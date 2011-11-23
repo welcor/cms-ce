@@ -30,6 +30,8 @@ public interface GlobalConfig
 
     public File getBlobStoreDir();
 
+    public File getElasticStorageDir();
+
     public int getAutoLoginTimeout();
 
     public String getAdminDefaultLanguage();

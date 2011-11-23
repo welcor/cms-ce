@@ -73,6 +73,10 @@ public class MockGlobalConfig
         return new File(getHomeDir(), "data/blobs");
     }
 
+    public File getElasticStorageDir() {
+        return new File(getHomeDir(), "data/index");
+    }
+
     public int getAutoLoginTimeout()
     {
         return -1;

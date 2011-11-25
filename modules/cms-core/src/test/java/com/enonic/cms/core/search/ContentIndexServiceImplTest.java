@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.elasticsearch;
+package com.enonic.cms.core.search;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  * Date: 11/23/11
  * Time: 2:09 PM
  */
-public class ContentIndexServiceElasticImplTest
+public class ContentIndexServiceImplTest
     extends TestCase
 {
 

@@ -16,7 +16,7 @@ public class ContentIndexWorkService
     implements Runnable, InitializingBean
 {
 
-    ContentIndexService contentIndexService;
+    ContentIndexService contentIndexServiceNew;
 
     ContentIndexDataBuilder contentIndexDataBuilder;
 
@@ -53,7 +53,7 @@ public class ContentIndexWorkService
 
         ContentIndexData contentIndexData = contentIndexDataBuilder.build( null, specification.getContentIndexDataBuilderSpecification() );
 
-        contentIndexService.index( contentIndexData );
+        contentIndexServiceNew.index( contentIndexData );
     }
 
 }

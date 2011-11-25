@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.elasticsearch;
+package com.enonic.cms.core.search;
 
 /**
  * Created by IntelliJ IDEA.
@@ -8,8 +8,6 @@ package com.enonic.cms.core.search.elasticsearch;
  */
 public class ElasticSearchConstants
 {
-
-    public final static String CONTENT_INDEX_NAME = "cms";
 
 
 }

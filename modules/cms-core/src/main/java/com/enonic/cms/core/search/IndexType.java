@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.elasticsearch;
+package com.enonic.cms.core.search;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
-package com.enonic.cms.core.search.elasticsearch;
+package com.enonic.cms.core.search;
 
-import com.enonic.cms.core.search.elasticsearch.IndexType;
+import com.enonic.cms.core.search.IndexType;
 
 /**
  * Created by IntelliJ IDEA.

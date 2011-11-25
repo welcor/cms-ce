@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.elasticsearch;
+package com.enonic.cms.core.search;
 
 import javax.annotation.PostConstruct;
 
@@ -52,9 +52,5 @@ public class ClientFactory
     {
         this.client = this.node.client();
 
-        CreateIndexRequest indexRequest = new CreateIndexRequest( "cms" );
-
-        CreateIndexResponse response = client.admin().indices().create( indexRequest ).actionGet();
-        System.out.println("Response: " + response.toString());
     }
 }

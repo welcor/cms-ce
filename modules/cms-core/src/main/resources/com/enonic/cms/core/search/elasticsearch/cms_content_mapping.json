@@ -1,0 +1,72 @@
+{
+    "content" : {
+        "_source" : {
+            "enabled" : false
+        },
+        "date_detection" : false,
+        "numeric_detection" : false,
+        "properties" : {
+            "title" : {
+                "type" : "multi_field",
+                "fields" : {
+                    "title" : {
+                        "type" : "string",
+                        "index" : "not_analyzed",
+                        "store" : "yes"
+                    },
+                    "_tokenized" : {
+                        "type" : "string",
+                        "index" : "analyzed",
+                        "store" : "yes"
+                    }
+                }
+            },
+            "contentlocations" : {
+                "properties" : {
+                    "home" : {
+                        "type" : "boolean",
+                        "store" : "yes"
+                    },
+                    "menuitemkey" : {
+                        "type" : "string",
+                        "index" : "not_analyzed",
+                        "store" : "yes"
+                    },
+                    "sitekey" : {
+                        "type" : "string",
+                        "index" : "not_analyzed",
+                        "store" : "yes"
+                    },
+                    "menukey" : {
+                        "type" : "string",
+                        "index" : "not_analyzed",
+                        "store" : "yes"
+                    }
+                }
+            }
+
+        },
+        "dynamic_templates" : [
+            {
+                "template_orderby" : {
+                    "match" : "orderby_*",
+                    "unmatch" : "*_numeric",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed",
+                        "store" : "yes"
+                    }
+                }
+            },
+            {
+                "template_numerics" : {
+                    "match" : "*_numeric",
+                    "mapping" : {
+                        "type" : "double",
+                        "store" : "yes"
+                    }
+                }
+            }
+        ]
+    }
+}

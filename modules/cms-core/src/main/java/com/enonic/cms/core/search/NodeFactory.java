@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.elasticsearch;
+package com.enonic.cms.core.search;
 
 import java.io.File;
 
@@ -25,6 +25,12 @@ public class NodeFactory
 
     private File storageDir;
 
+    private final static boolean local = true;
+
+    private final static boolean client = false;
+
+    private final static boolean data = true;
+
     public Node getObject()
         throws Exception
     {
@@ -49,7 +55,7 @@ public class NodeFactory
             .put( "path.data", new File( this.storageDir, "data" ).getAbsolutePath() )
             .build();
 
-        this.node = NodeBuilder.nodeBuilder().client( false ).local( true ).data( true ).settings( settings ).build();
+        this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
 
         this.node.start();
     }

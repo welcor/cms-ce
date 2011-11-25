@@ -1,0 +1,68 @@
+{
+    "customdata" : {
+        "_source" : {
+            "enabled" : false
+        },
+        "_parent" : {
+            "type" : "content"
+        },
+        "date_detection" : false,
+        "numeric_detection" : false,
+        "dynamic_templates" : [
+            {
+                "template_orderby" : {
+                    "match" : "orderby_*",
+                    "unmatch" : "*_numeric",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed",
+                        "store" : "yes"
+                    }
+                }
+            },
+            {
+                "template_userdata" : {
+                    "match" : "data_*",
+                    "unmatch" : "*_numeric",
+                    "mapping" : {
+                        "type" : "multi_field",
+                        "fields" : {
+                            "{name}" : {
+                                "type": "string",
+                                "index" : "not_analyzed",
+                                "store" : "yes",
+                                "include_in_all" : true
+                            },
+                            "_tokenized" : {
+                                "type": "string",
+                                "index" : "analyzed",
+                                "store" : "yes",
+                                "include_in_all" : true
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "template_numerics" : {
+                    "match" : "*_numeric",
+                    "mapping" : {
+                        "type" : "double",
+                        "store" : "yes"
+                    }
+                }
+            },
+            {
+                "template_standardvalues" : {
+                    "match" : "*",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed",
+                        "store" : "yes"
+                    }
+                }
+            }
+        ]
+    }
+
+}

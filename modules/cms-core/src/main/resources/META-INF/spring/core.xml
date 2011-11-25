@@ -590,10 +590,16 @@
         </property>
     </bean>
 
-    <bean class="com.enonic.cms.core.search.elasticsearch.NodeFactory">
+    <bean class="com.enonic.cms.core.search.NodeFactory">
         <property name="storageDir" value="#{config.elasticStorageDir}"/>
     </bean>
-    <bean class="com.enonic.cms.core.search.elasticsearch.ClientFactory"/>
+    <bean class="com.enonic.cms.core.search.ClientFactory"/>
+
+    <bean id="contentIndexServiceNew" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
+
+    <bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/>
+
+    <bean id="contentIndexDataBuilder" class="com.enonic.cms.core.search.builder.ContentIndexDataBuilderImpl"/>
 
 </beans>
         

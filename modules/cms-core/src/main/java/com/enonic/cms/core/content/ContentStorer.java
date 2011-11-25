@@ -47,6 +47,9 @@ import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentDataModifier;
 import com.enonic.cms.core.portal.ContentNotFoundException;
+import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
+import com.enonic.cms.core.search.builder.ContentIndexDataBuilderSpecification;
+import com.enonic.cms.core.search.index.ContentIndexService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserNotFoundException;
@@ -97,6 +100,12 @@ public class ContentStorer
 
     @Autowired
     private IndexService indexService;
+
+    @Autowired
+    private ContentIndexService contentIndexServiceNew;
+
+    @Autowired
+    private ContentIndexDataBuilder contentIndexDataBuilder;
 
     @Autowired
     private ContentValidator contentValidator;
@@ -170,6 +179,16 @@ public class ContentStorer
         flushPendingHibernateWork();
 
         indexService.index( newContent );
+
+        try
+        {
+            ContentIndexDataBuilderSpecification builderSpec = new ContentIndexDataBuilderSpecification( false, true );
+            contentIndexServiceNew.index( contentIndexDataBuilder.build( newContent, builderSpec ) );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         flushPendingHibernateWork();
 

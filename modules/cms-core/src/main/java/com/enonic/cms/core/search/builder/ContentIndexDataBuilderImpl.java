@@ -64,7 +64,7 @@ public class ContentIndexDataBuilderImpl
         if ( binaryData != null && !binaryData.isEmpty() )
         {
 
-            final XContentBuilder result = XContentFactory.safeJsonBuilder();
+            final XContentBuilder result = XContentFactory.jsonBuilder();
             result.startObject();
             addField( "key", new Double( entity.getKey().toInt() ), result, false );
             addAttachmentValues( result, binaryData );
@@ -78,7 +78,7 @@ public class ContentIndexDataBuilderImpl
     private XContentBuilder buildMetadata( ContentEntity entity )
         throws Exception
     {
-        final XContentBuilder result = XContentFactory.safeJsonBuilder();
+        final XContentBuilder result = XContentFactory.jsonBuilder();
         result.startObject();
         addField( "key", new Double( entity.getKey().toInt() ), result );
 
@@ -103,7 +103,7 @@ public class ContentIndexDataBuilderImpl
             return null;
         }
 
-        final XContentBuilder result = XContentFactory.safeJsonBuilder();
+        final XContentBuilder result = XContentFactory.jsonBuilder();
         result.startObject();
         addField( "key", new Double( entity.getKey().toInt() ), result );
         addUserDefinedValues( result, entity, indexDefinitions );

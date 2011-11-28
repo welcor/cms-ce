@@ -50,14 +50,20 @@ public class NodeFactory
     @PostConstruct
     public void start()
     {
-        final Settings settings = ImmutableSettings.settingsBuilder()
-            .put( "path.logs", new File( this.storageDir, "log" ).getAbsolutePath() )
-            .put( "path.data", new File( this.storageDir, "data" ).getAbsolutePath() )
-            .build();
+        final Settings settings = createNodeSettings();
 
         this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
 
         this.node.start();
+    }
+
+    private Settings createNodeSettings()
+    {
+        return ImmutableSettings.settingsBuilder()
+            .put( "path.logs", new File( this.storageDir, "log" ).getAbsolutePath() )
+            .put( "path.data", new File( this.storageDir, "data" ).getAbsolutePath() )
+            //.put(  "cluster.name", "cms-index-cluster" )
+            .build();
     }
 
     @PreDestroy

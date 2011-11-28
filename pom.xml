@@ -319,14 +319,14 @@
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
-                        <artifactId>org.springframework.core</artifactId>
+                        <artifactId>org.spNringframework.core</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>0.17.4</version>
+                <version>0.18.4</version>
             </dependency>
 
             <dependency>

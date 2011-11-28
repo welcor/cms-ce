@@ -24,8 +24,9 @@ public class ContentIndexServiceImplTest
     }
 
     @Test
-    public void testStuff()
+    public void testSorting()
     {
+
 
     }
 }

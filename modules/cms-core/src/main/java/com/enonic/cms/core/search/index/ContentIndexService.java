@@ -19,6 +19,7 @@ public interface ContentIndexService
 
     public void index( final ContentIndexData... content );
 
+
     public void delete( final ContentKey... contentKeys );
 
     public void delete( final CategoryKey... categoryKeys );

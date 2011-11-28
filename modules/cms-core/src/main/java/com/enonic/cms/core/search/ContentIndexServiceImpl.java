@@ -1,7 +1,11 @@
 package com.enonic.cms.core.search;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
 
@@ -49,6 +53,8 @@ public class ContentIndexServiceImpl
 
     private Client client;
 
+    private IndexRequestCreator indexRequestCreator;
+
     public void createIndex()
         throws Exception
     {
@@ -66,7 +72,7 @@ public class ContentIndexServiceImpl
 
     public void index( final ContentIndexData contentIndexData )
     {
-        List<IndexRequest> indexRequests = createIndexRequests( contentIndexData );
+        Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
 
         for ( IndexRequest indexRequest : indexRequests )
         {
@@ -85,7 +91,7 @@ public class ContentIndexServiceImpl
 
         for ( ContentIndexData contentIndexData : contentIndexDatas )
         {
-            addIndexRequests( bulkRequest, createIndexRequests( contentIndexData ) );
+            addIndexRequests( bulkRequest, indexRequestCreator.createIndexRequests( contentIndexData ) );
         }
 
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
@@ -96,39 +102,6 @@ public class ContentIndexServiceImpl
         }
     }
 
-    private List<IndexRequest> createIndexRequests( ContentIndexData contentIndexData )
-    {
-        List<IndexRequest> indexRequests = new ArrayList<IndexRequest>();
-        final String id = contentIndexData.getKey().toString();
-
-        if ( contentIndexData.getMetadata() != null )
-        {
-            indexRequests.add( createIndexRequest( id, contentIndexData.getMetadata(), IndexType.Content, null ) );
-        }
-
-        if ( contentIndexData.getCustomdata() != null )
-        {
-            indexRequests.add( createIndexRequest( id, contentIndexData.getCustomdata(), IndexType.Customdata, id ) );
-        }
-
-        if ( contentIndexData.getExtractedBinaryData() != null )
-        {
-            indexRequests.add( createIndexRequest( id, contentIndexData.getExtractedBinaryData(), IndexType.Binaries, id ) );
-        }
-
-        return indexRequests;
-    }
-
-    private IndexRequest createIndexRequest( String id, XContentBuilder data, IndexType indexType, String parent )
-    {
-        IndexRequest request = new IndexRequest( INDEX_NAME ).type( indexType.toString() ).id( id ).source( data );
-        if ( parent != null )
-        {
-            request.parent( parent );
-        }
-
-        return request;
-    }
 
     private void doIndex( IndexRequest request )
     {
@@ -136,7 +109,7 @@ public class ContentIndexServiceImpl
     }
 
 
-    private void addIndexRequests( BulkRequestBuilder bulkRequest, List<IndexRequest> requests )
+    private void addIndexRequests( BulkRequestBuilder bulkRequest, Set<IndexRequest> requests )
     {
         for ( IndexRequest request : requests )
         {
@@ -260,6 +233,9 @@ public class ContentIndexServiceImpl
     @PostConstruct
     public void startIndex()
     {
+
+        indexRequestCreator = new IndexRequestCreator( INDEX_NAME );
+
         try
         {
             initalizeIndex( true );
@@ -269,4 +245,6 @@ public class ContentIndexServiceImpl
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+
+
 }

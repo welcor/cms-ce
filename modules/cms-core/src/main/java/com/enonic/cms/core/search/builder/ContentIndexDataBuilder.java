@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search.builder;
 
 import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
 
 /**

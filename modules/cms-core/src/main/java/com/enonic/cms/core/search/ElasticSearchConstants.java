@@ -6,7 +6,7 @@ package com.enonic.cms.core.search;
  * Date: 11/23/11
  * Time: 9:29 AM
  */
-public class ElasticSearchConstants
+final class ElasticSearchConstants
 {
 
 

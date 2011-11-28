@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.util;
+package com.enonic.cms.core.search.builder;
 
 /**
  * Created by IntelliJ IDEA.
@@ -6,7 +6,7 @@ package com.enonic.cms.core.search.util;
  * Date: 11/23/11
  * Time: 12:07 PM
  */
-public class IndexFieldNameConstants
+class IndexFieldNameConstants
 {
     public final static char PRE_SEPARATOR = '_';
 

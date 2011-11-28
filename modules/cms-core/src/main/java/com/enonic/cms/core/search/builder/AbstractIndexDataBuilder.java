@@ -6,8 +6,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.util.NumericUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
-import com.enonic.cms.core.search.util.IndexFieldNameResolver;
-import com.enonic.cms.core.search.util.IndexValueResolver;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +13,7 @@ import com.enonic.cms.core.search.util.IndexValueResolver;
  * Date: 11/22/11
  * Time: 4:35 PM
  */
-public class AbstractIndexDataBuilder
+class AbstractIndexDataBuilder
 {
 
     protected void addField( String fieldName, String value, XContentBuilder builder )

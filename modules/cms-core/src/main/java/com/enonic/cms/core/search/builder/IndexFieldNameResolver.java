@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.util;
+package com.enonic.cms.core.search.builder;
 
 
 import org.apache.commons.lang.StringUtils;
@@ -11,7 +11,7 @@ import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
  * Date: 11/23/11
  * Time: 12:06 PM
  */
-public class IndexFieldNameResolver
+final class IndexFieldNameResolver
     extends IndexFieldNameConstants
 {
 

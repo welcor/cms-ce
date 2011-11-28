@@ -15,7 +15,7 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  * Date: 11/28/11
  * Time: 10:00 AM
  */
-public class IndexRequestCreator
+final class IndexRequestCreator
 {
     private final String indexName;
 

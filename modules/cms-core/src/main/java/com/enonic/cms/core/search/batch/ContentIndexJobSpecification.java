@@ -1,7 +1,8 @@
 package com.enonic.cms.core.search.batch;
 
 import com.enonic.cms.core.content.ContentSpecification;
-import com.enonic.cms.core.search.builder.ContentIndexDataBuilderSpecification;
+import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
+
 
 /**
  * Created by IntelliJ IDEA.

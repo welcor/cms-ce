@@ -1,10 +1,8 @@
-package com.enonic.cms.core.search.util;
+package com.enonic.cms.core.search.builder;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert.*;
 
-import junit.framework.TestCase;
+import com.enonic.cms.core.search.builder.IndexValueResolver;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;

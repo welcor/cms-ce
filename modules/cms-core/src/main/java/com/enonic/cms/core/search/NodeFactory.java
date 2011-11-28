@@ -6,6 +6,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 
+import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.logging.slf4j.Slf4jESLoggerFactory;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -50,6 +52,8 @@ public class NodeFactory
     @PostConstruct
     public void start()
     {
+        setLogger();
+
         final Settings settings = createNodeSettings();
 
         this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
@@ -57,13 +61,19 @@ public class NodeFactory
         this.node.start();
     }
 
+    private void setLogger()
+    {
+        ESLoggerFactory.setDefaultFactory( new Slf4jESLoggerFactory() );
+    }
+
     private Settings createNodeSettings()
     {
         return ImmutableSettings.settingsBuilder()
             .put( "path.logs", new File( this.storageDir, "log" ).getAbsolutePath() )
             .put( "path.data", new File( this.storageDir, "data" ).getAbsolutePath() )
-            //.put(  "cluster.name", "cms-index-cluster" )
+                //.put(  "cluster.name", "cms-index-cluster" )
             .build();
+
     }
 
     @PreDestroy

@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.util;
+package com.enonic.cms.core.search.builder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.util.NumericUtils;
@@ -15,7 +15,7 @@ import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
  * Date: 11/23/11
  * Time: 12:26 PM
  */
-public class IndexValueResolver
+public final class IndexValueResolver
 {
 
 

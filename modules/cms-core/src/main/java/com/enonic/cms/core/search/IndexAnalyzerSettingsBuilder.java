@@ -8,7 +8,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  * Date: 11/24/11
  * Time: 12:51 PM
  */
-public class IndexAnalyzerSettingsBuilder
+final class IndexAnalyzerSettingsBuilder
 {
 
     public static String buildAnalyserSettings()

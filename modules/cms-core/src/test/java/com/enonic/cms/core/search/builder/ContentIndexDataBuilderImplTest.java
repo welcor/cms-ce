@@ -3,11 +3,6 @@ package com.enonic.cms.core.search.builder;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.elasticsearch.common.jackson.JsonParser;
-import org.elasticsearch.common.xcontent.ToXContent;
-import org.elasticsearch.common.xcontent.XContentParser;
-import org.elasticsearch.common.xcontent.json.JsonXContentParser;
-import org.elasticsearch.common.xcontent.support.XContentMapConverter;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.joda.time.DateTime;
@@ -36,6 +31,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DateDataEntryConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.ImageDataEntryConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
+import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
 
 /**

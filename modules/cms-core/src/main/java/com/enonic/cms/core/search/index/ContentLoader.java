@@ -14,7 +14,7 @@ import com.enonic.cms.store.dao.ContentDao;
  * Date: 11/22/11
  * Time: 2:00 PM
  */
-public class ContentLoader
+final class ContentLoader
     implements BatchLoader<ContentEntity>
 {
 

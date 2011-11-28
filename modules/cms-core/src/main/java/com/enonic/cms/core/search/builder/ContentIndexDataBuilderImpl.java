@@ -15,6 +15,7 @@ import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.index.config.IndexDefinition;
 import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
+import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.security.user.UserEntity;
 
@@ -24,7 +25,7 @@ import com.enonic.cms.core.security.user.UserEntity;
  * Date: 11/22/11
  * Time: 1:50 PM
  */
-public class ContentIndexDataBuilderImpl
+public final class ContentIndexDataBuilderImpl
     extends AbstractIndexDataBuilder
     implements ContentIndexDataBuilder
 {

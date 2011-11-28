@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.builder;
+package com.enonic.cms.core.search;
 
 /**
  * Created by IntelliJ IDEA.
@@ -6,7 +6,7 @@ package com.enonic.cms.core.search.builder;
  * Date: 11/22/11
  * Time: 3:40 PM
  */
-public class ContentIndexDataBuilderSpecification
+public final class ContentIndexDataBuilderSpecification
 {
 
     private boolean buildAttachments = false;

@@ -238,7 +238,7 @@ public class ContentIndexServiceImpl
 
         try
         {
-            initalizeIndex( true );
+            initalizeIndex( false );
         }
         catch ( Exception e )
         {

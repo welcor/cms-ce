@@ -13,6 +13,7 @@ import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
+import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.index.config.IndexDefinition;
 import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
@@ -68,7 +69,7 @@ public final class ContentIndexDataBuilderImpl
             final XContentBuilder result = XContentFactory.jsonBuilder();
             result.startObject();
             addField( "key", new Double( entity.getKey().toInt() ), result, false );
-            addAttachmentValues( result, binaryData );
+            addBinaryExtractedData( result, binaryData );
             result.endObject();
             return result;
         }
@@ -113,7 +114,7 @@ public final class ContentIndexDataBuilderImpl
         return result;
     }
 
-    private void addAttachmentValues( XContentBuilder result, Set<ContentBinaryDataEntity> contentBinaryData )
+    private void addBinaryExtractedData( XContentBuilder result, Set<ContentBinaryDataEntity> contentBinaryData )
         throws Exception
     {
         /*
@@ -158,7 +159,15 @@ public final class ContentIndexDataBuilderImpl
     private void addCategory( ContentEntity entity, XContentBuilder result )
         throws Exception
     {
-        final int categoryKey = entity.getCategory().getKey().toInt();
+        final CategoryEntity category = entity.getCategory();
+
+        if ( category == null )
+        {
+            // TODO: Is this allowed or illegalArgument?
+            return;
+        }
+
+        final int categoryKey = category.getKey().toInt();
         addField( IndexFieldNameResolver.getCategoryKeyFieldName(), new Double( categoryKey ), result );
 
         final String categoryName = entity.getCategory().getName();

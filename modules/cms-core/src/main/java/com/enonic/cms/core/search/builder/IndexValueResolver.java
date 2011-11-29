@@ -19,6 +19,7 @@ public final class IndexValueResolver
 {
 
 
+    // TODO: What the hell is this?
     public static Object[] toValues( Expression expr )
     {
         if ( expr instanceof ArrayExpr )

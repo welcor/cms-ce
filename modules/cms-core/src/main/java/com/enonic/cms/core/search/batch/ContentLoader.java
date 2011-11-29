@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.index;
+package com.enonic.cms.core.search.batch;
 
 import java.util.List;
 

@@ -1,37 +1,19 @@
 package com.enonic.cms.core.search.builder;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.jdom.Document;
-import org.jdom.Element;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.TestCase;
 
-import com.enonic.cms.framework.util.JDOMUtil;
-
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.category.CategoryEntity;
-import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
-import com.enonic.cms.core.content.contentdata.custom.DateDataEntry;
-import com.enonic.cms.core.content.contentdata.custom.contentkeybased.ImageDataEntry;
-import com.enonic.cms.core.content.contentdata.custom.relationdataentrylistbased.ImagesDataEntry;
-import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
-import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
-import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.DateDataEntryConfig;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.ImageDataEntryConfig;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
+
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
+import com.enonic.cms.core.search.ContentTestDataBuilder;
 import com.enonic.cms.core.search.index.ContentIndexData;
 
 /**
@@ -48,62 +30,42 @@ public class ContentIndexDataBuilderImplTest
 
     ContentIndexDataBuilder indexDataBuilder = new ContentIndexDataBuilderImpl();
 
-    private Element standardConfigEl;
+    byte[] binary1 = "This is binary1".getBytes();
 
-    private Document standardConfigDoc;
 
-    private ImageDataEntryConfig imagesConfig = new ImageDataEntryConfig( "myImages", false, "My images", "contentdata/myimages" );
-
-    private TextDataEntryConfig titleConfig = new TextDataEntryConfig( "myTitle", true, "My title", "contentdata/mytitle" );
-
-    private DateDataEntryConfig dateConfig = new DateDataEntryConfig( "myDate", false, "My date", "contentdata/mydate" );
-
-    private ContentTypeConfig config;
-
-    @Before
-    public void setUp()
+    public String createContentXML()
         throws Exception
     {
-        StringBuffer standardConfigXml = new StringBuffer();
-        standardConfigXml.append( "<config name=\"MyContentType\" version=\"1.0\">" );
-        standardConfigXml.append( "     <form>" );
-        standardConfigXml.append( "         <title name=\"myTitle\"/>" );
-        standardConfigXml.append( "         <block name=\"TestBlock1\">" );
-        standardConfigXml.append( "             <input name=\"myTitle\" required=\"true\" type=\"text\">" );
-        standardConfigXml.append( "                 <display>My title</display>" );
-        standardConfigXml.append( "                 <xpath>contentdata/mytitle</xpath>" );
-        standardConfigXml.append( "             </input>" );
-        standardConfigXml.append( "             <input name=\"myDate\" type=\"date\">" );
-        standardConfigXml.append( "                 <display>My date</display>" );
-        standardConfigXml.append( "                 <xpath>contentdata/mydate</xpath>" );
-        standardConfigXml.append( "             </input>" );
-        standardConfigXml.append( "             <input name=\"myBinaryfile\" type=\"uploadfile\">" );
-        standardConfigXml.append( "                 <display>My binaryfile</display>" );
-        standardConfigXml.append( "                 <xpath>contentdata/mybinaryfile</xpath>" );
-        standardConfigXml.append( "             </input>" );
-        standardConfigXml.append( "             <input name=\"myImages\" type=\"images\">" );
-        standardConfigXml.append( "                 <display>My images</display>" );
-        standardConfigXml.append( "                 <xpath>contentdata/myimages</xpath>" );
-        standardConfigXml.append( "             </input>" );
-        standardConfigXml.append( "         </block>" );
-        standardConfigXml.append( "     </form>" );
-        standardConfigXml.append( "</config>" );
+        StringBuffer configXML = new StringBuffer();
+        configXML.append( "<config name=\"MyContentType\" version=\"1.0\">" );
+        configXML.append( "     <form>" );
+        configXML.append( "         <title name=\"myTitle\"/>" );
+        configXML.append( "         <block name=\"TestBlock1\">" );
+        configXML.append( "             <input name=\"myTitle\" required=\"true\" type=\"text\">" );
+        configXML.append( "                 <display>My title</display>" );
+        configXML.append( "                 <xpath>contentdata/mytitle</xpath>" );
+        configXML.append( "             </input>" );
+        configXML.append( "             <input name=\"myDate\" type=\"date\">" );
+        configXML.append( "                 <display>My date</display>" );
+        configXML.append( "                 <xpath>contentdata/mydate</xpath>" );
+        configXML.append( "             </input>" );
+        configXML.append( "             <input name=\"myBinary\" type=\"uploadfile\">" );
+        configXML.append( "                 <display>My Binary</display>" );
+        configXML.append( "                 <xpath>contentdata/myBinary</xpath>" );
+        configXML.append( "             </input>" );
+        configXML.append( "         </block>" );
+        configXML.append( "     </form>" );
+        configXML.append( "</config>" );
 
-        standardConfigDoc = JDOMUtil.parseDocument( standardConfigXml.toString() );
-        standardConfigEl = standardConfigDoc.getRootElement();
-
-        config = ContentTypeConfigParser.parse( ContentHandlerName.CUSTOM, standardConfigEl );
-
-
+        return configXML.toString();
     }
 
     @Test
     public void testMetadata()
         throws Exception
     {
-        final Date now = Calendar.getInstance().getTime();
 
-        ContentEntity content = createTestContent( now );
+        ContentEntity content = createTestContent();
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
 
@@ -117,37 +79,26 @@ public class ContentIndexDataBuilderImplTest
     }
 
 
-    private ContentEntity createTestContent( Date now )
+    private ContentEntity createTestContent()
+        throws Exception
     {
-        ContentVersionEntity contentVersion = new ContentVersionEntity();
-        contentVersion.setTitle( "testtitle" );
-        contentVersion.setStatus( ContentStatus.APPROVED );
+        ContentTestDataBuilder contentBuilder;
+        contentBuilder = new ContentTestDataBuilder();
+        contentBuilder.buildConfig( createContentXML() );
 
-        ContentEntity content = new ContentEntity();
-        content.setKey( new ContentKey( 1 ) );
-        content.setName( "testcontentname" );
-        content.setMainVersion( contentVersion );
-        CategoryEntity cat = new CategoryEntity();
+        Map<String, Object> customDataMap = new HashMap<String, Object>();
+        customDataMap.put( "myTitle", "contentdatatesttitle" );
+        customDataMap.put( "myDate", new DateTime( 2009, 1, 1, 1, 1, 1, 1 ).toDate() );
+        customDataMap.put( "myBinary", "%0" );
 
-        ContentHandlerEntity contentHandler = new ContentHandlerEntity();
-        contentHandler.setClassName( ContentHandlerName.CUSTOM.getHandlerClassShortName() );
+        ContentEntity content = contentBuilder.createContent( 1, "testcontent" )
+            .addMainVersion( 1, ContentStatus.APPROVED )
+            .addCustomContent( customDataMap )
+            .addBinaryData( 1, "ACABACAB" )
+            .build();
 
-        ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
-        contentType.setData( standardConfigDoc );
-
-        cat.setContentType( contentType );
-
-        content.setCategory( cat );
-        content.setAvailableFrom( now );
-        content.setCreatedAt( now );
-
-        CustomContentData contentData = new CustomContentData( config );
-        contentData.add( new TextDataEntry( titleConfig, "contentDataTestTitle" ) );
-        contentData.add( new DateDataEntry( dateConfig, new DateTime( 2009, 1, 1, 1, 1, 1, 1 ).toDate() ) );
-        contentData.add( new ImagesDataEntry( imagesConfig ).add( new ImageDataEntry( imagesConfig, new ContentKey( 1 ) ) ) );
-
-        contentVersion.setContentData( contentData );
         return content;
     }
+
+
 }

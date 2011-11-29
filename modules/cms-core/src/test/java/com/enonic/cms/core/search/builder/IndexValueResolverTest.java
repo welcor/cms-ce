@@ -2,10 +2,14 @@ package com.enonic.cms.core.search.builder;
 
 import org.junit.Test;
 
+import com.enonic.cms.core.content.index.queryexpression.Expression;
+import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 import com.enonic.cms.core.search.builder.IndexValueResolver;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +32,18 @@ public class IndexValueResolverTest
 
         result = IndexValueResolver.getOrderByValue( new Float( 123 ) );
         assertNotNull( result );
+    }
+
+    @Test
+    public void testExpressionToValue()
+    {
+        Object result = IndexValueResolver.toValue( new ValueExpr( "123" ) );
+        assertTrue( result instanceof String );
+
+        result = IndexValueResolver.toValue( new ValueExpr( 123 ) );
+
+
+
     }
 
     @Test

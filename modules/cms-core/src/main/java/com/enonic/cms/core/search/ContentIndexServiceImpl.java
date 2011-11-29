@@ -80,12 +80,12 @@ public class ContentIndexServiceImpl
         }
     }
 
-    public void index( final ContentIndexData... contentIndexDatas )
+    public void index( final List<ContentIndexData> contentIndexDatas )
     {
         doBulkIndex( contentIndexDatas );
     }
 
-    private void doBulkIndex( ContentIndexData[] contentIndexDatas )
+    private void doBulkIndex( List<ContentIndexData> contentIndexDatas )
     {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
 

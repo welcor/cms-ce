@@ -151,15 +151,18 @@ public final class ContentIndexDataBuilderImpl
     private void addContentType( ContentEntity entity, XContentBuilder result )
         throws Exception
     {
-        //addField( QueryFieldNameResolver.getContentTypeKeyFieldName(), new Double( entity.getContentType().getKey() ), result );
-        //addField( QueryFieldNameResolver.getContentTypeNameFieldName(), entity.getContentType().getName(), result );
+        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), new Double( entity.getContentType().getKey() ), result );
+        addField( IndexFieldNameResolver.getContentTypeNameFieldName(), entity.getContentType().getName(), result );
     }
 
     private void addCategory( ContentEntity entity, XContentBuilder result )
         throws Exception
     {
-       // addField( QueryFieldNameResolver.getCategoryKeyFieldName(), new Double( entity.getCategory().getKey().toInt() ), result );
-       // addField( QueryFieldNameResolver.getCategoryNameFieldName(), entity.getCategory().getName(), result );
+        final int categoryKey = entity.getCategory().getKey().toInt();
+        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), new Double( categoryKey ), result );
+
+        final String categoryName = entity.getCategory().getName();
+        addField( IndexFieldNameResolver.getCategoryNameFieldName(), categoryName, result );
     }
 
     private void addSections( ContentEntity content, XContentBuilder result )

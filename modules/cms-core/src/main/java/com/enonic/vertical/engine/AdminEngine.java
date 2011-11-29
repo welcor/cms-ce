@@ -37,6 +37,7 @@ import com.enonic.vertical.engine.handlers.UserHandler;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.content.AdminContentIndexer;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentService;
@@ -84,6 +85,9 @@ public final class AdminEngine
 
     @Autowired
     private MemberOfResolver memberOfResolver;
+
+    @Autowired
+    private AdminContentIndexer adminContentIndexer;
 
     private IndexService indexService;
 
@@ -206,7 +210,7 @@ public final class AdminEngine
             if ( Arrays.binarySearch( groupKeys, enterpriseGroupKey ) < 0 )
             {
                 String message = "User does not have rights to copy menu.";
-                VerticalEngineLogger.errorSecurity(message, null );
+                VerticalEngineLogger.errorSecurity( message, null );
             }
         }
 
@@ -261,16 +265,16 @@ public final class AdminEngine
             if ( !securityHandler.validateCategoryCreate( user, superCategoryKey ) )
             {
                 String message = "User does not have access rights to create a new category";
-                VerticalEngineLogger.errorSecurity(message, null );
+                VerticalEngineLogger.errorSecurity( message, null );
             }
         }
 
-        return categoryHandler.createCategory(user, doc);
+        return categoryHandler.createCategory( user, doc );
     }
 
     public int createContentObject( String xmlData )
     {
-        return contentObjectHandler.createContentObject(xmlData);
+        return contentObjectHandler.createContentObject( xmlData );
     }
 
     public int createContentType( User user, String xmlData )
@@ -281,7 +285,7 @@ public final class AdminEngine
         if ( !( securityHandler.isSiteAdmin( user ) || isDeveloper( user ) ) )
         {
             String message = "User is not administrator or developer";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         return contentHandler.createContentType( doc );
@@ -293,7 +297,7 @@ public final class AdminEngine
         if ( !isEnterpriseAdmin( user ) )
         {
             String message = "User is not enterprise administrator";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         languageHandler.createLanguage( languageCode, description );
@@ -306,7 +310,7 @@ public final class AdminEngine
 
     public void updateMenuItem( User user, String xmlData )
     {
-        menuHandler.updateMenuItem(user, xmlData);
+        menuHandler.updateMenuItem( user, xmlData );
     }
 
     public void removeMenuItem( User user, int mikey )
@@ -316,53 +320,52 @@ public final class AdminEngine
 
     public int createMenuItem( User user, String xmlData )
     {
-        return menuHandler.createMenuItem(user, xmlData);
+        return menuHandler.createMenuItem( user, xmlData );
     }
 
     public int createPageTemplate( String xmlData )
     {
-        return pageTemplateHandler.createPageTemplate(xmlData);
+        return pageTemplateHandler.createPageTemplate( xmlData );
     }
 
     public int copyPageTemplate( User user, int pageTemplateKey )
     {
-        return pageTemplateHandler.copyPageTemplate(user, new PageTemplateKey(pageTemplateKey));
+        return pageTemplateHandler.copyPageTemplate( user, new PageTemplateKey( pageTemplateKey ) );
     }
 
     public int createUnit( String xmlData )
         throws VerticalSecurityException
     {
-        return unitHandler.createUnit(xmlData);
+        return unitHandler.createUnit( xmlData );
     }
 
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey )
     {
-        return userHandler.generateUID(fName, sName, userStoreKey);
+        return userHandler.generateUID( fName, sName, userStoreKey );
     }
 
     public BinaryData getBinaryData( int binaryDataKey )
     {
-        return binaryDataHandler.getBinaryData(binaryDataKey);
+        return binaryDataHandler.getBinaryData( binaryDataKey );
     }
 
     public XMLDocument getContent( User user, int contentKey, int parentLevel, int childrenLevel, int parentChildrenLevel )
     {
-        Document doc =
-            contentHandler.getContent( user, contentKey, false, parentLevel, childrenLevel, parentChildrenLevel);
+        Document doc = contentHandler.getContent( user, contentKey, false, parentLevel, childrenLevel, parentChildrenLevel );
         securityHandler.appendAccessRights( user, doc, true, true );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public String getCategoryName( int categoryKey )
     {
 
-        return categoryHandler.getCategoryName(CategoryKey.parse(categoryKey));
+        return categoryHandler.getCategoryName( CategoryKey.parse( categoryKey ) );
     }
 
     public XMLDocument getCategoryNameXML( int categoryKey )
     {
 
-        return XMLDocumentFactory.create(categoryHandler.getCategoryNameDoc(CategoryKey.parse(categoryKey)));
+        return XMLDocumentFactory.create( categoryHandler.getCategoryNameDoc( CategoryKey.parse( categoryKey ) ) );
     }
 
     public XMLDocument getCategory( User user, int categoryKey )
@@ -376,27 +379,27 @@ public final class AdminEngine
         }
         securityHandler.appendAccessRights( user, doc, true, true );
 
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public MenuItemAccessRight getMenuItemAccessRight( User user, MenuItemKey key )
     {
-        return securityHandler.getMenuItemAccessRight(user, key);
+        return securityHandler.getMenuItemAccessRight( user, key );
     }
 
     public MenuAccessRight getMenuAccessRight( User user, int key )
     {
-        return securityHandler.getMenuAccessRight(user, key);
+        return securityHandler.getMenuAccessRight( user, key );
     }
 
     public CategoryAccessRight getCategoryAccessRight( User user, int key )
     {
-        return securityHandler.getCategoryAccessRight(user, CategoryKey.parse(key));
+        return securityHandler.getCategoryAccessRight( user, CategoryKey.parse( key ) );
     }
 
     public ContentAccessRight getContentAccessRight( User user, int key )
     {
-        return securityHandler.getContentAccessRight(user, key);
+        return securityHandler.getContentAccessRight( user, key );
     }
 
     public XMLDocument getMenuItem( User user, int key, boolean withParents )
@@ -408,14 +411,14 @@ public final class AdminEngine
 
     public XMLDocument getMenuItem( User user, int key, boolean withParents, boolean complete )
     {
-        Document doc = menuHandler.getMenuItem(user, key, withParents, complete, true);
+        Document doc = menuHandler.getMenuItem( user, key, withParents, complete, true );
         securityHandler.appendAccessRights( user, doc, true, true );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public int getCategoryKey( int contentKey )
     {
-        CategoryKey categoryKey = contentHandler.getCategoryKey(contentKey);
+        CategoryKey categoryKey = contentHandler.getCategoryKey( contentKey );
         if ( categoryKey == null )
         {
             return -1;
@@ -425,7 +428,7 @@ public final class AdminEngine
 
     public int getSuperCategoryKey( int categoryKey )
     {
-        CategoryKey parentCategoryKey = categoryHandler.getParentCategoryKey(CategoryKey.parse(categoryKey));
+        CategoryKey parentCategoryKey = categoryHandler.getParentCategoryKey( CategoryKey.parse( categoryKey ) );
         if ( parentCategoryKey == null )
         {
             return -1;
@@ -436,13 +439,13 @@ public final class AdminEngine
     public XMLDocument getSuperCategoryNames( int categoryKey, boolean withContentCount, boolean includeCategory )
     {
         Document doc = categoryHandler.getSuperCategoryNames( CategoryKey.parse( categoryKey ), withContentCount, includeCategory );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public int getContentCount( int categoryKey, boolean recursive )
     {
 
-        return categoryHandler.getContentCount(null, CategoryKey.parse(categoryKey), recursive);
+        return categoryHandler.getContentCount( null, CategoryKey.parse( categoryKey ), recursive );
     }
 
     public XMLDocument getContentObject( int contentObjectKey )
@@ -452,7 +455,7 @@ public final class AdminEngine
 
     public XMLDocument getContentObjectsByMenu( int menuKey )
     {
-        return XMLDocumentFactory.create(contentObjectHandler.getContentObjectsByMenu(menuKey));
+        return XMLDocumentFactory.create( contentObjectHandler.getContentObjectsByMenu( menuKey ) );
     }
 
     public String getContentTitle( int versionKey )
@@ -463,13 +466,13 @@ public final class AdminEngine
     public XMLDocument getContentType( int contentTypeKey )
     {
         Document doc = contentHandler.getContentType( contentTypeKey, false );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getContentType( int contentTypeKey, boolean includeContentCount )
     {
         Document doc = contentHandler.getContentType( contentTypeKey, includeContentCount );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public int getContentTypeKey( int contentKey )
@@ -511,7 +514,7 @@ public final class AdminEngine
     {
         Document doc = menuHandler.getMenu( user, menuKey, complete, true );
         securityHandler.appendAccessRights( user, doc, true, true );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public String getMenuItemName( int menuItemKey )
@@ -532,13 +535,13 @@ public final class AdminEngine
     private XMLDocument doGetPageTemplatesByMenu( int menuKey, int[] excludeTypeKeys )
     {
         Document doc = pageTemplateHandler.getPageTemplatesByMenu( menuKey, excludeTypeKeys );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getPageTemplatesByContentObject( int contentObjectKey )
     {
         Document doc = pageTemplateHandler.getPageTemplatesByContentObject( contentObjectKey );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public String getPageTemplParams( int pageTemplateKey )
@@ -568,7 +571,7 @@ public final class AdminEngine
 
     public XMLDocument getUnitNamesXML( Filter filter )
     {
-        return XMLDocumentFactory.create(unitHandler.getUnitNamesXML( filter ));
+        return XMLDocumentFactory.create( unitHandler.getUnitNamesXML( filter ) );
     }
 
     public XMLDocument getUnits()
@@ -593,7 +596,7 @@ public final class AdminEngine
 
 //        final int batchSize = 100;
         final int batchSize = 10;
-        RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService );
+        RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService, adminContentIndexer );
         batcher.regenerateIndex( contentType, batchSize, null );
     }
 
@@ -621,7 +624,7 @@ public final class AdminEngine
         if ( !( securityHandler.isSiteAdmin( user ) || isDeveloper( user ) ) )
         {
             String message = "User is not administrator or developer";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         contentHandler.removeContentType( contentTypeKey );
@@ -657,7 +660,7 @@ public final class AdminEngine
             if ( !securityHandler.validateCategoryUpdate( user, categoryKey ) )
             {
                 String message = "User does not have access rights to update the category.";
-                VerticalEngineLogger.errorSecurity(message, null );
+                VerticalEngineLogger.errorSecurity( message, null );
             }
         }
         categoryHandler.updateCategory( null, user, doc );
@@ -675,10 +678,10 @@ public final class AdminEngine
         if ( !( securityHandler.isSiteAdmin( user ) || isDeveloper( user ) ) )
         {
             String message = "User is not administrator or developer";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
-        contentHandler.updateContentType(doc );
+        contentHandler.updateContentType( doc );
     }
 
     public void updateLanguage( LanguageKey languageKey, String languageCode, String description )
@@ -692,7 +695,7 @@ public final class AdminEngine
         if ( !isAdmin( user ) )
         {
             String message = "User does not have rights to update menu data.";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         menuHandler.updateMenuData( doc );
@@ -711,13 +714,13 @@ public final class AdminEngine
     public XMLDocument getMenuItemsByContentObject( User user, int cobKey )
     {
         Document doc = menuHandler.getMenuItemsByContentObject( user, cobKey );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getMenuItemsByPageTemplates( User user, int[] pageTemplateKeys )
     {
         Document doc = menuHandler.getMenuItemsByPageTemplates( user, pageTemplateKeys );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getAccessRights( User user, int type, int key, boolean includeUserright )
@@ -819,13 +822,13 @@ public final class AdminEngine
             !securityHandler.validateCategoryCreate( user, CategoryKey.parse( newSuperCategoryKey ) ) )
         {
             String message = "User does not have access rights to move the category.";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         if ( categoryHandler.isSubCategory( CategoryKey.parse( catKey ), CategoryKey.parse( newSuperCategoryKey ) ) )
         {
             String message = "Cannot move a category to a subcategory";
-            VerticalEngineLogger.errorUpdate(message, null );
+            VerticalEngineLogger.errorUpdate( message, null );
         }
 
         categoryHandler.moveCategory( user, CategoryKey.parse( catKey ), CategoryKey.parse( newSuperCategoryKey ) );
@@ -863,7 +866,7 @@ public final class AdminEngine
 
             doc.getDocumentElement().appendChild( doc.importNode( unitElem, true ) );
         }
-        
+
         return XMLDocumentFactory.create( doc );
     }
 
@@ -879,7 +882,7 @@ public final class AdminEngine
     public XMLDocument getContentTitleXML( int versionKey )
     {
         Document doc = contentHandler.getContentTitleDoc( versionKey );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getMenusForAdmin( User user )
@@ -901,7 +904,7 @@ public final class AdminEngine
 
     public Set<UserEntity> getUserNames( String[] groupKeys )
     {
-        return groupHandler.getUserNames(groupKeys);
+        return groupHandler.getUserNames( groupKeys );
     }
 
     public XMLDocument getContentHandler( int contentHandlerKey )
@@ -925,11 +928,11 @@ public final class AdminEngine
         if ( !securityHandler.isEnterpriseAdmin( user ) )
         {
             String message = "User does not have access rights to create content handlers.";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         Document doc = XMLTool.domparse( xmlData );
-        return contentHandler.createContentHandler(doc );
+        return contentHandler.createContentHandler( doc );
     }
 
     public void updateContentHandler( User user, String xmlData )
@@ -938,11 +941,11 @@ public final class AdminEngine
         if ( !securityHandler.isEnterpriseAdmin( user ) )
         {
             String message = "User does not have access rights to update content handlers.";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         Document doc = XMLTool.domparse( xmlData );
-        contentHandler.updateContentHandler(doc );
+        contentHandler.updateContentHandler( doc );
     }
 
     public void removeContentHandler( User user, int contentHandlerKey )
@@ -951,7 +954,7 @@ public final class AdminEngine
         if ( !isEnterpriseAdmin( user ) )
         {
             String message = "User does not have access rights to delete content handlers.";
-            VerticalEngineLogger.errorSecurity(message, null );
+            VerticalEngineLogger.errorSecurity( message, null );
         }
 
         contentHandler.removeContentHandler( contentHandlerKey );
@@ -960,7 +963,7 @@ public final class AdminEngine
     public XMLDocument getContentTypes()
     {
         Document doc = contentHandler.getContentTypes( null, false );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getContentTypes( boolean includeContentCount )
@@ -998,7 +1001,7 @@ public final class AdminEngine
     public XMLDocument getSections( User user, SectionCriteria criteria )
     {
         Document doc = sectionHandler.getSections( user, criteria );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public void removeSection( int sectionKey, boolean recursive )
@@ -1052,25 +1055,25 @@ public final class AdminEngine
     public XMLDocument getUsersWithPublishRight( int categoryKey )
     {
         Document doc = securityHandler.getUsersWithPublishRight( CategoryKey.parse( categoryKey ) );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getContentOwner( int contentKey )
     {
         Document doc = contentHandler.getContentOwner( contentKey );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getLogEntries( User user, MultiValueMap adminParams, int fromIdx, int count, boolean complete )
     {
-        Document doc = logHandler.getLogEntries(adminParams, fromIdx, count, complete);
-        return XMLDocumentFactory.create(doc);
+        Document doc = logHandler.getLogEntries( adminParams, fromIdx, count, complete );
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getLogEntry( String key )
     {
         Document doc = logHandler.getLogEntry( key );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public int getContentCountByContentType( int contentTypeKey )
@@ -1082,7 +1085,7 @@ public final class AdminEngine
     {
         Document doc = XMLTool.createDocument( "path" );
         categoryHandler.getPathXML( doc, null, categoryKey, contentTypes );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public ResourceKey getContentTypeCSSKey( int contentTypeKey )
@@ -1090,10 +1093,10 @@ public final class AdminEngine
         return contentHandler.getContentTypeCSSKey( contentTypeKey );
     }
 
-    public XMLDocument getData(int type, int[] keys)
+    public XMLDocument getData( int type, int[] keys )
     {
         Document doc = commonHandler.getData( type, keys );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public ResourceKey getDefaultCSSByMenu( int menuKey )
@@ -1119,13 +1122,13 @@ public final class AdminEngine
     public XMLDocument getContentVersion( User user, int versionKey )
     {
         Document doc = contentHandler.getContentVersion( user, versionKey );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public XMLDocument getContentXMLField( int versionKey )
     {
         Document doc = contentHandler.getContentXMLField( versionKey );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public int[] getContentTypesByHandlerClass( String className )
@@ -1141,7 +1144,7 @@ public final class AdminEngine
     public XMLDocument getCategoryMenu( User user, int categoryKey, int[] contentTypes, boolean includeRootCategories )
     {
         Document doc = categoryHandler.getCategoryMenu( user, CategoryKey.parse( categoryKey ), contentTypes, includeRootCategories );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public int getContentVersionState( int versionKey )
@@ -1174,7 +1177,7 @@ public final class AdminEngine
     public XMLDocument getContentHomes( int contentKey )
     {
         Document doc = contentHandler.getContentHomes( contentKey );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     public boolean hasContentPageTemplates( int menuKey, int contentTypeKey )

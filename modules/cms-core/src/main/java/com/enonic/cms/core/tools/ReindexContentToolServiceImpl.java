@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.enonic.cms.core.content.AdminContentIndexer;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.content.RegenerateIndexBatcher;
@@ -23,6 +24,9 @@ public class ReindexContentToolServiceImpl
     private IndexService indexService;
 
     private ContentService contentService;
+
+    @Autowired
+    private AdminContentIndexer adminContentIndexer;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 86400)
     public void reindexAllContent( List<String> logEntries )
@@ -47,7 +51,7 @@ public class ReindexContentToolServiceImpl
 
             long start = System.currentTimeMillis();
 
-            RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService );
+            RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService, adminContentIndexer );
             final int batchSize = 10;
 
             batcher.regenerateIndex( contentType, batchSize, logEntries );

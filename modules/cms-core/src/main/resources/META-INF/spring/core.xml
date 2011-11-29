@@ -601,5 +601,7 @@
 
     <bean id="contentIndexDataBuilder" class="com.enonic.cms.core.search.builder.ContentIndexDataBuilderImpl"/>
 
+    <bean id="adminContentIndexer" class="com.enonic.cms.core.content.AdminContentIndexer"/>
+
 </beans>
         

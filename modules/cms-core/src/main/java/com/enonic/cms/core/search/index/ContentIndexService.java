@@ -1,5 +1,7 @@
 package com.enonic.cms.core.search.index;
 
+import java.util.List;
+
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -17,7 +19,7 @@ public interface ContentIndexService
 
     public void index( final ContentIndexData content );
 
-    public void index( final ContentIndexData... content );
+    public void index( final List<ContentIndexData> content );
 
 
     public void delete( final ContentKey... contentKeys );

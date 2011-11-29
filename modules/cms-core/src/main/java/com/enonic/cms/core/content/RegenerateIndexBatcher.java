@@ -8,8 +8,12 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
+import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
+import com.enonic.cms.core.search.index.ContentIndexService;
 
 
 public class RegenerateIndexBatcher
@@ -21,11 +25,14 @@ public class RegenerateIndexBatcher
 
     private ContentService contentService;
 
-    public RegenerateIndexBatcher( IndexService indexService, ContentService contentService )
+    private final AdminContentIndexer adminContentIndexer;
+
+    public RegenerateIndexBatcher( IndexService indexService, ContentService contentService, AdminContentIndexer adminContentIndexer )
     {
 
         this.indexService = indexService;
         this.contentService = contentService;
+        this.adminContentIndexer = adminContentIndexer;
     }
 
     public void regenerateIndex( ContentTypeEntity contentType, int batchSize, List<String> logEntries )
@@ -42,6 +49,8 @@ public class RegenerateIndexBatcher
 
         List<ContentKey> allContentKeys = contentService.findContentKeysByContentType( contentType );
 
+        ContentIndexDataBuilderSpecification spec = new ContentIndexDataBuilderSpecification( false, true );
+
         int currentIndex = 0;
 
         while ( currentIndex < allContentKeys.size() )
@@ -53,16 +62,27 @@ public class RegenerateIndexBatcher
 
                 if ( logEntries != null )
                 {
-                    logEntries.add( "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
-                                            " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() +
-                                            "'" );
+                    logEntries.add(
+                        "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
+                            " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
                 }
 
                 LOG.info( "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
-                                  " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
+                              " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
 
                 long start = System.currentTimeMillis();
-                indexService.regenerateIndex( nextContentKeys );
+
+                //indexService.regenerateIndex( nextContentKeys );
+
+                try
+                {
+                    adminContentIndexer.regenerateIndex( nextContentKeys, spec );
+                }
+                catch ( Exception e )
+                {
+                    throw new RuntimeException( "Failed to regenerate content", e );
+                }
+
                 long end = System.currentTimeMillis();
 
                 LOG.info( "Last batch took: " + ( ( end - start ) / 1000 ) + " sec" );

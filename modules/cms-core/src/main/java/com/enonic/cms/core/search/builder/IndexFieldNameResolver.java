@@ -20,12 +20,6 @@ final class IndexFieldNameResolver
         return doNormalizeFieldName( fieldName );
     }
 
-    public static String toFieldName( final FieldExpr expression )
-    {
-        return doNormalizeFieldName( expression.getPath() );
-    }
-
-
     private static String doNormalizeFieldName( final String fieldName )
     {
         if ( StringUtils.isBlank( fieldName ) )
@@ -43,11 +37,6 @@ final class IndexFieldNameResolver
     public static String getNumericField( String fieldName )
     {
         return fieldName + NUMERIC_FIELD_POSTFIELD;
-    }
-
-    public static String getOrderByFieldName( FieldExpr expression )
-    {
-        return doGetOrderByFieldName( expression.getPath() );
     }
 
     public static String getOrderByFieldName( String fieldName )

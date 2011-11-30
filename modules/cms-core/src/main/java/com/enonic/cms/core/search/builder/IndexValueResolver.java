@@ -18,8 +18,6 @@ import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 public final class IndexValueResolver
 {
 
-
-    // TODO: What the hell is this?
     public static Object[] toValues( Expression expr )
     {
         if ( expr instanceof ArrayExpr )
@@ -73,7 +71,7 @@ public final class IndexValueResolver
         return toValues( (Expression) expr.evaluate( eval ) );
     }
 
-    public static String getOrderByValue( Number value )
+    public static String getOrderValueForNumber( Number value )
     {
         if ( value == null )
         {

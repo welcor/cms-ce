@@ -154,7 +154,7 @@ class AbstractIndexDataBuilder
         throws Exception
     {
         String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
-        String orderByValue = IndexValueResolver.getOrderByValue( value );
+        String orderByValue = IndexValueResolver.getOrderValueForNumber( value );
 
         builder.field( orderByFieldName, orderByValue );
     }

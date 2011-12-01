@@ -22,19 +22,31 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryRequest;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.ContentEntityFetcherImpl;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
 import com.enonic.cms.core.search.IndexMappingProvider;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.search.index.ContentIndexService;
+import com.enonic.cms.core.search.query.QueryTranslator;
+import com.enonic.cms.store.dao.ContentDao;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
@@ -54,6 +66,13 @@ public class ContentIndexServiceImpl
     private Client client;
 
     private IndexRequestCreator indexRequestCreator;
+
+    @Autowired
+    private QueryTranslator translator;
+
+    @Autowired
+    private ContentDao contentDao;
+
 
     public void createIndex()
         throws Exception
@@ -246,5 +265,36 @@ public class ContentIndexServiceImpl
         }
     }
 
+
+    public ContentResultSet query( ContentIndexQuery query )
+        throws Exception
+    {
+        final SearchSourceBuilder build = this.translator.build( query );
+
+        final SearchRequest req = Requests.searchRequest( "cms" ).types( IndexType.Content.toString() ).source( build );
+
+        final SearchResponse res = this.client.search( req ).actionGet();
+        final SearchHits hits = res.getHits();
+
+        List<ContentKey> resultKeys = new ArrayList<ContentKey>();
+
+        for ( final SearchHit hit : hits )
+        {
+            resultKeys.add( new ContentKey( hit.getId() ) );
+        }
+
+        //TODO: This should get the correct from and to-index
+        return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), resultKeys, 0, (int) hits.getTotalHits() );
+
+        /*
+        final ContentSearchHits result = new ContentSearchHits( query.getFrom(), (int) hits.getTotalHits() );
+        for ( final SearchHit hit : hits )
+        {
+            result.add( new ContentKey( hit.getId() ), hit.score() );
+        }
+
+        return result;
+        */
+    }
 
 }

@@ -4,71 +4,68 @@ import java.util.Set;
 
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.ContentSearchQuery;
+import com.enonic.cms.core.search.ElasticContentConstants;
 
 public abstract class QueryTranslatorBaseTest
 {
-
     private QueryTranslator queryTranslator = new QueryTranslator();
 
-    public ContentSearchQuery createContentQuery()
+    protected final static int QUERY_DEFAULT_SIZE = Integer.MAX_VALUE;
+
+    public ContentIndexQuery createContentQuery( String queryString )
     {
-        ContentSearchQuery query = new ContentSearchQuery();
+        ContentIndexQuery query = doCreateContentIndexQuery( queryString );
 
         return query;
     }
 
-    public ContentSearchQuery createContentQuery( String queryString )
+    private ContentIndexQuery doCreateContentIndexQuery( String queryString )
     {
-        ContentSearchQuery query = new ContentSearchQuery();
-        query.setQuery( queryString );
-
-        return query;
+        return new ContentIndexQuery( queryString );
     }
 
-    public ContentSearchQuery createContentQuery( int from, int count, String queryString )
+    public ContentIndexQuery createContentQuery( int from, int count, String queryString )
     {
-        ContentSearchQuery query = new ContentSearchQuery();
-        query.setQuery( queryString );
-        query.setFrom( from );
+        ContentIndexQuery query = doCreateContentIndexQuery( queryString );
+        query.setIndex( from );
         query.setCount( count );
 
         return query;
     }
 
-    public ContentSearchQuery createContentQuery( String queryString, Set<CategoryKey> categoryFilter )
+    public ContentIndexQuery createContentQuery( String queryString, Set<CategoryKey> categoryFilter )
     {
-        ContentSearchQuery query = createContentQuery( queryString );
+        ContentIndexQuery query = createContentQuery( queryString );
         query.setCategoryFilter( categoryFilter );
 
         return query;
     }
 
-    public ContentSearchQuery createContentQuery( String queryString, Set<CategoryKey> categoryFilter,
-                                                  Set<ContentTypeKey> contentTypeFilter )
+    public ContentIndexQuery createContentQuery( String queryString, Set<CategoryKey> categoryFilter,
+                                                 Set<ContentTypeKey> contentTypeFilter )
     {
-        ContentSearchQuery query = createContentQuery( queryString, categoryFilter );
+        ContentIndexQuery query = createContentQuery( queryString, categoryFilter );
         query.setContentTypeFilter( contentTypeFilter );
 
         return query;
     }
 
-    public ContentSearchQuery createContentQuery( Set<CategoryKey> categoryFilter,
-                                                  Set<ContentTypeKey> contentTypeFilter )
+    public ContentIndexQuery createContentQuery( Set<CategoryKey> categoryFilter, Set<ContentTypeKey> contentTypeFilter )
     {
-        ContentSearchQuery query = createContentQuery();
+        ContentIndexQuery query = createContentQuery( "" );
         query.setCategoryFilter( categoryFilter );
         query.setContentTypeFilter( contentTypeFilter );
 
         return query;
     }
 
-    public ContentSearchQuery createContentQuery( int from, int count, String queryString,
-                                                  Set<CategoryKey> categoryFilter,
-                                                  Set<ContentTypeKey> contentTypeFilter )
+    public ContentIndexQuery createContentQuery( int from, int count, String queryString, Set<CategoryKey> categoryFilter,
+                                                 Set<ContentTypeKey> contentTypeFilter )
     {
-        ContentSearchQuery query = createContentQuery( queryString, categoryFilter, contentTypeFilter );
-        query.setFrom( from );
+        ContentIndexQuery query = createContentQuery( queryString, categoryFilter, contentTypeFilter );
+        query.setIndex( from );
         query.setCount( count );
 
         return query;

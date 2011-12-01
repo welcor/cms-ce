@@ -51,12 +51,12 @@ final class IndexFieldNameResolver
 
     public static String getCategoryKeyFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + "_key";
+        return CATEGORY_FIELD_PREFIX + "key";
     }
 
     public static String getCategoryKeyNumericFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + getNumericField( "_key" );
+        return CATEGORY_FIELD_PREFIX + getNumericField( "key" );
     }
 
     public static String getSectionKeyNumericFieldName()
@@ -66,22 +66,22 @@ final class IndexFieldNameResolver
 
     public static String getCategoryNameFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + "_name";
+        return CATEGORY_FIELD_PREFIX + "name";
     }
 
     public static String getContentTypeKeyFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "_key";
+        return CONTENT_TYPE_PREFIX + "key";
     }
 
     public static String getContentTypeKeyNumericFieldName()
     {
-        return CONTENT_TYPE_PREFIX + getNumericField( "_key" );
+        return CONTENT_TYPE_PREFIX + getNumericField( "key" );
     }
 
     public static String getContentTypeNameFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "_name";
+        return CONTENT_TYPE_PREFIX + "name";
     }
 
 }

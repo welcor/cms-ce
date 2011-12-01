@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search.query;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +12,9 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.ContentSearchQuery;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 /**
@@ -21,10 +24,10 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
  * Time: 9:27 AM
  */
 public class FilterQueryBuilder
-        extends BaseQueryBuilder
+    extends BaseQueryBuilder
 {
 
-    public static void buildFilterQuery( SearchSourceBuilder builder, ContentSearchQuery query )
+    public static void buildFilterQuery( SearchSourceBuilder builder, ContentIndexQuery query )
     {
         boolean category = false, contenttype = false, section = false;
 
@@ -95,13 +98,13 @@ public class FilterQueryBuilder
     }
 */
 
-    private static TermsFilterBuilder buildContentTypeFilter( Set<ContentTypeKey> contentTypeFilter )
+    private static TermsFilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
     {
         return new TermsFilterBuilder( QueryFieldNameResolver.getContentTypeKeyNumericFieldName(),
                                        getContentKeysAsIntList( contentTypeFilter ).toArray() );
     }
 
-    private static List<String> getContentKeysAsIntList( Set<ContentTypeKey> contentTypeKeys )
+    private static Collection<String> getContentKeysAsIntList( Collection<ContentTypeKey> contentTypeKeys )
     {
         List<String> contentKeysAsStrings = new ArrayList<String>();
 
@@ -134,19 +137,17 @@ public class FilterQueryBuilder
     */
     //}
 
-    private static TermsFilterBuilder buildSectionFilter( Set<MenuItemKey> keys )
+    private static TermsFilterBuilder buildSectionFilter( Collection<MenuItemEntity> keys )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(),
-                                       getSectionKeysAsList( keys ).toArray() );
+        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(), getSectionKeysAsList( keys ).toArray() );
     }
 
-    private static TermsFilterBuilder buildCategoryFilter( Set<CategoryKey> keys )
+    private static TermsFilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyNumericFieldName(),
-                                       getCategoryKeysAsList( keys ).toArray() );
+        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyNumericFieldName(), getCategoryKeysAsList( keys ).toArray() );
     }
 
-    private static List<String> getCategoryKeysAsList( Set<CategoryKey> categoryKeys )
+    private static List<String> getCategoryKeysAsList( Collection<CategoryKey> categoryKeys )
     {
         List<String> categoryKeysAsStrings = new ArrayList<String>();
 
@@ -158,13 +159,13 @@ public class FilterQueryBuilder
         return categoryKeysAsStrings;
     }
 
-    private static List<String> getSectionKeysAsList( Set<MenuItemKey> menuItemKeys )
+    private static List<String> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
     {
         List<String> menuItemKeysAsString = new ArrayList<String>();
 
-        for ( MenuItemKey key : menuItemKeys )
+        for ( MenuItemEntity entity : menuItemEntities )
         {
-            menuItemKeysAsString.add( key.toString() );
+            menuItemKeysAsString.add( "" + entity.getKey() );
         }
 
         return menuItemKeysAsString;

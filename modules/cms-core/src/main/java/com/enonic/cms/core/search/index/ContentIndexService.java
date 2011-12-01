@@ -6,6 +6,9 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.ContentSearchQuery;
 import com.enonic.cms.core.search.IndexType;
 
 /**
@@ -35,5 +38,8 @@ public interface ContentIndexService
 
     public void update( final ContentTypeKey... contentTypeKeys );
 
+
+    public ContentResultSet query( ContentIndexQuery query )
+        throws Exception;
 
 }

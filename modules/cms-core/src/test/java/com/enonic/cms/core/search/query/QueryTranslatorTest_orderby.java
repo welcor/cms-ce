@@ -3,6 +3,7 @@ package com.enonic.cms.core.search.query;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
+import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.ContentSearchQuery;
 
 import static junit.framework.Assert.assertEquals;
@@ -21,12 +22,12 @@ public class QueryTranslatorTest_orderby
             throws Exception
     {
         String expected_search_result =
-                "{\n" + "  \"from\" : 0,\n" + "  \"size\" : 0,\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
+                "{\n" + "  \"from\" : 0,\n" + "  \"size\" : "+ QUERY_DEFAULT_SIZE +",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
                         "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" +
                         "  \"sort\" : [ {\n" + "    \"orderby_key\" : {\n" + "      \"order\" : \"desc\"\n" +
                         "    }\n" + "  } ]\n" + "}";
 
-        ContentSearchQuery query = createContentQuery( "ORDER BY key DESC" );
+        ContentIndexQuery query = createContentQuery( "ORDER BY key DESC" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 

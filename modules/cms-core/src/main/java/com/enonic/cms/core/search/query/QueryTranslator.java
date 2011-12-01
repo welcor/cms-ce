@@ -6,6 +6,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.queryexpression.CompareExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
@@ -20,11 +21,13 @@ import com.enonic.cms.core.search.ElasticContentConstants;
 public final class QueryTranslator
 {
 
-    public SearchSourceBuilder build( ContentSearchQuery query )
-            throws Exception
+    public SearchSourceBuilder build( ContentIndexQuery query )
+        throws Exception
     {
         final SearchSourceBuilder builder = new SearchSourceBuilder();
-        builder.from( query.getFrom() );
+
+        builder.from( query.getIndex() );
+
         builder.size( query.getCount() );
 
         final QueryExpr expr = QueryParser.newInstance().parse( query.getQuery() );
@@ -38,7 +41,7 @@ public final class QueryTranslator
     }
 
     private QueryBuilder buildExpr( Expression expr )
-            throws Exception
+        throws Exception
     {
 
         if ( expr == null )
@@ -112,7 +115,7 @@ public final class QueryTranslator
     }
 
     private QueryBuilder buildNotExpr( NotExpr expr )
-            throws Exception
+        throws Exception
     {
         final QueryBuilder negated = buildExpr( expr.getExpr() );
         return buildNotQuery( negated );
@@ -136,7 +139,7 @@ public final class QueryTranslator
     }
 
     private QueryBuilder buildLogicalExpr( LogicalExpr expr )
-            throws Exception
+        throws Exception
     {
         final QueryBuilder left = buildExpr( expr.getLeft() );
         final QueryBuilder right = buildExpr( expr.getRight() );

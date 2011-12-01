@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search;
 
 
+import java.util.Collection;
 import java.util.Set;
 
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -18,7 +19,7 @@ public final class ContentSearchQuery
 
     private Set<GroupKey> groupFilter;
 
-    private Set<CategoryKey> categoryFilter;
+    private Collection<CategoryKey> categoryFilter;
 
     private Set<ContentTypeKey> contentTypeFilter;
 
@@ -63,7 +64,7 @@ public final class ContentSearchQuery
         return this.groupFilter;
     }
 
-    public Set<CategoryKey> getCategoryFilter()
+    public Collection<CategoryKey> getCategoryFilter()
     {
         return this.categoryFilter;
     }
@@ -84,7 +85,7 @@ public final class ContentSearchQuery
         this.groupFilter = groupFilter;
     }
 
-    public void setCategoryFilter( Set<CategoryKey> categoryFilter )
+    public void setCategoryFilter( Collection<CategoryKey> categoryFilter )
     {
         this.categoryFilter = categoryFilter;
     }

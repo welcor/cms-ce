@@ -215,7 +215,7 @@ public final class ContentIndexDataBuilderImpl
 
         addField( "publishFrom", entity.getAvailableFrom(), result );
         addField( "publishTo", entity.getAvailableTo(), result );
-        addField( "timestamp", version.getModifiedAt(), result );
+        addField( "timestamp", version.getModifiedAt() != null ? version.getModifiedAt() : version.getCreatedAt(), result );
         addField( "status", version.getStatus().getKey(), result );
         addField( "priority", entity.getPriority(), result );
         addField( "assignmentDueDate", entity.getAssignmentDueDate(), result );

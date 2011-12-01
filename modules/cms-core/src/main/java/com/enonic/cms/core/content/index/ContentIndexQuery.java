@@ -162,6 +162,11 @@ public final class ContentIndexQuery
         contentFilter = filter;
     }
 
+    public boolean hasSectionFilter()
+    {
+        return sectionFilter != null && !sectionFilter.isEmpty();
+    }
+
 
     public Collection<MenuItemEntity> getSectionFilter()
     {
@@ -206,6 +211,11 @@ public final class ContentIndexQuery
             return true;
         }
         return false;
+    }
+
+    public boolean hasContentStatusFilter()
+    {
+        return this.contentStatusFilter != null;
     }
 
     public void setContentStatusFilter( Integer contentStatus )

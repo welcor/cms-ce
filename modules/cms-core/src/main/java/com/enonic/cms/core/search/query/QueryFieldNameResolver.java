@@ -11,7 +11,7 @@ import com.enonic.cms.core.search.ElasticIndexUtils;
  * Time: 9:16 AM
  */
 public class QueryFieldNameResolver
-        extends ElasticContentConstants
+    extends ElasticContentConstants
 {
 
 
@@ -33,13 +33,13 @@ public class QueryFieldNameResolver
 
     public static String getOrderByFieldName( FieldExpr expression )
     {
-        String propertyName = ORDER_FIELD_PREFIX + normalizeName( expression.getPath() );
+        String propertyName = ORDER_FIELD_PREFIX + normalizeFieldName( expression.getPath() );
         return propertyName;
     }
 
     public static String getOrderByFieldName( String fieldName )
     {
-        String propertyName = ORDER_FIELD_PREFIX + normalizeName( fieldName );
+        String propertyName = ORDER_FIELD_PREFIX + normalizeFieldName( fieldName );
         return propertyName;
     }
 

@@ -603,5 +603,9 @@
 
     <bean id="adminContentIndexer" class="com.enonic.cms.core.content.AdminContentIndexer"/>
 
+    <bean id="contentQueryService" class="com.enonic.cms.core.search.ContentQueryServiceImpl"/>
+
+    <bean id="contentQueryTranslator" class="com.enonic.cms.core.search.query.QueryTranslator"/>
+
 </beans>
         

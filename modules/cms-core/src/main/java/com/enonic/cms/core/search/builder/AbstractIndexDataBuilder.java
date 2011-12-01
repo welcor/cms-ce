@@ -180,10 +180,10 @@ class AbstractIndexDataBuilder
     private void addOrderField( String fieldName, Date value, XContentBuilder builder )
         throws Exception
     {
-        /*
-        String prderByFieldName = QueryFieldNameResolver.getOrderByFieldName( fieldName );
-        builder.field( prderByFieldName, value );
-        */
+
+        String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
+        builder.field( orderByFieldName, value );
+
     }
 
 

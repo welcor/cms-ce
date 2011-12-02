@@ -1,10 +1,6 @@
 package com.enonic.cms.core.search.query;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert.*;
-
-import junit.framework.TestCase;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -16,20 +12,19 @@ import static junit.framework.Assert.assertEquals;
  */
 public class QueryFieldNameResolverTest
 {
-
-
-    @Before
-    public void setUp()
-    {
-
-    }
-
     @Test
     public void testStuff()
     {
         String normalized = QueryFieldNameResolver.normalizeFieldName( "category/@key" );
         assertEquals( "category_key", normalized );
 
+        String orderbyField = QueryFieldNameResolver.getOrderByFieldName( "title" );
+        assertEquals( "orderby_title", orderbyField );
 
+        String fieldName = QueryFieldNameResolver.getSectionKeyNumericFieldName();
+        assertEquals( "contentlocations.menuitemkey_numeric", fieldName );
+
+        String propertyName = QueryFieldNameResolver.toPropertyName( "VaLuE" );
+        assertEquals( "value", propertyName );
     }
 }

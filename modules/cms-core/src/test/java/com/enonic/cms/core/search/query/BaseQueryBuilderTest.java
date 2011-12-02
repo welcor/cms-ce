@@ -19,6 +19,7 @@ public class BaseQueryBuilderTest
 
         assertEquals( null, BaseQueryBuilder.getNumericValue( null ) );
 
+        assertEquals( null, BaseQueryBuilder.getNumericValue( "abc" ) );
 
     }
 }

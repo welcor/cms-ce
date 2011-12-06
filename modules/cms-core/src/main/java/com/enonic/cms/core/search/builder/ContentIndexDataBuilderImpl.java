@@ -14,6 +14,7 @@ import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.config.IndexDefinition;
 import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
@@ -38,19 +39,46 @@ public final class ContentIndexDataBuilderImpl
         this.indexDefBuilder = new IndexDefinitionBuilder();
     }
 
-    public ContentIndexData build( ContentEntity entity, ContentIndexDataBuilderSpecification indexDataBuilderSpecification )
-        throws Exception
+    public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec )
     {
-        ContentIndexData contentIndexData = new ContentIndexData( entity.getKey(), buildMetadata( entity ) );
+        //TBI
+        return null;
+    }
+
+    public ContentIndexData build( ContentEntity entity, ContentIndexDataBuilderSpecification indexDataBuilderSpecification )
+    {
+        ContentIndexData contentIndexData = null;
+        try
+        {
+            contentIndexData = new ContentIndexData( entity.getKey(), buildMetadata( entity ) );
+        }
+        catch ( Exception e )
+        {
+            throw new ContentIndexDataBuilderException( "Faild to build index-data for content", e );
+        }
 
         if ( indexDataBuilderSpecification.doBuildCustomData() )
         {
-            contentIndexData.setCustomdata( buildCustomData( entity ) );
+            try
+            {
+                contentIndexData.setCustomdata( buildCustomData( entity ) );
+            }
+            catch ( Exception e )
+            {
+                throw new ContentIndexDataBuilderException( "Failed to build index-data for content-data", e );
+            }
         }
 
         if ( indexDataBuilderSpecification.doBuildAttachments() )
         {
-            contentIndexData.setExtractedBinaryData( buildExtractedBinaryData( entity ) );
+            try
+            {
+                contentIndexData.setExtractedBinaryData( buildExtractedBinaryData( entity ) );
+            }
+            catch ( Exception e )
+            {
+                throw new ContentIndexDataBuilderException( "Faild to build index-data for binaries", e );
+            }
         }
 
         return contentIndexData;

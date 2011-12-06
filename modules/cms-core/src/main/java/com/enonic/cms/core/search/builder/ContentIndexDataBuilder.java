@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search.builder;
 
 import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
 
@@ -12,8 +13,10 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  */
 public interface ContentIndexDataBuilder
 {
-    public ContentIndexData build( ContentEntity content, ContentIndexDataBuilderSpecification spec )
-        throws Exception;
+    public ContentIndexData build( ContentEntity content, ContentIndexDataBuilderSpecification spec );
+
+    // TODO: Mocking atm
+    public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec );
 
 
 }

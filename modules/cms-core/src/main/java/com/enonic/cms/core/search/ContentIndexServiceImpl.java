@@ -49,6 +49,7 @@ import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
 import com.enonic.cms.core.search.IndexMappingProvider;
 import com.enonic.cms.core.search.IndexType;
+import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.search.query.QueryTranslator;
 import com.enonic.cms.store.dao.ContentDao;
@@ -73,6 +74,9 @@ public class ContentIndexServiceImpl
     private IndexRequestCreator indexRequestCreator;
 
     @Autowired
+    private ContentIndexDataBuilder indexDataBuilder;
+
+    @Autowired
     private QueryTranslator translator;
 
     @Autowired
@@ -95,7 +99,14 @@ public class ContentIndexServiceImpl
 
     public void index( ContentDocument doc, boolean deleteExisting )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        indexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+
+        // Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
+
+        //for ( IndexRequest indexRequest : indexRequests )
+        //{
+            //     doIndex( indexRequest );
+        //}
     }
 
     public boolean isIndexed( ContentKey contentKey )

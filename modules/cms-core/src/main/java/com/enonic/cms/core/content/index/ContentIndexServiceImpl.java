@@ -55,6 +55,11 @@ public final class ContentIndexServiceImpl
         CHANGED_AND_LENGTHENED
     }
 
+    public void createIndex()
+    {
+        // N/A
+    }
+
     /**
      * @inheritDoc
      */

@@ -601,5 +601,9 @@
 
     <bean id="contentQueryTranslator" class="com.enonic.cms.core.search.query.QueryTranslator"/>
 
+    <!--<bean id="contentIndexService" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>-->
+
+    <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
+
 </beans>
         

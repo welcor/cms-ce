@@ -12,7 +12,6 @@ final class IndexAnalyzerSettingsBuilder
 {
 
     public static String buildAnalyserSettings()
-        throws Exception
     {
         /* return jsonBuilder()
              .startObject()

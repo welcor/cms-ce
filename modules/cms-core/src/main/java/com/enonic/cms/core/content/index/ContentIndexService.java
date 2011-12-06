@@ -60,4 +60,8 @@ public interface ContentIndexService
      * Query the index values.
      */
     public AggregatedResult query( AggregatedQuery query );
+
+    public void createIndex();
 }
+
+

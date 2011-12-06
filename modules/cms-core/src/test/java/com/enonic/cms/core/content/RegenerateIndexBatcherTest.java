@@ -28,9 +28,6 @@ public class RegenerateIndexBatcherTest
 
     private RegenerateIndexBatcher regenerateIndexBatcher;
 
-    private AdminContentIndexer adminContentIndexer;
-
-
     @Before
     public void before()
     {
@@ -39,9 +36,7 @@ public class RegenerateIndexBatcherTest
 
         indexService = Mockito.mock( IndexService.class );
 
-        adminContentIndexer = Mockito.mock( AdminContentIndexer.class );
-
-        regenerateIndexBatcher = new RegenerateIndexBatcher( indexService, contentService, adminContentIndexer );
+        regenerateIndexBatcher = new RegenerateIndexBatcher( indexService, contentService );
     }
 
     @Test
@@ -60,7 +55,6 @@ public class RegenerateIndexBatcherTest
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
-        verify( adminContentIndexer, times( 3 ) ).regenerateIndex( isA( List.class ), isA( ContentIndexDataBuilderSpecification.class ) );
     }
 
     @Test
@@ -77,7 +71,6 @@ public class RegenerateIndexBatcherTest
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
-        verify( adminContentIndexer, times( 2 ) ).regenerateIndex( isA( List.class ), isA( ContentIndexDataBuilderSpecification.class ) );
 
     }
 
@@ -94,7 +87,6 @@ public class RegenerateIndexBatcherTest
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
-        verify( adminContentIndexer, times( 1 ) ).regenerateIndex( isA( List.class ), isA( ContentIndexDataBuilderSpecification.class ) );
 
     }
 
@@ -110,8 +102,6 @@ public class RegenerateIndexBatcherTest
         indexService.regenerateIndex( createContentKeys( new int[]{1, 2} ) );
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
-
-        verify( adminContentIndexer, times( 1 ) ).regenerateIndex( isA( List.class ), isA( ContentIndexDataBuilderSpecification.class ) );
     }
 
     @Test

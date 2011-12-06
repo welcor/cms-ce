@@ -67,7 +67,7 @@ public class ContentIndexDataBuilderImplTest
 
         ContentEntity content = createTestContent();
 
-        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
+        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
 
         ContentIndexData indexData = indexDataBuilder.build( content, spec );
 
@@ -76,6 +76,14 @@ public class ContentIndexDataBuilderImplTest
         assertEquals( metadata.key, 1.0 );
         assertEquals( metadata.title, CONTENT_TITLE );
         assertEquals( metadata.status, new Integer( 2 ) );
+        //TODO: Test all meta-fields
+    }
+
+    @Test
+    public void testCustomData()
+        throws Exception
+    {
+
     }
 
 

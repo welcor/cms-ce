@@ -55,7 +55,6 @@ import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
 import com.enonic.cms.core.log.Table;
-import com.enonic.cms.core.search.ContentQueryService;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
@@ -76,9 +75,6 @@ public class ContentServiceImpl
 
     @Autowired
     private ContentIndexService contentIndexService;
-
-    @Autowired
-    private ContentQueryService contentQueryService;
 
     @Autowired
     private MenuItemDao menuItemDao;
@@ -331,8 +327,7 @@ public class ContentServiceImpl
         Collection<GroupKey> securityFilter = contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() );
         ContentIndexQuery query = spec.createAndSetupContentQuery( sections, securityFilter );
 
-        return contentQueryService.query( query );
-        // return contentIndexService.query( query );
+        return contentIndexService.query( query );
     }
 
     public ContentResultSet queryContent( OpenContentQuery query )
@@ -377,8 +372,7 @@ public class ContentServiceImpl
         Collection<GroupKey> securityFilter = contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() );
         ContentIndexQuery query = spec.createAndSetupContentQuery( allCategories, securityFilter );
 
-        return contentQueryService.query( query );
-        // return contentIndexService.query( query );
+        return contentIndexService.query( query );
     }
 
     public ContentResultSet getContent( ContentSpecification specification, String orderByCol, int count, int index )

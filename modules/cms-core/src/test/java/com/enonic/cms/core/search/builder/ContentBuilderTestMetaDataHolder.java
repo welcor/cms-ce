@@ -10,8 +10,6 @@ import com.google.gson.Gson;
  */
 public class ContentBuilderTestMetaDataHolder
 {
-
-
     Double key_numeric;
 
     Double key;

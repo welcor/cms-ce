@@ -37,7 +37,6 @@ import com.enonic.vertical.engine.handlers.UserHandler;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.content.AdminContentIndexer;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentService;
@@ -85,9 +84,6 @@ public final class AdminEngine
 
     @Autowired
     private MemberOfResolver memberOfResolver;
-
-    @Autowired
-    private AdminContentIndexer adminContentIndexer;
 
     private IndexService indexService;
 
@@ -596,7 +592,7 @@ public final class AdminEngine
 
 //        final int batchSize = 100;
         final int batchSize = 10;
-        RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService, adminContentIndexer );
+        RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService );
         batcher.regenerateIndex( contentType, batchSize, null );
     }
 

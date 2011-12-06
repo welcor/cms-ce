@@ -27,8 +27,8 @@ public class QueryTranslatorTest_filters
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : "+ QUERY_DEFAULT_SIZE +",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
+            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
+                "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
                 "          \"category_key_numeric\" : [ \"15\" ]\n" + "        }\n" + "      },\n" + "      \"must\" : {\n" +
                 "        \"terms\" : {\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" + "        }\n" + "      }\n" +
                 "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
@@ -50,13 +50,14 @@ public class QueryTranslatorTest_filters
     public void testLogicalQuery_category_contenttype_filters_with_query()
         throws Exception
     {
-        String expected_search_result = "{\n" + "  \"from\" : 0,\n" + "  \"size\" : "+ QUERY_DEFAULT_SIZE +",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-            "      \"key_numeric\" : {\n" + "        \"from\" : 100.0,\n" + "        \"to\" : null,\n" +
-            "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-            "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
-            "          \"category_key_numeric\" : [ \"15\" ]\n" + "        }\n" + "      },\n" + "      \"must\" : {\n" +
-            "        \"terms\" : {\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" + "        }\n" + "      }\n" + "    }\n" +
-            "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+        String expected_search_result =
+            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
+                "      \"key_numeric\" : {\n" + "        \"from\" : 100.0,\n" + "        \"to\" : null,\n" +
+                "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
+                "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
+                "          \"category_key_numeric\" : [ \"15\" ]\n" + "        }\n" + "      },\n" + "      \"must\" : {\n" +
+                "        \"terms\" : {\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" + "        }\n" + "      }\n" +
+                "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
 
         Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 15 ) );

@@ -137,9 +137,9 @@ public class FilterQueryBuilder
     */
     //}
 
-    private static TermsFilterBuilder buildSectionFilter( Collection<MenuItemEntity> keys )
+    private static TermsFilterBuilder buildSectionFilter( Collection<MenuItemEntity> menuItemEntities )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(), getSectionKeysAsList( keys ).toArray() );
+        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(), getSectionKeysAsList( menuItemEntities ).toArray() );
     }
 
     private static TermsFilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )

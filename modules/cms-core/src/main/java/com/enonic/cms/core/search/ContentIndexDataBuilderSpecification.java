@@ -35,4 +35,9 @@ public final class ContentIndexDataBuilderSpecification
     {
         return new ContentIndexDataBuilderSpecification( true, true );
     }
+
+    public static ContentIndexDataBuilderSpecification createMetadataConfig()
+    {
+        return new ContentIndexDataBuilderSpecification( false, false );
+    }
 }

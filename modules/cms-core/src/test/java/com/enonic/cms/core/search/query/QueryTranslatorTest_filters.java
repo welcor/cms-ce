@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.ContentSearchQuery;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -91,6 +91,28 @@ public class QueryTranslatorTest_filters
         contentTypeFilter.add( new ContentTypeKey( "1001" ) );
 
         ContentIndexQuery query = createContentQuery( 0, 20, "key > 100", categoryFilter, contentTypeFilter );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        assertEquals( expected_search_result, builder.toString() );
+    }
+
+    @Test
+    public void testFilterQuery_section_filter()
+        throws Exception
+    {
+        String expected_search_result =
+            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
+                "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
+                "          \"contentlocations.menuitemkey_numeric\" : [ \"22\" ]\n" + "        }\n" + "      }\n" + "    }\n" + "  },\n" +
+                "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+
+        Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
+        MenuItemEntity entity = new MenuItemEntity();
+        entity.setKey( 22 );
+        sectionFilter.add( entity );
+
+        ContentIndexQuery query = createContentQuery( sectionFilter );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 

@@ -5,8 +5,8 @@ import java.util.Set;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.ContentSearchQuery;
-import com.enonic.cms.core.search.ElasticContentConstants;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+
 
 public abstract class QueryTranslatorBaseTest
 {
@@ -31,6 +31,14 @@ public abstract class QueryTranslatorBaseTest
         ContentIndexQuery query = doCreateContentIndexQuery( queryString );
         query.setIndex( from );
         query.setCount( count );
+
+        return query;
+    }
+
+    public ContentIndexQuery createContentQuery( Set<MenuItemEntity> sectionFilter )
+    {
+        ContentIndexQuery query = createContentQuery( "" );
+        query.setSectionFilter( sectionFilter, ContentIndexQuery.SectionFilterStatus.ANY );
 
         return query;
     }

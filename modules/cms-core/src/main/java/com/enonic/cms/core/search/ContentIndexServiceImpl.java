@@ -331,7 +331,7 @@ public class ContentIndexServiceImpl
             throw new IndexQueryException( "Failed to translate query: " + query.getQuery(), e );
         }
 
-        final SearchRequest req = Requests.searchRequest( "cms" ).types( IndexType.Content.toString() ).source( build );
+        final SearchRequest req = Requests.searchRequest( INDEX_NAME ).types( IndexType.Content.toString() ).source( build );
 
         final SearchResponse res = this.client.search( req ).actionGet();
         final SearchHits hits = res.getHits();

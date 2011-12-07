@@ -3,19 +3,17 @@ package com.enonic.cms.core.search.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.TermsFilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.ContentSearchQuery;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,29 +27,36 @@ public class FilterQueryBuilder
 
     public static void buildFilterQuery( SearchSourceBuilder builder, ContentIndexQuery query )
     {
-        boolean category = false, contenttype = false, section = false;
+        boolean applyFilter = false;
 
         BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
 
+        final Collection<ContentKey> contentFilter = query.getContentFilter();
+
+        if ( contentFilter != null && !contentFilter.isEmpty() )
+        {
+            applyFilter = true;
+            boolFilterBuilder.must( buildContentFilter( contentFilter ) );
+        }
+
         if ( query.hasSectionFilter() )
         {
-            section = true;
+            applyFilter = true;
             boolFilterBuilder.must( buildSectionFilter( query.getSectionFilter() ) );
         }
 
         if ( query.hasCategoryFilter() )
         {
-            category = true;
+            applyFilter = true;
             boolFilterBuilder.must( buildCategoryFilter( query.getCategoryFilter() ) );
         }
 
         if ( query.hasContentTypeFilter() )
         {
-            contenttype = true;
+            applyFilter = true;
             boolFilterBuilder.must( buildContentTypeFilter( query.getContentTypeFilter() ) );
         }
 
-        final boolean applyFilter = section || category || contenttype;
         if ( applyFilter )
         {
             builder.filter( boolFilterBuilder );
@@ -101,62 +106,38 @@ public class FilterQueryBuilder
     private static TermsFilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
     {
         return new TermsFilterBuilder( QueryFieldNameResolver.getContentTypeKeyNumericFieldName(),
-                                       getContentKeysAsIntList( contentTypeFilter ).toArray() );
+                                       getKeysAsList( contentTypeFilter ).toArray() );
     }
 
-    private static Collection<String> getContentKeysAsIntList( Collection<ContentTypeKey> contentTypeKeys )
+    private static TermsFilterBuilder buildContentFilter( Collection<ContentKey> contentKeys )
     {
-        List<String> contentKeysAsStrings = new ArrayList<String>();
-
-        for ( ContentTypeKey key : contentTypeKeys )
-        {
-            contentKeysAsStrings.add( key.toString() );
-        }
-
-        return contentKeysAsStrings;
+        return new TermsFilterBuilder( QueryFieldNameResolver.getNumericField( "key" ),
+                                       getKeysAsList( contentKeys ).toArray() );
     }
 
-    //private Filter and( Filter f1, Filter f2 )
-    // {
-    /*   if ( ( f1 != null ) && ( f2 != null ) )
-    {
-        final BooleanFilter combined = new BooleanFilter();
-        combined.add( new FilterClause( f1, BooleanClause.Occur.MUST ) );
-        combined.add( new FilterClause( f2, BooleanClause.Occur.MUST ) );
-        return combined;
-    }
-
-    if ( f1 == null )
-    {
-        return f2;
-    }
-    else
-    {
-        return f1;
-    }
-    */
-    //}
 
     private static TermsFilterBuilder buildSectionFilter( Collection<MenuItemEntity> menuItemEntities )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(), getSectionKeysAsList( menuItemEntities ).toArray() );
+        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(),
+                                       getSectionKeysAsList( menuItemEntities ).toArray() );
     }
 
     private static TermsFilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyNumericFieldName(), getCategoryKeysAsList( keys ).toArray() );
+        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyNumericFieldName(), getKeysAsList( keys ).toArray() );
     }
 
-    private static List<String> getCategoryKeysAsList( Collection<CategoryKey> categoryKeys )
+    private static <T> List<String> getKeysAsList( Collection<T> keys )
     {
-        List<String> categoryKeysAsStrings = new ArrayList<String>();
+        List<String> keysAsStringList = new ArrayList<String>();
 
-        for ( CategoryKey key : categoryKeys )
+        for ( T key : keys )
         {
-            categoryKeysAsStrings.add( key.toString() );
+            keysAsStringList.add( key.toString() );
         }
 
-        return categoryKeysAsStrings;
+        return keysAsStringList;
+
     }
 
     private static List<String> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
@@ -170,20 +151,5 @@ public class FilterQueryBuilder
 
         return menuItemKeysAsString;
     }
-
-    /*
-
-    private Filter buildContentTypeFilter( Set<ContentTypeKey> keys )
-    {
-        final TermsFilter filter = new TermsFilter();
-        for ( ContentTypeKey key : keys )
-        {
-            filter.addTerm( new Term( CONTENT_TYPE_KEY_FIELD, key.toString() ) );
-        }
-
-        return filter;
-    }
-    */
-
 
 }

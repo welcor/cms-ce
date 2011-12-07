@@ -6,6 +6,7 @@ import java.util.Set;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -118,4 +119,23 @@ public class QueryTranslatorTest_filters
 
         assertEquals( expected_search_result, builder.toString() );
     }
+
+
+    @Test
+    public void testFilterQuery_content_filter()
+        throws Exception
+    {
+        Set<ContentKey> contentKeys = new HashSet<ContentKey>();
+        contentKeys.add( new ContentKey( "1" ) );
+        contentKeys.add( new ContentKey( "2" ) );
+        contentKeys.add( new ContentKey( "3" ) );
+
+        ContentIndexQuery query = createContentQueryContentFilter( contentKeys );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        System.out.println( builder.toString() );
+
+    }
+
 }

@@ -2,6 +2,7 @@ package com.enonic.cms.core.search.query;
 
 import java.util.Set;
 
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -68,6 +69,15 @@ public abstract class QueryTranslatorBaseTest
 
         return query;
     }
+
+    public ContentIndexQuery createContentQueryContentFilter( Set<ContentKey> contentFilter )
+    {
+        ContentIndexQuery query = createContentQuery( "" );
+        query.setContentFilter( contentFilter );
+
+        return query;
+    }
+
 
     public ContentIndexQuery createContentQuery( int from, int count, String queryString, Set<CategoryKey> categoryFilter,
                                                  Set<ContentTypeKey> contentTypeFilter )

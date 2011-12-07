@@ -35,7 +35,7 @@ public final class QueryTranslator
         OrderQueryBuilder.buildOrderByExpr( builder, expr.getOrderBy() );
         FilterQueryBuilder.buildFilterQuery( builder, query );
 
-        //System.out.println( "****************************\n\r" + builder.toString() );
+        System.out.println( "****************************\n\r" + builder.toString() + "\n\r\n\r" );
 
         return builder;
     }

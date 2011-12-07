@@ -23,7 +23,7 @@ public class QueryFieldNameResolver
 
     public static String toFieldName( FieldExpr expression )
     {
-        return ElasticIndexUtils.toPropertyName( expression.getPath() );
+        return normalizeFieldName( expression.getPath() );
     }
 
     public static String getNumericField( String fieldName )

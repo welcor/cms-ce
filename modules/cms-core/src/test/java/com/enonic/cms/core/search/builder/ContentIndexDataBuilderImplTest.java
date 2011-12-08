@@ -18,7 +18,6 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexFieldSet;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
-import com.enonic.cms.core.security.user.UserKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,14 +49,23 @@ public class ContentIndexDataBuilderImplTest
         assertEquals( "1", metadata.publishto );
         assertEquals( "2011-01-09T23:00:00.000Z", metadata.publishfrom );
         assertEquals( "2011-03-09T23:00:00.000Z", metadata.timestamp );
-
-        //TODO: Test all meta-fields
     }
 
     @Test
     public void testCustomData()
         throws Exception
     {
+        ContentDocument content = createTestContent();
+
+        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
+
+        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+
+        ContentBuilderTestCustomDataHolder customdata =
+            ContentBuilderTestCustomDataHolder.createCustomDataHolder( indexData.getCustomdataJson() );
+
+        assertNotNull( indexData.getCustomdataJson() );
+        assertEquals( 1.0, customdata.key );
     }
 
     private ContentDocument createTestContent()
@@ -105,7 +113,7 @@ public class ContentIndexDataBuilderImplTest
         content.setStatus( 2 );
         content.setPriority( 1 );
 
-        //is it enaught for locations? how to set?
+        // content locations set. but it's really not used now.
         content.setContentLocations( new ContentLocations( new ContentEntity() ) );
 
         content.addUserDefinedField( "data/person/age", "38" );

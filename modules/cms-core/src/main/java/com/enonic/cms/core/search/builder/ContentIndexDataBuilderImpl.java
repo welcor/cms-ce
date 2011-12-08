@@ -197,26 +197,26 @@ public final class ContentIndexDataBuilderImpl
     private void addSections( ContentDocument content, XContentBuilder result )
         throws Exception
     {
-        final ContentLocations contentLocations = content.getContentLocations();
-
-        if ( !contentLocations.hasLocations() )
-        {
-            return;
-        }
-
-        result.startArray( "contentlocations" );
-
-        for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
-        {
-            result.startObject();
-            addField( "home", Boolean.toString( contentLocation.isUserDefinedSectionHome() ), result );
-            addField( "menuitemkey", contentLocation.getMenuItemKey().toString(), result );
-            addField( "sitekey", contentLocation.getSiteKey().toString(), result );
-            addField( "menukey", contentLocation.getSiteKey().toString(), result );
-            result.endObject();
-        }
-
-        result.endArray();
+//        final ContentLocations contentLocations = content.getContentLocations();
+//
+//        if ( !contentLocations.hasLocations() )
+//        {
+//            return;
+//        }
+//
+//        result.startArray( "contentlocations" );
+//
+//        for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
+//        {
+//            result.startObject();
+//            addField( "home", Boolean.toString( contentLocation.isUserDefinedSectionHome() ), result );
+//            addField( "menuitemkey", contentLocation.getMenuItemKey().toString(), result );
+//            addField( "sitekey", contentLocation.getSiteKey().toString(), result );
+//            addField( "menukey", contentLocation.getSiteKey().toString(), result );
+//            result.endObject();
+//        }
+//
+//        result.endArray();
     }
 
     private void addStandardValues( XContentBuilder result, ContentDocument content )

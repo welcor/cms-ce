@@ -81,11 +81,11 @@ public class ContentIndexDataBuilderImplTest
         content.setOwnerName( "OwnerName" );
         content.setOwnerQualifiedName( "OwnerQName" );
 
-        content.setAssigneeKey( new UserKey( "12" ) );
+        content.setAssigneeKey( "12" );
         content.setAssigneeName( "AssigneeName" );
         content.setAssigneeQualifiedName( "AssigneeQName" );
 
-        content.setAssignerKey( new UserKey( "14" ) );
+        content.setAssignerKey( "14" );
         content.setAssignerName( "AssignerName" );
         content.setAssignerQualifiedName( "AssignerQName" );
 

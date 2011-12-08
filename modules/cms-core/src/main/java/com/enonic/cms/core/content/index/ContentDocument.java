@@ -14,7 +14,6 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.security.user.UserKey;
 
 /**
  * This class implements the content resource.
@@ -50,13 +49,13 @@ public final class ContentDocument
 
     private SimpleText modifierQualifiedName;
 
-    private UserKey assigneeKey;
+    private SimpleText assigneeKey;
 
     private SimpleText assigneeName;
 
     private SimpleText assigneeQualifiedName;
 
-    private UserKey assignerKey;
+    private SimpleText assignerKey;
 
     private SimpleText assignerName;
 
@@ -202,7 +201,7 @@ public final class ContentDocument
     {
         ownerKey = new SimpleText( key );
         // If the key contains ASCII control characters, something is seriously wrong.
-        assert ( ownerKey.getText().equals( key.trim() ) );
+        assert ( ownerKey.toString().equals( key.toString().trim() ) );
     }
 
     public SimpleText getModifierKey()
@@ -217,14 +216,16 @@ public final class ContentDocument
         assert ( modifierKey.getText().equals( key.trim() ) );
     }
 
-    public UserKey getAssigneeKey()
+    public SimpleText getAssigneeKey()
     {
         return assigneeKey;
     }
 
-    public void setAssigneeKey( UserKey assigneeKey )
+    public void setAssigneeKey( String key )
     {
-        this.assigneeKey = assigneeKey;
+        assigneeKey = new SimpleText( key );
+        // If the key contains ASCII control characters, something is seriously wrong.
+        assert ( assigneeKey.getText().equals( key.trim() ) );
     }
 
     public SimpleText getAssigneeName()
@@ -247,14 +248,16 @@ public final class ContentDocument
         this.assigneeQualifiedName = new SimpleText( value );
     }
 
-    public UserKey getAssignerKey()
+    public SimpleText getAssignerKey()
     {
         return assignerKey;
     }
 
-    public void setAssignerKey( UserKey value )
+    public void setAssignerKey( String key )
     {
-        this.assignerKey = value;
+        assignerKey = new SimpleText( key );
+        // If the key contains ASCII control characters, something is seriously wrong.
+        assert ( assignerKey.getText().equals( key.trim() ) );
     }
 
     public SimpleText getAssignerName()

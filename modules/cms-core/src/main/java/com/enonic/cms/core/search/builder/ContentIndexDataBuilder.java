@@ -11,11 +11,8 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  * Date: 11/22/11
  * Time: 1:49 PM
  */
-public interface ContentIndexDataBuilder
-{
-    public ContentIndexData build( ContentEntity content, ContentIndexDataBuilderSpecification spec );
+public interface ContentIndexDataBuilder {
 
-    public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec );
-
+    public ContentIndexData build(ContentDocument content, ContentIndexDataBuilderSpecification spec);
 
 }

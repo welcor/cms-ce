@@ -1,14 +1,16 @@
 package com.enonic.cms.core.search;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.annotation.PostConstruct;
-
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.*;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
+import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
+import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.query.IndexQueryException;
+import com.enonic.cms.core.search.query.QueryTranslator;
+import com.enonic.cms.store.dao.ContentDao;
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -16,47 +18,21 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.deletebyquery.DeleteByQueryRequest;
-import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.client.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.indices.IndexCreationException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.AggregatedQuery;
-import com.enonic.cms.core.content.index.AggregatedResult;
-import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.ContentEntityFetcherImpl;
-import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.content.index.ContentIndexService;
-import com.enonic.cms.core.content.index.IndexValueQuery;
-import com.enonic.cms.core.content.index.IndexValueResultSet;
-import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
-import com.enonic.cms.core.search.IndexMappingProvider;
-import com.enonic.cms.core.search.IndexType;
-import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
-import com.enonic.cms.core.search.index.ContentIndexData;
-import com.enonic.cms.core.search.query.IndexQueryException;
-import com.enonic.cms.core.search.query.QueryTranslator;
-import com.enonic.cms.store.dao.ContentDao;
-
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,8 +41,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  * Time: 1:41 PM
  */
 public class ContentIndexServiceImpl
-    implements ContentIndexService
-{
+        implements ContentIndexService {
     public final static String INDEX_NAME = "cms";
 
     private IndexMappingProvider mappingProvider;
@@ -84,127 +59,106 @@ public class ContentIndexServiceImpl
     @Autowired
     private ContentDao contentDao;
 
-    public void createIndex()
-    {
-        CreateIndexRequest createIndexRequest = new CreateIndexRequest( INDEX_NAME );
+    public void createIndex() {
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest(INDEX_NAME);
 
         ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
-        settings.loadFromSource( IndexAnalyzerSettingsBuilder.buildAnalyserSettings() );
+        settings.loadFromSource(IndexAnalyzerSettingsBuilder.buildAnalyserSettings());
 
         //TODO: Other settings
 
-        createIndexRequest.settings( settings );
-        client.admin().indices().create( createIndexRequest ).actionGet();
+        createIndexRequest.settings(settings);
+        client.admin().indices().create(createIndexRequest).actionGet();
 
         addMapping();
     }
 
-    public void addMapping()
-    {
-        doAddMapping( INDEX_NAME, IndexType.Content );
-        doAddMapping( INDEX_NAME, IndexType.Binaries );
-        doAddMapping( INDEX_NAME, IndexType.Customdata );
+    public void addMapping() {
+        doAddMapping(INDEX_NAME, IndexType.Content);
+        doAddMapping(INDEX_NAME, IndexType.Binaries);
+        doAddMapping(INDEX_NAME, IndexType.Customdata);
     }
 
-    private PutMappingResponse doAddMapping( String indexName, IndexType indexType )
-    {
-        String mapping = mappingProvider.getMapping( indexName, indexType );
+    private PutMappingResponse doAddMapping(String indexName, IndexType indexType) {
+        String mapping = mappingProvider.getMapping(indexName, indexType);
 
-        PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType.toString() ).source( mapping );
+        PutMappingRequest mappingRequest = new PutMappingRequest(indexName).type(indexType.toString()).source(mapping);
 
-        return this.client.admin().indices().putMapping( mappingRequest ).actionGet();
+        return this.client.admin().indices().putMapping(mappingRequest).actionGet();
     }
 
-    public int remove( ContentKey contentKey )
-    {
+    public int remove(ContentKey contentKey) {
+
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void removeByCategory( CategoryKey categoryKey )
-    {
+    public void removeByCategory(CategoryKey categoryKey) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void removeByContentType( ContentTypeKey contentTypeKey )
-    {
+    public void removeByContentType(ContentTypeKey contentTypeKey) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void index( ContentDocument doc, boolean deleteExisting )
-    {
-        ContentIndexData contentIndexData = indexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+    public void index(ContentDocument doc, boolean deleteExisting) {
+        ContentIndexData contentIndexData = indexDataBuilder.build(doc, ContentIndexDataBuilderSpecification.createBuildAllConfig());
 
-        Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
+        Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests(contentIndexData);
 
-        for ( IndexRequest indexRequest : indexRequests )
-        {
-            doIndex( indexRequest );
+        for (IndexRequest indexRequest : indexRequests) {
+            doIndex(indexRequest);
         }
     }
 
-    private void doIndex( IndexRequest request )
-    {
-        this.client.index( request ).actionGet();
+    private void doIndex(IndexRequest request) {
+        this.client.index(request).actionGet();
     }
 
 
-    public boolean isIndexed( ContentKey contentKey )
-    {
+    public boolean isIndexed(ContentKey contentKey) {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     // TODO: We dont implement this one yet
-    public IndexValueResultSet query( IndexValueQuery query )
-    {
+    public IndexValueResultSet query(IndexValueQuery query) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     // TODO: We dont implement this one yet
-    public AggregatedResult query( AggregatedQuery query )
-    {
+    public AggregatedResult query(AggregatedQuery query) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Autowired
-    public void setMappingProvider( IndexMappingProvider mappingProvider )
-    {
+    public void setMappingProvider(IndexMappingProvider mappingProvider) {
         this.mappingProvider = mappingProvider;
     }
 
     @Autowired
-    public void setClient( Client client )
-    {
+    public void setClient(Client client) {
         this.client = client;
     }
 
     @PostConstruct
-    public void startIndex()
-    {
+    public void startIndex() {
 
-        indexRequestCreator = new IndexRequestCreator( INDEX_NAME );
+        indexRequestCreator = new IndexRequestCreator(INDEX_NAME);
 
-        try
-        {
-            initalizeIndex( false );
-        }
-        catch ( Exception e )
-        {
+        try {
+            initalizeIndex(false);
+        } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
-    private void initalizeIndex( boolean force )
-        throws Exception
-    {
+    private void initalizeIndex(boolean force)
+            throws Exception {
 
         final boolean indexExists = indexExists();
 
-        if ( indexExists && !force )
-        {
+        if (indexExists && !force) {
             return;
-        }
-        else if ( indexExists )
-        {
+        } else if (indexExists) {
             deleteIndex();
         }
 
@@ -212,21 +166,16 @@ public class ContentIndexServiceImpl
         addMapping();
     }
 
-    public DeleteIndexResponse deleteIndex()
-        throws Exception
-    {
-        return this.client.admin().indices().delete( new DeleteIndexRequest( INDEX_NAME ) ).actionGet();
+    private   DeleteIndexResponse deleteIndex()
+            throws Exception {
+        return this.client.admin().indices().delete(new DeleteIndexRequest(INDEX_NAME)).actionGet();
     }
 
-    public boolean indexExists()
-    {
-        try
-        {
-            this.client.admin().indices().status( new IndicesStatusRequest( INDEX_NAME ) ).actionGet();
+    public boolean indexExists() {
+        try {
+            this.client.admin().indices().status(new IndicesStatusRequest(INDEX_NAME)).actionGet();
             return true;
-        }
-        catch ( ElasticSearchException e )
-        {
+        } catch (ElasticSearchException e) {
             return false;
         }
     }
@@ -318,33 +267,28 @@ public class ContentIndexServiceImpl
 //    }
 //
 
-    public ContentResultSet query( ContentIndexQuery query )
-    {
+    public ContentResultSet query(ContentIndexQuery query) {
 
         final SearchSourceBuilder build;
-        try
-        {
-            build = this.translator.build( query );
-        }
-        catch ( Exception e )
-        {
-            throw new IndexQueryException( "Failed to translate query: " + query.getQuery(), e );
+        try {
+            build = this.translator.build(query);
+        } catch (Exception e) {
+            throw new IndexQueryException("Failed to translate query: " + query.getQuery(), e);
         }
 
-        final SearchRequest req = Requests.searchRequest( INDEX_NAME ).types( IndexType.Content.toString() ).source( build );
+        final SearchRequest req = Requests.searchRequest(INDEX_NAME).types(IndexType.Content.toString()).source(build);
 
-        final SearchResponse res = this.client.search( req ).actionGet();
+        final SearchResponse res = this.client.search(req).actionGet();
         final SearchHits hits = res.getHits();
 
         List<ContentKey> resultKeys = new ArrayList<ContentKey>();
 
-        for ( final SearchHit hit : hits )
-        {
-            resultKeys.add( new ContentKey( hit.getId() ) );
+        for (final SearchHit hit : hits) {
+            resultKeys.add(new ContentKey(hit.getId()));
         }
 
         //TODO: This should get the correct from and to-index
-        return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), resultKeys, 0, (int) hits.getTotalHits() );
+        return new ContentResultSetLazyFetcher(new ContentEntityFetcherImpl(contentDao), resultKeys, 0, (int) hits.getTotalHits());
 
         /*
         final ContentSearchHits result = new ContentSearchHits( query.getFrom(), (int) hits.getTotalHits() );

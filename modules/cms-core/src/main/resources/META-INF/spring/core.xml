@@ -601,9 +601,14 @@
 
     <bean id="contentQueryTranslator" class="com.enonic.cms.core.search.query.QueryTranslator"/>
 
-    <!--<bean id="contentIndexService" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>-->
+    <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceDispatcher">
+        <property name="newContentIndexService" ref="newContentIndexService"/>
+        <property name="oldContentIndexService" ref="oldContentIndexService"/>
+    </bean>
 
-    <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
+    <bean id="oldContentIndexService" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>
+
+    <bean id="newContentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
 
 </beans>
         

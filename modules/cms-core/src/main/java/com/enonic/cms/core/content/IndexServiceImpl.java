@@ -144,7 +144,7 @@ public final class IndexServiceImpl
                 StringBuffer sb = new StringBuffer();
                 sb.append( "Failed to extract full text from binary data" );
                 sb.append( "(key: " ).append( binaryData.getKey() ).append( ", name: " ).append( binaryData.getName() ).append(
-                        ") from content" );
+                    ") from content" );
                 sb.append( "(key: " ).append( content.getKey() ).append( ", type: " ).append( content.getContentType().getName() );
                 sb.append( ", category: " ).append( content.getCategory().getName() ).append( "): " ).append( e.getMessage() );
                 LOG.warn( sb.toString() );
@@ -164,8 +164,8 @@ public final class IndexServiceImpl
             return null;
         }
         else
-    {
-            BlobRecord blob = binaryDataDao.getBlob(binaryData);
+        {
+            BlobRecord blob = binaryDataDao.getBlob( binaryData );
             //InputStream stream = new ByteArrayInputStream( blob.getAsBytes() );
             InputStream stream = blob.getStream();
             fullTextString = textExtractor.extractText( stream );
@@ -224,17 +224,21 @@ public final class IndexServiceImpl
             indexedDoc.setCreated( createdDate );
         }
         indexedDoc.setModifierKey( modifier.getKey().toString() );
+        indexedDoc.setModifierName( modifier.getName() );
         indexedDoc.setModifierQualifiedName( modifier.getQualifiedName().toString() );
         indexedDoc.setOwnerKey( owner.getKey().toString() );
+        indexedDoc.setOwnerName( owner.getName() );
         indexedDoc.setOwnerQualifiedName( owner.getQualifiedName().toString() );
         if ( content.getAssignee() != null )
         {
-            indexedDoc.setAssigneeKey( content.getAssignee().getKey() );
+            indexedDoc.setAssigneeKey( content.getAssignee().getKey().toString() );
+            indexedDoc.setAssigneeName( content.getAssignee().getName() );
             indexedDoc.setAssigneeQualifiedName( content.getAssignee().getQualifiedName().toString() );
         }
         if ( content.getAssigner() != null )
         {
-            indexedDoc.setAssignerKey( content.getAssigner().getKey() );
+            indexedDoc.setAssignerKey( content.getAssigner().getKey().toString() );
+            indexedDoc.setAssignerName( content.getAssigner().getName() );
             indexedDoc.setAssignerQualifiedName( content.getAssigner().getQualifiedName().toString() );
         }
         if ( content.getAssignmentDueDate() != null )

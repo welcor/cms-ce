@@ -1,6 +1,5 @@
 package com.enonic.cms.core.search.builder;
 
-import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
@@ -11,8 +10,9 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  * Date: 11/22/11
  * Time: 1:49 PM
  */
-public interface ContentIndexDataBuilder {
+public interface ContentIndexDataBuilder
+{
 
-    public ContentIndexData build(ContentDocument content, ContentIndexDataBuilderSpecification spec);
+    public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec );
 
 }

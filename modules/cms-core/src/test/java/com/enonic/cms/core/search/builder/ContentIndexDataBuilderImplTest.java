@@ -1,20 +1,24 @@
 package com.enonic.cms.core.search.builder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Random;
 
-import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 
 import junit.framework.TestCase;
 
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentStatus;
-
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.BigText;
+import com.enonic.cms.core.content.index.ContentDocument;
+import com.enonic.cms.core.content.index.ContentIndexFieldSet;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
-import com.enonic.cms.core.search.ContentTestDataBuilder;
 import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.security.user.UserKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,46 +30,13 @@ public class ContentIndexDataBuilderImplTest
     extends TestCase
 {
 
-    protected static final String CONTENT_TITLE = "contentdatatesttitle";
-
     ContentIndexDataBuilder indexDataBuilder = new ContentIndexDataBuilderImpl();
-
-    byte[] binary1 = "This is binary1".getBytes();
-
-
-    public String createContentXML()
-        throws Exception
-    {
-        StringBuffer configXML = new StringBuffer();
-        configXML.append( "<config name=\"MyContentType\" version=\"1.0\">" );
-        configXML.append( "     <form>" );
-        configXML.append( "         <title name=\"myTitle\"/>" );
-        configXML.append( "         <block name=\"TestBlock1\">" );
-        configXML.append( "             <input name=\"myTitle\" required=\"true\" type=\"text\">" );
-        configXML.append( "                 <display>My title</display>" );
-        configXML.append( "                 <xpath>contentdata/mytitle</xpath>" );
-        configXML.append( "             </input>" );
-        configXML.append( "             <input name=\"myDate\" type=\"date\">" );
-        configXML.append( "                 <display>My date</display>" );
-        configXML.append( "                 <xpath>contentdata/mydate</xpath>" );
-        configXML.append( "             </input>" );
-        configXML.append( "             <input name=\"myBinary\" type=\"uploadfile\">" );
-        configXML.append( "                 <display>My Binary</display>" );
-        configXML.append( "                 <xpath>contentdata/myBinary</xpath>" );
-        configXML.append( "             </input>" );
-        configXML.append( "         </block>" );
-        configXML.append( "     </form>" );
-        configXML.append( "</config>" );
-
-        return configXML.toString();
-    }
 
     @Test
     public void testMetadata()
         throws Exception
     {
-
-        ContentEntity content = createTestContent();
+        ContentDocument content = createTestContent();
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
 
@@ -73,9 +44,13 @@ public class ContentIndexDataBuilderImplTest
 
         ContentBuilderTestMetaDataHolder metadata = ContentBuilderTestMetaDataHolder.createMetaDataHolder( indexData.getMetadataJson() );
 
-        assertEquals( metadata.key, 1.0 );
-        assertEquals( metadata.title, CONTENT_TITLE );
-        assertEquals( metadata.status, new Integer( 2 ) );
+        assertEquals( 1.0, metadata.key );
+        assertEquals( "mytitle", metadata.title );
+        assertEquals( new Integer( 2 ), metadata.status );
+        assertEquals( "1", metadata.publishto );
+        assertEquals( "2011-01-09T23:00:00.000Z", metadata.publishfrom );
+        assertEquals( "2011-03-09T23:00:00.000Z", metadata.timestamp );
+
         //TODO: Test all meta-fields
     }
 
@@ -83,30 +58,92 @@ public class ContentIndexDataBuilderImplTest
     public void testCustomData()
         throws Exception
     {
-
     }
 
-
-    private ContentEntity createTestContent()
+    private ContentDocument createTestContent()
         throws Exception
     {
-        ContentTestDataBuilder contentBuilder;
-        contentBuilder = new ContentTestDataBuilder();
-        contentBuilder.buildConfig( createContentXML() );
+        final GregorianCalendar date = new GregorianCalendar( 2011, Calendar.JANUARY, 10 );
 
-        Map<String, Object> customDataMap = new HashMap<String, Object>();
-        customDataMap.put( "myTitle", "contentdatatesttitle" );
-        customDataMap.put( "myDate", new DateTime( 2009, 1, 1, 1, 1, 1, 1 ).toDate() );
-        customDataMap.put( "myBinary", "%0" );
+        ContentDocument content = new ContentDocument( new ContentKey( 1 ) );
+        content.setCategoryKey( new CategoryKey( 2 ) );
+        content.setCategoryName( "MyCategory" );
+        content.setContentTypeKey( new ContentTypeKey( 3 ) );
+        content.setContentTypeName( "MyContentType" );
 
-        ContentEntity content = contentBuilder.createContent( 1, "testcontent" )
-            .addMainVersion( 1, ContentStatus.APPROVED )
-            .addCustomContent( customDataMap )
-            .addBinaryData( 1, "ACABACAB" )
-            .build();
+        content.setCreated( date.getTime() );
+
+        content.setModifierKey( "10" );
+        content.setModifierName( "ModifierName" );
+        content.setModifierQualifiedName( "ModifierQName" );
+
+        content.setOwnerKey( "11" );
+        content.setOwnerName( "OwnerName" );
+        content.setOwnerQualifiedName( "OwnerQName" );
+
+        content.setAssigneeKey( new UserKey( "12" ) );
+        content.setAssigneeName( "AssigneeName" );
+        content.setAssigneeQualifiedName( "AssigneeQName" );
+
+        content.setAssignerKey( new UserKey( "14" ) );
+        content.setAssignerName( "AssignerName" );
+        content.setAssignerQualifiedName( "AssignerQName" );
+
+        content.setPublishFrom( date.getTime() );
+
+        date.add( Calendar.MONTH, 1 );
+        content.setPublishTo( date.getTime() );
+
+        date.add( Calendar.MONTH, 1 );
+        content.setAssignmentDueDate( date.getTime() );
+
+        content.setTimestamp( date.getTime() );
+
+        content.setModified( date.getTime() );
+
+        content.setTitle( "MyTitle" );
+        content.setStatus( 2 );
+        content.setPriority( 1 );
+
+        //is it enaught for locations? how to set?
+        content.setContentLocations( new ContentLocations( new ContentEntity() ) );
+
+        content.addUserDefinedField( "data/person/age", "38" );
+        content.addUserDefinedField( "data/person/gender", "male" );
+        content.addUserDefinedField( "data/person/description", "description 38" );
+
+        content.addUserDefinedField( "data/person/age", "28" );
+        content.addUserDefinedField( "data/person/gender", "male" );
+        content.addUserDefinedField( "data/person/description", "description 28" );
+
+        content.addUserDefinedField( "data/person/age", "10" );
+        content.addUserDefinedField( "data/person/gender", "male" );
+        content.addUserDefinedField( "data/person/description", "description 10" );
+
+        int numberOfRowsExpected = 10;
+        content.setBinaryExtractedText( new BigText( createStringFillingXRows( numberOfRowsExpected ) ) );
 
         return content;
     }
 
+    private String createStringFillingXRows( int numberOfRows )
+    {
+        return createRandomTextOfSize( ContentIndexFieldSet.SPLIT_TRESHOLD * numberOfRows - 5 );
+    }
+
+    private String createRandomTextOfSize( int size )
+    {
+        String str = new String( "ABCDEFGHIJKLMNOPQRSTUVWZYZabcdefghijklmnopqrstuvw " );
+        StringBuffer sb = new StringBuffer();
+        Random r = new Random();
+        int te = 0;
+        for ( int i = 1; i <= size; i++ )
+        {
+            te = r.nextInt( str.length() - 1 );
+            sb.append( str.charAt( te ) );
+        }
+
+        return sb.toString();
+    }
 
 }

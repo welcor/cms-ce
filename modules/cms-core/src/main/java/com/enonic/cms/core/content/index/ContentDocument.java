@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.security.user.UserKey;
@@ -27,25 +28,37 @@ public final class ContentDocument
 
     private CategoryKey categoryKey;
 
+    private SimpleText categoryName;
+
     private ContentTypeKey contentTypeKey;
 
     private SimpleText contentTypeName;
+
+    private ContentLocations contentLocations;
 
     private SimpleText title;
 
     private SimpleText ownerKey;
 
+    private SimpleText ownerName;
+
     private SimpleText ownerQualifiedName;
 
     private SimpleText modifierKey;
+
+    private SimpleText modifierName;
 
     private SimpleText modifierQualifiedName;
 
     private UserKey assigneeKey;
 
+    private SimpleText assigneeName;
+
     private SimpleText assigneeQualifiedName;
 
     private UserKey assignerKey;
+
+    private SimpleText assignerName;
 
     private SimpleText assignerQualifiedName;
 
@@ -96,6 +109,16 @@ public final class ContentDocument
         this.categoryKey = categoryKey;
     }
 
+    public SimpleText getCategoryName()
+    {
+        return categoryName;
+    }
+
+    public void setCategoryName( String name )
+    {
+        categoryName = new SimpleText( name );
+    }
+
     public ContentTypeKey getContentTypeKey()
     {
         return this.contentTypeKey;
@@ -114,6 +137,16 @@ public final class ContentDocument
     public void setContentTypeName( String name )
     {
         contentTypeName = new SimpleText( name );
+    }
+
+    public ContentLocations getContentLocations()
+    {
+        return contentLocations;
+    }
+
+    public void setContentLocations( ContentLocations contentLocations )
+    {
+        this.contentLocations = contentLocations;
     }
 
     public void addUserDefinedField( UserDefinedField field )
@@ -194,6 +227,16 @@ public final class ContentDocument
         this.assigneeKey = assigneeKey;
     }
 
+    public SimpleText getAssigneeName()
+    {
+        return assigneeName;
+    }
+
+    public void setAssigneeName( String name )
+    {
+        assigneeName = new SimpleText( name );
+    }
+
     public SimpleText getAssigneeQualifiedName()
     {
         return assigneeQualifiedName;
@@ -212,6 +255,16 @@ public final class ContentDocument
     public void setAssignerKey( UserKey value )
     {
         this.assignerKey = value;
+    }
+
+    public SimpleText getAssignerName()
+    {
+        return assignerName;
+    }
+
+    public void setAssignerName( String name )
+    {
+        this.assignerName = new SimpleText( name );
     }
 
     public SimpleText getAssignerQualifiedName()
@@ -304,6 +357,16 @@ public final class ContentDocument
         this.priority = value;
     }
 
+    public SimpleText getOwnerName()
+    {
+        return ownerName;
+    }
+
+    public void setOwnerName( String name )
+    {
+        ownerName = new SimpleText( name );
+    }
+
     public SimpleText getOwnerQualifiedName()
     {
         return ownerQualifiedName;
@@ -312,6 +375,16 @@ public final class ContentDocument
     public void setOwnerQualifiedName( String value )
     {
         ownerQualifiedName = new SimpleText( value );
+    }
+
+    public SimpleText getModifierName()
+    {
+        return modifierName;
+    }
+
+    public void setModifierName( String name )
+    {
+        modifierName = new SimpleText( name );
     }
 
     public SimpleText getModifierQualifiedName()

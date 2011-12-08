@@ -15,7 +15,6 @@ public interface ContentIndexDataBuilder
 {
     public ContentIndexData build( ContentEntity content, ContentIndexDataBuilderSpecification spec );
 
-    // TODO: Mocking atm
     public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec );
 
 

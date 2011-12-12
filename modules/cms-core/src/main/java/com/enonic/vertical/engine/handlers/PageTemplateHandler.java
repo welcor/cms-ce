@@ -4,27 +4,18 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-
+import com.enonic.cms.core.CalendarUtil;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.RunAsType;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.structure.page.template.*;
+import com.enonic.cms.core.structure.portlet.PortletEntity;
+import com.enonic.cms.framework.util.TIntArrayList;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.util.StringUtil;
@@ -33,24 +24,11 @@ import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.VerticalRemoveException;
 import com.enonic.vertical.engine.XDG;
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.*;
 
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.structure.RunAsType;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateKey;
-import com.enonic.cms.core.structure.page.template.PageTemplatePortletEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateRegionEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.core.structure.portlet.PortletEntity;
+import java.sql.*;
+import java.util.*;
 
 public final class PageTemplateHandler
     extends BaseHandler
@@ -477,7 +455,7 @@ public final class PageTemplateHandler
             if ( node == null || node.length == 0 )
             {
                 String message = "No page template parameters to create";
-                VerticalEngineLogger.warn(message, null );
+                VerticalEngineLogger.warn(message );
             }
         }
         else

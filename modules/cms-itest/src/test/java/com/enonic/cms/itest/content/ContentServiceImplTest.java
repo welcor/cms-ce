@@ -26,7 +26,6 @@ import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -34,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,15 +44,10 @@ import static org.junit.Assert.*;
 public class ContentServiceImplTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
-    private DomainFixture fixture;
-
     @Autowired
-    private GroupEntityDao groupEntityDao;
+    private DomainFixture fixture;
 
     @Autowired
     protected ContentDao contentDao;
@@ -73,10 +66,7 @@ public class ContentServiceImplTest
         throws IOException, JDOMException
     {
 
-        groupEntityDao.invalidateCachedKeys();
-
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -165,7 +155,7 @@ public class ContentServiceImplTest
 
         ContentKey contenKey = contentService.createContent( createContentCommand );
 
-        hibernateTemplate.clear();
+        fixture.flushAndClearHibernateSesssion();
 
         ContentEntity persistedContent = contentDao.findByKey( contenKey );
         assertNotNull( persistedContent );
@@ -204,8 +194,7 @@ public class ContentServiceImplTest
         fixture.save( factory.createUnit( "MyUnit" ) );
         fixture.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
-        hibernateTemplate.flush();
-        hibernateTemplate.clear();
+        fixture.flushAndClearHibernateSesssion();
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
 
@@ -221,8 +210,7 @@ public class ContentServiceImplTest
         version.setStatus( ContentStatus.DRAFT );
         version.setContent( content );
 
-        ContentTypeConfig contentTypeConfig = ContentTypeConfigParser.parse( ContentHandlerName.CUSTOM,
-                                                                             standardConfigEl );
+        ContentTypeConfig contentTypeConfig = ContentTypeConfigParser.parse( ContentHandlerName.CUSTOM, standardConfigEl );
         CustomContentData contentData = new CustomContentData( contentTypeConfig );
 
         TextDataEntryConfig titleConfig = (TextDataEntryConfig) contentData.getInputConfig( "myTitle" );
@@ -246,7 +234,7 @@ public class ContentServiceImplTest
 
         ContentKey contenKey = contentService.createContent( createContentCommand );
 
-        hibernateTemplate.clear();
+        fixture.flushAndClearHibernateSesssion();
 
         ContentEntity persistedContent = contentDao.findByKey( contenKey );
         assertNotNull( persistedContent );
@@ -256,71 +244,10 @@ public class ContentServiceImplTest
 
         Document contentDataXml = persistedVersion.getContentDataAsJDomDocument();
         AssertTool.assertSingleXPathValueEquals( "/contentdata/mytitle", contentDataXml, "test title" );
-        AssertTool.assertSingleXPathValueEquals("/contentdata/subelement/mytitle", contentDataXml, "test subtitle");
+        AssertTool.assertSingleXPathValueEquals( "/contentdata/subelement/mytitle", contentDataXml, "test subtitle" );
 
         CustomContentData peristedContentData = (CustomContentData) persistedVersion.getContentData();
         assertEquals( "test title", peristedContentData.getTitle() );
     }
-
-    @Test
-    public void testCreateContent_AccessRightsIsSaved()
-    {
-        fixture.createAndStoreUserAndUserGroup( "testuser", "testuser fullname", UserType.NORMAL, "testuserstore" );
-        fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
-        fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), standardConfig ) );
-        fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "testuser", "testuser" ) );
-        fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
-        fixture.flushAndClearHibernateSesssion();
-
-        UserEntity runningUser = fixture.findUserByName( "testuser" );
-
-        ContentEntity content = new ContentEntity();
-        content.setLanguage( fixture.findLanguageByCode( "en" ) );
-        content.setCategory( fixture.findCategoryByName( "MyCategory" ) );
-        content.setOwner( fixture.findUserByName( "testuser" ) );
-        content.setPriority( 0 );
-        content.setName( "testcontent" );
-        ContentAccessEntity coa1 = new ContentAccessEntity();
-        coa1.setGroup( fixture.findGroupByKey( "ABCGROUP" ) );
-        coa1.setReadAccess( true );
-        coa1.setUpdateAccess( true );
-        coa1.setDeleteAccess( false );
-        content.addContentAccessRight( coa1 );
-
-        ContentVersionEntity version = new ContentVersionEntity();
-        version.setModifiedBy( fixture.findUserByName( "testuser" ) );
-        version.setStatus( ContentStatus.DRAFT );
-        version.setContent( content );
-
-        ContentTypeConfig contentTypeConfig = ContentTypeConfigParser.parse( ContentHandlerName.CUSTOM, standardConfigEl );
-        CustomContentData contentData = new CustomContentData( contentTypeConfig );
-        TextDataEntryConfig titleConfig = (TextDataEntryConfig) contentData.getInputConfig( "myTitle" );
-        contentData.add( new TextDataEntry( titleConfig, "test title" ) );
-        version.setContentData( contentData );
-        version.setTitle( contentData.getTitle() );
-
-        CreateContentCommand createContentCommand = new CreateContentCommand();
-        createContentCommand.setCreator( runningUser.getKey() );
-
-        createContentCommand.populateCommandWithContentValues( content );
-        createContentCommand.populateCommandWithContentVersionValues( version );
-
-        List<BinaryDataAndBinary> binaryDatas = new ArrayList<BinaryDataAndBinary>();
-        createContentCommand.setBinaryDatas( binaryDatas );
-        createContentCommand.setUseCommandsBinaryDataToAdd( true );
-
-        ContentKey contenKey = contentService.createContent( createContentCommand );
-
-        fixture.flushAndClearHibernateSesssion();
-
-        ContentEntity persistedContent = contentDao.findByKey( contenKey );
-        assertNotNull( persistedContent );
-
-        assertTrue( persistedContent.hasAccessRightSet( fixture.findGroupByKey( "ABCGROUP" ), ContentAccessType.READ ) );
-        assertTrue( persistedContent.hasAccessRightSet( fixture.findGroupByKey( "ABCGROUP" ), ContentAccessType.UPDATE ) );
-        assertFalse( persistedContent.hasAccessRightSet( fixture.findGroupByKey( "ABCGROUP" ), ContentAccessType.DELETE ) );
-    }
-
 
 }

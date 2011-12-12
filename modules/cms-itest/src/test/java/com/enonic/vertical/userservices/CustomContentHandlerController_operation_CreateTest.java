@@ -20,7 +20,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.xmlbased.XmlDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.SiteRedirectHelper;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -85,16 +85,15 @@ public class CustomContentHandlerController_operation_CreateTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
 
     @Before
     public void setUp()
     {
-        groupEntityDao.invalidateCachedKeys();
 
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         customContentHandlerController = new CustomContentHandlerController();
         customContentHandlerController.setContentService( contentService );
@@ -113,9 +112,9 @@ public class CustomContentHandlerController_operation_CreateTest
 
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
         fixture.createAndStoreNormalUserWithUserGroup( "testuser", "Test user", "testuserstore" );
-        SecurityHolder.setAnonUser( fixture.findUserByName( "anonymous" ).getKey() );
-        SecurityHolder.setRunAsUser( fixture.findUserByName( "testuser" ).getKey() );
-        SecurityHolder.setUser( fixture.findUserByName( "testuser" ).getKey() );
+        PortalSecurityHolder.setAnonUser( fixture.findUserByName( "anonymous" ).getKey() );
+        PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
+        PortalSecurityHolder.setUser( fixture.findUserByName( "testuser" ).getKey() );
 
         fixture.flushAndClearHibernateSesssion();
     }

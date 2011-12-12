@@ -1,17 +1,17 @@
 package com.enonic.cms.core.portal.livetrace;
 
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.joda.time.DateTime;
 
 public class DatasourceExecutionTrace
     implements ContentIndexQuerier, Trace
 {
     private String methodName;
 
-    private String runnableCondition;
+    private MaxLengthedString runnableCondition;
 
     private boolean isExecuted;
 
@@ -62,12 +62,12 @@ public class DatasourceExecutionTrace
 
     public String getRunnableCondition()
     {
-        return runnableCondition;
+        return runnableCondition != null ? runnableCondition.toString() : null;
     }
 
     void setRunnableCondition( String runnableCondition )
     {
-        this.runnableCondition = runnableCondition;
+        this.runnableCondition = new MaxLengthedString( runnableCondition );
     }
 
     public boolean isCacheUsed()

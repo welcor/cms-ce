@@ -4,45 +4,39 @@
  */
 package com.enonic.vertical.adminweb;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.enonic.cms.api.Version;
+import com.enonic.cms.core.AdminConsoleTranslationService;
+import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
+import com.enonic.cms.core.log.LogType;
+import com.enonic.cms.core.log.StoreNewLogEntryCommand;
+import com.enonic.cms.core.security.InvalidCredentialsException;
+import com.enonic.cms.core.security.LoginAdminUserCommand;
+import com.enonic.cms.core.security.PasswordGenerator;
+import com.enonic.cms.core.security.user.QualifiedUsername;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.userstore.UserStoreEntity;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.servlet.http.CookieUtil;
+import com.enonic.esl.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
+import org.jdom.Document;
+import org.jdom.Element;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.core.log.StoreNewLogEntryCommand;
-import org.apache.commons.lang.StringUtils;
-
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.util.StringUtil;
-
-import com.enonic.cms.api.Version;
-import com.enonic.cms.core.log.LogType;
-import com.enonic.cms.core.security.InvalidCredentialsException;
-import com.enonic.cms.core.security.PasswordGenerator;
-import com.enonic.cms.core.security.user.QualifiedUsername;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-
-import com.enonic.cms.core.DeploymentPathResolver;
-
-import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
-
-import com.enonic.cms.core.security.user.UserEntity;
-
-import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
-import org.jdom.Document;
-import org.jdom.Element;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Administration login servlet.
@@ -83,7 +77,7 @@ public final class AdminLogInServlet
         try
         {
             HashMap<String, Object> parameters = new HashMap<String, Object>();
-            ExtendedMap formItems = parseForm( request, false );
+            ExtendedMap formItems = parseForm( request );
             response.setContentType( "text/html;charset=UTF-8" );
 
             // Make IE 9 behave like IE 8
@@ -131,7 +125,7 @@ public final class AdminLogInServlet
             catch ( VerticalAdminException vae2 )
             {
                 String message = "Failed to redirect to error page: %t";
-                VerticalAdminLogger.errorAdmin(message, vae2);
+                VerticalAdminLogger.errorAdmin( message, vae2 );
             }
         }
     }
@@ -146,7 +140,7 @@ public final class AdminLogInServlet
 
         try
         {
-            ExtendedMap formItems = parseForm( request, false );
+            ExtendedMap formItems = parseForm( request );
             //ren: VS-1970
             int editContent = resolveEditContentParam( request.getHeader( "Referer" ) );
             if ( editContent > -1 )
@@ -180,7 +174,7 @@ public final class AdminLogInServlet
             catch ( VerticalAdminException vae2 )
             {
                 String message = "Failed to redirect to error page: %t";
-                VerticalAdminLogger.errorAdmin(message, vae2);
+                VerticalAdminLogger.errorAdmin( message, vae2 );
             }
         }
     }
@@ -202,50 +196,51 @@ public final class AdminLogInServlet
     {
         final StoreNewLogEntryCommand command = new StoreNewLogEntryCommand();
 
-        command.setType(LogType.LOGIN_FAILED);
-        command.setInetAddress(remoteIp);
-        command.setTitle(user.getUsername());
-        command.setXmlData(createUserStoreDataDoc(user));
-        command.setUser(this.securityService.getAnonymousUserKey());
+        command.setType( LogType.LOGIN_FAILED );
+        command.setInetAddress( remoteIp );
+        command.setTitle( user.getUsername() );
+        command.setXmlData( createUserStoreDataDoc( user ) );
+        command.setUser( this.securityService.getAnonymousUserKey() );
 
-        this.logService.storeNew(command);
+        this.logService.storeNew( command );
     }
 
     private void logLogin( final User user, final String remoteIp )
     {
         final StoreNewLogEntryCommand command = new StoreNewLogEntryCommand();
-        command.setType(LogType.LOGIN);
-        command.setInetAddress(remoteIp);
-        command.setTitle(user.getDisplayName() + " (" + user.getName() + ")");
-        command.setXmlData(createUserStoreDataDoc(user.getQualifiedName()));
-        command.setUser(user.getKey());
+        command.setType( LogType.LOGIN );
+        command.setInetAddress( remoteIp );
+        command.setTitle( user.getDisplayName() + " (" + user.getName() + ")" );
+        command.setXmlData( createUserStoreDataDoc( user.getQualifiedName() ) );
+        command.setUser( user.getKey() );
 
-        this.logService.storeNew(command);
+        this.logService.storeNew( command );
     }
 
     private void logLogout( final User user, final String remoteIp )
     {
         final StoreNewLogEntryCommand command = new StoreNewLogEntryCommand();
-        command.setType(LogType.LOGOUT);
-        command.setInetAddress(remoteIp);
-        command.setTitle(user.getDisplayName() + " (" + user.getName() + ")");
-        command.setUser(user.getKey());
+        command.setType( LogType.LOGOUT );
+        command.setInetAddress( remoteIp );
+        command.setTitle( user.getDisplayName() + " (" + user.getName() + ")" );
+        command.setUser( user.getKey() );
 
-        this.logService.storeNew(command);
+        this.logService.storeNew( command );
     }
 
-    private Document createUserStoreDataDoc(final QualifiedUsername user)
+    private Document createUserStoreDataDoc( final QualifiedUsername user )
     {
-        final Element rootElem = new Element("data");
+        final Element rootElem = new Element( "data" );
 
-        if (user.getUserStoreKey() != null) {
-            final Element userStoreElem = new Element("userstorekey");
-            userStoreElem.setAttribute("key", user.getUserStoreKey().toString());
-            userStoreElem.setText(user.getUserStoreName());
-            rootElem.addContent(userStoreElem);
+        if ( user.getUserStoreKey() != null )
+        {
+            final Element userStoreElem = new Element( "userstorekey" );
+            userStoreElem.setAttribute( "key", user.getUserStoreKey().toString() );
+            userStoreElem.setText( user.getUserStoreName() );
+            rootElem.addContent( userStoreElem );
         }
 
-        return new Document(rootElem);
+        return new Document( rootElem );
     }
 
     private void handlerLoginForm( HttpServletRequest request, HttpServletResponse response, HttpSession session,
@@ -336,7 +331,7 @@ public final class AdminLogInServlet
         String uid = formItems.getString( "username", null );
         String passwd = formItems.getString( "password", null );
         UserStoreKey userStoreKey;
-        String userStoreKeyStr = formItems.getString("userstorekey", null);
+        String userStoreKeyStr = formItems.getString( "userstorekey", null );
 
         if ( userStoreKeyStr != null )
         {
@@ -375,7 +370,7 @@ public final class AdminLogInServlet
             if ( uid == null || passwd == null )
             {
                 String message = "User and/or password not set.";
-                VerticalAdminLogger.error(message, null );
+                VerticalAdminLogger.error( message );
                 session.setAttribute( "loginerrorcode", EC_401_MISSING_USER_PASSWD );
                 session.setAttribute( "loginerror", message );
                 session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
@@ -392,26 +387,26 @@ public final class AdminLogInServlet
                 {
                     qualifiedUsername = new QualifiedUsername( userStoreKey, uid );
                 }
-                user = securityService.loginAdminUser( qualifiedUsername, passwd );
+                user = securityService.loginAdminUser( new LoginAdminUserCommand( qualifiedUsername, passwd ) );
             }
         }
         catch ( InvalidCredentialsException vse )
         {
             String message = "Failed to authenticate user (domain key: {0}): {1}";
             Object[] msgData = {userStoreKey, uid};
-            VerticalAdminLogger.warn(message, msgData, null );
+            VerticalAdminLogger.warn( message, msgData );
             message = StringUtil.expandString( message, msgData, vse );
             session.setAttribute( "loginerrorcode", EC_401_USER_PASSWD_WRONG );
             session.setAttribute( "loginerror", message );
             session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
             errorCode = EC_401_USER_PASSWD_WRONG;
             String remoteAdr = request.getRemoteAddr();
-            logLoginFailed(qualifiedUsername, remoteAdr);
+            logLoginFailed( qualifiedUsername, remoteAdr );
         }
         catch ( AdminConsoleAccessDeniedException e )
         {
             String message = "User is not authorized to use administration console.";
-            VerticalAdminLogger.error(message, null );
+            VerticalAdminLogger.error( message );
             session.setAttribute( "loginerrorcode", EC_401_ACCESS_DENIED );
             session.setAttribute( "loginerror", message );
             session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
@@ -439,7 +434,7 @@ public final class AdminLogInServlet
         try
         {
 
-            logLogin(user, remoteAdr);
+            logLogin( user, remoteAdr );
 
             // Reset some cookie data:
             String deploymentPath = DeploymentPathResolver.getAdminDeploymentPath( request );
@@ -487,7 +482,7 @@ public final class AdminLogInServlet
         catch ( VerticalAdminException vae )
         {
             String message = "Failed to redirect to admin page: %t";
-            VerticalAdminLogger.errorAdmin(message, vae);
+            VerticalAdminLogger.errorAdmin( message, vae );
         }
 
     }
@@ -499,7 +494,7 @@ public final class AdminLogInServlet
         if ( session != null && user != null )
         {
             String remoteAddr = request.getRemoteAddr();
-            logLogout(user, remoteAddr);
+            logLogout( user, remoteAddr );
 
             try
             {
@@ -510,7 +505,7 @@ public final class AdminLogInServlet
             {
                 String page = "login page";
                 String message = "Failed to redirect to {0}: %t";
-                VerticalAdminLogger.errorAdmin(message, page, vae);
+                VerticalAdminLogger.errorAdmin( message, page, vae );
             }
         }
         else
@@ -522,7 +517,7 @@ public final class AdminLogInServlet
             catch ( VerticalAdminException vae )
             {
                 String message = "Failed to redirect to {0}: %t";
-                VerticalAdminLogger.errorAdmin(message, "login page", vae);
+                VerticalAdminLogger.errorAdmin( message, "login page", vae );
             }
         }
     }
@@ -557,7 +552,7 @@ public final class AdminLogInServlet
         parameters.put( "copyright", Version.getCopyright() );
 
         String selectedUserStore = (String) session.getAttribute( "selectedloginuserstore" );
-        if ( StringUtils.isNotEmpty( selectedUserStore ))
+        if ( StringUtils.isNotEmpty( selectedUserStore ) )
         {
             parameters.put( "selectedloginuserstore", selectedUserStore );
         }

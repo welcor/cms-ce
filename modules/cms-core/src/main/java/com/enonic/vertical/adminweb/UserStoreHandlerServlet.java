@@ -4,25 +4,20 @@
  */
 package com.enonic.vertical.adminweb;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-
-import org.apache.commons.lang.StringUtils;
-import org.jdom.transform.JDOMSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
+import com.enonic.cms.core.security.user.DeleteUserStoreCommand;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.userstore.*;
+import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
+import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
+import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigXmlCreator;
+import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJob;
+import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
+import com.enonic.cms.core.service.AdminService;
+import com.enonic.cms.framework.util.JDOMUtil;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.URL;
 import com.enonic.esl.xml.XMLTool;
@@ -30,30 +25,23 @@ import com.enonic.vertical.adminweb.wizard.Wizard;
 import com.enonic.vertical.adminweb.wizard.WizardException;
 import com.enonic.vertical.adminweb.wizard.WizardLogger;
 import com.enonic.vertical.engine.VerticalEngineException;
+import org.apache.commons.lang.StringUtils;
+import org.jdom.transform.JDOMSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.security.user.DeleteUserStoreCommand;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.userstore.StoreNewUserStoreCommand;
-import com.enonic.cms.core.security.userstore.UpdateUserStoreCommand;
-import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
-import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigXmlCreator;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJob;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
-import com.enonic.cms.core.service.AdminService;
-
-import com.enonic.cms.core.security.userstore.DeleteUserStoreJob;
-
-import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class UserStoreHandlerServlet
@@ -227,7 +215,7 @@ public class UserStoreHandlerServlet
             else
             {
                 String message = "Unknown step: {0}";
-                WizardLogger.errorWizard(message, currentStep, null );
+                WizardLogger.errorWizard(message, currentStep );
             }
         }
 
@@ -346,7 +334,7 @@ public class UserStoreHandlerServlet
             return user;
         }
 
-        VerticalAdminLogger.errorAdmin("Not authorized.", null );
+        VerticalAdminLogger.errorAdmin("Not authorized." );
         return null;
     }
 

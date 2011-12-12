@@ -18,7 +18,7 @@ import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.GroupDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.io.IOException;
 import java.util.Date;
@@ -44,11 +43,9 @@ import static org.junit.Assert.assertNotNull;
 public class InternalClientImpl_CreateContentTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -62,8 +59,8 @@ public class InternalClientImpl_CreateContentTest
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
         fixture.initSystemData();
 
         StringBuffer standardConfigXml = new StringBuffer();
@@ -108,7 +105,7 @@ public class InternalClientImpl_CreateContentTest
         fixture.flushAndClearHibernateSesssion();
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
         ContentDataInput contentData = new ContentDataInput( "MyContentType" );
         contentData.add( new TextInput( "myTitle", "testtitle" ) );
@@ -171,7 +168,7 @@ public class InternalClientImpl_CreateContentTest
         fixture.save( factory.createCategoryAccessForUser( "Skole", "testuser", "read,create,approve" ) );
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
         CreateContentParams content = new CreateContentParams();
         content.categoryKey = fixture.findCategoryByName( "Skole" ).getKey().toInt();

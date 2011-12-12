@@ -4,16 +4,16 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import java.util.List;
-
+import com.enonic.cms.core.security.user.QualifiedUsername;
 import org.joda.time.DateTime;
 
-import com.enonic.cms.core.security.user.QualifiedUsername;
+import java.util.List;
 
 /**
  * Oct 6, 2010
  */
 public class PageRenderingTrace
+    implements Trace
 {
     private PortalRequestTrace portalRequestTrace;
 
@@ -21,7 +21,13 @@ public class PageRenderingTrace
 
     private QualifiedUsername renderer;
 
+    private boolean cacheable = false;
+
     private boolean usedCachedResult = false;
+
+    private long concurrencyBlockStartTime = 0;
+
+    private long concurrencyBlockingTime = 0;
 
     private Traces<WindowRenderingTrace> windowRenderingTraces = new Traces<WindowRenderingTrace>();
 
@@ -46,7 +52,6 @@ public class PageRenderingTrace
         this.duration.setStartTime( startTime );
     }
 
-
     void setStopTime( DateTime stopTime )
     {
         this.duration.setStopTime( stopTime );
@@ -67,6 +72,16 @@ public class PageRenderingTrace
         this.renderer = renderer;
     }
 
+    public boolean isCacheable()
+    {
+        return cacheable;
+    }
+
+    void setCacheable( boolean cacheable )
+    {
+        this.cacheable = cacheable;
+    }
+
     public boolean isUsedCachedResult()
     {
         return usedCachedResult;
@@ -75,6 +90,26 @@ public class PageRenderingTrace
     public void setUsedCachedResult( boolean value )
     {
         this.usedCachedResult = value;
+    }
+
+    public boolean isConcurrencyBlocked()
+    {
+        return concurrencyBlockingTime > CONCURRENCY_BLOCK_THRESHOLD;
+    }
+
+    public long getConcurrencyBlockingTime()
+    {
+        return isConcurrencyBlocked() ? concurrencyBlockingTime : 0;
+    }
+
+    void startConcurrencyBlockTimer()
+    {
+        concurrencyBlockStartTime = System.currentTimeMillis();
+    }
+
+    void stopConcurrencyBlockTimer()
+    {
+        this.concurrencyBlockingTime = System.currentTimeMillis() - concurrencyBlockStartTime;
     }
 
     void addWindowRenderingTrace( WindowRenderingTrace trace )
@@ -95,6 +130,11 @@ public class PageRenderingTrace
     public List<WindowRenderingTrace> getWindowRenderingTraces()
     {
         return windowRenderingTraces.getList();
+    }
+
+    public Traces<WindowRenderingTrace> getWindowRenderingTracesAsTraces()
+    {
+        return windowRenderingTraces;
     }
 
     public void addDatasourceExecutionTrace( DatasourceExecutionTrace trace )

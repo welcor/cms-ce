@@ -46,35 +46,25 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( "testuser", content.getMainVersion().getModifiedBy().getName() );
 
         Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/address", dataDoc, "Oslo1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/age", dataDoc, "1" );
-        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
 
         final CustomContentData contentData = (CustomContentData) content.getMainVersion().getContentData();
         assertTrue( ( (TextDataEntry) contentData.getEntry( "name" ) ).getValue().equals(
-            "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                    "src/test" +
-                AEC_ALL + "src/test1" ) );
+            "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" ) );
         assertTrue( ( (TextDataEntry) contentData.getEntry( "address" ) ).getValue().equals( "Oslo1" ) );
         assertTrue( ( (TextDataEntry) contentData.getEntry( "age" ) ).getValue().equals( "1" ) );
         assertTrue( ( (TextAreaDataEntry) contentData.getEntry( "info" ) ).getValue().equals(
-            "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                    "src/test" +
-                AEC_ALL + "src/test1" ) );
+            "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" ) );
 
         final Document xmlDoc = ( (XmlDataEntry) contentData.getEntry( "xmlInfo" ) ).getValue();
         final Document htmlDoc = JDOMUtil.parseDocument( ( (HtmlAreaDataEntry) contentData.getEntry( "htmlInfo" ) ).getValue() );
-        final String testAtr = "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                "src/test" +
-            AEC_ALL + "src/test1";
-        final String testElem = "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                "src/test" +
-            AEC_ALL + "src/test1";
+        final String testAtr = "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1";
+        final String testElem = "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1";
         AssertTool.assertSingleXPathValueEquals( "/root/@atr", xmlDoc, testAtr );
         AssertTool.assertSingleXPathValueEquals( "/root/elem", xmlDoc, testElem );
         AssertTool.assertSingleXPathValueEquals( "/p/@class", htmlDoc, testAtr );
@@ -130,14 +120,12 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( "testuser", content.getMainVersion().getModifiedBy().getName() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/address", dataDoc, "Oslo1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/age", dataDoc, "1" );
-        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
     }
 
     @Test
@@ -159,9 +147,8 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( "testuser", content.getMainVersion().getModifiedBy().getName() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
 
         AssertTool.assertSingleXPathValueEquals( "contentdata/kv1[key='keyA']/value", dataDoc, "valueA" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/kv1[key='keyB']/value", dataDoc, "valueB" );
@@ -190,9 +177,8 @@ public class InternalClientImpl_ImportContentXmlTest
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
 
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
 
         AssertTool.assertSingleXPathValueEquals( "contentdata/kv1[key='keyA']/value", dataDoc, "valueA" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/kv1[key='keyB']/value", dataDoc, "valueB" );
@@ -213,9 +199,8 @@ public class InternalClientImpl_ImportContentXmlTest
 
         final Document dataDoc2 = content2.getMainVersion().getContentDataAsJDomDocument();
 
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc2, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc2,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
 
         AssertTool.assertSingleXPathValueEquals( "contentdata/kv1[key='keyA']/value", dataDoc2, "valueA" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/kv1[key='keyB']/value", dataDoc2, "newValueB" );
@@ -256,9 +241,8 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( "testuser", content.getMainVersion().getModifiedBy().getName() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/max", dataDoc, "789" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/min", dataDoc, "123" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/year", dataDoc,
@@ -368,14 +352,12 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( "testuser", content.getMainVersion().getModifiedBy().getName() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/address", dataDoc, "Oslo1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/age", dataDoc, "1" );
-        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
     }
 
     @Test
@@ -397,35 +379,25 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( "testuser", content.getMainVersion().getModifiedBy().getName() );
 
         Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/address", dataDoc, "Oslo1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/age", dataDoc, "1" );
-        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/info", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
 
         final CustomContentData contentData = (CustomContentData) content.getMainVersion().getContentData();
         assertTrue( ( (TextDataEntry) contentData.getEntry( "name" ) ).getValue().equals(
-            "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                    "src/test" +
-                AEC_ALL + "src/test1" ) );
+            "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" ) );
         assertTrue( ( (TextDataEntry) contentData.getEntry( "address" ) ).getValue().equals( "Oslo1" ) );
         assertTrue( ( (TextDataEntry) contentData.getEntry( "age" ) ).getValue().equals( "1" ) );
         assertTrue( ( (TextAreaDataEntry) contentData.getEntry( "info" ) ).getValue().equals(
-            "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                    "src/test" +
-                AEC_ALL + "src/test1" ) );
+            "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" ) );
 
         final Document xmlDoc = ( (XmlDataEntry) contentData.getEntry( "xmlInfo" ) ).getValue();
         final Document htmlDoc = JDOMUtil.parseDocument( ( (HtmlAreaDataEntry) contentData.getEntry( "htmlInfo" ) ).getValue() );
-        final String testAtr = "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                "src/test" +
-            AEC_ALL + "src/test1";
-        final String testElem = "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                "src/test" +
-            AEC_ALL + "src/test1";
+        final String testAtr = "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1";
+        final String testElem = "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1";
         AssertTool.assertSingleXPathValueEquals( "/root/@atr", xmlDoc, testAtr );
         AssertTool.assertSingleXPathValueEquals( "/root/elem", xmlDoc, testElem );
         AssertTool.assertSingleXPathValueEquals( "/p/@class", htmlDoc, testAtr );
@@ -455,9 +427,8 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( 2, content.getMainVersion().getRelatedChildren( true ).size() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/picture/@key", dataDoc, key1.toString() );
         AssertTool.assertSingleXPathValueEquals( "contentdata/attachment/file/@key", dataDoc, key1.toString() );
         AssertTool.assertSingleXPathValueEquals( "contentdata/relcon/@key", dataDoc, key1.toString() );
@@ -493,9 +464,8 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( 3, content.getMainVersion().getRelatedChildren( true ).size() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/relcon/content[@key=\"" + key1 + "\"]/@key", dataDoc, key1.toString() );
         AssertTool.assertSingleXPathValueEquals( "contentdata/relcon/content[@key=\"" + key2 + "\"]/@key", dataDoc, key2.toString() );
         AssertTool.assertSingleXPathValueEquals( "contentdata/relcon/content[@key=\"" + key3 + "\"]/@key", dataDoc, key3.toString() );
@@ -530,9 +500,8 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( 3, content.getMainVersion().getRelatedChildren( true ).size() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/relcon/content[@key=\"" + key1 + "\"]/@key", dataDoc, key1.toString() );
         AssertTool.assertSingleXPathValueEquals( "contentdata/relcon/content[@key=\"" + key2 + "\"]/@key", dataDoc, key2.toString() );
         AssertTool.assertSingleXPathValueEquals( "contentdata/relcon/content[@key=\"" + key3 + "\"]/@key", dataDoc, key3.toString() );
@@ -562,16 +531,15 @@ public class InternalClientImpl_ImportContentXmlTest
         assertEquals( "testuser", content.getMainVersion().getModifiedBy().getName() );
 
         final Document dataDoc = content.getMainVersion().getContentDataAsJDomDocument();
-        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc, "ABC.." + NORWEGIAN +
-                "src/test" +
-            CHINESE + "src/test" + AEC_ALL + "src/test1" );
+        AssertTool.assertSingleXPathValueEquals( "contentdata/name", dataDoc,
+                                                 "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test1" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/longHair", dataDoc, "true" );
         AssertTool.assertSingleXPathValueEquals( "contentdata/lastChecked", dataDoc, "2009-03-10" );
         AssertTool.assertSingleXPathValueEquals( "count(/contentdata/keywords/keyword)", dataDoc, "4" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[node() = \"fisk\"]", dataDoc, "fisk" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[node() = \"ost\"]", dataDoc, "ost" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[node() = \"torsk\"]", dataDoc, "torsk" );
-        AssertTool.assertSingleXPathValueEquals("/contentdata/keywords/keyword[node() = \"hyse\"]", dataDoc, "hyse");
+        AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[node() = \"hyse\"]", dataDoc, "hyse" );
     }
 
     @Test
@@ -632,9 +600,7 @@ public class InternalClientImpl_ImportContentXmlTest
 
     private StringBuilder getHTMLImportEntry( final int no )
     {
-        final String testStr = "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                "src/test" +
-            AEC_ALL + "src/test" + no;
+        final String testStr = "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test" + no;
 
         StringBuilder builder = new StringBuilder();
         builder.append( "<myhtml>" );
@@ -647,9 +613,7 @@ public class InternalClientImpl_ImportContentXmlTest
 
     private StringBuilder getXMLImportEntry( final int no )
     {
-        final String testStr = "ABC.." + NORWEGIAN + "src/test" + CHINESE +
-                "src/test" +
-            AEC_ALL + "src/test" + no;
+        final String testStr = "ABC.." + NORWEGIAN + "src/test" + CHINESE + "src/test" + AEC_ALL + "src/test" + no;
 
         StringBuilder builder = new StringBuilder();
         builder.append( "<myxml>" );

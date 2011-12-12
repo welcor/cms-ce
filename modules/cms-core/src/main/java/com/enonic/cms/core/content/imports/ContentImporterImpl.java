@@ -4,21 +4,7 @@
  */
 package com.enonic.cms.core.content.imports;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentStorer;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.UpdateContentResult;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.category.CategoryEntity;
@@ -36,6 +22,9 @@ import com.enonic.cms.core.content.imports.sourcevalueholders.AbstractSourceValu
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
+import org.joda.time.DateTime;
+
+import java.util.*;
 
 public class ContentImporterImpl
 {
@@ -209,6 +198,10 @@ public class ContentImporterImpl
 
         // Command
         final UpdateContentCommand command = createUpdateContentCommand( existingContent, versionToBaseNewVersionOn );
+        if ( importConfig.getUpdateContentName() )
+        {
+            command.setContentName( PrettyPathNameCreator.generatePrettyPathName( newContentData.getTitle() ) );
+        }
         command.setModifier( importer );
         command.setContentKey( existingContent.getKey() );
         command.setAvailableFrom( existingContent.getAvailableFrom() );

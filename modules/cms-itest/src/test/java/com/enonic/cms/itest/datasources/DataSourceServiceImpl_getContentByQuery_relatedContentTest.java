@@ -4,22 +4,7 @@
  */
 package com.enonic.cms.itest.datasources;
 
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
@@ -34,22 +19,28 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -69,8 +60,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -93,8 +84,7 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "MyContent", "title" );
         ctyconf.startBlock( "MyContent" );
         ctyconf.addInput( "title", "text", "contentdata/title", "Title", true );
-        ctyconf.addRelatedContentInput( "myRelatedContent", "contentdata/myRelatedContent", "My related content", false,
-                                        true );
+        ctyconf.addRelatedContentInput( "myRelatedContent", "contentdata/myRelatedContent", "My related content", false, true );
         ctyconf.endBlock();
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
 
@@ -318,8 +308,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         AssertTool.assertXPathEquals( "/contents/content[title = 'Grand child']/relatedcontentkeys/relatedcontentkey[@level = -1]/@key",
                                       jdomDocResult, sonContentKey.toString() );
         AssertTool.assertSingleXPathValueEquals( "/contents/relatedcontents/@count", jdomDocResult, "4" );
-        AssertTool.assertXPathEquals("/contents/relatedcontents/content/@key", jdomDocResult, grandChildContentKey.toString(),
-                sonContentKey.toString(), daughterContentKey.toString(), fatherContentKey.toString());
+        AssertTool.assertXPathEquals( "/contents/relatedcontents/content/@key", jdomDocResult, grandChildContentKey.toString(),
+                                      sonContentKey.toString(), daughterContentKey.toString(), fatherContentKey.toString() );
     }
 
 

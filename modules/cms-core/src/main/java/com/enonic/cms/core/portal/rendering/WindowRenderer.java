@@ -4,57 +4,25 @@
  */
 package com.enonic.cms.core.portal.rendering;
 
-import java.util.concurrent.locks.Lock;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.enonic.vertical.VerticalProperties;
-
-import com.enonic.cms.framework.util.GenericConcurrencyLock;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.CacheObjectSettings;
-import com.enonic.cms.core.CacheSettings;
-import com.enonic.cms.core.CachedObject;
-import com.enonic.cms.core.RequestParameters;
-import com.enonic.cms.core.SitePropertiesService;
-import com.enonic.cms.core.SiteURLResolver;
+import com.enonic.cms.core.*;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.DataSourceResult;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
-import com.enonic.cms.core.portal.datasource.Datasources;
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.*;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionProcessor;
-import com.enonic.cms.core.portal.livetrace.InstructionPostProcessingTrace;
-import com.enonic.cms.core.portal.livetrace.InstructionPostProcessingTracer;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
-import com.enonic.cms.core.portal.livetrace.ViewTransformationTrace;
-import com.enonic.cms.core.portal.livetrace.ViewTransformationTracer;
-import com.enonic.cms.core.portal.livetrace.WindowRenderingTrace;
-import com.enonic.cms.core.portal.livetrace.WindowRenderingTracer;
+import com.enonic.cms.core.portal.livetrace.*;
 import com.enonic.cms.core.portal.page.PageRequestFactory;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsContext;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsFactory;
 import com.enonic.cms.core.portal.rendering.tracing.PagePortletTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.portal.rendering.tracing.TraceMarkerHelper;
-import com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer;
-import com.enonic.cms.core.portal.rendering.viewtransformer.StringTransformationParameter;
-import com.enonic.cms.core.portal.rendering.viewtransformer.TemplateParameterTransformationParameter;
-import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParameterOrigin;
-import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParams;
-import com.enonic.cms.core.portal.rendering.viewtransformer.ViewTransformationResult;
+import com.enonic.cms.core.portal.rendering.viewtransformer.*;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -65,8 +33,15 @@ import com.enonic.cms.core.structure.TemplateParameterType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.Window;
 import com.enonic.cms.core.structure.page.WindowKey;
-
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
+import com.enonic.cms.framework.util.GenericConcurrencyLock;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import com.enonic.vertical.VerticalProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.locks.Lock;
 
 /**
  * Apr 17, 2009
@@ -204,7 +179,7 @@ public class WindowRenderer
             if ( !useCache )
             {
                 final RenderedWindowResult windowResult = doExecuteDatasourcesAndTransformView( window, executor );
-                WindowRenderingTracer.traceUsedCachedResult( windowRenderingTrace, false );
+                WindowRenderingTracer.traceUsedCachedResult( windowRenderingTrace, false, false );
                 return cloneAndExecutePostProcessInstructions( windowResult );
             }
 
@@ -214,20 +189,22 @@ public class WindowRenderer
             final Lock locker = concurrencyLock.getLock( cacheKey );
             try
             {
+                WindowRenderingTracer.startConcurrencyBlockTimer( windowRenderingTrace );
                 locker.lock();
+                WindowRenderingTracer.stopConcurrencyBlockTimer(windowRenderingTrace);
 
                 // see if window result is in cache
                 final CachedObject cachedPortletHolder = pageCacheService.getCachedPortletWindow( cacheKey );
                 if ( cachedPortletHolder != null )
                 {
                     windowResult = (RenderedWindowResult) cachedPortletHolder.getObject();
-                    WindowRenderingTracer.traceUsedCachedResult( windowRenderingTrace, true );
+                    WindowRenderingTracer.traceUsedCachedResult( windowRenderingTrace, true, true );
                 }
                 else
                 {
                     // window not in cache, need to render...
                     windowResult = doExecuteDatasourcesAndTransformView( window, executor );
-                    WindowRenderingTracer.traceUsedCachedResult( windowRenderingTrace, false );
+                    WindowRenderingTracer.traceUsedCachedResult( windowRenderingTrace, true, false );
 
                     // register the rendered window in the cache
                     if ( windowResult.isErrorFree() )

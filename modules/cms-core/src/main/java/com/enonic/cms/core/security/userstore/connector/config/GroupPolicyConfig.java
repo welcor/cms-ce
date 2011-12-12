@@ -4,10 +4,10 @@
  */
 package com.enonic.cms.core.security.userstore.connector.config;
 
+import com.enonic.cms.core.security.userstore.config.AbstractPolicyConfig;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.enonic.cms.core.security.userstore.config.AbstractPolicyConfig;
 
 public final class GroupPolicyConfig
     extends AbstractPolicyConfig
@@ -70,6 +70,12 @@ public final class GroupPolicyConfig
         if ( policyList.contains( POLICY_NONE ) && policyList.size() != 1 )
         {
             throw new InvalidUserStoreConnectorConfigException( configName, "Group policy '" + POLICY_NONE +
+                "' cannot be combined with other policies" );
+        }
+
+        if ( policyList.contains( POLICY_LOCAL ) && policyList.size() != 1 )
+        {
+            throw new InvalidUserStoreConnectorConfigException( configName, "Group policy '" + POLICY_LOCAL +
                 "' cannot be combined with other policies" );
         }
 

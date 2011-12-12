@@ -4,54 +4,23 @@
  */
 package com.enonic.cms.core.portal.rendering;
 
-import java.util.concurrent.locks.Lock;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.joda.time.DateTime;
-
-import com.enonic.vertical.VerticalProperties;
-
-import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.framework.util.GenericConcurrencyLock;
-
-import com.enonic.cms.core.CacheObjectSettings;
-import com.enonic.cms.core.CacheSettings;
-import com.enonic.cms.core.CachedObject;
-import com.enonic.cms.core.SitePropertiesService;
-import com.enonic.cms.core.SiteURLResolver;
-import com.enonic.cms.core.TightestCacheSettingsResolver;
+import com.enonic.cms.core.*;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.InvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.DataSourceResult;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.*;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionProcessor;
-import com.enonic.cms.core.portal.livetrace.InstructionPostProcessingTrace;
-import com.enonic.cms.core.portal.livetrace.InstructionPostProcessingTracer;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
-import com.enonic.cms.core.portal.livetrace.PageRenderingTrace;
-import com.enonic.cms.core.portal.livetrace.PageRenderingTracer;
-import com.enonic.cms.core.portal.livetrace.ViewTransformationTrace;
-import com.enonic.cms.core.portal.livetrace.ViewTransformationTracer;
+import com.enonic.cms.core.portal.livetrace.*;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsContext;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsFactory;
 import com.enonic.cms.core.portal.rendering.tracing.PageTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.portal.rendering.tracing.TraceMarkerHelper;
-import com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer;
-import com.enonic.cms.core.portal.rendering.viewtransformer.RegionTransformationParameter;
-import com.enonic.cms.core.portal.rendering.viewtransformer.TemplateParameterTransformationParameter;
-import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParameterOrigin;
-import com.enonic.cms.core.portal.rendering.viewtransformer.TransformationParams;
-import com.enonic.cms.core.portal.rendering.viewtransformer.ViewTransformationResult;
+import com.enonic.cms.core.portal.rendering.viewtransformer.*;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
@@ -61,8 +30,15 @@ import com.enonic.cms.core.structure.TemplateParameter;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.Region;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
-
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
+import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.framework.util.GenericConcurrencyLock;
+import com.enonic.vertical.VerticalProperties;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.joda.time.DateTime;
+
+import java.util.concurrent.locks.Lock;
 
 
 /**
@@ -176,7 +152,7 @@ public class PageRenderer
             // render request is not cacheable
             final RenderedPageResult renderedPageResult = renderPageTemplateExcludingPortlets( pageTemplate );
             renderedPageResult.setRetrievedFromCache( false );
-            PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, false );
+            PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, false, false );
             return renderedPageResult;
         }
 
@@ -185,14 +161,16 @@ public class PageRenderer
         final Lock locker = concurrencyLock.getLock( pageCacheKey );
         try
         {
+            PageRenderingTracer.startConcurrencyBlockTimer( pageRenderingTrace );
             locker.lock();
+            PageRenderingTracer.stopConcurrencyBlockTimer( pageRenderingTrace );
 
             CachedObject cachedPageHolder = pageCacheService.getCachedPage( pageCacheKey );
             if ( cachedPageHolder != null )
             {
                 // Found the page in cache, return the clone to prevent further rendering of the cached object
                 RenderedPageResult cachedPageResult = (RenderedPageResult) cachedPageHolder.getObject();
-                PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, true );
+                PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, true, true );
                 return (RenderedPageResult) cachedPageResult.clone();
             }
 
@@ -206,7 +184,7 @@ public class PageRenderer
             // Have to return another instance since we did not retrieve this result from cache
             RenderedPageResult renderedPageResultToReturn = (RenderedPageResult) renderedPageResultToCache.clone();
             renderedPageResultToReturn.setRetrievedFromCache( false );
-            PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, false );
+            PageRenderingTracer.traceUsedCachedResult( pageRenderingTrace, true, false );
             return renderedPageResultToReturn;
         }
         finally
@@ -215,10 +193,10 @@ public class PageRenderer
         }
     }
 
-    private RenderedPageResult renderPageTemplateExcludingPortlets( PageTemplateEntity pageTemplate )
+    private RenderedPageResult renderPageTemplateExcludingPortlets( final PageTemplateEntity pageTemplate )
     {
         final DataSourceResult dataSourceResult = executeDataSources( pageTemplate );
-        PortalFunctionsContext portalFunctionsContext = new PortalFunctionsContext();
+        final PortalFunctionsContext portalFunctionsContext = new PortalFunctionsContext();
         portalFunctionsContext.setInvocationCache( invocationCache );
         portalFunctionsContext.setSitePath( context.getSitePath() );
         portalFunctionsContext.setOriginalSitePath( context.getOriginalSitePath() );

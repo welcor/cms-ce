@@ -4,6 +4,19 @@
  */
 package com.enonic.vertical.engine.handlers;
 
+import com.enonic.cms.core.structure.page.PageEntity;
+import com.enonic.cms.core.structure.page.PageWindowEntity;
+import com.enonic.cms.framework.util.TIntArrayList;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineLogger;
+import com.enonic.vertical.engine.VerticalRemoveException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,22 +24,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.VerticalCreateException;
-import com.enonic.vertical.engine.VerticalEngineLogger;
-import com.enonic.vertical.engine.VerticalRemoveException;
-
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.structure.page.PageEntity;
-import com.enonic.cms.core.structure.page.PageWindowEntity;
 
 public final class PageHandler
     extends BaseHandler
@@ -408,7 +405,7 @@ public final class PageHandler
         catch ( SQLException se )
         {
             String message = "Failed to get page keys by page template key: %t";
-            VerticalEngineLogger.error(message, null );
+            VerticalEngineLogger.error(message );
         }
         finally
         {

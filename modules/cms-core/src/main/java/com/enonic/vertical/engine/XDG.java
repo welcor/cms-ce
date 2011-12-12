@@ -4,28 +4,22 @@
  */
 package com.enonic.vertical.engine;
 
+import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
+import com.enonic.esl.sql.model.*;
+import com.enonic.esl.sql.model.datatypes.CDATAType;
+import com.enonic.esl.sql.model.datatypes.DataType;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.processors.ElementProcessor;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import com.enonic.esl.sql.model.Column;
-import com.enonic.esl.sql.model.Constants;
-import com.enonic.esl.sql.model.ForeignKeyColumn;
-import com.enonic.esl.sql.model.Table;
-import com.enonic.esl.sql.model.View;
-import com.enonic.esl.sql.model.datatypes.CDATAType;
-import com.enonic.esl.sql.model.datatypes.DataType;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.processors.ElementProcessor;
-import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 
 public class XDG
 {
@@ -157,11 +151,11 @@ public class XDG
         sql.append( value );
     }
 
-    public static void appendWhereSQL( StringBuffer sql, Column whereColumn, String operator )
+    public static void appendWhereSQL( StringBuffer sql, Column whereColumn )
     {
         appendAndSQL( sql );
+        sql.append( OPERATOR_EQUAL );
         sql.append( whereColumn );
-        sql.append( operator );
     }
 
     /**
@@ -169,25 +163,24 @@ public class XDG
      *
      * @param sql         A StringBuffer containing the existing SQL, which is modified in the StringBuffer by this method.
      * @param whereColumn The column to check the value against.
-     * @param operator    The operator for the check.
      * @param value       The value to check against.
      */
-    public static void appendWhereSQL( StringBuffer sql, Column whereColumn, String operator, String value )
+    public static void appendWhereSQL( StringBuffer sql, Column whereColumn, String value )
     {
         appendAndSQL( sql );
         sql.append( whereColumn );
-        sql.append( operator );
+        sql.append( OPERATOR_EQUAL );
         sql.append( "'" );
         sql.append( value );
         sql.append( "'" );
     }
 
 
-    public static void appendWhereSQL( StringBuffer sql, Column whereColumn1, String operator, Column whereColumn2 )
+    public static void appendWhereSQL( StringBuffer sql, Column whereColumn1, Column whereColumn2 )
     {
         appendAndSQL( sql );
         sql.append( whereColumn1 );
-        sql.append( operator );
+        sql.append( OPERATOR_EQUAL );
         sql.append( whereColumn2 );
     }
 
@@ -339,12 +332,11 @@ public class XDG
         return sql;
     }
 
-    public static StringBuffer generateFKJoinSQL( Table table1, Table table2, Column[] selectColumns, Column[] whereColumns )
+    public static StringBuffer generateFKJoinSQL( Table table1, Table table2, Column[] selectColumns )
     {
 
         StringBuffer sql = generateSelectSQL( table1, selectColumns, false, null );
         appendJoinSQL( sql, table1.getForeignKey( table2 ) );
-        generateWhereSQL( sql, whereColumns );
 
         return sql;
     }
@@ -366,9 +358,9 @@ public class XDG
         return generateSelectSQL( table, (Column[]) null, false, new Column[]{whereColumn} );
     }
 
-    public static StringBuffer generateSelectSQL( Table table, Column selectColumn, boolean distinct, Column[] whereColumns )
+    public static StringBuffer generateSelectSQL( Table table, Column selectColumn, Column[] whereColumns )
     {
-        return generateSelectSQL( table, new Column[]{selectColumn}, distinct, whereColumns );
+        return generateSelectSQL( table, new Column[]{selectColumn}, false, whereColumns );
     }
 
     /**
@@ -449,8 +441,7 @@ public class XDG
         return sql;
     }
 
-    public static StringBuffer generateSelectWhereInSQL( Table table, Column selectColumn, boolean distinct, Column whereInColumn,
-                                                         int count )
+    public static StringBuffer generateSelectWhereInSQL( Table table, Column selectColumn, Column whereInColumn, int count )
     {
 
         Column[] selectColumns = null;
@@ -458,7 +449,7 @@ public class XDG
         {
             selectColumns = new Column[]{selectColumn};
         }
-        return generateSelectWhereInSQL( table, selectColumns, distinct, whereInColumn, count );
+        return generateSelectWhereInSQL( table, selectColumns, true, whereInColumn, count );
     }
 
     public static Document resultSetToXML( Table table, ResultSet resultSet, Element parentElem, ElementProcessor[] elementProcessors,
@@ -645,10 +636,10 @@ public class XDG
         {
             whereColumns = null;
         }
-        return generateUpdateSQL( table, setColumns, whereColumns, null );
+        return generateUpdateSQL( table, setColumns, whereColumns );
     }
 
-    public static StringBuffer generateUpdateSQL( Table table, Column[] setColumns, Column[] whereColumns, Set excludeColumns )
+    public static StringBuffer generateUpdateSQL( Table table, Column[] setColumns, Column[] whereColumns )
     {
         // Generate SQL
         StringBuffer sql = new StringBuffer( "UPDATE " );
@@ -667,7 +658,7 @@ public class XDG
         for ( int i = 0; i < columns.length; i++ )
         {
             // If this column is not a primary key and not a "created timestamp"
-            if ( !( excludeColumns != null && excludeColumns.contains( columns[i] ) ) && !columns[i].isPrimaryKey() &&
+            if ( !columns[i].isPrimaryKey() &&
                 !( columns[i].getType() == Constants.COLUMN_CREATED_TIMESTAMP ) )
             {
                 sql.append( columns[i] );

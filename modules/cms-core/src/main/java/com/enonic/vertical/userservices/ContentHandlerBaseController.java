@@ -4,6 +4,39 @@
  */
 package com.enonic.vertical.userservices;
 
+import com.enonic.cms.core.CalendarUtil;
+import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.binary.BinaryData;
+import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
+import com.enonic.cms.core.content.binary.BinaryDataKey;
+import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.content.command.UpdateContentCommand;
+import com.enonic.cms.core.content.contentdata.ContentData;
+import com.enonic.cms.core.content.contentdata.custom.support.CustomContentDataFormParser;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.portal.PrettyPathNameCreator;
+import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.io.FileUtil;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,57 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.io.FileUtil;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.VerticalRemoveException;
-import com.enonic.vertical.engine.VerticalSecurityException;
-
-import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentLocationSpecification;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.PageCacheInvalidatorForContent;
-import com.enonic.cms.core.content.UpdateContentResult;
-import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
-import com.enonic.cms.core.content.category.CategoryEntity;
-import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.command.UpdateContentCommand;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.UserServicesService;
-
-import com.enonic.cms.core.portal.cache.PageCacheService;
-
-import com.enonic.cms.core.content.ContentAccessEntity;
-import com.enonic.cms.core.content.ContentAndVersion;
-import com.enonic.cms.core.content.ContentLocation;
-import com.enonic.cms.core.content.ContentLocations;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionKey;
-
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contentdata.ContentData;
-import com.enonic.cms.core.content.contentdata.custom.support.CustomContentDataFormParser;
-
-import com.enonic.cms.core.portal.PrettyPathNameCreator;
 
 /**
  * Base class for userservices servlets related to modifying content from "public" sites.  This class will take care of custom content. All
@@ -242,8 +224,8 @@ public class ContentHandlerBaseController
         if ( contentKey == -1 )
         {
             String message = "Content key not specified.";
-            VerticalUserServicesLogger.warn(message, null );
-            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY, null );
+            VerticalUserServicesLogger.warn(message );
+            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
             return;
         }
 
@@ -253,7 +235,7 @@ public class ContentHandlerBaseController
         List<BinaryDataAndBinary> binariesToAdd = BinaryDataAndBinary.createNewFrom( binaries );
 
         Document ctDoc = userServices.getContentTypeByContent( contentKey ).getAsDOMDocument();
-        String xmlData = buildContent( userServices, oldTypeUser, formItems, siteKey, ctDoc, false );
+        String xmlData = buildContent( userServices, oldTypeUser, formItems, siteKey, ctDoc );
 
         boolean asNewVersion = true;
         updateContent( oldTypeUser, xmlData, binariesToRemoveAsBinaryDataKey, binariesToAdd, asNewVersion );
@@ -345,15 +327,15 @@ public class ContentHandlerBaseController
         if ( categoryKey == -1 )
         {
             String message = "Category key not specified.";
-            VerticalUserServicesLogger.warn(message, null );
-            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY, null );
+            VerticalUserServicesLogger.warn(message );
+            redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
             return;
         }
 
         BinaryData[] binaries = fetchUploadedFiles( formItems );
 
         Document ctDoc = userServices.getContentTypeByCategory( categoryKey ).getAsDOMDocument();
-        String xmlData = buildContent( userServices, oldUser, formItems, siteKey, ctDoc, false );
+        String xmlData = buildContent( userServices, oldUser, formItems, siteKey, ctDoc );
 
         storeNewContent( oldUser, binaries, xmlData );
 
@@ -395,8 +377,7 @@ public class ContentHandlerBaseController
         return newContentKey;
     }
 
-    private String buildContent( UserServicesService services, User user, ExtendedMap formItems, SiteKey siteKey, Document contentType,
-                                 boolean skipEmptyElements )
+    private String buildContent( UserServicesService services, User user, ExtendedMap formItems, SiteKey siteKey, Document contentType )
     {
 
         Element rootElement = contentType.getDocumentElement();
@@ -411,7 +392,7 @@ public class ContentHandlerBaseController
 
         int contentTypeKey = Integer.parseInt( contentTypeElement.getAttribute( "key" ) );
         String contentTitle = formItems.getString( titleName );
-        return buildXML( services, user, formItems, siteKey, contentTypeKey, contentTitle, skipEmptyElements );
+        return buildXML( services, user, formItems, siteKey, contentTypeKey, contentTitle, false );
     }
 
     private BinaryData createBinaryData( String fileName, InputStream inputStream )

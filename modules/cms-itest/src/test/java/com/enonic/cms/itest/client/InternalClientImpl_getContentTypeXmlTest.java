@@ -13,18 +13,15 @@ import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import static com.enonic.cms.itest.util.AssertTool.*;
 
 public class InternalClientImpl_getContentTypeXmlTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     private InternalClientImpl internalClient;
@@ -38,8 +35,8 @@ public class InternalClientImpl_getContentTypeXmlTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         // setup
         fixture.initSystemData();

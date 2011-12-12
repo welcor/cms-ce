@@ -4,35 +4,38 @@
  */
 package com.enonic.vertical.adminweb;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Ints;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import com.google.common.collect.Lists;
-
+import com.enonic.cms.core.CmsDateAndTimeFormats;
+import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.SitePropertiesService;
+import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.command.UnassignContentCommand;
+import com.enonic.cms.core.content.command.UpdateContentCommand;
+import com.enonic.cms.core.mail.ApproveAndRejectMailTemplate;
+import com.enonic.cms.core.mail.MailRecipient;
+import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.service.AdminService;
+import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteProperties;
+import com.enonic.cms.core.structure.SiteService;
+import com.enonic.cms.core.structure.SiteXmlCreator;
+import com.enonic.cms.core.structure.menuitem.*;
+import com.enonic.cms.core.structure.page.PageSpecification;
+import com.enonic.cms.core.structure.page.template.PageTemplateKey;
+import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
+import com.enonic.cms.core.structure.page.template.PageTemplateType;
+import com.enonic.cms.framework.util.TIntArrayList;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
@@ -44,69 +47,26 @@ import com.enonic.vertical.adminweb.handlers.ListCountResolver;
 import com.enonic.vertical.adminweb.wizard.Wizard;
 import com.enonic.vertical.adminweb.wizard.WizardException;
 import com.enonic.vertical.adminweb.wizard.WizardLogger;
-import com.enonic.vertical.engine.CategoryAccessRight;
-import com.enonic.vertical.engine.MenuItemAccessRight;
-import com.enonic.vertical.engine.SectionCriteria;
-import com.enonic.vertical.engine.Types;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.VerticalRemoveException;
-import com.enonic.vertical.engine.VerticalSecurityException;
+import com.enonic.vertical.engine.*;
 import com.enonic.vertical.engine.criteria.CategoryCriteria;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.CmsDateAndTimeFormats;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePropertiesService;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionKey;
-import com.enonic.cms.core.content.command.UnassignContentCommand;
-import com.enonic.cms.core.content.command.UpdateContentCommand;
-import com.enonic.cms.core.mail.ApproveAndRejectMailTemplate;
-import com.enonic.cms.core.mail.MailRecipient;
-import com.enonic.cms.core.mail.SendMailService;
-import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.SiteProperties;
-import com.enonic.cms.core.structure.SiteService;
-import com.enonic.cms.core.structure.SiteXmlCreator;
-import com.enonic.cms.core.structure.menuitem.AddContentToSectionCommand;
-import com.enonic.cms.core.structure.menuitem.ApproveContentInSectionCommand;
-import com.enonic.cms.core.structure.menuitem.ApproveContentsInSectionCommand;
-import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
-import com.enonic.cms.core.structure.menuitem.MenuItemAccessType;
-import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemService;
-import com.enonic.cms.core.structure.menuitem.MenuItemServiceCommand;
-import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
-import com.enonic.cms.core.structure.menuitem.MenuItemType;
-import com.enonic.cms.core.structure.menuitem.MenuItemXMLCreatorSetting;
-import com.enonic.cms.core.structure.menuitem.MenuItemXmlCreator;
-import com.enonic.cms.core.structure.menuitem.OrderContentsInSectionCommand;
-import com.enonic.cms.core.structure.menuitem.RemoveContentsFromSectionCommand;
-import com.enonic.cms.core.structure.menuitem.SetContentHomeCommand;
-import com.enonic.cms.core.structure.menuitem.UnapproveContentsInSectionCommand;
-import com.enonic.cms.core.structure.page.PageSpecification;
-import com.enonic.cms.core.structure.page.template.PageTemplateKey;
-import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
-import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupDao;
-import com.enonic.cms.store.dao.MenuItemDao;
-
-import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
 
 
 public class SectionHandlerServlet
@@ -183,7 +143,7 @@ public class SectionHandlerServlet
             else
             {
                 String message = "Unknown test condition: {0}";
-                WizardLogger.errorWizard( message, testCondition, null );
+                WizardLogger.errorWizard( message, testCondition );
                 result = false;
             }
 
@@ -1057,7 +1017,7 @@ public class SectionHandlerServlet
                 {
                     if ( originalStatus != 2 )
                     {
-                        WizardLogger.errorWizard( "Unknown status: {0}", String.valueOf( status ), null );
+                        WizardLogger.errorWizard( "Unknown status: {0}", String.valueOf( status ) );
                     }
                     break;
                 }

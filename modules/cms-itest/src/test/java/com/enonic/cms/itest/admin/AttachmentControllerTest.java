@@ -1,13 +1,26 @@
 package com.enonic.cms.itest.admin;
 
-import java.io.IOException;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.enonic.cms.api.client.model.CreateFileContentParams;
+import com.enonic.cms.api.client.model.content.file.FileBinaryInput;
+import com.enonic.cms.api.client.model.content.file.FileContentDataInput;
+import com.enonic.cms.api.client.model.content.file.FileNameInput;
+import com.enonic.cms.core.client.InternalClientContentService;
+import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.binary.BinaryDataEntity;
+import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
+import com.enonic.cms.core.security.AdminSecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.server.service.admin.mvc.controller.AttachmentController;
+import com.enonic.cms.store.dao.GroupDao;
+import com.google.common.io.ByteStreams;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,35 +33,12 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.google.common.io.ByteStreams;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
 
-import com.enonic.cms.api.client.model.CreateFileContentParams;
-import com.enonic.cms.api.client.model.content.file.FileBinaryInput;
-import com.enonic.cms.api.client.model.content.file.FileContentDataInput;
-import com.enonic.cms.api.client.model.content.file.FileNameInput;
-import com.enonic.cms.core.client.InternalClientContentService;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
-import com.enonic.cms.core.security.SecurityHolderAdmin;
-import com.enonic.cms.core.security.user.UserType;
-import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.server.service.admin.mvc.controller.AttachmentController;
-
-import com.enonic.cms.core.security.SecurityHolder;
-
-import com.enonic.cms.core.content.ContentStatus;
-
-import com.enonic.cms.core.content.binary.BinaryDataEntity;
-
-import com.enonic.cms.core.security.user.UserKey;
-
-import com.enonic.cms.core.structure.SiteEntity;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AttachmentControllerTest
     extends AbstractSpringTest
@@ -56,8 +46,12 @@ public class AttachmentControllerTest
     @Autowired
     protected HibernateTemplate hibernateTemplate;
 
+    @Autowired
+    private GroupDao groupDao;
+
     protected DomainFactory factory;
 
+    @Autowired
     protected DomainFixture fixture;
 
     @Autowired
@@ -79,8 +73,7 @@ public class AttachmentControllerTest
     public void before()
         throws Exception
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
         fixture.createAndStoreUserAndUserGroup( "testuser", "testuser fullname", UserType.NORMAL, "testuserstore" );
@@ -343,13 +336,13 @@ public class AttachmentControllerTest
 
     private void loginUserInPortal( UserKey userKey )
     {
-        SecurityHolder.setRunAsUser( userKey );
-        SecurityHolder.setUser( userKey );
+        PortalSecurityHolder.setImpersonatedUser( userKey );
+        PortalSecurityHolder.setUser( userKey );
     }
 
     private void loginUserInAdmin( UserKey userKey )
     {
-        SecurityHolderAdmin.setUser( userKey );
+        AdminSecurityHolder.setUser( userKey );
     }
 
     private void setPathInfoAndRequestURI( MockHttpServletRequest httpServletRequest, String attachmentRequestPath )

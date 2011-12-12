@@ -1,8 +1,7 @@
 package com.enonic.cms.core.portal.livetrace;
 
-import org.joda.time.DateTime;
-
 import com.enonic.cms.core.content.ContentKey;
+import org.joda.time.DateTime;
 
 /**
  * Oct 11, 2010
@@ -16,21 +15,25 @@ public class ImageRequestTrace
 
     private ContentKey contentKey;
 
-    private String label;
+    private MaxLengthedString label;
 
-    private String imageParamQuality;
+    private MaxLengthedString imageParamQuality;
 
-    private String imageParamFormat;
+    private MaxLengthedString imageParamFormat;
 
-    private String imageParamFilter;
+    private MaxLengthedString imageParamFilter;
 
-    private String imageParamBackgroundColor;
+    private MaxLengthedString imageParamBackgroundColor;
 
-    private String imageName;
+    private MaxLengthedString imageName;
 
     private Long sizeInBytes;
 
-    private Boolean usedCachedResult;
+    private boolean usedCachedResult = false;
+
+    private long concurrencyBlockStartTime = 0;
+
+    private long concurrencyBlockingTime = 0;
 
     ImageRequestTrace( PortalRequestTrace portalRequestTrace )
     {
@@ -67,79 +70,99 @@ public class ImageRequestTrace
         return contentKey;
     }
 
-    public void setContentKey( ContentKey contentKey )
+    void setContentKey( ContentKey contentKey )
     {
         this.contentKey = contentKey;
     }
 
     public String getLabel()
     {
-        return label;
+        return label != null ? label.toString() : null;
     }
 
-    public void setLabel( String label )
+    void setLabel( String label )
     {
-        this.label = label;
+        this.label = new MaxLengthedString( label );
     }
 
     public String getImageParamFormat()
     {
-        return imageParamFormat;
+        return imageParamFormat != null ? imageParamFormat.toString() : null;
     }
 
-    public void setImageParamFormat( String imageParamFormat )
+    void setImageParamFormat( String imageParamFormat )
     {
-        this.imageParamFormat = imageParamFormat;
+        this.imageParamFormat = new MaxLengthedString( imageParamFormat );
     }
 
     public String getImageParamQuality()
     {
-        return imageParamQuality;
+        return imageParamQuality != null ? imageParamQuality.toString() : null;
     }
 
     public void setImageParamQuality( String imageParamQuality )
     {
-        this.imageParamQuality = imageParamQuality;
+        this.imageParamQuality = new MaxLengthedString( imageParamQuality );
     }
 
     public String getImageParamFilter()
     {
-        return imageParamFilter;
+        return imageParamFilter != null ? imageParamFilter.toString() : null;
     }
 
     public void setImageParamFilter( String imageParamFilter )
     {
-        this.imageParamFilter = imageParamFilter;
+        this.imageParamFilter = new MaxLengthedString( imageParamFilter );
     }
 
     public String getImageParamBackgroundColor()
     {
-        return imageParamBackgroundColor;
+        return imageParamBackgroundColor != null ? imageParamBackgroundColor.toString() : null;
     }
 
     public void setImageParamBackgroundColor( String imageParamBackgroundColor )
     {
-        this.imageParamBackgroundColor = imageParamBackgroundColor;
+        this.imageParamBackgroundColor = new MaxLengthedString( imageParamBackgroundColor );
     }
 
-    public Boolean getUsedCachedResult()
+    public boolean isUsedCachedResult()
     {
         return usedCachedResult;
     }
 
-    void setUsedCachedResult( Boolean usedCachedResult )
+    void setUsedCachedResult( boolean usedCachedResult )
     {
         this.usedCachedResult = usedCachedResult;
     }
 
+    public boolean isConcurrencyBlocked()
+    {
+        return concurrencyBlockingTime > CONCURRENCY_BLOCK_THRESHOLD;
+    }
+
+    public long getConcurrencyBlockingTime()
+    {
+        return isConcurrencyBlocked() ? concurrencyBlockingTime : 0;
+    }
+
+    void startConcurrencyBlockTimer()
+    {
+        concurrencyBlockStartTime = System.currentTimeMillis();
+    }
+
+    void stopConcurrencyBlockTimer()
+    {
+        this.concurrencyBlockingTime = System.currentTimeMillis() - concurrencyBlockStartTime;
+    }
+
     public String getImageName()
     {
-        return imageName;
+        return imageName != null ? imageName.toString() : null;
     }
 
     void setImageName( String imageName )
     {
-        this.imageName = imageName;
+        this.imageName = new MaxLengthedString( imageName );
     }
 
     public Long getSizeInBytes()

@@ -4,23 +4,20 @@
  */
 package com.enonic.cms.framework.cache;
 
-import java.util.Properties;
-
-import org.springframework.beans.factory.DisposableBean;
+import com.enonic.cms.framework.cache.standard.StandardCacheManager;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-
-import com.enonic.cms.framework.cache.base.AbstractCacheManager;
-import com.enonic.cms.framework.cache.standard.StandardCacheManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Properties;
 
 /**
  * This class switches between cache managers.
  */
 @Component("cacheFacadeManager")
 public final class CacheManagerFactory
-    implements FactoryBean<CacheManager>, InitializingBean, DisposableBean
+    implements FactoryBean<CacheManager>, InitializingBean
 {
     /**
      * Config location.
@@ -30,7 +27,7 @@ public final class CacheManagerFactory
     /**
      * Cache manager.
      */
-    private AbstractCacheManager cacheManager;
+    private StandardCacheManager cacheManager;
 
     /**
      * After properties set.
@@ -40,27 +37,10 @@ public final class CacheManagerFactory
     {
         this.cacheManager = new StandardCacheManager();
         this.cacheManager.setProperties( this.properties );
-        this.cacheManager.setPropertyPrefix( "cms.cache" );
-        this.cacheManager.afterPropertiesSet();
     }
 
-    /**
-     * Destroy the bean.
-     */
-    public void destroy()
-        throws Exception
-    {
-        if ( this.cacheManager != null )
-        {
-            this.cacheManager.destroy();
-        }
-    }
-
-    /**
-     * Set the properties.
-     */
     @Value("#{config.properties}")
-    public void setProperties( Properties properties )
+    public void setProperties( final Properties properties )
     {
         this.properties = properties;
     }

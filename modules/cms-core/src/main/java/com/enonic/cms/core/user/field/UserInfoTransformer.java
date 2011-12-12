@@ -4,14 +4,14 @@
  */
 package com.enonic.cms.core.user.field;
 
+import com.enonic.cms.api.client.model.user.Address;
+import com.enonic.cms.api.client.model.user.Gender;
+import com.enonic.cms.api.client.model.user.UserInfo;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import com.enonic.cms.api.client.model.user.Address;
-import com.enonic.cms.api.client.model.user.Gender;
-import com.enonic.cms.api.client.model.user.UserInfo;
 
 public final class UserInfoTransformer
 {
@@ -157,7 +157,7 @@ public final class UserInfoTransformer
             addIfNotNull( fields, UserFieldType.ADDRESS, address );
         }
 
-        addIfNotNull( fields, UserFieldType.BIRTHDAY, info.getBirthday() );
+        addNullable( fields, UserFieldType.BIRTHDAY, info.getBirthday() );
         addIfNotNull( fields, UserFieldType.COUNTRY, info.getCountry() );
         addIfNotNull( fields, UserFieldType.DESCRIPTION, info.getDescription() );
         addIfNotNull( fields, UserFieldType.FAX, info.getFax() );
@@ -192,4 +192,10 @@ public final class UserInfoTransformer
             fields.add( new UserField( type, value ) );
         }
     }
+
+    private void addNullable( UserFieldMap fields, UserFieldType type, Object value )
+    {
+        fields.add( new UserField( type, value ) );
+    }
+
 }

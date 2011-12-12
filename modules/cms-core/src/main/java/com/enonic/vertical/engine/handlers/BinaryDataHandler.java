@@ -4,22 +4,19 @@
  */
 package com.enonic.vertical.engine.handlers;
 
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.binary.BinaryData;
+import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
+import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
+import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.ContentBinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
-
-import com.enonic.cms.framework.blob.BlobRecord;
-
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentEntity;
-
-import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.content.binary.BinaryDataEntity;
-import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
@@ -46,17 +43,17 @@ public final class BinaryDataHandler
             return null;
         }
 
-        return getBinaryData( entity, false, -1 );
+        return getBinaryData( entity, -1 );
     }
 
-    private BinaryData getBinaryData( ContentBinaryDataEntity contentBinaryData, boolean anonAccess, long timestamp )
+    private BinaryData getBinaryData( ContentBinaryDataEntity contentBinaryData, long timestamp )
     {
         BinaryData binaryData = new BinaryData();
         binaryData.key = contentBinaryData.getBinaryData().getKey();
         binaryData.contentKey = contentBinaryData.getContentVersion().getContent().getKey().toInt();
         binaryData.setSafeFileName( contentBinaryData.getBinaryData().getName() );
         binaryData.timestamp = contentBinaryData.getBinaryData().getCreatedAt();
-        binaryData.anonymousAccess = anonAccess;
+        binaryData.anonymousAccess = false;
 
         if ( binaryData.timestamp.getTime() > timestamp )
         {

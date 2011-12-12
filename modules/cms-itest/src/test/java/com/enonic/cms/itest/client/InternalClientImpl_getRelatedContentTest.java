@@ -4,28 +4,9 @@
  */
 package com.enonic.cms.itest.client;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
 import com.enonic.cms.api.client.model.GetRelatedContentsParams;
 import com.enonic.cms.core.client.InternalClientImpl;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -36,19 +17,32 @@ import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.preview.PreviewService;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.UserDao;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class InternalClientImpl_getRelatedContentTest
     extends AbstractSpringTest
@@ -59,8 +53,6 @@ public class InternalClientImpl_getRelatedContentTest
     private static final DateTime DATE_TIME_2010_07_01_12_00_00_0 = new DateTime( 2010, 7, 1, 12, 0, 0, 0 );
 
     @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFixture fixture;
 
     @Autowired
@@ -89,8 +81,8 @@ public class InternalClientImpl_getRelatedContentTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        DomainFactory factory = new DomainFactory( fixture );
+
+        DomainFactory factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -151,8 +143,8 @@ public class InternalClientImpl_getRelatedContentTest
 
         fixture.flushAndClearHibernateSesssion();
 
-        SecurityHolder.setUser( fixture.findUserByName( "content-querier" ).getKey() );
-        SecurityHolder.setRunAsUser( fixture.findUserByName( "content-querier" ).getKey() );
+        PortalSecurityHolder.setUser( fixture.findUserByName( "content-querier" ).getKey() );
+        PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "content-querier" ).getKey() );
 
         internalClient = new InternalClientImpl();
         internalClient.setSecurityService( securityService );

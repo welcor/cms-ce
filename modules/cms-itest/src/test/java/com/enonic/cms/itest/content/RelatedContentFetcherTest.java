@@ -14,7 +14,7 @@ import com.enonic.cms.core.content.contentdata.custom.relationdataentrylistbased
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.resultset.*;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -53,6 +53,7 @@ public class RelatedContentFetcherTest
 
     private ContentAccessResolver contentAccessResolver;
 
+    @Autowired
     private DomainFixture fixture;
 
     public RelatedContentFetcherTest()
@@ -65,8 +66,7 @@ public class RelatedContentFetcherTest
     {
         contentAccessResolver = new ContentAccessResolver( groupEntityDao );
 
-        fixture = new DomainFixture( hibernateTemplate );
-        DomainFactory factory = new DomainFactory( fixture );
+        DomainFactory factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -74,7 +74,7 @@ public class RelatedContentFetcherTest
         fixture.createAndStoreUserAndUserGroup( "testuser", "testuser fullname", UserType.NORMAL, "testuserstore" );
 
         //SecurityHolder.setUser( findUserByName( User.ANONYMOUS_UID ).getKey() );
-        SecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
+        PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -716,7 +716,7 @@ public class RelatedContentFetcherTest
 
     private Set<ContentEntity> convertToSet( ContentEntity... contents )
     {
-        return new HashSet<ContentEntity>(Arrays.asList(contents));
+        return new HashSet<ContentEntity>( Arrays.asList( contents ) );
     }
 
     private List<RelatedChildContent> convertRelatedChildContentToList( Iterable<RelatedChildContent> iterable )

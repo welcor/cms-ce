@@ -4,23 +4,18 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.enonic.esl.sql.model.DatabaseSchemaTool;
-import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
-
+import com.enonic.cms.core.jdbc.DatabaseBaseValuesInitializer;
+import com.enonic.cms.framework.blob.gc.GarbageCollector;
 import com.enonic.cms.store.DatabaseAccessor;
 import com.enonic.cms.store.VacuumContentSQL;
+import com.enonic.esl.sql.model.DatabaseSchemaTool;
+import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.jdbc.DatabaseBaseValuesInitializer;
+import java.sql.*;
+import java.util.List;
 
 /**
  * This class implements the system handler that takes care of creating database schema and populating version numbers.
@@ -38,6 +33,8 @@ public final class SystemHandler
      */
     private final static String VACUUM_READ_LOGS_SQL = "DELETE FROM tLogEntry WHERE len_lTypeKey = 7";
 
+    @Autowired
+    private GarbageCollector garbageCollector;
 
     /**
      * Return true if it has the table.
@@ -153,15 +150,9 @@ public final class SystemHandler
     {
         Connection conn = getConnection();
 
-        try
+        if ( !updateModelNumber( conn, version ) )
         {
-            if ( !updateModelNumber( conn, version ) )
-            {
-                insertModelNumber( conn, version );
-            }
-        }
-        finally
-        {
+            insertModelNumber( conn, version );
         }
     }
 
@@ -215,14 +206,8 @@ public final class SystemHandler
     {
         Connection conn = null;
 
-        try
-        {
-            conn = getConnection();
-            return initializeDatabaseSchema( conn );
-        }
-        finally
-        {
-        }
+        conn = getConnection();
+        return initializeDatabaseSchema( conn );
     }
 
     /**
@@ -233,14 +218,8 @@ public final class SystemHandler
     {
         Connection conn = null;
 
-        try
-        {
-            conn = getConnection();
-            return initializeDatabaseValues( conn );
-        }
-        finally
-        {
-        }
+        conn = getConnection();
+        return initializeDatabaseValues( conn );
     }
 
     /**
@@ -362,13 +341,7 @@ public final class SystemHandler
         {
             Connection conn = getConnection();
 
-            try
-            {
-                vacuumReadLogs( conn );
-            }
-            finally
-            {
-            }
+            vacuumReadLogs( conn );
         }
         catch ( Exception e )
         {
@@ -385,16 +358,11 @@ public final class SystemHandler
         {
             Connection conn = getConnection();
 
-            try
-            {
-                vacuumBinaries( conn );
-                vacuumContents( conn );
-                vacuumCategories( conn );
-                vacuumArchives( conn );
-            }
-            finally
-            {
-            }
+            vacuumBinaries( conn );
+            vacuumContents( conn );
+            vacuumCategories( conn );
+            vacuumArchives( conn );
+            vacuumBlobStore();
         }
         catch ( Exception e )
         {
@@ -476,5 +444,10 @@ public final class SystemHandler
         {
             close( stmt );
         }
+    }
+
+    private void vacuumBlobStore()
+    {
+        this.garbageCollector.process();
     }
 }

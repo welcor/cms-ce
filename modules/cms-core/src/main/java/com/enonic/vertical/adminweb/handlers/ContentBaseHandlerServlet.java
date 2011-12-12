@@ -4,100 +4,9 @@
  */
 package com.enonic.vertical.adminweb.handlers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.dom.DOMSource;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateMidnight;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import com.google.common.collect.Sets;
-import com.google.common.io.Files;
-
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.io.FileUtil;
-import com.enonic.esl.net.URL;
-import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.util.ArrayUtil;
-import com.enonic.esl.util.DateUtil;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
-import com.enonic.vertical.adminweb.AdminHelper;
-import com.enonic.vertical.adminweb.AdminStore;
-import com.enonic.vertical.adminweb.AssigneeFormModel;
-import com.enonic.vertical.adminweb.AssigneeFormModelFactory;
-import com.enonic.vertical.adminweb.SearchUtility;
-import com.enonic.vertical.adminweb.VerticalAdminException;
-import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.adminweb.wizard.Wizard;
-import com.enonic.vertical.adminweb.wizard.WizardException;
-import com.enonic.vertical.adminweb.wizard.WizardLogger;
-import com.enonic.vertical.engine.AccessRight;
-import com.enonic.vertical.engine.CategoryAccessRight;
-import com.enonic.vertical.engine.ContentAccessRight;
-import com.enonic.vertical.engine.Types;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.criteria.CategoryCriteria;
-
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.content.AssignContentResult;
-import com.enonic.cms.core.content.AssignmentAction;
-import com.enonic.cms.core.content.AssignmentActionResolver;
-import com.enonic.cms.core.content.AssignmentDataParser;
-import com.enonic.cms.core.content.ContentAccessEntity;
-import com.enonic.cms.core.content.ContentAccessException;
-import com.enonic.cms.core.content.ContentAndVersion;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentLocationSpecification;
-import com.enonic.cms.core.content.ContentLocations;
-import com.enonic.cms.core.content.ContentMoveAccessException;
-import com.enonic.cms.core.content.ContentParserService;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.ContentSourceXmlCreator;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.ContentVersionKey;
-import com.enonic.cms.core.content.ContentXMLCreator;
-import com.enonic.cms.core.content.PageCacheInvalidatorForContent;
-import com.enonic.cms.core.content.UnassignContentResult;
-import com.enonic.cms.core.content.UpdateContentResult;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
@@ -106,12 +15,7 @@ import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
-import com.enonic.cms.core.content.command.AssignContentCommand;
-import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.command.SnapshotContentCommand;
-import com.enonic.cms.core.content.command.UnassignContentCommand;
-import com.enonic.cms.core.content.command.UpdateAssignmentCommand;
-import com.enonic.cms.core.content.command.UpdateContentCommand;
+import com.enonic.cms.core.content.command.*;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.mail.AssignmentMailSender;
 import com.enonic.cms.core.content.mail.ImportedContentAssignmentMailTemplate;
@@ -123,6 +27,9 @@ import com.enonic.cms.core.log.Table;
 import com.enonic.cms.core.mail.ApproveAndRejectMailTemplate;
 import com.enonic.cms.core.mail.MailRecipient;
 import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.rendering.RenderedPageResult;
+import com.enonic.cms.core.preview.NoLazyInitializationEnforcerForPreview;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.SecurityService;
@@ -137,19 +44,49 @@ import com.enonic.cms.core.structure.menuitem.MenuItemAccessRightAccumulator;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.core.xslt.XsltProcessor;
-import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorManager;
-import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
-import com.enonic.cms.core.xslt.XsltResource;
+import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
+import com.enonic.cms.core.xslt.*;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.UserDao;
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.io.FileUtil;
+import com.enonic.esl.net.URL;
+import com.enonic.esl.servlet.http.CookieUtil;
+import com.enonic.esl.util.ArrayUtil;
+import com.enonic.esl.util.DateUtil;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.VerticalProperties;
+import com.enonic.vertical.adminweb.*;
+import com.enonic.vertical.adminweb.wizard.Wizard;
+import com.enonic.vertical.adminweb.wizard.WizardException;
+import com.enonic.vertical.adminweb.wizard.WizardLogger;
+import com.enonic.vertical.engine.*;
+import com.enonic.vertical.engine.criteria.CategoryCriteria;
+import com.google.common.collect.Sets;
+import com.google.common.io.Files;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateMidnight;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import com.enonic.cms.core.portal.cache.SiteCachesService;
-import com.enonic.cms.core.preview.NoLazyInitializationEnforcerForPreview;
-
-import com.enonic.cms.core.portal.rendering.RenderedPageResult;
-import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.dom.DOMSource;
+import java.io.*;
+import java.util.*;
 
 /**
  * Base servlet for servlets handling content. Provides common methods.
@@ -1192,7 +1129,7 @@ public class ContentBaseHandlerServlet
             else
             {
                 String message = "Unknown sub-operation for operation report: %t";
-                VerticalAdminLogger.errorAdmin( message, null );
+                VerticalAdminLogger.errorAdmin( message );
             }
         }
         catch ( XsltProcessorException e )
@@ -1315,7 +1252,7 @@ public class ContentBaseHandlerServlet
 
         if ( ( !createContent && versionKey == -1 ) || ( createContent && versionKey != -1 ) )
         {
-            VerticalAdminLogger.error( "Parameter error!", null );
+            VerticalAdminLogger.error( "Parameter error!" );
         }
 
         handlerForm( request, response, session, admin, formItems, user, createContent, unitKey, categoryKey, contentTypeKey, contentKey,
@@ -1362,7 +1299,7 @@ public class ContentBaseHandlerServlet
         if ( !root.hasChildNodes() )
         {
             String message = "Access denied.";
-            VerticalAdminLogger.errorAdmin( message, null );
+            VerticalAdminLogger.errorAdmin( message );
         }
 
         if ( !createContent )

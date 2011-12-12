@@ -1,28 +1,30 @@
 package com.enonic.vertical.adminweb;
 
-import java.util.List;
-
-import org.jdom.Document;
-import org.jdom.Element;
-
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
 import com.enonic.cms.core.structure.DefaultSiteAccumulatedAccessRights;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SiteXmlCreator;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemXMLCreatorSetting;
 import com.enonic.cms.core.structure.menuitem.MenuItemXmlCreator;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+
+import java.util.List;
 
 /**
  * model for edit menu item page
  */
 public class MenuItemFormModel
 {
+
+    private boolean newMenuItem;
+
     private SiteEntity site;
 
     private SiteProperties siteProperties;
@@ -30,6 +32,11 @@ public class MenuItemFormModel
     private DefaultSiteAccumulatedAccessRights userRightsForSite;
 
     private List<MenuItemEntity> selectedMenuItemPath;
+
+    public MenuItemFormModel( MenuItemKey selectedMenuItemKey )
+    {
+        this.newMenuItem = selectedMenuItemKey == null;
+    }
 
     public XMLDocument toXML()
     {
@@ -64,8 +71,8 @@ public class MenuItemFormModel
                 Element currMenuItemEl = menuItemPathXmlCreator.createMenuItemElement( currMenuItem );
                 selectedMenuItemPathEl.addContent( currMenuItemEl );
 
-                // do not add last element - it is self
-                if ( ++i == selectedMenuItemPath.size() - 1 )
+                // do not add last element (it is the selected one, if not new)
+                if ( ( ++i == selectedMenuItemPath.size() - 1 ) && !newMenuItem )
                 {
                     break;
                 }

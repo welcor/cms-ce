@@ -4,11 +4,10 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import java.util.List;
-
+import com.enonic.cms.core.security.user.QualifiedUsername;
 import org.joda.time.DateTime;
 
-import com.enonic.cms.core.security.user.QualifiedUsername;
+import java.util.List;
 
 /**
  * Oct 6, 2010
@@ -26,7 +25,13 @@ public class WindowRenderingTrace
 
     private QualifiedUsername renderer;
 
+    private boolean cacheable = false;
+
     private boolean usedCachedResult = false;
+
+    private long concurrencyBlockStartTime = 0;
+
+    private long concurrencyBlockingTime = 0;
 
     private Traces<DatasourceExecutionTrace> datasourceExecutionTraces = new Traces<DatasourceExecutionTrace>();
 
@@ -80,6 +85,16 @@ public class WindowRenderingTrace
         this.renderer = renderer;
     }
 
+    public boolean isCacheable()
+    {
+        return cacheable;
+    }
+
+    void setCacheable( boolean cacheable )
+    {
+        this.cacheable = cacheable;
+    }
+
     public boolean isUsedCachedResult()
     {
         return usedCachedResult;
@@ -88,6 +103,26 @@ public class WindowRenderingTrace
     public void setUsedCachedResult( boolean value )
     {
         this.usedCachedResult = value;
+    }
+
+    public boolean isConcurrencyBlocked()
+    {
+        return concurrencyBlockingTime > CONCURRENCY_BLOCK_THRESHOLD;
+    }
+
+    public long getConcurrencyBlockingTime()
+    {
+        return isConcurrencyBlocked() ? concurrencyBlockingTime : 0;
+    }
+
+    void startConcurrencyBlockTimer()
+    {
+        concurrencyBlockStartTime = System.currentTimeMillis();
+    }
+
+    void stopConcurrencyBlockTimer()
+    {
+        this.concurrencyBlockingTime = System.currentTimeMillis() - concurrencyBlockStartTime;
     }
 
     public void addDatasourceExecutionTrace( DatasourceExecutionTrace trace )

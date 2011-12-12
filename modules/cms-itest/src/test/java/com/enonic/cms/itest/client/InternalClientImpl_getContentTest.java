@@ -4,27 +4,10 @@
  */
 package com.enonic.cms.itest.client;
 
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
 import com.enonic.cms.api.client.model.GetContentParams;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.client.InternalClientImpl;
-import com.enonic.cms.core.content.ContentAndVersion;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -37,21 +20,27 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.preview.ContentPreviewContext;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.preview.PreviewService;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.UserDao;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-import static com.enonic.cms.itest.util.AssertTool.assertSingleXPathValueEquals;
-import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
-import static com.enonic.cms.itest.util.AssertTool.assertXPathNotExist;
-import static org.junit.Assert.*;
+import static com.enonic.cms.itest.util.AssertTool.*;
+import static org.junit.Assert.assertEquals;
 
 public class InternalClientImpl_getContentTest
     extends AbstractSpringTest
@@ -60,11 +49,9 @@ public class InternalClientImpl_getContentTest
 
     private static final DateTime DATE_TIME_2010_07_01_12_00_00_0 = new DateTime( 2010, 7, 1, 12, 0, 0, 0 );
 
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -95,8 +82,8 @@ public class InternalClientImpl_getContentTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -146,7 +133,7 @@ public class InternalClientImpl_getContentTest
             factory.createCategoryAccessForUser( "MyRelatedCategory", "content-creator", "read, create, approve, admin_browse" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyRelatedCategory", "content-querier", "read, admin_browse" ) );
 
-        SecurityHolder.setRunAsUser( fixture.findUserByName( "content-querier" ).getKey() );
+        PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "content-querier" ).getKey() );
 
         internalClient = new InternalClientImpl();
         internalClient.setSecurityService( securityService );

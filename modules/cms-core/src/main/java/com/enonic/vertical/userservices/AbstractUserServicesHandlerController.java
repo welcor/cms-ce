@@ -4,67 +4,52 @@
  */
 package com.enonic.vertical.userservices;
 
+import com.enonic.cms.core.Attribute;
+import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.SitePathResolver;
+import com.enonic.cms.core.captcha.CaptchaService;
+import com.enonic.cms.core.content.ContentAccessException;
+import com.enonic.cms.core.content.ContentParserService;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.category.CategoryAccessException;
+import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.portal.SiteRedirectHelper;
+import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.httpservices.UserServicesException;
+import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.security.userstore.UserStoreService;
+import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.structure.SiteContext;
+import com.enonic.cms.core.structure.SiteService;
+import com.enonic.cms.framework.util.UrlPathDecoder;
+import com.enonic.cms.store.dao.CategoryDao;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.vertical.VerticalProperties;
+import com.enonic.vertical.adminweb.VerticalAdminLogger;
+import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+import org.apache.commons.fileupload.*;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.enonic.cms.core.structure.SiteContext;
-import com.enonic.cms.core.SitePathResolver;
-import com.enonic.cms.core.content.ContentParserService;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.mail.SendMailService;
-import com.enonic.cms.core.portal.SiteRedirectHelper;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
-import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.core.structure.SiteService;
-import com.enonic.cms.store.dao.CategoryDao;
-import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.SiteDao;
-import com.enonic.vertical.VerticalProperties;
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.engine.VerticalCreateException;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.VerticalRemoveException;
-import com.enonic.vertical.engine.VerticalSecurityException;
-
-import com.enonic.cms.framework.util.UrlPathDecoder;
-
-import com.enonic.cms.core.captcha.CaptchaService;
-import com.enonic.cms.core.service.UserServicesService;
-
-import com.enonic.cms.core.security.UserStoreParser;
-
-import com.enonic.cms.core.Attribute;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.content.ContentAccessException;
-import com.enonic.cms.core.content.category.CategoryAccessException;
-import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.httpservices.UserServicesException;
-import org.springframework.web.servlet.mvc.Controller;
+import java.util.*;
 
 public abstract class AbstractUserServicesHandlerController
     implements Controller
@@ -125,17 +110,10 @@ public abstract class AbstractUserServicesHandlerController
 
     private UserServicesService userServicesService;
 
-    protected UserStoreParser userStoreParser;
-
     public AbstractUserServicesHandlerController()
     {
         fileUpload = new DiskFileUpload();
         fileUpload.setHeaderEncoding( "UTF-8" );
-    }
-
-    public void setUserStoreParser( UserStoreParser userStoreParser )
-    {
-        this.userStoreParser = userStoreParser;
     }
 
     public void setUserServicesRedirectHelper( UserServicesRedirectUrlResolver value )
@@ -223,7 +201,7 @@ public abstract class AbstractUserServicesHandlerController
         throws VerticalUserServicesException, VerticalCreateException, VerticalSecurityException, RemoteException
     {
         String message = "OperationWrapper CREATE not implemented.";
-        VerticalUserServicesLogger.error(message, null );
+        VerticalUserServicesLogger.error( message );
     }
 
     protected void handlerRemove( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
@@ -231,7 +209,7 @@ public abstract class AbstractUserServicesHandlerController
         throws VerticalUserServicesException, VerticalRemoveException, VerticalSecurityException, RemoteException
     {
         String message = "OperationWrapper REMOVE not implemented.";
-        VerticalUserServicesLogger.error(message, null );
+        VerticalUserServicesLogger.error( message );
     }
 
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
@@ -244,14 +222,14 @@ public abstract class AbstractUserServicesHandlerController
         {
             operation = operation.toUpperCase();
         }
-        VerticalUserServicesLogger.error(message, operation, null );
+        VerticalUserServicesLogger.error( message, operation, null );
     }
 
     protected void handlerUpdate( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey )
     {
         String message = "OperationWrapper UPDATE not implemented.";
-        VerticalUserServicesLogger.error(message, null );
+        VerticalUserServicesLogger.error( message );
     }
 
     private UserServicesService lookupUserServices()
@@ -385,12 +363,12 @@ public abstract class AbstractUserServicesHandlerController
         catch ( FileUploadException fue )
         {
             String message = "Error occured with file upload: %t";
-            VerticalAdminLogger.error(message, fue );
+            VerticalAdminLogger.error( message, fue );
         }
         catch ( UnsupportedEncodingException uee )
         {
             String message = "Character encoding not supported: %t";
-            VerticalAdminLogger.error(message, uee );
+            VerticalAdminLogger.error( message, uee );
         }
 
         // Add parameters from url
@@ -448,7 +426,7 @@ public abstract class AbstractUserServicesHandlerController
         {
             String message = "Access to http service '" + handler + "." + operation + "' on site " + siteKey +
                 " is not allowed by configuration. Check the settings in site-" + siteKey + ".properties";
-            VerticalUserServicesLogger.warn(message, null );
+            VerticalUserServicesLogger.warn( message );
             String httpErrorMsg = "Access denied to http service '" + handler + "." + operation + "' on site " + siteKey;
             response.sendError( HttpServletResponse.SC_FORBIDDEN, httpErrorMsg );
             return null;
@@ -470,7 +448,7 @@ public abstract class AbstractUserServicesHandlerController
                     }
                     vsession.setAttribute( "error_" + handler + "_" + operation,
                                            captchaService.buildErrorXMLForSessionContext( formItems ).getAsDOMDocument() );
-                    redirectToErrorPage( request, response, formItems, ERR_INVALID_CAPTCHA, null );
+                    redirectToErrorPage( request, response, formItems, ERR_INVALID_CAPTCHA );
                     return null;
                 }
             }
@@ -495,20 +473,20 @@ public abstract class AbstractUserServicesHandlerController
         catch ( VerticalSecurityException vse )
         {
             String message = "No rights to handle request: %t";
-            VerticalUserServicesLogger.warn(message, vse );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION, null );
+            VerticalUserServicesLogger.warn( message, vse );
+            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
         }
         catch ( ContentAccessException vse )
         {
             String message = "No rights to handle request: %t";
-            VerticalUserServicesLogger.warn(message, vse );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION, null );
+            VerticalUserServicesLogger.warn( message, vse );
+            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
         }
         catch ( CategoryAccessException vse )
         {
             String message = "No rights to handle request: %t";
-            VerticalUserServicesLogger.warn(message, vse );
-            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION, null );
+            VerticalUserServicesLogger.warn( message, vse );
+            redirectToErrorPage( request, response, formItems, ERR_SECURITY_EXCEPTION );
         }
         catch ( UserServicesException use )
         {
@@ -517,8 +495,8 @@ public abstract class AbstractUserServicesHandlerController
         catch ( Exception e )
         {
             String message = "Failed to handle request: %t";
-            VerticalUserServicesLogger.error(message, e );
-            redirectToErrorPage( request, response, formItems, ERR_OPERATION_BACKEND, null );
+            VerticalUserServicesLogger.error( message, e );
+            redirectToErrorPage( request, response, formItems, ERR_OPERATION_BACKEND );
         }
         return null;
     }
@@ -551,17 +529,16 @@ public abstract class AbstractUserServicesHandlerController
         return url.matches( "^[a-z]{3,6}://.+" );
     }
 
-    protected void redirectToErrorPage( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, int code,
-                                        MultiValueMap queryParams )
+    protected void redirectToErrorPage( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, int code )
     {
-        redirectToErrorPage(request, response, formItems, new int[]{code}, queryParams);
+        redirectToErrorPage( request, response, formItems, new int[]{code}, null );
     }
 
     protected void redirectToErrorPage( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, int[] codes,
                                         MultiValueMap queryParams )
     {
         String url = userServicesRedirectUrlResolver.resolveRedirectUrlToErrorPage( request, formItems, codes, queryParams );
-        siteRedirectHelper.sendRedirect(request, response, url);
+        siteRedirectHelper.sendRedirect( request, response, url );
     }
 
     protected static String createMissingParametersMessage( String operation, List<String> missingParameters )

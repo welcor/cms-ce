@@ -4,17 +4,15 @@
  */
 package com.enonic.cms.core.content.contenttype;
 
-import java.util.List;
-
+import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import org.jdom.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -181,6 +179,77 @@ public class ContentTypeImportConfigParserTest
             ContentTypeImportConfigParser.parseAllImports( ctyFormConfig, xmlStringToRootElement( xml.toString() ) );
         CtyImportConfig importConfig = ctyImportConfigs.get( 0 );
         assertEquals( CtyImportUpdateStrategyConfig.UPDATE_AND_APPROVE_CONTENT, importConfig.getUpdateStrategy() );
+    }
+
+    @Test
+    public void default_value_for_update_content_name_is_false()
+    {
+        StringBuffer xml = new StringBuffer();
+        xml.append( "<config>" );
+        xml.append( "<imports>" );
+        xml.append( "<import" );
+        xml.append( " name='import-test' mode='csv' sync='employee-no'" );
+        xml.append( ">" );
+        xml.append( "<mapping src='@id' dest='employee-no'/>" );
+        xml.append( "<mapping src='name' dest='name'/>" );
+        xml.append( "<mapping src='birth' dest='date-of-birth'/>" );
+        xml.append( "</import>" );
+        xml.append( "</imports>" );
+        xml.append( "</config>" );
+
+        List<CtyImportConfig> ctyImportConfigs =
+            ContentTypeImportConfigParser.parseAllImports( ctyFormConfig, xmlStringToRootElement( xml.toString() ) );
+        CtyImportConfig importConfig = ctyImportConfigs.get( 0 );
+        assertEquals( false, importConfig.getUpdateContentName() );
+    }
+
+    @Test
+    public void getUpdateContentName_returns_true_when_setting_is_true()
+    {
+        StringBuffer xml = new StringBuffer();
+        xml.append( "<config>" );
+        xml.append( "<imports>" );
+        xml.append( "<import" );
+        xml.append( " name='import-test' mode='csv' sync='employee-no' update-content-name='true'" );
+        xml.append( ">" );
+        xml.append( "<mapping src='@id' dest='employee-no'/>" );
+        xml.append( "<mapping src='name' dest='name'/>" );
+        xml.append( "<mapping src='birth' dest='date-of-birth'/>" );
+        xml.append( "</import>" );
+        xml.append( "</imports>" );
+        xml.append( "</config>" );
+
+        List<CtyImportConfig> ctyImportConfigs =
+            ContentTypeImportConfigParser.parseAllImports( ctyFormConfig, xmlStringToRootElement( xml.toString() ) );
+        CtyImportConfig importConfig = ctyImportConfigs.get( 0 );
+        assertEquals( true, importConfig.getUpdateContentName() );
+    }
+
+    @Test
+    public void exception_is_thrown_when_update_content_name_setting_is_set_to_other_than_true_or_false()
+    {
+        StringBuffer xml = new StringBuffer();
+        xml.append( "<config>" );
+        xml.append( "<imports>" );
+        xml.append( "<import" );
+        xml.append( " name='import-test' mode='csv' sync='employee-no' update-content-name='fallos'" );
+        xml.append( ">" );
+        xml.append( "<mapping src='@id' dest='employee-no'/>" );
+        xml.append( "<mapping src='name' dest='name'/>" );
+        xml.append( "<mapping src='birth' dest='date-of-birth'/>" );
+        xml.append( "</import>" );
+        xml.append( "</imports>" );
+        xml.append( "</config>" );
+
+        try
+        {
+            ContentTypeImportConfigParser.parseAllImports( ctyFormConfig, xmlStringToRootElement( xml.toString() ) );
+            fail( "Expected exception" );
+        }
+        catch ( Exception e )
+        {
+            assertTrue( e instanceof InvalidImportConfigException );
+        }
     }
 
     @Test

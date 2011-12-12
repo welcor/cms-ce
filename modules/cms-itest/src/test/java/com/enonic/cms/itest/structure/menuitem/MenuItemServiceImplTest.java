@@ -18,7 +18,6 @@ import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.util.*;
 
@@ -28,13 +27,11 @@ public class MenuItemServiceImplTest
     extends AbstractSpringTest
 {
     @Autowired
-    private HibernateTemplate hibernateTemplate;
-
-    @Autowired
     private MenuItemService menuItemService;
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     private int menuItemOrderCount = 0;
@@ -42,8 +39,8 @@ public class MenuItemServiceImplTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();

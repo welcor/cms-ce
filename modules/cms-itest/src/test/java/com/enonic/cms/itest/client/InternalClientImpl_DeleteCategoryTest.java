@@ -12,7 +12,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.UnitEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -43,6 +43,7 @@ public class InternalClientImpl_DeleteCategoryTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     private byte[] dummyBinary = new byte[]{1, 2, 3};
@@ -51,8 +52,8 @@ public class InternalClientImpl_DeleteCategoryTest
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 
@@ -589,7 +590,7 @@ public class InternalClientImpl_DeleteCategoryTest
 
     private void loginPortalUser( String userName )
     {
-        SecurityHolder.setUser( fixture.findUserByName( userName ).getKey() );
-        SecurityHolder.setRunAsUser( fixture.findUserByName( userName ).getKey() );
+        PortalSecurityHolder.setUser( fixture.findUserByName( userName ).getKey() );
+        PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( userName ).getKey() );
     }
 }

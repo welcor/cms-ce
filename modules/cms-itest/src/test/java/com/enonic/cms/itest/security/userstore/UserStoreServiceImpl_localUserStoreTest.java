@@ -16,18 +16,15 @@ import com.enonic.cms.itest.util.DomainFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import static org.junit.Assert.assertEquals;
 
 public class UserStoreServiceImpl_localUserStoreTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -37,8 +34,8 @@ public class UserStoreServiceImpl_localUserStoreTest
     public void setUp()
         throws Exception
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 

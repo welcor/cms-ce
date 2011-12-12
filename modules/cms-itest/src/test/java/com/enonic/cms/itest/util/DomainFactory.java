@@ -4,33 +4,15 @@
  */
 package com.enonic.cms.itest.util;
 
-import java.util.Date;
-
-import org.jdom.Document;
-import org.joda.time.DateTime;
-
-import com.enonic.cms.core.language.LanguageEntity;
-import com.enonic.cms.core.language.LanguageKey;
-import com.enonic.cms.core.content.ContentAccessEntity;
-import com.enonic.cms.core.content.ContentAccessType;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerKey;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.UnitEntity;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataKey;
-import com.enonic.cms.core.content.category.CategoryAccessEntity;
-import com.enonic.cms.core.content.category.CategoryAccessKey;
-import com.enonic.cms.core.content.category.CategoryAccessType;
-import com.enonic.cms.core.content.category.CategoryEntity;
-import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.*;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.language.LanguageEntity;
+import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
@@ -42,18 +24,16 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
-import com.enonic.cms.core.structure.menuitem.ContentHomeKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
-import com.enonic.cms.core.structure.menuitem.MenuItemAccessKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemAccessType;
-import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.core.structure.menuitem.MenuItemType;
+import com.enonic.cms.core.structure.menuitem.*;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.itest.MockKeyService;
-
 import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.itest.MockKeyService;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
  * Nov 26, 2009
@@ -62,6 +42,7 @@ public class DomainFactory
 {
     private MockKeyService mockKeyService = new MockKeyService();
 
+    @Autowired
     private DomainFixture fixture;
 
     public DomainFactory( DomainFixture fixture )
@@ -296,6 +277,7 @@ public class DomainFactory
 
         CategoryAccessEntity access = new CategoryAccessEntity();
         access.setKey( new CategoryAccessKey( category.getKey(), group.getGroupKey() ) );
+        access.setGroup( group );
         access.setReadAccess( accesses.contains( CategoryAccessType.READ.toString().toLowerCase() ) );
         access.setAdminAccess( accesses.contains( CategoryAccessType.ADMINISTRATE.toString().toLowerCase() ) );
         access.setCreateAccess( accesses.contains( CategoryAccessType.CREATE.toString().toLowerCase() ) );

@@ -18,7 +18,7 @@ import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -28,6 +28,7 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
+import com.enonic.cms.store.dao.GroupDao;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.joda.time.DateTime;
@@ -35,7 +36,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.io.IOException;
 import java.util.Date;
@@ -47,10 +47,11 @@ public class InternalClientImpl_AssignContentTest
     extends AbstractSpringTest
 {
     @Autowired
-    private HibernateTemplate hibernateTemplate;
+    private GroupDao groupDao;
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -71,8 +72,7 @@ public class InternalClientImpl_AssignContentTest
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 
@@ -85,7 +85,7 @@ public class InternalClientImpl_AssignContentTest
         saveNeededEntities();
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
     }
 
@@ -119,7 +119,7 @@ public class InternalClientImpl_AssignContentTest
         newContentData.add( new TextInput( "myTitle", "changedtitle" ) );
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
         UpdateContentParams params = new UpdateContentParams();
         params.contentKey = contentKey.toInt();
@@ -157,7 +157,7 @@ public class InternalClientImpl_AssignContentTest
         int contentKey = internalClient.createContent( params );
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
         AssignContentParams assignContentParams = new AssignContentParams();
         assignContentParams.assignee = createClientUserQualifiedName( runningUser );
@@ -238,8 +238,7 @@ public class InternalClientImpl_AssignContentTest
 
         ContentKey contentKey = contentService.createContent( createContentCommand );
 
-        hibernateTemplate.flush();
-        hibernateTemplate.clear();
+        fixture.flushAndClearHibernateSesssion();
 
         return contentKey;
     }

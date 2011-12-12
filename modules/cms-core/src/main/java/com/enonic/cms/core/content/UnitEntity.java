@@ -4,15 +4,15 @@
  */
 package com.enonic.cms.core.content;
 
+import com.enonic.cms.core.content.category.UnitKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.language.LanguageEntity;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import com.enonic.cms.core.language.LanguageEntity;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 
 public class UnitEntity
     implements Serializable
@@ -36,6 +36,11 @@ public class UnitEntity
     public int getKey()
     {
         return key;
+    }
+
+    public UnitKey getUnitKey()
+    {
+        return new UnitKey( key );
     }
 
     public String getName()

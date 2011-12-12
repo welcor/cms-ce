@@ -4,64 +4,14 @@
  */
 package com.enonic.cms.core.client;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.enonic.esl.util.Base64Util;
-
-import com.enonic.cms.framework.blob.BlobRecord;
-import com.enonic.cms.core.time.TimeService;
-
 import com.enonic.cms.api.client.ClientException;
-import com.enonic.cms.api.client.model.AssignContentParams;
-import com.enonic.cms.api.client.model.ContentDataInputUpdateStrategy;
-import com.enonic.cms.api.client.model.CreateCategoryParams;
-import com.enonic.cms.api.client.model.CreateContentParams;
-import com.enonic.cms.api.client.model.CreateFileContentParams;
-import com.enonic.cms.api.client.model.CreateImageContentParams;
-import com.enonic.cms.api.client.model.DeleteContentParams;
-import com.enonic.cms.api.client.model.GetBinaryParams;
-import com.enonic.cms.api.client.model.GetContentBinaryParams;
-import com.enonic.cms.api.client.model.SnapshotContentParams;
-import com.enonic.cms.api.client.model.UnassignContentParams;
-import com.enonic.cms.api.client.model.UpdateContentParams;
-import com.enonic.cms.api.client.model.UpdateFileContentParams;
-import com.enonic.cms.core.content.ContentAccessType;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentLocation;
-import com.enonic.cms.core.content.ContentLocationSpecification;
-import com.enonic.cms.core.content.ContentLocations;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.ContentVersionKey;
-import com.enonic.cms.core.content.PageCacheInvalidatorForContent;
-import com.enonic.cms.core.content.UpdateContentResult;
+import com.enonic.cms.api.client.model.*;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
-import com.enonic.cms.core.content.binary.AttachmentNotFoundException;
-import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
-import com.enonic.cms.core.content.binary.BinaryDataEntity;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
-import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
-import com.enonic.cms.core.content.category.CategoryAccessType;
-import com.enonic.cms.core.content.category.CategoryEntity;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.category.CategoryService;
-import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
+import com.enonic.cms.core.content.binary.*;
+import com.enonic.cms.core.content.category.*;
 import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
-import com.enonic.cms.core.content.command.AssignContentCommand;
-import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.command.SnapshotContentCommand;
-import com.enonic.cms.core.content.command.UnassignContentCommand;
-import com.enonic.cms.core.content.command.UpdateContentCommand;
+import com.enonic.cms.core.content.command.*;
 import com.enonic.cms.core.content.command.UpdateContentCommand.UpdateStrategy;
 import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -78,20 +28,30 @@ import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.UserParser;
+import com.enonic.cms.core.security.UserStoreParser;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.store.dao.BinaryDataDao;
-import com.enonic.cms.store.dao.CategoryDao;
-import com.enonic.cms.store.dao.ContentBinaryDataDao;
-import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.ContentTypeDao;
-import com.enonic.cms.store.dao.ContentVersionDao;
-import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.core.security.userstore.UserStoreService;
+import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.framework.blob.BlobRecord;
+import com.enonic.cms.store.dao.*;
+import com.enonic.esl.util.Base64Util;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class InternalClientContentService
 {
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private UserStoreService userStoreService;
 
     @Autowired
     private ContentService contentService;
@@ -118,6 +78,12 @@ public class InternalClientContentService
     private GroupDao groupDao;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private UserStoreDao userStoreDao;
+
+    @Autowired
     private PreviewService previewService;
 
     @Autowired
@@ -131,8 +97,6 @@ public class InternalClientContentService
 
     @Autowired
     private CategoryService categoryService;
-
-    private UserParser userParser;
 
     public int createCategory( CreateCategoryParams params )
     {
@@ -238,8 +202,7 @@ public class InternalClientContentService
         command.setContentData( contentdata );
         command.setContentName( PrettyPathNameCreator.generatePrettyPathName( contentdata.getTitle() ) );
 
-        final List<BinaryDataAndBinary> binaryDatas = BinaryDataAndBinary.convertFromBinaryInputs(
-                params.contentData.getBinaryInputs() );
+        final List<BinaryDataAndBinary> binaryDatas = BinaryDataAndBinary.convertFromBinaryInputs( params.contentData.getBinaryInputs() );
 
         command.setBinaryDatas( binaryDatas );
         command.setUseCommandsBinaryDataToAdd( true );
@@ -405,6 +368,7 @@ public class InternalClientContentService
     public void assignContent( AssignContentParams params )
     {
         final UserEntity assigner = securityService.getRunAsUser();
+        final UserParser userParser = new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) );
         final UserEntity assignee = userParser.parseUser( params.assignee );
         final ContentKey contentToAssignOn = new ContentKey( params.contentKey );
 
@@ -878,11 +842,4 @@ public class InternalClientContentService
     {
         this.siteCachesService = value;
     }
-
-    public void setUserParser( UserParser userParser )
-    {
-        this.userParser = userParser;
-    }
-
-
 }

@@ -17,7 +17,7 @@ import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyFileContentData;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.io.IOException;
 import java.util.Date;
@@ -43,11 +42,9 @@ import static org.junit.Assert.*;
 public class InternalClientImpl_UpdateFileContentTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -66,8 +63,8 @@ public class InternalClientImpl_UpdateFileContentTest
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 
@@ -93,7 +90,7 @@ public class InternalClientImpl_UpdateFileContentTest
     public void testUpdateCurrentVersion()
     {
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
         int contentKey = storeNewFileContent();
 
@@ -141,8 +138,8 @@ public class InternalClientImpl_UpdateFileContentTest
         AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[1]", contentDataXml, "keyworda" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[2]", contentDataXml, "keywordb" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/filesize", contentDataXml, String.valueOf( dummyBinary2.length ) );
-        AssertTool.assertSingleXPathValueEquals("/contentdata/binarydata/@key", contentDataXml,
-                binaryDataResolvedFromContentBinaryData.getBinaryDataKey().toString());
+        AssertTool.assertSingleXPathValueEquals( "/contentdata/binarydata/@key", contentDataXml,
+                                                 binaryDataResolvedFromContentBinaryData.getBinaryDataKey().toString() );
 
     }
 
@@ -162,12 +159,12 @@ public class InternalClientImpl_UpdateFileContentTest
         params.fileContentData = fileContentData;
         int contentKey = internalClient.createFileContent( params );
 
-        hibernateTemplate.clear();
+        fixture.flushAndClearHibernateSesssion();
 
         ContentEntity persistedContent = contentDao.findByKey( new ContentKey( contentKey ) );
         assertNotNull( persistedContent );
 
-        hibernateTemplate.clear();
+        fixture.flushAndClearHibernateSesssion();
 
         return contentKey;
     }

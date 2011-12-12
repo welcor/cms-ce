@@ -4,16 +4,14 @@
  */
 package com.enonic.cms.core.user.field;
 
+import com.enonic.cms.api.client.model.user.Gender;
+import com.enonic.cms.core.resolver.locale.LocaleParser;
+import org.apache.commons.lang.StringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.enonic.cms.api.client.model.user.Gender;
-
-import com.enonic.cms.core.resolver.locale.LocaleParser;
 
 public final class UserFieldHelper
 {
@@ -61,7 +59,7 @@ public final class UserFieldHelper
 
         if ( value instanceof Date )
         {
-            return formatDate( (Date) value );
+            return value == null ? null : this.dateFormat.format( value );
         }
 
         if ( value instanceof Boolean )

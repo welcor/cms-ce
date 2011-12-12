@@ -18,7 +18,6 @@ import com.enonic.cms.store.dao.GroupEntityDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,23 +26,18 @@ public class ContentAccessResolverTest
     extends AbstractSpringTest
 {
     @Autowired
-    private HibernateTemplate hibernateTemplate;
-
-    @Autowired
     private GroupEntityDao groupEntityDao;
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Before
     public void before()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
         fixture.initSystemData();
-
-        groupEntityDao.invalidateCachedKeys();
     }
 
     @Test

@@ -4,17 +4,6 @@
  */
 package com.enonic.cms.itest.datasources;
 
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
 import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
@@ -32,22 +21,28 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DataSourceServiceImpl_getContentByCategory_queryTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -65,8 +60,8 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -147,8 +142,8 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
                                                     childrenLevel, parentLevel );
 
         // verify
-        AssertTool.assertXPathEquals("/contents/content/@key", xmlDocResult.getAsJDOMDocument(),
-                new String[]{expectedContentKey.toString()});
+        AssertTool.assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(),
+                                      new String[]{expectedContentKey.toString()} );
     }
 
     private CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus,

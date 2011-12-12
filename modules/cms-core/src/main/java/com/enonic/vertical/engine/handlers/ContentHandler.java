@@ -4,23 +4,22 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.util.*;
-
+import com.enonic.cms.core.CalendarUtil;
 import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.language.LanguageKey;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.UserNameXmlCreator;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.framework.util.TIntArrayList;
+import com.enonic.cms.framework.util.TIntObjectHashMap;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.store.dao.ContentHandlerDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
+import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.sql.model.Table;
 import com.enonic.esl.util.ArrayUtil;
@@ -30,29 +29,19 @@ import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.VerticalRemoveException;
 import com.enonic.vertical.engine.XDG;
-import com.enonic.vertical.engine.dbmodel.ContentPubKeyView;
-import com.enonic.vertical.engine.dbmodel.ContentPubKeysView;
-import com.enonic.vertical.engine.dbmodel.ContentPublishedView;
-import com.enonic.vertical.engine.dbmodel.ContentVersionView;
-import com.enonic.vertical.engine.dbmodel.ContentView;
+import com.enonic.vertical.engine.dbmodel.*;
 import com.enonic.vertical.engine.processors.ContentTypeProcessor;
 import com.enonic.vertical.engine.processors.ElementProcessor;
 import com.enonic.vertical.engine.processors.VersionKeyContentMapProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.cms.framework.util.TIntObjectHashMap;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.UserNameXmlCreator;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.store.dao.ContentTypeDao;
+import java.io.InputStream;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 public final class ContentHandler
     extends BaseHandler
@@ -116,7 +105,7 @@ public final class ContentHandler
         }
         CommonHandler commonHandler = getCommonHandler();
         StringBuffer sql =
-            XDG.generateSelectWhereInSQL( db.tContent, db.tContent.con_cat_lKey, true, db.tContent.con_lKey, contentKeys.length );
+            XDG.generateSelectWhereInSQL( db.tContent, db.tContent.con_cat_lKey, db.tContent.con_lKey, contentKeys.length );
         return commonHandler.getIntArray( sql.toString(), contentKeys );
     }
 
@@ -139,19 +128,19 @@ public final class ContentHandler
     public boolean contentExists( CategoryKey categoryKey, String contentTitle )
     {
         ContentView contentView = ContentView.getInstance();
-        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey.getCountColumn(), false, (Column[]) null );
+        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey.getCountColumn(), (Column[]) null );
         XDG.appendWhereSQL( sql, contentView.cat_lKey, XDG.OPERATOR_EQUAL, categoryKey.toInt() );
-        XDG.appendWhereSQL( sql, contentView.cov_sTitle, XDG.OPERATOR_EQUAL, contentTitle );
+        XDG.appendWhereSQL( sql, contentView.cov_sTitle, contentTitle );
         CommonHandler commonHandler = getCommonHandler();
-        return commonHandler.getBoolean( sql.toString(), null );
+        return commonHandler.getBoolean( sql.toString() );
     }
 
     public int getContentKey( CategoryKey categoryKey, String contentTitle )
     {
         ContentView contentView = ContentView.getInstance();
-        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey, false, (Column[]) null );
+        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey, (Column[]) null );
         XDG.appendWhereSQL( sql, contentView.cat_lKey, XDG.OPERATOR_EQUAL, categoryKey.toInt() );
-        XDG.appendWhereSQL( sql, contentView.cov_sTitle, XDG.OPERATOR_EQUAL );
+        XDG.appendWhereSQL( sql, contentView.cov_sTitle );
         sql.append( " ?" );
         CommonHandler commonHandler = getCommonHandler();
         return commonHandler.getInt( sql.toString(), contentTitle );
@@ -169,14 +158,14 @@ public final class ContentHandler
     {
         ContentView contentView = ContentView.getInstance();
         CommonHandler commonHandler = getCommonHandler();
-        return commonHandler.getTimestamp( contentView, contentView.con_dtePublishFrom, false, contentView.con_lKey, contentKey );
+        return commonHandler.getTimestamp( contentView, contentView.con_dtePublishFrom, contentView.con_lKey, contentKey );
     }
 
     public Date getPublishToTimestamp( int contentKey )
     {
         ContentView contentView = ContentView.getInstance();
         CommonHandler commonHandler = getCommonHandler();
-        return commonHandler.getTimestamp( contentView, contentView.con_dtePublishTo, false, contentView.con_lKey, contentKey );
+        return commonHandler.getTimestamp( contentView, contentView.con_dtePublishTo, contentView.con_lKey, contentKey );
     }
 
 
@@ -948,7 +937,7 @@ public final class ContentHandler
             Document doc = relatedcontentkeysElem.getOwnerDocument();
 
             Element relatedcontentkey = XMLTool.createElement( doc, relatedcontentkeysElem, "relatedcontentkey" );
-            if ( parentKeys.contains( parentVersionKey ) == false )
+            if ( !parentKeys.contains( parentVersionKey ) )
             {
                 parentKeys.add( parentVersionKey );
             }
@@ -1125,7 +1114,7 @@ public final class ContentHandler
 
     private int getContentHandlerKeyByHandlerClass( String handlerClass )
     {
-        StringBuffer sql = new StringBuffer( HAN_SELECT_KEY );
+        StringBuilder sql = new StringBuilder( HAN_SELECT_KEY );
         sql.append( " WHERE" );
         sql.append( HAN_WHERE_CLAUSE_CLASS );
 
@@ -1408,7 +1397,7 @@ public final class ContentHandler
             preparedStmt.setInt( 1, versionKey );
             resultSet = preparedStmt.executeQuery();
 
-            for ( int paramIndex = 1; resultSet.next(); paramIndex++ )
+            while (resultSet.next())
             {
                 Element elem = XMLTool.createElement( doc, root, "contenttitle" );
                 int contentKey = resultSet.getInt( "con_lKey" );
@@ -1519,7 +1508,7 @@ public final class ContentHandler
         Column[] selectColumns =
             {db.tBinaryData.bda_lKey, db.tBinaryData.bda_sFileName, db.tBinaryData.bda_lFileSize, db.tContentBinaryData.cbd_sLabel,
                 db.tContentBinaryData.cbd_cov_lKey};
-        StringBuffer sql = XDG.generateFKJoinSQL( cbd, bd, selectColumns, null );
+        StringBuffer sql = XDG.generateFKJoinSQL( cbd, bd, selectColumns );
         XDG.appendWhereInSQL( sql, db.tContentBinaryData.cbd_cov_lKey, versionKeyContentMap.keys().length );
 
         Object[][] data = getCommonHandler().getObjectArray( sql.toString(), versionKeyContentMap.keys() );
@@ -1552,7 +1541,7 @@ public final class ContentHandler
         ContentVersionView versionView = ContentVersionView.getInstance();
         StringBuffer sql = XDG.generateSelectSQL( versionView, null, false, versionView.cov_lKey );
         int contentKey = getContentKeyByVersionKey( versionKey );
-        getSecurityHandler().appendContentSQL( user, sql, false );
+        getSecurityHandler().appendContentSQL( user, sql );
 
         ElementProcessor sectionNamesProcessor = new ElementProcessor()
         {
@@ -1635,7 +1624,7 @@ public final class ContentHandler
         // Funker denne?
         StringBuffer sql = XDG.generateSelectSQL( db.tContentType, db.tContentType.cty_lKey, true, (Column) null );
         XDG.appendJoinSQL( sql, db.tContentType.cty_han_lKey );
-        XDG.appendWhereSQL( sql, db.tContentHandler.han_sClass, XDG.OPERATOR_EQUAL, className );
+        XDG.appendWhereSQL( sql, db.tContentHandler.han_sClass, className );
         return getCommonHandler().getIntArray( sql.toString(), (int[]) null );
     }
 
@@ -1643,7 +1632,7 @@ public final class ContentHandler
     {
         ContentVersionView versionView = ContentVersionView.getInstance();
         Column[] whereColumns = {versionView.cov_lKey, versionView.cov_lStatus};
-        StringBuffer sql = XDG.generateSelectSQL( versionView, versionView.cov_lKey, false, whereColumns );
+        StringBuffer sql = XDG.generateSelectSQL( versionView, versionView.cov_lKey, whereColumns );
         CommonHandler commonHandler = getCommonHandler();
         return commonHandler.getInt( sql.toString(), new int[]{versionKey, 2} ) >= 0;
     }
@@ -1682,7 +1671,7 @@ public final class ContentHandler
     public int getContentTypeKeyByName( String name )
     {
         StringBuffer sql = XDG.generateSelectSQL( db.tContentType, db.tContentType.cty_lKey, false, (Column) null );
-        XDG.appendWhereSQL( sql, db.tContentType.cty_sName, XDG.OPERATOR_EQUAL, name );
+        XDG.appendWhereSQL( sql, db.tContentType.cty_sName, name );
         return getCommonHandler().getInt( sql.toString(), (Object[]) null );
     }
 

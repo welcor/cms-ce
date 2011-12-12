@@ -4,23 +4,21 @@
  */
 package com.enonic.vertical.adminweb.handlers;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.w3c.dom.Document;
-
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.service.AdminService;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentXMLBuildersSpringManagedBeansBridge;
 import com.enonic.vertical.engine.VerticalEngineException;
+import org.w3c.dom.Document;
 
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.service.AdminService;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class PagelinkHandlerServlet
     extends ContentBaseHandlerServlet
@@ -38,7 +36,7 @@ public class PagelinkHandlerServlet
                                ExtendedMap formItems, User user )
         throws VerticalAdminException, VerticalEngineException
     {
-        VerticalAdminLogger.errorAdmin("OperationWrapper CREATE not implemented", null );
+        VerticalAdminLogger.errorAdmin("OperationWrapper CREATE not implemented" );
     }
 
     public boolean handlerSelect( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,

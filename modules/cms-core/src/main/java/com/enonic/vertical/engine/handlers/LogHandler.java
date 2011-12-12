@@ -4,24 +4,25 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.vertical.engine.dbmodel.LogEntryTable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
+import com.enonic.cms.core.log.LogType;
+import com.enonic.cms.core.log.StoreNewLogEntryCommand;
+import com.enonic.cms.core.log.Table;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.sql.model.Column;
-import com.enonic.vertical.engine.Types;
-import com.enonic.vertical.engine.VerticalCreateException;
-import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.*;
+import com.enonic.vertical.engine.dbmodel.LogEntryTable;
 import com.enonic.vertical.engine.processors.ElementProcessor;
 import com.enonic.vertical.engine.processors.MenuElementProcessor;
 import com.enonic.vertical.engine.processors.UserElementProcessor;
 import com.enonic.vertical.event.MenuHandlerEvent;
 import com.enonic.vertical.event.MenuHandlerListener;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import com.enonic.cms.core.log.LogType;
-import com.enonic.cms.core.log.Table;
-import com.enonic.cms.core.log.StoreNewLogEntryCommand;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public final class LogHandler
     extends BaseHandler
@@ -83,8 +84,38 @@ public final class LogHandler
         ElementProcessor[] elementProcessors = new ElementProcessor[2];
         elementProcessors[0] = new UserElementProcessor( baseEngine.getCommonHandler() );
         elementProcessors[1] = new MenuElementProcessor( baseEngine.getCommonHandler() );
-        CommonHandler commonHandler = getCommonHandler();
-        return commonHandler.getSingleData( Types.LOGENTRY, key, elementProcessors );
+        return getSingleData( key, elementProcessors );
+    }
+
+    private Document getSingleData( String key, ElementProcessor[] elementProcessors )
+    {
+        PreparedStatement preparedStmt = null;
+        ResultSet resultSet = null;
+        Document doc = null;
+
+        try
+        {
+            Connection con = getConnection();
+
+            StringBuffer sql = XDG.generateSelectWherePrimaryKeySQL( LogEntryTable.INSTANCE );
+            preparedStmt = con.prepareStatement( sql.toString() );
+            preparedStmt.setString( 1, key );
+            resultSet = preparedStmt.executeQuery();
+
+            doc = XDG.resultSetToXML( LogEntryTable.INSTANCE, resultSet, null, elementProcessors, null, -1 );
+        }
+        catch ( SQLException sqle )
+        {
+            String message = "SQL error: %t";
+            VerticalEngineLogger.error( message, sqle );
+        }
+        finally
+        {
+            close( resultSet );
+            close( preparedStmt );
+        }
+
+        return doc;
     }
 
     public void createdMenuItem( MenuHandlerEvent e )

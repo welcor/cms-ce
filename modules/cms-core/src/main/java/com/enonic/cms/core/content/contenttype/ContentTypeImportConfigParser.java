@@ -4,26 +4,24 @@
  */
 package com.enonic.cms.core.content.contenttype;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.jdom.Attribute;
-import org.jdom.Element;
-import org.jdom.transform.JDOMSource;
-
+import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfigType;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.RelatedContentDataEntryConfig;
 import net.sf.saxon.om.InscopeNamespaceResolver;
 import net.sf.saxon.om.NamespaceResolver;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.trans.XPathException;
+import org.apache.commons.lang.StringUtils;
+import org.jdom.Attribute;
+import org.jdom.Element;
+import org.jdom.transform.JDOMSource;
 
-import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfigType;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.RelatedContentDataEntryConfig;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ContentTypeImportConfigParser
 {
@@ -124,6 +122,8 @@ public class ContentTypeImportConfigParser
             }
             importConfig.setUpdateStrategy( CtyImportUpdateStrategyConfig.parse( importName, updateStrategyAttribute.getValue() ) );
         }
+
+        parseUpdateContentNameSetting( importConfig, importEl );
 
         parseImportMappings( importConfig, importEl, importEl );
         parseImportMappingBlocks( importConfig, importEl );
@@ -239,6 +239,30 @@ public class ContentTypeImportConfigParser
             throw new InvalidImportConfigException( importName, "Invalid mode setting: " + mode );
         }
         importConfig.setMode( impurtModeConfig );
+    }
+
+    private void parseUpdateContentNameSetting( CtyImportConfig importConfig, Element importEl )
+    {
+        final String settingAsString = importEl.getAttributeValue( "update-content-name", (String) null );
+        if ( StringUtils.isEmpty( settingAsString ) )
+        {
+            return;
+        }
+
+        if ( "true".equals( settingAsString ) )
+        {
+            importConfig.setUpdateContentName( true );
+        }
+        else if ( "false".equals( settingAsString ) )
+        {
+            importConfig.setUpdateContentName( false );
+        }
+        else
+        {
+            throw new InvalidImportConfigException( importName,
+                                                    "Setting 'update-content-name' must either be true or false or be removed: " +
+                                                        settingAsString );
+        }
     }
 
     private NamespaceResolver getNamespaceResolver( final Element importEl )

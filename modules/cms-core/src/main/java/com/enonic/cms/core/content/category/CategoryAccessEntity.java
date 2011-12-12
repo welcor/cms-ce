@@ -4,11 +4,10 @@
  */
 package com.enonic.cms.core.content.category;
 
-import java.io.Serializable;
-
+import com.enonic.cms.core.security.group.GroupEntity;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.enonic.cms.core.security.group.GroupEntity;
+import java.io.Serializable;
 
 public class CategoryAccessEntity
     implements Serializable
@@ -36,6 +35,11 @@ public class CategoryAccessEntity
     public GroupEntity getGroup()
     {
         return group;
+    }
+
+    public void setGroup( GroupEntity group )
+    {
+        this.group = group;
     }
 
     public boolean isReadAccess()

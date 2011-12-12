@@ -4,25 +4,14 @@
  */
 package com.enonic.cms.itest.util;
 
-import java.util.List;
-
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.enonic.cms.core.language.LanguageEntity;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerKey;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.ContentVersionKey;
-import com.enonic.cms.core.content.RelatedContentEntity;
-import com.enonic.cms.core.content.UnitEntity;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.language.LanguageEntity;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.User;
@@ -35,32 +24,78 @@ import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.core.structure.menuitem.ContentHomeKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.vertical.VerticalProperties;
+import com.google.common.base.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Nov 26, 2009
  */
+@Component
+@Scope("prototype")
 public class DomainFixture
 {
+    @Autowired
     private HibernateTemplate hibernateTemplate;
 
     private DomainFactory factory;
 
+    @Autowired
+    private GroupDao groupDao;
+
+    public DomainFixture()
+    {
+        factory = new DomainFactory( this );
+    }
+
+    public DomainFactory getFactory()
+    {
+        return factory;
+    }
+
+    public DomainFixture( HibernateTemplate hibernateTemplate, GroupDao groupDao )
+    {
+        Preconditions.checkNotNull( hibernateTemplate );
+        Preconditions.checkNotNull( groupDao );
+
+        this.hibernateTemplate = hibernateTemplate;
+        this.groupDao = groupDao;
+    }
+
     public DomainFixture( HibernateTemplate hibernateTemplate )
     {
+        Preconditions.checkNotNull( hibernateTemplate );
+
         this.hibernateTemplate = hibernateTemplate;
     }
 
     void setFactory( DomainFactory factory )
     {
+        Preconditions.checkNotNull( factory );
         this.factory = factory;
     }
 
     public void initSystemData()
     {
+        Properties properties = new Properties();
+        properties.setProperty( "cms.admin.password", "password" );
+        VerticalProperties.getVerticalProperties().setProperties( properties );
+
         hibernateTemplate.clear();
 
         save( factory.createLanguage( "en" ) );
 
+        if ( groupDao != null )
+        {
+            groupDao.invalidateCachedKeys();
+        }
         save( factory.createGroup( GroupType.ENTERPRISE_ADMINS.getName(), GroupType.ENTERPRISE_ADMINS ) );
         save( factory.createGroup( GroupType.ADMINS.getName(), GroupType.ADMINS ) );
         save( factory.createGroup( GroupType.DEVELOPERS.getName(), GroupType.DEVELOPERS ) );
@@ -79,8 +114,8 @@ public class DomainFixture
 
         flushAndClearHibernateSesssion();
 
-        SecurityHolder.setAnonUser( findUserByName( "anonymous" ).getKey() );
-        SecurityHolder.setUser( findUserByName( "anonymous" ).getKey() );
+        PortalSecurityHolder.setAnonUser( findUserByName( "anonymous" ).getKey() );
+        PortalSecurityHolder.setUser( findUserByName( "anonymous" ).getKey() );
     }
 
     public UserEntity createAndStoreNormalUserWithUserGroup( String uid, String displayName, String userStoreName )
@@ -281,12 +316,9 @@ public class DomainFixture
 
     public ContentEntity findContentByName( String name )
     {
-        List<ContentEntity> list = typecastList( ContentEntity.class, hibernateTemplate.find( "from ContentEntity where name = ?", name ) );
-        if ( list.isEmpty() )
-        {
-            return null;
-        }
-        return list.get( 0 );
+        ContentEntity example = new ContentEntity();
+        example.setName( name );
+        return (ContentEntity) findFirstByExample( example );
     }
 
     public List<ContentVersionEntity> findContentVersionsByContent( ContentKey key )
@@ -456,7 +488,10 @@ public class DomainFixture
         {
             return null;
         }
-
+        if ( list.size() > 1 )
+        {
+            throw new IllegalStateException( "Expected only one result, was: " + list.size() );
+        }
         return list.get( 0 );
     }
 

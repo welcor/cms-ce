@@ -9,11 +9,8 @@
 	<!ENTITY aelig  "&#230;">
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:output method="html" doctype-system="http://www.w3.org/TR/html4/loose.dtd" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
 
@@ -57,12 +54,9 @@
             sites : '%headMenus%'
           }
 
-          // Needed for the tree menu which is displayed in portal context(page templates, portlets and menu items).
-          var branchOpen = new Array();
         </script>
         <link href="css/menu.css" rel="stylesheet" type="text/stylesheet"/>
         <link href="tinymce/jscripts/tiny_mce/plugins/cmslink/css/cms_link_dialog.css" rel="stylesheet" type="text/stylesheet"/>
-        <link href="css/admin.css" rel="stylesheet" type="text/stylesheet"/>
       </head>
       <body>
         <form name="formAdmin" onsubmit="CMSLinkDialog.insertLinkAction();return false;" action="#">

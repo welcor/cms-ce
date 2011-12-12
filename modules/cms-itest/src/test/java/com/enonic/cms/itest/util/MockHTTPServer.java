@@ -1,11 +1,12 @@
 package com.enonic.cms.itest.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 public class MockHTTPServer
-        extends NanoHTTPD
+    extends NanoHTTPD
 {
 
     private static final Logger LOG = Logger.getLogger( "ENONIC." + MockHTTPServer.class.getName() );
@@ -14,12 +15,14 @@ public class MockHTTPServer
 
     static public String TEXT_TYPE = "text";
 
-    static public String XML_TYPE = "xml";
+    static public String BYTE_TYPE = "byte";
 
     private String responseText = "";
 
+    private byte[] responseBytes = null;
+
     public MockHTTPServer( int port )
-            throws IOException
+        throws IOException
     {
         super( port );
         LOG.info( "Running embedded server on http://localhost:" + port );
@@ -32,16 +35,13 @@ public class MockHTTPServer
         {
             return new Response( HTTP_OK, MIME_PLAINTEXT, responseText );
         }
+        else if ( BYTE_TYPE.equals( type ) )
+        {
+            return new Response( HTTP_OK, MIME_XML, new ByteArrayInputStream( responseBytes ) );
+        }
         else
         {
-            if ( XML_TYPE.equals( type ) )
-            {
-                return new Response( HTTP_OK, MIME_XML, responseText );
-            }
-            else
-            {
-                return new Response( HTTP_NOTIMPLEMENTED, MIME_PLAINTEXT, "Method is not emplemented" );
-            }
+            return new Response( HTTP_NOTIMPLEMENTED, MIME_PLAINTEXT, "Method is not emplemented" );
         }
     }
 
@@ -50,4 +50,8 @@ public class MockHTTPServer
         this.responseText = text;
     }
 
+    public void setResponseBytes( byte[] bytes )
+    {
+        this.responseBytes = bytes;
+    }
 }

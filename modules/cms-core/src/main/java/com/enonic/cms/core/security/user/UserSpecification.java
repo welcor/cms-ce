@@ -4,16 +4,22 @@
  */
 package com.enonic.cms.core.security.user;
 
-import org.springframework.core.style.ToStringCreator;
-
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import org.springframework.core.style.ToStringCreator;
 
 /**
  * Jun 29, 2009
  */
 public class UserSpecification
 {
+    public static UserSpecification usingKey( UserKey key )
+    {
+        UserSpecification spec = new UserSpecification();
+        spec.setKey( key );
+        return spec;
+    }
+
     public enum DeletedState
     {
         NOT_DELETED,

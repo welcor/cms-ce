@@ -4,10 +4,11 @@
  */
 package com.enonic.cms.itest;
 
+import com.enonic.cms.core.service.KeyService;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.enonic.cms.core.service.KeyService;
 
 /**
  * Extend this mock class with functionality when needed.

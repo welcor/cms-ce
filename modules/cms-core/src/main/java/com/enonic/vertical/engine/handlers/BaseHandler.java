@@ -4,27 +4,24 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.store.dao.*;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.enonic.esl.sql.model.Table;
-import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.engine.BaseEngine;
-import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
-
+import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.service.KeyService;
+import com.enonic.cms.store.dao.*;
+import com.enonic.esl.sql.model.Table;
+import com.enonic.vertical.VerticalProperties;
+import com.enonic.vertical.engine.BaseEngine;
+import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.content.ContentService;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public abstract class BaseHandler
 {
@@ -167,11 +164,6 @@ public abstract class BaseHandler
     protected final LanguageHandler getLanguageHandler()
     {
         return baseEngine.getLanguageHandler();
-    }
-
-    protected final LogHandler getLogHandler()
-    {
-        return baseEngine.getLogHandler();
     }
 
     protected final MenuHandler getMenuHandler()

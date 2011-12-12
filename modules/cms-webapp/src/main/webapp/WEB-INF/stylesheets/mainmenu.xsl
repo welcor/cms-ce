@@ -4,8 +4,6 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
                 xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
 
   <xsl:output method="html"/>
@@ -35,7 +33,7 @@
         <script type="text/javascript" src="javascript/menu.js">//</script>
 
         <script type="text/javascript" language="JavaScript">
-          var branchOpen = new Array;
+          var branchOpen = new Array();
 
           var allcookies = document.cookie;
           var cookiename =
@@ -51,7 +49,7 @@
             if (end == -1)
               end = allcookies.length;
             var values = allcookies.substring(start, end).split(',');
-            for ( i in values )
+            for ( var i in values )
             {
               branchOpen[values[i]] = true;
             }
@@ -487,6 +485,7 @@
         <xsl:with-param name="url" select="$url"/>
         <xsl:with-param name="topnode" select="false()"/>
         <xsl:with-param name="hassiblingoverride" select="($siteadmin = 'true' or $enterpriseadmin = 'true')"/>
+        <xsl:with-param name="selectedmenukey" select="$selectedmenukey"/>
       </xsl:apply-templates>
     </xsl:if>
 
@@ -563,4 +562,3 @@
   </xsl:template>
 
 </xsl:stylesheet>
-

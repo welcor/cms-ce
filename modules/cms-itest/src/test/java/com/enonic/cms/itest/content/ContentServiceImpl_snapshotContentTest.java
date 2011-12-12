@@ -22,7 +22,6 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -31,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -45,12 +43,6 @@ public class ContentServiceImpl_snapshotContentTest
     extends AbstractSpringTest
 {
     @Autowired
-    private HibernateTemplate hibernateTemplate;
-
-    @Autowired
-    private GroupEntityDao groupEntityDao;
-
-    @Autowired
     private ContentDao contentDao;
 
     @Autowired
@@ -61,6 +53,7 @@ public class ContentServiceImpl_snapshotContentTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     private Element standardConfigEl;
@@ -71,10 +64,8 @@ public class ContentServiceImpl_snapshotContentTest
     public void setUp()
         throws IOException, JDOMException
     {
-        groupEntityDao.invalidateCachedKeys();
 
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 

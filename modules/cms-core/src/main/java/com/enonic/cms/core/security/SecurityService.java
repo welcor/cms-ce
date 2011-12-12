@@ -4,11 +4,6 @@
  */
 package com.enonic.cms.core.security;
 
-import java.util.List;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.QualifiedGroupname;
@@ -19,6 +14,10 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.store.dao.GroupQuery;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface SecurityService
 {
@@ -74,7 +73,7 @@ public interface SecurityService
 
     List<UserStoreEntity> getUserStores();
 
-    User loginAdminUser( final QualifiedUsername qualifiedUsername, final String password );
+    User loginAdminUser( LoginAdminUserCommand command );
 
     void loginPortalUser( final QualifiedUsername qualifiedUsername, final String password );
 

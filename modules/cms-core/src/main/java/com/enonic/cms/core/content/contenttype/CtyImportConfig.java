@@ -4,11 +4,11 @@
  */
 package com.enonic.cms.core.content.contenttype;
 
+import net.sf.saxon.om.NamespaceResolver;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.sf.saxon.om.NamespaceResolver;
 
 public class CtyImportConfig
     implements CtyImportMappingContainer
@@ -40,6 +40,8 @@ public class CtyImportConfig
     private List<CtyImportBlockConfig> blocks = new ArrayList<CtyImportBlockConfig>();
 
     private CtyImportUpdateStrategyConfig updateStrategy = CtyImportUpdateStrategyConfig.UPDATE_CONTENT_KEEP_STATUS;
+
+    private boolean updateContentName = false;
 
     public CtyImportConfig( final CtyFormConfig form, final String name, final String sync, final NamespaceResolver namespaceResolver )
     {
@@ -243,5 +245,15 @@ public class CtyImportConfig
         {
             ctyImportMappingConfig.validate( contentTypeConfig );
         }
+    }
+
+    public boolean getUpdateContentName()
+    {
+        return updateContentName;
+    }
+
+    public void setUpdateContentName( boolean value )
+    {
+        updateContentName = value;
     }
 }

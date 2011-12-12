@@ -15,15 +15,13 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
-import com.enonic.cms.core.security.SecurityHolder;
-import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentEntityDao;
 import com.enonic.cms.store.dao.GroupEntityDao;
 import org.jdom.Document;
@@ -48,12 +46,6 @@ public class RelatedContentFetcherForContentVersionTest
     @Autowired
     private GroupEntityDao groupEntityDao;
 
-    @Autowired
-    private SecurityService securityService;
-
-    @Autowired
-    private CategoryDao categoryDao;
-
     private OverridingContentEntityDao contentDao;
 
     @Autowired
@@ -61,6 +53,7 @@ public class RelatedContentFetcherForContentVersionTest
 
     private ContentAccessResolver contentAccessResolver;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Before
@@ -68,8 +61,7 @@ public class RelatedContentFetcherForContentVersionTest
     {
         contentAccessResolver = new ContentAccessResolver( groupEntityDao );
 
-        fixture = new DomainFixture( hibernateTemplate );
-        DomainFactory factory = new DomainFactory( fixture );
+        DomainFactory factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -77,7 +69,7 @@ public class RelatedContentFetcherForContentVersionTest
         fixture.createAndStoreUserAndUserGroup( "testuser", "testuser fullname", UserType.NORMAL, "testuserstore" );
 
         //SecurityHolder.setUser( findUserByName( User.ANONYMOUS_UID ).getKey() );
-        SecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
+        PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
         fixture.flushAndClearHibernateSesssion();

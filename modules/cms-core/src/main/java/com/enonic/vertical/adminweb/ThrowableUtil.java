@@ -4,17 +4,15 @@
  */
 package com.enonic.vertical.adminweb;
 
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-
 import com.enonic.esl.util.VectorWriter;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.VerticalException;
 import com.enonic.vertical.VerticalRuntimeException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.servlet.ServletException;
+import java.io.PrintWriter;
 
 public final class ThrowableUtil
 {
@@ -25,9 +23,7 @@ public final class ThrowableUtil
     {
     }
 
-    /**
-     */
-    public static Document throwableToDoc( Element parentElem, Throwable t, boolean rootThrowableFirst )
+    public static Document throwableToDoc( Element parentElem, Throwable t )
     {
 
         Document doc;
@@ -121,15 +117,7 @@ public final class ThrowableUtil
                     }
                 }
 
-                if ( rootThrowableFirst && prevThrowable != null )
-                {
-                    root.insertBefore( throwable, prevThrowable );
-                }
-                else
-                {
-                    root.appendChild( throwable );
-                }
-
+                root.appendChild( throwable );
                 prevThrowable = throwable;
             }
             while ( t != null );

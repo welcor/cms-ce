@@ -4,14 +4,12 @@
  */
 package com.enonic.cms.server.service.admin.ajax;
 
-import java.util.Collection;
-
 import com.enonic.cms.server.service.admin.ajax.dto.PreferenceDto;
 import com.enonic.cms.server.service.admin.ajax.dto.RegionDto;
 import com.enonic.cms.server.service.admin.ajax.dto.SynchronizeStatusDto;
 import com.enonic.cms.server.service.admin.ajax.dto.UserDto;
 
-import com.enonic.cms.core.country.Region;
+import java.util.Collection;
 
 public interface AdminAjaxService
 {
@@ -31,7 +29,7 @@ public interface AdminAjaxService
 
     SynchronizeStatusDto getSynchUserStoreStatus( String userStoreKey );
 
-    boolean menuItemNameExistsUnderParent( String menuItemName, int existingMenuItemKey, int parentKey );
+    boolean menuItemNameExistsUnderParent( int siteKey, String menuItemName, int existingMenuItemKey, int parentKey );
 
     String getContentPath( int contentKey );
 

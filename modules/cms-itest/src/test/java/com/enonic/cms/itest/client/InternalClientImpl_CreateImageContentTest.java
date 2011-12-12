@@ -11,7 +11,7 @@ import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyImageContentData;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -46,6 +46,7 @@ public class InternalClientImpl_CreateImageContentTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -61,8 +62,8 @@ public class InternalClientImpl_CreateImageContentTest
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
         fixture.initSystemData();
 
         StringBuffer contentTypeConfigXml = new StringBuffer();
@@ -128,14 +129,14 @@ public class InternalClientImpl_CreateImageContentTest
         AssertTool.assertSingleXPathValueEquals( "/contentdata/images/image/@type", contentDataXml, "original" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/images/image/width", contentDataXml, "200" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/images/image/height", contentDataXml, "200" );
-        AssertTool.assertSingleXPathValueEquals("/contentdata/images/image/binarydata/@key", contentDataXml,
-                binaryDataResolvedFromContentBinaryData.getBinaryDataKey().toString());
+        AssertTool.assertSingleXPathValueEquals( "/contentdata/images/image/binarydata/@key", contentDataXml,
+                                                 binaryDataResolvedFromContentBinaryData.getBinaryDataKey().toString() );
     }
 
     private void setRunningUser()
     {
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
     }
 
     private void setUpContentAndCategory()

@@ -10,7 +10,7 @@ import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyImageContentData;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -18,6 +18,7 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.GroupDao;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -41,12 +42,13 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
 
     public static final String AEC_ALL = "\u0082\u0083\u0084\u0085\u0086\u0087\u0089\u008a\u008b\u008c\u0091\u0092\u0093\u0094" +
         "\u0095\u0096\u0097\u0098\u0099\u009a\u009b\u009c\u009f";
-    
+
     @Autowired
     protected HibernateTemplate hibernateTemplate;
 
     protected DomainFactory factory;
 
+    @Autowired
     protected DomainFixture fixture;
 
     @Autowired
@@ -59,12 +61,14 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
     @Autowired
     protected ContentDao contentDao;
 
+    @Autowired
+    private GroupDao groupDao;
+
     @Before
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
         fixture.flushAndClearHibernateSesssion();
@@ -96,7 +100,6 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
 
     protected void setupRelatedContentCategory()
     {
-        fixture.save( factory.createContentHandler( "RelatedContent", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "MyRelatedContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
                                                  getConfigRelatedContent() ) );
         fixture.save( factory.createUnit( "MyRelatedContentUnit", "en" ) );
@@ -185,7 +188,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         throws Exception
     {
         final UserEntity runningUser = fixture.findUserByName( userName );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
         final ImportContentsParams importParams = new ImportContentsParams();
         importParams.publishFrom = publishFrom;

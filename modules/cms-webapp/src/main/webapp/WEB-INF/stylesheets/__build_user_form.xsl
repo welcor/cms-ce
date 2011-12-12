@@ -5,9 +5,7 @@
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:namespace-alias stylesheet-prefix="x" result-prefix="xsl"/>
   <xsl:output method="xml"/>
@@ -75,6 +73,7 @@
       <x:param name="profile" select="false()"/>
 
       <x:param name="canUpdateUser" select="'false'"/>
+      <x:param name="canUpdateGroup" select="'false'"/>
       <x:param name="showdn"/>
 
       <!-- params for the notification form -->
@@ -634,7 +633,7 @@
             </tr>
             <tr>
               <td>
-                <x:if test="$canUpdateUser != 'false'">
+                <x:if test="$canUpdateUser != 'false' or $canUpdateGroup != 'false'">
                   <x:variable name="savescript">
                     <x:choose>
                       <x:when test="$user/block or $create = 1">
@@ -695,7 +694,7 @@
 
                 <x:variable name="buttonCaption">
                   <x:choose>
-                    <x:when test="$canUpdateUser != 'false'">%cmdCancel%</x:when>
+                    <x:when test="$canUpdateUser != 'false' or $canUpdateGroup != 'false'">%cmdCancel%</x:when>
                     <x:otherwise>%cmdClose%</x:otherwise>
                   </x:choose>
                 </x:variable>
@@ -839,7 +838,7 @@
             </legend>
             <table border="0" cellspacing="2" cellpadding="0" width="50%">
               <x:if test="count(/users/user/memberOf/group[@type != 6]) &gt; 0">
-                <x:if test="$isadmin = 'true' and $canUpdateUser = 'true'">
+                <x:if test="$isadmin = 'true' and $canUpdateGroup = 'true'">
                   <tr>
                     <td>
                       <x:call-template name="button">
@@ -873,7 +872,7 @@
                             </input>
                           </td>
 
-                          <x:if test="$isadmin = 'true' and $canUpdateUser = 'true'">
+                          <x:if test="$isadmin = 'true' and $canUpdateGroup = 'true'">
                             <td width="20">
                               <x:call-template name="button">
                                 <x:with-param name="name">
@@ -899,7 +898,7 @@
                   </table>
                 </td>
               </tr>
-              <x:if test="$isadmin = 'true' and $canUpdateUser = 'true'">
+              <x:if test="$isadmin = 'true' and $canUpdateGroup = 'true'">
                 <tr>
                   <td>
                     <x:call-template name="button">

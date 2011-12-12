@@ -12,7 +12,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.SelectorDataEn
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.InvalidContentTypeConfigException;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -20,13 +20,11 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,12 +39,6 @@ public class ContentServiceImpl_contentConfigTest
     extends AbstractSpringTest
 {
     @Autowired
-    private HibernateTemplate hibernateTemplate;
-
-    @Autowired
-    private GroupEntityDao groupEntityDao;
-
-    @Autowired
     protected ContentDao contentDao;
 
     @Autowired
@@ -54,6 +46,7 @@ public class ContentServiceImpl_contentConfigTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
@@ -62,15 +55,13 @@ public class ContentServiceImpl_contentConfigTest
     @Before
     public void setUp()
     {
-        groupEntityDao.invalidateCachedKeys();
 
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
 
-        SecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
+        PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
         fixture.createAndStoreUserAndUserGroup( "testuser", "testuser fullname", UserType.NORMAL, "testuserstore" );
@@ -231,8 +222,7 @@ public class ContentServiceImpl_contentConfigTest
         }
         catch ( Exception e )
         {
-            assertTrue( "Expected CreateContentException, was: " + e.getClass().getName(),
-                        e instanceof CreateContentException );
+            assertTrue( "Expected CreateContentException, was: " + e.getClass().getName(), e instanceof CreateContentException );
             assertEquals( "Failed to created content: Missing data for required title input (missing value in data entry): birth",
                           e.getMessage() );
         }

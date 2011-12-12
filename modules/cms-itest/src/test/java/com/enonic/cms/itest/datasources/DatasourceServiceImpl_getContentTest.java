@@ -4,24 +4,7 @@
  */
 package com.enonic.cms.itest.datasources;
 
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.content.ContentAndVersion;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -38,16 +21,22 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.UserDao;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-import static com.enonic.cms.itest.util.AssertTool.assertSingleXPathValueEquals;
-import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
-import static com.enonic.cms.itest.util.AssertTool.assertXPathNotExist;
-import static org.junit.Assert.*;
+import static com.enonic.cms.itest.util.AssertTool.*;
+import static org.junit.Assert.assertEquals;
 
 public class DatasourceServiceImpl_getContentTest
     extends AbstractSpringTest
@@ -56,11 +45,9 @@ public class DatasourceServiceImpl_getContentTest
 
     private static final DateTime DATE_TIME_2010_07_01_12_00_00_0 = new DateTime( 2010, 7, 1, 12, 0, 0, 0 );
 
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -84,8 +71,8 @@ public class DatasourceServiceImpl_getContentTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();

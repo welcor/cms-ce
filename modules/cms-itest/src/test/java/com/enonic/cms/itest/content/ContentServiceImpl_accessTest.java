@@ -12,7 +12,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.SiteRedirectHelper;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.junit.Assert.assertNotNull;
@@ -42,9 +41,6 @@ import static org.junit.Assert.fail;
 public class ContentServiceImpl_accessTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private HibernateTemplate hibernateTemplate;
-
     @Autowired
     private GroupEntityDao groupEntityDao;
 
@@ -68,16 +64,14 @@ public class ContentServiceImpl_accessTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
 
     @Before
     public void setUp()
     {
-        groupEntityDao.invalidateCachedKeys();
-
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         customContentHandlerController = new CustomContentHandlerController();
         customContentHandlerController.setContentService( contentService );
@@ -95,7 +89,7 @@ public class ContentServiceImpl_accessTest
         fixture.initSystemData();
 
         //SecurityHolder.setUser( findUserByName( User.ANONYMOUS_UID ).getKey() );
-        SecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
+        PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
         fixture.flushAndClearHibernateSesssion();

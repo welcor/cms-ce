@@ -4,14 +4,12 @@
  */
 package com.enonic.cms.core.user.field;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.esl.containers.ExtendedMap;
 import org.apache.commons.fileupload.FileItem;
 
-import com.enonic.esl.containers.ExtendedMap;
-
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class UserFieldTransformer
 {
@@ -113,10 +111,7 @@ public final class UserFieldTransformer
         if ( value != null )
         {
             Object typedValue = this.helper.fromString( type, value );
-            if ( typedValue != null )
-            {
-                fields.add( new UserField( type, typedValue ) );
-            }
+            fields.add( new UserField( type, typedValue ) );
         }
     }
 
@@ -125,7 +120,7 @@ public final class UserFieldTransformer
         HashMap<String, String> result = new HashMap<String, String>();
         for ( UserField field : fields )
         {
-            if ( !field.isOfType( UserFieldType.ADDRESS ) && !field.isOfType( UserFieldType.PHOTO ) )
+            if ( !field.isAddress() && !field.isPhoto() )
             {
                 addSimpleField( result, field );
             }
@@ -139,7 +134,14 @@ public final class UserFieldTransformer
     {
         UserFieldType type = field.getType();
         String strValue = this.helper.toString( field );
-        addIfNotNull( result, type.getName(), strValue );
+
+        if ( field.isBirthday() )
+        {
+            addNullable( result, type.getName(), strValue );
+        } else
+        {
+            addIfNotNull( result, type.getName(), strValue );
+        }
     }
 
     private void addIfNotNull( Map<String, String> result, String name, String value )
@@ -148,5 +150,10 @@ public final class UserFieldTransformer
         {
             result.put( name, value );
         }
+    }
+
+    private void addNullable( Map<String, String> result, String name, String value )
+    {
+        result.put( name, value );
     }
 }

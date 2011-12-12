@@ -15,7 +15,7 @@ import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyFileContentData;
-import com.enonic.cms.core.security.SecurityHolder;
+import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -47,6 +47,7 @@ public class InternalClientImpl_CreateFileContentTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     @Autowired
@@ -60,8 +61,8 @@ public class InternalClientImpl_CreateFileContentTest
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
         fixture.initSystemData();
 
         StringBuffer contentTypeConfigXml = new StringBuffer();
@@ -89,7 +90,7 @@ public class InternalClientImpl_CreateFileContentTest
         fixture.flushAndClearHibernateSesssion();
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
-        SecurityHolder.setRunAsUser( runningUser.getKey() );
+        PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
 
         FileContentDataInput fileContentData = new FileContentDataInput();
         fileContentData.binary = new FileBinaryInput( dummyBinary, "Dummy Name" );
@@ -132,8 +133,8 @@ public class InternalClientImpl_CreateFileContentTest
         AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[1]", contentDataXml, "keyword1" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/keywords/keyword[2]", contentDataXml, "keyword2" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/filesize", contentDataXml, String.valueOf( dummyBinary.length ) );
-        AssertTool.assertSingleXPathValueEquals("/contentdata/binarydata/@key", contentDataXml,
-                binaryDataResolvedFromContentBinaryData.getBinaryDataKey().toString());
+        AssertTool.assertSingleXPathValueEquals( "/contentdata/binarydata/@key", contentDataXml,
+                                                 binaryDataResolvedFromContentBinaryData.getBinaryDataKey().toString() );
     }
 
 

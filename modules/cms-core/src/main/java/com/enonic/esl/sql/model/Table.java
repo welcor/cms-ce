@@ -4,14 +4,13 @@
  */
 package com.enonic.esl.sql.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Maps;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Table
 {
@@ -60,7 +59,6 @@ public class Table
         {
             columnXPathMap.put( column.getXPath().toLowerCase(), column );
         }
-
         column.setTable( this );
     }
 

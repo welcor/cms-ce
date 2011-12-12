@@ -57,6 +57,7 @@ public class ContentServiceImpl_updateContentStatusTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     private Element standardConfigEl;
@@ -67,8 +68,8 @@ public class ContentServiceImpl_updateContentStatusTest
     public void before()
         throws IOException, JDOMException
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 

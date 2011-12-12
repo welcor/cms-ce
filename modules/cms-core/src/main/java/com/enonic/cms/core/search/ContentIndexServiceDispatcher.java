@@ -5,11 +5,13 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.*;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.measure.IndexMeasureLogEntry;
+import com.enonic.cms.core.search.measure.IndexTimeMeasurer;
+import com.google.common.collect.Sets;
 import org.springframework.util.StopWatch;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -20,13 +22,22 @@ import java.util.List;
  */
 public class ContentIndexServiceDispatcher implements ContentIndexService {
 
-
     ContentIndexServiceImpl newContentIndexService;
 
     com.enonic.cms.core.content.index.ContentIndexServiceImpl oldContentIndexService;
 
+    private boolean runNewOnly = false;
 
-    private List<ExecuteTimeMeasure> executeTimeLog = new ArrayList<ExecuteTimeMeasure>();
+    private boolean runOldOnly = false;
+
+    private List<ExecuteDiffEntry> executeDiffList = new ArrayList<ExecuteDiffEntry>();
+
+    private IndexTimeMeasurer queryMeasurer = new IndexTimeMeasurer();
+
+    public ContentIndexServiceDispatcher() {
+        runNewOnly = Boolean.getBoolean("runNewOnly");
+        runOldOnly = Boolean.getBoolean("runOldOnly");
+    }
 
     public int remove(ContentKey contentKey) {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
@@ -41,7 +52,7 @@ public class ContentIndexServiceDispatcher implements ContentIndexService {
     }
 
     public void index(ContentDocument doc, boolean deleteExisting) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        newContentIndexService.index(doc, false);
     }
 
     public boolean isIndexed(ContentKey contentKey) {
@@ -51,28 +62,54 @@ public class ContentIndexServiceDispatcher implements ContentIndexService {
     public ContentResultSet query(ContentIndexQuery query) {
 
         StopWatch stopWatch = new StopWatch();
-        stopWatch.start("new");
-        ContentResultSet resultNew = newContentIndexService.query(query);
-        stopWatch.stop();
 
-        long newServiceTime = stopWatch.getLastTaskTimeMillis();
+        ContentResultSet resultNew = null;
+        ContentResultSet resultOld = null;
+        long newServiceTime = 0;
+        long oldServiceTime = 0;
 
-        stopWatch.start("old");
-        ContentResultSet resultOld = oldContentIndexService.query(query);
-        stopWatch.stop();
+        if (!runOldOnly) {
+            stopWatch.start("new");
+            resultNew = newContentIndexService.query(query);
+            stopWatch.stop();
+            newServiceTime = stopWatch.getLastTaskTimeMillis();
+        }
 
-        long oldServiceTime = stopWatch.getLastTaskTimeMillis();
 
-        executeTimeLog.add(new ExecuteTimeMeasure(newServiceTime, oldServiceTime, query.toString()));
+        if (!runNewOnly) {
+            stopWatch.start("old");
+            resultOld = oldContentIndexService.query(query);
+            stopWatch.stop();
+            oldServiceTime = stopWatch.getLastTaskTimeMillis();
+        }
 
-        if (executeTimeLog.size() >= 20) {
-            for (ExecuteTimeMeasure measure : executeTimeLog) {
-                System.out.println(measure.toString());
-            }
-            executeTimeLog.clear();
+
+        if (!runNewOnly && !runOldOnly) {
+
+            addTimeMeasurement(query, newServiceTime, oldServiceTime);
+            //compareResults(query, resultNew, resultOld);
         }
 
         return resultNew;
+    }
+
+    private void compareResults(ContentIndexQuery query, ContentResultSet resultNew, ContentResultSet resultOld) {
+
+        final HashSet<ContentKey> newResultContentKeys = Sets.newHashSet(resultNew.getKeys());
+        final HashSet<ContentKey> oldResultContentKeys = Sets.newHashSet(resultOld.getKeys());
+        Sets.SetView<ContentKey> diff = Sets.symmetricDifference(newResultContentKeys, oldResultContentKeys);
+
+        if (diff.isEmpty()) {
+            return;
+        }
+
+        System.out.println("Different results, hits new : " + newResultContentKeys.size() + ", hits old: " + oldResultContentKeys.size());
+        executeDiffList.add(new ExecuteDiffEntry(query.toString(), newResultContentKeys, oldResultContentKeys));
+    }
+
+
+    private void addTimeMeasurement(ContentIndexQuery query, long newServiceTime, long oldServiceTime) {
+        queryMeasurer.add(new IndexMeasureLogEntry(newServiceTime, oldServiceTime, query));
     }
 
     public IndexValueResultSet query(IndexValueQuery query) {
@@ -95,33 +132,55 @@ public class ContentIndexServiceDispatcher implements ContentIndexService {
         this.oldContentIndexService = oldContentIndexService;
     }
 
-    private class ExecuteTimeMeasure {
-        long newExecTime;
-        long oldExecTime;
 
-        String query;
+    private class ExecuteDiffEntry {
 
-        private ExecuteTimeMeasure(long newExecTime, long oldExecTime, String query) {
-            this.newExecTime = newExecTime;
-            this.oldExecTime = oldExecTime;
+        private String query;
+        private HashSet<ContentKey> newResultContentKeys;
+        private HashSet<ContentKey> oldResultContentKeys;
+
+        private ExecuteDiffEntry(String query, HashSet<ContentKey> newResultContentKeys, HashSet<ContentKey> oldResultContentKeys) {
             this.query = query;
+            this.newResultContentKeys = newResultContentKeys;
+            this.oldResultContentKeys = oldResultContentKeys;
         }
 
         @Override
         public String toString() {
+
             StringBuffer buf = new StringBuffer();
-            buf.append("-------------------------------------------------\n\r");
+
             buf.append("Query: " + query + "\n\r");
-            buf.append("Timeused new: " + newExecTime + "\n\r");
-            buf.append("Timeused old: " + oldExecTime + "\n\r");
 
-            String winner = newExecTime > oldExecTime ? "old" : "new";
+            Sets.SetView<ContentKey> onlyInNew = Sets.difference(newResultContentKeys, oldResultContentKeys);
+            Sets.SetView<ContentKey> onlyInOld = Sets.difference(oldResultContentKeys, newResultContentKeys);
 
-            buf.append("Diff: " + Math.abs(newExecTime - oldExecTime) + " ms\n\r");
-            buf.append("Winner: " + winner + "\n\r");
+            if (!onlyInNew.isEmpty()) {
+
+                buf.append("Only in new: " + "\n\r");
+
+                for (ContentKey key : onlyInNew) {
+                    buf.append(key.toString() + "\n\r");
+                }
+            }
+
+            if (!onlyInOld.isEmpty()) {
+
+                buf.append("Only in old: " + "\n\r");
+
+                for (ContentKey key : onlyInNew) {
+                    buf.append(key.toString() + "\n\r");
+                }
+            }
+
             return buf.toString();
         }
     }
+
+    public List<ExecuteDiffEntry> getExecuteDiffList() {
+        return executeDiffList;
+    }
+
 
 }
 

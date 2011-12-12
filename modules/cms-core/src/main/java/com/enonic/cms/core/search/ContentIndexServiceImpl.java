@@ -17,6 +17,8 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
+import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
@@ -35,10 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 11/22/11
- * Time: 1:41 PM
+ * This class implements the content index service based on elasticsearch
  */
 public class ContentIndexServiceImpl
         implements ContentIndexService {
@@ -146,6 +145,7 @@ public class ContentIndexServiceImpl
 
         try {
             initalizeIndex(false);
+            optimizeIndex();
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -166,7 +166,13 @@ public class ContentIndexServiceImpl
         addMapping();
     }
 
-    private   DeleteIndexResponse deleteIndex()
+    public OptimizeResponse optimizeIndex() {
+        OptimizeRequest request = new OptimizeRequest(INDEX_NAME).maxNumSegments(1).waitForMerge(true);
+        OptimizeResponse response = this.client.admin().indices().optimize(request).actionGet();
+        return response;
+    }
+
+    private DeleteIndexResponse deleteIndex()
             throws Exception {
         return this.client.admin().indices().delete(new DeleteIndexRequest(INDEX_NAME)).actionGet();
     }

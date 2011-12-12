@@ -1,5 +1,7 @@
 package com.enonic.cms.core.search.index;
 
+import java.io.IOException;
+
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -45,6 +47,12 @@ public class ContentIndexData
     public XContentBuilder getCustomdata()
     {
         return customdata;
+    }
+
+    public String getCustomdataJson()
+        throws IOException
+    {
+        return getCustomdata().string();
     }
 
     public void setCustomdata( XContentBuilder customdata )

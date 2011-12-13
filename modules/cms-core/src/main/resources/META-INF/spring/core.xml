@@ -93,7 +93,6 @@
     <property name="localeService" ref="localeService"/>
     <property name="timeZoneService" ref="timeZoneService"/>
     <property name="timeService" ref="timeService"/>
-    <property name="userStoreParser" ref="userStoreParser"/>
     <property name="userStoreService" ref="userStoreService"/>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>

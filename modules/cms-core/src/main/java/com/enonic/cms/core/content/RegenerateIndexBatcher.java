@@ -43,7 +43,7 @@ public class RegenerateIndexBatcher
 
         List<ContentKey> allContentKeys = contentService.findContentKeysByContentType( contentType );
 
-        ContentIndexDataBuilderSpecification spec = new ContentIndexDataBuilderSpecification( false, true );
+        ContentIndexDataBuilderSpecification spec = new ContentIndexDataBuilderSpecification( false );
 
         int currentIndex = 0;
 

@@ -1,69 +1,92 @@
 {
-    "content" : {
-        "_source" : {
-            "enabled" : false
+    "content":{
+        "_source":{
+            "enabled":false
         },
-        "date_detection" : false,
-        "numeric_detection" : false,
-        "properties" : {
-            "title" : {
-                "type" : "multi_field",
-                "fields" : {
-                    "title" : {
-                        "type" : "string",
-                        "index" : "not_analyzed",
-                        "store" : "yes"
+        "date_detection":false,
+        "numeric_detection":false,
+        "properties":{
+            "title":{
+                "type":"multi_field",
+                "fields":{
+                    "title":{
+                        "type":"string",
+                        "index":"not_analyzed",
+                        "store":"yes"
                     },
-                    "_tokenized" : {
-                        "type" : "string",
-                        "index" : "analyzed",
-                        "store" : "yes"
+                    "_tokenized":{
+                        "type":"string",
+                        "index":"analyzed",
+                        "store":"yes"
                     }
                 }
             },
-            "contentlocations" : {
-                "properties" : {
-                    "home" : {
-                        "type" : "boolean",
-                        "store" : "yes"
+            "contentlocations":{
+                "properties":{
+                    "home":{
+                        "type":"boolean",
+                        "store":"yes"
                     },
-                    "menuitemkey" : {
-                        "type" : "string",
-                        "index" : "not_analyzed",
-                        "store" : "yes"
+                    "menuitemkey":{
+                        "type":"string",
+                        "index":"not_analyzed",
+                        "store":"yes"
                     },
-                    "sitekey" : {
-                        "type" : "string",
-                        "index" : "not_analyzed",
-                        "store" : "yes"
+                    "sitekey":{
+                        "type":"string",
+                        "index":"not_analyzed",
+                        "store":"yes"
                     },
-                    "menukey" : {
-                        "type" : "string",
-                        "index" : "not_analyzed",
-                        "store" : "yes"
+                    "menukey":{
+                        "type":"string",
+                        "index":"not_analyzed",
+                        "store":"yes"
                     }
                 }
             }
 
         },
-        "dynamic_templates" : [
+        "dynamic_templates":[
             {
-                "template_orderby" : {
-                    "match" : "orderby_*",
-                    "unmatch" : "*_numeric",
-                    "mapping" : {
-                        "type" : "string",
-                        "index" : "not_analyzed",
-                        "store" : "yes"
+                "template_userdata":{
+                    "match":"data_*",
+                    "unmatch":"*_numeric",
+                    "mapping":{
+                        "type":"multi_field",
+                        "fields":{
+                            "{name}":{
+                                "type":"string",
+                                "index":"not_analyzed",
+                                "store":"yes",
+                                "include_in_all":true
+                            },
+                            "_tokenized":{
+                                "type":"string",
+                                "index":"analyzed",
+                                "store":"yes",
+                                "include_in_all":true
+                            }
+                        }
                     }
                 }
             },
             {
-                "template_numerics" : {
-                    "match" : "*_numeric",
-                    "mapping" : {
-                        "type" : "double",
-                        "store" : "yes"
+                "template_orderby":{
+                    "match":"orderby_*",
+                    "unmatch":"*_numeric",
+                    "mapping":{
+                        "type":"string",
+                        "index":"not_analyzed",
+                        "store":"yes"
+                    }
+                }
+            },
+            {
+                "template_numerics":{
+                    "match":"*_numeric",
+                    "mapping":{
+                        "type":"double",
+                        "store":"yes"
                     }
                 }
             }

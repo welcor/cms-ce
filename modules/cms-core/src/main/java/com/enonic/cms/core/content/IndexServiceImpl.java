@@ -143,8 +143,11 @@ public final class IndexServiceImpl
             {
                 StringBuffer sb = new StringBuffer();
                 sb.append( "Failed to extract full text from binary data" );
-                sb.append( "(key: " ).append( binaryData.getKey() ).append( ", name: " ).append( binaryData.getName() ).append(
-                    ") from content" );
+                sb.append( "(key: " )
+                    .append( binaryData.getKey() )
+                    .append( ", name: " )
+                    .append( binaryData.getName() )
+                    .append( ") from content" );
                 sb.append( "(key: " ).append( content.getKey() ).append( ", type: " ).append( content.getContentType().getName() );
                 sb.append( ", category: " ).append( content.getCategory().getName() ).append( "): " ).append( e.getMessage() );
                 LOG.warn( sb.toString() );
@@ -259,6 +262,12 @@ public final class IndexServiceImpl
         indexedDoc.setTitle( title );
         indexedDoc.setStatus( contentVersion.getStatus().getKey() );
         indexedDoc.setPriority( content.getPriority() );
+
+        ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
+        contentLocationSpecification.setIncludeInactiveLocationsInSection( true );
+        final ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
+
+        indexedDoc.setContentLocations( contentLocations );
 
         return indexedDoc;
 

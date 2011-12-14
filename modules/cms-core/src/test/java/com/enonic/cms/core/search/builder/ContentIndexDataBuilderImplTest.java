@@ -51,6 +51,7 @@ public class ContentIndexDataBuilderImplTest
         assertEquals( "2011-03-09T23:00:00.000Z", metadata.timestamp );
     }
 
+    /*
     @Test
     public void testCustomData()
         throws Exception
@@ -67,6 +68,7 @@ public class ContentIndexDataBuilderImplTest
         assertNotNull( indexData.getCustomdataJson() );
         assertEquals( 1.0, customdata.key );
     }
+    */
 
     private ContentDocument createTestContent()
         throws Exception

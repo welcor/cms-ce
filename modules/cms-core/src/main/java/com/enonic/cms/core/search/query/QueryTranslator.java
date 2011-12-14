@@ -1,31 +1,46 @@
 package com.enonic.cms.core.search.query;
 
-import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.content.index.queryexpression.*;
-import com.enonic.cms.core.search.ElasticContentConstants;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.util.StopWatch;
+
+import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.index.queryexpression.CompareExpr;
+import com.enonic.cms.core.content.index.queryexpression.Expression;
+import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
+import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
+import com.enonic.cms.core.content.index.queryexpression.NotExpr;
+import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
+import com.enonic.cms.core.content.index.queryexpression.QueryParser;
+import com.enonic.cms.core.search.ElasticContentConstants;
 
 
 public final class QueryTranslator {
 
-    public SearchSourceBuilder build(ContentIndexQuery query)
+    StopWatch timer = new StopWatch();
+
+    public SearchSourceBuilder build(ContentIndexQuery contentIndexQuery)
             throws Exception {
+
         final SearchSourceBuilder builder = new SearchSourceBuilder();
 
-        builder.from(query.getIndex());
+        builder.from(contentIndexQuery.getIndex());
 
-        builder.size(query.getCount());
+        builder.size(contentIndexQuery.getCount());
 
-        final QueryExpr expr = QueryParser.newInstance().parse(query.getQuery());
-        builder.query(buildExpr(expr.getExpr()));
-        OrderQueryBuilder.buildOrderByExpr(builder, expr.getOrderBy());
-        FilterQueryBuilder.buildFilterQuery(builder, query);
+        final QueryExpr queryExpr = QueryParser.newInstance().parse(contentIndexQuery.getQuery());
 
-        System.out.println( "****************************\n\r" + builder.toString() + "\n\r\n\r" );
+        final QueryBuilder queryBuilder = buildExpr(queryExpr.getExpr());
+
+        builder.query(queryBuilder);
+        OrderQueryBuilder.buildOrderByExpr(builder, queryExpr.getOrderBy());
+        FilterQueryBuilder.buildFilterQuery(builder, contentIndexQuery);
+
+
+        System.out.println("****************************\n\r" + builder.toString());
 
         return builder;
     }

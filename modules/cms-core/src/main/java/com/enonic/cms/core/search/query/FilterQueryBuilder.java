@@ -1,18 +1,19 @@
 package com.enonic.cms.core.search.query;
 
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.TermsFilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,70 +31,70 @@ public class FilterQueryBuilder
 
         BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
 
+        List<TermsFilterBuilder> filtersToApply = new ArrayList<TermsFilterBuilder>();
+
         final Collection<ContentKey> contentFilter = query.getContentFilter();
 
         if (contentFilter != null && !contentFilter.isEmpty()) {
-            applyFilter = true;
-            boolFilterBuilder.must(buildContentFilter(contentFilter));
+            filtersToApply.add(buildContentFilter(contentFilter));
         }
 
         if (query.hasSectionFilter()) {
-            applyFilter = true;
-            boolFilterBuilder.must(buildSectionFilter(query.getSectionFilter()));
+            filtersToApply.add(buildSectionFilter(query.getSectionFilter()));
         }
 
         if (query.hasCategoryFilter()) {
-            applyFilter = true;
-            boolFilterBuilder.must(buildCategoryFilter(query.getCategoryFilter()));
+            filtersToApply.add(buildCategoryFilter(query.getCategoryFilter()));
         }
 
         if (query.hasContentTypeFilter()) {
-            applyFilter = true;
-            boolFilterBuilder.must(buildContentTypeFilter(query.getContentTypeFilter()));
+            filtersToApply.add(buildContentTypeFilter(query.getContentTypeFilter()));
         }
 
-        if (applyFilter) {
-            builder.filter(boolFilterBuilder);
+        if (filtersToApply.isEmpty()) {
+            // Do nothing
+        } else if (filtersToApply.size() == 1) {
+            builder.filter(filtersToApply.get(0));
         } else {
-            builder.filter(FilterBuilders.matchAllFilter());
+            builder.filter(boolFilterBuilder);
         }
     }
 
     /*
-    private static QueryBuilder buildHasChildQuery( AttachmentFilters attachmentFilter )
-    {
-        List<AttachmentFilter> attachmentFilters = attachmentFilter.getFilters();
-
-        BoolQueryBuilder query = QueryBuilders.boolQuery();
-
-        for ( AttachmentFilter filter : attachmentFilters )
+        private static QueryBuilder buildHasChildQuery( AttachmentFilters attachmentFilter )
         {
-            buildAttachmentFilterSubQuery( query, filter );
+            List<AttachmentFilter> attachmentFilters = attachmentFilter.getFilters();
+    
+            BoolQueryBuilder query = QueryBuilders.boolQuery();
+    
+            for ( AttachmentFilter filter : attachmentFilters )
+            {
+                buildAttachmentFilterSubQuery( query, filter );
+            }
+    
+            return query;
         }
-
-        return query;
-    }
-
-    private static void buildAttachmentFilterSubQuery( BoolQueryBuilder query, AttachmentFilter filter )
-    {
-        List<String> filterValues = filter.getValueList();
-
-        if ( filterValues.size() == 1 )
+    
+        private static void buildAttachmentFilterSubQuery( BoolQueryBuilder query, AttachmentFilter filter )
         {
-            query.must( QueryBuilders.termQuery( filter.getFilterType().getFieldRepresentation(), filterValues.get( 0 ) ) );
-            return;
+            List<String> filterValues = filter.getValueList();
+    
+            if ( filterValues.size() == 1 )
+            {
+                query.must( QueryBuilders.termQuery( filter.getFilterType().getFieldRepresentation(), filterValues.get( 0 ) ) );
+                return;
+            }
+    
+            BoolQueryBuilder subQuery = QueryBuilders.boolQuery();
+    
+            for ( String value : filterValues )
+            {
+                subQuery.must( QueryBuilders.termQuery( filter.getFilterType().getFieldRepresentation(), value ) );
+            }
+    
+            query.must( subQuery );
         }
-
-        BoolQueryBuilder subQuery = QueryBuilders.boolQuery();
-
-        for ( String value : filterValues )
-        {
-            subQuery.must( QueryBuilders.termQuery( filter.getFilterType().getFieldRepresentation(), value ) );
-        }
-
-        query.must( subQuery );
-    }
-*/
+    */
 
     private static TermsFilterBuilder buildContentTypeFilter(Collection<ContentTypeKey> contentTypeFilter) {
         return new TermsFilterBuilder(QueryFieldNameResolver.getContentTypeKeyNumericFieldName(),

@@ -9,8 +9,8 @@ package com.enonic.cms.core.search;
 public enum IndexType
 {
     Content,
-    Binaries,
-    Customdata;
+    Binaries;
+    //Customdata;
 
 
     @Override

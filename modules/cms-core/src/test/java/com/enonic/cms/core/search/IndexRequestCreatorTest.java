@@ -7,11 +7,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert.*;
 
-import junit.framework.TestCase;
-
-import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.search.index.ContentIndexData;
 
@@ -42,7 +38,7 @@ public class IndexRequestCreatorTest
         throws Exception
     {
         ContentIndexData data = new ContentIndexData( new ContentKey( "1" ), buildMetadata( 1, "contentdata" ) );
-        data.setCustomdata( buildMetadata( 2, "customdata" ) );
+        //data.setCustomdata( buildMetadata( 2, "customdata" ) );
         data.setExtractedBinaryData( buildMetadata( 3, "binarydata" ) );
 
         Set<IndexRequest> requests = indexRequestCreator.createIndexRequests( data );
@@ -67,10 +63,6 @@ public class IndexRequestCreatorTest
             else if ( type.equals( IndexType.Binaries.toString() ) )
             {
                 binarydataFound = true;
-            }
-            else if ( type.equals( IndexType.Customdata.toString() ) )
-            {
-                customdataFound = true;
             }
         }
 

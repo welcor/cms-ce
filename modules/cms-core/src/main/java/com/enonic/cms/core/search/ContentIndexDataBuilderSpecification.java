@@ -8,16 +8,11 @@ package com.enonic.cms.core.search;
  */
 public final class ContentIndexDataBuilderSpecification
 {
-
     private boolean buildAttachments = false;
 
-    private boolean buildCustomData = false;
-
-
-    public ContentIndexDataBuilderSpecification( boolean buildAttachments, boolean buildCustomData )
+    public ContentIndexDataBuilderSpecification( boolean buildAttachments )
     {
         this.buildAttachments = buildAttachments;
-        this.buildCustomData = buildCustomData;
     }
 
     public boolean doBuildAttachments()
@@ -25,19 +20,13 @@ public final class ContentIndexDataBuilderSpecification
         return buildAttachments;
     }
 
-    public boolean doBuildCustomData()
-    {
-        return buildCustomData;
-    }
-
-
     public static ContentIndexDataBuilderSpecification createBuildAllConfig()
     {
-        return new ContentIndexDataBuilderSpecification( true, true );
+        return new ContentIndexDataBuilderSpecification( true );
     }
 
     public static ContentIndexDataBuilderSpecification createMetadataConfig()
     {
-        return new ContentIndexDataBuilderSpecification( false, false );
+        return new ContentIndexDataBuilderSpecification( false );
     }
 }

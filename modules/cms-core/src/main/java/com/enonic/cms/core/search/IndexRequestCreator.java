@@ -32,14 +32,9 @@ final class IndexRequestCreator
 
         final String id = contentIndexData.getKey().toString();
 
-        if ( contentIndexData.getMetadata() != null )
+        if ( contentIndexData.getContentdata() != null )
         {
-            indexRequests.add( createIndexRequest( id, contentIndexData.getMetadata(), IndexType.Content, null ) );
-        }
-
-        if ( contentIndexData.getCustomdata() != null )
-        {
-            indexRequests.add( createIndexRequest( id, contentIndexData.getCustomdata(), IndexType.Customdata, id ) );
+            indexRequests.add( createIndexRequest( id, contentIndexData.getContentdata(), IndexType.Content, null ) );
         }
 
         if ( contentIndexData.getExtractedBinaryData() != null )
@@ -54,6 +49,7 @@ final class IndexRequestCreator
     private IndexRequest createIndexRequest( String id, XContentBuilder data, IndexType indexType, String parent )
     {
         IndexRequest request = new IndexRequest( indexName ).type( indexType.toString() ).id( id ).source( data );
+
         if ( parent != null )
         {
             request.parent( parent );

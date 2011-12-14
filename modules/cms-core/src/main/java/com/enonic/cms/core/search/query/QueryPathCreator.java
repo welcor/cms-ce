@@ -17,11 +17,7 @@ public class QueryPathCreator
     {
         QueryPath queryPath = new QueryPath( path );
 
-        if ( StringUtils.startsWith( path, "data" ) )
-        {
-            queryPath.setRenderAsHasChildQuery( true ).setIndexType( IndexType.Customdata );
-        }
-        else if ( StringUtils.startsWith( path, "attachment" ) )
+        if ( StringUtils.startsWith( path, "attachment" ) )
         {
             queryPath.setRenderAsHasChildQuery( true ).setIndexType( IndexType.Binaries );
         }
@@ -32,6 +28,7 @@ public class QueryPathCreator
 
         return queryPath;
     }
+
 
 
 }

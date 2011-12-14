@@ -40,23 +40,13 @@ public final class ContentIndexDataBuilderImpl
         ContentIndexData contentIndexData = null;
         try
         {
-            contentIndexData = new ContentIndexData( content.getContentKey(), buildMetadata( content ) );
+            final XContentBuilder contentData = buildContentdata( content );
+
+            contentIndexData = new ContentIndexData( content.getContentKey(), contentData );
         }
         catch ( Exception e )
         {
             throw new ContentIndexDataBuilderException( "Faild to build index-data for content", e );
-        }
-
-        if ( spec.doBuildCustomData() )
-        {
-            try
-            {
-                contentIndexData.setCustomdata( buildCustomData( content ) );
-            }
-            catch ( Exception e )
-            {
-                throw new ContentIndexDataBuilderException( "Failed to build index-data for content-data", e );
-            }
         }
 
         if ( spec.doBuildAttachments() )
@@ -74,7 +64,7 @@ public final class ContentIndexDataBuilderImpl
         return contentIndexData;
     }
 
-    private XContentBuilder buildMetadata( ContentDocument content )
+    private XContentBuilder buildContentdata( ContentDocument content )
         throws Exception
     {
         final XContentBuilder result = XContentFactory.jsonBuilder();
@@ -83,29 +73,16 @@ public final class ContentIndexDataBuilderImpl
 
         addCategory( content, result );
         addContentType( content, result );
-        //addSections(content, result);
+        addSections( content, result );
 
         addStandardValues( result, content );
 
-        result.endObject();
-
-        return result;
-    }
-
-    private XContentBuilder buildCustomData( ContentDocument content )
-        throws Exception
-    {
         Collection<UserDefinedField> userDefinedFields = content.getUserDefinedFields();
-
-        if ( userDefinedFields.isEmpty() )
+        if ( !userDefinedFields.isEmpty() )
         {
-            return null;
+            addUserDefinedValues( result, userDefinedFields );
         }
 
-        final XContentBuilder result = XContentFactory.jsonBuilder();
-        result.startObject();
-        addField( "key", new Double( content.getContentKey().toInt() ), result );
-        addUserDefinedValues( result, userDefinedFields );
         result.endObject();
 
         return result;
@@ -197,26 +174,26 @@ public final class ContentIndexDataBuilderImpl
     private void addSections( ContentDocument content, XContentBuilder result )
         throws Exception
     {
-//        final ContentLocations contentLocations = content.getContentLocations();
-//
-//        if ( !contentLocations.hasLocations() )
-//        {
-//            return;
-//        }
-//
-//        result.startArray( "contentlocations" );
-//
-//        for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
-//        {
-//            result.startObject();
-//            addField( "home", Boolean.toString( contentLocation.isUserDefinedSectionHome() ), result );
-//            addField( "menuitemkey", contentLocation.getMenuItemKey().toString(), result );
-//            addField( "sitekey", contentLocation.getSiteKey().toString(), result );
-//            addField( "menukey", contentLocation.getSiteKey().toString(), result );
-//            result.endObject();
-//        }
-//
-//        result.endArray();
+        final ContentLocations contentLocations = content.getContentLocations();
+
+        if ( contentLocations == null || !contentLocations.hasLocations() )
+        {
+            return;
+        }
+
+        result.startArray( "contentlocations" );
+
+        for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
+        {
+            result.startObject();
+            addField( "home", Boolean.toString( contentLocation.isUserDefinedSectionHome() ), result );
+            addField( "menuitemkey", contentLocation.getMenuItemKey().toString(), result );
+            addField( "sitekey", contentLocation.getSiteKey().toString(), result );
+            addField( "menukey", contentLocation.getSiteKey().toString(), result );
+            result.endObject();
+        }
+
+        result.endArray();
     }
 
     private void addStandardValues( XContentBuilder result, ContentDocument content )

@@ -16,11 +16,11 @@ class IndexFieldNameConstants
 
     public static final String ORDER_FIELD_PREFIX = "orderby" + POST_SEPARATOR;
 
-    public static final String CATEGORY_FIELD_PREFIX = "category" + POST_SEPARATOR;
+    public static final String CATEGORY_FIELD_PREFIX = "category";
 
     public static final String SECTION_FIELD_PREFIX = PRE_SEPARATOR + "contentlocations";
 
-    public static final String CONTENT_TYPE_PREFIX = "contenttype" + POST_SEPARATOR;
+    public static final String CONTENT_TYPE_PREFIX = "contenttype";
 
     public static final String NON_ANALYZED_FIELD_POSTFIX = "._tokenized";
 

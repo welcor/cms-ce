@@ -10,11 +10,11 @@ public class QueryPathCreatorTest
     public void testCreateQueryPath()
     {
         QueryPath startDataPath = QueryPathCreator.createQueryPath( "data" );
-        assertEquals( true, startDataPath.isRenderAsHasChildQuery() );
+        assertEquals( true, startDataPath.doRenderAsHasChildQuery() );
         assertEquals( "customdata", startDataPath.getIndexType().toString() );
 
         QueryPath startAttachmentPath = QueryPathCreator.createQueryPath( "attachment" );
-        assertEquals( true, startAttachmentPath.isRenderAsHasChildQuery() );
+        assertEquals( true, startAttachmentPath.doRenderAsHasChildQuery() );
         assertEquals( "binaries", startAttachmentPath.getIndexType().toString() );
     }
 }

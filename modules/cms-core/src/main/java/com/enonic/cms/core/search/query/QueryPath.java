@@ -19,6 +19,8 @@ public class QueryPath
 
     private boolean renderAsHasChildQuery = false;
 
+    private boolean renderAsFilter = false;
+
     private IndexType indexType;
 
     private String contextRelativePath;
@@ -31,11 +33,6 @@ public class QueryPath
     public void setPath( String path )
     {
         this.path = path;
-    }
-
-    public boolean isRenderAsHasChildQuery()
-    {
-        return renderAsHasChildQuery;
     }
 
     public QueryPath setRenderAsHasChildQuery( boolean renderAsHasChildQuery )

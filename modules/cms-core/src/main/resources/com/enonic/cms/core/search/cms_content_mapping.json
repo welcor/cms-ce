@@ -21,6 +21,10 @@
                     }
                 }
             },
+            "timestamp":{
+                "type":"date",
+                "store" : "yes"
+            },
             "contentlocations":{
                 "properties":{
                     "home":{
@@ -87,6 +91,16 @@
                     "mapping":{
                         "type":"double",
                         "store":"yes"
+                    }
+                }
+            },
+            {
+                "template_general":{
+                    "match":"*",
+                    "mapping":{
+                        "type":"string",
+                        "store":"yes",
+                        "index":"not_analyzed"
                     }
                 }
             }

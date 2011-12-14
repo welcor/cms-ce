@@ -15,6 +15,7 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -128,6 +129,26 @@ public class ContentIndexServiceImpl
             doIndex( indexRequest );
         }
     }
+
+    public void indexBulk( List<ContentDocument> docs )
+    {
+        BulkRequest bulkRequest = new BulkRequest();
+
+        for ( ContentDocument doc : docs )
+        {
+            ContentIndexData contentIndexData = indexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+
+            Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
+
+            for ( IndexRequest indexRequest : indexRequests )
+            {
+                bulkRequest.add( indexRequest );
+            }
+        }
+
+        this.client.bulk( bulkRequest ).actionGet();
+    }
+
 
     private void doIndex( IndexRequest request )
     {

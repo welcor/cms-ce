@@ -3,8 +3,6 @@ package com.enonic.cms.core.search.builder;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
@@ -51,12 +49,12 @@ final class IndexFieldNameResolver
 
     public static String getCategoryKeyFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + "key";
+        return CATEGORY_FIELD_PREFIX + "_key";
     }
 
     public static String getCategoryKeyNumericFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + getNumericField( "key" );
+        return CATEGORY_FIELD_PREFIX + getNumericField( "_key" );
     }
 
     public static String getSectionKeyNumericFieldName()
@@ -66,22 +64,22 @@ final class IndexFieldNameResolver
 
     public static String getCategoryNameFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + "name";
+        return CATEGORY_FIELD_PREFIX + "_name";
     }
 
     public static String getContentTypeKeyFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "key";
+        return CONTENT_TYPE_PREFIX + "_" + "key";
     }
 
     public static String getContentTypeKeyNumericFieldName()
     {
-        return CONTENT_TYPE_PREFIX + getNumericField( "key" );
+        return CONTENT_TYPE_PREFIX + "_" + getNumericField( "key" );
     }
 
     public static String getContentTypeNameFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "name";
+        return CONTENT_TYPE_PREFIX;
     }
 
 }

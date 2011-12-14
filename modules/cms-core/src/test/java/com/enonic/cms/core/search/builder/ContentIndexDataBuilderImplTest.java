@@ -49,6 +49,8 @@ public class ContentIndexDataBuilderImplTest
         assertEquals( "1", metadata.publishto );
         assertEquals( "2011-01-09T23:00:00.000Z", metadata.publishfrom );
         assertEquals( "2011-03-09T23:00:00.000Z", metadata.timestamp );
+        assertEquals( "mycontenttype", metadata.contenttype );
+        assertEquals( (int) 3, (int) metadata.contenttype_key );
     }
 
     /*

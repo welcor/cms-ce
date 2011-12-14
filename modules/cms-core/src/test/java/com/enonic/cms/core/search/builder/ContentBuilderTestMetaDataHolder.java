@@ -30,6 +30,11 @@ public class ContentBuilderTestMetaDataHolder
 
     Integer status;
 
+    String contenttype;
+    
+    Integer contenttype_key;
+
+    
     public static ContentBuilderTestMetaDataHolder createMetaDataHolder( String json )
     {
         Gson gson = new Gson();

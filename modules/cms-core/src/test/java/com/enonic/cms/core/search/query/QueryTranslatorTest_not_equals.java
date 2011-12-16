@@ -4,25 +4,22 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.ContentSearchQuery;
 
 import static junit.framework.Assert.assertEquals;
 
 public class QueryTranslatorTest_not_equals
-        extends QueryTranslatorBaseTest
+    extends QueryTranslatorBaseTest
 {
 
     @Test
     public void testNotQuery_key()
-            throws Exception
+        throws Exception
     {
         String expected_search_result =
-                "{\n" + "  \"from\" : 0,\n" + "  \"size\" : "+ QUERY_DEFAULT_SIZE +",\n" + "  \"query\" : {\n" + "    \"bool\" : {\n" +
-                        "      \"must\" : {\n" + "        \"match_all\" : {\n" + "        }\n" + "      },\n" +
-                        "      \"must_not\" : {\n" + "        \"term\" : {\n" + "          \"key_numeric\" : 100.0\n" +
-                        "        }\n" + "      }\n" + "    }\n" + "  },\n" + "  \"filter\" : {\n" +
-                        "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" +
-                        "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"bool\" : {\r\n" + "      \"must\" : {\r\n" + "        \"match_all\" : {\r\n" + "        }\r\n" + "      },\r\n" +
+                "      \"must_not\" : {\r\n" + "        \"term\" : {\r\n" + "          \"key_numeric\" : 100.0\r\n" + "        }\r\n" +
+                "      }\r\n" + "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key != 100" );
 

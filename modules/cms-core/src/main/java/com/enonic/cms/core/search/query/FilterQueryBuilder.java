@@ -22,11 +22,13 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
  * Time: 9:27 AM
  */
 public class FilterQueryBuilder
-        extends BaseQueryBuilder {
+    extends BaseQueryBuilder
+{
 
     private final static boolean cacheFilters = true;
 
-    public static void buildFilterQuery(SearchSourceBuilder builder, ContentIndexQuery query) {
+    public static void buildFilterQuery( SearchSourceBuilder builder, ContentIndexQuery query )
+    {
         boolean applyFilter = false;
 
         BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
@@ -35,28 +37,41 @@ public class FilterQueryBuilder
 
         final Collection<ContentKey> contentFilter = query.getContentFilter();
 
-        if (contentFilter != null && !contentFilter.isEmpty()) {
-            filtersToApply.add(buildContentFilter(contentFilter));
+        if ( contentFilter != null && !contentFilter.isEmpty() )
+        {
+            filtersToApply.add( buildContentFilter( contentFilter ) );
         }
 
-        if (query.hasSectionFilter()) {
-            filtersToApply.add(buildSectionFilter(query.getSectionFilter()));
+        if ( query.hasSectionFilter() )
+        {
+            filtersToApply.add( buildSectionFilter( query.getSectionFilter() ) );
         }
 
-        if (query.hasCategoryFilter()) {
-            filtersToApply.add(buildCategoryFilter(query.getCategoryFilter()));
+        if ( query.hasCategoryFilter() )
+        {
+            filtersToApply.add( buildCategoryFilter( query.getCategoryFilter() ) );
         }
 
-        if (query.hasContentTypeFilter()) {
-            filtersToApply.add(buildContentTypeFilter(query.getContentTypeFilter()));
+        if ( query.hasContentTypeFilter() )
+        {
+            filtersToApply.add( buildContentTypeFilter( query.getContentTypeFilter() ) );
         }
 
-        if (filtersToApply.isEmpty()) {
+        if ( filtersToApply.isEmpty() )
+        {
             // Do nothing
-        } else if (filtersToApply.size() == 1) {
-            builder.filter(filtersToApply.get(0));
-        } else {
-            builder.filter(boolFilterBuilder);
+        }
+        else if ( filtersToApply.size() == 1 )
+        {
+            builder.filter( filtersToApply.get( 0 ) );
+        }
+        else
+        {
+            for ( TermsFilterBuilder filter : filtersToApply )
+            {
+                boolFilterBuilder.must( filter );
+            }
+            builder.filter( boolFilterBuilder );
         }
     }
 
@@ -96,42 +111,49 @@ public class FilterQueryBuilder
         }
     */
 
-    private static TermsFilterBuilder buildContentTypeFilter(Collection<ContentTypeKey> contentTypeFilter) {
-        return new TermsFilterBuilder(QueryFieldNameResolver.getContentTypeKeyNumericFieldName(),
-                getKeysAsList(contentTypeFilter).toArray());
+    private static TermsFilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
+    {
+        return new TermsFilterBuilder( QueryFieldNameResolver.getContentTypeKeyNumericFieldName(),
+                                       getKeysAsList( contentTypeFilter ).toArray() );
     }
 
-    private static TermsFilterBuilder buildContentFilter(Collection<ContentKey> contentKeys) {
-        return new TermsFilterBuilder(QueryFieldNameResolver.getNumericField("key"),
-                getKeysAsList(contentKeys).toArray());
+    private static TermsFilterBuilder buildContentFilter( Collection<ContentKey> contentKeys )
+    {
+        return new TermsFilterBuilder( QueryFieldNameResolver.getNumericField( "key" ), getKeysAsList( contentKeys ).toArray() );
     }
 
 
-    private static TermsFilterBuilder buildSectionFilter(Collection<MenuItemEntity> menuItemEntities) {
-        return new TermsFilterBuilder(QueryFieldNameResolver.getSectionKeyNumericFieldName(),
-                getSectionKeysAsList(menuItemEntities).toArray());
+    private static TermsFilterBuilder buildSectionFilter( Collection<MenuItemEntity> menuItemEntities )
+    {
+        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(),
+                                       getSectionKeysAsList( menuItemEntities ).toArray() );
     }
 
-    private static TermsFilterBuilder buildCategoryFilter(Collection<CategoryKey> keys) {
-        return new TermsFilterBuilder(QueryFieldNameResolver.getCategoryKeyNumericFieldName(), getKeysAsList(keys).toArray());
+    private static TermsFilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )
+    {
+        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyNumericFieldName(), getKeysAsList( keys ).toArray() );
     }
 
-    private static <T> List<String> getKeysAsList(Collection<T> keys) {
+    private static <T> List<String> getKeysAsList( Collection<T> keys )
+    {
         List<String> keysAsStringList = new ArrayList<String>();
 
-        for (T key : keys) {
-            keysAsStringList.add(key.toString());
+        for ( T key : keys )
+        {
+            keysAsStringList.add( key.toString() );
         }
 
         return keysAsStringList;
 
     }
 
-    private static List<String> getSectionKeysAsList(Collection<MenuItemEntity> menuItemEntities) {
+    private static List<String> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
+    {
         List<String> menuItemKeysAsString = new ArrayList<String>();
 
-        for (MenuItemEntity entity : menuItemEntities) {
-            menuItemKeysAsString.add("" + entity.getKey());
+        for ( MenuItemEntity entity : menuItemEntities )
+        {
+            menuItemKeysAsString.add( "" + entity.getKey() );
         }
 
         return menuItemKeysAsString;

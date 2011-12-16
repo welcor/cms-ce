@@ -15,9 +15,8 @@ public class QueryTranslatorTest_ft
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"term\" : {\n" +
-                "      \"title._tokenized\" : \"world\"\n" + "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" +
-                "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"title._tokenized\" : \"world\"\r\n" + "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "title FT \"world\"" );
 

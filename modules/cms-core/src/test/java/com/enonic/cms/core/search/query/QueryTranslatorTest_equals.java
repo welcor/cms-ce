@@ -4,7 +4,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.ContentSearchQuery;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -17,9 +16,8 @@ public class QueryTranslatorTest_equals
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"term\" : {\n" +
-                "      \"key\" : \"100\"\n" + "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" +
-                "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"key\" : \"100\"\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "key = '100'" );
 
@@ -34,9 +32,8 @@ public class QueryTranslatorTest_equals
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"term\" : {\n" +
-                "      \"key_numeric\" : 100.0\n" + "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" +
-                "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"key_numeric\" : 100.0\r\n" + "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key = 100" );
 
@@ -50,9 +47,8 @@ public class QueryTranslatorTest_equals
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"term\" : {\n" +
-                "      \"key_numeric\" : 100.0\n" + "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" +
-                "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"key_numeric\" : 100.0\r\n" + "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key = 100.0" );
 

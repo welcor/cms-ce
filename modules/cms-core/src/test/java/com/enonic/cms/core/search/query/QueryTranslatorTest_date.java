@@ -16,13 +16,14 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : 2147483647,\n" + "  \"query\" : {\n" + "    \"bool\" : {\n" +
-                "      \"must\" : [ {\n" + "        \"range\" : {\n" + "          \"timestamp\" : {\n" +
-                "            \"from\" : \"2011-11-15t00:00:00.000+02:00\",\n" + "            \"to\" : null,\n" +
-                "            \"include_lower\" : true,\n" + "            \"include_upper\" : true\n" + "          }\n" + "        }\n" +
-                "      }, {\n" + "        \"range\" : {\n" + "          \"timestamp\" : {\n" + "            \"from\" : null,\n" +
-                "            \"to\" : \"2011-11-15t23:59:59.999+02:00\",\n" + "            \"include_lower\" : true,\n" +
-                "            \"include_upper\" : true\n" + "          }\n" + "        }\n" + "      } ]\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : 2147483647,\r\n" + "  \"query\" : {\r\n" + "    \"bool\" : {\r\n" +
+                "      \"must\" : [ {\r\n" + "        \"range\" : {\r\n" + "          \"timestamp\" : {\r\n" +
+                "            \"from\" : \"2011-11-15t00:00:00.000+02:00\",\r\n" + "            \"to\" : null,\r\n" +
+                "            \"include_lower\" : true,\r\n" + "            \"include_upper\" : true\r\n" + "          }\r\n" +
+                "        }\r\n" + "      }, {\r\n" + "        \"range\" : {\r\n" + "          \"timestamp\" : {\r\n" +
+                "            \"from\" : null,\r\n" + "            \"to\" : \"2011-11-15t23:59:59.999+02:00\",\r\n" +
+                "            \"include_lower\" : true,\r\n" + "            \"include_upper\" : true\r\n" + "          }\r\n" +
+                "        }\r\n" + "      } ]\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp = '2011-11-15'" );
 
@@ -36,13 +37,14 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : 2147483647,\n" + "  \"query\" : {\n" + "    \"bool\" : {\n" +
-                "      \"must\" : [ {\n" + "        \"range\" : {\n" + "          \"timestamp\" : {\n" +
-                "            \"from\" : \"2011-11-15t00:00:00.000+02:00\",\n" + "            \"to\" : null,\n" +
-                "            \"include_lower\" : true,\n" + "            \"include_upper\" : true\n" + "          }\n" + "        }\n" +
-                "      }, {\n" + "        \"range\" : {\n" + "          \"timestamp\" : {\n" + "            \"from\" : null,\n" +
-                "            \"to\" : \"2011-11-15t23:59:59.000+02:00\",\n" + "            \"include_lower\" : true,\n" +
-                "            \"include_upper\" : true\n" + "          }\n" + "        }\n" + "      } ]\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : 2147483647,\r\n" + "  \"query\" : {\r\n" + "    \"bool\" : {\r\n" +
+                "      \"must\" : [ {\r\n" + "        \"range\" : {\r\n" + "          \"timestamp\" : {\r\n" +
+                "            \"from\" : \"2011-11-15t00:00:00.000+02:00\",\r\n" + "            \"to\" : null,\r\n" +
+                "            \"include_lower\" : true,\r\n" + "            \"include_upper\" : true\r\n" + "          }\r\n" +
+                "        }\r\n" + "      }, {\r\n" + "        \"range\" : {\r\n" + "          \"timestamp\" : {\r\n" +
+                "            \"from\" : null,\r\n" + "            \"to\" : \"2011-11-15t23:59:59.000+02:00\",\r\n" +
+                "            \"include_lower\" : true,\r\n" + "            \"include_upper\" : true\r\n" + "          }\r\n" +
+                "        }\r\n" + "      } ]\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp >= '2011-11-15T00:00:00' AND timestamp <= '2011-11-15T23:59:59'" );
 
@@ -56,9 +58,10 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"timestamp\" : {\n" + "        \"from\" : \"2011-11-15t00:00:00.000+02:00\",\n" + "        \"to\" : null,\n" +
-                "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"timestamp\" : {\r\n" + "        \"from\" : \"2011-11-15t00:00:00.000+02:00\",\r\n" +
+                "        \"to\" : null,\r\n" + "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" +
+                "      }\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp > '2011-11-15'" );
 
@@ -72,9 +75,10 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"timestamp\" : {\n" + "        \"from\" : null,\n" + "        \"to\" : \"2011-11-15t00:00:00.000+02:00\",\n" +
-                "        \"include_lower\" : true,\n" + "        \"include_upper\" : false\n" + "      }\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"timestamp\" : {\r\n" + "        \"from\" : null,\r\n" +
+                "        \"to\" : \"2011-11-15t00:00:00.000+02:00\",\r\n" + "        \"include_lower\" : true,\r\n" +
+                "        \"include_upper\" : false\r\n" + "      }\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp < '2011-11-15'" );
 
@@ -88,9 +92,10 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"timestamp\" : {\n" + "        \"from\" : null,\n" + "        \"to\" : \"2011-11-15t23:59:59.999+02:00\",\n" +
-                "        \"include_lower\" : true,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"timestamp\" : {\r\n" + "        \"from\" : null,\r\n" +
+                "        \"to\" : \"2011-11-15t23:59:59.999+02:00\",\r\n" + "        \"include_lower\" : true,\r\n" +
+                "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp <= '2011-11-15'" );
 
@@ -104,8 +109,8 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"term\" : {\n" +
-                "      \"timestamp\" : \"\"\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"timestamp\" : \"\"\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp = ''" );
 
@@ -119,8 +124,8 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"term\" : {\n" +
-                "      \"timestamp\" : \"12345678\"\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"timestamp\" : \"12345678\"\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp = '12345678'" );
 
@@ -134,8 +139,8 @@ public class QueryTranslatorTest_date
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"term\" : {\n" +
-                "      \"timestamp\" : \"2011/11/15\"\n" + "    }\n" + "  }\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"timestamp\" : \"2011/11/15\"\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp = '2011/11/15'" );
 

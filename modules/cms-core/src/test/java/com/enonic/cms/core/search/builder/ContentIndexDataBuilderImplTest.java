@@ -51,6 +51,26 @@ public class ContentIndexDataBuilderImplTest
         assertEquals( "2011-03-09T23:00:00.000Z", metadata.timestamp );
         assertEquals( "mycontenttype", metadata.contenttype );
         assertEquals( (int) 3, (int) metadata.contenttype_key );
+
+        assertEquals( 12.0, metadata.assignee_key );
+        assertEquals( "assigneeqname", metadata.assignee_qualifiedname );
+
+        assertEquals( 14.0, metadata.assigner_key );
+        assertEquals( "assignerqname", metadata.assigner_qualifiedname );
+
+        assertEquals( "2011-03-09T23:00:00.000Z", metadata.assignmentduedate );
+
+        assertEquals( 10.0, metadata.modifier_key );
+        assertEquals( "modifierqname", metadata.modifier_qualifiedname );
+
+        assertEquals( 11.0, metadata.owner_key );
+        assertEquals( "ownerqname", metadata.owner_qualifiedname );
+
+        assertEquals( new Integer( 1 ), metadata.priority );
+
+        assertEquals( 2.0, metadata.category_key );
+        assertEquals( "mycategory", metadata.category_name );
+
     }
 
     /*

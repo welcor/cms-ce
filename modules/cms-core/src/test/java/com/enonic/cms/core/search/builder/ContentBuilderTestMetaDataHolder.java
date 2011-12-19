@@ -10,13 +10,7 @@ import com.google.gson.Gson;
  */
 public class ContentBuilderTestMetaDataHolder
 {
-    Double key_numeric;
-
     Double key;
-
-    String orderby_key;
-
-    String orderby_title;
 
     String title;
 
@@ -26,15 +20,36 @@ public class ContentBuilderTestMetaDataHolder
 
     String timestamp;
 
-    Integer status_numeric;
-
     Integer status;
 
     String contenttype;
-    
+
     Integer contenttype_key;
 
-    
+    Double assignee_key;
+
+    String assignee_qualifiedname;
+
+    Double assigner_key;
+
+    String assigner_qualifiedname;
+
+    String assignmentduedate;
+
+    Double modifier_key;
+
+    String modifier_qualifiedname;
+
+    Double owner_key;
+
+    String owner_qualifiedname;
+
+    Integer priority;
+
+    Double category_key;
+
+    String category_name;
+
     public static ContentBuilderTestMetaDataHolder createMetaDataHolder( String json )
     {
         Gson gson = new Gson();

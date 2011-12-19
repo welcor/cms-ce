@@ -9,7 +9,6 @@ import org.springframework.util.StopWatch;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQueryExprParser;
-import com.enonic.cms.core.content.index.optimizer.LogicalOrOptimizer;
 import com.enonic.cms.core.content.index.queryexpression.CompareExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
@@ -39,7 +38,7 @@ public final class QueryTranslator
         // final QueryExpr queryExpr = QueryParser.newInstance().parse( contentIndexQuery.getQuery() );
 
         final Expression expression = queryExpr.getExpr();
-        final Expression optimizedExpr = new LogicalOrOptimizer().optimize( expression );
+        final Expression optimizedExpr = expression; //new LogicalOrOptimizer().optimize( expression );
 
         final QueryBuilder queryBuilder = buildExpr( optimizedExpr );
 
@@ -82,7 +81,7 @@ public final class QueryTranslator
             return buildNotExpr( (NotExpr) expr );
         }
 
-        throw new RuntimeException( expr.getClass().getName() + " expression not supported" );
+        throw new QueryTranslatorException( expr.getClass().getName() + " expression not supported" );
     }
 
 
@@ -176,6 +175,7 @@ public final class QueryTranslator
         }
     }
 
+    // TODO: Why? Should not have to create a match all and then add the negated?
     private QueryBuilder buildNotQuery( QueryBuilder negated )
     {
         return QueryBuilders.boolQuery().must( QueryBuilders.matchAllQuery() ).mustNot( negated );

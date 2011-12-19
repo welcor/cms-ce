@@ -16,11 +16,20 @@ public class RangeQueryBuilderTest
     @Test
     public void testBuildRangeQuery_key_string()
     {
-        String expected_result =
-            "{\r\n" + "  \"range\" : {\r\n" + "    \"key\" : {\r\n" + "      \"from\" : \"100\",\r\n" + "      \"to\" : null,\r\n" +
-                "      \"include_lower\" : false,\r\n" + "      \"include_upper\" : true\r\n" + "    }\r\n" + "  }\r\n" + "}";
+        String expected_result = "{\n" +
+            "  \"range\" : {\n" +
+            "    \"key\" : {\n" +
+            "      \"from\" : \"100\",\n" +
+            "      \"to\" : null,\n" +
+            "      \"include_lower\" : false,\n" +
+            "      \"include_upper\" : true\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", "100", null, false, true );
+
+        System.out.println( query.toString() );
 
         assertEquals( expected_result, query.toString() );
     }
@@ -28,12 +37,20 @@ public class RangeQueryBuilderTest
     @Test
     public void testBuildRangeQuery_key_int()
     {
-        String expected_result =
-            "{\r\n" + "  \"range\" : {\r\n" + "    \"key_numeric\" : {\r\n" + "      \"from\" : 100,\r\n" + "      \"to\" : null,\r\n" +
-                "      \"include_lower\" : false,\r\n" + "      \"include_upper\" : true\r\n" + "    }\r\n" + "  }\r\n" + "}";
+        String expected_result = "{\n" +
+            "  \"range\" : {\n" +
+            "    \"key_numeric\" : {\n" +
+            "      \"from\" : 100,\n" +
+            "      \"to\" : null,\n" +
+            "      \"include_lower\" : false,\n" +
+            "      \"include_upper\" : true\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", 100, null, false, true );
 
+        System.out.println( query.toString() );
         assertEquals( expected_result, query.toString() );
     }
 
@@ -46,11 +63,19 @@ public class RangeQueryBuilderTest
     @Test
     public void testBuildRangeQuery_key_int_low_include()
     {
-        String expected_result =
-            "{\r\n" + "  \"range\" : {\r\n" + "    \"key_numeric\" : {\r\n" + "      \"from\" : 100,\r\n" + "      \"to\" : 300,\r\n" +
-                "      \"include_lower\" : true,\r\n" + "      \"include_upper\" : true\r\n" + "    }\r\n" + "  }\r\n" + "}";
+        String expected_result = "{\n" +
+            "  \"range\" : {\n" +
+            "    \"key_numeric\" : {\n" +
+            "      \"from\" : 100,\n" +
+            "      \"to\" : 300,\n" +
+            "      \"include_lower\" : true,\n" +
+            "      \"include_upper\" : true\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", 100, 300, true, true );
+        System.out.println( query.toString() );
 
         assertEquals( expected_result, query.toString() );
     }

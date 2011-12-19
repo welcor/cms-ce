@@ -7,9 +7,8 @@ import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderFieldExpr;
 
-import static junit.framework.Assert.assertEquals;
-
 public class OrderQueryBuilderTest
+    extends QueryTranslatorBaseTest
 {
 
     @Test
@@ -30,6 +29,6 @@ public class OrderQueryBuilderTest
 //        assertEquals( "{\n" + "  \"sort\" : [ {\n" + "    \"key_numeric\" : {\n" + "      \"order\" : \"desc\"\n" +
 //                              "    }\n" + "  } ]\n" + "}", sourceBuilder.toString() );
 
-        assertEquals( expected_result, sourceBuilder.toString() );
+        compareStringsIgnoreFormatting( expected_result, sourceBuilder.toString() );
     }
 }

@@ -43,7 +43,7 @@ public class IndexRequestCreatorTest
 
         Set<IndexRequest> requests = indexRequestCreator.createIndexRequests( data );
 
-        assertEquals( requests.size(), 3 );
+        assertEquals( 2, requests.size() );
 
         boolean contentWasFirst = false;
         boolean customdataFound = false, binarydataFound = false;
@@ -66,7 +66,7 @@ public class IndexRequestCreatorTest
             }
         }
 
-        assertTrue( contentWasFirst && binarydataFound && customdataFound );
+        assertTrue( contentWasFirst && binarydataFound  );
 
     }
 

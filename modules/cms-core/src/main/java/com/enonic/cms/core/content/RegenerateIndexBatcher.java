@@ -66,7 +66,7 @@ public class RegenerateIndexBatcher
 
                 long start = System.currentTimeMillis();
 
-                indexService.regenerateIndex( nextContentKeys );
+                indexService.regenerateIndexBatched( nextContentKeys );
 
                 long end = System.currentTimeMillis();
 
@@ -75,6 +75,12 @@ public class RegenerateIndexBatcher
                 currentIndex = currentIndex + batchSize;
             }
         }
+
+    }
+
+    public void optimizeIndex()
+    {
+        indexService.optimizeIndex();
     }
 
     private List<ContentKey> getNextContentKeys( List<ContentKey> allContentKeys, int currentIndex, int batchSize )

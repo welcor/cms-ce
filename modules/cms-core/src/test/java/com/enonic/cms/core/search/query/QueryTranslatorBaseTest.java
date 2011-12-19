@@ -109,6 +109,7 @@ public abstract class QueryTranslatorBaseTest
 
         if ( !expectedStripped.equals( actualStripped ) )
         {
+            // Just to get the nice "show diff" feature in IDEA
             assertEquals( expected, actual );
         }
 

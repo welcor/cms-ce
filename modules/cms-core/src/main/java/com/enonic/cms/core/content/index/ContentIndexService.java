@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.content.index;
 
+import java.util.List;
+
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -41,6 +43,8 @@ public interface ContentIndexService
      */
     public void index( ContentDocument doc, boolean deleteExisting );
 
+    public void indexBulk( List<ContentDocument> docs );
+
     /**
      * Return true if content is indexed.
      */
@@ -62,6 +66,9 @@ public interface ContentIndexService
     public AggregatedResult query( AggregatedQuery query );
 
     public void createIndex();
+
+    public void optimize();
+
 }
 
 

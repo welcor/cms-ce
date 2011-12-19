@@ -92,6 +92,11 @@ public final class ContentIndexServiceImpl
         doIndex( doc, deleteExisting );
     }
 
+    public void indexBulk( List<ContentDocument> docs )
+    {
+        throw new RuntimeException( "Not implemented" );
+    }
+
     /**
      * @inheritDoc
      */
@@ -596,5 +601,10 @@ public final class ContentIndexServiceImpl
             }
         }
 
+    }
+
+    public void optimize()
+    {
+        // DO NOTHING
     }
 }

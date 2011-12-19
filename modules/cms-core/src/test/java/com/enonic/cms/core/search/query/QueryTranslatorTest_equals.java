@@ -57,4 +57,17 @@ public class QueryTranslatorTest_equals
         assertEquals( expected_search_result, builder.toString() );
     }
 
+    @Test
+    public void testDateStuff()
+        throws Exception
+    {
+
+        ContentIndexQuery query = createContentQuery( "modified = '01-01-2010'" );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        System.out.println( builder.toString() );
+    }
+
+
 }

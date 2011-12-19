@@ -20,11 +20,14 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 public class ReindexContentToolServiceImpl
     implements ReindexContentToolService
 {
+
     private IndexService indexService;
 
     private ContentService contentService;
 
-     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 86400)
+    protected static final int BATCH_SIZE = 10;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 86400)
     public void reindexAllContent( List<String> logEntries )
     {
         logEntries.clear();
@@ -34,6 +37,8 @@ public class ReindexContentToolServiceImpl
         Collection<ContentTypeEntity> contentTypes = contentService.getAllContentTypes();
 
         logEntries.add( "Generating indexes for " + contentTypes.size() + " content types..." );
+
+        RegenerateIndexBatcher batcher = null;
 
         int count = 1;
         for ( ContentTypeEntity contentType : contentTypes )
@@ -47,10 +52,9 @@ public class ReindexContentToolServiceImpl
 
             long start = System.currentTimeMillis();
 
-            RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService );
-            final int batchSize = 10;
+            batcher = new RegenerateIndexBatcher( indexService, contentService );
 
-            batcher.regenerateIndex( contentType, batchSize, logEntries );
+            batcher.regenerateIndex( contentType, BATCH_SIZE, logEntries );
 
             long end = System.currentTimeMillis();
 
@@ -63,6 +67,7 @@ public class ReindexContentToolServiceImpl
         logEntries.add( "Reindexing of all content types was successful!" );
         logEntries.add( "Total time used: " + timeUsed );
 
+        batcher.optimizeIndex();
     }
 
     @Autowired

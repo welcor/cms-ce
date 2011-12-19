@@ -3,6 +3,7 @@ package com.enonic.cms.core.search;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
@@ -16,6 +17,7 @@ import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -62,6 +64,8 @@ public class ContentIndexServiceImpl
     private Client client;
 
     private IndexRequestCreator indexRequestCreator;
+
+    private Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
 
     @Autowired
     private ContentIndexDataBuilder indexDataBuilder;
@@ -146,7 +150,8 @@ public class ContentIndexServiceImpl
             }
         }
 
-        this.client.bulk( bulkRequest ).actionGet();
+        BulkResponse resp = this.client.bulk( bulkRequest ).actionGet();
+        LOG.info( "Bulk index done in " + resp.getTookInMillis() + " ms" );
     }
 
 
@@ -194,7 +199,7 @@ public class ContentIndexServiceImpl
         try
         {
             initalizeIndex( false );
-            optimizeIndex();
+            optimize();
         }
         catch ( Exception e )
         {
@@ -221,11 +226,18 @@ public class ContentIndexServiceImpl
         addMapping();
     }
 
-    public OptimizeResponse optimizeIndex()
+    public void optimize()
     {
         OptimizeRequest request = new OptimizeRequest( INDEX_NAME ).maxNumSegments( 1 ).waitForMerge( true );
+
+        long start = System.currentTimeMillis();
+
         OptimizeResponse response = this.client.admin().indices().optimize( request ).actionGet();
-        return response;
+
+        long finished = System.currentTimeMillis();
+
+        LOG.info( "Optimized index for " + response.successfulShards() + " shards in " + ( finished - start ) + " ms" );
+
     }
 
     private DeleteIndexResponse deleteIndex()

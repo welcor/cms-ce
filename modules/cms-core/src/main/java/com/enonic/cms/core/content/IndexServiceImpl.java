@@ -6,6 +6,7 @@ package com.enonic.cms.core.content;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -88,6 +89,39 @@ public final class IndexServiceImpl
         contentDao.getHibernateTemplate().clear();
     }
 
+    public void regenerateIndexBatched( List<ContentKey> contentKeys )
+    {
+        List<ContentDocument> contentToIndex = new ArrayList<ContentDocument>();
+        List<ContentEntity> contentToRemove = new ArrayList<ContentEntity>();
+
+        for ( ContentKey contentKey : contentKeys )
+        {
+            ContentEntity currentContent = contentDao.findByKey( contentKey );
+
+            if ( currentContent.isDeleted() )
+            {
+                contentToRemove.add( currentContent );
+            }
+            else
+            {
+                ContentDocument indexedDoc = insertStandardValues( currentContent );
+                insertUserDefinedIndexValues( currentContent, indexedDoc );
+                insertBinaryIndexValues( currentContent, indexedDoc );
+                contentToIndex.add( indexedDoc );
+            }
+        }
+
+        if ( contentToIndex.isEmpty() )
+        {
+            return;
+        }
+
+        contentIndexService.indexBulk( contentToIndex );
+
+        contentDao.getHibernateTemplate().flush();
+    }
+
+
     public void index( ContentEntity content )
     {
 //        doIndex( content, true );
@@ -97,6 +131,11 @@ public final class IndexServiceImpl
     public void index( ContentEntity content, boolean deleteExisting )
     {
         doIndex( content, deleteExisting );
+    }
+
+    public void optimizeIndex()
+    {
+        contentIndexService.optimize();
     }
 
     private int doRemoveIndex( ContentEntity content )

@@ -15,9 +15,9 @@ public class OrderQueryBuilderTest
     @Test
     public void testStuff()
     {
-        String expected_esult =
-                "{\n" + "  \"sort\" : [ {\n" + "    \"orderby_key\" : {\n" + "      \"order\" : \"desc\"\n" +
-                        "    }\n" + "  } ]\n" + "}";
+        String expected_result =
+            "{\r\n" + "  \"sort\" : [ {\r\n" + "    \"orderby_key\" : {\r\n" + "      \"order\" : \"desc\"\r\n" + "    }\r\n" +
+                "  } ]\r\n" + "}";
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
@@ -30,6 +30,6 @@ public class OrderQueryBuilderTest
 //        assertEquals( "{\n" + "  \"sort\" : [ {\n" + "    \"key_numeric\" : {\n" + "      \"order\" : \"desc\"\n" +
 //                              "    }\n" + "  } ]\n" + "}", sourceBuilder.toString() );
 
-        assertEquals( expected_esult, sourceBuilder.toString() );
+        assertEquals( expected_result, sourceBuilder.toString() );
     }
 }

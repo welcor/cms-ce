@@ -28,11 +28,11 @@ public class QueryTranslatorTest_filters
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
-                "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
-                "          \"category_key_numeric\" : [ \"15\" ]\n" + "        }\n" + "      },\n" + "      \"must\" : {\n" +
-                "        \"terms\" : {\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" + "        }\n" + "      }\n" +
-                "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"match_all\" : {\r\n" + "    }\r\n" + "  },\r\n" + "  \"filter\" : {\r\n" + "    \"bool\" : {\r\n" +
+                "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" + "          \"category_key_numeric\" : [ \"15\" ]\r\n" +
+                "        }\r\n" + "      },\r\n" + "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" +
+                "          \"contenttype_key_numeric\" : [ \"1001\" ]\r\n" + "        }\r\n" + "      }\r\n" + "    }\r\n" + "  }\r\n}";
 
         Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 15 ) );
@@ -52,13 +52,13 @@ public class QueryTranslatorTest_filters
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"key_numeric\" : {\n" + "        \"from\" : 100.0,\n" + "        \"to\" : null,\n" +
-                "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
-                "          \"category_key_numeric\" : [ \"15\" ]\n" + "        }\n" + "      },\n" + "      \"must\" : {\n" +
-                "        \"terms\" : {\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" + "        }\n" + "      }\n" +
-                "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"key_numeric\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
+                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
+                "  },\r\n" + "  \"filter\" : {\r\n" + "    \"bool\" : {\r\n" + "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" +
+                "          \"category_key_numeric\" : [ \"15\" ]\r\n" + "        }\r\n" + "      },\r\n" + "      \"must\" : {\r\n" +
+                "        \"terms\" : {\r\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\r\n" + "        }\r\n" + "      }\r\n" +
+                "    }\r\n" + "  }\r\n}";
 
         Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 15 ) );
@@ -77,13 +77,14 @@ public class QueryTranslatorTest_filters
     public void testLogicalQuery_category_contenttype_filters_with_query_and_count()
         throws Exception
     {
-        String expected_search_result = "{\n" + "  \"from\" : 0,\n" + "  \"size\" : 20,\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-            "      \"key_numeric\" : {\n" + "        \"from\" : 100.0,\n" + "        \"to\" : null,\n" +
-            "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-            "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
-            "          \"category_key_numeric\" : [ \"15\" ]\n" + "        }\n" + "      },\n" + "      \"must\" : {\n" +
-            "        \"terms\" : {\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" + "        }\n" + "      }\n" + "    }\n" +
-            "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+        String expected_search_result =
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : 20,\r\n" + "  \"query\" : {\r\n" + "    \"range\" : {\r\n" +
+                "      \"key_numeric\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
+                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
+                "  },\r\n" + "  \"filter\" : {\r\n" + "    \"bool\" : {\r\n" + "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" +
+                "          \"category_key_numeric\" : [ \"15\" ]\r\n" + "        }\r\n" + "      },\r\n" + "      \"must\" : {\r\n" +
+                "        \"terms\" : {\r\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\r\n" + "        }\r\n" + "      }\r\n" +
+                "    }\r\n" + "  }\r\n}";
 
         Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 15 ) );
@@ -103,10 +104,9 @@ public class QueryTranslatorTest_filters
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
-                "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"bool\" : {\n" + "      \"must\" : {\n" + "        \"terms\" : {\n" +
-                "          \"contentlocations.menuitemkey_numeric\" : [ \"22\" ]\n" + "        }\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"match_all\" : {\r\n" + "    }\r\n" + "  },\r\n" + "  \"filter\" : {\r\n" + "    \"terms\" : {\r\n" +
+                "      \"contentlocations.menuitemkey_numeric\" : [ \"22\" ]\r\n" + "    }\r\n" + "  }\r\n" + "}";
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity = new MenuItemEntity();

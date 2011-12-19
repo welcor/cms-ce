@@ -15,14 +15,13 @@ public class QueryTranslatorTest_not
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"bool\" : {\n" +
-                "      \"must\" : {\n" + "        \"match_all\" : {\n" + "        }\n" + "      },\n" + "      \"must_not\" : {\n" +
-                "        \"bool\" : {\n" + "          \"should\" : [ {\n" + "            \"term\" : {\n" +
-                "              \"title\" : \"hello\"\n" + "            }\n" + "          }, {\n" + "            \"term\" : {\n" +
-                "              \"title\" : \"test 2\"\n" + "            }\n" + "          }, {\n" + "            \"term\" : {\n" +
-                "              \"title\" : \"my testcontent\"\n" + "            }\n" + "          } ]\n" + "        }\n" + "      }\n" +
-                "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" +
-                "    \"_score\" : {\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"bool\" : {\r\n" + "      \"must\" : {\r\n" + "        \"match_all\" : {\r\n" + "        }\r\n" + "      },\r\n" +
+                "      \"must_not\" : {\r\n" + "        \"bool\" : {\r\n" + "          \"should\" : [ {\r\n" +
+                "            \"term\" : {\r\n" + "              \"title\" : \"hello\"\r\n" + "            }\r\n" + "          }, {\r\n" +
+                "            \"term\" : {\r\n" + "              \"title\" : \"test 2\"\r\n" + "            }\r\n" + "          }, {\r\n" +
+                "            \"term\" : {\r\n" + "              \"title\" : \"my testcontent\"\r\n" + "            }\r\n" +
+                "          } ]\r\n" + "        }\r\n" + "      }\r\n" + "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "NOT (title IN (\"Hello\", \"Test 2\", \"my testcontent\"))" );
 

@@ -16,11 +16,10 @@ public class QueryTranslatorTest_range
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"key_numeric\" : {\n" + "        \"from\" : 100.0,\n" + "        \"to\" : null,\n" +
-                "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" +
-                "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"key_numeric\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
+                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
+                "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key > 100" );
 
@@ -34,11 +33,10 @@ public class QueryTranslatorTest_range
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"key_numeric\" : {\n" + "        \"from\" : 100.0,\n" + "        \"to\" : null,\n" +
-                "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" +
-                "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"key_numeric\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
+                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
+                "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key > 100.0" );
 
@@ -53,11 +51,10 @@ public class QueryTranslatorTest_range
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"key\" : {\n" + "        \"from\" : \"100\",\n" + "        \"to\" : null,\n" +
-                "        \"include_lower\" : false,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" +
-                "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"key\" : {\r\n" + "        \"from\" : \"100\",\r\n" + "        \"to\" : null,\r\n" +
+                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
+                "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key > '100'" );
 
@@ -71,11 +68,9 @@ public class QueryTranslatorTest_range
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"key\" : {\n" + "        \"from\" : \"100\",\n" + "        \"to\" : null,\n" +
-                "        \"include_lower\" : true,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" +
-                "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"key\" : {\r\n" + "        \"from\" : \"100\",\r\n" + "        \"to\" : null,\r\n" +
+                "        \"include_lower\" : true,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key >= '100'" );
 
@@ -89,11 +84,10 @@ public class QueryTranslatorTest_range
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"key\" : {\n" + "        \"from\" : null,\n" + "        \"to\" : \"100\",\n" +
-                "        \"include_lower\" : true,\n" + "        \"include_upper\" : false\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" +
-                "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"key\" : {\r\n" + "        \"from\" : null,\r\n" + "        \"to\" : \"100\",\r\n" +
+                "        \"include_lower\" : true,\r\n" + "        \"include_upper\" : false\r\n" + "      }\r\n" + "    }\r\n" +
+                "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key < '100'" );
 
@@ -107,11 +101,9 @@ public class QueryTranslatorTest_range
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"range\" : {\n" +
-                "      \"key\" : {\n" + "        \"from\" : null,\n" + "        \"to\" : \"100\",\n" +
-                "        \"include_lower\" : true,\n" + "        \"include_upper\" : true\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" +
-                "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"range\" : {\r\n" + "      \"key\" : {\r\n" + "        \"from\" : null,\r\n" + "        \"to\" : \"100\",\r\n" +
+                "        \"include_lower\" : true,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "key <= '100'" );
 

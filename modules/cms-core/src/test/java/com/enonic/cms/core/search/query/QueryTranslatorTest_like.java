@@ -15,10 +15,9 @@ public class QueryTranslatorTest_like
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"wildcard\" : {\n" +
-                "      \"title\" : {\n" + "        \"wildcard\" : \"b?t*\"\n" + "      }\n" + "    }\n" + "  },\n" + "  \"filter\" : {\n" +
-                "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" +
-                "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"wildcard\" : {\r\n" + "      \"title\" : {\r\n" + "        \"wildcard\" : \"b?t*\"\r\n" + "      }\r\n" +
+                "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "title LIKE \"B?t*\"" );
 
@@ -32,10 +31,9 @@ public class QueryTranslatorTest_like
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"wildcard\" : {\n" +
-                "      \"title\" : {\n" + "        \"wildcard\" : \"*$&*\"\n" + "      }\n" + "    }\n" + "  },\n" + "  \"filter\" : {\n" +
-                "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" + "    }\n" + "  } ]\n" +
-                "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"wildcard\" : {\r\n" + "      \"title\" : {\r\n" + "        \"wildcard\" : \"*$&*\"\r\n" + "      }\r\n" +
+                "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "title LIKE \"*$&*\"" );
 
@@ -49,10 +47,9 @@ public class QueryTranslatorTest_like
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"wildcard\" : {\n" +
-                "      \"title\" : {\n" + "        \"wildcard\" : \"*\\\\*\"\n" + "      }\n" + "    }\n" + "  },\n" +
-                "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" + "    \"_score\" : {\n" +
-                "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"wildcard\" : {\r\n" + "      \"title\" : {\r\n" + "        \"wildcard\" : \"*\\\\*\"\r\n" + "      }\r\n" +
+                "    }\r\n" + "  }\r\n}";
 
         ContentIndexQuery query = createContentQuery( "title LIKE \"*\\\\*\"" );
 

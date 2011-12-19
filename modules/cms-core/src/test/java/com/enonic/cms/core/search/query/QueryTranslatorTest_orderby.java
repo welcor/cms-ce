@@ -21,9 +21,9 @@ public class QueryTranslatorTest_orderby
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
-                "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" +
-                "    \"orderby_key\" : {\n" + "      \"order\" : \"desc\"\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"match_all\" : {\r\n" + "    }\r\n" + "  },\r\n" + "  \"sort\" : [ {\r\n" + "    \"orderby_key\" : {\r\n" +
+                "      \"order\" : \"desc\"\r\n" + "    }\r\n" + "  } ]\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "ORDER BY key DESC" );
 
@@ -37,11 +37,27 @@ public class QueryTranslatorTest_orderby
         throws Exception
     {
         String expected_search_result =
-            "{\n" + "  \"from\" : 0,\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" + "  \"query\" : {\n" + "    \"match_all\" : {\n" +
-                "    }\n" + "  },\n" + "  \"filter\" : {\n" + "    \"match_all\" : {\n" + "    }\n" + "  },\n" + "  \"sort\" : [ {\n" +
-                "    \"orderby_key\" : {\n" + "      \"order\" : \"asc\"\n" + "    }\n" + "  } ]\n" + "}";
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"match_all\" : {\r\n" + "    }\r\n" + "  },\r\n" + "  \"sort\" : [ {\r\n" + "    \"orderby_key\" : {\r\n" +
+                "      \"order\" : \"asc\"\r\n" + "    }\r\n" + "  } ]\r\n" + "}";
 
         ContentIndexQuery query = createContentQuery( "ORDER BY key ASC" );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        assertEquals( expected_search_result, builder.toString() );
+    }
+
+    @Test
+    public void testEquals_key_int_order_by_key_asc()
+        throws Exception
+    {
+        String expected_search_result =
+            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
+                "    \"term\" : {\r\n" + "      \"key_numeric\" : 100.0\r\n" + "    }\r\n" + "  },\r\n" + "  \"sort\" : [ {\r\n" +
+                "    \"orderby_key\" : {\r\n" + "      \"order\" : \"asc\"\r\n" + "    }\r\n" + "  } ]\r\n" + "}";
+
+        ContentIndexQuery query = createContentQuery( "key = 100 ORDER BY key ASC" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 

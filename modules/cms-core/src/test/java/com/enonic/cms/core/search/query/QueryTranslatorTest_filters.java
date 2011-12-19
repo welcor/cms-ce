@@ -12,8 +12,6 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
-import static junit.framework.Assert.assertEquals;
-
 /**
  * Created by IntelliJ IDEA.
  * User: udu
@@ -24,41 +22,78 @@ public class QueryTranslatorTest_filters
     extends QueryTranslatorBaseTest
 {
     @Test
-    public void testLogicalQuery_category_contenttype_filters()
+    public void testLogicalQuery_category_and_contenttype_filters()
         throws Exception
     {
-        String expected_search_result =
-            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
-                "    \"match_all\" : {\r\n" + "    }\r\n" + "  },\r\n" + "  \"filter\" : {\r\n" + "    \"bool\" : {\r\n" +
-                "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" + "          \"category_key_numeric\" : [ \"15\" ]\r\n" +
-                "        }\r\n" + "      },\r\n" + "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" +
-                "          \"contenttype_key_numeric\" : [ \"1001\" ]\r\n" + "        }\r\n" + "      }\r\n" + "    }\r\n" + "  }\r\n}";
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"match_all\" : {\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"filter\" : {\n" +
+            "    \"bool\" : {\n" +
+            "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"category_key_numeric\" : [ \"15\" ]\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"contenttype_key_numeric\" : [ \"1002\", \"1001\" ]\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 15 ) );
 
         Set<ContentTypeKey> contentTypeFilter = new HashSet<ContentTypeKey>();
         contentTypeFilter.add( new ContentTypeKey( "1001" ) );
+        contentTypeFilter.add( new ContentTypeKey( "1002" ) );
 
         ContentIndexQuery query = createContentQuery( categoryFilter, contentTypeFilter );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
-        assertEquals( expected_search_result, builder.toString() );
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
 
     @Test
     public void testLogicalQuery_category_contenttype_filters_with_query()
         throws Exception
     {
-        String expected_search_result =
-            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
-                "    \"range\" : {\r\n" + "      \"key_numeric\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
-                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
-                "  },\r\n" + "  \"filter\" : {\r\n" + "    \"bool\" : {\r\n" + "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" +
-                "          \"category_key_numeric\" : [ \"15\" ]\r\n" + "        }\r\n" + "      },\r\n" + "      \"must\" : {\r\n" +
-                "        \"terms\" : {\r\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\r\n" + "        }\r\n" + "      }\r\n" +
-                "    }\r\n" + "  }\r\n}";
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"range\" : {\n" +
+            "      \"key_numeric\" : {\n" +
+            "        \"from\" : 100.0,\n" +
+            "        \"to\" : null,\n" +
+            "        \"include_lower\" : false,\n" +
+            "        \"include_upper\" : true\n" +
+            "      }\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"filter\" : {\n" +
+            "    \"bool\" : {\n" +
+            "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"category_key_numeric\" : [ \"15\" ]\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 15 ) );
@@ -70,21 +105,41 @@ public class QueryTranslatorTest_filters
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
-        assertEquals( expected_search_result, builder.toString() );
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
 
     @Test
     public void testLogicalQuery_category_contenttype_filters_with_query_and_count()
         throws Exception
     {
-        String expected_search_result =
-            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : 20,\r\n" + "  \"query\" : {\r\n" + "    \"range\" : {\r\n" +
-                "      \"key_numeric\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
-                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
-                "  },\r\n" + "  \"filter\" : {\r\n" + "    \"bool\" : {\r\n" + "      \"must\" : {\r\n" + "        \"terms\" : {\r\n" +
-                "          \"category_key_numeric\" : [ \"15\" ]\r\n" + "        }\r\n" + "      },\r\n" + "      \"must\" : {\r\n" +
-                "        \"terms\" : {\r\n" + "          \"contenttype_key_numeric\" : [ \"1001\" ]\r\n" + "        }\r\n" + "      }\r\n" +
-                "    }\r\n" + "  }\r\n}";
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : 20,\n" +
+            "  \"query\" : {\n" +
+            "    \"range\" : {\n" +
+            "      \"key_numeric\" : {\n" +
+            "        \"from\" : 100.0,\n" +
+            "        \"to\" : null,\n" +
+            "        \"include_lower\" : false,\n" +
+            "        \"include_upper\" : true\n" +
+            "      }\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"filter\" : {\n" +
+            "    \"bool\" : {\n" +
+            "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"category_key_numeric\" : [ \"15\" ]\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 15 ) );
@@ -96,17 +151,26 @@ public class QueryTranslatorTest_filters
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
-        assertEquals( expected_search_result, builder.toString() );
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
 
     @Test
     public void testFilterQuery_section_filter()
         throws Exception
     {
-        String expected_search_result =
-            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
-                "    \"match_all\" : {\r\n" + "    }\r\n" + "  },\r\n" + "  \"filter\" : {\r\n" + "    \"terms\" : {\r\n" +
-                "      \"contentlocations.menuitemkey_numeric\" : [ \"22\" ]\r\n" + "    }\r\n" + "  }\r\n" + "}";
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"match_all\" : {\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"filter\" : {\n" +
+            "    \"terms\" : {\n" +
+            "      \"contentlocations.menuitemkey_numeric\" : [ \"22\" ]\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity = new MenuItemEntity();
@@ -117,7 +181,7 @@ public class QueryTranslatorTest_filters
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
-        assertEquals( expected_search_result, builder.toString() );
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
 
 

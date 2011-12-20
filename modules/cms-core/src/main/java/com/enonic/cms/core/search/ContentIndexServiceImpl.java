@@ -18,6 +18,10 @@ import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -67,17 +71,34 @@ public class ContentIndexServiceImpl
 
     private Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
 
-    @Autowired
     private ContentIndexDataBuilder indexDataBuilder;
 
-    @Autowired
     private QueryTranslator translator;
 
-    @Autowired
     private ContentDao contentDao;
+
+    @PostConstruct
+    public void startIndex()
+    {
+        LOG.info( "Setting up index" );
+
+        indexRequestCreator = new IndexRequestCreator( INDEX_NAME );
+
+        try
+        {
+            initalizeIndex( false );
+            optimize();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
     public void createIndex()
     {
+        LOG.info( "creating index: " + INDEX_NAME );
+
         CreateIndexRequest createIndexRequest = new CreateIndexRequest( INDEX_NAME );
 
         ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
@@ -108,8 +129,19 @@ public class ContentIndexServiceImpl
 
     public int remove( ContentKey contentKey )
     {
+        // TODO : Delete children aswell
+        DeleteRequest deleteRequest = new DeleteRequest( INDEX_NAME, IndexType.Content.toString(), contentKey.toString() );
 
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        DeleteResponse response = this.client.delete( deleteRequest ).actionGet();
+
+        if ( response.notFound() )
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
     }
 
     public void removeByCategory( CategoryKey categoryKey )
@@ -163,7 +195,11 @@ public class ContentIndexServiceImpl
 
     public boolean isIndexed( ContentKey contentKey )
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        final GetRequest getRequest = new GetRequest( INDEX_NAME, IndexType.Content.toString(), contentKey.toString() );
+
+        GetResponse response = this.client.get( getRequest ).actionGet();
+
+        return response.exists();
     }
 
     // TODO: We dont implement this one yet
@@ -178,34 +214,6 @@ public class ContentIndexServiceImpl
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Autowired
-    public void setMappingProvider( IndexMappingProvider mappingProvider )
-    {
-        this.mappingProvider = mappingProvider;
-    }
-
-    @Autowired
-    public void setClient( Client client )
-    {
-        this.client = client;
-    }
-
-    @PostConstruct
-    public void startIndex()
-    {
-
-        indexRequestCreator = new IndexRequestCreator( INDEX_NAME );
-
-        try
-        {
-            initalizeIndex( false );
-            optimize();
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
 
     private void initalizeIndex( boolean force )
         throws Exception
@@ -410,6 +418,36 @@ public class ContentIndexServiceImpl
 
         return result;
         */
+    }
+
+    @Autowired
+    public void setMappingProvider( IndexMappingProvider mappingProvider )
+    {
+        this.mappingProvider = mappingProvider;
+    }
+
+    @Autowired
+    public void setClient( Client client )
+    {
+        this.client = client;
+    }
+
+    @Autowired
+    public void setContentDao( ContentDao contentDao )
+    {
+        this.contentDao = contentDao;
+    }
+
+    @Autowired
+    public void setTranslator( QueryTranslator translator )
+    {
+        this.translator = translator;
+    }
+
+    @Autowired
+    public void setIndexDataBuilder( ContentIndexDataBuilder indexDataBuilder )
+    {
+        this.indexDataBuilder = indexDataBuilder;
     }
 
 }

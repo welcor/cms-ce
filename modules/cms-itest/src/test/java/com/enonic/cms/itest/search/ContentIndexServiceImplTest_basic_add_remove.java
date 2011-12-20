@@ -19,13 +19,13 @@ import com.enonic.cms.core.content.index.ContentDocument;
 
 import static org.junit.Assert.*;
 
-public class ContentIndexServiceImplTest
+public class ContentIndexServiceImplTest_basic_add_remove
     extends ContentIndexServiceBaseTest
 {
-    private static final Logger LOG = LoggerFactory.getLogger( ContentIndexServiceImplTest.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( ContentIndexServiceImplTest_basic_add_remove.class.getName() );
 
     @Test
-    public void basic_index_operations()
+    public void add_and_remove_document()
         throws Exception
     {
         // Check if indexed
@@ -47,7 +47,7 @@ public class ContentIndexServiceImplTest
 
 
     @Test
-    public void remove_and_add()
+    public void update_values_for_document()
         throws Exception
     {
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );

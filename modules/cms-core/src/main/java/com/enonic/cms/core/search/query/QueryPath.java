@@ -74,7 +74,7 @@ public class QueryPath
         return this;
     }
 
-    public boolean isWildCardQuery()
+    public boolean isWildCardPath()
     {
         return StringUtils.contains( this.path, "*" );
     }

@@ -1,27 +1,89 @@
 package com.enonic.cms.itest.search;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
+
+import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
- * Date: 12/20/11
- * Time: 5:22 PM
+ * Date: 1/3/12
+ * Time: 12:06 PM
  */
-public class IndexDataCreator
+public class ContentIndexServiceImplTest_query_basics
+    extends ContentIndexServiceTestBase
 {
-    protected List<ContentDocument> createSimpleIndexDataList()
-    {
-        List<ContentDocument> docs = new ArrayList<ContentDocument>();
 
+    @Test
+    public void simple_querying()
+    {
+        // Setup standard values
+        setUpStandardTestValues();
+        letTheIndexFinishItsWork();
+
+        ContentIndexQuery query = createQuery( "key = 1321" );
+        ContentResultSet res1 = service.query( query );
+        assertEquals( 0, res1.getLength() );
+
+        query = createQuery( "key = 1322" );
+        ContentResultSet res2 = service.query( query );
+        assertEquals( 1, res2.getLength() );
+
+        query = createQuery( "key = '1322'" );
+        ContentResultSet res3 = service.query( query );
+        //assertEquals( 1, res3.getLength() );
+
+        query = createQuery( "title = 'Bart'" );
+        ContentResultSet res3b = service.query( query );
+        assertEquals( 1, res3b.getLength() );
+        assertEquals( 1323, res3b.getKey( 0 ).toInt() );
+
+        query = createQuery( "key != 1322" );
+        ContentResultSet res4 = service.query( query );
+        assertEquals( 3, res4.getLength() );
+
+        query = createQuery( "key != '1324'" );
+        ContentResultSet res5 = service.query( query );
+        //assertEquals( 3, res5.getLength() );
+
+        query = createQuery( "key > 1323 order by key asc" );
+        ContentResultSet res6 = service.query( query );
+        assertEquals( 2, res6.getLength() );
+        assertTrue( 1324 == res6.getKey( 0 ).toInt() );
+
+        query = createQuery( "key < 1327" );
+        ContentResultSet res7 = service.query( query );
+        assertEquals( 3, res7.getLength() );
+
+        query = createQuery( "key >= 1323" );
+        ContentResultSet res8 = service.query( query );
+        assertEquals( 3, res8.getLength() );
+
+        query = createQuery( "key <= 1324" );
+        ContentResultSet res9 = service.query( query );
+        assertEquals( 3, res9.getLength() );
+    }
+
+    private ContentIndexQuery createQuery( String queryString )
+    {
+        ContentIndexQuery query = new ContentIndexQuery( queryString );
+        query.setCount( 10 );
+        return query;
+    }
+
+
+    private void setUpStandardTestValues()
+    {
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
 
         // Index content 1, 2 og 3:
@@ -41,11 +103,11 @@ public class IndexDataCreator
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        docs.add( doc1 );
+        service.index( doc1, true );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc2 = new ContentDocument( new ContentKey( 1327 ) );
-        doc2.setCategoryKey( new CategoryKey( 9 ) );
+        doc2.setCategoryKey( new CategoryKey( 7 ) );
         doc2.setContentTypeKey( new ContentTypeKey( 32 ) );
         doc2.setContentTypeName( "Adults" );
         doc2.setTitle( "Fry" );
@@ -59,7 +121,7 @@ public class IndexDataCreator
         date.add( Calendar.MONTH, -1 );
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
-        docs.add( doc2 );
+        service.index( doc2, true );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc3 = new ContentDocument( new ContentKey( 1323 ) );
@@ -77,7 +139,7 @@ public class IndexDataCreator
         date.add( Calendar.MONTH, -1 );
         doc3.setStatus( 2 );
         doc3.setPriority( 0 );
-        docs.add( doc3 );
+        service.index( doc3, true );
 
         ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
         doc4.setCategoryKey( new CategoryKey( 9 ) );
@@ -94,34 +156,7 @@ public class IndexDataCreator
         doc4.setPublishTo( date.getTime() );
         doc4.setStatus( 2 );
         doc4.setPriority( 0 );
-        docs.add( doc4 );
-
-        return docs;
-    }
-
-
-    public static List<ContentDocument> createContentDocuments( int startIndex, int numberOfEntries, String contentTypeName )
-    {
-        List<ContentDocument> docs = new ArrayList<ContentDocument>();
-
-        int endIndex = startIndex + numberOfEntries;
-
-        for ( int i = startIndex; i < endIndex; i++ )
-        {
-            ContentDocument doc = new ContentDocument( new ContentKey( i ) );
-            doc.setCategoryKey( new CategoryKey( 9 ) );
-            doc.setContentTypeKey( new ContentTypeKey( 32 ) );
-            doc.setContentTypeName( contentTypeName );
-            doc.setTitle( "Homer" + numberOfEntries );
-            doc.addUserDefinedField( "data/person/age", i + "" );
-            doc.addUserDefinedField( "data/person/gender", "male" + i );
-            doc.addUserDefinedField( "data/person/description", "crude" + i + ", overweight" + i + ", incompetent" + i +
-                ", clumsy" + i + ", thoughtless" + i + " and a borderline alcoholic" + i );
-
-            docs.add( doc );
-        }
-
-        return docs;
+        service.index( doc4, true );
     }
 
 

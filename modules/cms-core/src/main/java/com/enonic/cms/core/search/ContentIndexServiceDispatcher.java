@@ -226,6 +226,11 @@ public class ContentIndexServiceDispatcher
     {
         newContentIndexService.optimize();
     }
+
+    public void deleteIndex()
+    {
+        newContentIndexService.deleteIndex();
+    }
 }
 
 

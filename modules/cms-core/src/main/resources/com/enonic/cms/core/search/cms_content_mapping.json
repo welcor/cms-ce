@@ -1,5 +1,8 @@
 {
     "content":{
+        "_all":{
+            "enabled":true
+        },
         "_source":{
             "enabled":false
         },
@@ -10,11 +13,13 @@
                 "type":"multi_field",
                 "fields":{
                     "title":{
+                        "include_in_all":false,
                         "type":"string",
                         "index":"not_analyzed",
                         "store":"yes"
                     },
                     "_tokenized":{
+                        "include_in_all":false,
                         "type":"string",
                         "index":"analyzed",
                         "store":"yes"
@@ -22,10 +27,12 @@
                 }
             },
             "timestamp":{
+                "include_in_all":false,
                 "type":"date",
-                "store" : "yes"
+                "store":"yes"
             },
             "contentlocations":{
+                "include_in_all":false,
                 "properties":{
                     "home":{
                         "type":"boolean",
@@ -53,6 +60,7 @@
         "dynamic_templates":[
             {
                 "template_userdata":{
+                    "include_in_all":true,
                     "match":"data_*",
                     "unmatch":"*_numeric",
                     "mapping":{
@@ -79,6 +87,7 @@
                     "match":"orderby_*",
                     "unmatch":"*_numeric",
                     "mapping":{
+                        "include_in_all":false,
                         "type":"string",
                         "index":"not_analyzed",
                         "store":"yes"
@@ -89,6 +98,7 @@
                 "template_numerics":{
                     "match":"*_numeric",
                     "mapping":{
+                        "include_in_all":false,
                         "type":"double",
                         "store":"yes"
                     }
@@ -98,6 +108,7 @@
                 "template_general":{
                     "match":"*",
                     "mapping":{
+                        "include_in_all":true,
                         "type":"string",
                         "store":"yes",
                         "index":"not_analyzed"

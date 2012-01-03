@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -10,7 +11,6 @@ import javax.annotation.PostConstruct;
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
@@ -23,8 +23,10 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchOperationThreading;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -47,6 +49,7 @@ import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.content.index.IndexValueResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
+import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.search.query.IndexQueryException;
@@ -61,7 +64,9 @@ public class ContentIndexServiceImpl
 {
     public final static String INDEX_NAME = "cms";
 
-    private StopWatch timer = new StopWatch();
+    protected static final SearchOperationThreading OPERATION_THREADING = SearchOperationThreading.NO_THREADS;
+
+    protected static final SearchType SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
 
     private IndexMappingProvider mappingProvider;
 
@@ -76,6 +81,8 @@ public class ContentIndexServiceImpl
     private QueryTranslator translator;
 
     private ContentDao contentDao;
+
+    private static final boolean DEBUG_EXEC_TIME = false;
 
     @PostConstruct
     public void startIndex()
@@ -112,7 +119,7 @@ public class ContentIndexServiceImpl
         addMapping();
     }
 
-    public void addMapping()
+    private void addMapping()
     {
         doAddMapping( INDEX_NAME, IndexType.Content );
         doAddMapping( INDEX_NAME, IndexType.Binaries );
@@ -146,13 +153,48 @@ public class ContentIndexServiceImpl
 
     public void removeByCategory( CategoryKey categoryKey )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        ContentIndexQuery contentIndexQuery = new ContentIndexQuery( "" );
+        contentIndexQuery.setCategoryFilter( Arrays.asList( new CategoryKey[]{categoryKey} ) );
+        doRemoveByQuery( contentIndexQuery );
     }
 
     public void removeByContentType( ContentTypeKey contentTypeKey )
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        ContentIndexQuery contentIndexQuery = new ContentIndexQuery( "" );
+        contentIndexQuery.setContentTypeFilter( Arrays.asList( new ContentTypeKey[]{contentTypeKey} ) );
+        doRemoveByQuery( contentIndexQuery );
     }
+
+    private void doRemoveByQuery( ContentIndexQuery contentIndexQuery )
+    {
+        //TODO: How to handle the count?
+        contentIndexQuery.setCount( 100 );
+
+        final SearchSourceBuilder build;
+
+        try
+        {
+            build = translator.build( contentIndexQuery );
+        }
+        catch ( Exception e )
+        {
+            throw new ContentIndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
+        }
+
+        SearchHits hits = doExecuteSearchRequest( build );
+
+        final int entriesToDelete = hits.getHits().length;
+        LOG.info( "Prepare to delete: " + entriesToDelete + " entries from index " + INDEX_NAME );
+
+        for ( SearchHit hit : hits )
+        {
+            DeleteRequest deleteRequest = new DeleteRequest( INDEX_NAME, IndexType.Content.toString(), hit.getId() );
+            DeleteResponse response = this.client.delete( deleteRequest ).actionGet();
+        }
+
+        LOG.info( "Deleted from index " + INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
+    }
+
 
     public void index( ContentDocument doc, boolean deleteExisting )
     {
@@ -231,7 +273,6 @@ public class ContentIndexServiceImpl
         }
 
         createIndex();
-        addMapping();
     }
 
     public void optimize()
@@ -248,10 +289,10 @@ public class ContentIndexServiceImpl
 
     }
 
-    private DeleteIndexResponse deleteIndex()
-        throws Exception
+    public void deleteIndex()
     {
-        return this.client.admin().indices().delete( new DeleteIndexRequest( INDEX_NAME ) ).actionGet();
+
+        this.client.admin().indices().delete( new DeleteIndexRequest( INDEX_NAME ) ).actionGet();
     }
 
     public boolean indexExists()
@@ -267,95 +308,9 @@ public class ContentIndexServiceImpl
         }
     }
 
-//    public void index( final ContentIndexData contentIndexData )
-//    {
-//        Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
-//
-//        for ( IndexRequest indexRequest : indexRequests )
-//        {
-//            doIndex( indexRequest );
-//        }
-//    }
-//
-//    public void index( final List<ContentIndexData> contentIndexDatas )
-//    {
-//        doBulkIndex( contentIndexDatas );
-//    }
-//
-//    private void doBulkIndex( List<ContentIndexData> contentIndexDatas )
-//    {
-//        BulkRequestBuilder bulkRequest = client.prepareBulk();
-//
-//        for ( ContentIndexData contentIndexData : contentIndexDatas )
-//        {
-//            addIndexRequests( bulkRequest, indexRequestCreator.createIndexRequests( contentIndexData ) );
-//        }
-//
-//        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-//
-//        if ( bulkResponse.hasFailures() )
-//        {
-//            //TODO: Handle exception
-//        }
-//    }
-//
-//
-
-//
-//    private void addIndexRequests( BulkRequestBuilder bulkRequest, Set<IndexRequest> requests )
-//    {
-//        for ( IndexRequest request : requests )
-//        {
-//            bulkRequest.add( request );
-//        }
-//    }
-//
-//
-//    public void delete( final ContentKey... contentKeys )
-//    {
-//
-//        for ( ContentKey contentKey : contentKeys )
-//        {
-//            doDelete( INDEX_NAME, contentKey.toString(), IndexType.Customdata.toString(), IndexType.Binaries.toString(),
-//                      IndexType.Content.toString() );
-//        }
-//    }
-//
-//    private void doDelete( final String indexName, final String id, final String... indexTypes )
-//    {
-//        // TODO: create query with _parent or _id
-//        final DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest( indexName ).types( indexTypes ).query( "" );
-//        DeleteByQueryResponse resp = this.client.deleteByQuery( deleteByQueryRequest ).actionGet();
-//    }
-//
-//    public void delete( CategoryKey... categoryKeys )
-//    {
-//        //To change body of implemented methods use File | Settings | File Templates.
-//    }
-//
-//    public void delete( ContentTypeKey... contentTypeKeys )
-//    {
-//        //To change body of implemented methods use File | Settings | File Templates.
-//    }
-//
-//    public void update( ContentKey... contentKeys )
-//    {
-//        //To change body of implemented methods use File | Settings | File Templates.
-//    }
-//
-//    public void update( CategoryKey... categoryKeys )
-//    {
-//        //To change body of implemented methods use File | Settings | File Templates.
-//    }
-//
-//    public void update( ContentTypeKey... contentTypeKeys )
-//    {
-//        //To change body of implemented methods use File | Settings | File Templates.
-//    }
-//
-
     public ContentResultSet query( ContentIndexQuery query )
     {
+        StopWatch timer = new StopWatch();
 
         timer.start( "build query" );
 
@@ -372,11 +327,41 @@ public class ContentIndexServiceImpl
         {
             timer.stop();
         }
-        System.out.println( "* Timeused build query: " + timer.getLastTaskTimeMillis() );
 
-        final SearchRequest req = Requests.searchRequest( INDEX_NAME ).types( IndexType.Content.toString() ).source( build );
+        final SearchHits hits = doExecuteSearchRequest( build );
 
-        timer.start( "search" );
+        final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
+
+        //ContentIndexQueryTracer.traceMatchCount( queryResultTotalSize, trace );
+        if ( query.getIndex() > queryResultTotalSize )
+        {
+            final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
+            rs.addError( "Index greater than result count: " + query.getIndex() + " greater than " + queryResultTotalSize );
+            return rs;
+        }
+
+        final int fromIndex = Math.max( query.getIndex(), 0 );
+
+        final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();
+
+        for ( SearchHit hit : hits )
+        {
+            keys.add( new ContentKey( hit.getId() ) );
+        }
+
+        return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
+    }
+
+    private SearchHits doExecuteSearchRequest( SearchSourceBuilder build )
+    {
+        StopWatch timer = new StopWatch();
+        timer.start( "doQuery" );
+
+        final SearchRequest req = Requests.searchRequest( INDEX_NAME )
+            .types( IndexType.Content.toString() )
+            .operationThreading( OPERATION_THREADING )
+            .searchType( SEARCH_TYPE )
+            .source( build );
 
         final SearchResponse res;
 
@@ -389,35 +374,15 @@ public class ContentIndexServiceImpl
             throw new ContentIndexException( "Failed to execute search: ", e );
 
         }
-        finally
+
+        timer.stop();
+
+        if ( DEBUG_EXEC_TIME )
         {
-            timer.stop();
+            System.out.println( timer.prettyPrint() );
         }
 
-        final SearchHits hits = res.getHits();
-
-        System.out.println( "* Search exec-time: " + timer.getLastTaskTimeMillis() );
-        System.out.println( "\n\r\n\r" );
-
-        List<ContentKey> resultKeys = new ArrayList<ContentKey>();
-
-        for ( final SearchHit hit : hits )
-        {
-            resultKeys.add( new ContentKey( hit.getId() ) );
-        }
-
-        //TODO: This should get the correct from and to-index
-        return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), resultKeys, 0, (int) hits.getTotalHits() );
-
-        /*
-        final ContentSearchHits result = new ContentSearchHits( query.getFrom(), (int) hits.getTotalHits() );
-        for ( final SearchHit hit : hits )
-        {
-            result.add( new ContentKey( hit.getId() ), hit.score() );
-        }
-
-        return result;
-        */
+        return res.getHits();
     }
 
     @Autowired

@@ -69,6 +69,8 @@ public interface ContentIndexService
 
     public void optimize();
 
+    public void deleteIndex();
+
 }
 
 

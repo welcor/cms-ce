@@ -98,6 +98,14 @@ public final class ContentIndexQuery
         validateFullTextQuery( query );
     }
 
+    public ContentIndexQuery( String query, int count )
+    {
+        this.query = query;
+        validateFullTextQuery( query );
+        this.count = count;
+    }
+
+
     private void validateFullTextQuery( String query )
     {
 

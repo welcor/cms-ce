@@ -16,6 +16,8 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,9 +26,12 @@ import org.elasticsearch.node.NodeBuilder;
  * Time: 3:26 PM
  */
 public class ElasticSearchTestInstance
+    implements InitializingBean, DisposableBean
 {
 
     private final static Logger LOG = Logger.getLogger( ElasticSearchTestInstance.class.getName() );
+
+    protected static final String INDEX_NAME = "cms";
 
     protected Node node;
 
@@ -37,6 +42,26 @@ public class ElasticSearchTestInstance
     private final static String GATEWAY_SETTING_KEY = "gateway.type";
 
     private final static String GATEWAY_NO_PERSISTENCE = "none";
+
+    public void afterPropertiesSet()
+        throws Exception
+    {
+        instance = new ElasticSearchTestInstance();
+        try
+        {
+            instance.start();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public void destroy()
+        throws Exception
+    {
+        cleanUp();
+    }
 
     private ElasticSearchTestInstance()
     {
@@ -61,12 +86,18 @@ public class ElasticSearchTestInstance
     }
 
 
-    public static void cleanUp()
+    public synchronized static void cleanUp()
+        throws Exception
     {
-        if ( instance != null )
+
+        LOG.info( "Cleaning up and shutting down the test-instance" );
+
+        if ( instance != null && !instance.node.isClosed() )
         {
             instance.node.stop();
             instance.node.close();
+            instance = null;
+            Thread.sleep( 1000 );
         }
     }
 
@@ -74,7 +105,8 @@ public class ElasticSearchTestInstance
         throws Exception
     {
         final Settings settings =
-            ImmutableSettings.settingsBuilder().put( "pretty", "true" ).put( GATEWAY_SETTING_KEY, GATEWAY_NO_PERSISTENCE ).build();
+            // ImmutableSettings.settingsBuilder().build();
+            ImmutableSettings.settingsBuilder().put( GATEWAY_SETTING_KEY, GATEWAY_NO_PERSISTENCE ).build();
 
         node = NodeBuilder.nodeBuilder().client( false ).local( true ).data( true ).settings( settings ).build();
         node.start();
@@ -85,13 +117,13 @@ public class ElasticSearchTestInstance
         client = node.client();
     }
 
-    public void initIndex( String indexName )
+    public void deleteIndex()
         throws Exception
     {
         try
         {
-            getIndexStatus( indexName );
-            deleteIndex( indexName );
+            getIndexStatus( INDEX_NAME );
+            deleteIndex( INDEX_NAME );
 
             // Let it delete it properly
             Thread.sleep( 1000 );
@@ -100,7 +132,6 @@ public class ElasticSearchTestInstance
         {
         }
 
-        getInstance().createIndex( indexName );
     }
 
     private void getIndexStatus( String indexName )

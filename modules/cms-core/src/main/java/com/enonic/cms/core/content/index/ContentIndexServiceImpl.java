@@ -607,4 +607,9 @@ public final class ContentIndexServiceImpl
     {
         // DO NOTHING
     }
+
+    public void deleteIndex()
+    {
+        // DO NOTHING
+    }
 }

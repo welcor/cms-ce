@@ -33,7 +33,7 @@ public class RangeQueryBuilder
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
 
-        return rangeQuery( field + NUMERIC_FIELD_POSTFIX ).from( lower ).to( upper ).includeLower(
+        return rangeQuery( field + NUMERIC_FIELD_POSTFIX ).from( lowerNumeric ).to( upperNumeric ).includeLower(
                 lowerInclusive ).includeUpper( upperInclusive );
     }
 

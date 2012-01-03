@@ -18,12 +18,14 @@ public class TermQueryBuilderCreator
     {
         TermQueryBuilder termQuery;
 
-        if ( path.isWildCardQuery() )
+        if ( path.isWildCardPath() )
         {
             path.setMatchAllPath();
         }
 
-        if ( singleValue instanceof Number )
+        //HANDLE NUMERIC WILDCARD
+
+        if ( singleValue instanceof Number && !path.isWildCardPath() )
         {
             Number number = (Number) singleValue;
             termQuery = QueryBuilders.termQuery( path.getPath() + ElasticContentConstants.NUMERIC_FIELD_POSTFIX, number );

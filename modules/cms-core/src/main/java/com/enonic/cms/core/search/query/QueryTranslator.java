@@ -1,11 +1,9 @@
 package com.enonic.cms.core.search.query;
 
-import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.springframework.util.StopWatch;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQueryExprParser;
@@ -20,8 +18,6 @@ import com.enonic.cms.core.search.ElasticContentConstants;
 
 public final class QueryTranslator
 {
-
-    StopWatch timer = new StopWatch();
 
     public SearchSourceBuilder build( ContentIndexQuery contentIndexQuery )
         throws Exception
@@ -111,9 +107,9 @@ public final class QueryTranslator
             case CompareExpr.LTE:
                 return RangeQueryBuilder.buildRangeQuery( path, null, singleValue, true, true );
             case CompareExpr.LIKE:
-                return buildLikeQuery( path, (String) singleValue );
+                return LikeQueryBuilderCreator.buildLikeQuery( queryPath, (String) singleValue );
             case CompareExpr.NOT_LIKE:
-                return buildNotQuery( buildLikeQuery( path, (String) singleValue ) );
+                return buildNotQuery( LikeQueryBuilderCreator.buildLikeQuery( queryPath, (String) singleValue ) );
             case CompareExpr.IN:
                 return buildInQuery( path, values );
             case CompareExpr.NOT_IN:
@@ -148,11 +144,6 @@ public final class QueryTranslator
         }
 
         return boolQuery;
-    }
-
-    private QueryBuilder buildLikeQuery( String field, String value )
-    {
-        return QueryBuilders.wildcardQuery( field, StringUtils.replaceChars( value, '%', '*' ) );
     }
 
     private QueryBuilder buildLogicalExpr( LogicalExpr expr )

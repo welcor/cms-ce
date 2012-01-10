@@ -28,7 +28,7 @@ class AbstractIndexDataBuilder
         doAddField( fieldName, value, builder, addOrderField );
     }
 
-    protected void doAddField( String fieldName, String value, XContentBuilder builder, boolean addOrderField )
+    private void doAddField( String fieldName, String value, XContentBuilder builder, boolean addOrderField )
         throws Exception
     {
         fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
@@ -43,6 +43,7 @@ class AbstractIndexDataBuilder
         {
             Double numericValue = Double.parseDouble( value );
             builder.field( IndexFieldNameResolver.getNumericField( fieldName ), numericValue );
+
             if ( addOrderField )
             {
                 addOrderField( fieldName, numericValue, builder );

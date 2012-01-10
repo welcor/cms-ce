@@ -1,6 +1,8 @@
 package com.enonic.cms.core.search.builder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -207,7 +209,7 @@ public final class ContentIndexDataBuilderImpl
         addUserValues( result, "assigner", content.getAssignerKey(), content.getAssignerName(), content.getAssignerQualifiedName() );
 
         addField( "publishFrom", content.getPublishFrom(), result );
-        addField( "publishTo", content.getPriority(), result );
+        addField( "publishTo", content.getPublishTo(), result );
         addField( "timestamp", content.getTimestamp(), result );
         addField( "status", content.getStatus(), result );
         addField( "priority", content.getPriority(), result );
@@ -231,9 +233,22 @@ public final class ContentIndexDataBuilderImpl
     private void addUserDefinedValues( final XContentBuilder result, final Collection<UserDefinedField> userDefinedFields )
         throws Exception
     {
+
+        List<String> addedFields = new ArrayList<String>();
+
         for ( UserDefinedField field : userDefinedFields )
         {
-            addField( field.getName(), field.getValue().getText(), result );
+            final boolean addedBeforeSoSkipAddingOrderByField = addedFields.contains( field.getName() );
+
+            if ( addedBeforeSoSkipAddingOrderByField )
+            {
+                addField( field.getName(), field.getValue().getText(), result, false );
+            }
+            else
+            {
+                addField( field.getName(), field.getValue().getText(), result, true );
+                addedFields.add( field.getName() );
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.enonic.cms.itest.search;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -26,5 +27,10 @@ public class ContentIndexServiceTestDBBase
     @Autowired
     protected DomainFixture fixture;
 
+    @Test
+    public void dummy()
+    {
+
+    }
 
 }

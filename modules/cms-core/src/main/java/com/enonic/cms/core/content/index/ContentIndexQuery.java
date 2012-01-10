@@ -76,7 +76,6 @@ public final class ContentIndexQuery
      */
     public ContentIndexQuery( String queryWithoutOrderBy, String orderBy )
     {
-
         if ( queryWithoutOrderBy == null )
         {
             queryWithoutOrderBy = "";
@@ -91,6 +90,26 @@ public final class ContentIndexQuery
 
         validateFullTextQuery( query );
     }
+
+    public ContentIndexQuery( String queryWithoutOrderBy, String orderBy, int count )
+    {
+        if ( queryWithoutOrderBy == null )
+        {
+            queryWithoutOrderBy = "";
+        }
+
+        if ( ( orderBy != null ) && ( orderBy.length() > 0 ) )
+        {
+            queryWithoutOrderBy = queryWithoutOrderBy + " ORDER BY " + orderBy;
+        }
+
+        this.query = queryWithoutOrderBy.trim();
+
+        this.count = count;
+
+        validateFullTextQuery( query );
+    }
+
 
     public ContentIndexQuery( String query )
     {

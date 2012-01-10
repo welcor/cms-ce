@@ -27,6 +27,7 @@ import org.elasticsearch.action.search.SearchOperationThreading;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -372,10 +373,10 @@ public class ContentIndexServiceImpl
         catch ( ElasticSearchException e )
         {
             throw new ContentIndexException( "Failed to execute search: ", e );
-
         }
-
         timer.stop();
+
+        parseSearchResultFailures( res );
 
         if ( DEBUG_EXEC_TIME )
         {
@@ -383,6 +384,23 @@ public class ContentIndexServiceImpl
         }
 
         return res.getHits();
+    }
+
+
+    //TODO: How should this be handled
+    private void parseSearchResultFailures( SearchResponse res )
+    {
+        if ( res.getFailedShards() > 0 )
+        {
+            final ShardSearchFailure[] shardFailures = res.getShardFailures();
+
+            for ( ShardSearchFailure failure : shardFailures )
+            {
+                final String reason = failure.reason();
+                LOG.severe( "Status: " + failure.status() + " - Search failed on shard: " + reason );
+                throw new ContentIndexException( "Search failed: " + reason );
+            }
+        }
     }
 
     @Autowired

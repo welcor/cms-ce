@@ -3,16 +3,16 @@ package com.enonic.cms.itest.search;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -23,18 +23,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.ContentIndexFieldSet;
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.IndexType;
+import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
+import com.enonic.cms.core.search.builder.IndexFieldNameResolver;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
@@ -55,13 +54,16 @@ public abstract class ContentIndexServiceTestBase
     protected final ElasticSearchTestInstance server = ElasticSearchTestInstance.getInstance();
 
     protected final static String[] REQUIRED_ORDERBY_FIELDS =
-        new String[]{"orderby_category_key", "orderby_contenttype", "orderby_contenttype_key", "orderby_key", "orderby_priority",
-            "orderby_publishfrom", "orderby_publishto", "orderby_status", "orderby_title"};
+        new String[]{"orderby_categorykey", "orderby_contenttype", "orderby_contenttypekey", "orderby_key", "orderby_priority",
+            "orderby_publishfrom", "orderby_status", "orderby_title"};
 
     protected final static String[] REQUIRED_STANDARD_FIELD =
-        new String[]{"category_key", "category_key_numeric", "contenttype", "contenttype_key", "contenttype_key_numeric", "key",
-            "key_numeric", "priority", "priority_numeric", "publishfrom", "publishto", "publishto_numeric", "status", "status_numeric",
-            "title", "title._tokenized"};
+        new String[]{"categorykey", "categorykey_numeric", "contenttype", "contenttypekey", "contenttypekey_numeric", "key", "key_numeric",
+            "priority", "priority_numeric", "publishfrom", "status", "status_numeric", "title", "title._tokenized"};
+
+    private final static Pattern SPECIAL_FIELD_PATTERN = Pattern.compile(
+        "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIELD +
+            "){1}$" );
 
     //@Autowired
     //private ContentIndexService contentIndexService;
@@ -108,192 +110,8 @@ public abstract class ContentIndexServiceTestBase
         return indexName + "_" + indexType + "_mapping.json";
     }
 
-    private void verifyStandardValuesForAllIndexes( ContentDocument doc1, List<ContentIndexEntity> indexes )
-    {
-        for ( ContentIndexEntity contentIndexEntity : indexes )
-        {
-            checkContentIndexEntity( contentIndexEntity, doc1 );
-        }
-    }
 
-    private ContentDocument createContentDocWithNoUserFields( ContentKey contentKey )
-    {
-        ContentDocument doc1 = new ContentDocument( contentKey );
-        final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
-        doc1.setCategoryKey( new CategoryKey( 9 ) );
-        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
-        doc1.setContentTypeName( "Adults" );
-        doc1.setTitle( "Homer" );
-        doc1.setPublishFrom( date.getTime() );
-        date.add( Calendar.MONTH, 1 );
-        doc1.setPublishTo( date.getTime() );
-        doc1.setStatus( 2 );
-        doc1.setPriority( 0 );
-        return doc1;
-    }
-
-    private void checkUserDefinedFields( List<ContentIndexEntity> indexes, Collection<UserDefinedField> userDefinedFields,
-                                         int numberOfUserDefinedFields, int numberOfUniqueUserDefinedFields )
-    {
-        HashSet<String> foundPaths = new HashSet<String>();
-        int count = 0;
-
-        for ( UserDefinedField userDefinedField : userDefinedFields )
-        {
-            boolean found = false;
-            for ( ContentIndexEntity contentIndexEntity : indexes )
-            {
-                String path = convertToOriginalFormat( contentIndexEntity.getPath() );
-                String value = contentIndexEntity.getValue();
-                if ( userDefinedField.getValue().getText().length() > ContentIndexFieldSet.SPLIT_TRESHOLD )
-                {
-                    if ( userDefinedField.getName().equals( path ) )
-                    {
-                        BigText userDefinedValue = new BigText( userDefinedField.getValue().getText() );
-                        if ( userDefinedValue.getText().toLowerCase().contains( value ) )
-                        {
-                            found = true;
-                            foundPaths.add( path );
-                            count++;
-                        }
-                    }
-                }
-                else
-                {
-                    if ( userDefinedField.getName().equals( path ) && userDefinedField.getValue().getText().equalsIgnoreCase( value ) )
-                    {
-                        found = true;
-                        foundPaths.add( path );
-                        count++;
-                    }
-                }
-            }
-            assertTrue( "Wrong value for index with path " + userDefinedField.getName(), found );
-        }
-        assertEquals( count, numberOfUserDefinedFields );
-        assertEquals( foundPaths.size(), numberOfUniqueUserDefinedFields );
-
-    }
-
-    private String convertToOriginalFormat( String path )
-    {
-        return path.replaceAll( "#", "/" );
-    }
-
-    private void checkContentIndexEntity( ContentIndexEntity actual, ContentDocument expected )
-    {
-        assertEquals( expected.getCategoryKey(), actual.getCategoryKey() );
-        assertEquals( expected.getContentKey(), actual.getContentKey() );
-        assertEquals( expected.getContentTypeKey().toInt(), actual.getContentTypeKey() );
-        assertEquals( expected.getPublishFrom(), actual.getContentPublishFrom() );
-        assertEquals( expected.getPublishTo(), actual.getContentPublishTo() );
-        assertEquals( expected.getStatus().intValue(), actual.getContentStatus() );
-
-        if ( actual.getPath().equals( "owner#qualifiedname" ) )
-        {
-            if ( expected.getOwnerQualifiedName() != null )
-            {
-                assertEquals( expected.getOwnerQualifiedName().toString(), actual.getValue() );
-            }
-            else
-            {
-                assertEquals( "#", actual.getValue() );
-            }
-        }
-
-        if ( actual.getPath().equals( "owner#key" ) )
-        {
-            if ( expected.getOwnerKey() != null )
-            {
-                assertEquals( expected.getOwnerKey().toString(), actual.getValue() );
-            }
-            else
-            {
-                assertEquals( "#", actual.getValue() );
-            }
-
-        }
-
-        if ( actual.getPath().equals( "modifier#qualifiedname" ) )
-        {
-            if ( expected.getModifierQualifiedName() != null )
-            {
-                assertEquals( expected.getModifierQualifiedName().toString(), actual.getValue() );
-            }
-            else
-            {
-                assertEquals( "#", actual.getValue() );
-            }
-        }
-
-        if ( actual.getPath().equals( "modifier#key" ) )
-        {
-            if ( expected.getModifierKey() != null )
-            {
-                assertEquals( expected.getModifierKey().toString(), actual.getValue() );
-            }
-            else
-            {
-                assertEquals( "#", actual.getValue() );
-            }
-        }
-
-        if ( actual.getPath().equals( "priority" ) )
-        {
-            assertEquals( expected.getPriority().toString(), actual.getValue() );
-        }
-
-        if ( actual.getPath().equals( "created" ) )
-        {
-            if ( expected.getCreated() != null )
-            {
-                assertEquals( expected.getCreated().toString(), actual.getValue() );
-            }
-            else
-            {
-                assertEquals( "#", actual.getValue() );
-            }
-        }
-
-        if ( actual.getPath().equals( "title" ) )
-        {
-            if ( expected.getTitle() != null )
-            {
-                assertEquals( expected.getTitle().toString().toLowerCase(), actual.getValue() );
-            }
-            else
-            {
-                assertEquals( "#", actual.getValue() );
-            }
-        }
-
-        if ( actual.getPath().equals( "contenttype" ) )
-        {
-            assertEquals( expected.getContentTypeName().toString().toLowerCase(), actual.getValue() );
-        }
-
-        if ( actual.getPath().equals( "timestamp" ) )
-        {
-            if ( expected.getTimestamp() != null )
-            {
-                assertEquals( expected.getTimestamp().toString(), actual.getValue() );
-            }
-            else
-            {
-                assertEquals( "#", actual.getValue() );
-            }
-        }
-        if ( actual.getPath().equals( "fulltext" ) )
-        {
-            assertTrue( expected.getBinaryExtractedText().getText().toLowerCase().contains( actual.getValue() ) );
-        }
-
-        // order value
-        // num value
-
-    }
-
-    private void assertContentResultSetEquals( int[] contentKeys, ContentResultSet result )
+    protected void assertContentResultSetEquals( int[] contentKeys, ContentResultSet result )
     {
         assertEquals( "contentResultSet length", contentKeys.length, result.getTotalCount() );
 
@@ -309,63 +127,27 @@ public abstract class ContentIndexServiceTestBase
         }
     }
 
-    private void assertException( Class expectedClass, String expectedMessageStartWith, Exception actual )
-    {
-        assertTrue( "Expected " + expectedClass, actual.getClass().isAssignableFrom( expectedClass ) );
-        assertTrue( "Expected message to starts with '" + expectedMessageStartWith + "', was: " + actual.getMessage(),
-                    actual.getMessage().startsWith( expectedMessageStartWith ) );
-    }
-
-    private List<CategoryKey> createCategoryKeyList( Integer... array )
-    {
-        List<CategoryKey> keys = new ArrayList<CategoryKey>();
-        for ( int x : array )
-        {
-            keys.add( new CategoryKey( x ) );
-        }
-        return keys;
-    }
-
-    private List<ContentTypeKey> createContentTypeList( Integer... array )
-    {
-        List<ContentTypeKey> keys = new ArrayList<ContentTypeKey>();
-        for ( int x : array )
-        {
-            keys.add( new ContentTypeKey( x ) );
-        }
-        return keys;
-    }
-
-    private String createStringFillingXRows( int numberOfRows )
-    {
-        return createRandomTextOfSize( ContentIndexFieldSet.SPLIT_TRESHOLD * numberOfRows - 5 );
-    }
-
-    private String createRandomTextOfSize( int size )
-    {
-        String str = new String( "ABCDEFGHIJKLMNOPQRSTUVWZYZabcdefghijklmnopqrstuvw " );
-        StringBuffer sb = new StringBuffer();
-        Random r = new Random();
-        int te = 0;
-        for ( int i = 1; i <= size; i++ )
-        {
-            te = r.nextInt( str.length() - 1 );
-            sb.append( str.charAt( te ) );
-        }
-
-        return sb.toString();
-    }
-
     protected void doIndexContentDocuments( List<ContentDocument> docs )
     {
         for ( ContentDocument doc : docs )
         {
             this.service.index( doc, false );
         }
-
     }
 
     protected Map<String, SearchHitField> getFieldMapForId( ContentKey contentKey )
+    {
+        SearchResponse result = fetchDocumentByContentKey( contentKey );
+
+        assertEquals( "Should get one hit only", 1, result.getHits().getHits().length );
+
+        SearchHit hit = result.getHits().getAt( 0 );
+
+        return hit.getFields();
+
+    }
+
+    private SearchResponse fetchDocumentByContentKey( ContentKey contentKey )
     {
         String termQuery = "{\n" +
             "  \"from\" : 0,\n" +
@@ -379,14 +161,60 @@ public abstract class ContentIndexServiceTestBase
             "}";
 
         SearchRequest req = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( termQuery );
-        SearchResponse result = server.client.search( req ).actionGet();
+        return server.client.search( req ).actionGet();
+    }
 
+
+    protected void verifyUserDefinedFields( ContentKey contentKey, ContentDocument doc1 )
+    {
+        SearchResponse result = fetchDocumentByContentKey( contentKey );
         assertEquals( "Should get one hit only", 1, result.getHits().getHits().length );
 
-        SearchHit hit = result.getHits().getAt( 0 );
+        final Collection<UserDefinedField> userDefinedFields = doc1.getUserDefinedFields();
 
-        return hit.getFields();
+        final SearchHit hit = result.getHits().getAt( 0 );
+        final Map<String, SearchHitField> hitFieldMap = hit.getFields();
 
+        for ( UserDefinedField field : userDefinedFields )
+        {
+
+            final String indexFieldName = IndexFieldNameResolver.normalizeFieldName( field.getName() );
+            final SearchHitField hitField = hitFieldMap.get( indexFieldName );
+
+            assertNotNull( "Could not find field in index: " + indexFieldName, hitField );
+            compareValues( hitField, field.getValue().toString() );
+        }
+
+        int numberOfUserFieldsInHit = findNumberOfUserDataFields( hitFieldMap );
+
+        assertEquals( "Should have equal number of userfields in index and doc", userDefinedFields.size(), numberOfUserFieldsInHit );
+    }
+
+    private int findNumberOfUserDataFields( Map<String, SearchHitField> hitFieldMap )
+    {
+        int numberOfUserFieldsInHit = 0;
+
+        for ( String hitField : hitFieldMap.keySet() )
+        {
+            if ( isUserDataField( hitField ) )
+            {
+                numberOfUserFieldsInHit++;
+            }
+        }
+        return numberOfUserFieldsInHit;
+    }
+
+    private boolean isUserDataField( String hitField )
+    {
+        if ( StringUtils.startsWith( hitField, "data_" ) )
+        {
+            Matcher m = SPECIAL_FIELD_PATTERN.matcher( hitField );
+            if ( !m.find() )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -407,22 +235,8 @@ public abstract class ContentIndexServiceTestBase
         SearchResponse result = server.client.search( req ).actionGet();
 
         System.out.println( "\n\n------------------------------------------" );
-
-        for ( SearchHit hit : result.getHits() )
-        {
-            System.out.println( "HIT:  id = " + hit.getId() );
-
-            final Map<String, SearchHitField> fields = hit.getFields();
-
-            for ( String field : fields.keySet() )
-            {
-                System.out.println( "    " + field + " : " + fields.get( field ).value() );
-
-            }
-        }
-
+        System.out.println( result.toString() );
         System.out.println( "\n\n\n\n" );
-
     }
 
     protected void letTheIndexFinishItsWork()
@@ -437,24 +251,11 @@ public abstract class ContentIndexServiceTestBase
         }
     }
 
-    protected void verifyStandardValues( ContentDocument doc1, ContentResultSet contentResultSet )
+    protected void verifyStandardFields( ContentDocument doc1, ContentKey contentKey )
     {
-        final List<ContentKey> contentKeys = contentResultSet.getKeys();
+        final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( contentKey );
 
-        for ( ContentKey key : contentKeys )
-        {
-            final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( key );
-
-            verifyStandardFields( key.toString(), fieldMapForId, doc1 );
-
-
-        }
-
-        //    for ( ContentIndexEntity contentIndexEntity : indexes )
-        //    {
-        //        checkContentIndexEntity( contentIndexEntity, doc1 );
-        //    }
-
+        verifyStandardFields( contentKey.toString(), fieldMapForId, doc1 );
     }
 
     private void verifyStandardFields( String id, Map<String, SearchHitField> fieldMapForId, ContentDocument doc )
@@ -471,8 +272,8 @@ public abstract class ContentIndexServiceTestBase
 
         compareValues( fieldMapForId.get( "key" ), id );
         compareValues( fieldMapForId.get( "key_numeric" ), id );
-        compareValues( fieldMapForId.get( "category_key" ), doc.getCategoryKey().toString() );
-        compareValues( fieldMapForId.get( "category_key_numeric" ), doc.getCategoryKey().toString() );
+        compareValues( fieldMapForId.get( "categorykey" ), doc.getCategoryKey().toString() );
+        compareValues( fieldMapForId.get( "categorykey_numeric" ), doc.getCategoryKey().toString() );
         compareValues( fieldMapForId.get( "status" ), doc.getStatus() );
         compareValues( fieldMapForId.get( "status_numeric" ), doc.getStatus() );
     }
@@ -496,7 +297,7 @@ public abstract class ContentIndexServiceTestBase
             }
             catch ( NumberFormatException e )
             {
-                assertEquals( failureMessage, expected, actual );
+                assertEquals( failureMessage, StringUtils.lowerCase( expected ), StringUtils.lowerCase( (String) actual ) );
             }
         }
         else
@@ -510,4 +311,132 @@ public abstract class ContentIndexServiceTestBase
         compareValues( field, Integer.toString( expected ) );
     }
 
+    protected ContentDocument createContentDocument( int contentKey, String title, String preface, String fulltext )
+    {
+        return createContentDocument( contentKey, title, new String[][]{{"data/preface", preface}, {"fulltext", fulltext}} );
+    }
+
+    ContentDocument createContentDocument( int contentKey, String title, String[][] fields )
+    {
+        ContentDocument doc = new ContentDocument( new ContentKey( contentKey ) );
+        doc.setCategoryKey( new CategoryKey( 9 ) );
+        doc.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc.setContentTypeName( "Article" );
+        if ( title != null )
+        {
+            doc.setTitle( title );
+        }
+        if ( fields != null )
+        {
+            for ( String[] field : fields )
+            {
+                doc.addUserDefinedField( field[0], field[1] );
+            }
+        }
+        doc.setStatus( 2 );
+        doc.setPriority( 0 );
+        return doc;
+    }
+
+    protected ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,
+                                                     int status, String title, String[][] fields )
+    {
+        ContentDocument doc = new ContentDocument( contentKey );
+        doc.setCategoryKey( categoryKey );
+        doc.setContentTypeKey( contentTypeKey );
+        doc.setContentTypeName( "Article" );
+        if ( title != null )
+        {
+            doc.setTitle( title );
+        }
+        if ( fields != null )
+        {
+            for ( String[] field : fields )
+            {
+                doc.addUserDefinedField( field[0], field[1] );
+            }
+        }
+        doc.setStatus( status );
+        doc.setPriority( 0 );
+        return doc;
+    }
+
+    protected void setUpStandardTestValues()
+    {
+        final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
+
+        // Index content 1, 2 og 3:
+        ContentDocument doc1 = new ContentDocument( new ContentKey( 1322 ) );
+        doc1.setCategoryKey( new CategoryKey( 9 ) );
+        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc1.setContentTypeName( "Adults" );
+        doc1.setTitle( "Homer" );
+        doc1.addUserDefinedField( "data/person/age", "38" );
+        doc1.addUserDefinedField( "data/person/gender", "male" );
+        doc1.addUserDefinedField( "data/person/description",
+                                  "crude, overweight, incompetent, clumsy, thoughtless and a borderline alcoholic" );
+        // Publish from February 28th to March 28th.
+        doc1.setPublishFrom( date.getTime() );
+        date.add( Calendar.MONTH, 1 );
+        doc1.setPublishTo( date.getTime() );
+        date.add( Calendar.MONTH, -1 );
+        doc1.setStatus( 2 );
+        doc1.setPriority( 0 );
+        service.index( doc1, true );
+
+        date.add( Calendar.DAY_OF_MONTH, 1 );
+        ContentDocument doc2 = new ContentDocument( new ContentKey( 1327 ) );
+        doc2.setCategoryKey( new CategoryKey( 7 ) );
+        doc2.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc2.setContentTypeName( "Adults" );
+        doc2.setTitle( "Fry" );
+        doc2.addUserDefinedField( "data/person/age", "28" );
+        doc2.addUserDefinedField( "data/person/gender", "male" );
+        doc2.addUserDefinedField( "data/person/description", "an extratemporal character, unable to comprehend the future" );
+        // Publish from February 29th to March 29th.
+        doc2.setPublishFrom( date.getTime() );
+        date.add( Calendar.MONTH, 1 );
+        doc2.setPublishTo( date.getTime() );
+        date.add( Calendar.MONTH, -1 );
+        doc2.setStatus( 2 );
+        doc2.setPriority( 0 );
+        service.index( doc2, true );
+
+        date.add( Calendar.DAY_OF_MONTH, 1 );
+        ContentDocument doc3 = new ContentDocument( new ContentKey( 1323 ) );
+        doc3.setCategoryKey( new CategoryKey( 9 ) );
+        doc3.setContentTypeKey( new ContentTypeKey( 37 ) );
+        doc3.setContentTypeName( "Children" );
+        doc3.setTitle( "Bart" );
+        doc3.addUserDefinedField( "data/person/age", "10" );
+        doc3.addUserDefinedField( "data/person/gender", "male" );
+        doc3.addUserDefinedField( "data/person/description", "mischievous, rebellious, disrespecting authority and sharp witted" );
+        // Publish from March 1st to April 1st
+        doc3.setPublishFrom( date.getTime() );
+        date.add( Calendar.MONTH, 1 );
+        doc3.setPublishTo( date.getTime() );
+        date.add( Calendar.MONTH, -1 );
+        doc3.setStatus( 2 );
+        doc3.setPriority( 0 );
+        service.index( doc3, true );
+
+        ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
+        doc4.setCategoryKey( new CategoryKey( 9 ) );
+        doc4.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc4.setContentTypeName( "Adults" );
+        doc4.setTitle( "Bender" );
+        doc4.addUserDefinedField( "data/person/age", "5" );
+        doc4.addUserDefinedField( "data/person/gender", "man-bot" );
+        doc4.addUserDefinedField( "data/person/description",
+                                  "alcoholic, whore-mongering, chain-smoking gambler with a swarthy Latin charm" );
+        // Publish from March 1st to March 28th.
+        doc4.setPublishFrom( date.getTime() );
+        date.add( Calendar.DAY_OF_MONTH, 27 );
+        doc4.setPublishTo( date.getTime() );
+        doc4.setStatus( 2 );
+        doc4.setPriority( 0 );
+        service.index( doc4, true );
+
+        letTheIndexFinishItsWork();
+    }
 }

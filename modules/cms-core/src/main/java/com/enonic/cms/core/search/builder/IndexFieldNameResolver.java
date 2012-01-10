@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
  * Date: 11/23/11
  * Time: 12:06 PM
  */
-final class IndexFieldNameResolver
+final public class IndexFieldNameResolver
     extends IndexFieldNameConstants
 {
 
@@ -49,12 +49,12 @@ final class IndexFieldNameResolver
 
     public static String getCategoryKeyFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + "_key";
+        return CATEGORY_FIELD_PREFIX + "key";
     }
 
     public static String getCategoryKeyNumericFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + getNumericField( "_key" );
+        return CATEGORY_FIELD_PREFIX + getNumericField( "key" );
     }
 
     public static String getSectionKeyNumericFieldName()
@@ -69,12 +69,14 @@ final class IndexFieldNameResolver
 
     public static String getContentTypeKeyFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "_" + "key";
+        return "contenttypekey";
+        //return CONTENT_TYPE_PREFIX + "_" + "key";
     }
 
     public static String getContentTypeKeyNumericFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "_" + getNumericField( "key" );
+        return "contenttypekey_numeric";
+        //return CONTENT_TYPE_PREFIX + "_" + getNumericField( "key" );
     }
 
     public static String getContentTypeNameFieldName()

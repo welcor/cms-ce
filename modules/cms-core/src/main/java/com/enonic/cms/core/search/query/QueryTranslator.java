@@ -149,6 +149,7 @@ public final class QueryTranslator
     private QueryBuilder buildLogicalExpr( LogicalExpr expr )
         throws Exception
     {
+
         final QueryBuilder left = buildExpr( expr.getLeft() );
         final QueryBuilder right = buildExpr( expr.getRight() );
 

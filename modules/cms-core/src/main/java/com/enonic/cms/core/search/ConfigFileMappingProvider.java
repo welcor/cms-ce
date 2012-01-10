@@ -6,7 +6,6 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.elasticsearch.ElasticSearchException;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,7 +33,7 @@ final class ConfigFileMappingProvider
             IOUtils.copy( stream, writer, "UTF-8" );
             final String mapping = writer.toString();
 
-            System.out.println( "Mapping file loaded: " + mapping );
+            //System.out.println( "Mapping file loaded: " + mapping );
 
             return mapping;
         }

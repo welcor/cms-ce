@@ -2,7 +2,6 @@ package com.enonic.cms.core.search.query;
 
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.search.ElasticContentConstants;
-import com.enonic.cms.core.search.ElasticIndexUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,12 +54,12 @@ public class QueryFieldNameResolver
 
     public static String getCategoryKeyFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + "_key";
+        return CATEGORY_FIELD_PREFIX + "key";
     }
 
     public static String getCategoryKeyNumericFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + getNumericField( "_key" );
+        return CATEGORY_FIELD_PREFIX + getNumericField( "key" );
     }
 
     public static String getSectionKeyNumericFieldName()
@@ -82,7 +81,8 @@ public class QueryFieldNameResolver
 
     public static String getContentTypeKeyNumericFieldName()
     {
-        return CONTENT_TYPE_PREFIX + getNumericField( "_key" );
+        return "contenttypekey_numeric";
+        //return CONTENT_TYPE_PREFIX + getNumericField( "_key" );
     }
 
 

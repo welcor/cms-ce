@@ -24,7 +24,5 @@ public class QueryFieldNameResolverTest
         String fieldName = QueryFieldNameResolver.getSectionKeyNumericFieldName();
         assertEquals( "contentlocations.menuitemkey_numeric", fieldName );
 
-        String propertyName = QueryFieldNameResolver.toPropertyName( "VaLuE" );
-        assertEquals( "value", propertyName );
     }
 }

@@ -5,7 +5,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 
-import com.enonic.cms.core.search.ElasticContentConstants;
+import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 public class TermQueryBuilderCreator
     extends BaseQueryBuilder
@@ -28,7 +28,7 @@ public class TermQueryBuilderCreator
         if ( singleValue instanceof Number && !path.isWildCardPath() )
         {
             Number number = (Number) singleValue;
-            termQuery = QueryBuilders.termQuery( path.getPath() + ElasticContentConstants.NUMERIC_FIELD_POSTFIX, number );
+            termQuery = QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, number );
         }
         else
         {

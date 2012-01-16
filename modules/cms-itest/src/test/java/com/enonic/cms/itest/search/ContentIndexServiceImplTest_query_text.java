@@ -11,7 +11,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  * Date: 1/3/12
  * Time: 1:02 PM
  */
-public class ContentIndexServiceImplTest_query_word_and_fulltext
+public class ContentIndexServiceImplTest_query_text
     extends ContentIndexServiceTestBase
 {
     @Test
@@ -235,5 +235,43 @@ public class ContentIndexServiceImplTest_query_word_and_fulltext
         assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
             "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'", 10 ) ) );
     }
+
+
+    @Test
+    public void testSplittedNormalIndexWithAnd()
+    {
+        service.index( createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ),
+                       false );
+        service.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        letTheIndexFinishItsWork();
+
+        assertContentResultSetEquals( new int[]{101}, service.query(
+            new ContentIndexQuery( "data/text CONTAINS 'fisk' AND data/text CONTAINS 'torsk'", "", 10 ) ) );
+    }
+
+    @Test
+    public void testSplittedNormalIndexWithOr()
+    {
+        service.index( createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ),
+                       false );
+        service.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        letTheIndexFinishItsWork();
+
+        assertContentResultSetEquals( new int[]{101}, service.query(
+            new ContentIndexQuery( "data/text CONTAINS 'fisk' OR data/text CONTAINS 'torsk'", "", 10 ) ) );
+    }
+
+    @Test
+    public void testMultipleSameLikeExactWords()
+    {
+        service.index( createContentDocument( 101, "title", new String[][]{{"data/heading", "ENONIC"}, {"data/preface", "ENONIC"},
+            {"data/text", "ENONIC"}} ), false );
+        letTheIndexFinishItsWork();
+
+        assertContentResultSetEquals( new int[]{101}, service.query(
+            new ContentIndexQuery( "data/heading LIKE '%ENONIC%' or data/preface LIKE '%ENONIC%' or data/text LIKE '%ENONIC%'", "",
+                                   10 ) ) );
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.enonic.cms.itest.search;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -116,6 +117,17 @@ public class ElasticSearchTestInstance
 
         client = node.client();
     }
+
+    public final static Settings createNodeSettings( File storageDir )
+    {
+
+        return ImmutableSettings.settingsBuilder()
+            .put( "path.log", new File( storageDir, "log" ).getAbsolutePath() )
+            .put( "path.data", new File( storageDir, "data" ).getAbsolutePath() )
+            .put( "path.config", "thisisconfigdir" )
+            .build();
+    }
+
 
     public void deleteIndex()
         throws Exception

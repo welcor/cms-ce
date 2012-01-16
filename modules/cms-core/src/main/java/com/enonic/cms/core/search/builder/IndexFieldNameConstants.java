@@ -8,13 +8,13 @@ package com.enonic.cms.core.search.builder;
  */
 public class IndexFieldNameConstants
 {
-    public static final String NUMERIC_FIELD_POSTFIELD = "_numeric";
+    public static final String NUMERIC_FIELD_POSTFIX = "_numeric";
 
     public static final String ORDER_FIELD_PREFIX = "orderby_";
 
     public static final String CATEGORY_FIELD_PREFIX = "category";
 
-    public static final String SECTION_FIELD_PREFIX = "_contentlocations";
+    public static final String SECTION_FIELD_PREFIX = "contentlocations";
 
     public static final String CONTENT_TYPE_PREFIX = "contenttype";
 

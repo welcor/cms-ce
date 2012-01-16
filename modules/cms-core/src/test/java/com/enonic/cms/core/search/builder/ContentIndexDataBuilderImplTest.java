@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,37 +55,6 @@ public class ContentIndexDataBuilderImplTest
 
         ContentIndexData indexData = indexDataBuilder.build( content, spec );
 
-        /*ContentBuilderTestMetaDataHolder metadata = ContentBuilderTestMetaDataHolder.createMetaDataHolder( indexData.getMetadataJson() );
-
-        assertEquals( 1.0, metadata.key );
-        assertEquals( "mytitle", metadata.title );
-        assertEquals( new Integer( 2 ), metadata.status );
-        assertEquals( "2011-02-09T23:00:00.000Z", metadata.publishto );
-        assertEquals( "2011-01-09T23:00:00.000Z", metadata.publishfrom );
-        assertEquals( "2011-03-09T23:00:00.000Z", metadata.timestamp );
-        assertEquals( "mycontenttype", metadata.contenttype );
-        assertEquals( (int) 3, (int) metadata.contenttype_key );
-
-        assertEquals( 12.0, metadata.assignee_key );
-        assertEquals( "assigneeqname", metadata.assignee_qualifiedname );
-
-        assertEquals( 14.0, metadata.assigner_key );
-        assertEquals( "assignerqname", metadata.assigner_qualifiedname );
-
-        assertEquals( "2011-03-09T23:00:00.000Z", metadata.assignmentduedate );
-
-        assertEquals( 10.0, metadata.modifier_key );
-        assertEquals( "modifierqname", metadata.modifier_qualifiedname );
-
-        assertEquals( 11.0, metadata.owner_key );
-        assertEquals( "ownerqname", metadata.owner_qualifiedname );
-
-        assertEquals( new Integer( 1 ), metadata.priority );
-
-        assertEquals( 2.0, metadata.category_key );
-        assertEquals( "mycategory", metadata.category_name );
-        */
-
         final String indexDataAsString = indexData.getMetadataJson();
 
         for ( String field : REQUIRED_STANDARD_FIELD )
@@ -100,6 +67,80 @@ public class ContentIndexDataBuilderImplTest
             assertTrue( "Missing required orderby field: " + field, indexDataAsString.contains( field ) );
         }
     }
+
+    @Test
+    public void testUserFields()
+        throws Exception
+    {
+
+        ContentDocument content = createTestContent();
+
+        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
+
+        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+
+        final String indexDataAsString = indexData.getMetadataJson();
+
+        System.out.println( indexDataAsString );
+
+        for ( String field : REQUIRED_ORDERBY_FIELDS )
+        {
+            assertTrue( "Missing required orderby field: " + field, indexDataAsString.contains( field ) );
+        }
+
+        final List<String> keysAsList = getKeysAsList( indexDataAsString );
+
+        Assert.assertTrue( keysAsList.contains( "data_person_age" ) );
+        Assert.assertTrue( keysAsList.contains( "data_person_description" ) );
+        Assert.assertTrue( keysAsList.contains( "data_person_gender" ) );
+    }
+
+
+    @Test
+    public void testNumericValues()
+        throws Exception
+    {
+
+        ContentDocument content = createTestContent();
+
+        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
+
+        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+
+        final String indexDataAsString = indexData.getMetadataJson();
+
+        System.out.println( indexDataAsString );
+
+        for ( String field : REQUIRED_ORDERBY_FIELDS )
+        {
+            assertTrue( "Missing required orderby field: " + field, indexDataAsString.contains( field ) );
+        }
+
+        final List<String> keysAsList = getKeysAsList( indexDataAsString );
+
+        verifyFieldExists( keysAsList, "key" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "status" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "priority" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "data_person_age" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+
+        verifyFieldDoesNotExists( keysAsList,
+                                  IndexFieldNameConstants.ORDER_FIELD_PREFIX + "key" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldDoesNotExists( keysAsList,
+                                  IndexFieldNameConstants.ORDER_FIELD_PREFIX + "status" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldDoesNotExists( keysAsList, "data_person_description" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldDoesNotExists( keysAsList, "data_person_gender" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+    }
+
+    private void verifyFieldExists( List<String> keysAsList, String keyName )
+    {
+        Assert.assertTrue( "Missing key: " + keyName, keysAsList.contains( keyName ) );
+    }
+
+    private void verifyFieldDoesNotExists( List<String> keysAsList, String keyName )
+    {
+        Assert.assertFalse( "Redundant key: " + keyName, keysAsList.contains( keyName ) );
+    }
+
 
     @Test
     public void testOrderByFields()
@@ -131,29 +172,9 @@ public class ContentIndexDataBuilderImplTest
         }
 
         // Check orderby for customdata fields
-        Assert.assertTrue( keysAsList.contains( IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_age" ) );
-        Assert.assertTrue( keysAsList.contains( IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_description" ) );
-        Assert.assertTrue( keysAsList.contains( IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_gender" ) );
-    }
-
-    private Map<String, String> getIndexDataAsMap( String indexData )
-    {
-        Map<String, String> indexDataAsMap = new HashMap<String, String>();
-
-        final String[] split = StringUtils.split( indexData, "," );
-
-        for ( int i = 0; i < split.length; i++ )
-        {
-            final String keyValue = split[i];
-
-            final String cleaned = StringUtils.remove( keyValue, '"' );
-
-            final String[] keyValueArray = StringUtils.split( cleaned, ":" );
-
-            indexDataAsMap.put( keyValueArray[0], keyValueArray[1] );
-        }
-
-        return indexDataAsMap;
+        verifyFieldExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_age" );
+        verifyFieldExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_description" );
+        verifyFieldExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_gender" );
     }
 
     private List<String> getKeysAsList( String indexData )
@@ -166,7 +187,7 @@ public class ContentIndexDataBuilderImplTest
         {
             final String keyValue = split[i];
 
-            final String cleaned = StringUtils.remove( keyValue, '"' );
+            final String cleaned = keyValue.replace( "\"", "" ).replace( "{", "" ).replace( "}", "" );
 
             final String[] keyValueArray = StringUtils.split( cleaned, ":" );
 

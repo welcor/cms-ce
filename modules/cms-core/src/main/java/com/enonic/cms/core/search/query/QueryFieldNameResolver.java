@@ -1,7 +1,7 @@
 package com.enonic.cms.core.search.query;
 
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
-import com.enonic.cms.core.search.ElasticContentConstants;
+import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +10,7 @@ import com.enonic.cms.core.search.ElasticContentConstants;
  * Time: 9:16 AM
  */
 public class QueryFieldNameResolver
-    extends ElasticContentConstants
+    extends IndexFieldNameConstants
 {
 
 
@@ -42,19 +42,9 @@ public class QueryFieldNameResolver
         return propertyName;
     }
 
-    public static String toPropertyName( String value )
-    {
-        return PROPERTY_FIELD_PREFIX + normalizeName( value );
-    }
-
     public static String normalizeName( String name )
     {
         return name.replace( QUERY_LANGUAGE_PROPERTY_SEPARATOR, INDEX_FIELDNAME_PROPERTY_SEPARATOR ).toLowerCase();
-    }
-
-    public static String getCategoryKeyFieldName()
-    {
-        return CATEGORY_FIELD_PREFIX + "key";
     }
 
     public static String getCategoryKeyNumericFieldName()
@@ -67,28 +57,10 @@ public class QueryFieldNameResolver
         return SECTION_FIELD_PREFIX + getNumericField( ".menuitemkey" );
     }
 
-    public static String getCategoryNameFieldName()
-    {
-        return CATEGORY_FIELD_PREFIX + "_name";
-    }
-
-
-    public static String getContentTypeKeyFieldName()
-    {
-        return CONTENT_TYPE_PREFIX + "_key";
-    }
-
-
     public static String getContentTypeKeyNumericFieldName()
     {
         return "contenttypekey_numeric";
         //return CONTENT_TYPE_PREFIX + getNumericField( "_key" );
-    }
-
-
-    public static String getContentTypeNameFieldName()
-    {
-        return CONTENT_TYPE_PREFIX + "_name";
     }
 
 }

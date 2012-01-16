@@ -40,7 +40,7 @@ public class RangeQueryBuilderTest
         String expected_result = "{\n" +
             "  \"range\" : {\n" +
             "    \"key_numeric\" : {\n" +
-            "      \"from\" : 100,\n" +
+            "      \"from\" : 100.0,\n" +
             "      \"to\" : null,\n" +
             "      \"include_lower\" : false,\n" +
             "      \"include_upper\" : true\n" +
@@ -66,8 +66,8 @@ public class RangeQueryBuilderTest
         String expected_result = "{\n" +
             "  \"range\" : {\n" +
             "    \"key_numeric\" : {\n" +
-            "      \"from\" : 100,\n" +
-            "      \"to\" : 300,\n" +
+            "      \"from\" : 100.0,\n" +
+            "      \"to\" : 300.0,\n" +
             "      \"include_lower\" : true,\n" +
             "      \"include_upper\" : true\n" +
             "    }\n" +

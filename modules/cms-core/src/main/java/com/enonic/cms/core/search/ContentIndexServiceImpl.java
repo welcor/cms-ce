@@ -30,7 +30,6 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -85,6 +84,8 @@ public class ContentIndexServiceImpl
 
     private static final boolean DEBUG_EXEC_TIME = false;
 
+    private IndexSettingsBuilder indexSettingsBuilder;
+
     @PostConstruct
     public void startIndex()
     {
@@ -109,12 +110,7 @@ public class ContentIndexServiceImpl
 
         CreateIndexRequest createIndexRequest = new CreateIndexRequest( INDEX_NAME );
 
-        ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
-        settings.loadFromSource( IndexAnalyzerSettingsBuilder.buildAnalyserSettings() );
-
-        //TODO: Other settings
-
-        createIndexRequest.settings( settings );
+        createIndexRequest.settings( indexSettingsBuilder.buildSettings() );
         client.admin().indices().create( createIndexRequest ).actionGet();
 
         addMapping();
@@ -433,4 +429,9 @@ public class ContentIndexServiceImpl
         this.indexDataBuilder = indexDataBuilder;
     }
 
+    @Autowired
+    public void setIndexSettingsBuilder( IndexSettingsBuilder indexSettingsBuilder )
+    {
+        this.indexSettingsBuilder = indexSettingsBuilder;
+    }
 }

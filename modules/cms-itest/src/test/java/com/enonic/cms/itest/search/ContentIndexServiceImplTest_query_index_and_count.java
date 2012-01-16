@@ -79,7 +79,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
 
 
     @Test
-    public void having_one_matching_content_query_returns_one_when_index_is_0_and_count_1()
+    public void test_having_one_matching_content_query_returns_one_when_index_is_0_and_count_1()
         throws Exception
     {
         //service.deleteIndex();
@@ -108,7 +108,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
     }
 
     @Test
-    public void having_one_matching_content_query_returns_none_when_index_is_1_and_count_1()
+    public void test_having_one_matching_content_query_returns_none_when_index_is_1_and_count_1()
         throws Exception
     {
         // setup
@@ -133,7 +133,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
     }
 
     @Test
-    public void having_two_matching_content_query_returns_one_when_index_is_1_and_count_1()
+    public void test_having_two_matching_content_query_returns_one_when_index_is_1_and_count_1()
         throws Exception
     {
 
@@ -245,75 +245,6 @@ public class ContentIndexServiceImplTest_query_index_and_count
 
         return doc;
     }
-
-    /*
-  @Test
-  public void having_two_matching_content_query_returns_one_when_index_is_1_and_count_1()
-  {
-      // setup
-      contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
-      contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
-      fixture.flushAndClearHibernateSesssion();
-
-      // exercise
-      ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
-      query.setSecurityFilter( Lists.newArrayList( fixture.findUserByName( "content-querier" ).getUserGroupKey() ) );
-      query.setIndex( 1 );
-      query.setCount( 1 );
-      query.setCategoryFilter( Lists.newArrayList( fixture.findCategoryByName( "MyCategory" ).getKey() ) );
-      ContentResultSet result = contentIndexService.query( query );
-
-      // verify
-      assertEquals( 1, result.getLength() );
-      assertEquals( 2, result.getTotalCount() );
-  }
-
-  @Test
-  public void having_three_matching_content_query_returns_two_when_index_is_1_and_count_2()
-  {
-      // setup
-      contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
-      contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
-      contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
-      fixture.flushAndClearHibernateSesssion();
-
-      // exercise
-      ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
-      query.setSecurityFilter( Lists.newArrayList( fixture.findUserByName( "content-querier" ).getUserGroupKey() ) );
-      query.setIndex( 1 );
-      query.setCount( 2 );
-      query.setCategoryFilter( Lists.newArrayList( fixture.findCategoryByName( "MyCategory" ).getKey() ) );
-      ContentResultSet result = contentIndexService.query( query );
-
-      // verify
-      assertEquals( 2, result.getLength() );
-      assertEquals( 3, result.getTotalCount() );
-  }
-
-  @Test
-  public void having_three_matching_content_query_returns_one_when_index_is_1_and_count_1()
-  {
-      // setup
-      contentService.createContent( createContentCommand( "a-1", "a-1", "MyCategory" ) );
-      contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
-      contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
-      contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
-      fixture.flushAndClearHibernateSesssion();
-
-      // exercise
-      ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
-      query.setSecurityFilter( Lists.newArrayList( fixture.findUserByName( "content-querier" ).getUserGroupKey() ) );
-      query.setIndex( 1 );
-      query.setCount( 1 );
-      query.setCategoryFilter( Lists.newArrayList( fixture.findCategoryByName( "MyCategory" ).getKey() ) );
-      ContentResultSet result = contentIndexService.query( query );
-
-      // verify
-      assertEquals( 3, result.getTotalCount() );
-      assertEquals( 1, result.getLength() );
-      assertEquals( "c-2", result.getContent( 0 ).getName() );
-  }
-    */
 
     private CreateContentCommand createContentCommand( String name, String title, String categoryName )
     {

@@ -62,7 +62,7 @@ public abstract class ContentIndexServiceTestBase
             "priority", "priority_numeric", "publishfrom", "status", "status_numeric", "title", "title._tokenized"};
 
     private final static Pattern SPECIAL_FIELD_PATTERN = Pattern.compile(
-        "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIELD +
+        "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX +
             "){1}$" );
 
     //@Autowired

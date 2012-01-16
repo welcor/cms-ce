@@ -36,12 +36,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"category_key_numeric\" : [ \"15\" ]\n" +
+            "          \"categorykey_numeric\" : [ \"15\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttype_key_numeric\" : [ \"1002\", \"1001\" ]\n" +
+            "          \"contenttypekey_numeric\" : [ \"1002\", \"1001\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -83,12 +83,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"category_key_numeric\" : [ \"15\" ]\n" +
+            "          \"categorykey_numeric\" : [ \"15\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" +
+            "          \"contenttypekey_numeric\" : [ \"1001\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -129,12 +129,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"category_key_numeric\" : [ \"15\" ]\n" +
+            "          \"categorykey_numeric\" : [ \"15\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttype_key_numeric\" : [ \"1001\" ]\n" +
+            "          \"contenttypekey_numeric\" : [ \"1001\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

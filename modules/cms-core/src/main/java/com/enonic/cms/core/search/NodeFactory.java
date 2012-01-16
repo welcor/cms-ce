@@ -1,16 +1,17 @@
 package com.enonic.cms.core.search;
 
+import java.io.File;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.common.logging.slf4j.Slf4jESLoggerFactory;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.springframework.beans.factory.FactoryBean;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.io.File;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +48,7 @@ public class NodeFactory
     public void start() {
         setLogger();
 
-        final Settings settings = IndexSettingsBuilder.createNodeSettings(this.storageDir);
+        final Settings settings = NodeSettingsBuilder.createNodeSettings( this.storageDir );
 
         this.node = NodeBuilder.nodeBuilder().client(client).local(local).data(data).settings(settings).build();
 

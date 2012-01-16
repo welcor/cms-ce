@@ -13,7 +13,7 @@ import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
-import com.enonic.cms.core.search.ElasticContentConstants;
+import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 
 public final class QueryTranslator
@@ -124,7 +124,7 @@ public final class QueryTranslator
     private QueryBuilder buildFulltextQuery( final String path, final Object singleValue )
     {
         String stringValue = (String) singleValue;
-        return QueryBuilders.termQuery( path + ElasticContentConstants.NON_ANALYZED_POSTFIX, stringValue );
+        return QueryBuilders.termQuery( path + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX, stringValue );
     }
 
     private QueryBuilder buildNotExpr( NotExpr expr )

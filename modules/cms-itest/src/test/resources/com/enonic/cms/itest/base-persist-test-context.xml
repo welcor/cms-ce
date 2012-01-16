@@ -78,4 +78,6 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean id="indexSettingsBuilder" class="com.enonic.cms.itest.search.ContentIndexTestSettingsBuilder"/>
+    
 </beans>

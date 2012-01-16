@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import com.enonic.cms.core.content.ContentLocation;
-import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
@@ -71,11 +70,11 @@ public final class ContentIndexDataBuilderImpl
     {
         final XContentBuilder result = XContentFactory.jsonBuilder();
         result.startObject();
+
         addField( "key", new Double( content.getContentKey().toInt() ), result );
 
         addCategory( content, result );
         addContentType( content, result );
-        addSections( content, result );
 
         addStandardValues( result, content );
 
@@ -112,6 +111,9 @@ public final class ContentIndexDataBuilderImpl
     private void addBinaryExtractedData( XContentBuilder result, BigText contentBinaryData )
         throws Exception
     {
+
+        //TODO: To be implemented when extractor is decided
+
         /*
 
         result.startArray( "attachments" );
@@ -161,41 +163,17 @@ public final class ContentIndexDataBuilderImpl
             return;
         }
 
-        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), new Double( categoryKey.toInt() ), result );
+        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), categoryKey.toInt(), result );
 
         final SimpleText categoryName = content.getCategoryName();
 
-        if ( categoryName == null )
+        if ( categoryName == null || StringUtils.isNotBlank( categoryName.getText() ) )
         {
+            // TODO: Is this allowed or illegalArgument?
             return;
         }
 
         addField( IndexFieldNameResolver.getCategoryNameFieldName(), categoryName.getText(), result );
-    }
-
-    private void addSections( ContentDocument content, XContentBuilder result )
-        throws Exception
-    {
-        final ContentLocations contentLocations = content.getContentLocations();
-
-        if ( contentLocations == null || !contentLocations.hasLocations() )
-        {
-            return;
-        }
-
-        result.startArray( "contentlocations" );
-
-        for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
-        {
-            result.startObject();
-            addField( "home", Boolean.toString( contentLocation.isUserDefinedSectionHome() ), result );
-            addField( "menuitemkey", contentLocation.getMenuItemKey().toString(), result );
-            addField( "sitekey", contentLocation.getSiteKey().toString(), result );
-            addField( "menukey", contentLocation.getSiteKey().toString(), result );
-            result.endObject();
-        }
-
-        result.endArray();
     }
 
     private void addStandardValues( XContentBuilder result, ContentDocument content )

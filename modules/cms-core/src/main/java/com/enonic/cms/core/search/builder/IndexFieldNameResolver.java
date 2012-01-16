@@ -34,7 +34,7 @@ final public class IndexFieldNameResolver
 
     public static String getNumericField( String fieldName )
     {
-        return fieldName + NUMERIC_FIELD_POSTFIELD;
+        return fieldName + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getOrderByFieldName( String fieldName )

@@ -81,21 +81,21 @@
         <property name="propertyResolver" ref="upgradePropertyResolver"/>
     </bean>
 
-  <bean id="dataSourceService" class="com.enonic.cms.core.service.DataSourceServiceImpl">
-    <property name="calendarService" ref="calendarService"/>
-    <property name="contentService" ref="contentService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="presentationEngine" ref="presentationEngine"/>
-    <property name="preferenceService" ref="preferenceService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="countryService" ref="countryService"/>
-    <property name="localeService" ref="localeService"/>
-    <property name="timeZoneService" ref="timeZoneService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="userStoreService" ref="userStoreService"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-  </bean>
+    <bean id="dataSourceService" class="com.enonic.cms.core.service.DataSourceServiceImpl">
+        <property name="calendarService" ref="calendarService"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="contentDao" ref="contentDao"/>
+        <property name="userDao" ref="userDao"/>
+        <property name="presentationEngine" ref="presentationEngine"/>
+        <property name="preferenceService" ref="preferenceService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="countryService" ref="countryService"/>
+        <property name="localeService" ref="localeService"/>
+        <property name="timeZoneService" ref="timeZoneService"/>
+        <property name="timeService" ref="timeService"/>
+        <property name="userStoreService" ref="userStoreService"/>
+        <property name="sitePropertiesService" ref="sitePropertiesService"/>
+    </bean>
 
     <bean id="userServicesEngine" class="com.enonic.vertical.engine.UserServicesEngine" parent="abstractBaseEngine">
         <property name="contentHandler" ref="contentHandler"/>
@@ -178,27 +178,27 @@
         <property name="autologinTimeoutInDays" value="#{config.autoLoginTimeout}"/>
     </bean>
 
-  <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
-    <property name="dataSourceService" ref="dataSourceService"/>
-    <property name="internalClientRenderService" ref="internalClientRenderService"/>
-    <property name="internalClientContentService" ref="internalClientContentService"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="resourceService" ref="resourceService"/>
-    <property name="preferenceService" ref="preferenceService"/>
-    <property name="cmsProperties" value="#{config.properties}"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="contentService" ref="contentService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="previewService" ref="previewService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-  </bean>
+    <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
+        <property name="dataSourceService" ref="dataSourceService"/>
+        <property name="internalClientRenderService" ref="internalClientRenderService"/>
+        <property name="internalClientContentService" ref="internalClientContentService"/>
+        <property name="userDao" ref="userDao"/>
+        <property name="resourceService" ref="resourceService"/>
+        <property name="preferenceService" ref="preferenceService"/>
+        <property name="cmsProperties" value="#{config.properties}"/>
+        <property name="sitePropertiesService" ref="sitePropertiesService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="contentDao" ref="contentDao"/>
+        <property name="previewService" ref="previewService"/>
+        <property name="timeService" ref="timeService"/>
+        <property name="livePortalTraceService" ref="livePortalTraceService"/>
+    </bean>
 
-  <bean id="internalClientContentService"
-        class="com.enonic.cms.core.client.InternalClientContentService">
-    <property name="siteCachesService" ref="siteCachesService"/>
-  </bean>
+    <bean id="internalClientContentService"
+          class="com.enonic.cms.core.client.InternalClientContentService">
+        <property name="siteCachesService" ref="siteCachesService"/>
+    </bean>
 
     <bean class="com.enonic.cms.core.client.LocalClientSetter">
         <property name="localClient" ref="localClient"/>
@@ -605,6 +605,8 @@
     <bean id="oldContentIndexService" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>
 
     <bean id="newContentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
+
+    <bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.ContentIndexSettingsBuilder"/>
 
 </beans>
         

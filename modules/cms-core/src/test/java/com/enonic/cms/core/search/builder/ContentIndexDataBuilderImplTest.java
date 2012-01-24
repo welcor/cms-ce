@@ -197,24 +197,20 @@ public class ContentIndexDataBuilderImplTest
         return keys;
     }
 
-    /*
+
     @Test
-    public void testCustomData()
+    public void testAttachmentData()
         throws Exception
     {
         ContentDocument content = createTestContent();
+        content.setBinaryExtractedText( new BigText( "This is a binary text" ) );
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
 
         ContentIndexData indexData = indexDataBuilder.build( content, spec );
 
-        ContentBuilderTestCustomDataHolder customdata =
-            ContentBuilderTestCustomDataHolder.createCustomDataHolder( indexData.getCustomdataJson() );
-
-        assertNotNull( indexData.getCustomdataJson() );
-        assertEquals( 1.0, customdata.key );
     }
-    */
+
 
     private ContentDocument createTestContent()
         throws Exception

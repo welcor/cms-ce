@@ -24,4 +24,10 @@ public class IndexFieldNameConstants
 
     protected static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
 
+    protected static final String CUSTOMDATA_ALIAS = "customdata_";
+
+    protected static final String CUSTOMDATA_KEY = "data_";
+
+    protected static final String CONTENTKEY = "key";
+
 }

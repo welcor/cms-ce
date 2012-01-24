@@ -1,5 +1,7 @@
 package com.enonic.cms.core.search.query;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
@@ -13,54 +15,57 @@ public class QueryFieldNameResolver
     extends IndexFieldNameConstants
 {
 
-
-    public static String normalizeFieldName( String name )
+    public static String resolveQueryFieldName( String name )
     {
-        final String normalized = name.replace( '/', '.' ).replace( '.', '_' ).replaceAll( "@", "" ).toLowerCase();
+        return doNormalizeQueryFieldName( name );
+    }
+
+    private static String doNormalizeQueryFieldName( String name )
+    {
+        String normalized = name.replace( '/', '.' ).replace( '.', '_' ).replaceAll( "@", "" ).toLowerCase();
+
+        if ( StringUtils.startsWith( normalized, CUSTOMDATA_ALIAS ) )
+        {
+            normalized = StringUtils.replaceOnce( normalized, CUSTOMDATA_ALIAS, CUSTOMDATA_KEY );
+        }
+
         return normalized;
     }
 
-    public static String toFieldName( FieldExpr expression )
+    public static String resolveQueryFieldName( FieldExpr expression )
     {
-        return normalizeFieldName( expression.getPath() );
+        return resolveQueryFieldName( expression.getPath() );
     }
 
-    public static String getNumericField( String fieldName )
+    public static String resolveNumericQueryFieldName( FieldExpr expression )
     {
-        return fieldName + NUMERIC_FIELD_POSTFIX;
-    }
-
-    public static String getOrderByFieldName( FieldExpr expression )
-    {
-        String propertyName = ORDER_FIELD_PREFIX + normalizeFieldName( expression.getPath() );
-        return propertyName;
+        return getOrderByFieldName( expression.getPath() );
     }
 
     public static String getOrderByFieldName( String fieldName )
     {
-        String propertyName = ORDER_FIELD_PREFIX + normalizeFieldName( fieldName );
-        return propertyName;
+        return ORDER_FIELD_PREFIX + resolveQueryFieldName( fieldName );
     }
 
-    public static String normalizeName( String name )
+
+    public static String getSectionKeyQueryFieldName()
     {
-        return name.replace( QUERY_LANGUAGE_PROPERTY_SEPARATOR, INDEX_FIELDNAME_PROPERTY_SEPARATOR ).toLowerCase();
+        return SECTION_FIELD_PREFIX + ".menuitemkey" + NUMERIC_FIELD_POSTFIX;
     }
 
-    public static String getCategoryKeyNumericFieldName()
+    public static String getCategoryKeyQueryFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + getNumericField( "key" );
+        return CATEGORY_FIELD_PREFIX + "key" + NUMERIC_FIELD_POSTFIX;
     }
 
-    public static String getSectionKeyNumericFieldName()
+    public static String getContentKeyQueryFieldName()
     {
-        return SECTION_FIELD_PREFIX + getNumericField( ".menuitemkey" );
+        return CONTENTKEY + NUMERIC_FIELD_POSTFIX;
     }
 
-    public static String getContentTypeKeyNumericFieldName()
+    public static String getContentTypeKeyQueryFieldName()
     {
-        return "contenttypekey_numeric";
-        //return CONTENT_TYPE_PREFIX + getNumericField( "_key" );
+        return CONTENT_TYPE_PREFIX + "key" + NUMERIC_FIELD_POSTFIX;
     }
 
 }

@@ -1,12 +1,17 @@
 package com.enonic.cms.core.search.query;
 
-import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
-import com.enonic.cms.core.content.index.queryexpression.OrderFieldExpr;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.ScoreSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
+
+import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
+import com.enonic.cms.core.content.index.queryexpression.OrderFieldExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,7 +57,7 @@ public class OrderQueryBuilder
     }
 
     private static SortBuilder buildOrderFieldExpr(OrderFieldExpr expr) {
-        final String name = QueryFieldNameResolver.getOrderByFieldName(expr.getField());
+        final String name = QueryFieldNameResolver.resolveNumericQueryFieldName( expr.getField() );
 
         SortOrder order = SortOrder.DESC;
 

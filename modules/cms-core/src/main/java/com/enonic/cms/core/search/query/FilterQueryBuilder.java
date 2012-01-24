@@ -113,25 +113,25 @@ public class FilterQueryBuilder
 
     private static TermsFilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getContentTypeKeyNumericFieldName(),
+        return new TermsFilterBuilder( QueryFieldNameResolver.getContentTypeKeyQueryFieldName(),
                                        getKeysAsList( contentTypeFilter ).toArray() );
     }
 
     private static TermsFilterBuilder buildContentFilter( Collection<ContentKey> contentKeys )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getNumericField( "key" ), getKeysAsList( contentKeys ).toArray() );
+        return new TermsFilterBuilder( QueryFieldNameResolver.getContentKeyQueryFieldName(), getKeysAsList( contentKeys ).toArray() );
     }
 
 
     private static TermsFilterBuilder buildSectionFilter( Collection<MenuItemEntity> menuItemEntities )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyNumericFieldName(),
+        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyQueryFieldName(),
                                        getSectionKeysAsList( menuItemEntities ).toArray() );
     }
 
     private static TermsFilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyNumericFieldName(), getKeysAsList( keys ).toArray() );
+        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyQueryFieldName(), getKeysAsList( keys ).toArray() );
     }
 
     private static <T> List<String> getKeysAsList( Collection<T> keys )

@@ -31,7 +31,7 @@ class AbstractIndexDataBuilder
     private void doAddField( String fieldName, String value, XContentBuilder builder, boolean addOrderField )
         throws Exception
     {
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+        fieldName = IndexFieldNameCreator.normalizeFieldName( fieldName );
         value = normalizeValue( value );
 
         if ( StringUtils.isBlank( value ) )
@@ -42,7 +42,7 @@ class AbstractIndexDataBuilder
         try
         {
             Double numericValue = Double.parseDouble( value );
-            builder.field( IndexFieldNameResolver.getNumericField( fieldName ), numericValue );
+            builder.field( IndexFieldNameCreator.getNumericFieldName( fieldName ), numericValue );
 
             if ( addOrderField )
             {
@@ -89,7 +89,7 @@ class AbstractIndexDataBuilder
         throws Exception
     {
 
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+        fieldName = IndexFieldNameCreator.normalizeFieldName( fieldName );
         builder.field( fieldName, value );
         if ( addOrderField )
         {
@@ -115,8 +115,8 @@ class AbstractIndexDataBuilder
         throws Exception
     {
 
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        builder.field( IndexFieldNameResolver.getNumericField( fieldName ), value );
+        fieldName = IndexFieldNameCreator.normalizeFieldName( fieldName );
+        builder.field( IndexFieldNameCreator.getNumericFieldName( fieldName ), value );
         builder.field( fieldName, value );
         if ( addOrderField )
         {
@@ -142,8 +142,8 @@ class AbstractIndexDataBuilder
         throws Exception
     {
 
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        builder.field( IndexFieldNameResolver.getNumericField( fieldName ), value );
+        fieldName = IndexFieldNameCreator.normalizeFieldName( fieldName );
+        builder.field( IndexFieldNameCreator.getNumericFieldName( fieldName ), value );
         builder.field( fieldName, value );
         if ( addOrderField )
         {
@@ -154,7 +154,7 @@ class AbstractIndexDataBuilder
     private void addOrderField( String fieldName, Number value, XContentBuilder builder )
         throws Exception
     {
-        String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
+        String orderByFieldName = IndexFieldNameCreator.getOrderByFieldName( fieldName );
         String orderByValue = IndexValueResolver.getOrderValueForNumber( value );
 
         builder.field( orderByFieldName, orderByValue );
@@ -164,7 +164,7 @@ class AbstractIndexDataBuilder
         throws Exception
     {
 
-        String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
+        String orderByFieldName = IndexFieldNameCreator.getOrderByFieldName( fieldName );
 
         try
         {
@@ -182,7 +182,7 @@ class AbstractIndexDataBuilder
         throws Exception
     {
 
-        String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
+        String orderByFieldName = IndexFieldNameCreator.getOrderByFieldName( fieldName );
         builder.field( orderByFieldName, value );
 
     }

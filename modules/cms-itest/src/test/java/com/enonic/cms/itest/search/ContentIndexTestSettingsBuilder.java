@@ -19,9 +19,9 @@ public class ContentIndexTestSettingsBuilder
     implements IndexSettingsBuilder
 {
 
-    protected static final String NUMBER_OF_SHARDS = "10";
+    protected static final String NUMBER_OF_SHARDS = "5";
 
-    protected static final String NUMBER_OF_REPLICAS = "0";
+    protected static final String NUMBER_OF_REPLICAS = "1";
 
 
     public ImmutableSettings.Builder buildSettings()

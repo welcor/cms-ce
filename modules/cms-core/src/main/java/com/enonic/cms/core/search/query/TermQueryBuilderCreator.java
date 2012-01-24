@@ -18,17 +18,24 @@ public class TermQueryBuilderCreator
     {
         TermQueryBuilder termQuery;
 
-        if ( path.isWildCardPath() )
+        final boolean isWildCardPath = path.isWildCardPath();
+
+        if ( isWildCardPath )
         {
             path.setMatchAllPath();
         }
 
         //HANDLE NUMERIC WILDCARD
 
-        if ( singleValue instanceof Number && !path.isWildCardPath() )
+        if ( singleValue instanceof Number && !isWildCardPath )
         {
             Number number = (Number) singleValue;
             termQuery = QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, number );
+        }
+        else if ( singleValue instanceof Number )
+        {
+            Number number = (Number) singleValue;
+            termQuery = QueryBuilders.termQuery( QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ), number );
         }
         else
         {

@@ -134,6 +134,9 @@ public final class ContentIndexServiceImpl
             }
 
             final String hqlStr = translatedContentQuery.getQuery();
+
+            //System.out.println( "Old query: " + hqlStr );
+
             ContentIndexQueryTracer.traceQuery( contentIndexQuery, contentIndexQuery.getIndex(), contentIndexQuery.getCount(), trace );
 
             // Important: if we query on any given date (that changes) there is no use in caching the the content query
@@ -609,6 +612,11 @@ public final class ContentIndexServiceImpl
     }
 
     public void deleteIndex()
+    {
+        // DO NOTHING
+    }
+
+    public void updateIndexSettings()
     {
         // DO NOTHING
     }

@@ -56,21 +56,10 @@ public class QueryPath
         return indexType;
     }
 
-    public String getContextRelativePath()
-    {
-        return contextRelativePath;
-    }
-
 
     public QueryPath setIndexType( IndexType indexType )
     {
         this.indexType = indexType;
-        return this;
-    }
-
-    public QueryPath setContextRelativePath( String contextRelativePath )
-    {
-        this.contextRelativePath = contextRelativePath;
         return this;
     }
 

@@ -15,6 +15,7 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
+import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -96,11 +97,12 @@ public class ContentIndexServiceImpl
         try
         {
             initalizeIndex( false );
-            optimize();
+            //optimize();
+            //updateIndexSettings();
         }
         catch ( Exception e )
         {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.severe( "Failed to initalize index on startup: " + e.getStackTrace() );
         }
     }
 
@@ -115,6 +117,16 @@ public class ContentIndexServiceImpl
 
         addMapping();
     }
+
+    public void updateIndexSettings()
+    {
+        LOG.info( "Refresh settings for index: " + INDEX_NAME );
+        UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest( INDEX_NAME );
+        updateSettingsRequest.settings( indexSettingsBuilder.buildSettings() );
+
+        client.admin().indices().updateSettings( updateSettingsRequest ).actionGet();
+    }
+
 
     private void addMapping()
     {
@@ -244,15 +256,17 @@ public class ContentIndexServiceImpl
     // TODO: We dont implement this one yet
     public IndexValueResultSet query( IndexValueQuery query )
     {
+        //throw new NotImplementedException( "Method query( IndexValueQuery query )" );
+
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     // TODO: We dont implement this one yet
     public AggregatedResult query( AggregatedQuery query )
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        //throw new NotImplementedException( "Method query( AggregatedQuery query )" );
+        return null;
     }
-
 
     private void initalizeIndex( boolean force )
         throws Exception

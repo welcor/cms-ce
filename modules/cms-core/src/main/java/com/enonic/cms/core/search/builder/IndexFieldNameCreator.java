@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
  * Date: 11/23/11
  * Time: 12:06 PM
  */
-final public class IndexFieldNameResolver
+final public class IndexFieldNameCreator
     extends IndexFieldNameConstants
 {
 
@@ -22,7 +22,7 @@ final public class IndexFieldNameResolver
     {
         if ( StringUtils.isBlank( fieldName ) )
         {
-            return fieldName;
+            return "";
         }
 
         return fieldName.replace( QUERY_LANGUAGE_PROPERTY_SEPARATOR, INDEX_FIELDNAME_PROPERTY_SEPARATOR )
@@ -32,17 +32,12 @@ final public class IndexFieldNameResolver
     }
 
 
-    public static String getNumericField( String fieldName )
+    public static String getNumericFieldName( String fieldName )
     {
-        return fieldName + NUMERIC_FIELD_POSTFIX;
+        return normalizeFieldName( fieldName ) + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getOrderByFieldName( String fieldName )
-    {
-        return doGetOrderByFieldName( fieldName );
-    }
-
-    private static String doGetOrderByFieldName( String fieldName )
     {
         return ORDER_FIELD_PREFIX + doNormalizeFieldName( fieldName );
     }
@@ -52,16 +47,6 @@ final public class IndexFieldNameResolver
         return CATEGORY_FIELD_PREFIX + "key";
     }
 
-    public static String getCategoryKeyNumericFieldName()
-    {
-        return CATEGORY_FIELD_PREFIX + getNumericField( "key" );
-    }
-
-    public static String getSectionKeyNumericFieldName()
-    {
-        return SECTION_FIELD_PREFIX + getNumericField( ".menuitemkey" );
-    }
-
     public static String getCategoryNameFieldName()
     {
         return CATEGORY_FIELD_PREFIX + "_name";
@@ -69,19 +54,13 @@ final public class IndexFieldNameResolver
 
     public static String getContentTypeKeyFieldName()
     {
-        return "contenttypekey";
-        //return CONTENT_TYPE_PREFIX + "_" + "key";
-    }
-
-    public static String getContentTypeKeyNumericFieldName()
-    {
-        return "contenttypekey_numeric";
-        //return CONTENT_TYPE_PREFIX + "_" + getNumericField( "key" );
+        return CONTENT_TYPE_PREFIX + "key";
     }
 
     public static String getContentTypeNameFieldName()
     {
-        return CONTENT_TYPE_PREFIX;
+        return CONTENT_TYPE_PREFIX + "_name";
     }
+
 
 }

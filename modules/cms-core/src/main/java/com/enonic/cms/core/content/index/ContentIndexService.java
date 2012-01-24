@@ -67,6 +67,8 @@ public interface ContentIndexService
 
     public void createIndex();
 
+    public void updateIndexSettings();
+
     public void optimize();
 
     public void deleteIndex();

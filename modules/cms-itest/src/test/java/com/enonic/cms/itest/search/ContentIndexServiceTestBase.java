@@ -33,7 +33,7 @@ import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
-import com.enonic.cms.core.search.builder.IndexFieldNameResolver;
+import com.enonic.cms.core.search.builder.IndexFieldNameCreator;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
@@ -178,7 +178,7 @@ public abstract class ContentIndexServiceTestBase
         for ( UserDefinedField field : userDefinedFields )
         {
 
-            final String indexFieldName = IndexFieldNameResolver.normalizeFieldName( field.getName() );
+            final String indexFieldName = IndexFieldNameCreator.normalizeFieldName( field.getName() );
             final SearchHitField hitField = hitFieldMap.get( indexFieldName );
 
             assertNotNull( "Could not find field in index: " + indexFieldName, hitField );

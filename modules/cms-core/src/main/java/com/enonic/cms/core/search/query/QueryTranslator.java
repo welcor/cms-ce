@@ -43,7 +43,7 @@ public final class QueryTranslator
         OrderQueryBuilder.buildOrderByExpr( builder, queryExpr.getOrderBy() );
         FilterQueryBuilder.buildFilterQuery( builder, contentIndexQuery );
 
-        System.out.println( "****************************\n\r" + builder.toString() );
+        //System.out.println( "****************************\n\r" + builder.toString() );
 
         return builder;
     }
@@ -85,7 +85,7 @@ public final class QueryTranslator
     {
 
         final int operator = expr.getOperator();
-        final String path = QueryFieldNameResolver.toFieldName( (FieldExpr) expr.getLeft() );
+        final String path = QueryFieldNameResolver.resolveQueryFieldName( (FieldExpr) expr.getLeft() );
 
         final QueryPath queryPath = QueryPathCreator.createQueryPath( path );
 

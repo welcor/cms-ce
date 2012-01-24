@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
+import com.enonic.cms.core.content.ContentLocation;
+import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
@@ -77,6 +79,8 @@ public final class ContentIndexDataBuilderImpl
         addContentType( content, result );
 
         addStandardValues( result, content );
+
+        addSections( content, result );
 
         Collection<UserDefinedField> userDefinedFields = content.getUserDefinedFields();
         if ( !userDefinedFields.isEmpty() )
@@ -148,8 +152,8 @@ public final class ContentIndexDataBuilderImpl
     private void addContentType( ContentDocument content, XContentBuilder result )
         throws Exception
     {
-        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), new Double( content.getContentTypeKey().toInt() ), result );
-        addField( IndexFieldNameResolver.getContentTypeNameFieldName(), content.getContentTypeName().getText(), result );
+        addField( IndexFieldNameCreator.getContentTypeKeyFieldName(), new Double( content.getContentTypeKey().toInt() ), result );
+        addField( IndexFieldNameCreator.getContentTypeNameFieldName(), content.getContentTypeName().getText(), result );
     }
 
     private void addCategory( ContentDocument content, XContentBuilder result )
@@ -163,7 +167,7 @@ public final class ContentIndexDataBuilderImpl
             return;
         }
 
-        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), categoryKey.toInt(), result );
+        addField( IndexFieldNameCreator.getCategoryKeyFieldName(), categoryKey.toInt(), result );
 
         final SimpleText categoryName = content.getCategoryName();
 
@@ -173,7 +177,7 @@ public final class ContentIndexDataBuilderImpl
             return;
         }
 
-        addField( IndexFieldNameResolver.getCategoryNameFieldName(), categoryName.getText(), result );
+        addField( IndexFieldNameCreator.getCategoryNameFieldName(), categoryName.getText(), result );
     }
 
     private void addStandardValues( XContentBuilder result, ContentDocument content )
@@ -194,17 +198,46 @@ public final class ContentIndexDataBuilderImpl
         addField( "assignmentDueDate", content.getAssignmentDueDate(), result );
     }
 
-    private void addUserValues( XContentBuilder result, String prefix, SimpleText key, SimpleText name, SimpleText qualigiedName )
+
+    private void addSections( ContentDocument content, XContentBuilder result )
         throws Exception
     {
-        if ( key == null && name == null && qualigiedName == null )
+        final ContentLocations contentLocations = content.getContentLocations();
+
+        if ( contentLocations == null || !contentLocations.hasLocations() )
+        {
+            return;
+        }
+
+        result.startArray( "contentlocations" );
+
+        for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
+        {
+            if ( contentLocation.isApproved() )
+            {
+                result.startObject();
+                //addField( "home", Boolean.toString( contentLocation.isUserDefinedSectionHome() ), result );
+                addField( "menuitemkey", contentLocation.getMenuItemKey().toString(), result, false );
+                //addField( "sitekey", contentLocation.getSiteKey().toString(), result );
+                //addField( "menukey", contentLocation.getSiteKey().toString(), result );
+                result.endObject();
+            }
+        }
+
+        result.endArray();
+    }
+
+    private void addUserValues( XContentBuilder result, String prefix, SimpleText key, SimpleText name, SimpleText qualifiedName )
+        throws Exception
+    {
+        if ( key == null && name == null && qualifiedName == null )
         {
             return;
         }
 
         addField( prefix + "_key", key != null ? key.getText() : null, result );
         addField( prefix + "_name", name != null ? name.getText() : null, result );
-        addField( prefix + "_qualifiedName", qualigiedName != null ? qualigiedName.getText() : null, result );
+        addField( prefix + "_qualifiedName", qualifiedName != null ? qualifiedName.getText() : null, result );
 
     }
 

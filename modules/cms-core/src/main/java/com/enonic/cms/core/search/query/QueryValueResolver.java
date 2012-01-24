@@ -1,7 +1,6 @@
 package com.enonic.cms.core.search.query;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.util.NumericUtils;
 
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
@@ -70,31 +69,5 @@ public class QueryValueResolver
         final FunctionEvaluator eval = new FunctionEvaluator();
         return toValues( (Expression) expr.evaluate( eval ) );
     }
-
-    public static String getOrderByValue( Number value )
-    {
-        String orderValue;
-
-        if ( value instanceof Double )
-        {
-            orderValue = NumericUtils.doubleToPrefixCoded( value.doubleValue() );
-        }
-
-        else if ( value instanceof Float )
-        {
-            orderValue = NumericUtils.floatToPrefixCoded( value.floatValue() );
-        }
-
-        else if ( value instanceof Long )
-        {
-            orderValue = NumericUtils.longToPrefixCoded( value.longValue() );
-        }
-        else
-        {
-            orderValue = NumericUtils.intToPrefixCoded( value.intValue() );
-        }
-        return orderValue;
-    }
-
 
 }

@@ -12,6 +12,7 @@ import static junit.framework.Assert.assertEquals;
  * Time: 3:46 PM
  */
 public class RangeQueryBuilderTest
+    extends QueryTranslatorBaseTest
 {
     @Test
     public void testBuildRangeQuery_key_string()

@@ -33,14 +33,14 @@ final class NodeSettingsBuilder
 
     private final static String NODE_NAME = "name";
 
-
     public final static Settings createNodeSettings( File storageDir )
     {
 
         return ImmutableSettings.settingsBuilder()
             .put( LOG_PATH, new File( storageDir, "log" ).getAbsolutePath() )
             .put( DATA_PATH, new File( storageDir, "data" ).getAbsolutePath() )
-            .put( CLUSTER_NAME, "enonic.elasticsearch" )
+            .put( "path.config", new File( storageDir, "config" ).getAbsolutePath() )
+            .put( "cluster.name", "elasticsearch" )
             .build();
     }
 

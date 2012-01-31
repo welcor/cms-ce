@@ -4,8 +4,36 @@
  */
 package com.enonic.cms.server.service.admin.ajax;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMSource;
+
+import org.apache.commons.lang.StringUtils;
+import org.directwebremoting.annotations.RemoteMethod;
+import org.directwebremoting.annotations.RemoteProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+
+import com.enonic.vertical.adminweb.AdminStore;
+import com.enonic.vertical.adminweb.VerticalAdminLogger;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.query.ContentByContentQuery;
 import com.enonic.cms.core.content.query.RelatedContentQuery;
@@ -28,31 +56,22 @@ import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
-import com.enonic.cms.core.xslt.*;
-import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.core.xslt.XsltProcessor;
+import com.enonic.cms.core.xslt.XsltProcessorException;
+import com.enonic.cms.core.xslt.XsltProcessorManager;
+import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
+import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.server.service.admin.ajax.dto.PreferenceDto;
 import com.enonic.cms.server.service.admin.ajax.dto.RegionDto;
 import com.enonic.cms.server.service.admin.ajax.dto.SynchronizeStatusDto;
 import com.enonic.cms.server.service.admin.ajax.dto.UserDto;
-import com.enonic.cms.store.dao.*;
-import com.enonic.vertical.adminweb.AdminStore;
-import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import org.apache.commons.lang.StringUtils;
-import org.directwebremoting.annotations.RemoteMethod;
-import org.directwebremoting.annotations.RemoteProxy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.dom.DOMSource;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.MenuItemDao;
+import com.enonic.cms.store.dao.PortletDao;
+import com.enonic.cms.store.dao.PreferenceDao;
+import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.cms.store.dao.UserDao;
 
 @RemoteProxy(name = "AjaxService", creator = AdminAjaxServiceCreator.class)
 public class AdminAjaxServiceImpl
@@ -129,16 +148,10 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByCategory( int categoryKey )
     {
-        UserEntity user = getLoggedInAdminConsoleUser();
+        ensureAdminIsLoggedIn();
 
         try
         {
-            boolean access = memberOfResolver.hasEnterpriseAdminPowers( user );
-            if ( !access )
-            {
-                return "No access";
-            }
-
             return String.valueOf( adminService.getArchiveSizeByCategory( categoryKey ) );
         }
         catch ( Exception e )
@@ -151,16 +164,10 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByUnit( int unitKey )
     {
-        UserEntity user = getLoggedInAdminConsoleUser();
+        ensureAdminIsLoggedIn();
 
         try
         {
-            boolean access = memberOfResolver.hasEnterpriseAdminPowers( user );
-            if ( !access )
-            {
-                return "No access";
-            }
-
             return String.valueOf( adminService.getArchiveSizeByUnit( unitKey ) );
         }
         catch ( Exception e )
@@ -269,6 +276,19 @@ public class AdminAjaxServiceImpl
     private UserEntity getLoggedInAdminConsoleUser()
     {
         return securityService.getLoggedInAdminConsoleUserAsEntity();
+    }
+
+    private void ensureAdminIsLoggedIn()
+    {
+        UserEntity user = getLoggedInAdminConsoleUser();
+        if ( user == null )
+        {
+            throw new IllegalStateException( "User is not logged in admin console" );
+        }
+        if ( user != null && !memberOfResolver.hasEnterpriseAdminPowers( user ) )
+        {
+            throw new IllegalStateException( "Logged user does not have administrate powers" );
+        }
     }
 
     @RemoteMethod
@@ -395,6 +415,8 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public Collection<UserDto> findUsers( String name )
     {
+        ensureAdminIsLoggedIn();
+
         List<UserDto> foundUserDtos = new ArrayList<UserDto>();
 
         List<UserEntity> foundUsers = userDao.findByQuery( null, name, null, true );

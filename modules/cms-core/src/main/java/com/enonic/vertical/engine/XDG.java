@@ -4,22 +4,28 @@
  */
 package com.enonic.vertical.engine;
 
-import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
-import com.enonic.esl.sql.model.*;
-import com.enonic.esl.sql.model.datatypes.CDATAType;
-import com.enonic.esl.sql.model.datatypes.DataType;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.processors.ElementProcessor;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.enonic.esl.sql.model.Column;
+import com.enonic.esl.sql.model.Constants;
+import com.enonic.esl.sql.model.ForeignKeyColumn;
+import com.enonic.esl.sql.model.Table;
+import com.enonic.esl.sql.model.View;
+import com.enonic.esl.sql.model.datatypes.CDATAType;
+import com.enonic.esl.sql.model.datatypes.DataType;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.processors.ElementProcessor;
+
+import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 
 public class XDG
 {
@@ -154,8 +160,8 @@ public class XDG
     public static void appendWhereSQL( StringBuffer sql, Column whereColumn )
     {
         appendAndSQL( sql );
-        sql.append( OPERATOR_EQUAL );
         sql.append( whereColumn );
+        sql.append( OPERATOR_EQUAL );
     }
 
     /**

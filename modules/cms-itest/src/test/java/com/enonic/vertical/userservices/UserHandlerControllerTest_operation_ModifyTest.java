@@ -1,5 +1,15 @@
 package com.enonic.vertical.userservices;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.util.DateUtil;
+
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteKey;
@@ -20,16 +30,10 @@ import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.util.DateUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.easymock.classextension.EasyMock.createMock;
 
 public class UserHandlerControllerTest_operation_ModifyTest
@@ -184,7 +188,7 @@ public class UserHandlerControllerTest_operation_ModifyTest
     private void loginPortalUser( String userName )
     {
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( userName ).getKey() );
-        PortalSecurityHolder.setUser( fixture.findUserByName( userName ).getKey() );
+        PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( userName ).getKey() );
     }
 
     private UserStoreKey createLocalUserStore( String name, boolean defaultStore, UserStoreConfig config )

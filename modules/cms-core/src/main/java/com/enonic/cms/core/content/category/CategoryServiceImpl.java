@@ -4,6 +4,13 @@
  */
 package com.enonic.cms.core.content.category;
 
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.enonic.cms.api.util.Preconditions;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentStorer;
@@ -26,13 +33,12 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.store.dao.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.Map;
+import com.enonic.cms.store.dao.CategoryDao;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.ContentTypeDao;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.UnitDao;
+import com.enonic.cms.store.dao.UserDao;
 
 /**
  * Mar 9, 2010
@@ -99,6 +105,7 @@ public class CategoryServiceImpl
         category.setName( command.getName() );
         category.setOwner( creator );
         category.setAutoMakeAvailable( command.getAutoApprove() );
+        category.setDescription( command.getDescription() );
 
         if ( parentCategory != null )
         {

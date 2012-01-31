@@ -3,11 +3,8 @@
     <!ENTITY nbsp "&#160;">
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:output method="html" />
 
@@ -354,7 +351,7 @@
                 <xsl:with-param name="caption" select="''" />
                 <xsl:with-param name="sortable" select="'false'" />
                 <xsl:with-param name="checkboxname" select="'batch_add_checkbox'"/>
-                <xsl:with-param name="checkBoxOnClickFallback" select="'cms.util.BatchAdd.enableDisableAddButton()'"/>
+                <xsl:with-param name="checkBoxOnClickFallback" select="'cms.util.BatchAdd.enableDisableAddButton'"/>
               </xsl:call-template>
             </xsl:if>
 

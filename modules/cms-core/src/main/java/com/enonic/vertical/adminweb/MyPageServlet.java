@@ -27,13 +27,24 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentSpecification;
+import com.enonic.cms.core.content.ContentXMLCreator;
+import com.enonic.cms.core.content.access.ContentAccessResolver;
+import com.enonic.cms.core.content.category.CategoryAccessType;
+import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryXmlCreator;
 import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeXmlCreator;
+import com.enonic.cms.core.content.index.ContentIndexQuery.CategoryAccessTypeFilterPolicy;
+import com.enonic.cms.core.content.index.ContentIndexQuery.SectionFilterStatus;
+import com.enonic.cms.core.content.query.ContentByContentQuery;
+import com.enonic.cms.core.content.query.ContentBySectionQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
+import com.enonic.cms.core.log.ContentLogEntrySpecification;
+import com.enonic.cms.core.log.ContentLogXMLCreator;
 import com.enonic.cms.core.log.LogEntryEntity;
 import com.enonic.cms.core.log.LogEntryResultSet;
 import com.enonic.cms.core.log.LogType;
@@ -41,26 +52,15 @@ import com.enonic.cms.core.log.Table;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
-
-import com.enonic.cms.core.content.ContentXMLCreator;
-import com.enonic.cms.core.content.access.ContentAccessResolver;
-
 import com.enonic.cms.core.structure.SectionXmlCreator;
-import com.enonic.cms.core.log.ContentLogXMLCreator;
-
-import com.enonic.cms.core.content.category.CategoryAccessType;
-import com.enonic.cms.core.content.category.CategoryEntity;
-
-import com.enonic.cms.core.content.contenttype.ContentTypeXmlCreator;
-import com.enonic.cms.core.content.index.ContentIndexQuery.CategoryAccessTypeFilterPolicy;
-import com.enonic.cms.core.content.index.ContentIndexQuery.SectionFilterStatus;
-import com.enonic.cms.core.content.query.ContentByContentQuery;
-import com.enonic.cms.core.content.query.ContentBySectionQuery;
-import com.enonic.cms.core.log.ContentLogEntrySpecification;
 
 public class MyPageServlet
     extends AdminHandlerBaseServlet
 {
+    public static final CategoryAccessType[] CREATE_BROWSE = new CategoryAccessType[] {
+        CategoryAccessType.ADMIN_BROWSE, CategoryAccessType.CREATE
+    };
+
     private static final int ASSIGNED_TO_COUNT = 6;
 
     public void handlerPage( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
@@ -318,7 +318,7 @@ public class MyPageServlet
 
         for ( ContentTypeEntity contentType : contentTypeDao.getAll() )
         {
-            if ( userHasCreateAccessOnCategoriesOfContentType( runningUser, contentType ) )
+            if ( userHasAccessOnCategoriesOfContentType( runningUser, contentType, CREATE_BROWSE ) )
             {
                 filteredContentTypes.add( contentType );
             }
@@ -335,16 +335,31 @@ public class MyPageServlet
         transformXML( request, response, doc.getAsJDOMDocument(), "createcontentwizard.xsl", parameters );
     }
 
-    private boolean userHasCreateAccessOnCategoriesOfContentType( UserEntity runningUser, ContentTypeEntity contentType )
+    protected boolean userHasAccessOnCategoriesOfContentType( final UserEntity runningUser, final ContentTypeEntity contentType,
+                                                            final CategoryAccessType... categoryAccessTypes )
     {
-        CategoryAccessResolver categoryAccessResolver = new CategoryAccessResolver( groupDao );
-        for ( CategoryEntity category : contentType.getCategories( false ) )
+        final CategoryAccessResolver categoryAccessResolver = new CategoryAccessResolver( groupDao );
+
+        for ( final CategoryEntity category : contentType.getCategories( false ) )
         {
-            if ( categoryAccessResolver.hasAccess( runningUser, category, CategoryAccessType.CREATE ) )
+            boolean hasAccess = false;
+
+            for ( final CategoryAccessType accessType : categoryAccessTypes )
+            {
+                hasAccess = categoryAccessResolver.hasAccess( runningUser, category, accessType );
+
+                if ( !hasAccess )
+                {
+                    break;
+                }
+            }
+
+            if ( hasAccess )
             {
                 return true;
             }
         }
+
         return false;
     }
 

@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.SiteURLResolver;
+import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
@@ -72,6 +72,12 @@ public class DatasourcesContextXmlCreator
 
         // Language context
         contextElem.setAttribute( "languagecode", language.getCode() );
+
+        // Querystring context
+        Element queryStringElem =
+            queryStringContextXmlCreator.createQueryStringElement( context.getHttpRequest(), context.getOriginalSitePath(),
+                                                                   context.getRequestParameters() );
+        contextElem.addContent( queryStringElem );
 
         // Device context
         if ( context.getDeviceClass() != null )
@@ -141,12 +147,6 @@ public class DatasourcesContextXmlCreator
         {
             addElement( "profile", context.getProfile(), contextElem );
         }
-
-        // Querystring context
-        Element queryStringElem =
-            queryStringContextXmlCreator.createQueryStringElement( context.getHttpRequest(), context.getOriginalSitePath(),
-                                                                   context.getRequestParameters() );
-        contextElem.addContent( queryStringElem );
 
         // Http context
         if ( datasources.hasHttpContext() )

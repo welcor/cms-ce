@@ -42,16 +42,23 @@ public class QueryFieldNameResolverTest
 
         orderbyField = QueryFieldNameResolver.getOrderByFieldName( "data/title" );
         assertEquals( "orderby_data_title", orderbyField );
+
+        orderbyField = QueryFieldNameResolver.getOrderByFieldName( "contentdata/date" );
+        assertEquals( "orderby_data_date", orderbyField );
+
+        orderbyField = QueryFieldNameResolver.getOrderByFieldName( "orderby/test" );
+        assertEquals( "orderby_orderby_test", orderbyField );
+
     }
 
     @Test
     public void testCustomDataQueryFieldNames()
     {
-        String fieldName = QueryFieldNameResolver.resolveQueryFieldName( "customdata/date" );
+        String fieldName = QueryFieldNameResolver.resolveQueryFieldName( "contentdata/date" );
         assertEquals( "data_date", fieldName );
 
-        fieldName = QueryFieldNameResolver.resolveQueryFieldName( "customdata/customdata/date" );
-        assertEquals( "data_customdata_date", fieldName );
+        fieldName = QueryFieldNameResolver.resolveQueryFieldName( "contentdata/contentdata/date" );
+        assertEquals( "data_contentdata_date", fieldName );
     }
 
     @Test

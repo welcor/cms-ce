@@ -4,6 +4,21 @@
  */
 package com.enonic.cms.server.service.admin.mvc.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+
+import com.enonic.vertical.VerticalProperties;
+import com.enonic.vertical.adminweb.AdminHelper;
+
+import com.enonic.cms.framework.util.UrlPathEncoder;
+
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePathResolver;
@@ -11,17 +26,6 @@ import com.enonic.cms.core.portal.mvc.view.SiteCustomForwardView;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.framework.util.UrlPathEncoder;
-import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.adminweb.AdminHelper;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class implements a file controller that returns the actual referenced file in the servlet context.
@@ -52,7 +56,7 @@ public class SitePreviewController
             User adminUser = securityService.getLoggedInAdminConsoleUser();
             if ( adminUser != null )
             {
-                PortalSecurityHolder.setUser( adminUser.getKey() );
+                PortalSecurityHolder.setLoggedInUser( adminUser.getKey() );
             }
         }
     }

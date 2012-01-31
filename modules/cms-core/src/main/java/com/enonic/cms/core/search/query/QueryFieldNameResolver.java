@@ -24,9 +24,9 @@ public class QueryFieldNameResolver
     {
         String normalized = name.replace( '/', '.' ).replace( '.', '_' ).replaceAll( "@", "" ).toLowerCase();
 
-        if ( StringUtils.startsWith( normalized, CUSTOMDATA_ALIAS ) )
+        if ( StringUtils.startsWith( normalized, CONTENTDATA_ALIAS ) )
         {
-            normalized = StringUtils.replaceOnce( normalized, CUSTOMDATA_ALIAS, CUSTOMDATA_KEY );
+            normalized = StringUtils.replaceOnce( normalized, CONTENTDATA_ALIAS, CUSTOMDATA_KEY );
         }
 
         return normalized;

@@ -4,27 +4,41 @@
  */
 package com.enonic.vertical.userservices;
 
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.text.ParseException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.CreateContentException;
+import com.enonic.cms.core.content.PageCacheInvalidatorForContent;
+import com.enonic.cms.core.content.UpdateContentException;
+import com.enonic.cms.core.content.UpdateContentResult;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
-import com.enonic.cms.core.content.contentdata.*;
+import com.enonic.cms.core.content.contentdata.ContentData;
+import com.enonic.cms.core.content.contentdata.ContentDataParserException;
+import com.enonic.cms.core.content.contentdata.ContentDataParserInvalidDataException;
+import com.enonic.cms.core.content.contentdata.ContentDataParserUnsupportedTypeException;
+import com.enonic.cms.core.content.contentdata.InvalidContentDataException;
+import com.enonic.cms.core.content.contentdata.MissingRequiredContentDataException;
 import com.enonic.cms.core.content.contentdata.custom.support.CustomContentDataFormParser;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.VerticalSecurityException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.text.ParseException;
 
 /**
  * Created by rmy - Date: Jun 24, 2009
@@ -56,7 +70,7 @@ public class CustomContentHandlerController
         if ( categoryKey == -1 )
         {
             String message = "Category key not specified.";
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
             return;
         }
@@ -70,7 +84,7 @@ public class CustomContentHandlerController
         catch ( ContentDataParserInvalidDataException e )
         {
             String message = e.getMessage();
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
             return;
         }
@@ -102,14 +116,14 @@ public class CustomContentHandlerController
             if ( cause instanceof MissingRequiredContentDataException )
             {
                 String message = e.getMessage();
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
                 return;
             }
             else if ( cause instanceof InvalidContentDataException )
             {
                 String message = e.getMessage();
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
                 return;
             }
@@ -127,14 +141,14 @@ public class CustomContentHandlerController
     protected void handlerUpdate( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey )
     {
-        User oldTypeUser = securityService.getOldUserObject();
+        User oldTypeUser = securityService.getLoggedInPortalUser();
 
         int contentKey = formItems.getInt( "key", -1 );
 
         if ( contentKey == -1 )
         {
             String message = "Content key not specified.";
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
             return;
         }
@@ -155,7 +169,7 @@ public class CustomContentHandlerController
         catch ( ContentDataParserInvalidDataException e )
         {
             String message = e.getMessage();
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
             return;
         }
@@ -180,14 +194,14 @@ public class CustomContentHandlerController
             if ( cause instanceof MissingRequiredContentDataException )
             {
                 String message = e.getMessage();
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
                 return;
             }
             else if ( cause instanceof InvalidContentDataException )
             {
                 String message = e.getMessage();
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
                 return;
             }
@@ -207,14 +221,14 @@ public class CustomContentHandlerController
 
     protected void handlerModify( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
     {
-        User oldTypeUser = securityService.getOldUserObject();
+        User oldTypeUser = securityService.getLoggedInPortalUser();
 
         int contentKey = formItems.getInt( "key", -1 );
 
         if ( contentKey == -1 )
         {
             String message = "Content key not specified.";
-            VerticalUserServicesLogger.error(message );
+            VerticalUserServicesLogger.error( message );
             redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
             return;
         }
@@ -230,7 +244,7 @@ public class CustomContentHandlerController
         catch ( ContentDataParserInvalidDataException e )
         {
             String message = e.getMessage();
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
             return;
         }
@@ -260,14 +274,14 @@ public class CustomContentHandlerController
             if ( cause instanceof MissingRequiredContentDataException )
             {
                 String message = e.getMessage();
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
                 return;
             }
             else if ( cause instanceof InvalidContentDataException )
             {
                 String message = e.getMessage();
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
                 return;
             }
@@ -304,14 +318,13 @@ public class CustomContentHandlerController
         if ( persistedContent == null || persistedContent.isDeleted() )
         {
             String message = "Content with key " + contentKey + " not found";
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             throw new UserServicesException( ERR_OPERATION_HANDLER );
         }
 
         ContentVersionEntity persistedVersion = persistedContent.getMainVersion();
 
-        UpdateContentCommand updateContentCommand = UpdateContentCommand.storeNewVersionEvenIfUnchanged(
-                persistedVersion.getKey() );
+        UpdateContentCommand updateContentCommand = UpdateContentCommand.storeNewVersionEvenIfUnchanged( persistedVersion.getKey() );
         updateContentCommand.setModifier( user );
         updateContentCommand.setLanguage( persistedContent.getLanguage() );
         updateContentCommand.setPriority( persistedContent.getPriority() == null ? 0 : persistedContent.getPriority() );

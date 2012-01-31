@@ -1,19 +1,20 @@
 package com.enonic.cms.core.plugin.context;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+
+import static org.junit.Assert.*;
 
 public class PluginConfigHelperTest
 {
@@ -28,13 +29,14 @@ public class PluginConfigHelperTest
         props.put("key2", "value2");
 
         this.propFile = File.createTempFile("sample", "properties");
+        this.propFile.deleteOnExit();
         props.store(new FileWriter(this.propFile), "sample properties");
    }
 
     @After
     public void tearDown()
     {
-        assertTrue(this.propFile.delete());
+        this.propFile.delete();
     }
 
     @Test

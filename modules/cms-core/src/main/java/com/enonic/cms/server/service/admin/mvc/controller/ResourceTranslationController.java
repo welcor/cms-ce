@@ -28,7 +28,7 @@ public class ResourceTranslationController
     {
 
         StringBuffer contentType = new StringBuffer();
-        contentType.append( getServletContext().getMimeType( resource.getFilename() ) );
+        contentType.append( mimeTypeResolver.getMimeType( resource.getFilename() ) );
         contentType.append( "; charset=UTF-8" );
         response.setContentType( contentType.toString() );
 

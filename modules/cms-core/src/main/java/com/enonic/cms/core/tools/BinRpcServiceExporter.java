@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -31,28 +32,17 @@ import com.enonic.cms.api.client.binrpc.BinRpcInvocationResult;
 public final class BinRpcServiceExporter
     implements Controller
 {
-    /**
-     * Content type.
-     */
     private final static String CONTENT_TYPE_SERIALIZED_OBJECT = "application/x-java-serialized-object";
 
-    /**
-     * Local client.
-     */
     private LocalClient client;
 
-    /**
-     * Set the local client.
-     */
     @Autowired
+    @Qualifier("remoteClient")
     public void setLocalClient( LocalClient client )
     {
         this.client = client;
     }
 
-    /**
-     * Handle the request.
-     */
     public ModelAndView handleRequest( HttpServletRequest req, HttpServletResponse res )
         throws ServletException, IOException
     {
@@ -77,9 +67,6 @@ public final class BinRpcServiceExporter
         return null;
     }
 
-    /**
-     * Read the invocation.
-     */
     private BinRpcInvocation readInvocation( HttpServletRequest req )
         throws IOException, ClassNotFoundException
     {
@@ -105,9 +92,6 @@ public final class BinRpcServiceExporter
         }
     }
 
-    /**
-     * Write invocation result.
-     */
     private void writeInvocationResult( HttpServletResponse res, BinRpcInvocationResult result )
         throws IOException
     {
@@ -126,9 +110,6 @@ public final class BinRpcServiceExporter
         }
     }
 
-    /**
-     * Invoke and create result.
-     */
     private BinRpcInvocationResult invokeAndCreateResult( BinRpcInvocation invocation, Object targetObject )
     {
         try

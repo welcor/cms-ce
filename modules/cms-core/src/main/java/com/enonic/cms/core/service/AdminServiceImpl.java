@@ -25,10 +25,10 @@ import com.enonic.vertical.engine.filters.Filter;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
@@ -101,21 +101,9 @@ public class AdminServiceImpl
         return adminEngine.getCategoryKey( superCategoryKey, name );
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int createCategory( User user, int superCategoryKey, String name )
-    {
-        return adminEngine.createCategory( user, superCategoryKey, name );
-    }
-
     public MenuItemKey getSectionKeyByMenuItemKey( MenuItemKey menuItemKey )
     {
         return adminEngine.getSectionKeyByMenuItemKey( menuItemKey );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int createCategory( User user, String xmlData )
-    {
-        return adminEngine.createCategory( user, xmlData );
     }
 
     public XMLDocument getCategory( User user, int categoryKey )

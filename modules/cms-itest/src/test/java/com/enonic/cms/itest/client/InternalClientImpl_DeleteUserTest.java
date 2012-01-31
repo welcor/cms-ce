@@ -1,6 +1,14 @@
 package com.enonic.cms.itest.client;
 
 
+import java.io.IOException;
+
+import org.jdom.JDOMException;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+
 import com.enonic.cms.api.client.model.CreateUserParams;
 import com.enonic.cms.api.client.model.DeleteUserParams;
 import com.enonic.cms.core.client.InternalClient;
@@ -10,15 +18,8 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
-import org.jdom.JDOMException;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class InternalClientImpl_DeleteUserTest
     extends AbstractSpringTest
@@ -99,7 +100,7 @@ public class InternalClientImpl_DeleteUserTest
     private void clientLogin( String username, String password )
     {
         UserEntity user = fixture.findUserByName( username );
-        PortalSecurityHolder.setUser( user.getKey() );
+        PortalSecurityHolder.setLoggedInUser( user.getKey() );
         PortalSecurityHolder.setImpersonatedUser( user.getKey() );
     }
 }

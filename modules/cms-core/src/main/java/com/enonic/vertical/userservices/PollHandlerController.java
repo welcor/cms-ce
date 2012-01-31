@@ -4,22 +4,25 @@
  */
 package com.enonic.vertical.userservices;
 
-import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.service.UserServicesService;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.xml.XMLTool;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.servlet.http.CookieUtil;
+import com.enonic.esl.xml.XMLTool;
+
+import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.service.UserServicesService;
 
 public class PollHandlerController
     extends ContentHandlerBaseController
@@ -45,7 +48,7 @@ public class PollHandlerController
     {
 
         int contentKey = formItems.getInt( "key" );
-        User user = securityService.getOldUserObject();
+        User user = securityService.getLoggedInPortalUser();
 
         Document doc = userServices.getContent( user, contentKey, true, 0, 0, 0 ).getAsDOMDocument();
         Element contentsElement = doc.getDocumentElement();
@@ -71,7 +74,7 @@ public class PollHandlerController
         if ( !multipleChoice )
         {
             String selected = formItems.getString( "choice" );
-            VerticalUserServicesLogger.info("the selection was: {0}", selected );
+            VerticalUserServicesLogger.info( "the selection was: {0}", selected );
 
             Map alternativesMap = XMLTool.filterElementsWithAttributeAsKey( alternativesElement.getChildNodes(), "id" );
             Element alternativeElem = (Element) alternativesMap.get( selected );

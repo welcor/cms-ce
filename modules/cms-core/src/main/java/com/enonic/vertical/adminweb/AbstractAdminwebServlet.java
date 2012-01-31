@@ -32,16 +32,35 @@ import com.enonic.esl.net.URL;
 import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver;
 
-import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.core.SitePropertiesService;
+import com.enonic.cms.core.content.ContentParserService;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.category.CategoryService;
+import com.enonic.cms.core.content.imports.ImportJobFactory;
+import com.enonic.cms.core.content.imports.ImportService;
+import com.enonic.cms.core.country.CountryService;
+import com.enonic.cms.core.locale.LocaleService;
 import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.rendering.PageRendererFactory;
+import com.enonic.cms.core.preview.PreviewService;
+import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
+import com.enonic.cms.core.resolver.locale.LocaleResolverService;
+import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.resource.access.ResourceAccessResolver;
+import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
+import com.enonic.cms.core.security.userstore.UserStoreService;
+import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJobFactory;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.service.KeyService;
+import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.core.structure.menuitem.MenuItemService;
+import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.core.timezone.TimeZoneService;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentHandlerDao;
@@ -58,27 +77,6 @@ import com.enonic.cms.store.dao.UnitDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 import com.enonic.cms.upgrade.UpgradeService;
-
-import com.enonic.cms.core.content.ContentParserService;
-import com.enonic.cms.core.content.ContentService;
-import com.enonic.cms.core.content.category.CategoryService;
-import com.enonic.cms.core.content.imports.ImportJobFactory;
-import com.enonic.cms.core.content.imports.ImportService;
-import com.enonic.cms.core.resource.ResourceService;
-
-import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJobFactory;
-import com.enonic.cms.core.structure.SiteService;
-import com.enonic.cms.core.country.CountryService;
-import com.enonic.cms.core.locale.LocaleService;
-
-import com.enonic.cms.core.portal.cache.SiteCachesService;
-import com.enonic.cms.core.portal.rendering.PageRendererFactory;
-import com.enonic.cms.core.preview.PreviewService;
-import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
-import com.enonic.cms.core.resolver.locale.LocaleResolverService;
-import com.enonic.cms.core.timezone.TimeZoneService;
 
 public abstract class AbstractAdminwebServlet
     extends HttpServlet
@@ -226,6 +224,10 @@ public abstract class AbstractAdminwebServlet
 
     @Autowired
     protected ResourceAccessResolver resourceAccessResolver;
+
+    @Autowired
+    protected MimeTypeResolver mimeTypeResolver;
+
 
     private ServletContext servletContext;
 

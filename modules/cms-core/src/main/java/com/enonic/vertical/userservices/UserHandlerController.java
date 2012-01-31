@@ -4,6 +4,36 @@
  */
 package com.enonic.vertical.userservices;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.net.Mail;
+import com.enonic.esl.servlet.http.CookieUtil;
+import com.enonic.esl.util.ArrayUtil;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.vertical.VerticalProperties;
+import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.SiteKey;
@@ -15,14 +45,40 @@ import com.enonic.cms.core.login.LoginService;
 import com.enonic.cms.core.mail.MessageSettings;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.PortalInstanceKeyResolver;
-import com.enonic.cms.core.preference.*;
+import com.enonic.cms.core.preference.PreferenceAccessException;
+import com.enonic.cms.core.preference.PreferenceEntity;
+import com.enonic.cms.core.preference.PreferenceKey;
+import com.enonic.cms.core.preference.PreferenceScopeKey;
+import com.enonic.cms.core.preference.PreferenceScopeKeyResolver;
+import com.enonic.cms.core.preference.PreferenceScopeType;
+import com.enonic.cms.core.preference.PreferenceService;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.PasswordGenerator;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.UserStoreParser;
-import com.enonic.cms.core.security.group.*;
-import com.enonic.cms.core.security.user.*;
-import com.enonic.cms.core.security.userstore.*;
+import com.enonic.cms.core.security.group.AbstractMembershipsCommand;
+import com.enonic.cms.core.security.group.AddMembershipsCommand;
+import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.group.GroupSpecification;
+import com.enonic.cms.core.security.group.RemoveMembershipsCommand;
+import com.enonic.cms.core.security.user.MissingRequiredUserFieldException;
+import com.enonic.cms.core.security.user.QualifiedUsername;
+import com.enonic.cms.core.security.user.ReadOnlyUserFieldPolicyException;
+import com.enonic.cms.core.security.user.StoreNewUserCommand;
+import com.enonic.cms.core.security.user.UpdateUserCommand;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.user.UserNotFoundException;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
+import com.enonic.cms.core.security.user.UserStorageInvalidArgumentException;
+import com.enonic.cms.core.security.userstore.UserStoreAccessException;
+import com.enonic.cms.core.security.userstore.UserStoreConnectorPolicyBrokenException;
+import com.enonic.cms.core.security.userstore.UserStoreEntity;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteContext;
@@ -32,33 +88,6 @@ import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.net.Mail;
-import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.util.ArrayUtil;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.engine.VerticalCreateException;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.VerticalSecurityException;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.util.Assert;
-
-import javax.mail.MessagingException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.rmi.RemoteException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserHandlerController
     extends AbstractUserServicesHandlerController
@@ -285,7 +314,6 @@ public class UserHandlerController
     {
 
         UserEntity user = securityService.getLoggedInPortalUserAsEntity();
-        UserEntity executor = securityService.getRunAsUser();
 
         if ( user == null )
         {
@@ -308,7 +336,7 @@ public class UserHandlerController
             return;
         }
 
-        List<GroupKey> groupKeysToAdd = getSubmittedGroupKeys(formItems, "key");
+        List<GroupKey> groupKeysToAdd = getSubmittedGroupKeys( formItems, "key" );
         List<GroupKey> existingKeysForUser = getExistingDirectMembershipsForUser( user );
         groupKeysToAdd.removeAll( existingKeysForUser );
         if ( groupKeysToAdd.size() >= 1 )
@@ -317,7 +345,7 @@ public class UserHandlerController
             GroupSpecification userGroupForLoggedInUser = new GroupSpecification();
             userGroupForLoggedInUser.setKey( user.getUserGroupKey() );
 
-            AddMembershipsCommand addMembershipCommand = new AddMembershipsCommand( userGroupForLoggedInUser, executor.getKey() );
+            AddMembershipsCommand addMembershipCommand = new AddMembershipsCommand( userGroupForLoggedInUser, user.getKey() );
             addMembershipCommand.setUpdateOpenGroupsOnly( true );
             addMembershipCommand.setRespondWithException( true );
             for ( GroupKey groupKeyToAdd : groupKeysToAdd )
@@ -359,7 +387,7 @@ public class UserHandlerController
         UpdateUserCommand updateUserCommand = new UpdateUserCommand( user.getKey(), spec );
         updateUserCommand.setUpdateStrategy( UpdateUserCommand.UpdateStrategy.REPLACE_NEW );
         updateUserCommand.setSyncMemberships( true );
-        updateUserCommand.setUpdateOpenGroupsOnly(true);
+        updateUserCommand.setUpdateOpenGroupsOnly( true );
         updateUserCommand.setAllowUpdateSelf( true );
         return updateUserCommand;
     }
@@ -434,7 +462,6 @@ public class UserHandlerController
         throws VerticalUserServicesException, RemoteException
     {
         UserEntity user = securityService.getLoggedInPortalUserAsEntity();
-        UserEntity executor = securityService.getRunAsUser();
         if ( user == null )
         {
             String message = "User must be logged in.";
@@ -466,7 +493,7 @@ public class UserHandlerController
             GroupSpecification userGroupForLoggedInUser = new GroupSpecification();
             userGroupForLoggedInUser.setKey( user.getUserGroupKey() );
 
-            RemoveMembershipsCommand removeMembershipsCommand = new RemoveMembershipsCommand( userGroupForLoggedInUser, executor.getKey() );
+            RemoveMembershipsCommand removeMembershipsCommand = new RemoveMembershipsCommand( userGroupForLoggedInUser, user.getKey() );
             removeMembershipsCommand.setUpdateOpenGroupsOnly( true );
             removeMembershipsCommand.setRespondWithException( true );
             for ( GroupKey groupKeyToRemove : submittedGroupKeysToRemove )
@@ -499,7 +526,7 @@ public class UserHandlerController
 
     protected void handlerChangePassword( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
     {
-        User loggedInUser = securityService.getOldUserObject();
+        User loggedInUser = securityService.getLoggedInPortalUser();
 
         String uid = parseUsername( formItems );
 
@@ -544,7 +571,7 @@ public class UserHandlerController
                     return;
                 }
                 securityService.loginPortalUser( new QualifiedUsername( userStoreKey, uid ), password );
-                loggedInUser = securityService.getOldUserObject();
+                loggedInUser = securityService.getLoggedInPortalUser();
             }
 
             String newPassword1 = formItems.getString( "newpassword1", "" );
@@ -763,7 +790,7 @@ public class UserHandlerController
             updateUserCommand.setUpdateOpenGroupsOnly( true );
 
             updateUserCommand.setIsModifyOperation();
-            preservePossiblyMissingBirthdateForModify(formItems, updateUserCommand);
+            preservePossiblyMissingBirthdateForModify( formItems, updateUserCommand );
 
             updateGroupsInUpdateCommand( formItems, loggedInUser, updateUserCommand );
 
@@ -1161,7 +1188,7 @@ public class UserHandlerController
             }
 
             securityService.loginPortalUser( new QualifiedUsername( userStoreKey, username ), password );
-            user = securityService.getOldUserObject();
+            user = securityService.getLoggedInPortalUser();
 
             if ( user == null )
             {
@@ -1174,7 +1201,7 @@ public class UserHandlerController
             }
 
             session.setAttribute( "vertical_uid", username );
-            PortalSecurityHolder.setUser(user.getKey());
+            PortalSecurityHolder.setLoggedInUser( user.getKey() );
 
             boolean rememberUser = parseRememberUser( formItems );
 
@@ -1224,7 +1251,7 @@ public class UserHandlerController
                                     String deploymentPath, String cookieName )
     {
         boolean resetGuid = false;
-        if ( formItems.getString( "resetguid", "false" ).equals( "true" ) || formItems.getString( "resetguid", "off" ).equals("on") )
+        if ( formItems.getString( "resetguid", "false" ).equals( "true" ) || formItems.getString( "resetguid", "off" ).equals( "on" ) )
         {
             resetGuid = true;
         }
@@ -1273,7 +1300,7 @@ public class UserHandlerController
     {
         String submittedUid = formItems.getString( FORMITEM_UID, null );
 
-        if ( StringUtils.isNotBlank(submittedUid) )
+        if ( StringUtils.isNotBlank( submittedUid ) )
         {
             QualifiedUsername qualifiedUserName = QualifiedUsername.parse( submittedUid );
 
@@ -1340,7 +1367,7 @@ public class UserHandlerController
         command.setUser( user.getKey() );
         command.setSite( this.siteDao.findByKey( site.getSiteKey() ) );
 
-        this.logService.storeNew(command);
+        this.logService.storeNew( command );
     }
 
     private void logLogout( final SiteContext site, final User user, final String remoteIp )
@@ -1378,7 +1405,7 @@ public class UserHandlerController
         if ( session != null )
         {
             // Create log entry:
-            User user = securityService.getOldUserObject();
+            User user = securityService.getLoggedInPortalUser();
             if ( user != null && !user.isAnonymous() )
             {
                 if ( siteContext.isAuthenticationLoggingEnabled() )
@@ -1429,7 +1456,7 @@ public class UserHandlerController
     private void handlerSetPreferences( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems, SiteKey siteKey )
     {
 
-        User olduser = securityService.getOldUserObject();
+        User olduser = securityService.getLoggedInPortalUser();
         if ( olduser == null )
         {
             String message = "User is not logged in.";
@@ -1508,7 +1535,7 @@ public class UserHandlerController
                                            SiteKey siteKey )
     {
 
-        User olduser = securityService.getOldUserObject();
+        User olduser = securityService.getLoggedInPortalUser();
         if ( olduser == null )
         {
             String message = "User is not logged in.";
@@ -1578,13 +1605,13 @@ public class UserHandlerController
             scopeName = defaultScope;
         }
 
-        PreferenceScopeType scopeType = PreferenceScopeType.parse(scopeName);
+        PreferenceScopeType scopeType = PreferenceScopeType.parse( scopeName );
         if ( scopeType == null )
         {
             throw new IllegalArgumentException( "Scope " + scopeName + " is not valid" );
         }
 
-        PreferenceScopeKey scopeKey = resolveScopeKey(instanceKey, scopeType);
+        PreferenceScopeKey scopeKey = resolveScopeKey( instanceKey, scopeType );
 
         return new PreferenceKey( userKey, scopeType, scopeKey, preferenceKeyStr );
     }

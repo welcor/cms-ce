@@ -1,5 +1,18 @@
 package com.enonic.vertical.userservices;
 
+import java.util.Date;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.util.DateUtil;
+
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteKey;
@@ -21,19 +34,12 @@ import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.util.DateUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
 
-import java.util.Date;
-
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 import static org.easymock.classextension.EasyMock.createMock;
 
 public class UserHandlerControllerTest_operation_UpdateTest
@@ -191,7 +197,7 @@ public class UserHandlerControllerTest_operation_UpdateTest
     private void loginPortalUser( String userName )
     {
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( userName ).getKey() );
-        PortalSecurityHolder.setUser( fixture.findUserByName( userName ).getKey() );
+        PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( userName ).getKey() );
     }
 
     private UserStoreKey createLocalUserStore( String name, boolean defaultStore, UserStoreConfig config )

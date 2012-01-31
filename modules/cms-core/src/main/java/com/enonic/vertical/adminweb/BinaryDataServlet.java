@@ -16,9 +16,8 @@ import javax.servlet.http.HttpSession;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.service.AdminService;
-
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.service.AdminService;
 
 public class BinaryDataServlet
     extends AbstractAdminwebServlet
@@ -96,12 +95,7 @@ public class BinaryDataServlet
 
                 if ( binaryData != null )
                 {
-                    String mimeType = getServletContext().getMimeType( binaryData.fileName.toLowerCase() );
-                    if ( mimeType == null )
-                    {
-                        mimeType = "www/unknown";
-                    }
-
+                    String mimeType = mimeTypeResolver.getMimeType( binaryData.fileName.toLowerCase() );
                     response.setContentType( mimeType );
                     HttpServletUtil.setContentDisposition( response, false, binaryData.fileName );
                     response.setContentLength( binaryData.data.length );

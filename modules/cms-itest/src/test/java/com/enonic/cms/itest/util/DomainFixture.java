@@ -4,7 +4,27 @@
  */
 package com.enonic.cms.itest.util;
 
-import com.enonic.cms.core.content.*;
+import java.util.List;
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Component;
+
+import com.google.common.base.Preconditions;
+
+import com.enonic.vertical.VerticalProperties;
+
+import com.enonic.cms.api.client.model.user.UserInfo;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentHandlerEntity;
+import com.enonic.cms.core.content.ContentHandlerKey;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.RelatedContentEntity;
+import com.enonic.cms.core.content.UnitEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.category.CategoryEntity;
@@ -25,15 +45,6 @@ import com.enonic.cms.core.structure.menuitem.ContentHomeKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.store.dao.GroupDao;
-import com.enonic.vertical.VerticalProperties;
-import com.google.common.base.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Properties;
 
 /**
  * Nov 26, 2009
@@ -115,12 +126,34 @@ public class DomainFixture
         flushAndClearHibernateSesssion();
 
         PortalSecurityHolder.setAnonUser( findUserByName( "anonymous" ).getKey() );
-        PortalSecurityHolder.setUser( findUserByName( "anonymous" ).getKey() );
+        PortalSecurityHolder.setLoggedInUser( findUserByName( "anonymous" ).getKey() );
     }
 
     public UserEntity createAndStoreNormalUserWithUserGroup( String uid, String displayName, String userStoreName )
     {
         return createAndStoreUserAndUserGroup( uid, displayName, UserType.NORMAL, userStoreName );
+    }
+
+    public UserEntity createAndStoreNormalUserWithAllValuesAndWithUserGroup( String uid, String displayName, String userStoreName,
+                                                                             UserInfo userInfo )
+    {
+        GroupEntity userGroup = new GroupEntity();
+        userGroup.setName( uid );
+        userGroup.setSyncValue( uid );
+        userGroup.setDeleted( 0 );
+        userGroup.setType( GroupType.resolveAssociate( UserType.NORMAL ) );
+        userGroup.setRestricted( 1 );
+        hibernateTemplate.save( userGroup );
+
+        UserEntity user = factory.createUserWithAllValues( uid, displayName, UserType.NORMAL, userStoreName, userInfo );
+        user.encodePassword( null );
+
+        user.setUserGroup( userGroup );
+
+        hibernateTemplate.save( user );
+        hibernateTemplate.flush();
+
+        return user;
     }
 
     public UserEntity createAndStoreUserAndUserGroup( String uid, String displayName, UserType type, String userStoreName )

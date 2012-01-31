@@ -4,11 +4,16 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
+
+  <xsl:include href="codearea.xsl"/>
 
   <xsl:template name="content_source">
+
+    <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
+    <script type="text/javascript" src="javascript/codearea.js">//</script>
+    <link rel="stylesheet" type="text/css" href="css/codearea.css"/>
+
     <xsl:if test="/contents/source">
 
       <xsl:variable name="source" select="/contents/source"/>
@@ -22,9 +27,21 @@
 
         <fieldset>
           <legend>&nbsp;%blockContentXml%&nbsp;</legend>
-          <pre class="content-source">
-            <xsl:value-of select="$source/data"/>
-          </pre>
+
+          <table border="0" cellspacing="2" cellpadding="2" width="100%">
+            <tr>
+              <xsl:call-template name="codearea">
+                <xsl:with-param name="name" select="'_source_xml_data'"/>
+                <xsl:with-param name="width" select="'100%'"/>
+                <xsl:with-param name="height" select="'300px'"/>
+                <xsl:with-param name="line-numbers" select="true()"/>
+                <xsl:with-param name="read-only" select="true()"/>
+                <xsl:with-param name="selectnode" select="$source/data"/>
+                <xsl:with-param name="buttons" select="''"/>
+                <xsl:with-param name="status-bar" select="false()"/>
+              </xsl:call-template>
+            </tr>
+          </table>
         </fieldset>
 
         <xsl:if test="count($source/related-children/content) != 0">
@@ -34,9 +51,9 @@
             <script type="text/javascript">
               function callback_content_source_related_children()
               {
-                /* Needed for the content popup */
-              
-                return;
+              /* Needed for the content popup */
+
+              return;
               }
 
             </script>
@@ -76,7 +93,10 @@
 
                       <xsl:variable name="disabled">
                         <xsl:choose>
-                          <xsl:when test="/contents/relatedcontents/content[@key = current()/@key]/userright/@update = 'true' and /contents/relatedcontents/content[@key = current()/@key]/userright/@read = 'true'">false</xsl:when>
+                          <xsl:when
+                              test="/contents/relatedcontents/content[@key = current()/@key]/userright/@update = 'true' and /contents/relatedcontents/content[@key = current()/@key]/userright/@read = 'true'">
+                            false
+                          </xsl:when>
                           <xsl:otherwise>true</xsl:otherwise>
                         </xsl:choose>
                       </xsl:variable>
@@ -95,7 +115,8 @@
                         <xsl:with-param name="onclick">
                           <xsl:text>OpenEditContentPopup(</xsl:text>
                           <xsl:value-of select="@key"/>
-                          <xsl:text>, -1, 'sourceRelatedChildren', getObjectIndex(this), 'callback_content_source_related_children');</xsl:text>
+                          <xsl:text>, -1, 'sourceRelatedChildren', getObjectIndex(this), 'callback_content_source_related_children');
+                          </xsl:text>
                         </xsl:with-param>
                       </xsl:call-template>
                     </td>
@@ -132,7 +153,9 @@
                 </tr>
               </xsl:for-each>
               <tr>
-                <td class="left" colspan="2"><br/></td>
+                <td class="left" colspan="2">
+                  <br/>
+                </td>
               </tr>
               <tr>
                 <th class="left" colspan="2">Custom</th>

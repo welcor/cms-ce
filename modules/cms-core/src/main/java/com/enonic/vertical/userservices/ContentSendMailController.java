@@ -4,22 +4,28 @@
  */
 package com.enonic.vertical.userservices;
 
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.content.CreateContentException;
-import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.contentdata.*;
-import com.enonic.cms.core.portal.httpservices.UserServicesException;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.UserServicesService;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.vertical.engine.VerticalEngineException;
+import java.io.IOException;
+import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.text.ParseException;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.vertical.engine.VerticalEngineException;
+
+import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.content.CreateContentException;
+import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.content.contentdata.ContentDataParserException;
+import com.enonic.cms.core.content.contentdata.ContentDataParserInvalidDataException;
+import com.enonic.cms.core.content.contentdata.ContentDataParserUnsupportedTypeException;
+import com.enonic.cms.core.content.contentdata.InvalidContentDataException;
+import com.enonic.cms.core.content.contentdata.MissingRequiredContentDataException;
+import com.enonic.cms.core.portal.httpservices.UserServicesException;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.service.UserServicesService;
 
 /**
  * Extension of the standard sendmail servlet. <p/> <p> In addition to sending an email (using the functionality in {@link
@@ -41,13 +47,13 @@ public class ContentSendMailController
         if ( operation.equals( "send" ) )
         {
 
-            User oldUser = securityService.getOldUserObject();
+            User oldUser = securityService.getLoggedInPortalUser();
             int categoryKey = formItems.getInt( "categorykey", -1 );
 
             if ( categoryKey == -1 )
             {
                 String message = "Category key not specified.";
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
                 return;
             }
@@ -60,7 +66,7 @@ public class ContentSendMailController
             catch ( ContentDataParserInvalidDataException e )
             {
                 String message = e.getMessage();
-                VerticalUserServicesLogger.warn(message );
+                VerticalUserServicesLogger.warn( message );
                 redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
                 return;
             }
@@ -92,14 +98,14 @@ public class ContentSendMailController
                 if ( cause instanceof MissingRequiredContentDataException )
                 {
                     String message = e.getMessage();
-                    VerticalUserServicesLogger.warn(message );
+                    VerticalUserServicesLogger.warn( message );
                     redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_MISSING );
                     return;
                 }
                 else if ( cause instanceof InvalidContentDataException )
                 {
                     String message = e.getMessage();
-                    VerticalUserServicesLogger.warn(message );
+                    VerticalUserServicesLogger.warn( message );
                     redirectToErrorPage( request, response, formItems, ERR_PARAMETERS_INVALID );
                     return;
                 }

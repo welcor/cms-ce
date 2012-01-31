@@ -1,11 +1,38 @@
 package com.enonic.cms.itest.portal;
 
+import java.io.IOException;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.google.common.collect.Sets;
+import com.google.common.io.ByteStreams;
+
+import com.enonic.cms.framework.util.MimeTypeResolver;
+
 import com.enonic.cms.api.client.model.CreateFileContentParams;
 import com.enonic.cms.api.client.model.content.file.FileBinaryInput;
 import com.enonic.cms.api.client.model.content.file.FileContentDataInput;
 import com.enonic.cms.api.client.model.content.file.FileNameInput;
 import com.enonic.cms.core.client.InternalClientContentService;
-import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.ContentAndVersion;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.ContentData;
@@ -24,22 +51,6 @@ import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import com.google.common.collect.Sets;
-import com.google.common.io.ByteStreams;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -61,6 +72,9 @@ public class AttachmentControllerTest
 
     @Autowired
     private AttachmentController attachmentController;
+
+    @Autowired
+    private MimeTypeResolver mimeTypeResolver;
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -108,6 +122,10 @@ public class AttachmentControllerTest
         fixture.save( factory.createUnit( "FileUnit" ) );
         fixture.save( factory.createCategory( "AttachmentCategory", "FileContentType", "FileUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "AttachmentCategory", "testuser", "read, create, approve" ) );
+
+        WebApplicationContext wac = Mockito.mock( WebApplicationContext.class );
+        Mockito.when( wac.getBean("mimeTypeResolver") ).thenReturn( mimeTypeResolver );
+        servletContext.setAttribute( WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac );
 
         fixture.flushAndClearHibernateSesssion();
     }
@@ -461,7 +479,7 @@ public class AttachmentControllerTest
     private void loginUserInPortal( UserKey userKey )
     {
         PortalSecurityHolder.setImpersonatedUser( userKey );
-        PortalSecurityHolder.setUser( userKey );
+        PortalSecurityHolder.setLoggedInUser( userKey );
     }
 
     private void setPathInfoAndRequestURI( MockHttpServletRequest httpServletRequest, String attachmentRequestPath )

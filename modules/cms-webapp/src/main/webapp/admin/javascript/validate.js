@@ -59,7 +59,7 @@ function str_trim( str )
 // returns true if str contains \f\n\r\t\v
 function str_containsOnlyWhitespace( str )
 {
-    return /^\s+$/.test(str);    
+    return /^\s+$/.test(str);
 }
 
 function BrowserDetector(ua) {
@@ -266,7 +266,7 @@ function contentValidateName( element, tabPane )
 function validateURL(e)
 {
 	var i;
-    
+
 	if (isArray(e)) {
 	    for(i = 0; i < e.length; i++) {
 		    if ( !validateURL(e[i]) )
@@ -344,6 +344,10 @@ function validateURLList(formName, urls_field, descriptions_field)
 
 function isEmpty(e)
 {
+    if( e == undefined || e.value == undefined )
+    {
+        return true;
+    }
     if( e == null || e.value == null )
     {
         return true;
@@ -632,7 +636,7 @@ function getStrDateAsDate( strDate )
 /**
  * DateTimeRangeValidator constructor function.
  *
- * Constructs a new DateTimeRangeValidator instance. 
+ * Constructs a new DateTimeRangeValidator instance.
  *
  * @param {String} startFieldNamePostfix The start fields name postfix.
  * @param {String} endFieldNamePostfix The end fields name postfix.
@@ -987,6 +991,26 @@ function validateRelatedContent(e, fieldname, tabPane) {
 	return true;
 }
 
+function validateRelatedContentCount(e, fieldname, tabPane) {
+    if (e == undefined ) {
+        error(e, errorRequired + fieldname, tabPane);
+        return false;
+    } else if ( isArray( e ) ) {
+        for ( var i = 0; i < e.length; i++ ) {
+            if (e[i].value === undefined || e[i].value === '0') {
+                error(e[i], errorRequired + fieldname, tabPane);
+                return false;
+            }
+        }
+    } else {
+        if (e.value === undefined || e.value === '0') {
+            error(e, errorRequired + fieldname, tabPane);
+            return false;
+        }
+    }
+    return true;
+}
+
 function validateRequired(e, fieldname, tabPane, ignoreFirstPos) {
   var i;
 
@@ -1138,7 +1162,7 @@ function isArray( obj )
     {
         return false;
     }
-    
+
     return ( typeof( obj ) != 'string' && typeof( obj.length ) != 'undefined' );
 }
 
@@ -1202,11 +1226,6 @@ function checkTime(timeString, seconds)
 
 function checkDate (dateString)
 {
-    if( isEmpty(dateString) )
-    {
-        return true;
-    }
-
 	// check date formatting
     if (!regExpDate.test(dateString))
 		return false;

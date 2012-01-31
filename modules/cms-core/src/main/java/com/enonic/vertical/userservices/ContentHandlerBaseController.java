@@ -4,9 +4,47 @@
  */
 package com.enonic.vertical.userservices;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.io.FileUtil;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+
 import com.enonic.cms.core.CalendarUtil;
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.ContentAccessEntity;
+import com.enonic.cms.core.content.ContentAndVersion;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentLocation;
+import com.enonic.cms.core.content.ContentLocationSpecification;
+import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.PageCacheInvalidatorForContent;
+import com.enonic.cms.core.content.UpdateContentResult;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
@@ -22,30 +60,6 @@ import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.io.FileUtil;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.VerticalRemoveException;
-import com.enonic.vertical.engine.VerticalSecurityException;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.rmi.RemoteException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Base class for userservices servlets related to modifying content from "public" sites.  This class will take care of custom content. All
@@ -189,7 +203,7 @@ public class ContentHandlerBaseController
                                   UserServicesService userServices, SiteKey siteKey )
         throws VerticalUserServicesException, VerticalRemoveException, VerticalSecurityException, RemoteException
     {
-        User user = securityService.getOldUserObject();
+        User user = securityService.getLoggedInPortalUser();
         UserEntity runningUser = securityService.getUser( user );
 
         ContentKey contentKey = new ContentKey( formItems.getInt( "key" ) );
@@ -217,14 +231,14 @@ public class ContentHandlerBaseController
     protected void handlerUpdate( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey )
     {
-        User oldTypeUser = securityService.getOldUserObject();
+        User oldTypeUser = securityService.getLoggedInPortalUser();
 
         int contentKey = formItems.getInt( "key", -1 );
 
         if ( contentKey == -1 )
         {
             String message = "Content key not specified.";
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
             return;
         }
@@ -265,8 +279,7 @@ public class ContentHandlerBaseController
         }
         else
         {
-            updateContentCommand = UpdateContentCommand.updateExistingVersion2(
-                    parsedContentAndVersion.getVersion().getKey() );
+            updateContentCommand = UpdateContentCommand.updateExistingVersion2( parsedContentAndVersion.getVersion().getKey() );
         }
 
         updateContentCommand.setModifier( runningUser );
@@ -320,14 +333,14 @@ public class ContentHandlerBaseController
                                   UserServicesService userServices, SiteKey siteKey )
         throws VerticalUserServicesException, VerticalSecurityException, RemoteException
     {
-        User oldUser = securityService.getOldUserObject();
+        User oldUser = securityService.getLoggedInPortalUser();
 
         int categoryKey = formItems.getInt( "categorykey", -1 );
 
         if ( categoryKey == -1 )
         {
             String message = "Category key not specified.";
-            VerticalUserServicesLogger.warn(message );
+            VerticalUserServicesLogger.warn( message );
             redirectToErrorPage( request, response, formItems, ERR_MISSING_CATEGORY_KEY );
             return;
         }

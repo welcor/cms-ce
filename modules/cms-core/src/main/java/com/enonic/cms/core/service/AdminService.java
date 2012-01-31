@@ -18,10 +18,10 @@ import com.enonic.vertical.engine.filters.Filter;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -48,11 +48,7 @@ public interface AdminService
 
     public int getCategoryKey( int superCategoryKey, String name );
 
-    public int createCategory( User user, int superCategoryKey, String name );
-
     public MenuItemKey getSectionKeyByMenuItemKey( MenuItemKey menuItemKey );
-
-    public int createCategory( User user, String xmlData );
 
     public XMLDocument getCategory( User user, int categoryKey );
 

@@ -4,23 +4,37 @@
  */
 package com.enonic.vertical.adminweb;
 
-import com.enonic.cms.core.content.UnitEntity;
-import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
-import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
-import com.enonic.cms.framework.util.TIntArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.FileUploadException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.io.FileUtil;
@@ -32,24 +46,31 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.VerticalException;
 import com.enonic.vertical.VerticalRuntimeException;
 import com.enonic.vertical.engine.VerticalEngineException;
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.fileupload.FileUploadException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.util.*;
+import com.enonic.cms.framework.util.TIntArrayList;
+
+import com.enonic.cms.core.content.UnitEntity;
+import com.enonic.cms.core.content.binary.BinaryData;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
+import com.enonic.cms.core.content.category.UnitKey;
+import com.enonic.cms.core.content.category.access.CategoryAccessRights;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.resource.ResourceFile;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.service.AdminService;
+import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
+import com.enonic.cms.core.structure.page.template.PageTemplateType;
+import com.enonic.cms.core.xslt.XsltProcessorException;
+import com.enonic.cms.core.xslt.XsltProcessorHelper;
 
 
 public abstract class AdminHandlerBaseServlet
@@ -954,7 +975,7 @@ public abstract class AdminHandlerBaseServlet
             final HttpSession session = request.getSession();
             final String languageCode = (String) session.getAttribute( "languageCode" );
 
-            final Source xslDoc = AdminStore.getStylesheet( languageCode, xslPath);
+            final Source xslDoc = AdminStore.getStylesheet( languageCode, xslPath );
             final URIResolver uriResolver = AdminStore.getURIResolver( languageCode );
 
             new XsltProcessorHelper().stylesheet( xslDoc, uriResolver ).input( doc ).params( parameters ).process( response );
@@ -972,7 +993,7 @@ public abstract class AdminHandlerBaseServlet
     {
         final HttpSession session = request.getSession();
         final String languageCode = (String) session.getAttribute( "languageCode" );
-        final Source xslSource = AdminStore.getStylesheet( languageCode, xslPath);
+        final Source xslSource = AdminStore.getStylesheet( languageCode, xslPath );
 
         transformXML( request, response, doc, xslSource, parameters );
     }
@@ -1096,6 +1117,77 @@ public abstract class AdminHandlerBaseServlet
         }
 
         return element;
+    }
+
+    protected StoreNewCategoryCommand createStoreNewCategoryCommand( User user, ExtendedMap formItems )
+    {
+        StoreNewCategoryCommand command = new StoreNewCategoryCommand();
+        command.setCreator( user.getKey() );
+        command.setName( formItems.getString( "name" ) );
+        command.setAutoApprove( formItems.getBoolean( "autoApprove" ) );
+
+        if ( formItems.containsKey( "contenttypekey" ) )
+        {
+            command.setContentType( new ContentTypeKey( formItems.getString( "contenttypekey" ) ) );
+        }
+        if ( formItems.containsKey( "supercategorykey" ) )
+        {
+            command.setParentCategory( new CategoryKey( formItems.getString( "supercategorykey" ) ) );
+        }
+        if ( formItems.containsKey( "selectedunitkey" ) )
+        {
+            command.setUnitKey( new UnitKey( formItems.getString( "selectedunitkey" ) ) );
+        }
+        if ( formItems.containsKey( "description" ) )
+        {
+            command.setDescription( formItems.getString( "description" ) );
+        }
+
+        fillAccessRights( command, formItems );
+        return command;
+    }
+
+    private void fillAccessRights( StoreNewCategoryCommand command, ExtendedMap formItems )
+    {
+        for ( Object parameterKey : formItems.keySet() )
+        {
+            String paramName = (String) parameterKey;
+            if ( paramName.startsWith( "accessright[key=" ) )
+            {
+                CategoryAccessRights accessRight = new CategoryAccessRights();
+
+                String paramValue = formItems.getString( paramName );
+                ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
+                ExtendedMap paramsInValue = ParamsInTextParser.parseParamsInText( paramValue, "[", "]", ";" );
+
+                if ( paramsInName.containsKey( "key" ) )
+                {
+                    accessRight.setGroupKey( new GroupKey( paramsInName.getString( "key" ) ) );
+                }
+                if ( paramsInValue.containsKey( "administrate" ) )
+                {
+                    accessRight.setAdminAccess( paramsInValue.getBoolean( "administrate" ) );
+                }
+                if ( paramsInValue.containsKey( "publish" ) )
+                {
+                    accessRight.setPublishAccess( paramsInValue.getBoolean( "publish" ) );
+                }
+                if ( paramsInValue.containsKey( "create" ) )
+                {
+                    accessRight.setCreateAccess( paramsInValue.getBoolean( "create" ) );
+                }
+                if ( paramsInValue.containsKey( "adminread" ) )
+                {
+                    accessRight.setAdminBrowseAccess( paramsInValue.getBoolean( "adminread" ) );
+                }
+                if ( paramsInValue.containsKey( "read" ) )
+                {
+                    accessRight.setReadAccess( paramsInValue.getBoolean( "read" ) );
+                }
+
+                command.addAccessRight( accessRight );
+            }
+        }
     }
 
     public void addAccessLevelParameters( User user, Map<String, Object> parameters )

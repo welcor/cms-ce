@@ -1,5 +1,21 @@
 package com.enonic.cms.itest.content.imports;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Collection;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.mock.web.MockHttpServletRequest;
+
+import junit.framework.Assert;
+
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
@@ -12,24 +28,11 @@ import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.content.imports.ImportResult;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import junit.framework.Assert;
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class Support112124Test
     extends AbstractSpringTest
@@ -73,7 +76,7 @@ public class Support112124Test
         request.setRemoteAddr( "127.0.0.1" );
         ServletRequestAccessor.setRequest( request );
 
-        PortalSecurityHolder.setUser( fixture.findUserByName( "testuser" ).getKey() );
+        PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
     }
 

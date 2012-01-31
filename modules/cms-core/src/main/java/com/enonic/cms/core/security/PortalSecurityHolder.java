@@ -4,9 +4,10 @@
  */
 package com.enonic.cms.core.security;
 
-import com.enonic.cms.core.security.user.UserKey;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+
+import com.enonic.cms.core.security.user.UserKey;
 
 /**
  * This class holds the logged in user per thread basis or in session.
@@ -29,7 +30,7 @@ public final class PortalSecurityHolder
 
     private static UserKey ANON_USER;
 
-    public static UserKey getUser()
+    public static UserKey getLoggedInUser()
     {
         UserKey user = doGetUser( false );
         return user != null ? user : ANON_USER;
@@ -38,7 +39,7 @@ public final class PortalSecurityHolder
     public static UserKey getImpersonatedUser()
     {
         UserKey impersonatedUser = doGetUser( true );
-        return impersonatedUser != null ? impersonatedUser : getUser();
+        return impersonatedUser != null ? impersonatedUser : getLoggedInUser();
     }
 
     public static UserKey getAnonUser()
@@ -46,7 +47,7 @@ public final class PortalSecurityHolder
         return ANON_USER;
     }
 
-    public static void setUser( UserKey user )
+    public static void setLoggedInUser( UserKey user )
     {
         doSetUser( user, false );
     }
@@ -54,6 +55,11 @@ public final class PortalSecurityHolder
     public static void setImpersonatedUser( UserKey user )
     {
         doSetUser( user, true );
+    }
+
+    public static void removeImpersonatedUser()
+    {
+        doSetUser( null, true );
     }
 
     public static void setAnonUser( UserKey user )

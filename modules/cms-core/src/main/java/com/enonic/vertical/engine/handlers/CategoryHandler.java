@@ -4,40 +4,56 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.CmsDateAndTimeFormats;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.category.*;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
-import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.store.dao.CategoryDao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.util.RelationAggregator;
 import com.enonic.esl.util.RelationNode;
 import com.enonic.esl.util.RelationTree;
 import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalEngineLogger;
-import com.enonic.vertical.engine.VerticalSecurityException;
 import com.enonic.vertical.engine.XDG;
 import com.enonic.vertical.engine.criteria.CategoryCriteria;
 import com.enonic.vertical.engine.dbmodel.CategoryTable;
 import com.enonic.vertical.engine.dbmodel.CategoryView;
 import com.enonic.vertical.engine.dbmodel.ConAccessRight2Table;
 import com.enonic.vertical.engine.dbmodel.ContentPublishedView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
+import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
+import com.enonic.cms.framework.util.TIntArrayList;
+import com.enonic.cms.framework.xml.XMLDocument;
+
+import com.enonic.cms.core.CalendarUtil;
+import com.enonic.cms.core.CmsDateAndTimeFormats;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.category.CategoryAccessRightsAccumulated;
+import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.CategoryStatistics;
+import com.enonic.cms.core.content.category.CategoryXmlCreator;
+import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.store.dao.CategoryDao;
 
 public class CategoryHandler
     extends BaseHandler
@@ -81,243 +97,6 @@ public class CategoryHandler
         super.init();
 
         categoryStatisticsHelper = new CategoryStatisticsHelper( this );
-    }
-
-    private int[] createCategory( User olduser, CopyContext copyContext, Document categoryDoc, boolean useOldKey )
-        throws VerticalSecurityException
-    {
-        Connection con;
-        PreparedStatement preparedStmt = null;
-        TIntArrayList newKeys = null;
-
-        try
-        {
-            Document subCategoriesDoc = XMLTool.createDocument( "categories" );
-            Element subCategoriesElem = subCategoriesDoc.getDocumentElement();
-            int subCategoryCount = 0;
-
-            Element docElem = categoryDoc.getDocumentElement();
-            Element[] categoryElems;
-            if ( "category".equals( docElem.getTagName() ) )
-            {
-                categoryElems = new Element[]{docElem};
-            }
-            else
-            {
-                categoryElems = XMLTool.getElements( docElem );
-            }
-
-            con = getConnection();
-            preparedStmt = con.prepareStatement( CAT_INSERT );
-
-            newKeys = new TIntArrayList();
-            for ( Element root : categoryElems )
-            {
-                // key
-                int key;
-                String keyStr = root.getAttribute( "key" );
-                if ( !useOldKey || keyStr == null || keyStr.length() == 0 )
-                {
-                    key = getNextKey( db.tCategory.toString() );
-                }
-                else
-                {
-                    key = Integer.parseInt( keyStr );
-                }
-                if ( copyContext != null )
-                {
-                    int oldCategoryKey = Integer.parseInt( keyStr );
-                    copyContext.putCategoryKey( oldCategoryKey, key );
-                }
-                newKeys.add( key );
-
-                // get the foreign keys
-                int unitkey = -1;
-                keyStr = root.getAttribute( "unitkey" );
-                if ( keyStr.length() > 0 )
-                {
-                    unitkey = Integer.parseInt( keyStr );
-                }
-                int ctyKey = -1;
-                keyStr = root.getAttribute( "contenttypekey" );
-                if ( keyStr.length() > 0 )
-                {
-                    ctyKey = Integer.parseInt( keyStr );
-                }
-                int scakey = -1;
-                keyStr = root.getAttribute( "supercategorykey" );
-                if ( keyStr.length() > 0 )
-                {
-                    scakey = Integer.parseInt( keyStr );
-                }
-
-                preparedStmt.setInt( 1, key );
-                if ( unitkey >= 0 )
-                {
-                    preparedStmt.setInt( 2, unitkey );
-                }
-                else
-                {
-                    preparedStmt.setNull( 2, Types.INTEGER );
-                }
-                if ( ctyKey >= 0 )
-                {
-                    preparedStmt.setInt( 3, ctyKey );
-                }
-                else
-                {
-                    preparedStmt.setNull( 3, Types.INTEGER );
-                }
-                if ( scakey >= 0 )
-                {
-                    preparedStmt.setInt( 4, scakey );
-                }
-                else
-                {
-                    preparedStmt.setNull( 4, Types.INTEGER );
-                }
-
-                // get the contentcategory's sub-elements
-                Map subelems = XMLTool.filterElements( root.getChildNodes() );
-
-                preparedStmt.setString( 5, olduser.getKey().toString() );
-
-                // element: created (using the database timestamp at creation)
-                /* no code */
-
-                // name
-                String name = root.getAttribute( "name" );
-                preparedStmt.setString(6, name);
-
-                // element: description (optional)
-                Element subelem = (Element) subelems.get( "description" );
-                if ( subelem != null )
-                {
-                    String description = XMLTool.getElementText( subelem );
-
-                    if ( description == null || description.length() == 0 )
-                    {
-                        preparedStmt.setNull( 7, Types.VARCHAR );
-                    }
-                    else
-                    {
-                        preparedStmt.setString(7, description);
-                    }
-                }
-                else
-                {
-                    preparedStmt.setNull( 7, Types.VARCHAR );
-                }
-
-                preparedStmt.setString( 8, olduser.getKey().toString() );
-
-                // element: timestamp (using the database timestamp at creation)
-                /* no code */
-
-                preparedStmt.setInt( 9, root.getAttribute( "autoApprove" ).equals( "true" ) ? 1 : 0 );
-
-                // add the content category
-                int result = preparedStmt.executeUpdate();
-
-                if ( result <= 0 )
-                {
-                    VerticalEngineLogger.errorCreate("Failed to create category", null );
-                }
-
-                // set category access rights
-                SecurityHandler securityHandler = getSecurityHandler();
-                if ( scakey >= 0 )
-                {
-                    securityHandler.inheritCategoryAccessRights( scakey, new CategoryKey( key ) );
-                }
-                else
-                {
-                    GroupHandler groupHandler = getGroupHandler();
-                    Document accessrightsDoc = XMLTool.createDocument( "accessrights" );
-                    Element elem = accessrightsDoc.getDocumentElement();
-                    elem.setAttribute( "key", String.valueOf( key ) );
-                    elem.setAttribute( "type", String.valueOf( AccessRight.CATEGORY ) );
-                    elem = XMLTool.createElement( accessrightsDoc, elem, "accessright" );
-                    String siteGroupKey = groupHandler.getAdminGroupKey();
-                    elem.setAttribute( "groupkey", siteGroupKey );
-                    elem.setAttribute( "read", "true" );
-                    elem.setAttribute( "create", "true" );
-                    elem.setAttribute( "publish", "true" );
-                    elem.setAttribute( "administrate", "true" );
-                    elem.setAttribute( "adminread", "true" );
-                    securityHandler.updateAccessRights( olduser, accessrightsDoc );
-                }
-                Element accessrightsElem = (Element) subelems.get( "accessrights" );
-                if ( accessrightsElem != null )
-                {
-                    accessrightsElem.setAttribute( "key", String.valueOf( key ) );
-                    Document tempDoc = XMLTool.createDocument();
-                    tempDoc.appendChild( tempDoc.importNode( accessrightsElem, true ) );
-                    securityHandler.updateAccessRights( olduser, tempDoc );
-                }
-
-                Element[] elems = XMLTool.getElements( XMLTool.getElement( root, "categories" ) );
-                subCategoryCount += elems.length;
-                for ( Element elem : elems )
-                {
-                    subCategoriesElem.appendChild( subCategoriesDoc.importNode( elem, true ) );
-                }
-            }
-
-            // create sub categories
-            if ( subCategoryCount > 0 )
-            {
-                newKeys.add( createCategory( olduser, copyContext, subCategoriesDoc, useOldKey ) );
-            }
-        }
-        catch ( SQLException sqle )
-        {
-            String message = "Failed to create category: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
-        }
-        finally
-        {
-            close( preparedStmt );
-        }
-
-        return newKeys.toArray();
-    }
-
-    public int createCategory( User olduser, Document doc )
-        throws VerticalSecurityException
-    {
-
-        int[] key = createCategory( olduser, null, doc, true );
-        if ( key == null || key.length == 0 )
-        {
-            String message = "Failed to create content category. No category key returned.";
-            VerticalEngineLogger.errorCreate(message, null );
-        }
-
-        return key[0];
-    }
-
-    public int createCategory( User olduser, CategoryKey superCategoryKey, String name )
-        throws VerticalSecurityException
-    {
-        Document doc = getCategory( olduser, superCategoryKey );
-        Element categoryElem = XMLTool.getFirstElement( doc.getDocumentElement() );
-        categoryElem.setAttribute( "supercategorykey", categoryElem.getAttribute( "key" ) );
-        categoryElem.setAttribute( "name", name );
-        categoryElem.removeAttribute( "key" );
-        categoryElem.removeAttribute( "created" );
-        categoryElem.removeAttribute( "timestamp" );
-        Element descriptionElem = XMLTool.getElement( categoryElem, "description" );
-        if ( descriptionElem != null )
-        {
-            categoryElem.removeChild( descriptionElem );
-        }
-        Element ownerElem = XMLTool.getElement( categoryElem, "owner" );
-        categoryElem.removeChild( ownerElem );
-        Element modifierElem = XMLTool.getElement( categoryElem, "modifier" );
-        categoryElem.removeChild( modifierElem );
-
-        return createCategory( olduser, doc );
     }
 
     public int getCategoryKey( int superCategoryKey, String name )

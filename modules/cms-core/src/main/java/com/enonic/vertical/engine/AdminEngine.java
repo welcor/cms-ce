@@ -4,6 +4,42 @@
  */
 package com.enonic.vertical.engine;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.criteria.CategoryCriteria;
+import com.enonic.vertical.engine.filters.Filter;
+import com.enonic.vertical.engine.handlers.BinaryDataHandler;
+import com.enonic.vertical.engine.handlers.CategoryHandler;
+import com.enonic.vertical.engine.handlers.CommonHandler;
+import com.enonic.vertical.engine.handlers.ContentHandler;
+import com.enonic.vertical.engine.handlers.ContentObjectHandler;
+import com.enonic.vertical.engine.handlers.GroupHandler;
+import com.enonic.vertical.engine.handlers.LanguageHandler;
+import com.enonic.vertical.engine.handlers.LogHandler;
+import com.enonic.vertical.engine.handlers.MenuHandler;
+import com.enonic.vertical.engine.handlers.PageHandler;
+import com.enonic.vertical.engine.handlers.PageTemplateHandler;
+import com.enonic.vertical.engine.handlers.SectionHandler;
+import com.enonic.vertical.engine.handlers.SecurityHandler;
+import com.enonic.vertical.engine.handlers.SystemHandler;
+import com.enonic.vertical.engine.handlers.UnitHandler;
+import com.enonic.vertical.engine.handlers.UserHandler;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentXMLCreator;
@@ -28,26 +64,8 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.GroupDao;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.criteria.CategoryCriteria;
-import com.enonic.vertical.engine.filters.Filter;
-import com.enonic.vertical.engine.handlers.*;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 public final class AdminEngine
     extends BaseEngine
@@ -227,30 +245,6 @@ public final class AdminEngine
     public int getCategoryKey( int superCategoryKey, String name )
     {
         return categoryHandler.getCategoryKey( superCategoryKey, name );
-    }
-
-    public int createCategory( User user, int superCategoryKey, String name )
-    {
-        return categoryHandler.createCategory( user, CategoryKey.parse( superCategoryKey ), name );
-    }
-
-    public int createCategory( User user, String xmlData )
-    {
-
-        Document doc = XMLTool.domparse( xmlData, "category" );
-        Element categoryElem = doc.getDocumentElement();
-        if ( !isEnterpriseAdmin( user ) )
-        {
-            CategoryKey superCategoryKey = CategoryKey.parse( categoryElem.getAttribute( "supercategorykey" ) );
-
-            if ( !securityHandler.validateCategoryCreate( user, superCategoryKey ) )
-            {
-                String message = "User does not have access rights to create a new category";
-                VerticalEngineLogger.errorSecurity(message, null );
-            }
-        }
-
-        return categoryHandler.createCategory(user, doc);
     }
 
     public int createContentObject( String xmlData )
@@ -848,7 +842,7 @@ public final class AdminEngine
 
             doc.getDocumentElement().appendChild( doc.importNode( unitElem, true ) );
         }
-        
+
         return XMLDocumentFactory.create( doc );
     }
 

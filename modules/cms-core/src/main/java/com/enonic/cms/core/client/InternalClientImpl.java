@@ -85,6 +85,9 @@ import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.content.GetContentExecutor;
 import com.enonic.cms.core.content.GetContentResult;
 import com.enonic.cms.core.content.GetContentXmlCreator;
+import com.enonic.cms.core.content.GetRelatedContentExecutor;
+import com.enonic.cms.core.content.GetRelatedContentResult;
+import com.enonic.cms.core.content.GetRelatedContentXmlCreator;
 import com.enonic.cms.core.content.PageCacheInvalidatorForContent;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.category.CategoryEntity;
@@ -100,13 +103,11 @@ import com.enonic.cms.core.content.imports.ImportResult;
 import com.enonic.cms.core.content.imports.ImportResultXmlCreator;
 import com.enonic.cms.core.content.index.ContentIndexQuery.SectionFilterStatus;
 import com.enonic.cms.core.content.query.ContentByCategoryQuery;
-import com.enonic.cms.core.content.query.ContentByContentQuery;
 import com.enonic.cms.core.content.query.ContentByQueryQuery;
 import com.enonic.cms.core.content.query.ContentBySectionQuery;
 import com.enonic.cms.core.content.query.RelatedChildrenContentQuery;
 import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.portal.cache.PageCacheService;
@@ -129,6 +130,7 @@ import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.security.ImpersonateCommand;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.UserParser;
 import com.enonic.cms.core.security.UserStoreParser;
@@ -223,10 +225,12 @@ public final class InternalClientImpl
     @Autowired
     private ContentTypeDao contentTypeDao;
 
+    private LivePortalTraceService livePortalTraceService;
+
+    private boolean clientForRemoteInvocations;
+
     @Autowired(required = false)
     private SiteCachesService siteCachesService;
-
-    private LivePortalTraceService livePortalTraceService;
 
     /**
      * Vertical properties.
@@ -265,7 +269,7 @@ public final class InternalClientImpl
     {
         try
         {
-            return securityService.getLoggedInPortalUser().getName();
+            return securityService.getLoggedInPortalUserAsEntity().getName();
         }
         catch ( Exception e )
         {
@@ -284,7 +288,7 @@ public final class InternalClientImpl
 
         try
         {
-            return securityService.getLoggedInPortalUser().getName();
+            return securityService.getLoggedInPortalUserAsEntity().getName();
         }
         catch ( Exception e )
         {
@@ -347,7 +351,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getUsers( GetUsersParams params )
         throws ClientException
     {
@@ -371,6 +375,8 @@ public final class InternalClientImpl
             List<UserEntity> users =
                 this.securityService.getUsers( userStore.getKey(), params.index, params.count, params.includeDeletedUsers );
             UserXmlCreator xmlCreator = new UserXmlCreator();
+            xmlCreator.setIncludeUserFields( params.includeCustomUserFields );
+            xmlCreator.wrappUserFieldsInBlockElement( false );
             xmlCreator.setAdminConsoleStyle( false );
             return xmlCreator.createUsersDocument( users, params.includeMemberships, params.normalizeGroups );
 
@@ -385,7 +391,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getGroups( GetGroupsParams params )
         throws ClientException
     {
@@ -477,7 +483,7 @@ public final class InternalClientImpl
             }
 
             List<GroupEntity> groupsToJoin = parseGroups( params.groupsToJoin, true );
-            UserEntity executor = securityService.getRunAsUser();
+            UserEntity executor = securityService.getImpersonatedPortalUser();
             GroupSpecification groupSpec = new GroupSpecification();
             groupSpec.setKey( groupToUse.getGroupKey() );
 
@@ -533,7 +539,7 @@ public final class InternalClientImpl
             }
 
             Collection<GroupEntity> groupsToLeave = parseGroups( params.groupsToLeave, true );
-            UserEntity executor = securityService.getRunAsUser();
+            UserEntity executor = securityService.getImpersonatedPortalUser();
             GroupSpecification groupToRemoveSpec = new GroupSpecification();
             groupToRemoveSpec.setKey( groupToRemoveMembershipsFor.getGroupKey() );
 
@@ -571,7 +577,7 @@ public final class InternalClientImpl
 
             final UserStoreEntity userStore = new UserStoreParser( userStoreDao ).parseUserStore( params.userStore );
 
-            UserEntity runningUser = securityService.getRunAsUser();
+            UserEntity runningUser = securityService.getImpersonatedPortalUser();
 
             StoreNewGroupCommand storeNewGroupCommand = new StoreNewGroupCommand();
             storeNewGroupCommand.setName( params.name );
@@ -615,7 +621,7 @@ public final class InternalClientImpl
 
             GroupEntity group = parseGroup( params.group );
 
-            UserEntity runningUser = securityService.getRunAsUser();
+            UserEntity runningUser = securityService.getImpersonatedPortalUser();
 
             GroupSpecification groupSpec = new GroupSpecification();
             groupSpec.setKey( group.getGroupKey() );
@@ -657,7 +663,7 @@ public final class InternalClientImpl
     {
         try
         {
-            UserEntity runAsUser = this.securityService.getRunAsUser();
+            UserEntity runAsUser = this.securityService.getImpersonatedPortalUser();
 
             Assert.isTrue( runAsUser != null );
 
@@ -697,7 +703,7 @@ public final class InternalClientImpl
     {
         try
         {
-            final UserEntity userEntity = securityService.getRunAsUser();
+            final UserEntity userEntity = securityService.getImpersonatedPortalUser();
             UserContextXmlCreator userContextXmlCreator = new UserContextXmlCreator( groupDao );
             return userContextXmlCreator.createUserDocument( userEntity );
         }
@@ -717,7 +723,7 @@ public final class InternalClientImpl
         try
         {
             this.securityService.loginClientApiUser( QualifiedUsername.parse( user ), password );
-            return this.securityService.getUserName();
+            return this.securityService.getLoggedInClientApiUserAsEntity().getName();
         }
         catch ( Exception e )
         {
@@ -734,16 +740,24 @@ public final class InternalClientImpl
     {
         try
         {
-            UserEntity impersonated = this.securityService.impersonate( QualifiedUsername.parse( user ) );
-
-            Assert.isTrue( impersonated != null );
-
+            UserEntity userToImpersonate =
+                new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser( user );
+            final UserEntity impersonated =
+                securityService.impersonatePortalUser( new ImpersonateCommand( clientForRemoteInvocations, userToImpersonate.getKey() ) );
             return impersonated.getName();
         }
         catch ( Exception e )
         {
             throw handleException( e );
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void removeImpersonation()
+    {
+        securityService.removePortalImpersonation();
     }
 
     /**
@@ -763,7 +777,7 @@ public final class InternalClientImpl
     {
         try
         {
-            String userName = this.securityService.getUserName();
+            String userName = this.securityService.getLoggedInClientApiUserAsEntity().getName();
             this.securityService.logoutClientApiUser( invalidateSession );
             return userName;
         }
@@ -822,7 +836,7 @@ public final class InternalClientImpl
                 throw new IllegalArgumentException( "userInfo cannot be null" );
             }
 
-            UserEntity storer = securityService.getRunAsUser();
+            UserEntity storer = securityService.getImpersonatedPortalUser();
             UserStoreEntity userStore = new UserStoreParser( userStoreDao ).parseUserStore( params.userstore );
 
             StoreNewUserCommand storeNewUserCommand = new StoreNewUserCommand();
@@ -862,7 +876,7 @@ public final class InternalClientImpl
                 throw new IllegalArgumentException( "user cannot be blank" );
             }
 
-            final UserEntity deleter = securityService.getRunAsUser();
+            final UserEntity deleter = securityService.getImpersonatedPortalUser();
             final UserEntity user =
                 new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser( params.user );
 
@@ -1046,7 +1060,7 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getCategories( GetCategoriesParams params )
         throws ClientException
     {
@@ -1068,14 +1082,14 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getContent( GetContentParams params )
         throws ClientException
     {
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getContent", livePortalTraceService );
         try
         {
-            UserEntity user = securityService.getRunAsUser();
+            UserEntity user = securityService.getImpersonatedPortalUser();
 
             GetContentExecutor executor = new GetContentExecutor( contentService, contentDao, userDao, timeService.getNowAsDateTime(),
                                                                   previewService.getPreviewContext() );
@@ -1120,7 +1134,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getContentVersions( GetContentVersionsParams params )
     {
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getContentVersions", livePortalTraceService );
@@ -1131,7 +1145,7 @@ public final class InternalClientImpl
                 throw new IllegalArgumentException( "Missing one or more versionkeys" );
             }
             final Date now = new Date();
-            UserEntity user = securityService.getRunAsUser();
+            UserEntity user = securityService.getImpersonatedPortalUser();
 
             List<ContentVersionEntity> versions = new ArrayList<ContentVersionEntity>( params.contentVersionKeys.length );
             ContentAccessResolver contentAccessResolver = new ContentAccessResolver( groupDao );
@@ -1187,7 +1201,7 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getContentByQuery( GetContentByQueryParams params )
         throws ClientException
     {
@@ -1197,7 +1211,7 @@ public final class InternalClientImpl
             PreviewContext previewContext = previewService.getPreviewContext();
 
             final Date now = new Date();
-            UserEntity user = securityService.getRunAsUser();
+            UserEntity user = securityService.getImpersonatedPortalUser();
             ContentXMLCreator xmlCreator = new ContentXMLCreator();
             ContentByQueryQuery spec = new ContentByQueryQuery();
             RelatedContentQuery relatedContentQuery = new RelatedContentQuery( now );
@@ -1261,7 +1275,7 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getContentByCategory( GetContentByCategoryParams params )
         throws ClientException
     {
@@ -1271,7 +1285,7 @@ public final class InternalClientImpl
             PreviewContext previewContext = previewService.getPreviewContext();
 
             final Date now = new Date();
-            UserEntity user = securityService.getRunAsUser();
+            UserEntity user = securityService.getImpersonatedPortalUser();
             ContentXMLCreator xmlCreator = new ContentXMLCreator();
             ContentByCategoryQuery contentByCategoryQuery = new ContentByCategoryQuery();
             RelatedContentQuery relatedContentQuery = new RelatedContentQuery( now );
@@ -1335,7 +1349,7 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getRandomContentByCategory( GetRandomContentByCategoryParams params )
         throws ClientException
     {
@@ -1345,7 +1359,7 @@ public final class InternalClientImpl
         {
             PreviewContext previewContext = previewService.getPreviewContext();
 
-            UserEntity user = securityService.getRunAsUser();
+            UserEntity user = securityService.getImpersonatedPortalUser();
             ContentXMLCreator xmlCreator = new ContentXMLCreator();
             final Date now = new Date();
             ContentByCategoryQuery contentByCategoryQuery = new ContentByCategoryQuery();
@@ -1418,7 +1432,7 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getContentBySection( GetContentBySectionParams params )
         throws ClientException
     {
@@ -1427,7 +1441,7 @@ public final class InternalClientImpl
         {
             PreviewContext previewContext = previewService.getPreviewContext();
 
-            UserEntity user = securityService.getRunAsUser();
+            UserEntity user = securityService.getImpersonatedPortalUser();
             final Date now = new Date();
             ContentXMLCreator xmlCreator = new ContentXMLCreator();
             ContentBySectionQuery spec = new ContentBySectionQuery();
@@ -1494,7 +1508,7 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getRandomContentBySection( GetRandomContentBySectionParams params )
         throws ClientException
     {
@@ -1504,7 +1518,7 @@ public final class InternalClientImpl
         {
             PreviewContext previewContext = previewService.getPreviewContext();
 
-            UserEntity user = securityService.getRunAsUser();
+            UserEntity user = securityService.getImpersonatedPortalUser();
             final Date now = new Date();
             ContentXMLCreator xmlCreator = new ContentXMLCreator();
             ContentBySectionQuery spec = new ContentBySectionQuery();
@@ -1568,7 +1582,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getMenu( GetMenuParams params )
         throws ClientException
     {
@@ -1587,7 +1601,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getMenuBranch( GetMenuBranchParams params )
         throws ClientException
     {
@@ -1606,7 +1620,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getMenuData( GetMenuDataParams params )
         throws ClientException
     {
@@ -1625,7 +1639,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getMenuItem( GetMenuItemParams params )
         throws ClientException
     {
@@ -1644,7 +1658,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getSubMenu( GetSubMenuParams params )
         throws ClientException
     {
@@ -1666,137 +1680,48 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getRelatedContent( final GetRelatedContentsParams params )
         throws ClientException
     {
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getRelatedContent", livePortalTraceService );
         try
         {
-            PreviewContext previewContext = previewService.getPreviewContext();
+            final UserEntity impersonatedPortalUser = securityService.getImpersonatedPortalUser();
+            final List<ContentKey> contentFilter = ContentKey.convertToList( params.contentKeys );
 
-            final Date now = new Date();
-            UserEntity user = securityService.getRunAsUser();
-
-            // Get given content
-            final ContentByContentQuery baseContentQuery = new ContentByContentQuery();
-            baseContentQuery.setContentKeyFilter( ContentKey.convertToList( params.contentKeys ) );
-            baseContentQuery.setUser( user );
-            if ( params.includeOfflineContent )
+            final GetRelatedContentExecutor getRelatedContentExecutor =
+                new GetRelatedContentExecutor( contentService, timeService.getNowAsDateTime().toDate(),
+                                               previewService.getPreviewContext() );
+            getRelatedContentExecutor.user( impersonatedPortalUser );
+            getRelatedContentExecutor.includeOfflineContent( params.includeOfflineContent );
+            getRelatedContentExecutor.requireAll( params.requireAll );
+            getRelatedContentExecutor.relation( params.relation );
+            getRelatedContentExecutor.query( params.query );
+            getRelatedContentExecutor.orderBy( params.orderBy );
+            getRelatedContentExecutor.index( params.index );
+            getRelatedContentExecutor.count( params.count );
+            getRelatedContentExecutor.childrenLevel( params.childrenLevel );
+            getRelatedContentExecutor.parentLevel( params.parentLevel );
+            getRelatedContentExecutor.parentChildrenLevel( 0 );
+            if ( contentFilter != null )
             {
-                baseContentQuery.setFilterIncludeOfflineContent();
-            }
-            else
-            {
-                baseContentQuery.setFilterContentOnlineAt( now );
-            }
-            ContentResultSet baseContent = contentService.queryContent( baseContentQuery );
-            if ( previewContext.isPreviewingContent() )
-            {
-                baseContent =
-                    previewContext.getContentPreviewContext().applyPreviewedContentOnContentResultSet( baseContent, params.contentKeys );
+                getRelatedContentExecutor.contentFilter( contentFilter );
             }
 
-            // Get the main content (related content to base content)
-            final RelatedContentResultSet relatedContentToBaseContent;
-            if ( params.requireAll && baseContent.getLength() > 1 )
-            {
-                relatedContentToBaseContent = contentService.getRelatedContentRequiresAll( user, params.relation, baseContent );
-            }
-            else
-            {
-                final RelatedContentQuery relatedContentToBaseContentSpec = new RelatedContentQuery( now );
-                relatedContentToBaseContentSpec.setUser( user );
-                relatedContentToBaseContentSpec.setContentResultSet( baseContent );
-                relatedContentToBaseContentSpec.setParentLevel( params.relation < 0 ? 1 : 0 );
-                relatedContentToBaseContentSpec.setChildrenLevel( params.relation > 0 ? 1 : 0 );
-                relatedContentToBaseContentSpec.setParentChildrenLevel( 0 );
-                relatedContentToBaseContentSpec.setIncludeOnlyMainVersions( true );
-                if ( params.includeOfflineContent )
-                {
-                    relatedContentToBaseContentSpec.setFilterIncludeOfflineContent();
-                }
-                else
-                {
-                    relatedContentToBaseContentSpec.setFilterContentOnlineAt( now );
-                }
-                relatedContentToBaseContent = contentService.queryRelatedContent( relatedContentToBaseContentSpec );
+            final GetRelatedContentResult result = getRelatedContentExecutor.execute();
 
-                final boolean previewedContentIsAmongBaseContent = previewContext.isPreviewingContent() &&
-                    baseContent.containsContent( previewContext.getContentPreviewContext().getContentPreviewed().getKey() );
-                if ( previewedContentIsAmongBaseContent )
-                {
-                    // ensuring offline related content to the previewed content to be included when previewing
-                    RelatedContentQuery relatedSpecForPreviewedContent = new RelatedContentQuery( relatedContentToBaseContentSpec );
-                    relatedSpecForPreviewedContent.setFilterIncludeOfflineContent();
-                    relatedSpecForPreviewedContent.setContentResultSet( new ContentResultSetNonLazy(
-                        previewContext.getContentPreviewContext().getContentAndVersionPreviewed().getContent() ) );
+            final GetRelatedContentXmlCreator getRelatedContentXmlCreator =
+                new GetRelatedContentXmlCreator( new CategoryAccessResolver( groupDao ), new ContentAccessResolver( groupDao ) );
+            getRelatedContentXmlCreator.user( impersonatedPortalUser );
+            getRelatedContentXmlCreator.versionInfoStyle( GetRelatedContentXmlCreator.VersionInfoStyle.CLIENT );
+            getRelatedContentXmlCreator.includeContentsContentData( params.includeData );
+            getRelatedContentXmlCreator.includeRelatedContentsContentData( params.includeData );
+            getRelatedContentXmlCreator.startingIndex( params.index );
+            getRelatedContentXmlCreator.resultLength( params.count );
+            getRelatedContentXmlCreator.includeUserRights( params.includeUserRights );
 
-                    RelatedContentResultSet relatedContentsForPreviewedContent =
-                        contentService.queryRelatedContent( relatedSpecForPreviewedContent );
-
-                    relatedContentToBaseContent.overwrite( relatedContentsForPreviewedContent );
-                    previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( relatedContentToBaseContent );
-                }
-            }
-
-            // Get the main result content
-            final ContentByContentQuery mainResultContentQuery = new ContentByContentQuery();
-            mainResultContentQuery.setUser( user );
-            mainResultContentQuery.setQuery( params.query );
-            mainResultContentQuery.setOrderBy( params.orderBy );
-            mainResultContentQuery.setIndex( params.index );
-            mainResultContentQuery.setCount( params.count );
-            mainResultContentQuery.setContentKeyFilter( relatedContentToBaseContent.getContentKeys() );
-            if ( params.includeOfflineContent || previewContext.isPreviewingContent() )
-            {
-                mainResultContentQuery.setFilterIncludeOfflineContent();
-            }
-            else
-            {
-                mainResultContentQuery.setFilterContentOnlineAt( now );
-            }
-            ContentResultSet mainResultContent = contentService.queryContent( mainResultContentQuery );
-            if ( previewContext.isPreviewingContent() )
-            {
-                mainResultContent = previewContext.getContentPreviewContext().overrideContentResultSet( mainResultContent );
-                previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( mainResultContent );
-            }
-
-            // Get the related content of the top level content
-            final RelatedContentQuery relatedContentSpec = new RelatedContentQuery( now );
-            relatedContentSpec.setUser( user );
-            relatedContentSpec.setContentResultSet( mainResultContent );
-            relatedContentSpec.setParentLevel( params.parentLevel );
-            relatedContentSpec.setChildrenLevel( params.childrenLevel );
-            relatedContentSpec.setParentChildrenLevel( 0 );
-            relatedContentSpec.setIncludeOnlyMainVersions( true );
-            if ( params.includeOfflineContent || previewContext.isPreviewingContent() )
-            {
-                relatedContentSpec.setFilterIncludeOfflineContent();
-            }
-            else
-            {
-                relatedContentSpec.setFilterContentOnlineAt( now );
-            }
-            RelatedContentResultSet relatedContent = contentService.queryRelatedContent( relatedContentSpec );
-            if ( previewContext.isPreviewingContent() )
-            {
-                relatedContent = previewContext.getContentPreviewContext().overrideRelatedContentResultSet( relatedContent );
-                previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( relatedContent );
-            }
-
-            // Create the content xml
-            final ContentXMLCreator xmlCreator = new ContentXMLCreator();
-            xmlCreator.setResultIndexing( params.index, params.count );
-            xmlCreator.setIncludeContentData( params.includeData );
-            xmlCreator.setIncludeRelatedContentData( params.includeData );
-            xmlCreator.setIncludeUserRightsInfo( params.includeUserRights, new CategoryAccessResolver( groupDao ),
-                                                 new ContentAccessResolver( groupDao ) );
-            xmlCreator.setIncludeVersionsInfoForClient( true );
-            xmlCreator.setIncludeAssignment( true );
-
-            return xmlCreator.createContentsDocument( user, mainResultContent, relatedContent ).getAsJDOMDocument();
+            return getRelatedContentXmlCreator.create( result ).getAsJDOMDocument();
         }
         catch ( Exception e )
         {
@@ -1836,7 +1761,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getBinary( GetBinaryParams params )
         throws ClientException
     {
@@ -1855,7 +1780,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getContentBinary( GetContentBinaryParams params )
         throws ClientException
     {
@@ -1874,7 +1799,7 @@ public final class InternalClientImpl
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getResource( GetResourceParams params )
         throws ClientException
     {
@@ -1919,7 +1844,7 @@ public final class InternalClientImpl
             }
 
             final ImportContentCommand command = new ImportContentCommand();
-            command.importer = this.securityService.getRunAsUser();
+            command.importer = this.securityService.getImpersonatedPortalUser();
             command.categoryToImportTo = categoryToImportTo;
             command.importName = params.importName;
             command.publishFrom = params.publishFrom == null ? null : new DateTime( params.publishFrom );
@@ -1955,16 +1880,18 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Preference getPreference( GetPreferenceParams params )
         throws ClientException
     {
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getPreference", livePortalTraceService );
         try
         {
-            PreferenceKey preferenceKey =
-                new PreferenceKey( securityService.getRunAsUser().getKey(), PreferenceScopeType.parse( params.scope.getType().toString() ),
-                                   params.scope.getKey() != null ? new PreferenceScopeKey( params.scope.getKey() ) : null, params.key );
+            PreferenceKey preferenceKey = new PreferenceKey( securityService.getImpersonatedPortalUser().getKey(),
+                                                             PreferenceScopeType.parse( params.scope.getType().toString() ),
+                                                             params.scope.getKey() != null
+                                                                 ? new PreferenceScopeKey( params.scope.getKey() )
+                                                                 : null, params.key );
 
             PreferenceEntity preferenceEntity = preferenceService.getPreference( preferenceKey );
 
@@ -1983,14 +1910,14 @@ public final class InternalClientImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<Preference> getPreferences()
         throws ClientException
     {
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getPreferences", livePortalTraceService );
         try
         {
-            PreferenceSpecification spec = new PreferenceSpecification( this.securityService.getRunAsUser() );
+            PreferenceSpecification spec = new PreferenceSpecification( this.securityService.getImpersonatedPortalUser() );
             List<PreferenceEntity> preferenceList = preferenceService.getPreferences( spec );
             List<Preference> preferences = new ArrayList<Preference>();
             for ( PreferenceEntity preference : preferenceList )
@@ -2028,9 +1955,11 @@ public final class InternalClientImpl
 
         try
         {
-            PreferenceKey preferenceKey =
-                new PreferenceKey( securityService.getRunAsUser().getKey(), PreferenceScopeType.parse( params.scope.getType().toString() ),
-                                   params.scope.getKey() != null ? new PreferenceScopeKey( params.scope.getKey() ) : null, params.key );
+            PreferenceKey preferenceKey = new PreferenceKey( securityService.getImpersonatedPortalUser().getKey(),
+                                                             PreferenceScopeType.parse( params.scope.getType().toString() ),
+                                                             params.scope.getKey() != null
+                                                                 ? new PreferenceScopeKey( params.scope.getKey() )
+                                                                 : null, params.key );
 
             PreferenceEntity preference = new PreferenceEntity();
             preference.setKey( preferenceKey );
@@ -2053,9 +1982,11 @@ public final class InternalClientImpl
     {
         try
         {
-            PreferenceKey preferenceKey =
-                new PreferenceKey( securityService.getRunAsUser().getKey(), PreferenceScopeType.parse( params.scope.getType().toString() ),
-                                   params.scope.getKey() != null ? new PreferenceScopeKey( params.scope.getKey() ) : null, params.key );
+            PreferenceKey preferenceKey = new PreferenceKey( securityService.getImpersonatedPortalUser().getKey(),
+                                                             PreferenceScopeType.parse( params.scope.getType().toString() ),
+                                                             params.scope.getKey() != null
+                                                                 ? new PreferenceScopeKey( params.scope.getKey() )
+                                                                 : null, params.key );
 
             PreferenceEntity preference = new PreferenceEntity();
             preference.setKey( preferenceKey );
@@ -2072,7 +2003,7 @@ public final class InternalClientImpl
     {
         try
         {
-            UserEntity runningUser = securityService.getRunAsUser();
+            UserEntity runningUser = securityService.getImpersonatedPortalUser();
             if ( !( runningUser.isEnterpriseAdmin() || runningUser.isAdministrator() ) )
             {
                 throw new IllegalAccessException( "User " + runningUser.getQualifiedName() + " do not have access to this operation" );
@@ -2105,7 +2036,7 @@ public final class InternalClientImpl
                 throw new IllegalArgumentException( "menuItemKeys cannot be null" );
             }
 
-            UserEntity runningUser = securityService.getRunAsUser();
+            UserEntity runningUser = securityService.getImpersonatedPortalUser();
             if ( !( runningUser.isEnterpriseAdmin() || runningUser.isAdministrator() ) )
             {
                 throw new IllegalAccessException( "User " + runningUser.getQualifiedName() + " do not have access to this operation" );
@@ -2133,7 +2064,7 @@ public final class InternalClientImpl
     {
         try
         {
-            UserEntity runningUser = securityService.getRunAsUser();
+            UserEntity runningUser = securityService.getImpersonatedPortalUser();
             if ( !( runningUser.isEnterpriseAdmin() || runningUser.isAdministrator() ) )
             {
                 throw new IllegalAccessException( "User " + runningUser.getQualifiedName() + " do not have access to this operation" );
@@ -2165,7 +2096,7 @@ public final class InternalClientImpl
                 throw new IllegalArgumentException( "key must be specified" );
             }
 
-            UserEntity deleter = securityService.getRunAsUser();
+            UserEntity deleter = securityService.getImpersonatedPortalUser();
 
             DeleteCategoryCommand command = new DeleteCategoryCommand();
             command.setDeleter( deleter.getKey() );
@@ -2417,7 +2348,7 @@ public final class InternalClientImpl
         return map;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Document getContentTypeConfigXML( GetContentTypeConfigXMLParams params )
         throws ClientException
     {
@@ -2461,5 +2392,10 @@ public final class InternalClientImpl
         {
             ClientMethodExecutionTracer.stopTracing( trace, livePortalTraceService );
         }
+    }
+
+    public void setClientForRemoteInvocations( boolean value )
+    {
+        this.clientForRemoteInvocations = value;
     }
 }

@@ -5,13 +5,58 @@
 
 package com.enonic.cms.api.mock;
 
-import com.enonic.cms.api.client.Client;
-import com.enonic.cms.api.client.ClientException;
-import com.enonic.cms.api.client.model.*;
-import com.enonic.cms.api.client.model.preference.Preference;
+import java.util.List;
+
 import org.jdom.Document;
 
-import java.util.List;
+import com.enonic.cms.api.client.Client;
+import com.enonic.cms.api.client.ClientException;
+import com.enonic.cms.api.client.model.AssignContentParams;
+import com.enonic.cms.api.client.model.CreateCategoryParams;
+import com.enonic.cms.api.client.model.CreateContentParams;
+import com.enonic.cms.api.client.model.CreateFileContentParams;
+import com.enonic.cms.api.client.model.CreateGroupParams;
+import com.enonic.cms.api.client.model.CreateImageContentParams;
+import com.enonic.cms.api.client.model.CreateUserParams;
+import com.enonic.cms.api.client.model.DeleteCategoryParams;
+import com.enonic.cms.api.client.model.DeleteContentParams;
+import com.enonic.cms.api.client.model.DeleteGroupParams;
+import com.enonic.cms.api.client.model.DeletePreferenceParams;
+import com.enonic.cms.api.client.model.DeleteUserParams;
+import com.enonic.cms.api.client.model.GetBinaryParams;
+import com.enonic.cms.api.client.model.GetCategoriesParams;
+import com.enonic.cms.api.client.model.GetContentBinaryParams;
+import com.enonic.cms.api.client.model.GetContentByCategoryParams;
+import com.enonic.cms.api.client.model.GetContentByQueryParams;
+import com.enonic.cms.api.client.model.GetContentBySectionParams;
+import com.enonic.cms.api.client.model.GetContentParams;
+import com.enonic.cms.api.client.model.GetContentTypeConfigXMLParams;
+import com.enonic.cms.api.client.model.GetContentVersionsParams;
+import com.enonic.cms.api.client.model.GetGroupParams;
+import com.enonic.cms.api.client.model.GetGroupsParams;
+import com.enonic.cms.api.client.model.GetMenuBranchParams;
+import com.enonic.cms.api.client.model.GetMenuDataParams;
+import com.enonic.cms.api.client.model.GetMenuItemParams;
+import com.enonic.cms.api.client.model.GetMenuParams;
+import com.enonic.cms.api.client.model.GetPreferenceParams;
+import com.enonic.cms.api.client.model.GetRandomContentByCategoryParams;
+import com.enonic.cms.api.client.model.GetRandomContentBySectionParams;
+import com.enonic.cms.api.client.model.GetRelatedContentsParams;
+import com.enonic.cms.api.client.model.GetResourceParams;
+import com.enonic.cms.api.client.model.GetSubMenuParams;
+import com.enonic.cms.api.client.model.GetUserParams;
+import com.enonic.cms.api.client.model.GetUsersParams;
+import com.enonic.cms.api.client.model.ImportContentsParams;
+import com.enonic.cms.api.client.model.JoinGroupsParams;
+import com.enonic.cms.api.client.model.LeaveGroupsParams;
+import com.enonic.cms.api.client.model.RenderContentParams;
+import com.enonic.cms.api.client.model.RenderPageParams;
+import com.enonic.cms.api.client.model.SetPreferenceParams;
+import com.enonic.cms.api.client.model.SnapshotContentParams;
+import com.enonic.cms.api.client.model.UnassignContentParams;
+import com.enonic.cms.api.client.model.UpdateContentParams;
+import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.preference.Preference;
 
 /**
  * Mock implementation of the Client interface.
@@ -66,6 +111,12 @@ public class MockClient
         throws ClientException
     {
         return null;
+    }
+
+    public void removeImpersonation()
+        throws ClientException
+    {
+
     }
 
     public String logout()

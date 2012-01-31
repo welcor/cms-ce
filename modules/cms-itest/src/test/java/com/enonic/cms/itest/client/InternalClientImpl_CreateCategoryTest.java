@@ -4,6 +4,14 @@
  */
 package com.enonic.cms.itest.client;
 
+import java.io.IOException;
+
+import org.jdom.JDOMException;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+
 import com.enonic.cms.api.client.model.CreateCategoryParams;
 import com.enonic.cms.core.client.InternalClient;
 import com.enonic.cms.core.content.ContentHandlerName;
@@ -15,13 +23,6 @@ import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import org.jdom.JDOMException;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -58,7 +59,7 @@ public class InternalClientImpl_CreateCategoryTest
         ServletRequestAccessor.setRequest( request );
 
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
-        PortalSecurityHolder.setUser( fixture.findUserByName( "testuser" ).getKey() );
+        PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
 
     }

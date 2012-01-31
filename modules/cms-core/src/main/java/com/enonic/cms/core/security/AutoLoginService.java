@@ -4,15 +4,16 @@
  */
 package com.enonic.cms.core.security;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.enonic.esl.servlet.http.CookieUtil;
+
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.login.LoginService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.esl.servlet.http.CookieUtil;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class AutoLoginService
 {
@@ -29,7 +30,7 @@ public class AutoLoginService
         }
         if ( !user.isAnonymous() )
         {
-            PortalSecurityHolder.setUser( user.getKey() );
+            PortalSecurityHolder.setLoggedInUser( user.getKey() );
         }
         return user;
     }
@@ -52,7 +53,7 @@ public class AutoLoginService
         }
         if ( !user.isAnonymous() )
         {
-            PortalSecurityHolder.setUser( user.getKey() );
+            PortalSecurityHolder.setLoggedInUser( user.getKey() );
             return user;
         }
         return user;

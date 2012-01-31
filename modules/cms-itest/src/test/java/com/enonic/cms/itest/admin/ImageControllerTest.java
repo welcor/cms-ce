@@ -1,12 +1,35 @@
 package com.enonic.cms.itest.admin;
 
 
+import java.io.IOException;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.google.common.io.ByteStreams;
+
 import com.enonic.cms.api.client.model.CreateImageContentParams;
 import com.enonic.cms.api.client.model.content.image.ImageBinaryInput;
 import com.enonic.cms.api.client.model.content.image.ImageContentDataInput;
 import com.enonic.cms.api.client.model.content.image.ImageNameInput;
 import com.enonic.cms.core.client.InternalClientContentService;
-import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.portal.image.ImageService;
@@ -27,25 +50,8 @@ import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.server.service.admin.mvc.controller.ImageController;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
-import com.google.common.io.ByteStreams;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ImageControllerTest
     extends AbstractSpringTest
@@ -410,7 +416,7 @@ public class ImageControllerTest
     private void loginUserInPortal( UserKey userKey )
     {
         PortalSecurityHolder.setImpersonatedUser( userKey );
-        PortalSecurityHolder.setUser( userKey );
+        PortalSecurityHolder.setLoggedInUser( userKey );
     }
 
     private void loginUserInAdmin( UserKey userKey )

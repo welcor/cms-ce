@@ -87,11 +87,11 @@ public class ContentIndexServiceImplTest_query_index_and_count
         final CategoryKey categoryKey = new CategoryKey( 1 );
 
         ContentDocument doc = createContentDocument( 1, "a-1", categoryKey );
-        service.index( doc, false );
+        contentIndexService.index( doc, false );
         ContentDocument doc1 = createContentDocument( 2, "c-1", categoryKey );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
-        service.optimize();
+        contentIndexService.optimize();
 
         printAllIndexContent();
 
@@ -100,7 +100,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         query.setIndex( 0 );
         query.setCount( 1 );
         query.setCategoryFilter( Lists.newArrayList( categoryKey ) );
-        ContentResultSet result = service.query( query );
+        ContentResultSet result = contentIndexService.query( query );
 
         // verify
         assertEquals( 1, result.getLength() );
@@ -115,9 +115,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
 
-        letTheIndexFinishItsWork();
-
-        printAllIndexContent();
+        flushIndex();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "" );
@@ -125,7 +123,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         query.setIndex( 1 );
         query.setCount( 1 );
         // query.setCategoryFilter( Lists.newArrayList( fixture.findCategoryByName( "MyCategory" ).getKey() ) );
-        ContentResultSet result = service.query( query );
+        ContentResultSet result = contentIndexService.query( query );
 
         // verify
         assertEquals( 0, result.getLength() );
@@ -142,7 +140,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
 
-        letTheIndexFinishItsWork();
+        flushIndex();
 
         printAllIndexContent();
 
@@ -153,7 +151,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         query.setIndex( 1 );
         query.setCount( 2 );
         //query.setCategoryFilter( Lists.newArrayList( fixture.findCategoryByName( "MyCategory" ).getKey() ) );
-        ContentResultSet result = service.query( query );
+        ContentResultSet result = contentIndexService.query( query );
 
         System.out.println( "Hits length: " + result.getLength() );
         System.out.println( "TotalCount: " + result.getTotalCount() );
@@ -173,7 +171,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
 
-        letTheIndexFinishItsWork();
+        flushIndex();
 
         printAllIndexContent();
 
@@ -184,7 +182,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         query.setIndex( 1 );
         query.setCount( 2 );
         query.setCategoryFilter( Lists.newArrayList( fixture.findCategoryByName( "MyCategory" ).getKey() ) );
-        ContentResultSet result = service.query( query );
+        ContentResultSet result = contentIndexService.query( query );
 
         // verify
         assertEquals( 2, result.getLength() );
@@ -202,7 +200,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
 
-        letTheIndexFinishItsWork();
+        flushIndex();
 
         printAllIndexContent();
 
@@ -213,7 +211,7 @@ public class ContentIndexServiceImplTest_query_index_and_count
         query.setIndex( 1 );
         query.setCount( 1 );
         query.setCategoryFilter( Lists.newArrayList( fixture.findCategoryByName( "MyCategory" ).getKey() ) );
-        ContentResultSet result = service.query( query );
+        ContentResultSet result = contentIndexService.query( query );
 
         // verify
         assertEquals( 3, result.getTotalCount() );

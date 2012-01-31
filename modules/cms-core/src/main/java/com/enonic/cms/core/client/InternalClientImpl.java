@@ -4,12 +4,88 @@
  */
 package com.enonic.cms.core.client;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLException;
+
 import com.enonic.cms.api.client.ClientException;
-import com.enonic.cms.api.client.model.*;
+import com.enonic.cms.api.client.model.AssignContentParams;
+import com.enonic.cms.api.client.model.CreateCategoryParams;
+import com.enonic.cms.api.client.model.CreateContentParams;
+import com.enonic.cms.api.client.model.CreateFileContentParams;
+import com.enonic.cms.api.client.model.CreateGroupParams;
+import com.enonic.cms.api.client.model.CreateImageContentParams;
+import com.enonic.cms.api.client.model.CreateUserParams;
+import com.enonic.cms.api.client.model.DeleteCategoryParams;
+import com.enonic.cms.api.client.model.DeleteContentParams;
+import com.enonic.cms.api.client.model.DeleteGroupParams;
+import com.enonic.cms.api.client.model.DeletePreferenceParams;
+import com.enonic.cms.api.client.model.DeleteUserParams;
+import com.enonic.cms.api.client.model.GetBinaryParams;
+import com.enonic.cms.api.client.model.GetCategoriesParams;
+import com.enonic.cms.api.client.model.GetContentBinaryParams;
+import com.enonic.cms.api.client.model.GetContentByCategoryParams;
+import com.enonic.cms.api.client.model.GetContentByQueryParams;
+import com.enonic.cms.api.client.model.GetContentBySectionParams;
+import com.enonic.cms.api.client.model.GetContentParams;
+import com.enonic.cms.api.client.model.GetContentTypeConfigXMLParams;
+import com.enonic.cms.api.client.model.GetContentVersionsParams;
+import com.enonic.cms.api.client.model.GetGroupParams;
+import com.enonic.cms.api.client.model.GetGroupsParams;
+import com.enonic.cms.api.client.model.GetMenuBranchParams;
+import com.enonic.cms.api.client.model.GetMenuDataParams;
+import com.enonic.cms.api.client.model.GetMenuItemParams;
+import com.enonic.cms.api.client.model.GetMenuParams;
+import com.enonic.cms.api.client.model.GetPreferenceParams;
+import com.enonic.cms.api.client.model.GetRandomContentByCategoryParams;
+import com.enonic.cms.api.client.model.GetRandomContentBySectionParams;
+import com.enonic.cms.api.client.model.GetRelatedContentsParams;
+import com.enonic.cms.api.client.model.GetResourceParams;
+import com.enonic.cms.api.client.model.GetSubMenuParams;
+import com.enonic.cms.api.client.model.GetUserParams;
+import com.enonic.cms.api.client.model.GetUsersParams;
+import com.enonic.cms.api.client.model.ImportContentsParams;
+import com.enonic.cms.api.client.model.JoinGroupsParams;
+import com.enonic.cms.api.client.model.LeaveGroupsParams;
+import com.enonic.cms.api.client.model.RenderContentParams;
+import com.enonic.cms.api.client.model.RenderPageParams;
+import com.enonic.cms.api.client.model.SetPreferenceParams;
+import com.enonic.cms.api.client.model.SnapshotContentParams;
+import com.enonic.cms.api.client.model.UnassignContentParams;
+import com.enonic.cms.api.client.model.UpdateContentParams;
+import com.enonic.cms.api.client.model.UpdateFileContentParams;
 import com.enonic.cms.api.client.model.preference.Preference;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
-import com.enonic.cms.core.content.*;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.ContentXMLCreator;
+import com.enonic.cms.core.content.GetContentExecutor;
+import com.enonic.cms.core.content.GetContentResult;
+import com.enonic.cms.core.content.GetContentXmlCreator;
+import com.enonic.cms.core.content.PageCacheInvalidatorForContent;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -23,7 +99,12 @@ import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.content.imports.ImportResult;
 import com.enonic.cms.core.content.imports.ImportResultXmlCreator;
 import com.enonic.cms.core.content.index.ContentIndexQuery.SectionFilterStatus;
-import com.enonic.cms.core.content.query.*;
+import com.enonic.cms.core.content.query.ContentByCategoryQuery;
+import com.enonic.cms.core.content.query.ContentByContentQuery;
+import com.enonic.cms.core.content.query.ContentByQueryQuery;
+import com.enonic.cms.core.content.query.ContentBySectionQuery;
+import com.enonic.cms.core.content.query.RelatedChildrenContentQuery;
+import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
@@ -34,7 +115,14 @@ import com.enonic.cms.core.portal.datasource.context.UserContextXmlCreator;
 import com.enonic.cms.core.portal.livetrace.ClientMethodExecutionTrace;
 import com.enonic.cms.core.portal.livetrace.ClientMethodExecutionTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
-import com.enonic.cms.core.preference.*;
+import com.enonic.cms.core.preference.PreferenceEntity;
+import com.enonic.cms.core.preference.PreferenceKey;
+import com.enonic.cms.core.preference.PreferenceScope;
+import com.enonic.cms.core.preference.PreferenceScopeKey;
+import com.enonic.cms.core.preference.PreferenceScopeResolver;
+import com.enonic.cms.core.preference.PreferenceScopeType;
+import com.enonic.cms.core.preference.PreferenceService;
+import com.enonic.cms.core.preference.PreferenceSpecification;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.resource.ResourceFile;
@@ -44,29 +132,39 @@ import com.enonic.cms.core.resource.ResourceXmlCreator;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.UserParser;
 import com.enonic.cms.core.security.UserStoreParser;
-import com.enonic.cms.core.security.group.*;
-import com.enonic.cms.core.security.user.*;
+import com.enonic.cms.core.security.group.AddMembershipsCommand;
+import com.enonic.cms.core.security.group.DeleteGroupCommand;
+import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.group.GroupNotFoundException;
+import com.enonic.cms.core.security.group.GroupSpecification;
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.group.GroupXmlCreator;
+import com.enonic.cms.core.security.group.QualifiedGroupname;
+import com.enonic.cms.core.security.group.RemoveMembershipsCommand;
+import com.enonic.cms.core.security.group.StoreNewGroupCommand;
+import com.enonic.cms.core.security.user.DeleteUserCommand;
+import com.enonic.cms.core.security.user.DisplayNameResolver;
+import com.enonic.cms.core.security.user.QualifiedUsername;
+import com.enonic.cms.core.security.user.StoreNewUserCommand;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLException;
-import com.enonic.cms.store.dao.*;
-import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
-import java.io.ByteArrayInputStream;
-import java.util.*;
+import com.enonic.cms.store.dao.CategoryDao;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.ContentTypeDao;
+import com.enonic.cms.store.dao.ContentVersionDao;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.GroupQuery;
+import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.store.dao.UserStoreDao;
 
 /**
  * This class implements the local client.
@@ -76,6 +174,8 @@ public final class InternalClientImpl
 {
 
     private static final Logger LOG = LoggerFactory.getLogger( InternalClientImpl.class );
+
+    protected static final int DEFAULT_COUNT = 200;
 
     private InternalClientContentService internalClientContentService;
 
@@ -1253,7 +1353,7 @@ public final class InternalClientImpl
 
             contentByCategoryQuery.setUser( user );
             contentByCategoryQuery.setIndex( 0 );
-            contentByCategoryQuery.setCount( Integer.MAX_VALUE );
+            contentByCategoryQuery.setCount( DEFAULT_COUNT );
             contentByCategoryQuery.setQuery( params.query );
             if ( params.includeOfflineContent )
             {

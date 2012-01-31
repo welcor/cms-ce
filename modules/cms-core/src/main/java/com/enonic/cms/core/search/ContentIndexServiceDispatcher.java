@@ -2,6 +2,7 @@ package com.enonic.cms.core.search;
 
 import java.util.List;
 
+import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.StopWatch;
 
@@ -162,6 +163,21 @@ public class ContentIndexServiceDispatcher
     {
         queryMeasurer.flush();
         resultComparer.flush();
+    }
+
+    public void flush()
+    {
+        newContentIndexService.flush();
+    }
+
+    public SearchResponse query( String query )
+    {
+        return newContentIndexService.query( query );
+    }
+
+    public void initalizeIndex( boolean forceDelete )
+    {
+        newContentIndexService.initalizeIndex( forceDelete );
     }
 }
 

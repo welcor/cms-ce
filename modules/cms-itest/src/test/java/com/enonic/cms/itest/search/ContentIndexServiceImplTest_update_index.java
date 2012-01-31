@@ -51,14 +51,14 @@ public class ContentIndexServiceImplTest_update_index
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
-        letTheIndexFinishItsWork();
+        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "key = 1322" );
         query.setCount( 10 );
 
-        ContentResultSet resultSet = service.query( query );
+        ContentResultSet resultSet = contentIndexService.query( query );
         assertEquals( 1, resultSet.getTotalCount() );
 
         verifyStandardFields( doc1, resultSet.getKey( 0 ) );
@@ -74,22 +74,22 @@ public class ContentIndexServiceImplTest_update_index
         ContentKey contentKey = new ContentKey( 1322 );
         ContentDocument doc1 = createContentDocWithNoUserFields( contentKey );
         doc1.setStatus( 1 );
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "key = 1322" );
         query.setCount( 10 );
-        ContentResultSet resultSet = service.query( query );
+        ContentResultSet resultSet = contentIndexService.query( query );
         assertEquals( 1, resultSet.getTotalCount() );
         verifyStandardFields( doc1, resultSet.getKey( 0 ) );
 
         // Update status
         doc1 = createContentDocWithNoUserFields( contentKey );
         doc1.setStatus( 2 );
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        flushIndex();
 
-        resultSet = service.query( query );
+        resultSet = contentIndexService.query( query );
         assertEquals( 1, resultSet.getTotalCount() );
         verifyStandardFields( doc1, resultSet.getKey( 0 ) );
         verifyUserDefinedFields( contentKey, doc1 );

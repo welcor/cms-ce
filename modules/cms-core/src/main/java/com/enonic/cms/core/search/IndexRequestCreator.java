@@ -21,6 +21,8 @@ final class IndexRequestCreator
 
     private final IndexRequestComparator comparator = new IndexRequestComparator();
 
+    //private final boolean multithreaded = false;
+
     public IndexRequestCreator( String indexName )
     {
         this.indexName = indexName;
@@ -34,12 +36,16 @@ final class IndexRequestCreator
 
         if ( contentIndexData.getContentdata() != null )
         {
-            indexRequests.add( createIndexRequest( id, contentIndexData.getContentdata(), IndexType.Content, null ) );
+            final IndexRequest indexRequest = createIndexRequest( id, contentIndexData.getContentdata(), IndexType.Content, null );
+            //indexRequest.operationThreaded( multithreaded );
+            indexRequests.add( indexRequest );
         }
 
         if ( contentIndexData.getExtractedBinaryData() != null )
         {
-            indexRequests.add( createIndexRequest( id, contentIndexData.getExtractedBinaryData(), IndexType.Binaries, id ) );
+            final IndexRequest indexRequest = createIndexRequest( id, contentIndexData.getExtractedBinaryData(), IndexType.Binaries, id );
+            //indexRequest.operationThreaded( multithreaded );
+            indexRequests.add( indexRequest );
         }
 
         return indexRequests;

@@ -34,7 +34,18 @@
 
     <bean id="importJobFactory" class="com.enonic.cms.core.content.imports.ImportJobFactory"/>
 
-    <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
+    <bean class="com.enonic.cms.itest.content.index.ContentIndexServiceImplTest">
+        <property name="contentIndexService" ref="contentIndexServiceOld"/>
+    </bean>
+
+    <bean id="contentIndexServiceOld" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>
+
+    <bean id="contentIndexServiceNew" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
+
+    <bean id="contentIndexService" class="com.enonic.cms.itest.search.ContentIndexServiceTestWrapper">
+        <property name="contentIndexService" ref="contentIndexServiceNew"/>
+    </bean>
+
 
     <bean id="securityService" class="com.enonic.cms.core.security.SecurityServiceImpl"/>
 

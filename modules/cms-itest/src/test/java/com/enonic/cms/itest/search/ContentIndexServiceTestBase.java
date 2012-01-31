@@ -1,8 +1,5 @@
 package com.enonic.cms.itest.search;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -11,9 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
@@ -31,7 +26,6 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 import com.enonic.cms.core.search.builder.IndexFieldNameCreator;
 
@@ -51,7 +45,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration("classpath:com/enonic/cms/itest/base-core-test-context.xml")
 public abstract class ContentIndexServiceTestBase
 {
-    protected final ElasticSearchTestInstance server = ElasticSearchTestInstance.getInstance();
 
     protected final static String[] REQUIRED_ORDERBY_FIELDS =
         new String[]{"orderby_categorykey", "orderby_contenttype", "orderby_contenttypekey", "orderby_key", "orderby_priority",
@@ -65,51 +58,20 @@ public abstract class ContentIndexServiceTestBase
         "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX +
             "){1}$" );
 
-    //@Autowired
-    //private ContentIndexService contentIndexService;
-
     @Autowired
     protected ContentService contentService;
 
     @Autowired
-    protected ContentIndexService service;
+    protected ContentIndexService contentIndexService;
 
     @Before
     public void initIndex()
         throws Exception
     {
-        this.server.deleteIndex();
-
-        this.service.createIndex();
-
-        // Let the index be created properly before continuing
-        Thread.sleep( 1000 );
-
+        contentIndexService.initalizeIndex( true );
     }
-
 
     protected IndexDataCreator indexDataCreator = new IndexDataCreator();
-
-    protected String getMappingFromFile( String indexName, String indexType )
-        throws IOException
-    {
-        InputStream stream = ElasticSearchTestInstance.class.getResourceAsStream( createMappingFileName( indexName, indexType ) );
-
-        if ( stream == null )
-        {
-            throw new IOException( "File not found: " + createMappingFileName( indexName, indexType ) );
-        }
-
-        StringWriter writer = new StringWriter();
-        IOUtils.copy( stream, writer, "UTF-8" );
-        return writer.toString();
-    }
-
-    protected String createMappingFileName( String indexName, String indexType )
-    {
-        return indexName + "_" + indexType + "_mapping.json";
-    }
-
 
     protected void assertContentResultSetEquals( int[] contentKeys, ContentResultSet result )
     {
@@ -131,7 +93,7 @@ public abstract class ContentIndexServiceTestBase
     {
         for ( ContentDocument doc : docs )
         {
-            this.service.index( doc, false );
+            this.contentIndexService.index( doc, false );
         }
     }
 
@@ -160,8 +122,7 @@ public abstract class ContentIndexServiceTestBase
             "  }\n" +
             "}";
 
-        SearchRequest req = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( termQuery );
-        return server.client.search( req ).actionGet();
+        return contentIndexService.query( termQuery );
     }
 
 
@@ -231,24 +192,16 @@ public abstract class ContentIndexServiceTestBase
             "  }\n" +
             "}";
 
-        SearchRequest req = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( termQuery );
-        SearchResponse result = server.client.search( req ).actionGet();
+        SearchResponse result = contentIndexService.query( termQuery );
 
         System.out.println( "\n\n------------------------------------------" );
         System.out.println( result.toString() );
         System.out.println( "\n\n\n\n" );
     }
 
-    protected void letTheIndexFinishItsWork()
+    protected void flushIndex()
     {
-        try
-        {
-            Thread.sleep( 1000 );
-        }
-        catch ( InterruptedException e )
-        {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        this.contentIndexService.flush();
     }
 
     protected void verifyStandardFields( ContentDocument doc1, ContentKey contentKey )
@@ -382,7 +335,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc2 = new ContentDocument( new ContentKey( 1327 ) );
@@ -400,7 +353,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
-        service.index( doc2, true );
+        contentIndexService.index( doc2, true );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc3 = new ContentDocument( new ContentKey( 1323 ) );
@@ -418,7 +371,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc3.setStatus( 2 );
         doc3.setPriority( 0 );
-        service.index( doc3, true );
+        contentIndexService.index( doc3, true );
 
         ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
         doc4.setCategoryKey( new CategoryKey( 9 ) );
@@ -435,8 +388,9 @@ public abstract class ContentIndexServiceTestBase
         doc4.setPublishTo( date.getTime() );
         doc4.setStatus( 2 );
         doc4.setPriority( 0 );
-        service.index( doc4, true );
+        contentIndexService.index( doc4, true );
 
-        letTheIndexFinishItsWork();
+        flushIndex();
     }
+
 }

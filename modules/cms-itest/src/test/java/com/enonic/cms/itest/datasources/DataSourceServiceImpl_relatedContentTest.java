@@ -4,7 +4,26 @@
  */
 package com.enonic.cms.itest.datasources;
 
-import com.enonic.cms.core.content.*;
+import org.jdom.Document;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+
+import com.enonic.cms.framework.util.JDOMUtil;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
@@ -19,24 +38,13 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DataSourceServiceImpl_relatedContentTest
     extends AbstractSpringTest
@@ -245,6 +253,9 @@ public class DataSourceServiceImpl_relatedContentTest
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
 
+        XMLOutputter outputter = new XMLOutputter( Format.getPrettyFormat() );
+        System.out.println( outputter.outputString( jdomDocResult ) );
+
         AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "4" );
         AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, fatherContentKey.toString(), daughterContentKey.toString(),
                                       sonContentKey.toString(), grandChildContentKey.toString() );
@@ -297,6 +308,9 @@ public class DataSourceServiceImpl_relatedContentTest
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
+
+        XMLOutputter outputter = new XMLOutputter( Format.getPrettyFormat() );
+        System.out.println( outputter.outputString( jdomDocResult ) );
 
         AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "4" );
         AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, fatherContentKey.toString(), daughterContentKey.toString(),

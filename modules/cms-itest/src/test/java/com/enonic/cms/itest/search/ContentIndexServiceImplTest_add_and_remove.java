@@ -54,8 +54,9 @@ public class ContentIndexServiceImplTest_add_and_remove
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+
+        //flushIndex();
 
         verifyStandardFields( doc1, contentKey );
 
@@ -92,8 +93,9 @@ public class ContentIndexServiceImplTest_add_and_remove
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+
+        //flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -128,8 +130,9 @@ public class ContentIndexServiceImplTest_add_and_remove
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+
+        //flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -141,22 +144,22 @@ public class ContentIndexServiceImplTest_add_and_remove
         throws Exception
     {
         // Check if indexed
-        assertFalse( service.isIndexed( new ContentKey( 1322 ) ) );
+        assertFalse( contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
 
         // Setup standard values
         doIndexTestData();
 
-        letTheIndexFinishItsWork();
+        //letTheIndexFinishItsWork();
 
         // Check if indexed
-        assertTrue( service.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
 
         // Remove content
-        int removeCount = service.remove( new ContentKey( 1322 ) );
+        int removeCount = contentIndexService.remove( new ContentKey( 1322 ) );
 
         // Check removed properly.
         assertTrue( removeCount > 0 );
-        assertFalse( service.isIndexed( new ContentKey( 1322 ) ) );
+        assertFalse( contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
     }
 
 
@@ -166,28 +169,29 @@ public class ContentIndexServiceImplTest_add_and_remove
     {
         // Setup standard values
         setUpStandardTestValues();
-        letTheIndexFinishItsWork();
+        //letTheIndexFinishItsWork();
 
         // Check contents exists
-        assertTrue( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1327 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1327 ) ) );
 
         // Remove by category
-        this.service.removeByCategory( new CategoryKey( 9 ) );
-        letTheIndexFinishItsWork();
+        this.contentIndexService.removeByCategory( new CategoryKey( 9 ) );
+        flushIndex();
 
         // Check contents deleted
-        assertFalse( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertFalse( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1327 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1327 ) ) );
 
         // Remove content
-        this.service.removeByCategory( new CategoryKey( 7 ) );
-        letTheIndexFinishItsWork();
+        this.contentIndexService.removeByCategory( new CategoryKey( 7 ) );
+
+        //flushIndex();
 
         // Check if indexed
-        assertFalse( this.service.isIndexed( new ContentKey( 1327 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1327 ) ) );
     }
 
     @Test
@@ -196,28 +200,30 @@ public class ContentIndexServiceImplTest_add_and_remove
     {
         // Setup standard values
         setUpStandardTestValues();
-        letTheIndexFinishItsWork();
+        //letTheIndexFinishItsWork();
 
         // Check contents exists
-        assertTrue( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1324 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1324 ) ) );
 
         // Remove by content type
-        this.service.removeByContentType( new ContentTypeKey( 32 ) );
-        letTheIndexFinishItsWork();
+        this.contentIndexService.removeByContentType( new ContentTypeKey( 32 ) );
+
+        //flushIndex();
 
         // Check contents deleted
-        assertFalse( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertFalse( this.service.isIndexed( new ContentKey( 1324 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1324 ) ) );
 
         // Remove content
-        this.service.removeByContentType( new ContentTypeKey( 37 ) );
-        letTheIndexFinishItsWork();
+        this.contentIndexService.removeByContentType( new ContentTypeKey( 37 ) );
+
+        //flushIndex();
 
         // Check if indexed
-        assertFalse( this.service.isIndexed( new ContentKey( 1323 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
     }
 
 

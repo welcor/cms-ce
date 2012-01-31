@@ -34,8 +34,8 @@ public class ContentIndexServiceImplTest_largeText
         int numberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -46,8 +46,8 @@ public class ContentIndexServiceImplTest_largeText
         int newNumberOfRowsExpected = 3;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( newNumberOfRowsExpected ) );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        //flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -64,8 +64,8 @@ public class ContentIndexServiceImplTest_largeText
         int numberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        //flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -76,8 +76,8 @@ public class ContentIndexServiceImplTest_largeText
         int newNumberOfRowsExpected = 10;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( newNumberOfRowsExpected ) );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        //flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -94,15 +94,15 @@ public class ContentIndexServiceImplTest_largeText
         int numberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        //flushIndex();
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
         // Set new, shorter value for the text-field, and index again
         doc1 = createContentDocWithNoUserFields( contentKey );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        flushIndex();
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
     }
@@ -120,8 +120,8 @@ public class ContentIndexServiceImplTest_largeText
         String userText = createStringFillingXRows( numberOfRowsExpected );
         doc1.addUserDefinedField( "data/text", userText );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        //flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -133,8 +133,8 @@ public class ContentIndexServiceImplTest_largeText
         int newNumberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", userText );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        //flushIndex();
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
     }
@@ -150,8 +150,8 @@ public class ContentIndexServiceImplTest_largeText
         int numberOfRowsExpected = 10;
         doc1.setBinaryExtractedText( new BigText( createStringFillingXRows( numberOfRowsExpected ) ) );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -161,8 +161,8 @@ public class ContentIndexServiceImplTest_largeText
         int newNumberOfRowsExpected = 3;
         doc1.setBinaryExtractedText( new BigText( createStringFillingXRows( newNumberOfRowsExpected ) ) );
 
-        service.index( doc1, false );
-        letTheIndexFinishItsWork();
+        contentIndexService.index( doc1, false );
+        flushIndex();
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
     }

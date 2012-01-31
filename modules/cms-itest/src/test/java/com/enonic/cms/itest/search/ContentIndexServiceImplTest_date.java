@@ -29,25 +29,25 @@ public class ContentIndexServiceImplTest_date
     {
         setUpStandardTestValues();
 
-        ContentIndexQuery query1 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')", 10 );
-        ContentResultSet res1 = service.query( query1 );
+        ContentIndexQuery query1 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')");
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 1, res1.getLength() );
 
-        ContentIndexQuery query2 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')", 10 );
-        ContentResultSet res2 = service.query( query2 );
+        ContentIndexQuery query2 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')");
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 1, res2.getLength() );
 
-        ContentIndexQuery query3 = new ContentIndexQuery( "publishFrom <= date('2008-02-29T00:00:00')", 10 );
-        ContentResultSet res3 = service.query( query3 );
+        ContentIndexQuery query3 = new ContentIndexQuery( "publishFrom <= date('2008-02-29T00:00:00')");
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 2, res3.getLength() );
 
-        ContentIndexQuery query4 = new ContentIndexQuery( "publishFrom > date('2008-02-28')", 10 );
-        ContentResultSet res4 = service.query( query4 );
+        ContentIndexQuery query4 = new ContentIndexQuery( "publishFrom > date('2008-02-28')");
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 3, res4.getLength() );
 
         ContentIndexQuery query5 =
-            new ContentIndexQuery( "publishFrom >= date('2008-02-29T00:00:00') AND publishTo < date('2008-03-29T00:00:00')", 10 );
-        ContentResultSet res5 = service.query( query5 );
+            new ContentIndexQuery( "publishFrom >= date('2008-02-29T00:00:00') AND publishTo < date('2008-03-29T00:00:00')");
+        ContentResultSet res5 = contentIndexService.query( query5 );
         assertEquals( 1, res5.getLength() );
     }
 
@@ -64,14 +64,14 @@ public class ContentIndexServiceImplTest_date
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
-        letTheIndexFinishItsWork();
+        //flushIndex();
 
-        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001", 10 );
+        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001");
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 0, 59, 999 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
@@ -86,14 +86,14 @@ public class ContentIndexServiceImplTest_date
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
-        letTheIndexFinishItsWork();
+        //flushIndex();
 
-        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001", 10 );
+        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001");
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
@@ -108,14 +108,14 @@ public class ContentIndexServiceImplTest_date
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
-        letTheIndexFinishItsWork();
+        //flushIndex();
 
-        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001", 10 );
+        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001");
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 0, 1 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
@@ -132,14 +132,14 @@ public class ContentIndexServiceImplTest_date
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
-        letTheIndexFinishItsWork();
+        //flushIndex();
 
-        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001", 10 );
+        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001");
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
@@ -156,14 +156,14 @@ public class ContentIndexServiceImplTest_date
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
-        letTheIndexFinishItsWork();
+        //flushIndex();
 
-        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001", 10 );
+        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001");
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
@@ -179,14 +179,14 @@ public class ContentIndexServiceImplTest_date
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
-        letTheIndexFinishItsWork();
+        //flushIndex();
 
-        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001", 10 );
+        ContentIndexQuery query = new ContentIndexQuery( "@key = 3001");
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 59, 999 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 

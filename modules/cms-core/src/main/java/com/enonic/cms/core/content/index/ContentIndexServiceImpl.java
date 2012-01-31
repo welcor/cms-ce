@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -617,6 +618,21 @@ public final class ContentIndexServiceImpl
     }
 
     public void updateIndexSettings()
+    {
+        // DO NOTHING
+    }
+
+    public void flush()
+    {
+        // DO NOTHING
+    }
+
+    public SearchResponse query( String query )
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void initalizeIndex( boolean forceDelete )
     {
         // DO NOTHING
     }

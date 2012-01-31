@@ -24,6 +24,8 @@ public final class ContentIndexQuery
     extends AbstractQuery
 {
 
+    protected static final int DEFAULT_COUNT = 200;
+
     public enum SectionFilterStatus
     {
         ANY,
@@ -58,7 +60,7 @@ public final class ContentIndexQuery
 
     private int index = 0;
 
-    private int count = Integer.MAX_VALUE;
+    private int count = DEFAULT_COUNT;
 
     private Integer contentStatusFilter;
 
@@ -91,39 +93,11 @@ public final class ContentIndexQuery
         validateFullTextQuery( query );
     }
 
-    public ContentIndexQuery( String queryWithoutOrderBy, String orderBy, int count )
-    {
-        if ( queryWithoutOrderBy == null )
-        {
-            queryWithoutOrderBy = "";
-        }
-
-        if ( ( orderBy != null ) && ( orderBy.length() > 0 ) )
-        {
-            queryWithoutOrderBy = queryWithoutOrderBy + " ORDER BY " + orderBy;
-        }
-
-        this.query = queryWithoutOrderBy.trim();
-
-        this.count = count;
-
-        validateFullTextQuery( query );
-    }
-
-
     public ContentIndexQuery( String query )
     {
         this.query = query;
         validateFullTextQuery( query );
     }
-
-    public ContentIndexQuery( String query, int count )
-    {
-        this.query = query;
-        validateFullTextQuery( query );
-        this.count = count;
-    }
-
 
     private void validateFullTextQuery( String query )
     {

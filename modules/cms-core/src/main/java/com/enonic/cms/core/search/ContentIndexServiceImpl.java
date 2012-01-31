@@ -10,13 +10,17 @@ import javax.annotation.PostConstruct;
 
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
+import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -24,6 +28,7 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchOperationThreading;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -90,15 +95,13 @@ public class ContentIndexServiceImpl
     @PostConstruct
     public void startIndex()
     {
-        LOG.info( "Setting up index" );
+        LOG.fine( "Setting up index" );
 
         indexRequestCreator = new IndexRequestCreator( INDEX_NAME );
 
         try
         {
             initalizeIndex( false );
-            //optimize();
-            //updateIndexSettings();
         }
         catch ( Exception e )
         {
@@ -108,19 +111,26 @@ public class ContentIndexServiceImpl
 
     public void createIndex()
     {
-        LOG.info( "creating index: " + INDEX_NAME );
+        LOG.fine( "creating index: " + INDEX_NAME );
 
         CreateIndexRequest createIndexRequest = new CreateIndexRequest( INDEX_NAME );
 
         createIndexRequest.settings( indexSettingsBuilder.buildSettings() );
-        client.admin().indices().create( createIndexRequest ).actionGet();
+
+        final CreateIndexResponse createIndexResponse = client.admin().indices().create( createIndexRequest ).actionGet();
+
+        if ( !createIndexResponse.acknowledged() )
+        {
+            // TODO: Handle this
+            LOG.warning( "CreateIndexRequest not acknowledged" );
+        }
 
         addMapping();
     }
 
     public void updateIndexSettings()
     {
-        LOG.info( "Refresh settings for index: " + INDEX_NAME );
+        LOG.fine( "Refresh settings for index: " + INDEX_NAME );
         UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest( INDEX_NAME );
         updateSettingsRequest.settings( indexSettingsBuilder.buildSettings() );
 
@@ -176,9 +186,6 @@ public class ContentIndexServiceImpl
 
     private void doRemoveByQuery( ContentIndexQuery contentIndexQuery )
     {
-        //TODO: How to handle the count?
-        contentIndexQuery.setCount( 100 );
-
         final SearchSourceBuilder build;
 
         try
@@ -193,7 +200,7 @@ public class ContentIndexServiceImpl
         SearchHits hits = doExecuteSearchRequest( build );
 
         final int entriesToDelete = hits.getHits().length;
-        LOG.info( "Prepare to delete: " + entriesToDelete + " entries from index " + INDEX_NAME );
+        LOG.finest( "Prepare to delete: " + entriesToDelete + " entries from index " + INDEX_NAME );
 
         for ( SearchHit hit : hits )
         {
@@ -201,7 +208,7 @@ public class ContentIndexServiceImpl
             DeleteResponse response = this.client.delete( deleteRequest ).actionGet();
         }
 
-        LOG.info( "Deleted from index " + INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
+        LOG.fine( "Deleted from index " + INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
     }
 
 
@@ -213,7 +220,8 @@ public class ContentIndexServiceImpl
 
         for ( IndexRequest indexRequest : indexRequests )
         {
-            doIndex( indexRequest );
+            final IndexResponse indexResponse = doIndex( indexRequest );
+            LOG.finest( "Content indexed with id: " + indexResponse.getId() );
         }
     }
 
@@ -234,13 +242,14 @@ public class ContentIndexServiceImpl
         }
 
         BulkResponse resp = this.client.bulk( bulkRequest ).actionGet();
-        LOG.info( "Bulk index done in " + resp.getTookInMillis() + " ms" );
+        LOG.fine( "Bulk index done in " + resp.getTookInMillis() + " ms" );
     }
 
 
-    private void doIndex( IndexRequest request )
+    private IndexResponse doIndex( IndexRequest request )
     {
-        this.client.index( request ).actionGet();
+        request.operationThreaded( false );
+        return this.client.index( request ).actionGet();
     }
 
 
@@ -253,28 +262,12 @@ public class ContentIndexServiceImpl
         return response.exists();
     }
 
-    // TODO: We dont implement this one yet
-    public IndexValueResultSet query( IndexValueQuery query )
+
+    public void initalizeIndex( boolean forceDelete )
     {
-        //throw new NotImplementedException( "Method query( IndexValueQuery query )" );
-
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    // TODO: We dont implement this one yet
-    public AggregatedResult query( AggregatedQuery query )
-    {
-        //throw new NotImplementedException( "Method query( AggregatedQuery query )" );
-        return null;
-    }
-
-    private void initalizeIndex( boolean force )
-        throws Exception
-    {
-
         final boolean indexExists = indexExists();
 
-        if ( indexExists && !force )
+        if ( indexExists && !forceDelete )
         {
             return;
         }
@@ -296,21 +289,36 @@ public class ContentIndexServiceImpl
 
         long finished = System.currentTimeMillis();
 
-        LOG.info( "Optimized index for " + response.successfulShards() + " shards in " + ( finished - start ) + " ms" );
+        LOG.fine( "Optimized index for " + response.successfulShards() + " shards in " + ( finished - start ) + " ms" );
 
     }
 
     public void deleteIndex()
     {
 
-        this.client.admin().indices().delete( new DeleteIndexRequest( INDEX_NAME ) ).actionGet();
+        final DeleteIndexResponse deleteIndexResponse =
+            this.client.admin().indices().delete( new DeleteIndexRequest( INDEX_NAME ) ).actionGet();
+
+        if ( !deleteIndexResponse.acknowledged() )
+        {
+            LOG.warning( "Index " + INDEX_NAME + " not deleted" );
+        }
+        else
+        {
+            LOG.fine( "Index " + INDEX_NAME + " deleted" );
+        }
+
     }
 
     public boolean indexExists()
     {
         try
         {
-            this.client.admin().indices().status( new IndicesStatusRequest( INDEX_NAME ) ).actionGet();
+            final IndicesStatusResponse indicesStatusResponse =
+                this.client.admin().indices().status( new IndicesStatusRequest( INDEX_NAME ) ).actionGet();
+
+            LOG.fine( "Index " + INDEX_NAME + " status ok with " + indicesStatusResponse.getSuccessfulShards() + " shards" );
+
             return true;
         }
         catch ( ElasticSearchException e )
@@ -412,6 +420,36 @@ public class ContentIndexServiceImpl
             }
         }
     }
+
+
+    public void flush()
+    {
+        client.admin().indices().flush( new FlushRequest( INDEX_NAME ).refresh( true ) ).actionGet();
+    }
+
+    public SearchResponse query( String query )
+    {
+        SearchRequest req = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( query );
+        return this.client.search( req ).actionGet();
+    }
+
+    // TODO: We dont implement this one yet
+    public IndexValueResultSet query( IndexValueQuery query )
+    {
+        throw new RuntimeException(
+            "Method not implemented in class " + this.getClass().getName() + ": " + "query( IndexValueQuery query )" );
+
+        //return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    // TODO: We dont implement this one yet
+    public AggregatedResult query( AggregatedQuery query )
+    {
+        throw new RuntimeException(
+            "Method not implemented in class " + this.getClass().getName() + ": " + "query( AggregatedQuery query )" );
+        //return null;
+    }
+
 
     @Autowired
     public void setMappingProvider( IndexMappingProvider mappingProvider )

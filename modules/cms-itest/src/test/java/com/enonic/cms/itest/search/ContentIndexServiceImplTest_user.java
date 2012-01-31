@@ -21,11 +21,11 @@ public class ContentIndexServiceImplTest_user
         ContentDocument doc = createContentDocument( 101, "ost", null );
         doc.setOwnerQualifiedName( "incamono\\jvs" );
 
-        service.index( doc, false );
+        contentIndexService.index( doc, false );
 
-        letTheIndexFinishItsWork();
+        flushIndex();
 
-        assertContentResultSetEquals( new int[]{101}, service.query( new ContentIndexQuery( "owner/qualifiedName = 'incamono\\jvs'", 10 ) ) );
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "owner/qualifiedName = 'incamono\\jvs'" ) ) );
     }
 
 

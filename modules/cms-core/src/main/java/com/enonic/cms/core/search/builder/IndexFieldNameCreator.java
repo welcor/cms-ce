@@ -59,7 +59,7 @@ final public class IndexFieldNameCreator
 
     public static String getContentTypeNameFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "_name";
+        return CONTENT_TYPE_PREFIX;
     }
 
 

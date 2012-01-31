@@ -29,7 +29,7 @@ final class NodeSettingsBuilder
 
     private final static String CONFIG_PATH = "path.config";
 
-    private final static String CLUSTER_NAME = "elasticsearch";
+    private final static String CLUSTER_NAME = "enonic-cms-es-cluster";
 
     private final static String NODE_NAME = "name";
 
@@ -40,7 +40,7 @@ final class NodeSettingsBuilder
             .put( LOG_PATH, new File( storageDir, "log" ).getAbsolutePath() )
             .put( DATA_PATH, new File( storageDir, "data" ).getAbsolutePath() )
             .put( "path.config", new File( storageDir, "config" ).getAbsolutePath() )
-            .put( "cluster.name", "elasticsearch" )
+            .put( "cluster.name", CLUSTER_NAME)
             .build();
     }
 

@@ -4,22 +4,38 @@
  */
 package com.enonic.cms.itest.content.index;
 
-import com.enonic.cms.core.content.ContentIndexEntity;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.*;
-import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.store.dao.ContentIndexDao;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import com.enonic.cms.core.content.ContentIndexEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.AggregatedQuery;
+import com.enonic.cms.core.content.index.AggregatedResult;
+import com.enonic.cms.core.content.index.BigText;
+import com.enonic.cms.core.content.index.ContentDocument;
+import com.enonic.cms.core.content.index.ContentIndexFieldSet;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.content.index.IndexValueQuery;
+import com.enonic.cms.core.content.index.IndexValueResultSet;
+import com.enonic.cms.core.content.index.UserDefinedField;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.store.dao.ContentIndexDao;
 
 import static org.junit.Assert.*;
 
@@ -30,8 +46,7 @@ public class ContentIndexServiceImplTest
 
     private static final int NUMBER_OF_STANDARD_INDEX_FIELDS = 13;
 
-    @Autowired
-    private ContentIndexService service;
+    private ContentIndexService contentIndexService;
 
     @Autowired
     private ContentIndexDao contentIndexDao;
@@ -57,7 +72,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc2 = new ContentDocument( new ContentKey( 1327 ) );
@@ -75,7 +90,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
-        service.index( doc2, true );
+        contentIndexService.index( doc2, true );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc3 = new ContentDocument( new ContentKey( 1323 ) );
@@ -93,7 +108,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc3.setStatus( 2 );
         doc3.setPriority( 0 );
-        service.index( doc3, true );
+        contentIndexService.index( doc3, true );
 
         ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
         doc4.setCategoryKey( new CategoryKey( 9 ) );
@@ -110,7 +125,7 @@ public class ContentIndexServiceImplTest
         doc4.setPublishTo( date.getTime() );
         doc4.setStatus( 2 );
         doc4.setPriority( 0 );
-        service.index( doc4, true );
+        contentIndexService.index( doc4, true );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -144,7 +159,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -169,7 +184,7 @@ public class ContentIndexServiceImplTest
         int numberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -183,7 +198,7 @@ public class ContentIndexServiceImplTest
         int newNumberOfRowsExpected = 3;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( newNumberOfRowsExpected ) );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -203,7 +218,7 @@ public class ContentIndexServiceImplTest
         int numberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -217,7 +232,7 @@ public class ContentIndexServiceImplTest
         int newNumberOfRowsExpected = 10;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( newNumberOfRowsExpected ) );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -237,7 +252,7 @@ public class ContentIndexServiceImplTest
         int numberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -248,7 +263,7 @@ public class ContentIndexServiceImplTest
         // Set new, shorter value for the text-field, and index again
         doc1 = createContentDocWithNoUserFields( contentKey );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -269,7 +284,7 @@ public class ContentIndexServiceImplTest
         String userText = createStringFillingXRows( numberOfRowsExpected );
         doc1.addUserDefinedField( "data/text", userText );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -284,7 +299,7 @@ public class ContentIndexServiceImplTest
         int newNumberOfRowsExpected = 5;
         doc1.addUserDefinedField( "data/text", userText );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -306,7 +321,7 @@ public class ContentIndexServiceImplTest
         int numberOfRowsExpected = 10;
         doc1.setBinaryExtractedText( new BigText( createStringFillingXRows( numberOfRowsExpected ) ) );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -320,7 +335,7 @@ public class ContentIndexServiceImplTest
         int newNumberOfRowsExpected = 3;
         doc1.setBinaryExtractedText( new BigText( createStringFillingXRows( newNumberOfRowsExpected ) ) );
 
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
 
@@ -373,7 +388,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -396,7 +411,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -437,7 +452,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -478,7 +493,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -521,7 +536,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -565,7 +580,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -608,7 +623,7 @@ public class ContentIndexServiceImplTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         contentIndexDao.getHibernateTemplate().flush();
         contentIndexDao.getHibernateTemplate().clear();
@@ -788,20 +803,20 @@ public class ContentIndexServiceImplTest
         throws Exception
     {
         // Check if indexed
-        assertFalse( this.service.isIndexed( new ContentKey( 1322 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
 
         // Setup standard values
         setUpStandardTestValues();
 
         // Check if indexed
-        assertTrue( this.service.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
 
         // Remove content
-        int removeCount = this.service.remove( new ContentKey( 1322 ) );
+        int removeCount = this.contentIndexService.remove( new ContentKey( 1322 ) );
 
         // Check removed properly.
         assertTrue( removeCount > 0 );
-        assertFalse( this.service.isIndexed( new ContentKey( 1322 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
     }
 
     @Test
@@ -812,23 +827,23 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         // Check contents exists
-        assertTrue( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1327 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1327 ) ) );
 
         // Remove by category
-        this.service.removeByCategory( new CategoryKey( 9 ) );
+        this.contentIndexService.removeByCategory( new CategoryKey( 9 ) );
 
         // Check contents deleted
-        assertFalse( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertFalse( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1327 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1327 ) ) );
 
         // Remove content
-        this.service.removeByCategory( new CategoryKey( 7 ) );
+        this.contentIndexService.removeByCategory( new CategoryKey( 7 ) );
 
         // Check if indexed
-        assertFalse( this.service.isIndexed( new ContentKey( 1327 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1327 ) ) );
     }
 
     @Test
@@ -839,23 +854,23 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         // Check contents exists
-        assertTrue( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1324 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1324 ) ) );
 
         // Remove by content type
-        this.service.removeByContentType( new ContentTypeKey( 32 ) );
+        this.contentIndexService.removeByContentType( new ContentTypeKey( 32 ) );
 
         // Check contents deleted
-        assertFalse( this.service.isIndexed( new ContentKey( 1322 ) ) );
-        assertTrue( this.service.isIndexed( new ContentKey( 1323 ) ) );
-        assertFalse( this.service.isIndexed( new ContentKey( 1324 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1322 ) ) );
+        assertTrue( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1324 ) ) );
 
         // Remove content
-        this.service.removeByContentType( new ContentTypeKey( 37 ) );
+        this.contentIndexService.removeByContentType( new ContentTypeKey( 37 ) );
 
         // Check if indexed
-        assertFalse( this.service.isIndexed( new ContentKey( 1323 ) ) );
+        assertFalse( this.contentIndexService.isIndexed( new ContentKey( 1323 ) ) );
     }
 
     @Test
@@ -865,45 +880,45 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "key = 1321" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 0, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "key = 1322" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 1, res2.getLength() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "key = '1322'" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 1, res3.getLength() );
 
         ContentIndexQuery query3b = new ContentIndexQuery( "title = 'Bart'" );
-        ContentResultSet res3b = service.query( query3b );
+        ContentResultSet res3b = contentIndexService.query( query3b );
         assertEquals( 1, res3b.getLength() );
         assertEquals( 1323, res3b.getKey( 0 ).toInt() );
 
         ContentIndexQuery query4 = new ContentIndexQuery( "key != 1322" );
-        ContentResultSet res4 = service.query( query4 );
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 3, res4.getLength() );
 
         ContentIndexQuery query5 = new ContentIndexQuery( "key != '1324'" );
-        ContentResultSet res5 = service.query( query5 );
+        ContentResultSet res5 = contentIndexService.query( query5 );
         assertEquals( 3, res5.getLength() );
 
         ContentIndexQuery query6 = new ContentIndexQuery( "key > 1323" );
-        ContentResultSet res6 = service.query( query6 );
+        ContentResultSet res6 = contentIndexService.query( query6 );
         assertEquals( 2, res6.getLength() );
         assertEquals( 1324, res6.getKey( 0 ).toInt() );
 
         ContentIndexQuery query7 = new ContentIndexQuery( "key < 1327" );
-        ContentResultSet res7 = service.query( query7 );
+        ContentResultSet res7 = contentIndexService.query( query7 );
         assertEquals( 3, res7.getLength() );
 
         ContentIndexQuery query8 = new ContentIndexQuery( "key >= 1323" );
-        ContentResultSet res8 = service.query( query8 );
+        ContentResultSet res8 = contentIndexService.query( query8 );
         assertEquals( 3, res8.getLength() );
 
         ContentIndexQuery query9 = new ContentIndexQuery( "key <= 1324" );
-        ContentResultSet res9 = service.query( query9 );
+        ContentResultSet res9 = contentIndexService.query( query9 );
         assertEquals( 3, res9.getLength() );
     }
 
@@ -914,27 +929,27 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "categorykey = 9 AND key < 1323" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 1, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "key > 1322 AND contenttypekey = 32" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 2, res2.getLength() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "categorykey = 9 OR key >= 1324" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 4, res3.getLength() );
 
         ContentIndexQuery query4 = new ContentIndexQuery( "key > 1320 AND categorykey = 9 AND contenttypekey = 32" );
-        ContentResultSet res4 = service.query( query4 );
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 2, res4.getLength() );
 
         ContentIndexQuery query5 = new ContentIndexQuery( "key > 1322 AND (categorykey = 7 OR contenttypekey = 34)" );
-        ContentResultSet res5 = service.query( query5 );
+        ContentResultSet res5 = contentIndexService.query( query5 );
         assertEquals( 1, res5.getLength() );
 
         ContentIndexQuery query6 = new ContentIndexQuery( "key != 1322 AND (categorykey = 9 OR contenttypekey = 33)" );
-        ContentResultSet res6 = service.query( query6 );
+        ContentResultSet res6 = contentIndexService.query( query6 );
         assertEquals( 2, res6.getLength() );
     }
 
@@ -944,19 +959,19 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "key IN (1320, 1321, 1322, 1324)" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 2, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "title IN ('Bender', 'Bart', 'Zoidberg')" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 2, res2.getLength() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "categorykey NOT IN (1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121)" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 1, res3.getLength() );
 
         ContentIndexQuery query4 = new ContentIndexQuery( "title NOT IN ('Home', 'Away', 'Fry', 'Boil')" );
-        ContentResultSet res4 = service.query( query4 );
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 3, res4.getLength() );
     }
 
@@ -966,31 +981,31 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "title LIKE 'B%'" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 2, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "title LIKE '%er'" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 2, res2.getLength() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "title LIKE '%end%'" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 1, res3.getLength() );
 
         ContentIndexQuery query4 = new ContentIndexQuery( "title STARTS WITH 'Home'" );
-        ContentResultSet res4 = service.query( query4 );
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 1, res4.getLength() );
 
         ContentIndexQuery query5 = new ContentIndexQuery( "title ENDS WITH 'art'" );
-        ContentResultSet res5 = service.query( query5 );
+        ContentResultSet res5 = contentIndexService.query( query5 );
         assertEquals( 1, res5.getLength() );
 
         ContentIndexQuery query6 = new ContentIndexQuery( "title CONTAINS 'r'" );
-        ContentResultSet res6 = service.query( query6 );
+        ContentResultSet res6 = contentIndexService.query( query6 );
         assertEquals( 4, res6.getLength() );
 
         ContentIndexQuery query7 = new ContentIndexQuery( "title STARTS WITH 'B' AND title ENDS WITH 'er'" );
-        ContentResultSet res7 = service.query( query7 );
+        ContentResultSet res7 = contentIndexService.query( query7 );
         assertEquals( 1, res7.getLength() );
     }
 
@@ -1000,24 +1015,24 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 1, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 1, res2.getLength() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "publishFrom <= date('2008-02-29T00:00:00')" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 2, res3.getLength() );
 
         ContentIndexQuery query4 = new ContentIndexQuery( "publishFrom > date('2008-02-28')" );
-        ContentResultSet res4 = service.query( query4 );
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 3, res4.getLength() );
 
         ContentIndexQuery query5 =
             new ContentIndexQuery( "publishFrom >= date('2008-02-29T00:00:00') AND publishTo < date('2008-03-29T00:00:00')" );
-        ContentResultSet res5 = service.query( query5 );
+        ContentResultSet res5 = contentIndexService.query( query5 );
         assertEquals( 1, res5.getLength() );
     }
 
@@ -1027,46 +1042,46 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "ORDER BY key DESC" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 4, res1.getLength() );
         assertEquals( 1327, res1.getKey( 0 ).toInt() );
         assertEquals( 1324, res1.getKey( 1 ).toInt() );
         assertEquals( 1323, res1.getKey( 2 ).toInt() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "categorykey = 9 ORDER BY title ASC" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 3, res2.getLength() );
         assertEquals( 1323, res2.getKey( 0 ).toInt() );
         assertEquals( 1324, res2.getKey( 1 ).toInt() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "ORDER BY title ASC" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 4, res3.getLength() );
         assertEquals( 1323, res3.getKey( 0 ).toInt() );
         assertEquals( 1324, res3.getKey( 1 ).toInt() );
         assertEquals( 1327, res3.getKey( 2 ).toInt() );
 
         ContentIndexQuery query4 = new ContentIndexQuery( "ORDER BY publishto ASC" );
-        ContentResultSet res4 = service.query( query4 );
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 4, res4.getLength() );
         assertEquals( 1327, res4.getKey( 2 ).toInt() );
         assertEquals( 1323, res4.getKey( 3 ).toInt() );
 
         ContentIndexQuery query5 = new ContentIndexQuery( "ORDER BY publishto DESC" );
-        ContentResultSet res5 = service.query( query5 );
+        ContentResultSet res5 = contentIndexService.query( query5 );
         assertEquals( 4, res5.getLength() );
         assertEquals( 1323, res5.getKey( 0 ).toInt() );
         assertEquals( 1327, res5.getKey( 1 ).toInt() );
 
         ContentIndexQuery query6 = new ContentIndexQuery( "ORDER BY categorykey DESC, title ASC" );
-        ContentResultSet res6 = service.query( query6 );
+        ContentResultSet res6 = contentIndexService.query( query6 );
         assertEquals( 4, res6.getLength() );
         assertEquals( 1323, res6.getKey( 0 ).toInt() );
         assertEquals( 1324, res6.getKey( 1 ).toInt() );
         assertEquals( 1322, res6.getKey( 2 ).toInt() );
 
         ContentIndexQuery query7 = new ContentIndexQuery( "ORDER BY categorykey ASC, publishfrom DESC, publishto DESC" );
-        ContentResultSet res7 = service.query( query7 );
+        ContentResultSet res7 = contentIndexService.query( query7 );
         assertEquals( 4, res7.getLength() );
         assertEquals( 1327, res7.getKey( 0 ).toInt() );
         assertEquals( 1324, res7.getKey( 2 ).toInt() );
@@ -1079,15 +1094,15 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "* CONTAINS 'male'" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 3, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "contenttypekey = 32 AND * CONTAINS 'alcoholic'" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 2, res2.getLength() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "categorykey = 9 AND * CONTAINS 'alcoholic' ORDER BY title" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 2, res3.getLength() );
     }
 
@@ -1097,24 +1112,24 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "data/person/age > 9" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 3, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "data/person/gender = 'male'" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 3, res2.getLength() );
 
         ContentIndexQuery query3 = new ContentIndexQuery( "data/person/description LIKE '%alcoholic%'" );
-        ContentResultSet res3 = service.query( query3 );
+        ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 2, res3.getLength() );
 
         ContentIndexQuery query4 = new ContentIndexQuery( "data/person/gender = 'male' AND data/person/description LIKE '%alcoholic%'" );
-        ContentResultSet res4 = service.query( query4 );
+        ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 1, res4.getLength() );
         assertEquals( 1322, res4.getKey( 0 ).toInt() );
 
         ContentIndexQuery query5 = new ContentIndexQuery( "data/person/description LIKE '%alcoholic%' ORDER BY data/person/age DESC" );
-        ContentResultSet res5 = service.query( query5 );
+        ContentResultSet res5 = contentIndexService.query( query5 );
         assertEquals( 2, res5.getLength() );
         assertEquals( 1322, res5.getKey( 0 ).toInt() );
     }
@@ -1125,11 +1140,11 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "data.person.age > 9" );
-        ContentResultSet res1 = service.query( query1 );
+        ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 3, res1.getLength() );
 
         ContentIndexQuery query2 = new ContentIndexQuery( "data.person.gender = 'male'" );
-        ContentResultSet res2 = service.query( query2 );
+        ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 3, res2.getLength() );
     }
 
@@ -1139,7 +1154,7 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         IndexValueQuery query = new IndexValueQuery( "data/person/age" );
-        IndexValueResultSet result = service.query( query );
+        IndexValueResultSet result = contentIndexService.query( query );
 
         assertEquals( 4, result.getCount() );
         assertEquals( 0, result.getFromIndex() );
@@ -1158,7 +1173,7 @@ public class ContentIndexServiceImplTest
         setUpStandardTestValues();
 
         AggregatedQuery query = new AggregatedQuery( "data/person/age" );
-        AggregatedResult result = service.query( query );
+        AggregatedResult result = contentIndexService.query( query );
 
         assertEquals( 4, result.getCount() );
         assertEquals( 5.0, result.getMinValue(), 0 );
@@ -1170,124 +1185,124 @@ public class ContentIndexServiceImplTest
     @Test
     public void testOneWordSearchOnTitleAndData()
     {
-        service.index( createContentDocument( 123, "ost", "ost", null ), false );
-        service.index( createContentDocument( 124, "ost", "kake", null ), false );
-        service.index( createContentDocument( 125, "kake", "ost", null ), false );
-        service.index( createContentDocument( 126, "kake", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", "ost", null ), false );
+        contentIndexService.index( createContentDocument( 124, "ost", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 125, "kake", "ost", null ), false );
+        contentIndexService.index( createContentDocument( 126, "kake", "kake", null ), false );
 
-        assertContentResultSetEquals( new int[]{123},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'ost' AND data/* CONTAINS 'ost'" ) ) );
+        assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' AND data/* CONTAINS 'ost'" ) ) );
 
         assertContentResultSetEquals( new int[]{123, 124, 125},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost'" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124, 125, 126},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'kake' OR data/* CONTAINS 'kake'" ) ) );
+        assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'kake' OR data/* CONTAINS 'kake'" ) ) );
 
         assertContentResultSetEquals( new int[]{},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk'" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk'" ) ) );
     }
 
     @Test
     public void testOneWordSearchOnTitleAndFulltext()
     {
-        service.index( createContentDocument( 123, "ost", null, "ost" ), false );
-        service.index( createContentDocument( 124, "ost", null, "kake" ), false );
-        service.index( createContentDocument( 125, "kake", null, "ost" ), false );
-        service.index( createContentDocument( 126, "kake", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", null, "ost" ), false );
+        contentIndexService.index( createContentDocument( 124, "ost", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ), false );
+        contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
 
-        assertContentResultSetEquals( new int[]{123},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
+        assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
 
         assertContentResultSetEquals( new int[]{123, 124, 125},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'ost' OR fulltext CONTAINS 'ost'" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' OR fulltext CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124, 125, 126},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'kake' OR fulltext CONTAINS 'kake'" ) ) );
+        assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'kake' OR fulltext CONTAINS 'kake'" ) ) );
 
         assertContentResultSetEquals( new int[]{},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk'" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk'" ) ) );
     }
 
 
     @Test
     public void testOneWordSearchOnTitleAndUnknown()
     {
-        service.index( createContentDocument( 123, "ost", null, null ), false );
-        service.index( createContentDocument( 124, "kake", null, null ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", null, null ), false );
+        contentIndexService.index( createContentDocument( 124, "kake", null, null ), false );
 
-        assertContentResultSetEquals( new int[]{},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'ost' AND unknown CONTAINS 'ost'" ) ) );
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' AND unknown CONTAINS 'ost'" ) ) );
 
         assertContentResultSetEquals( new int[]{123},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'ost' OR unknown CONTAINS 'ost'" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' OR unknown CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124},
-                                      service.query( new ContentIndexQuery( "unknown CONTAINS 'kake' OR title CONTAINS 'kake'" ) ) );
+        assertContentResultSetEquals( new int[]{124}, contentIndexService.query(
+            new ContentIndexQuery( "unknown CONTAINS 'kake' OR title CONTAINS 'kake'" ) ) );
 
         assertContentResultSetEquals( new int[]{},
-                                      service.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
 
     @Test
     public void testOneWordSearchOnTitleAndDataAndFulltext()
     {
-        service.index( createContentDocument( 121, "ost", "ost", "ost" ), false );
-        service.index( createContentDocument( 122, "kake", "ost", "ost" ), false );
-        service.index( createContentDocument( 123, "ost", "kake", "ost" ), false );
-        service.index( createContentDocument( 124, "ost", "ost", "kake" ), false );
-        service.index( createContentDocument( 125, "kake", "kake", "ost" ), false );
-        service.index( createContentDocument( 126, "kake", "ost", "kake" ), false );
-        service.index( createContentDocument( 127, "ost", "kake", "kake" ), false );
-        service.index( createContentDocument( 128, "kake", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 121, "ost", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 122, "kake", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 124, "ost", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 125, "kake", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 126, "kake", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 127, "ost", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 128, "kake", "kake", "kake" ), false );
 
-        assertContentResultSetEquals( new int[]{121}, service.query(
+        assertContentResultSetEquals( new int[]{121}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125, 126, 127}, service.query(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125, 126, 127}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 127}, service.query(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 127}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 126}, service.query(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 126}, contentIndexService.query(
             new ContentIndexQuery( "data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125}, service.query(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125}, contentIndexService.query(
             new ContentIndexQuery( "fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 123, 124}, service.query(
+        assertContentResultSetEquals( new int[]{121, 123, 124}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 124}, service.query(
+        assertContentResultSetEquals( new int[]{121, 122, 124}, contentIndexService.query(
             new ContentIndexQuery( "data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123}, service.query(
+        assertContentResultSetEquals( new int[]{121, 122, 123}, contentIndexService.query(
             new ContentIndexQuery( "fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')" ) ) );
     }
 
     @Test
     public void testOneWordSearchOnTitleAndDataAndUnknown()
     {
-        service.index( createContentDocument( 123, "ost", "ost", null ), false );
-        service.index( createContentDocument( 124, "ost", "kake", null ), false );
-        service.index( createContentDocument( 125, "kake", "ost", null ), false );
-        service.index( createContentDocument( 126, "kake", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", "ost", null ), false );
+        contentIndexService.index( createContentDocument( 124, "ost", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 125, "kake", "ost", null ), false );
+        contentIndexService.index( createContentDocument( 126, "kake", "kake", null ), false );
 
-        assertContentResultSetEquals( new int[]{123}, service.query(
+        assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
             new ContentIndexQuery( "(title CONTAINS 'ost' AND data/* CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{123, 124, 125}, service.query(
+        assertContentResultSetEquals( new int[]{123, 124, 125}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
             new ContentIndexQuery( "(title CONTAINS 'ost' OR data/* CONTAINS 'ost') AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124, 125, 126}, service.query(
+        assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'kake' OR data/* CONTAINS 'kake' OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
@@ -1295,24 +1310,24 @@ public class ContentIndexServiceImplTest
     @Test
     public void testOneWordSearchOnTitleAndFulltextAndUnknown()
     {
-        service.index( createContentDocument( 123, "ost", null, "ost" ), false );
-        service.index( createContentDocument( 124, "ost", null, "kake" ), false );
-        service.index( createContentDocument( 125, "kake", null, "ost" ), false );
-        service.index( createContentDocument( 126, "kake", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", null, "ost" ), false );
+        contentIndexService.index( createContentDocument( 124, "ost", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ), false );
+        contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
 
-        assertContentResultSetEquals( new int[]{123}, service.query(
+        assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
             new ContentIndexQuery( "(title CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{123, 124, 125}, service.query(
+        assertContentResultSetEquals( new int[]{123, 124, 125}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' OR fulltext CONTAINS 'ost' OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost' AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124, 125, 126}, service.query(
+        assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'kake' OR fulltext CONTAINS 'kake' OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
@@ -1320,205 +1335,205 @@ public class ContentIndexServiceImplTest
     @Test
     public void testOneWordSearchOnTitleAndDataAndFulltextAndUnknown()
     {
-        service.index( createContentDocument( 121, "ost", "ost", "ost" ), false );
-        service.index( createContentDocument( 122, "kake", "ost", "ost" ), false );
-        service.index( createContentDocument( 123, "ost", "kake", "ost" ), false );
-        service.index( createContentDocument( 124, "ost", "ost", "kake" ), false );
-        service.index( createContentDocument( 125, "kake", "kake", "ost" ), false );
-        service.index( createContentDocument( 126, "kake", "ost", "kake" ), false );
-        service.index( createContentDocument( 127, "ost", "kake", "kake" ), false );
-        service.index( createContentDocument( 128, "kake", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 121, "ost", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 122, "kake", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 124, "ost", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 125, "kake", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 126, "kake", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 127, "ost", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 128, "kake", "kake", "kake" ), false );
 
-        assertContentResultSetEquals( new int[]{121}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost') AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125, 126, 127}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125, 126, 127}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost') AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 127}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 127}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 126}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 126}, contentIndexService.query( new ContentIndexQuery(
             "(data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125}, contentIndexService.query( new ContentIndexQuery(
             "(fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 123, 124}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121, 123, 124}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 124}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121, 122, 124}, contentIndexService.query( new ContentIndexQuery(
             "(data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{121, 122, 123}, contentIndexService.query( new ContentIndexQuery(
             "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
     }
 
     @Test
     public void testTwoWordSearchOnTitleAndData()
     {
-        service.index( createContentDocument( 1021, "ost", "ost", null ), false );
-        service.index( createContentDocument( 1022, "ost", "kake", null ), false );
-        service.index( createContentDocument( 1023, "kake", "ost", null ), false );
-        service.index( createContentDocument( 1024, "kake", "kake", null ), false );
-        service.index( createContentDocument( 1025, "ostkake", "ostkake", null ), false );
-        service.index( createContentDocument( 1026, "ostkake", "kakekake", null ), false );
-        service.index( createContentDocument( 1027, "kakekake", "ostkake", null ), false );
-        service.index( createContentDocument( 1028, "kakekake", "kakekake", null ), false );
+        contentIndexService.index( createContentDocument( 1021, "ost", "ost", null ), false );
+        contentIndexService.index( createContentDocument( 1022, "ost", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 1023, "kake", "ost", null ), false );
+        contentIndexService.index( createContentDocument( 1024, "kake", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 1025, "ostkake", "ostkake", null ), false );
+        contentIndexService.index( createContentDocument( 1026, "ostkake", "kakekake", null ), false );
+        contentIndexService.index( createContentDocument( 1027, "kakekake", "ostkake", null ), false );
+        contentIndexService.index( createContentDocument( 1028, "kakekake", "kakekake", null ), false );
 
         /* Search = ost kake */
-        assertContentResultSetEquals( new int[]{1025, 1026, 1027}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1025, 1026, 1027}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost') AND (title CONTAINS 'kake')) OR ((data/* CONTAINS 'ost') AND (data/* CONTAINS 'kake'))" ) ) );
 
         /* Search = ost kake */
-        assertContentResultSetEquals( new int[]{1022, 1023, 1025, 1026, 1027}, service.query( new ContentIndexQuery(
-            "(title CONTAINS 'ost' OR data/* CONTAINS 'ost') AND (title CONTAINS 'kake' OR data/* CONTAINS 'kake')" ) ) );
+        assertContentResultSetEquals( new int[]{1022, 1023, 1025, 1026, 1027}, contentIndexService.query(
+            new ContentIndexQuery( "(title CONTAINS 'ost' OR data/* CONTAINS 'ost') AND (title CONTAINS 'kake' OR data/* CONTAINS 'kake')" ) ) );
 
         /* Search = ost ost */
-        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost') AND (title CONTAINS 'ost')) OR ((data/* CONTAINS 'ost') AND (data/* CONTAINS 'ost'))" ) ) );
 
         /* Search = ost ost */
-        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR data/* CONTAINS 'ost') AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')" ) ) );
     }
 
     @Test
     public void testTwoWordSearchOnTitleAndFulltext()
     {
-        service.index( createContentDocument( 1021, "ost", null, "ost" ), false );
-        service.index( createContentDocument( 1022, "ost", null, "kake" ), false );
-        service.index( createContentDocument( 1023, "kake", null, "ost" ), false );
-        service.index( createContentDocument( 1024, "kake", null, "kake" ), false );
-        service.index( createContentDocument( 1025, "ostkake", null, "ostkake" ), false );
-        service.index( createContentDocument( 1026, "ostkake", null, "kakekake" ), false );
-        service.index( createContentDocument( 1027, "kakekake", null, "ostkake" ), false );
-        service.index( createContentDocument( 1028, "kakekake", null, "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1021, "ost", null, "ost" ), false );
+        contentIndexService.index( createContentDocument( 1022, "ost", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 1023, "kake", null, "ost" ), false );
+        contentIndexService.index( createContentDocument( 1024, "kake", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 1025, "ostkake", null, "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1026, "ostkake", null, "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1027, "kakekake", null, "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1028, "kakekake", null, "kakekake" ), false );
 
-        assertContentResultSetEquals( new int[]{1025, 1026, 1027}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1025, 1026, 1027}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost') AND (title CONTAINS 'kake')) OR ((fulltext CONTAINS 'ost') AND (fulltext CONTAINS 'kake'))" ) ) );
 
-        assertContentResultSetEquals( new int[]{1022, 1023, 1025, 1026, 1027}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1022, 1023, 1025, 1026, 1027}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR fulltext CONTAINS 'ost') AND (title CONTAINS 'kake' OR fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost') AND (title CONTAINS 'ost')) OR ((fulltext CONTAINS 'ost') AND (fulltext CONTAINS 'ost'))" ) ) );
 
-        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1021, 1022, 1023, 1025, 1026, 1027}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR fulltext CONTAINS 'ost') AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')" ) ) );
     }
 
     @Test
     public void testSearchOnTextWithSingleQuote()
     {
-        service.index( createContentDocument( 1021, "ost", null, "Det var ost's store appetitt som vant.  ;)" ), false );
-        service.index( createContentDocument( 1022, "ost's", null, "Det var ost sin skyld.  ;)" ), false );
+        contentIndexService.index( createContentDocument( 1021, "ost", null, "Det var ost's store appetitt som vant.  ;)" ), false );
+        contentIndexService.index( createContentDocument( 1022, "ost's", null, "Det var ost sin skyld.  ;)" ), false );
 
-        assertContentResultSetEquals( new int[]{1021}, service.query( new ContentIndexQuery( "fulltext CONTAINS \"ost's\"" ) ) );
+        assertContentResultSetEquals( new int[]{1021}, contentIndexService.query( new ContentIndexQuery( "fulltext CONTAINS \"ost's\"" ) ) );
 
-        assertContentResultSetEquals( new int[]{1022}, service.query( new ContentIndexQuery( "title = \"ost's\"" ) ) );
+        assertContentResultSetEquals( new int[]{1022}, contentIndexService.query( new ContentIndexQuery( "title = \"ost's\"" ) ) );
     }
 
     @Test
     public void testTwoWordSearchOnTitleAndDataAndFulltext()
     {
-        service.index( createContentDocument( 1021, "ost", "ost", "ost" ), false );
-        service.index( createContentDocument( 1022, "kake", "ost", "ost" ), false );
-        service.index( createContentDocument( 1023, "ost", "kake", "ost" ), false );
-        service.index( createContentDocument( 1024, "ost", "ost", "kake" ), false );
-        service.index( createContentDocument( 1025, "kake", "kake", "ost" ), false );
-        service.index( createContentDocument( 1026, "kake", "ost", "kake" ), false );
-        service.index( createContentDocument( 1027, "ost", "kake", "kake" ), false );
-        service.index( createContentDocument( 1028, "kake", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1021, "ost", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1022, "kake", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1023, "ost", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1024, "ost", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1025, "kake", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1026, "kake", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1027, "ost", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1028, "kake", "kake", "kake" ), false );
 
-        service.index( createContentDocument( 1031, "ostkake", "ostkake", "ostkake" ), false );
-        service.index( createContentDocument( 1032, "kakekake", "ostkake", "ostkake" ), false );
-        service.index( createContentDocument( 1033, "ostkake", "kakekake", "ostkake" ), false );
-        service.index( createContentDocument( 1034, "ostkake", "ostkake", "kakekake" ), false );
-        service.index( createContentDocument( 1035, "kakekake", "kakekake", "ostkake" ), false );
-        service.index( createContentDocument( 1036, "kakekake", "ostkake", "kakekake" ), false );
-        service.index( createContentDocument( 1037, "ostkake", "kakekake", "kakekake" ), false );
-        service.index( createContentDocument( 1038, "kakekake", "kakekake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1031, "ostkake", "ostkake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1032, "kakekake", "ostkake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1033, "ostkake", "kakekake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1034, "ostkake", "ostkake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1035, "kakekake", "kakekake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1036, "kakekake", "ostkake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1037, "ostkake", "kakekake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1038, "kakekake", "kakekake", "kakekake" ), false );
 
-        assertContentResultSetEquals( new int[]{1031}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1033}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1033}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1034}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1034}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1033}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1033}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost' AND title CONTAINS 'kake') OR (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake')) AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1034}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1034}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost' AND title CONTAINS 'kake') OR (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')) AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1033, 1034}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1033, 1034}, contentIndexService.query( new ContentIndexQuery(
             "((data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')) AND (title CONTAINS 'ost' AND title CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1035}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1035}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1034, 1036}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1034, 1036}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1033, 1034, 1037}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1033, 1034, 1037}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1034, 1035, 1036, 1037}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1034, 1035, 1036, 1037}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') OR (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "((title CONTAINS 'ost' OR title CONTAINS 'kake') OR (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake')) AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "((title CONTAINS 'ost' OR title CONTAINS 'kake') OR (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')) AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake')" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "((data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')) AND (title CONTAINS 'ost' OR title CONTAINS 'kake')" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "(title CONTAINS 'ost' OR title CONTAINS 'kake') OR ((data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake'))" ) ) );
     }
@@ -1526,79 +1541,78 @@ public class ContentIndexServiceImplTest
     @Test
     public void testTwoWordSearchOnTitleAndDataAndFulltextAndUnknown()
     {
-        service.index( createContentDocument( 1021, "ost", "ost", "ost" ), false );
-        service.index( createContentDocument( 1022, "kake", "ost", "ost" ), false );
-        service.index( createContentDocument( 1023, "ost", "kake", "ost" ), false );
-        service.index( createContentDocument( 1024, "ost", "ost", "kake" ), false );
-        service.index( createContentDocument( 1025, "kake", "kake", "ost" ), false );
-        service.index( createContentDocument( 1026, "kake", "ost", "kake" ), false );
-        service.index( createContentDocument( 1027, "ost", "kake", "kake" ), false );
-        service.index( createContentDocument( 1028, "kake", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1021, "ost", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1022, "kake", "ost", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1023, "ost", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1024, "ost", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1025, "kake", "kake", "ost" ), false );
+        contentIndexService.index( createContentDocument( 1026, "kake", "ost", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1027, "ost", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 1028, "kake", "kake", "kake" ), false );
 
-        service.index( createContentDocument( 1031, "ostkake", "ostkake", "ostkake" ), false );
-        service.index( createContentDocument( 1032, "kakekake", "ostkake", "ostkake" ), false );
-        service.index( createContentDocument( 1033, "ostkake", "kakekake", "ostkake" ), false );
-        service.index( createContentDocument( 1034, "ostkake", "ostkake", "kakekake" ), false );
-        service.index( createContentDocument( 1035, "kakekake", "kakekake", "ostkake" ), false );
-        service.index( createContentDocument( 1036, "kakekake", "ostkake", "kakekake" ), false );
-        service.index( createContentDocument( 1037, "ostkake", "kakekake", "kakekake" ), false );
-        service.index( createContentDocument( 1038, "kakekake", "kakekake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1031, "ostkake", "ostkake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1032, "kakekake", "ostkake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1033, "ostkake", "kakekake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1034, "ostkake", "ostkake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1035, "kakekake", "kakekake", "ostkake" ), false );
+        contentIndexService.index( createContentDocument( 1036, "kakekake", "ostkake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1037, "ostkake", "kakekake", "kakekake" ), false );
+        contentIndexService.index( createContentDocument( 1038, "kakekake", "kakekake", "kakekake" ), false );
 
-        assertContentResultSetEquals( new int[]{1031}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1033}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1033}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1034}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1034}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1033}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1033}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost' AND title CONTAINS 'kake') OR (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake')) AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1034}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1034}, contentIndexService.query( new ContentIndexQuery(
             "((title CONTAINS 'ost' AND title CONTAINS 'kake') OR (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')) AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1033, 1034}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1033, 1034}, contentIndexService.query( new ContentIndexQuery(
             "((data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake')) AND (title CONTAINS 'ost' AND title CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1035}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1035}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1034, 1036}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1034, 1036}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1033, 1034, 1037}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1033, 1034, 1037}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1034, 1035, 1036, 1037}, service.query( new ContentIndexQuery(
+        assertContentResultSetEquals( new int[]{1031, 1032, 1033, 1034, 1035, 1036, 1037}, contentIndexService.query( new ContentIndexQuery(
             "(title CONTAINS 'ost' AND title CONTAINS 'kake') OR (data/* CONTAINS 'ost' AND data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' AND fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "(title CONTAINS 'ost' OR title CONTAINS 'kake') AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
-            new ContentIndexQuery(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query( new ContentIndexQuery(
                 "((title CONTAINS 'ost' OR title CONTAINS 'kake') OR (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake')) AND (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "((title CONTAINS 'ost' OR title CONTAINS 'kake') OR (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')) AND (data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "((data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')) AND (title CONTAINS 'ost' OR title CONTAINS 'kake') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals(
-            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, service.query(
+            new int[]{1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038}, contentIndexService.query(
             new ContentIndexQuery(
                 "(title CONTAINS 'ost' OR title CONTAINS 'kake') OR ((data/* CONTAINS 'ost' OR data/* CONTAINS 'kake') OR (fulltext CONTAINS 'ost' OR fulltext CONTAINS 'kake')) OR unknown CONTAINS 'fisk'" ) ) );
     }
@@ -1609,17 +1623,19 @@ public class ContentIndexServiceImplTest
         ContentDocument doc = createContentDocument( 101, "ost", null );
         doc.setOwnerQualifiedName( "incamono\\jvs" );
 
-        service.index( doc, false );
+        contentIndexService.index( doc, false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query( new ContentIndexQuery( "owner/qualifiedName = 'incamono\\jvs'" ) ) );
+        assertContentResultSetEquals( new int[]{101},
+                                      contentIndexService.query( new ContentIndexQuery( "owner/qualifiedName = 'incamono\\jvs'" ) ) );
     }
 
     @Test
     public void testQueryWithOrderByMultipleRelatedContentDoesNotCreateDuplicateContentKeys()
     {
-        service.index( createContentDocument( 101, "title", new String[][]{{"data/myrelated", "3"}, {"data/myrelated", "9"}} ), false );
+        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/myrelated", "3"}, {"data/myrelated", "9"}} ),
+                                   false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query( new ContentIndexQuery( "", "data/myrelated ASC" ) ) );
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "", "data/myrelated ASC" ) ) );
     }
 
     @Test
@@ -1651,14 +1667,14 @@ public class ContentIndexServiceImplTest
         assignedToNone.setStatus( 2 );
         assignedToNone.setPriority( 0 );
 
-        service.index( assignedToJVS, false );
-        service.index( assignedToTAN, false );
-        service.index( assignedToNone, false );
+        contentIndexService.index( assignedToJVS, false );
+        contentIndexService.index( assignedToTAN, false );
+        contentIndexService.index( assignedToNone, false );
 
-        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, service.query( new ContentIndexQuery( "categorykey = 9" ) ) );
-        assertContentResultSetEquals( new int[]{1101}, service.query(
+        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
+        assertContentResultSetEquals( new int[]{1101}, contentIndexService.query(
             new ContentIndexQuery( "categorykey = 9 and assignee/qualifiedName = 'incamono\\jvs'" ) ) );
-        assertContentResultSetEquals( new int[]{1102}, service.query(
+        assertContentResultSetEquals( new int[]{1102}, contentIndexService.query(
             new ContentIndexQuery( "categorykey = 9 and assignee/qualifiedName = 'incamono\\tan'" ) ) );
     }
 
@@ -1691,18 +1707,18 @@ public class ContentIndexServiceImplTest
         assignedToNone.setStatus( 2 );
         assignedToNone.setPriority( 0 );
 
-        service.index( assignedToJVS, false );
-        service.index( assignedToTAN, false );
-        service.index( assignedToNone, false );
+        contentIndexService.index( assignedToJVS, false );
+        contentIndexService.index( assignedToTAN, false );
+        contentIndexService.index( assignedToNone, false );
 
-        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, service.query( new ContentIndexQuery( "categorykey = 9" ) ) );
+        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
         assertContentResultSetEquals( new int[]{1102, 1101, 1103},
-                                      service.query( new ContentIndexQuery( "categorykey = 9", "assignee/qualifiedname desc" ) ) );
-        assertContentResultSetEquals( new int[]{1102, 1101}, service.query( new ContentIndexQuery(
+                                      contentIndexService.query( new ContentIndexQuery( "categorykey = 9", "assignee/qualifiedname desc" ) ) );
+        assertContentResultSetEquals( new int[]{1102, 1101}, contentIndexService.query( new ContentIndexQuery(
             "categorykey = 9 AND ( assignee/qualifiedName = 'incamono\\jvs' OR assignee/qualifiedName = 'incamono\\tan' )",
             "assignee/qualifiedname desc" ) ) );
         assertContentResultSetEquals( new int[]{1103, 1101, 1102,},
-                                      service.query( new ContentIndexQuery( "categorykey = 9", "assignee/qualifiedname asc" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "categorykey = 9", "assignee/qualifiedname asc" ) ) );
     }
 
     @Test
@@ -1734,14 +1750,14 @@ public class ContentIndexServiceImplTest
         assigerIsNone.setStatus( 2 );
         assigerIsNone.setPriority( 0 );
 
-        service.index( assignerIsJVS, false );
-        service.index( assignerIsTAN, false );
-        service.index( assigerIsNone, false );
+        contentIndexService.index( assignerIsJVS, false );
+        contentIndexService.index( assignerIsTAN, false );
+        contentIndexService.index( assigerIsNone, false );
 
-        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, service.query( new ContentIndexQuery( "categorykey = 9" ) ) );
-        assertContentResultSetEquals( new int[]{1101}, service.query(
+        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
+        assertContentResultSetEquals( new int[]{1101}, contentIndexService.query(
             new ContentIndexQuery( "categorykey = 9 and assigner/qualifiedName = 'incamono\\jvs'" ) ) );
-        assertContentResultSetEquals( new int[]{1102}, service.query(
+        assertContentResultSetEquals( new int[]{1102}, contentIndexService.query(
             new ContentIndexQuery( "categorykey = 9 and assigner/qualifiedName = 'incamono\\tan'" ) ) );
     }
 
@@ -1774,18 +1790,18 @@ public class ContentIndexServiceImplTest
         assignerIsNone.setStatus( 2 );
         assignerIsNone.setPriority( 0 );
 
-        service.index( assignerIsJVS, false );
-        service.index( assignerIsTAN, false );
-        service.index( assignerIsNone, false );
+        contentIndexService.index( assignerIsJVS, false );
+        contentIndexService.index( assignerIsTAN, false );
+        contentIndexService.index( assignerIsNone, false );
 
-        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, service.query( new ContentIndexQuery( "categorykey = 9" ) ) );
+        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
         assertContentResultSetEquals( new int[]{1102, 1101, 1103},
-                                      service.query( new ContentIndexQuery( "categorykey = 9", "assigner/qualifiedname desc" ) ) );
-        assertContentResultSetEquals( new int[]{1102, 1101}, service.query( new ContentIndexQuery(
+                                      contentIndexService.query( new ContentIndexQuery( "categorykey = 9", "assigner/qualifiedname desc" ) ) );
+        assertContentResultSetEquals( new int[]{1102, 1101}, contentIndexService.query( new ContentIndexQuery(
             "categorykey = 9 AND ( assigner/qualifiedName = 'incamono\\jvs' OR assigner/qualifiedName = 'incamono\\tan' )",
             "assigner/qualifiedname desc" ) ) );
         assertContentResultSetEquals( new int[]{1103, 1101, 1102,},
-                                      service.query( new ContentIndexQuery( "categorykey = 9", "assigner/qualifiedname asc" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "categorykey = 9", "assigner/qualifiedname asc" ) ) );
     }
 
     @Test
@@ -1817,19 +1833,19 @@ public class ContentIndexServiceImplTest
         notDue.setStatus( 2 );
         notDue.setPriority( 0 );
 
-        service.index( due2010_06_01T00_00_00, false );
-        service.index( due2010_06_01T12_00_00, false );
-        service.index( notDue, false );
+        contentIndexService.index( due2010_06_01T00_00_00, false );
+        contentIndexService.index( due2010_06_01T12_00_00, false );
+        contentIndexService.index( notDue, false );
 
-        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, service.query( new ContentIndexQuery( "categorykey = 9" ) ) );
-        assertContentResultSetEquals( new int[]{1101}, service.query(
+        assertContentResultSetEquals( new int[]{1101, 1102, 1103}, contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
+        assertContentResultSetEquals( new int[]{1101}, contentIndexService.query(
             new ContentIndexQuery( "categorykey = 9 and assignmentDueDate = '2010-06-01T00:00:00'" ) ) );
-        assertContentResultSetEquals( new int[]{1102}, service.query(
+        assertContentResultSetEquals( new int[]{1102}, contentIndexService.query(
             new ContentIndexQuery( "categorykey = 9 and assignmentDueDate = date('2010-06-01 12:00:00')" ) ) );
         assertContentResultSetEquals( new int[]{1103},
-                                      service.query( new ContentIndexQuery( "categorykey = 9 and assignmentDueDate = ''" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "categorykey = 9 and assignmentDueDate = ''" ) ) );
         assertContentResultSetEquals( new int[]{1101, 1102},
-                                      service.query( new ContentIndexQuery( "categorykey = 9 and assignmentDueDate != ''" ) ) );
+                                      contentIndexService.query( new ContentIndexQuery( "categorykey = 9 and assignmentDueDate != ''" ) ) );
     }
 
     private void assertContentResultSetEquals( int[] contentKeys, ContentResultSet result )
@@ -1881,8 +1897,7 @@ public class ContentIndexServiceImplTest
         return createContentDocument( contentKey, categoryKey, contentTypeKey, 2, title, fields );
     }
 
-    private ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,
-                                                   int status, String title, String[][] fields )
+    private ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey, int status, String title, String[][] fields )
     {
         ContentDocument doc = new ContentDocument( contentKey );
         doc.setCategoryKey( categoryKey );
@@ -1908,20 +1923,24 @@ public class ContentIndexServiceImplTest
     @Test
     public void testSplittedFulltextIndexWithAnd()
     {
-        service.index( createContentDocument( 101, "title", new String[][]{{"fulltext", "fisk ost"}, {"fulltext", "torsk tine"}} ), false );
-        service.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 101, "title", new String[][]{{"fulltext", "fisk ost"}, {"fulltext", "torsk tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "fulltext CONTAINS 'fisk' AND fulltext CONTAINS 'torsk'", "" ) ) );
     }
 
     @Test
     public void testSplittedFulltextIndexWithOr()
     {
-        service.index( createContentDocument( 101, "title", new String[][]{{"fulltext", "fisk ost"}, {"fulltext", "torsk tine"}} ), false );
-        service.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 101, "title", new String[][]{{"fulltext", "fisk ost"}, {"fulltext", "torsk tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "fulltext CONTAINS 'fisk' OR fulltext CONTAINS 'torsk'", "" ) ) );
     }
 
@@ -1929,45 +1948,48 @@ public class ContentIndexServiceImplTest
     @Test
     public void testSplittedNormalIndexWithAnd()
     {
-        service.index( createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ),
-                       false );
-        service.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/text CONTAINS 'fisk' AND data/text CONTAINS 'torsk'", "" ) ) );
     }
 
     @Test
     public void testSplittedNormalIndexWithOr()
     {
-        service.index( createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ),
-                       false );
-        service.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/text CONTAINS 'fisk' OR data/text CONTAINS 'torsk'", "" ) ) );
     }
 
     @Test
     public void testMultipleSameLikeExactWords()
     {
-        service.index( createContentDocument( 101, "title", new String[][]{{"data/heading", "ENONIC"}, {"data/preface", "ENONIC"},
-            {"data/text", "ENONIC"}} ), false );
+        contentIndexService.index( createContentDocument( 101, "title",
+                                                          new String[][]{{"data/heading", "ENONIC"}, {"data/preface", "ENONIC"},
+                                                              {"data/text", "ENONIC"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/heading LIKE '%ENONIC%' or data/preface LIKE '%ENONIC%' or data/text LIKE '%ENONIC%'", "" ) ) );
     }
 
     @Test
     public void testEinarTing1()
     {
-        service.index( createContentDocument( 100, "title", new String[][]{{"data/preface", "denne skal ikke gi treff"},
+        contentIndexService.index( createContentDocument( 100, "title", new String[][]{{"data/preface", "denne skal ikke gi treff"},
             {"data/description", "dette skal ikke gi treff"}} ), false );
 
-        service.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
+        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
             {"data/description", "dette er en beskrivelse ja"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/preface CONTAINS 'ingress' AND data/description CONTAINS 'beskrivelse'" ) ) );
 
     }
@@ -1975,13 +1997,13 @@ public class ContentIndexServiceImplTest
     @Test
     public void testEinarTing2()
     {
-        service.index( createContentDocument( 100, "title", new String[][]{{"data/preface", "denne skal ikke gi treff"},
+        contentIndexService.index( createContentDocument( 100, "title", new String[][]{{"data/preface", "denne skal ikke gi treff"},
             {"data/description", "dette skal ikke gi treff"}} ), false );
 
-        service.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
+        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
             {"data/description", "dette er en beskrivelse ja"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/* CONTAINS 'ingress' AND data/* CONTAINS 'beskrivelse'" ) ) );
 
     }
@@ -1989,13 +2011,13 @@ public class ContentIndexServiceImplTest
     @Test
     public void testEinarTing3()
     {
-        service.index( createContentDocument( 100, "title", new String[][]{{"data/preface", "denne skal ikke gi treff"},
+        contentIndexService.index( createContentDocument( 100, "title", new String[][]{{"data/preface", "denne skal ikke gi treff"},
             {"data/description", "dette skal ikke gi treff"}} ), false );
 
-        service.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
+        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
             {"data/description", "dette er en beskrivelse ja"}} ), false );
 
-        assertContentResultSetEquals( new int[]{101}, service.query(
+        assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/* CONTAINS 'ingress' OR data/* CONTAINS 'beskrivelse'" ) ) );
 
     }
@@ -2003,18 +2025,22 @@ public class ContentIndexServiceImplTest
     @Test
     public void testOrderByStatus()
     {
-        service.index( createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 3, "c1",
-                                              new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
-        service.index( createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
-                                              new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
-        service.index( createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 2, "c3",
-                                              new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
+        contentIndexService.index( createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 3, "c1",
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
+                                   false );
+        contentIndexService.index( createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
+                                   false );
+        contentIndexService.index( createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 2, "c3",
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
+                                   false );
 
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ),
-                      service.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) ).getKeys() );
+                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) )
+                          .getKeys() );
 
         assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
-                      service.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) ).getKeys() );
+                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) ).getKeys() );
 
     }
 
@@ -2024,21 +2050,22 @@ public class ContentIndexServiceImplTest
         ContentDocument doc1 = createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c1",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc1.setPublishFrom( new DateTime( 2010, 10, 1, 0, 0, 0, 2 ).toDate() );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         ContentDocument doc2 = createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc2.setPublishFrom( new DateTime( 2010, 10, 1, 0, 0, 0, 0 ).toDate() );
-        service.index( doc2, false );
+        contentIndexService.index( doc2, false );
         ContentDocument doc3 = createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c3",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc3.setPublishFrom( new DateTime( 2010, 10, 1, 0, 0, 0, 1 ).toDate() );
-        service.index( doc3, false );
+        contentIndexService.index( doc3, false );
 
-        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), service.query(
+        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
             new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom asc" ) ).getKeys() );
 
-        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), service.query(
-            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom desc" ) ).getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
+                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom desc" ) )
+                          .getKeys() );
 
     }
 
@@ -2048,21 +2075,23 @@ public class ContentIndexServiceImplTest
         ContentDocument doc1 = createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c1",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc1.setPublishTo( new DateTime( 2010, 10, 1, 0, 0, 0, 2 ).toDate() );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
         ContentDocument doc2 = createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc2.setPublishTo( new DateTime( 2010, 10, 1, 0, 0, 0, 0 ).toDate() );
-        service.index( doc2, false );
+        contentIndexService.index( doc2, false );
         ContentDocument doc3 = createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c3",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc3.setPublishTo( new DateTime( 2010, 10, 1, 0, 0, 0, 1 ).toDate() );
-        service.index( doc3, false );
+        contentIndexService.index( doc3, false );
 
-        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), service.query(
-            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo asc" ) ).getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ),
+                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo asc" ) )
+                          .getKeys() );
 
-        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), service.query(
-            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo desc" ) ).getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
+                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo desc" ) )
+                          .getKeys() );
 
     }
 
@@ -2072,23 +2101,23 @@ public class ContentIndexServiceImplTest
 
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       new String[][]{{"data/heading", "title1"}} );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
                                                       new String[][]{{"data/heading", "title2"}} );
-        service.index( doc2, false );
+        contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 102 ), new ContentTypeKey( 10 ), "title3",
                                                       new String[][]{{"data/heading", "title3"}} );
-        service.index( doc3, false );
+        contentIndexService.index( doc3, false );
 
         ContentIndexQuery query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
-        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setCategoryFilter( createCategoryKeyList( 102 ) );
-        assertContentResultSetEquals( new int[]{3}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{3}, contentIndexService.query( query ) );
     }
 
     @Test
@@ -2097,23 +2126,23 @@ public class ContentIndexServiceImplTest
 
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       new String[][]{{"data/heading", "title1"}} );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
                                                       new String[][]{{"data/heading", "title2"}} );
-        service.index( doc2, false );
+        contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
                                                       new String[][]{{"data/heading", "title3"}} );
-        service.index( doc3, false );
+        contentIndexService.index( doc3, false );
 
         ContentIndexQuery query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setContentTypeFilter( createContentTypeList( 10 ) );
-        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setContentTypeFilter( createContentTypeList( 11 ) );
-        assertContentResultSetEquals( new int[]{3}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{3}, contentIndexService.query( query ) );
     }
 
     @Test
@@ -2122,39 +2151,39 @@ public class ContentIndexServiceImplTest
 
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       new String[][]{{"data/a", "1"}, {"data/b", "2"}, {"data/c", "3"}} );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title2",
                                                       new String[][]{{"data/a", "2"}, {"data/b", "2"}, {"data/c", "1"}} );
-        service.index( doc2, false );
+        contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title3",
                                                       new String[][]{{"data/a", "2"}, {"data/b", "1"}, {"data/c", "3"}} );
-        service.index( doc3, false );
+        contentIndexService.index( doc3, false );
 
         ContentIndexQuery query = new ContentIndexQuery( "(data/a = 1 AND data/b = 2)", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
-        assertContentResultSetEquals( new int[]{1}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "(data/a = 1 AND data/b = 2) OR data/c = 1", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
-        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "(data/a = 1 OR data/b = 2) AND data/c = 1", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
-        assertContentResultSetEquals( new int[]{2}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{2}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "data/a = 3 OR data/b = 1 OR data/c = 1", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
-        assertContentResultSetEquals( new int[]{2, 3}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{2, 3}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "(data/a = 2 OR data/b = 2) AND (data/a = 1 OR data/c = 3)", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
-        assertContentResultSetEquals( new int[]{1, 3}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{1, 3}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "(data/a = 2 AND data/b = 2) OR (data/a = 1 AND data/c = 3)", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
-        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
     }
 
     @Test
@@ -2164,25 +2193,25 @@ public class ContentIndexServiceImplTest
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       new String[][]{{"data/heading", "title1"}} );
         doc1.setContentTypeName( "Article3" );
-        service.index( doc1, false );
+        contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
                                                       new String[][]{{"data/heading", "title2"}} );
         doc2.setContentTypeName( "Article3" );
-        service.index( doc2, false );
+        contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
                                                       new String[][]{{"data/heading", "title3"}} );
         doc3.setContentTypeName( "Loooooooooooooong-content-type-name-it-is" );
-        service.index( doc3, false );
+        contentIndexService.index( doc3, false );
 
         ContentIndexQuery query = new ContentIndexQuery( "contenttype = 'Article3'", "" );
         query.setContentTypeFilter( createContentTypeList( 10 ) );
-        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
 
         query = new ContentIndexQuery( "contenttype = 'Loooooooooooooong-content-type-name-it-is'", "" );
         query.setContentTypeFilter( createContentTypeList( 11 ) );
-        assertContentResultSetEquals( new int[]{3}, service.query( query ) );
+        assertContentResultSetEquals( new int[]{3}, contentIndexService.query( query ) );
     }
 
     @Test
@@ -2196,12 +2225,12 @@ public class ContentIndexServiceImplTest
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         ContentIndexQuery query = new ContentIndexQuery( "@key = 3001" );
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 0, 59, 999 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
@@ -2216,12 +2245,12 @@ public class ContentIndexServiceImplTest
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         ContentIndexQuery query = new ContentIndexQuery( "@key = 3001" );
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
@@ -2236,12 +2265,12 @@ public class ContentIndexServiceImplTest
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         ContentIndexQuery query = new ContentIndexQuery( "@key = 3001" );
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 0, 1 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
@@ -2257,12 +2286,12 @@ public class ContentIndexServiceImplTest
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         ContentIndexQuery query = new ContentIndexQuery( "@key = 3001" );
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
@@ -2278,12 +2307,12 @@ public class ContentIndexServiceImplTest
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         ContentIndexQuery query = new ContentIndexQuery( "@key = 3001" );
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
@@ -2299,12 +2328,12 @@ public class ContentIndexServiceImplTest
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        service.index( doc1, true );
+        contentIndexService.index( doc1, true );
 
         ContentIndexQuery query = new ContentIndexQuery( "@key = 3001" );
         query.setContentOnlineAtFilter( new DateTime( 2010, 4, 19, 13, 1, 59, 999 ).toDate() );
 
-        ContentResultSet contentResultSet = service.query( query );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
@@ -2317,7 +2346,7 @@ public class ContentIndexServiceImplTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         try
         {
-            service.query( query );
+            contentIndexService.query( query );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -2329,7 +2358,7 @@ public class ContentIndexServiceImplTest
         query.setCount( 101 );
         try
         {
-            service.query( query );
+            contentIndexService.query( query );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -2342,7 +2371,7 @@ public class ContentIndexServiceImplTest
         query.setCount( 101 );
         try
         {
-            service.query( query );
+            contentIndexService.query( query );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -2355,7 +2384,7 @@ public class ContentIndexServiceImplTest
         query.setCount( 101 );
         try
         {
-            service.query( query );
+            contentIndexService.query( query );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -2368,7 +2397,7 @@ public class ContentIndexServiceImplTest
         query.setCount( 101 );
         try
         {
-            service.query( query );
+            contentIndexService.query( query );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -2424,5 +2453,8 @@ public class ContentIndexServiceImplTest
         return sb.toString();
     }
 
-
+    public void setContentIndexService( ContentIndexService contentIndexService )
+    {
+        this.contentIndexService = contentIndexService;
+    }
 }

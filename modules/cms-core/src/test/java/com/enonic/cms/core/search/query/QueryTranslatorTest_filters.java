@@ -167,15 +167,21 @@ public class QueryTranslatorTest_filters
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
-            "      \"contentlocations.menuitemkey_numeric\" : [ \"22\" ]\n" +
+            "      \"contentlocations_numeric\" : [ \"1\", \"2\", \"3\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
-        MenuItemEntity entity = new MenuItemEntity();
-        entity.setKey( 22 );
-        sectionFilter.add( entity );
+        MenuItemEntity entity1 = new MenuItemEntity();
+        entity1.setKey( 1 );
+        sectionFilter.add( entity1 );
+        MenuItemEntity entity2 = new MenuItemEntity();
+        entity2.setKey( 2 );
+        sectionFilter.add( entity2 );
+        MenuItemEntity entity3 = new MenuItemEntity();
+        entity3.setKey( 3 );
+        sectionFilter.add( entity3 );
 
         ContentIndexQuery query = createContentQuery( sectionFilter );
 

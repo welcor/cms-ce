@@ -10,31 +10,31 @@ import static junit.framework.Assert.assertEquals;
  * Date: 1/24/12
  * Time: 2:22 PM
  */
-public class IndexFieldNameCreatorTest
+public class IndexFieldNameResolverTest
 {
     @Test
     public void testNormalize()
     {
-        String result = IndexFieldNameCreator.normalizeFieldName( "data/test" );
+        String result = IndexFieldNameResolver.normalizeFieldName( "data/test" );
         assertEquals( "data_test", result );
 
-        result = IndexFieldNameCreator.normalizeFieldName( "data/test/@key" );
+        result = IndexFieldNameResolver.normalizeFieldName( "data/test/@key" );
         assertEquals( "data_test_key", result );
 
-        result = IndexFieldNameCreator.normalizeFieldName( "data.test" );
+        result = IndexFieldNameResolver.normalizeFieldName( "data.test" );
         assertEquals( "data_test", result );
 
-        result = IndexFieldNameCreator.normalizeFieldName( "data/test.instance/@key" );
+        result = IndexFieldNameResolver.normalizeFieldName( "data/test.instance/@key" );
         assertEquals( "data_test_instance_key", result );
     }
 
     @Test
     public void testNormalizeEmpty()
     {
-        String result = IndexFieldNameCreator.normalizeFieldName( "" );
+        String result = IndexFieldNameResolver.normalizeFieldName( "" );
         assertEquals( "", result );
 
-        result = IndexFieldNameCreator.normalizeFieldName( null );
+        result = IndexFieldNameResolver.normalizeFieldName( null );
         assertEquals( "", result );
     }
 

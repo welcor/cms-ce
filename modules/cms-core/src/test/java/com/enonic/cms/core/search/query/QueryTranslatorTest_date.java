@@ -22,7 +22,7 @@ public class QueryTranslatorTest_date
 
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 2147483647,\n" +
+            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
@@ -65,7 +65,7 @@ public class QueryTranslatorTest_date
 
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 2147483647,\n" +
+            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
@@ -106,7 +106,7 @@ public class QueryTranslatorTest_date
 
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 2147483647,\n" +
+            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp\" : {\n" +
@@ -135,7 +135,7 @@ public class QueryTranslatorTest_date
 
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 2147483647,\n" +
+            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp\" : {\n" +
@@ -163,7 +163,7 @@ public class QueryTranslatorTest_date
 
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 2147483647,\n" +
+            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp\" : {\n" +

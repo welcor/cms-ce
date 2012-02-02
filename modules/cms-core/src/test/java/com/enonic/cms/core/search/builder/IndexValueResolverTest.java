@@ -148,7 +148,7 @@ public class IndexValueResolverTest
         Collections.sort( resultList );
 
         assertEquals( "1", one, resultList.get( 0 ) );
-        assertEquals( "1.0", one_point_one, resultList.get( 1 ) );
+        assertEquals( "1.1", one_point_one, resultList.get( 1 ) );
         assertEquals( "2", two, resultList.get( 2 ) );
         assertEquals( "10", ten, resultList.get( 3 ) );
         assertEquals( "12", twelwe, resultList.get( 4 ) );

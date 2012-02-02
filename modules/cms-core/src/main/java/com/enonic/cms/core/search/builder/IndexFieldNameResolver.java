@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
  * Date: 11/23/11
  * Time: 12:06 PM
  */
-final public class IndexFieldNameCreator
+final public class IndexFieldNameResolver
     extends IndexFieldNameConstants
 {
 

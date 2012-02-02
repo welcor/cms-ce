@@ -37,7 +37,7 @@ public class QueryFieldNameResolver
         return resolveQueryFieldName( expression.getPath() );
     }
 
-    public static String resolveNumericQueryFieldName( FieldExpr expression )
+    public static String getOrderByFieldName( FieldExpr expression )
     {
         return getOrderByFieldName( expression.getPath() );
     }
@@ -47,10 +47,9 @@ public class QueryFieldNameResolver
         return ORDER_FIELD_PREFIX + resolveQueryFieldName( fieldName );
     }
 
-
     public static String getSectionKeyQueryFieldName()
     {
-        return SECTION_FIELD_PREFIX + ".menuitemkey" + NUMERIC_FIELD_POSTFIX;
+        return SECTION_FIELD_PREFIX + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getCategoryKeyQueryFieldName()

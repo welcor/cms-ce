@@ -27,9 +27,10 @@ import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
-import com.enonic.cms.core.search.builder.IndexFieldNameCreator;
+import com.enonic.cms.core.search.builder.IndexFieldNameResolver;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.*;
 
@@ -138,31 +139,12 @@ public abstract class ContentIndexServiceTestBase
 
         for ( UserDefinedField field : userDefinedFields )
         {
-
-            final String indexFieldName = IndexFieldNameCreator.normalizeFieldName( field.getName() );
+            final String indexFieldName = IndexFieldNameResolver.normalizeFieldName( field.getName() );
             final SearchHitField hitField = hitFieldMap.get( indexFieldName );
 
             assertNotNull( "Could not find field in index: " + indexFieldName, hitField );
             compareValues( hitField, field.getValue().toString() );
         }
-
-        int numberOfUserFieldsInHit = findNumberOfUserDataFields( hitFieldMap );
-
-        assertEquals( "Should have equal number of userfields in index and doc", userDefinedFields.size(), numberOfUserFieldsInHit );
-    }
-
-    private int findNumberOfUserDataFields( Map<String, SearchHitField> hitFieldMap )
-    {
-        int numberOfUserFieldsInHit = 0;
-
-        for ( String hitField : hitFieldMap.keySet() )
-        {
-            if ( isUserDataField( hitField ) )
-            {
-                numberOfUserFieldsInHit++;
-            }
-        }
-        return numberOfUserFieldsInHit;
     }
 
     private boolean isUserDataField( String hitField )
@@ -231,32 +213,47 @@ public abstract class ContentIndexServiceTestBase
         compareValues( fieldMapForId.get( "status_numeric" ), doc.getStatus() );
     }
 
-    private void compareValues( SearchHitField field, String expected )
+    private void compareValues( final SearchHitField field, final String expected )
     {
-        Object actual = field.getValue();
+        final List<Object> values = field.getValues();
+
+        if ( values.size() > 1 )
+        {
+            doCompareArrayValues( field.getName(), values, expected );
+            return;
+        }
+
+        Object singleValue = values.get( 0 );
 
         final String failureMessage = "Error in field value for field: " + field.getName();
 
-        if ( actual instanceof Double )
+        if ( singleValue instanceof Double )
         {
-            assertEquals( failureMessage, new Double( expected ), actual );
+            assertEquals( failureMessage, new Double( expected ), singleValue );
         }
-        else if ( actual instanceof String )
+        else if ( singleValue instanceof String )
         {
             try
             {
-                Double actualAsDouble = Double.parseDouble( (String) actual );
+                Double actualAsDouble = Double.parseDouble( (String) singleValue );
                 assertEquals( failureMessage, new Double( expected ), actualAsDouble );
             }
             catch ( NumberFormatException e )
             {
-                assertEquals( failureMessage, StringUtils.lowerCase( expected ), StringUtils.lowerCase( (String) actual ) );
+                assertEquals( failureMessage, StringUtils.lowerCase( expected ), StringUtils.lowerCase( (String) singleValue ) );
             }
         }
         else
         {
             fail( "Unexpected value for " + field.getName() );
         }
+    }
+
+    private void doCompareArrayValues( String fieldName, List<Object> values, String expected )
+    {
+        final String failureMessage = "Missing value " + expected + " in field: " + fieldName;
+
+        assertTrue( failureMessage, values.contains( expected ) );
     }
 
     private void compareValues( SearchHitField field, int expected )

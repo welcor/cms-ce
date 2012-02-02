@@ -58,6 +58,8 @@ public class ContentIndexServiceImplTest_add_and_remove
 
         //flushIndex();
 
+        printAllIndexContent();
+
         verifyStandardFields( doc1, contentKey );
 
         verifyUserDefinedFields( contentKey, doc1 );

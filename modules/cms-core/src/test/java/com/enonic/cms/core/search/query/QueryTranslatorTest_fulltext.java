@@ -5,16 +5,16 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_ft
+public class QueryTranslatorTest_fulltext
     extends QueryTranslatorBaseTest
 {
     @Test
-    public void testFt()
+    public void testFulltextQuery()
         throws Exception
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 2147483647,\n" +
+            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"term\" : {\n" +
             "      \"title._tokenized\" : \"world\"\n" +

@@ -17,7 +17,7 @@ public abstract class QueryTranslatorBaseTest
 {
     private QueryTranslator queryTranslator = new QueryTranslator();
 
-    protected final static int QUERY_DEFAULT_SIZE = Integer.MAX_VALUE;
+    protected final static int QUERY_DEFAULT_SIZE = 200;
 
 
     public ContentIndexQuery createContentQuery( String queryString )

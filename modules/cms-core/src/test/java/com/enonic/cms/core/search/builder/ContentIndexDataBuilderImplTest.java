@@ -8,12 +8,16 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import junit.framework.Assert;
 
+import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -22,9 +26,14 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexFieldSet;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.query.QueryFieldNameResolver;
+import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentKey;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by IntelliJ IDEA.
@@ -177,6 +186,77 @@ public class ContentIndexDataBuilderImplTest
         verifyFieldExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_gender" );
     }
 
+    @Test
+    public void testAttachmentData()
+        throws Exception
+    {
+        ContentDocument content = createTestContent();
+        content.setBinaryExtractedText( new BigText( "This is a binary text" ) );
+
+        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
+
+        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+
+    }
+
+    @Test
+    public void testContentLocations()
+        throws Exception
+    {
+
+        ContentDocument contentDocument = createTestContent();
+
+        ContentEntity content = new ContentEntity();
+        content.setKey( new ContentKey( "1" ) );
+
+        SiteEntity site = new SiteEntity();
+        site.setKey( 1 );
+        site.setName( "site1" );
+
+        SectionContentEntity sectionContent1 = createSectionContent( site, content, 1 );
+        SectionContentEntity sectionContent2 = createSectionContent( site, content, 2 );
+        SectionContentEntity sectionContent3 = createSectionContent( site, content, 3 );
+
+        content.addSectionContent( sectionContent1 );
+        content.addSectionContent( sectionContent2 );
+        content.addSectionContent( sectionContent3 );
+
+        ContentLocationSpecification spec = new ContentLocationSpecification();
+        spec.setSiteKey( new SiteKey( 1 ) );
+        spec.setIncludeInactiveLocationsInSection( false );
+
+        contentDocument.setContentLocations( content.getLocations( spec ) );
+
+        assertEquals( 3, contentDocument.getContentLocations().numberOfLocations() );
+
+        ContentIndexDataBuilderSpecification builderSpec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
+
+        ContentIndexData indexData = indexDataBuilder.build( contentDocument, builderSpec );
+
+        JSONObject resultObject = new JSONObject( indexData.getMetadataJson() );
+
+        final String sectionKeyQueryFieldName = QueryFieldNameResolver.getSectionKeyQueryFieldName();
+        assertTrue( resultObject.has( sectionKeyQueryFieldName ) );
+        JSONArray contentLocations = resultObject.getJSONArray( sectionKeyQueryFieldName );
+
+        assertEquals( 3, contentLocations.length() );
+    }
+
+    private SectionContentEntity createSectionContent( SiteEntity site, ContentEntity content, int sectionKey )
+    {
+        MenuItemEntity menuItem = new MenuItemEntity();
+        menuItem.setSite( site );
+        menuItem.setKey( sectionKey );
+        menuItem.setName( "menu" + sectionKey );
+
+        SectionContentEntity sectionContent = new SectionContentEntity();
+        sectionContent.setKey( new SectionContentKey( sectionKey ) );
+        sectionContent.setContent( content );
+        sectionContent.setMenuItem( menuItem );
+        sectionContent.setApproved( true );
+        return sectionContent;
+    }
+
     private List<String> getKeysAsList( String indexData )
     {
 
@@ -196,21 +276,6 @@ public class ContentIndexDataBuilderImplTest
 
         return keys;
     }
-
-
-    @Test
-    public void testAttachmentData()
-        throws Exception
-    {
-        ContentDocument content = createTestContent();
-        content.setBinaryExtractedText( new BigText( "This is a binary text" ) );
-
-        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
-
-        ContentIndexData indexData = indexDataBuilder.build( content, spec );
-
-    }
-
 
     private ContentDocument createTestContent()
         throws Exception

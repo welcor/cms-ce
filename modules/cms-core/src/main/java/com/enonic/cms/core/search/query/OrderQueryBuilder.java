@@ -57,7 +57,7 @@ public class OrderQueryBuilder
     }
 
     private static SortBuilder buildOrderFieldExpr(OrderFieldExpr expr) {
-        final String name = QueryFieldNameResolver.resolveNumericQueryFieldName( expr.getField() );
+        final String name = QueryFieldNameResolver.getOrderByFieldName( expr.getField() );
 
         SortOrder order = SortOrder.DESC;
 

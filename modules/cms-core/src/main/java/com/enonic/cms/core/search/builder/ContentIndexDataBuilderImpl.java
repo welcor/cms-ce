@@ -1,12 +1,13 @@
 package com.enonic.cms.core.search.builder;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
+import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocations;
@@ -15,7 +16,6 @@ import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
 
@@ -30,17 +30,13 @@ public final class ContentIndexDataBuilderImpl
     implements ContentIndexDataBuilder
 {
 
-    private final IndexDefinitionBuilder indexDefBuilder;
-
-    public ContentIndexDataBuilderImpl()
-    {
-        this.indexDefBuilder = new IndexDefinitionBuilder();
-    }
+    private final ContentIndexDataCustomDataBuilder customDataBuilder = new ContentIndexDataCustomDataBuilder();
 
     public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec )
     {
 
         ContentIndexData contentIndexData = null;
+
         try
         {
             final XContentBuilder contentData = buildContentdata( content );
@@ -82,15 +78,22 @@ public final class ContentIndexDataBuilderImpl
 
         addSections( content, result );
 
-        Collection<UserDefinedField> userDefinedFields = content.getUserDefinedFields();
-        if ( !userDefinedFields.isEmpty() )
-        {
-            addUserDefinedValues( result, userDefinedFields );
-        }
+        addCustomData( content, result );
 
         result.endObject();
 
         return result;
+    }
+
+    private void addCustomData( ContentDocument contentDocument, XContentBuilder result )
+        throws Exception
+    {
+        Collection<UserDefinedField> userDefinedFields = contentDocument.getUserDefinedFields();
+        if ( !userDefinedFields.isEmpty() )
+        {
+            customDataBuilder.build( result, userDefinedFields );
+        }
+
     }
 
     private XContentBuilder buildExtractedBinaryData( ContentDocument content )
@@ -152,8 +155,8 @@ public final class ContentIndexDataBuilderImpl
     private void addContentType( ContentDocument content, XContentBuilder result )
         throws Exception
     {
-        addField( IndexFieldNameCreator.getContentTypeKeyFieldName(), new Double( content.getContentTypeKey().toInt() ), result );
-        addField( IndexFieldNameCreator.getContentTypeNameFieldName(), content.getContentTypeName().getText(), result );
+        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), new Double( content.getContentTypeKey().toInt() ), result );
+        addField( IndexFieldNameResolver.getContentTypeNameFieldName(), content.getContentTypeName().getText(), result );
     }
 
     private void addCategory( ContentDocument content, XContentBuilder result )
@@ -167,7 +170,7 @@ public final class ContentIndexDataBuilderImpl
             return;
         }
 
-        addField( IndexFieldNameCreator.getCategoryKeyFieldName(), categoryKey.toInt(), result );
+        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), categoryKey.toInt(), result );
 
         final SimpleText categoryName = content.getCategoryName();
 
@@ -177,25 +180,28 @@ public final class ContentIndexDataBuilderImpl
             return;
         }
 
-        addField( IndexFieldNameCreator.getCategoryNameFieldName(), categoryName.getText(), result );
+        addField( IndexFieldNameResolver.getCategoryNameFieldName(), categoryName.getText(), result );
     }
 
     private void addStandardValues( XContentBuilder result, ContentDocument content )
         throws Exception
     {
-        addField( "title", content.getTitle().getText(), result );
+        addField( TITLE_FIELDNAME, content.getTitle().getText(), result );
 
-        addUserValues( result, "owner", content.getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
-        addUserValues( result, "modifier", content.getModifierKey(), content.getModifierName(), content.getModifierQualifiedName() );
-        addUserValues( result, "assignee", content.getAssigneeKey(), content.getAssigneeName(), content.getAssigneeQualifiedName() );
-        addUserValues( result, "assigner", content.getAssignerKey(), content.getAssignerName(), content.getAssignerQualifiedName() );
+        addUserValues( result, OWNER_FIELDNAME, content.getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
+        addUserValues( result, MODIFIER_FIELDNAME, content.getModifierKey(), content.getModifierName(),
+                       content.getModifierQualifiedName() );
+        addUserValues( result, ASSIGNEE_FIELDNAME, content.getAssigneeKey(), content.getAssigneeName(),
+                       content.getAssigneeQualifiedName() );
+        addUserValues( result, ASSIGNER_FIELDNAME, content.getAssignerKey(), content.getAssignerName(),
+                       content.getAssignerQualifiedName() );
 
-        addField( "publishFrom", content.getPublishFrom(), result );
-        addField( "publishTo", content.getPublishTo(), result );
-        addField( "timestamp", content.getTimestamp(), result );
-        addField( "status", content.getStatus(), result );
-        addField( "priority", content.getPriority(), result );
-        addField( "assignmentDueDate", content.getAssignmentDueDate(), result );
+        addField( PUBLISH_FROM_FIELDNAME, content.getPublishFrom(), result );
+        addField( PUBLISH_TO_FIELDNAME, content.getPublishTo(), result );
+        addField( TIMESTAMP_FIELDNAME, content.getTimestamp(), result );
+        addField( STATUS_FIELDNAME, content.getStatus(), result );
+        addField( PRIORITY_FIELDNAME, content.getPriority(), result );
+        addField( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate(), result );
     }
 
 
@@ -209,22 +215,17 @@ public final class ContentIndexDataBuilderImpl
             return;
         }
 
-        result.startArray( "contentlocations" );
+        Set<Double> sectionKeys = Sets.newTreeSet();
 
         for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
         {
             if ( contentLocation.isApproved() )
             {
-                result.startObject();
-                //addField( "home", Boolean.toString( contentLocation.isUserDefinedSectionHome() ), result );
-                addField( "menuitemkey", contentLocation.getMenuItemKey().toString(), result, false );
-                //addField( "sitekey", contentLocation.getSiteKey().toString(), result );
-                //addField( "menukey", contentLocation.getSiteKey().toString(), result );
-                result.endObject();
+                sectionKeys.add( new Double( contentLocation.getMenuItemKey().toInt() ) );
             }
         }
 
-        result.endArray();
+        addNumericSet( CONTENTLOCATIONS_FIELDNAME, sectionKeys, result, false );
     }
 
     private void addUserValues( XContentBuilder result, String prefix, SimpleText key, SimpleText name, SimpleText qualifiedName )
@@ -235,32 +236,10 @@ public final class ContentIndexDataBuilderImpl
             return;
         }
 
-        addField( prefix + "_key", key != null ? key.getText() : null, result );
-        addField( prefix + "_name", name != null ? name.getText() : null, result );
-        addField( prefix + "_qualifiedName", qualifiedName != null ? qualifiedName.getText() : null, result );
+        addField( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null, result );
+        addField( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null, result );
+        addField( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null, result );
 
-    }
-
-    private void addUserDefinedValues( final XContentBuilder result, final Collection<UserDefinedField> userDefinedFields )
-        throws Exception
-    {
-
-        List<String> addedFields = new ArrayList<String>();
-
-        for ( UserDefinedField field : userDefinedFields )
-        {
-            final boolean addedBeforeSoSkipAddingOrderByField = addedFields.contains( field.getName() );
-
-            if ( addedBeforeSoSkipAddingOrderByField )
-            {
-                addField( field.getName(), field.getValue().getText(), result, false );
-            }
-            else
-            {
-                addField( field.getName(), field.getValue().getText(), result, true );
-                addedFields.add( field.getName() );
-            }
-        }
     }
 
 }

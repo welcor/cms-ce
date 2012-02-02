@@ -84,6 +84,8 @@
     <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
   </bean>
 
+    <bean id="userStoreConnectorManager" class="com.enonic.cms.core.security.userstore.UserStoreConnectorManagerImpl"/>
+
     <bean id="timeService" class="com.enonic.cms.core.time.SystemTimeService"/>
 
     <bean id="logService" class="com.enonic.cms.core.log.LogServiceImpl"/>

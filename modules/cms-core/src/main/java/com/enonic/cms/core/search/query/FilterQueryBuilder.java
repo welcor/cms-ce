@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.elasticsearch.index.query.BaseFilterBuilder;
 import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.TermsFilterBuilder;
@@ -29,11 +30,32 @@ public class FilterQueryBuilder
 
     public static void buildFilterQuery( SearchSourceBuilder builder, ContentIndexQuery query )
     {
-        boolean applyFilter = false;
-
         BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
 
-        List<TermsFilterBuilder> filtersToApply = new ArrayList<TermsFilterBuilder>();
+        List<BaseFilterBuilder> filtersToApply = getListOfFiltersToApply( query );
+
+        if ( filtersToApply.isEmpty() )
+        {
+            // Do nothing
+        }
+        else if ( filtersToApply.size() == 1 )
+        {
+            builder.filter( filtersToApply.get( 0 ) );
+        }
+        else
+        {
+            for ( BaseFilterBuilder filter : filtersToApply )
+            {
+                boolFilterBuilder.must( filter );
+            }
+
+            builder.filter( boolFilterBuilder );
+        }
+    }
+
+    private static List<BaseFilterBuilder> getListOfFiltersToApply( ContentIndexQuery query )
+    {
+        List<BaseFilterBuilder> filtersToApply = new ArrayList<BaseFilterBuilder>();
 
         final Collection<ContentKey> contentFilter = query.getContentFilter();
 
@@ -44,7 +66,7 @@ public class FilterQueryBuilder
 
         if ( query.hasSectionFilter() )
         {
-            filtersToApply.add( buildSectionFilter( query.getSectionFilter() ) );
+            filtersToApply.add( buildSectionFilter( query ) );
         }
 
         if ( query.hasCategoryFilter() )
@@ -57,22 +79,7 @@ public class FilterQueryBuilder
             filtersToApply.add( buildContentTypeFilter( query.getContentTypeFilter() ) );
         }
 
-        if ( filtersToApply.isEmpty() )
-        {
-            // Do nothing
-        }
-        else if ( filtersToApply.size() == 1 )
-        {
-            builder.filter( filtersToApply.get( 0 ) );
-        }
-        else
-        {
-            for ( TermsFilterBuilder filter : filtersToApply )
-            {
-                boolFilterBuilder.must( filter );
-            }
-            builder.filter( boolFilterBuilder );
-        }
+        return filtersToApply;
     }
 
     /*
@@ -123,10 +130,28 @@ public class FilterQueryBuilder
     }
 
 
-    private static TermsFilterBuilder buildSectionFilter( Collection<MenuItemEntity> menuItemEntities )
+    private static BaseFilterBuilder buildSectionFilter( ContentIndexQuery query )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeyQueryFieldName(),
-                                       getSectionKeysAsList( menuItemEntities ).toArray() );
+        if ( query.isApprovedSectionContentOnly() )
+        {
+            return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName(),
+                                           getSectionKeysAsList( query.getSectionFilter() ).toArray() );
+        }
+        else if ( query.isUnapprovedSectionContentOnly() )
+        {
+            return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysUnapprovedQueryFieldName(),
+                                           getSectionKeysAsList( query.getSectionFilter() ).toArray() );
+        }
+        else
+        {
+            BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+            boolFilterBuilder.should( new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName(),
+                                                              getSectionKeysAsList( query.getSectionFilter() ).toArray() ) );
+            boolFilterBuilder.should( new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysUnapprovedQueryFieldName(),
+                                                              getSectionKeysAsList( query.getSectionFilter() ).toArray() ) );
+
+            return boolFilterBuilder;
+        }
     }
 
     private static TermsFilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )

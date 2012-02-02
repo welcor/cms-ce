@@ -30,7 +30,7 @@ public class QueryFieldNameResolverTest
     @Test
     public void testSectionKeyQueryFieldName()
     {
-        String fieldName = QueryFieldNameResolver.getSectionKeyQueryFieldName();
+        String fieldName = QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName();
         assertEquals( "contentlocations_numeric", fieldName );
     }
 

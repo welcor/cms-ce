@@ -31,7 +31,9 @@ public class IndexFieldNameConstants
 
     protected static final String TITLE_FIELDNAME = "title";
 
-    protected static final String CONTENTLOCATIONS_FIELDNAME = "contentlocations";
+    protected static final String CONTENTLOCATION_APPROVED_FIELDNAME = "contentlocations_approved";
+
+    protected static final String CONTENTLOCATION_UNAPPROVED_FIELDNAME = "contentlocations_unapproved";
 
     protected static final String USER_KEY_POSTFIX = "_key";
 
@@ -44,8 +46,6 @@ public class IndexFieldNameConstants
     public static final String ORDER_FIELD_PREFIX = "orderby_";
 
     public static final String CATEGORY_FIELD_PREFIX = "category";
-
-    public static final String SECTION_FIELD_PREFIX = "contentlocations";
 
     public static final String CONTENT_TYPE_PREFIX = "contenttype";
 

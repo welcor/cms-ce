@@ -47,9 +47,14 @@ public class QueryFieldNameResolver
         return ORDER_FIELD_PREFIX + resolveQueryFieldName( fieldName );
     }
 
-    public static String getSectionKeyQueryFieldName()
+    public static String getSectionKeysApprovedQueryFieldName()
     {
-        return SECTION_FIELD_PREFIX + NUMERIC_FIELD_POSTFIX;
+        return CONTENTLOCATION_APPROVED_FIELDNAME + NUMERIC_FIELD_POSTFIX;
+    }
+
+    public static String getSectionKeysUnapprovedQueryFieldName()
+    {
+        return CONTENTLOCATION_UNAPPROVED_FIELDNAME + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getCategoryKeyQueryFieldName()

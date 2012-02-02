@@ -1,16 +1,11 @@
 package com.enonic.cms.core.search.builder;
 
 import java.util.Collection;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import com.google.common.collect.Sets;
-
-import com.enonic.cms.core.content.ContentLocation;
-import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
@@ -31,6 +26,8 @@ public final class ContentIndexDataBuilderImpl
 {
 
     private final ContentIndexDataCustomDataBuilder customDataBuilder = new ContentIndexDataCustomDataBuilder();
+
+    private final ContentIndexDataSectionBuilder sectionBuilder = new ContentIndexDataSectionBuilder();
 
     public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec )
     {
@@ -71,11 +68,10 @@ public final class ContentIndexDataBuilderImpl
 
         addField( "key", new Double( content.getContentKey().toInt() ), result );
 
-        addCategory( content, result );
-        addContentType( content, result );
-
         addStandardValues( result, content );
 
+        addCategory( content, result );
+        addContentType( content, result );
         addSections( content, result );
 
         addCustomData( content, result );
@@ -83,6 +79,12 @@ public final class ContentIndexDataBuilderImpl
         result.endObject();
 
         return result;
+    }
+
+    private void addSections( ContentDocument content, XContentBuilder result )
+        throws Exception
+    {
+        sectionBuilder.build( content.getContentLocations(), result );
     }
 
     private void addCustomData( ContentDocument contentDocument, XContentBuilder result )
@@ -204,29 +206,6 @@ public final class ContentIndexDataBuilderImpl
         addField( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate(), result );
     }
 
-
-    private void addSections( ContentDocument content, XContentBuilder result )
-        throws Exception
-    {
-        final ContentLocations contentLocations = content.getContentLocations();
-
-        if ( contentLocations == null || !contentLocations.hasLocations() )
-        {
-            return;
-        }
-
-        Set<Double> sectionKeys = Sets.newTreeSet();
-
-        for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
-        {
-            if ( contentLocation.isApproved() )
-            {
-                sectionKeys.add( new Double( contentLocation.getMenuItemKey().toInt() ) );
-            }
-        }
-
-        addNumericSet( CONTENTLOCATIONS_FIELDNAME, sectionKeys, result, false );
-    }
 
     private void addUserValues( XContentBuilder result, String prefix, SimpleText key, SimpleText name, SimpleText qualifiedName )
         throws Exception

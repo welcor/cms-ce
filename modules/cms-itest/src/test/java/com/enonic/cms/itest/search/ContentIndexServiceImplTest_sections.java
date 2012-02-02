@@ -21,6 +21,8 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentKey;
 
+import static org.junit.Assert.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
@@ -31,9 +33,8 @@ public class ContentIndexServiceImplTest_sections
     extends ContentIndexServiceTestBase
 {
 
-
     @Test
-    public void testQueryOnSections()
+    public void testSectionFilterStatus()
         throws Exception
     {
         final ContentKey contentKey = new ContentKey( 1 );
@@ -42,27 +43,41 @@ public class ContentIndexServiceImplTest_sections
 
         contentIndexService.index( doc1, false );
 
-        //printAllIndexContent();
+        printAllIndexContent();
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
 
         final ContentIndexQuery query = new ContentIndexQuery( "" );
 
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( 10 );
-
+        menuItem.setKey( 1 );
         query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.APPROVED_ONLY );
-
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
 
+        menuItem.setKey( 2 );
+        query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.APPROVED_ONLY );
+        assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
 
+        menuItem.setKey( 3 );
+        query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.APPROVED_ONLY );
+        assertTrue( contentIndexService.query( query ).getTotalCount() == 0 );
+
+        query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.UNAPPROVED_ONLY );
+        assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
+
+        menuItem.setKey( 2 );
+        query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.UNAPPROVED_ONLY );
+        assertTrue( contentIndexService.query( query ).getTotalCount() == 0 );
+
+        menuItem.setKey( 3 );
+        query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.ANY );
+        assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
     }
 
 
     private ContentDocument createTestContentWithSections( ContentKey contentKey )
         throws Exception
     {
-
         ContentDocument contentDocument = createTestContent();
 
         ContentEntity content = new ContentEntity();
@@ -72,9 +87,9 @@ public class ContentIndexServiceImplTest_sections
         site.setKey( 1 );
         site.setName( "site1" );
 
-        SectionContentEntity sectionContent1 = createSectionContent( site, content, 1 );
-        SectionContentEntity sectionContent2 = createSectionContent( site, content, 2 );
-        SectionContentEntity sectionContent3 = createSectionContent( site, content, 3 );
+        SectionContentEntity sectionContent1 = createSectionContent( site, content, 1, true );
+        SectionContentEntity sectionContent2 = createSectionContent( site, content, 2, true );
+        SectionContentEntity sectionContent3 = createSectionContent( site, content, 3, false );
 
         content.addSectionContent( sectionContent1 );
         content.addSectionContent( sectionContent2 );
@@ -82,14 +97,14 @@ public class ContentIndexServiceImplTest_sections
 
         ContentLocationSpecification spec = new ContentLocationSpecification();
         spec.setSiteKey( new SiteKey( 1 ) );
-        spec.setIncludeInactiveLocationsInSection( false );
+        spec.setIncludeInactiveLocationsInSection( true );
 
         contentDocument.setContentLocations( content.getLocations( spec ) );
 
         return contentDocument;
     }
 
-    private SectionContentEntity createSectionContent( SiteEntity site, ContentEntity content, int sectionKey )
+    private SectionContentEntity createSectionContent( SiteEntity site, ContentEntity content, int sectionKey, boolean approved )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
         menuItem.setSite( site );
@@ -100,7 +115,7 @@ public class ContentIndexServiceImplTest_sections
         sectionContent.setKey( new SectionContentKey( sectionKey ) );
         sectionContent.setContent( content );
         sectionContent.setMenuItem( menuItem );
-        sectionContent.setApproved( true );
+        sectionContent.setApproved( approved );
         return sectionContent;
     }
 
@@ -166,6 +181,5 @@ public class ContentIndexServiceImplTest_sections
 
         return content;
     }
-
 
 }

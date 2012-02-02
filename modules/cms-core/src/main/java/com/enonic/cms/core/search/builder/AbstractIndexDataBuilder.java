@@ -196,6 +196,11 @@ class AbstractIndexDataBuilder
                               boolean addOrderField )
         throws Exception
     {
+        if ( values.size() == 0 )
+        {
+            return;
+        }
+
         doAddStringSet( fieldName, values, builder, addOrderField );
 
         if ( includeNumeric )
@@ -224,6 +229,11 @@ class AbstractIndexDataBuilder
     public void addNumericSet( String fieldName, final Set<Double> values, final XContentBuilder builder, final boolean addOrderField )
         throws Exception
     {
+        if ( values.size() == 0 )
+        {
+            return;
+        }
+
         doAddNumericSet( fieldName, values, builder, addOrderField );
     }
 
@@ -231,6 +241,7 @@ class AbstractIndexDataBuilder
                                   final boolean addOrderField )
         throws Exception
     {
+
         String numericFieldName = IndexFieldNameResolver.getNumericFieldName( fieldName );
         builder.array( numericFieldName, values.toArray( new Double[values.size()] ) );
 

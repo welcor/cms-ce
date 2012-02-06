@@ -1,7 +1,6 @@
 package com.enonic.cms.core.search;
 
 import java.io.File;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -54,22 +53,8 @@ public class NodeFactory
         setLogger();
 
         final Settings settings = NodeSettingsBuilder.createNodeSettings( this.storageDir );
-
         this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
-
         this.node.start();
-
-        Map<String, String> appliedSettings = this.node.settings().getAsMap();
-
-        System.out.println( "Settings: " );
-
-        for ( String setsetting : appliedSettings.keySet() )
-        {
-
-            System.out.println( setsetting + ": " + appliedSettings.get( setsetting ) );
-        }
-
-
     }
 
     private void setLogger()

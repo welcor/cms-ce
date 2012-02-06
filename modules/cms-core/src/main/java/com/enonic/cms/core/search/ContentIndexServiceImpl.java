@@ -378,7 +378,6 @@ public class ContentIndexServiceImpl
 
         final SearchRequest req = Requests.searchRequest( INDEX_NAME )
             .types( IndexType.Content.toString() )
-            .operationThreading( OPERATION_THREADING )
             .searchType( SEARCH_TYPE )
             .source( build );
 
@@ -420,7 +419,6 @@ public class ContentIndexServiceImpl
             }
         }
     }
-
 
     public void flush()
     {

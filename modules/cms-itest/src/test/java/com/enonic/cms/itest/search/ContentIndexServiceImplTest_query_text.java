@@ -24,17 +24,17 @@ public class ContentIndexServiceImplTest_query_text
         flushIndex();
         //printAllIndexContent();
 
-        assertContentResultSetEquals( new int[]{123},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' AND data/* CONTAINS 'ost'") ) );
+        assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' AND data/* CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{123, 124, 125},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost'") ) );
+        assertContentResultSetEquals( new int[]{123, 124, 125}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124, 125, 126},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'kake' OR data/* CONTAINS 'kake'") ) );
+        assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'kake' OR data/* CONTAINS 'kake'" ) ) );
 
-        assertContentResultSetEquals( new int[]{},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk'") ) );
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk'" ) ) );
     }
 
     @Test
@@ -46,17 +46,17 @@ public class ContentIndexServiceImplTest_query_text
         contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
         flushIndex();
 
-        assertContentResultSetEquals( new int[]{123},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost'") ) );
+        assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{123, 124, 125},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' OR fulltext CONTAINS 'ost'") ) );
+        assertContentResultSetEquals( new int[]{123, 124, 125}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' OR fulltext CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124, 125, 126},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'kake' OR fulltext CONTAINS 'kake'") ) );
+        assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'kake' OR fulltext CONTAINS 'kake'" ) ) );
 
-        assertContentResultSetEquals( new int[]{},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk'") ) );
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk'" ) ) );
     }
 
 
@@ -67,17 +67,17 @@ public class ContentIndexServiceImplTest_query_text
         contentIndexService.index( createContentDocument( 124, "kake", null, null ), false );
         flushIndex();
 
-        assertContentResultSetEquals( new int[]{},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' AND unknown CONTAINS 'ost'") ) );
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' AND unknown CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{123},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'ost' OR unknown CONTAINS 'ost'") ) );
+        assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'ost' OR unknown CONTAINS 'ost'" ) ) );
 
-        assertContentResultSetEquals( new int[]{124},
-                                      contentIndexService.query( new ContentIndexQuery( "unknown CONTAINS 'kake' OR title CONTAINS 'kake'") ) );
+        assertContentResultSetEquals( new int[]{124}, contentIndexService.query(
+            new ContentIndexQuery( "unknown CONTAINS 'kake' OR title CONTAINS 'kake'" ) ) );
 
-        assertContentResultSetEquals( new int[]{},
-                                      contentIndexService.query( new ContentIndexQuery( "title CONTAINS 'fisk' OR unknown CONTAINS 'fisk'") ) );
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
+            new ContentIndexQuery( "title CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
     @Ignore // Decide how to handle fulltext
@@ -95,28 +95,28 @@ public class ContentIndexServiceImplTest_query_text
         flushIndex();
 
         assertContentResultSetEquals( new int[]{121}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost'") ) );
+            new ContentIndexQuery( "title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125, 126, 127}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost'") ) );
+            new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123, 124, 127}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')") ) );
+            new ContentIndexQuery( "title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123, 124, 126}, contentIndexService.query(
-            new ContentIndexQuery( "data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')") ) );
+            new ContentIndexQuery( "data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125}, contentIndexService.query(
-            new ContentIndexQuery( "fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')") ) );
+            new ContentIndexQuery( "fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 123, 124}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')") ) );
+            new ContentIndexQuery( "title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 124}, contentIndexService.query(
-            new ContentIndexQuery( "data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')") ) );
+            new ContentIndexQuery( "data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123}, contentIndexService.query(
-            new ContentIndexQuery( "fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')") ) );
+            new ContentIndexQuery( "fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')" ) ) );
     }
 
     @Test
@@ -129,19 +129,19 @@ public class ContentIndexServiceImplTest_query_text
         flushIndex();
 
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
-            new ContentIndexQuery( "(title CONTAINS 'ost' AND data/* CONTAINS 'ost') OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "(title CONTAINS 'ost' AND data/* CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{123, 124, 125}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query(
-            new ContentIndexQuery( "(title CONTAINS 'ost' OR data/* CONTAINS 'ost') AND unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "(title CONTAINS 'ost' OR data/* CONTAINS 'ost') AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'kake' OR data/* CONTAINS 'kake' OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "title CONTAINS 'kake' OR data/* CONTAINS 'kake' OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk' OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
 
@@ -155,19 +155,19 @@ public class ContentIndexServiceImplTest_query_text
         flushIndex();
 
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
-            new ContentIndexQuery( "(title CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "(title CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{123, 124, 125}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'ost' OR fulltext CONTAINS 'ost' OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "title CONTAINS 'ost' OR fulltext CONTAINS 'ost' OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost' AND unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost' AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{124, 125, 126}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'kake' OR fulltext CONTAINS 'kake' OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "title CONTAINS 'kake' OR fulltext CONTAINS 'kake' OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query(
-            new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk' OR unknown CONTAINS 'fisk'") ) );
+            new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
 
@@ -186,61 +186,62 @@ public class ContentIndexServiceImplTest_query_text
         flushIndex();
 
         assertContentResultSetEquals( new int[]{121}, contentIndexService.query( new ContentIndexQuery(
-            "(title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'") ) );
+            "(title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
-            "(title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost') AND unknown CONTAINS 'fisk'") ) );
+            "(title CONTAINS 'ost' AND data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost') AND unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125, 126, 127}, contentIndexService.query(
-            new ContentIndexQuery( "(title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
+        assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125, 126, 127}, contentIndexService.query( new ContentIndexQuery(
+            "(title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
 
-        assertContentResultSetEquals( new int[]{}, contentIndexService.query(
-            new ContentIndexQuery( "(title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost') AND unknown CONTAINS 'fisk'" ) ) );
+        assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
+            "(title CONTAINS 'ost' OR data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost') AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123, 124, 127}, contentIndexService.query( new ContentIndexQuery(
-            "(title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'") ) );
+            "(title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
-            "(title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'") ) );
+            "(title CONTAINS 'ost' OR (data/* CONTAINS 'ost' AND fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123, 124, 126}, contentIndexService.query( new ContentIndexQuery(
-            "(data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'") ) );
+            "(data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
-            "(data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'") ) );
+            "(data/* CONTAINS 'ost' OR (title CONTAINS 'ost' AND fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123, 124, 125}, contentIndexService.query( new ContentIndexQuery(
-            "(fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')) OR unknown CONTAINS 'fisk'") ) );
+            "(fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
-            "(fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'") ) );
+            "(fulltext CONTAINS 'ost' OR (title CONTAINS 'ost' AND data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 123, 124}, contentIndexService.query( new ContentIndexQuery(
-            "(title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'") ) );
+            "(title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
-            "(title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'") ) );
+            "(title CONTAINS 'ost' AND (data/* CONTAINS 'ost' OR fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 124}, contentIndexService.query( new ContentIndexQuery(
-            "(data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'") ) );
+            "(data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
-            "(data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'") ) );
+            "(data/* CONTAINS 'ost' AND (title CONTAINS 'ost' OR fulltext CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{121, 122, 123}, contentIndexService.query( new ContentIndexQuery(
-            "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) OR unknown CONTAINS 'fisk'") ) );
+            "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) OR unknown CONTAINS 'fisk'" ) ) );
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
-            "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'") ) );
+            "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
     }
 
 
     @Test
     public void testSplittedNormalIndexWithAnd()
     {
-        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ),
-                       false );
-        contentIndexService.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
@@ -250,9 +251,10 @@ public class ContentIndexServiceImplTest_query_text
     @Test
     public void testSplittedNormalIndexWithOr()
     {
-        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ),
-                       false );
-        contentIndexService.index( createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ), false );
+        contentIndexService.index(
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
@@ -261,10 +263,11 @@ public class ContentIndexServiceImplTest_query_text
 
     @Test
     public void testMultipleSameLikeExactWords()
+        throws Exception
     {
-        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/heading", "ENONIC"}, {"data/preface", "ENONIC"},
-            {"data/text", "ENONIC"}} ), false );
-        flushIndex();
+        contentIndexService.index( createContentDocument( 101, "title",
+                                                          new String[][]{{"data/heading", "enonic"}, {"data/preface", "enonic"},
+                                                              {"data/text", "enonic"}} ), false );
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/heading LIKE '%ENONIC%' or data/preface LIKE '%ENONIC%' or data/text LIKE '%ENONIC%'", "" ) ) );

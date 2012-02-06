@@ -103,4 +103,10 @@ public final class IndexValueResolver
     }
 
 
+    public static String getWildcardValue( final String value )
+    {
+        String replacedValue = StringUtils.replaceChars( value, '%', '*' );
+        return StringUtils.lowerCase( replacedValue );
+    }
+
 }

@@ -1,9 +1,10 @@
 package com.enonic.cms.core.search.query;
 
-import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
+
+import com.enonic.cms.core.search.builder.IndexValueResolver;
 
 public class LikeQueryBuilderCreator
     extends BaseQueryBuilder
@@ -20,7 +21,7 @@ public class LikeQueryBuilderCreator
         }
 
         final WildcardQueryBuilder wildcardQueryBuilder =
-            QueryBuilders.wildcardQuery( path.getPath(), StringUtils.replaceChars( value, '%', '*' ) );
+            QueryBuilders.wildcardQuery( path.getPath(), IndexValueResolver.getWildcardValue( value ) );
 
         if ( path.doRenderAsHasChildQuery() )
         {

@@ -70,6 +70,7 @@ public abstract class ContentIndexServiceTestBase
         throws Exception
     {
         contentIndexService.initalizeIndex( true );
+        flushIndex();
     }
 
     protected IndexDataCreator indexDataCreator = new IndexDataCreator();

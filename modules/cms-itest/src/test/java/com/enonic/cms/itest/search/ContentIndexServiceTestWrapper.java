@@ -51,6 +51,7 @@ public class ContentIndexServiceTestWrapper
     public void indexBulk( List<ContentDocument> docs )
     {
         contentIndexService.indexBulk( docs );
+        contentIndexService.flush();
     }
 
     public boolean isIndexed( ContentKey contentKey )

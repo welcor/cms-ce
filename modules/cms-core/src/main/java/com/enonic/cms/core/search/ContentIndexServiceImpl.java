@@ -13,7 +13,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
@@ -424,7 +424,10 @@ public class ContentIndexServiceImpl
 
     public void flush()
     {
-        client.admin().indices().flush( new FlushRequest( INDEX_NAME ).refresh( true ) ).actionGet();
+        final FlushResponse flushResponse =
+            client.admin().indices().flush( Requests.flushRequest( INDEX_NAME ).refresh( true ) ).actionGet();
+
+        LOG.finest( "Flush request executed with " + flushResponse.getSuccessfulShards() + " successfull shards" );
     }
 
     public SearchResponse query( String query )

@@ -46,13 +46,11 @@ public class ContentIndexServiceImplTest_query_orderby
         printAllIndexContent();
 
         // TODO: Should contenttypekey be contenttypekey or contenttype_key ??
-        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom asc" ) )
-                          .getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
+            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom asc" ) ).getKeys() );
 
-        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom desc" ) )
-                          .getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), contentIndexService.query(
+            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom desc" ) ).getKeys() );
 
     }
 
@@ -79,9 +77,8 @@ public class ContentIndexServiceImplTest_query_orderby
                       contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo asc" ) )
                           .getKeys() );
 
-        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo desc" ) )
-                          .getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), contentIndexService.query(
+            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo desc" ) ).getKeys() );
 
     }
 
@@ -89,18 +86,23 @@ public class ContentIndexServiceImplTest_query_orderby
     public void testOrderByStatus()
     {
         contentIndexService.index( createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 3, "c1",
-                                              new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
+                                   false );
         contentIndexService.index( createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
-                                              new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
+                                   false );
         contentIndexService.index( createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 2, "c3",
-                                              new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
+                                   false );
         flushIndex();
 
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) ).getKeys() );
+                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) )
+                          .getKeys() );
 
         assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) ).getKeys() );
+                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) )
+                          .getKeys() );
 
     }
 
@@ -160,9 +162,10 @@ public class ContentIndexServiceImplTest_query_orderby
     @Test
     public void testQueryWithOrderByMultipleRelatedContentDoesNotCreateDuplicateContentKeys()
     {
-        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/myrelated", "3"}, {"data/myrelated", "9"}} ), false );
-       // flushIndex();
-       // printAllIndexContent();
+        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/myrelated", "3"}, {"data/myrelated", "9"}} ),
+                                   false );
+        // flushIndex();
+        // printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "", "data/myrelated ASC" ) ) );
     }

@@ -20,7 +20,8 @@ import org.springframework.beans.factory.FactoryBean;
  * Time: 2:13 PM
  */
 public class NodeFactory
-        implements FactoryBean<Node> {
+    implements FactoryBean<Node>
+{
     private Node node;
 
     private File storageDir;
@@ -32,51 +33,60 @@ public class NodeFactory
     private final static boolean data = true;
 
     public Node getObject()
-            throws Exception {
+        throws Exception
+    {
         return this.node;
     }
 
-    public Class<?> getObjectType() {
+    public Class<?> getObjectType()
+    {
         return Node.class;
     }
 
-    public boolean isSingleton() {
+    public boolean isSingleton()
+    {
         return true;
     }
 
     @PostConstruct
-    public void start() {
+    public void start()
+    {
         setLogger();
 
         final Settings settings = NodeSettingsBuilder.createNodeSettings( this.storageDir );
 
-        this.node = NodeBuilder.nodeBuilder().client(client).local(local).data(data).settings(settings).build();
+        this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
 
         this.node.start();
 
         Map<String, String> appliedSettings = this.node.settings().getAsMap();
 
-        System.out.println("Settings: ");
+        System.out.println( "Settings: " );
 
-        for (String setsetting : appliedSettings.keySet()) {
+        for ( String setsetting : appliedSettings.keySet() )
+        {
 
-            System.out.println(setsetting + ": " + appliedSettings.get(setsetting));
+            System.out.println( setsetting + ": " + appliedSettings.get( setsetting ) );
         }
 
 
     }
 
-    private void setLogger() {
-        ESLoggerFactory.setDefaultFactory(new Slf4jESLoggerFactory());
+    private void setLogger()
+    {
+        ESLoggerFactory.setDefaultFactory( new Slf4jESLoggerFactory() );
     }
 
 
     @PreDestroy
-    public void stop() {
+    public void stop()
+    {
         this.node.close();
     }
 
-    public void setStorageDir(File storageDir) {
+    public void setStorageDir( File storageDir )
+    {
         this.storageDir = storageDir;
     }
+
 }

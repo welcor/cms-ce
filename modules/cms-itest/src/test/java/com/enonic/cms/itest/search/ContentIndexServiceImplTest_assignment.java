@@ -178,7 +178,6 @@ public class ContentIndexServiceImplTest_assignment
         contentIndexService.index( assignerIsJVS, false );
         contentIndexService.index( assignerIsTAN, false );
         contentIndexService.index( assignerIsNone, false );
-        //flushIndex();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103}, contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
         assertContentResultSetEquals( new int[]{1102, 1101, 1103},

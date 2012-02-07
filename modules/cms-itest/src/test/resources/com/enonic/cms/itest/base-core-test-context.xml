@@ -78,11 +78,11 @@
     <bean id="remoteUserStoreFactory"
           class="com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStoreFactory"/>
 
-  <bean id="fileResourceService" class="com.enonic.cms.store.resource.FileResourceServiceImpl">
-    <property name="blobStore" ref="blobStore"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
-  </bean>
+    <bean id="fileResourceService" class="com.enonic.cms.store.resource.FileResourceServiceImpl">
+        <property name="blobStore" ref="blobStore"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
+    </bean>
 
     <bean id="userStoreConnectorManager" class="com.enonic.cms.core.security.userstore.UserStoreConnectorManagerImpl"/>
 
@@ -312,12 +312,11 @@
     <bean id="adminConsoleLoginAccessResolver" class="com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver"/>
 
 
+    <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 
-  <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
-
-  <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
-    <property name="mimetypesLocation" value="#{config.homeDir}/config/mimetypes.properties"/>
-  </bean>
+    <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
+        <property name="mimetypesLocation" value="#{config.homeDir}/config/mimetypes.properties"/>
+    </bean>
 
     <bean id="contentIndexDataBuilder" class="com.enonic.cms.core.search.builder.ContentIndexDataBuilderImpl"/>
 
@@ -328,7 +327,9 @@
     <bean class="com.enonic.cms.core.search.NodeFactory">
         <property name="storageDir" value="#{config.elasticStorageDir}"/>
     </bean>
+
     <bean class="com.enonic.cms.core.search.ClientFactory"/>
 
-    
+    <bean id="nodeSettingsBuilder" class="com.enonic.cms.itest.search.NodeTestSettingsBuilder"/>
+
 </beans>

@@ -178,46 +178,46 @@
         <property name="autologinTimeoutInDays" value="#{config.autoLoginTimeout}"/>
     </bean>
 
-  <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
-    <property name="clientForRemoteInvocations" value="false"/>
-    <property name="dataSourceService" ref="dataSourceService"/>
-    <property name="internalClientRenderService" ref="internalClientRenderService"/>
-    <property name="internalClientContentService" ref="internalClientContentService"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="resourceService" ref="resourceService"/>
-    <property name="preferenceService" ref="preferenceService"/>
-    <property name="cmsProperties" value="#{config.properties}"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="contentService" ref="contentService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="previewService" ref="previewService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-  </bean>
+    <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
+        <property name="clientForRemoteInvocations" value="false"/>
+        <property name="dataSourceService" ref="dataSourceService"/>
+        <property name="internalClientRenderService" ref="internalClientRenderService"/>
+        <property name="internalClientContentService" ref="internalClientContentService"/>
+        <property name="userDao" ref="userDao"/>
+        <property name="resourceService" ref="resourceService"/>
+        <property name="preferenceService" ref="preferenceService"/>
+        <property name="cmsProperties" value="#{config.properties}"/>
+        <property name="sitePropertiesService" ref="sitePropertiesService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="contentDao" ref="contentDao"/>
+        <property name="previewService" ref="previewService"/>
+        <property name="timeService" ref="timeService"/>
+        <property name="livePortalTraceService" ref="livePortalTraceService"/>
+    </bean>
 
-  <bean id="remoteClient" class="com.enonic.cms.core.client.InternalClientImpl">
-    <property name="clientForRemoteInvocations" value="true"/>
-    <property name="dataSourceService" ref="dataSourceService"/>
-    <property name="internalClientRenderService" ref="internalClientRenderService"/>
-    <property name="internalClientContentService" ref="internalClientContentService"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="resourceService" ref="resourceService"/>
-    <property name="preferenceService" ref="preferenceService"/>
-    <property name="cmsProperties" value="#{config.properties}"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="contentService" ref="contentService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="previewService" ref="previewService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-  </bean>
+    <bean id="remoteClient" class="com.enonic.cms.core.client.InternalClientImpl">
+        <property name="clientForRemoteInvocations" value="true"/>
+        <property name="dataSourceService" ref="dataSourceService"/>
+        <property name="internalClientRenderService" ref="internalClientRenderService"/>
+        <property name="internalClientContentService" ref="internalClientContentService"/>
+        <property name="userDao" ref="userDao"/>
+        <property name="resourceService" ref="resourceService"/>
+        <property name="preferenceService" ref="preferenceService"/>
+        <property name="cmsProperties" value="#{config.properties}"/>
+        <property name="sitePropertiesService" ref="sitePropertiesService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="contentService" ref="contentService"/>
+        <property name="contentDao" ref="contentDao"/>
+        <property name="previewService" ref="previewService"/>
+        <property name="timeService" ref="timeService"/>
+        <property name="livePortalTraceService" ref="livePortalTraceService"/>
+    </bean>
 
-  <bean id="internalClientContentService"
-        class="com.enonic.cms.core.client.InternalClientContentService">
-    <property name="siteCachesService" ref="siteCachesService"/>
-  </bean>
+    <bean id="internalClientContentService"
+          class="com.enonic.cms.core.client.InternalClientContentService">
+        <property name="siteCachesService" ref="siteCachesService"/>
+    </bean>
 
     <bean class="com.enonic.cms.core.client.LocalClientSetter">
         <property name="localClient" ref="localClient"/>
@@ -256,11 +256,11 @@
         <property name="directory" value="#{config.blobStoreDir}"/>
     </bean>
 
-  <bean id="fileResourceService" class="com.enonic.cms.store.resource.FileResourceServiceImpl">
-    <property name="blobStore" ref="blobStore"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
-  </bean>
+    <bean id="fileResourceService" class="com.enonic.cms.store.resource.FileResourceServiceImpl">
+        <property name="blobStore" ref="blobStore"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
+    </bean>
 
     <bean id="blobStoreGarbageCollector" class="com.enonic.cms.framework.blob.gc.GarbageCollector">
         <property name="finder" ref="usedBlobStoreFinder"/>
@@ -592,43 +592,46 @@
 
     <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 
-  <bean id="compositeFilter" class="org.springframework.web.filter.CompositeFilter">
-    <property name="filters">
-      <list>
-        <bean class="org.springframework.web.filter.RequestContextFilter"/>
-        <bean class="com.enonic.cms.server.service.servlet.CharacterEncodingFilter"/>
-        <bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
-          <property name="singleSession" value="true"/>
-        </bean>
-        <bean class="com.enonic.cms.core.vhost.VirtualHostFilter"/>
-        <bean class="com.enonic.cms.upgrade.UpgradeCheckFilter"/>
-      </list>
-    </property>
-  </bean>
+    <bean id="compositeFilter" class="org.springframework.web.filter.CompositeFilter">
+        <property name="filters">
+            <list>
+                <bean class="org.springframework.web.filter.RequestContextFilter"/>
+                <bean class="com.enonic.cms.server.service.servlet.CharacterEncodingFilter"/>
+                <bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
+                    <property name="singleSession" value="true"/>
+                </bean>
+                <bean class="com.enonic.cms.core.vhost.VirtualHostFilter"/>
+                <bean class="com.enonic.cms.upgrade.UpgradeCheckFilter"/>
+            </list>
+        </property>
+    </bean>
 
-  <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
-    <property name="mimetypesLocation" value="#{config.homeDir}/config/mimetypes.properties"/>
-  </bean>
+    <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
+        <property name="mimetypesLocation" value="#{config.homeDir}/config/mimetypes.properties"/>
+    </bean>
 
-                                                <bean class="com.enonic.cms.core.search.NodeFactory">
-<property name="storageDir" value="#{config.elasticStorageDir}"/>
-</bean>
-<bean class="com.enonic.cms.core.search.ClientFactory"/>
+    <bean class="com.enonic.cms.core.search.NodeFactory">
+        <property name="storageDir" value="#{config.elasticStorageDir}"/>
+    </bean>
+    <bean class="com.enonic.cms.core.search.ClientFactory"/>
 
-<bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/>
+    <bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/>
 
-<bean id="contentIndexDataBuilder" class="com.enonic.cms.core.search.builder.ContentIndexDataBuilderImpl"/>
+    <bean id="contentIndexDataBuilder" class="com.enonic.cms.core.search.builder.ContentIndexDataBuilderImpl"/>
 
-<bean id="contentQueryTranslator" class="com.enonic.cms.core.search.query.QueryTranslator"/>
+    <bean id="contentQueryTranslator" class="com.enonic.cms.core.search.query.QueryTranslator"/>
 
-<bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceDispatcher">
-<property name="newContentIndexService" ref="newContentIndexService"/>
-<property name="oldContentIndexService" ref="oldContentIndexService"/>
-</bean>
+    <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceDispatcher">
+        <property name="newContentIndexService" ref="newContentIndexService"/>
+        <property name="oldContentIndexService" ref="oldContentIndexService"/>
+    </bean>
 
-<bean id="oldContentIndexService" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>
+    <bean id="oldContentIndexService" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>
 
-<bean id="newContentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
+    <bean id="newContentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
 
-<bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.ContentIndexSettingsBuilder"/>
+    <bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.ContentIndexSettingsBuilder"/>
+
+    <bean id="nodeSettingsBuilder" class="com.enonic.cms.core.search.NodeSettingsBuilderImpl"/>
+
 </beans>  

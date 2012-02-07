@@ -11,6 +11,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +31,8 @@ public class NodeFactory
     private final static boolean client = false;
 
     private final static boolean data = true;
+
+    private NodeSettingsBuilder nodeSettingsBuilder;
 
     public Node getObject()
         throws Exception
@@ -52,7 +55,7 @@ public class NodeFactory
     {
         setLogger();
 
-        final Settings settings = NodeSettingsBuilder.createNodeSettings( this.storageDir );
+        final Settings settings = nodeSettingsBuilder.createNodeSettings( this.storageDir );
         this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
         this.node.start();
     }
@@ -74,4 +77,9 @@ public class NodeFactory
         this.storageDir = storageDir;
     }
 
+    @Autowired
+    public void setNodeSettingsBuilder( NodeSettingsBuilder nodeSettingsBuilder )
+    {
+        this.nodeSettingsBuilder = nodeSettingsBuilder;
+    }
 }

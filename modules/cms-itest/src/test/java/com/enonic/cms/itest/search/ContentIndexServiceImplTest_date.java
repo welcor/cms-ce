@@ -1,7 +1,6 @@
 package com.enonic.cms.itest.search;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -13,17 +12,11 @@ import com.enonic.cms.core.content.resultset.ContentResultSet;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 1/10/12
- * Time: 9:44 AM
- */
+
 public class ContentIndexServiceImplTest_date
     extends ContentIndexServiceTestBase
 {
 
-    @Ignore
     @Test
     public void testDateQueries()
     {
@@ -52,7 +45,6 @@ public class ContentIndexServiceImplTest_date
     }
 
 
-    @Ignore
     @Test
     public void testQueryReturnsEmptyResultWhenNowIsOneMillisecondBeforePublishFrom()
     {
@@ -119,7 +111,6 @@ public class ContentIndexServiceImplTest_date
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
-    @Ignore
     @Test
     public void testQueryReturnsEmptytWhenNowIsSameAsBothPublishFromAndPublishTo()
     {
@@ -143,7 +134,6 @@ public class ContentIndexServiceImplTest_date
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
-    @Ignore
     @Test
     public void testQueryReturnsEmptyWhenNowIsAfterPublishFromAndSameAsPublishTo()
     {

@@ -31,6 +31,18 @@
                 "type":"date",
                 "store":"yes"
             },
+            "publishfrom":{
+                "type":"date",
+                "store":"yes"
+            },
+            "publishto":{
+                "type":"date",
+                "store":"yes"
+            },
+            "assignmentduedate":{
+                "type":"date",
+                "store":"yes"
+            },
             "contentlocations":{
                 "include_in_all":false,
                 "properties":{

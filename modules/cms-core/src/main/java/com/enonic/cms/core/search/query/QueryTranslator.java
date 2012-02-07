@@ -1,9 +1,15 @@
 package com.enonic.cms.core.search.query;
 
+import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MissingFilterBuilder;
+import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeFilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.joda.time.DateTime;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQueryExprParser;
@@ -31,6 +37,10 @@ public final class QueryTranslator
 
         builder.size( contentIndexQuery.getCount() );
 
+        if ( contentIndexQuery.getContentOnlineAtFilter() != null )
+        {
+            applyContentPublishedAtFilter( builder, contentIndexQuery.getContentOnlineAtFilter() );
+        }
         // final QueryExpr queryExpr = QueryParser.newInstance().parse( contentIndexQuery.getQuery() );
 
         final Expression expression = queryExpr.getExpr();
@@ -51,6 +61,19 @@ public final class QueryTranslator
     private QueryExpr applyFunctionsAndDateTranslations( ContentIndexQuery contentIndexQuery )
     {
         return ContentIndexQueryExprParser.parse( contentIndexQuery );
+    }
+
+    private void applyContentPublishedAtFilter( final SearchSourceBuilder builder, final DateTime dateTime )
+    {
+        final DateTime dateTimeRoundedDownToNearestMinute = dateTime.minuteOfHour().roundFloorCopy();
+        final RangeFilterBuilder publishFromFilter = FilterBuilders.rangeFilter( "publishfrom" ).lte( dateTimeRoundedDownToNearestMinute );
+
+        final MissingFilterBuilder publishToMissing = FilterBuilders.missingFilter( "publishto" );
+        final RangeFilterBuilder publishToGTDate = FilterBuilders.rangeFilter( "publishto" ).gt( dateTimeRoundedDownToNearestMinute );
+        final OrFilterBuilder publishToFilter = FilterBuilders.orFilter( publishToMissing, publishToGTDate );
+
+        final AndFilterBuilder filter = FilterBuilders.andFilter( publishFromFilter, publishToFilter );
+        builder.filter( filter );
     }
 
     private QueryBuilder buildExpr( Expression expr )

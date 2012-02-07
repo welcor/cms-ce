@@ -1,7 +1,6 @@
 package com.enonic.cms.itest.search;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -10,12 +9,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 1/4/12
- * Time: 4:24 PM
- */
+
 public class ContentIndexServiceImplTest_assignment
     extends ContentIndexServiceTestBase
 {
@@ -189,7 +183,6 @@ public class ContentIndexServiceImplTest_assignment
                                       contentIndexService.query( new ContentIndexQuery( "categorykey = 9", "assigner/qualifiedname asc" ) ) );
     }
 
-    @Ignore
     @Test
     public void testIndexingAndSearchOnAssigmentDueDate()
     {

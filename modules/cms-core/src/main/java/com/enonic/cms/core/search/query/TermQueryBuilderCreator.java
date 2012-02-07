@@ -1,11 +1,19 @@
 package com.enonic.cms.core.search.query;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MissingFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
+import org.joda.time.ReadableDateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
+import com.enonic.cms.core.content.index.util.ValueConverter;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
+
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
 public class TermQueryBuilderCreator
     extends BaseQueryBuilder
@@ -16,7 +24,7 @@ public class TermQueryBuilderCreator
 
     public static QueryBuilder buildTermQuery( QueryPath path, Object singleValue )
     {
-        TermQueryBuilder termQuery;
+        final QueryBuilder termQuery;
 
         final boolean isWildCardPath = path.isWildCardPath();
 
@@ -37,6 +45,16 @@ public class TermQueryBuilderCreator
             Number number = (Number) singleValue;
             termQuery = QueryBuilders.termQuery( QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ), number );
         }
+        else if ( path.isDateField() && "".equals( singleValue ) )
+        {
+            MissingFilterBuilder filter = FilterBuilders.missingFilter( path.getPath() );
+            termQuery = QueryBuilders.filteredQuery( matchAllQuery(), filter );
+        }
+        else if ( isValidDateString( singleValue ) )
+        {
+            String stringDateValue = formatDateForElasticSearch( (String) singleValue );
+            termQuery = QueryBuilders.termQuery( path.getPath(), stringDateValue );
+        }
         else
         {
             String stringValue = (String) singleValue;
@@ -54,5 +72,22 @@ public class TermQueryBuilderCreator
 
     }
 
+    private static String formatDateForElasticSearch( final String dateValue )
+    {
+        final ReadableDateTime date = ValueConverter.toDate( dateValue );
+        final MutableDateTime dateInUTC = date.toMutableDateTime();
+        dateInUTC.setZone( DateTimeZone.UTC );
+        return ISODateTimeFormat.dateTime().print( dateInUTC );
+    }
+
+    private static boolean isValidDateString( Object value )
+    {
+        if ( value instanceof String )
+        {
+            ReadableDateTime date = ValueConverter.toDate( (String) value );
+            return date != null;
+        }
+        return false;
+    }
 
 }

@@ -1,19 +1,20 @@
 package com.enonic.cms.core.search.query;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.search.IndexType;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 11/13/11
- * Time: 9:28 PM
- */
+
 public class QueryPath
 {
 
     protected static final String ALL_FIELDS_PATH = "_all";
+
+    private static final Set<String> dateFields = Sets.newHashSet( "publishfrom", "publishto", "assignmentduedate" );
 
     private String path;
 
@@ -71,5 +72,10 @@ public class QueryPath
     public void setMatchAllPath()
     {
         this.path = ALL_FIELDS_PATH;
+    }
+
+    public boolean isDateField()
+    {
+        return dateFields.contains( this.path );
     }
 }

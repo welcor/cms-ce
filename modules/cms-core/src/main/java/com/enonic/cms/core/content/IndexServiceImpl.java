@@ -121,6 +121,11 @@ public final class IndexServiceImpl
 
         contentIndexService.indexBulk( contentToIndex );
 
+        for ( ContentEntity content : contentToRemove )
+        {
+            contentIndexService.remove( content.getKey() );
+        }
+
         contentDao.getHibernateTemplate().flush();
     }
 

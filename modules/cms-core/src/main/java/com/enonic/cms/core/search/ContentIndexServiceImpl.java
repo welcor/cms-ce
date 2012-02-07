@@ -242,7 +242,7 @@ public class ContentIndexServiceImpl
         }
 
         BulkResponse resp = this.client.bulk( bulkRequest ).actionGet();
-        LOG.fine( "Bulk index done in " + resp.getTookInMillis() + " ms" );
+        LOG.info( "Bulk index of " + docs.size() + " done in " + resp.getTookInMillis() + " ms" );
     }
 
 
@@ -376,10 +376,8 @@ public class ContentIndexServiceImpl
         StopWatch timer = new StopWatch();
         timer.start( "doQuery" );
 
-        final SearchRequest req = Requests.searchRequest( INDEX_NAME )
-            .types( IndexType.Content.toString() )
-            .searchType( SEARCH_TYPE )
-            .source( build );
+        final SearchRequest req =
+            Requests.searchRequest( INDEX_NAME ).types( IndexType.Content.toString() ).searchType( SEARCH_TYPE ).source( build );
 
         final SearchResponse res;
 

@@ -1,6 +1,8 @@
 package com.enonic.cms.core.search.IndexPerformance;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.util.StopWatch;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -60,18 +63,27 @@ public class QueryMeasurer
         File f = new File( "query-log" + Calendar.getInstance().getTime() + ".log" );
 
         print( System.out );
-        /*
-       try
-       {
-           FileUtils.write( f, querMeasurerData, "UTF-8" );
-       }
-       catch ( IOException e )
-       {
-           System.out.println( "Failed to write queryMeasures to disk " );
-       }
-        */
+
+        writeToFile( f );
+
         measuresMap = new HashMap<String, QueryMeasure>();
         totalSize = 0;
+    }
+
+    private void writeToFile( File f )
+    {
+        try
+        {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream( baos );
+            print( ps );
+            String content = baos.toString( "UTF-8" );
+            FileUtils.write( f, content, "UTF-8" );
+        }
+        catch ( IOException e )
+        {
+            System.out.println( "Failed to write queryMeasures to disk " );
+        }
     }
 
     public void print( PrintStream out )
@@ -152,10 +164,20 @@ public class QueryMeasurer
                 sum += measure;
             }
 
-            listInfo.totalHits = measures.size();
-            listInfo.avgTime = sum / measures.size();
-            listInfo.maxTime = maxTime;
-            listInfo.minTime = minTime;
+            if ( measures.size() > 0 )
+            {
+                listInfo.totalHits = measures.size();
+                listInfo.avgTime = sum / measures.size();
+                listInfo.maxTime = maxTime;
+                listInfo.minTime = minTime;
+            }
+            else
+            {
+                listInfo.totalHits = -1;
+                listInfo.avgTime = -1;
+                listInfo.maxTime = -1;
+                listInfo.minTime = -1;
+            }
 
             return listInfo;
         }

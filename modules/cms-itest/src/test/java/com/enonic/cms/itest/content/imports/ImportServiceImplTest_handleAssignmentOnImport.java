@@ -11,6 +11,7 @@ import java.util.Calendar;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -46,6 +47,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.*;
 
+@Ignore
 public class ImportServiceImplTest_handleAssignmentOnImport
     extends AbstractSpringTest
 {

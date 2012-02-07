@@ -17,7 +17,8 @@
 
     <bean id="pluginManager" class="com.enonic.cms.itest.plugin.MockPluginManager"/>
 
-    <bean id="indexService" class="com.enonic.cms.core.content.IndexServiceImpl"/>
+    <bean id="indexService" class="com.enonic.cms.core.content.IndexServiceImpl">
+    </bean>
 
     <bean id="categoryService" class="com.enonic.cms.core.content.category.CategoryServiceImpl">
         <property name="timeService" ref="timeService"/>
@@ -30,11 +31,12 @@
         <property name="contentStorer" ref="contentStorer"/>
     </bean>
 
-    <bean id="importService" class="com.enonic.cms.core.content.imports.ImportServiceImpl"/>
+    <bean id="importService" class="com.enonic.cms.core.content.imports.ImportServiceImpl">
+    </bean>
 
     <bean id="importJobFactory" class="com.enonic.cms.core.content.imports.ImportJobFactory"/>
 
-    <bean class="com.enonic.cms.itest.content.index.ContentIndexServiceImplTest">
+    <bean id="oldContentIndexServiceTest" class="com.enonic.cms.itest.content.index.ContentIndexServiceImplTest">
         <property name="contentIndexService" ref="contentIndexServiceOld"/>
     </bean>
 

@@ -4,6 +4,20 @@
  */
 package com.enonic.cms.itest.client;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import org.jdom.Document;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.enonic.cms.framework.util.JDOMUtil;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
@@ -13,17 +27,11 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.HtmlAreaDataEn
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextAreaDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.xmlbased.XmlDataEntry;
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.util.AssertTool;
-import org.jdom.Document;
-import org.junit.Test;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class InternalClientImpl_ImportContentXmlTest
     extends AbstractInternalClientImpl_ImportContentTest
 {

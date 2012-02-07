@@ -4,7 +4,32 @@
  */
 package com.enonic.cms.itest.content;
 
-import com.enonic.cms.core.content.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jdom.Document;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.RelatedContentFetcher;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
@@ -13,25 +38,19 @@ import com.enonic.cms.core.content.contentdata.custom.contentkeybased.RelatedCon
 import com.enonic.cms.core.content.contentdata.custom.relationdataentrylistbased.RelatedContentsDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
-import com.enonic.cms.core.content.resultset.*;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
+import com.enonic.cms.core.content.resultset.RelatedChildContent;
+import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
+import com.enonic.cms.core.content.resultset.RelatedParentContent;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserType;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentEntityDao;
 import com.enonic.cms.store.dao.GroupEntityDao;
-import org.jdom.Document;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -101,6 +120,7 @@ public class RelatedContentFetcherTest
         contentDao.setHibernateTemplate( hibernateTemplate );
     }
 
+    @Ignore
     @Test
     public void xxxx()
     {
@@ -153,6 +173,7 @@ public class RelatedContentFetcherTest
         LOG.info( "verification is to do" );
     }
 
+    @Ignore
     @Test
     public void fetch_children_when_one_content_relates_another()
     {
@@ -183,6 +204,7 @@ public class RelatedContentFetcherTest
 
     }
 
+    @Ignore
     @Test
     public void fetch_parents_when_one_content_relates_another()
     {
@@ -213,6 +235,7 @@ public class RelatedContentFetcherTest
 
     }
 
+    @Ignore
     @Test
     public void three_content_relates_each_other_in_a_circle()
     {
@@ -283,6 +306,7 @@ public class RelatedContentFetcherTest
         assertEquals( contentKeyA, contentCrelatedParents.get( 0 ).getContent().getKey() );
     }
 
+    @Ignore
     @Test
     public void common_related_child_between_two_content_is_contained_in_root_related_children_for_both_content()
     {
@@ -330,6 +354,7 @@ public class RelatedContentFetcherTest
         assertEquals( commonChild, contentBrelatedChildren.get( 0 ).getContent().getKey() );
     }
 
+    @Ignore
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_circular_reference_and_all_other_are_included()
     {
@@ -391,6 +416,7 @@ public class RelatedContentFetcherTest
 
     }
 
+    @Ignore
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_multiple_circular_references()
     {
@@ -444,6 +470,7 @@ public class RelatedContentFetcherTest
 
     }
 
+    @Ignore
     @Test
     public void eternal_loop_is_prevented_for_related_children_of_children()
     {
@@ -495,6 +522,7 @@ public class RelatedContentFetcherTest
 
     }
 
+    @Ignore
     @Test
     public void eternal_loop_is_prevented_for_related_parents_with_circular_reference()
     {
@@ -562,6 +590,7 @@ public class RelatedContentFetcherTest
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
     }
 
+    @Ignore
     @Test
     public void eternal_loop_is_prevented_for_related_parent_children_with_circular_reference()
     {

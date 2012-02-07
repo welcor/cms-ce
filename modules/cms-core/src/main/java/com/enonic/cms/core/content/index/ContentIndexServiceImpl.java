@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -34,7 +33,6 @@ import com.enonic.cms.store.dao.ContentIndexDao;
 /**
  * This class implements the content index service based on hibernate.
  */
-@Component("contentIndexService")
 public final class ContentIndexServiceImpl
     implements ContentIndexService, ContentIndexConstants
 {

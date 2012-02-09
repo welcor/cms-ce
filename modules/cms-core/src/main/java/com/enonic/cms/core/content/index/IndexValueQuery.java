@@ -17,7 +17,8 @@ public final class IndexValueQuery
 
     private int index = 0;
 
-    private int count = Integer.MAX_VALUE;
+    // TODO: FIX THIS
+    private int count = 200;
 
     private boolean descOrder;
 

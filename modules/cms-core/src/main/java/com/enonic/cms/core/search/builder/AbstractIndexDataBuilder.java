@@ -33,49 +33,38 @@ class AbstractIndexDataBuilder
         doAddField( fieldName, value, builder, addOrderField );
     }
 
-    private void doAddField( String fieldName, String value, final XContentBuilder builder, boolean addOrderField )
+    private void doAddField( final String fieldName, final String value, final XContentBuilder builder, boolean addOrderField )
         throws Exception
     {
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        value = normalizeValue( value );
+        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+        final String normalizedValue = IndexValueResolver.normalizeValue( value );
 
-        if ( StringUtils.isBlank( value ) )
+        if ( StringUtils.isBlank( normalizedValue ) )
         {
             return;
         }
 
         try
         {
-            Double numericValue = Double.parseDouble( value );
-            builder.field( IndexFieldNameResolver.getNumericFieldName( fieldName ), numericValue );
+            Double numericValue = Double.parseDouble( normalizedValue );
+            builder.field( IndexFieldNameResolver.getNumericFieldName( normalizedFieldName ), numericValue );
 
             if ( addOrderField )
             {
-                addOrderField( fieldName, numericValue, builder );
+                addOrderField( normalizedFieldName, numericValue, builder );
             }
         }
         catch ( NumberFormatException e )
         {
             if ( addOrderField )
             {
-                addOrderField( fieldName, value, builder );
+                addOrderField( normalizedFieldName, normalizedValue, builder );
             }
         }
 
-        builder.field( fieldName, value );
+        builder.field( normalizedFieldName, normalizedValue );
 
     }
-
-    private String normalizeValue( final String value )
-    {
-        if ( StringUtils.isBlank( value ) )
-        {
-            return "";
-        }
-
-        return value.trim().toLowerCase();
-    }
-
 
     protected void addField( String fieldName, final Date value, final XContentBuilder builder )
         throws Exception
@@ -116,16 +105,17 @@ class AbstractIndexDataBuilder
     }
 
 
-    private void doAddField( String fieldName, final Integer value, final XContentBuilder builder, boolean addOrderField )
+    private void doAddField( final String fieldName, final Integer value, final XContentBuilder builder, boolean addOrderField )
         throws Exception
     {
 
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
         builder.field( IndexFieldNameResolver.getNumericFieldName( fieldName ), value );
-        builder.field( fieldName, value );
+
+        builder.field( normalizedFieldName, value );
         if ( addOrderField )
         {
-            addOrderField( fieldName, value, builder );
+            addOrderField( normalizedFieldName, value, builder );
         }
     }
 
@@ -143,16 +133,16 @@ class AbstractIndexDataBuilder
     }
 
 
-    private void doAddField( String fieldName, final Double value, final XContentBuilder builder, boolean addOrderField )
+    private void doAddField( final String fieldName, final Double value, final XContentBuilder builder, boolean addOrderField )
         throws Exception
     {
 
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
         builder.field( IndexFieldNameResolver.getNumericFieldName( fieldName ), value );
-        builder.field( fieldName, value );
+        builder.field( normalizedFieldName, value );
         if ( addOrderField )
         {
-            addOrderField( fieldName, value, builder );
+            addOrderField( normalizedFieldName, value, builder );
         }
     }
 
@@ -214,11 +204,12 @@ class AbstractIndexDataBuilder
         }
     }
 
-    private void doAddStringSet( String fieldName, Set<String> values, XContentBuilder builder, final boolean addOrderField )
+    private void doAddStringSet( final String fieldName, Set<String> values, XContentBuilder builder, final boolean addOrderField )
         throws Exception
     {
-        String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        builder.array( normalizedFieldName, values.toArray( new String[values.size()] ) );
+        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+
+        builder.array( normalizedFieldName, IndexValueResolver.getNormalizedStringValues( values ) );
 
         if ( addOrderField )
         {

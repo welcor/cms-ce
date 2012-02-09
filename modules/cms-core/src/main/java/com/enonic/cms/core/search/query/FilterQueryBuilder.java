@@ -14,6 +14,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
 /**
@@ -34,6 +35,50 @@ public class FilterQueryBuilder
 
         List<BaseFilterBuilder> filtersToApply = getListOfFiltersToApply( query );
 
+        doAddFilters( builder, boolFilterBuilder, filtersToApply );
+    }
+
+    private static List<BaseFilterBuilder> getListOfFiltersToApply( ContentIndexQuery query )
+    {
+        List<BaseFilterBuilder> filtersToApply = new ArrayList<BaseFilterBuilder>();
+
+        final Collection<ContentKey> contentFilter = query.getContentFilter();
+
+        if ( contentFilter != null && !contentFilter.isEmpty() )
+        {
+            filtersToApply.add( buildContentFilter( contentFilter ) );
+        }
+
+        if ( query.hasSectionFilter() )
+        {
+            filtersToApply.add( buildSectionFilter( query ) );
+        }
+
+        if ( query.hasCategoryFilter() )
+        {
+            filtersToApply.add( buildCategoryFilter( query.getCategoryFilter() ) );
+        }
+
+        if ( query.hasContentTypeFilter() )
+        {
+            filtersToApply.add( buildContentTypeFilter( query.getContentTypeFilter() ) );
+        }
+
+        return filtersToApply;
+    }
+
+    public static void buildFilterQuery( SearchSourceBuilder builder, IndexValueQuery query )
+    {
+        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+
+        List<BaseFilterBuilder> filtersToApply = getListOfFiltersToApply( query );
+
+        doAddFilters( builder, boolFilterBuilder, filtersToApply );
+    }
+
+    private static void doAddFilters( SearchSourceBuilder builder, BoolFilterBuilder boolFilterBuilder,
+                                      List<BaseFilterBuilder> filtersToApply )
+    {
         if ( filtersToApply.isEmpty() )
         {
             // Do nothing
@@ -53,21 +98,9 @@ public class FilterQueryBuilder
         }
     }
 
-    private static List<BaseFilterBuilder> getListOfFiltersToApply( ContentIndexQuery query )
+    private static List<BaseFilterBuilder> getListOfFiltersToApply( IndexValueQuery query )
     {
         List<BaseFilterBuilder> filtersToApply = new ArrayList<BaseFilterBuilder>();
-
-        final Collection<ContentKey> contentFilter = query.getContentFilter();
-
-        if ( contentFilter != null && !contentFilter.isEmpty() )
-        {
-            filtersToApply.add( buildContentFilter( contentFilter ) );
-        }
-
-        if ( query.hasSectionFilter() )
-        {
-            filtersToApply.add( buildSectionFilter( query ) );
-        }
 
         if ( query.hasCategoryFilter() )
         {

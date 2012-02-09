@@ -3,6 +3,7 @@ package com.enonic.cms.core.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -37,6 +38,7 @@ import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +54,16 @@ import com.enonic.cms.core.content.index.ContentEntityFetcherImpl;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.IndexValueQuery;
+import com.enonic.cms.core.content.index.IndexValueResultImpl;
 import com.enonic.cms.core.content.index.IndexValueResultSet;
+import com.enonic.cms.core.content.index.IndexValueResultSetImpl;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.search.query.IndexQueryException;
+import com.enonic.cms.core.search.query.IndexValueQueryTranslator;
 import com.enonic.cms.core.search.query.QueryTranslator;
 import com.enonic.cms.store.dao.ContentDao;
 
@@ -84,7 +89,9 @@ public class ContentIndexServiceImpl
 
     private ContentIndexDataBuilder indexDataBuilder;
 
-    private QueryTranslator translator;
+    private QueryTranslator queryTranslator;
+
+    private final IndexValueQueryTranslator indexValueQueryTranslator = new IndexValueQueryTranslator();
 
     private ContentDao contentDao;
 
@@ -190,7 +197,7 @@ public class ContentIndexServiceImpl
 
         try
         {
-            build = translator.build( contentIndexQuery );
+            build = queryTranslator.build( contentIndexQuery );
         }
         catch ( Exception e )
         {
@@ -336,7 +343,7 @@ public class ContentIndexServiceImpl
         final SearchSourceBuilder build;
         try
         {
-            build = this.translator.build( query );
+            build = this.queryTranslator.build( query );
         }
         catch ( Exception e )
         {
@@ -370,6 +377,53 @@ public class ContentIndexServiceImpl
 
         return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
     }
+
+
+    public IndexValueResultSet query( IndexValueQuery query )
+    {
+        final SearchSourceBuilder build;
+
+        try
+        {
+            build = this.indexValueQueryTranslator.build( query );
+        }
+        catch ( Exception e )
+        {
+            throw new IndexQueryException( "Failed to translate query: " + query, e );
+        }
+
+        IndexValueResultSetImpl resultSet = new IndexValueResultSetImpl( query.getIndex(), query.getCount() );
+
+        final SearchHits hits = doExecuteSearchRequest( build );
+
+        final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();
+
+        for ( SearchHit hit : hits )
+        {
+            resultSet.add( createIndexValueResult( hit ) );
+        }
+
+        return resultSet;
+    }
+
+    private IndexValueResultImpl createIndexValueResult( SearchHit hit )
+    {
+        final Map<String, SearchHitField> fields = hit.getFields();
+
+        if ( fields.size() != 1 )
+        {
+            throw new ContentIndexException( "Expected one field hit for query, found " + fields.size() );
+        }
+
+        ContentKey contentKey = new ContentKey( hit.getId() );
+
+        final Map.Entry<String, SearchHitField> next = fields.entrySet().iterator().next();
+
+        final String value = (String) next.getValue().getValue();
+
+        return new IndexValueResultImpl( contentKey, value );
+    }
+
 
     private SearchHits doExecuteSearchRequest( SearchSourceBuilder build )
     {
@@ -433,15 +487,6 @@ public class ContentIndexServiceImpl
     }
 
     // TODO: We dont implement this one yet
-    public IndexValueResultSet query( IndexValueQuery query )
-    {
-        throw new RuntimeException(
-            "Method not implemented in class " + this.getClass().getName() + ": " + "query( IndexValueQuery query )" );
-
-        //return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    // TODO: We dont implement this one yet
     public AggregatedResult query( AggregatedQuery query )
     {
         throw new RuntimeException(
@@ -469,9 +514,9 @@ public class ContentIndexServiceImpl
     }
 
     @Autowired
-    public void setTranslator( QueryTranslator translator )
+    public void setQueryTranslator( QueryTranslator queryTranslator )
     {
-        this.translator = translator;
+        this.queryTranslator = queryTranslator;
     }
 
     @Autowired

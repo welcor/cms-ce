@@ -1,7 +1,13 @@
 package com.enonic.cms.core.search.builder;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.util.NumericUtils;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
@@ -17,6 +23,14 @@ import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
  */
 public final class IndexValueResolver
 {
+    private final static Function<String, String> lowerCaseFunction = new Function<String, String>()
+    {
+        @Override
+        public String apply( String input )
+        {
+            return input.toLowerCase();
+        }
+    };
 
     public static Object[] toValues( Expression expr )
     {
@@ -108,5 +122,25 @@ public final class IndexValueResolver
         String replacedValue = StringUtils.replaceChars( value, '%', '*' );
         return StringUtils.lowerCase( replacedValue );
     }
+
+    public static String normalizeValue( final String value )
+    {
+        if ( StringUtils.isBlank( value ) )
+        {
+            return "";
+        }
+
+        return value.trim().toLowerCase();
+    }
+
+
+    public static String[] getNormalizedStringValues( Set<String> values )
+    {
+
+        final Collection<String> lowerCased = Collections2.transform( values, lowerCaseFunction );
+
+        return lowerCased.toArray( new String[lowerCased.size()] );
+    }
+
 
 }

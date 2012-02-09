@@ -1,12 +1,17 @@
 package com.enonic.cms.core.search.query;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
+import org.joda.time.ReadableDateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FunctionEvaluator;
 import com.enonic.cms.core.content.index.queryexpression.FunctionExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
+import com.enonic.cms.core.content.index.util.ValueConverter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,12 +49,42 @@ public class QueryValueResolver
             return expr.getValue();
 
         }
+        else if ( expr.isDate() )
+        {
+            return formatDateForElasticSearch( (ReadableDateTime) expr.getValue() );
+        }
+        else if ( expr.isValidDateString() )
+        {
+            return formatDateStringForElasticSearch( (String) expr.getValue() );
+        }
         else
         {
             final String stringValue = expr.getValue().toString();
             return StringUtils.lowerCase( stringValue );
         }
     }
+
+    private static String formatDateStringForElasticSearch( final String dateValue )
+    {
+        return formatDateForElasticSearch( ValueConverter.toDate( dateValue ) );
+    }
+
+    private static String formatDateForElasticSearch( final ReadableDateTime date )
+    {
+        return ISODateTimeFormat.dateTime().print( toUTCTimeZone(date) );
+    }
+
+    private static ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )
+    {
+        if ( DateTimeZone.UTC.equals( dateTime.getZone() ) )
+        {
+            return dateTime;
+        }
+        final MutableDateTime dateInUTC = dateTime.toMutableDateTime();
+        dateInUTC.setZone( DateTimeZone.UTC );
+        return dateInUTC.toDateTime();
+    }
+
 
     private static Object[] toValues( ArrayExpr expr )
     {

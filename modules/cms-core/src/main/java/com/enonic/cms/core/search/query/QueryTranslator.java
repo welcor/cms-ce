@@ -10,6 +10,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeFilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
+import org.joda.time.ReadableDateTime;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQueryExprParser;
@@ -65,7 +68,7 @@ public final class QueryTranslator
 
     private void applyContentPublishedAtFilter( final SearchSourceBuilder builder, final DateTime dateTime )
     {
-        final DateTime dateTimeRoundedDownToNearestMinute = dateTime.minuteOfHour().roundFloorCopy();
+        final ReadableDateTime dateTimeRoundedDownToNearestMinute = toUTCTimeZone( dateTime.minuteOfHour().roundFloorCopy() );
         final RangeFilterBuilder publishFromFilter = FilterBuilders.rangeFilter( "publishfrom" ).lte( dateTimeRoundedDownToNearestMinute );
 
         final MissingFilterBuilder publishToMissing = FilterBuilders.missingFilter( "publishto" );
@@ -194,6 +197,17 @@ public final class QueryTranslator
     private QueryBuilder buildNotQuery( QueryBuilder negated )
     {
         return QueryBuilders.boolQuery().must( QueryBuilders.matchAllQuery() ).mustNot( negated );
+    }
+
+    private ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )
+    {
+        if ( DateTimeZone.UTC.equals( dateTime.getZone() ) )
+        {
+            return dateTime;
+        }
+        final MutableDateTime dateInUTC = dateTime.toMutableDateTime();
+        dateInUTC.setZone( DateTimeZone.UTC );
+        return dateInUTC.toDateTime();
     }
 
 }

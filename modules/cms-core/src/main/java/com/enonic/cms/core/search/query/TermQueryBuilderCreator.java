@@ -5,10 +5,7 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.MissingFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.joda.time.DateTimeZone;
-import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.enonic.cms.core.content.index.util.ValueConverter;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
@@ -52,8 +49,7 @@ public class TermQueryBuilderCreator
         }
         else if ( isValidDateString( singleValue ) )
         {
-            String stringDateValue = formatDateForElasticSearch( (String) singleValue );
-            termQuery = QueryBuilders.termQuery( path.getPath(), stringDateValue );
+            termQuery = QueryBuilders.termQuery( path.getPath(), singleValue );
         }
         else
         {
@@ -70,14 +66,6 @@ public class TermQueryBuilderCreator
             return termQuery;
         }
 
-    }
-
-    private static String formatDateForElasticSearch( final String dateValue )
-    {
-        final ReadableDateTime date = ValueConverter.toDate( dateValue );
-        final MutableDateTime dateInUTC = date.toMutableDateTime();
-        dateInUTC.setZone( DateTimeZone.UTC );
-        return ISODateTimeFormat.dateTime().print( dateInUTC );
     }
 
     private static boolean isValidDateString( Object value )

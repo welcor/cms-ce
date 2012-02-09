@@ -28,19 +28,23 @@
             },
             "timestamp":{
                 "include_in_all":false,
-                "type":"date",
+                "type":"string",
+                "index":"not_analyzed",
                 "store":"yes"
             },
             "publishfrom":{
-                "type":"date",
+                "type":"string",
+                "index":"not_analyzed",
                 "store":"yes"
             },
             "publishto":{
-                "type":"date",
+                "type":"string",
+                "index":"not_analyzed",
                 "store":"yes"
             },
             "assignmentduedate":{
-                "type":"date",
+                "type":"string",
+                "index":"not_analyzed",
                 "store":"yes"
             },
             "contentlocations":{

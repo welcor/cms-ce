@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -107,7 +106,7 @@ public class RelatedContentFetcherForContentVersionTest
     }
 
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_circular_reference_but_all_other_are_included()
     {
@@ -165,7 +164,7 @@ public class RelatedContentFetcherForContentVersionTest
 
     }
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_multiple_circular_references()
     {
@@ -216,7 +215,7 @@ public class RelatedContentFetcherForContentVersionTest
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
     }
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_of_children()
     {
@@ -268,7 +267,7 @@ public class RelatedContentFetcherForContentVersionTest
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
     }
 
-    @Ignore
+
     @Test
     public void including_visited_returns_all_when_true_but_not_when_false()
     {

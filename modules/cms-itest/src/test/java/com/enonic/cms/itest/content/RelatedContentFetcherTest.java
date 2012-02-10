@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.jdom.Document;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,7 +119,6 @@ public class RelatedContentFetcherTest
         contentDao.setHibernateTemplate( hibernateTemplate );
     }
 
-    @Ignore
     @Test
     public void xxxx()
     {
@@ -173,7 +171,7 @@ public class RelatedContentFetcherTest
         LOG.info( "verification is to do" );
     }
 
-    @Ignore
+
     @Test
     public void fetch_children_when_one_content_relates_another()
     {
@@ -204,7 +202,7 @@ public class RelatedContentFetcherTest
 
     }
 
-    @Ignore
+
     @Test
     public void fetch_parents_when_one_content_relates_another()
     {
@@ -235,7 +233,7 @@ public class RelatedContentFetcherTest
 
     }
 
-    @Ignore
+
     @Test
     public void three_content_relates_each_other_in_a_circle()
     {
@@ -306,7 +304,7 @@ public class RelatedContentFetcherTest
         assertEquals( contentKeyA, contentCrelatedParents.get( 0 ).getContent().getKey() );
     }
 
-    @Ignore
+
     @Test
     public void common_related_child_between_two_content_is_contained_in_root_related_children_for_both_content()
     {
@@ -354,7 +352,7 @@ public class RelatedContentFetcherTest
         assertEquals( commonChild, contentBrelatedChildren.get( 0 ).getContent().getKey() );
     }
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_circular_reference_and_all_other_are_included()
     {
@@ -416,7 +414,7 @@ public class RelatedContentFetcherTest
 
     }
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_multiple_circular_references()
     {
@@ -470,7 +468,7 @@ public class RelatedContentFetcherTest
 
     }
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_of_children()
     {
@@ -522,7 +520,7 @@ public class RelatedContentFetcherTest
 
     }
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_parents_with_circular_reference()
     {
@@ -590,7 +588,7 @@ public class RelatedContentFetcherTest
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
     }
 
-    @Ignore
+
     @Test
     public void eternal_loop_is_prevented_for_related_parent_children_with_circular_reference()
     {

@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -35,7 +34,6 @@ import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
-@Ignore
 public class Support112124Test
     extends AbstractSpringTest
 {

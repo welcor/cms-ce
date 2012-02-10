@@ -30,6 +30,7 @@ import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.Version;
+import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
 
@@ -51,6 +52,9 @@ public class SystemHandlerServlet
 
     @Autowired
     private DataSourceInfoResolver datasourceInfoResolver;
+
+    @Autowired
+    private ContentIndexService contentIndexService;
 
     private Properties configurationProperties;
 
@@ -78,6 +82,10 @@ public class SystemHandlerServlet
         else if ( "clearstatistics".equals( operation ) )
         {
             clearStatistics( request, response, formItems );
+        }
+        else if ( "optimizeIndex".equals( operation ) )
+        {
+            optimizeIndex( request, response, formItems );
         }
         else
         {
@@ -268,6 +276,16 @@ public class SystemHandlerServlet
         referer.setParameter( "selectedoperation", formItems.getString( "selectedoperation", formItems.getString( "op", "" ) ) );
         referer.setParameter( "selectedcachename", formItems.getString( "selectedcachename", formItems.getString( "cacheName", "" ) ) );
         redirectClientToURL( referer, response );
+    }
+
+    private void optimizeIndex( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
+        throws VerticalAdminException
+    {
+        contentIndexService.optimize();
+
+        URL referrer = new URL( request.getHeader( "referer" ) );
+        referrer.setParameter( "selectedoperation", "optimizeindex" );
+        redirectClientToURL( referrer, response );
     }
 
     public void setCacheFacadeManager( CacheManager value )

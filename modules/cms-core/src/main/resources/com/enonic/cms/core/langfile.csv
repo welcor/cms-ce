@@ -1138,6 +1138,9 @@
 %cmdRemoveDeletedContentFromDatabase%|Fjern slettet innhold fra database|Remove Deleted Content From Database|Fjern slettet indhold fra database|Ta bort raderad innehåll från database
 %alertCleanReadLogs%|Sikker på at du vil slette alle leselogger?|Are you sure you want to remove all read logs?|Er du sikker på at du vil fjerne alle læste log|Är du säker på att du vill radera alla läsloggar?
 %alertCleanUnusedContent%|Sikker på at du vil slette alle ubrukte innhold?|Are you sure you want to remove all unused content?|Er du sikker på, at du vil slette alt ubrugt indhold?|Är du säker på att du vill radera allt oanvänt innehåll?
+%alertOptimizeIndex%|Are you sure you want to optimize the indexes?(TRANSLATION NEEDED!)|Are you sure you want to optimize the indexes?|Are you sure you want to optimize the indexes?(TRANSLATION NEEDED!)|Are you sure you want to optimize the indexes?(TRANSLATION NEEDED!)
+%cmdOptimizeIndex%|Optimize Indexes(TRANSLATION NEEDED!)|Optimize Indexes|Optimize Indexes(TRANSLATION NEEDED!)|Optimize Indexes(TRANSLATION NEEDED!)
+%indexOptimizeCompleted%|The indexes have been optimized.(TRANSLATION NEEDED)|The indexes have been optimized.|The indexes have been optimized.(TRANSLATION NEEDED)|The indexes have been optimized.(TRANSLATION NEEDED)
 %mnuAdmin%|Admin|Admin|Admin|Admin
 %txtEquals%|eksakt dag|exact day|præcis dato|exakt dag
 %txtLessThanOrEqualTo%|før|before|før|före

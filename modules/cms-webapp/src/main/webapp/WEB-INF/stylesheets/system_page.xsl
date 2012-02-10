@@ -37,7 +37,7 @@
                 </h1>
 
                 <xsl:if test="$mode = 'system'">
-                    <table cellspacing="0" cellpadding="0" border="0">
+                  <table cellspacing="0" cellpadding="0" border="0">
                         <tr>
                             <td>
                                 <xsl:call-template name="button">
@@ -57,6 +57,25 @@
                                         <xsl:text>confirm('%alertCleanUnusedContent%')</xsl:text>
                                     </xsl:with-param>
                                 </xsl:call-template>
+                              <xsl:text>&#160;</xsl:text>
+                              <xsl:call-template name="button">
+                                <xsl:with-param name="type" select="'link'"/>
+                                <xsl:with-param name="caption" select="'%cmdOptimizeIndex%'"/>
+                                <xsl:with-param name="href" select="'adminpage?page=10&amp;op=optimizeIndex'"/>
+                                <xsl:with-param name="condition">
+                                  <xsl:text>confirm('%alertOptimizeIndex%')</xsl:text>
+                                </xsl:with-param>
+                              </xsl:call-template>
+                              <xsl:text>&#160;</xsl:text>
+                              <xsl:if test="$selectedoperation = 'optimizeindex'">
+                                <tr>
+                                  <td>
+                                    <fieldset style="background-color: #fff; padding: 8px">
+                                      <xsl:text>%indexOptimizeCompleted%</xsl:text>
+                                    </fieldset>
+                                  </td>
+                                </tr>
+                              </xsl:if>
                             </td>
                         </tr>
                         <tr>

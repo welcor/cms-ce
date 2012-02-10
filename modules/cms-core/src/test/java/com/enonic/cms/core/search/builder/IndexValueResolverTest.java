@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
@@ -98,23 +97,6 @@ public class IndexValueResolverTest
 
         result = IndexValueResolver.getOrderValueForNumber( new Float( 123 ) );
         assertNotNull( result );
-    }
-
-    @Ignore
-    @Test
-    public void testOrderByValueSortingWithLongAndDouble()
-    {
-        List<String> resultList = new ArrayList<String>();
-
-        String two = IndexValueResolver.getOrderValueForNumber( new Double( 2 ) );
-        String hundredAndOne = IndexValueResolver.getOrderValueForNumber( 101L );
-
-        resultList.addAll( Arrays.asList( new String[]{two, hundredAndOne} ) );
-
-        Collections.sort( resultList );
-
-        assertEquals( "2", two, resultList.get( 0 ) );
-        assertEquals( "101", hundredAndOne, resultList.get( 1 ) );
     }
 
     @Test

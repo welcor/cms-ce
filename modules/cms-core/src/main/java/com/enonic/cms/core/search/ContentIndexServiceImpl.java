@@ -79,7 +79,7 @@ public class ContentIndexServiceImpl
 
     protected static final SearchType SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
 
-    private IndexMappingProvider mappingProvider;
+    private IndexMappingProvider indexMappingProvider;
 
     private Client client;
 
@@ -87,7 +87,7 @@ public class ContentIndexServiceImpl
 
     private Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
 
-    private ContentIndexDataBuilder indexDataBuilder;
+    private ContentIndexDataBuilder contentIndexDataBuilder;
 
     private QueryTranslator queryTranslator;
 
@@ -153,7 +153,7 @@ public class ContentIndexServiceImpl
 
     private PutMappingResponse doAddMapping( String indexName, IndexType indexType )
     {
-        String mapping = mappingProvider.getMapping( indexName, indexType );
+        String mapping = indexMappingProvider.getMapping( indexName, indexType );
 
         PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType.toString() ).source( mapping );
 
@@ -221,7 +221,8 @@ public class ContentIndexServiceImpl
 
     public void index( ContentDocument doc, boolean deleteExisting )
     {
-        ContentIndexData contentIndexData = indexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+        ContentIndexData contentIndexData =
+            contentIndexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
 
         Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
 
@@ -238,7 +239,8 @@ public class ContentIndexServiceImpl
 
         for ( ContentDocument doc : docs )
         {
-            ContentIndexData contentIndexData = indexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+            ContentIndexData contentIndexData =
+                contentIndexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
 
             Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
 
@@ -496,9 +498,9 @@ public class ContentIndexServiceImpl
 
 
     @Autowired
-    public void setMappingProvider( IndexMappingProvider mappingProvider )
+    public void setIndexMappingProvider( IndexMappingProvider indexMappingProvider )
     {
-        this.mappingProvider = mappingProvider;
+        this.indexMappingProvider = indexMappingProvider;
     }
 
     @Autowired
@@ -520,9 +522,9 @@ public class ContentIndexServiceImpl
     }
 
     @Autowired
-    public void setIndexDataBuilder( ContentIndexDataBuilder indexDataBuilder )
+    public void setContentIndexDataBuilder( ContentIndexDataBuilder contentIndexDataBuilder )
     {
-        this.indexDataBuilder = indexDataBuilder;
+        this.contentIndexDataBuilder = contentIndexDataBuilder;
     }
 
     @Autowired

@@ -25,7 +25,7 @@ import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 
-public final class QueryTranslator
+public class QueryTranslator
 {
     public SearchSourceBuilder build( ContentIndexQuery contentIndexQuery )
         throws Exception

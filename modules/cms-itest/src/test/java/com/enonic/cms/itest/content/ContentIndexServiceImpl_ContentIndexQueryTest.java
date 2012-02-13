@@ -3,7 +3,6 @@ package com.enonic.cms.itest.content;
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -164,7 +163,6 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         assertEquals( 3, result.getTotalCount() );
     }
 
-    @Ignore
     @Test
     public void having_three_matching_content_query_returns_one_when_index_is_1_and_count_1()
     {
@@ -176,7 +174,8 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
-        ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
+        final String orderBy = "title desc";
+        ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"", orderBy );
         query.setSecurityFilter( Lists.newArrayList( fixture.findUserByName( "content-querier" ).getUserGroupKey() ) );
         query.setIndex( 1 );
         query.setCount( 1 );

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.URIResolver;
@@ -151,7 +150,7 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByCategory( int categoryKey )
     {
-        ensureAdminIsLoggedIn();
+        ensureUserIsLoggedIn();
 
         try
         {
@@ -167,7 +166,7 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByUnit( int unitKey )
     {
-        ensureAdminIsLoggedIn();
+        ensureUserIsLoggedIn();
 
         try
         {
@@ -342,16 +341,12 @@ public class AdminAjaxServiceImpl
         return securityService.getLoggedInAdminConsoleUserAsEntity();
     }
 
-    private void ensureAdminIsLoggedIn()
+    private void ensureUserIsLoggedIn()
     {
         UserEntity user = getLoggedInAdminConsoleUser();
-        if ( user == null )
+        if ( user == null || user.isAnonymous() )
         {
             throw new IllegalStateException( "User is not logged in admin console" );
-        }
-        if ( user != null && !memberOfResolver.hasEnterpriseAdminPowers( user ) )
-        {
-            throw new IllegalStateException( "Logged user does not have administrate powers" );
         }
     }
 
@@ -479,7 +474,7 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public Collection<UserDto> findUsers( String name )
     {
-        ensureAdminIsLoggedIn();
+        ensureUserIsLoggedIn();
 
         List<UserDto> foundUserDtos = new ArrayList<UserDto>();
 
@@ -502,6 +497,8 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public Collection<UserDto> findUsersAndAccessType( String name, int contentKey )
     {
+        ensureUserIsLoggedIn();
+
         return doFindUsers( name, null, contentKey );
     }
 

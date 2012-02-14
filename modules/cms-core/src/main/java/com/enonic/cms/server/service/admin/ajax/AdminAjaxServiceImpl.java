@@ -418,10 +418,18 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public SynchronizeStatusDto getSynchUserStoreStatus( String userStoreKey )
     {
-        ensureUserStoreAdministratorPowers( new UserStoreKey( userStoreKey ) );
+        if ( !StringUtils.isEmpty( userStoreKey ) )
+        {
+            ensureUserStoreAdministratorPowers( new UserStoreKey( userStoreKey ) );
 
-        String languageCode = (String) ServletRequestAccessor.getSession().getAttribute( "languageCode" );
-        return this.syncUserStoreExecutorManager.getStatus( userStoreKey, languageCode );
+            String languageCode = (String) ServletRequestAccessor.getSession().getAttribute( "languageCode" );
+            return this.syncUserStoreExecutorManager.getStatus( userStoreKey, languageCode );
+        }
+        else
+        {
+            // to prevent client-side java script to possibly fail
+            return new SynchronizeStatusDto( "" );
+        }
     }
 
     @RemoteMethod

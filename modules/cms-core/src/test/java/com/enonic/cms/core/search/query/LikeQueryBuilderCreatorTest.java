@@ -26,7 +26,7 @@ public class LikeQueryBuilderCreatorTest
 
         QueryPath queryPath = QueryPathCreator.createQueryPath( "*" );
 
-        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, "test" );
+        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, new QueryValue( "test" ) );
 
         System.out.println( queryBuilder.toString() );
 
@@ -52,7 +52,7 @@ public class LikeQueryBuilderCreatorTest
 
         QueryPath queryPath = QueryPathCreator.createQueryPath( "attachment_title" );
 
-        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, "test" );
+        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, new QueryValue( "test" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -70,7 +70,7 @@ public class LikeQueryBuilderCreatorTest
 
         QueryPath queryPath = QueryPathCreator.createQueryPath( "data_title" );
 
-        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, "test" );
+        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, new QueryValue( "test" ) );
 
         System.out.println( queryBuilder.toString() );
 

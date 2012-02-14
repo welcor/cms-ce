@@ -1,13 +1,11 @@
 package com.enonic.cms.core.search.query;
 
-import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.MissingFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.joda.time.ReadableDateTime;
 
-import com.enonic.cms.core.content.index.util.ValueConverter;
+import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
@@ -19,9 +17,8 @@ public class TermQueryBuilderCreator
     {
     }
 
-    public static QueryBuilder buildTermQuery( QueryPath path, Object singleValue )
+    public static QueryBuilder buildTermQuery( final QueryPath path, final QueryValue queryValue )
     {
-        final QueryBuilder termQuery;
 
         final boolean isWildCardPath = path.isWildCardPath();
 
@@ -30,32 +27,7 @@ public class TermQueryBuilderCreator
             path.setMatchAllPath();
         }
 
-        //HANDLE NUMERIC WILDCARD
-
-        if ( singleValue instanceof Number && !isWildCardPath )
-        {
-            Number number = (Number) singleValue;
-            termQuery = QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, number );
-        }
-        else if ( singleValue instanceof Number )
-        {
-            Number number = (Number) singleValue;
-            termQuery = QueryBuilders.termQuery( QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ), number );
-        }
-        else if ( path.isDateField() && "".equals( singleValue ) )
-        {
-            MissingFilterBuilder filter = FilterBuilders.missingFilter( path.getPath() );
-            termQuery = QueryBuilders.filteredQuery( matchAllQuery(), filter );
-        }
-        else if ( isValidDateString( singleValue ) )
-        {
-            termQuery = QueryBuilders.termQuery( path.getPath(), singleValue );
-        }
-        else
-        {
-            String stringValue = (String) singleValue;
-            termQuery = QueryBuilders.termQuery( path.getPath(), StringUtils.lowerCase( stringValue ) );
-        }
+        final QueryBuilder termQuery = handleQueryTypesTemporaryMethodNameThisIs( path, queryValue, isWildCardPath );
 
         if ( path.doRenderAsHasChildQuery() )
         {
@@ -68,14 +40,44 @@ public class TermQueryBuilderCreator
 
     }
 
-    private static boolean isValidDateString( Object value )
+    private static QueryBuilder handleQueryTypesTemporaryMethodNameThisIs( QueryPath path, QueryValue queryValue, boolean wildCardPath )
     {
-        if ( value instanceof String )
+
+        //TODO: Verify HANDLE NUMERIC WILDCARD
+
+        if ( path.isRenderAsIdQuery() )
         {
-            ReadableDateTime date = ValueConverter.toDate( (String) value );
-            return date != null;
+            if ( queryValue.isNumeric() )
+            {
+                return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getNumericValueAsString() );
+            }
+
+            return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getStringValueNormalized() );
         }
-        return false;
+
+        if ( queryValue.isNumeric() && !wildCardPath )
+        {
+            return QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, queryValue.getDoubleValue() );
+        }
+
+        if ( queryValue.isNumeric() )
+        {
+            return QueryBuilders.termQuery( QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ), queryValue.getDoubleValue() );
+        }
+
+        if ( path.isDateField() && queryValue.isEmpty() )
+        {
+            MissingFilterBuilder filter = FilterBuilders.missingFilter( path.getPath() );
+            return QueryBuilders.filteredQuery( matchAllQuery(), filter );
+        }
+
+        if ( queryValue.isValidDateString() )
+        {
+            return QueryBuilders.termQuery( path.getPath(), queryValue.getDateAsStringValue() );
+        }
+
+        return QueryBuilders.termQuery( path.getPath(), queryValue.getStringValueNormalized() );
     }
+
 
 }

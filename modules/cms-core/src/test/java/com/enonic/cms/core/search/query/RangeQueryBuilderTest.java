@@ -28,7 +28,7 @@ public class RangeQueryBuilderTest
             "  }\n" +
             "}";
 
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", "100", null, false, true );
+        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", new QueryValue( "100" ), null, false, true );
 
         System.out.println( query.toString() );
 
@@ -49,7 +49,7 @@ public class RangeQueryBuilderTest
             "  }\n" +
             "}";
 
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", 100, null, false, true );
+        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", new QueryValue( 100 ), null, false, true );
 
         System.out.println( query.toString() );
         assertEquals( expected_result, query.toString() );
@@ -75,7 +75,7 @@ public class RangeQueryBuilderTest
             "  }\n" +
             "}";
 
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", 100, 300, true, true );
+        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", new QueryValue( 100 ), new QueryValue( 300 ), true, true );
         System.out.println( query.toString() );
 
         assertEquals( expected_result, query.toString() );

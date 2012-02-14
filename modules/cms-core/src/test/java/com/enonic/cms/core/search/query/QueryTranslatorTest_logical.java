@@ -15,16 +15,18 @@ public class QueryTranslatorTest_logical
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"should\" : [ {\n" +
-            "        \"term\" : {\n" +
-            "          \"key_numeric\" : 100.0\n" +
+            "        \"ids\" : {\n" +
+            "          \"type\" : \"content\",\n" +
+            "          \"values\" : [ \"100\" ]\n" +
             "        }\n" +
             "      }, {\n" +
-            "        \"term\" : {\n" +
-            "          \"key_numeric\" : 200.0\n" +
+            "        \"ids\" : {\n" +
+            "          \"type\" : \"content\",\n" +
+            "          \"values\" : [ \"200\" ]\n" +
             "        }\n" +
             "      } ]\n" +
             "    }\n" +
@@ -44,12 +46,13 @@ public class QueryTranslatorTest_logical
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
-            "        \"term\" : {\n" +
-            "          \"key_numeric\" : 100.0\n" +
+            "        \"ids\" : {\n" +
+            "          \"type\" : \"content\",\n" +
+            "          \"values\" : [ \"100\" ]\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"term\" : {\n" +

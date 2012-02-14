@@ -12,6 +12,22 @@ import org.junit.Test;
 public class TermQueryBuilderCreatorTest
     extends QueryTranslatorBaseTest
 {
+
+    @Test
+    public void testIdQueries()
+    {
+        String expected = "{\n" +
+            "  \"ids\" : {\n" +
+            "    \"type\" : \"content\",\n" +
+            "    \"values\" : [ \"123\" ]\n" +
+            "  }\n" +
+            "}";
+
+        final QueryBuilder queryBuilder =
+            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "key" ), new QueryValue( "123" ) );
+        compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
+    }
+
     @Test
     public void testWildcardQuery()
     {
@@ -21,7 +37,8 @@ public class TermQueryBuilderCreatorTest
             "  }\n" +
             "}";
 
-        final QueryBuilder queryBuilder = TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "*" ), "123" );
+        final QueryBuilder queryBuilder =
+            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "*" ), new QueryValue( "123" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -32,11 +49,12 @@ public class TermQueryBuilderCreatorTest
     {
         String expected = "{\n" +
             "  \"term\" : {\n" +
-            "    \"_all\" : 123\n" +
+            "    \"_all\" : 123.0\n" +
             "  }\n" +
             "}";
 
-        final QueryBuilder queryBuilder = TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "*" ), 123 );
+        final QueryBuilder queryBuilder =
+            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "*" ), new QueryValue( 123 ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -56,7 +74,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "attachments/*" ), "123" );
+            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "attachments/*" ), new QueryValue( "123" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }

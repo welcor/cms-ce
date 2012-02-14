@@ -11,30 +11,35 @@ import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
  * Time: 4:50 PM
  */
 public class RangeQueryBuilder
-        extends BaseQueryBuilder
+    extends BaseQueryBuilder
 {
     protected static final String NUMERIC_FIELD_POSTFIX = "_numeric";
 
-    public static QueryBuilder buildRangeQuery( String field, Object lower, Object upper, boolean lowerInclusive,
-                                                boolean upperInclusive )
+    public static QueryBuilder buildRangeQuery( final String field, final QueryValue lower, final QueryValue upper,
+                                                final boolean lowerInclusive, final boolean upperInclusive )
     {
-        final boolean doStringComparison = lower instanceof String || upper instanceof String;
+        final boolean doStringComparison = ( lower != null && !lower.isNumeric() ) || ( upper != null && !upper.isNumeric() );
+
         if ( doStringComparison )
         {
-            return rangeQuery( field ).from( lower ).to( upper ).includeLower( lowerInclusive ).includeUpper(
-                    upperInclusive );
+            return rangeQuery( field ).from( lower != null ? lower.getStringValueNormalized() : null )
+                .to( upper != null ? upper.getStringValueNormalized() : null )
+                .includeLower( lowerInclusive )
+                .includeUpper( upperInclusive );
         }
 
-        Double lowerNumeric = getNumericValue( lower );
-        Double upperNumeric = getNumericValue( upper );
+        Double lowerNumeric = lower != null ? lower.getDoubleValue() : null;
+        Double upperNumeric = upper != null ? upper.getDoubleValue() : null;
 
         if ( lowerNumeric == null && upperNumeric == null )
         {
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
 
-        return rangeQuery( field + NUMERIC_FIELD_POSTFIX ).from( lowerNumeric ).to( upperNumeric ).includeLower(
-                lowerInclusive ).includeUpper( upperInclusive );
+        return rangeQuery( field + NUMERIC_FIELD_POSTFIX ).from( lowerNumeric )
+            .to( upperNumeric )
+            .includeLower( lowerInclusive )
+            .includeUpper( upperInclusive );
     }
 
 }

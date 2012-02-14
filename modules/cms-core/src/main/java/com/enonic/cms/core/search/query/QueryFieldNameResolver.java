@@ -64,7 +64,7 @@ public class QueryFieldNameResolver
 
     public static String getContentKeyQueryFieldName()
     {
-        return CONTENTKEY + NUMERIC_FIELD_POSTFIX;
+        return CONTENTKEY_FIELDNAME + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getContentTypeKeyQueryFieldName()

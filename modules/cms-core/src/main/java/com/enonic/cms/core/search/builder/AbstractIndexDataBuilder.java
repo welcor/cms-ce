@@ -69,28 +69,30 @@ class AbstractIndexDataBuilder
     protected void addField( String fieldName, final Date value, final XContentBuilder builder )
         throws Exception
     {
-        doAddField( fieldName, value, builder, true );
-    }
-
-    protected void addField( String fieldName, final Date value, final XContentBuilder builder, boolean addOrderField )
-        throws Exception
-    {
-        doAddField( fieldName, value, builder, addOrderField );
-    }
-
-
-    private void doAddField( String fieldName, final Date value, final XContentBuilder builder, boolean addOrderField )
-        throws Exception
-    {
-
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        builder.field( fieldName, value );
-        if ( addOrderField )
+        if ( value == null )
         {
-            addOrderField( fieldName, value, builder );
+            doAddField( fieldName, (String) null, builder, true );
+            return;
         }
+
+        doAddField( fieldName, value.toString(), builder, true );
+
+
     }
 
+    /*
+  private void doAddField( String fieldName, final Date value, final XContentBuilder builder, boolean addOrderField )
+      throws Exception
+  {
+
+      fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+      builder.field( fieldName, value );
+      if ( addOrderField )
+      {
+          addOrderField( fieldName, value, builder );
+      }
+  }
+    */
 
     protected void addField( String fieldName, final Integer value, final XContentBuilder builder )
         throws Exception

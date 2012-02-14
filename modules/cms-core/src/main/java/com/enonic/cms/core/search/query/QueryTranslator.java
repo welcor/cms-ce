@@ -114,42 +114,42 @@ public class QueryTranslator
 
         final QueryPath queryPath = QueryPathCreator.createQueryPath( path );
 
-        final Object[] values = QueryValueResolver.toValues( expr.getRight() );
-        final Object singleValue = values.length > 0 ? values[0] : null;
+        final QueryValue[] values = QueryValueResolver2.toValues( expr.getRight() );
+
+        final QueryValue queryValue = values.length > 0 ? values[0] : null;
 
         switch ( operator )
         {
             case CompareExpr.EQ:
-                return TermQueryBuilderCreator.buildTermQuery( queryPath, singleValue );
+                return TermQueryBuilderCreator.buildTermQuery( queryPath, queryValue );
             case CompareExpr.NEQ:
-                return buildNotQuery( TermQueryBuilderCreator.buildTermQuery( queryPath, singleValue ) );
+                return buildNotQuery( TermQueryBuilderCreator.buildTermQuery( queryPath, queryValue ) );
             case CompareExpr.GT:
-                return RangeQueryBuilder.buildRangeQuery( path, singleValue, null, false, true );
+                return RangeQueryBuilder.buildRangeQuery( path, queryValue, null, false, true );
             case CompareExpr.GTE:
-                return RangeQueryBuilder.buildRangeQuery( path, singleValue, null, true, true );
+                return RangeQueryBuilder.buildRangeQuery( path, queryValue, null, true, true );
             case CompareExpr.LT:
-                return RangeQueryBuilder.buildRangeQuery( path, null, singleValue, true, false );
+                return RangeQueryBuilder.buildRangeQuery( path, null, queryValue, true, false );
             case CompareExpr.LTE:
-                return RangeQueryBuilder.buildRangeQuery( path, null, singleValue, true, true );
+                return RangeQueryBuilder.buildRangeQuery( path, null, queryValue, true, true );
             case CompareExpr.LIKE:
-                return LikeQueryBuilderCreator.buildLikeQuery( queryPath, (String) singleValue );
+                return LikeQueryBuilderCreator.buildLikeQuery( queryPath, queryValue );
             case CompareExpr.NOT_LIKE:
-                return buildNotQuery( LikeQueryBuilderCreator.buildLikeQuery( queryPath, (String) singleValue ) );
+                return buildNotQuery( LikeQueryBuilderCreator.buildLikeQuery( queryPath, queryValue ) );
             case CompareExpr.IN:
                 return buildInQuery( path, values );
             case CompareExpr.NOT_IN:
                 return buildNotQuery( buildInQuery( path, values ) );
             case CompareExpr.FT:
-                return buildFulltextQuery( path, singleValue );
+                return buildFulltextQuery( path, queryValue );
         }
 
         return null;
     }
 
-    private QueryBuilder buildFulltextQuery( final String path, final Object singleValue )
+    private QueryBuilder buildFulltextQuery( final String path, final QueryValue queryValue )
     {
-        String stringValue = (String) singleValue;
-        return QueryBuilders.termQuery( path + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX, stringValue );
+        return QueryBuilders.termQuery( path + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX, queryValue.getStringValueNormalized() );
     }
 
     private QueryBuilder buildNotExpr( NotExpr expr )
@@ -159,13 +159,20 @@ public class QueryTranslator
         return buildNotQuery( negated );
     }
 
-    private QueryBuilder buildInQuery( String field, Object[] values )
+    private QueryBuilder buildInQuery( String field, QueryValue[] values )
     {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
-        for ( Object value : values )
+        for ( QueryValue value : values )
         {
-            boolQuery.should( QueryBuilders.termQuery( field, value ) );
+            if ( value.isNumeric() )
+            {
+                boolQuery.should( QueryBuilders.termQuery( field, value.getDoubleValue() ) );
+            }
+            else
+            {
+                boolQuery.should( QueryBuilders.termQuery( field, value.getStringValueNormalized() ) );
+            }
         }
 
         return boolQuery;

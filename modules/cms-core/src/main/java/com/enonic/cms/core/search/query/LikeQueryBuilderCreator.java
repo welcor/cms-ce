@@ -13,7 +13,7 @@ public class LikeQueryBuilderCreator
     {
     }
 
-    public final static QueryBuilder buildLikeQuery( QueryPath path, String value )
+    public final static QueryBuilder buildLikeQuery( QueryPath path, QueryValue value )
     {
         if ( path.isWildCardPath() )
         {
@@ -21,7 +21,7 @@ public class LikeQueryBuilderCreator
         }
 
         final WildcardQueryBuilder wildcardQueryBuilder =
-            QueryBuilders.wildcardQuery( path.getPath(), IndexValueResolver.getWildcardValue( value ) );
+            QueryBuilders.wildcardQuery( path.getPath(), IndexValueResolver.getWildcardValue( value.getStringValueNormalized() ) );
 
         if ( path.doRenderAsHasChildQuery() )
         {

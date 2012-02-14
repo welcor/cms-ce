@@ -43,8 +43,6 @@ public class TermQueryBuilderCreator
     private static QueryBuilder handleQueryTypesTemporaryMethodNameThisIs( QueryPath path, QueryValue queryValue, boolean wildCardPath )
     {
 
-        //TODO: Verify HANDLE NUMERIC WILDCARD
-
         if ( path.isRenderAsIdQuery() )
         {
             if ( queryValue.isNumeric() )

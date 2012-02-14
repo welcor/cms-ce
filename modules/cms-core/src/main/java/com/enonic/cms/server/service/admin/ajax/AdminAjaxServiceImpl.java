@@ -153,7 +153,7 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByCategory( int categoryKey )
     {
-        ensureUserHasAdministratorPowers();
+        ensureUserHasEnterpriseAdministratorPowers();
 
         try
         {
@@ -169,7 +169,7 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByUnit( int unitKey )
     {
-        ensureUserHasAdministratorPowers();
+        ensureUserHasEnterpriseAdministratorPowers();
 
         try
         {
@@ -359,14 +359,14 @@ public class AdminAjaxServiceImpl
         }
     }
 
-    private void ensureUserHasAdministratorPowers()
+    private void ensureUserHasEnterpriseAdministratorPowers()
     {
         UserEntity user = getLoggedInAdminConsoleUser();
         if ( user == null )
         {
             throw new IllegalStateException( "User is not logged in" );
         }
-        else if ( !memberOfResolver.hasAdministratorPowers( user ) )
+        else if ( !memberOfResolver.hasEnterpriseAdminPowers( user ) )
         {
             throw new IllegalStateException( "User is not Administrator" );
         }

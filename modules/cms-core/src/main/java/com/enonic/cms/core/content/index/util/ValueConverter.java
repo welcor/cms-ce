@@ -35,6 +35,14 @@ public final class ValueConverter
 
     private final static DateFormat DATETIME_WITHOUT_SECS_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
 
+    static
+    {
+        FULL_DATE_FORMAT.setLenient( false );
+        DATE_FORMAT.setLenient( false );
+        DATETIME_WITH_SECS_FORMAT.setLenient( false );
+        DATETIME_WITHOUT_SECS_FORMAT.setLenient( false );
+    }
+
     /**
      * Private constructor.
      */

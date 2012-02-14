@@ -43,7 +43,7 @@ public class QueryValueTest
     @Test
     public void testDateFormat()
     {
-        QueryValue queryValue = new QueryValue( "01-08-1975" );
+        QueryValue queryValue = new QueryValue( "1975-08-01" );
 
         assertTrue( queryValue.isValidDateString() );
 

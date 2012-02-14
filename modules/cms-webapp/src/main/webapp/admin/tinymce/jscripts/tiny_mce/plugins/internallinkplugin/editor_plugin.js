@@ -1,1 +1,275 @@
-(function(){var reImgSrcWithSizeParamEQCustomPattern=/^_image\/.+(_size=custom)/im;var reFilterParamPattern=/([\?&]_filter(?:=[^&]*)?)/im;var reExternalImgSrcPattern=/^_image\/(.+)/im;var reExternalImgSrcReplacePattern='image://$1';var reInternalImgSrcPattern=/^image:\/\/(.+)/im;var reInternalImgSrcReplacePattern='_image/$1';var reInternalImgSrcAttachmentPattern=/^attachment:\/\/(.*?)/im;var reInternalImgSrcAttachmentReplacePattern='_attachment/$1';var reExternalImgSrcAttachmentPattern=/^_attachment\/(.*?)/im;var reExternalImgSrcAttachmentReplacePattern='attachment://$1';tinymce.create('tinymce.plugins.InternalLinkPlugin',{init:function(ed,url){var t=this;ed.onSetContent.add(function(ed,o){t.transformURLsToExternalFormat(ed,o)});ed.onPreProcess.add(function(ed,o){if(o.get){t.transformURLsToInternalFormat(ed,o)}})},transformURLsToExternalFormat:function(oEditor,oOptions){var t=this;var oDOM=oEditor.dom;var oImgElements=oDOM.select('img',oOptions.node);tinymce.each(oImgElements,function(oImgElement){var sImgSrc=oDOM.getAttrib(oImgElement,'src');if(sImgSrc.match(reInternalImgSrcPattern)){if(!t._isCustomSize(sImgSrc)){if(!sImgSrc.match(reFilterParamPattern)){var sFilterParam=t.resolveFilterParam(sImgSrc,oEditor);if(sFilterParam!==''){sImgSrc=sImgSrc+'&_filter='+sFilterParam}}}sImgSrc=sImgSrc.replace(reInternalImgSrcPattern,reInternalImgSrcReplacePattern)}if(sImgSrc.match(reInternalImgSrcAttachmentPattern)){sImgSrc=sImgSrc.replace(reInternalImgSrcAttachmentPattern,reInternalImgSrcAttachmentReplacePattern)}oDOM.setAttrib(oImgElement,'src',sImgSrc)})},transformURLsToInternalFormat:function(oEditor,oOptions){var t=this;var oDOM=oEditor.dom;var oImgElements=oDOM.select('img',oOptions.node);tinymce.each(oImgElements,function(oImgElement){var sImgSrc=oDOM.getAttrib(oImgElement,'src');if(sImgSrc.match(reExternalImgSrcPattern)){if(!t._isCustomSize(sImgSrc)){sImgSrc=sImgSrc.replace(reFilterParamPattern,'')}sImgSrc=sImgSrc.replace(reExternalImgSrcPattern,reExternalImgSrcReplacePattern)}if(sImgSrc.match(reExternalImgSrcAttachmentPattern)){sImgSrc=sImgSrc.replace(reExternalImgSrcAttachmentPattern,reExternalImgSrcAttachmentReplacePattern)}oDOM.setAttrib(oImgElement,'src',sImgSrc)})},resolveFilterParam:function(sImageSrc,oEditor,iCustomWidth){var t=this;var sFilterString='';var iEditorWidth=t._getWidthForEditorInstance(oEditor);var iFortyPercentOfEditorWidth=Math.round((iEditorWidth*40/100));var iTwentyFivePercentOfEditorWidth=Math.round((iEditorWidth*25/100));var iFifteenPercentOfEditorWidth=Math.round((iEditorWidth*15/100));var iHeightForScaleWideFormat=Math.round((iEditorWidth*0.42));if(sImageSrc.match(/_size\=full/i)){sFilterString='scalewidth('+iEditorWidth+')'}else if(sImageSrc.match(/_size\=wide/i)){sFilterString='scalewide('+iEditorWidth+','+iHeightForScaleWideFormat+')'}else if(sImageSrc.match(/_size\=regular/i)){sFilterString='scalewidth('+iFortyPercentOfEditorWidth+')'}else if(sImageSrc.match(/_size\=square/i)){sFilterString='scalesquare('+iFortyPercentOfEditorWidth+')'}else if(sImageSrc.match(/_size\=list/i)){sFilterString='scalesquare('+iTwentyFivePercentOfEditorWidth+')'}else if(sImageSrc.match(/_size\=thumbnail/i)){sFilterString='scalesquare('+iFifteenPercentOfEditorWidth+')'}else if(sImageSrc.match(/_size\=custom/i)&&(iCustomWidth&&iCustomWidth.match(/\d/))){sFilterString='scalewidth('+iCustomWidth+')'}else{sFilterString=''}return sFilterString},getInfo:function(){return{longname:'Internal Link Plugin',author:'tan@enonic.com',authorurl:'http://www.enonic.com',infourl:'http://www.enonic.com',version:'0.1'}},_getWidthForEditorInstance:function(oEditor){var t=this;var oBodyElemStyleMarginAndPadding=t._getBodyStyleMarginAndPaddingForEditorInstance(oEditor);var iBodyMarginLeft=oBodyElemStyleMarginAndPadding.marginleft;var iBodyMarginRight=oBodyElemStyleMarginAndPadding.marginright;var iBodyPaddingLeft=oBodyElemStyleMarginAndPadding.paddingleft;var iBodyPaddingRight=oBodyElemStyleMarginAndPadding.paddingright;var iContentAreaWidth=oEditor.settings.initial_width-2;return(iContentAreaWidth-(iBodyMarginLeft+iBodyPaddingLeft)-(iBodyMarginRight+iBodyPaddingRight))},_getBodyStyleMarginAndPaddingForEditorInstance:function(oEditor){var oDOM=oEditor.dom;var oEditorBodyElement=oEditor.getBody();var margintop,marginright,marginbottom,marginleft,paddingtop,paddingright,paddingbottom,paddingleft;margintop=parseInt(oDOM.getStyle(oEditorBodyElement,'margin-top',true))||0;marginright=parseInt(oDOM.getStyle(oEditorBodyElement,'margin-right',true))||0;marginbottom=parseInt(oDOM.getStyle(oEditorBodyElement,'margin-nottom',true))||0;marginleft=parseInt(oDOM.getStyle(oEditorBodyElement,'margin-left',true))||0;paddingtop=parseInt(oDOM.getStyle(oEditorBodyElement,'padding-top',true))||0;paddingright=parseInt(oDOM.getStyle(oEditorBodyElement,'padding-right',true))||0;paddingbottom=parseInt(oDOM.getStyle(oEditorBodyElement,'padding-bottom',true))||0;paddingleft=parseInt(oDOM.getStyle(oEditorBodyElement,'padding-left',true))||0;return{'margintop':margintop,'marginright':marginright,'marginbottom':marginbottom,'marginleft':marginleft,'paddingtop':paddingtop,'paddingright':paddingright,'paddingbottom':paddingbottom,'paddingleft':paddingleft}},_isCustomSize:function(sImageSrc){return sImageSrc.match(reImgSrcWithSizeParamEQCustomPattern)}});tinymce.PluginManager.add('internallinkplugin',tinymce.plugins.InternalLinkPlugin)})();
+/*
+    Internal:                                                       External:
+
+    attachment://$contentKey                                        _attachment/$contentKey
+    attachment://$contentKey/binary/$binaryKey                      _attachment/$contentKey/binary/$binaryKey
+    image://$contentKey?filter=$filter&size=$size&format=$format    _image/$contentKey?filter=$filter&size=$size&format=$format
+
+ */
+
+(function()
+{
+    var imgSrcWithSizeParamEQCustomPattern = /^_image\/.+(_size=custom)/im;
+    var filterParamPattern = /([\?&]_filter(?:=[^&]*)?)/im;
+
+    var internalImagePattern = /(<img.+?src=")(image:\/\/)(.+?)(".+?\/>)/gim;
+    var internalImageAttachmentPattern = /(<img.+?src=")(attachment:\/\/)(.+?)(".+?\/>)/gim;
+
+    var externalImgSrcPattern = /^_image\/(.+)/im;
+    var externalImgSrcReplacePattern = 'image://$1';
+
+    var externalImgSrcAttachmentPattern = /^_attachment\/(.*?)/im;
+    var externalImgSrcAttachmentReplacePattern = 'attachment://$1';
+
+    /*
+    // TODO: Remove old code
+    var reInternalImgSrcPattern = /^image:\/\/(.+)/im;
+    var reInternalImgSrcReplacePattern = '_image/$1';
+
+    var reInternalImgSrcAttachmentPattern = /^attachment:\/\/(.*?)/im;
+    var reInternalImgSrcAttachmentReplacePattern = '_attachment/$1';
+    */
+
+    tinymce.create('tinymce.plugins.InternalLinkPlugin', {
+
+        init: function( ed, url )
+        {
+            var t = this;
+            t.editor = ed;
+
+            ed.onBeforeSetContent.add(function(ed, o)
+            {
+                t.transformImagesToExternalFormat(o);
+            });
+
+            ed.onPreProcess.add(function(ed, o)
+            {
+                if ( o.get )
+                {
+                    t.transformImageSrcToInternalFormat(o);
+                }
+            });
+        },
+        // ---------------------------------------------------------------------------------------------------------------------------------
+
+        // Public
+
+        transformImagesToExternalFormat: function ( o )
+        {
+            var t = this;
+
+            function replacer( match, p1, p2, p3, p4 )
+            {
+                /*
+                match   = <img alt="c" src="image://20844?_size=wide&amp;_format=jpg" title="c" />
+                p1      = <img alt="c" src="
+                p2      = image://
+                p3      = 20844?_size=wide&amp;_format=jpg
+                p4      = " title="c" />
+                */
+
+                var keyAndParams = p3;
+                var filterParamValue = t.resolveFilterParam( 'image://' + keyAndParams );
+                if ( filterParamValue !== '' )
+                {
+                    keyAndParams += '&_filter=' + filterParamValue;
+                }
+
+                return p1 + '_image/' + keyAndParams + p4;
+            }
+
+            // Replace img with image:://* pattern
+            o.content = o.content.replace( internalImagePattern, replacer );
+            // Replace img with attachment:://* pattern
+            o.content = o.content.replace( internalImageAttachmentPattern, replacer );
+
+
+            /*
+             // TODO: Remove old code
+            var t = this;
+            var DOM = editor.dom;
+            var imageElements = DOM.select('img', options.node);
+
+            tinymce.each( imageElements, function( imageElement )
+            {
+                var imageSrc = DOM.getAttrib(imageElement, 'src');
+
+                if ( imageSrc.match(reInternalImgSrcPattern) )
+                {
+                    if ( !t._isCustomSize(imageSrc) )
+                    {
+                        if ( !imageSrc.match(reFilterParamPattern) )
+                        {
+                            var filterParam = t.resolveFilterParam(imageSrc, editor);
+
+                            if ( filterParam !== '' )
+                            {
+                                imageSrc = imageSrc + '&_filter=' + filterParam;
+                            }
+                        }
+                    }
+
+                    imageSrc = imageSrc.replace(reInternalImgSrcPattern, reInternalImgSrcReplacePattern);
+                }
+
+                if ( imageSrc.match(reInternalImgSrcAttachmentPattern) )
+                {
+                    imageSrc = imageSrc.replace(reInternalImgSrcAttachmentPattern, reInternalImgSrcAttachmentReplacePattern);
+                }
+
+                DOM.setAttrib(imageElement, 'src', imageSrc);
+            });
+            */
+        },
+        // ---------------------------------------------------------------------------------------------------------------------------------
+
+        transformImageSrcToInternalFormat: function( o )
+        {
+            var t = this;
+            var dom = t.editor.dom;
+            var imageElements = dom.select('img', o.node);
+
+            tinymce.each( imageElements, function( imageElement )
+            {
+                var imageSrc = dom.getAttrib(imageElement, 'src');
+
+                if ( imageSrc.match(externalImgSrcPattern) )
+                {
+                    // Remove filter param for non custom sizes.
+                    if ( !t._isCustomSize(imageSrc) )
+                    {
+                        imageSrc = imageSrc.replace(filterParamPattern, '');
+                    }
+
+                    imageSrc = imageSrc.replace(externalImgSrcPattern, externalImgSrcReplacePattern);
+                }
+
+                if ( imageSrc.match(externalImgSrcAttachmentPattern) )
+                {
+                    imageSrc = imageSrc.replace(externalImgSrcAttachmentPattern, externalImgSrcAttachmentReplacePattern);
+                }
+
+                dom.setAttrib(imageElement, 'src', imageSrc);
+            });
+        },
+        // ---------------------------------------------------------------------------------------------------------------------------------
+
+        resolveFilterParam: function( imageSrc, customWidth )
+        {
+            var t = this;
+
+            var filter = '';
+
+            var editorWidth = t._getWidthForEditorInstance();
+            var fortyPercentOfEditorWidth = Math.round((editorWidth * 40 / 100));
+            var twentyFivePercentOfEditorWidth = Math.round((editorWidth * 25 / 100));
+            var fifteenPercentOfEditorWidth = Math.round((editorWidth * 15 / 100));
+            var heightForScaleWideFormat = Math.round((editorWidth * 0.42));
+
+            if ( imageSrc.match(/_size\=full/i ) )
+            {
+                filter = 'scalewidth(' + editorWidth + ')';
+            }
+            else if ( imageSrc.match(/_size\=wide/i ) )
+            {
+                filter = 'scalewide(' + editorWidth + ',' + heightForScaleWideFormat + ')';
+            }
+            else if ( imageSrc.match(/_size\=regular/i) )
+            {
+                filter = 'scalewidth(' + fortyPercentOfEditorWidth + ')';
+            }
+            else if ( imageSrc.match(/_size\=square/i) )
+            {
+                filter = 'scalesquare(' + fortyPercentOfEditorWidth + ')';
+            }
+            else if ( imageSrc.match(/_size\=list/i) )
+            {
+                filter = 'scalesquare(' + twentyFivePercentOfEditorWidth + ')';
+            }
+            else if ( imageSrc.match(/_size\=thumbnail/i) )
+            {
+                filter = 'scalesquare(' + fifteenPercentOfEditorWidth + ')';
+            }                                                                                   // TODO: Use \d+
+            else if ( imageSrc.match(/_size\=custom/i) && (customWidth && customWidth.match(/\d/)) )
+            {
+                filter = 'scalewidth(' + customWidth + ')';
+            }
+            else
+            {
+                filter = '';
+            }
+
+            return filter;
+        },
+        // ---------------------------------------------------------------------------------------------------------------------------------
+
+        getInfo: function()
+        {
+            return {
+                longname : 'Internal Link Plugin',
+                author : 'tan@enonic.com',
+                authorurl : 'http://www.enonic.com',
+                infourl : 'http://www.enonic.com',
+                version : '0.1'
+            };
+        },
+        // ---------------------------------------------------------------------------------------------------------------------------------
+
+        // Private
+
+        /*
+         function: _getWidthForEditorInstance
+         */
+        _getWidthForEditorInstance: function()
+        {
+            var t = this;
+            var editor = t.editor;
+
+            var bodyElementStyleMarginAndPadding = t._getBodyStyleMarginAndPaddingForEditorInstance( editor );
+
+            var bodyMarginLeft     = bodyElementStyleMarginAndPadding.marginleft;
+            var bodyMarginRight    = bodyElementStyleMarginAndPadding.marginright;
+            var bodyPaddingLeft    = bodyElementStyleMarginAndPadding.paddingleft;
+            var bodyPaddingRight   = bodyElementStyleMarginAndPadding.paddingright;
+
+            var contentAreaWidth   = editor.settings.initial_width - 2; // Initial width - gui left and right border.
+
+            return ( contentAreaWidth - ( bodyMarginLeft + bodyPaddingLeft ) - ( bodyMarginRight + bodyPaddingRight ) );
+        },
+        // ---------------------------------------------------------------------------------------------------------------------------------
+
+        _getBodyStyleMarginAndPaddingForEditorInstance: function()
+        {
+            var t = this;
+            var editor = t.editor;
+            var DOM = editor.dom;
+
+            var editorBodyElement = editor.getBody();
+
+            var margintop, marginright, marginbottom ,marginleft,
+                    paddingtop, paddingright, paddingbottom ,paddingleft;
+
+            margintop       = parseInt(DOM.getStyle(editorBodyElement, 'margin-top', true))       || 0;
+            marginright     = parseInt(DOM.getStyle(editorBodyElement, 'margin-right', true))     || 0;
+            marginbottom    = parseInt(DOM.getStyle(editorBodyElement, 'margin-nottom', true))    || 0;
+            marginleft      = parseInt(DOM.getStyle(editorBodyElement, 'margin-left', true))      || 0;
+
+            paddingtop      = parseInt(DOM.getStyle(editorBodyElement, 'padding-top', true))      || 0;
+            paddingright    = parseInt(DOM.getStyle(editorBodyElement, 'padding-right', true))    || 0;
+            paddingbottom   = parseInt(DOM.getStyle(editorBodyElement, 'padding-bottom', true))   || 0;
+            paddingleft     = parseInt(DOM.getStyle(editorBodyElement, 'padding-left', true))     || 0;
+
+            return { 'margintop': margintop, 'marginright': marginright, 'marginbottom': marginbottom, 'marginleft': marginleft,
+                'paddingtop': paddingtop, 'paddingright': paddingright, 'paddingbottom': paddingbottom, 'paddingleft': paddingleft };
+        },
+        // ---------------------------------------------------------------------------------------------------------------------------------
+
+        _isCustomSize: function( imageSrc )
+        {
+            return imageSrc.match(imgSrcWithSizeParamEQCustomPattern);
+        }
+        // ---------------------------------------------------------------------------------------------------------------------------------
+    });
+
+    tinymce.PluginManager.add('internallinkplugin', tinymce.plugins.InternalLinkPlugin);
+})();

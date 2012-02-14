@@ -18,7 +18,7 @@ public class QueryValueResolverTest
     {
         Expression expression = new ValueExpr( "100.0" );
 
-        final QueryValue actual = QueryValueResolver.toValues( expression )[0];
+        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
 
         assertEquals( "100.0", actual.getStringValueNormalized() );
     }
@@ -28,7 +28,7 @@ public class QueryValueResolverTest
     {
         Expression expression = new ValueExpr( 100.0 );
 
-        final QueryValue actual = QueryValueResolver.toValues( expression )[0];
+        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
         assertEquals( 100.0, actual.getDoubleValue() );
     }
 
@@ -37,9 +37,9 @@ public class QueryValueResolverTest
     {
         Expression expression = new FieldExpr( "" );
 
-        assertNotNull( QueryValueResolver.toValues( expression ) );
+        assertNotNull( QueryValueResolver.resolveQueryValues( expression ) );
 
-        final int length = QueryValueResolver.toValues( expression ).length;
+        final int length = QueryValueResolver.resolveQueryValues( expression ).length;
         assertEquals( 0, length );
     }
 
@@ -47,9 +47,9 @@ public class QueryValueResolverTest
     public void testDateValue()
     {
         Expression expression = new ValueExpr( new DateTime( 2012, 02, 14, 12, 5, 0 ) );
-        final QueryValue[] queryValues = QueryValueResolver.toValues( expression );
+        final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expression );
 
-        final QueryValue actual = QueryValueResolver.toValues( expression )[0];
+        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
 
         assertTrue( actual.isValidDateString() );
 
@@ -61,9 +61,9 @@ public class QueryValueResolverTest
     public void testDateAsStringValue()
     {
         Expression expression = new ValueExpr( "2012-02-14t12:05:00.000z" );
-        final QueryValue[] queryValues = QueryValueResolver.toValues( expression );
+        final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expression );
 
-        final QueryValue actual = QueryValueResolver.toValues( expression )[0];
+        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
 
         assertTrue( actual.isValidDateString() );
 

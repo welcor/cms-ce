@@ -20,6 +20,11 @@ public class QueryFieldNameResolver
         return doNormalizeQueryFieldName( name );
     }
 
+    public static String resolveQueryFieldName( FieldExpr expression )
+    {
+        return doNormalizeQueryFieldName( expression.getPath() );
+    }
+
     private static String doNormalizeQueryFieldName( String name )
     {
         String normalized = name.replace( '/', '.' ).replace( '.', '_' ).replaceAll( "@", "" ).toLowerCase();
@@ -32,19 +37,19 @@ public class QueryFieldNameResolver
         return normalized;
     }
 
-    public static String resolveQueryFieldName( FieldExpr expression )
-    {
-        return resolveQueryFieldName( expression.getPath() );
-    }
-
     public static String getOrderByFieldName( FieldExpr expression )
     {
-        return getOrderByFieldName( expression.getPath() );
+        return doGetOrderByFieldName( expression.getPath() );
     }
 
     public static String getOrderByFieldName( String fieldName )
     {
-        return ORDER_FIELD_PREFIX + resolveQueryFieldName( fieldName );
+        return doGetOrderByFieldName( fieldName );
+    }
+
+    private static String doGetOrderByFieldName( String fieldName )
+    {
+        return ORDER_FIELD_PREFIX + doNormalizeQueryFieldName( fieldName );
     }
 
     public static String getSectionKeysApprovedQueryFieldName()
@@ -71,5 +76,6 @@ public class QueryFieldNameResolver
     {
         return CONTENT_TYPE_PREFIX + "key" + NUMERIC_FIELD_POSTFIX;
     }
+
 
 }

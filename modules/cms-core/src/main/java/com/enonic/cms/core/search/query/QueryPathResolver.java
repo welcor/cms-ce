@@ -11,10 +11,10 @@ import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
  * Date: 11/9/11
  * Time: 2:12 PM
  */
-public class QueryPathCreator
+public class QueryPathResolver
     extends IndexFieldNameConstants
 {
-    public static QueryPath createQueryPath( String path )
+    public static QueryPath resolveQueryPath( String path )
     {
         QueryPath queryPath = new QueryPath( path );
 

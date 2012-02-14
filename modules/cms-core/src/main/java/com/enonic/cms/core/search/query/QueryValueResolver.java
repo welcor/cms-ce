@@ -20,11 +20,11 @@ import com.enonic.cms.core.content.index.util.ValueConverter;
 public class QueryValueResolver
 {
 
-    public static QueryValue[] toValues( Expression expr )
+    public static QueryValue[] resolveQueryValues( Expression expr )
     {
         if ( expr instanceof ArrayExpr )
         {
-            return toValues( (ArrayExpr) expr );
+            return toQueryValues( (ArrayExpr) expr );
         }
         else if ( expr instanceof ValueExpr )
         {
@@ -32,7 +32,7 @@ public class QueryValueResolver
         }
         else if ( expr instanceof FunctionExpr )
         {
-            return toValues( (FunctionExpr) expr );
+            return resolveQueryValues( (FunctionExpr) expr );
         }
         else
         {
@@ -41,7 +41,7 @@ public class QueryValueResolver
     }
 
 
-    private static QueryValue[] toValues( ArrayExpr expr )
+    private static QueryValue[] toQueryValues( ArrayExpr expr )
     {
         final ValueExpr[] list = expr.getValues();
         final QueryValue[] result = new QueryValue[list.length];

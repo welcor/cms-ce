@@ -24,7 +24,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "key" ), new QueryValue( "123" ) );
+            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( "123" ) );
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
 
@@ -38,7 +38,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "*" ), new QueryValue( "123" ) );
+            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "*" ), new QueryValue( "123" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -54,7 +54,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "*" ), new QueryValue( 123 ) );
+            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "*" ), new QueryValue( 123 ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -74,7 +74,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathCreator.createQueryPath( "attachments/*" ), new QueryValue( "123" ) );
+            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "attachments/*" ), new QueryValue( "123" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }

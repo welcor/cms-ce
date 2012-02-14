@@ -4,16 +4,16 @@ import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
-public class QueryPathCreatorTest
+public class QueryPathResolverTest
 {
     @Test
     public void testCreateQueryPath()
     {
-        QueryPath startDataPath = QueryPathCreator.createQueryPath( "data" );
+        QueryPath startDataPath = QueryPathResolver.resolveQueryPath( "data" );
         assertEquals( false, startDataPath.doRenderAsHasChildQuery() );
         assertEquals( "content", startDataPath.getIndexType().toString() );
 
-        QueryPath startAttachmentPath = QueryPathCreator.createQueryPath( "attachment" );
+        QueryPath startAttachmentPath = QueryPathResolver.resolveQueryPath( "attachment" );
         assertEquals( true, startAttachmentPath.doRenderAsHasChildQuery() );
         assertEquals( "binaries", startAttachmentPath.getIndexType().toString() );
     }

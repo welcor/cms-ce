@@ -28,7 +28,8 @@ public class RangeQueryBuilderTest
             "  }\n" +
             "}";
 
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", new QueryValue( "100" ), null, false, true );
+        QueryBuilder query =
+            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( "100" ), null, false, true );
 
         System.out.println( query.toString() );
 
@@ -49,7 +50,8 @@ public class RangeQueryBuilderTest
             "  }\n" +
             "}";
 
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", new QueryValue( 100 ), null, false, true );
+        QueryBuilder query =
+            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( 100 ), null, false, true );
 
         System.out.println( query.toString() );
         assertEquals( expected_result, query.toString() );
@@ -58,7 +60,7 @@ public class RangeQueryBuilderTest
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void testBuildRangeQuery_null_range()
     {
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", null, null, false, true );
+        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), null, null, false, true );
     }
 
     @Test
@@ -75,7 +77,9 @@ public class RangeQueryBuilderTest
             "  }\n" +
             "}";
 
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( "key", new QueryValue( 100 ), new QueryValue( 300 ), true, true );
+        QueryBuilder query =
+            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( 100 ), new QueryValue( 300 ),
+                                               true, true );
         System.out.println( query.toString() );
 
         assertEquals( expected_result, query.toString() );

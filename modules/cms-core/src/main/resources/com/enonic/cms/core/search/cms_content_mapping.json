@@ -112,6 +112,7 @@
             },
             {
                 "template_numerics":{
+                    "unmatch":"data_*",
                     "match":"*_numeric",
                     "mapping":{
                         "include_in_all":false,
@@ -121,10 +122,21 @@
                 }
             },
             {
+                "template_userdata_numeric":{
+                    "include_in_all":false,
+                    "match":"*_numeric",
+                    "mapping":{
+                        "include_in_all":true,
+                        "type":"double",
+                        "store":"yes"
+                    }
+                }
+            },
+            {
                 "template_general":{
                     "match":"*",
                     "mapping":{
-                        "include_in_all":true,
+                        "include_in_all":false,
                         "type":"string",
                         "store":"yes",
                         "index":"not_analyzed"

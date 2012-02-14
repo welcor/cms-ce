@@ -377,6 +377,8 @@ public class ContentIndexServiceImpl
             keys.add( new ContentKey( hit.getId() ) );
         }
 
+        System.out.println( "Query finished in " + timer.getLastTaskTimeMillis() + " ms with " + queryResultTotalSize + " hits" );
+
         return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
     }
 

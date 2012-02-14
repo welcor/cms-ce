@@ -15,15 +15,25 @@ public class RangeQueryBuilder
 {
     protected static final String NUMERIC_FIELD_POSTFIX = "_numeric";
 
-    public static QueryBuilder buildRangeQuery( final String field, final QueryValue lower, final QueryValue upper,
+    public static QueryBuilder buildRangeQuery( final QueryPath queryPath, final QueryValue lower, final QueryValue upper,
                                                 final boolean lowerInclusive, final boolean upperInclusive )
     {
         final boolean doStringComparison = ( lower != null && !lower.isNumeric() ) || ( upper != null && !upper.isNumeric() );
 
+        String path;
+
+        if ( queryPath.isWildCardPath() )
+        {
+            path = QueryPath.ALL_FIELDS_PATH;
+        }
+        else
+        {
+            path = queryPath.getPath();
+        }
+
         if ( doStringComparison )
         {
-            return rangeQuery( field ).from( lower != null ? lower.getStringValueNormalized() : null )
-                .to( upper != null ? upper.getStringValueNormalized() : null )
+            return rangeQuery( queryPath.isWildCardPath() ? QueryPath.ALL_FIELDS_PATH : queryPath.getPath() ).from( lower != null ? lower.getStringValueNormalized() : null ).to( upper != null ? upper.getStringValueNormalized() : null )
                 .includeLower( lowerInclusive )
                 .includeUpper( upperInclusive );
         }
@@ -36,10 +46,8 @@ public class RangeQueryBuilder
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
 
-        return rangeQuery( field + NUMERIC_FIELD_POSTFIX ).from( lowerNumeric )
-            .to( upperNumeric )
-            .includeLower( lowerInclusive )
-            .includeUpper( upperInclusive );
+        return rangeQuery( queryPath.isWildCardPath() ? QueryPath.ALL_FIELDS_PATH : queryPath.getPath() + NUMERIC_FIELD_POSTFIX ).from(
+            lowerNumeric ).to( upperNumeric ).includeLower( lowerInclusive ).includeUpper( upperInclusive );
     }
 
 }

@@ -122,13 +122,13 @@ public class QueryTranslator
             case CompareExpr.NEQ:
                 return buildNotQuery( TermQueryBuilderCreator.buildTermQuery( queryPath, querySingleValue ) );
             case CompareExpr.GT:
-                return RangeQueryBuilder.buildRangeQuery( path, querySingleValue, null, false, true );
+                return RangeQueryBuilder.buildRangeQuery( queryPath, querySingleValue, null, false, true );
             case CompareExpr.GTE:
-                return RangeQueryBuilder.buildRangeQuery( path, querySingleValue, null, true, true );
+                return RangeQueryBuilder.buildRangeQuery( queryPath, querySingleValue, null, true, true );
             case CompareExpr.LT:
-                return RangeQueryBuilder.buildRangeQuery( path, null, querySingleValue, true, false );
+                return RangeQueryBuilder.buildRangeQuery( queryPath, null, querySingleValue, true, false );
             case CompareExpr.LTE:
-                return RangeQueryBuilder.buildRangeQuery( path, null, querySingleValue, true, true );
+                return RangeQueryBuilder.buildRangeQuery( queryPath, null, querySingleValue, true, true );
             case CompareExpr.LIKE:
                 return LikeQueryBuilderCreator.buildLikeQuery( queryPath, querySingleValue );
             case CompareExpr.NOT_LIKE:

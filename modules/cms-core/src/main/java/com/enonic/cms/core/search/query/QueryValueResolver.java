@@ -1,6 +1,5 @@
 package com.enonic.cms.core.search.query;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
@@ -8,7 +7,6 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
-import com.enonic.cms.core.content.index.queryexpression.FunctionEvaluator;
 import com.enonic.cms.core.content.index.queryexpression.FunctionExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 import com.enonic.cms.core.content.index.util.ValueConverter;
@@ -16,14 +14,13 @@ import com.enonic.cms.core.content.index.util.ValueConverter;
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
- * Date: 10/20/11
- * Time: 9:18 AM
+ * Date: 2/13/12
+ * Time: 4:29 PM
  */
 public class QueryValueResolver
 {
 
-
-    public static Object[] toValues( Expression expr )
+    public static QueryValue[] toValues( Expression expr )
     {
         if ( expr instanceof ArrayExpr )
         {
@@ -31,7 +28,7 @@ public class QueryValueResolver
         }
         else if ( expr instanceof ValueExpr )
         {
-            return new Object[]{toValue( (ValueExpr) expr )};
+            return new QueryValue[]{toQueryValue( (ValueExpr) expr )};
         }
         else if ( expr instanceof FunctionExpr )
         {
@@ -39,29 +36,38 @@ public class QueryValueResolver
         }
         else
         {
-            return new String[0];
+            return new QueryValue[0];
         }
     }
 
-    private static Object toValue( ValueExpr expr )
-    {
-        if ( expr.isNumber() )
-        {
-            return expr.getValue();
 
-        }
-        else if ( expr.isDate() )
+    private static QueryValue[] toValues( ArrayExpr expr )
+    {
+        final ValueExpr[] list = expr.getValues();
+        final QueryValue[] result = new QueryValue[list.length];
+
+        for ( int i = 0; i < list.length; i++ )
         {
-            return formatDateForElasticSearch( (ReadableDateTime) expr.getValue() );
+            result[i] = toQueryValue( list[i] );
+        }
+
+        return result;
+    }
+
+
+    public static QueryValue toQueryValue( ValueExpr expr )
+    {
+        if ( expr.isDate() )
+        {
+            return new QueryValue( formatDateForElasticSearch( (ReadableDateTime) expr.getValue() ) );
         }
         else if ( expr.isValidDateString() )
         {
-            return formatDateStringForElasticSearch( (String) expr.getValue() );
+            return new QueryValue( formatDateStringForElasticSearch( (String) expr.getValue() ) );
         }
         else
         {
-            final String stringValue = expr.getValue().toString();
-            return StringUtils.lowerCase( stringValue );
+            return new QueryValue( expr.getValue() );
         }
     }
 
@@ -85,25 +91,4 @@ public class QueryValueResolver
         dateInUTC.setZone( DateTimeZone.UTC );
         return dateInUTC.toDateTime();
     }
-
-
-    private static Object[] toValues( ArrayExpr expr )
-    {
-        final ValueExpr[] list = expr.getValues();
-        final Object[] result = new Object[list.length];
-
-        for ( int i = 0; i < list.length; i++ )
-        {
-            result[i] = toValue( list[i] );
-        }
-
-        return result;
-    }
-
-    private static Object[] toValues( FunctionExpr expr )
-    {
-        final FunctionEvaluator eval = new FunctionEvaluator();
-        return toValues( (Expression) expr.evaluate( eval ) );
-    }
-
 }

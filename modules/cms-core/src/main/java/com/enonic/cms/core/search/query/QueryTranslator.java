@@ -114,7 +114,7 @@ public class QueryTranslator
 
         final QueryPath queryPath = QueryPathCreator.createQueryPath( path );
 
-        final QueryValue[] values = QueryValueResolver2.toValues( expr.getRight() );
+        final QueryValue[] values = QueryValueResolver.toValues( expr.getRight() );
 
         final QueryValue queryValue = values.length > 0 ? values[0] : null;
 

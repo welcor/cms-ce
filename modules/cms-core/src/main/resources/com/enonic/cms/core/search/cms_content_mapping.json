@@ -28,22 +28,22 @@
             },
             "timestamp":{
                 "include_in_all":false,
-                "type":"string",
+                "type":"date",
                 "index":"not_analyzed",
                 "store":"yes"
             },
             "publishfrom":{
-                "type":"string",
+                "type":"date",
                 "index":"not_analyzed",
                 "store":"yes"
             },
             "publishto":{
-                "type":"string",
+                "type":"date",
                 "index":"not_analyzed",
                 "store":"yes"
             },
             "assignmentduedate":{
-                "type":"string",
+                "type":"date",
                 "index":"not_analyzed",
                 "store":"yes"
             },

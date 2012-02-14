@@ -50,7 +50,7 @@ public class QueryValue
 
     public String getDateAsStringValue()
     {
-        return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
+        return stringValue != null ? stringValue : null;
     }
 
 

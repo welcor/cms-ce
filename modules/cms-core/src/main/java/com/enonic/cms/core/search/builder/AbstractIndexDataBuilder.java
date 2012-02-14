@@ -75,24 +75,22 @@ class AbstractIndexDataBuilder
             return;
         }
 
-        doAddField( fieldName, value.toString(), builder, true );
-
-
+        doAddField( fieldName, value, builder, true );
     }
 
-    /*
-  private void doAddField( String fieldName, final Date value, final XContentBuilder builder, boolean addOrderField )
-      throws Exception
-  {
+    private void doAddField( String fieldName, final Date value, final XContentBuilder builder, boolean addOrderField )
+        throws Exception
+    {
+        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+        final String fieldValue = IndexValueResolver.normalizeDateValue( value );
 
-      fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-      builder.field( fieldName, value );
-      if ( addOrderField )
-      {
-          addOrderField( fieldName, value, builder );
-      }
-  }
-    */
+        builder.field( fieldName, fieldValue );
+        if ( addOrderField )
+        {
+            final String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
+            builder.field( orderByFieldName, value );
+        }
+    }
 
     protected void addField( String fieldName, final Integer value, final XContentBuilder builder )
         throws Exception

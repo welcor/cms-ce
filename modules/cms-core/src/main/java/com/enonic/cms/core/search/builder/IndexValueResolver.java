@@ -1,10 +1,15 @@
 package com.enonic.cms.core.search.builder;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.util.NumericUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -133,6 +138,25 @@ public final class IndexValueResolver
         return value.trim().toLowerCase();
     }
 
+    public static String normalizeDateValue( final Date value )
+    {
+        if ( value == null )
+        {
+            return "";
+        }
+
+        DateTime dateTime = new DateTime( value );
+        if ( !DateTimeZone.UTC.equals( dateTime.getZone() ) )
+        {
+            final MutableDateTime dateInUTC = dateTime.toMutableDateTime();
+            dateInUTC.setZone( DateTimeZone.UTC );
+            dateTime = dateInUTC.toDateTime();
+        }
+
+        final String dateFormatted = ISODateTimeFormat.dateTime().print( dateTime );
+
+        return dateFormatted;
+    }
 
     public static String[] getNormalizedStringValues( Set<String> values )
     {

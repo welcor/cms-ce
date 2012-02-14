@@ -52,6 +52,7 @@ import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJobFactory;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -133,6 +134,8 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String deleteContentVersion( int versionKey )
     {
+        ensureUserIsLoggedIn();
+
         UserEntity deleter = getLoggedInAdminConsoleUser();
         try
         {
@@ -150,7 +153,7 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByCategory( int categoryKey )
     {
-        ensureUserIsLoggedIn();
+        ensureUserHasAdministratorPowers();
 
         try
         {
@@ -166,7 +169,7 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getArchiveSizeByUnit( int unitKey )
     {
-        ensureUserIsLoggedIn();
+        ensureUserHasAdministratorPowers();
 
         try
         {
@@ -182,12 +185,16 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public boolean isContentInUse( String[] contentkeys )
     {
+        ensureUserIsLoggedIn();
+
         return contentService.isContentInUse( ContentKey.convertToList( contentkeys ) );
     }
 
     @RemoteMethod
     public String getContentUsedByAsHtml( int contentKey )
     {
+        ensureUserIsLoggedIn();
+
         UserEntity user = getLoggedInAdminConsoleUser();
 
         try
@@ -236,37 +243,10 @@ public class AdminAjaxServiceImpl
     }
 
     @RemoteMethod
-    public String getPageTemplateUsedByAsHtml( int pageTemplateKey )
-    {
-        UserEntity user = getLoggedInAdminConsoleUser();
-
-        try
-        {
-            final XMLDocument menuItemsByPageTemplates = adminService.getMenuItemsByPageTemplates( user, new int[]{pageTemplateKey} );
-            final Document menuItemsDoc = menuItemsByPageTemplates.getAsDOMDocument();
-
-            final Element[] menuitems = XMLTool.getElements( menuItemsDoc, "menuitem" );
-
-            for (Element menuitem : menuitems)
-            {
-                final String key = menuitem.getAttribute( "key" );
-                MenuItemEntity selectedMenuItem = menuItemDao.findByKey( Integer.parseInt( key ) );
-                menuitem.setAttribute( "path-to-menu", selectedMenuItem.getPathAsString() );
-            }
-
-            return transformXML( menuItemsDoc, "ajax_get_used_by_for_pagetemplate.xsl" );
-
-        }
-        catch ( Exception e )
-        {
-            LOG.error( "ERROR: " + e.getMessage(), e );
-            return "ERROR: " + e.getMessage();
-        }
-    }
-
-    @RemoteMethod
     public String getPortletUsedByAsHtml( int portletKey )
     {
+        ensureUserIsLoggedIn();
+
         UserEntity user = getLoggedInAdminConsoleUser();
 
         try
@@ -276,7 +256,7 @@ public class AdminAjaxServiceImpl
 
             final Element[] menuitems = XMLTool.getElements( menuItemsDoc, "menuitem" );
 
-            for (Element menuitem : menuitems)
+            for ( Element menuitem : menuitems )
             {
                 final String key = menuitem.getAttribute( "key" );
                 MenuItemEntity selectedMenuItem = menuItemDao.findByKey( Integer.parseInt( key ) );
@@ -294,7 +274,36 @@ public class AdminAjaxServiceImpl
         }
     }
 
+    @RemoteMethod
+    public String getPageTemplateUsedByAsHtml( int pageTemplateKey )
+    {
+        ensureUserIsLoggedIn();
 
+        UserEntity user = getLoggedInAdminConsoleUser();
+
+        try
+        {
+            final XMLDocument menuItemsByPageTemplates = adminService.getMenuItemsByPageTemplates( user, new int[]{pageTemplateKey} );
+            final Document menuItemsDoc = menuItemsByPageTemplates.getAsDOMDocument();
+
+            final Element[] menuitems = XMLTool.getElements( menuItemsDoc, "menuitem" );
+
+            for ( Element menuitem : menuitems )
+            {
+                final String key = menuitem.getAttribute( "key" );
+                MenuItemEntity selectedMenuItem = menuItemDao.findByKey( Integer.parseInt( key ) );
+                menuitem.setAttribute( "path-to-menu", selectedMenuItem.getPathAsString() );
+            }
+
+            return transformXML( menuItemsDoc, "ajax_get_used_by_for_pagetemplate.xsl" );
+
+        }
+        catch ( Exception e )
+        {
+            LOG.error( "ERROR: " + e.getMessage(), e );
+            return "ERROR: " + e.getMessage();
+        }
+    }
 
     private String transformXML( Document doc, String xslPath )
     {
@@ -346,13 +355,41 @@ public class AdminAjaxServiceImpl
         UserEntity user = getLoggedInAdminConsoleUser();
         if ( user == null || user.isAnonymous() )
         {
-            throw new IllegalStateException( "User is not logged in admin console" );
+            throw new IllegalStateException( "User not logged in" );
+        }
+    }
+
+    private void ensureUserHasAdministratorPowers()
+    {
+        UserEntity user = getLoggedInAdminConsoleUser();
+        if ( user == null )
+        {
+            throw new IllegalStateException( "User is not logged in" );
+        }
+        else if ( !memberOfResolver.hasAdministratorPowers( user ) )
+        {
+            throw new IllegalStateException( "User is not Administrator" );
+        }
+    }
+
+    private void ensureUserStoreAdministratorPowers( UserStoreKey userStoreKey )
+    {
+        UserEntity user = getLoggedInAdminConsoleUser();
+        if ( user == null )
+        {
+            throw new IllegalStateException( "User is not logged in" );
+        }
+        else if ( !memberOfResolver.hasUserStoreAdministratorPowers( getLoggedInAdminConsoleUser(), userStoreKey ) )
+        {
+            throw new IllegalStateException( "User is not User Store Administrator" );
         }
     }
 
     @RemoteMethod
     public Collection<RegionDto> getCountryRegions( final String countryCode )
     {
+        ensureUserIsLoggedIn();
+
         final CountryCode code = new CountryCode( countryCode );
         final Country country = countryService.getCountry( code );
 
@@ -373,12 +410,16 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public boolean startSyncUserStore( String userStoreKey, boolean users, boolean groups, int batchSize )
     {
+        ensureUserStoreAdministratorPowers( new UserStoreKey( userStoreKey ) );
+
         return this.syncUserStoreExecutorManager.start( userStoreKey, users, groups, batchSize );
     }
 
     @RemoteMethod
     public SynchronizeStatusDto getSynchUserStoreStatus( String userStoreKey )
     {
+        ensureUserStoreAdministratorPowers( new UserStoreKey( userStoreKey ) );
+
         String languageCode = (String) ServletRequestAccessor.getSession().getAttribute( "languageCode" );
         return this.syncUserStoreExecutorManager.getStatus( userStoreKey, languageCode );
     }
@@ -386,6 +427,8 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public boolean menuItemNameExistsUnderParent( int siteKeyInt, String menuItemName, int existingMenuItemKeyInt, int parentKey )
     {
+        ensureUserIsLoggedIn();
+
         final SiteKey siteKey = new SiteKey( siteKeyInt );
         final MenuItemSpecification menuItemSpec = new MenuItemSpecification();
         menuItemSpec.setSiteKey( siteKey );
@@ -437,6 +480,8 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getContentPath( int contentKey )
     {
+        ensureUserIsLoggedIn();
+
         if ( contentKey == -1 )
         {
             return STRING_EMPTY_RESULT_RETURN_VALUE;
@@ -456,6 +501,8 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public String getPagePath( int menuItemKey )
     {
+        ensureUserIsLoggedIn();
+
         if ( menuItemKey == -1 )
         {
             return STRING_EMPTY_RESULT_RETURN_VALUE;
@@ -640,6 +687,8 @@ public class AdminAjaxServiceImpl
     @RemoteMethod
     public Collection<PreferenceDto> getUserPreferences( String uid )
     {
+        ensureUserIsLoggedIn();
+
         if ( StringUtils.isBlank( uid ) )
         {
             throw new IllegalArgumentException( "Uid is null or empty" );

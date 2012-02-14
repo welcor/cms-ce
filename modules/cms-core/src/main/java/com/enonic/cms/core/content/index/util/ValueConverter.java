@@ -12,6 +12,8 @@ import java.util.Date;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableDateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * This class implements the index value.
@@ -22,6 +24,8 @@ public final class ValueConverter
     private static final long SIGN_MASK = 0x8000000000000000L;
 
     private static final int STRING_DOUBLE_LEN = Long.toString( Long.MAX_VALUE, Character.MAX_RADIX ).length() + 1;
+
+    private final static DateTimeFormatter FULL_DATE_FORMAT_WITH_TIME_ZONE = ISODateTimeFormat.dateTimeParser();
 
     private final static DateFormat FULL_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss" );
 
@@ -114,6 +118,12 @@ public final class ValueConverter
         Date dateTimeByFullFormat = toDate( value, FULL_DATE_FORMAT );
         if ( dateTimeByFullFormat != null )
         {
+            final DateTime dateTimeByFullFormatTimeZone = toDateTime( value, FULL_DATE_FORMAT_WITH_TIME_ZONE );
+            if ( dateTimeByFullFormatTimeZone != null )
+            {
+                return dateTimeByFullFormatTimeZone;
+            }
+
             return new DateTime( dateTimeByFullFormat );
         }
 
@@ -151,4 +161,17 @@ public final class ValueConverter
             return null;
         }
     }
+
+    private static DateTime toDateTime( String value, DateTimeFormatter format )
+    {
+        try
+        {
+            return format.parseDateTime( value );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            return null;
+        }
+    }
+
 }

@@ -78,17 +78,6 @@ public class QueryValueResolver
 
     private static String formatDateForElasticSearch( final ReadableDateTime date )
     {
-        return ISODateTimeFormat.dateTime().print( toUTCTimeZone( date ) );
-    }
-
-    private static ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )
-    {
-        if ( DateTimeZone.UTC.equals( dateTime.getZone() ) )
-        {
-            return dateTime;
-        }
-        final MutableDateTime dateInUTC = dateTime.toMutableDateTime();
-        dateInUTC.setZone( DateTimeZone.UTC );
-        return dateInUTC.toDateTime();
+        return ISODateTimeFormat.dateTime().print( date );
     }
 }

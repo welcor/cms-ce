@@ -145,17 +145,7 @@ public final class IndexValueResolver
             return "";
         }
 
-        DateTime dateTime = new DateTime( value );
-        if ( !DateTimeZone.UTC.equals( dateTime.getZone() ) )
-        {
-            final MutableDateTime dateInUTC = dateTime.toMutableDateTime();
-            dateInUTC.setZone( DateTimeZone.UTC );
-            dateTime = dateInUTC.toDateTime();
-        }
-
-        final String dateFormatted = ISODateTimeFormat.dateTime().print( dateTime );
-
-        return dateFormatted;
+        return ISODateTimeFormat.dateTime().print( new DateTime( value ) );
     }
 
     public static String[] getNormalizedStringValues( Set<String> values )

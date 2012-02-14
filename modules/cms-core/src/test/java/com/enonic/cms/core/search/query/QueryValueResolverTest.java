@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search.query;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.index.queryexpression.Expression;
@@ -54,21 +55,36 @@ public class QueryValueResolverTest
         assertTrue( actual.isValidDateString() );
 
         // one hour behind because of timezone normalization
-        assertEquals( "2012-02-14t11:05:00.000z", actual.getStringValueNormalized() );
+        assertDateTimeEquals( "2012-02-14T11:05:00.000Z", actual.getDateAsStringValue() );
     }
 
     @Test
     public void testDateAsStringValue()
     {
-        Expression expression = new ValueExpr( "2012-02-14t12:05:00.000z" );
+        Expression expression = new ValueExpr( "2012-02-14T12:05:00.000Z" );
         final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expression );
 
         final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
 
         assertTrue( actual.isValidDateString() );
 
-        assertEquals( "2012-02-14t12:05:00.000z", actual.getStringValueNormalized() );
+        assertDateTimeEquals( "2012-02-14T12:05:00.000Z", actual.getDateAsStringValue() );
     }
 
+    private void assertDateTimeEquals( final String expectedDateTime, final String actualDateTime )
+    {
+        DateTime expected = DateTime.parse( expectedDateTime );
+        DateTime actual = DateTime.parse( actualDateTime );
+
+        // move to same time-zone if necessary
+        if ( !actual.getZone().equals( expected.getZone() ) )
+        {
+            MutableDateTime actualUpdatedZone = actual.toMutableDateTime();
+            actualUpdatedZone.setZone( expected.getZone() );
+            actual = actualUpdatedZone.toDateTime();
+        }
+
+        assertEquals( expected, actual );
+    }
 
 }

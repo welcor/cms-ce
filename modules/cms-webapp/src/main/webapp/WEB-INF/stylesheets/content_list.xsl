@@ -458,7 +458,7 @@
 
               window.parent.opener.setPickerFieldValues('input-content', 'content://' + selectedContentKey, contentTitle);
               window.parent.close();
-            
+
             }
             // ---------------------------------------------------------------------------------------------------
 
@@ -671,7 +671,7 @@
                         </xsl:otherwise>
                       </xsl:choose>
                     </xsl:variable>
-            
+
                     opener.addRelatedContent(fieldName, fieldRow, key, title, <xsl:value-of select="$_minoccurrence"/>, <xsl:value-of select="$_maxoccurrence"/>);
                   }
                 }
@@ -1172,7 +1172,7 @@
 
             function contentAdded( contentKey )
             {
-              var contentKeys = window.top.opener.contentKeys;
+              var contentKeys = window.top.opener.totalContentKeys;
               var found = false;
               for(i in contentKeys)
               {
@@ -1219,7 +1219,7 @@
             {
                 return (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename) : undefined;
             }
-          
+
             <xsl:variable name="superCategoryKey">
               <xsl:choose>
                 <xsl:when test="/data/category/@supercategorykey">
@@ -1284,7 +1284,7 @@
           </xsl:if>
 
           <input type="hidden" name="navigation-url-for-for-count-dropdown" id="navigation-url-for-for-count-dropdown" value="{$urlForNavigation}"/>
-          
+
           <xsl:variable name="url">
             <xsl:text>adminpage?op=browse&amp;subop=</xsl:text>
             <xsl:value-of select="$subop"/>
@@ -1605,7 +1605,7 @@
                       </xsl:variable>
 
                       <xsl:variable name="currentContent" select="."/>
-                      
+
                       <xsl:variable name="suffix">
                         <xsl:call-template name="getsuffix">
                           <xsl:with-param name="fname" select="$currentContent/title"/>
@@ -1665,7 +1665,7 @@
                         <xsl:variable name="key" select="@key"/>
                         <xsl:variable name="categorykey" select="categoryname/@key"/>
                         <xsl:variable name="ctykey" select="@contenttypekey"/>
-                        
+
                          <xsl:variable name="clickable">
                             <xsl:choose>
                               <xsl:when test="@clickable">
@@ -1712,7 +1712,7 @@
                           <xsl:call-template name="addJSEvent">
                             <xsl:with-param name="node" select="$currentContent"/>
                           </xsl:call-template>
-                          
+
                           <xsl:call-template name="display-content-icon">
                             <xsl:with-param name="content-node" select="."/>
                             <xsl:with-param name="title" select="title"/>
@@ -1770,7 +1770,7 @@
                                 </xsl:if>
 
                               </xsl:otherwise>
-                            </xsl:choose>       
+                            </xsl:choose>
 
 
                             <!-- Browser hack -->

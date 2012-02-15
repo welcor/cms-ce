@@ -37,10 +37,15 @@ public class ContentTitleXmlCreator
 
     public Element createContentTitleElement( ContentEntity content )
     {
-        return doCreateContentTitleElement( content );
+        return doCreateContentTitleElement( content, "contenttitle" );
     }
 
-    private Element doCreateContentTitleElement( ContentEntity content )
+    public Element createTotalContentTitleElement( ContentEntity content )
+    {
+        return doCreateContentTitleElement( content, "totalcontent" );
+    }
+
+    private Element doCreateContentTitleElement( ContentEntity content, String elementName )
     {
         ContentVersionEntity mainVersion = content.getMainVersion();
         CategoryEntity category = content.getCategory();
@@ -48,7 +53,7 @@ public class ContentTitleXmlCreator
         ContentTypeEntity contentType = category.getContentType();
         ContentHandlerEntity contentHandler = contentType.getHandler();
 
-        Element el = new Element( "contenttitle" );
+        Element el = new Element( elementName );
         el.setAttribute( "key", content.getKey().toString() );
         el.setAttribute( "categorykey", category.getKey().toString() );
         el.setAttribute( "unitkey", String.valueOf( unit.getKey() ) );

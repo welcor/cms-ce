@@ -834,13 +834,15 @@
           cms.util.BatchAdd.addToolTip('%msgNoMembersSelected%');
         </script>
 
+        <xsl:if test="string-length($userstorekey) > 0">
         <script type="text/javascript">
           $(document).ready( function()
           {
-            checkIfUserstoreIsSynchronizing('<xsl:value-of select="$userstorekey"/>');
+              var userStoreKey = '<xsl:value-of select="$userstorekey"/>';
+              checkIfUserstoreIsSynchronizing( userStoreKey );
           });
         </script>
-
+        </xsl:if>
       </body>
     </html>
   </xsl:template>

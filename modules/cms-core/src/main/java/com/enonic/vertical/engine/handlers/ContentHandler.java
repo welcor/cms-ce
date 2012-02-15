@@ -104,8 +104,7 @@ public final class ContentHandler
             return new int[0];
         }
         CommonHandler commonHandler = getCommonHandler();
-        StringBuffer sql =
-            XDG.generateSelectWhereInSQL( db.tContent, db.tContent.con_cat_lKey, db.tContent.con_lKey, contentKeys.length );
+        StringBuffer sql = XDG.generateSelectWhereInSQL( db.tContent, db.tContent.con_cat_lKey, db.tContent.con_lKey, contentKeys.length );
         return commonHandler.getIntArray( sql.toString(), contentKeys );
     }
 
@@ -212,16 +211,16 @@ public final class ContentHandler
             byte[] mdocBytes = XMLTool.documentToBytes( moduleDoc, "UTF-8" );
 
             preparedStmt.setInt( 1, key );
-            preparedStmt.setString(2, name);
+            preparedStmt.setString( 2, name );
             if ( description != null )
             {
-                preparedStmt.setString(3, description);
+                preparedStmt.setString( 3, description );
             }
             else
             {
                 preparedStmt.setNull( 3, Types.VARCHAR );
             }
-            preparedStmt.setBytes(4, mdocBytes);
+            preparedStmt.setBytes( 4, mdocBytes );
 
             String contentHandlerKeyString = root.getAttribute( "contenthandlerkey" );
             int contentHandlerKey = Integer.parseInt( contentHandlerKeyString );
@@ -245,13 +244,13 @@ public final class ContentHandler
             if ( result == 0 )
             {
                 String message = "Failed to create content type. No content type created.";
-                VerticalEngineLogger.errorCreate(message, null );
+                VerticalEngineLogger.errorCreate( message, null );
             }
         }
         catch ( SQLException sqle )
         {
             String message = "Failed to create content type: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         finally
         {
@@ -261,16 +260,16 @@ public final class ContentHandler
         return key;
     }
 
-    public Document getContent(User user, int contentKey, boolean publishedOnly, int parentLevel, int childrenLevel,
-                               int parentChildrenLevel)
+    public Document getContent( User user, int contentKey, boolean publishedOnly, int parentLevel, int childrenLevel,
+                                int parentChildrenLevel )
     {
-        return getContents( user, new int[]{contentKey}, publishedOnly, parentLevel, childrenLevel, parentChildrenLevel);
+        return getContents( user, new int[]{contentKey}, publishedOnly, parentLevel, childrenLevel, parentChildrenLevel );
 
-                            // false, false, null );
+        // false, false, null );
     }
 
-    private Document getContents(User user, int[] contentKeys, boolean publishedOnly, int parentLevel,
-                                 int childrenLevel, int parentChildrenLevel)
+    private Document getContents( User user, int[] contentKeys, boolean publishedOnly, int parentLevel, int childrenLevel,
+                                  int parentChildrenLevel )
     {
         ContentView contentView = ContentView.getInstance();
         if ( contentKeys == null || contentKeys.length == 0 )
@@ -302,9 +301,7 @@ public final class ContentHandler
             sqlString = getSecurityHandler().appendContentSQL( user, categoryKeys, sqlString );
         }
 
-        return doGetContents(user, null, null, sqlString, paramValues, publishedOnly, parentLevel,
-                childrenLevel, parentChildrenLevel
-        );
+        return doGetContents( user, null, null, sqlString, paramValues, publishedOnly, parentLevel, childrenLevel, parentChildrenLevel );
     }
 
     public String getContentTitle( int versionKey )
@@ -424,7 +421,7 @@ public final class ContentHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove content type: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -432,7 +429,7 @@ public final class ContentHandler
         }
     }
 
-    public void updateContentType(Document doc)
+    public void updateContentType( Document doc )
     {
 
         Connection con = null;
@@ -466,16 +463,16 @@ public final class ContentHandler
             con = getConnection();
             preparedStmt = con.prepareStatement( CTY_UPDATE );
             preparedStmt.setInt( 6, key );
-            preparedStmt.setString(1, name);
+            preparedStmt.setString( 1, name );
             if ( description != null )
             {
-                preparedStmt.setString(2, description);
+                preparedStmt.setString( 2, description );
             }
             else
             {
                 preparedStmt.setNull( 2, Types.VARCHAR );
             }
-            preparedStmt.setBytes(3, mdocBytes);
+            preparedStmt.setBytes( 3, mdocBytes );
 
             String contentHandlerKeyString = root.getAttribute( "contenthandlerkey" );
             int contentHandlerKey = Integer.parseInt( contentHandlerKeyString );
@@ -499,12 +496,12 @@ public final class ContentHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to update content type: %t";
-            VerticalEngineLogger.errorUpdate(message, sqle );
+            VerticalEngineLogger.errorUpdate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse content type key: %t";
-            VerticalEngineLogger.errorUpdate(message, nfe );
+            VerticalEngineLogger.errorUpdate( message, nfe );
         }
         finally
         {
@@ -513,9 +510,8 @@ public final class ContentHandler
     }
 
 
-    private Document doGetContents(User user, Set<Integer> referencedKeys, Element contentsElem, String sql,
-                                   List<Integer> paramValues, boolean publishedOnly,
-                                   int parentLevel, int childrenLevel, int parentChildrenLevel)
+    private Document doGetContents( User user, Set<Integer> referencedKeys, Element contentsElem, String sql, List<Integer> paramValues,
+                                    boolean publishedOnly, int parentLevel, int childrenLevel, int parentChildrenLevel )
     {
         final int fromIdx = 0;
         final int count = Integer.MAX_VALUE;
@@ -763,10 +759,10 @@ public final class ContentHandler
                 tempSql = getSecurityHandler().appendContentSQL( user, categoryKeys, tempSql );
 
                 parentChildrenLevel = Math.min( parentChildrenLevel, 3 );
-                doGetContents(user, contentKeys, relatedcontentsElem, tempSql, null, publishedOnly,
-                        parentLevel - 1, parentChildrenLevel, parentChildrenLevel
-                        // includeStatistics
-                        // includeSectionNames
+                doGetContents( user, contentKeys, relatedcontentsElem, tempSql, null, publishedOnly, parentLevel - 1, parentChildrenLevel,
+                               parentChildrenLevel
+                               // includeStatistics
+                               // includeSectionNames
                 );
             }
 
@@ -787,13 +783,13 @@ public final class ContentHandler
                 String tempSql = sqlString.toString();
                 tempSql = getSecurityHandler().appendContentSQL( user, categoryKeys, tempSql );
 
-                doGetContents(user, contentKeys, relatedcontentsElem, tempSql, null, publishedOnly,
-                        0, childrenLevel - 1, 0   // includeStatistics
-                        // includeSectionNames
+                doGetContents( user, contentKeys, relatedcontentsElem, tempSql, null, publishedOnly, 0, childrenLevel - 1, 0
+                               // includeStatistics
+                               // includeSectionNames
                 );
             }
 
-            if ( contentsElem == null  )
+            if ( contentsElem == null )
             {
                 StringBuffer countSql = new StringBuffer( sql );
                 int orderByIndex = sql.indexOf( "ORDER BY" );
@@ -828,7 +824,7 @@ public final class ContentHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get contents; %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             if ( contentsElem != null )
             {
                 XMLTool.removeChildNodes( contentsElem, false );
@@ -949,7 +945,7 @@ public final class ContentHandler
 
     private Document createContentTypesDoc( List<ContentTypeEntity> list, boolean includeContentCount )
     {
-        Document doc = XMLTool.createDocument("contenttypes");
+        Document doc = XMLTool.createDocument( "contenttypes" );
         Element root = doc.getDocumentElement();
 
         if ( list == null )
@@ -1013,7 +1009,7 @@ public final class ContentHandler
         ContentView contentView = ContentView.getInstance();
         StringBuffer countSQL =
             XDG.generateSelectSQL( contentView, contentView.con_lKey.getCountColumn(), false, contentView.cat_cty_lKey );
-        return getCommonHandler().getInt(countSQL.toString(), contentTypeKey);
+        return getCommonHandler().getInt( countSQL.toString(), contentTypeKey );
     }
 
     private int[] getContentTypeKeys( String sql, int paramValue )
@@ -1040,7 +1036,7 @@ public final class ContentHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get content type keys: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -1102,14 +1098,15 @@ public final class ContentHandler
 
     public org.jdom.Document getContentHandler( final int contentHandlerKey )
     {
-        final ContentHandlerEntity entity = this.contentHandlerDao.findByKey(new ContentHandlerKey(contentHandlerKey));
+        final ContentHandlerEntity entity = this.contentHandlerDao.findByKey( new ContentHandlerKey( contentHandlerKey ) );
         List<ContentHandlerEntity> list = Collections.emptyList();
 
-        if (entity != null) {
-            list = Collections.singletonList(entity);
+        if ( entity != null )
+        {
+            list = Collections.singletonList( entity );
         }
 
-        return toDocument(list);
+        return toDocument( list );
     }
 
     private int getContentHandlerKeyByHandlerClass( String handlerClass )
@@ -1118,50 +1115,53 @@ public final class ContentHandler
         sql.append( " WHERE" );
         sql.append( HAN_WHERE_CLAUSE_CLASS );
 
-        return getCommonHandler().getInt(sql.toString(), new Object[]{handlerClass});
+        return getCommonHandler().getInt( sql.toString(), new Object[]{handlerClass} );
     }
 
     public org.jdom.Document getContentHandlers()
     {
         final List<ContentHandlerEntity> list = this.contentHandlerDao.findAll();
-        return toDocument(list);
+        return toDocument( list );
     }
 
-    private org.jdom.Document toDocument(final List<ContentHandlerEntity> list)
+    private org.jdom.Document toDocument( final List<ContentHandlerEntity> list )
     {
-        final org.jdom.Element root = new org.jdom.Element("contenthandlers");
+        final org.jdom.Element root = new org.jdom.Element( "contenthandlers" );
 
-        for (final ContentHandlerEntity entity : list) {
-            final org.jdom.Element elem = new org.jdom.Element("contenthandler");
-            root.addContent(elem);
-            
+        for ( final ContentHandlerEntity entity : list )
+        {
+            final org.jdom.Element elem = new org.jdom.Element( "contenthandler" );
+            root.addContent( elem );
+
             elem.setAttribute( "key", entity.getKey().toString() );
 
-            elem.addContent(new org.jdom.Element("name").setText(entity.getName()));
-            elem.addContent(new org.jdom.Element("class").setText(entity.getClassName()));
+            elem.addContent( new org.jdom.Element( "name" ).setText( entity.getName() ) );
+            elem.addContent( new org.jdom.Element( "class" ).setText( entity.getClassName() ) );
 
             final String description = entity.getDescription();
-            if (description != null) {
-                elem.addContent(new org.jdom.Element("description").setText(description));
+            if ( description != null )
+            {
+                elem.addContent( new org.jdom.Element( "description" ).setText( description ) );
             }
 
             final org.jdom.Document xmlConfig = entity.getXmlConfig();
-            if (xmlConfig != null) {
-                elem.addContent(xmlConfig.getRootElement().detach());
+            if ( xmlConfig != null )
+            {
+                elem.addContent( xmlConfig.getRootElement().detach() );
             }
             else
             {
-                elem.addContent(new org.jdom.Element("xmlconfig"));
+                elem.addContent( new org.jdom.Element( "xmlconfig" ) );
             }
 
-            final String timestamp = CalendarUtil.formatTimestamp(entity.getTimestamp(), true);
-            elem.addContent(new org.jdom.Element("timestamp").setText(timestamp));
+            final String timestamp = CalendarUtil.formatTimestamp( entity.getTimestamp(), true );
+            elem.addContent( new org.jdom.Element( "timestamp" ).setText( timestamp ) );
         }
 
-        return new org.jdom.Document(root);
+        return new org.jdom.Document( root );
     }
 
-    public int createContentHandler(Document doc)
+    public int createContentHandler( Document doc )
     {
         Connection con = null;
         PreparedStatement preparedStmt = null;
@@ -1210,30 +1210,30 @@ public final class ContentHandler
             byte[] cdocBytes = XMLTool.documentToBytes( configDoc, "UTF-8" );
 
             preparedStmt.setInt( 1, key );
-            preparedStmt.setString(2, name);
-            preparedStmt.setString(3, className);
+            preparedStmt.setString( 2, name );
+            preparedStmt.setString( 3, className );
             if ( description != null )
             {
-                preparedStmt.setString(4, description);
+                preparedStmt.setString( 4, description );
             }
             else
             {
                 preparedStmt.setNull( 4, Types.VARCHAR );
             }
-            preparedStmt.setBytes(5, cdocBytes);
+            preparedStmt.setBytes( 5, cdocBytes );
 
             // add the content handler
             int result = preparedStmt.executeUpdate();
             if ( result == 0 )
             {
                 String message = "Failed to create content handler. No content handler created.";
-                VerticalEngineLogger.errorCreate(message, null );
+                VerticalEngineLogger.errorCreate( message, null );
             }
         }
         catch ( SQLException sqle )
         {
             String message = "Failed to create content handler: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         finally
         {
@@ -1243,7 +1243,7 @@ public final class ContentHandler
         return key;
     }
 
-    public void updateContentHandler(Document doc)
+    public void updateContentHandler( Document doc )
     {
         Connection con = null;
         PreparedStatement preparedStmt = null;
@@ -1276,17 +1276,17 @@ public final class ContentHandler
             con = getConnection();
             preparedStmt = con.prepareStatement( HAN_UPDATE );
             preparedStmt.setInt( 5, key );
-            preparedStmt.setString(1, name);
+            preparedStmt.setString( 1, name );
             if ( description != null )
             {
-                preparedStmt.setString(2, description);
+                preparedStmt.setString( 2, description );
             }
             else
             {
                 preparedStmt.setNull( 2, Types.VARCHAR );
             }
-            preparedStmt.setString(3, className);
-            preparedStmt.setBytes(4, cdocBytes);
+            preparedStmt.setString( 3, className );
+            preparedStmt.setBytes( 4, cdocBytes );
             preparedStmt.executeUpdate();
             preparedStmt.close();
             preparedStmt = null;
@@ -1294,12 +1294,12 @@ public final class ContentHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to update content type: %t";
-            VerticalEngineLogger.errorUpdate(message, sqle );
+            VerticalEngineLogger.errorUpdate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse content type key: %t";
-            VerticalEngineLogger.errorUpdate(message, nfe);
+            VerticalEngineLogger.errorUpdate( message, nfe );
         }
         finally
         {
@@ -1326,7 +1326,7 @@ public final class ContentHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove content handler: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -1354,7 +1354,7 @@ public final class ContentHandler
         return doc;
     }
 
-    public XMLDocument getContentTitles( int[] contentKeys, boolean includeSectionInfo, MenuItemEntity section )
+    public XMLDocument getContentTitles( int[] contentKeys, int[] totalContentKeys, boolean includeSectionInfo, MenuItemEntity section )
     {
         org.jdom.Element contentsEl = new org.jdom.Element( "contenttitles" );
         if ( contentKeys == null || contentKeys.length == 0 )
@@ -1375,12 +1375,24 @@ public final class ContentHandler
             contentsEl.addContent( contentEl );
         }
 
+        if ( totalContentKeys != null )
+        {
+            for ( int totalContentKeyInt : totalContentKeys )
+            {
+                ContentKey totalContentKey = new ContentKey( totalContentKeyInt );
+                ContentEntity totalContent = contentDao.findByKey( totalContentKey );
+
+                org.jdom.Element totalContentEl = contentTitleXmlCreator.createTotalContentTitleElement( totalContent );
+                contentsEl.addContent( totalContentEl );
+            }
+        }
+
         return XMLDocumentFactory.create( new org.jdom.Document( contentsEl ) );
     }
 
     public Document getContentTitleDoc( int versionKey )
     {
-        Document doc = XMLTool.createDocument("contenttitles");
+        Document doc = XMLTool.createDocument( "contenttitles" );
 
         ContentVersionView versionView = ContentVersionView.getInstance();
         StringBuffer sql = XDG.generateSelectSQL( versionView, versionView.cov_lKey );
@@ -1397,7 +1409,7 @@ public final class ContentHandler
             preparedStmt.setInt( 1, versionKey );
             resultSet = preparedStmt.executeQuery();
 
-            while (resultSet.next())
+            while ( resultSet.next() )
             {
                 Element elem = XMLTool.createElement( doc, root, "contenttitle" );
                 int contentKey = resultSet.getInt( "con_lKey" );
@@ -1436,7 +1448,7 @@ public final class ContentHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get content titles; %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             doc = XMLTool.createDocument( "contenttitles" );
         }
         finally
@@ -1456,7 +1468,7 @@ public final class ContentHandler
 
     public int getContentKeyByVersionKey( int versionKey )
     {
-        StringBuffer sql = XDG.generateSelectSQL(db.tContentVersion, db.tContentVersion.cov_con_lKey, false, db.tContentVersion.cov_lKey);
+        StringBuffer sql = XDG.generateSelectSQL( db.tContentVersion, db.tContentVersion.cov_con_lKey, false, db.tContentVersion.cov_lKey );
         return getCommonHandler().getInt( sql.toString(), versionKey );
     }
 
@@ -1470,7 +1482,7 @@ public final class ContentHandler
         XDG.appendOrderBySQL( sql, versionView.cov_dteCreated, true );
         Object[][] data = getCommonHandler().getObjectArray( sql.toString(), new Object[]{contentKey} );
 
-        Document doc = XMLTool.createDocument("versions");
+        Document doc = XMLTool.createDocument( "versions" );
 
         for ( int contentCounter = 0; contentCounter < data.length; contentCounter++ )
         {
@@ -1616,7 +1628,7 @@ public final class ContentHandler
 
     public Document getContentXMLField( int versionKey )
     {
-        return getCommonHandler().getDocument(db.tContentVersion, versionKey);
+        return getCommonHandler().getDocument( db.tContentVersion, versionKey );
     }
 
     public int[] getContentTypesByHandlerClass( String className )

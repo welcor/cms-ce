@@ -32,7 +32,6 @@ import com.enonic.cms.core.security.userstore.connector.remote.MemberCache;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.security.userstore.status.LocalGroupsStatus;
 import com.enonic.cms.core.security.userstore.status.LocalUsersStatus;
-
 import com.enonic.cms.core.user.remote.RemoteGroup;
 import com.enonic.cms.core.user.remote.RemoteUser;
 
@@ -90,10 +89,6 @@ public interface UserStoreService
     UserStoreEntity getDefaultUserStore();
 
     UserStoreEntity getUserStore( final UserStoreKey userStoreKey );
-
-    boolean isUserStoreAdministrator( final UserKey userKey );
-
-    boolean isUserStoreAdministrator( final UserKey userKey, final UserStoreKey userStoreKey );
 
     User getUserByKey( final UserKey userKey );
 

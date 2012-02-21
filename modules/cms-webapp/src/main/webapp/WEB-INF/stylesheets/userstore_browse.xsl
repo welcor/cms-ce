@@ -165,7 +165,7 @@
                       <table border="0" cellspacing="0" cellpadding="0">
                         <tr>
                           <td>
-                            <xsl:variable name="enableDelete" select="not(@default = 'true')"/>
+                            <xsl:variable name="enableDelete" select="not(@default = 'true') and $enterpriseadmin = 'true'"/>
                             <xsl:call-template name="operations">
                               <xsl:with-param name="page" select="$page"/>
                               <xsl:with-param name="key" select="@key"/>

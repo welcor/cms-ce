@@ -2,10 +2,13 @@ package com.enonic.cms.core.tools;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.format.DateTimeFormatterBuilder;
+
+import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.plugin.PluginHandle;
 
@@ -52,7 +55,11 @@ public final class PluginWrapper
 
     public Map<String, String> getConfig()
     {
-        return this.plugin.getConfig();
+        if (this.plugin.isActive()) {
+            return this.plugin.getConfig();
+        } else {
+            return Collections.emptyMap();
+        }
     }
 
     public static Collection<PluginWrapper> toWrapperList( final List<PluginHandle> list )

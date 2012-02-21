@@ -4,18 +4,18 @@
  */
 package com.enonic.cms.core.security.userstore;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
+
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class GroupMembershipDiffResolverTest
 {
@@ -24,116 +24,172 @@ public class GroupMembershipDiffResolverTest
     @Before
     public void setUp()
     {
-        userGroup = new GroupEntity();
-        userGroup.setKey( "user1" );
+        userGroup = createGroup( "userGroup1", "group for user 1" );
     }
 
     @Test
-    public void testFindGroupsToJoin()
+    public void testResolveGroupsToJoin()
     {
-        GroupEntity memberGroup1 = new GroupEntity();
-        memberGroup1.setDeleted( false );
-        memberGroup1.setKey( "group100" );
-        userGroup.addMembership( memberGroup1 );
-        Set<GroupKey> requestedGroups = new HashSet<GroupKey>();
-        requestedGroups.add( new GroupKey( "group100" ) );
-        requestedGroups.add( new GroupKey( "group700" ) );
-        requestedGroups.add( new GroupKey( "group888" ) );
-        GroupMembershipDiffResolver groupMembershipDiffResolver = new GroupMembershipDiffResolver( userGroup );
-        Set<GroupKey> groupsToJoin = groupMembershipDiffResolver.findGroupsToJoin( requestedGroups );
+        // setup
+        userGroup.addMembership( createGroup( "group100" ) );
 
-        // asserts
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
+        Set<GroupKey> requestedGroups =
+            Sets.newHashSet( new GroupKey( "group100" ), new GroupKey( "group700" ), new GroupKey( "group888" ) );
+        Set<GroupKey> groupsToJoin = resolver.resolveGroupsToJoin( requestedGroups );
+
+        // verify
         Set<GroupKey> expectedGroupsToJoin = new HashSet<GroupKey>();
         expectedGroupsToJoin.add( new GroupKey( "group700" ) );
         expectedGroupsToJoin.add( new GroupKey( "group888" ) );
 
-        assertCollectionsEqual( expectedGroupsToJoin, groupsToJoin );
+        assertEquals( expectedGroupsToJoin, groupsToJoin );
     }
 
     @Test
-    public void testFindGroupsToLeave()
+    public void testResolveGroupsToLeave()
     {
-        GroupEntity memberGroup1 = new GroupEntity();
-        GroupEntity memberGroup2 = new GroupEntity();
-        GroupEntity memberGroup3 = new GroupEntity();
-        memberGroup1.setDeleted( false );
-        memberGroup2.setDeleted( false );
-        memberGroup3.setDeleted( false );
-        memberGroup1.setKey( "group100" );
-        memberGroup2.setKey( "group700" );
-        memberGroup3.setKey( "group888" );
-        userGroup.addMembership( memberGroup1 );
-        userGroup.addMembership( memberGroup2 );
-        userGroup.addMembership( memberGroup3 );
-        Set<GroupKey> requestedGroups = new HashSet<GroupKey>();
-        requestedGroups.add( new GroupKey( "group100" ) );
-        GroupMembershipDiffResolver groupMembershipDiffResolver = new GroupMembershipDiffResolver( userGroup );
-        Set<GroupKey> groupsToLeave = groupMembershipDiffResolver.findGroupsToLeave( requestedGroups );
+        // setup
+        userGroup.addMembership( createGroup( "group100" ) );
+        userGroup.addMembership( createGroup( "group700" ) );
+        userGroup.addMembership( createGroup( "group888" ) );
 
-        // asserts
-        Set<GroupKey> expectedGroupsToLeave = new HashSet<GroupKey>();
-        expectedGroupsToLeave.add( new GroupKey( "group700" ) );
-        expectedGroupsToLeave.add( new GroupKey( "group888" ) );
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
+        Set<GroupKey> requestedGroups = Sets.newHashSet( new GroupKey( "group100" ) );
+        Set<GroupKey> groupsToLeave = resolver.resolveGroupsToLeave( requestedGroups );
 
-        assertCollectionsEqual( expectedGroupsToLeave, groupsToLeave );
+        // verify
+        Set<GroupKey> expectedGroupsToLeave = Sets.newHashSet( new GroupKey( "group700" ), new GroupKey( "group888" ) );
+        assertEquals( expectedGroupsToLeave, groupsToLeave );
     }
 
     @Test
-    public void testFindGroupsDiff()
+    public void testResolveGroupsDiff()
     {
-        GroupEntity memberGroup1 = new GroupEntity();
-        GroupEntity memberGroup2 = new GroupEntity();
-        memberGroup1.setDeleted( false );
-        memberGroup2.setDeleted( false );
-        memberGroup1.setKey( "group100" );
-        memberGroup2.setKey( "group700" );
-        userGroup.addMembership( memberGroup1 );
-        userGroup.addMembership( memberGroup2 );
-        Set<GroupKey> requestedGroups = new HashSet<GroupKey>();
-        requestedGroups.add( new GroupKey( "group700" ) );
-        requestedGroups.add( new GroupKey( "group800" ) );
-        requestedGroups.add( new GroupKey( "group888" ) );
-        requestedGroups.add( new GroupKey( "group999" ) );
-        GroupMembershipDiffResolver groupMembershipDiffResolver = new GroupMembershipDiffResolver( userGroup );
-        Set<GroupKey> groupsToJoin = groupMembershipDiffResolver.findGroupsToJoin( requestedGroups );
-        Set<GroupKey> groupsToLeave = groupMembershipDiffResolver.findGroupsToLeave( requestedGroups );
+        // setup
+        userGroup.addMembership( createGroup( "group100" ) );
+        userGroup.addMembership( createGroup( "group700" ) );
 
-        // asserts
-        Set<GroupKey> expectedGroupsToJoin = new HashSet<GroupKey>();
-        expectedGroupsToJoin.add( new GroupKey( "group800" ) );
-        expectedGroupsToJoin.add( new GroupKey( "group888" ) );
-        expectedGroupsToJoin.add( new GroupKey( "group999" ) );
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
+        Set<GroupKey> requestedGroups = Sets.newHashSet( new GroupKey( "group700" ), new GroupKey( "group800" ), new GroupKey( "group888" ),
+                                                         new GroupKey( "group999" ) );
+        Set<GroupKey> groupsToJoin = resolver.resolveGroupsToJoin( requestedGroups );
+        Set<GroupKey> groupsToLeave = resolver.resolveGroupsToLeave( requestedGroups );
 
-        Set<GroupKey> expectedGroupsToLeave = new HashSet<GroupKey>();
-        expectedGroupsToLeave.add( new GroupKey( "group100" ) );
+        // verify
+        Set<GroupKey> expectedGroupsToJoin =
+            Sets.newHashSet( new GroupKey( "group800" ), new GroupKey( "group888" ), new GroupKey( "group999" ) );
+        Set<GroupKey> expectedGroupsToLeave = Sets.newHashSet( new GroupKey( "group100" ) );
 
-        assertCollectionsEqual( expectedGroupsToJoin, groupsToJoin );
-        assertCollectionsEqual( expectedGroupsToLeave, groupsToLeave );
+        assertEquals( expectedGroupsToJoin, groupsToJoin );
+        assertEquals( expectedGroupsToLeave, groupsToLeave );
     }
 
     @Test
-    public void testFindGroupsDiffWithEmptyValues()
+    public void testResolveGroupsDiffWithEmptyValues()
     {
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
         Set<GroupKey> requestedGroups = new HashSet<GroupKey>();
-        GroupMembershipDiffResolver groupMembershipDiffResolver = new GroupMembershipDiffResolver( userGroup );
-        Set<GroupKey> groupsToJoin = groupMembershipDiffResolver.findGroupsToJoin( requestedGroups );
-        Set<GroupKey> groupsToLeave = groupMembershipDiffResolver.findGroupsToLeave( requestedGroups );
+        Set<GroupKey> groupsToJoin = resolver.resolveGroupsToJoin( requestedGroups );
+        Set<GroupKey> groupsToLeave = resolver.resolveGroupsToLeave( requestedGroups );
 
-        // asserts
-        Set<GroupKey> expectedGroupsToJoin = new HashSet<GroupKey>();
-
-        Set<GroupKey> expectedGroupsToLeave = new HashSet<GroupKey>();
-
-        assertCollectionsEqual( expectedGroupsToJoin, groupsToJoin );
-        assertCollectionsEqual( expectedGroupsToLeave, groupsToLeave );
+        // verify
+        assertEquals( new HashSet<GroupKey>(), groupsToJoin );
+        assertEquals( new HashSet<GroupKey>(), groupsToLeave );
     }
 
-    public <T> void assertCollectionsEqual( Collection<T> expected, Collection<T> actual )
+    @Test
+    public void resolveGroupsToJoin_returns_empty_set_when_existing_memberships_are_the_same_as_requested_memberships()
     {
-        assertEquals( expected.size(), actual.size() );
-        for ( T actualElement : actual )
-        {
-            assertTrue( expected.contains( actualElement ) );
-        }
+        // setup
+        GroupEntity existingMembership1 = createGroup( "EX1", "Existing membership 1" );
+        GroupEntity existingMembership2 = createGroup( "EX2", "Existing membership 2" );
+        userGroup.addMembership( existingMembership1 );
+        userGroup.addMembership( existingMembership2 );
+
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
+        Set<GroupKey> requestedGroups = Sets.newHashSet( existingMembership1.getGroupKey(), existingMembership2.getGroupKey() );
+
+        // verify
+        assertEquals( "groupsToJoin", new HashSet<GroupKey>(), resolver.resolveGroupsToJoin( requestedGroups ) );
+    }
+
+    @Test
+    public void resolveGroupsToLeave_returns_empty_set_when_existing_memberships_are_the_same_as_requested_memberships()
+    {
+        // setup
+        GroupEntity existingMembership1 = createGroup( "EX1", "Existing membership 1" );
+        GroupEntity existingMembership2 = createGroup( "EX2", "Existing membership 2" );
+        userGroup.addMembership( existingMembership1 );
+        userGroup.addMembership( existingMembership2 );
+
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
+        Set<GroupKey> requestedGroups = Sets.newHashSet( existingMembership1.getGroupKey(), existingMembership2.getGroupKey() );
+        // verify
+        assertEquals( "groupsToLeave", new HashSet<GroupKey>(), resolver.resolveGroupsToLeave( requestedGroups ) );
+    }
+
+    @Test
+    public void resolveGroupsToLeave_returns_empty_set_when_existing_memberships_are_the_same_as_requested_memberships_and_existing_membership_have_other_membership()
+    {
+        // setup
+        GroupEntity existingMembership1 = createGroup( "EX1", "Existing membership 1" );
+        GroupEntity existingMembership2 = createGroup( "EX2", "Existing membership 2" );
+        GroupEntity indirectlyExistingMembership1 = createGroup( "IEX2", "Indirectly existing membership 1" );
+        existingMembership1.addMembership( indirectlyExistingMembership1 );
+        userGroup.addMembership( existingMembership1 );
+        userGroup.addMembership( existingMembership2 );
+
+        Set<GroupKey> requestedGroups = Sets.newHashSet( existingMembership1.getGroupKey(), existingMembership2.getGroupKey() );
+
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
+
+        // verify
+        assertEquals( "groupsToLeave", new HashSet<GroupKey>(), resolver.resolveGroupsToLeave( requestedGroups ) );
+    }
+
+    @Test
+    public void resolveGroupsToJoin_returns_empty_set_when_existing_memberships_are_the_same_as_requested_memberships_and_existing_membership_have_other_membership()
+    {
+        // setup
+        GroupEntity existingMembership1 = createGroup( "EX1", "Existing membership 1" );
+        GroupEntity existingMembership2 = createGroup( "EX2", "Existing membership 2" );
+        GroupEntity indirectlyExistingMembership1 = createGroup( "IEX2", "Indirectly existing membership 1" );
+        existingMembership1.addMembership( indirectlyExistingMembership1 );
+        userGroup.addMembership( existingMembership1 );
+        userGroup.addMembership( existingMembership2 );
+
+        Set<GroupKey> requestedGroups = Sets.newHashSet( existingMembership1.getGroupKey(), existingMembership2.getGroupKey() );
+
+        // exercise
+        GroupMembershipDiffResolver resolver = new GroupMembershipDiffResolver( userGroup );
+
+        // verify
+        assertEquals( "groupsToJoin", new HashSet<GroupKey>(), resolver.resolveGroupsToJoin( requestedGroups ) );
+    }
+
+    private GroupEntity createGroup( String key, String name )
+    {
+        GroupEntity group = new GroupEntity();
+        group.setKey( new GroupKey( key ) );
+        group.setDeleted( false );
+        group.setName( name );
+        return group;
+    }
+
+    private GroupEntity createGroup( String key )
+    {
+        GroupEntity group = new GroupEntity();
+        group.setKey( new GroupKey( key ) );
+        group.setDeleted( false );
+        group.setName( key );
+        return group;
     }
 }

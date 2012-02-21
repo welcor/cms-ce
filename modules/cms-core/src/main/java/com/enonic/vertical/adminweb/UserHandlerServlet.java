@@ -1620,8 +1620,8 @@ public class UserHandlerServlet
         {
             final GroupEntity userGroupToUpdate = groupDao.findByKey( userToUpdate.getUserGroup().getGroupKey() );
             GroupMembershipDiffResolver diffResolver = new GroupMembershipDiffResolver( userGroupToUpdate );
-            Set<GroupKey> groupsToJoin = diffResolver.findGroupsToJoin( requestedGroupMemberships );
-            Set<GroupKey> groupsToLeave = diffResolver.findGroupsToLeave( requestedGroupMemberships );
+            Set<GroupKey> groupsToJoin = diffResolver.resolveGroupsToJoin( requestedGroupMemberships );
+            Set<GroupKey> groupsToLeave = diffResolver.resolveGroupsToLeave( requestedGroupMemberships );
 
             GroupSpecification userGroupToUpdateSpec = new GroupSpecification();
             userGroupToUpdateSpec.setDeletedState( GroupSpecification.DeletedState.NOT_DELETED );

@@ -6,9 +6,9 @@ package com.enonic.cms.core.content.contentdata.custom.support;
 
 import org.jdom.Element;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.contentdata.ContentDataXPathCreator;
 import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 
@@ -26,8 +26,7 @@ public class BinaryDataEntryXmlCreator
     {
         final DataEntryConfig config = binaryDataEntry.getConfig();
         Element entryEl =
-            ContentDataXPathCreator.ensurePath( parentEl, stripContentdataWhenNotBlockGroup( config.getRelativeXPath(),
-                                                                                             inBlockGroup ) );
+            ContentDataXPathCreator.ensurePath( parentEl, stripContentdataWhenNotBlockGroup( config.getRelativeXPath(), inBlockGroup ) );
 
         final ContentTypeConfig contentTypeConfig = config.getSetConfig().getContentTypeConfig();
         if ( contentTypeConfig.getContentHandlerName() == ContentHandlerName.FILE )

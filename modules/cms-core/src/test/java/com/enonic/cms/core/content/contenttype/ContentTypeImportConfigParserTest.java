@@ -13,7 +13,6 @@ import org.junit.Test;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
 
 import static org.junit.Assert.*;

@@ -20,7 +20,7 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.URLUtil;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
-import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.security.AdminSecurityHolder;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserSpecification;

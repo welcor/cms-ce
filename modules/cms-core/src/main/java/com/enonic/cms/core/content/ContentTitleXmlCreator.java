@@ -11,6 +11,7 @@ import org.jdom.Element;
 import com.enonic.cms.core.CmsDateAndTimeFormats;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.UnitEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 

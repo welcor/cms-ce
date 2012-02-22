@@ -23,7 +23,7 @@
     <property name="defaultCssKey" type="com.enonic.cms.store.hibernate.type.ResourceKeyUserType">
       <column name="CTY_SCSS" length="1024"/>
     </property>
-    <many-to-one name="handler" class="com.enonic.cms.core.content.ContentHandlerEntity" fetch="select">
+    <many-to-one name="handler" class="com.enonic.cms.core.content.contenttype.ContentHandlerEntity" fetch="select">
       <column name="CTY_HAN_LKEY" not-null="true"/>
     </many-to-one>
     <set name="categories" inverse="true" order-by="CAT_CTY_LKEY">

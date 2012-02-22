@@ -16,7 +16,6 @@ import org.xml.sax.SAXException;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.DateDataEntry;
@@ -27,6 +26,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextAreaDataEn
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.UrlDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.xmlbased.XmlDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.CtyFormConfig;
 import com.enonic.cms.core.content.contenttype.CtySetConfig;

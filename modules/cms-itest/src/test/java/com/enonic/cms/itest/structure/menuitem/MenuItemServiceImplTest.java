@@ -16,12 +16,12 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryAccessException;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.resource.ResourceKey;

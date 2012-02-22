@@ -92,7 +92,7 @@
       <cache usage="nonstrict-read-write"/>
       <key column="COA_CON_LKEY"/>
       <map-key type="com.enonic.cms.store.hibernate.type.GroupKeyUserType" column="COA_GRP_HKEY"/>
-      <one-to-many class="com.enonic.cms.core.content.ContentAccessEntity"/>
+      <one-to-many class="com.enonic.cms.core.content.access.ContentAccessEntity"/>
     </map>
     <set name="relatedParents" table="TRELATEDCONTENT">
       <cache usage="nonstrict-read-write"/>

@@ -17,11 +17,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import com.enonic.cms.core.time.TimeService;
-
-import com.enonic.cms.core.content.index.LogEntryEntityFetcherImpl;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.LogEntryDao;
 import com.enonic.cms.store.dao.UserDao;
 
@@ -118,18 +116,21 @@ public class LogServiceImpl
         logEntry.setInetAddress( clientInetAddress );
         logEntry.setUser( user );
 
-        if (command.getTable() != null) {
+        if ( command.getTable() != null )
+        {
             logEntry.setTableKey( command.getTable().asInteger() );
             logEntry.setKeyValue( command.getTableKeyValue() );
         }
 
-        if (command.getSite() != null) {
-            logEntry.setSite(command.getSite());
+        if ( command.getSite() != null )
+        {
+            logEntry.setSite( command.getSite() );
         }
 
         logEntry.setTitle( command.getTitle() );
 
-        if (command.getPath() != null) {
+        if ( command.getPath() != null )
+        {
             logEntry.setPath( enshurePathWithinBoundary( command.getPath() ) );
         }
 

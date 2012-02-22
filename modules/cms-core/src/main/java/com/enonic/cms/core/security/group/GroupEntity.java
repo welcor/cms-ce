@@ -153,6 +153,7 @@ public class GroupEntity
         this.key = value;
     }
 
+    @Deprecated
     public void setKey( String value )
     {
         this.key = new GroupKey( value );

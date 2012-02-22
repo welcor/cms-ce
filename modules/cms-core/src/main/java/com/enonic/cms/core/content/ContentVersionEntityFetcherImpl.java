@@ -2,14 +2,12 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.content.index;
+package com.enonic.cms.core.content;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.ContentVersionKey;
 import com.enonic.cms.store.dao.ContentVersionDao;
 
 public final class ContentVersionEntityFetcherImpl

@@ -6,9 +6,10 @@ package com.enonic.cms.store.dao;
 
 import java.util.List;
 
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerKey;
 import org.springframework.stereotype.Repository;
+
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 
 @Repository("contentHandlerDao")
 public final class ContentHandlerEntityDao

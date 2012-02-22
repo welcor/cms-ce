@@ -19,7 +19,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.command.ImportContentCommand;
 import com.enonic.cms.core.content.contentdata.custom.BlockGroupDataEntries;
@@ -27,6 +26,7 @@ import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.DateDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.GroupDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.imports.ImportJob;
 import com.enonic.cms.core.content.imports.ImportJobFactory;

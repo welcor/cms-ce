@@ -35,7 +35,7 @@
     <many-to-one name="parent" class="com.enonic.cms.core.content.category.CategoryEntity" fetch="select">
       <column name="CAT_CAT_LSUPER"/>
     </many-to-one>
-    <many-to-one name="unit" class="com.enonic.cms.core.content.UnitEntity" fetch="select">
+    <many-to-one name="unit" class="com.enonic.cms.core.content.category.UnitEntity" fetch="select">
       <column name="CAT_UNI_LKEY" not-null="true"/>
     </many-to-one>
     <bag name="children" inverse="false" lazy="true" fetch="select" batch-size="500" order-by="CAT_SNAME" where="CAT_BDELETED = 0"

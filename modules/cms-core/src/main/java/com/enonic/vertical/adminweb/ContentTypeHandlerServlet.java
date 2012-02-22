@@ -25,9 +25,9 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerKey;
-import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
@@ -265,9 +265,9 @@ public class ContentTypeHandlerServlet
             }
         }
         Document contentHandlersDoc = admin.getContentHandlers().getAsDOMDocument();
-        doc.getDocumentElement().appendChild(doc.importNode(contentHandlersDoc.getDocumentElement(), true));
+        doc.getDocumentElement().appendChild( doc.importNode( contentHandlersDoc.getDocumentElement(), true ) );
 
-        addErrorsXML(doc);
+        addErrorsXML( doc );
 
         if ( createContent )
         {
@@ -322,7 +322,7 @@ public class ContentTypeHandlerServlet
         else
         {
             String message = "Parameter not found: returnkey";
-            VerticalAdminLogger.errorAdmin(message );
+            VerticalAdminLogger.errorAdmin( message );
         }
 
         if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).toString().equals( "" ) ) )
@@ -332,7 +332,7 @@ public class ContentTypeHandlerServlet
         else
         {
             String message = "Parameter not found: returnview";
-            VerticalAdminLogger.errorAdmin(message );
+            VerticalAdminLogger.errorAdmin( message );
         }
 
         if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).toString().equals( "" ) ) )
@@ -412,7 +412,7 @@ public class ContentTypeHandlerServlet
             else
             {
                 String message = "Parameter not found: returnkey";
-                VerticalAdminLogger.errorAdmin(message );
+                VerticalAdminLogger.errorAdmin( message );
             }
 
             if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).toString().equals( "" ) ) )
@@ -422,7 +422,7 @@ public class ContentTypeHandlerServlet
             else
             {
                 String message = "Parameter not found: returnview";
-                VerticalAdminLogger.errorAdmin(message );
+                VerticalAdminLogger.errorAdmin( message );
             }
 
             if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).toString().equals( "" ) ) )

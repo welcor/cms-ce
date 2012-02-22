@@ -29,12 +29,12 @@ import com.enonic.cms.api.client.model.content.file.FileContentDataInput;
 import com.enonic.cms.api.client.model.content.file.FileNameInput;
 import com.enonic.cms.core.client.InternalClientContentService;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.security.AdminSecurityHolder;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserKey;
@@ -46,7 +46,6 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.server.service.admin.mvc.controller.AttachmentController;
-import com.enonic.cms.store.dao.GroupDao;
 
 import static org.junit.Assert.*;
 
@@ -114,7 +113,7 @@ public class AttachmentControllerTest
         fixture.save( factory.createCategoryAccessForUser( "AttachmentCategory", "testuser", "read, create, approve" ) );
 
         WebApplicationContext wac = Mockito.mock( WebApplicationContext.class );
-        Mockito.when( wac.getBean("mimeTypeResolver") ).thenReturn( mimeTypeResolver );
+        Mockito.when( wac.getBean( "mimeTypeResolver" ) ).thenReturn( mimeTypeResolver );
         servletContext.setAttribute( WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac );
 
         fixture.flushAndClearHibernateSesssion();

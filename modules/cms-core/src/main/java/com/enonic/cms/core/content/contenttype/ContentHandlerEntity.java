@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.content;
+package com.enonic.cms.core.content.contenttype;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -79,7 +79,7 @@ public class ContentHandlerEntity
 
     public void setXmlConfig( Document xmlConfig )
     {
-        this.xmlConfig = LazyInitializedJDOMDocument.parse(xmlConfig);
+        this.xmlConfig = LazyInitializedJDOMDocument.parse( xmlConfig );
     }
 
     public void setTimestamp( Date timestamp )

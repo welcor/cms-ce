@@ -15,7 +15,6 @@ import com.enonic.cms.api.util.Preconditions;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentStorer;
 import com.enonic.cms.core.content.ContentTitleValidator;
-import com.enonic.cms.core.content.UnitEntity;
 import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.access.CategoryAccessRights;
 import com.enonic.cms.core.content.category.access.CreateCategoryAccessException;

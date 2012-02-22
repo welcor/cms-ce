@@ -25,10 +25,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.access.ContentAccessRightsAccumulated;
+import com.enonic.cms.core.content.access.ContentAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupKeyComparator;

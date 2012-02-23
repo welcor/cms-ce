@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.IndexService;
@@ -27,7 +25,7 @@ public class ReindexContentToolServiceImpl
 
     protected static final int BATCH_SIZE = 10;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 86400)
+
     public void reindexAllContent( List<String> logEntries )
     {
         logEntries.clear();

@@ -92,6 +92,8 @@ public final class IndexServiceImpl
         contentDao.getHibernateTemplate().clear();
     }
 
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600, readOnly = true)
     public void regenerateIndexBatched( List<ContentKey> contentKeys )
     {
         List<ContentDocument> contentToIndex = new ArrayList<ContentDocument>();
@@ -109,7 +111,8 @@ public final class IndexServiceImpl
             {
                 ContentDocument indexedDoc = insertStandardValues( currentContent );
                 insertUserDefinedIndexValues( currentContent, indexedDoc );
-                insertBinaryIndexValues( currentContent, indexedDoc );
+                //TODO: fix binary extraction
+                //insertBinaryIndexValues( currentContent, indexedDoc );
                 contentToIndex.add( indexedDoc );
             }
         }
@@ -155,7 +158,9 @@ public final class IndexServiceImpl
     {
         ContentDocument indexedDoc = insertStandardValues( content );
         insertUserDefinedIndexValues( content, indexedDoc );
-        insertBinaryIndexValues( content, indexedDoc );
+
+        //TODO: Fix binary extraction
+        //insertBinaryIndexValues( content, indexedDoc );
         contentIndexService.index( indexedDoc, deleteExisting );
 
         contentDao.getHibernateTemplate().flush();

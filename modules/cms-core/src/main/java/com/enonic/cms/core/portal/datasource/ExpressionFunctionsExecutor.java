@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.BasicMarker;
+import org.slf4j.helpers.BasicMarkerFactory;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
@@ -27,7 +29,6 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory;
-import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsStatic;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -39,7 +40,7 @@ public final class ExpressionFunctionsExecutor
     private static final Logger LOG = LoggerFactory.getLogger( "EL" );
 
     private static final ExpressionParser EXPR_FACTORY = new SpelExpressionParser();
-    private static final TemplateParserContext TEMPLATE_PARSER_CONTEXT= new  TemplateParserContext();
+    private static final TemplateParserContext TEMPLATE_PARSER_CONTEXT = new TemplateParserContext();
 
     private RequestParameters requestParameters;
     private VerticalSession verticalSession;
@@ -69,18 +70,19 @@ public final class ExpressionFunctionsExecutor
     public String evaluate( String expression )
         throws Exception
     {
-        // all functions in ExpressionFunctionsStatic are available by default
-        StandardEvaluationContext context = new StandardEvaluationContext(new ExpressionFunctionsStatic() {
-            public Map<String, String> param = createParameterMap();
-            public Map<String, String> session = createSessionMap();
-            public Map<String, String> cookie = createCookieMap();
-            public Map<String, String> user = createUserMap();
-            public Map<String, Object> portal = createPortalMap();
-        });
+        ExpressionRootObject rootObject = new ExpressionRootObject();
+
+        rootObject.setParam( createParameterMap() );
+        rootObject.setSession( createSessionMap() );
+        rootObject.setCookie( createCookieMap() );
+        rootObject.setUser( createUserMap() );
+        rootObject.setPortal( createPortalMap() );
+
+        StandardEvaluationContext context = new StandardEvaluationContext(rootObject);
 
         ExpressionFunctionsFactory.get().setContext( expressionContext );
 
-        context.addPropertyAccessor( new SafeMapAccessor() );
+        context.addPropertyAccessor( new SafeMapAccessor(expression) );
 
         Expression exp = EXPR_FACTORY.parseExpression( expression, TEMPLATE_PARSER_CONTEXT );
 
@@ -285,16 +287,63 @@ public final class ExpressionFunctionsExecutor
     private static class SafeMapAccessor
             extends MapAccessor
     {
+        private String expression;
+
+        public SafeMapAccessor( final String expression )
+        {
+
+            this.expression = expression;
+        }
+
         @Override
         public TypedValue read( EvaluationContext context, Object target, String name )
                 throws AccessException
         {
-            Map map = (Map) target;
-            Object value = map.get(name);
-            if (value == null && !map.containsKey(name)) {
+            if (target instanceof ExpressionRootObject )
+            {
+                LOG.warn( "Accessing map {} as root object as the Map by parameter {}. Expression is {}", name, expression); // must be accessed directly !
+
+                ExpressionRootObject rootObject = (ExpressionRootObject) target;
+
+                if ( "user".equals( name ) )
+                {
+                    return new TypedValue( rootObject.getUser() );
+                }
+                if ( "param".equals( name ) )
+                {
+                    return new TypedValue( rootObject.getParam() );
+                }
+                if ( "session".equals( name ) )
+                {
+                    return new TypedValue( rootObject.getSession() );
+                }
+                if ( "portal".equals( name ) )
+                {
+                    return new TypedValue( rootObject.getPortal() );
+                }
+                if ( "cookie".equals( name ) )
+                {
+                    return new TypedValue( rootObject.getCookie() );
+                }
+
                 return TypedValue.NULL;
             }
-            return new TypedValue(value);
+            else if (target instanceof Map )
+            {
+                Map map = (Map) target;
+                Object value = map.get( name );
+
+                if ( value == null && !map.containsKey( name ) )
+                {
+                    return TypedValue.NULL;
+                }
+
+                return new TypedValue( value );
+            }
+
+            LOG.error( "Accessing root object as {}. Expression is {}", target.getClass(), expression );
+
+            return TypedValue.NULL;
         }
 
         @Override

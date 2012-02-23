@@ -48,6 +48,8 @@
         <property name="contentIndexService" ref="contentIndexServiceNew"/>
     </bean>
 
+    <bean id="elasticSearchIndexService" class="com.enonic.cms.core.search.ElasticSearchIndexServiceImpl"/>
+
     <bean id="securityService" class="com.enonic.cms.core.security.SecurityServiceImpl"/>
 
     <bean id="contentSecurityFilterResolver" class="com.enonic.cms.core.content.ContentSecurityFilterResolver"/>

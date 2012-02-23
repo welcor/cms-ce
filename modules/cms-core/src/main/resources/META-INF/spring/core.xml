@@ -634,4 +634,6 @@
 
     <bean id="nodeSettingsBuilder" class="com.enonic.cms.core.search.NodeSettingsBuilderImpl"/>
 
+    <bean id="elasticSearchIndexService" class="com.enonic.cms.core.search.ElasticSearchIndexServiceImpl"/>
+
 </beans>  

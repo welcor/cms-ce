@@ -14,6 +14,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
@@ -30,12 +31,10 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchOperationThreading;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.search.ShardSearchFailure;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
@@ -75,13 +74,11 @@ public class ContentIndexServiceImpl
 {
     public final static String INDEX_NAME = "cms";
 
-    protected static final SearchOperationThreading OPERATION_THREADING = SearchOperationThreading.NO_THREADS;
-
     protected static final SearchType SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
 
     private IndexMappingProvider indexMappingProvider;
 
-    private Client client;
+    private ElasticSearchIndexService elasticSearchIndexService;
 
     private IndexRequestCreator indexRequestCreator;
 
@@ -124,7 +121,7 @@ public class ContentIndexServiceImpl
 
         createIndexRequest.settings( indexSettingsBuilder.buildSettings() );
 
-        final CreateIndexResponse createIndexResponse = client.admin().indices().create( createIndexRequest ).actionGet();
+        final CreateIndexResponse createIndexResponse = elasticSearchIndexService.createIndex( createIndexRequest );
 
         if ( !createIndexResponse.acknowledged() )
         {
@@ -141,7 +138,7 @@ public class ContentIndexServiceImpl
         UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest( INDEX_NAME );
         updateSettingsRequest.settings( indexSettingsBuilder.buildSettings() );
 
-        client.admin().indices().updateSettings( updateSettingsRequest ).actionGet();
+        elasticSearchIndexService.updateIndexSettings( updateSettingsRequest );
     }
 
 
@@ -157,7 +154,7 @@ public class ContentIndexServiceImpl
 
         PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType.toString() ).source( mapping );
 
-        return this.client.admin().indices().putMapping( mappingRequest ).actionGet();
+        return elasticSearchIndexService.putMapping( mappingRequest );
     }
 
     public int remove( ContentKey contentKey )
@@ -165,7 +162,7 @@ public class ContentIndexServiceImpl
         // TODO : Delete children aswell
         DeleteRequest deleteRequest = new DeleteRequest( INDEX_NAME, IndexType.Content.toString(), contentKey.toString() );
 
-        DeleteResponse response = this.client.delete( deleteRequest ).actionGet();
+        DeleteResponse response = elasticSearchIndexService.delete( deleteRequest );
 
         if ( response.notFound() )
         {
@@ -212,7 +209,7 @@ public class ContentIndexServiceImpl
         for ( SearchHit hit : hits )
         {
             DeleteRequest deleteRequest = new DeleteRequest( INDEX_NAME, IndexType.Content.toString(), hit.getId() );
-            DeleteResponse response = this.client.delete( deleteRequest ).actionGet();
+            DeleteResponse response = elasticSearchIndexService.delete( deleteRequest );
         }
 
         LOG.fine( "Deleted from index " + INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
@@ -250,7 +247,7 @@ public class ContentIndexServiceImpl
             }
         }
 
-        BulkResponse resp = this.client.bulk( bulkRequest ).actionGet();
+        BulkResponse resp = elasticSearchIndexService.bulk( bulkRequest );
         LOG.info( "Bulk index of " + docs.size() + " done in " + resp.getTookInMillis() + " ms" );
     }
 
@@ -258,7 +255,7 @@ public class ContentIndexServiceImpl
     private IndexResponse doIndex( IndexRequest request )
     {
         request.operationThreaded( false );
-        return this.client.index( request ).actionGet();
+        return elasticSearchIndexService.index( request );
     }
 
 
@@ -266,7 +263,7 @@ public class ContentIndexServiceImpl
     {
         final GetRequest getRequest = new GetRequest( INDEX_NAME, IndexType.Content.toString(), contentKey.toString() );
 
-        GetResponse response = this.client.get( getRequest ).actionGet();
+        GetResponse response = elasticSearchIndexService.get( getRequest );
 
         return response.exists();
     }
@@ -294,7 +291,7 @@ public class ContentIndexServiceImpl
 
         long start = System.currentTimeMillis();
 
-        OptimizeResponse response = this.client.admin().indices().optimize( request ).actionGet();
+        OptimizeResponse response = elasticSearchIndexService.optimize( request );
 
         long finished = System.currentTimeMillis();
 
@@ -305,8 +302,8 @@ public class ContentIndexServiceImpl
     public void deleteIndex()
     {
 
-        final DeleteIndexResponse deleteIndexResponse =
-            this.client.admin().indices().delete( new DeleteIndexRequest( INDEX_NAME ) ).actionGet();
+        final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest( INDEX_NAME );
+        final DeleteIndexResponse deleteIndexResponse = elasticSearchIndexService.deleteIndex( deleteIndexRequest );
 
         if ( !deleteIndexResponse.acknowledged() )
         {
@@ -323,8 +320,8 @@ public class ContentIndexServiceImpl
     {
         try
         {
-            final IndicesStatusResponse indicesStatusResponse =
-                this.client.admin().indices().status( new IndicesStatusRequest( INDEX_NAME ) ).actionGet();
+            final IndicesStatusRequest indicesStatusRequest = new IndicesStatusRequest( INDEX_NAME );
+            final IndicesStatusResponse indicesStatusResponse = elasticSearchIndexService.status( indicesStatusRequest );
 
             LOG.fine( "Index " + INDEX_NAME + " status ok with " + indicesStatusResponse.getSuccessfulShards() + " shards" );
 
@@ -441,7 +438,7 @@ public class ContentIndexServiceImpl
 
         try
         {
-            res = this.client.search( req ).actionGet();
+            res = elasticSearchIndexService.search( req );
         }
         catch ( ElasticSearchException e )
         {
@@ -478,8 +475,8 @@ public class ContentIndexServiceImpl
 
     public void flush()
     {
-        final FlushResponse flushResponse =
-            client.admin().indices().flush( Requests.flushRequest( INDEX_NAME ).refresh( true ) ).actionGet();
+        final FlushRequest flushRequest = Requests.flushRequest( INDEX_NAME ).refresh( true );
+        final FlushResponse flushResponse = elasticSearchIndexService.flush( flushRequest );
 
         LOG.finest( "Flush request executed with " + flushResponse.getSuccessfulShards() + " successfull shards" );
     }
@@ -487,7 +484,7 @@ public class ContentIndexServiceImpl
     public SearchResponse query( String query )
     {
         SearchRequest req = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( query );
-        return this.client.search( req ).actionGet();
+        return elasticSearchIndexService.search( req );
     }
 
     // TODO: We dont implement this one yet
@@ -503,12 +500,6 @@ public class ContentIndexServiceImpl
     public void setIndexMappingProvider( IndexMappingProvider indexMappingProvider )
     {
         this.indexMappingProvider = indexMappingProvider;
-    }
-
-    @Autowired
-    public void setClient( Client client )
-    {
-        this.client = client;
     }
 
     @Autowired
@@ -533,5 +524,11 @@ public class ContentIndexServiceImpl
     public void setIndexSettingsBuilder( IndexSettingsBuilder indexSettingsBuilder )
     {
         this.indexSettingsBuilder = indexSettingsBuilder;
+    }
+
+    @Autowired
+    public void setElasticSearchIndexService( ElasticSearchIndexService elasticSearchIndexService )
+    {
+        this.elasticSearchIndexService = elasticSearchIndexService;
     }
 }

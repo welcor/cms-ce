@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
+import com.enonic.cms.core.content.ContentAccessEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -87,10 +88,13 @@ public final class ContentDocument
 
     private BigText binaryExtractedText;
 
+    private final Collection<ContentAccessEntity> contentAccessRights;
+
     public ContentDocument( ContentKey contentKey )
     {
         this.contentKey = contentKey;
         this.userDefinedFields = new ArrayList<UserDefinedField>();
+        this.contentAccessRights = new ArrayList<ContentAccessEntity>();
     }
 
     public ContentKey getContentKey()
@@ -403,5 +407,15 @@ public final class ContentDocument
     private boolean isProtectedField( String field )
     {
         return PROTECTED_FIELDS.contains( field );
+    }
+
+    public Collection<ContentAccessEntity> getContentAccessRights()
+    {
+        return contentAccessRights;
+    }
+
+    public void addContentAccessRights( Collection<ContentAccessEntity> contentAccessRights )
+    {
+        this.contentAccessRights.addAll( contentAccessRights );
     }
 }

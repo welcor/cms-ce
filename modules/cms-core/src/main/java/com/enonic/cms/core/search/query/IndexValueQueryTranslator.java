@@ -14,6 +14,8 @@ import com.enonic.cms.core.content.index.IndexValueQuery;
 public class IndexValueQueryTranslator
 {
 
+    private final FilterQueryBuilder filterQueryBuilder = new FilterQueryBuilder();
+
     // Selects the values from a given field in index for all contents matching filter
     public SearchSourceBuilder build( IndexValueQuery query )
     {
@@ -28,7 +30,7 @@ public class IndexValueQueryTranslator
 
         builder.query( QueryBuilders.matchAllQuery() );
 
-        FilterQueryBuilder.buildFilterQuery( builder, query );
+        filterQueryBuilder.buildFilterQuery( builder, query );
 
         //TODO: Fix orderby
         // Orderby

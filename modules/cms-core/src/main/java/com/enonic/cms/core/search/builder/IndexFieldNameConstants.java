@@ -35,6 +35,12 @@ public class IndexFieldNameConstants
 
     protected static final String CONTENTLOCATION_UNAPPROVED_FIELDNAME = "contentlocations_unapproved";
 
+    public static final String CONTENT_ACCESS_READ_FIELDNAME = "access_read";
+
+    public static final String CONTENT_ACCESS_UPDATE_FIELDNAME = "access_update";
+
+    public static final String CONTENT_ACCESS_DELETE_FIELDNAME = "access_delete";
+
     protected static final String USER_KEY_POSTFIX = "_key";
 
     protected static final String USER_NAME_POSTFIX = "_name";

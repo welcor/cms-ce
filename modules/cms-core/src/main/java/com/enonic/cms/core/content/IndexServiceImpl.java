@@ -7,6 +7,7 @@ package com.enonic.cms.core.content;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -320,6 +321,9 @@ public final class IndexServiceImpl
         final ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
 
         indexedDoc.setContentLocations( contentLocations );
+
+        final Collection<ContentAccessEntity> contentAccessRights = content.getContentAccessRights();
+        indexedDoc.addContentAccessRights( contentAccessRights );
 
         return indexedDoc;
 

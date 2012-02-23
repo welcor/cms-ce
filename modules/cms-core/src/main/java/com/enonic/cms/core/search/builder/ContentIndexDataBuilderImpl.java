@@ -1,3 +1,7 @@
+/*
+ * Copyright 2000-2011 Enonic AS
+ * http://www.enonic.com/license
+ */
 package com.enonic.cms.core.search.builder;
 
 import java.util.Collection;
@@ -6,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
+import com.enonic.cms.core.content.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
@@ -14,12 +19,7 @@ import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 11/22/11
- * Time: 1:50 PM
- */
+
 public final class ContentIndexDataBuilderImpl
     extends AbstractIndexDataBuilder
     implements ContentIndexDataBuilder
@@ -28,6 +28,8 @@ public final class ContentIndexDataBuilderImpl
     private final ContentIndexDataCustomDataBuilder customDataBuilder = new ContentIndexDataCustomDataBuilder();
 
     private final ContentIndexDataSectionBuilder sectionBuilder = new ContentIndexDataSectionBuilder();
+
+    private final ContentIndexDataAccessRightsBuilder accessRightsBuilder = new ContentIndexDataAccessRightsBuilder();
 
     public ContentIndexData build( ContentDocument content, ContentIndexDataBuilderSpecification spec )
     {
@@ -42,7 +44,7 @@ public final class ContentIndexDataBuilderImpl
         }
         catch ( Exception e )
         {
-            throw new ContentIndexDataBuilderException( "Faild to build index-data for content", e );
+            throw new ContentIndexDataBuilderException( "Failed to build index-data for content", e );
         }
 
         if ( spec.doBuildAttachments() )
@@ -53,7 +55,7 @@ public final class ContentIndexDataBuilderImpl
             }
             catch ( Exception e )
             {
-                throw new ContentIndexDataBuilderException( "Faild to build index-data for binaries", e );
+                throw new ContentIndexDataBuilderException( "Failed to build index-data for binaries", e );
             }
         }
 
@@ -76,9 +78,21 @@ public final class ContentIndexDataBuilderImpl
 
         addCustomData( content, result );
 
+        addAccessRights( content, result );
+
         result.endObject();
 
         return result;
+    }
+
+    private void addAccessRights( ContentDocument contentDocument, XContentBuilder result )
+        throws Exception
+    {
+        Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
+        if ( !accessRights.isEmpty() )
+        {
+            accessRightsBuilder.build( result, accessRights );
+        }
     }
 
     private void addSections( ContentDocument content, XContentBuilder result )

@@ -1,13 +1,12 @@
 package com.enonic.cms.core.search;
 
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
+import java.util.Collection;
+
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.search.index.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,9 +26,9 @@ public interface ElasticSearchIndexService
 
     public boolean delete( String indexName, IndexType indexType, ContentKey contentKey );
 
-    public BulkResponse bulk( BulkRequest bulkRequest );
+    public void index( String indexName, Collection<ContentIndexData> contentIndexDatas );
 
-    public IndexResponse index( IndexRequest indexRequest );
+    public void index( String indexName, ContentIndexData contentIndexData );
 
     public boolean get( String indexName, IndexType indexType, ContentKey contentKey );
 

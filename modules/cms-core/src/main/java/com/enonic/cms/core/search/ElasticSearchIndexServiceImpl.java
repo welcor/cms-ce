@@ -1,5 +1,7 @@
 package com.enonic.cms.core.search;
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.elasticsearch.ElasticSearchException;
@@ -33,6 +35,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.search.index.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,6 +54,8 @@ public class ElasticSearchIndexServiceImpl
     protected static final boolean WAIT_FOR_MERGE = true;
 
     private IndexSettingsBuilder indexSettingsBuilder;
+
+    private ContentIndexRequestCreator contentIndexRequestCreator;
 
     private Client client;
 
@@ -101,13 +106,39 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public BulkResponse bulk( BulkRequest bulkRequest )
+    public void index( String indexName, Collection<ContentIndexData> contentIndexDatas )
     {
-        return this.client.bulk( bulkRequest ).actionGet();
+
+        BulkRequest bulkRequest = new BulkRequest();
+
+        for ( ContentIndexData contentIndexData : contentIndexDatas )
+        {
+            Set<IndexRequest> indexRequests = contentIndexRequestCreator.createIndexRequests( indexName, contentIndexData );
+
+            for ( IndexRequest indexRequest : indexRequests )
+            {
+                bulkRequest.add( indexRequest );
+            }
+        }
+
+        BulkResponse resp = this.client.bulk( bulkRequest ).actionGet();
+
+        LOG.info( "Bulk index of " + contentIndexDatas.size() + " done in " + resp.getTookInMillis() + " ms" );
     }
 
     @Override
-    public IndexResponse index( IndexRequest indexRequest )
+    public void index( String indexName, ContentIndexData contentIndexData )
+    {
+        Set<IndexRequest> indexRequests = contentIndexRequestCreator.createIndexRequests( indexName, contentIndexData );
+
+        for ( IndexRequest indexRequest : indexRequests )
+        {
+            final IndexResponse indexResponse = doIndex( indexRequest );
+            LOG.finest( "Content indexed with id: " + indexResponse.getId() );
+        }
+    }
+
+    private IndexResponse doIndex( IndexRequest indexRequest )
     {
         return this.client.index( indexRequest ).actionGet();
     }
@@ -232,6 +263,12 @@ public class ElasticSearchIndexServiceImpl
     public void setIndexSettingsBuilder( IndexSettingsBuilder indexSettingsBuilder )
     {
         this.indexSettingsBuilder = indexSettingsBuilder;
+    }
+
+    @Autowired
+    public void setContentIndexRequestCreator( ContentIndexRequestCreator contentIndexRequestCreator )
+    {
+        this.contentIndexRequestCreator = contentIndexRequestCreator;
     }
 }
 

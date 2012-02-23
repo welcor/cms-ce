@@ -21,16 +21,16 @@ import static junit.framework.Assert.fail;
  * Date: 11/28/11
  * Time: 10:04 AM
  */
-public class IndexRequestCreatorTest
+public class ContentIndexRequestCreatorTest
 {
 
-    private IndexRequestCreator indexRequestCreator;
+    private ContentIndexRequestCreator contentIndexRequestCreator;
 
 
     @Before
     public void setUp()
     {
-        indexRequestCreator = new IndexRequestCreator( "TEST_INDEX" );
+        contentIndexRequestCreator = new ContentIndexRequestCreator( );
     }
 
     @Test
@@ -41,7 +41,7 @@ public class IndexRequestCreatorTest
         //data.setCustomdata( buildMetadata( 2, "customdata" ) );
         data.setExtractedBinaryData( buildMetadata( 3, "binarydata" ) );
 
-        Set<IndexRequest> requests = indexRequestCreator.createIndexRequests( data );
+        Set<IndexRequest> requests = contentIndexRequestCreator.createIndexRequests( "TEST_INDEX", data );
 
         assertEquals( 2, requests.size() );
 

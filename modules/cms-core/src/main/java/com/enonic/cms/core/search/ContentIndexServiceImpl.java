@@ -9,10 +9,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
@@ -20,6 +16,8 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
+
+import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -56,8 +54,6 @@ public class ContentIndexServiceImpl
 
     private ElasticSearchIndexService elasticSearchIndexService;
 
-    private IndexRequestCreator indexRequestCreator;
-
     private Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
 
     private ContentIndexDataBuilder contentIndexDataBuilder;
@@ -68,15 +64,10 @@ public class ContentIndexServiceImpl
 
     private ContentDao contentDao;
 
-    private static final boolean DEBUG_EXEC_TIME = false;
-
-
     @PostConstruct
     public void startIndex()
     {
         LOG.fine( "Setting up index" );
-
-        indexRequestCreator = new IndexRequestCreator( INDEX_NAME );
 
         try
         {
@@ -105,7 +96,6 @@ public class ContentIndexServiceImpl
         String mapping = indexMappingProvider.getMapping( indexName, indexType );
         elasticSearchIndexService.putMapping( INDEX_NAME, indexType, mapping );
     }
-
 
     public int remove( ContentKey contentKey )
     {
@@ -169,41 +159,23 @@ public class ContentIndexServiceImpl
         ContentIndexData contentIndexData =
             contentIndexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
 
-        Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
-
-        for ( IndexRequest indexRequest : indexRequests )
-        {
-            final IndexResponse indexResponse = doIndex( indexRequest );
-            LOG.finest( "Content indexed with id: " + indexResponse.getId() );
-        }
+        elasticSearchIndexService.index( INDEX_NAME, contentIndexData );
     }
 
     public void indexBulk( List<ContentDocument> docs )
     {
-        BulkRequest bulkRequest = new BulkRequest();
+
+        Set<ContentIndexData> contentIndexDatas = Sets.newHashSet();
 
         for ( ContentDocument doc : docs )
         {
             ContentIndexData contentIndexData =
                 contentIndexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
 
-            Set<IndexRequest> indexRequests = indexRequestCreator.createIndexRequests( contentIndexData );
-
-            for ( IndexRequest indexRequest : indexRequests )
-            {
-                bulkRequest.add( indexRequest );
-            }
+            contentIndexDatas.add( contentIndexData );
         }
 
-        BulkResponse resp = elasticSearchIndexService.bulk( bulkRequest );
-        LOG.info( "Bulk index of " + docs.size() + " done in " + resp.getTookInMillis() + " ms" );
-    }
-
-
-    private IndexResponse doIndex( IndexRequest request )
-    {
-        request.operationThreaded( false );
-        return elasticSearchIndexService.index( request );
+        elasticSearchIndexService.index( INDEX_NAME, contentIndexDatas );
     }
 
 

@@ -636,4 +636,6 @@
 
     <bean id="elasticSearchIndexService" class="com.enonic.cms.core.search.ElasticSearchIndexServiceImpl"/>
 
+    <bean id="indexRequestCreator" class="com.enonic.cms.core.search.IndexRequestCreator"/>
+    
 </beans>  

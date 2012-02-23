@@ -335,4 +335,6 @@
 
     <bean id="nodeSettingsBuilder" class="com.enonic.cms.itest.search.NodeTestSettingsBuilder"/>
 
+    <bean id="contentIndexRequestCreator" class="com.enonic.cms.core.search.ContentIndexRequestCreator"/>
+
 </beans>

@@ -15,20 +15,11 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  * Date: 11/28/11
  * Time: 10:00 AM
  */
-final class IndexRequestCreator
+final class ContentIndexRequestCreator
 {
-    private final String indexName;
-
     private final IndexRequestComparator comparator = new IndexRequestComparator();
 
-    //private final boolean multithreaded = false;
-
-    public IndexRequestCreator( String indexName )
-    {
-        this.indexName = indexName;
-    }
-
-    public Set<IndexRequest> createIndexRequests( ContentIndexData contentIndexData )
+    public Set<IndexRequest> createIndexRequests( String indexName, ContentIndexData contentIndexData )
     {
         Set<IndexRequest> indexRequests = new TreeSet<IndexRequest>( comparator );
 
@@ -36,14 +27,16 @@ final class IndexRequestCreator
 
         if ( contentIndexData.getContentdata() != null )
         {
-            final IndexRequest indexRequest = createIndexRequest( id, contentIndexData.getContentdata(), IndexType.Content, null );
+            final IndexRequest indexRequest =
+                createIndexRequest( indexName, id, contentIndexData.getContentdata(), IndexType.Content, null );
             //indexRequest.operationThreaded( multithreaded );
             indexRequests.add( indexRequest );
         }
 
         if ( contentIndexData.getExtractedBinaryData() != null )
         {
-            final IndexRequest indexRequest = createIndexRequest( id, contentIndexData.getExtractedBinaryData(), IndexType.Binaries, id );
+            final IndexRequest indexRequest =
+                createIndexRequest( indexName, id, contentIndexData.getExtractedBinaryData(), IndexType.Binaries, id );
             //indexRequest.operationThreaded( multithreaded );
             indexRequests.add( indexRequest );
         }
@@ -52,7 +45,7 @@ final class IndexRequestCreator
     }
 
 
-    private IndexRequest createIndexRequest( String id, XContentBuilder data, IndexType indexType, String parent )
+    private IndexRequest createIndexRequest( String indexName, String id, XContentBuilder data, IndexType indexType, String parent )
     {
         IndexRequest request = new IndexRequest( indexName ).type( indexType.toString() ).id( id ).source( data );
 

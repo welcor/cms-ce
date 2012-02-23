@@ -1,17 +1,17 @@
 package com.enonic.cms.core.search;
 
+import java.util.logging.Logger;
+
+import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest;
-import org.elasticsearch.action.admin.indices.settings.UpdateSettingsResponse;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
 import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -25,8 +25,14 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchOperationThreading;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.Requests;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.enonic.cms.core.content.ContentKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,33 +43,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ElasticSearchIndexServiceImpl
     implements ElasticSearchIndexService
 {
+
+    protected static final SearchType DEFAULT_SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
+
+    protected static final int MAX_NUM_SEGMENTS = 1;
+
+    protected static final boolean WAIT_FOR_MERGE = true;
+
+    private IndexSettingsBuilder indexSettingsBuilder;
+
     private Client client;
 
     protected static final SearchOperationThreading OPERATION_THREADING = SearchOperationThreading.NO_THREADS;
 
 
+    private Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
+
+
     @Override
-    public CreateIndexResponse createIndex( CreateIndexRequest createIndexRequest )
+    public void createIndex( String indexName )
     {
-        return client.admin().indices().create( createIndexRequest ).actionGet();
+        LOG.fine( "creating index: " + indexName );
+
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest( indexName );
+
+        createIndexRequest.settings( indexSettingsBuilder.buildSettings() );
+
+        client.admin().indices().create( createIndexRequest ).actionGet();
     }
 
     @Override
-    public UpdateSettingsResponse updateIndexSettings( UpdateSettingsRequest updateSettingsRequest )
+    public void updateIndexSettings( String indexName )
     {
-        return client.admin().indices().updateSettings( updateSettingsRequest ).actionGet();
+        LOG.fine( "Refresh settings for index: " + indexName );
+        UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest( indexName );
+        updateSettingsRequest.settings( indexSettingsBuilder.buildSettings() );
+
+        client.admin().indices().updateSettings( updateSettingsRequest ).actionGet();
     }
 
     @Override
-    public PutMappingResponse putMapping( PutMappingRequest putMappingRequest )
+    public void putMapping( String indexName, IndexType indexType, String mapping )
     {
-        return this.client.admin().indices().putMapping( putMappingRequest ).actionGet();
+        PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType.toString() ).source( mapping );
+
+        this.client.admin().indices().putMapping( mappingRequest ).actionGet();
     }
 
     @Override
-    public DeleteResponse delete( DeleteRequest deleteRequest )
+    public boolean delete( String indexName, IndexType indexType, ContentKey contentKey )
     {
-        return this.client.delete( deleteRequest ).actionGet();
+        DeleteRequest deleteRequest = new DeleteRequest( indexName, indexType.toString(), contentKey.toString() );
+
+        final DeleteResponse deleteResponse = this.client.delete( deleteRequest ).actionGet();
+
+        return !deleteResponse.notFound();
     }
 
     @Override
@@ -79,45 +113,125 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public GetResponse get( GetRequest getRequest )
+    public boolean get( String indexName, IndexType indexType, ContentKey contentKey )
     {
-        return this.client.get( getRequest ).actionGet();
+        final GetRequest getRequest = new GetRequest( indexName, IndexType.Content.toString(), contentKey.toString() );
+
+        final GetResponse getResponse = this.client.get( getRequest ).actionGet();
+
+        return getResponse.exists();
     }
 
     @Override
-    public OptimizeResponse optimize( OptimizeRequest optimizeRequest )
+    public void optimize( String indexName )
     {
-        return this.client.admin().indices().optimize( optimizeRequest ).actionGet();
+        OptimizeRequest optimizeRequest =
+            new OptimizeRequest( indexName ).maxNumSegments( MAX_NUM_SEGMENTS ).waitForMerge( WAIT_FOR_MERGE );
+
+        long start = System.currentTimeMillis();
+        final OptimizeResponse optimizeResponse = this.client.admin().indices().optimize( optimizeRequest ).actionGet();
+        long finished = System.currentTimeMillis();
+
+        LOG.fine( "Optimized index for " + optimizeResponse.successfulShards() + " shards in " + ( finished - start ) + " ms" );
     }
 
     @Override
-    public DeleteIndexResponse deleteIndex( DeleteIndexRequest deleteIndexRequest )
+    public void deleteIndex( String indexName )
     {
-        return this.client.admin().indices().delete( deleteIndexRequest ).actionGet();
+        final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest( indexName );
+
+        final DeleteIndexResponse deleteIndexResponse = this.client.admin().indices().delete( deleteIndexRequest ).actionGet();
+
+        if ( !deleteIndexResponse.acknowledged() )
+        {
+            LOG.warning( "Index " + indexName + " not deleted" );
+        }
+        else
+        {
+            LOG.fine( "Index " + indexName + " deleted" );
+        }
     }
 
     @Override
-    public SearchResponse search( SearchRequest searchRequest )
+    public SearchResponse search( String indexName, IndexType indexType, SearchSourceBuilder sourceBuilder )
+    {
+        final SearchRequest searchRequest =
+            Requests.searchRequest( indexName ).types( indexType.toString() ).searchType( DEFAULT_SEARCH_TYPE ).source( sourceBuilder );
+
+        final SearchResponse searchResponse = doSearchRequest( searchRequest );
+
+        parseSearchResultFailures( searchResponse );
+
+        return searchResponse;
+    }
+
+    @Override
+    public SearchResponse search( String indexName, IndexType indexType, String sourceBuilder )
+    {
+        SearchRequest searchRequest = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( sourceBuilder );
+
+        return doSearchRequest( searchRequest );
+    }
+
+    private SearchResponse doSearchRequest( SearchRequest searchRequest )
     {
         return this.client.search( searchRequest ).actionGet();
     }
 
-    @Override
-    public FlushResponse flush( FlushRequest flushRequest )
+
+    //TODO: How should this be handled
+    private void parseSearchResultFailures( SearchResponse res )
     {
-        return client.admin().indices().flush( flushRequest ).actionGet();
+        if ( res.getFailedShards() > 0 )
+        {
+            final ShardSearchFailure[] shardFailures = res.getShardFailures();
+
+            for ( ShardSearchFailure failure : shardFailures )
+            {
+                final String reason = failure.reason();
+                LOG.severe( "Status: " + failure.status() + " - Search failed on shard: " + reason );
+                throw new ContentIndexException( "Search failed: " + reason );
+            }
+        }
     }
 
     @Override
-    public IndicesStatusResponse status( IndicesStatusRequest indicesStatusRequest )
+    public void flush( String indexName )
     {
-        return this.client.admin().indices().status( indicesStatusRequest ).actionGet();
+        final FlushRequest flushRequest = Requests.flushRequest( indexName ).refresh( true );
+        final FlushResponse flushResponse = client.admin().indices().flush( flushRequest ).actionGet();
+
+        LOG.fine( "Flush request executed with " + flushResponse.getSuccessfulShards() + " successfull shards" );
+    }
+
+    @Override
+    public boolean indexExists( String indexName )
+    {
+        try
+        {
+            final IndicesStatusRequest indicesStatusRequest = new IndicesStatusRequest( indexName );
+            final IndicesStatusResponse indicesStatusResponse = this.client.admin().indices().status( indicesStatusRequest ).actionGet();
+
+            LOG.fine( "Index " + indexName + " status ok with " + indicesStatusResponse.getSuccessfulShards() + " shards" );
+
+            return true;
+        }
+        catch ( ElasticSearchException e )
+        {
+            return false;
+        }
     }
 
     @Autowired
     public void setClient( Client client )
     {
         this.client = client;
+    }
+
+    @Autowired
+    public void setIndexSettingsBuilder( IndexSettingsBuilder indexSettingsBuilder )
+    {
+        this.indexSettingsBuilder = indexSettingsBuilder;
     }
 }
 

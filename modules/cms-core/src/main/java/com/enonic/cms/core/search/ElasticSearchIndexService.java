@@ -1,29 +1,13 @@
 package com.enonic.cms.core.search;
 
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.action.admin.indices.flush.FlushRequest;
-import org.elasticsearch.action.admin.indices.flush.FlushResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
-import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
-import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
-import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest;
-import org.elasticsearch.action.admin.indices.settings.UpdateSettingsResponse;
-import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
-import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+
+import com.enonic.cms.core.content.ContentKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,31 +17,31 @@ import org.elasticsearch.action.search.SearchResponse;
  */
 public interface ElasticSearchIndexService
 {
+    public void createIndex( String indexName );
 
+    public void deleteIndex( String indexName );
 
-    public CreateIndexResponse createIndex( CreateIndexRequest createIndexRequest );
+    public void updateIndexSettings( String indexName );
 
-    public DeleteIndexResponse deleteIndex( DeleteIndexRequest deleteIndexRequest );
+    public void putMapping( String indexName, IndexType indexType, String mapping );
 
-    public UpdateSettingsResponse updateIndexSettings( UpdateSettingsRequest updateSettingsRequest );
-
-    public PutMappingResponse putMapping( PutMappingRequest putMappingRequest );
-
-    public DeleteResponse delete( DeleteRequest deleteRequest );
+    public boolean delete( String indexName, IndexType indexType, ContentKey contentKey );
 
     public BulkResponse bulk( BulkRequest bulkRequest );
 
     public IndexResponse index( IndexRequest indexRequest );
 
-    public GetResponse get( GetRequest getRequest );
+    public boolean get( String indexName, IndexType indexType, ContentKey contentKey );
 
-    public OptimizeResponse optimize( OptimizeRequest optimizeRequest );
+    public void optimize( String indexName );
 
-    public SearchResponse search( SearchRequest searchRequest );
+    public SearchResponse search( String indexName, IndexType indexType, SearchSourceBuilder sourceBuilder );
 
-    public FlushResponse flush( FlushRequest flushRequest );
+    public SearchResponse search( String indexName, IndexType indexType, String sourceBuilder );
 
-    public IndicesStatusResponse status( IndicesStatusRequest indicesStatusRequest );
+    public void flush( String indexName );
+
+    public boolean indexExists( String indexName );
 
 }
 

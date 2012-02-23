@@ -4,25 +4,28 @@
  */
 package com.enonic.vertical.adminweb;
 
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.security.AdminSecurityHolder;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserSpecification;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.net.URLUtil;
-import com.enonic.vertical.engine.VerticalSecurityException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.net.URLUtil;
+import com.enonic.vertical.engine.VerticalSecurityException;
+
+import com.enonic.cms.core.content.ContentHandlerName;
+import com.enonic.cms.core.security.AdminSecurityHolder;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.service.AdminService;
 
 /**
  * Routes a request for a page in the administration web to the correct servlet.
@@ -325,6 +328,9 @@ public class AdminPage
                     break;
                 case 912:
                     servlet = "/admin/servlet/tools/com.enonic.cms.core.tools.LivePortalTraceController";
+                    break;
+                case 914:
+                    servlet = "/admin/servlet/tools/com.enonic.cms.core.tools.IndexMonitorController";
                     break;
                 case 916:
                     servlet = "/admin/servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController";

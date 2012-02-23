@@ -172,6 +172,8 @@
                        value-ref="livePortalTraceController"/>
                 <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController"
                        value-ref="reindexContentToolController"/>
+                <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.IndexMonitorController"
+                       value-ref="indexMonitorController"/>
             </map>
         </property>
     </bean>
@@ -209,9 +211,16 @@
           parent="abstractToolController"/>
 
 
+    <bean id="indexMonitorController" class="com.enonic.cms.core.tools.IndexMonitorController"
+          parent="abstractToolController">
+        <property name="newContentIndexService" ref="contentIndexService"/>
+        <property name="oldContentIndexService" ref="oldContentIndexService"/>
+    </bean>
+
+
     <!-- Construct the resource controller. -->
     <bean id="resourceController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceController">
-      <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
+        <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
     </bean>
 
     <!-- Debug controller that renders the debug view. -->
@@ -236,7 +245,7 @@
     <!-- Construct the resource translator. -->
     <bean id="resourceTranslationController"
           class="com.enonic.cms.server.service.admin.mvc.controller.ResourceTranslationController">
-      <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
+        <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
     </bean>
 
     <!--

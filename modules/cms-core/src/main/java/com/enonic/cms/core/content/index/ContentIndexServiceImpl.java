@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.content.ContentIndexEntity;
@@ -52,11 +51,6 @@ public final class ContentIndexServiceImpl
         NEW,
         CHANGED_AND_SHORTENED,
         CHANGED_AND_LENGTHENED
-    }
-
-    public void createIndex()
-    {
-        // N/A
     }
 
     /**
@@ -610,28 +604,10 @@ public final class ContentIndexServiceImpl
         // DO NOTHING
     }
 
-    public void deleteIndex()
-    {
-        // DO NOTHING
-    }
-
-    public void updateIndexSettings()
-    {
-        // DO NOTHING
-    }
 
     public void flush()
     {
         // DO NOTHING
     }
 
-    public SearchResponse query( String query )
-    {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void initalizeIndex( boolean forceDelete )
-    {
-        // DO NOTHING
-    }
 }

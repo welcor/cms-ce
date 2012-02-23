@@ -6,8 +6,6 @@ package com.enonic.cms.core.content.index;
 
 import java.util.List;
 
-import org.elasticsearch.action.search.SearchResponse;
-
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -67,19 +65,9 @@ public interface ContentIndexService
      */
     public AggregatedResult query( AggregatedQuery query );
 
-    public void createIndex();
-
-    public void updateIndexSettings();
-
     public void optimize();
 
-    public void deleteIndex();
-
     public void flush();
-
-    public SearchResponse query( String query );
-
-    public void initalizeIndex( boolean forceDelete );
 
 }
 

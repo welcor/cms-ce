@@ -65,24 +65,19 @@ public class ContentIndexServiceImpl
     private ContentDao contentDao;
 
     @PostConstruct
-    public void startIndex()
+    private void initializeContentIndex()
     {
-        LOG.fine( "Setting up index" );
-
         try
         {
-            initalizeIndex( false );
+            elasticSearchIndexService.initalizeIndex( INDEX_NAME, false );
         }
         catch ( Exception e )
         {
             LOG.severe( "Failed to initalize index on startup: " + e.getStackTrace() );
         }
-    }
 
-    public void createIndex()
-    {
-        elasticSearchIndexService.createIndex( INDEX_NAME );
         addMapping();
+
     }
 
     private void addMapping()
@@ -182,22 +177,6 @@ public class ContentIndexServiceImpl
     public boolean isIndexed( ContentKey contentKey )
     {
         return elasticSearchIndexService.get( INDEX_NAME, IndexType.Content, contentKey );
-    }
-
-    public void initalizeIndex( boolean forceDelete )
-    {
-        final boolean indexExists = indexExists();
-
-        if ( indexExists && !forceDelete )
-        {
-            return;
-        }
-        else if ( indexExists )
-        {
-            deleteIndex();
-        }
-
-        createIndex();
     }
 
     public void optimize()

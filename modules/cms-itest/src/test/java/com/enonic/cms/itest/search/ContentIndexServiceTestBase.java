@@ -26,6 +26,10 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.ContentIndexServiceImpl;
+import com.enonic.cms.core.search.ElasticSearchIndexService;
+import com.enonic.cms.core.search.IndexMappingProvider;
+import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 import com.enonic.cms.core.search.builder.IndexFieldNameResolver;
 
@@ -47,6 +51,8 @@ import static org.junit.Assert.*;
 public abstract class ContentIndexServiceTestBase
 {
 
+    private IndexMappingProvider indexMappingProvider;
+
     protected final static String[] REQUIRED_ORDERBY_FIELDS =
         new String[]{"orderby_categorykey", "orderby_contenttype", "orderby_contenttypekey", "orderby_key", "orderby_priority",
             "orderby_publishfrom", "orderby_status", "orderby_title"};
@@ -65,12 +71,28 @@ public abstract class ContentIndexServiceTestBase
     @Autowired
     protected ContentIndexService contentIndexService;
 
+    @Autowired
+    protected ElasticSearchIndexService elasticSearchIndexService;
+
     @Before
     public void initIndex()
         throws Exception
     {
-        contentIndexService.initalizeIndex( true );
-        flushIndex();
+        elasticSearchIndexService.initalizeIndex( ContentIndexServiceImpl.INDEX_NAME, true );
+        addMapping();
+
+    }
+
+    private void addMapping()
+    {
+        doAddMapping( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content );
+        doAddMapping( ContentIndexServiceImpl.INDEX_NAME, IndexType.Binaries );
+    }
+
+    private void doAddMapping( String indexName, IndexType indexType )
+    {
+        String mapping = indexMappingProvider.getMapping( indexName, indexType );
+        elasticSearchIndexService.putMapping( ContentIndexServiceImpl.INDEX_NAME, indexType, mapping );
     }
 
     protected IndexDataCreator indexDataCreator = new IndexDataCreator();
@@ -124,7 +146,7 @@ public abstract class ContentIndexServiceTestBase
             "  }\n" +
             "}";
 
-        return contentIndexService.query( termQuery );
+        return elasticSearchIndexService.search( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content, termQuery );
     }
 
 
@@ -175,7 +197,7 @@ public abstract class ContentIndexServiceTestBase
             "  }\n" +
             "}";
 
-        SearchResponse result = contentIndexService.query( termQuery );
+        SearchResponse result = elasticSearchIndexService.search( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content, termQuery );
 
         System.out.println( "\n\n------------------------------------------" );
         System.out.println( result.toString() );
@@ -391,4 +413,10 @@ public abstract class ContentIndexServiceTestBase
         flushIndex();
     }
 
+
+    @Autowired
+    public void setIndexMappingProvider( IndexMappingProvider indexMappingProvider )
+    {
+        this.indexMappingProvider = indexMappingProvider;
+    }
 }

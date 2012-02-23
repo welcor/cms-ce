@@ -2,7 +2,6 @@ package com.enonic.cms.core.search;
 
 import java.util.List;
 
-import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.StopWatch;
 
@@ -127,36 +126,11 @@ public class ContentIndexServiceDispatcher
         return this.newContentIndexService.query( query );
     }
 
-    public void createIndex()
-    {
-        this.newContentIndexService.createIndex();
-    }
-
-    public void updateIndexSettings()
-    {
-        this.newContentIndexService.updateIndexSettings();
-    }
-
-    public void setNewContentIndexService( ContentIndexServiceImpl newContentIndexService )
-    {
-        this.newContentIndexService = newContentIndexService;
-    }
-
-    public void setOldContentIndexService( com.enonic.cms.core.content.index.ContentIndexServiceImpl oldContentIndexService )
-    {
-        this.oldContentIndexService = oldContentIndexService;
-    }
-
-
     public void optimize()
     {
         newContentIndexService.optimize();
     }
 
-    public void deleteIndex()
-    {
-        newContentIndexService.deleteIndex();
-    }
 
     public void destroy()
         throws Exception
@@ -170,15 +144,18 @@ public class ContentIndexServiceDispatcher
         newContentIndexService.flush();
     }
 
-    public SearchResponse query( String query )
+
+    public void setNewContentIndexService( ContentIndexServiceImpl newContentIndexService )
     {
-        return newContentIndexService.query( query );
+        this.newContentIndexService = newContentIndexService;
     }
 
-    public void initalizeIndex( boolean forceDelete )
+    public void setOldContentIndexService( com.enonic.cms.core.content.index.ContentIndexServiceImpl oldContentIndexService )
     {
-        newContentIndexService.initalizeIndex( forceDelete );
+        this.oldContentIndexService = oldContentIndexService;
     }
+
+
 }
 
 

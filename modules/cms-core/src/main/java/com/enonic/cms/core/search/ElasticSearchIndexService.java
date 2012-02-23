@@ -3,6 +3,7 @@ package com.enonic.cms.core.search;
 import java.util.Collection;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -16,6 +17,10 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  */
 public interface ElasticSearchIndexService
 {
+    public Client getClient();
+
+    public void initalizeIndex( String indexName, boolean forceDelete );
+
     public void createIndex( String indexName );
 
     public void deleteIndex( String indexName );

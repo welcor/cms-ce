@@ -61,9 +61,29 @@ public class ElasticSearchIndexServiceImpl
 
     protected static final SearchOperationThreading OPERATION_THREADING = SearchOperationThreading.NO_THREADS;
 
-
     private Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
 
+    @Override
+    public Client getClient()
+    {
+        return this.client;
+    }
+
+    public void initalizeIndex( String indexName, boolean forceDelete )
+    {
+        final boolean indexExists = indexExists( indexName );
+
+        if ( indexExists && !forceDelete )
+        {
+            return;
+        }
+        else if ( indexExists )
+        {
+            deleteIndex( indexName );
+        }
+
+        createIndex( indexName );
+    }
 
     @Override
     public void createIndex( String indexName )

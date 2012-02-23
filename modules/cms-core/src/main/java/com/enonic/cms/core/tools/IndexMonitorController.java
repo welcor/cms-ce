@@ -6,10 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.search.ElasticSearchIndexService;
+import com.enonic.cms.core.search.IndexType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,8 +26,7 @@ public class IndexMonitorController
 
     private ContentIndexService newContentIndexService;
 
-    private ContentIndexService oldContentIndexService;
-
+    private ElasticSearchIndexService elasticSearchIndexService;
 
     @Override
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
@@ -63,7 +65,7 @@ public class IndexMonitorController
             "}\n" +
             "";
 
-        final SearchResponse response = newContentIndexService.query( termQuery );
+        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content, termQuery );
 
         return response.getHits().getTotalHits();
     }
@@ -74,8 +76,9 @@ public class IndexMonitorController
         this.newContentIndexService = newContentIndexService;
     }
 
-    public void setOldContentIndexService( ContentIndexService oldContentIndexService )
+    @Autowired
+    public void setElasticSearchIndexService( ElasticSearchIndexService elasticSearchIndexService )
     {
-        this.oldContentIndexService = oldContentIndexService;
+        this.elasticSearchIndexService = elasticSearchIndexService;
     }
 }

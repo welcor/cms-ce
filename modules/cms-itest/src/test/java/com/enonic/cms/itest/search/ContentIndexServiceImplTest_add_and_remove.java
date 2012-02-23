@@ -56,7 +56,7 @@ public class ContentIndexServiceImplTest_add_and_remove
         doc1.setPriority( 0 );
         contentIndexService.index( doc1, false );
 
-        //flushIndex();
+        flushIndex();
 
         printAllIndexContent();
 

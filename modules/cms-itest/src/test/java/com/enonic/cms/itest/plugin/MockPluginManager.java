@@ -1,5 +1,6 @@
 package com.enonic.cms.itest.plugin;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,5 +105,15 @@ public class MockPluginManager
     public PluginHandle findPluginByKey( long key )
     {
         return null;
+    }
+
+    public void install( final File file )
+    {
+
+    }
+
+    public void uninstall( final File file )
+    {
+
     }
 }

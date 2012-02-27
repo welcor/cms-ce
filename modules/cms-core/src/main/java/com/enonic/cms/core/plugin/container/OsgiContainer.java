@@ -9,12 +9,13 @@ import javax.annotation.PreDestroy;
 import org.eclipse.core.runtime.internal.adaptor.EclipseLogHook;
 import org.eclipse.osgi.baseadaptor.HookConfigurator;
 import org.eclipse.osgi.baseadaptor.HookRegistry;
+import org.eclipse.osgi.internal.baseadaptor.BaseHookConfigurator;
 import org.eclipse.osgi.launch.EquinoxFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
@@ -31,7 +32,8 @@ public abstract class OsgiContainer
 
         map.put( FRAMEWORK_STORAGE, Files.createTempDir().getAbsolutePath() );
         map.put( FRAMEWORK_STORAGE_CLEAN, FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT );
-        map.put( HookRegistry.PROP_HOOK_CONFIGURATORS_INCLUDE, DynamicHookConfigurator.class.getName() );
+        map.put( HookRegistry.PROP_HOOK_CONFIGURATORS, BaseHookConfigurator.class.getName() +
+            "," + DynamicHookConfigurator.class.getName() );
         map.put( HookRegistry.PROP_HOOK_CONFIGURATORS_EXCLUDE, EclipseLogHook.class.getName() );
 
         return map;

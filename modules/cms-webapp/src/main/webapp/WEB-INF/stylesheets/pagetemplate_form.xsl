@@ -449,8 +449,11 @@
             <script type="text/javascript" language="JavaScript">
               function handle_tabpane_onclick( pageIndex, page )
               {
-                if (page &amp;&amp; page.id == "tab-page-5")
+                if (page &amp;&amp; page.id == "tab-page-5") {
+                  if (document.getElementById('usedBy').className == 'used-by-unloaded') {
                     getPageTemplateUsedByAsHtml(<xsl:value-of select="/pagetemplates/pagetemplate/@key"/>);
+                  }
+                }
               }
 
               function getPageTemplateUsedByAsHtml( contentKey )
@@ -461,7 +464,9 @@
 
               function handleResponse_getPageTemplateUsedByAsHtml( content )
               {
-                document.getElementById('usedBy').innerHTML = content;
+                var tag = document.getElementById('usedBy');
+                tag.innerHTML = content;
+                tag.className = 'used-by-loaded';
               }
 
             </script>
@@ -1180,7 +1185,7 @@
                     <fieldset>
                         <legend>&nbsp;%blockFrameworkUsedByPage%&nbsp;</legend>
 
-                        <span id="usedBy">
+                        <span id="usedBy" class="used-by-unloaded">
                           &nbsp;
                         </span>
 

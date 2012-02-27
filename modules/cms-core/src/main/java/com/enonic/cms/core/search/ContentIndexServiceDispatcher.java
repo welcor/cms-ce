@@ -136,7 +136,6 @@ public class ContentIndexServiceDispatcher
     public void destroy()
         throws Exception
     {
-        indexQueryMeasurer.flush();
         resultComparer.flush();
     }
 

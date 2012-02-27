@@ -1,16 +1,12 @@
 package com.enonic.cms.core.search.IndexPerformance;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.util.StopWatch;
+
+import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
@@ -22,99 +18,33 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  */
 public class IndexQueryMeasurer
 {
-    private final static int FLUSH_TRESHOLD = 3000;
-
-    private Map<String, IndexQueryMeasureTracker> measuresMap = new HashMap<String, IndexQueryMeasureTracker>();
-
-    private IndexQueryMeasureTracker total = new IndexQueryMeasureTracker();
-
-    final String LS = System.getProperty( "line.separator" );
-
-    private int totalSize = 0;
-
-
-    public List<IndexQueryStats> createStatsSnapshot()
-    {
-        final List<IndexQueryStats> indexQueryStats = IndexQueryStatsCreator.createIndexQueryStats( measuresMap );
-
-        return indexQueryStats;
-    }
+    Map<IndexQuerySignature, IndexQueryMeasure> queryMeasures = Maps.newHashMap();
 
     public synchronized void addMeasure( ContentIndexQuery query, StopWatch stopWatch, String sourceName )
     {
-        totalSize++;
-
-        if ( totalSize > FLUSH_TRESHOLD )
-        {
-            flush();
-        }
-
         final long lastTaskTimeMillis = stopWatch.getLastTaskTimeMillis();
 
-        total.addMeasure( sourceName, lastTaskTimeMillis );
+        final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query );
 
-        final String queryString = QueryIdResolver.queryToKey( query );
+        IndexQueryMeasure indexQueryMeasure = queryMeasures.get( querySignature );
 
-        if ( !measuresMap.containsKey( queryString ) )
+        if ( indexQueryMeasure == null )
         {
-            IndexQueryMeasureTracker indexQueryMeasureTracker = new IndexQueryMeasureTracker();
-            measuresMap.put( queryString, indexQueryMeasureTracker );
+            indexQueryMeasure = new IndexQueryMeasure( querySignature );
+            queryMeasures.put( querySignature, indexQueryMeasure );
         }
 
-        final IndexQueryMeasureTracker indexQueryMeasureTracker = measuresMap.get( queryString );
-        indexQueryMeasureTracker.addMeasure( sourceName, lastTaskTimeMillis );
+        indexQueryMeasure.addMeasure( sourceName, lastTaskTimeMillis );
     }
 
-
-    public synchronized void flush()
+    public Map<IndexQuerySignature, IndexQueryMeasure> getQueryMeasures()
     {
-        File f = new File( "query-log" + Calendar.getInstance().getTime() + ".log" );
-
-        print( System.out );
-
-        writeToFile( f );
-
-        measuresMap = new HashMap<String, IndexQueryMeasureTracker>();
-        totalSize = 0;
+        return queryMeasures;
     }
 
-    private void writeToFile( File f )
+    public List<IndexQueryMeasure> getAllMeasures()
     {
-        try
-        {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintStream ps = new PrintStream( baos );
-            print( ps );
-            String content = baos.toString( "UTF-8" );
-            FileUtils.write( f, content, "UTF-8" );
-        }
-        catch ( IOException e )
-        {
-            System.out.println( "Failed to write queryMeasures to disk " );
-        }
+        return new ArrayList<IndexQueryMeasure>( this.queryMeasures.values() );
     }
-
-    public void print( PrintStream out )
-    {
-        for ( String query : measuresMap.keySet() )
-        {
-
-            out.println();
-            out.println( "-------------------" );
-            out.println( "Query: " );
-            out.println( "-------" );
-            out.println( query );
-            out.println();
-
-            final IndexQueryMeasureTracker indexQueryMeasureTracker = measuresMap.get( query );
-            indexQueryMeasureTracker.printStats( out );
-
-        }
-
-        out.println( "-------------------" );
-        out.println( "Grand total: " );
-        total.printStats( out );
-    }
-
 
 }

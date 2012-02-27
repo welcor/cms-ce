@@ -25,15 +25,15 @@ public class QueryResultComparer
 {
     private List<DiffEntry> diffEntries = new ArrayList<DiffEntry>();
 
-    private List<String> checkedQueries = new ArrayList<String>();
+    private List<IndexQuerySignature> checkedQueries = new ArrayList<IndexQuerySignature>();
 
     private final static String LS = System.getProperty( "line.separator" );
 
     public void compareResults( ContentIndexQuery query, ContentResultSet resultNew, ContentResultSet resultOld )
     {
-        final String queryKey = QueryIdResolver.queryToKey( query );
+        final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query );
 
-        if ( checkedQueries.contains( queryKey ) )
+        if ( checkedQueries.contains( querySignature ) )
         {
             return;
         }
@@ -42,14 +42,14 @@ public class QueryResultComparer
         final HashSet<ContentKey> oldResultContentKeys = Sets.newHashSet( resultOld.getKeys() );
         Sets.SetView<ContentKey> diff = Sets.symmetricDifference( newResultContentKeys, oldResultContentKeys );
 
-        checkedQueries.add( queryKey );
+        checkedQueries.add( querySignature );
 
         if ( diff.isEmpty() )
         {
             return;
         }
 
-        DiffEntry diffEntry = new DiffEntry( queryKey, newResultContentKeys, oldResultContentKeys );
+        DiffEntry diffEntry = new DiffEntry( querySignature, newResultContentKeys, oldResultContentKeys );
         diffEntries.add( diffEntry );
     }
 
@@ -94,15 +94,16 @@ public class QueryResultComparer
     private class DiffEntry
     {
 
-        private String query;
+        private IndexQuerySignature querySignature;
 
         private HashSet<ContentKey> newResultContentKeys;
 
         private HashSet<ContentKey> oldResultContentKeys;
 
-        private DiffEntry( String query, HashSet<ContentKey> newResultContentKeys, HashSet<ContentKey> oldResultContentKeys )
+        private DiffEntry( IndexQuerySignature querySignature, HashSet<ContentKey> newResultContentKeys,
+                           HashSet<ContentKey> oldResultContentKeys )
         {
-            this.query = query;
+            this.querySignature = querySignature;
             this.newResultContentKeys = newResultContentKeys;
             this.oldResultContentKeys = oldResultContentKeys;
         }
@@ -116,7 +117,7 @@ public class QueryResultComparer
             Sets.SetView<ContentKey> onlyInOld = Sets.difference( oldResultContentKeys, newResultContentKeys );
 
             buf.append( "****" );
-            buf.append( "Query: " + query + LS + LS );
+            buf.append( "Query: " + querySignature.getQueryDisplayValue() + LS + LS );
 
             buf.append( "Old total : " + oldResultContentKeys.size() + LS );
             buf.append( "New total : " + newResultContentKeys.size() + LS );

@@ -2,16 +2,16 @@
 
 [#macro queryMeasureDetails measure]
     <div class="measureTable">
-    ${measure.query}"
+    ${measure.querySignature.queryDisplayValue}"
     <table>
     <th>SourceName</th><th>TotalHits</th><th>AvgTime</th><th>MaxTime</th><th>MinTime</th>
-     [#list measure.sourceStats as sourceStat]
+      [#list measure.sourceStats?keys as key]
          <tr>
-         <td>${sourceStat.sourceName}</td>
-         <td>${sourceStat.totalHits}</td>
-         <td>${sourceStat.avgTime}</td>
-         <td>${sourceStat.maxTime}</td>
-         <td>${sourceStat.minTime}</td>
+         <td> ${key}</td>
+         <td> ${measure.sourceStats[key].totalHits}</td>
+         <td> ${measure.sourceStats[key].avgTime}</td>
+         <td> ${measure.sourceStats[key].maxTime}</td>
+         <td> ${measure.sourceStats[key].minTime}</td>
          </tr>
      [/#list]
      </table>

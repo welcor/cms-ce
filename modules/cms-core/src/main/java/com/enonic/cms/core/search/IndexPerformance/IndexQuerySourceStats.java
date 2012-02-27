@@ -11,21 +11,13 @@ import java.io.Serializable;
 public class IndexQuerySourceStats
     implements Serializable
 {
+    private int totalHits = 0;
 
-    int totalHits = 0;
+    private long maxTime = -1;
 
-    long avgTime = -1;
+    private long minTime = -1;
 
-    long maxTime = -1;
-
-    long minTime = -1;
-
-    String sourceName;
-
-    public IndexQuerySourceStats( String sourceName )
-    {
-        this.sourceName = sourceName;
-    }
+    private long totalTime = -1;
 
     public int getTotalHits()
     {
@@ -34,7 +26,7 @@ public class IndexQuerySourceStats
 
     public long getAvgTime()
     {
-        return avgTime;
+        return totalHits > 0 ? totalTime / totalHits : -1;
     }
 
     public long getMaxTime()
@@ -47,8 +39,25 @@ public class IndexQuerySourceStats
         return minTime;
     }
 
-    public String getSourceName()
+    public void updateStats( long newMeasure )
     {
-        return sourceName;
+        totalHits++;
+
+        totalTime += newMeasure;
+
+        if ( newMeasure > maxTime )
+        {
+            maxTime = newMeasure;
+        }
+
+        if ( minTime < 0 || newMeasure < minTime )
+        {
+            minTime = newMeasure;
+        }
+    }
+
+    public long getTotalTime()
+    {
+        return totalTime;
     }
 }

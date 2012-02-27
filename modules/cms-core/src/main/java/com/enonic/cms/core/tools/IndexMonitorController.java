@@ -20,8 +20,8 @@ import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
+import com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasure;
 import com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasurer;
-import com.enonic.cms.core.search.IndexPerformance.IndexQueryStats;
 import com.enonic.cms.core.search.IndexType;
 
 /**
@@ -69,9 +69,9 @@ public class IndexMonitorController
 
     }
 
-    private List<IndexQueryStats> getIndexQueryMeasurerResult()
+    private List<IndexQueryMeasure> getIndexQueryMeasurerResult()
     {
-        return indexQueryMeasurer.createStats();
+        return indexQueryMeasurer.getAllMeasures();
     }
 
 

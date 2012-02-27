@@ -1,5 +1,7 @@
 package com.enonic.cms.api.plugin;
 
+import java.util.Map;
+
 import com.enonic.cms.api.plugin.ext.Extension;
 
 public interface PluginContext
@@ -11,11 +13,8 @@ public interface PluginContext
     public String getVersion();
 
     public PluginConfig getConfig();
-
-    public <T> T getService(Class<T> type)
-        throws PluginException;
+    
+    public Map<String, Object> getServices();
 
     public void register(Extension extension);
-
-    // public List<Extension> getExtensions();
 }

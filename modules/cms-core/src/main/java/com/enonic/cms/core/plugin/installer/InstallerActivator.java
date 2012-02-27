@@ -32,10 +32,4 @@ public final class InstallerActivator
         final BundleInstaller installer = new BundleInstallerImpl(context);
         context.registerService(BundleInstaller.class.getName(), installer, null);
     }
-
-    public void stop(final BundleContext context)
-        throws Exception
-    {
-        // Do nothing
-    }
 }

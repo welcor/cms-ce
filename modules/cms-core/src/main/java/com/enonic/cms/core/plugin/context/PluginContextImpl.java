@@ -1,7 +1,11 @@
 package com.enonic.cms.core.plugin.context;
 
+import java.util.Map;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+
+import com.google.common.collect.ImmutableMap;
 
 import com.enonic.cms.api.plugin.PluginConfig;
 import com.enonic.cms.api.plugin.PluginContext;
@@ -15,12 +19,15 @@ final class PluginContextImpl
 
     private final BundleContext context;
 
+    private final Map<String, Object> serviceMap;
+
     private PluginConfig config;
 
-    public PluginContextImpl( final Bundle bundle )
+    public PluginContextImpl( final Bundle bundle, final Map<String, Object> serviceMap )
     {
         this.bundle = bundle;
         this.context = this.bundle.getBundleContext();
+        this.serviceMap = serviceMap;
     }
 
     public String getId()
@@ -48,13 +55,13 @@ final class PluginContextImpl
         return this.config;
     }
 
-    public <T> T getService( final Class<T> type )
-    {
-        return OsgiHelper.requireService( this.context, type );
-    }
-
     public void register( final Extension ext )
     {
         this.context.registerService( Extension.class.getName(), ext, null );
+    }
+
+    public Map<String, Object> getServices()
+    {
+        return ImmutableMap.copyOf( this.serviceMap );
     }
 }

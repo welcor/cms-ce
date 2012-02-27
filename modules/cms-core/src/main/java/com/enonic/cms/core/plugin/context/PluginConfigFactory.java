@@ -16,9 +16,9 @@ final class PluginConfigFactory
 {
     private final static LogFacade LOG = LogFacade.get( PluginConfigFactory.class );
 
-    private final File configDir;
+    private File configDir;
 
-    public PluginConfigFactory( final File configDir )
+    public void setConfigDir( final File configDir )
     {
         this.configDir = configDir;
     }

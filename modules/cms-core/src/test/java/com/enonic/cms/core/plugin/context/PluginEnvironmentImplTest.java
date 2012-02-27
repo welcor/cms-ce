@@ -1,4 +1,4 @@
-package com.enonic.cms.core.plugin.host;
+package com.enonic.cms.core.plugin.context;
 
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import org.junit.Before;

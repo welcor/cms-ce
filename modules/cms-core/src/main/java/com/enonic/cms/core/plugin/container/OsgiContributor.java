@@ -1,6 +1,7 @@
 package com.enonic.cms.core.plugin.container;
 
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 public abstract class OsgiContributor
     implements BundleActivator, Comparable<OsgiContributor>
@@ -15,5 +16,11 @@ public abstract class OsgiContributor
     public final int compareTo(final OsgiContributor other)
     {
         return this.rank - other.rank;
+    }
+
+    public void stop( final BundleContext context )
+        throws Exception
+    {
+        // Do nothing
     }
 }

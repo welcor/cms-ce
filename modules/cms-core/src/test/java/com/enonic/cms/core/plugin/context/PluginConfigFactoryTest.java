@@ -40,7 +40,8 @@ public class PluginConfigFactoryTest
         this.defaultFile = this.folder.newFile("default.properties");
         defaultProps.store(new FileWriter(this.defaultFile), "default properties");
 
-        this.factory = new PluginConfigFactory(this.folder.getRoot());
+        this.factory = new PluginConfigFactory();
+        this.factory.setConfigDir( this.folder.getRoot() );
     }
 
     @Test

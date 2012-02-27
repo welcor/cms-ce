@@ -18,9 +18,9 @@ public class IndexQueryMeasure
 
     Map<String, IndexQuerySourceStats> sourceStats = Maps.newHashMap();
 
-    private long totalTime = 0;
+    private int totalTime = 0;
 
-    private long numberOfInvocations = 0;
+    private int numberOfInvocations = 0;
 
     public IndexQueryMeasure( IndexQuerySignature querySignature )
     {
@@ -38,6 +38,9 @@ public class IndexQueryMeasure
         }
 
         indexQuerySourceStats.updateStats( executionTime );
+
+        numberOfInvocations++;
+        totalTime += executionTime;
     }
 
     public IndexQuerySignature getQuerySignature()
@@ -55,8 +58,78 @@ public class IndexQueryMeasure
         return numberOfInvocations > 0 ? totalTime / numberOfInvocations : -1;
     }
 
-    public long getNumberOfInvocations()
+    public int getNumberOfInvocations()
     {
         return numberOfInvocations;
     }
+
+
+    @Override
+    public boolean equals( Object o )
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        IndexQueryMeasure that = (IndexQueryMeasure) o;
+
+        if ( numberOfInvocations != that.numberOfInvocations )
+        {
+            return false;
+        }
+        if ( totalTime != that.totalTime )
+        {
+            return false;
+        }
+        if ( querySignature != null ? !querySignature.equals( that.querySignature ) : that.querySignature != null )
+        {
+            return false;
+        }
+        if ( sourceStats != null ? !sourceStats.equals( that.sourceStats ) : that.sourceStats != null )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = querySignature != null ? querySignature.hashCode() : 0;
+        result = 31 * result + ( sourceStats != null ? sourceStats.hashCode() : 0 );
+        result = 31 * result + totalTime;
+        result = 31 * result + numberOfInvocations;
+        return result;
+    }
+
+
+    public int getAvgTimeDiff()
+    {
+        long maxFoundValue = 0;
+        long minFoundValue = Integer.MAX_VALUE;
+
+        for ( String source : sourceStats.keySet() )
+        {
+            final long foundAvgTime = sourceStats.get( source ).getAvgTime();
+
+            if ( foundAvgTime > maxFoundValue )
+            {
+                maxFoundValue = foundAvgTime;
+            }
+
+            if ( foundAvgTime < minFoundValue )
+            {
+                minFoundValue = foundAvgTime;
+            }
+        }
+
+        return Long.valueOf( maxFoundValue - minFoundValue ).intValue();
+    }
+
 }

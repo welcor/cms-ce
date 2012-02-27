@@ -3,7 +3,10 @@ package com.enonic.cms.core.search.IndexPerformance;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.elasticsearch.common.collect.Sets;
 import org.springframework.util.StopWatch;
 
 import com.google.common.collect.Maps;
@@ -46,5 +49,25 @@ public class IndexQueryMeasurer
     {
         return new ArrayList<IndexQueryMeasure>( this.queryMeasures.values() );
     }
+
+    public Set<IndexQueryMeasure> getMeasuresOrderedByTotalExecutions()
+    {
+        final TreeSet<IndexQueryMeasure> indexQueryMeasures = Sets.newTreeSet( new IndexQueryMeasureInvocationComparator() );
+
+        indexQueryMeasures.addAll( queryMeasures.values() );
+
+        return indexQueryMeasures;
+    }
+
+
+    public Set<IndexQueryMeasure> getMeasuresOrderedByAvgDiffTime()
+    {
+        final TreeSet<IndexQueryMeasure> indexQueryMeasures = Sets.newTreeSet( new IndexQueryMeasureAvgTimeDiffComparator() );
+
+        indexQueryMeasures.addAll( queryMeasures.values() );
+
+        return indexQueryMeasures;
+    }
+
 
 }

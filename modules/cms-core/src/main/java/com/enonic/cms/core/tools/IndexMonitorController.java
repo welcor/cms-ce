@@ -1,8 +1,8 @@
 package com.enonic.cms.core.tools;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,9 +69,9 @@ public class IndexMonitorController
 
     }
 
-    private List<IndexQueryMeasure> getIndexQueryMeasurerResult()
+    private Collection<IndexQueryMeasure> getIndexQueryMeasurerResult()
     {
-        return indexQueryMeasurer.getAllMeasures();
+        return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime();
     }
 
 

@@ -50,6 +50,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
@@ -414,7 +415,7 @@ public class DomainFactory
                                                  boolean isOrderedSection, Date timestamp, boolean isHidden, Document xmlData )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) );
+        menuItem.setKey( new MenuItemKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) ) );
         menuItem.setName( name );
         menuItem.setMenuName( menuName );
         menuItem.setDisplayName( displayName );
@@ -426,7 +427,7 @@ public class DomainFactory
         menuItem.setSection( true );
         menuItem.setOrderedSection( isOrderedSection );
         menuItem.setLanguage( fixture.findLanguageByCode( language ) );
-        if ( parentName != null && parentOrder != null )
+        if ( parentName != null )
         {
             menuItem.setParent( fixture.findMenuItemByName( parentName ) );
         }
@@ -441,7 +442,7 @@ public class DomainFactory
                                               String parentName, Integer parentOrder, Date timestamp, boolean isHidden, Document xmlData )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) );
+        menuItem.setKey( new MenuItemKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) ) );
         menuItem.setName( name );
         menuItem.setOrder( order );
         menuItem.setMenuName( menuName );
@@ -453,7 +454,7 @@ public class DomainFactory
         menuItem.setSection( hasSection );
         menuItem.setOrderedSection( isOrderedSection );
         menuItem.setLanguage( fixture.findLanguageByCode( language ) );
-        if ( parentName != null && parentOrder != null )
+        if ( parentName != null )
         {
             menuItem.setParent( fixture.findMenuItemByName( parentName ) );
         }

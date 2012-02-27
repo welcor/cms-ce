@@ -186,7 +186,7 @@ public class MenuItemXmlCreator
     {
 
         xmlDoc.startElement( "menuitem" );
-        xmlDoc.setAttribute( "key", menuItem.getKey() );
+        xmlDoc.setAttribute( "key", menuItem.getKey().toInt() );
         xmlDoc.setAttribute( "menukey", menuItem.getSite().getKey().toString() );
         xmlDoc.setAttribute( "modifier", menuItem.getModifier().getKey().toString() );
         xmlDoc.setAttribute( "order", menuItem.getOrder() );
@@ -196,7 +196,7 @@ public class MenuItemXmlCreator
         xmlDoc.setAttribute( "visible", menuItem.getHidden() ? "no" : "yes" );
         if ( menuItem.getParent() != null )
         {
-            xmlDoc.setAttribute( "parent", menuItem.getParent().getKey() );
+            xmlDoc.setAttribute( "parent", menuItem.getParent().getKey().toInt() );
         }
         if ( includeSiteInfo )
         {
@@ -228,7 +228,7 @@ public class MenuItemXmlCreator
         if ( setting.activeMenuItem != null )
         {
 
-            if ( menuItem.getKey() == setting.activeMenuItem.getKey() )
+            if ( menuItem.getKey().toInt() == setting.activeMenuItem.getKey().toInt() )
             {
                 xmlDoc.setAttribute( "active", "true" );
                 xmlDoc.setAttribute( "path", "true" );
@@ -402,7 +402,7 @@ public class MenuItemXmlCreator
         }
 
         xmlDoc.startElement( "shortcut" );
-        xmlDoc.setAttribute( "key", shortcutDestination.getKey() );
+        xmlDoc.setAttribute( "key", shortcutDestination.getKey().toInt() );
         xmlDoc.setAttribute( "name", shortcutDestination.getName() );
         xmlDoc.setAttribute( "forward", menuItem.isShortcutForward() ? "true" : "false" );
 
@@ -449,8 +449,8 @@ public class MenuItemXmlCreator
             return;
         }
         xmlDoc.startElement( "section" );
-        xmlDoc.setAttribute( "key", menuItem.getKey() );
-        xmlDoc.setAttribute( "menuitemkey", menuItem.getKey() );
+        xmlDoc.setAttribute( "key", menuItem.getKey().toInt() );
+        xmlDoc.setAttribute( "menuitemkey", menuItem.getKey().toInt() );
         xmlDoc.setAttribute( "menukey", menuItem.getSite().getKey().toString() );
         xmlDoc.setAttribute( "ordered", menuItem.isOrderedSection() ? "true" : "false" );
 

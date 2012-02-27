@@ -41,14 +41,14 @@ public class PageRequestProcessor
         result.setLanguage( language );
 
         // site path
-        sitePath.addParam( "id", menuItem.getMenuItemKey().toString() );
+        sitePath.addParam( "id", menuItem.getKey().toString() );
         result.setSitePath( sitePath );
 
         // http request
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper( context.getHttpRequest() );
         // noinspection deprecation
         requestWrapper.setParamsMasked( false );
-        requestWrapper.setParameter( "id", menuItem.getMenuItemKey().toString() );
+        requestWrapper.setParameter( "id", menuItem.getKey().toString() );
         result.setHttpRequest( requestWrapper );
 
         processCommonRequest( result );

@@ -32,7 +32,7 @@ public class PathContextXmlCreator
     public Element createResourceElement( final MenuItemEntity menuItem )
     {
         final Element objectEl = new Element( "resource" );
-        objectEl.setAttribute( "key", menuItem.getMenuItemKey().toString() );
+        objectEl.setAttribute( "key", menuItem.getKey().toString() );
         objectEl.setAttribute( "type", "menuitem" );
 
         objectEl.addContent( createElement( "name", menuItem.getName() ) );

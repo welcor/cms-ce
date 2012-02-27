@@ -821,7 +821,7 @@ public class PortalFunctionsTest
     private MenuItemEntity createMenuItem( String key, String name )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( Integer.valueOf( key ) );
+        menuItem.setKey( new MenuItemKey( key ) );
         menuItem.setName( name );
         return menuItem;
     }
@@ -834,7 +834,7 @@ public class PortalFunctionsTest
     private MenuItemEntity createMenuItem( String key, String name, MenuItemEntity parent, SiteEntity site )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( Integer.valueOf( key ) );
+        menuItem.setKey( new MenuItemKey( key ) );
         menuItem.setName( name );
         menuItem.setSite( site );
         menuItem.setParent( parent );

@@ -68,7 +68,7 @@ public class DirectiveRequestProcessor
         else
         {
             Map shortcutParams = context.getRequestParams();
-            if ( context.getMenuItem().getMenuItemKey().toString().equals( shortcutParams.get( "id" ) ) )
+            if ( context.getMenuItem().getKey().toString().equals( shortcutParams.get( "id" ) ) )
             {
                 shortcutParams.remove( "id" );
             }

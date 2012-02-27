@@ -370,7 +370,7 @@ public class PortalExceptionResolver
         }
         else
         {
-            return entity.getErrorPage().getKey();
+            return entity.getErrorPage().getKey().toInt();
         }
     }
 
@@ -388,7 +388,7 @@ public class PortalExceptionResolver
         }
         else
         {
-            return entity.getLoginPage().getKey();
+            return entity.getLoginPage().getKey().toInt();
         }
     }
 

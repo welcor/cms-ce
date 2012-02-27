@@ -140,7 +140,7 @@ public final class ContentQueryTranslator
                 {
                     public void appendValue( StringBuffer sql, MenuItemEntity section )
                     {
-                        sql.append( section.getKey() );
+                        sql.append( section.getKey().toInt() );
                     }
                 };
                 hqlQuery.addFilter( "AND", sectionKeyInClause.toString() );

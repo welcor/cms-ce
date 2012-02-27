@@ -76,7 +76,7 @@ public class ContentLocation
         Assert.notNull( menuItem );
 
         this.type = type;
-        this.menuItemKey = menuItem.getMenuItemKey();
+        this.menuItemKey = menuItem.getKey();
         this.menuItemName = menuItem.getName();
         this.content = content;
         this.menuItem = menuItem;

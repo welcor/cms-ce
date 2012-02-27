@@ -62,7 +62,7 @@ public class ContentEditFormModelFactory
                 new MenuItemAndUserAccessRights( menuItem, resolveUserRights( menuItem, executor ),
                                                  resolveUserRights( menuItem, securityService.getAnonymousUser() ) );
 
-            menuItemAndUserAccessRightsMapByMenuItemKey.put( menuItem.getMenuItemKey(), menuItemAndUserAccessRights );
+            menuItemAndUserAccessRightsMapByMenuItemKey.put( menuItem.getKey(), menuItemAndUserAccessRights );
         }
         contentEditFormModel.setMenuItemAndUserAccessRightsMapByMenuItemKey( menuItemAndUserAccessRightsMapByMenuItemKey );
 

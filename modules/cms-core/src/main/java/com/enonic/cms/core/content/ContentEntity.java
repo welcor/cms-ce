@@ -803,7 +803,7 @@ public class ContentEntity
             SectionContentEntity sectionContentToRemove = null;
             for ( SectionContentEntity sectionContent : sectionContents )
             {
-                if ( sectionContent.getMenuItem().getKey() == sectionKey.toInt() )
+                if ( sectionContent.getMenuItem().getKey().equals( sectionKey ) )
                 {
                     sectionContentToRemove = sectionContent;
                     break;

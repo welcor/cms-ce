@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.enonic.cms.domain" default-access="field">
+<hibernate-mapping package="com.enonic.cms.core.structure.menuitem" default-access="field">
   <class name="com.enonic.cms.core.structure.menuitem.MenuItemEntity" table="TMENUITEM" mutable="true" batch-size="500">
     <cache usage="nonstrict-read-write"/>
-    <id name="key" type="int">
+    <id name="key" type="com.enonic.cms.store.hibernate.type.MenuItemKeyUserType">
       <column name="MEI_LKEY"/>
       <generator class="assigned"/>
     </id>

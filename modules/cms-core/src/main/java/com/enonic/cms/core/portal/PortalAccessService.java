@@ -36,7 +36,7 @@ public class PortalAccessService
             }
             else
             {
-                throw new PortalAccessDeniedException( menuItem.getMenuItemKey() );
+                throw new PortalAccessDeniedException( menuItem.getKey() );
             }
         }
     }
@@ -56,7 +56,7 @@ public class PortalAccessService
             }
             else
             {
-                throw new PortalAccessDeniedException( requestedMenuItem.getMenuItemKey() );
+                throw new PortalAccessDeniedException( requestedMenuItem.getKey() );
             }
         }
     }

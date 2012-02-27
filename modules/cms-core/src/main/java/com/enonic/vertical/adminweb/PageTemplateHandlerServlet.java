@@ -805,7 +805,7 @@ public class PageTemplateHandlerServlet
 
             for ( MenuItemEntity menuItem : menuItemsUsingPageTemplate )
             {
-                pageCacheService.removeEntriesByMenuItem( menuItem.getMenuItemKey() );
+                pageCacheService.removeEntriesByMenuItem( menuItem.getKey() );
             }
         }
     }

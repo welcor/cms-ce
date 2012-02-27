@@ -330,21 +330,21 @@ public class SiteXmlCreator
         xmlDoc.startElement( "firstpage" );
         if ( site.getFrontPage() != null )
         {
-            xmlDoc.setAttribute( "key", site.getFrontPage().getKey() );
+            xmlDoc.setAttribute( "key", site.getFrontPage().getKey().toInt() );
         }
         xmlDoc.endElement();
 
         xmlDoc.startElement( "loginpage" );
         if ( site.getLoginPage() != null )
         {
-            xmlDoc.setAttribute( "key", String.valueOf( site.getLoginPage().getKey() ) );
+            xmlDoc.setAttribute( "key", String.valueOf( site.getLoginPage().getKey().toInt() ) );
         }
         xmlDoc.endElement();
 
         xmlDoc.startElement( "errorpage" );
         if ( site.getErrorPage() != null )
         {
-            xmlDoc.setAttribute( "key", site.getErrorPage().getKey() );
+            xmlDoc.setAttribute( "key", site.getErrorPage().getKey().toInt() );
         }
         xmlDoc.endElement();
 

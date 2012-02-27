@@ -206,7 +206,7 @@ public class PortalRequestProcessor
 
             final WindowRenderer windowRenderer = windowRendererFactory.createPortletRenderer( windowRendererContext );
 
-            WindowKey requestedWindow = new WindowKey( menuItem.getMenuItemKey(), requestedPortlet.getPortletKey() );
+            WindowKey requestedWindow = new WindowKey( menuItem.getKey(), requestedPortlet.getPortletKey() );
             final RenderedWindowResult renderedWindowResult = windowRenderer.renderWindowDirect( requestedWindow );
 
             return PortalResponse.createContent( renderedWindowResult );

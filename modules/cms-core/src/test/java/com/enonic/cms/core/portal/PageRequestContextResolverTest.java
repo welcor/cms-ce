@@ -15,6 +15,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentKey;
 import com.enonic.cms.store.dao.ContentDao;
@@ -246,7 +247,7 @@ public class PageRequestContextResolverTest
 
         final MenuItemEntity rootMenuItem = new MenuItemEntity();
         rootMenuItem.setName( "" );
-        rootMenuItem.setKey( 1 );
+        rootMenuItem.setKey( new MenuItemKey( 1 ) );
 
         injectMenuItemToSiteEntityResolver( "/", rootMenuItem );
         injectContentIntoContentDao( contentKey, "contentName" );
@@ -271,7 +272,7 @@ public class PageRequestContextResolverTest
 
         final MenuItemEntity rootMenuItem = new MenuItemEntity();
         rootMenuItem.setName( "" );
-        rootMenuItem.setKey( 1 );
+        rootMenuItem.setKey( new MenuItemKey( 1 ) );
 
         injectRootPageOnSite( rootMenuItem );
         injectContentIntoContentDao( contentKey, "contentName" );
@@ -293,7 +294,7 @@ public class PageRequestContextResolverTest
 
         final MenuItemEntity rootMenuItem = new MenuItemEntity();
         rootMenuItem.setName( "" );
-        rootMenuItem.setKey( 1 );
+        rootMenuItem.setKey( new MenuItemKey( 1 ) );
 
         injectRootPageOnSite( rootMenuItem );
         injectContentIntoContentDao( contentKey, "contentName" );

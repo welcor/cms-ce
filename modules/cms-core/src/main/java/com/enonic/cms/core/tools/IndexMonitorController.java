@@ -1,17 +1,27 @@
 package com.enonic.cms.core.tools;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.cluster.ClusterState;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.io.stream.BytesStreamOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
+import com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasurer;
+import com.enonic.cms.core.search.IndexPerformance.IndexQueryStats;
 import com.enonic.cms.core.search.IndexType;
 
 /**
@@ -28,6 +38,9 @@ public class IndexMonitorController
 
     private ElasticSearchIndexService elasticSearchIndexService;
 
+
+    private IndexQueryMeasurer indexQueryMeasurer;
+
     @Override
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
@@ -35,7 +48,10 @@ public class IndexMonitorController
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
         model.put( "newIndexNumberOfContent", getTotalHits() );
-        model.put( "Number of nodes", 1 );
+        model.put( "numberOfNodes", 1 );
+        // model.put( "contentMapping", getMapping() );
+
+        model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult() );
 
         /*
         final ExtensionSet extensions = this.pluginManager.getExtensions();
@@ -52,6 +68,40 @@ public class IndexMonitorController
         process( req, res, model, "indexMonitorPage" );
 
     }
+
+    private List<IndexQueryStats> getIndexQueryMeasurerResult()
+    {
+        return indexQueryMeasurer.createStats();
+    }
+
+
+    private String getMapping()
+    {
+
+        final Client client = elasticSearchIndexService.getClient();
+
+        ClusterState cs = client.admin().cluster().prepareState().setFilterIndices( "cms" ).execute().actionGet().getState();
+        IndexMetaData imd = cs.getMetaData().index( "cms" );
+        MappingMetaData mdd = imd.mapping( IndexType.Content.toString() );
+
+        try
+        {
+            final Map<String, Object> mappingMap = mdd.getSourceAsMap();
+
+            BytesStreamOutput out = new BytesStreamOutput();
+
+            MappingMetaData.writeTo( mdd, out );
+
+            return new String( out.copiedByteArray(), "UTF-8" );
+
+        }
+        catch ( IOException e )
+        {
+            return "";
+        }
+
+    }
+
 
     private long getTotalHits()
     {
@@ -80,5 +130,11 @@ public class IndexMonitorController
     public void setElasticSearchIndexService( ElasticSearchIndexService elasticSearchIndexService )
     {
         this.elasticSearchIndexService = elasticSearchIndexService;
+    }
+
+    @Autowired
+    public void setIndexQueryMeasurer( IndexQueryMeasurer indexQueryMeasurer )
+    {
+        this.indexQueryMeasurer = indexQueryMeasurer;
     }
 }

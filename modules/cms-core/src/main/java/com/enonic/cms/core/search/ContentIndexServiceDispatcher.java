@@ -3,6 +3,7 @@ package com.enonic.cms.core.search;
 import java.util.List;
 
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -16,7 +17,7 @@ import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.content.index.IndexValueResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.search.IndexPerformance.QueryMeasurer;
+import com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasurer;
 import com.enonic.cms.core.search.IndexPerformance.QueryResultComparer;
 
 /**
@@ -30,7 +31,7 @@ public class ContentIndexServiceDispatcher
 {
     ContentIndexServiceImpl newContentIndexService;
 
-    private QueryMeasurer queryMeasurer = new QueryMeasurer();
+    private IndexQueryMeasurer indexQueryMeasurer;
 
     private QueryResultComparer resultComparer = new QueryResultComparer();
 
@@ -88,7 +89,7 @@ public class ContentIndexServiceDispatcher
             resultNew = newContentIndexService.query( query );
             stopWatch.stop();
 
-            queryMeasurer.addMeasure( query, stopWatch, false );
+            indexQueryMeasurer.addMeasure( query, stopWatch, "ElasticSearch" );
         }
 
         if ( !runNewOnly )
@@ -98,7 +99,7 @@ public class ContentIndexServiceDispatcher
             resultOld = oldContentIndexService.query( query );
             stopWatch.stop();
 
-            queryMeasurer.addMeasure( query, stopWatch, true );
+            indexQueryMeasurer.addMeasure( query, stopWatch, "Hibernate" );
         }
 
         final boolean runBoth = !runNewOnly && !runOldOnly;
@@ -135,7 +136,7 @@ public class ContentIndexServiceDispatcher
     public void destroy()
         throws Exception
     {
-        queryMeasurer.flush();
+        indexQueryMeasurer.flush();
         resultComparer.flush();
     }
 
@@ -156,6 +157,11 @@ public class ContentIndexServiceDispatcher
     }
 
 
+    @Autowired
+    public void setIndexQueryMeasurer( IndexQueryMeasurer indexQueryMeasurer )
+    {
+        this.indexQueryMeasurer = indexQueryMeasurer;
+    }
 }
 
 

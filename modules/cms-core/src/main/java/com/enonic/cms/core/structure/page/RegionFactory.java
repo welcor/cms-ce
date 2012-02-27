@@ -51,7 +51,7 @@ public class RegionFactory
                 PortletEntity portlet = pageWindow.getPortlet();
 
                 Window window = new Window();
-                window.setKey( new WindowKey( menuItem.getMenuItemKey(), portlet.getPortletKey() ) );
+                window.setKey( new WindowKey( menuItem.getKey(), portlet.getPortletKey() ) );
                 window.setPortlet( portlet );
                 window.setRegion( region );
                 region.addWindow( window );

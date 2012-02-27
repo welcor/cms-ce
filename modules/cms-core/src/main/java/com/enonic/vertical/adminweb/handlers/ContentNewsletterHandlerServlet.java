@@ -612,7 +612,7 @@ public class ContentNewsletterHandlerServlet
                 MenuItemKey menuItemKey = new MenuItemKey( menuItemKeyStr );
                 MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
 
-                selectedMenuItemKey = menuItem.getMenuItemKey().toString();
+                selectedMenuItemKey = menuItem.getKey().toString();
                 selectedMenuItemPath = menuItem.getSite().getName() + ": " + menuItem.getPathAsString();
             }
         }
@@ -706,7 +706,7 @@ public class ContentNewsletterHandlerServlet
         final Regions regionsInPage = RegionsResolver.resolveRegionsForPageRequest( menuItem, pageTemplate, PageRequestType.MENUITEM );
 
         RequestParameters requestParameters = new RequestParameters();
-        requestParameters.addParameterValue( "id", menuItem.getMenuItemKey().toString() );
+        requestParameters.addParameterValue( "id", menuItem.getKey().toString() );
 
         RequestParameters mergedRequestParameters =
             RequestParametersMerger.mergeWithMenuItemRequestParameters( requestParameters, menuItem.getRequestParameters() );

@@ -13,6 +13,7 @@ import com.enonic.cms.core.CaseInsensitiveString;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 public class SiteEntityTest
     extends TestCase
@@ -67,7 +68,7 @@ public class SiteEntityTest
     private MenuItemEntity createMenuItem( String key, String name, MenuItemEntity parent )
     {
         MenuItemEntity mi = new MenuItemEntity();
-        mi.setKey( Integer.parseInt( key ) );
+        mi.setKey( new MenuItemKey( key ) );
         mi.setName( name );
         if ( parent != null )
         {

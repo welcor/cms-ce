@@ -2066,15 +2066,15 @@ public class SectionHandlerServlet
 
         final RemoveContentsFromSectionCommand removeContentsCommand = new RemoveContentsFromSectionCommand();
         removeContentsCommand.setRemover( user.getKey() );
-        removeContentsCommand.setSection( section.getMenuItemKey() );
+        removeContentsCommand.setSection( section.getKey() );
 
         final UnapproveContentsInSectionCommand unapproveContentsCommand = new UnapproveContentsInSectionCommand();
         unapproveContentsCommand.setUnapprover( user.getKey() );
-        unapproveContentsCommand.setSection( section.getMenuItemKey() );
+        unapproveContentsCommand.setSection( section.getKey() );
 
         final ApproveContentsInSectionCommand approveContentsCommand = new ApproveContentsInSectionCommand();
         approveContentsCommand.setApprover( user.getKey() );
-        approveContentsCommand.setSection( section.getMenuItemKey() );
+        approveContentsCommand.setSection( section.getKey() );
 
         final OrderContentsInSectionCommand orderContentsInSectionCommand =
             approveContentsCommand.createAndReturnOrderContentsInSectionCommand();

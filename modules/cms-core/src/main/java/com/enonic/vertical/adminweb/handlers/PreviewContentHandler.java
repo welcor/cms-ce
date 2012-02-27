@@ -121,7 +121,7 @@ public class PreviewContentHandler
         // wrap and modify request
         HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper( request );
         wrappedRequest.setServletPath( "/site" );
-        wrappedRequest.setParameter( "id", menuItem.getMenuItemKey().toString() );
+        wrappedRequest.setParameter( "id", menuItem.getKey().toString() );
         if ( this.contentKey != null )
         {
             wrappedRequest.setParameter( "key", contentKey.toString() );
@@ -142,7 +142,7 @@ public class PreviewContentHandler
         final Locale locale = localeResolverService.getLocale( resolverContext );
         final String deviceClass = deviceClassResolverService.getDeviceClass( resolverContext );
 
-        sitePath.addParam( "id", menuItem.getMenuItemKey().toString() );
+        sitePath.addParam( "id", menuItem.getKey().toString() );
         if ( this.contentKey != null )
         {
             sitePath.addParam( "key", contentKey.toString() );

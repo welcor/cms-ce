@@ -26,11 +26,11 @@ public class MenuItemAccessRightAccumulator
     {
         if ( user.isRoot() )
         {
-            return new MenuItemAccumulatedAccessRights( true, user.getKey(), menuItem.getMenuItemKey() );
+            return new MenuItemAccumulatedAccessRights( true, user.getKey(), menuItem.getKey() );
         }
 
         final MenuItemAccumulatedAccessRights accumulated =
-            new MenuItemAccumulatedAccessRights( false, user.getKey(), menuItem.getMenuItemKey() );
+            new MenuItemAccumulatedAccessRights( false, user.getKey(), menuItem.getKey() );
 
         accumulateUserGroupRights( menuItem, user, accumulated );
         if ( accumulated.isAllTrue() )

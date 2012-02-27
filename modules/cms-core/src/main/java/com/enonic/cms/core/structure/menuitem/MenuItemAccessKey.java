@@ -13,7 +13,7 @@ import com.enonic.cms.core.security.group.GroupKey;
 public class MenuItemAccessKey
     implements Serializable
 {
-    private int menuItemKey;
+    private MenuItemKey menuItemKey;
 
     private GroupKey groupKey;
 
@@ -21,13 +21,13 @@ public class MenuItemAccessKey
     {
     }
 
-    public MenuItemAccessKey( int menuItemKey, GroupKey groupKey )
+    public MenuItemAccessKey( MenuItemKey menuItemKey, GroupKey groupKey )
     {
         this.menuItemKey = menuItemKey;
         this.groupKey = groupKey;
     }
 
-    public int getMenuItemKey()
+    public MenuItemKey getMenuItemKey()
     {
         return menuItemKey;
     }
@@ -50,7 +50,7 @@ public class MenuItemAccessKey
 
         MenuItemAccessKey that = (MenuItemAccessKey) o;
 
-        if ( menuItemKey != that.getMenuItemKey() )
+        if ( menuItemKey.toInt() != that.getMenuItemKey().toInt() )
         {
             return false;
         }
@@ -64,6 +64,6 @@ public class MenuItemAccessKey
 
     public int hashCode()
     {
-        return new HashCodeBuilder( 453, 335 ).append( menuItemKey ).append( groupKey ).toHashCode();
+        return new HashCodeBuilder( 453, 335 ).append( menuItemKey.toInt() ).append( groupKey ).toHashCode();
     }
 }

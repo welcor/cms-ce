@@ -298,9 +298,9 @@ public class SectionHandler
         if ( entity != null && entity.isSection() )
         {
             Element elem = doc.getDocumentElement();
-            elem.setAttribute( "key", String.valueOf( entity.getKey() ) );
+            elem.setAttribute( "key", String.valueOf( entity.getKey().toInt() ) );
             elem.setAttribute( "menukey", String.valueOf( entity.getSite().getKey() ) );
-            elem.setAttribute( "menuitemkey", String.valueOf( entity.getKey() ) );
+            elem.setAttribute( "menuitemkey", String.valueOf( entity.getKey().toInt() ) );
             elem.setAttribute( "ordered", String.valueOf( entity.isOrderedSection() ) );
         }
 

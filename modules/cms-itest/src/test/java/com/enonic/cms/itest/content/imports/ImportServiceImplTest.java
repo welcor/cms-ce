@@ -2228,8 +2228,10 @@ public class ImportServiceImplTest
             assertTrue( "Expected ImportException", e instanceof ImportException );
             ImportException importException = (ImportException) e;
             assertEquals(
-                "Given publishFrom (2012-08-01T00:00:00.000+02:00) bust be before given publishTo (2010-08-01T00:00:00.000+02:00)",
-                importException.getMessage() );
+                "Given publishFrom (2012-08-01T00:00:00.000+02:00) bust be before given publishTo (2010-08-01T00:00:00.000+02:00)"
+                    .replaceAll( "000.*?\\)", "000)" ),
+                importException.getMessage()
+                    .replaceAll( "000.*?\\)", "000)" ) ); /// remove TZ info
         }
     }
 

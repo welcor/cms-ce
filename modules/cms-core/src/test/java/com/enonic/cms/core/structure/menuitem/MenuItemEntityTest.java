@@ -344,7 +344,7 @@ public class MenuItemEntityTest
     private MenuItemEntity createMenuItem( String key, String name, MenuItemEntity parent )
     {
         MenuItemEntity mi = new MenuItemEntity();
-        mi.setKey( Integer.parseInt( key ) );
+        mi.setKey( new MenuItemKey( key ) );
         mi.setName( name );
         if ( parent != null )
         {

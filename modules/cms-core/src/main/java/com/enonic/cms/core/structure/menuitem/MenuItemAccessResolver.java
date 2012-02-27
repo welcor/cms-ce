@@ -22,7 +22,7 @@ public class MenuItemAccessResolver
     {
         if ( !hasAddContentToSectionAccess( executor, section ) )
         {
-            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.ADD, section.getMenuItemKey() );
+            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.ADD, section.getKey() );
         }
     }
 
@@ -30,7 +30,7 @@ public class MenuItemAccessResolver
     {
         if ( !hasApproveContentInSectionAccess( executor, section ) )
         {
-            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.PUBLISH, section.getMenuItemKey() );
+            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.PUBLISH, section.getKey() );
         }
     }
 
@@ -38,7 +38,7 @@ public class MenuItemAccessResolver
     {
         if ( !hasUnapproveContentInSectionAccess( executor, section ) )
         {
-            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.PUBLISH, section.getMenuItemKey() );
+            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.PUBLISH, section.getKey() );
         }
     }
 
@@ -46,7 +46,7 @@ public class MenuItemAccessResolver
     {
         if ( !hasRemoveUnapprovedContentFromSectionAccess( executor, section ) )
         {
-            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.ADD, section.getMenuItemKey() );
+            throw new MenuItemAccessException( message, executor.getQualifiedName(), MenuItemAccessType.ADD, section.getKey() );
         }
     }
 

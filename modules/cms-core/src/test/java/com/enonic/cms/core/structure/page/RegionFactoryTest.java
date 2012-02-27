@@ -178,7 +178,7 @@ public class RegionFactoryTest
     private MenuItemEntity createMenuItem( int key, String name, PageEntity page )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( key );
+        menuItem.setKey( new MenuItemKey( key ) );
         menuItem.setName( name );
         menuItem.setPage( page );
         return menuItem;

@@ -209,7 +209,7 @@ public class PortalFunctions
     public String createPageUrl( String[] params )
     {
 
-        MenuItemKey menuItemKey = context.getMenuItem().getMenuItemKey();
+        MenuItemKey menuItemKey = context.getMenuItem().getKey();
 
         if ( encodeURIs )
         {
@@ -454,7 +454,7 @@ public class PortalFunctions
 
         if ( currentMenuItem != null )
         {
-            menuItemKey = currentMenuItem.getMenuItemKey();
+            menuItemKey = currentMenuItem.getKey();
         }
         return menuItemKey;
     }

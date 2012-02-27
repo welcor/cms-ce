@@ -100,7 +100,7 @@ public class ContentRequestProcessor
 
         // site path
         sitePath.setParam( "key", contentFromRequest.getKey().toString() );
-        sitePath.addParam( "id", context.getMenuItem().getMenuItemKey().toString() );
+        sitePath.addParam( "id", context.getMenuItem().getKey().toString() );
         result.setSitePath( sitePath );
 
         // http request
@@ -108,7 +108,7 @@ public class ContentRequestProcessor
         // noinspection deprecation
         requestWrapper.setParamsMasked( false );
         requestWrapper.setParameter( "key", contentFromRequest.getKey().toString() );
-        requestWrapper.setParameter( "id", context.getMenuItem().getMenuItemKey().toString() );
+        requestWrapper.setParameter( "id", context.getMenuItem().getKey().toString() );
         result.setHttpRequest( requestWrapper );
 
         // process common stuff

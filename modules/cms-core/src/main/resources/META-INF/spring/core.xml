@@ -249,6 +249,7 @@
   </bean>
 
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
+    <property name="directory" value="#{config.blobStoreDir}"/>
     <property name="imageCache" ref="imageCache"/>
   </bean>
 

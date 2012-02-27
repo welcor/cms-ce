@@ -460,7 +460,7 @@ public class PostProcessInstructionExecutorImpl
             if ( context.getWindowRendererContext().getMenuItem() != null )
             {
                 MenuItemEntity menuItem = context.getWindowRendererContext().getMenuItem();
-                message.append( " in menu item [" ).append( menuItem.getMenuItemKey().toString() ).append( ": " ).append(
+                message.append( " in menu item [" ).append( menuItem.getKey().toString() ).append( ": " ).append(
                     menuItem.getDisplayName() ).append( "]" );
             }
             if ( context.getWindowRendererContext().getPageTemplate() != null )

@@ -39,14 +39,15 @@ public final class MenuItemEntityDao
         return (List<MenuItemEntity>) compiled.list();
     }
 
+    @Deprecated
     public MenuItemEntity findByKey( int menuItemKey )
     {
-        return get( MenuItemEntity.class, menuItemKey );
+        return get( MenuItemEntity.class, new MenuItemKey( menuItemKey ) );
     }
 
     public MenuItemEntity findByKey( MenuItemKey menuItemKey )
     {
-        return get( MenuItemEntity.class, menuItemKey.toInt() );
+        return get( MenuItemEntity.class, menuItemKey );
     }
 
     public List<MenuItemEntity> findByKeys( Collection<MenuItemKey> menuItemKeys )
@@ -108,7 +109,7 @@ public final class MenuItemEntityDao
         }
         if ( spec.getMenuItemShortcut() != null )
         {
-            hqlQuery.addFilter( "AND", "mei.menuItemShortcut = " + spec.getMenuItemShortcut().getKey() );
+            hqlQuery.addFilter( "AND", "mei.menuItemShortcut = " + spec.getMenuItemShortcut().getKey().toInt() );
         }
         if ( spec.getPageSpecification() != null )
         {

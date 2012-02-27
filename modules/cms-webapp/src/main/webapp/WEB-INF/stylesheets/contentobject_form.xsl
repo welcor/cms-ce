@@ -224,8 +224,11 @@
                     <script type="text/javascript" language="JavaScript">
                       function handle_tabpane_onclick( pageIndex, page )
                       {
-                        if (page &amp;&amp; page.id == "tab-page-usedby")
+                        if (page &amp;&amp; page.id == "tab-page-usedby") {
+                          if (document.getElementById('usedBy').className == 'used-by-unloaded') {
                             getPortletUsedByAsHtml(<xsl:value-of select="/contentobjects/contentobject/@key"/>);
+                          }
+                        }
                       }
 
                       function getPortletUsedByAsHtml( contentKey )
@@ -236,7 +239,9 @@
 
                       function handleResponse_getPortletUsedByAsHtml( content )
                       {
-                        document.getElementById('usedBy').innerHTML = content;
+                        var tag = document.getElementById('usedBy');
+                        tag.innerHTML = content;
+                        tag.className = 'used-by-loaded';
                       }
 
                     </script>
@@ -646,7 +651,7 @@
                 <span class="tab">%blockUsedBy%</span>
                 <fieldset>
                   <legend>&nbsp;%blockPages%&nbsp;</legend>
-                  <span id="usedBy">
+                  <span id="usedBy" class="used-by-unloaded">
                     &nbsp;
                   </span>
                 </fieldset>

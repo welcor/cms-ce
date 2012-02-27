@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.osgi.framework.Bundle;
 
 import com.enonic.cms.api.plugin.PluginConfig;
+import com.enonic.cms.api.plugin.PluginContext;
 import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
@@ -53,9 +54,14 @@ final class PluginHandleImpl
         return new DateTime( this.bundle.getLastModified() );
     }
 
+    public PluginContext getContext()
+    {
+        return OsgiHelper.requireService(this.bundle.getBundleContext(), PluginContext.class);
+    }
+
     public PluginConfig getConfig()
     {
-        return OsgiHelper.requireService(this.bundle.getBundleContext(), PluginConfig.class);
+        return getContext().getConfig();
     }
 
     public void update()

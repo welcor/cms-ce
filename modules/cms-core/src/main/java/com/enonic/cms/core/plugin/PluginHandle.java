@@ -3,6 +3,7 @@ package com.enonic.cms.core.plugin;
 import org.joda.time.DateTime;
 
 import com.enonic.cms.api.plugin.PluginConfig;
+import com.enonic.cms.api.plugin.PluginContext;
 
 public interface PluginHandle
 {
@@ -19,6 +20,8 @@ public interface PluginHandle
     public DateTime getTimestamp();
 
     public ExtensionSet getExtensions();
+
+    public PluginContext getContext();
 
     public PluginConfig getConfig();
 

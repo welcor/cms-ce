@@ -5,11 +5,10 @@ import java.util.Map;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import com.google.common.collect.ImmutableMap;
-
 import com.enonic.cms.api.plugin.PluginConfig;
 import com.enonic.cms.api.plugin.PluginContext;
 import com.enonic.cms.api.plugin.ext.Extension;
+import com.enonic.cms.core.plugin.host.HostServices;
 import com.enonic.cms.core.plugin.util.OsgiHelper;
 
 final class PluginContextImpl
@@ -19,15 +18,14 @@ final class PluginContextImpl
 
     private final BundleContext context;
 
-    private final Map<String, Object> serviceMap;
+    private HostServices hostServices;
 
     private PluginConfig config;
 
-    public PluginContextImpl( final Bundle bundle, final Map<String, Object> serviceMap )
+    public PluginContextImpl( final Bundle bundle )
     {
         this.bundle = bundle;
         this.context = this.bundle.getBundleContext();
-        this.serviceMap = serviceMap;
     }
 
     public String getId()
@@ -45,13 +43,8 @@ final class PluginContextImpl
         return this.bundle.getVersion().toString();
     }
 
-    public synchronized PluginConfig getConfig()
+    public PluginConfig getConfig()
     {
-        if ( this.config == null )
-        {
-            this.config = OsgiHelper.requireService( this.context, PluginConfig.class );
-        }
-
         return this.config;
     }
 
@@ -62,6 +55,16 @@ final class PluginContextImpl
 
     public Map<String, Object> getServices()
     {
-        return ImmutableMap.copyOf( this.serviceMap );
+        return this.hostServices.getServiceMap();
+    }
+
+    public void setConfig( final PluginConfig config )
+    {
+        this.config = config;
+    }
+
+    public void setHostServices( final HostServices hostServices )
+    {
+        this.hostServices = hostServices;
     }
 }

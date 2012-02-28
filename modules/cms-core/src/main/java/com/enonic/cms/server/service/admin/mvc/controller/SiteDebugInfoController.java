@@ -144,14 +144,16 @@ public final class SiteDebugInfoController
         StringBuffer str = new StringBuffer();
 
         // Header
+        final String title = StringEscapeUtils.escapeHtml( info.getTitle() );
+
         if ( isPage )
         {
-            str.append( "<div style='float: left; width: 70%'><h3>" ).append( info.getTitle() ).append( "</h3></div>" );
+            str.append( "<div style='float: left; width: 70%'><h3>" ).append( title ).append( "</h3></div>" );
             str.append( "<div style='float: left; width: 30%' id='ice-on-of-container'></div>" );
         }
         else
         {
-            str.append( "<div><h3>" ).append( info.getTitle() ).append( "</h3></div>" );
+            str.append( "<div><h3>" ).append( title ).append( "</h3></div>" );
         }
 
         if ( !info.getContentInfo().isEmpty() || hasAdmin )

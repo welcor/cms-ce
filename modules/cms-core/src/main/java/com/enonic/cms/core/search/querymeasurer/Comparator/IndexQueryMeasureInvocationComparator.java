@@ -1,14 +1,16 @@
-package com.enonic.cms.core.search.IndexPerformance;
+package com.enonic.cms.core.search.querymeasurer.comparator;
 
 import java.util.Comparator;
+
+import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasure;
 
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
  * Date: 2/27/12
- * Time: 5:11 PM
+ * Time: 4:26 PM
  */
-public class IndexQueryMeasureAvgTimeDiffComparator
+public class IndexQueryMeasureInvocationComparator
     implements Comparator<IndexQueryMeasure>
 {
 
@@ -16,14 +18,11 @@ public class IndexQueryMeasureAvgTimeDiffComparator
     public int compare( IndexQueryMeasure im1, IndexQueryMeasure im2 )
     {
 
-        final int im1avgTimeDiff = im1.getAvgTimeDiff();
-        final int im2avgTimeDiff = im2.getAvgTimeDiff();
-
-        if ( im1avgTimeDiff < im2avgTimeDiff )
+        if ( im1.getNumberOfInvocations() < im2.getNumberOfInvocations() )
         {
             return 1;
         }
-        else if ( im1avgTimeDiff > im2avgTimeDiff )
+        else if ( im1.getNumberOfInvocations() > im2.getNumberOfInvocations() )
         {
             return -1;
         }

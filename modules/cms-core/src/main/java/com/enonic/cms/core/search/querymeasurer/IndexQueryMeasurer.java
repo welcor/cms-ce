@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.IndexPerformance;
+package com.enonic.cms.core.search.querymeasurer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasureAvgTimeDiffComparator;
+import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasureInvocationComparator;
+import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasurerAvgTimeComparator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,7 +62,6 @@ public class IndexQueryMeasurer
         return limitSetIfNeccesary( count, indexQueryMeasures );
     }
 
-
     public Set<IndexQueryMeasure> getMeasuresOrderedByAvgDiffTime( int count )
     {
         final TreeSet<IndexQueryMeasure> sortedSet = Sets.newTreeSet( new IndexQueryMeasureAvgTimeDiffComparator() );
@@ -67,6 +69,15 @@ public class IndexQueryMeasurer
 
         return limitSetIfNeccesary( count, sortedSet );
     }
+
+    public Set<IndexQueryMeasure> getMeasuresOrderedByAvgTime( int count )
+    {
+        final TreeSet<IndexQueryMeasure> sortedSet = Sets.newTreeSet( new IndexQueryMeasurerAvgTimeComparator() );
+        sortedSet.addAll( queryMeasures.values() );
+
+        return limitSetIfNeccesary( count, sortedSet );
+    }
+
 
     private Set<IndexQueryMeasure> limitSetIfNeccesary( int count, TreeSet<IndexQueryMeasure> sortedSet )
     {

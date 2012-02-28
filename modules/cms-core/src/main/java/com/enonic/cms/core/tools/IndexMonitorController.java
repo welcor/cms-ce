@@ -22,9 +22,9 @@ import com.enonic.vertical.adminweb.AdminHelper;
 
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
-import com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasure;
-import com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasurer;
 import com.enonic.cms.core.search.IndexType;
+import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasure;
+import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasurer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,9 +36,12 @@ public class IndexMonitorController
     extends AbstractToolController
 {
 
-    protected static final String AVG_TIME_DIFF = "avgTimeDiff";
-
-    protected static final String TOTAL_HITS = "totalHits";
+    protected static enum SortValue
+    {
+        AvgTimeDiff,
+        TotalHits,
+        AvgTime;
+    }
 
     private ContentIndexService newContentIndexService;
 
@@ -51,20 +54,44 @@ public class IndexMonitorController
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
 
-        String clear = req.getParameter( "clear" );
+        clearIfFlagged( req );
 
-        if ( StringUtils.isNotBlank( clear ) )
+        SortValue orderBy = getOrderBy( req );
+
+        int count = getCount( req );
+
+        final HashMap<String, Object> model = new HashMap<String, Object>();
+
+        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+        model.put( "newIndexNumberOfContent", getTotalHits() );
+        model.put( "numberOfNodes", 1 );
+        model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
+
+        process( req, res, model, "indexMonitorPage" );
+
+    }
+
+    private SortValue getOrderBy( HttpServletRequest req )
+    {
+        String orderByStringValue = req.getParameter( "orderby" );
+
+        if ( StringUtils.isBlank( orderByStringValue ) )
         {
-            indexQueryMeasurer.clearStatistics();
+            return SortValue.AvgTimeDiff;
         }
 
-        String orderBy = req.getParameter( "orderby" );
+        SortValue orderBy = SortValue.valueOf( orderByStringValue );
 
-        if ( StringUtils.isBlank( orderBy ) )
+        if ( orderBy == null )
         {
-            orderBy = AVG_TIME_DIFF;
+            return SortValue.AvgTimeDiff;
         }
 
+        return orderBy;
+    }
+
+    private int getCount( HttpServletRequest req )
+    {
         String countString = req.getParameter( "count" );
 
         int count;
@@ -77,45 +104,32 @@ public class IndexMonitorController
         {
             count = new Integer( countString );
         }
-
-        final HashMap<String, Object> model = new HashMap<String, Object>();
-
-        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
-        model.put( "newIndexNumberOfContent", getTotalHits() );
-        model.put( "numberOfNodes", 1 );
-        // model.put( "contentMapping", getMapping() );
-
-        model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
-
-        /*
-        final ExtensionSet extensions = this.pluginManager.getExtensions();
-        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
-        model.put( "functionLibraryExtensions", toWrappers( extensions.getAllFunctionLibraries() ) );
-        model.put( "autoLoginExtensions", toWrappers( extensions.getAllHttpAutoLoginPlugins() ) );
-        model.put( "httpInterceptors", toWrappers( extensions.getAllHttpInterceptors() ) );
-        model.put( "httpResponseFilters", toWrappers( extensions.getAllHttpResponseFilters() ) );
-        model.put( "taskExtensions", toWrappers( extensions.getAllTaskPlugins() ) );
-        model.put( "textExtractorExtensions", toWrappers( extensions.getAllTextExtractorPlugins() ) );
-        model.put( "pluginHandles", toPluginWrappers( this.pluginManager.getPlugins() ) );
-        */
-
-        process( req, res, model, "indexMonitorPage" );
-
+        return count;
     }
 
-    private Collection<IndexQueryMeasure> getIndexQueryMeasurerResult( String orderBy, Integer count )
+    private void clearIfFlagged( HttpServletRequest req )
     {
-        if ( AVG_TIME_DIFF.equals( orderBy ) )
-        {
-            return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
-        }
+        String clear = req.getParameter( "clear" );
 
-        if ( TOTAL_HITS.equals( orderBy ) )
+        if ( StringUtils.isNotBlank( clear ) )
         {
-            return indexQueryMeasurer.getMeasuresOrderedByTotalExecutions(count);
+            indexQueryMeasurer.clearStatistics();
         }
+    }
 
-        return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
+    private Collection<IndexQueryMeasure> getIndexQueryMeasurerResult( SortValue orderBy, Integer count )
+    {
+        switch ( orderBy )
+        {
+            case AvgTime:
+                return indexQueryMeasurer.getMeasuresOrderedByAvgTime( count );
+            case AvgTimeDiff:
+                return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
+            case TotalHits:
+                return indexQueryMeasurer.getMeasuresOrderedByTotalExecutions( count );
+            default:
+                return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
+        }
     }
 
 

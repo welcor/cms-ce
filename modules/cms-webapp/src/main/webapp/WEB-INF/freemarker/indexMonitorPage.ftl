@@ -53,7 +53,12 @@
     </div>
      <div class="infoBox">
      <h2>Query Measures <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&clear=true"> [ Clear ] </a></h2>
-     Order by <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&orderby=avgTimeDiff">[avgTime diff]</a> <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&orderby=totalHits">[totalHits]</a>
+
+              Order by
+              <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&orderby=AvgTime">[AvgTime]</a>
+              <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&orderby=AvgTimeDiff">[AvgTime diff]</a>
+              <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&orderby=TotalHits">[TotalHits]</a>
+
               [#list indexQueryMeasurerSnapshot as measure]
                   [@lib.queryMeasureDetails measure=measure/]
               [/#list]

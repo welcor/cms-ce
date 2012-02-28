@@ -639,6 +639,6 @@
 
     <bean id="contentIndexRequestCreator" class="com.enonic.cms.core.search.ContentIndexRequestCreator"/>
 
-    <bean id="queryMeasurer" class="com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasurer"/>
+    <bean id="queryMeasurer" class="com.enonic.cms.core.search.querymeasurer.IndexQueryMeasurer"/>
 
 </beans>  

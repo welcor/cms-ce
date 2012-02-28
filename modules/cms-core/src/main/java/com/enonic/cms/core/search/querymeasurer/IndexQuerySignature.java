@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.IndexPerformance;
+package com.enonic.cms.core.search.querymeasurer;
 
 /**
  * Created by IntelliJ IDEA.

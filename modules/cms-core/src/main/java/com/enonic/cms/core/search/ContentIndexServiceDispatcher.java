@@ -17,8 +17,8 @@ import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.content.index.IndexValueResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.search.IndexPerformance.IndexQueryMeasurer;
-import com.enonic.cms.core.search.IndexPerformance.QueryResultComparer;
+import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasurer;
+import com.enonic.cms.core.search.querymeasurer.QueryResultComparer;
 
 /**
  * Created by IntelliJ IDEA.

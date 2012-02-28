@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.IndexPerformance;
+package com.enonic.cms.core.search.querymeasurer;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -106,6 +106,24 @@ public class IndexQueryMeasure
         result = 31 * result + totalTime;
         result = 31 * result + numberOfInvocations;
         return result;
+    }
+
+    public int getHighestAvgTime()
+    {
+        long maxFoundValue = 0;
+
+        for ( String source : sourceStats.keySet() )
+        {
+            final long foundAvgTime = sourceStats.get( source ).getAvgTime();
+
+            if ( foundAvgTime > maxFoundValue )
+            {
+                maxFoundValue = foundAvgTime;
+            }
+
+        }
+
+        return Long.valueOf( maxFoundValue ).intValue();
     }
 
 

@@ -15,7 +15,12 @@ public class OrderQueryBuilderTest
     public void testStuff()
     {
         String expected_result =
-            "{\r\n" + "  \"sort\" : [ {\r\n" + "    \"orderby_key\" : {\r\n" + "      \"order\" : \"desc\"\r\n" + "    }\r\n" +
+            "{\r\n" +
+                "  \"sort\" : [ {\r\n" +
+                "    \"orderby_key\" : {\r\n" +
+                "      \"order\" : \"desc\",\r\n" +
+                "      \"ignore_unmapped\" : true\r\n" +
+                "    }\r\n" +
                 "  } ]\r\n" + "}";
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();

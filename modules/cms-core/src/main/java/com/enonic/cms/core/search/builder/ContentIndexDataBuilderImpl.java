@@ -218,6 +218,9 @@ public final class ContentIndexDataBuilderImpl
         addField( STATUS_FIELDNAME, content.getStatus(), result );
         addField( PRIORITY_FIELDNAME, content.getPriority(), result );
         addField( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate(), result );
+
+        addField( CONTENT_CREATED, content.getCreated(), result );
+        addField( CONTENT_MODIFIED, content.getModified(), result );
     }
 
 

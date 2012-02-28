@@ -68,4 +68,9 @@ public class IndexFieldNameConstants
     protected static final String CONTENTKEY_FIELDNAME = "key";
 
     protected static final String ATTACHMENT_FIELDNAME = "attachment";
+
+    protected static final String CONTENT_CREATED = "created";
+
+    protected static final String CONTENT_MODIFIED = "modified";
+
 }

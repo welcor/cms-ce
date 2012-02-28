@@ -113,7 +113,7 @@ public class ContentXMLCreator
     /**
      * Whether or not to include versions information for the given content in a minimal format suited for the admin GUI.
      * <p/>
-     * This value can not be true at the same time as <code>includeVersionsInfoForSites</code> or <code>includeVersionsInfoForClient</code>
+     * This value can not be true at the same time as <code>includeVersionsInfoForPortal</code> or <code>includeVersionsInfoForClient</code>
      * is true.
      */
     private boolean includeVersionsInfoForAdmin = false;
@@ -131,7 +131,7 @@ public class ContentXMLCreator
      * Whether or not to include a list of versions for the content, in a format that is suitable for template developers using the data
      * sources. This means that versions of any status will be included in the result.
      * <p/>
-     * This value can not be true at the same time as <code>includeVersionsInfoForAdmin</code> or <code>includeVersionsInfoForSites</code>
+     * This value can not be true at the same time as <code>includeVersionsInfoForAdmin</code> or <code>includeVersionsInfoForPortal</code>
      * is true.
      */
     private boolean includeVersionsInfoForClient = false;

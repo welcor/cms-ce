@@ -18,9 +18,12 @@ public final class FieldExpr
 {
     private static final Set<String> DATE_FIELDS = new TreeSet<String>( String.CASE_INSENSITIVE_ORDER );
 
+    private static final Set<String> INTEGER_FIELDS = new TreeSet<String>( String.CASE_INSENSITIVE_ORDER );
+
     static
     {
         DATE_FIELDS.addAll( Arrays.asList( ContentIndexConstants.DATE_FIELDS ) );
+        INTEGER_FIELDS.addAll( Arrays.asList( ContentIndexConstants.INTEGER_FIELDS ) );
     }
 
     /**
@@ -55,6 +58,11 @@ public final class FieldExpr
     public boolean isDateField()
     {
         return DATE_FIELDS.contains( path );
+    }
+
+    public boolean isIntegerField()
+    {
+        return INTEGER_FIELDS.contains( path );
     }
 
     /**

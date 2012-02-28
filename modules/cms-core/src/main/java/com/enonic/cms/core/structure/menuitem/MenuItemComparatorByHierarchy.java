@@ -43,7 +43,7 @@ public class MenuItemComparatorByHierarchy
         }
 
         // NOTE: This has to be done to prevent trouble with equals when menuItems have same order but different keys
-        return ( a.getKey() < b.getKey() ? -1 : ( a.getKey() == b.getKey() ? 0 : 1 ) );
+        return ( a.getKey().toInt() < b.getKey().toInt() ? -1 : ( a.getKey().toInt() == b.getKey().toInt() ? 0 : 1 ) );
     }
 
 

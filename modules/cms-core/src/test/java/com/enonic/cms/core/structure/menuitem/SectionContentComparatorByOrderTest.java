@@ -25,7 +25,7 @@ public class SectionContentComparatorByOrderTest
     public void before()
     {
         section0 = new MenuItemEntity();
-        section0.setKey( sectionKey0.toInt() );
+        section0.setKey( sectionKey0 );
     }
 
     @Test

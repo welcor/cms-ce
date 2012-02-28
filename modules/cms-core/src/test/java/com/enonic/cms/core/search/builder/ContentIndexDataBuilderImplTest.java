@@ -29,6 +29,7 @@ import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentKey;
 
@@ -252,7 +253,7 @@ public class ContentIndexDataBuilderImplTest
     {
         MenuItemEntity menuItem = new MenuItemEntity();
         menuItem.setSite( site );
-        menuItem.setKey( sectionKey );
+        menuItem.setKey( new MenuItemKey( sectionKey ) );
         menuItem.setName( "menu" + sectionKey );
 
         SectionContentEntity sectionContent = new SectionContentEntity();

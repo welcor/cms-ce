@@ -27,6 +27,7 @@ import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageRequestParams;
 import com.enonic.cms.core.image.ImageRequestParser;
+import com.enonic.cms.core.link.NativeLinkKey;
 import com.enonic.cms.core.portal.PathToContentResolver;
 import com.enonic.cms.core.portal.ReservedLocalPaths;
 import com.enonic.cms.core.portal.image.ImageService;
@@ -44,8 +45,6 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SectionContentDao;
 import com.enonic.cms.store.resource.FileResourceService;
-
-import com.enonic.cms.core.link.NativeLinkKey;
 
 public class PostProcessInstructionExecutorImpl
     implements PostProcessInstructionExecutor
@@ -460,7 +459,7 @@ public class PostProcessInstructionExecutorImpl
             if ( context.getWindowRendererContext().getMenuItem() != null )
             {
                 MenuItemEntity menuItem = context.getWindowRendererContext().getMenuItem();
-                message.append( " in menu item [" ).append( menuItem.getMenuItemKey().toString() ).append( ": " ).append(
+                message.append( " in menu item [" ).append( menuItem.getKey().toString() ).append( ": " ).append(
                     menuItem.getDisplayName() ).append( "]" );
             }
             if ( context.getWindowRendererContext().getPageTemplate() != null )

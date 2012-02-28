@@ -1,25 +1,48 @@
 package com.enonic.cms.itest.structure.menuitem;
 
-import com.enonic.cms.core.content.*;
-import com.enonic.cms.core.content.category.CategoryAccessException;
-import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.structure.menuitem.*;
-import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.DomainFactory;
-import com.enonic.cms.itest.util.DomainFixture;
-import com.google.common.collect.Lists;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import com.google.common.collect.Lists;
+
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentLocation;
+import com.enonic.cms.core.content.ContentLocationSpecification;
+import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.content.category.CategoryAccessException;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.structure.menuitem.AddContentToSectionCommand;
+import com.enonic.cms.core.structure.menuitem.ApproveContentInSectionCommand;
+import com.enonic.cms.core.structure.menuitem.ApproveContentsInSectionCommand;
+import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
+import com.enonic.cms.core.structure.menuitem.ContentHomeKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccessException;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemService;
+import com.enonic.cms.core.structure.menuitem.OrderContentsInSectionCommand;
+import com.enonic.cms.core.structure.menuitem.RemoveContentsFromSectionCommand;
+import com.enonic.cms.core.structure.menuitem.SetContentHomeCommand;
+import com.enonic.cms.core.structure.menuitem.UnapproveContentsInSectionCommand;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateType;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.itest.util.DomainFactory;
+import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
@@ -75,9 +98,7 @@ public class MenuItemServiceImplTest
         // Create a site and a section page for testing working with sections.
         fixture.save( factory.createSite( "The Newspaper", new Date(), null, "en" ) );
 
-        fixture.save(
-            factory.createPageMenuItem( "Hello World!", 10, "This is the top level menu item", "Hello World!", "The Newspaper", "aru",
-                                        "aru", false, null, "en", null, null, null, false, null ) );
+
         fixture.flushAndClearHibernateSesssion();
     }
 
@@ -109,7 +130,7 @@ public class MenuItemServiceImplTest
         // exercise
         RemoveContentsFromSectionCommand command = new RemoveContentsFromSectionCommand();
         command.setRemover( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "News" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "News" ).getKey() );
         command.addContentToRemove( c1Key );
         menuItemService.execute( command );
 
@@ -151,7 +172,7 @@ public class MenuItemServiceImplTest
         // set home to one of them
         SetContentHomeCommand setContentHomeCommand = new SetContentHomeCommand();
         setContentHomeCommand.setSetter( fixture.findUserByName( "aru" ).getKey() );
-        setContentHomeCommand.setSection( fixture.findMenuItemByName( "Culture" ).getMenuItemKey() );
+        setContentHomeCommand.setSection( fixture.findMenuItemByName( "Culture" ).getKey() );
         setContentHomeCommand.setContent( fixture.findContentByName( "c-123" ).getKey() );
         menuItemService.execute( setContentHomeCommand );
 
@@ -163,7 +184,7 @@ public class MenuItemServiceImplTest
         // exercise
         RemoveContentsFromSectionCommand removeCommand = new RemoveContentsFromSectionCommand();
         removeCommand.setRemover( fixture.findUserByName( "aru" ).getKey() );
-        removeCommand.setSection( fixture.findMenuItemByName( "News" ).getMenuItemKey() );
+        removeCommand.setSection( fixture.findMenuItemByName( "News" ).getKey() );
         removeCommand.addContentToRemove( fixture.findContentByName( "c-123" ).getKey() );
         menuItemService.execute( removeCommand );
 
@@ -172,9 +193,9 @@ public class MenuItemServiceImplTest
         // verify content home is still there
         contentLocations = fixture.findContentByName( "c-123" ).getLocations( new ContentLocationSpecification() );
         ContentLocation actualHomeLocation = contentLocations.getHomeLocation( fixture.findSiteByName( "The Newspaper" ).getKey() );
-        assertEquals( fixture.findMenuItemByName( "Culture" ).getMenuItemKey(), actualHomeLocation.getMenuItemKey() );
+        assertEquals( fixture.findMenuItemByName( "Culture" ).getKey(), actualHomeLocation.getMenuItemKey() );
 
-        removeCommand.setSection( fixture.findMenuItemByName( "Culture" ).getMenuItemKey() );
+        removeCommand.setSection( fixture.findMenuItemByName( "Culture" ).getKey() );
         menuItemService.execute( removeCommand );
 
         fixture.flushAndClearHibernateSesssion();
@@ -230,7 +251,7 @@ public class MenuItemServiceImplTest
         // exercise
         RemoveContentsFromSectionCommand command = new RemoveContentsFromSectionCommand();
         command.setRemover( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "mysection" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "mysection" ).getKey() );
         command.addContentToRemove( fixture.findContentByName( "content-to-remove" ).getKey() );
         menuItemService.execute( command );
 
@@ -258,7 +279,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( false );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "my-content" ).getKey() );
         menuItemService.execute( command );
     }
@@ -283,7 +304,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( false );
         command.setApproveInSection( false );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "my-unsupported-content" ).getKey() );
         try
         {
@@ -312,7 +333,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( false );
         command.setApproveInSection( false );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "my-supported-content" ).getKey() );
         menuItemService.execute( command );
 
@@ -344,7 +365,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( false );
         command.setApproveInSection( false );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "my-unsupported-content" ).getKey() );
         menuItemService.execute( command );
     }
@@ -362,7 +383,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( false );
         command.setApproveInSection( false );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "my-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -389,7 +410,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( false );
         command.setApproveInSection( false );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -399,7 +420,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( false );
         command.setApproveInSection( false );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "second-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -427,7 +448,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "my-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -454,7 +475,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -464,7 +485,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "second-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -489,7 +510,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -499,7 +520,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "second-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -532,7 +553,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -542,7 +563,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "second-content" ).getKey() );
         OrderContentsInSectionCommand orderContentsInSectionCommand = command.createOrderContentsInSectionCommand();
         orderContentsInSectionCommand.addContent( fixture.findContentByName( "first-content" ).getKey() );
@@ -580,7 +601,7 @@ public class MenuItemServiceImplTest
         command.setAddOnTop( true );
         command.setApproveInSection( true );
         command.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.setContent( fixture.findContentByName( "my-content" ).getKey() );
         List<ContentKey> wantedOrder = Lists.newArrayList( fixture.findContentByName( "my-content" ).getKey() );
         command.createOrderContentsInSectionCommand().setWantedOrder( wantedOrder );
@@ -757,7 +778,7 @@ public class MenuItemServiceImplTest
         // exercise
         ApproveContentsInSectionCommand approveContentsInSectionCommand = new ApproveContentsInSectionCommand();
         approveContentsInSectionCommand.setApprover( fixture.findUserByName( "aru" ).getKey() );
-        approveContentsInSectionCommand.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        approveContentsInSectionCommand.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         approveContentsInSectionCommand.addContentToApprove( c3 );
         approveContentsInSectionCommand.addContentToApprove( c1 );
         approveContentsInSectionCommand.addContentToApprove( c2 );
@@ -811,7 +832,7 @@ public class MenuItemServiceImplTest
         // exercise
         ApproveContentInSectionCommand approveContentInSectionCommand = new ApproveContentInSectionCommand();
         approveContentInSectionCommand.setApprover( fixture.findUserByName( "aru" ).getKey() );
-        approveContentInSectionCommand.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        approveContentInSectionCommand.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         approveContentInSectionCommand.setContentToApprove( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( approveContentInSectionCommand );
         fixture.flushAndClearHibernateSesssion();
@@ -862,7 +883,7 @@ public class MenuItemServiceImplTest
         // exercise
         ApproveContentsInSectionCommand approveContentsInSectionCommand = new ApproveContentsInSectionCommand();
         approveContentsInSectionCommand.setApprover( fixture.findUserByName( "aru" ).getKey() );
-        approveContentsInSectionCommand.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        approveContentsInSectionCommand.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         approveContentsInSectionCommand.addContentToApprove( fixture.findContentByName( "c-1" ).getKey() );
         approveContentsInSectionCommand.addContentToApprove( fixture.findContentByName( "c-2" ).getKey() );
         approveContentsInSectionCommand.addContentToApprove( fixture.findContentByName( "c-3" ).getKey() );
@@ -923,11 +944,11 @@ public class MenuItemServiceImplTest
         // exercise
         ApproveContentInSectionCommand approve1 = new ApproveContentInSectionCommand();
         approve1.setApprover( fixture.findUserByName( "aru" ).getKey() );
-        approve1.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        approve1.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         approve1.setContentToApprove( fixture.findContentByName( "first-content" ).getKey() );
         ApproveContentInSectionCommand approve2 = new ApproveContentInSectionCommand();
         approve2.setApprover( fixture.findUserByName( "aru" ).getKey() );
-        approve2.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        approve2.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         approve2.setContentToApprove( fixture.findContentByName( "second-content" ).getKey() );
         menuItemService.execute( approve1, approve2 );
         fixture.flushAndClearHibernateSesssion();
@@ -968,7 +989,7 @@ public class MenuItemServiceImplTest
         // exercise
         UnapproveContentsInSectionCommand command = new UnapproveContentsInSectionCommand();
         command.setUnapprover( fixture.findUserByName( "add-only-user" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.addContentToUnapprove( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( command );
     }
@@ -997,7 +1018,7 @@ public class MenuItemServiceImplTest
         // exercise
         UnapproveContentsInSectionCommand command = new UnapproveContentsInSectionCommand();
         command.setUnapprover( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.addContentToUnapprove( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -1037,7 +1058,7 @@ public class MenuItemServiceImplTest
         // exercise
         UnapproveContentsInSectionCommand command = new UnapproveContentsInSectionCommand();
         command.setUnapprover( fixture.findUserByName( "aru" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "My section" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
         command.addContentToUnapprove( fixture.findContentByName( "first-content" ).getKey() );
         menuItemService.execute( command );
         fixture.flushAndClearHibernateSesssion();
@@ -1063,7 +1084,7 @@ public class MenuItemServiceImplTest
         SetContentHomeCommand command = new SetContentHomeCommand();
         command.setSetter( fixture.findUserByName( "aru" ).getKey() );
         command.setContent( fixture.findContentByName( "c-1" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "News" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "News" ).getKey() );
         menuItemService.execute( command );
 
         fixture.flushAndClearHibernateSesssion();
@@ -1084,7 +1105,7 @@ public class MenuItemServiceImplTest
         assertNotNull( contentLocations );
         final ContentLocation actualHomeLocation = contentLocations.getHomeLocation( fixture.findSiteByName( "The Newspaper" ).getKey() );
         assertNotNull( actualHomeLocation );
-        assertEquals( fixture.findMenuItemByName( "News" ).getMenuItemKey(), actualHomeLocation.getMenuItemKey() );
+        assertEquals( fixture.findMenuItemByName( "News" ).getKey(), actualHomeLocation.getMenuItemKey() );
     }
 
     @Test
@@ -1102,7 +1123,7 @@ public class MenuItemServiceImplTest
         SetContentHomeCommand command = new SetContentHomeCommand();
         command.setSetter( fixture.findUserByName( "aru" ).getKey() );
         command.setContent( fixture.findContentByName( "c-1" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "News" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "News" ).getKey() );
         command.setPageTemplate( fixture.findPageTemplateByName( "my-page-template" ).getPageTemplateKey() );
         menuItemService.execute( command );
 
@@ -1124,7 +1145,7 @@ public class MenuItemServiceImplTest
         assertNotNull( contentLocations );
         final ContentLocation actualHomeLocation = contentLocations.getHomeLocation( fixture.findSiteByName( "The Newspaper" ).getKey() );
         assertNotNull( actualHomeLocation );
-        assertEquals( fixture.findMenuItemByName( "News" ).getMenuItemKey(), actualHomeLocation.getMenuItemKey() );
+        assertEquals( fixture.findMenuItemByName( "News" ).getKey(), actualHomeLocation.getMenuItemKey() );
 
     }
 
@@ -1151,7 +1172,7 @@ public class MenuItemServiceImplTest
         SetContentHomeCommand command = new SetContentHomeCommand();
         command.setSetter( fixture.findUserByName( "aru" ).getKey() );
         command.setContent( fixture.findContentByName( "c-1" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "Tabloid" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "Tabloid" ).getKey() );
         menuItemService.execute( command );
 
         fixture.flushAndClearHibernateSesssion();
@@ -1172,7 +1193,7 @@ public class MenuItemServiceImplTest
         assertNotNull( contentLocations );
         final ContentLocation actualHomeLocation = contentLocations.getHomeLocation( fixture.findSiteByName( "The Newspaper" ).getKey() );
         assertNotNull( actualHomeLocation );
-        assertEquals( fixture.findMenuItemByName( "Tabloid" ).getMenuItemKey(), actualHomeLocation.getMenuItemKey() );
+        assertEquals( fixture.findMenuItemByName( "Tabloid" ).getKey(), actualHomeLocation.getMenuItemKey() );
     }
 
     @Test(expected = CategoryAccessException.class)
@@ -1189,158 +1210,8 @@ public class MenuItemServiceImplTest
         SetContentHomeCommand command = new SetContentHomeCommand();
         command.setSetter( fixture.findUserByName( "permission-test-user" ).getKey() );
         command.setContent( fixture.findContentByName( "c-1" ).getKey() );
-        command.setSection( fixture.findMenuItemByName( "News" ).getMenuItemKey() );
+        command.setSection( fixture.findMenuItemByName( "News" ).getKey() );
         menuItemService.execute( command );
-    }
-
-    @Test
-    public void testGetPageKeyByPath()
-    {
-        String keys;
-
-        MenuItemEntity menuItem1 =
-            factory.createSectionMenuItem( "name1", 40, "menuName1", "displayName1", "The Newspaper", "aru", "aru", "en", "Hello World!",
-                                           10, false, null, false, null );
-        fixture.save( menuItem1 );
-
-        MenuItemEntity menuItem2 =
-            factory.createSectionMenuItem( "name2", 40, "menuName2", "displayName2", "The Newspaper", "aru", "aru", "en", "Hello World!",
-                                           10, false, null, false, null );
-        fixture.save( menuItem2 );
-
-        MenuItemEntity section = fixture.findMenuItemByName( "Hello World!" );
-
-        Collection<MenuItemEntity> children = section.getChildren();
-        assertEquals( 2, children.size() );
-
-        keys = menuItemService.getPageKeyByPath( section, "/" );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "/Hello World!" );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "/Hello World!/name1" );
-        assertEquals( keys, "" + menuItem1.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "/Hello World!/name2" );
-        assertEquals( keys, "" + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "/Hello World!/name2/nope" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "/../" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "/nope" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "/Hello World!/" );
-        assertEquals( keys, "" + menuItem1.getKey() + "," + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "." );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "./" );
-        assertEquals( keys, "" + menuItem1.getKey() + "," + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "./name2" );
-        assertEquals( keys, "" + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "./../Hello World!/name2" );
-        assertEquals( keys, "" + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "./../../Hello World!/name2" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, ".." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "../." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "../" );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( section, "../nope" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "../../" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "../.." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "../../.." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "nope" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( section, "./nope" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "." );
-        assertEquals( keys, "" + menuItem1.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, ".." );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./.." );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "../" );
-        assertEquals( keys, "" + menuItem1.getKey() + "," + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./../" );
-        assertEquals( keys, "" + menuItem1.getKey() + "," + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./.././././" );
-        assertEquals( keys, "" + menuItem1.getKey() + "," + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./././.././././" );
-        assertEquals( keys, "" + menuItem1.getKey() + "," + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "../name1" );
-        assertEquals( keys, "" + menuItem1.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "../name2" );
-        assertEquals( keys, "" + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./../name1" );
-        assertEquals( keys, "" + menuItem1.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./../name2" );
-        assertEquals( keys, "" + menuItem2.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "../../Hello World!" );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./../../Hello World!" );
-        assertEquals( keys, "" + section.getKey() );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "../.." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "../../.." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "nope" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./nope" );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./nope/." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "./nope/.." );
-        assertEquals( keys, "" );
-
-        keys = menuItemService.getPageKeyByPath( menuItem1, "../nope" );
-        assertEquals( keys, "" );
     }
 
     @Test
@@ -1475,7 +1346,7 @@ public class MenuItemServiceImplTest
         AddContentToSectionCommand addContentToSectionCommand = new AddContentToSectionCommand();
         addContentToSectionCommand.setContributor( fixture.findUserByName( "aru" ).getKey() );
         addContentToSectionCommand.setContent( content.getKey() );
-        addContentToSectionCommand.setSection( fixture.findMenuItemByName( "Opinion" ).getMenuItemKey() );
+        addContentToSectionCommand.setSection( fixture.findMenuItemByName( "Opinion" ).getKey() );
         addContentToSectionCommand.setApproveInSection( approveContent );
         if ( approveContent )
         {
@@ -1494,7 +1365,7 @@ public class MenuItemServiceImplTest
         // Verify that a user with only list rights can not remove from the section.
         RemoveContentsFromSectionCommand removeContentFromSectionCommand = new RemoveContentsFromSectionCommand();
         removeContentFromSectionCommand.setRemover( fixture.findUserByName( "permission-test-user" ).getKey() );
-        removeContentFromSectionCommand.setSection( fixture.findMenuItemByName( "Opinion" ).getMenuItemKey() );
+        removeContentFromSectionCommand.setSection( fixture.findMenuItemByName( "Opinion" ).getKey() );
         removeContentFromSectionCommand.addContentToRemove( fixture.findContentByName( "c-1" ).getKey() );
 
         try
@@ -1534,7 +1405,7 @@ public class MenuItemServiceImplTest
         AddContentToSectionCommand command = new AddContentToSectionCommand();
         command.setContributor( fixture.findUserByName( contributor ).getKey() );
         command.setContent( content.getKey() );
-        command.setSection( section.getMenuItemKey() );
+        command.setSection( section.getKey() );
         command.setApproveInSection( approve );
         command.setAddOnTop( approve );
         return command;
@@ -1543,6 +1414,11 @@ public class MenuItemServiceImplTest
     private MenuItemEntity createUnorderedSection( String name )
     {
         return factory.createSectionMenuItem( name, 0, null, name, null, "admin", "admin", "en", null, null, false, null, false, null );
+    }
+
+    private MenuItemEntity createUnorderedSection( String name, String parentMenuItemName, String siteName )
+    {
+        return factory.createSectionMenuItem( name, 0, null, name, siteName, "admin", "admin", "en", parentMenuItemName, null, false, null, false, null );
     }
 
     private MenuItemEntity createOrderedSection( String name )

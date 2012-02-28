@@ -11,9 +11,9 @@ import org.junit.Test;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 

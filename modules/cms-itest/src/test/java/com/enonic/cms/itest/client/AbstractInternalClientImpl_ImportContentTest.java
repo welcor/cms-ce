@@ -4,21 +4,12 @@
  */
 package com.enonic.cms.itest.client;
 
-import com.enonic.cms.api.client.model.ImportContentsParams;
-import com.enonic.cms.core.client.InternalClient;
-import com.enonic.cms.core.content.*;
-import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
-import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.contentdata.legacy.LegacyImageContentData;
-import com.enonic.cms.core.security.PortalSecurityHolder;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserType;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.DomainFactory;
-import com.enonic.cms.itest.util.DomainFixture;
-import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupDao;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -27,11 +18,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.api.client.model.ImportContentsParams;
+import com.enonic.cms.core.client.InternalClient;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
+import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.content.contentdata.legacy.LegacyImageContentData;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.security.PortalSecurityHolder;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.itest.util.DomainFactory;
+import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.GroupDao;
 
 public abstract class AbstractInternalClientImpl_ImportContentTest
     extends AbstractSpringTest

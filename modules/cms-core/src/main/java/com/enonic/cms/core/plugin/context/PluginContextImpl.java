@@ -1,11 +1,14 @@
 package com.enonic.cms.core.plugin.context;
 
+import java.util.Map;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import com.enonic.cms.api.plugin.PluginConfig;
 import com.enonic.cms.api.plugin.PluginContext;
 import com.enonic.cms.api.plugin.ext.Extension;
+import com.enonic.cms.core.plugin.host.HostServices;
 import com.enonic.cms.core.plugin.util.OsgiHelper;
 
 final class PluginContextImpl
@@ -14,6 +17,8 @@ final class PluginContextImpl
     private final Bundle bundle;
 
     private final BundleContext context;
+
+    private HostServices hostServices;
 
     private PluginConfig config;
 
@@ -38,23 +43,28 @@ final class PluginContextImpl
         return this.bundle.getVersion().toString();
     }
 
-    public synchronized PluginConfig getConfig()
+    public PluginConfig getConfig()
     {
-        if ( this.config == null )
-        {
-            this.config = OsgiHelper.requireService( this.context, PluginConfig.class );
-        }
-
         return this.config;
-    }
-
-    public <T> T getService( final Class<T> type )
-    {
-        return OsgiHelper.requireService( this.context, type );
     }
 
     public void register( final Extension ext )
     {
         this.context.registerService( Extension.class.getName(), ext, null );
+    }
+
+    public Map<String, Object> getServices()
+    {
+        return this.hostServices.getServiceMap();
+    }
+
+    public void setConfig( final PluginConfig config )
+    {
+        this.config = config;
+    }
+
+    public void setHostServices( final HostServices hostServices )
+    {
+        this.hostServices = hostServices;
     }
 }

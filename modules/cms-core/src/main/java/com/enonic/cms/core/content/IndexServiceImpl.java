@@ -24,6 +24,7 @@ import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.api.plugin.ext.TextExtractor;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;

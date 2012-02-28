@@ -7,6 +7,7 @@ package com.enonic.cms.core.structure;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,9 +18,9 @@ import org.jdom.Element;
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.CaseInsensitiveString;
-import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.group.GroupKey;
@@ -54,7 +55,7 @@ public class SiteEntity
 
     private UserEntity defaultRunAsUser;
 
-    private Map<CaseInsensitiveString, MenuItemEntity> topMenuItems;
+    private Map<CaseInsensitiveString, MenuItemEntity> topMenuItems = new HashMap<CaseInsensitiveString, MenuItemEntity>();
 
     private Map<GroupKey, DefaultSiteAccessEntity> defaultAccesses;
 
@@ -282,6 +283,16 @@ public class SiteEntity
         // Invalidate caches
         xmlDataAsJDOMDocument = null;
         siteData = null;
+    }
+
+    public void addTopMenuItem( MenuItemEntity menuItem )
+    {
+        CaseInsensitiveString menuItemName = new CaseInsensitiveString( menuItem.getName() );
+        if ( topMenuItems.containsKey( menuItemName ) )
+        {
+            throw new IllegalArgumentException( "Menu item already exist." );
+        }
+        topMenuItems.put( menuItemName, menuItem );
     }
 
     public Collection<MenuItemEntity> getTopMenuItems()

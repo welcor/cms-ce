@@ -23,7 +23,6 @@ import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.BooleanDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -40,6 +39,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextAreaDataEn
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.UrlDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.xmlbased.XmlDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
 

@@ -4,7 +4,14 @@
  */
 package com.enonic.cms.itest.content;
 
-import com.enonic.cms.core.content.ContentHandlerName;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
@@ -14,22 +21,17 @@ import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.query.ContentByCategoryQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ContentServiceImpl_queryContentTest
     extends AbstractSpringTest

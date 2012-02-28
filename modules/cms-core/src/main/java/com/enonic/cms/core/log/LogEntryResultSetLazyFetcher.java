@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.enonic.cms.core.AbstractResultSet;
-import com.enonic.cms.core.content.index.LogEntryEntityFetcher;
 
 public final class LogEntryResultSetLazyFetcher
     extends AbstractResultSet

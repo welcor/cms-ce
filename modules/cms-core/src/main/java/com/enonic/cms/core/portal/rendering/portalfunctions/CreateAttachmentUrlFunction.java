@@ -8,13 +8,13 @@ import java.util.Set;
 
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.binary.AttachmentNativeLinkKey;
 import com.enonic.cms.core.content.binary.AttachmentNativeLinkKeyParser;
 import com.enonic.cms.core.content.binary.AttachmentNativeLinkKeyWithBinaryKey;
 import com.enonic.cms.core.content.binary.AttachmentNativeLinkKeyWithLabel;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.portal.instruction.CreateAttachmentUrlInstruction;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.ContentDao;

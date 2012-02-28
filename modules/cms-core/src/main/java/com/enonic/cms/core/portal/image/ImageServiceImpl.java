@@ -4,7 +4,25 @@
  */
 package com.enonic.cms.core.portal.image;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.concurrent.locks.Lock;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.common.base.Preconditions;
+
+import com.enonic.cms.framework.blob.BlobKey;
+import com.enonic.cms.framework.blob.BlobRecord;
+import com.enonic.cms.framework.blob.BlobStore;
+import com.enonic.cms.framework.util.GenericConcurrencyLock;
+import com.enonic.cms.framework.util.ImageHelper;
+
 import com.enonic.cms.core.content.access.ContentAccessResolver;
+import com.enonic.cms.core.content.binary.AttachmentNotFoundException;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageResponse;
@@ -16,24 +34,15 @@ import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.framework.blob.BlobKey;
-import com.enonic.cms.framework.blob.BlobRecord;
-import com.enonic.cms.framework.blob.BlobStore;
-import com.enonic.cms.framework.util.GenericConcurrencyLock;
-import com.enonic.cms.framework.util.ImageHelper;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
-import com.google.common.base.Preconditions;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.awt.image.BufferedImage;
-import java.util.concurrent.locks.Lock;
 
 public final class ImageServiceImpl
     implements ImageService
 {
+    private static final Logger LOG = LoggerFactory.getLogger( ImageServiceImpl.class );
+
     private ImageCache imageCache;
 
     private final ImageProcessor processor;
@@ -54,6 +63,8 @@ public final class ImageServiceImpl
     private LivePortalTraceService livePortalTraceService;
 
     private static GenericConcurrencyLock<String> concurrencyLock = GenericConcurrencyLock.create();
+
+    private File directory;
 
     public ImageServiceImpl()
     {
@@ -106,6 +117,11 @@ public final class ImageServiceImpl
                 ImageRequestTracer.traceImageResponse( imageRequestTrace, res );
                 ImageRequestTracer.traceUsedCachedResult( imageRequestTrace, false );
                 return res;
+            }
+            catch ( AttachmentNotFoundException e )
+            {
+                LOG.error( "Cannot read image with key {} from configured BLOB directory ( {} ). Check your CMS configuration.", blobKey, directory.getAbsolutePath() );
+                return ImageResponse.notFound();
             }
             catch ( Exception e )
             {
@@ -189,7 +205,7 @@ public final class ImageServiceImpl
         BlobRecord binary = this.blobStore.getRecord( new BlobKey( req.getBlobKey() ) );
         if ( binary == null )
         {
-            return null;
+            throw AttachmentNotFoundException.notFound( req.getBlobKey() );
         }
 
         return binary.getAsBytes();
@@ -245,5 +261,10 @@ public final class ImageServiceImpl
     public void setGroupDao( GroupDao groupDao )
     {
         this.groupDao = groupDao;
+    }
+
+    public void setDirectory( File directory )
+    {
+        this.directory = directory;
     }
 }

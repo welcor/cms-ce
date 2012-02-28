@@ -4,9 +4,7 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:template name="content_usedby">
 
@@ -24,20 +22,10 @@
 
           function handle_tabpane_onclick( pageIndex, page )
           {
-            if (page &amp;&amp; page.id == "tab-page-usedby")
+            if (page &amp;&amp; page.id == "tab-page-usedby") {
+              if (document.getElementById('usedBy').className == 'used-by-unloaded') {
                 getContentUsedByAsHtml(<xsl:value-of select="$contentKey"/>);
-          }
-
-          function getUsedBy( contentKey )
-          {
-            AjaxService.getUsedBy(contentKey, {callback:handleResponse_getUsedBy});
-          }
-
-          function handleResponse_getUsedBy(relatedContent)
-          {
-            for( var i = 0; i &lt; relatedContent.length; i++ )
-            {
-              alert( relatedContent[i].key + ' ' +  relatedContent[i].title + ' ' + relatedContent[i].contentType + ' ' + relatedContent[i].path);
+              }
             }
           }
 
@@ -49,7 +37,9 @@
 
           function handleResponse_getContentUsedByAsHtml( content )
           {
-            document.getElementById('usedBy').innerHTML = content;
+            var tag = document.getElementById('usedBy');
+            tag.innerHTML = content;
+            tag.className = 'used-by-loaded';
           }
 
         </script>
@@ -61,7 +51,7 @@
             <br/><br/>
           </xsl:if>
 
-          <span id="usedBy">
+          <span id="usedBy" class="used-by-unloaded">
             &nbsp;
           </span>
 

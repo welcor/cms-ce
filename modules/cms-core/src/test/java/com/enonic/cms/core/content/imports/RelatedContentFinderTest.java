@@ -10,13 +10,13 @@ import org.junit.Test;
 import junit.framework.Assert;
 
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.DataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.CtyFormConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;

@@ -153,6 +153,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.user.UserXmlCreator;
+import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreService;
@@ -193,6 +194,9 @@ public final class InternalClientImpl
 
     @Autowired
     private UserStoreService userStoreService;
+
+    @Autowired
+    private MemberOfResolver memberOfResolver;
 
     private ContentService contentService;
 
@@ -2004,7 +2008,7 @@ public final class InternalClientImpl
         try
         {
             UserEntity runningUser = securityService.getImpersonatedPortalUser();
-            if ( !( runningUser.isEnterpriseAdmin() || runningUser.isAdministrator() ) )
+            if ( !memberOfResolver.hasAdministratorPowers( runningUser ) )
             {
                 throw new IllegalAccessException( "User " + runningUser.getQualifiedName() + " do not have access to this operation" );
             }
@@ -2037,7 +2041,7 @@ public final class InternalClientImpl
             }
 
             UserEntity runningUser = securityService.getImpersonatedPortalUser();
-            if ( !( runningUser.isEnterpriseAdmin() || runningUser.isAdministrator() ) )
+            if ( !memberOfResolver.hasAdministratorPowers( runningUser ) )
             {
                 throw new IllegalAccessException( "User " + runningUser.getQualifiedName() + " do not have access to this operation" );
             }
@@ -2065,7 +2069,7 @@ public final class InternalClientImpl
         try
         {
             UserEntity runningUser = securityService.getImpersonatedPortalUser();
-            if ( !( runningUser.isEnterpriseAdmin() || runningUser.isAdministrator() ) )
+            if ( !memberOfResolver.hasAdministratorPowers( runningUser ) )
             {
                 throw new IllegalAccessException( "User " + runningUser.getQualifiedName() + " do not have access to this operation" );
             }

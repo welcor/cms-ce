@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.store.hibernate.type;
 
-import com.enonic.cms.core.content.ContentHandlerKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 
 public class ContentHandlerKeyUserType
     extends AbstractIntegerBasedUserType<ContentHandlerKey>

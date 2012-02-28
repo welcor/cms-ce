@@ -4,9 +4,52 @@
  */
 package com.enonic.cms.core.security.userstore;
 
-import com.enonic.cms.core.security.group.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import com.enonic.vertical.VerticalProperties;
+
+import com.enonic.cms.core.security.group.AddMembershipsCommand;
+import com.enonic.cms.core.security.group.CreateGroupAccessException;
+import com.enonic.cms.core.security.group.DeleteGroupAccessException;
+import com.enonic.cms.core.security.group.DeleteGroupCommand;
+import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.group.GroupSpecification;
+import com.enonic.cms.core.security.group.GroupStorageService;
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.group.RemoveMembershipsCommand;
+import com.enonic.cms.core.security.group.StoreNewGroupCommand;
+import com.enonic.cms.core.security.group.UpdateGroupAccessException;
+import com.enonic.cms.core.security.group.UpdateGroupCommand;
 import com.enonic.cms.core.security.group.access.GroupAccessResolver;
-import com.enonic.cms.core.security.user.*;
+import com.enonic.cms.core.security.user.DeleteUserCommand;
+import com.enonic.cms.core.security.user.DeleteUserStoreCommand;
+import com.enonic.cms.core.security.user.StoreNewUserCommand;
+import com.enonic.cms.core.security.user.UpdateUserCommand;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserImpl;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.user.UserNotFoundException;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
+import com.enonic.cms.core.security.user.UserStorageInvalidArgumentException;
 import com.enonic.cms.core.security.userstore.config.InvalidUserStoreConfigException;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
@@ -28,18 +71,6 @@ import com.enonic.cms.core.user.remote.RemoteUser;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
-import com.enonic.vertical.VerticalProperties;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
-import java.util.*;
 
 @Component("userStoreService")
 public class UserStoreServiceImpl
@@ -82,20 +113,6 @@ public class UserStoreServiceImpl
     public UserStoreEntity getUserStore( final UserStoreKey userStoreKey )
     {
         return userStoreDao.findByKey( userStoreKey );
-    }
-
-    public boolean isUserStoreAdministrator( final UserKey userKey )
-    {
-        UserEntity user = userDao.findByKey( userKey );
-        UserStoreEntity userStore = user.getUserStore();
-        return user.isUserstoreAdmin( userStore );
-    }
-
-    public boolean isUserStoreAdministrator( final UserKey userKey, final UserStoreKey userStoreKey )
-    {
-        UserEntity user = userDao.findByKey( userKey );
-        UserStoreEntity userStore = getUserStore( userStoreKey );
-        return user.isUserstoreAdmin( userStore );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

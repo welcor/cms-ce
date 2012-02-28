@@ -4,29 +4,9 @@
  */
 package com.enonic.cms.itest.client;
 
-import com.enonic.cms.api.client.model.CreateFileContentParams;
-import com.enonic.cms.api.client.model.UpdateFileContentParams;
-import com.enonic.cms.api.client.model.content.ContentStatus;
-import com.enonic.cms.api.client.model.content.file.*;
-import com.enonic.cms.core.client.InternalClient;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.binary.BinaryDataEntity;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
-import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
-import com.enonic.cms.core.content.contentdata.legacy.LegacyFileContentData;
-import com.enonic.cms.core.security.PortalSecurityHolder;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserType;
-import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.AssertTool;
-import com.enonic.cms.itest.util.DomainFactory;
-import com.enonic.cms.itest.util.DomainFixture;
-import com.enonic.cms.store.dao.ContentDao;
+import java.io.IOException;
+import java.util.Date;
+
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.junit.Before;
@@ -34,8 +14,34 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.io.IOException;
-import java.util.Date;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.api.client.model.CreateFileContentParams;
+import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.content.ContentStatus;
+import com.enonic.cms.api.client.model.content.file.FileBinaryInput;
+import com.enonic.cms.api.client.model.content.file.FileContentDataInput;
+import com.enonic.cms.api.client.model.content.file.FileDescriptionInput;
+import com.enonic.cms.api.client.model.content.file.FileKeywordsInput;
+import com.enonic.cms.api.client.model.content.file.FileNameInput;
+import com.enonic.cms.core.client.InternalClient;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.binary.BinaryDataEntity;
+import com.enonic.cms.core.content.binary.BinaryDataKey;
+import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
+import com.enonic.cms.core.content.contentdata.legacy.LegacyFileContentData;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.security.PortalSecurityHolder;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.itest.util.AssertTool;
+import com.enonic.cms.itest.util.DomainFactory;
+import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.store.dao.ContentDao;
 
 import static org.junit.Assert.*;
 

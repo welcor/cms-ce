@@ -4,9 +4,13 @@
  */
 package com.enonic.cms.itest.content;
 
-import com.enonic.cms.core.content.ContentAccessRightsAccumulated;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
+import com.enonic.cms.core.content.access.ContentAccessRightsAccumulated;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -15,12 +19,8 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.GroupEntityDao;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ContentAccessResolverTest
     extends AbstractSpringTest

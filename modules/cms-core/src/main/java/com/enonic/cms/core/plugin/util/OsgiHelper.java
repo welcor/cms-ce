@@ -15,26 +15,15 @@ public final class OsgiHelper
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T optionalService( final BundleContext context, final Class<T> type )
+    public static <T> T requireService( final BundleContext context, final Class<T> type )
     {
         final ServiceReference ref = context.getServiceReference( type.getName() );
         if ( ref == null )
         {
-            return null;
+            throw new PluginException( "Failed to find service of type [{0}]", type.getName() );
         }
 
         return (T) context.getService( ref );
-    }
-
-    public static <T> T requireService( final BundleContext context, final Class<T> type )
-    {
-        final T service = optionalService( context, type );
-        if ( service != null )
-        {
-            return service;
-        }
-
-        throw new PluginException( "Failed to find service of type [{0}]", type.getName() );
     }
 
     public static String getBundleName( final Bundle bundle )

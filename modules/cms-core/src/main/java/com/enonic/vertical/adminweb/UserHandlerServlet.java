@@ -4,6 +4,51 @@
  */
 package com.enonic.vertical.adminweb;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.fileupload.FileItem;
+import org.jdom.transform.JDOMSource;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.springframework.util.Assert;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.net.Mail;
+import com.enonic.esl.servlet.http.CookieUtil;
+import com.enonic.esl.util.DateUtil;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.VerticalException;
+import com.enonic.vertical.adminweb.handlers.ListCountResolver;
+import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.VerticalEngineLogger;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.AbstractPagedXmlCreator;
 import com.enonic.cms.core.AdminConsoleTranslationService;
@@ -16,8 +61,25 @@ import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.LoginAdminUserCommand;
 import com.enonic.cms.core.security.ObjectClassesXmlCreator;
 import com.enonic.cms.core.security.PasswordGenerator;
-import com.enonic.cms.core.security.group.*;
-import com.enonic.cms.core.security.user.*;
+import com.enonic.cms.core.security.group.AddMembershipsCommand;
+import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.group.GroupSpecification;
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.group.GroupXmlCreator;
+import com.enonic.cms.core.security.group.RemoveMembershipsCommand;
+import com.enonic.cms.core.security.user.DeleteUserCommand;
+import com.enonic.cms.core.security.user.DisplayNameResolver;
+import com.enonic.cms.core.security.user.QualifiedUsername;
+import com.enonic.cms.core.security.user.StoreNewUserCommand;
+import com.enonic.cms.core.security.user.UpdateUserCommand;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.user.field.UserInfoXmlCreator;
 import com.enonic.cms.core.security.userstore.GroupMembershipDiffResolver;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
@@ -32,40 +94,12 @@ import com.enonic.cms.core.user.field.UserFieldMap;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
 import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
-import com.enonic.cms.core.xslt.*;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import com.enonic.cms.core.xslt.XsltProcessor;
+import com.enonic.cms.core.xslt.XsltProcessorException;
+import com.enonic.cms.core.xslt.XsltProcessorManager;
+import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
+import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.store.dao.GroupQuery;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.net.Mail;
-import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.util.DateUtil;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalException;
-import com.enonic.vertical.adminweb.handlers.ListCountResolver;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.VerticalEngineLogger;
-import org.apache.commons.fileupload.FileItem;
-import org.jdom.transform.JDOMSource;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.springframework.util.Assert;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.*;
 
 
 public class UserHandlerServlet
@@ -878,13 +912,13 @@ public class UserHandlerServlet
         UserEntity user = securityService.getUser( oldUser );
 
         boolean isEnterpriseAdmin = false;
-        if ( user.isEnterpriseAdmin() )
+        if ( memberOfResolver.hasEnterpriseAdminPowers( user ) )
         {
             isEnterpriseAdmin = true;
         }
 
         boolean isUserstoreAdmin = false;
-        if ( user.isUserstoreAdmin( userStore ) )
+        if ( memberOfResolver.hasUserStoreAdministratorPowers( user, userStore.getKey() ) )
         {
             isUserstoreAdmin = true;
         }
@@ -1529,19 +1563,23 @@ public class UserHandlerServlet
                 groupArray = new String[]{formItems.getString( "member" )};
             }
 
-            for ( String aGroupArray : groupArray )
+            for ( String groupKey : groupArray )
             {
-                if ( user.isEnterpriseAdmin() )
+                boolean groupIsEnterpriseGroup = enterpriseAdminGroupKey.toString().equalsIgnoreCase( groupKey );
+                if ( groupIsEnterpriseGroup )
                 {
-                    requestedGroupMemberships.add( new GroupKey( aGroupArray ) );
+                    if ( memberOfResolver.hasEnterpriseAdminPowers( user ) )
+                    {
+                        requestedGroupMemberships.add( new GroupKey( groupKey ) );
+                    }
+                    else
+                    {
+                        throw new SecurityException( "No access to enterprise administrators group" );
+                    }
                 }
-                else if ( user.isUserstoreAdmin( userStore ) && enterpriseAdminGroupKey.toString().equalsIgnoreCase( aGroupArray ) )
+                else
                 {
-                    throw new SecurityException( "No access to enterprise administrators group" );
-                }
-                else if ( !enterpriseAdminGroupKey.toString().equalsIgnoreCase( aGroupArray ) )
-                {
-                    requestedGroupMemberships.add( new GroupKey( aGroupArray ) );
+                    requestedGroupMemberships.add( new GroupKey( groupKey ) );
                 }
             }
         }
@@ -1582,8 +1620,8 @@ public class UserHandlerServlet
         {
             final GroupEntity userGroupToUpdate = groupDao.findByKey( userToUpdate.getUserGroup().getGroupKey() );
             GroupMembershipDiffResolver diffResolver = new GroupMembershipDiffResolver( userGroupToUpdate );
-            Set<GroupKey> groupsToJoin = diffResolver.findGroupsToJoin( requestedGroupMemberships );
-            Set<GroupKey> groupsToLeave = diffResolver.findGroupsToLeave( requestedGroupMemberships );
+            Set<GroupKey> groupsToJoin = diffResolver.resolveGroupsToJoin( requestedGroupMemberships );
+            Set<GroupKey> groupsToLeave = diffResolver.resolveGroupsToLeave( requestedGroupMemberships );
 
             GroupSpecification userGroupToUpdateSpec = new GroupSpecification();
             userGroupToUpdateSpec.setDeletedState( GroupSpecification.DeletedState.NOT_DELETED );

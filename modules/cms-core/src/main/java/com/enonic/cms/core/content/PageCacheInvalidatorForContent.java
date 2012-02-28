@@ -49,7 +49,7 @@ public class PageCacheInvalidatorForContent
         {
             if ( menuItem.isRenderable() )
             {
-                pageCacheService.removeEntriesByMenuItem( menuItem.getMenuItemKey() );
+                pageCacheService.removeEntriesByMenuItem( menuItem.getKey() );
             }
             else
             {

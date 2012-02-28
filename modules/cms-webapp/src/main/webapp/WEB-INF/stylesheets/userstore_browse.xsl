@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:output method="html"/>
 
@@ -165,7 +163,7 @@
                       <table border="0" cellspacing="0" cellpadding="0">
                         <tr>
                           <td>
-                            <xsl:variable name="enableDelete" select="not(@default = 'true')"/>
+                            <xsl:variable name="enableDelete" select="not(@default = 'true') and $enterpriseadmin = 'true'"/>
                             <xsl:call-template name="operations">
                               <xsl:with-param name="page" select="$page"/>
                               <xsl:with-param name="key" select="@key"/>

@@ -17,13 +17,13 @@ import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.ContentPath;
 import com.enonic.cms.core.portal.PortalInstanceKey;
@@ -766,8 +766,8 @@ public class PortalFunctionsTest
         PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( menuItemKeyWindow, portletKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
-        WindowKey windowKey = new WindowKey(menuItemKeyWindow, portletKey );
-        String windowUrl = portalFunctions.createWindowUrl(windowKey, new String[]{});
+        WindowKey windowKey = new WindowKey( menuItemKeyWindow, portletKey );
+        String windowUrl = portalFunctions.createWindowUrl( windowKey, new String[]{} );
 
         assertEquals( "http://localhost/site/1/en/features/xslt-functions/createwindowurl-test/_window/createwindowurlportlet", windowUrl );
     }
@@ -802,8 +802,8 @@ public class PortalFunctionsTest
         PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( menuItemKeyWindow, portletKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
-        WindowKey windowKey = new WindowKey(menuItemKeyWindow, portletKey );
-        String windowUrl = portalFunctions.createWindowUrl(windowKey, new String[]{});
+        WindowKey windowKey = new WindowKey( menuItemKeyWindow, portletKey );
+        String windowUrl = portalFunctions.createWindowUrl( windowKey, new String[]{} );
 
         assertEquals( "http://localhost/site/1/en/features/xslt-functions/createwindowurl-test/article1/_window/createwindowurlportlet",
                       windowUrl );
@@ -821,7 +821,7 @@ public class PortalFunctionsTest
     private MenuItemEntity createMenuItem( String key, String name )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( Integer.valueOf( key ) );
+        menuItem.setKey( new MenuItemKey( key ) );
         menuItem.setName( name );
         return menuItem;
     }
@@ -834,7 +834,7 @@ public class PortalFunctionsTest
     private MenuItemEntity createMenuItem( String key, String name, MenuItemEntity parent, SiteEntity site )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( Integer.valueOf( key ) );
+        menuItem.setKey( new MenuItemKey( key ) );
         menuItem.setName( name );
         menuItem.setSite( site );
         menuItem.setParent( parent );

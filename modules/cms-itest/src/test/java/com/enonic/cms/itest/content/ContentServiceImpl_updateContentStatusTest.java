@@ -4,25 +4,12 @@
  */
 package com.enonic.cms.itest.content;
 
-import com.enonic.cms.core.content.*;
-import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
-import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.command.UpdateContentCommand;
-import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
-import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
-import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
-import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserType;
-import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.DomainFactory;
-import com.enonic.cms.itest.util.DomainFixture;
-import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.ContentVersionDao;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -32,11 +19,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import com.enonic.cms.framework.util.JDOMUtil;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.UpdateContentResult;
+import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
+import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.content.command.UpdateContentCommand;
+import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
+import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
+import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.itest.util.DomainFactory;
+import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.ContentVersionDao;
 
 import static org.junit.Assert.*;
 

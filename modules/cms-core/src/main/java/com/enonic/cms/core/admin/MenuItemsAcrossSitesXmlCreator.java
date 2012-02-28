@@ -11,8 +11,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
 /**
@@ -50,7 +50,7 @@ public class MenuItemsAcrossSitesXmlCreator
     private Element doCreateMenuItemElement( MenuItemEntity menuItem )
     {
         Element menuitemEl = new Element( "menuitem" );
-        menuitemEl.setAttribute( "key", menuItem.getMenuItemKey().toString() );
+        menuitemEl.setAttribute( "key", menuItem.getKey().toString() );
 
         Element typeEl = new Element( "type" );
         typeEl.setAttribute( "key", menuItem.getType().getKey().toString() );

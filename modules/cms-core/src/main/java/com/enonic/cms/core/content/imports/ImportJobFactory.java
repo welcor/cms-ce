@@ -9,11 +9,11 @@ import java.io.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.command.ImportContentCommand;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.CtyImportConfig;

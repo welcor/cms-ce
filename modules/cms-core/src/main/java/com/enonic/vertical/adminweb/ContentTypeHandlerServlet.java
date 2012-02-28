@@ -4,31 +4,39 @@
  */
 package com.enonic.vertical.adminweb;
 
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerKey;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.contenttype.*;
-import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.VerticalEngineException;
-import org.jdom.JDOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.jdom.JDOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.VerticalEngineException;
+
+import com.enonic.cms.framework.util.JDOMUtil;
+import com.enonic.cms.framework.xml.XMLDocument;
+
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
+import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeXmlCreator;
+import com.enonic.cms.core.content.contenttype.InvalidContentTypeConfigException;
+import com.enonic.cms.core.resource.ResourceFile;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.service.AdminService;
 
 
 public class ContentTypeHandlerServlet
@@ -257,9 +265,9 @@ public class ContentTypeHandlerServlet
             }
         }
         Document contentHandlersDoc = admin.getContentHandlers().getAsDOMDocument();
-        doc.getDocumentElement().appendChild(doc.importNode(contentHandlersDoc.getDocumentElement(), true));
+        doc.getDocumentElement().appendChild( doc.importNode( contentHandlersDoc.getDocumentElement(), true ) );
 
-        addErrorsXML(doc);
+        addErrorsXML( doc );
 
         if ( createContent )
         {
@@ -314,7 +322,7 @@ public class ContentTypeHandlerServlet
         else
         {
             String message = "Parameter not found: returnkey";
-            VerticalAdminLogger.errorAdmin(message );
+            VerticalAdminLogger.errorAdmin( message );
         }
 
         if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).toString().equals( "" ) ) )
@@ -324,7 +332,7 @@ public class ContentTypeHandlerServlet
         else
         {
             String message = "Parameter not found: returnview";
-            VerticalAdminLogger.errorAdmin(message );
+            VerticalAdminLogger.errorAdmin( message );
         }
 
         if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).toString().equals( "" ) ) )
@@ -404,7 +412,7 @@ public class ContentTypeHandlerServlet
             else
             {
                 String message = "Parameter not found: returnkey";
-                VerticalAdminLogger.errorAdmin(message );
+                VerticalAdminLogger.errorAdmin( message );
             }
 
             if ( !( request.getParameter( "returnview" ) == null || request.getParameter( "returnview" ).toString().equals( "" ) ) )
@@ -414,7 +422,7 @@ public class ContentTypeHandlerServlet
             else
             {
                 String message = "Parameter not found: returnview";
-                VerticalAdminLogger.errorAdmin(message );
+                VerticalAdminLogger.errorAdmin( message );
             }
 
             if ( !( request.getParameter( "returnrow" ) == null || request.getParameter( "returnrow" ).toString().equals( "" ) ) )

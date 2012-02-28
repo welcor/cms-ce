@@ -14,8 +14,8 @@ import java.util.Set;
 
 import com.enonic.cms.core.AbstractResultSet;
 import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentEntityFetcher;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.index.ContentEntityFetcher;
 
 
 public final class ContentResultSetLazyFetcher

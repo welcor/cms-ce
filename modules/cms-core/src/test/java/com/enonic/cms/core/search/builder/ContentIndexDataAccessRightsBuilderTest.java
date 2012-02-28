@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import com.enonic.cms.core.content.ContentAccessEntity;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 

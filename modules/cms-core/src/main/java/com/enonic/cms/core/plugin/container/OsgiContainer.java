@@ -1,82 +1,76 @@
 package com.enonic.cms.core.plugin.container;
 
-import java.util.Collections;
-import java.util.List;
+import java.io.File;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.apache.felix.framework.Felix;
-import org.apache.felix.framework.util.FelixConstants;
+import org.eclipse.core.runtime.internal.adaptor.EclipseLogHook;
+import org.eclipse.osgi.baseadaptor.HookConfigurator;
+import org.eclipse.osgi.baseadaptor.HookRegistry;
+import org.eclipse.osgi.launch.EquinoxFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.launch.Framework;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
-import com.enonic.cms.api.util.LogFacade;
-
-@Component
-public final class OsgiContainer
-    implements FelixConstants
+public abstract class OsgiContainer
+    implements Constants
 {
-    protected final static LogFacade LOG = LogFacade.get(OsgiContainer.class);
+    private Framework framework;
 
-    private List<OsgiContributor> contributors;
-    private Map<String, String> properties;
-    private Felix felix = null;
+    private BundleInstaller bundleInstaller;
 
-    @Autowired
-    public void setContributors(final List<OsgiContributor> list)
+    private Map<String, String> createConfigMap()
     {
-        this.contributors = Lists.newArrayList(list);
-        Collections.sort(this.contributors);
-    }
-
-    @Value("#{config.map}")
-    public void setProperties( final Map<String, String> properties )
-    {
-        this.properties = properties;
-    }
-
-    private Map<String, Object> createConfigMap()
-    {
-        final FelixLogBridge logBridge = new FelixLogBridge();
-
-        final Map<String, Object> map = Maps.newHashMap();
-        map.putAll( this.properties );
+        final Map<String, String> map = Maps.newHashMap();
 
         map.put( FRAMEWORK_STORAGE, Files.createTempDir().getAbsolutePath() );
         map.put( FRAMEWORK_STORAGE_CLEAN, FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT );
-        map.put( LOG_LEVEL_PROP, String.valueOf( logBridge.getLogLevel() ) );
-        map.put( LOG_LOGGER_PROP, logBridge );
-        map.put( IMPLICIT_BOOT_DELEGATION_PROP, "true" );
-        map.put( FRAMEWORK_BOOTDELEGATION, "*" );
-        map.put( FRAMEWORK_BUNDLE_PARENT, FRAMEWORK_BUNDLE_PARENT_FRAMEWORK );
-        map.put( SYSTEMBUNDLE_ACTIVATORS_PROP, this.contributors );
+        map.put( HookRegistry.PROP_HOOK_CONFIGURATORS_INCLUDE, DynamicHookConfigurator.class.getName() );
+        map.put( HookRegistry.PROP_HOOK_CONFIGURATORS_EXCLUDE, EclipseLogHook.class.getName() );
 
         return map;
     }
 
     @PostConstruct
-    public void start()
+    public final void start()
         throws Exception
     {
-        this.felix = new Felix( createConfigMap() );
-        LOG.info( "Starting Felix OSGi Container ({0})", this.felix.getVersion() );
-        this.felix.start();
-
-        LOG.info( "OSGi container started and running" );
+        this.framework = new EquinoxFactory().newFramework( createConfigMap() );
+        this.framework.start();
+        this.bundleInstaller = new BundleInstaller( this.framework.getBundleContext() );
+        start( this.framework.getBundleContext() );
     }
 
     @PreDestroy
-    public void stop()
+    public final void stop()
         throws Exception
     {
-        this.felix.stop();
-        this.felix.waitForStop( 5000 );
+        this.framework.stop();
+        this.framework.waitForStop( 5000 );
+    }
+
+    protected abstract void start( BundleContext context )
+        throws Exception;
+
+    @Autowired
+    public final void setHookConfigurator( final HookConfigurator configurator )
+    {
+        HookConfiguratorAccessor.getInstance().set( configurator );
+    }
+
+    public final void install( final File file )
+    {
+        this.bundleInstaller.install( file );
+    }
+
+    public final void uninstall( final File file )
+    {
+        this.bundleInstaller.uninstall( file );
     }
 }

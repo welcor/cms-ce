@@ -6,9 +6,9 @@ package com.enonic.cms.core.portal.processor;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
+import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageResolver;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.PageTemplateNotFoundException;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
@@ -41,14 +41,14 @@ public class PageRequestProcessor
         result.setLanguage( language );
 
         // site path
-        sitePath.addParam( "id", menuItem.getMenuItemKey().toString() );
+        sitePath.addParam( "id", menuItem.getKey().toString() );
         result.setSitePath( sitePath );
 
         // http request
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper( context.getHttpRequest() );
         // noinspection deprecation
         requestWrapper.setParamsMasked( false );
-        requestWrapper.setParameter( "id", menuItem.getMenuItemKey().toString() );
+        requestWrapper.setParameter( "id", menuItem.getKey().toString() );
         result.setHttpRequest( requestWrapper );
 
         processCommonRequest( result );

@@ -1,20 +1,25 @@
 package com.enonic.cms.itest.client;
 
-import com.enonic.cms.api.client.model.GetContentTypeConfigXMLParams;
-import com.enonic.cms.core.client.InternalClientImpl;
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.DomainFactory;
-import com.enonic.cms.itest.util.DomainFixture;
-import com.enonic.cms.store.dao.ContentTypeDao;
 import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.enonic.cms.itest.util.AssertTool.*;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.api.client.model.GetContentTypeConfigXMLParams;
+import com.enonic.cms.core.client.InternalClientImpl;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.itest.util.DomainFactory;
+import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.store.dao.ContentTypeDao;
+
+import static com.enonic.cms.itest.util.AssertTool.assertSingleXPathValueEquals;
+import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
+import static com.enonic.cms.itest.util.AssertTool.assertXPathExist;
+import static com.enonic.cms.itest.util.AssertTool.assertXPathNotExist;
 
 public class InternalClientImpl_getContentTypeXmlTest
     extends AbstractSpringTest

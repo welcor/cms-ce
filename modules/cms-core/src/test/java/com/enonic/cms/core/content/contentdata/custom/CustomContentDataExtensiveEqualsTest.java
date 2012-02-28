@@ -13,8 +13,8 @@ import org.junit.Test;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
 

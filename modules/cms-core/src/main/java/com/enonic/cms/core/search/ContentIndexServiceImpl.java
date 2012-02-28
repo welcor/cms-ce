@@ -19,13 +19,13 @@ import org.springframework.util.StopWatch;
 
 import com.google.common.collect.Sets;
 
+import com.enonic.cms.core.content.ContentEntityFetcherImpl;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.AggregatedQuery;
 import com.enonic.cms.core.content.index.AggregatedResult;
 import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.ContentEntityFetcherImpl;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.IndexValueQuery;

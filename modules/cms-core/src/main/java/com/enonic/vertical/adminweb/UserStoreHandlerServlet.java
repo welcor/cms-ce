@@ -4,33 +4,10 @@
  */
 package com.enonic.vertical.adminweb;
 
-import com.enonic.cms.core.security.user.DeleteUserStoreCommand;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.userstore.*;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
-import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
-import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigXmlCreator;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJob;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.net.URL;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.adminweb.wizard.Wizard;
-import com.enonic.vertical.adminweb.wizard.WizardException;
-import com.enonic.vertical.adminweb.wizard.WizardLogger;
-import com.enonic.vertical.engine.VerticalEngineException;
-import org.apache.commons.lang.StringUtils;
-import org.jdom.transform.JDOMSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,10 +15,43 @@ import javax.servlet.http.HttpSession;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.jdom.transform.JDOMSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.net.URL;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.adminweb.wizard.Wizard;
+import com.enonic.vertical.adminweb.wizard.WizardException;
+import com.enonic.vertical.adminweb.wizard.WizardLogger;
+import com.enonic.vertical.engine.VerticalEngineException;
+
+import com.enonic.cms.framework.util.JDOMUtil;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.security.user.DeleteUserStoreCommand;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.userstore.DeleteUserStoreJob;
+import com.enonic.cms.core.security.userstore.StoreNewUserStoreCommand;
+import com.enonic.cms.core.security.userstore.UpdateUserStoreCommand;
+import com.enonic.cms.core.security.userstore.UserStoreEntity;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.security.userstore.UserStoreService;
+import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
+import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
+import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
+import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigXmlCreator;
+import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJob;
+import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
+import com.enonic.cms.core.service.AdminService;
 
 
 public class UserStoreHandlerServlet
@@ -168,15 +178,14 @@ public class UserStoreHandlerServlet
                 // UserStore connector config names
 
                 final XMLDocument userStoreConnectorConfigNamesXmlDoc = XMLDocumentFactory.create(
-                    UserStoreConnectorConfigXmlCreator.createUserStoreConnectorConfigsDocument(
-                            userStoreConnectorConfigs.values() ) );
+                    UserStoreConnectorConfigXmlCreator.createUserStoreConnectorConfigsDocument( userStoreConnectorConfigs.values() ) );
                 wizarddataElem.appendChild(
                     wizarddataDoc.importNode( userStoreConnectorConfigNamesXmlDoc.getAsDOMDocument().getDocumentElement(), true ) );
             }
             else
             {
                 String message = "Unknown step: {0}";
-                VerticalAdminLogger.error(message, currentStep.getName(), null );
+                VerticalAdminLogger.error( message, currentStep.getName(), null );
             }
         }
 
@@ -215,7 +224,7 @@ public class UserStoreHandlerServlet
             else
             {
                 String message = "Unknown step: {0}";
-                WizardLogger.errorWizard(message, currentStep );
+                WizardLogger.errorWizard( message, currentStep );
             }
         }
 
@@ -301,9 +310,8 @@ public class UserStoreHandlerServlet
             UserStoreConfig config = new UserStoreConfig();
             if ( configXmlString != null && configXmlString.trim().length() > 0 )
             {
-                config = UserStoreConfigParser.parse(
-                        XMLDocumentFactory.create( configXmlString ).getAsJDOMDocument().getRootElement(),
-                        connectorName != null );
+                config = UserStoreConfigParser.parse( XMLDocumentFactory.create( configXmlString ).getAsJDOMDocument().getRootElement(),
+                                                      connectorName != null );
             }
 
             final StoreNewUserStoreCommand command = new StoreNewUserStoreCommand();
@@ -317,24 +325,17 @@ public class UserStoreHandlerServlet
         }
     }
 
-    private User verifyAccess( UserStoreKey userStoreKey )
+    private User verifyAccessToEditUserStore()
         throws VerticalAdminException
     {
 
-        User user = securityService.getLoggedInAdminConsoleUser();
-        UserEntity userEntity = userDao.findByKey( user.getKey() );
-        if ( userEntity.isEnterpriseAdmin() || userEntity.isAdministrator() )
+        UserEntity user = securityService.getLoggedInAdminConsoleUserAsEntity();
+        if ( memberOfResolver.hasEnterpriseAdminPowers( user.getKey() ) )
         {
             return user;
         }
 
-        UserStoreEntity userStore = userStoreDao.findByKey( userStoreKey );
-        if ( userStoreKey != null && userEntity.isUserstoreAdmin( userStore ) )
-        {
-            return user;
-        }
-
-        VerticalAdminLogger.errorAdmin("Not authorized." );
+        VerticalAdminLogger.errorAdmin( "Not authorized." );
         return null;
     }
 
@@ -381,11 +382,11 @@ public class UserStoreHandlerServlet
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error: %t", e );
+            VerticalAdminLogger.errorAdmin( "I/O error: %t", e );
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error: %t", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error: %t", e );
         }
     }
 
@@ -394,7 +395,7 @@ public class UserStoreHandlerServlet
         throws VerticalAdminException, VerticalEngineException
     {
 
-        verifyAccess( UserStoreKey.parse( formItems.getString( "key", null ) ) );
+        verifyAccessToEditUserStore();
 
         URL url = new URL( request.getHeader( "referer" ) );
         url.setParameter( "reload", "true" );
@@ -499,8 +500,7 @@ public class UserStoreHandlerServlet
         Document dataDoc = userStoresXmlDoc.getAsDOMDocument();
         try
         {
-            UserEntity userEntity = userDao.findByKey( user.getKey() );
-            boolean isUserStoreAdministrator = userEntity.isUserstoreAdmin( userStore ) || userEntity.isEnterpriseAdmin();
+            boolean isUserStoreAdministrator = memberOfResolver.hasUserStoreAdministratorPowers( user.getKey(), userStoreKey );
             // parameters
             ExtendedMap xslParams = new ExtendedMap();
             xslParams.put( "page", formItems.getString( "page" ) );
@@ -532,11 +532,11 @@ public class UserStoreHandlerServlet
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error: %t", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error: %t", e );
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error: %t", e );
+            VerticalAdminLogger.errorAdmin( "I/O error: %t", e );
         }
     }
 }

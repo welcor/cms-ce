@@ -13,12 +13,12 @@ import org.springframework.stereotype.Repository;
 
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
 
-import com.enonic.cms.store.support.EntityPageList;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
 import com.enonic.cms.core.structure.page.PageSpecification;
 import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
+import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("menuItemDao")
 public final class MenuItemEntityDao
@@ -39,14 +39,15 @@ public final class MenuItemEntityDao
         return (List<MenuItemEntity>) compiled.list();
     }
 
+    @Deprecated
     public MenuItemEntity findByKey( int menuItemKey )
     {
-        return get( MenuItemEntity.class, menuItemKey );
+        return get( MenuItemEntity.class, new MenuItemKey( menuItemKey ) );
     }
 
     public MenuItemEntity findByKey( MenuItemKey menuItemKey )
     {
-        return get( MenuItemEntity.class, menuItemKey.toInt() );
+        return get( MenuItemEntity.class, menuItemKey );
     }
 
     public List<MenuItemEntity> findByKeys( Collection<MenuItemKey> menuItemKeys )
@@ -108,7 +109,7 @@ public final class MenuItemEntityDao
         }
         if ( spec.getMenuItemShortcut() != null )
         {
-            hqlQuery.addFilter( "AND", "mei.menuItemShortcut = " + spec.getMenuItemShortcut().getKey() );
+            hqlQuery.addFilter( "AND", "mei.menuItemShortcut = " + spec.getMenuItemShortcut().getKey().toInt() );
         }
         if ( spec.getPageSpecification() != null )
         {

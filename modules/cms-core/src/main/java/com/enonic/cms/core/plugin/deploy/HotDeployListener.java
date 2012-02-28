@@ -4,45 +4,33 @@ import java.io.File;
 
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 
-import com.enonic.cms.core.plugin.installer.BundleInstaller;
+import com.enonic.cms.core.plugin.PluginManager;
 
 final class HotDeployListener
     extends FileAlterationListenerAdaptor
 {
-    private final BundleInstaller installer;
+    private final PluginManager installer;
 
-    public HotDeployListener(final BundleInstaller installer)
+    public HotDeployListener( final PluginManager installer )
     {
         this.installer = installer;
     }
 
     @Override
-    public void onFileCreate(final File file)
+    public void onFileCreate( final File file )
     {
-        this.installer.install(toLocation(file));
+        this.installer.install( file );
     }
 
     @Override
-    public void onFileChange(final File file)
+    public void onFileChange( final File file )
     {
-        this.installer.install(toLocation(file));
+        this.installer.install( file );
     }
 
     @Override
-    public void onFileDelete(final File file)
+    public void onFileDelete( final File file )
     {
-        this.installer.uninstall(toLocation(file));
-    }
-
-    private String toLocation( final File file )
-    {
-        try
-        {
-            return file.toURI().toURL().toExternalForm();
-        }
-        catch ( Exception e )
-        {
-            throw new AssertionError(e);
-        }
+        this.installer.uninstall( file );
     }
 }

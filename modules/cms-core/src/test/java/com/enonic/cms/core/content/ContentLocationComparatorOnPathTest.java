@@ -10,13 +10,13 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
+import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentKey;
-
-import com.enonic.cms.core.SiteKey;
 
 import static org.junit.Assert.*;
 
@@ -96,7 +96,7 @@ public class ContentLocationComparatorOnPathTest
     private MenuItemEntity createMenuItem( String key, String name, MenuItemEntity parent, SiteEntity site )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( Integer.valueOf( key ) );
+        menuItem.setKey( new MenuItemKey( key ) );
         menuItem.setName( name );
         menuItem.setSite( site );
         menuItem.setParent( parent );

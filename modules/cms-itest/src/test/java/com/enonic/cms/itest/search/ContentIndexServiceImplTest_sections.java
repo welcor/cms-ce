@@ -18,6 +18,7 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentKey;
 
@@ -50,26 +51,26 @@ public class ContentIndexServiceImplTest_sections
         final ContentIndexQuery query = new ContentIndexQuery( "" );
 
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( 1 );
+        menuItem.setKey( new MenuItemKey(1) );
         query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.APPROVED_ONLY );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
 
-        menuItem.setKey( 2 );
+        menuItem.setKey( new MenuItemKey(2) );
         query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.APPROVED_ONLY );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
 
-        menuItem.setKey( 3 );
+        menuItem.setKey( new MenuItemKey(3 ));
         query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.APPROVED_ONLY );
         assertTrue( contentIndexService.query( query ).getTotalCount() == 0 );
 
         query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.UNAPPROVED_ONLY );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
 
-        menuItem.setKey( 2 );
+        menuItem.setKey(new MenuItemKey(2 ));
         query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.UNAPPROVED_ONLY );
         assertTrue( contentIndexService.query( query ).getTotalCount() == 0 );
 
-        menuItem.setKey( 3 );
+        menuItem.setKey( new MenuItemKey(3 ));
         query.setSectionFilter( Lists.newArrayList( menuItem ), ContentIndexQuery.SectionFilterStatus.ANY );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
     }
@@ -108,7 +109,7 @@ public class ContentIndexServiceImplTest_sections
     {
         MenuItemEntity menuItem = new MenuItemEntity();
         menuItem.setSite( site );
-        menuItem.setKey( sectionKey );
+        menuItem.setKey( new MenuItemKey(sectionKey) );
         menuItem.setName( "menu" + sectionKey );
 
         SectionContentEntity sectionContent = new SectionContentEntity();

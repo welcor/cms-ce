@@ -11,7 +11,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import com.google.common.collect.Sets;
 
-import com.enonic.cms.core.content.ContentAccessEntity;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
 

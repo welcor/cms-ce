@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import com.enonic.cms.core.content.ContentAccessEntity;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;

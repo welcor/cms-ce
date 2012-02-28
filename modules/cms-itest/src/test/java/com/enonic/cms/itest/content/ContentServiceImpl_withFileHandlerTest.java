@@ -1,6 +1,24 @@
 package com.enonic.cms.itest.content;
 
-import com.enonic.cms.core.content.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+
+import com.enonic.cms.core.content.ContentAndVersion;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.content.UpdateContentResult;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
@@ -9,6 +27,7 @@ import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyFileContentData;
 import com.enonic.cms.core.content.contentdata.legacy.support.FileContentDataParser;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -17,20 +36,8 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class ContentServiceImpl_withFileHandlerTest
     extends AbstractSpringTest

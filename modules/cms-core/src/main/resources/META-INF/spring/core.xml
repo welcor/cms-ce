@@ -248,9 +248,10 @@
         <property name="cacheManager" ref="cacheFacadeManager"/>
     </bean>
 
-    <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
-        <property name="imageCache" ref="imageCache"/>
-    </bean>
+  <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
+    <property name="directory" value="#{config.blobStoreDir}"/>
+    <property name="imageCache" ref="imageCache"/>
+  </bean>
 
     <bean id="blobStore" class="com.enonic.cms.framework.blob.file.FileBlobStore">
         <property name="directory" value="#{config.blobStoreDir}"/>

@@ -4,14 +4,50 @@
  */
 package com.enonic.vertical.userservices;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.vertical.VerticalProperties;
+import com.enonic.vertical.adminweb.VerticalAdminLogger;
+import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+
+import com.enonic.cms.framework.util.UrlPathDecoder;
+
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePathResolver;
 import com.enonic.cms.core.captcha.CaptchaService;
-import com.enonic.cms.core.content.ContentAccessException;
 import com.enonic.cms.core.content.ContentParserService;
 import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.access.ContentAccessException;
 import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.mail.SendMailService;
 import com.enonic.cms.core.portal.SiteRedirectHelper;
@@ -23,33 +59,9 @@ import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteContext;
 import com.enonic.cms.core.structure.SiteService;
-import com.enonic.cms.framework.util.UrlPathDecoder;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.SiteDao;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.engine.VerticalCreateException;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.VerticalRemoveException;
-import com.enonic.vertical.engine.VerticalSecurityException;
-import org.apache.commons.fileupload.*;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public abstract class AbstractUserServicesHandlerController
     implements Controller

@@ -35,9 +35,11 @@ import com.enonic.cms.core.preference.PreferenceScopeKeyResolver;
 import com.enonic.cms.core.preference.PreferenceScopeResolver;
 import com.enonic.cms.core.preference.PreferenceScopeType;
 import com.enonic.cms.core.preference.PreferenceService;
-import com.enonic.cms.core.structure.menuitem.MenuItemService;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKeysByPathResolver;
 import com.enonic.cms.core.structure.portlet.PortletKey;
 import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.store.dao.MenuItemDao;
 
 /**
  *
@@ -50,7 +52,7 @@ public class ExpressionFunctions
 
     private TimeService timeService;
 
-    private MenuItemService menuItemService;
+    private MenuItemDao menuItemDao;
 
     public boolean isnotblank( String str )
     {
@@ -280,7 +282,7 @@ public class ExpressionFunctions
 
     public String getPageKey()
     {
-        return context.getMenuItem().getMenuItemKey().toString();
+        return context.getMenuItem().getKey().toString();
     }
 
     public String getWindowKey()
@@ -304,7 +306,9 @@ public class ExpressionFunctions
 
     public String pageKey( String path )
     {
-        return menuItemService.getPageKeyByPath( context.getMenuItem(), path );
+        MenuItemEntity menuItem = menuItemDao.findByKey( context.getMenuItem().getKey() );
+        MenuItemKeysByPathResolver menuItemKeysByPathResolver = new MenuItemKeysByPathResolver( menuItem );
+        return menuItemKeysByPathResolver.getPageKeyByPath( path );
     }
 
     public void setPreferenceService( PreferenceService preferenceService )
@@ -322,9 +326,9 @@ public class ExpressionFunctions
         this.timeService = timeService;
     }
 
-    public void setMenuItemService( MenuItemService menuItemService )
+    public void setMenuItemDao( MenuItemDao menuItemDao )
     {
-        this.menuItemService = menuItemService;
+        this.menuItemDao = menuItemDao;
     }
 
     public String urlEncode( String source )
@@ -334,7 +338,7 @@ public class ExpressionFunctions
             return "";
         }
 
-        if( hasBasePath( source ) )
+        if ( hasBasePath( source ) )
         {
             return doEncodeURL( source );
         }

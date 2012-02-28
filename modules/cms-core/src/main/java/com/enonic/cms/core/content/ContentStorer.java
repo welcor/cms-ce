@@ -23,7 +23,10 @@ import com.google.common.base.Preconditions;
 
 import com.enonic.cms.framework.blob.BlobRecord;
 
+import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.access.ContentAccessException;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
+import com.enonic.cms.core.content.access.ContentAccessType;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
@@ -45,6 +48,7 @@ import com.enonic.cms.core.content.contentdata.MissingRequiredContentDataExcepti
 import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentDataModifier;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.ContentNotFoundException;
 import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;

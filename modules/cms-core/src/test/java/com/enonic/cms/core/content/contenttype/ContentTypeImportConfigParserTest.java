@@ -4,15 +4,16 @@
  */
 package com.enonic.cms.core.content.contenttype;
 
-import com.enonic.cms.core.content.ContentHandlerName;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import java.util.List;
+
 import org.jdom.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
 
 import static org.junit.Assert.*;
 

@@ -4,22 +4,27 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.content.*;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.language.LanguageKey;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.UserNameXmlCreator;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.cms.framework.util.TIntObjectHashMap;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.cms.store.dao.ContentHandlerDao;
-import com.enonic.cms.store.dao.ContentTypeDao;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.sql.model.Table;
 import com.enonic.esl.util.ArrayUtil;
@@ -29,19 +34,36 @@ import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.VerticalRemoveException;
 import com.enonic.vertical.engine.XDG;
-import com.enonic.vertical.engine.dbmodel.*;
+import com.enonic.vertical.engine.dbmodel.ContentPubKeyView;
+import com.enonic.vertical.engine.dbmodel.ContentPubKeysView;
+import com.enonic.vertical.engine.dbmodel.ContentPublishedView;
+import com.enonic.vertical.engine.dbmodel.ContentVersionView;
+import com.enonic.vertical.engine.dbmodel.ContentView;
 import com.enonic.vertical.engine.processors.ContentTypeProcessor;
 import com.enonic.vertical.engine.processors.ElementProcessor;
 import com.enonic.vertical.engine.processors.VersionKeyContentMapProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import java.io.InputStream;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
+import com.enonic.cms.framework.util.TIntArrayList;
+import com.enonic.cms.framework.util.TIntObjectHashMap;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.CalendarUtil;
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentTitleXmlCreator;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.language.LanguageKey;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.UserNameXmlCreator;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.store.dao.ContentHandlerDao;
+import com.enonic.cms.store.dao.ContentTypeDao;
 
 public final class ContentHandler
     extends BaseHandler

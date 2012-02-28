@@ -15,11 +15,11 @@ import org.junit.Test;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.AbstractEqualsTest;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.contentdata.custom.contentkeybased.ImageDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.relationdataentrylistbased.ImagesDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DateDataEntryConfig;

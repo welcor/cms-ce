@@ -4,6 +4,49 @@
  */
 package com.enonic.vertical.engine.handlers;
 
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+import com.enonic.esl.sql.model.Column;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.adminweb.VerticalAdminLogger;
+import com.enonic.vertical.engine.AccessRight;
+import com.enonic.vertical.engine.MenuAccessRight;
+import com.enonic.vertical.engine.MenuItemAccessRight;
+import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.VerticalEngineLogger;
+import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+import com.enonic.vertical.engine.XDG;
+import com.enonic.vertical.engine.handlers.model.MenuItemModel;
+import com.enonic.vertical.event.MenuHandlerEvent;
+import com.enonic.vertical.event.MenuHandlerListener;
+import com.enonic.vertical.event.VerticalEventMulticaster;
+
+import com.enonic.cms.framework.util.TIntArrayList;
+
 import com.enonic.cms.core.CalendarUtil;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
@@ -25,24 +68,6 @@ import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.esl.sql.model.Column;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.engine.*;
-import com.enonic.vertical.engine.handlers.model.MenuItemModel;
-import com.enonic.vertical.event.MenuHandlerEvent;
-import com.enonic.vertical.event.MenuHandlerListener;
-import com.enonic.vertical.event.VerticalEventMulticaster;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.util.Assert;
-import org.w3c.dom.*;
-
-import java.io.InputStream;
-import java.sql.*;
-import java.sql.Types;
-import java.util.*;
 
 public final class MenuHandler
     extends BaseHandler
@@ -4512,7 +4537,7 @@ public final class MenuHandler
             }
             else
             {
-                if ( childByName.getMenuItemKey().equals( excludeKey ) )
+                if ( childByName.getKey().equals( excludeKey ) )
                 {
                     return false;
                 }
@@ -4532,7 +4557,7 @@ public final class MenuHandler
             }
             else
             {
-                if ( childByName.getMenuItemKey().equals( excludeKey ) )
+                if ( childByName.getKey().equals( excludeKey ) )
                 {
                     return false;
                 }

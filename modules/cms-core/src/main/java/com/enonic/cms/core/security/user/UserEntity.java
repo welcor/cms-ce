@@ -15,6 +15,7 @@ import java.util.Set;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
+
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
@@ -23,7 +24,6 @@ import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-
 import com.enonic.cms.core.user.field.UserFieldMap;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
@@ -154,31 +154,6 @@ public class UserEntity
         }
 
         return getUserGroup().isOfType( GroupType.ENTERPRISE_ADMINS, true );
-    }
-
-    public boolean isUserstoreAdmin( UserStoreEntity userStore )
-    {
-        return !isAnonymous() && getUserGroup() != null && getUserGroup().isUserstoreAdmin( userStore );
-    }
-
-    public boolean isAdministrator()
-    {
-        return !isAnonymous() && getUserGroup() != null && getUserGroup().isAdministrator();
-    }
-
-    public boolean isContributor()
-    {
-        return !isAnonymous() && getUserGroup() != null && getUserGroup().isContributor();
-    }
-
-    public boolean isExpertContributor()
-    {
-        return !isAnonymous() && getUserGroup() != null && getUserGroup().isExpertContributor();
-    }
-
-    public boolean isDeveloper()
-    {
-        return !isAnonymous() && getUserGroup() != null && getUserGroup().isDeveloper();
     }
 
     public static boolean isBuiltInUser( String uid )

@@ -9,7 +9,6 @@ import java.util.List;
 import org.jdom.Attribute;
 import org.jdom.Element;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfigType;
 

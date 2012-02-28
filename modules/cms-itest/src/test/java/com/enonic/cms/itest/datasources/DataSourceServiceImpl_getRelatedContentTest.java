@@ -4,7 +4,16 @@
  */
 package com.enonic.cms.itest.datasources;
 
-import com.enonic.cms.core.content.ContentHandlerName;
+import org.jdom.Document;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
@@ -14,6 +23,7 @@ import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.contentkeybased.RelatedContentDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.relationdataentrylistbased.RelatedContentsDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.security.SecurityService;
@@ -21,22 +31,14 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
-import org.jdom.Document;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
 import static com.enonic.cms.itest.util.AssertTool.assertXPathNotExist;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DataSourceServiceImpl_getRelatedContentTest
     extends AbstractSpringTest

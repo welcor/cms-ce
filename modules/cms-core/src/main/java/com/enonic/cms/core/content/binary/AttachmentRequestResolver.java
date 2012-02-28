@@ -9,8 +9,8 @@ import java.util.List;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.PathAndParams;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 
 public abstract class AttachmentRequestResolver
 {

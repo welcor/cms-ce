@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,13 +49,13 @@ public class QueryTranslatorTest_sectionFilter
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity1 = new MenuItemEntity();
-        entity1.setKey( 1 );
+        entity1.setKey( new MenuItemKey(1) );
         sectionFilter.add( entity1 );
         MenuItemEntity entity2 = new MenuItemEntity();
-        entity2.setKey( 2 );
+        entity2.setKey( new MenuItemKey(2) );
         sectionFilter.add( entity2 );
         MenuItemEntity entity3 = new MenuItemEntity();
-        entity3.setKey( 3 );
+        entity3.setKey( new MenuItemKey(3 ));
         sectionFilter.add( entity3 );
 
         ContentIndexQuery query = createContentQuery( sectionFilter );
@@ -84,13 +85,13 @@ public class QueryTranslatorTest_sectionFilter
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity1 = new MenuItemEntity();
-        entity1.setKey( 1 );
+        entity1.setKey( new MenuItemKey(1) );
         sectionFilter.add( entity1 );
         MenuItemEntity entity2 = new MenuItemEntity();
-        entity2.setKey( 2 );
+        entity2.setKey( new MenuItemKey(2) );
         sectionFilter.add( entity2 );
         MenuItemEntity entity3 = new MenuItemEntity();
-        entity3.setKey( 3 );
+        entity3.setKey( new MenuItemKey(3) );
         sectionFilter.add( entity3 );
 
         ContentIndexQuery query = createContentQuery( "" );
@@ -122,13 +123,13 @@ public class QueryTranslatorTest_sectionFilter
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity1 = new MenuItemEntity();
-        entity1.setKey( 1 );
+        entity1.setKey( new MenuItemKey(1 ));
         sectionFilter.add( entity1 );
         MenuItemEntity entity2 = new MenuItemEntity();
-        entity2.setKey( 2 );
+        entity2.setKey( new MenuItemKey(2) );
         sectionFilter.add( entity2 );
         MenuItemEntity entity3 = new MenuItemEntity();
-        entity3.setKey( 3 );
+        entity3.setKey(new MenuItemKey( 3) );
         sectionFilter.add( entity3 );
 
         ContentIndexQuery query = createContentQuery( "" );

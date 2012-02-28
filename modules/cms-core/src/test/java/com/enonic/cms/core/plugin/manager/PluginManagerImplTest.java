@@ -1,14 +1,18 @@
 package com.enonic.cms.core.plugin.manager;
 
-import com.enonic.cms.core.plugin.ExtensionListener;
-import com.enonic.cms.core.plugin.PluginHandle;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import java.util.Collections;
-import java.util.List;
+
+import com.enonic.cms.core.plugin.ExtensionListener;
+import com.enonic.cms.core.plugin.PluginHandle;
+import com.enonic.cms.core.plugin.context.ContextFactory;
+
 import static org.junit.Assert.*;
 
 public class PluginManagerImplTest
@@ -21,6 +25,9 @@ public class PluginManagerImplTest
     {
         this.manager = new PluginManagerImpl();
         this.context = Mockito.mock(BundleContext.class);
+        
+        final ContextFactory contextFactory = Mockito.mock( ContextFactory.class );
+        this.manager.setContextFactory( contextFactory );
     }
 
     @Test
@@ -55,9 +62,7 @@ public class PluginManagerImplTest
         list = this.manager.getPlugins();
         assertNotNull(list);
         assertEquals(1, list.size());
-        assertSame(1L, list.get(0).getKey());
-
-        this.manager.stop(this.context);
+        assertSame( 1L, list.get( 0 ).getKey() );
     }
 
     @Test
@@ -85,8 +90,6 @@ public class PluginManagerImplTest
 
         handle = this.manager.findPluginByKey(1L);
         assertNotNull(handle);
-        assertEquals(1L, handle.getKey());
-
-        this.manager.stop(this.context);
+        assertEquals( 1L, handle.getKey() );
     }
 }

@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
 
-import com.enonic.cms.core.content.ContentAccessEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;

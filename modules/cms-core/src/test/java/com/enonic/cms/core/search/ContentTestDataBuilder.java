@@ -7,13 +7,10 @@ import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.joda.time.DateTime;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionEntity;
@@ -27,6 +24,8 @@ import com.enonic.cms.core.content.contentdata.custom.BinaryDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
 import com.enonic.cms.core.content.contentdata.custom.DateDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigParser;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;

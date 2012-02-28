@@ -26,18 +26,15 @@ import com.enonic.vertical.engine.MenuAccessRight;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
 import com.enonic.cms.core.service.AdminService;
-
-import com.enonic.cms.core.DeploymentPathResolver;
-
-import com.enonic.cms.core.resource.ResourceFolder;
-
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.userstore.UserStoreEntity;
 
 public class MainMenuServlet
     extends AdminHandlerBaseServlet
@@ -69,7 +66,7 @@ public class MainMenuServlet
             org.jdom.Element userstoresEl = new org.jdom.Element( "userstores" );
             for ( UserStoreEntity userStore : allUsertores )
             {
-                if ( user.isEnterpriseAdmin() || userStoreService.isUserStoreAdministrator( user.getKey(), userStore.getKey() ) )
+                if ( memberOfResolver.hasUserStoreAdministratorPowers( user, userStore.getKey() ) )
                 {
                     org.jdom.Element userstoreEl = userStoreXmlCreator.createUserStoreElement( userStore );
 
@@ -208,12 +205,12 @@ public class MainMenuServlet
         catch ( TransformerException te )
         {
             String MESSAGE_02 = "Failed to transform XML document: %t";
-            VerticalAdminLogger.errorAdmin(MESSAGE_02, te );
+            VerticalAdminLogger.errorAdmin( MESSAGE_02, te );
         }
         catch ( IOException ioe )
         {
             String MESSAGE_03 = "I/O error occured: %t";
-            VerticalAdminLogger.errorAdmin(MESSAGE_03, ioe );
+            VerticalAdminLogger.errorAdmin( MESSAGE_03, ioe );
         }
     }
 }

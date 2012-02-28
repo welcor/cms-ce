@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import com.enonic.cms.core.content.ContentAccessEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 

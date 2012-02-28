@@ -1,5 +1,12 @@
 package com.enonic.cms.itest.plugin;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
+
 import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.api.plugin.ext.TaskHandler;
@@ -10,11 +17,6 @@ import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class MockPluginManager
     implements PluginManager
@@ -103,5 +105,15 @@ public class MockPluginManager
     public PluginHandle findPluginByKey( long key )
     {
         return null;
+    }
+
+    public void install( final File file )
+    {
+
+    }
+
+    public void uninstall( final File file )
+    {
+
     }
 }

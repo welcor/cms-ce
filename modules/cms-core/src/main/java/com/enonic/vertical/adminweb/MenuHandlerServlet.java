@@ -4,6 +4,49 @@
  */
 package com.enonic.vertical.adminweb;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.lang.StringUtils;
+import org.jdom.JDOMException;
+import org.joda.time.DateTime;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.containers.MultiValueMap;
+import com.enonic.esl.servlet.http.CookieUtil;
+import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
+import com.enonic.esl.util.ParamsInTextParser;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.AccessRight;
+import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineException;
+import com.enonic.vertical.engine.VerticalSecurityException;
+
+import com.enonic.cms.framework.util.JDOMUtil;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.SiteKey;
@@ -33,47 +76,32 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.core.structure.*;
-import com.enonic.cms.core.structure.menuitem.*;
-import com.enonic.cms.core.structure.page.*;
+import com.enonic.cms.core.structure.DefaultSiteAccessRightAccumulator;
+import com.enonic.cms.core.structure.DefaultSiteAccumulatedAccessRights;
+import com.enonic.cms.core.structure.RunAsType;
+import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteXmlCreator;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccessRightAccumulator;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccumulatedAccessRights;
+import com.enonic.cms.core.structure.menuitem.MenuItemAndUserAccessRights;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemRequestParameter;
+import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
+import com.enonic.cms.core.structure.menuitem.MenuItemType;
+import com.enonic.cms.core.structure.menuitem.MenuItemXMLCreatorSetting;
+import com.enonic.cms.core.structure.menuitem.MenuItemXmlCreator;
+import com.enonic.cms.core.structure.page.PageEntity;
+import com.enonic.cms.core.structure.page.PageSpecification;
+import com.enonic.cms.core.structure.page.PageWindowEntity;
+import com.enonic.cms.core.structure.page.PageWindowKey;
+import com.enonic.cms.core.structure.page.Regions;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateRegionEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
-import com.enonic.esl.util.ParamsInTextParser;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.AccessRight;
-import com.enonic.vertical.engine.VerticalCreateException;
-import com.enonic.vertical.engine.VerticalEngineException;
-import com.enonic.vertical.engine.VerticalSecurityException;
-import org.apache.commons.lang.StringUtils;
-import org.jdom.JDOMException;
-import org.joda.time.DateTime;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.util.*;
 
 public class MenuHandlerServlet
     extends AdminHandlerBaseServlet
@@ -1171,7 +1199,7 @@ public class MenuHandlerServlet
         String str_oldParentKey = "-1";
         if ( menuItemToMove.getParent() != null )
         {
-            str_oldParentKey = menuItemToMove.getParent().getMenuItemKey().toString();
+            str_oldParentKey = menuItemToMove.getParent().getKey().toString();
         }
 
         int parentKey = formItems.getInt( "belowkey" );
@@ -1238,7 +1266,7 @@ public class MenuHandlerServlet
 
         MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey.toInt() );
 
-        MenuItemKey parentMenuItemKey = menuItem.getParent() != null ? menuItem.getParent().getMenuItemKey() : null;
+        MenuItemKey parentMenuItemKey = menuItem.getParent() != null ? menuItem.getParent().getKey() : null;
         SiteKey siteKey = menuItem.getSite().getKey();
 
         admin.removeMenuItem( user, menuItemKey.toInt() );
@@ -1520,7 +1548,7 @@ public class MenuHandlerServlet
 
             MenuItemEntity moveMenuItem = menuItemDao.findByKey( moveMenuItemKey );
 
-            int fromParentKey = moveMenuItem.getParent() != null ? moveMenuItem.getParent().getKey() : -1;
+            int fromParentKey = moveMenuItem.getParent() != null ? moveMenuItem.getParent().getKey().toInt() : -1;
             int toParentKey = formItems.getInt( "move_to_parent", -1 );
 
             MenuItemEntity toParentMenuItem = menuItemDao.findByKey( new MenuItemKey( toParentKey ) );
@@ -1557,7 +1585,7 @@ public class MenuHandlerServlet
 
         while ( menuItemToCheck != null )
         {
-            if ( menuItemToCheck.getMenuItemKey().equals( new MenuItemKey( menuKeyToMove ) ) )
+            if ( menuItemToCheck.getKey().equals( new MenuItemKey( menuKeyToMove ) ) )
             {
                 throw new VerticalAdminException( "Not allowed to move menuitem to self or own descendant" );
             }
@@ -1785,7 +1813,7 @@ public class MenuHandlerServlet
             MenuItemEntity menuItemEntity = menuItemDao.findByKey( shortCut );
             formItems.remove( "key" );
             formItems.remove( "type" );
-            formItems.putInt( "key", menuItemEntity.getKey() );
+            formItems.putInt( "key", menuItemEntity.getKey().toInt() );
             formItems.putString( "type", menuItemEntity.getType().getName() );
             handlerPreview( request, response, session, admin, formItems );
         }
@@ -1828,7 +1856,7 @@ public class MenuHandlerServlet
                 modifiedMenuItem.setPage( newPage );
                 SiteEntity site = siteDao.findByKey( siteKey );
                 modifiedMenuItem.setSite( site );
-                modifiedMenuItem.setKey( -1 );
+                modifiedMenuItem.setKey( new MenuItemKey( -1 ) );
 
                 modifiedMenuItem.setParent( menuItemDao.findByKey( parentKey ) );
             }
@@ -2418,7 +2446,7 @@ public class MenuHandlerServlet
                 MenuItemEntity selectedMenuItem = menuItemDao.findByKey( selectedMenuItemKey );
                 if ( selectedMenuItem.getParent() != null )
                 {
-                    parentMenuItemKey = selectedMenuItem.getParent().getMenuItemKey();
+                    parentMenuItemKey = selectedMenuItem.getParent().getKey();
                 }
 
                 XMLTool.mergeDocuments( doc1, menuItemXML, true );

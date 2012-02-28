@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import org.elasticsearch.common.collect.Sets;
 import org.springframework.util.StopWatch;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -21,7 +22,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  */
 public class IndexQueryMeasurer
 {
-    Map<IndexQuerySignature, IndexQueryMeasure> queryMeasures = Maps.newHashMap();
+    private final Map<IndexQuerySignature, IndexQueryMeasure> queryMeasures = Maps.newHashMap();
 
     public synchronized void addMeasure( ContentIndexQuery query, StopWatch stopWatch, String sourceName )
     {
@@ -50,24 +51,38 @@ public class IndexQueryMeasurer
         return new ArrayList<IndexQueryMeasure>( this.queryMeasures.values() );
     }
 
-    public Set<IndexQueryMeasure> getMeasuresOrderedByTotalExecutions()
+    public Set<IndexQueryMeasure> getMeasuresOrderedByTotalExecutions( int count )
     {
         final TreeSet<IndexQueryMeasure> indexQueryMeasures = Sets.newTreeSet( new IndexQueryMeasureInvocationComparator() );
-
         indexQueryMeasures.addAll( queryMeasures.values() );
 
-        return indexQueryMeasures;
+        return limitSetIfNeccesary( count, indexQueryMeasures );
     }
 
 
-    public Set<IndexQueryMeasure> getMeasuresOrderedByAvgDiffTime()
+    public Set<IndexQueryMeasure> getMeasuresOrderedByAvgDiffTime( int count )
     {
-        final TreeSet<IndexQueryMeasure> indexQueryMeasures = Sets.newTreeSet( new IndexQueryMeasureAvgTimeDiffComparator() );
+        final TreeSet<IndexQueryMeasure> sortedSet = Sets.newTreeSet( new IndexQueryMeasureAvgTimeDiffComparator() );
+        sortedSet.addAll( queryMeasures.values() );
 
-        indexQueryMeasures.addAll( queryMeasures.values() );
-
-        return indexQueryMeasures;
+        return limitSetIfNeccesary( count, sortedSet );
     }
 
+    private Set<IndexQueryMeasure> limitSetIfNeccesary( int count, TreeSet<IndexQueryMeasure> sortedSet )
+    {
+        if ( sortedSet.size() > count )
+        {
+            IndexQueryMeasure lastElement = Iterables.get( sortedSet, count );
+            return sortedSet.headSet( lastElement );
+        }
+
+        return sortedSet;
+    }
+
+
+    public void clearStatistics()
+    {
+        queryMeasures.clear();
+    }
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.ClusterState;
@@ -17,6 +18,7 @@ import org.elasticsearch.common.io.stream.BytesStreamOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.vertical.adminweb.AdminHelper;
 
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
@@ -34,6 +36,10 @@ public class IndexMonitorController
     extends AbstractToolController
 {
 
+    protected static final String AVG_TIME_DIFF = "avgTimeDiff";
+
+    protected static final String TOTAL_HITS = "totalHits";
+
     private ContentIndexService newContentIndexService;
 
     private ElasticSearchIndexService elasticSearchIndexService;
@@ -45,13 +51,41 @@ public class IndexMonitorController
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
 
+        String clear = req.getParameter( "clear" );
+
+        if ( StringUtils.isNotBlank( clear ) )
+        {
+            indexQueryMeasurer.clearStatistics();
+        }
+
+        String orderBy = req.getParameter( "orderby" );
+
+        if ( StringUtils.isBlank( orderBy ) )
+        {
+            orderBy = AVG_TIME_DIFF;
+        }
+
+        String countString = req.getParameter( "count" );
+
+        int count;
+
+        if ( !StringUtils.isNumeric( countString ) )
+        {
+            count = 10;
+        }
+        else
+        {
+            count = new Integer( countString );
+        }
+
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
+        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
         model.put( "newIndexNumberOfContent", getTotalHits() );
         model.put( "numberOfNodes", 1 );
         // model.put( "contentMapping", getMapping() );
 
-        model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult() );
+        model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
 
         /*
         final ExtensionSet extensions = this.pluginManager.getExtensions();
@@ -69,9 +103,19 @@ public class IndexMonitorController
 
     }
 
-    private Collection<IndexQueryMeasure> getIndexQueryMeasurerResult()
+    private Collection<IndexQueryMeasure> getIndexQueryMeasurerResult( String orderBy, Integer count )
     {
-        return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime();
+        if ( AVG_TIME_DIFF.equals( orderBy ) )
+        {
+            return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
+        }
+
+        if ( TOTAL_HITS.equals( orderBy ) )
+        {
+            return indexQueryMeasurer.getMeasuresOrderedByTotalExecutions(count);
+        }
+
+        return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
     }
 
 

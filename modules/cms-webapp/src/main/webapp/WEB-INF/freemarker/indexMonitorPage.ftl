@@ -14,6 +14,7 @@
         }
 
         .infoBox {
+            font-size: 10pt;
             padding: 8px;
             margin: 10px;
             border: 1px dotted #000000;
@@ -51,7 +52,8 @@
         </ul>
     </div>
      <div class="infoBox">
-        <b>Query Measures</b>
+     <h2>Query Measures <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&clear=true"> [ Clear ] </a></h2>
+     Order by <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&orderby=avgTimeDiff">[avgTime diff]</a> <a href="${baseUrl}/adminpage?page=914&op=indexMonitor&orderby=totalHits">[totalHits]</a>
               [#list indexQueryMeasurerSnapshot as measure]
                   [@lib.queryMeasureDetails measure=measure/]
               [/#list]

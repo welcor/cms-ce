@@ -65,7 +65,7 @@ public class OrderQueryBuilder
             order = SortOrder.ASC;
         }
 
-        return new FieldSortBuilder(name).order(order);
+        return new FieldSortBuilder( name ).order( order ).ignoreUnmapped( true );
     }
 
 }

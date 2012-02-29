@@ -38,22 +38,22 @@ class DeleteCategoryCommandProcessor
         this.contentStorer = contentStorer;
     }
 
-    public void setDeleter( UserEntity deleter )
+    void setDeleter( UserEntity deleter )
     {
         this.deleter = deleter;
     }
 
-    public void setCategoryToDelete( CategoryEntity categoryToDelete )
+    void setCategoryToDelete( CategoryEntity categoryToDelete )
     {
         this.categoryToDelete = categoryToDelete;
     }
 
-    public void setIncludeContent( boolean includeContent )
+    void setIncludeContent( boolean includeContent )
     {
         this.includeContent = includeContent;
     }
 
-    public void setRecursive( boolean recursive )
+    void setRecursive( boolean recursive )
     {
         this.recursive = recursive;
     }
@@ -125,12 +125,12 @@ class DeleteCategoryCommandProcessor
         }
     }
 
-    public UserEntity getDeleter()
+    UserEntity getDeleter()
     {
         return deleter;
     }
 
-    public List<ContentEntity> getDeletedContent()
+    List<ContentEntity> getDeletedContent()
     {
         return deletedContent;
     }

@@ -335,7 +335,7 @@ public class CategoryEntity
     public void setParent( CategoryEntity parent )
     {
         this.parent = parent;
-        parent.addChild( this );
+        this.parent.addChild( this );
     }
 
     public void setAccessRights( Map<GroupKey, CategoryAccessEntity> accessRights )

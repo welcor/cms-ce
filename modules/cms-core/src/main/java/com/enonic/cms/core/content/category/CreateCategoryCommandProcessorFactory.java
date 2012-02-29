@@ -41,7 +41,7 @@ public class CreateCategoryCommandProcessorFactory
     @Autowired
     private CategoryDao categoryDao;
 
-    public CreateCategoryCommandProcessor create( StoreNewCategoryCommand command )
+    CreateCategoryCommandProcessor create( StoreNewCategoryCommand command )
     {
         Preconditions.checkNotNull( command.getCreator(), "Creator in command must be specified" );
 
@@ -50,10 +50,11 @@ public class CreateCategoryCommandProcessorFactory
         final ContentTypeEntity contentType = resolveContentType( command.getContentType() );
         final CategoryAccessStorer categoryAccessStorer = new CategoryAccessStorer( groupDao );
         final CategoryAccessResolver categoryAccessResolver = new CategoryAccessResolver( groupDao );
+        final CreateCategoryAccessChecker createCategoryAccessChecker =
+            new CreateCategoryAccessChecker( memberOfResolver, categoryAccessResolver ).creator( creator );
 
         final CreateCategoryCommandProcessor createCategoryCommandProcessor =
-            new CreateCategoryCommandProcessor( timeService, categoryDao, unitFactory, memberOfResolver, categoryAccessStorer,
-                                                categoryAccessResolver );
+            new CreateCategoryCommandProcessor( timeService, categoryDao, unitFactory, categoryAccessStorer, createCategoryAccessChecker );
 
         createCategoryCommandProcessor.setCreator( creator );
         createCategoryCommandProcessor.setParentCategory( parentCategory );
@@ -95,11 +96,5 @@ public class CreateCategoryCommandProcessorFactory
         }
 
         return null;
-    }
-
-    @Autowired
-    public void setTimeService( TimeService timeService )
-    {
-        this.timeService = timeService;
     }
 }

@@ -7,13 +7,13 @@ import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.store.dao.GroupDao;
 
-public class CategoryAccessStorer
+class CategoryAccessStorer
 {
     private GroupDao groupDao;
 
     private final GroupEntity administrator;
 
-    public CategoryAccessStorer( GroupDao groupDao )
+    CategoryAccessStorer( GroupDao groupDao )
     {
         this.groupDao = groupDao;
         this.administrator = groupDao.findBuiltInAdministrator();

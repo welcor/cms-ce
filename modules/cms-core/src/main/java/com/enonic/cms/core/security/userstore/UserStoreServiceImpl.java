@@ -115,20 +115,6 @@ public class UserStoreServiceImpl
         return userStoreDao.findByKey( userStoreKey );
     }
 
-    public boolean isUserStoreAdministrator( final UserKey userKey )
-    {
-        UserEntity user = userDao.findByKey( userKey );
-        UserStoreEntity userStore = user.getUserStore();
-        return user.isUserstoreAdmin( userStore );
-    }
-
-    public boolean isUserStoreAdministrator( final UserKey userKey, final UserStoreKey userStoreKey )
-    {
-        UserEntity user = userDao.findByKey( userKey );
-        UserStoreEntity userStore = getUserStore( userStoreKey );
-        return user.isUserstoreAdmin( userStore );
-    }
-
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public UserKey storeNewUser( final StoreNewUserCommand command )
     {

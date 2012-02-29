@@ -1,12 +1,10 @@
 package com.enonic.cms.core.structure.menuitem;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,13 +14,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.CacheSettings;
 import com.enonic.cms.core.CaseInsensitiveString;
@@ -43,7 +38,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 public class MenuItemEntity
     implements Serializable
 {
-    private int key;
+    private MenuItemKey key;
 
     private String name;
 
@@ -167,14 +162,9 @@ public class MenuItemEntity
         return menuItemType.isRenderable();
     }
 
-    public int getKey()
+    public MenuItemKey getKey()
     {
         return key;
-    }
-
-    public MenuItemKey getMenuItemKey()
-    {
-        return new MenuItemKey( getKey() );
     }
 
     public String getName()
@@ -417,7 +407,7 @@ public class MenuItemEntity
         return descendantSections;
     }
 
-    public void setKey( int key )
+    public void setKey( MenuItemKey key )
     {
         this.key = key;
     }
@@ -592,7 +582,7 @@ public class MenuItemEntity
 
         if ( contents.size() > 1 )
         {
-            throw new IllegalStateException( "Unexpected number of contents (" + contents.size() + ") for menu item: " + getKey() );
+            throw new IllegalStateException( "Unexpected number of contents (" + contents.size() + ") for menu item: " + getKey().toInt() );
         }
 
         return contents.iterator().next();
@@ -830,7 +820,7 @@ public class MenuItemEntity
 
         while ( currentParent != null )
         {
-            if ( potentialParent.getKey() == currentParent.getKey() )
+            if ( potentialParent.getKey().toInt() == currentParent.getKey().toInt() )
             {
                 return true;
             }
@@ -840,6 +830,7 @@ public class MenuItemEntity
         return false;
     }
 
+    @Override
     public boolean equals( Object o )
     {
         if ( this == o )
@@ -852,20 +843,18 @@ public class MenuItemEntity
         }
 
         MenuItemEntity that = (MenuItemEntity) o;
-
-        return key == that.getKey();
-
+        return !( getKey() != null ? !getKey().equals( that.getKey() ) : that.getKey() != null );
     }
 
     public int hashCode()
     {
-        return new HashCodeBuilder( 143, 631 ).append( key ).toHashCode();
+        return new HashCodeBuilder( 143, 631 ).append( getKey() ).toHashCode();
     }
 
     public String toString()
     {
         StringBuffer s = new StringBuffer();
-        s.append( "key=" ).append( key ).append( ", name='" ).append( getName() ).append( "'" );
+        s.append( "key=" ).append( getKey() ).append( ", name='" ).append( getName() ).append( "'" );
         return s.toString();
     }
 

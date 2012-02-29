@@ -912,13 +912,13 @@ public class UserHandlerServlet
         UserEntity user = securityService.getUser( oldUser );
 
         boolean isEnterpriseAdmin = false;
-        if ( user.isEnterpriseAdmin() )
+        if ( memberOfResolver.hasEnterpriseAdminPowers( user ) )
         {
             isEnterpriseAdmin = true;
         }
 
         boolean isUserstoreAdmin = false;
-        if ( user.isUserstoreAdmin( userStore ) )
+        if ( memberOfResolver.hasUserStoreAdministratorPowers( user, userStore.getKey() ) )
         {
             isUserstoreAdmin = true;
         }
@@ -1563,19 +1563,23 @@ public class UserHandlerServlet
                 groupArray = new String[]{formItems.getString( "member" )};
             }
 
-            for ( String aGroupArray : groupArray )
+            for ( String groupKey : groupArray )
             {
-                if ( user.isEnterpriseAdmin() )
+                boolean groupIsEnterpriseGroup = enterpriseAdminGroupKey.toString().equalsIgnoreCase( groupKey );
+                if ( groupIsEnterpriseGroup )
                 {
-                    requestedGroupMemberships.add( new GroupKey( aGroupArray ) );
+                    if ( memberOfResolver.hasEnterpriseAdminPowers( user ) )
+                    {
+                        requestedGroupMemberships.add( new GroupKey( groupKey ) );
+                    }
+                    else
+                    {
+                        throw new SecurityException( "No access to enterprise administrators group" );
+                    }
                 }
-                else if ( user.isUserstoreAdmin( userStore ) && enterpriseAdminGroupKey.toString().equalsIgnoreCase( aGroupArray ) )
+                else
                 {
-                    throw new SecurityException( "No access to enterprise administrators group" );
-                }
-                else if ( !enterpriseAdminGroupKey.toString().equalsIgnoreCase( aGroupArray ) )
-                {
-                    requestedGroupMemberships.add( new GroupKey( aGroupArray ) );
+                    requestedGroupMemberships.add( new GroupKey( groupKey ) );
                 }
             }
         }
@@ -1616,8 +1620,8 @@ public class UserHandlerServlet
         {
             final GroupEntity userGroupToUpdate = groupDao.findByKey( userToUpdate.getUserGroup().getGroupKey() );
             GroupMembershipDiffResolver diffResolver = new GroupMembershipDiffResolver( userGroupToUpdate );
-            Set<GroupKey> groupsToJoin = diffResolver.findGroupsToJoin( requestedGroupMemberships );
-            Set<GroupKey> groupsToLeave = diffResolver.findGroupsToLeave( requestedGroupMemberships );
+            Set<GroupKey> groupsToJoin = diffResolver.resolveGroupsToJoin( requestedGroupMemberships );
+            Set<GroupKey> groupsToLeave = diffResolver.resolveGroupsToLeave( requestedGroupMemberships );
 
             GroupSpecification userGroupToUpdateSpec = new GroupSpecification();
             userGroupToUpdateSpec.setDeletedState( GroupSpecification.DeletedState.NOT_DELETED );

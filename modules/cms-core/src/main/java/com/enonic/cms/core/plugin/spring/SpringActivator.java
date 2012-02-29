@@ -17,9 +17,10 @@ public final class SpringActivator
     {
         this.app = new XmlAppContext( context.getBundle() );
 
-        final PluginContext pluginContext  = OsgiHelper.requireService(context, PluginContext.class);
-        this.app.addBeanFactoryPostProcessor(new BeansProcessor(pluginContext));
+        final PluginContext pluginContext = OsgiHelper.requireService( context, PluginContext.class );
         this.app.addBeanFactoryPostProcessor( new ConfigProcessor( pluginContext ) );
+        this.app.addBeanFactoryPostProcessor( new BeansProcessor( pluginContext ) );
+
         this.app.refresh();
 
         for ( final Extension ext : this.app.getBeansOfType( Extension.class ).values() )
@@ -27,7 +28,7 @@ public final class SpringActivator
             pluginContext.register( ext );
         }
     }
-    
+
     public void stop( final BundleContext context )
         throws Exception
     {

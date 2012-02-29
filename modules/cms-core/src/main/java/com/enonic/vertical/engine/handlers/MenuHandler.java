@@ -4537,7 +4537,7 @@ public final class MenuHandler
             }
             else
             {
-                if ( childByName.getMenuItemKey().equals( excludeKey ) )
+                if ( childByName.getKey().equals( excludeKey ) )
                 {
                     return false;
                 }
@@ -4557,7 +4557,7 @@ public final class MenuHandler
             }
             else
             {
-                if ( childByName.getMenuItemKey().equals( excludeKey ) )
+                if ( childByName.getKey().equals( excludeKey ) )
                 {
                     return false;
                 }

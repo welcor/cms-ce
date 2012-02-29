@@ -157,63 +157,52 @@ public class GetRelatedContentExecutor
 
     public GetRelatedContentResult execute()
     {
-        // Get given content
-        final ContentByContentQuery baseContentQuery = new ContentByContentQuery();
-        baseContentQuery.setContentKeyFilter( contentFilter );
-        baseContentQuery.setUser( user );
-        if ( includeOfflineContent )
+        Preconditions.checkNotNull( user, "user must be specified" );
+        Preconditions.checkNotNull( contentFilter, "contentFilter must be specified" );
+        Preconditions.checkArgument( contentFilter.size() > 0, "contentFilter must contain one or more content keys" );
+        Preconditions.checkArgument( count > 0, "count must be larger than zero" );
+        Preconditions.checkArgument( relation != 0, "relation must either be -1 (parents) or 1 (children)" );
+
+        final ContentResultSet givenContent = getGivenContent();
+
+        final RelatedContentResultSet relatedContentToGivenContent = getRelatedContentToGivenContent( givenContent );
+
+        final ContentResultSet contentResult = applyQueryOnRelatedContentToGivenContent( relatedContentToGivenContent );
+
+        final RelatedContentResultSet relatedContent = getRelatedContentToContentResult( contentResult );
+
+        return new GetRelatedContentResult( contentResult, relatedContent );
+    }
+
+    private RelatedContentResultSet getRelatedContentToContentResult( ContentResultSet mainResultContent )
+    {
+        // Get the related content of the top level content
+        final RelatedContentQuery relatedContentSpec = new RelatedContentQuery( nowAsDate );
+        relatedContentSpec.setUser( user );
+        relatedContentSpec.setContentResultSet( mainResultContent );
+        relatedContentSpec.setParentLevel( parentLevel );
+        relatedContentSpec.setChildrenLevel( childrenLevel );
+        relatedContentSpec.setParentChildrenLevel( parentChildrenLevel );
+        relatedContentSpec.setIncludeOnlyMainVersions( true );
+        if ( includeOfflineContent || previewContext.isPreviewingContent() )
         {
-            baseContentQuery.setFilterIncludeOfflineContent();
+            relatedContentSpec.setFilterIncludeOfflineContent();
         }
         else
         {
-            baseContentQuery.setFilterContentOnlineAt( nowAsDate );
+            relatedContentSpec.setFilterContentOnlineAt( nowAsDate );
         }
-        ContentResultSet baseContent = contentService.queryContent( baseContentQuery );
+        RelatedContentResultSet relatedContent = contentService.queryRelatedContent( relatedContentSpec );
         if ( previewContext.isPreviewingContent() )
         {
-            baseContent = previewContext.getContentPreviewContext().applyPreviewedContentOnContentResultSet( baseContent, contentFilter );
+            relatedContent = previewContext.getContentPreviewContext().overrideRelatedContentResultSet( relatedContent );
+            previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( relatedContent );
         }
-        // Get the related content to given content
-        final RelatedContentResultSet relatedContentToBaseContent;
-        if ( requireAll && baseContent.getLength() > 1 )
-        {
-            relatedContentToBaseContent = contentService.getRelatedContentRequiresAll( user, relation, baseContent );
-        }
-        else
-        {
-            final RelatedContentQuery relatedContentToBaseContentSpec = new RelatedContentQuery( nowAsDate );
-            relatedContentToBaseContentSpec.setUser( user );
-            relatedContentToBaseContentSpec.setContentResultSet( baseContent );
-            relatedContentToBaseContentSpec.setParentLevel( relation < 0 ? 1 : 0 );
-            relatedContentToBaseContentSpec.setChildrenLevel( relation > 0 ? 1 : 0 );
-            relatedContentToBaseContentSpec.setParentChildrenLevel( 0 );
-            relatedContentToBaseContentSpec.setIncludeOnlyMainVersions( true );
-            if ( includeOfflineContent )
-            {
-                relatedContentToBaseContentSpec.setFilterIncludeOfflineContent();
-            }
-            relatedContentToBaseContent = contentService.queryRelatedContent( relatedContentToBaseContentSpec );
+        return relatedContent;
+    }
 
-            final boolean previewedContentIsAmongBaseContent = previewContext.isPreviewingContent() &&
-                baseContent.containsContent( previewContext.getContentPreviewContext().getContentPreviewed().getKey() );
-            if ( previewedContentIsAmongBaseContent )
-            {
-                // ensuring offline related content to the previewed content to be included when previewing
-                RelatedContentQuery relatedSpecForPreviewedContent = new RelatedContentQuery( relatedContentToBaseContentSpec );
-                relatedSpecForPreviewedContent.setFilterIncludeOfflineContent();
-                relatedSpecForPreviewedContent.setContentResultSet(
-                    new ContentResultSetNonLazy( previewContext.getContentPreviewContext().getContentAndVersionPreviewed().getContent() ) );
-
-                RelatedContentResultSet relatedContentsForPreviewedContent =
-                    contentService.queryRelatedContent( relatedSpecForPreviewedContent );
-
-                relatedContentToBaseContent.overwrite( relatedContentsForPreviewedContent );
-                previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( relatedContentToBaseContent );
-            }
-        }
-
-        // Get the main result content
+    private ContentResultSet applyQueryOnRelatedContentToGivenContent( RelatedContentResultSet relatedContentToGivenContent )
+    {
         final ContentByContentQuery mainResultContentQuery = new ContentByContentQuery();
         mainResultContentQuery.setUser( user );
         mainResultContentQuery.setQuery( query );
@@ -222,7 +211,7 @@ public class GetRelatedContentExecutor
         mainResultContentQuery.setCount( count );
         if ( contentFilter != null )
         {
-            mainResultContentQuery.setContentKeyFilter( relatedContentToBaseContent.getContentKeys() );
+            mainResultContentQuery.setContentKeyFilter( relatedContentToGivenContent.getContentKeys() );
         }
         if ( categoryFilter != null )
         {
@@ -246,30 +235,69 @@ public class GetRelatedContentExecutor
             mainResultContent = previewContext.getContentPreviewContext().overrideContentResultSet( mainResultContent );
             previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( mainResultContent );
         }
+        return mainResultContent;
+    }
 
-        // Get the related content of the top level content
-        final RelatedContentQuery relatedContentSpec = new RelatedContentQuery( nowAsDate );
-        relatedContentSpec.setUser( user );
-        relatedContentSpec.setContentResultSet( mainResultContent );
-        relatedContentSpec.setParentLevel( parentLevel );
-        relatedContentSpec.setChildrenLevel( childrenLevel );
-        relatedContentSpec.setParentChildrenLevel( parentChildrenLevel );
-        relatedContentSpec.setIncludeOnlyMainVersions( true );
-        if ( includeOfflineContent || previewContext.isPreviewingContent() )
+    private RelatedContentResultSet getRelatedContentToGivenContent( ContentResultSet givenContent )
+    {
+        final RelatedContentResultSet relatedContentToGivenContent;
+        if ( requireAll && givenContent.getLength() > 1 )
         {
-            relatedContentSpec.setFilterIncludeOfflineContent();
+            relatedContentToGivenContent = contentService.getRelatedContentRequiresAll( user, relation, givenContent );
         }
         else
         {
-            relatedContentSpec.setFilterContentOnlineAt( nowAsDate );
+            final RelatedContentQuery relatedContentToBaseContentSpec = new RelatedContentQuery( nowAsDate );
+            relatedContentToBaseContentSpec.setUser( user );
+            relatedContentToBaseContentSpec.setContentResultSet( givenContent );
+            relatedContentToBaseContentSpec.setParentLevel( relation < 0 ? 1 : 0 );
+            relatedContentToBaseContentSpec.setChildrenLevel( relation > 0 ? 1 : 0 );
+            relatedContentToBaseContentSpec.setParentChildrenLevel( 0 );
+            relatedContentToBaseContentSpec.setIncludeOnlyMainVersions( true );
+            if ( includeOfflineContent )
+            {
+                relatedContentToBaseContentSpec.setFilterIncludeOfflineContent();
+            }
+            relatedContentToGivenContent = contentService.queryRelatedContent( relatedContentToBaseContentSpec );
+
+            final boolean previewedContentIsAmongBaseContent = previewContext.isPreviewingContent() &&
+                givenContent.containsContent( previewContext.getContentPreviewContext().getContentPreviewed().getKey() );
+            if ( previewedContentIsAmongBaseContent )
+            {
+                // ensuring offline related content to the previewed content to be included when previewing
+                RelatedContentQuery relatedSpecForPreviewedContent = new RelatedContentQuery( relatedContentToBaseContentSpec );
+                relatedSpecForPreviewedContent.setFilterIncludeOfflineContent();
+                relatedSpecForPreviewedContent.setContentResultSet(
+                    new ContentResultSetNonLazy( previewContext.getContentPreviewContext().getContentAndVersionPreviewed().getContent() ) );
+
+                RelatedContentResultSet relatedContentsForPreviewedContent =
+                    contentService.queryRelatedContent( relatedSpecForPreviewedContent );
+
+                relatedContentToGivenContent.overwrite( relatedContentsForPreviewedContent );
+                previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( relatedContentToGivenContent );
+            }
         }
-        RelatedContentResultSet relatedContent = contentService.queryRelatedContent( relatedContentSpec );
+        return relatedContentToGivenContent;
+    }
+
+    private ContentResultSet getGivenContent()
+    {
+        final ContentByContentQuery baseContentQuery = new ContentByContentQuery();
+        baseContentQuery.setContentKeyFilter( contentFilter );
+        baseContentQuery.setUser( user );
+        if ( includeOfflineContent )
+        {
+            baseContentQuery.setFilterIncludeOfflineContent();
+        }
+        else
+        {
+            baseContentQuery.setFilterContentOnlineAt( nowAsDate );
+        }
+        ContentResultSet baseContent = contentService.queryContent( baseContentQuery );
         if ( previewContext.isPreviewingContent() )
         {
-            relatedContent = previewContext.getContentPreviewContext().overrideRelatedContentResultSet( relatedContent );
-            previewContext.getContentPreviewContext().registerContentToBeAvailableOnline( relatedContent );
+            baseContent = previewContext.getContentPreviewContext().applyPreviewedContentOnContentResultSet( baseContent, contentFilter );
         }
-
-        return new GetRelatedContentResult( mainResultContent, relatedContent );
+        return baseContent;
     }
 }

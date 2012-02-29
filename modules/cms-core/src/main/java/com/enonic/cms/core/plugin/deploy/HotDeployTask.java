@@ -2,13 +2,20 @@ package com.enonic.cms.core.plugin.deploy;
 
 import java.io.File;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.util.LogFacade;
-import com.enonic.cms.core.plugin.installer.BundleInstaller;
+import com.enonic.cms.core.plugin.PluginManager;
 
-final class HotDeployTask
+@Component
+public final class HotDeployTask
 {
     private final static LogFacade LOG = LogFacade.get( HotDeployTask.class );
 
@@ -20,28 +27,34 @@ final class HotDeployTask
 
     private HotDeployListener listener;
 
+    private PluginManager pluginManager;
+
+    @Value("#{config.pluginDeployDir}")
     public void setDeployDir( final File deployDir )
     {
         this.deployDir = deployDir;
     }
 
+    @Value("#{config.pluginScanPeriod}")
     public void setScanPeriod( final long scanPeriod )
     {
         this.scanPeriod = scanPeriod;
     }
 
-    public void setInstaller( final BundleInstaller installer )
+    @Autowired
+    public void setPluginManager( final PluginManager pluginManager )
     {
-        this.listener = new HotDeployListener(installer);
+        this.pluginManager = pluginManager;
     }
 
+    @PostConstruct
     public void start()
         throws Exception
     {
         final JarFileFilter filter = new JarFileFilter();
 
         final FileAlterationObserver observer = new FileAlterationObserver(this.deployDir, filter);
-        observer.addListener(this.listener);
+        observer.addListener(new HotDeployListener( this.pluginManager ));
         observer.checkAndNotify();
 
         this.monitor = new FileAlterationMonitor(this.scanPeriod, observer);
@@ -50,6 +63,7 @@ final class HotDeployTask
         LOG.info("Hot deploying plugins from [{0}]. Scanning every [{1}] ms.", this.deployDir.getAbsolutePath(), this.scanPeriod);
     }
 
+    @PreDestroy
     public void stop()
         throws Exception
     {

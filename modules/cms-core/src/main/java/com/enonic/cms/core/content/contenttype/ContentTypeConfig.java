@@ -6,7 +6,6 @@ package com.enonic.cms.core.content.contenttype;
 
 import java.util.List;
 
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 
 public class ContentTypeConfig

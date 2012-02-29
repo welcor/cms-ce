@@ -6,10 +6,9 @@ package com.enonic.cms.core.portal.datasource.expressionfunctions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.time.TimeService;
-
 import com.enonic.cms.core.preference.PreferenceService;
-import com.enonic.cms.core.structure.menuitem.MenuItemService;
+import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.store.dao.MenuItemDao;
 
 
 public class ExpressionFunctionsFactory
@@ -20,7 +19,7 @@ public class ExpressionFunctionsFactory
 
     private TimeService timeService;
 
-    private MenuItemService menuItemService;
+    private MenuItemDao menuItemDao;
 
     private ThreadLocal<ExpressionContext> context = new ThreadLocal<ExpressionContext>();
 
@@ -53,9 +52,9 @@ public class ExpressionFunctionsFactory
     {
         ExpressionFunctions expressionFunctions = new ExpressionFunctions();
         expressionFunctions.setPreferenceService( preferenceService );
-        expressionFunctions.setContext(getContext());
-        expressionFunctions.setTimeService(timeService);
-        expressionFunctions.setMenuItemService(menuItemService);
+        expressionFunctions.setContext( getContext() );
+        expressionFunctions.setTimeService( timeService );
+        expressionFunctions.setMenuItemDao( menuItemDao );
         return expressionFunctions;
     }
 
@@ -73,8 +72,8 @@ public class ExpressionFunctionsFactory
 
 
     @Autowired
-    public void setMenuItemService( MenuItemService menuItemService )
+    public void setMenuItemDao( MenuItemDao menuItemDao )
     {
-        this.menuItemService = menuItemService;
+        this.menuItemDao = menuItemDao;
     }
 }

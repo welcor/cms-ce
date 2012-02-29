@@ -13,8 +13,8 @@ import java.util.Set;
 
 import com.enonic.cms.core.AbstractResultSet;
 import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionEntityFetcher;
 import com.enonic.cms.core.content.ContentVersionKey;
-import com.enonic.cms.core.content.index.ContentVersionEntityFetcher;
 
 public final class ContentVersionResultSetLazyFetcher
     extends AbstractResultSet

@@ -50,7 +50,7 @@ public class MenuItemsAcrossSitesXmlCreator
     private Element doCreateMenuItemElement( MenuItemEntity menuItem )
     {
         Element menuitemEl = new Element( "menuitem" );
-        menuitemEl.setAttribute( "key", menuItem.getMenuItemKey().toString() );
+        menuitemEl.setAttribute( "key", menuItem.getKey().toString() );
 
         Element typeEl = new Element( "type" );
         typeEl.setAttribute( "key", menuItem.getType().getKey().toString() );

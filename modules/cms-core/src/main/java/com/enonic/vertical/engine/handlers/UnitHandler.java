@@ -13,10 +13,6 @@ import java.sql.Types;
 import java.util.Map;
 import java.util.Set;
 
-import com.enonic.cms.core.content.UnitEntity;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,7 +21,12 @@ import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.filters.Filter;
 
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.CalendarUtil;
+import com.enonic.cms.core.content.category.UnitEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 
 public class UnitHandler
     extends BaseHandler
@@ -150,12 +151,12 @@ public class UnitHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to create units: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a unit key: %t";
-            VerticalEngineLogger.errorCreate(message, nfe );
+            VerticalEngineLogger.errorCreate( message, nfe );
         }
 
         finally
@@ -177,7 +178,7 @@ public class UnitHandler
         sql.append( UNI_WHERE_CLAUSE );
         int[] paramValue = {unitKey};
 
-        return XMLDocumentFactory.create(getUnit(sql.toString(), paramValue));
+        return XMLDocumentFactory.create( getUnit( sql.toString(), paramValue ) );
     }
 
     private Document getUnit( String sql, int[] paramValue )
@@ -243,7 +244,7 @@ public class UnitHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get units: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -256,7 +257,7 @@ public class UnitHandler
 
     public String getUnitName( int unitKey )
     {
-        final UnitEntity entity = this.unitDao.findByKey(unitKey);
+        final UnitEntity entity = this.unitDao.findByKey( unitKey );
         return entity != null ? entity.getName() : null;
     }
 
@@ -274,7 +275,7 @@ public class UnitHandler
             Element root = doc.getDocumentElement();
 
             StringBuffer sql = new StringBuffer( UNI_SELECT_NAME );
-            sql.append(" ORDER BY uni_sName ASC");
+            sql.append( " ORDER BY uni_sName ASC" );
 
             con = getConnection();
             preparedStmt = con.prepareStatement( sql.toString() );
@@ -305,7 +306,7 @@ public class UnitHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get unit names: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             doc = null;
         }
         finally
@@ -320,7 +321,7 @@ public class UnitHandler
     public XMLDocument getUnits()
     {
         StringBuffer sql = new StringBuffer( UNI_SELECT );
-        return XMLDocumentFactory.create(getUnit(sql.toString(), null));
+        return XMLDocumentFactory.create( getUnit( sql.toString(), null ) );
     }
 
     public void updateUnit( String xmlData )
@@ -417,12 +418,12 @@ public class UnitHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to update unit: %t";
-            VerticalEngineLogger.errorUpdate(message, sqle );
+            VerticalEngineLogger.errorUpdate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a unit key: %t";
-            VerticalEngineLogger.errorUpdate(message, nfe );
+            VerticalEngineLogger.errorUpdate( message, nfe );
         }
         finally
         {
@@ -432,25 +433,29 @@ public class UnitHandler
 
     private void setUnitContentTypes( int unitKey, int[] contentTypeKeys )
     {
-        final UnitEntity entity = this.unitDao.findByKey(unitKey);
-        if (entity == null) {
+        final UnitEntity entity = this.unitDao.findByKey( unitKey );
+        if ( entity == null )
+        {
             return;
         }
 
         entity.getContentTypes().clear();
 
-        for (final int contentTypeKey : contentTypeKeys) {
-            final ContentTypeEntity contentType = this.contentTypeDao.findByKey(contentTypeKey);
-            if (contentType != null) {
-                entity.getContentTypes().add(contentType);
+        for ( final int contentTypeKey : contentTypeKeys )
+        {
+            final ContentTypeEntity contentType = this.contentTypeDao.findByKey( contentTypeKey );
+            if ( contentType != null )
+            {
+                entity.getContentTypes().add( contentType );
             }
         }
     }
 
     private int[] getUnitContentTypes( int unitKey )
     {
-        final UnitEntity entity = this.unitDao.findByKey(unitKey);
-        if (entity == null) {
+        final UnitEntity entity = this.unitDao.findByKey( unitKey );
+        if ( entity == null )
+        {
             return new int[0];
         }
 
@@ -458,7 +463,8 @@ public class UnitHandler
 
         int index = 0;
         final int[] result = new int[contentTypes.size()];
-        for (final ContentTypeEntity contentType : contentTypes) {
+        for ( final ContentTypeEntity contentType : contentTypes )
+        {
             result[index++] = contentType.getKey();
         }
 
@@ -467,7 +473,7 @@ public class UnitHandler
 
     public int getUnitLanguageKey( int unitKey )
     {
-        final UnitEntity entity = this.unitDao.findByKey(unitKey);
+        final UnitEntity entity = this.unitDao.findByKey( unitKey );
         return entity != null ? entity.getLanguage().getKey().toInt() : -1;
     }
 }

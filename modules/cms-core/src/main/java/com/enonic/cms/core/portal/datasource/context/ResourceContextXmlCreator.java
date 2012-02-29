@@ -89,7 +89,7 @@ public class ResourceContextXmlCreator
         }
         else if ( menuItem != null )
         {
-            return menuItem.getMenuItemKey().toString();
+            return menuItem.getKey().toString();
         }
         else
         {

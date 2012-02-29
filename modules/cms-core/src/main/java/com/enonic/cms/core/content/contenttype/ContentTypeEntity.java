@@ -18,8 +18,6 @@ import org.jdom.Element;
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.resource.ResourceKey;
 
@@ -125,10 +123,13 @@ public class ContentTypeEntity
 
     public void setData( Document data )
     {
-        if (data == null) {
+        if ( data == null )
+        {
             this.data = null;
-        } else {
-            this.data = LazyInitializedJDOMDocument.parse(data);
+        }
+        else
+        {
+            this.data = LazyInitializedJDOMDocument.parse( data );
         }
         this.contentTypeConfig = null;
     }

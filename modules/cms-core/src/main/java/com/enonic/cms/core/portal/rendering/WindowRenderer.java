@@ -563,7 +563,7 @@ public class WindowRenderer
     private WindowCacheKey resolveCacheKey( Window window, UserKey executorKey )
     {
         WindowCacheKey key = new WindowCacheKey();
-        key.setMenuItemKey( context.getMenuItem().getMenuItemKey() );
+        key.setMenuItemKey( context.getMenuItem().getKey() );
         key.setUserKey( executorKey.toString() );
         key.setPortletKey( window.getKey().getPortletKey().toInt() );
         key.setDeviceClass( context.getDeviceClass() );

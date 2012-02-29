@@ -175,6 +175,7 @@
             <xsl:text>;</xsl:text>
           </xsl:for-each>
 
+          // contentKeys filling here
           var contentKeys = new Array;
           <xsl:for-each select="/contenttitles/contenttitle">
             <xsl:text>contentKeys[</xsl:text>
@@ -183,6 +184,17 @@
             <xsl:value-of select="@key"/>
             <xsl:text>;</xsl:text>
           </xsl:for-each>
+
+          // totalContentKeys filling here
+          var totalContentKeys = new Array;
+          <xsl:for-each select="/contenttitles/totalcontent">
+            <xsl:text>totalContentKeys[</xsl:text>
+            <xsl:value-of select="(position()-1)"/>
+            <xsl:text>] = </xsl:text>
+            <xsl:value-of select="@key"/>
+            <xsl:text>;</xsl:text>
+          </xsl:for-each>
+
           // -------------------------------------------------------------------------------------------------------------------------------
 
           /*

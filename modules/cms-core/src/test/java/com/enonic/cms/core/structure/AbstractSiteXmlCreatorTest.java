@@ -19,6 +19,7 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
@@ -81,7 +82,7 @@ public abstract class AbstractSiteXmlCreatorTest
     {
 
         MenuItemEntity mi = new MenuItemEntity();
-        mi.setKey( Integer.parseInt( key ) );
+        mi.setKey( new MenuItemKey( key ) );
         mi.setName( name );
         mi.setOrder( 0 );
         mi.setType( MenuItemType.CONTENT );

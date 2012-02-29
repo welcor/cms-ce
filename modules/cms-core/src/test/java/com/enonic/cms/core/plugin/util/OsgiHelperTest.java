@@ -7,7 +7,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import java.util.Hashtable;
-import java.util.Set;
 import static org.junit.Assert.*;
 
 public class OsgiHelperTest
@@ -37,21 +36,6 @@ public class OsgiHelperTest
 
         headers.put("Bundle-Name", "BundleName");
         assertEquals("BundleName", OsgiHelper.getBundleName(bundle));
-    }
-
-    @Test
-    public void testOptionalService()
-    {
-        final String service = "Service";
-        final ServiceReference ref = Mockito.mock(ServiceReference.class);
-        final BundleContext context = Mockito.mock(BundleContext.class);
-
-        assertNull(OsgiHelper.optionalService(context, String.class));
-
-        Mockito.when(context.getServiceReference("java.lang.String")).thenReturn(ref);
-        Mockito.when(context.getService(ref)).thenReturn(service);
-
-        assertSame(service, OsgiHelper.optionalService(context, String.class));
     }
 
     @Test

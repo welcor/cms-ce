@@ -477,7 +477,7 @@ public class AdminAjaxServiceImpl
 
     private boolean menuItemNameExistsButItsMeSoItsOk( MenuItemKey existingMenuItemKey, List<MenuItemEntity> foundMenuItems )
     {
-        if ( foundMenuItems.get( 0 ) != null && foundMenuItems.get( 0 ).getMenuItemKey().equals( existingMenuItemKey ) )
+        if ( foundMenuItems.get( 0 ) != null && foundMenuItems.get( 0 ).getKey().equals( existingMenuItemKey ) )
         {
             return true;
         }

@@ -1022,7 +1022,7 @@ public final class AdminEngine
 
     public XMLDocument getContentTitles( int[] contentKeys )
     {
-        return contentHandler.getContentTitles( contentKeys, false, null );
+        return contentHandler.getContentTitles( contentKeys, null, false, null );
     }
 
     public XMLDocument getUsersWithPublishRight( int categoryKey )

@@ -55,7 +55,7 @@ public class ContentLocations
 
     public boolean hasMenuItemAsLocation( final MenuItemEntity menuItem )
     {
-        return allLocations.containsKey( menuItem.getMenuItemKey() );
+        return allLocations.containsKey( menuItem.getKey() );
     }
 
     public void addDirectMenuItemLocation( final MenuItemEntity menuItem )
@@ -79,7 +79,7 @@ public class ContentLocations
         Assert.notNull( contentHome );
         Assert.isTrue( content.equals( contentHome.getContent() ) );
 
-        ContentLocation existingContentLocation = allLocations.get( contentHome.getMenuItem().getMenuItemKey() );
+        ContentLocation existingContentLocation = allLocations.get( contentHome.getMenuItem().getKey() );
         if ( existingContentLocation != null && existingContentLocation.getType() == ContentLocationType.SECTION )
         {
             doChangeExistingSectionLocationToSectionAndHomeLocation( contentHome, existingContentLocation );

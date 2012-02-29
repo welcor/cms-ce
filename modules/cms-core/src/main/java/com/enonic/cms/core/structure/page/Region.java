@@ -85,7 +85,7 @@ public class Region
     {
         for ( PageTemplatePortletEntity pageTemplatePortlet : pageTemplatePortlets.values() )
         {
-            WindowKey key = new WindowKey( menuItem.getMenuItemKey(), pageTemplatePortlet.getPortlet().getPortletKey() );
+            WindowKey key = new WindowKey( menuItem.getKey(), pageTemplatePortlet.getPortlet().getPortletKey() );
             Window window = new Window();
             window.setKey( key );
             window.setPortlet( pageTemplatePortlet.getPortlet() );

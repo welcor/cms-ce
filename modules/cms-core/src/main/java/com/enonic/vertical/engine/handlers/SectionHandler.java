@@ -221,14 +221,14 @@ public class SectionHandler
                 if ( result == 0 )
                 {
                     String message = "Failed to create section contenttype filter.";
-                    VerticalEngineLogger.errorCreate(message, null );
+                    VerticalEngineLogger.errorCreate( message, null );
                 }
             }
         }
         catch ( SQLException sqle )
         {
             String message = "Failed to create section contenttype filter: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         finally
         {
@@ -254,7 +254,7 @@ public class SectionHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove section contenttype filter: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -264,19 +264,22 @@ public class SectionHandler
 
     public int getMenuKeyBySection( int sectionKey )
     {
-        StringBuffer sql = XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_men_lKey, new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} );
+        StringBuffer sql = XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_men_lKey,
+                                                  new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} );
         return getCommonHandler().getInt( sql.toString(), new Object[]{sectionKey, 1} );
     }
 
     public MenuItemKey getMenuItemKeyBySection( int sectionKey )
     {
-        StringBuffer sql = XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_lKey, new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} );
+        StringBuffer sql =
+            XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_lKey, new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} );
         return new MenuItemKey( getCommonHandler().getInt( sql.toString(), new Object[]{sectionKey, 1} ) );
     }
 
     public MenuItemKey getSectionKeyByMenuItem( MenuItemKey menuItemKey )
     {
-        StringBuffer sql = XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_lKey, new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} );
+        StringBuffer sql =
+            XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_lKey, new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} );
         if ( getCommonHandler().hasRows( sql.toString(), new int[]{menuItemKey.toInt(), 1} ) )
         {
             return menuItemKey;
@@ -295,9 +298,9 @@ public class SectionHandler
         if ( entity != null && entity.isSection() )
         {
             Element elem = doc.getDocumentElement();
-            elem.setAttribute( "key", String.valueOf( entity.getKey() ) );
+            elem.setAttribute( "key", String.valueOf( entity.getKey().toInt() ) );
             elem.setAttribute( "menukey", String.valueOf( entity.getSite().getKey() ) );
-            elem.setAttribute( "menuitemkey", String.valueOf( entity.getKey() ) );
+            elem.setAttribute( "menuitemkey", String.valueOf( entity.getKey().toInt() ) );
             elem.setAttribute( "ordered", String.valueOf( entity.isOrderedSection() ) );
         }
 
@@ -397,7 +400,7 @@ public class SectionHandler
             SecurityHandler securityHandler = getSecurityHandler();
             if ( !includeAll )
             {
-                securityHandler.appendSectionSQL( user, sql);
+                securityHandler.appendSectionSQL( user, sql );
             }
 
             sql.append( " ORDER BY mei_sName" );
@@ -528,7 +531,7 @@ public class SectionHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get sections: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             doc = XMLTool.createDocument( "sections" );
         }
         finally
@@ -653,7 +656,7 @@ public class SectionHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to append section names to content: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -689,7 +692,7 @@ public class SectionHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get section content timestamp: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -751,6 +754,7 @@ public class SectionHandler
         PreparedStatement prepStmt = null;
         ResultSet resultSet = null;
         TIntArrayList contentKeys;
+        TIntArrayList totalContentKeys = new TIntArrayList();
 
         int totalCount = 0;
         if ( count > 20 )
@@ -791,6 +795,11 @@ public class SectionHandler
             totalCount = fromIndex;
             for (; ( ( includeTotalCount || i < fromIndex + count ) && moreResults ); i++ )
             {
+                //always save total content keys list
+                int totalContentKey = resultSet.getInt( 1 );
+                totalContentKeys.add( totalContentKey );
+                //
+
                 if ( i < fromIndex )
                 {
                     moreResults = resultSet.next();
@@ -812,7 +821,7 @@ public class SectionHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get content keys for content in sections: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -832,7 +841,7 @@ public class SectionHandler
 
         ContentHandler contentHandler = getContentHandler();
         MenuItemEntity section = menuItemDao.findByKey( sectionKey );
-        XMLDocument doc = contentHandler.getContentTitles( contentKeys.toArray(), true, section );
+        XMLDocument doc = contentHandler.getContentTitles( contentKeys.toArray(), totalContentKeys.toArray(), true, section );
 
         if ( includeTotalCount )
         {
@@ -882,7 +891,7 @@ public class SectionHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("Failed to find section: %t", e );
+            VerticalEngineLogger.error( "Failed to find section: %t", e );
         }
         finally
         {
@@ -910,7 +919,7 @@ public class SectionHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.errorCopy("Failed to copy section: %t", e );
+            VerticalEngineLogger.errorCopy( "Failed to copy section: %t", e );
         }
     }
 
@@ -937,7 +946,8 @@ public class SectionHandler
 
     private void copySectionData( int sourceKey, MenuItemKey superKey )
     {
-        String sql1 = XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_bOrderedSection, new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} ).toString();
+        String sql1 = XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_bOrderedSection,
+                                             new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} ).toString();
         int ordered = getCommonHandler().getInt( sql1, new int[]{sourceKey, 1} );
         if ( ordered < 0 )
         {

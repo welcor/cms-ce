@@ -134,7 +134,7 @@ public class PathToContentResolver
     {
         String contentName = content.getName();
 
-        int count = sectionContentDao.getCountNamedContentsInSection( menuItem.getMenuItemKey(), contentName );
+        int count = sectionContentDao.getCountNamedContentsInSection( menuItem.getKey(), contentName );
 
         return count == 1;
     }

@@ -78,7 +78,7 @@ public class PathToContentResolverTest
         content.setKey( new ContentKey( "123" ) );
 
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( 1 );
+        menuItem.setKey( new MenuItemKey( 1 ) );
         menuItem.setName( "test" );
         menuItem.setSite( site );
 
@@ -173,7 +173,7 @@ public class PathToContentResolverTest
         content.setKey( new ContentKey( "123" ) );
 
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( 1 );
+        menuItem.setKey( new MenuItemKey( 1 ) );
         menuItem.setName( "test" );
         menuItem.setSite( site );
         menuItem.setType( MenuItemType.SECTION );

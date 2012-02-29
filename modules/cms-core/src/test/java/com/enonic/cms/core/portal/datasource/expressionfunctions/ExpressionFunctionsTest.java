@@ -171,7 +171,7 @@ public class ExpressionFunctionsTest
         ExpressionContext context = new ExpressionContext();
         MenuItemEntity menuItem = new MenuItemEntity();
         final int key = 123;
-        menuItem.setKey( key );
+        menuItem.setKey( new MenuItemKey( key ) );
         context.setMenuItem( menuItem );
         eFuncs.setContext( context );
         assertEquals( "123", eFuncs.getPageKey() );

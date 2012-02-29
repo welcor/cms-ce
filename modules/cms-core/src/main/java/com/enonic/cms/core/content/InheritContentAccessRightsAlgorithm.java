@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.content;
 
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.security.group.GroupEntity;

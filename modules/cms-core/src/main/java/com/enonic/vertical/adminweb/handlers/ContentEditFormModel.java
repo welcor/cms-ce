@@ -100,7 +100,7 @@ public class ContentEditFormModel
         for ( MenuItemEntity menuItem : contentLocations.getMenuItems() )
         {
             MenuItemAndUserAccessRights menuItemAndUserAccessRights =
-                menuItemAndUserAccessRightsMapByMenuItemKey.get( menuItem.getMenuItemKey() );
+                menuItemAndUserAccessRightsMapByMenuItemKey.get( menuItem.getKey() );
             final MenuItemAccumulatedAccessRights accessRightsForExecutor = menuItemAndUserAccessRights.getAccessRightsForUser();
             final MenuItemAccumulatedAccessRights accessRightsForAnonymous = menuItemAndUserAccessRights.getAccessrightsForAnonymous();
             locationMenuitemsEl.addContent(

@@ -8,7 +8,7 @@
       <key-property name="groupKey" type="com.enonic.cms.store.hibernate.type.GroupKeyUserType">
         <column name="MIA_GRP_HKEY" length="40"/>
       </key-property>
-      <key-property name="menuItemKey" type="int">
+      <key-property name="menuItemKey" type="com.enonic.cms.store.hibernate.type.MenuItemKeyUserType">
         <column name="MIA_MEI_LKEY"/>
       </key-property>
     </composite-id>

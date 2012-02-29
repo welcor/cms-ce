@@ -20,6 +20,7 @@ public interface MenuItemDao
 
     List<MenuItemEntity> findBySpecification( MenuItemSpecification spec );
 
+    @Deprecated
     MenuItemEntity findByKey( int menuItemKey );
 
     MenuItemEntity findByKey( MenuItemKey menuItemKey );

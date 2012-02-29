@@ -430,7 +430,7 @@ public class PageRenderer
         }
         else
         {
-            portalInstanceKey = PortalInstanceKey.createPage( context.getMenuItem().getMenuItemKey() );
+            portalInstanceKey = PortalInstanceKey.createPage( context.getMenuItem().getKey() );
         }
         return portalInstanceKey;
     }
@@ -443,7 +443,7 @@ public class PageRenderer
             return;
         }
 
-        PageTraceInfo info = RenderTrace.enterPage( menuItem.getKey() );
+        PageTraceInfo info = RenderTrace.enterPage( menuItem.getKey().toInt() );
         if ( info != null )
         {
             info.setSiteKey( context.getSite().getKey() );
@@ -503,7 +503,7 @@ public class PageRenderer
     private PageCacheKey resolvePageCacheKey()
     {
         PageCacheKey key = new PageCacheKey();
-        key.setMenuItemKey( context.getMenuItem().getMenuItemKey() );
+        key.setMenuItemKey( context.getMenuItem().getKey() );
         key.setUserKey( context.getRunAsUser().getKey().toString() );
         key.setDeviceClass( context.getDeviceClass() );
         key.setLocale( context.getLocale() );

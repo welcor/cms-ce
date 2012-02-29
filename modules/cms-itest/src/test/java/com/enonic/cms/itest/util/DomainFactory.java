@@ -11,16 +11,12 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.core.content.ContentAccessEntity;
-import com.enonic.cms.core.content.ContentAccessType;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentHandlerEntity;
-import com.enonic.cms.core.content.ContentHandlerKey;
-import com.enonic.cms.core.content.ContentHandlerName;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.UnitEntity;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.access.ContentAccessType;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
@@ -30,6 +26,10 @@ import com.enonic.cms.core.content.category.CategoryAccessKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.UnitEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
@@ -50,6 +50,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
@@ -414,7 +415,7 @@ public class DomainFactory
                                                  boolean isOrderedSection, Date timestamp, boolean isHidden, Document xmlData )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) );
+        menuItem.setKey( new MenuItemKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) ) );
         menuItem.setName( name );
         menuItem.setMenuName( menuName );
         menuItem.setDisplayName( displayName );
@@ -426,7 +427,7 @@ public class DomainFactory
         menuItem.setSection( true );
         menuItem.setOrderedSection( isOrderedSection );
         menuItem.setLanguage( fixture.findLanguageByCode( language ) );
-        if ( parentName != null && parentOrder != null )
+        if ( parentName != null )
         {
             menuItem.setParent( fixture.findMenuItemByName( parentName ) );
         }
@@ -441,7 +442,7 @@ public class DomainFactory
                                               String parentName, Integer parentOrder, Date timestamp, boolean isHidden, Document xmlData )
     {
         MenuItemEntity menuItem = new MenuItemEntity();
-        menuItem.setKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) );
+        menuItem.setKey( new MenuItemKey( mockKeyService.generateNextKeySafe( "TMENUITEM" ) ) );
         menuItem.setName( name );
         menuItem.setOrder( order );
         menuItem.setMenuName( menuName );
@@ -453,7 +454,7 @@ public class DomainFactory
         menuItem.setSection( hasSection );
         menuItem.setOrderedSection( isOrderedSection );
         menuItem.setLanguage( fixture.findLanguageByCode( language ) );
-        if ( parentName != null && parentOrder != null )
+        if ( parentName != null )
         {
             menuItem.setParent( fixture.findMenuItemByName( parentName ) );
         }

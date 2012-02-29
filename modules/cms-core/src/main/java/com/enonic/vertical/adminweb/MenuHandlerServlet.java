@@ -1199,7 +1199,7 @@ public class MenuHandlerServlet
         String str_oldParentKey = "-1";
         if ( menuItemToMove.getParent() != null )
         {
-            str_oldParentKey = menuItemToMove.getParent().getMenuItemKey().toString();
+            str_oldParentKey = menuItemToMove.getParent().getKey().toString();
         }
 
         int parentKey = formItems.getInt( "belowkey" );
@@ -1266,7 +1266,7 @@ public class MenuHandlerServlet
 
         MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey.toInt() );
 
-        MenuItemKey parentMenuItemKey = menuItem.getParent() != null ? menuItem.getParent().getMenuItemKey() : null;
+        MenuItemKey parentMenuItemKey = menuItem.getParent() != null ? menuItem.getParent().getKey() : null;
         SiteKey siteKey = menuItem.getSite().getKey();
 
         admin.removeMenuItem( user, menuItemKey.toInt() );
@@ -1548,7 +1548,7 @@ public class MenuHandlerServlet
 
             MenuItemEntity moveMenuItem = menuItemDao.findByKey( moveMenuItemKey );
 
-            int fromParentKey = moveMenuItem.getParent() != null ? moveMenuItem.getParent().getKey() : -1;
+            int fromParentKey = moveMenuItem.getParent() != null ? moveMenuItem.getParent().getKey().toInt() : -1;
             int toParentKey = formItems.getInt( "move_to_parent", -1 );
 
             MenuItemEntity toParentMenuItem = menuItemDao.findByKey( new MenuItemKey( toParentKey ) );
@@ -1585,7 +1585,7 @@ public class MenuHandlerServlet
 
         while ( menuItemToCheck != null )
         {
-            if ( menuItemToCheck.getMenuItemKey().equals( new MenuItemKey( menuKeyToMove ) ) )
+            if ( menuItemToCheck.getKey().equals( new MenuItemKey( menuKeyToMove ) ) )
             {
                 throw new VerticalAdminException( "Not allowed to move menuitem to self or own descendant" );
             }
@@ -1813,7 +1813,7 @@ public class MenuHandlerServlet
             MenuItemEntity menuItemEntity = menuItemDao.findByKey( shortCut );
             formItems.remove( "key" );
             formItems.remove( "type" );
-            formItems.putInt( "key", menuItemEntity.getKey() );
+            formItems.putInt( "key", menuItemEntity.getKey().toInt() );
             formItems.putString( "type", menuItemEntity.getType().getName() );
             handlerPreview( request, response, session, admin, formItems );
         }
@@ -1856,7 +1856,7 @@ public class MenuHandlerServlet
                 modifiedMenuItem.setPage( newPage );
                 SiteEntity site = siteDao.findByKey( siteKey );
                 modifiedMenuItem.setSite( site );
-                modifiedMenuItem.setKey( -1 );
+                modifiedMenuItem.setKey( new MenuItemKey( -1 ) );
 
                 modifiedMenuItem.setParent( menuItemDao.findByKey( parentKey ) );
             }
@@ -2446,7 +2446,7 @@ public class MenuHandlerServlet
                 MenuItemEntity selectedMenuItem = menuItemDao.findByKey( selectedMenuItemKey );
                 if ( selectedMenuItem.getParent() != null )
                 {
-                    parentMenuItemKey = selectedMenuItem.getParent().getMenuItemKey();
+                    parentMenuItemKey = selectedMenuItem.getParent().getKey();
                 }
 
                 XMLTool.mergeDocuments( doc1, menuItemXML, true );

@@ -3,7 +3,14 @@
 
 Welcome to the home of Enonic CMS Community Edition. Here you will find all source code for the product.
 
-## Building
+## Checking out the code
+
+To check out all of the code, you have to have Git installed. If you have not git installed, please see instructions [here](http://help.github.com/set-up-git-redirect). First clone
+the repository (and all submodules) with the following command:
+
+	git clone --recursive git@github.com:enonic/cms-ce.git
+
+## Building with Maven
 
 Build all code and run all tests including integration tests:
 
@@ -16,6 +23,25 @@ Build all code skipping integration tests:
 Build all code skipping all tests:
 
     mvn -DskipTests clean install
+
+## Building with Gradle
+
+We are now in the process of switching to Gradle for build. At this time we are building with Gradle version 1.0 Milestone 8, but if you do not have
+gradle installed you can use the bundled gradle wrapper.
+
+	./gradle/gradlew 
+	
+Build all code and run all tests including integration tests:
+
+    gradle clean build
+
+Build all code skipping integration tests:
+
+    gradle clean build -x :cms-itest:test
+
+Build all code skipping all tests:
+
+    gradle clean build -x test
 
 ## License
 

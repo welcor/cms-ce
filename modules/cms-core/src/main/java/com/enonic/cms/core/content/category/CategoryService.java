@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.core.content.category;
 
-import com.enonic.cms.core.content.category.command.DeleteCategoryCommand;
-
 /**
  * Mar 9, 2010
  */

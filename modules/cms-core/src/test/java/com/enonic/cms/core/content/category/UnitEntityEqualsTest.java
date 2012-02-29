@@ -21,14 +21,14 @@ public class UnitEntityEqualsTest
     public Object getObjectX()
     {
         UnitEntity instance1 = new UnitEntity();
-        instance1.setKey( 1 );
+        instance1.setKey( new UnitKey( 1 ) );
         return instance1;
     }
 
     public Object[] getObjectsThatNotEqualsX()
     {
         UnitEntity instance1 = new UnitEntity();
-        instance1.setKey( 2 );
+        instance1.setKey( new UnitKey( 2 ) );
 
         return new Object[]{instance1};
     }
@@ -36,14 +36,14 @@ public class UnitEntityEqualsTest
     public Object getObjectThatEqualsXButNotTheSame()
     {
         UnitEntity instance1 = new UnitEntity();
-        instance1.setKey( 1 );
+        instance1.setKey( new UnitKey( 1 ) );
         return instance1;
     }
 
     public Object getObjectThatEqualsXButNotTheSame2()
     {
         UnitEntity instance1 = new UnitEntity();
-        instance1.setKey( 1 );
+        instance1.setKey( new UnitKey( 1 ) );
         return instance1;
     }
 }

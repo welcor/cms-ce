@@ -17,7 +17,7 @@ import com.enonic.cms.core.language.LanguageEntity;
 public class UnitEntity
     implements Serializable
 {
-    private int key;
+    private UnitKey key;
 
     private String name;
 
@@ -33,14 +33,9 @@ public class UnitEntity
 
     private Set<ContentTypeEntity> contentTypes = new LinkedHashSet<ContentTypeEntity>();
 
-    public int getKey()
+    public UnitKey getKey()
     {
         return key;
-    }
-
-    public UnitKey getUnitKey()
-    {
-        return new UnitKey( key );
     }
 
     public String getName()
@@ -88,7 +83,7 @@ public class UnitEntity
         contentTypes.clear();
     }
 
-    public void setKey( int key )
+    public void setKey( UnitKey key )
     {
         this.key = key;
     }
@@ -123,6 +118,7 @@ public class UnitEntity
         this.language = language;
     }
 
+    @Override
     public boolean equals( Object o )
     {
         if ( this == o )
@@ -135,9 +131,7 @@ public class UnitEntity
         }
 
         UnitEntity that = (UnitEntity) o;
-
-        return key == that.getKey();
-
+        return getKey().equals( that.getKey() );
     }
 
     public int hashCode()

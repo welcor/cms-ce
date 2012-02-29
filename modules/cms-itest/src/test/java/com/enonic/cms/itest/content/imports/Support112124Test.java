@@ -66,10 +66,10 @@ public class Support112124Test
                                                  XMLDocumentFactory.create( statistikkContentTypeXml ).getAsJDOMDocument() ) );
 
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "Kontakt", "kontaktCty", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "Kontakt", null, "kontaktCty", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Kontakt", "testuser", "read, create, approve" ) );
 
-        fixture.save( factory.createCategory( "Statistikk", "statistikkCty", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "Statistikk", null, "statistikkCty", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Statistikk", "testuser", "read, create, approve" ) );
 
         MockHttpServletRequest request = new MockHttpServletRequest();

@@ -99,7 +99,7 @@ public class ImportServiceImplTest
         fixture.save( factory.createContentType( "PersonCty", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
                                                  XMLDocumentFactory.create( personContentTypeXml ).getAsJDOMDocument() ) );
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "Persons", "PersonCty", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "Persons", null, "PersonCty", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Persons", "testuser", "read, create, approve" ) );
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -350,7 +350,7 @@ public class ImportServiceImplTest
         Document configAsXmlBytes = XMLDocumentFactory.create( dateCtyConfig.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "DateCty", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
         fixture.save( factory.createUnit( "DatesUnit" ) );
-        fixture.save( factory.createCategory( "Dates", "DateCty", "DatesUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "Dates", null, "DateCty", "DatesUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Dates", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -2228,10 +2228,8 @@ public class ImportServiceImplTest
             assertTrue( "Expected ImportException", e instanceof ImportException );
             ImportException importException = (ImportException) e;
             assertEquals(
-                "Given publishFrom (2012-08-01T00:00:00.000+02:00) bust be before given publishTo (2010-08-01T00:00:00.000+02:00)"
-                    .replaceAll( "000.*?\\)", "000)" ),
-                importException.getMessage()
-                    .replaceAll( "000.*?\\)", "000)" ) ); /// remove TZ info
+                "Given publishFrom (2012-08-01T00:00:00.000+02:00) bust be before given publishTo (2010-08-01T00:00:00.000+02:00)".replaceAll(
+                    "000.*?\\)", "000)" ), importException.getMessage().replaceAll( "000.*?\\)", "000)" ) ); /// remove TZ info
         }
     }
 

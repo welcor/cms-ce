@@ -479,7 +479,7 @@ public class ContentXMLCreator
         final LanguageEntity language = content.getLanguage();
 
         Element contentEl = new Element( "content" );
-        contentEl.setAttribute( "unitkey", Integer.toString( unit.getKey() ) );
+        contentEl.setAttribute( "unitkey", unit.getKey().toString() );
         contentEl.setAttribute( "approved", Boolean.toString( contentVersion.isApproved() ) );
         contentEl.setAttribute( "state", Integer.toString( contentVersion.getState( onlineCheckDate ) ) );
         contentEl.setAttribute( "status", Integer.toString( contentVersion.getStatus().getKey() ) );

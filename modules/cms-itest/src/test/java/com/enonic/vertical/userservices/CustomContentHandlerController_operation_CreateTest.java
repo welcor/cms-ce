@@ -686,7 +686,7 @@ public class CustomContentHandlerController_operation_CreateTest
         fixture.flushAndClearHibernateSesssion();
 
         final CategoryEntity categoryEntity =
-            factory.createCategory( categoryName, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
+            factory.createCategory( categoryName, null, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
 
         fixture.save( categoryEntity );
 

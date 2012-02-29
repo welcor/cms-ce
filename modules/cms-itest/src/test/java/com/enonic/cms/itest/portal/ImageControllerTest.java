@@ -109,7 +109,7 @@ public class ImageControllerTest
         fixture.save( factory.createContentHandler( "Image content", ContentHandlerName.IMAGE.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "ImageContentType", ContentHandlerName.IMAGE.getHandlerClassShortName() ) );
         fixture.save( factory.createUnit( "ImageUnit" ) );
-        fixture.save( factory.createCategory( "ImageCategory", "ImageContentType", "ImageUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "ImageCategory", null, "ImageContentType", "ImageUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "ImageCategory", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();

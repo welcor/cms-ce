@@ -31,10 +31,10 @@ import com.enonic.cms.framework.util.TIntArrayList;
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
-import com.enonic.cms.core.content.category.UnitKey;
-import com.enonic.cms.core.content.category.command.DeleteCategoryCommand;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
@@ -83,10 +83,6 @@ public class ArchiveHandlerServlet
         command.setName( formItems.getString( "name" ) );
         command.setAutoApprove( formItems.getBoolean( "autoApprove" ) );
 
-        if ( formItems.containsKey( "selectedunitkey" ) )
-        {
-            command.setUnitKey( new UnitKey( formItems.getString( "selectedunitkey" ) ) );
-        }
         if ( formItems.containsKey( "categorycontenttypekey" ) )
         {
             command.setContentType( new ContentTypeKey( formItems.getString( "categorycontenttypekey" ) ) );
@@ -98,6 +94,15 @@ public class ArchiveHandlerServlet
         if ( formItems.containsKey( "description" ) )
         {
             command.setDescription( formItems.getString( "description" ) );
+        }
+        if ( formItems.containsKey( "languagekey" ) )
+        {
+            command.setLanguage( new LanguageKey( formItems.getString( "languagekey" ) ) );
+        }
+        String[] contentTypeKeys = formItems.getStringArray( "contenttypekey" );
+        for ( String contentTypeKey : contentTypeKeys )
+        {
+            command.addAllowedContentType( new ContentTypeKey( contentTypeKey ) );
         }
 
         fillAccessRights( command, formItems );
@@ -258,14 +263,13 @@ public class ArchiveHandlerServlet
                                ExtendedMap formItems )
         throws VerticalAdminException, VerticalEngineException
     {
-        User user = securityService.getLoggedInAdminConsoleUser();
+        final UserEntity user = securityService.getLoggedInAdminConsoleUserAsEntity();
 
-        String unitXML = buildUnitXML( formItems, true );
-        int unitKey = admin.createUnit( unitXML );
-        formItems.put( "selectedunitkey", String.valueOf( unitKey ) );
+        final StoreNewCategoryCommand command = createStoreNewCategoryCommand( user, formItems );
+        final CategoryKey categoryKey = categoryService.storeNewCategory( command );
+        final CategoryEntity category = categoryDao.findByKey( categoryKey );
 
-        StoreNewCategoryCommand command = createStoreNewCategoryCommand( user, formItems );
-        categoryService.storeNewCategory( command );
+        formItems.put( "selectedunitkey", category.getUnit().getKey().toString() );
 
         MultiValueMap queryParams = new MultiValueMap();
         queryParams.put( "page", formItems.get( "page" ) );

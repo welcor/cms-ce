@@ -25,10 +25,10 @@ import com.enonic.vertical.engine.filters.Filter;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
@@ -185,12 +185,6 @@ public class AdminServiceImpl
     public int copyPageTemplate( User user, int pageTemplateKey )
     {
         return adminEngine.copyPageTemplate( user, pageTemplateKey );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int createUnit( String xmlData )
-    {
-        return adminEngine.createUnit( xmlData );
     }
 
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey )
@@ -700,7 +694,7 @@ public class AdminServiceImpl
 
     public XMLDocument getData( User user, int type, int[] keys )
     {
-        return adminEngine.getData(type, keys );
+        return adminEngine.getData( type, keys );
     }
 
     public ResourceKey getDefaultCSSByMenu( int menuKey )
@@ -813,7 +807,7 @@ public class AdminServiceImpl
     private XMLDocument doGetAdminMenu( User user, int[] menuKeys, String[] menuItemTypes, boolean includeReadOnlyAccessRight )
     {
         Document doc = this.adminEngine.getAdminMenu( user, menuKeys, menuItemTypes, includeReadOnlyAccessRight );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

@@ -4,9 +4,11 @@
 <hibernate-mapping default-access="field">
   <class name="com.enonic.cms.core.content.category.CategoryEntity" table="TCATEGORY" mutable="true" batch-size="500">
     <cache usage="nonstrict-read-write"/>
-    <id name="key" type="com.enonic.cms.store.hibernate.type.CategoryKeyUserType">
-      <column name="CAT_LKEY"/>
-      <generator class="assigned"/>
+    <id name="key" column="CAT_LKEY" type="com.enonic.cms.store.hibernate.type.CategoryKeyUserType">
+      <generator class="com.enonic.cms.store.hibernate.id.IntegerBasedCustomIdentifierGenerator">
+        <param name="table">TCATEGORY</param>
+        <param name="idClassName">com.enonic.cms.core.content.category.CategoryKey</param>
+      </generator>
     </id>
     <property name="created" type="timestamp">
       <column name="CAT_DTECREATED" not-null="true"/>
@@ -35,7 +37,7 @@
     <many-to-one name="parent" class="com.enonic.cms.core.content.category.CategoryEntity" fetch="select">
       <column name="CAT_CAT_LSUPER"/>
     </many-to-one>
-    <many-to-one name="unit" class="com.enonic.cms.core.content.category.UnitEntity" fetch="select">
+    <many-to-one name="unit" class="com.enonic.cms.core.content.category.UnitEntity" fetch="select" cascade="all">
       <column name="CAT_UNI_LKEY" not-null="true"/>
     </many-to-one>
     <bag name="children" inverse="false" lazy="true" fetch="select" batch-size="500" order-by="CAT_SNAME" where="CAT_BDELETED = 0"

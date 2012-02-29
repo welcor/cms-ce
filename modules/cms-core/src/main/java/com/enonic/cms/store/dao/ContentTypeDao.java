@@ -7,14 +7,17 @@ package com.enonic.cms.store.dao;
 import java.util.List;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceKey;
-
 import com.enonic.cms.store.support.EntityPageList;
 
 public interface ContentTypeDao
     extends EntityDao<ContentTypeEntity>
 {
+    @Deprecated
     ContentTypeEntity findByKey( int key );
+
+    ContentTypeEntity findByKey( ContentTypeKey key );
 
     ContentTypeEntity findByName( String name );
 

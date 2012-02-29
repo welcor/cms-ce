@@ -18,10 +18,10 @@ import com.enonic.vertical.engine.filters.Filter;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -77,8 +77,6 @@ public interface AdminService
     public int createPageTemplate( User user, String xmlData );
 
     public int copyPageTemplate( User user, int pageTemplateKey );
-
-    public int createUnit( String xmlData );
 
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey );
 
@@ -261,7 +259,8 @@ public interface AdminService
 
     public XMLDocument getContentOwner( int contentKey );
 
-    public XMLDocument getLogEntries( User user, com.enonic.esl.containers.MultiValueMap adminParams, int fromIdx, int count, boolean complete );
+    public XMLDocument getLogEntries( User user, com.enonic.esl.containers.MultiValueMap adminParams, int fromIdx, int count,
+                                      boolean complete );
 
     public XMLDocument getLogEntry( String key );
 

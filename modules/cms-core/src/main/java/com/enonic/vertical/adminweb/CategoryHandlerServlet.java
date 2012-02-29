@@ -37,8 +37,8 @@ import com.enonic.cms.framework.xml.XMLException;
 
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
-import com.enonic.cms.core.content.category.command.DeleteCategoryCommand;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;

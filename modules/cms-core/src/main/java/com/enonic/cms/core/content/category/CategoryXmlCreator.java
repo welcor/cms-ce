@@ -219,7 +219,7 @@ public class CategoryXmlCreator
 
         if ( category.getUnitExcludeDeleted() != null )
         {
-            element.setAttribute( "unitkey", Integer.toString( category.getUnitExcludeDeleted().getKey() ) );
+            element.setAttribute( "unitkey", Integer.toString( category.getUnitExcludeDeleted().getKey().toInt() ) );
         }
 
         element.setAttribute( "subcategories", category.hasChildren() ? "true" : "false" );

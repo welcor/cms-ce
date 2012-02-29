@@ -93,7 +93,7 @@ public class ContentServiceImpl_storeRelatedContentTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "UnitForMyRelatedTypes", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyRelatedTypes", "UnitForMyRelatedTypes", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyCategory", null, "MyRelatedTypes", "UnitForMyRelatedTypes", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();

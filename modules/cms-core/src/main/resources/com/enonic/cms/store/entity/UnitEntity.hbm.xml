@@ -4,9 +4,11 @@
 <hibernate-mapping package="com.enonic.cms.core.content.category" default-access="field">
   <class name="com.enonic.cms.core.content.category.UnitEntity" table="TUNIT" mutable="true" batch-size="10">
     <cache usage="nonstrict-read-write"/>
-    <id name="key" type="int">
-      <column name="UNI_LKEY"/>
-      <generator class="assigned"/>
+    <id name="key" column="UNI_LKEY" type="com.enonic.cms.store.hibernate.type.UnitKeyUserType">
+      <generator class="com.enonic.cms.store.hibernate.id.IntegerBasedCustomIdentifierGenerator">
+        <param name="table">TUNIT</param>
+        <param name="idClassName">com.enonic.cms.core.content.category.UnitKey</param>
+      </generator>
     </id>
     <property name="deleted" type="int">
       <column name="UNI_BDELETED" not-null="true"/>

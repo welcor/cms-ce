@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -43,11 +42,9 @@ public class GetRelatedContentExecutorTest
     extends AbstractSpringTest
 {
     @Autowired
-    private HibernateTemplate hibernateTemplate;
+    private DomainFixture fixture;
 
     private DomainFactory factory;
-
-    private DomainFixture fixture;
 
     @Autowired
     private GroupDao groupDao;
@@ -65,8 +62,7 @@ public class GetRelatedContentExecutorTest
     @Before
     public void setUp()
     {
-        fixture = new DomainFixture( hibernateTemplate, groupDao );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 
@@ -88,12 +84,12 @@ public class GetRelatedContentExecutorTest
 
         fixture.save( factory.createContentType( "MyRelatedType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXML ) );
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.save( factory.createCategory( "cat-default", "MyRelatedType", "MyUnit", "content-creator", "content-creator", false ) );
+        fixture.save(
+            factory.createCategory( "cat-default", null, "MyRelatedType", "MyUnit", "content-creator", "content-creator", false ) );
 
         fixture.save( factory.createUnit( "MyOtherUnit", "en" ) );
-        fixture.save(
-            factory.createCategory( "cat-content-querier-no-read", "MyRelatedType", "MyOtherUnit", "content-creator", "content-creator",
-                                    false ) );
+        fixture.save( factory.createCategory( "cat-content-querier-no-read", null, "MyRelatedType", "MyOtherUnit", "content-creator",
+                                              "content-creator", false ) );
 
         fixture.save( factory.createCategoryAccessForUser( "cat-default", "content-creator", "read, create, approve, admin_browse" ) );
         fixture.save( factory.createCategoryAccessForUser( "cat-content-querier-no-read", "content-creator",

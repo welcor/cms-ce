@@ -83,7 +83,7 @@ public class ImportServiceImplTest_handleAssignmentOnImport
         fixture.save( factory.createContentType( "PersonCty", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
                                                  XMLDocumentFactory.create( personContentTypeXml ).getAsJDOMDocument() ) );
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "Persons", "PersonCty", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "Persons", null, "PersonCty", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Persons", "testuser", "read, create, approve" ) );
 
         MockHttpServletRequest request = new MockHttpServletRequest();

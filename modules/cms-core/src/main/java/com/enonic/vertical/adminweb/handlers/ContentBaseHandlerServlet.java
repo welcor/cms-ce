@@ -683,7 +683,6 @@ public class ContentBaseHandlerServlet
             CategoryEntity parentCategory = categoryDao.findByKey( new CategoryKey( superCategoryKey ) );
 
             StoreNewCategoryCommand command = new StoreNewCategoryCommand();
-            command.setUnitKey( parentCategory.getUnit().getUnitKey() );
             command.setCreator( user.getKey() );
             command.setParentCategory( parentCategory.getKey() );
             command.setName( fileName );
@@ -2520,7 +2519,7 @@ public class ContentBaseHandlerServlet
             }
             parameters.put( "versionkey", versionKey );
             contentTitle = contentVersion.getTitle();
-            unitKey = content.getCategory().getUnit().getKey();
+            unitKey = content.getCategory().getUnit().getKey().toInt();
         }
         else
         {

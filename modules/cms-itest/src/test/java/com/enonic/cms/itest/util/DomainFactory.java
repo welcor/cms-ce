@@ -27,6 +27,7 @@ import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.UnitEntity;
+import com.enonic.cms.core.content.category.UnitKey;
 import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
@@ -67,7 +68,7 @@ public class DomainFactory
     @Autowired
     private DomainFixture fixture;
 
-    public DomainFactory( DomainFixture fixture )
+    DomainFactory( DomainFixture fixture )
     {
         this.fixture = fixture;
         fixture.setFactory( this );
@@ -239,20 +240,21 @@ public class DomainFactory
     public UnitEntity createUnit( String name, String languageCode )
     {
         UnitEntity unit = new UnitEntity();
-        unit.setKey( mockKeyService.generateNextKeySafe( "TUNIT" ) );
+        unit.setKey( new UnitKey( mockKeyService.generateNextKeySafe( "TUNIT" ) ) );
         unit.setName( name );
         unit.setLanguage( fixture.findLanguageByCode( languageCode ) );
         unit.setDeleted( false );
         return unit;
     }
 
-    public CategoryEntity createCategory( String name, String contentTypeName, String unitName, String ownerUid, String modifierUid )
+    public CategoryEntity createCategory( String name, String parentCategoryName, String contentTypeName, String unitName, String ownerUid,
+                                          String modifierUid )
     {
-        return createCategory( name, contentTypeName, unitName, ownerUid, modifierUid, false );
+        return createCategory( name, null, contentTypeName, unitName, ownerUid, modifierUid, false );
     }
 
-    public CategoryEntity createCategory( String name, String contentTypeName, String unitName, String ownerUid, String modifierUid,
-                                          boolean autoApprove )
+    public CategoryEntity createCategory( String name, String parentCategoryName, String contentTypeName, String unitName, String ownerUid,
+                                          String modifierUid, boolean autoApprove )
     {
         CategoryEntity category = new CategoryEntity();
         category.setKey( new CategoryKey( mockKeyService.generateNextKeySafe( "TCATEGORY" ) ) );
@@ -268,6 +270,12 @@ public class DomainFactory
         category.setModifier( fixture.findUserByName( modifierUid ) );
         category.setAutoMakeAvailable( autoApprove );
         category.setDeleted( false );
+
+        if ( parentCategoryName != null )
+        {
+            CategoryEntity parentCategory = fixture.findCategoryByName( parentCategoryName );
+            category.setParent( parentCategory );
+        }
         return category;
     }
 

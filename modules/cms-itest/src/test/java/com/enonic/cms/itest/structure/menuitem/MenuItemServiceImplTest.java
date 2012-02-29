@@ -1,6 +1,5 @@
 package com.enonic.cms.itest.structure.menuitem;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -92,13 +91,12 @@ public class MenuItemServiceImplTest
 
         // Create a unit and a category in the archive to store the articles in, including access rights on the category.
         fixture.save( factory.createUnit( "Archive" ) );
-        fixture.save( factory.createCategory( "Articles", "article", "Archive", "aru", "aru" ) );
+        fixture.save( factory.createCategory( "Articles", null, "article", "Archive", "aru", "aru" ) );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "aru", "read, admin_browse, create, delete, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "nru", "read" ) );
 
         // Create a site and a section page for testing working with sections.
         fixture.save( factory.createSite( "The Newspaper", new Date(), null, "en" ) );
-
 
         fixture.flushAndClearHibernateSesssion();
     }
@@ -290,7 +288,7 @@ public class MenuItemServiceImplTest
     public void addContentToSection_adding_content_that_is_not_supported_by_section_page__trows_exception()
     {
         // setup
-        fixture.save( factory.createCategory( "Unsupported contents", "just-another-cty", "Archive", "aru", "aru" ) );
+        fixture.save( factory.createCategory( "Unsupported contents", null, "just-another-cty", "Archive", "aru", "aru" ) );
         fixture.save( factory.createCategoryAccessForUser( "Unsupported contents", "aru", "read, admin_browse, create" ) );
 
         fixture.save( createSection( "My section", "The Newspaper", false ) );
@@ -1419,7 +1417,8 @@ public class MenuItemServiceImplTest
 
     private MenuItemEntity createUnorderedSection( String name, String parentMenuItemName, String siteName )
     {
-        return factory.createSectionMenuItem( name, 0, null, name, siteName, "admin", "admin", "en", parentMenuItemName, null, false, null, false, null );
+        return factory.createSectionMenuItem( name, 0, null, name, siteName, "admin", "admin", "en", parentMenuItemName, null, false, null,
+                                              false, null );
     }
 
     private MenuItemEntity createOrderedSection( String name )

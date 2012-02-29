@@ -7,7 +7,6 @@ package com.enonic.cms.core.content.category;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.enonic.cms.core.content.category.access.CategoryAccessRights;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.security.user.UserKey;

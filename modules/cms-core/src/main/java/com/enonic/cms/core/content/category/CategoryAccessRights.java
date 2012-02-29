@@ -1,4 +1,4 @@
-package com.enonic.cms.core.content.category.access;
+package com.enonic.cms.core.content.category;
 
 
 import com.enonic.cms.core.security.group.GroupKey;

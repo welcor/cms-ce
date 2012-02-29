@@ -18,7 +18,7 @@ import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.SiteDao;

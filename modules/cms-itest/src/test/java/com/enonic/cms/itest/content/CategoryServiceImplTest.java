@@ -6,12 +6,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
+import com.enonic.cms.core.content.category.CategoryAccessRights;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryService;
+import com.enonic.cms.core.content.category.CreateCategoryAccessException;
 import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
-import com.enonic.cms.core.content.category.access.CategoryAccessRights;
-import com.enonic.cms.core.content.category.access.CreateCategoryAccessException;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserType;

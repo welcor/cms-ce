@@ -3,7 +3,6 @@ package com.enonic.cms.core.content.category;
 import java.util.List;
 import java.util.Map;
 
-import com.enonic.cms.core.content.category.access.CategoryAccessRights;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.store.dao.GroupDao;

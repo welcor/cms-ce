@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.security.user.UserEntity;

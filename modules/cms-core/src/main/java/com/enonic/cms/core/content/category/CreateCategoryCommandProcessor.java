@@ -5,8 +5,6 @@ import java.util.Date;
 
 import com.google.common.base.Preconditions;
 
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
-import com.enonic.cms.core.content.category.access.CreateCategoryAccessException;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;

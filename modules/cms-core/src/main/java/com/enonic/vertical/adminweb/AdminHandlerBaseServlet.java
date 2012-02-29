@@ -50,11 +50,11 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.util.TIntArrayList;
 
 import com.enonic.cms.core.content.binary.BinaryData;
+import com.enonic.cms.core.content.category.CategoryAccessRights;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
 import com.enonic.cms.core.content.category.UnitEntity;
 import com.enonic.cms.core.content.category.UnitKey;
-import com.enonic.cms.core.content.category.access.CategoryAccessRights;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceFile;

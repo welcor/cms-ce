@@ -114,6 +114,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( son ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( -1 );
         executor.parentLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -138,6 +139,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( son ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( -1 );
         executor.parentLevel( 1 );
         executor.includeOfflineContent( true );
@@ -163,6 +165,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( son ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( -1 );
         executor.parentLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -189,6 +192,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( son ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( -1 );
         executor.parentLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -214,6 +218,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -238,6 +243,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         executor.includeOfflineContent( true );
@@ -263,6 +269,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -287,6 +294,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -313,6 +321,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( son ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( -1 );
         executor.parentLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -339,6 +348,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( son ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( -1 );
         executor.parentLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -367,6 +377,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( son ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( -1 );
         executor.parentLevel( 1 );
         executor.includeOfflineContent( true );
@@ -395,6 +406,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -421,6 +433,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         GetRelatedContentResult result = executor.execute();
@@ -447,6 +460,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         executor.includeOfflineContent( true );
@@ -477,6 +491,7 @@ public class GetRelatedContentExecutorTest
         executor.user( fixture.findUserByName( "content-querier" ) );
         executor.contentFilter( Lists.newArrayList( father ) );
         executor.count( 1000 );
+        executor.orderBy( "@key" );
         executor.relation( 1 );
         executor.childrenLevel( 1 );
         GetRelatedContentResult result = executor.execute();

@@ -169,4 +169,30 @@ public class ExpressionFunctionsExecutorTest
         String evaluted = efExecutor.evaluate( "${portal.siteKey}" );
         assertEquals( "0", evaluted );
     }
+
+    @Test(expected = NullPointerException.class)
+    public void testPortalSiteKeyValueDoesNotExists()
+        throws Exception
+    {
+        String evaluted = efExecutor.evaluate( "${portal.siteKey1233}" );
+        assertEquals( "0", evaluted );
+    }
+
+
+    @Test
+    public void testEvaluateNegativeDurationHoursMinutesComplex()
+        throws Exception
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter( "subCat", "-5" );
+        request.addParameter( "sub-cat", "-2" );
+        efExecutor.setHttpRequest( request );
+        efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
+
+        timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
+
+        String evaluted = efExecutor.evaluate( "${periodHoursMinutes( param['sub-cat'], param.subCat )}" );
+        assertEquals( "PT-2H-5M", evaluted );
+    }
+
 }

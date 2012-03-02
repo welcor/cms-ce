@@ -78,6 +78,8 @@ public class Support112124Test
 
         PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
+
+        ImportJobFactory.setExecuteInOneTransaction( true );
     }
 
     @Test
@@ -133,7 +135,6 @@ public class Support112124Test
             resourceToString( new ClassPathResource( Support112124Test.class.getName().replace( ".", "/" ) + "-" + fileName ) );
 
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( categoryName );
         command.importName = importName;

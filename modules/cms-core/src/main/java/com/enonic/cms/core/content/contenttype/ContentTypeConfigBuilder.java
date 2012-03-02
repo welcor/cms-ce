@@ -12,6 +12,8 @@ public class ContentTypeConfigBuilder
 {
     private StringBuffer allBlocks = new StringBuffer();
 
+    private StringBuffer allImportConfigs = new StringBuffer();
+
     private String name;
 
     private StringBuffer currentBlock = new StringBuffer();
@@ -21,6 +23,8 @@ public class ContentTypeConfigBuilder
     private String currentBlockName;
 
     private String currentGroupXPath;
+
+    private StringBuffer currentImport = new StringBuffer();
 
     private Map<String, String> indexParams = new LinkedHashMap<String, String>();
 
@@ -141,6 +145,59 @@ public class ContentTypeConfigBuilder
         currentBlock.append( "</input>" );
     }
 
+    public void startImportConfigForXmlMode( String name, String base, String status, String sync,
+                                             CtyImportUpdateStrategyConfig updateStrategy )
+    {
+        currentImport = new StringBuffer();
+        currentImport.append( "<import name=\"" ).append( name ).append( "\"" );
+        currentImport.append( " mode=\"xml\"" );
+        currentImport.append( " base=\"" ).append( base ).append( "\"" );
+        currentImport.append( " status=\"" ).append( status ).append( "\"" );
+        if ( sync != null )
+        {
+            currentImport.append( " sync=\"" ).append( sync ).append( "\"" );
+        }
+        if ( updateStrategy != null )
+        {
+            currentImport.append( " update-strategy=\"" ).append( updateStrategy ).append( "\"" );
+        }
+        currentImport.append( ">\n" );
+    }
+
+    public void startImportConfigForCSVMode( String name, String separator, String status, String sync,
+                                             CtyImportUpdateStrategyConfig updateStrategy )
+    {
+        currentImport = new StringBuffer();
+        currentImport.append( "<import name=\"" ).append( name ).append( "\"" );
+        currentImport.append( " mode=\"csv\"" );
+        currentImport.append( " separator=\"" ).append( separator ).append( "\"" );
+        currentImport.append( " status=\"" ).append( status ).append( "\"" );
+        if ( sync != null )
+        {
+            currentImport.append( " sync=\"" ).append( sync ).append( "\"" );
+        }
+        if ( updateStrategy != null )
+        {
+            currentImport.append( " update-strategy=\"" ).append( updateStrategy ).append( "\"" );
+        }
+        currentImport.append( ">\n" );
+    }
+
+    public void addImportMapping( String source, String dest )
+    {
+        currentImport.append( "<mapping" );
+        currentImport.append( " src=\"" ).append( source ).append( "\"" );
+        currentImport.append( " dest=\"" ).append( dest ).append( "\"" );
+        currentImport.append( "/>" );
+    }
+
+    public void endImportConfig()
+    {
+        currentImport.append( "</import>\n" );
+        allImportConfigs.append( currentImport );
+        currentImport = null;
+    }
+
     public void addIndexParameter( String name )
     {
         indexParams.put( name, "contentdata/" + name );
@@ -165,7 +222,20 @@ public class ContentTypeConfigBuilder
 
         s.append( allBlocks );
 
-        s.append( "\n</form>\n</config>\n" );
+        s.append( "\n</form>\n" );
+
+        if ( allImportConfigs.length() > 0 )
+        {
+            s.append( "<imports>\n" );
+            s.append( allImportConfigs );
+            s.append( "</imports>\n" );
+        }
+        else
+        {
+            s.append( "<imports/>\n" );
+        }
+
+        s.append( "\n</config>\n" );
 
         s.append( "<indexparameters>\n" );
         for ( Map.Entry<String, String> indexParamEntry : indexParams.entrySet() )

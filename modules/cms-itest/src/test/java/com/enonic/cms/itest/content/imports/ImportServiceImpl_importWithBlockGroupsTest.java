@@ -81,6 +81,8 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
+
+        ImportJobFactory.setExecuteInOneTransaction( true );
     }
 
     @Test
@@ -118,7 +120,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -151,7 +152,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -223,7 +223,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -265,7 +264,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -339,7 +337,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         firstImportSource += "</persons>";
 
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync";
@@ -377,7 +374,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync-and-without-block-mapping";
@@ -441,7 +437,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -479,7 +474,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -564,7 +558,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-without-purge";
@@ -602,7 +595,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-without-purge";
@@ -692,7 +684,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-with-purge";
@@ -734,7 +725,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-with-purge";
@@ -810,7 +800,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-jvs";
@@ -839,7 +828,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-jvs";
@@ -916,7 +904,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-with-purge";
@@ -958,7 +945,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-with-purge";
@@ -1035,7 +1021,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-with-purge";
@@ -1073,7 +1058,6 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync-and-block-sync-with-purge";

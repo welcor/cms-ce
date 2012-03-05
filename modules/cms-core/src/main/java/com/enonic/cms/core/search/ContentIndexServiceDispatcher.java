@@ -2,7 +2,6 @@ package com.enonic.cms.core.search;
 
 import java.util.List;
 
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
@@ -27,13 +26,13 @@ import com.enonic.cms.core.search.querymeasurer.QueryResultComparer;
  * Time: 10:46 AM
  */
 public class ContentIndexServiceDispatcher
-    implements ContentIndexService, DisposableBean
+    implements ContentIndexService
 {
     ContentIndexServiceImpl newContentIndexService;
 
     private IndexQueryMeasurer indexQueryMeasurer;
 
-    private QueryResultComparer resultComparer = new QueryResultComparer();
+    private QueryResultComparer resultComparer;
 
     com.enonic.cms.core.content.index.ContentIndexServiceImpl oldContentIndexService;
 
@@ -132,18 +131,10 @@ public class ContentIndexServiceDispatcher
         newContentIndexService.optimize();
     }
 
-
-    public void destroy()
-        throws Exception
-    {
-        resultComparer.flush();
-    }
-
     public void flush()
     {
         newContentIndexService.flush();
     }
-
 
     public void setNewContentIndexService( ContentIndexServiceImpl newContentIndexService )
     {
@@ -160,6 +151,12 @@ public class ContentIndexServiceDispatcher
     public void setIndexQueryMeasurer( IndexQueryMeasurer indexQueryMeasurer )
     {
         this.indexQueryMeasurer = indexQueryMeasurer;
+    }
+
+    @Autowired
+    public void setResultComparer( final QueryResultComparer resultComparer )
+    {
+        this.resultComparer = resultComparer;
     }
 }
 

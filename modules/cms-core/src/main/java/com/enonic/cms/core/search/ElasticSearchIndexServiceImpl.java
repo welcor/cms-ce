@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -31,6 +32,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -222,6 +224,19 @@ public class ElasticSearchIndexServiceImpl
         SearchRequest searchRequest = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( sourceBuilder );
 
         return doSearchRequest( searchRequest );
+    }
+
+
+    @Override
+    public Map<String, GetField> search( String indexName, IndexType indexType, ContentKey contentKey )
+    {
+        final GetRequest getRequest = new GetRequest( indexName, IndexType.Content.toString(), contentKey.toString() );
+        getRequest.fields( "*" );
+
+        final GetResponse getResponse = this.client.get( getRequest ).actionGet();
+
+        final Map<String, GetField> fields = getResponse.getFields();
+        return fields;
     }
 
     private SearchResponse doSearchRequest( SearchRequest searchRequest )

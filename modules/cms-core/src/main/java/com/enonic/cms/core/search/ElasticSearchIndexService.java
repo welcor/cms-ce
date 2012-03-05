@@ -1,9 +1,11 @@
 package com.enonic.cms.core.search;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -42,6 +44,8 @@ public interface ElasticSearchIndexService
     public SearchResponse search( String indexName, IndexType indexType, SearchSourceBuilder sourceBuilder );
 
     public SearchResponse search( String indexName, IndexType indexType, String sourceBuilder );
+
+    public Map<String, GetField> search( String indexName, IndexType indexType, ContentKey contentKey );
 
     public void flush( String indexName );
 

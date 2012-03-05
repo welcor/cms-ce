@@ -16,6 +16,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasureAvgTimeDiffComparator;
 import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasureInvocationComparator;
 import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasurerAvgTimeComparator;
+import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasurerMaxTimeComparator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,8 +28,12 @@ public class IndexQueryMeasurer
 {
     private final Map<IndexQuerySignature, IndexQueryMeasure> queryMeasures = Maps.newHashMap();
 
+    private int totalQueriesOnIndex = 0;
+
     public synchronized void addMeasure( ContentIndexQuery query, StopWatch stopWatch, String sourceName )
     {
+        totalQueriesOnIndex++;
+
         final long lastTaskTimeMillis = stopWatch.getLastTaskTimeMillis();
 
         final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query );
@@ -78,6 +83,14 @@ public class IndexQueryMeasurer
         return limitSetIfNeccesary( count, sortedSet );
     }
 
+    public Set<IndexQueryMeasure> getMeasuresOrderedByMaxTime( int count )
+    {
+        final TreeSet<IndexQueryMeasure> sortedSet = Sets.newTreeSet( new IndexQueryMeasurerMaxTimeComparator() );
+        sortedSet.addAll( queryMeasures.values() );
+
+        return limitSetIfNeccesary( count, sortedSet );
+    }
+
 
     private Set<IndexQueryMeasure> limitSetIfNeccesary( int count, TreeSet<IndexQueryMeasure> sortedSet )
     {
@@ -96,4 +109,13 @@ public class IndexQueryMeasurer
         queryMeasures.clear();
     }
 
+    public int getTotalQueriesOnIndex()
+    {
+        return totalQueriesOnIndex;
+    }
+
+    public int getRecordedQueries()
+    {
+        return queryMeasures.size();
+    }
 }

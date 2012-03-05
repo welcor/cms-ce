@@ -20,6 +20,8 @@ public class IndexQueryMeasure
 
     private int totalTime = 0;
 
+    private long currentMaxTime = 0;
+
     private int numberOfInvocations = 0;
 
     public IndexQueryMeasure( IndexQuerySignature querySignature )
@@ -41,6 +43,12 @@ public class IndexQueryMeasure
 
         numberOfInvocations++;
         totalTime += executionTime;
+
+        if ( executionTime > currentMaxTime )
+        {
+            currentMaxTime = executionTime;
+        }
+
     }
 
     public IndexQuerySignature getQuerySignature()
@@ -150,4 +158,8 @@ public class IndexQueryMeasure
         return Long.valueOf( maxFoundValue - minFoundValue ).intValue();
     }
 
+    public long getCurrentMaxTime()
+    {
+        return currentMaxTime;
+    }
 }

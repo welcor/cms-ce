@@ -1,8 +1,8 @@
 package com.enonic.cms.core.tools;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,21 +10,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.cluster.ClusterState;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
-import org.elasticsearch.common.io.stream.BytesStreamOutput;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHitField;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.common.collect.Maps;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.adminweb.AdminHelper;
 
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasure;
 import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasurer;
+import com.enonic.cms.core.search.querymeasurer.QueryDiffEntry;
+import com.enonic.cms.core.search.querymeasurer.QueryResultComparer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,8 +39,11 @@ public class IndexMonitorController
     extends AbstractToolController
 {
 
+    protected static final int DEFAULT_COUNT = 500;
+
     protected static enum SortValue
     {
+        MaxTime,
         AvgTimeDiff,
         TotalHits,
         AvgTime;
@@ -50,9 +56,15 @@ public class IndexMonitorController
 
     private IndexQueryMeasurer indexQueryMeasurer;
 
+    private QueryResultComparer queryResultComparer;
+
     @Override
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
+
+        final String systemInfo = req.getParameter( "measuresList" );
+        final String diffList = req.getParameter( "diffList" );
+        final String queryContent = req.getParameter( "queryContent" );
 
         clearIfFlagged( req );
 
@@ -60,14 +72,74 @@ public class IndexMonitorController
 
         int count = getCount( req );
 
-        final HashMap<String, Object> model = new HashMap<String, Object>();
+        if ( StringUtils.isNotBlank( queryContent ) )
+        {
+            final HashMap<String, Object> model = new HashMap<String, Object>();
 
-        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
-        model.put( "newIndexNumberOfContent", getTotalHits() );
-        model.put( "numberOfNodes", 1 );
-        model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
+            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+            model.put( "contentFields", getContentFields( req ) );
+            process( req, res, model, "indexMonitorContentQueryWindow" );
 
-        process( req, res, model, "indexMonitorPage" );
+        }
+        else if ( StringUtils.isNotBlank( systemInfo ) )
+        {
+            final HashMap<String, Object> model = new HashMap<String, Object>();
+
+            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+            model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
+            model.put( "totalHitsOnIndex", indexQueryMeasurer.getTotalQueriesOnIndex() );
+            model.put( "numberOfRecoredQueries", indexQueryMeasurer.getRecordedQueries() );
+
+            process( req, res, model, "indexMonitorMeasureList" );
+        }
+
+        else if ( StringUtils.isNotBlank( diffList ) )
+        {
+            final HashMap<String, Object> model = new HashMap<String, Object>();
+
+            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+            model.put( "queryResultDiffList", createQueryResultDiffList() );
+            process( req, res, model, "indexMonitorDiffList" );
+        }
+
+        else
+        {
+            final HashMap<String, Object> model = new HashMap<String, Object>();
+
+            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+            model.put( "totalHitsOnIndex", indexQueryMeasurer.getTotalQueriesOnIndex() );
+            model.put( "numberOfRecoredQueries", indexQueryMeasurer.getRecordedQueries() );
+            model.put( "newIndexNumberOfContent", getTotalHits() );
+            model.put( "numberOfNodes", 1 );
+            model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
+            model.put( "count", count );
+            model.put( "orderBy", orderBy );
+
+            process( req, res, model, "indexMonitorPage" );
+        }
+    }
+
+    private Map<String, String> getContentFields( final HttpServletRequest req )
+    {
+        final String contentKey = req.getParameter( "contentKey" );
+
+        final Map<String, String> resultMap = Maps.newHashMap();
+
+        final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( new ContentKey( contentKey ) );
+
+        for ( String fieldName : fieldMapForId.keySet() )
+        {
+            final SearchHitField searchHitField = fieldMapForId.get( fieldName );
+            resultMap.put( searchHitField.getName(), searchHitField.getValue().toString() );
+        }
+
+        return resultMap;
+    }
+
+    private List<QueryDiffEntry> createQueryResultDiffList()
+    {
+
+        return queryResultComparer.getQueryDiffEntries();
 
     }
 
@@ -98,7 +170,7 @@ public class IndexMonitorController
 
         if ( !StringUtils.isNumeric( countString ) )
         {
-            count = 10;
+            count = DEFAULT_COUNT;
         }
         else
         {
@@ -121,6 +193,8 @@ public class IndexMonitorController
     {
         switch ( orderBy )
         {
+            case MaxTime:
+                return indexQueryMeasurer.getMeasuresOrderedByMaxTime( count );
             case AvgTime:
                 return indexQueryMeasurer.getMeasuresOrderedByAvgTime( count );
             case AvgTimeDiff:
@@ -133,31 +207,29 @@ public class IndexMonitorController
     }
 
 
-    private String getMapping()
+    protected Map<String, SearchHitField> getFieldMapForId( ContentKey contentKey )
     {
+        SearchResponse result = fetchDocumentByContentKey( contentKey );
 
-        final Client client = elasticSearchIndexService.getClient();
+        SearchHit hit = result.getHits().getAt( 0 );
 
-        ClusterState cs = client.admin().cluster().prepareState().setFilterIndices( "cms" ).execute().actionGet().getState();
-        IndexMetaData imd = cs.getMetaData().index( "cms" );
-        MappingMetaData mdd = imd.mapping( IndexType.Content.toString() );
+        return hit.getFields();
+    }
 
-        try
-        {
-            final Map<String, Object> mappingMap = mdd.getSourceAsMap();
+    private SearchResponse fetchDocumentByContentKey( ContentKey contentKey )
+    {
+        String termQuery = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + 100 + ",\n" +
+            "\"fields\" : [\"*\"],\n" +
+            "  \"query\" : {\n" +
+            "    \"term\" : {\n" +
+            "      \"key_numeric\" : \"" + new Long( contentKey.toString() ).toString() + "\"\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
-            BytesStreamOutput out = new BytesStreamOutput();
-
-            MappingMetaData.writeTo( mdd, out );
-
-            return new String( out.copiedByteArray(), "UTF-8" );
-
-        }
-        catch ( IOException e )
-        {
-            return "";
-        }
-
+        return elasticSearchIndexService.search( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content, termQuery );
     }
 
 
@@ -194,5 +266,11 @@ public class IndexMonitorController
     public void setIndexQueryMeasurer( IndexQueryMeasurer indexQueryMeasurer )
     {
         this.indexQueryMeasurer = indexQueryMeasurer;
+    }
+
+    @Autowired
+    public void setQueryResultComparer( final QueryResultComparer queryResultComparer )
+    {
+        this.queryResultComparer = queryResultComparer;
     }
 }

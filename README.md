@@ -3,13 +3,6 @@
 
 Welcome to the home of Enonic CMS Community Edition. Here you will find all source code for the product.
 
-## Checking out the code
-
-To check out all of the code, you have to have Git installed. If you have not git installed, please see instructions [here](http://help.github.com/set-up-git-redirect). First clone
-the repository with the following command:
-
-	git clone git@github.com:enonic/cms-ce.git
-
 ## Building with Maven
 
 Build all code and run all tests including integration tests:

@@ -72,6 +72,225 @@ public class ImportDataReaderXmlTest
     }
 
     @Test
+    public void given_input_field_when_import_source_does_not_contain_mapped_xpath_then_no_source_value_exists_for_input_field()
+        throws UnsupportedEncodingException
+    {
+        CtyImportMappingConfig mappingText = new CtyImportMappingConfig( importMultiTypeXml, "my-text", "text" );
+        importMultiTypeXml.addMapping( mappingText );
+        CtyImportMappingConfig mappingTextarea = new CtyImportMappingConfig( importMultiTypeXml, "my-textarea", "textarea" );
+        importMultiTypeXml.addMapping( mappingTextarea );
+        CtyImportMappingConfig mappingXml = new CtyImportMappingConfig( importMultiTypeXml, "my-xml", "xml" );
+        importMultiTypeXml.addMapping( mappingXml );
+        CtyImportMappingConfig mappingHtmlarea = new CtyImportMappingConfig( importMultiTypeXml, "my-htmlarea", "htmlarea" );
+        importMultiTypeXml.addMapping( mappingHtmlarea );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<not-mapped-text/>" +
+                                 "<not-mapped-textarea/>" +
+                                 "<not-mapped-xml/>" +
+                                 "<not-mapped-htmlarea/>" +
+                                 "</multi-type></root>" );
+
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+
+        assertTrue( reader.hasMoreEntries() );
+
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        assertFalse( reader.hasMoreEntries() );
+
+        Map<CtyImportMappingConfig, AbstractSourceValue> configAndValueMap = importEntry.getConfigAndValueMap();
+        assertNull( configAndValueMap.get( mappingText ) );
+        assertNull( configAndValueMap.get( mappingTextarea ) );
+        assertNull( configAndValueMap.get( mappingXml ) );
+        assertNull( configAndValueMap.get( mappingHtmlarea ) );
+    }
+
+    @Test
+    public void given_text_input_field_when_import_source_contain_mapped_xpath_but_element_is_closed_then_source_value_exists_with_empty_string_for_input_field()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingText = new CtyImportMappingConfig( importMultiTypeXml, "my-text", "text" );
+        importMultiTypeXml.addMapping( mappingText );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-text/>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        Map<CtyImportMappingConfig, AbstractSourceValue> configAndValueMap = importEntry.getConfigAndValueMap();
+        assertEquals( "", ( (StringSourceValue) configAndValueMap.get( mappingText ) ).getValue() );
+    }
+
+    @Test
+    public void given_textarea_input_field_when_import_source_contain_mapped_xpath_but_element_is_closed_then_source_value_exists_with_empty_string_for_input_field()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingTextarea = new CtyImportMappingConfig( importMultiTypeXml, "my-textarea", "textarea" );
+        importMultiTypeXml.addMapping( mappingTextarea );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-textarea/>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        Map<CtyImportMappingConfig, AbstractSourceValue> configAndValueMap = importEntry.getConfigAndValueMap();
+        assertEquals( "", ( (StringSourceValue) configAndValueMap.get( mappingTextarea ) ).getValue() );
+    }
+
+    @Test
+    public void given_htmlarea_input_field_when_import_source_contain_mapped_xpath_but_element_is_closed_then_no_source_value_exists_for_input_field()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingHtmlarea = new CtyImportMappingConfig( importMultiTypeXml, "my-htmlarea", "htmlarea" );
+        importMultiTypeXml.addMapping( mappingHtmlarea );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-htmlarea/>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        Map<CtyImportMappingConfig, AbstractSourceValue> configAndValueMap = importEntry.getConfigAndValueMap();
+        assertNull( configAndValueMap.get( mappingHtmlarea ) );
+    }
+
+    @Test
+    public void given_xml_input_field_when_import_source_contain_mapped_xpath_but_element_is_closed_then_no_source_value_exists_for_input_field()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingXml = new CtyImportMappingConfig( importMultiTypeXml, "my-xml", "xml" );
+        importMultiTypeXml.addMapping( mappingXml );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-xml/>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        Map<CtyImportMappingConfig, AbstractSourceValue> configAndValueMap = importEntry.getConfigAndValueMap();
+        assertNull( configAndValueMap.get( mappingXml ) );
+    }
+
+    @Test
+    public void given_text_input_field_when_import_source_contains_mapped_xpath_but_contains_empty_value_then_source_value_with_empty_value()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingText = new CtyImportMappingConfig( importMultiTypeXml, "my-text", "text" );
+        importMultiTypeXml.addMapping( mappingText );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-text></my-text>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        Map<CtyImportMappingConfig, AbstractSourceValue> configAndValueMap = importEntry.getConfigAndValueMap();
+        assertEquals( "", ( (StringSourceValue) configAndValueMap.get( mappingText ) ).getValue() );
+    }
+
+    @Test
+    public void given_textarea_input_field_when_import_source_contains_mapped_xpath_but_contains_empty_value_then_source_value_with_empty_value()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingTextarea = new CtyImportMappingConfig( importMultiTypeXml, "my-textarea", "textarea" );
+        importMultiTypeXml.addMapping( mappingTextarea );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-textarea></my-textarea>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        Map<CtyImportMappingConfig, AbstractSourceValue> configAndValueMap = importEntry.getConfigAndValueMap();
+        assertEquals( "", ( (StringSourceValue) configAndValueMap.get( mappingTextarea ) ).getValue() );
+    }
+
+    @Test
+    public void given_htmlarea_input_field_when_import_source_contains_mapped_xpath_but_contains_empty_value_then_source_is_null()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingHtmlarea = new CtyImportMappingConfig( importMultiTypeXml, "my-htmlarea", "htmlarea" );
+        importMultiTypeXml.addMapping( mappingHtmlarea );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-htmlarea></my-htmlarea>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        assertNull( importEntry.getConfigAndValueMap().get( mappingHtmlarea ) );
+    }
+
+    @Test
+    public void given_xml_input_field_when_import_source_contains_mapped_xpath_but_contains_empty_value_then_source_value_is_null()
+        throws UnsupportedEncodingException
+    {
+        // setup
+        CtyImportMappingConfig mappingXml = new CtyImportMappingConfig( importMultiTypeXml, "my-xml", "xml" );
+        importMultiTypeXml.addMapping( mappingXml );
+
+        StringBuffer importSource = new StringBuffer();
+        importSource.append( "<root><multi-type>" +
+                                 "<id value='1001'/>" +
+                                 "<my-xml></my-xml>" +
+                                 "</multi-type></root>" );
+
+        // exercise
+        ImportDataReaderXml reader = new ImportDataReaderXml( importMultiTypeXml, stringBufferToInputStream( importSource ) );
+        ImportDataEntry importEntry = reader.getNextEntry();
+
+        // verify
+        assertNull( importEntry.getConfigAndValueMap().get( mappingXml ) );
+    }
+
+    @Test
     public void wrapping_element_referred_by_htmlarea_mapping_is_not_included_in_value()
         throws UnsupportedEncodingException
     {

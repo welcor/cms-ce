@@ -7,11 +7,10 @@ import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.CategoryDao;
 
-public class CreateCategoryCommandProcessor
+class CreateCategoryCommandProcessor
 {
     private TimeService timeService;
 
@@ -19,7 +18,9 @@ public class CreateCategoryCommandProcessor
 
     private UnitFactory unitFactory;
 
-    private MemberOfResolver memberOfResolver;
+    private CreateCategoryAccessChecker createCategoryAccessChecker;
+
+    private CategoryAccessStorer categoryAccessStorer;
 
     private UserEntity creator;
 
@@ -27,40 +28,35 @@ public class CreateCategoryCommandProcessor
 
     private ContentTypeEntity contentType;
 
-    private CategoryAccessStorer categoryAccessStorer;
-
-    private CategoryAccessResolver categoryAccessResolver;
-
-    public CreateCategoryCommandProcessor( TimeService timeService, CategoryDao categoryDao, UnitFactory unitFactory,
-                                           MemberOfResolver memberOfResolver, CategoryAccessStorer categoryAccessStorer,
-                                           CategoryAccessResolver categoryAccessResolver )
+    CreateCategoryCommandProcessor( TimeService timeService, CategoryDao categoryDao, UnitFactory unitFactory,
+                                    CategoryAccessStorer categoryAccessStorer, CreateCategoryAccessChecker createCategoryAccessChecker )
     {
         this.timeService = timeService;
         this.categoryDao = categoryDao;
         this.unitFactory = unitFactory;
-        this.memberOfResolver = memberOfResolver;
         this.categoryAccessStorer = categoryAccessStorer;
-        this.categoryAccessResolver = categoryAccessResolver;
+        this.createCategoryAccessChecker = createCategoryAccessChecker;
     }
 
-    public void setCreator( UserEntity creator )
+    void setCreator( UserEntity creator )
     {
         this.creator = creator;
     }
 
-    public void setParentCategory( CategoryEntity parentCategory )
+    void setParentCategory( CategoryEntity parentCategory )
     {
         this.parentCategory = parentCategory;
     }
 
-    public void setContentType( ContentTypeEntity contentType )
+    void setContentType( ContentTypeEntity contentType )
     {
         this.contentType = contentType;
     }
 
-    public CategoryKey createCategory( final StoreNewCategoryCommand command )
+    CategoryKey createCategory( final StoreNewCategoryCommand command )
     {
-        checkCreateCategoryAccess();
+        final boolean creatingContentArchive = parentCategory == null;
+        checkCreateCategoryAccess( creatingContentArchive );
 
         final Date now = timeService.getNowAsDateTime().toDate();
 
@@ -75,11 +71,9 @@ public class CreateCategoryCommandProcessor
         category.setAutoMakeAvailable( command.getAutoApprove() );
         category.setDescription( command.getDescription() );
 
-        UnitEntity unit;
-        boolean creatingContentArchive = parentCategory == null;
         if ( creatingContentArchive )
         {
-            unit = unitFactory.createNewUnit( command );
+            category.setUnit( unitFactory.createNewUnit( command ) );
         }
         else
         {
@@ -89,14 +83,11 @@ public class CreateCategoryCommandProcessor
                                          "Expect language only to be specified when creating a content archive" );
 
             category.setParent( parentCategory );
-            unit = parentCategory.getUnit();
+            category.setUnit( parentCategory.getUnit() );
         }
 
-        category.setUnit( unit );
         categoryDao.storeNew( category );
-
         applyAccessRights( command, category );
-
         return category.getKey();
     }
 
@@ -116,32 +107,16 @@ public class CreateCategoryCommandProcessor
         }
     }
 
-    private void checkCreateCategoryAccess()
+    private void checkCreateCategoryAccess( final boolean creatingContentArchive )
         throws CreateCategoryAccessException
     {
-        if ( parentCategory == null )
+        if ( creatingContentArchive )
         {
-            // needs at least administrator rights
-            if ( !memberOfResolver.hasAdministratorPowers( creator ) )
-            {
-                throw new CreateCategoryAccessException( "To create a top category the user needs to be an administrator",
-                                                         creator.getQualifiedName() );
-            }
+            createCategoryAccessChecker.checkAccessToCreateContentArchive();
         }
         else
         {
-            final boolean noAdministrateAccessByRights =
-                !categoryAccessResolver.hasAccess( creator, parentCategory, CategoryAccessType.ADMINISTRATE );
-
-            if ( noAdministrateAccessByRights )
-            {
-                if ( !memberOfResolver.isMemberOfAdministratorsGroup( creator ) )
-                {
-                    throw new CreateCategoryAccessException(
-                        "To create a category the user needs to have the administrate access on the parent category or be an administrator",
-                        creator.getQualifiedName() );
-                }
-            }
+            createCategoryAccessChecker.checkAccessToCreateCategory( parentCategory );
         }
     }
 }

@@ -109,6 +109,8 @@ public class ImportServiceImplTest
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
+
+        ImportJobFactory.setExecuteInOneTransaction( true );
     }
 
     @Test
@@ -139,7 +141,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-without-status-without-sync";
@@ -211,7 +212,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -254,7 +254,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -315,7 +314,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -393,7 +391,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -477,7 +474,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -578,7 +574,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -640,7 +635,6 @@ public class ImportServiceImplTest
 
         // setup: first import
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -667,7 +661,6 @@ public class ImportServiceImplTest
 
         // exercise: second import
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "test-related-content";
@@ -715,7 +708,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-without-sync";
@@ -762,7 +754,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-without-sync";
@@ -811,7 +802,6 @@ public class ImportServiceImplTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-without-sync";
@@ -829,7 +819,6 @@ public class ImportServiceImplTest
 
         // exercise
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-without-sync";
@@ -882,7 +871,6 @@ public class ImportServiceImplTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -897,7 +885,6 @@ public class ImportServiceImplTest
 
         // exercise
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-approved-with-sync";
@@ -946,7 +933,6 @@ public class ImportServiceImplTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync";
@@ -970,7 +956,6 @@ public class ImportServiceImplTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync-and-sex";
@@ -1034,7 +1019,6 @@ public class ImportServiceImplTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync";
@@ -1066,7 +1050,6 @@ public class ImportServiceImplTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync-on-contenkey";
@@ -1121,7 +1104,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-with-block-with-base-to-input-in-nonGroupBlock";
@@ -1174,7 +1156,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-without-block-to-input-in-nonGroupBlock";
@@ -1223,7 +1204,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1270,7 +1250,6 @@ public class ImportServiceImplTest
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1344,7 +1323,6 @@ public class ImportServiceImplTest
 
         // exercise: import with status = 0
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1427,7 +1405,6 @@ public class ImportServiceImplTest
 
         // exercise: import with status = 0
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1511,7 +1488,6 @@ public class ImportServiceImplTest
 
         // exercise: import with status = 0
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1599,7 +1575,6 @@ public class ImportServiceImplTest
 
         // exercise:
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1687,7 +1662,6 @@ public class ImportServiceImplTest
 
         // exercise:
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1756,7 +1730,6 @@ public class ImportServiceImplTest
 
         // exercise:
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1833,7 +1806,6 @@ public class ImportServiceImplTest
 
         // exercise: import with status = 0
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -1922,7 +1894,6 @@ public class ImportServiceImplTest
 
         // exercise: import with status = 0
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -2005,7 +1976,6 @@ public class ImportServiceImplTest
 
         // exercise: import with status = 0
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";
@@ -2062,7 +2032,6 @@ public class ImportServiceImplTest
 
         // setup
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync";
@@ -2089,7 +2058,6 @@ public class ImportServiceImplTest
         secondImportSource += "</persons>";
 
         command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-as-draft-with-sync";
@@ -2164,7 +2132,6 @@ public class ImportServiceImplTest
 
         // exercise:
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.publishFrom = new DateTime( 2010, 8, 1, 0, 0, 0, 0 );
@@ -2211,7 +2178,6 @@ public class ImportServiceImplTest
 
         // exercise:
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.publishFrom = new DateTime( 2012, 8, 1, 0, 0, 0, 0 );

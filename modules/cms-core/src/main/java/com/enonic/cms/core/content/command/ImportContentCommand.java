@@ -28,8 +28,6 @@ public class ImportContentCommand
 
     public InputStream inputStream;
 
-    public boolean executeInOneTransaction = false;
-
     public UserKey assigneeKey;
 
     public Date assignmentDueDate;

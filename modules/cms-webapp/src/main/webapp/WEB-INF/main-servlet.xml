@@ -9,25 +9,6 @@
 
   <mvc:default-servlet-handler/>
 
-  <!-- Create the view resolver. -->
-  <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-    <property name="templateLoaderPath" value="/WEB-INF/freemarker/"/>
-    <property name="freemarkerSettings">
-      <props>
-        <prop key="number_format">0.######</prop>
-        <prop key="default_encoding">UTF-8</prop>
-      </props>
-    </property>
-  </bean>
-
-  <!-- Create the view resolver. -->
-  <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-    <property name="cache" value="true"/>
-    <property name="prefix" value=""/>
-    <property name="suffix" value=".ftl"/>
-    <property name="exposeSpringMacroHelpers" value="true"/>
-  </bean>
-
   <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="order" value="1"/>
     <property name="alwaysUseFullPath" value="true"/>

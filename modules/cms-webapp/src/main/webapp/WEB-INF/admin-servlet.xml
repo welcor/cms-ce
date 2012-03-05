@@ -6,25 +6,6 @@
 
   <context:annotation-config/>
 
-  <!-- Create the view resolver. -->
-  <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-    <property name="templateLoaderPath" value="/WEB-INF/freemarker/"/>
-    <property name="freemarkerSettings">
-      <props>
-        <prop key="number_format">0.######</prop>
-        <prop key="default_encoding">UTF-8</prop>
-      </props>
-    </property>
-  </bean>
-
-  <!-- Create the view resolver. -->
-  <bean id="adminViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-    <property name="cache" value="true"/>
-    <property name="prefix" value=""/>
-    <property name="suffix" value=".ftl"/>
-    <property name="exposeSpringMacroHelpers" value="true"/>
-  </bean>
-
   <bean class="com.enonic.vertical.adminweb.resource.AdminResourcesImpl"/>
 
   <!-- Interceptor to trigger autologin plugins. -->
@@ -190,7 +171,6 @@
   <!-- Tools -->
   <bean id="abstractToolController" abstract="true"
         class="com.enonic.cms.core.tools.AbstractToolController">
-    <property name="viewResolver" ref="adminViewResolver"/>
   </bean>
 
   <bean id="pluginInfoController" class="com.enonic.cms.core.tools.PluginInfoController"

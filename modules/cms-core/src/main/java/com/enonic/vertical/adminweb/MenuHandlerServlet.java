@@ -145,7 +145,7 @@ public class MenuHandlerServlet
             Element parameter = (Element) nodes.item( i );
             String key = parameter.getAttribute( "key" );
 
-            String paramName = XMLTool.getElementText( parameter, "name" );
+            String paramName = XMLTool.getElementText( parameter, "name" ) + "_portlet";
             String separator = XMLTool.getElementText( parameter, "separator" );
             if ( !isArrayFormItem( formItems, paramName ) )
             {

@@ -11,17 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
 
-import com.enonic.cms.core.time.TimeService;
-
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessException;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessType;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentHomeDao;
 import com.enonic.cms.store.dao.GroupDao;

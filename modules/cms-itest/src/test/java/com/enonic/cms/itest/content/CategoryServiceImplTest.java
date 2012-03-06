@@ -6,11 +6,13 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
+import com.enonic.cms.core.content.category.CategoryAccessRights;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryService;
+import com.enonic.cms.core.content.category.CreateCategoryAccessException;
+import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
-import com.enonic.cms.core.content.category.access.CategoryAccessRights;
-import com.enonic.cms.core.content.category.access.CreateCategoryAccessException;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -52,6 +54,9 @@ public class CategoryServiceImplTest
         fixture.initSystemData();
 
         fixture.createAndStoreUserAndUserGroup( "MyUser", "MyUser fullname", UserType.NORMAL, "testuserstore" );
+
+        fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
+        fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
     }
 
     @Test
@@ -59,7 +64,7 @@ public class CategoryServiceImplTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit", "by" ) );
-        fixture.save( factory.createCategory( "ParentCategory", null, "MyUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createCategory( "ParentCategory", null, null, "MyUnit", "MyUser", "MyUser" ) );
         fixture.save(
             factory.createCategoryAccessForUser( "ParentCategory", "MyUser", "administrate, read, create, approve, admin_browse" ) );
         fixture.flushAndClearHibernateSesssion();
@@ -68,7 +73,6 @@ public class CategoryServiceImplTest
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
         command.setName( "Test category" );
         command.setCreator( fixture.findUserByName( "MyUser" ).getKey() );
-        command.setUnitKey( fixture.findUnitByName( "MyUnit" ).getUnitKey() );
         command.setParentCategory( fixture.findCategoryByName( "ParentCategory" ).getKey() );
         CategoryKey key = categoryService.storeNewCategory( command );
 
@@ -79,8 +83,8 @@ public class CategoryServiceImplTest
     public void create_category_without_access_rights()
     {
         // setup
-        fixture.save( factory.createUnit( "MyUnit", "by" ) );
-        fixture.save( factory.createCategory( "ParentCategory", null, "MyUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createUnit( "MyUnit", "en" ) );
+        fixture.save( factory.createCategory( "ParentCategory", null, null, "MyUnit", "MyUser", "MyUser" ) );
         fixture.save( factory.createCategoryAccessForUser( "ParentCategory", "MyUser", "read" ) );
         fixture.flushAndClearHibernateSesssion();
 
@@ -88,56 +92,71 @@ public class CategoryServiceImplTest
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
         command.setName( "Test category" );
         command.setCreator( fixture.findUserByName( "MyUser" ).getKey() );
-        command.setUnitKey( fixture.findUnitByName( "MyUnit" ).getUnitKey() );
         command.setParentCategory( fixture.findCategoryByName( "ParentCategory" ).getKey() );
         categoryService.storeNewCategory( command );
     }
 
     @Test(expected = CreateCategoryAccessException.class)
-    public void create_top_category_without_access_rights()
+    public void create_archive_without_access_rights()
     {
         // setup
-        fixture.save( factory.createUnit( "MyUnit", "by" ) );
+        fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
         command.setName( "Test category" );
         command.setCreator( fixture.findUserByName( "MyUser" ).getKey() );
-        command.setUnitKey( fixture.findUnitByName( "MyUnit" ).getUnitKey() );
         categoryService.storeNewCategory( command );
     }
 
     @Test
-    public void unit_is_set_on_when_creating_top_category_and_unit_is_given()
+    public void unit_is_created_when_creating_content_archive()
     {
         // setup
-        fixture.save( factory.createUnit( "MyCommandUnit", "by" ) );
-        fixture.flushAndClearHibernateSesssion();
-
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
-        command.setName( "Test category" );
+        command.setName( "My archive" );
         command.setCreator( fixture.findUserByName( User.ROOT_UID ).getKey() );
-        command.setUnitKey( fixture.findUnitByName( "MyCommandUnit" ).getUnitKey() );
+        command.setLanguage( fixture.findLanguageByCode( "en" ).getKey() );
         CategoryKey key = categoryService.storeNewCategory( command );
 
+        assertNotNull( categoryDao.findByKey( key ) );
         assertNotNull( categoryDao.findByKey( key ).getUnit() );
-        assertEquals( "MyCommandUnit", categoryDao.findByKey( key ).getUnit().getName() );
+        assertEquals( "My archive", categoryDao.findByKey( key ).getUnit().getName() );
+        assertEquals( "en", categoryDao.findByKey( key ).getUnit().getLanguage().getCode() );
     }
 
     @Test
-    public void accessrights_for_administrator_is_persisted_when_creating_top_category_and_accessrights_are_not_given()
+    public void unit_with_allowed_content_types_is_created_when_creating_content_archive()
     {
         // setup
-        fixture.save( factory.createUnit( "MyCommandUnit", "by" ) );
+        fixture.save( factory.createContentType( "MyContentType2", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
+
+        // exercise
+        StoreNewCategoryCommand command = new StoreNewCategoryCommand();
+        command.setName( "My archive" );
+        command.setCreator( fixture.findUserByName( User.ROOT_UID ).getKey() );
+        command.setLanguage( fixture.findLanguageByCode( "en" ).getKey() );
+        command.addAllowedContentType( fixture.findContentTypeByName( "MyContentType" ).getContentTypeKey() );
+        CategoryKey key = categoryService.storeNewCategory( command );
+
+        assertEquals( fixture.findContentTypeByName( "MyContentType" ).getContentTypeKey(),
+                      categoryDao.findByKey( key ).getUnit().getContentTypes().iterator().next().getContentTypeKey() );
+    }
+
+    @Test
+    public void accessrights_for_administrator_is_persisted_when_creating_content_archive_and_accessrights_are_not_given()
+    {
+        // setup
+        fixture.save( factory.createUnit( "MyCommandUnit", "en" ) );
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
         command.setName( "Test category" );
         command.setCreator( fixture.findUserByName( User.ROOT_UID ).getKey() );
-        command.setUnitKey( fixture.findUnitByName( "MyCommandUnit" ).getUnitKey() );
+        command.setLanguage( fixture.findLanguageByCode( "en" ).getKey() );
 
         CategoryKey key = categoryService.storeNewCategory( command );
 
@@ -154,17 +173,13 @@ public class CategoryServiceImplTest
     }
 
     @Test
-    public void accessrights_is_persisted_when_creating_top_category_and_accessrights_are_given()
+    public void accessrights_is_persisted_when_creating_content_archive_and_accessrights_are_given()
     {
-        // setup
-        fixture.save( factory.createUnit( "MyCommandUnit", "by" ) );
-        fixture.flushAndClearHibernateSesssion();
-
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
         command.setName( "Test category" );
         command.setCreator( fixture.findUserByName( User.ROOT_UID ).getKey() );
-        command.setUnitKey( fixture.findUnitByName( "MyCommandUnit" ).getUnitKey() );
+        command.setLanguage( fixture.findLanguageByCode( "en" ).getKey() );
 
         CategoryAccessRights accessRights = new CategoryAccessRights();
         accessRights.setGroupKey( groupDao.findBuiltInDeveloper().getGroupKey() );
@@ -177,11 +192,10 @@ public class CategoryServiceImplTest
 
         CategoryKey key = categoryService.storeNewCategory( command );
 
+        // verify
         assertNotNull( categoryDao.findByKey( key ).getAccessRights().values() );
         assertTrue( categoryDao.findByKey( key ).getAccessRights().size() == 2 );
-
         assertNotNull( categoryDao.findByKey( key ).getAccessRights().get( groupDao.findBuiltInAdministrator().getGroupKey() ) );
-
         CategoryAccessEntity categoryAccess =
             categoryDao.findByKey( key ).getAccessRights().get( groupDao.findBuiltInDeveloper().getGroupKey() );
 
@@ -196,14 +210,14 @@ public class CategoryServiceImplTest
     public void inherited_accessrights_from_top_category_is_persisted_when_creating_child_category_without_given_accessrights()
     {
         // setup
-        fixture.save( factory.createUnit( "MyCommandUnit", "by" ) );
+        fixture.save( factory.createUnit( "MyCommandUnit", "en" ) );
         fixture.flushAndClearHibernateSesssion();
 
         // create top category with defined access rights
         StoreNewCategoryCommand topCategoryCommand = new StoreNewCategoryCommand();
         topCategoryCommand.setName( "Test category" );
         topCategoryCommand.setCreator( fixture.findUserByName( User.ROOT_UID ).getKey() );
-        topCategoryCommand.setUnitKey( fixture.findUnitByName( "MyCommandUnit" ).getUnitKey() );
+        topCategoryCommand.setLanguage( fixture.findLanguageByCode( "en" ).getKey() );
 
         CategoryAccessRights accessRights = new CategoryAccessRights();
         accessRights.setGroupKey( groupDao.findBuiltInDeveloper().getGroupKey() );
@@ -216,14 +230,17 @@ public class CategoryServiceImplTest
 
         CategoryKey topCategoryKey = categoryService.storeNewCategory( topCategoryCommand );
 
+        fixture.flushAndClearHibernateSesssion();
+
         //create child category under the top category
         StoreNewCategoryCommand childCategoryCommand = new StoreNewCategoryCommand();
         childCategoryCommand.setName( "Child category" );
         childCategoryCommand.setCreator( fixture.findUserByName( User.ROOT_UID ).getKey() );
-        childCategoryCommand.setUnitKey( fixture.findUnitByName( "MyCommandUnit" ).getUnitKey() );
         childCategoryCommand.setParentCategory( topCategoryKey );
 
         CategoryKey childCategoryKey = categoryService.storeNewCategory( childCategoryCommand );
+
+        fixture.flushAndClearHibernateSesssion();
 
         assertEquals( "Child category", categoryDao.findByKey( childCategoryKey ).getName() );
 
@@ -250,6 +267,62 @@ public class CategoryServiceImplTest
         assertTrue( categoryAdministratorAccess.isCreateAccess() );
         assertTrue( categoryAdministratorAccess.isPublishAccess() );
         assertTrue( categoryAdministratorAccess.isReadAccess() );
+    }
+
+    @Test
+    public void given_content_archive_when_deleted_then_unit_is_marked_deleted_and_category_marked_deleted()
+    {
+        // setup
+        fixture.save( factory.createUnit( "MyUnitToBeDeleted", "en" ) );
+        fixture.save(
+            factory.createCategory( "MyContentArchiveToBeDeleted", null, null, "MyUnitToBeDeleted", User.ROOT_UID, User.ANONYMOUS_UID ) );
+        fixture.save( factory.createCategoryAccessForUser( "MyContentArchiveToBeDeleted", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+
+        assertEquals( false, fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).isDeleted() );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // exercise
+        DeleteCategoryCommand command = new DeleteCategoryCommand();
+        command.setDeleter( fixture.findUserByName( "MyUser" ).getKey() );
+        command.setCategoryKey( fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).getKey() );
+        categoryService.deleteCategory( command );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // verify
+        assertEquals( true, fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).isDeleted() );
+        assertEquals( true, fixture.findUnitByName( "MyUnitToBeDeleted" ).isDeleted() );
+    }
+
+    @Test
+    public void deleteCategory_given_content_archive_with_sub_category_and_recursive_is_true_when_deleted_then_sub_category_is_marked_deleted()
+    {
+        // setup
+        fixture.save( factory.createUnit( "MyUnitToBeDeleted", "en" ) );
+        fixture.save(
+            factory.createCategory( "MyContentArchiveToBeDeleted", null, null, "MyUnitToBeDeleted", User.ROOT_UID, User.ANONYMOUS_UID ) );
+        fixture.save( factory.createCategory( "MySubCategory", "MyContentArchiveToBeDeleted", null, "MyUnitToBeDeleted", User.ROOT_UID,
+                                              User.ANONYMOUS_UID ) );
+        fixture.save( factory.createCategoryAccessForUser( "MyContentArchiveToBeDeleted", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+
+        assertEquals( false, fixture.findCategoryByName( "MySubCategory" ).isDeleted() );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // exercise
+        DeleteCategoryCommand command = new DeleteCategoryCommand();
+        command.setDeleter( fixture.findUserByName( "MyUser" ).getKey() );
+        command.setCategoryKey( fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).getKey() );
+        command.setRecursive( true );
+        categoryService.deleteCategory( command );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // verify
+        assertEquals( true, fixture.findCategoryByName( "MySubCategory" ).isDeleted() );
     }
 
 }

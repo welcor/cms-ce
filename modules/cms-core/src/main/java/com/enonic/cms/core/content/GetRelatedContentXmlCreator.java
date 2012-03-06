@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.content.access.ContentAccessResolver;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.security.user.UserEntity;
 
 /**

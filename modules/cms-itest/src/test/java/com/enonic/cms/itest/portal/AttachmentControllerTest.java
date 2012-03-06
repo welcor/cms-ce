@@ -120,7 +120,7 @@ public class AttachmentControllerTest
         fixture.save( factory.createContentHandler( "File content", ContentHandlerName.FILE.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "FileContentType", ContentHandlerName.FILE.getHandlerClassShortName() ) );
         fixture.save( factory.createUnit( "FileUnit" ) );
-        fixture.save( factory.createCategory( "AttachmentCategory", "FileContentType", "FileUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "AttachmentCategory", null, "FileContentType", "FileUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "AttachmentCategory", "testuser", "read, create, approve" ) );
 
         WebApplicationContext wac = Mockito.mock( WebApplicationContext.class );

@@ -96,7 +96,7 @@ public class RelatedContentFetcherForContentVersionTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyRelatingContent", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyCategory", null, "MyRelatingContent", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();

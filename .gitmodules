@@ -1,3 +1,0 @@
-[submodule "gradle"]
-	path = gradle
-	url = git@github.com:enonic/gradle-build.git

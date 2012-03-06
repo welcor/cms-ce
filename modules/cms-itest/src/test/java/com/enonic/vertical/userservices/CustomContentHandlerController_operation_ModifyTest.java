@@ -126,7 +126,7 @@ public class CustomContentHandlerController_operation_ModifyTest
         // setup content repository
         fixture.save( factory.createUnit( "MyUnit1" ) );
         final CategoryEntity categoryEntity =
-            factory.createCategory( "MyCategory1", "MyContentType1", "MyUnit1", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
+            factory.createCategory( "MyCategory1", null, "MyContentType1", "MyUnit1", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
         fixture.save( categoryEntity );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory1", "testuser", "read, create" ) );
 
@@ -175,7 +175,7 @@ public class CustomContentHandlerController_operation_ModifyTest
         // setup content repository
         fixture.save( factory.createUnit( "MyUnit2" ) );
         final CategoryEntity categoryEntity =
-            factory.createCategory( "MyCategory2", "MyContentType2", "MyUnit2", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
+            factory.createCategory( "MyCategory2", null, "MyContentType2", "MyUnit2", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
         fixture.save( categoryEntity );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory2", "testuser", "read, create" ) );
 
@@ -232,7 +232,8 @@ public class CustomContentHandlerController_operation_ModifyTest
 
         // setup content repository
         fixture.save( factory.createUnit( "MyUnit3", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory3", "MyContentType3", "MyUnit3", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true ) );
+        fixture.save(
+            factory.createCategory( "MyCategory3", null, "MyContentType3", "MyUnit3", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -304,7 +305,8 @@ public class CustomContentHandlerController_operation_ModifyTest
         // setup content repository
         fixture.save( factory.createUnit( "PersonsUnit", "en" ) );
         fixture.save(
-            factory.createCategory( "PersonsCategory", "PersonContentType", "PersonsUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true ) );
+            factory.createCategory( "PersonsCategory", null, "PersonContentType", "PersonsUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID,
+                                    true ) );
         fixture.save( factory.createCategoryAccessForUser( "PersonsCategory", "testuser", "read, create" ) );
         fixture.flushAndClearHibernateSesssion();
 
@@ -378,7 +380,8 @@ public class CustomContentHandlerController_operation_ModifyTest
         // setup content repository
         fixture.save( factory.createUnit( "PersonsUnit", "en" ) );
         fixture.save(
-            factory.createCategory( "PersonsCategory", "PersonContentType", "PersonsUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true ) );
+            factory.createCategory( "PersonsCategory", null, "PersonContentType", "PersonsUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID,
+                                    true ) );
         fixture.save( factory.createCategoryAccessForUser( "PersonsCategory", "testuser", "read, create" ) );
         fixture.flushAndClearHibernateSesssion();
 
@@ -577,7 +580,7 @@ public class CustomContentHandlerController_operation_ModifyTest
         fixture.flushAndClearHibernateSesssion();
 
         final CategoryEntity categoryEntity =
-            factory.createCategory( categoryName, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
+            factory.createCategory( categoryName, null, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
 
         fixture.save( categoryEntity );
 

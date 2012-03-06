@@ -94,7 +94,8 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
         fixture.save(
             factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+        fixture.save(
+            factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
         fixture.createAndStoreNormalUserWithUserGroup( "content-creator", "Creator", "testuserstore" );
         fixture.createAndStoreNormalUserWithUserGroup( "content-querier", "Creator", "testuserstore" );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-creator", "read, create, approve, admin_browse" ) );

@@ -16,10 +16,9 @@ import javax.xml.transform.dom.DOMSource;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 
-import com.enonic.cms.core.service.AdminService;
-
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.service.AdminService;
 
 public class FramesetServlet
     extends AdminHandlerBaseServlet
@@ -79,15 +78,15 @@ public class FramesetServlet
                 assert ( contentDao != null );
                 ContentEntity entity = contentDao.findByKey( new ContentKey( editContent ) );
                 int categoryKey = entity.getCategory().getKey().toInt();
-                int selectedUnitKey = entity.getCategory().getUnitExcludeDeleted().getKey();
+                int selectedUnitKey = entity.getCategory().getUnitExcludeDeleted().getKey().toInt();
                 int contentTypeKey = entity.getContentType().getKey();
 
                 parameters.put( "rightframe",
                                 "adminpage?page=" + ( contentTypeKey + 999 ) + "&op=form&key=" + editContent + "&cat=" + categoryKey +
                                     "&selectedunitkey=" + selectedUnitKey );
-                parameters.put( "referer", formItems.getString( "referer",
-                                                                "adminpage?mainmenu=true&op=browse&page=" + ( contentTypeKey + 999 ) +
-                                                                    "&categorykey=" + categoryKey ) );
+                parameters.put( "referer",
+                                formItems.getString( "referer", "adminpage?mainmenu=true&op=browse&page=" + ( contentTypeKey + 999 ) +
+                                    "&categorykey=" + categoryKey ) );
 
                 session.removeAttribute( "editContent" );
             }
@@ -97,11 +96,11 @@ public class FramesetServlet
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error.", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error.", e );
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error.", e );
+            VerticalAdminLogger.errorAdmin( "I/O error.", e );
         }
     }
 }

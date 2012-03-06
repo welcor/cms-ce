@@ -83,7 +83,7 @@ public class ImportServiceImplTest_handleAssignmentOnImport
         fixture.save( factory.createContentType( "PersonCty", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
                                                  XMLDocumentFactory.create( personContentTypeXml ).getAsJDOMDocument() ) );
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "Persons", "PersonCty", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "Persons", null, "PersonCty", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Persons", "testuser", "read, create, approve" ) );
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -93,6 +93,8 @@ public class ImportServiceImplTest_handleAssignmentOnImport
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
+
+        ImportJobFactory.setExecuteInOneTransaction( true );
     }
 
     @Test
@@ -123,7 +125,6 @@ public class ImportServiceImplTest_handleAssignmentOnImport
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import-without-status-without-sync";
@@ -221,7 +222,6 @@ public class ImportServiceImplTest_handleAssignmentOnImport
 
         // exercise: import with status = 0
         ImportContentCommand command = new ImportContentCommand();
-        command.executeInOneTransaction = true;
         command.importer = fixture.findUserByName( "testuser" );
         command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
         command.importName = "xml-import";

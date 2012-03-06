@@ -9,9 +9,9 @@ import java.io.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.command.ImportContentCommand;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
@@ -21,7 +21,6 @@ import com.enonic.cms.core.content.contenttype.CtyImportModeConfig;
 import com.enonic.cms.core.content.contenttype.CtyImportStatusConfig;
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
@@ -31,9 +30,6 @@ public class ImportJobFactory
 {
     @Autowired
     private ImportService importService;
-
-    @Autowired
-    private CategoryDao categoryDao;
 
     @Autowired
     private ContentDao contentDao;
@@ -46,6 +42,8 @@ public class ImportJobFactory
 
     @Autowired
     private UserDao userDao;
+
+    private static boolean executeInOneTransaction = false;
 
     public ImportJob createImportJob( final ImportContentCommand command )
     {
@@ -70,7 +68,7 @@ public class ImportJobFactory
         importJob.setImportDataReader( importDataReader );
         importJob.setDefaultPublishFrom( command.publishFrom );
         importJob.setDefaultPublishTo( command.publishTo );
-        importJob.setExecuteInOneTransaction( command.executeInOneTransaction );
+        importJob.setExecuteInOneTransaction( executeInOneTransaction );
 
         if ( command.assigneeKey != null )
         {
@@ -150,5 +148,10 @@ public class ImportJobFactory
         {
             throw new ImportException( "Unknown import mode: " + config.getMode().toString() );
         }
+    }
+
+    public static void setExecuteInOneTransaction( boolean value )
+    {
+        ImportJobFactory.executeInOneTransaction = value;
     }
 }

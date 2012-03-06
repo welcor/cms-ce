@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.enonic.cms.core.content.category.UnitEntity;
+import com.enonic.cms.core.content.category.UnitKey;
 import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("unitDao")
@@ -16,7 +17,7 @@ public final class UnitEntityDao
     extends AbstractBaseEntityDao<UnitEntity>
     implements UnitDao
 {
-    public UnitEntity findByKey( Integer key )
+    public UnitEntity findByKey( UnitKey key )
     {
         UnitEntity unit = get( UnitEntity.class, key );
 

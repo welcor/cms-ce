@@ -19,10 +19,15 @@
 
   <bean id="indexService" class="com.enonic.cms.core.content.IndexServiceImpl"/>
 
-  <bean id="categoryService" class="com.enonic.cms.core.content.category.CategoryServiceImpl">
-    <property name="timeService" ref="timeService"/>
-    <property name="keyService" ref="keyService"/>
-  </bean>
+  <bean id="categoryService" class="com.enonic.cms.core.content.category.CategoryServiceImpl"/>
+
+  <bean id="unitFactory" class="com.enonic.cms.core.content.category.UnitFactory"/>
+
+  <bean id="deleteCategoryCommandProcessorFactory"
+        class="com.enonic.cms.core.content.category.DeleteCategoryCommandProcessorFactory"/>
+
+  <bean id="createCategoryCommandProcessorFactory"
+        class="com.enonic.cms.core.content.category.CreateCategoryCommandProcessorFactory"/>
 
   <bean id="contentStorer" class="com.enonic.cms.core.content.ContentStorer"/>
 

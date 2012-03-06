@@ -53,7 +53,7 @@ public class ImportJobImpl
 
     private Map<String, ContentKey> existingContentKeysBySyncValue;
 
-    private boolean executeInOneTransaction = false;
+    private static boolean executeInOneTransaction = false;
 
     private UserEntity assignee;
 
@@ -290,7 +290,7 @@ public class ImportJobImpl
 
     public void setExecuteInOneTransaction( boolean value )
     {
-        this.executeInOneTransaction = value;
+        executeInOneTransaction = value;
     }
 
     public UserEntity getAssignee()

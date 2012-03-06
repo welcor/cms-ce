@@ -51,7 +51,7 @@ public class InternalClientImpl_CreateCategoryTest
         fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
         fixture.save( factory.createUnit( "My unit" ) );
-        fixture.save( factory.createCategory( "My top category", null, "My unit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "My top category", null, null, "My unit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "My top category", "testuser", "read,administrate" ) );
 
         MockHttpServletRequest request = new MockHttpServletRequest();

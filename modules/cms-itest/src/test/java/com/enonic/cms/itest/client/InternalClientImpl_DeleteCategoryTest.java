@@ -94,7 +94,7 @@ public class InternalClientImpl_DeleteCategoryTest
         myUnit.addContentType( fixture.findContentTypeByName( "MyContentType" ) );
         myUnit.addContentType( fixture.findContentTypeByName( "MyOtherContentType" ) );
         fixture.save( myUnit );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -133,7 +133,7 @@ public class InternalClientImpl_DeleteCategoryTest
         myUnit.addContentType( fixture.findContentTypeByName( "MyContentType" ) );
         myUnit.addContentType( fixture.findContentTypeByName( "MyOtherContentType" ) );
         fixture.save( myUnit );
-        fixture.save( factory.createCategory( "World", "MyContentType", "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, "MyContentType", "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreContent( "content1", "World" );
@@ -177,7 +177,7 @@ public class InternalClientImpl_DeleteCategoryTest
         myUnit.addContentType( fixture.findContentTypeByName( "MyContentType" ) );
         myUnit.addContentType( fixture.findContentTypeByName( "MyOtherContentType" ) );
         fixture.save( myUnit );
-        fixture.save( factory.createCategory( "World", "MyContentType", "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, "MyContentType", "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -220,7 +220,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // prepare data
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -250,7 +250,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // prepare data
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -284,7 +284,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -314,7 +314,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -363,7 +363,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -413,7 +413,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -450,7 +450,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -488,7 +488,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
@@ -528,7 +528,7 @@ public class InternalClientImpl_DeleteCategoryTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "World", null, "MyUnit", "deleter", "deleter" ) );
+        fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read, administrate" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter-noaccess", "read, admin_browse" ) );
 

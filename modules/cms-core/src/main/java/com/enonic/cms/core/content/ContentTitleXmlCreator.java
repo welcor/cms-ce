@@ -58,7 +58,7 @@ public class ContentTitleXmlCreator
         Element el = new Element( elementName );
         el.setAttribute( "key", content.getKey().toString() );
         el.setAttribute( "categorykey", category.getKey().toString() );
-        el.setAttribute( "unitkey", String.valueOf( unit.getKey() ) );
+        el.setAttribute( "unitkey", unit.getKey().toString() );
         el.setAttribute( "contenttypekey", String.valueOf( contentType.getKey() ) );
         el.setAttribute( "contenthandlerkey", String.valueOf( contentHandler.getKey() ) );
         el.setAttribute( "contenthandler-class-name", contentHandler.getClassName() );

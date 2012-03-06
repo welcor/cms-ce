@@ -13,13 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.enonic.cms.core.content.access.ContentAccessResolver;
+import org.joda.time.DateTime;
+
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedContent;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
-import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.RelatedChildContentQuery;
 
 
 public abstract class AbstractRelatedContentFetcher
@@ -32,11 +34,9 @@ public abstract class AbstractRelatedContentFetcher
 
     private boolean includeOfflineContent;
 
-    private ContentAccessResolver contentAccessResolver;
+    protected Collection<GroupKey> securityFilter;
 
-    private UserEntity runningUser;
-
-    private Date availableCheckDate;
+    protected Date availableCheckDate;
 
     private Map<ContentVersionKey, RelatedContent> relatedContentByVersionKey = new HashMap<ContentVersionKey, RelatedContent>();
 
@@ -46,10 +46,9 @@ public abstract class AbstractRelatedContentFetcher
 
     protected Set<ContentKey> visitedChildRelatedContent = new HashSet<ContentKey>();
 
-    protected AbstractRelatedContentFetcher( ContentDao contentDao, ContentAccessResolver contentAccessResolver )
+    protected AbstractRelatedContentFetcher( ContentDao contentDao )
     {
         this.contentDao = contentDao;
-        this.contentAccessResolver = contentAccessResolver;
     }
 
     public void setMaxChildrenLevel( Integer value )
@@ -57,9 +56,9 @@ public abstract class AbstractRelatedContentFetcher
         maxChildrenLevel = value;
     }
 
-    public void setRunningUser( UserEntity value )
+    public void setSecurityFilter( Collection<GroupKey> securityFilter )
     {
-        runningUser = value;
+        this.securityFilter = securityFilter;
     }
 
     public void setAvailableCheckDate( Date value )
@@ -86,8 +85,9 @@ public abstract class AbstractRelatedContentFetcher
 //        }
 //
 //        List<RelatedChildContent> relatedChildContents = new ArrayList<RelatedChildContent>();
-//        for ( ContentVersionEntity version : versions )com.enonic.vertical.userservices.CustomContentHandlerController_operation_ModifyTest
+//        for ( ContentVersionEntity version : versions )
 //        {
+//            // TODO: alternative: version.getRelatedChildren( false ) faster?
 //            for ( ContentKey relatedChildKey : version.getContentData().resolveRelatedContentKeys() )
 //            {
 //                ContentEntity relatedChild = contentDao.findByKey( relatedChildKey );
@@ -97,6 +97,7 @@ public abstract class AbstractRelatedContentFetcher
 //                }
 //            }
 //        }
+//        // TODO: needs to be sorted on createdAt?
 //        return relatedChildContents;
 
         if ( versions.size() == 0 )
@@ -104,11 +105,20 @@ public abstract class AbstractRelatedContentFetcher
             return new ArrayList<RelatedChildContent>();
         }
 
+        // TODO: This logic could probably be rewritten to resolve RelatedChildContents from version.getContentData instead,
+        // this would probably performfaster too, since we then would be using the entity cache instead to retrieve the related content.
+
         final List<ContentVersionKey> versionKeys = ContentVersionKey.createList( versions );
-        return contentDao.findRelatedChildrenByKeys( versionKeys );
+        RelatedChildContentQuery relatedChildContentQuery = new RelatedChildContentQuery();
+        relatedChildContentQuery.contentVersions( versionKeys );
+        relatedChildContentQuery.now( new DateTime( availableCheckDate ) );
+        relatedChildContentQuery.includeOfflineContent( includeOfflineContent() );
+        relatedChildContentQuery.securityFilter( securityFilter );
+        return contentDao.findRelatedChildrenByKeys( relatedChildContentQuery );
     }
 
-    protected List<RelatedChildContent> doAddAndFetchChildren( final Collection<RelatedChildContent> children, final int level, boolean includeVisited )
+    protected List<RelatedChildContent> doAddAndFetchChildren( final Collection<RelatedChildContent> children, final int level,
+                                                               boolean includeVisited )
     {
         final int nextLevel = level - 1;
         final boolean atLastLevel = nextLevel == 0;
@@ -149,16 +159,6 @@ public abstract class AbstractRelatedContentFetcher
 
     protected abstract boolean isAddable( RelatedContent relatedToAdd, boolean includeVisited );
 
-    protected abstract boolean isAddableToRootRelated( RelatedContent relatedToAdd );
-
-    protected boolean isAvailable( final RelatedContent relatedContent )
-    {
-        final ContentEntity content = relatedContent.getContent();
-        boolean statusCheckOK = includeOfflineContent || content.isOnline( availableCheckDate );
-        boolean accessCheckOK = runningUser == null || contentAccessResolver.hasReadContentAccess( runningUser, content );
-        return statusCheckOK && accessCheckOK;
-    }
-
     protected void registerForFastAccess( RelatedChildContent relatedChildContent )
     {
         relatedContentByVersionKey.put( relatedChildContent.getContent().getMainVersion().getKey(), relatedChildContent );
@@ -166,7 +166,7 @@ public abstract class AbstractRelatedContentFetcher
 
     protected void registerForFastAccess( RelatedParentContent relatedParentContent )
     {
-        relatedContentByVersionKey.put( relatedParentContent.getContent().getMainVersion().getKey(), relatedParentContent );
+        relatedContentByVersionKey.put( relatedParentContent.getParentMainVersionKey(), relatedParentContent );
         relatedParentContentByContentKey.put( relatedParentContent.getContent().getKey(), relatedParentContent );
     }
 
@@ -190,12 +190,12 @@ public abstract class AbstractRelatedContentFetcher
 
     protected List<ContentVersionEntity> gatherMainVersionsFromContent( final Collection<ContentEntity> contents )
     {
-        final List<ContentVersionEntity> keys = new ArrayList<ContentVersionEntity>( contents.size() );
+        final List<ContentVersionEntity> versions = new ArrayList<ContentVersionEntity>( contents.size() );
         for ( ContentEntity content : contents )
         {
-            keys.add( content.getMainVersion() );
+            versions.add( content.getMainVersion() );
         }
-        return keys;
+        return versions;
     }
 
     protected List<ContentKey> gatherContentKeysFromContent( final Collection<ContentEntity> contents )

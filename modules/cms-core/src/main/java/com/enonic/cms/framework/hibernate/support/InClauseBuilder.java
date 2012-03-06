@@ -18,6 +18,8 @@ public abstract class InClauseBuilder<T>
 
     private Collection<T> values;
 
+    private int index = 0;
+
     public InClauseBuilder( String columnName, Collection<T> values )
     {
         this.columnName = columnName;
@@ -67,11 +69,17 @@ public abstract class InClauseBuilder<T>
             }
 
             i++;
+            index = i;
         }
         sql.append( ")" );
     }
 
     public abstract void appendValue( final StringBuffer sql, final T value );
+
+    public int getIndex()
+    {
+        return index;
+    }
 
     public String toString()
     {

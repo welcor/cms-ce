@@ -217,18 +217,7 @@ public class ContentAccessResolver
 
     public boolean hasReadContentAccess( UserEntity executor, ContentEntity content )
     {
-        if ( doHasAccess( executor, content, ContentAccessType.READ ) )
-        {
-            return true;
-        }
-
-        if ( categoryAccessResolver.hasReadContentAccess( executor, content.getCategory() ) )
-
-        {
-            return true;
-        }
-
-        return false;
+        return doHasAccess( executor, content, ContentAccessType.READ );
     }
 
     protected boolean hasAccess( final ContentEntity content, final GroupEntity group, final ContentAccessType accessType,

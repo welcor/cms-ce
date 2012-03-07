@@ -8,7 +8,6 @@ import java.util.Collection;
 
 import org.springframework.util.Assert;
 
-import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedContent;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
@@ -22,9 +21,9 @@ public class RelatedContentFetcherForContentVersion
 
     private Collection<ContentVersionEntity> originallyRequestedContentVersions;
 
-    public RelatedContentFetcherForContentVersion( ContentDao contentDao, ContentAccessResolver contentAccessResolver )
+    public RelatedContentFetcherForContentVersion( ContentDao contentDao )
     {
-        super( contentDao, contentAccessResolver );
+        super( contentDao );
     }
 
     public RelatedContentResultSet fetch( final Collection<ContentVersionEntity> versions )
@@ -53,21 +52,12 @@ public class RelatedContentFetcherForContentVersion
                 doAddAndFetchChildren( rootRelatedChildren, maxChildrenLevel, includeVisited );
                 for ( RelatedChildContent rootRelatedChild : rootRelatedChildren )
                 {
-                    if ( isAddableToRootRelated( rootRelatedChild ) )
-                    {
-                        relatedContentResultSet.addRootRelatedChild( rootRelatedChild );
-                    }
+                    relatedContentResultSet.addRootRelatedChild( rootRelatedChild );
                 }
             }
         }
 
         return relatedContentResultSet;
-    }
-
-    @Override
-    protected boolean isAddableToRootRelated( RelatedContent relatedToAdd )
-    {
-        return includeOfflineContent() || isAvailable( relatedToAdd );
     }
 
     @Override
@@ -79,7 +69,6 @@ public class RelatedContentFetcherForContentVersion
         final boolean contentVersionIsInOriginallyRequestedContentVersionSet =
             originallyRequestedContentVersions.contains( content.getMainVersion() );
 
-        return ( includeOfflineContent() || isAvailable( relatedToAdd ) ) && ( includeVisited || !contentIsAllreadyVisited ) &&
-            !contentVersionIsInOriginallyRequestedContentVersionSet;
+        return ( includeVisited || !contentIsAllreadyVisited ) && !contentVersionIsInOriginallyRequestedContentVersionSet;
     }
 }

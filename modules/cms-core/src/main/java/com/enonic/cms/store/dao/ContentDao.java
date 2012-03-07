@@ -7,17 +7,14 @@ package com.enonic.cms.store.dao;
 import java.util.Collection;
 import java.util.List;
 
-import com.enonic.cms.store.support.EntityPageList;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentVersionKey;
-
 import com.enonic.cms.core.content.ContentSpecification;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
-
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
+import com.enonic.cms.store.support.EntityPageList;
 
 public interface ContentDao
     extends EntityDao<ContentEntity>
@@ -26,9 +23,9 @@ public interface ContentDao
 
     List<ContentKey> findBySpecification( ContentSpecification specification, String orderBy, int count );
 
-    Collection<RelatedChildContent> findRelatedChildrenByKeys( List<ContentVersionKey> contentVersionKeys );
+    Collection<RelatedChildContent> findRelatedChildrenByKeys( RelatedChildContentQuery relatedChildContentQuery );
 
-    Collection<RelatedParentContent> findRelatedParentByKeys( List<ContentKey> contentKeys, boolean includeOnlyMainVersions );
+    Collection<RelatedParentContent> findRelatedParentByKeys( RelatedParentContentQuery relatedParentContentQuery );
 
     List<ContentKey> findContentKeysByContentType( ContentTypeEntity contentType );
 

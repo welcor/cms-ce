@@ -22,7 +22,6 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.ContentVersionKey;
 import com.enonic.cms.core.content.RelatedContentFetcherForContentVersion;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.command.CreateContentCommand;
@@ -43,6 +42,7 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentEntityDao;
 import com.enonic.cms.store.dao.GroupEntityDao;
+import com.enonic.cms.store.dao.RelatedChildContentQuery;
 
 import static org.junit.Assert.*;
 
@@ -142,9 +142,7 @@ public class RelatedContentFetcherForContentVersionTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 6 );
 
-        RelatedContentFetcherForContentVersion relatedContentFetcher =
-            new RelatedContentFetcherForContentVersion( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcherForContentVersion relatedContentFetcher = new RelatedContentFetcherForContentVersion( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxChildrenLevel( Integer.MAX_VALUE );
         relatedContentFetcher.setIncludeOfflineContent( true );
@@ -195,9 +193,7 @@ public class RelatedContentFetcherForContentVersionTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 4 );
 
-        RelatedContentFetcherForContentVersion relatedContentFetcher =
-            new RelatedContentFetcherForContentVersion( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcherForContentVersion relatedContentFetcher = new RelatedContentFetcherForContentVersion( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxChildrenLevel( Integer.MAX_VALUE );
         relatedContentFetcher.setIncludeOfflineContent( true );
@@ -246,9 +242,7 @@ public class RelatedContentFetcherForContentVersionTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 4 );
 
-        RelatedContentFetcherForContentVersion relatedContentFetcher =
-            new RelatedContentFetcherForContentVersion( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcherForContentVersion relatedContentFetcher = new RelatedContentFetcherForContentVersion( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxChildrenLevel( Integer.MAX_VALUE );
         relatedContentFetcher.setIncludeOfflineContent( true );
@@ -290,9 +284,7 @@ public class RelatedContentFetcherForContentVersionTest
         updateCommand =
             setupDefaultUpdateContentCommandForMyRelatingContent( content_2, "Relating content 2 to A and C", content_A, content_C );
         contentService.updateContent( updateCommand );
-        RelatedContentFetcherForContentVersion relatedContentFetcher =
-            new RelatedContentFetcherForContentVersion( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcherForContentVersion relatedContentFetcher = new RelatedContentFetcherForContentVersion( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxChildrenLevel( Integer.MAX_VALUE );
         relatedContentFetcher.setIncludeOfflineContent( true );
@@ -414,14 +406,14 @@ public class RelatedContentFetcherForContentVersionTest
         }
 
         @Override
-        public Collection<RelatedChildContent> findRelatedChildrenByKeys( List<ContentVersionKey> contentVersionKeys )
+        public Collection<RelatedChildContent> findRelatedChildrenByKeys( RelatedChildContentQuery relatedChildContentQuery )
         {
             numberOfFindRelatedChildrenByKeysAttempts++;
             if ( numberOfFindRelatedChildrenByKeysAttempts > maxExpectedFindRelatedChildrenByKeysAttempts )
             {
                 fail( "max expected findRelatedChildrenByKeys attempts exceeded : " + numberOfFindRelatedChildrenByKeysAttempts );
             }
-            return super.findRelatedChildrenByKeys( contentVersionKeys );
+            return super.findRelatedChildrenByKeys( relatedChildContentQuery );
         }
     }
 

@@ -133,26 +133,6 @@ public class CategoryAccessResolver
         return false;
     }
 
-    public boolean hasReadContentAccess( UserEntity user, CategoryEntity category )
-    {
-        if ( doHasAccess( user, category, CategoryAccessType.READ ) )
-        {
-            return true;
-        }
-
-        if ( doHasAccess( user, category, CategoryAccessType.ADMIN_BROWSE ) )
-        {
-            return true;
-        }
-
-        if ( doHasAccess( user, category, CategoryAccessType.APPROVE ) )
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * Returns true if given user has given access on the given category or on any of it's descendants.
      */

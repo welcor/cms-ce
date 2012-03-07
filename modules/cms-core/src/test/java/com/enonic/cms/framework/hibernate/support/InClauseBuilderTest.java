@@ -172,4 +172,26 @@ public class InClauseBuilderTest
         assertEquals( expectedSql.toString(), sql.toString() );
     }
 
+    public void testIndex_starts_with_zero_and_then_increments_by_one()
+    {
+        final List<Integer> values = new ArrayList<Integer>();
+        values.add( 1 );
+        values.add( 2 );
+        values.add( 3 );
+
+        final StringBuffer sql = new StringBuffer();
+
+        InClauseBuilder builder = new InClauseBuilder( "col", values )
+        {
+            private int expectedNextIndex = 0;
+
+            public void appendValue( StringBuffer sql, Object value )
+            {
+                sql.append( value );
+                assertEquals( expectedNextIndex++, getIndex() );
+            }
+        };
+        builder.appendTo( sql );
+    }
+
 }

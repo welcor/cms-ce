@@ -4,12 +4,12 @@
  */
 package com.enonic.cms.itest.datasources;
 
+import java.util.Date;
+
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -33,8 +33,13 @@ import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.menuitem.AddContentToSectionCommand;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemService;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.AssertTool;
@@ -47,13 +52,13 @@ import static org.junit.Assert.*;
 public class DataSourceServiceImpl_relatedContentTest
     extends AbstractSpringTest
 {
-    private static final Logger LOG = LoggerFactory.getLogger( DataSourceServiceImpl_relatedContentTest.class.getName() );
-
-
     private DomainFactory factory;
 
     @Autowired
     private DomainFixture fixture;
+
+    @Autowired
+    private MenuItemService menuItemService;
 
     @Autowired
     private SecurityService securityService;
@@ -67,7 +72,6 @@ public class DataSourceServiceImpl_relatedContentTest
     private ContentService contentService;
 
     private static final DateTime DATE_TIME_2010_01_01 = new DateTime( 2010, 1, 1, 0, 0, 0, 0 );
-
 
     @Before
     public void setUp()
@@ -326,68 +330,151 @@ public class DataSourceServiceImpl_relatedContentTest
     }
 
     @Test
-    public void parent_test()
+    public void content_queried_with_related_children_having_different_read_permissions()
     {
-        // setup: create same content in two different categories
-        ContentKey content1 = contentService.createContent(
-            createCreateContentCommand( "MyCategory", createMyRelatedContentData( "1" ), "content-creator" ) );
+        // set up 2 users
+        fixture.createAndStoreNormalUserWithUserGroup( "user_a", "User A", "testuserstore" );
+        fixture.createAndStoreNormalUserWithUserGroup( "user_b", "User B", "testuserstore" );
 
-        ContentKey content2 = contentService.createContent(
-            createCreateContentCommand( "MyCategory", createMyRelatedContentData( "2" ), "content-creator" ) );
+        // content type with a related content type, for example "link_list" and "link" as related content
+        ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "Link_List", "title" );
+        ctyconf.startBlock( "Link_List" );
+        ctyconf.addInput( "title", "text", "contentdata/title", "Title", true );
+        ctyconf.addRelatedContentInput( "link", "contentdata/link", "Link", false, true );
+        ctyconf.endBlock();
+        Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
 
-        ContentKey content3 = contentService.createContent(
-            createCreateContentCommand( "MyCategory", createMyRelatedContentData( "3" ), "content-creator" ) );
+        fixture.save( factory.createContentType( "Link_List", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        ContentKey content4 = contentService.createContent(
-            createCreateContentCommand( "MyCategory", createMyRelatedContentData( "4" ), "content-creator" ) );
+        // setup related content type
+        ContentTypeConfigBuilder ctyconfRel = new ContentTypeConfigBuilder( "Link", "title" );
+        ctyconfRel.startBlock( "Link" );
+        ctyconfRel.addInput( "title", "text", "contentdata/title", "Title", true );
+        ctyconfRel.endBlock();
+        Document relConfigAsXmlBytes = XMLDocumentFactory.create( ctyconfRel.toString() ).getAsJDOMDocument();
 
-        ContentKey content5 = contentService.createContent(
-            createCreateContentCommand( "MyCategory", createMyRelatedContentData( "5" ), "content-creator" ) );
+        fixture.save( factory.createContentType( "Link", ContentHandlerName.CUSTOM.getHandlerClassShortName(), relConfigAsXmlBytes ) );
 
-        ContentKey content6 = contentService.createContent(
-            createCreateContentCommand( "MyCategory", createMyRelatedContentData( "6" ), "content-creator" ) );
+        // create categories and set user rights
+        fixture.save( factory.createUnit( "Link_ListUnit", "en" ) );
+        fixture.save(
+            factory.createCategory( "Link_List_Category", null, "Link_List", "Link_ListUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID,
+                                    false ) );
 
-        contentService.updateContent( updateContentCommand( content1, createMyRelatedContentData( "1", content2 ), "content-creator" ) );
-        contentService.updateContent( updateContentCommand( content2, createMyRelatedContentData( "2", content3 ), "content-creator" ) );
-        contentService.updateContent( updateContentCommand( content3, createMyRelatedContentData( "3", content1 ), "content-creator" ) );
-        contentService.updateContent( updateContentCommand( content4, createMyRelatedContentData( "4", content1 ), "content-creator" ) );
-        contentService.updateContent( updateContentCommand( content5, createMyRelatedContentData( "5", content2 ), "content-creator" ) );
-        contentService.updateContent( updateContentCommand( content6, createMyRelatedContentData( "6", content3 ), "content-creator" ) );
+        fixture.save( factory.createUnit( "LinkUnit", "en" ) );
+        fixture.save( factory.createCategory( "Link_Category", null, "Link", "LinkUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+
+        fixture.save( factory.createCategoryAccessForUser( "Link_Category", "user_a", "read, create, approve" ) );
+        fixture.save( factory.createCategoryAccessForUser( "Link_Category", "user_b", "read, create, approve" ) );
+
+        fixture.save( factory.createCategoryAccessForUser( "Link_List_Category", "user_a", "read, create, approve" ) );
+        fixture.save( factory.createCategoryAccessForUser( "Link_List_Category", "user_b", "read, create, approve" ) );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // Add a set of links with only reading rights for user A, and another set of links with only reading rights for user B
+        CreateContentCommand.AccessRightsStrategy useGivenRights = CreateContentCommand.AccessRightsStrategy.USE_GIVEN;
+        ContentKey relCont1ContentKey = contentService.createContent(
+            createCreateContentCommand( "Link_Category", createMyRelatedContentData( "link_1" ), "user_a", useGivenRights ) );
+        ContentKey relCont2ContentKey = contentService.createContent(
+            createCreateContentCommand( "Link_Category", createMyRelatedContentData( "link_2" ), "user_a", useGivenRights ) );
+        ContentKey relCont3ContentKey = contentService.createContent(
+            createCreateContentCommand( "Link_Category", createMyRelatedContentData( "link_3" ), "user_b", useGivenRights ) );
+        ContentKey relCont4ContentKey = contentService.createContent(
+            createCreateContentCommand( "Link_Category", createMyRelatedContentData( "link_4" ), "user_b", useGivenRights ) );
+
+        final UserEntity userA = fixture.findUserByName( "user_a" );
+        final UserEntity userB = fixture.findUserByName( "user_b" );
+        fixture.save( factory.createContentAccess( relCont1ContentKey, userA, "read, create, approve" ) );
+        fixture.save( factory.createContentAccess( relCont2ContentKey, userA, "read, create, approve" ) );
+        fixture.save( factory.createContentAccess( relCont3ContentKey, userB, "read, create, approve" ) );
+        fixture.save( factory.createContentAccess( relCont4ContentKey, userB, "read, create, approve" ) );
+
+        CustomContentData contentData_A = new CustomContentData( fixture.findContentTypeByName( "Link_List" ).getContentTypeConfig() );
+        contentData_A.add( new TextDataEntry( contentData_A.getInputConfig( "title" ), "Title content A" ) );
+        ContentKey contentA = contentService.createContent( createCreateContentCommand( "Link_List_Category",
+                                                                                        createMyRelatedContentData( "Content A",
+                                                                                                                    relCont1ContentKey,
+                                                                                                                    relCont2ContentKey ),
+                                                                                        "user_a" ) );
+
+        CustomContentData contentData_B = new CustomContentData( fixture.findContentTypeByName( "Link_List" ).getContentTypeConfig() );
+        contentData_B.add( new TextDataEntry( contentData_B.getInputConfig( "title" ), "Title content B" ) );
+        ContentKey contentB = contentService.createContent( createCreateContentCommand( "Link_List_Category",
+                                                                                        createMyRelatedContentData( "Content B",
+                                                                                                                    relCont3ContentKey,
+                                                                                                                    relCont4ContentKey ),
+                                                                                        "user_b" ) );
+
+        // publish the link_list contents in a section page with reading rights for both users
+        fixture.save( factory.createSite( "My Links Site", new Date(), null, "en" ) );
+        MenuItemEntity section = createSection( "MyLinks", "My Links Site", "admin", false );
+        fixture.save( section );
+        fixture.save( createMenuItemAccess( "MyLinks", "user_a", "read, create, add, publish" ) );
+        fixture.save( createMenuItemAccess( "MyLinks", "user_b", "read, create, add, publish" ) );
+
+        AddContentToSectionCommand command = new AddContentToSectionCommand();
+        command.setAddOnTop( true );
+        command.setApproveInSection( true );
+        command.setContributor( userA.getKey() );
+        command.setSection( fixture.findMenuItemByName( "MyLinks" ).getKey() );
+        command.setContent( contentA );
+        menuItemService.execute( command );
+
+        AddContentToSectionCommand command2 = new AddContentToSectionCommand();
+        command2.setAddOnTop( true );
+        command2.setApproveInSection( true );
+        command2.setContributor( userB.getKey() );
+        command2.setSection( fixture.findMenuItemByName( "MyLinks" ).getKey() );
+        command2.setContent( contentB );
+        menuItemService.execute( command2 );
 
         // setup: verify that the content was created
         assertEquals( 6, fixture.countAllContent() );
 
         // exercise
         DataSourceContext context = new DataSourceContext();
-        context.setUser( fixture.findUserByName( "content-querier" ) );
+        context.setUser( userB );
 
-        String query = "key = " + content1.toString();
+        String query = "contenttype = 'Link_List'";
         String orderyBy = "";
         int index = 0;
-        int count = 100;
+        int count = 10;
+        int levels = 1;
         boolean includeData = true;
-        int childrenLevel = 0;
-        int parentLevel = 10;
+        int childrenLevel = 1;
+        int parentLevel = 0;
+        int[] menuItemKeys = new int[]{section.getKey().toInt()};
 
         XMLDocument xmlDocResult =
-            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel );
-
+            dataSourceService.getContentBySection( context, menuItemKeys, levels, query, orderyBy, index, count, includeData, childrenLevel,
+                                                   parentLevel );
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
-        LOG.info( JDOMUtil.prettyPrintDocument( jdomDocResult ) );
 
-        /*AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "4" );
-        AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, content4.toString(), content3.toString(),
-                                      content2.toString(), content1.toString() );
+        String relCntCount = JDOMUtil.evaluateSingleXPathValueAsString( "/contents/relatedcontents/@count", jdomDocResult );
+        int relatedContentCount = Integer.parseInt( relCntCount );
+        assertEquals( "number of related contents returned", 2, relatedContentCount );
 
-        AssertTool.assertXPathEquals( "/contents/content[ title = 'Daughter']/relatedcontentkeys/relatedcontentkey/@key", jdomDocResult,
-                                      content4.toString() );
-        AssertTool.assertXPathEquals( "/contents/content[ title = 'Son']/relatedcontentkeys/relatedcontentkey/@key", jdomDocResult,
-                                      content4.toString() );
-        AssertTool.assertXPathEquals( "/contents/content[ title = 'Grand child']/relatedcontentkeys/relatedcontentkey/@key", jdomDocResult,
-                                      content2.toString() );
-        AssertTool.assertSingleXPathValueEquals( "/contents/relatedcontents/@count", jdomDocResult, "2" );
-        AssertTool.assertXPathEquals( "/contents/relatedcontents/content/@key", jdomDocResult, content2.toString(), content4.toString() );*/
+        String titleContent3 =
+            JDOMUtil.evaluateSingleXPathValueAsString( "/contents/relatedcontents/content[1]/contentdata/title", jdomDocResult );
+        assertEquals( "related content #1 title", "link_3", titleContent3 );
+
+        String titleContent4 =
+            JDOMUtil.evaluateSingleXPathValueAsString( "/contents/relatedcontents/content[2]/contentdata/title", jdomDocResult );
+        assertEquals( "related content #2 title", "link_4", titleContent4 );
+    }
+
+    private MenuItemEntity createSection( String name, String siteName, String username, boolean isOrdered )
+    {
+        return factory.createSectionMenuItem( name, 0, null, name, siteName, username, username, "en", null, null, isOrdered, null, false,
+                                              null );
+    }
+
+    private MenuItemAccessEntity createMenuItemAccess( String menuItemName, String userName, String accesses )
+    {
+        return factory.createMenuItemAccess( fixture.findMenuItemByName( menuItemName ), fixture.findUserByName( userName ).getUserGroup(),
+                                             accesses );
     }
 
     private ContentData createMyRelatedContentData( String title, ContentKey... relatedContents )
@@ -412,13 +499,20 @@ public class DataSourceServiceImpl_relatedContentTest
 
     private CreateContentCommand createCreateContentCommand( String categoryName, ContentData contentData, String creatorUid )
     {
+        return createCreateContentCommand( categoryName, contentData, creatorUid,
+                                           CreateContentCommand.AccessRightsStrategy.INHERIT_FROM_CATEGORY );
+    }
+
+    private CreateContentCommand createCreateContentCommand( String categoryName, ContentData contentData, String creatorUid,
+                                                             CreateContentCommand.AccessRightsStrategy accessRights )
+    {
         CreateContentCommand createContentCommand = new CreateContentCommand();
         createContentCommand.setCategory( fixture.findCategoryByName( categoryName ) );
         createContentCommand.setCreator( fixture.findUserByName( creatorUid ).getKey() );
         createContentCommand.setLanguage( fixture.findLanguageByCode( "en" ) );
         createContentCommand.setStatus( ContentStatus.APPROVED );
         createContentCommand.setPriority( 0 );
-        createContentCommand.setAccessRightsStrategy( CreateContentCommand.AccessRightsStrategy.INHERIT_FROM_CATEGORY );
+        createContentCommand.setAccessRightsStrategy( accessRights );
         createContentCommand.setContentData( contentData );
         createContentCommand.setAvailableFrom( DATE_TIME_2010_01_01.toDate() );
         createContentCommand.setAvailableTo( null );

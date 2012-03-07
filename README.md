@@ -7,7 +7,7 @@ Welcome to the home of Enonic CMS Community Edition. Here you will find all sour
 
 You can either build using your locally installed Gradle, or use the wrapper like this:
 
-	./gradle/gradlew 
+	./gradlew 
 	
 Build all code and run all tests including integration tests:
 

@@ -3,6 +3,4 @@ task wrapper(type: Wrapper) {
     group = 'Buildmaster'
     description = "Generates gradlew bootstrap scripts"
     gradleVersion = '1.0-milestone-8'
-    jarFile = 'gradle/wrapper/gradle-wrapper.jar'
-	scriptFile = 'gradle/gradlew'
 }

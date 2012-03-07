@@ -2,8 +2,8 @@
 apply plugin: 'war'
 
 war {
-    into('META-INF/maven') {
-        from('src/main/webapp/META-INF/maven/pom.properties')
+    into("META-INF/maven/${project.group}/${project.name}") {
+        from('src/main/misc/pom.properties')
         expand("project": project)
     }
 }

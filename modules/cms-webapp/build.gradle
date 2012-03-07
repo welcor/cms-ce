@@ -2,7 +2,10 @@
 apply plugin: 'war'
 
 war {
-	manifest = jar.manifest
+    into('META-INF/maven') {
+        from('src/main/webapp/META-INF/maven/pom.properties')
+        expand("project": project)
+    }
 }
 
 dependencies {

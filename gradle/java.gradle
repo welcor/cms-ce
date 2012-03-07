@@ -17,3 +17,13 @@ test {
 }
 
 [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:none']
+
+jar {
+    manifest {
+		attributes(
+            "Implementation-Title" : "Enonic CMS",
+        	"Implementation-Version" : version
+    	)
+	}
+}
+

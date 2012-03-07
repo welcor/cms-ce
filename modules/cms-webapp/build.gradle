@@ -1,6 +1,10 @@
 
 apply plugin: 'war'
 
+war {
+	manifest = jar.manifest
+}
+
 dependencies {
 	compile project(':cms-core')
 	providedCompile "javax.servlet:servlet-api:${versions.servlet}"

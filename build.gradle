@@ -1,27 +1,64 @@
 
+allprojects {
+	group = 'com.enonic.cms'
+	scriptDir = "$rootDir/gradle"
+	buildNumber = new Date().format("yyyyMMdd.HHmmss")
+
+	repositories {
+   		mavenCentral()
+		mavenRepo url: 'http://repo.enonic.com/maven'
+	}
+}
+
 versions = [
 	servlet: '2.5',
-	junit: '4.8.2',
 	spring: '3.1.0.RELEASE',
 	spring_osgi: '1.2.1',
 	hibernate: '3.5.6-Final',
 	slf4j: '1.6.1',
 	saxon: '9.1.0.8',
-	jackrabbit: '2.3.0',
-	mockito: '1.8.5'
+	jackrabbit: '2.3.0'
 ]
 
-allprojects {
-	group = 'com.enonic.cms'
-        
-	scriptDir = "$rootDir/gradle"
-	buildNumber = new Date().format("yyyyMMdd.HHmmss")
+def javaProjects() {
+	subprojects - project(':cms-distro')
+}
 
-	repositories {
-    	mavenCentral()
-		mavenRepo url: 'http://repo.enonic.com/maven'
-	}
+def ideProjects() {
+	javaProjects()
+}
+
+def publishProjects() {
+	subprojects - project(':cms-itest')
 }
 
 apply from: "$scriptDir/wrapper.gradle"
 apply from: "$scriptDir/idea.gradle"
+
+configure(javaProjects()) {
+	apply from: "$scriptDir/java.gradle"
+	
+	configurations {
+		all*.exclude group: 'xml-apis'
+	 	all*.exclude group: 'commons-logging'
+	 	all*.exclude group: 'xerces'
+	}
+	
+	dependencies {
+		testCompile 'junit:junit:4.8.2'
+	    testCompile 'junit-addons:junit-addons:1.4'
+	    testCompile "org.springframework:spring-test:${versions.spring}"
+	    testCompile 'org.easymock:easymock:2.2'
+	    testCompile 'org.easymock:easymockclassextension:2.2.1'
+	    testCompile 'org.mockito:mockito-all:1.8.5'
+	    testCompile 'xmlunit:xmlunit:1.2'	    
+	}
+}
+
+configure(publishProjects()) {
+	apply from: "$scriptDir/publish.gradle"
+}
+
+configure(ideProjects()) {
+	apply from: "$scriptDir/idea.gradle"
+}

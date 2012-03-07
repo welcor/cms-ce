@@ -1,18 +1,9 @@
 
 apply plugin: 'maven'
 
-configurations {
-    deployerJars
-}
-
-dependencies {
-	deployerJars 'org.apache.maven.wagon:wagon-webdav-jackrabbit:2.2'
-}
-
 uploadArchives {
 	repositories.mavenDeployer { deployer ->
-    	configuration = configurations.deployerJars
-     	repository(url: "dav:http://leela.enonic/repo")
+     	repository(url: "http://leela.enonic/artifactory/public")
      	customizePom(deployer.pom)
 	}
 }
@@ -31,4 +22,9 @@ def customizePom(def pom) {
         // Remove all test dependencies (no need to have them)
         generatedPom.dependencies.removeAll { it.scope == 'test' }      
     }
+}
+
+task publish(dependsOn: 'uploadArchives') {
+	group = 'Upload'
+	description = 'Publish artifacts to remote repository (alias for uploadArchives)'
 }

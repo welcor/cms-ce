@@ -3,26 +3,11 @@
 
 Welcome to the home of Enonic CMS Community Edition. Here you will find all source code for the product.
 
-## Building with Maven
+## Building 
 
-Build all code and run all tests including integration tests:
+You can either build using your locally installed Gradle, or use the wrapper like this:
 
-    mvn clean install
-
-Build all code skipping integration tests:
-
-    mvn -DskipITs clean install
-
-Build all code skipping all tests:
-
-    mvn -DskipTests clean install
-
-## Building with Gradle
-
-We are now in the process of switching to Gradle for build. At this time we are building with Gradle version 1.0 Milestone 8, but if you do not have
-gradle installed you can use the bundled gradle wrapper.
-
-	./gradlew 
+	./gradle/gradlew 
 	
 Build all code and run all tests including integration tests:
 
@@ -35,6 +20,16 @@ Build all code skipping integration tests:
 Build all code skipping all tests:
 
     gradle clean build -x test
+
+## Generate IDEA files
+
+We always check in modified IDEA files since Gradle do not yet support all features we need (generate WebApp artifact). First think you 
+need to do (and repeat this when dependencies are changed) is to generate idea files using the following command:
+
+	gradle idea
+	
+This will keep the manual modified changes in IDEA files - which is good. The only reason to issue this command is to download all binary
+and source dependencies. When dependencies are changes you will also need to modify the WebApp artifact manually in IDEA.
 
 ## License
 

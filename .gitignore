@@ -3,7 +3,6 @@ build/
 target/
 .gradle/
 *.iws
-*.ipr
-**.iml
-**.ids
+*.ids
 .idea
+out/

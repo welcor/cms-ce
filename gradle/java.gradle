@@ -11,7 +11,7 @@ tasks.withType(Compile) {
 
 test {
     maxHeapSize = '2048m'
-    forkEvery = 40
+    forkEvery = 10
     systemProperties['java.awt.headless'] = 'true'
 	logging.captureStandardOutput(LogLevel.INFO)
 }

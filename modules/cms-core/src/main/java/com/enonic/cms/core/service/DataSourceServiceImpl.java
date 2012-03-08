@@ -1638,6 +1638,14 @@ public final class DataSourceServiceImpl
             xmlCreator.setIncludeVersionsInfoForPortal( false );
             xmlCreator.setIncludeAssignment( true );
 
+            try
+            {
+                Thread.sleep( 2000 );
+            }
+            catch ( InterruptedException e )
+            {
+            }
+
             ContentResultSet contents = contentService.queryContent( spec );
             if ( previewContext.isPreviewingContent() )
             {

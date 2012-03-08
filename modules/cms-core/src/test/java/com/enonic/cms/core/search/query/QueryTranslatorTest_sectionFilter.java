@@ -35,12 +35,12 @@ public class QueryTranslatorTest_sectionFilter
             "    \"bool\" : {\n" +
             "      \"should\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contentlocations_approved_numeric\" : [ \"1\", \"2\", \"3\" ]\n" +
+            "          \"contentlocations_approved_numeric\" : [ \"3\", \"2\", \"1\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"should\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contentlocations_unapproved_numeric\" : [ \"1\", \"2\", \"3\" ]\n" +
+            "          \"contentlocations_unapproved_numeric\" : [ \"3\", \"2\", \"1\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -78,7 +78,7 @@ public class QueryTranslatorTest_sectionFilter
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
-            "      \"contentlocations_unapproved_numeric\" : [ \"1\", \"2\", \"3\" ]\n" +
+            "      \"contentlocations_unapproved_numeric\" : [ \"3\", \"2\", \"1\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -116,7 +116,7 @@ public class QueryTranslatorTest_sectionFilter
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
-            "      \"contentlocations_approved_numeric\" : [ \"1\", \"2\", \"3\" ]\n" +
+            "      \"contentlocations_approved_numeric\" : [ \"3\", \"2\", \"1\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";

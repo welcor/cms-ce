@@ -62,8 +62,8 @@ public class QueryTranslatorTest_range
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
-            "        \"from\" : \"100\",\n" +
+            "      \"key_numeric\" : {\n" +
+            "        \"from\" : 100.0,\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
             "        \"include_upper\" : true\n" +
@@ -88,8 +88,8 @@ public class QueryTranslatorTest_range
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
-            "        \"from\" : \"100\",\n" +
+            "      \"key_numeric\" : {\n" +
+            "        \"from\" : 100.0,\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : true\n" +
@@ -114,9 +114,9 @@ public class QueryTranslatorTest_range
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
+            "      \"key_numeric\" : {\n" +
             "        \"from\" : null,\n" +
-            "        \"to\" : \"100\",\n" +
+            "        \"to\" : 100.0,\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : false\n" +
             "      }\n" +
@@ -140,9 +140,9 @@ public class QueryTranslatorTest_range
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
+            "      \"key_numeric\" : {\n" +
             "        \"from\" : null,\n" +
-            "        \"to\" : \"100\",\n" +
+            "        \"to\" : 100.0,\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : true\n" +
             "      }\n" +

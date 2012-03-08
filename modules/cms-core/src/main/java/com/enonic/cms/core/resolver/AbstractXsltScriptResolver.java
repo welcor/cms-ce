@@ -54,7 +54,7 @@ public abstract class AbstractXsltScriptResolver
     {
         XsltResource resource = new XsltResource( name, xslt.getAsString() );
         XsltProcessorManager manager = XsltProcessorManagerAccessor.getProcessorManager();
-        XsltProcessor processor = manager.createProcessor( resource, uriResolver );
+        XsltProcessor processor = manager.createCachedProcessor( resource, uriResolver );
         processor.setOmitXmlDecl( true );
         return processor;
     }

@@ -60,7 +60,7 @@ public abstract class AbstractXsltViewTransformer
     {
         XsltResource resource = new XsltResource( styleSheetKey.toString(), xslt.getAsString() );
         XsltProcessorManager manager = XsltProcessorManagerAccessor.getProcessorManager();
-        return manager.createProcessor( resource, styleSheetURIResolver );
+        return manager.createCachedProcessor( resource, styleSheetURIResolver );
     }
 
     protected XsltProcessor createProcessor( ResourceKey styleSheetKey, XMLDocument xslt, boolean omitXmlDecl )

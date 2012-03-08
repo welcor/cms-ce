@@ -1,6 +1,8 @@
 package com.enonic.cms.core.search.querymeasurer;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.index.ContentIndexQueryExprParser;
+import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +16,8 @@ public class QuerySignatureResolver
 
     public static IndexQuerySignature createQuerySignature( ContentIndexQuery query )
     {
+        final QueryExpr queryExpr = ContentIndexQueryExprParser.parse( query );
+
         StringBuffer s = new StringBuffer();
 
         appendIfNotNull( s, "query : ", query.getQuery() );
@@ -23,10 +27,11 @@ public class QuerySignatureResolver
         appendIfNotNull( s, "contentStatusFilter : ", query.getContentStatusFilter() );
         appendIfNotNull( s, "contentOnlineAtFilter : ", query.getContentOnlineAtFilter() != null ? "yes" : "no" );
         appendIfNotNull( s, "contentFilter : ", query.getContentFilter() );
-        appendIfNotNull( s, "sectionFilter : ", query.getSectionFilter()  );
+        appendIfNotNull( s, "sectionFilter : ", query.getSectionFilter() );
         appendIfNotNull( s, "categoryFilter : ", query.getCategoryFilter() );
         appendIfNotNull( s, "contentTypeFilter : ", query.getContentTypeFilter() );
         appendIfNotNull( s, "securityFilter : ", query.getSecurityFilter() );
+        appendIfNotNull( s, "orderBy : ", queryExpr.getOrderBy() );
 
         return new IndexQuerySignature( s.toString() );
     }

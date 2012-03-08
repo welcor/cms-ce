@@ -8,49 +8,78 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
 
 public class QueryDiffEntry
     implements Serializable
 {
     private IndexQuerySignature querySignature;
 
-    private HashSet<ContentKey> newResultContentKeys;
+    private ImmutableSet<ContentKey> inNewOnly;
 
-    private HashSet<ContentKey> oldResultContentKeys;
+    private ImmutableSet<ContentKey> inOldOnly;
 
-    private ImmutableSet<ContentKey> diff;
+    private ContentIndexQuery fullQuery;
 
-    public QueryDiffEntry( IndexQuerySignature querySignature, HashSet<ContentKey> newResultContentKeys,
-                           HashSet<ContentKey> oldResultContentKeys, Sets.SetView<ContentKey> diff )
+    private int newSize;
+
+    private int oldSize;
+
+    public QueryDiffEntry( final IndexQuerySignature querySignature, final ImmutableSet<ContentKey> inNewOnly,
+                           final ImmutableSet<ContentKey> inOldOnly, final ContentIndexQuery fullQuery, final int newSize,
+                           final int oldSize )
     {
         this.querySignature = querySignature;
-        this.newResultContentKeys = newResultContentKeys;
-        this.oldResultContentKeys = oldResultContentKeys;
-        this.diff = diff.immutableCopy();
+        this.inNewOnly = inNewOnly;
+        this.inOldOnly = inOldOnly;
+        this.fullQuery = fullQuery;
+        this.newSize = newSize;
+        this.oldSize = oldSize;
     }
-
 
     public IndexQuerySignature getQuerySignature()
     {
         return querySignature;
     }
 
-    public HashSet<ContentKey> getNewResultContentKeys()
+    public ImmutableSet<ContentKey> getInNewOnly()
     {
-        return newResultContentKeys;
+        return inNewOnly;
     }
 
-    public HashSet<ContentKey> getOldResultContentKeys()
+    public void setInNewOnly( final ImmutableSet<ContentKey> inNewOnly )
     {
-        return oldResultContentKeys;
+        this.inNewOnly = inNewOnly;
     }
 
-
-    public ImmutableSet<ContentKey> getDiff()
+    public ImmutableSet<ContentKey> getInOldOnly()
     {
-        return diff;
+        return inOldOnly;
     }
 
+    public void setInOldOnly( final ImmutableSet<ContentKey> inOldOnly )
+    {
+        this.inOldOnly = inOldOnly;
+    }
 
+    public ContentIndexQuery getFullQuery()
+    {
+        return fullQuery;
+    }
+
+    public void setFullQuery( final ContentIndexQuery fullQuery )
+    {
+        this.fullQuery = fullQuery;
+    }
+
+    public int getNewSize()
+    {
+        return newSize;
+    }
+
+    public int getOldSize()
+    {
+        return oldSize;
+    }
 }
 

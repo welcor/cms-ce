@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -33,24 +34,32 @@ public class QueryResultComparer
             return;
         }
 
-        final HashSet<ContentKey> newResultContentKeys = Sets.newHashSet( resultNew.getKeys() );
-        final HashSet<ContentKey> oldResultContentKeys = Sets.newHashSet( resultOld.getKeys() );
-        Sets.SetView<ContentKey> diff = Sets.symmetricDifference( newResultContentKeys, oldResultContentKeys );
-
         checkedQueries.add( querySignature );
 
-        if ( diff.isEmpty() )
+        final HashSet<ContentKey> newResultContentKeys = Sets.newHashSet( resultNew.getKeys() );
+        final HashSet<ContentKey> oldResultContentKeys = Sets.newHashSet( resultOld.getKeys() );
+
+        ImmutableSet newOnly = Sets.difference( newResultContentKeys, oldResultContentKeys ).immutableCopy();
+        ImmutableSet oldOnly = Sets.difference( oldResultContentKeys, newResultContentKeys ).immutableCopy();
+
+        if ( newOnly.isEmpty() && oldOnly.isEmpty() )
         {
             return;
         }
 
-        QueryDiffEntry queryDiffEntry = new QueryDiffEntry( querySignature, newResultContentKeys, oldResultContentKeys, diff );
+        QueryDiffEntry queryDiffEntry =
+            new QueryDiffEntry( querySignature, newOnly, oldOnly, query, newResultContentKeys.size(), oldResultContentKeys.size() );
         queryDiffEntries.add( queryDiffEntry );
     }
-
 
     public List<QueryDiffEntry> getQueryDiffEntries()
     {
         return queryDiffEntries;
     }
+
+    public void clear()
+    {
+        queryDiffEntries.clear();
+    }
+
 }

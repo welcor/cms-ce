@@ -66,7 +66,7 @@ public class IndexMonitorController
         final String diffList = req.getParameter( "diffList" );
         final String queryContent = req.getParameter( "queryContent" );
 
-        clearIfFlagged( req );
+        clearQueryMeasures( req );
 
         SortValue orderBy = getOrderBy( req );
 
@@ -138,7 +138,6 @@ public class IndexMonitorController
 
     private List<QueryDiffEntry> createQueryResultDiffList()
     {
-
         return queryResultComparer.getQueryDiffEntries();
 
     }
@@ -179,13 +178,23 @@ public class IndexMonitorController
         return count;
     }
 
-    private void clearIfFlagged( HttpServletRequest req )
+    private void clearQueryMeasures( HttpServletRequest req )
     {
         String clear = req.getParameter( "clear" );
 
         if ( StringUtils.isNotBlank( clear ) )
         {
             indexQueryMeasurer.clearStatistics();
+        }
+    }
+
+    private void clearDiffEntries( HttpServletRequest req )
+    {
+        String clear = req.getParameter( "clearDiffEntries" );
+
+        if ( StringUtils.isNotBlank( clear ) )
+        {
+            queryResultComparer.clear();
         }
     }
 

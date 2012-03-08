@@ -153,6 +153,8 @@
                value-ref="livePortalTraceController"/>
         <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController"
                value-ref="reindexContentToolController"/>
+                <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.IndexMonitorController"
+                       value-ref="indexMonitorController"/>
       </map>
     </property>
   </bean>
@@ -188,6 +190,11 @@
   <bean id="reindexContentToolController" class="com.enonic.cms.core.tools.ReindexContentToolController"
         parent="abstractToolController"/>
 
+
+    <bean id="indexMonitorController" class="com.enonic.cms.core.tools.IndexMonitorController"
+          parent="abstractToolController">
+        <property name="newContentIndexService" ref="contentIndexService"/>
+    </bean>
 
   <!-- Construct the resource controller. -->
   <bean id="resourceController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceController">

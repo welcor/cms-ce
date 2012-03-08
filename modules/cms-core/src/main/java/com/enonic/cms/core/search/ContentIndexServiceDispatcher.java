@@ -63,7 +63,17 @@ public class ContentIndexServiceDispatcher
 
     public void index( ContentDocument doc, boolean deleteExisting )
     {
-        newContentIndexService.index( doc, false );
+
+        if ( !runOldOnly )
+        {
+            newContentIndexService.index( doc, false );
+        }
+
+         if ( !runNewOnly )
+        {
+            oldContentIndexService.index( doc, false );
+        }
+
     }
 
     public void indexBulk( List<ContentDocument> docs )

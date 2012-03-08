@@ -326,7 +326,7 @@
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>0.19.0.RC3</version>
+                <version>0.19.0</version>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
@@ -394,6 +394,10 @@
     <repository>
       <id>enonic.repo</id>
       <url>http://repo.enonic.com/maven</url>
+    </repository>
+    <repository>
+      <id>sonatype</id>
+      <url>https://oss.sonatype.org/content/repositories/releases</url>
     </repository>
   </repositories>
 

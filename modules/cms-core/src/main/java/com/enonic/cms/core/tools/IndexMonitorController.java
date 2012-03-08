@@ -123,7 +123,7 @@ public class IndexMonitorController
     {
         final String contentKey = req.getParameter( "contentKey" );
 
-        final Map<String, String> resultMap = Maps.newHashMap();
+        final Map<String, String> resultMap = Maps.newTreeMap();
 
         final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( new ContentKey( contentKey ) );
 

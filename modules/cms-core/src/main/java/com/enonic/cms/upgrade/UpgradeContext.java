@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionCallback;
@@ -106,4 +107,8 @@ public interface UpgradeContext
 
     public String getConfigDirPath();
 
+    public List<String> getStatementsFromSchema( int modelNumber );
+
+    public void executeStatement( String statement )
+        throws Exception;
 }

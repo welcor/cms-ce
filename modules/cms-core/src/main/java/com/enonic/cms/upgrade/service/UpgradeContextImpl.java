@@ -23,7 +23,6 @@ import com.enonic.esl.sql.model.DatabaseSchemaTool;
 import com.enonic.esl.sql.model.Table;
 import com.enonic.esl.sql.model.View;
 
-import com.enonic.cms.framework.jdbc.DialectConnectionDecorator;
 import com.enonic.cms.framework.jdbc.dialect.Db2Dialect;
 import com.enonic.cms.framework.jdbc.dialect.Dialect;
 import com.enonic.cms.framework.jdbc.dialect.H2Dialect;
@@ -562,4 +561,14 @@ public final class UpgradeContextImpl
         return transactionTimeout;
     }
 
+    public List<String> getStatementsFromSchema( final int modelNumber )
+    {
+        return DatabaseAccessor.getDatabase( modelNumber ).getStatements();
+    }
+
+    public void executeStatement( final String statement )
+        throws Exception
+    {
+        executeStatement( statement, true );
+    }
 }

@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.enonic.cms.core.content.access.ContentAccessResolver;
+import org.joda.time.DateTime;
+
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
@@ -17,6 +18,7 @@ import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
 import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.RelatedParentContentQuery;
 
 
 public class RelatedContentFetcher
@@ -34,9 +36,9 @@ public class RelatedContentFetcher
     private ContentResultSet contentResultSet;
 
 
-    public RelatedContentFetcher( ContentDao contentDao, ContentAccessResolver contentAccessResolver )
+    public RelatedContentFetcher( ContentDao contentDao )
     {
-        super( contentDao, contentAccessResolver );
+        super( contentDao );
     }
 
     public RelatedContentResultSet fetch( final ContentEntity content )
@@ -79,10 +81,7 @@ public class RelatedContentFetcher
                 doAddAndFetchChildren( rootRelatedChildren, maxChildrenLevel, includeVisited );
                 for ( RelatedChildContent rootRelatedChild : rootRelatedChildren )
                 {
-                    if ( isAddableToRootRelated( rootRelatedChild ) )
-                    {
-                        relatedContentResultSet.addRootRelatedChild( rootRelatedChild );
-                    }
+                    relatedContentResultSet.addRootRelatedChild( rootRelatedChild );
                 }
             }
         }
@@ -96,10 +95,7 @@ public class RelatedContentFetcher
                 doAddAndFetchParents( rootRelatedParents, maxParentLevel, includeVisited );
                 for ( RelatedParentContent rootRelatedParent : rootRelatedParents )
                 {
-                    if ( isAddableToRootRelated( rootRelatedParent ) )
-                    {
-                        relatedContentResultSet.addRootRelatedParent( rootRelatedParent );
-                    }
+                    relatedContentResultSet.addRootRelatedParent( rootRelatedParent );
                 }
             }
         }
@@ -107,7 +103,8 @@ public class RelatedContentFetcher
         return relatedContentResultSet;
     }
 
-    private List<RelatedParentContent> doAddAndFetchParents( final Collection<RelatedParentContent> parentsToAdd, final int level, final boolean includeVisited )
+    private List<RelatedParentContent> doAddAndFetchParents( final Collection<RelatedParentContent> parentsToAdd, final int level,
+                                                             final boolean includeVisited )
     {
         final int nextLevel = level - 1;
 
@@ -157,12 +154,6 @@ public class RelatedContentFetcher
     }
 
     @Override
-    protected boolean isAddableToRootRelated( RelatedContent relatedToAdd )
-    {
-        return includeOfflineContent() || isAvailable( relatedToAdd );
-    }
-
-    @Override
     protected boolean isAddable( final RelatedContent relatedToAdd, boolean includeVisited )
     {
         final boolean contentIsAllreadyVisited;
@@ -175,9 +166,7 @@ public class RelatedContentFetcher
             contentIsAllreadyVisited = visitedChildRelatedContent.contains( relatedToAdd.getContent().getKey() );
         }
 
-        final boolean availableCheckOK = includeOfflineContent() || isAvailable( relatedToAdd );
-
-        return availableCheckOK && ( includeVisited || !contentIsAllreadyVisited );
+        return includeVisited || !contentIsAllreadyVisited;
     }
 
     private Collection<RelatedParentContent> doFindRelatedParents( List<ContentKey> contentKeys )
@@ -187,7 +176,13 @@ public class RelatedContentFetcher
             return new ArrayList<RelatedParentContent>();
         }
 
-        return contentDao.findRelatedParentByKeys( contentKeys, includeOnlyMainVersions );
+        final RelatedParentContentQuery relatedParentContentQuery = new RelatedParentContentQuery();
+        relatedParentContentQuery.contents( contentKeys );
+        relatedParentContentQuery.includeOnlyMainVersions( includeOnlyMainVersions );
+        relatedParentContentQuery.now( new DateTime( availableCheckDate ) );
+        relatedParentContentQuery.includeOfflineContent( includeOfflineContent() );
+        relatedParentContentQuery.securityFilter( securityFilter );
+        return contentDao.findRelatedParentByKeys( relatedParentContentQuery );
     }
 
 

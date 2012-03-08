@@ -128,7 +128,7 @@ public class CustomContentHandlerController_operation_UpdateTest
         // setup content repository
         fixture.save( factory.createUnit( "MyUnit" ) );
         final CategoryEntity categoryEntity =
-            factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "testuser", "testuser", true );
+            factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser", true );
         fixture.save( categoryEntity );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create" ) );
 
@@ -193,7 +193,7 @@ public class CustomContentHandlerController_operation_UpdateTest
         // setup content repository
         fixture.save( factory.createUnit( "MyUnit" ) );
         final CategoryEntity categoryEntity =
-            factory.createCategory( "MyCategory", "MyContentType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
+            factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
         fixture.save( categoryEntity );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create" ) );
 
@@ -399,7 +399,7 @@ public class CustomContentHandlerController_operation_UpdateTest
         fixture.flushAndClearHibernateSesssion();
 
         final CategoryEntity categoryEntity =
-            factory.createCategory( categoryName, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
+            factory.createCategory( categoryName, null, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
 
         fixture.save( categoryEntity );
 

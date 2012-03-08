@@ -64,7 +64,7 @@ public class ContentServiceImpl_withImageHandlerTest
         fixture.save( factory.createContentHandler( "Image content", ContentHandlerName.IMAGE.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.IMAGE.getHandlerClassShortName() ) );
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create" ) );
         fixture.flushAndClearHibernateSesssion();
 

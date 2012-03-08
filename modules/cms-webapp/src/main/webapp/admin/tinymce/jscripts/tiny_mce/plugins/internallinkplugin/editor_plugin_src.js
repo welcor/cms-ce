@@ -1,50 +1,43 @@
 /*
-    Attachment in img/@src 1
-    External: _attachment/$contentKey
-    Internal: attachment://$contentKey
+    Internal:                                                       External:
 
-    Attachment in img/@src 2
-    External: _attachment/$contentKey/binary/$binaryKey
-    Internal: attachment://$contentKey/binary/$binaryKey
+    attachment://$contentKey                                        _attachment/$contentKey
+    attachment://$contentKey/binary/$binaryKey                      _attachment/$contentKey/binary/$binaryKey
+    image://$contentKey?filter=$filter&size=$size&format=$format    _image/$contentKey?filter=$filter&size=$size&format=$format
 
-    Image in img/@src
-    External: _image/$contentKey?filter=$filter&size=$size&format=$format
-    Internal: image://$contentKey?filter=$filter&size=$size&format=$format
-*/
+ */
 
 (function()
 {
-    var reImgSrcWithSizeParamEQCustomPattern = /^_image\/.+(_size=custom)/im;
-    var reFilterParamPattern = /([\?&]_filter(?:=[^&]*)?)/im;
+    var imgSrcWithSizeParamEQCustomPattern = /^_image\/.+(_size=custom)/im;
+    var filterParamPattern = /([\?&]_filter(?:=[^&]*)?)/im;
 
-    var reExternalImgSrcPattern = /^_image\/(.+)/im;
-    var reExternalImgSrcReplacePattern = 'image://$1';
+    var internalImagePattern = /(<img.+?src=")(image:\/\/)(.+?)(".+?\/>)/gim;
+    var internalImageAttachmentPattern = /(<img.+?src=")(attachment:\/\/)(.+?)(".+?\/>)/gim;
 
-    var reInternalImgSrcPattern = /^image:\/\/(.+)/im;
-    var reInternalImgSrcReplacePattern = '_image/$1';
+    var externalImgSrcPattern = /^_image\/(.+)/im;
+    var externalImgSrcReplacePattern = 'image://$1';
 
-    var reInternalImgSrcAttachmentPattern = /^attachment:\/\/(.*?)/im;
-    var reInternalImgSrcAttachmentReplacePattern = '_attachment/$1';
-
-    var reExternalImgSrcAttachmentPattern = /^_attachment\/(.*?)/im;
-    var reExternalImgSrcAttachmentReplacePattern = 'attachment://$1';
+    var externalImgSrcAttachmentPattern = /^_attachment\/(.*?)/im;
+    var externalImgSrcAttachmentReplacePattern = 'attachment://$1';
 
     tinymce.create('tinymce.plugins.InternalLinkPlugin', {
 
         init: function( ed, url )
         {
             var t = this;
+            t.editor = ed;
 
-            ed.onSetContent.add( function( ed, o )
+            ed.onBeforeSetContent.add(function(ed, o)
             {
-                t.transformURLsToExternalFormat(ed, o);
+                t.transformImagesToExternalFormat(o);
             });
 
-            ed.onPreProcess.add(function( ed, o )
+            ed.onPreProcess.add(function(ed, o)
             {
                 if ( o.get )
                 {
-                    t.transformURLsToInternalFormat(ed, o);
+                    t.transformImageSrcToInternalFormat(o);
                 }
             });
         },
@@ -52,140 +45,116 @@
 
         // Public
 
-        /*
-            Method: transformURLsToExternalFormat
-        */
-        transformURLsToExternalFormat: function( oEditor, oOptions )
+        transformImagesToExternalFormat: function ( o )
         {
             var t = this;
-            var oDOM = oEditor.dom;
-            var oImgElements = oDOM.select('img', oOptions.node);
 
-            tinymce.each( oImgElements, function( oImgElement )
+            function replacer( match, p1, p2, p3, p4 )
             {
-                var sImgSrc = oDOM.getAttrib(oImgElement, 'src');
+                /*
+                match   = <img alt="c" src="image://20844?_size=wide&amp;_format=jpg" title="c" />
+                p1      = <img alt="c" src="
+                p2      = image://
+                p3      = 20844?_size=wide&amp;_format=jpg
+                p4      = " title="c" />
+                */
 
-                // TODO: Refactor to function
-                if ( sImgSrc.match(reInternalImgSrcPattern) )
+                var imageKeyAndUrlParams = p3;
+                var filterParamValue = t.resolveFilterParam( 'image://' + imageKeyAndUrlParams );
+                if ( filterParamValue !== '' )
                 {
-                    if ( !t._isCustomSize(sImgSrc) )
-                    {
-                        if ( !sImgSrc.match(reFilterParamPattern) )
-                        {
-                            var sFilterParam = t.resolveFilterParam(sImgSrc, oEditor);
-
-                            if ( sFilterParam !== '' )
-                            {
-                                sImgSrc = sImgSrc + '&_filter=' + sFilterParam;
-                            }
-                        }
-                    }
-
-                    sImgSrc = sImgSrc.replace(reInternalImgSrcPattern, reInternalImgSrcReplacePattern);
+                    imageKeyAndUrlParams += '&_filter=' + filterParamValue;
                 }
+                return p1 + '_image/' + imageKeyAndUrlParams + p4;
+            }
 
-                // TODO: Refactor to function
-                if ( sImgSrc.match(reInternalImgSrcAttachmentPattern) )
-                {
-                    sImgSrc = sImgSrc.replace(reInternalImgSrcAttachmentPattern, reInternalImgSrcAttachmentReplacePattern);
-                }
-
-                oDOM.setAttrib(oImgElement, 'src', sImgSrc);
-            });
+            // Replace all images with internal links
+            o.content = o.content.replace( internalImagePattern, replacer );
+            // Replace all images using image attachment
+            o.content = o.content.replace( internalImageAttachmentPattern, replacer );
         },
         // ---------------------------------------------------------------------------------------------------------------------------------
 
-        /*
-            Method: transformURLsToInternalFormat
-        */
-        transformURLsToInternalFormat: function( oEditor, oOptions  )
+        transformImageSrcToInternalFormat: function( o )
         {
             var t = this;
-            var oDOM = oEditor.dom;
-            var oImgElements = oDOM.select('img', oOptions.node);
+            var dom = t.editor.dom;
+            var imageElements = dom.select('img', o.node);
 
-            tinymce.each( oImgElements, function( oImgElement )
+            tinymce.each( imageElements, function( imageElement )
             {
-                var sImgSrc = oDOM.getAttrib(oImgElement, 'src');
+                var imageSrc = dom.getAttrib(imageElement, 'src');
 
-                // TODO: Refactor to function
-                if ( sImgSrc.match(reExternalImgSrcPattern) )
+                if ( imageSrc.match(externalImgSrcPattern) )
                 {
                     // Remove filter param for non custom sizes.
-                    if ( !t._isCustomSize(sImgSrc) )
+                    if ( !t._isCustomSize(imageSrc) )
                     {
-                        sImgSrc = sImgSrc.replace(reFilterParamPattern, '');
+                        imageSrc = imageSrc.replace(filterParamPattern, '');
                     }
 
-                    sImgSrc = sImgSrc.replace(reExternalImgSrcPattern, reExternalImgSrcReplacePattern);
+                    imageSrc = imageSrc.replace(externalImgSrcPattern, externalImgSrcReplacePattern);
                 }
 
-                // TODO: Refactor to function
-                if ( sImgSrc.match(reExternalImgSrcAttachmentPattern) )
+                if ( imageSrc.match(externalImgSrcAttachmentPattern) )
                 {
-                    sImgSrc = sImgSrc.replace(reExternalImgSrcAttachmentPattern, reExternalImgSrcAttachmentReplacePattern);
+                    imageSrc = imageSrc.replace(externalImgSrcAttachmentPattern, externalImgSrcAttachmentReplacePattern);
                 }
 
-                oDOM.setAttrib(oImgElement, 'src', sImgSrc);
+                dom.setAttrib(imageElement, 'src', imageSrc);
             });
         },
         // ---------------------------------------------------------------------------------------------------------------------------------
 
-        /*
-            function: resolveFilterParam
-        */
-        resolveFilterParam: function( sImageSrc, oEditor, iCustomWidth )
+        resolveFilterParam: function( imageSrc, customWidth )
         {
             var t = this;
 
-            var sFilterString = '';
+            var filter = '';
 
-            var iEditorWidth = t._getWidthForEditorInstance(oEditor);
-            var iFortyPercentOfEditorWidth = Math.round((iEditorWidth * 40 / 100));
-            var iTwentyFivePercentOfEditorWidth = Math.round((iEditorWidth * 25 / 100));
-            var iFifteenPercentOfEditorWidth = Math.round((iEditorWidth * 15 / 100));
-            var iHeightForScaleWideFormat = Math.round((iEditorWidth * 0.42));
+            var editorWidth = t._getWidthForEditorInstance();
+            var fortyPercentOfEditorWidth = Math.round((editorWidth * 40 / 100));
+            var twentyFivePercentOfEditorWidth = Math.round((editorWidth * 25 / 100));
+            var fifteenPercentOfEditorWidth = Math.round((editorWidth * 15 / 100));
+            var heightForScaleWideFormat = Math.round((editorWidth * 0.42));
 
-            if ( sImageSrc.match(/_size\=full/i ) )
+            if ( imageSrc.match(/_size\=full/i ) )
             {
-                sFilterString = 'scalewidth(' + iEditorWidth + ')';
+                filter = 'scalewidth(' + editorWidth + ')';
             }
-            else if ( sImageSrc.match(/_size\=wide/i ) )
+            else if ( imageSrc.match(/_size\=wide/i ) )
             {
-                sFilterString = 'scalewide(' + iEditorWidth + ',' + iHeightForScaleWideFormat + ')';
+                filter = 'scalewide(' + editorWidth + ',' + heightForScaleWideFormat + ')';
             }
-            else if ( sImageSrc.match(/_size\=regular/i) )
+            else if ( imageSrc.match(/_size\=regular/i) )
             {
-                sFilterString = 'scalewidth(' + iFortyPercentOfEditorWidth + ')';
+                filter = 'scalewidth(' + fortyPercentOfEditorWidth + ')';
             }
-            else if ( sImageSrc.match(/_size\=square/i) )
+            else if ( imageSrc.match(/_size\=square/i) )
             {
-                sFilterString = 'scalesquare(' + iFortyPercentOfEditorWidth + ')';
+                filter = 'scalesquare(' + fortyPercentOfEditorWidth + ')';
             }
-            else if ( sImageSrc.match(/_size\=list/i) )
+            else if ( imageSrc.match(/_size\=list/i) )
             {
-                sFilterString = 'scalesquare(' + iTwentyFivePercentOfEditorWidth + ')';
+                filter = 'scalesquare(' + twentyFivePercentOfEditorWidth + ')';
             }
-            else if ( sImageSrc.match(/_size\=thumbnail/i) )
+            else if ( imageSrc.match(/_size\=thumbnail/i) )
             {
-                sFilterString = 'scalesquare(' + iFifteenPercentOfEditorWidth + ')';
+                filter = 'scalesquare(' + fifteenPercentOfEditorWidth + ')';
             }                                                                                   // TODO: Use \d+
-            else if ( sImageSrc.match(/_size\=custom/i) && (iCustomWidth && iCustomWidth.match(/\d/)) )
+            else if ( imageSrc.match(/_size\=custom/i) && (customWidth && customWidth.match(/\d/)) )
             {
-                sFilterString = 'scalewidth(' + iCustomWidth + ')';
+                filter = 'scalewidth(' + customWidth + ')';
             }
             else
             {
-                sFilterString = '';
+                filter = '';
             }
 
-            return sFilterString;
+            return filter;
         },
         // ---------------------------------------------------------------------------------------------------------------------------------
 
-        /*
-            Function: getInfo
-        */
         getInfo: function()
         {
             return {
@@ -201,58 +170,55 @@
         // Private
 
         /*
-            function: _getWidthForEditorInstance
-        */
-        _getWidthForEditorInstance: function( oEditor )
+         function: _getWidthForEditorInstance
+         */
+        _getWidthForEditorInstance: function()
         {
             var t = this;
+            var editor = t.editor;
 
-            var oBodyElemStyleMarginAndPadding = t._getBodyStyleMarginAndPaddingForEditorInstance( oEditor );
+            var bodyElementStyleMarginAndPadding = t._getBodyStyleMarginAndPaddingForEditorInstance( editor );
 
-            var iBodyMarginLeft     = oBodyElemStyleMarginAndPadding.marginleft;
-            var iBodyMarginRight    = oBodyElemStyleMarginAndPadding.marginright;
-            var iBodyPaddingLeft    = oBodyElemStyleMarginAndPadding.paddingleft;
-            var iBodyPaddingRight   = oBodyElemStyleMarginAndPadding.paddingright;
+            var bodyMarginLeft     = bodyElementStyleMarginAndPadding.marginleft;
+            var bodyMarginRight    = bodyElementStyleMarginAndPadding.marginright;
+            var bodyPaddingLeft    = bodyElementStyleMarginAndPadding.paddingleft;
+            var bodyPaddingRight   = bodyElementStyleMarginAndPadding.paddingright;
 
-            var iContentAreaWidth   = oEditor.settings.initial_width - 2; // Initial width - gui left and right border.
+            var contentAreaWidth   = editor.settings.initial_width - 2; // Initial width - gui left and right border.
 
-            return ( iContentAreaWidth - ( iBodyMarginLeft + iBodyPaddingLeft ) - ( iBodyMarginRight + iBodyPaddingRight ) );
+            return ( contentAreaWidth - ( bodyMarginLeft + bodyPaddingLeft ) - ( bodyMarginRight + bodyPaddingRight ) );
         },
         // ---------------------------------------------------------------------------------------------------------------------------------
 
-        /*
-            Function: _getBodyStylePaddingForEditorInstance
-        */
-        _getBodyStyleMarginAndPaddingForEditorInstance: function( oEditor )
+        _getBodyStyleMarginAndPaddingForEditorInstance: function()
         {
-            var oDOM = oEditor.dom;
+            var t = this;
+            var editor = t.editor;
+            var DOM = editor.dom;
 
-            var oEditorBodyElement = oEditor.getBody();
+            var editorBodyElement = editor.getBody();
 
             var margintop, marginright, marginbottom ,marginleft,
                     paddingtop, paddingright, paddingbottom ,paddingleft;
 
-            margintop       = parseInt(oDOM.getStyle(oEditorBodyElement, 'margin-top', true))       || 0;
-            marginright     = parseInt(oDOM.getStyle(oEditorBodyElement, 'margin-right', true))     || 0;
-            marginbottom    = parseInt(oDOM.getStyle(oEditorBodyElement, 'margin-nottom', true))    || 0;
-            marginleft      = parseInt(oDOM.getStyle(oEditorBodyElement, 'margin-left', true))      || 0;
+            margintop       = parseInt(DOM.getStyle(editorBodyElement, 'margin-top', true))       || 0;
+            marginright     = parseInt(DOM.getStyle(editorBodyElement, 'margin-right', true))     || 0;
+            marginbottom    = parseInt(DOM.getStyle(editorBodyElement, 'margin-nottom', true))    || 0;
+            marginleft      = parseInt(DOM.getStyle(editorBodyElement, 'margin-left', true))      || 0;
 
-            paddingtop      = parseInt(oDOM.getStyle(oEditorBodyElement, 'padding-top', true))      || 0;
-            paddingright    = parseInt(oDOM.getStyle(oEditorBodyElement, 'padding-right', true))    || 0;
-            paddingbottom   = parseInt(oDOM.getStyle(oEditorBodyElement, 'padding-bottom', true))   || 0;
-            paddingleft     = parseInt(oDOM.getStyle(oEditorBodyElement, 'padding-left', true))     || 0;
+            paddingtop      = parseInt(DOM.getStyle(editorBodyElement, 'padding-top', true))      || 0;
+            paddingright    = parseInt(DOM.getStyle(editorBodyElement, 'padding-right', true))    || 0;
+            paddingbottom   = parseInt(DOM.getStyle(editorBodyElement, 'padding-bottom', true))   || 0;
+            paddingleft     = parseInt(DOM.getStyle(editorBodyElement, 'padding-left', true))     || 0;
 
             return { 'margintop': margintop, 'marginright': marginright, 'marginbottom': marginbottom, 'marginleft': marginleft,
                 'paddingtop': paddingtop, 'paddingright': paddingright, 'paddingbottom': paddingbottom, 'paddingleft': paddingleft };
         },
         // ---------------------------------------------------------------------------------------------------------------------------------
 
-        /*
-            Function: _isCustomSize
-        */
-        _isCustomSize: function( sImageSrc )
+        _isCustomSize: function( imageSrc )
         {
-            return sImageSrc.match(reImgSrcWithSizeParamEQCustomPattern);
+            return imageSrc.match(imgSrcWithSizeParamEQCustomPattern);
         }
         // ---------------------------------------------------------------------------------------------------------------------------------
     });

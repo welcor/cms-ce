@@ -92,7 +92,7 @@ public class ContentServiceImpl_contentConfigTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
-        fixture.save( factory.createCategory( "Employees", "Person", "UnitForPerson", "testuser", "testuser", false ) );
+        fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -135,7 +135,7 @@ public class ContentServiceImpl_contentConfigTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
-        fixture.save( factory.createCategory( "Employees", "Person", "UnitForPerson", "testuser", "testuser", false ) );
+        fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -166,7 +166,7 @@ public class ContentServiceImpl_contentConfigTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
-        fixture.save( factory.createCategory( "Employees", "Person", "UnitForPerson", "testuser", "testuser", false ) );
+        fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -206,7 +206,7 @@ public class ContentServiceImpl_contentConfigTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
-        fixture.save( factory.createCategory( "Employees", "Person", "UnitForPerson", "testuser", "testuser", false ) );
+        fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -253,7 +253,7 @@ public class ContentServiceImpl_contentConfigTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
-        fixture.save( factory.createCategory( "Employees", "Person", "UnitForPerson", "testuser", "testuser", false ) );
+        fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();

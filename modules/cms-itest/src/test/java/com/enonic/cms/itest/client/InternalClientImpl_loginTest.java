@@ -33,6 +33,7 @@ public class InternalClientImpl_loginTest
 
     private DomainFactory factory;
 
+    @Autowired
     private DomainFixture fixture;
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
@@ -42,8 +43,7 @@ public class InternalClientImpl_loginTest
     public void before()
         throws Exception
     {
-        fixture = new DomainFixture( hibernateTemplate );
-        factory = new DomainFactory( fixture );
+        factory = fixture.getFactory();
 
         fixture.initSystemData();
 

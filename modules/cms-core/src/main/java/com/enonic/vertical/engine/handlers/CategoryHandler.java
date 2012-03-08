@@ -44,12 +44,12 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.core.CalendarUtil;
 import com.enonic.cms.core.CmsDateAndTimeFormats;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessRightsAccumulated;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryStatistics;
 import com.enonic.cms.core.content.category.CategoryXmlCreator;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -109,13 +109,13 @@ public class CategoryHandler
         return commonHandler.getInt( sql.toString(), (int[]) null );
     }
 
-    private int[] getCategoryKeysBySuperCategory(CategoryKey superCategoryKey, boolean recursive)
+    private int[] getCategoryKeysBySuperCategory( CategoryKey superCategoryKey, boolean recursive )
     {
 
         return getCategoryKeysBySuperCategories( new int[]{superCategoryKey.toInt()}, recursive );
     }
 
-    public int[] getCategoryKeysBySuperCategories(int[] superCategoryKeys, boolean recursive)
+    public int[] getCategoryKeysBySuperCategories( int[] superCategoryKeys, boolean recursive )
     {
 
         if ( superCategoryKeys == null || superCategoryKeys.length == 0 )
@@ -221,7 +221,8 @@ public class CategoryHandler
             {
                 List<CategoryKey> childrenKeys = category.getChildrenKeys();
                 int[] catKeys = new int[childrenKeys.size()];
-                for ( int j = 0; j < childrenKeys.size(); j++ ) {
+                for ( int j = 0; j < childrenKeys.size(); j++ )
+                {
                     catKeys[j] = childrenKeys.get( j ).toInt();
                 }
                 if ( childrenKeys.size() > 0 )
@@ -310,7 +311,7 @@ public class CategoryHandler
             return -1;
         }
 
-        return category.getUnitExcludeDeleted().getKey();
+        return category.getUnitExcludeDeleted().getKey().toInt();
     }
 
     public boolean hasSubCategories( CategoryKey categoryKey )
@@ -347,7 +348,7 @@ public class CategoryHandler
             }
             if ( adminRead )
             {
-                getSecurityHandler().appendCategorySQL(olduser, sql, true );
+                getSecurityHandler().appendCategorySQL( olduser, sql, true );
             }
 
             con = getConnection();
@@ -364,12 +365,12 @@ public class CategoryHandler
             {
                 subCategories = false;
                 String message = "Failed to count sub-categories. No result given";
-                VerticalEngineLogger.error(message );
+                VerticalEngineLogger.error( message );
             }
 
             if ( !subCategories )
             {
-                int keys[] = getCategoryKeysBySuperCategory(categoryKey, false );
+                int keys[] = getCategoryKeysBySuperCategory( categoryKey, false );
                 for ( int i = 0; !subCategories && i < keys.length; i++ )
                 {
                     subCategories = hasSubCategories( olduser, new CategoryKey( keys[i] ), contentTypeKeys, adminRead );
@@ -379,7 +380,7 @@ public class CategoryHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to count sub-categories: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             subCategories = false;
         }
         finally
@@ -460,12 +461,12 @@ public class CategoryHandler
             }
 
             // attribute: created
-            Date createdDate = CmsDateAndTimeFormats.parseFrom_STORE_DATE(root.getAttribute("created"));
+            Date createdDate = CmsDateAndTimeFormats.parseFrom_STORE_DATE( root.getAttribute( "created" ) );
             preparedStmt.setTimestamp( 5, new Timestamp( createdDate.getTime() ) );
 
             // attribute: name
             String name = root.getAttribute( "name" );
-            preparedStmt.setString(6, name);
+            preparedStmt.setString( 6, name );
 
             // element: owner
             Element subElem = (Element) subElems.get( "owner" );
@@ -484,7 +485,7 @@ public class CategoryHandler
                 }
                 else
                 {
-                    preparedStmt.setString(7, description);
+                    preparedStmt.setString( 7, description );
                 }
             }
             else
@@ -506,7 +507,7 @@ public class CategoryHandler
             if ( result == 0 )
             {
                 String message = "Failed to update category.";
-                VerticalEngineLogger.errorUpdate(message, null );
+                VerticalEngineLogger.errorUpdate( message, null );
             }
 
             // set category access rights
@@ -522,12 +523,12 @@ public class CategoryHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to update category: %t";
-            VerticalEngineLogger.errorUpdate(message, sqle );
+            VerticalEngineLogger.errorUpdate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorUpdate(message, nfe );
+            VerticalEngineLogger.errorUpdate( message, nfe );
         }
         finally
         {
@@ -574,15 +575,15 @@ public class CategoryHandler
 
             if ( !getSecurityHandler().validateCategoryUpdate( olduser, categoryDao.findByKey( catKey ).getParent().getKey() ) )
             {
-                VerticalEngineLogger.errorSecurity("User is not allowed to move the category.", null );
+                VerticalEngineLogger.errorSecurity( "User is not allowed to move the category.", null );
             }
 
             if ( !getSecurityHandler().validateCategoryUpdate( olduser, superCatKey ) )
             {
-                VerticalEngineLogger.errorSecurity("User is not allowed to update the new parent category.", null );
+                VerticalEngineLogger.errorSecurity( "User is not allowed to update the new parent category.", null );
             }
 
-            int[] children = getCategoryKeysBySuperCategory(catKey, true );
+            int[] children = getCategoryKeysBySuperCategory( catKey, true );
 
             // Get new unit key
             int unitKey = getUnitKey( superCatKey );
@@ -610,7 +611,7 @@ public class CategoryHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.errorUpdate("A database error occurred: %t", e );
+            VerticalEngineLogger.errorUpdate( "A database error occurred: %t", e );
         }
         finally
         {
@@ -684,7 +685,7 @@ public class CategoryHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to count categories: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -945,7 +946,7 @@ public class CategoryHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get the categories: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -1031,7 +1032,7 @@ public class CategoryHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("Failed to fetch relation keys: %t", e );
+            VerticalEngineLogger.error( "Failed to fetch relation keys: %t", e );
         }
 
         return doc;

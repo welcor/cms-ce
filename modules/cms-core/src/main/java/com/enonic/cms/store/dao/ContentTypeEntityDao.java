@@ -6,11 +6,12 @@ package com.enonic.cms.store.dao;
 
 import java.util.List;
 
-import com.enonic.cms.store.support.EntityPageList;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.resource.ResourceKey;
-
 import org.springframework.stereotype.Repository;
+
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("contentTypeDao")
 public final class ContentTypeEntityDao
@@ -21,6 +22,11 @@ public final class ContentTypeEntityDao
     public ContentTypeEntity findByKey( int key )
     {
         return get( ContentTypeEntity.class, key );
+    }
+
+    public ContentTypeEntity findByKey( ContentTypeKey key )
+    {
+        return get( ContentTypeEntity.class, key.toInt() );
     }
 
     public ContentTypeEntity findByName( String name )

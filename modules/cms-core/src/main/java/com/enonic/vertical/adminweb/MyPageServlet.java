@@ -29,11 +29,11 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentSpecification;
 import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryXmlCreator;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeXmlCreator;
@@ -57,9 +57,8 @@ import com.enonic.cms.core.structure.SectionXmlCreator;
 public class MyPageServlet
     extends AdminHandlerBaseServlet
 {
-    public static final CategoryAccessType[] CREATE_BROWSE = new CategoryAccessType[] {
-        CategoryAccessType.ADMIN_BROWSE, CategoryAccessType.CREATE
-    };
+    public static final CategoryAccessType[] CREATE_BROWSE =
+        new CategoryAccessType[]{CategoryAccessType.ADMIN_BROWSE, CategoryAccessType.CREATE};
 
     private static final int ASSIGNED_TO_COUNT = 6;
 
@@ -336,7 +335,7 @@ public class MyPageServlet
     }
 
     protected boolean userHasAccessOnCategoriesOfContentType( final UserEntity runningUser, final ContentTypeEntity contentType,
-                                                            final CategoryAccessType... categoryAccessTypes )
+                                                              final CategoryAccessType... categoryAccessTypes )
     {
         final CategoryAccessResolver categoryAccessResolver = new CategoryAccessResolver( groupDao );
 

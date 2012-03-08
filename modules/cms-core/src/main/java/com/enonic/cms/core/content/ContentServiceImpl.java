@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.command.AssignContentCommand;
@@ -62,7 +61,6 @@ import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
-import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 
 @Component("contentService")
@@ -79,9 +77,6 @@ public class ContentServiceImpl
 
     @Autowired
     private ContentDao contentDao;
-
-    @Autowired
-    private GroupDao groupDao;
 
     @Autowired
     private ContentVersionDao contentVersionDao;
@@ -322,7 +317,8 @@ public class ContentServiceImpl
 
         Collection<MenuItemEntity> sections = doGetSectionKeysByMenuItems( spec.getMenuItemKeys(), spec.getLevels() );
 
-        Collection<GroupKey> securityFilter = contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() );
+        Collection<GroupKey> securityFilter =
+            spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null;
         ContentIndexQuery query = spec.createAndSetupContentQuery( sections, securityFilter );
 
         return contentIndexService.query( query );
@@ -367,7 +363,8 @@ public class ContentServiceImpl
             allCategories.addAll( spec.getCategoryKeyFilter() );
         }
 
-        Collection<GroupKey> securityFilter = contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() );
+        Collection<GroupKey> securityFilter =
+            spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null;
         ContentIndexQuery query = spec.createAndSetupContentQuery( allCategories, securityFilter );
 
         return contentIndexService.query( query );
@@ -396,8 +393,8 @@ public class ContentServiceImpl
 
     public RelatedContentResultSet queryRelatedContent( RelatedContentQuery spec )
     {
-        RelatedContentFetcher fetcher = new RelatedContentFetcher( contentDao, new ContentAccessResolver( groupDao ) );
-        fetcher.setRunningUser( spec.getUser() );
+        RelatedContentFetcher fetcher = new RelatedContentFetcher( contentDao );
+        fetcher.setSecurityFilter( spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null );
         fetcher.setMaxChildrenLevel( spec.getChildrenLevel() );
         fetcher.setMaxParentLevel( spec.getParentLevel() );
         fetcher.setMaxParentChildrenLevel( spec.getParentChildrenLevel() );
@@ -410,9 +407,8 @@ public class ContentServiceImpl
 
     public RelatedContentResultSet queryRelatedContent( RelatedChildrenContentQuery spec )
     {
-        RelatedContentFetcherForContentVersion fetcher =
-            new RelatedContentFetcherForContentVersion( contentDao, new ContentAccessResolver( groupDao ) );
-        fetcher.setRunningUser( spec.getUser() );
+        RelatedContentFetcherForContentVersion fetcher = new RelatedContentFetcherForContentVersion( contentDao );
+        fetcher.setSecurityFilter( spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null );
         fetcher.setAvailableCheckDate( spec.getOnlineCheckDate() );
         fetcher.setMaxChildrenLevel( spec.getChildrenLevel() );
         fetcher.setIncludeOfflineContent( !spec.isOnline() );
@@ -425,8 +421,8 @@ public class ContentServiceImpl
         int parentLevel = relation > 0 ? 0 : 1;
         int childrenLevel = relation > 0 ? 1 : 0;
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, new ContentAccessResolver( groupDao ) );
-        relatedContentFetcher.setRunningUser( user );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
+        relatedContentFetcher.setSecurityFilter( user != null ? contentSecurityFilterResolver.resolveGroupKeys( user ) : null );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxChildrenLevel( childrenLevel );
         relatedContentFetcher.setMaxParentLevel( parentLevel );
@@ -482,7 +478,7 @@ public class ContentServiceImpl
             fillInSubCategories( categoryKeySet, categoryFilter, Integer.MAX_VALUE );
         }
 
-        Collection<GroupKey> userGroups = user.isEnterpriseAdmin() ? null : user.getAllMembershipsGroupKeys();
+        Collection<GroupKey> userGroups = user != null ? contentSecurityFilterResolver.resolveGroupKeys( user ) : null;
         AggregatedQuery query = new AggregatedQuery( field );
         query.setCategoryFilter( categoryKeySet );
         query.setSecurityFilter( userGroups );
@@ -505,7 +501,7 @@ public class ContentServiceImpl
             fillInSubCategories( categoryKeySet, categoryFilter, Integer.MAX_VALUE );
         }
 
-        Collection<GroupKey> userGroups = user.isEnterpriseAdmin() ? null : user.getAllMembershipsGroupKeys();
+        Collection<GroupKey> userGroups = user != null ? contentSecurityFilterResolver.resolveGroupKeys( user ) : null;
         IndexValueQuery query = new IndexValueQuery( field );
         query.setCategoryFilter( categoryKeySet );
         query.setSecurityFilter( userGroups );
@@ -675,3 +671,4 @@ public class ContentServiceImpl
         logService.storeNew( command );
     }
 }
+

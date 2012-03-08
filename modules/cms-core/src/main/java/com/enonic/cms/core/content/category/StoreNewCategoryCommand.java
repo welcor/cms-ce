@@ -7,8 +7,8 @@ package com.enonic.cms.core.content.category;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.enonic.cms.core.content.category.access.CategoryAccessRights;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.security.user.UserKey;
 
 /**
@@ -20,9 +20,9 @@ public class StoreNewCategoryCommand
 
     private ContentTypeKey contentType;
 
-    private UnitKey unitKey;
-
     private CategoryKey parentCategory;
+
+    private List<ContentTypeKey> allowedContentTypes;
 
     private String name;
 
@@ -31,6 +31,8 @@ public class StoreNewCategoryCommand
     private List<CategoryAccessRights> accessRights = null;
 
     private String description;
+
+    private LanguageKey language;
 
     public void setCreator( UserKey creator )
     {
@@ -50,16 +52,6 @@ public class StoreNewCategoryCommand
     public ContentTypeKey getContentType()
     {
         return contentType;
-    }
-
-    public UnitKey getUnitKey()
-    {
-        return unitKey;
-    }
-
-    public void setUnitKey( UnitKey unitKey )
-    {
-        this.unitKey = unitKey;
     }
 
     public void setParentCategory( CategoryKey parentCategory )
@@ -114,5 +106,29 @@ public class StoreNewCategoryCommand
     public void setDescription( final String description )
     {
         this.description = description;
+    }
+
+    public List<ContentTypeKey> getAllowedContentTypes()
+    {
+        return allowedContentTypes;
+    }
+
+    public void addAllowedContentType( ContentTypeKey allowedContentType )
+    {
+        if ( this.allowedContentTypes == null )
+        {
+            this.allowedContentTypes = new ArrayList<ContentTypeKey>();
+        }
+        this.allowedContentTypes.add( allowedContentType );
+    }
+
+    public LanguageKey getLanguage()
+    {
+        return language;
+    }
+
+    public void setLanguage( LanguageKey language )
+    {
+        this.language = language;
     }
 }

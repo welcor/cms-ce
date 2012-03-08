@@ -73,7 +73,7 @@ public class InternalClientImpl_getBinaryTest
         fixture.save( factory.createContentHandler( "File content", ContentHandlerName.FILE.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.FILE.getHandlerClassShortName(), contentTypeConfig ) );
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "creator", "creator" ) );
+        fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "creator", "creator" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "creator", "read,create,approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "getter", "read,create" ) );
         fixture.flushAndClearHibernateSesssion();

@@ -5,7 +5,7 @@
 package com.enonic.cms.core.content.access;
 
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.security.AbstractAccessResolver;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupMembershipSearcher;
@@ -217,18 +217,7 @@ public class ContentAccessResolver
 
     public boolean hasReadContentAccess( UserEntity executor, ContentEntity content )
     {
-        if ( doHasAccess( executor, content, ContentAccessType.READ ) )
-        {
-            return true;
-        }
-
-        if ( categoryAccessResolver.hasReadContentAccess( executor, content.getCategory() ) )
-
-        {
-            return true;
-        }
-
-        return false;
+        return doHasAccess( executor, content, ContentAccessType.READ );
     }
 
     protected boolean hasAccess( final ContentEntity content, final GroupEntity group, final ContentAccessType accessType,

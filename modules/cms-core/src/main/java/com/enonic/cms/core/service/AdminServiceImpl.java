@@ -187,12 +187,6 @@ public class AdminServiceImpl
         return adminEngine.copyPageTemplate( user, pageTemplateKey );
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int createUnit( String xmlData )
-    {
-        return adminEngine.createUnit( xmlData );
-    }
-
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey )
     {
         return adminEngine.generateUID( fName, sName, userStoreKey );
@@ -700,7 +694,7 @@ public class AdminServiceImpl
 
     public XMLDocument getData( User user, int type, int[] keys )
     {
-        return adminEngine.getData(type, keys );
+        return adminEngine.getData( type, keys );
     }
 
     public ResourceKey getDefaultCSSByMenu( int menuKey )
@@ -813,7 +807,7 @@ public class AdminServiceImpl
     private XMLDocument doGetAdminMenu( User user, int[] menuKeys, String[] menuItemTypes, boolean includeReadOnlyAccessRight )
     {
         Document doc = this.adminEngine.getAdminMenu( user, menuKeys, menuItemTypes, includeReadOnlyAccessRight );
-        return XMLDocumentFactory.create(doc);
+        return XMLDocumentFactory.create( doc );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

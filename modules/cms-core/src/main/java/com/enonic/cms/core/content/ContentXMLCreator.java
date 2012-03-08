@@ -26,10 +26,10 @@ import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.access.ContentAccessRightsAccumulated;
 import com.enonic.cms.core.content.access.ContentAccessXmlCreator;
 import com.enonic.cms.core.content.binary.BinaryDataXmlCreator;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessRightsAccumulated;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.UnitEntity;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentVersionResultSet;
@@ -479,7 +479,7 @@ public class ContentXMLCreator
         final LanguageEntity language = content.getLanguage();
 
         Element contentEl = new Element( "content" );
-        contentEl.setAttribute( "unitkey", Integer.toString( unit.getKey() ) );
+        contentEl.setAttribute( "unitkey", unit.getKey().toString() );
         contentEl.setAttribute( "approved", Boolean.toString( contentVersion.isApproved() ) );
         contentEl.setAttribute( "state", Integer.toString( contentVersion.getState( onlineCheckDate ) ) );
         contentEl.setAttribute( "status", Integer.toString( contentVersion.getStatus().getKey() ) );

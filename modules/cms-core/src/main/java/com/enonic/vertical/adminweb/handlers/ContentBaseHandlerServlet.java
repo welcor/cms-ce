@@ -102,12 +102,12 @@ import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryService;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
 import com.enonic.cms.core.content.command.AssignContentCommand;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.SnapshotContentCommand;
@@ -683,7 +683,6 @@ public class ContentBaseHandlerServlet
             CategoryEntity parentCategory = categoryDao.findByKey( new CategoryKey( superCategoryKey ) );
 
             StoreNewCategoryCommand command = new StoreNewCategoryCommand();
-            command.setUnitKey( parentCategory.getUnit().getUnitKey() );
             command.setCreator( user.getKey() );
             command.setParentCategory( parentCategory.getKey() );
             command.setName( fileName );
@@ -2520,7 +2519,7 @@ public class ContentBaseHandlerServlet
             }
             parameters.put( "versionkey", versionKey );
             contentTitle = contentVersion.getTitle();
-            unitKey = content.getCategory().getUnit().getKey();
+            unitKey = content.getCategory().getUnit().getKey().toInt();
         }
         else
         {

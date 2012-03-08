@@ -304,7 +304,7 @@ var CMSImage = {
         {
             sImgSrc += '_image/' + iContentKey + '?_size=' + sSize + '&_format=' + sFileExtension;
 
-            var sFilter = oInternalLinkPlugin.resolveFilterParam(sImgSrc, ed, iCustomWidthValue);
+            var sFilter = oInternalLinkPlugin.resolveFilterParam(sImgSrc, iCustomWidthValue);
 
             if ( sFilter !== '' )
                 sImgSrc += '&_filter=' + sFilter;

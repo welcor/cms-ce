@@ -88,7 +88,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "MyCustomContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), config ) );
         fixture.save( factory.createUnit( "MyCustomUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyImportCategory", "MyCustomContentType", "MyCustomUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyImportCategory", null, "MyCustomContentType", "MyCustomUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser", "read, browse, create, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser2", "read, browse, create, approve" ) );
         fixture.flushAndClearHibernateSesssion();
@@ -100,7 +100,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         fixture.save(
             factory.createContentType( "MyImageContentType", ContentHandlerName.FILE.getHandlerClassShortName(), getConfigImage() ) );
         fixture.save( factory.createUnit( "MyFileUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyImageCategory", "MyImageContentType", "MyFileUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyImageCategory", null, "MyImageContentType", "MyFileUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyImageCategory", "testuser", "read, browse, create, approve" ) );
     }
 
@@ -109,8 +109,8 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         fixture.save( factory.createContentType( "MyRelatedContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
                                                  getConfigRelatedContent() ) );
         fixture.save( factory.createUnit( "MyRelatedContentUnit", "en" ) );
-        fixture.save(
-            factory.createCategory( "MyRelatedContentCategory", "MyRelatedContentType", "MyRelatedContentUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyRelatedContentCategory", null, "MyRelatedContentType", "MyRelatedContentUnit", "testuser",
+                                              "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyRelatedContentCategory", "testuser", "read, browse, create, approve" ) );
     }
 

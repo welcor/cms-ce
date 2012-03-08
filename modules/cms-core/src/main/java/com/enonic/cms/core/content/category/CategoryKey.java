@@ -28,6 +28,11 @@ public class CategoryKey
         init( key );
     }
 
+    public CategoryKey( Integer key )
+    {
+        init( key );
+    }
+
     public boolean equals( Object o )
     {
         if ( this == o )

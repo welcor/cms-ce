@@ -498,7 +498,7 @@ public class ContentServiceImpl_accessTest
     private void createAndStoreCategory( String categoryName, boolean autoApprove )
     {
         fixture.save(
-            factory.createCategory( categoryName, "Person", "UnitForPerson", User.ANONYMOUS_UID, User.ANONYMOUS_UID, autoApprove ) );
+            factory.createCategory( categoryName, null, "Person", "UnitForPerson", User.ANONYMOUS_UID, User.ANONYMOUS_UID, autoApprove ) );
 
         fixture.flushAndClearHibernateSesssion();
     }

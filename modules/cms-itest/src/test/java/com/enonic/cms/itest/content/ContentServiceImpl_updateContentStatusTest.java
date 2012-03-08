@@ -115,7 +115,7 @@ public class ContentServiceImpl_updateContentStatusTest
         hibernateTemplate.save(
             factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), standardConfig ) );
         hibernateTemplate.save( factory.createUnit( "MyUnit" ) );
-        hibernateTemplate.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "testuser", "testuser" ) );
+        hibernateTemplate.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         hibernateTemplate.save(
             factory.createCategoryAccess( "MyCategory", fixture.findUserByName( "testuser" ), "read, create, approve" ) );
         hibernateTemplate.flush();

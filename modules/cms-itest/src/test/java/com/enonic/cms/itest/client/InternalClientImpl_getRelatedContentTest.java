@@ -119,8 +119,9 @@ public class InternalClientImpl_getRelatedContentTest
         // setup archive: Company Unit with 2 categories: Employees and Departments.
         fixture.save( factory.createUnit( "Company", "en" ) );
 
-        fixture.save( factory.createCategory( "Employees", "Person", "Company", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
-        fixture.save( factory.createCategory( "Departments", "Department", "Company", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+        fixture.save( factory.createCategory( "Employees", null, "Person", "Company", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+        fixture.save(
+            factory.createCategory( "Departments", null, "Department", "Company", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
 
         fixture.save( factory.createCategoryAccessForUser( "Employees", "content-creator", "read, create, approve, admin_browse" ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "content-querier", "read, admin_browse" ) );

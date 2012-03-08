@@ -11,6 +11,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentVersionKey;
 
 
 public class RelatedParentContent
@@ -19,12 +20,20 @@ public class RelatedParentContent
 {
     private ContentKey childContentKey;
 
+    private ContentVersionKey parentMainVersionKey;
+
     private Set<RelatedContent> relatedParents = new HashSet<RelatedContent>();
 
-    public RelatedParentContent( ContentKey childContentKey, ContentEntity parent )
+    public RelatedParentContent( ContentKey childContentKey, ContentEntity parent, ContentVersionKey parentMainVersionKey )
     {
         super( parent );
         this.childContentKey = childContentKey;
+        this.parentMainVersionKey = parentMainVersionKey;
+    }
+
+    public ContentVersionKey getParentMainVersionKey()
+    {
+        return parentMainVersionKey;
     }
 
     public ContentKey getChildContentKey()

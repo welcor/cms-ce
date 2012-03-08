@@ -96,9 +96,10 @@ public class DataSourceServiceImpl_getRelatedContentTest
         fixture.save(
             factory.createContentType( "MyRelatedType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyRelatedType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
         fixture.save(
-            factory.createCategory( "MyOtherCategory", "MyRelatedType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+            factory.createCategory( "MyCategory", null, "MyRelatedType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+        fixture.save(
+            factory.createCategory( "MyOtherCategory", null, "MyRelatedType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
 
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-creator", "read, create, approve, admin_browse" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, admin_browse" ) );

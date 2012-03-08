@@ -5,46 +5,27 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:annotation-config/>
+  <context:annotation-config/>
 
-    <mvc:resources mapping="/resources/**" location="/main/" />
+  <mvc:default-servlet-handler/>
 
-    <!-- Create the view resolver. -->
-    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <property name="templateLoaderPath" value="/WEB-INF/freemarker/"/>
-        <property name="freemarkerSettings">
-            <props>
-                <prop key="number_format">0.######</prop>
-                <prop key="default_encoding">UTF-8</prop>
-            </props>
-        </property>
-    </bean>
+  <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="order" value="1"/>
+    <property name="alwaysUseFullPath" value="true"/>
+    <property name="mappings">
+      <props>
+        <prop key="/">welcomeController</prop>
+        <prop key="/upgrade">upgradeController</prop>
+        <prop key="/rpc/bin">binRpcController</prop>
+      </props>
+    </property>
+  </bean>
 
-    <!-- Create the view resolver. -->
-    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-        <property name="cache" value="true"/>
-        <property name="prefix" value=""/>
-        <property name="suffix" value=".ftl"/>
-        <property name="exposeSpringMacroHelpers" value="true"/>
-    </bean>
+  <bean id="welcomeController" class="com.enonic.cms.core.tools.WelcomeController"/>
+  <bean id="upgradeController" class="com.enonic.cms.core.tools.UpgradeController">
+    <property name="entrerpriseAdminPassword" value="#{config.adminPassword}"/>
+  </bean>
 
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="order" value="1"/>
-        <property name="alwaysUseFullPath" value="true"/>
-        <property name="mappings">
-            <props>
-                <prop key="/">welcomeController</prop>
-                <prop key="/upgrade">upgradeController</prop>
-                <prop key="/rpc/bin">binRpcController</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="welcomeController" class="com.enonic.cms.core.tools.WelcomeController"/>
-    <bean id="upgradeController" class="com.enonic.cms.core.tools.UpgradeController">
-        <property name="entrerpriseAdminPassword" value="#{config.adminPassword}"/>
-    </bean>
-
-    <bean id="binRpcController" class="com.enonic.cms.core.tools.BinRpcServiceExporter"/>
+  <bean id="binRpcController" class="com.enonic.cms.core.tools.BinRpcServiceExporter"/>
 
 </beans>

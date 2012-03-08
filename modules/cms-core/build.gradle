@@ -1,13 +1,4 @@
 
-apply from: "$scriptDir/java.gradle"
-apply from: "$scriptDir/idea.gradle"
-
-configurations {
-	all*.exclude group: 'xml-apis'
-	all*.exclude group: 'commons-logging'
-	all*.exclude group: 'xerces'
-}
-
 dependencies {
 	compile project(':cms-api')
     compile 'com.google.guava:guava:11.0.1'
@@ -46,12 +37,6 @@ dependencies {
 	}
     compile 'org.eclipse.osgi:org.eclipse.osgi:3.6.0.v20100517'
 	compile 'org.directwebremoting:dwr:2.0.6'
-    compile 'org.elasticsearch:elasticsearch:0.18.7'
-    testCompile "junit:junit:${versions.junit}"
-    testCompile 'junit-addons:junit-addons:1.4'
-    testCompile "org.springframework:spring-test:${versions.spring}"
-    testCompile 'org.easymock:easymock:2.2'
-    testCompile 'org.easymock:easymockclassextension:2.2.1'
-    testCompile "org.mockito:mockito-all:${versions.mockito}"
-    testCompile 'xmlunit:xmlunit:1.2'
+    compile 'org.elasticsearch:elasticsearch:0.19.0'
+    compile 'org.json:json:20090211'
 }

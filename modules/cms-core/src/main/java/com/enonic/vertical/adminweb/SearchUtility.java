@@ -20,9 +20,12 @@ import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
+import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.query.OpenContentQuery;
+import com.enonic.cms.core.content.query.RelatedContentQuery;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
@@ -31,11 +34,6 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
-
-import com.enonic.cms.core.content.category.access.CategoryAccessResolver;
-
-import com.enonic.cms.core.content.query.RelatedContentQuery;
-import com.enonic.cms.core.content.resultset.ContentResultSet;
 
 /**
  * This class contains common methods used to search for content.

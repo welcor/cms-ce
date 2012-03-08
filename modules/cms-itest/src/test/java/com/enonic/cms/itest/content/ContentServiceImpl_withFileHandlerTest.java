@@ -70,7 +70,7 @@ public class ContentServiceImpl_withFileHandlerTest
         fixture.save( factory.createContentHandler( "File content", ContentHandlerName.FILE.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.FILE.getHandlerClassShortName() ) );
         fixture.save( factory.createUnit( "MyUnit" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccess( "MyCategory", fixture.findUserByName( "testuser" ), "read, create" ) );
         fixture.flushAndClearHibernateSesssion();
 

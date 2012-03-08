@@ -1,16 +1,10 @@
 
-apply from: "$scriptDir/java.gradle"
-apply from: "$scriptDir/idea.gradle"
-apply from: "$scriptDir/publish.gradle"
-
 dependencies {
 	compile 'org.jdom:jdom:1.1.1'
 	compile "javax.servlet:servlet-api:${versions.servlet}"
 	runtime('jaxen:jaxen:1.1.1') {
 		transitive = false
-		mavenOptional = true
 	}
-	testCompile "junit:junit:${versions.junit}"
 }
 
 jar {
@@ -20,6 +14,7 @@ jar {
 }
 
 processResources {
+    include '**/*.properties'
 	expand "project": project, "buildTimestamp" : buildNumber
 }
 

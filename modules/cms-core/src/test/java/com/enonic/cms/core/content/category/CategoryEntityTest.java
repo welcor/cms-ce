@@ -97,7 +97,6 @@ public class CategoryEntityTest
         if ( parent != null )
         {
             cat.setParent( parent );
-            parent.addChild( cat );
         }
         return cat;
     }

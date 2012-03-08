@@ -78,8 +78,6 @@ public interface AdminService
 
     public int copyPageTemplate( User user, int pageTemplateKey );
 
-    public int createUnit( String xmlData );
-
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey );
 
     public BinaryData getBinaryData( User user, int binaryDataKey );
@@ -261,7 +259,8 @@ public interface AdminService
 
     public XMLDocument getContentOwner( int contentKey );
 
-    public XMLDocument getLogEntries( User user, com.enonic.esl.containers.MultiValueMap adminParams, int fromIdx, int count, boolean complete );
+    public XMLDocument getLogEntries( User user, com.enonic.esl.containers.MultiValueMap adminParams, int fromIdx, int count,
+                                      boolean complete );
 
     public XMLDocument getLogEntry( String key );
 

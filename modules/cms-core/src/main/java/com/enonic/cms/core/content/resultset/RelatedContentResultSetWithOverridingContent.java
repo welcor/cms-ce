@@ -108,7 +108,7 @@ public class RelatedContentResultSetWithOverridingContent
         else
         {
             RelatedParentContent rpc = (RelatedParentContent) relatedContent;
-            return new RelatedParentContent( rpc.getChildContentKey(), overridingContent );
+            return new RelatedParentContent( rpc.getChildContentKey(), overridingContent, overridingContent.getMainVersion().getKey() );
         }
     }
 }

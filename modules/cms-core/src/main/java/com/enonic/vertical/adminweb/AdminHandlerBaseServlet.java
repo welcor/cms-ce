@@ -50,11 +50,11 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.util.TIntArrayList;
 
 import com.enonic.cms.core.content.binary.BinaryData;
+import com.enonic.cms.core.content.category.CategoryAccessRights;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
 import com.enonic.cms.core.content.category.UnitEntity;
 import com.enonic.cms.core.content.category.UnitKey;
-import com.enonic.cms.core.content.category.access.CategoryAccessRights;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceFile;
@@ -374,7 +374,7 @@ public abstract class AdminHandlerBaseServlet
 
         if ( unitKey != -1 )
         {
-            UnitEntity unit = unitDao.findByKey( unitKey );
+            UnitEntity unit = unitDao.findByKey( new UnitKey( unitKey ) );
             parameters.put( "unitname", unit.getName() );
             parameters.put( "selectedunitkey", String.valueOf( unitKey ) );
         }
@@ -1126,10 +1126,6 @@ public abstract class AdminHandlerBaseServlet
         command.setName( formItems.getString( "name" ) );
         command.setAutoApprove( formItems.getBoolean( "autoApprove" ) );
 
-        if ( formItems.containsKey( "selectedunitkey" ) )
-        {
-            command.setUnitKey( new UnitKey( formItems.getString( "selectedunitkey" ) ) );
-        }
         if ( formItems.containsKey( "contenttypekey" ) )
         {
             command.setContentType( new ContentTypeKey( formItems.getString( "contenttypekey" ) ) );

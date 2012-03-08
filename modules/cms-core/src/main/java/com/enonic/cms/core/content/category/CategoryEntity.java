@@ -174,12 +174,7 @@ public class CategoryEntity
         return autoMakeAvailable != null && autoMakeAvailable == 1;
     }
 
-    public void setChildren( List<CategoryEntity> children )
-    {
-        this.children = children;
-    }
-
-    public void addChild( CategoryEntity child )
+    void addChild( CategoryEntity child )
     {
         if ( children == null )
         {
@@ -340,6 +335,7 @@ public class CategoryEntity
     public void setParent( CategoryEntity parent )
     {
         this.parent = parent;
+        this.parent.addChild( this );
     }
 
     public void setAccessRights( Map<GroupKey, CategoryAccessEntity> accessRights )

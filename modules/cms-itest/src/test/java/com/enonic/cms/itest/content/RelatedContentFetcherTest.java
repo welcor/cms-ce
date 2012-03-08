@@ -26,7 +26,6 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentVersionKey;
 import com.enonic.cms.core.content.RelatedContentFetcher;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.command.CreateContentCommand;
@@ -50,6 +49,7 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentEntityDao;
 import com.enonic.cms.store.dao.GroupEntityDao;
+import com.enonic.cms.store.dao.RelatedChildContentQuery;
 
 import static org.junit.Assert.*;
 
@@ -110,7 +110,7 @@ public class RelatedContentFetcherTest
         fixture.flushAndClearHibernateSesssion();
 
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyRelatingContent", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyCategory", null, "MyRelatingContent", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
@@ -134,13 +134,13 @@ public class RelatedContentFetcherTest
 
         CreateContentCommand createCommand;
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Odin" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Odin", null );
         ContentKey odinContentKey = contentService.createContent( createCommand );
 
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Ola", odinContentKey );
         ContentKey olaContentKey = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Brita" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Brita", null );
         ContentKey britaContentKey = contentService.createContent( createCommand );
 
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Kjell", olaContentKey, britaContentKey );
@@ -155,8 +155,7 @@ public class RelatedContentFetcherTest
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( Integer.MAX_VALUE );
@@ -168,7 +167,7 @@ public class RelatedContentFetcherTest
         // verify:
         //assertEquals( 3, resultSet.getDinstinctSetOfContent().size() );
         Collection relatedContent = resultSet.getDistinctCollectionOfRelatedContent();
-        LOG.info( "verification is to do" );
+        System.out.println( "asdfasdf" );
     }
 
 
@@ -178,7 +177,7 @@ public class RelatedContentFetcherTest
         // setup
         CreateContentCommand createCommand;
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Son" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Son", null );
         ContentKey sonContentKey = contentService.createContent( createCommand );
 
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Father", sonContentKey );
@@ -187,8 +186,7 @@ public class RelatedContentFetcherTest
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( 0 );
@@ -209,7 +207,7 @@ public class RelatedContentFetcherTest
         // setup
         CreateContentCommand createCommand;
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Son" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Son", null );
         ContentKey sonContentKey = contentService.createContent( createCommand );
 
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Father", sonContentKey );
@@ -218,8 +216,7 @@ public class RelatedContentFetcherTest
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( Integer.MAX_VALUE );
@@ -240,7 +237,7 @@ public class RelatedContentFetcherTest
         // setup
         CreateContentCommand createCommand;
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content C" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content C", null );
         ContentKey contentKeyC = contentService.createContent( createCommand );
 
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content A", contentKeyC );
@@ -255,8 +252,7 @@ public class RelatedContentFetcherTest
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( Integer.MAX_VALUE );
@@ -311,7 +307,7 @@ public class RelatedContentFetcherTest
         // setup
         CreateContentCommand createCommand;
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Common child 1" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Common child 1", null );
         ContentKey commonChild = contentService.createContent( createCommand );
 
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content A", commonChild );
@@ -323,8 +319,7 @@ public class RelatedContentFetcherTest
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( 0 );
@@ -357,22 +352,22 @@ public class RelatedContentFetcherTest
     public void eternal_loop_is_prevented_for_related_children_with_circular_reference_and_all_other_are_included()
     {
         // setup content to update
-        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1" );
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1", null );
         ContentKey content_1 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2", null );
         ContentKey content_2 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3", null );
         ContentKey content_3 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4", null );
         ContentKey content_4 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 5" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 5", null );
         ContentKey content_5 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 6" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 6", null );
         ContentKey content_6 = contentService.createContent( createCommand );
 
         assertEquals( 6, fixture.countAllContent() );
@@ -393,8 +388,7 @@ public class RelatedContentFetcherTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 6 );
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( 0 );
@@ -419,16 +413,16 @@ public class RelatedContentFetcherTest
     public void eternal_loop_is_prevented_for_related_children_with_multiple_circular_references()
     {
         // setup content to update
-        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1" );
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1", null );
         ContentKey content_1 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2", null );
         ContentKey content_2 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3", null );
         ContentKey content_3 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4", null );
         ContentKey content_4 = contentService.createContent( createCommand );
 
         UpdateContentCommand updateCommand =
@@ -449,8 +443,7 @@ public class RelatedContentFetcherTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 4 );
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( 0 );
@@ -473,16 +466,16 @@ public class RelatedContentFetcherTest
     public void eternal_loop_is_prevented_for_related_children_of_children()
     {
         // setup content to update
-        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1" );
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1", null );
         ContentKey content_1 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2", null );
         ContentKey content_2 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3", null );
         ContentKey content_3 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4", null );
         ContentKey content_4 = contentService.createContent( createCommand );
 
         UpdateContentCommand updateCommand =
@@ -502,8 +495,7 @@ public class RelatedContentFetcherTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 4 );
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( 0 );
@@ -525,22 +517,22 @@ public class RelatedContentFetcherTest
     public void eternal_loop_is_prevented_for_related_parents_with_circular_reference()
     {
         // setup content to update
-        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1" );
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1", null );
         ContentKey content_1 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2", null );
         ContentKey content_2 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3", null );
         ContentKey content_3 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4", null );
         ContentKey content_4 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 5" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 5", null );
         ContentKey content_5 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 6" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 6", null );
         ContentKey content_6 = contentService.createContent( createCommand );
 
         assertEquals( 6, fixture.countAllContent() );
@@ -568,8 +560,7 @@ public class RelatedContentFetcherTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 6 );
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( 0 );
         relatedContentFetcher.setMaxParentLevel( Integer.MAX_VALUE );
@@ -593,22 +584,22 @@ public class RelatedContentFetcherTest
     public void eternal_loop_is_prevented_for_related_parent_children_with_circular_reference()
     {
         // setup content to update
-        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1" );
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 1", null );
         ContentKey content_1 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 2", null );
         ContentKey content_2 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 3", null );
         ContentKey content_3 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 4", null );
         ContentKey content_4 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 5" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 5", null );
         ContentKey content_5 = contentService.createContent( createCommand );
 
-        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 6" );
+        createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content not relating yet 6", null );
         ContentKey content_6 = contentService.createContent( createCommand );
 
         assertEquals( 6, fixture.countAllContent() );
@@ -636,8 +627,7 @@ public class RelatedContentFetcherTest
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 6 );
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, contentAccessResolver );
-        relatedContentFetcher.setRunningUser( fixture.findUserByName( "testuser" ) );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxParentChildrenLevel( Integer.MAX_VALUE );
         relatedContentFetcher.setMaxParentLevel( Integer.MAX_VALUE );
@@ -779,14 +769,14 @@ public class RelatedContentFetcherTest
         }
 
         @Override
-        public Collection<RelatedChildContent> findRelatedChildrenByKeys( List<ContentVersionKey> contentVersionKeys )
+        public Collection<RelatedChildContent> findRelatedChildrenByKeys( RelatedChildContentQuery relatedChildContentQuery )
         {
             numberOfFindRelatedChildrenByKeysAttempts++;
             if ( numberOfFindRelatedChildrenByKeysAttempts > maxExpectedFindRelatedChildrenByKeysAttempts )
             {
                 fail( "max expected findRelatedChildrenByKeys attempts exceeded : " + numberOfFindRelatedChildrenByKeysAttempts );
             }
-            return super.findRelatedChildrenByKeys( contentVersionKeys );
+            return super.findRelatedChildrenByKeys( relatedChildContentQuery );
         }
     }
 

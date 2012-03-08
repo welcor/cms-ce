@@ -148,7 +148,7 @@ public class InternalClientImpl_UpdateContentTest
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), standardConfig ) );
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.save( factory.createCategory( "MyCategory", "MyContentType", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
         fixture.flushAndClearHibernateSesssion();
     }
@@ -432,7 +432,7 @@ public class InternalClientImpl_UpdateContentTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "Skole", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.save( factory.createCategory( "Skole", "Skole", "MyUnit", "testuser", "testuser" ) );
+        fixture.save( factory.createCategory( "Skole", null, "Skole", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Skole", "testuser", "read,create,approve" ) );
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );

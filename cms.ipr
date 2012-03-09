@@ -63,6 +63,7 @@
             <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.springframework/spring-jdbc/3.1.0.RELEASE/jar/7aa355d36411f9816b0338f0dfaac63399abd60e/spring-jdbc-3.1.0.RELEASE.jar" />
             <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.jdom/jdom/1.1.1/jar/9986f2db44c7d183a861e72d3003eea1fcfe7a99/jdom-1.1.1.jar" />
             <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/jaxen/jaxen/1.1.1/jar/9f5d3c5974dbe5cf69c2c2ec7d8a4eb6e0fce7f9/jaxen-1.1.1.jar" />
+            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.quartz-scheduler/quartz/1.8.5/jar/c8e9e9128a82d16cd16ba2283cee92412e0edee3/quartz-1.8.5.jar" />
           </element>
         </element>
         <element id="javaee-facet-resources" facet="cms-webapp/web/Web" />

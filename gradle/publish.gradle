@@ -1,9 +1,11 @@
 
 apply plugin: 'maven'
 
+distributionRepo = 'public'
+
 uploadArchives {
 	repositories.mavenDeployer { deployer ->
-     	repository(url: "http://leela.enonic/artifactory/public")
+     	repository(url: "http://leela.enonic/artifactory/${distributionRepo}")
      	customizePom(deployer.pom)
 	}
 }

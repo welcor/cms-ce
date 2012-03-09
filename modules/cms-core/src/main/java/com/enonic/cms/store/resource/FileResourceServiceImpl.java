@@ -503,7 +503,7 @@ public final class FileResourceServiceImpl
         }
     }
 
-    @Autowired
+    @Autowired(required = false)
     public void setListeners(final List<FileResourceListener> listeners)
     {
         this.listeners = listeners;

@@ -115,6 +115,10 @@ public final class SaxonProcessorManager
     public XsltProcessor createCachedProcessor( final XsltResource xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
+        if (this.cache == null) {
+            return createProcessor(xsl, resolver );
+        }
+
         Templates templates = this.cache.get( xsl );
         if (templates == null) {
             templates = createTemplates( xsl.getAsSource(), resolver );

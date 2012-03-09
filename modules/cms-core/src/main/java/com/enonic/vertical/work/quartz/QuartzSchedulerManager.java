@@ -7,6 +7,7 @@ import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.vertical.work.WorkRunner;
 
@@ -61,11 +62,13 @@ public final class QuartzSchedulerManager
         INSTANCE = this;
     }
 
+    @Autowired
     public void setConnectionFactory( ConnectionFactory connectionFactory )
     {
         this.connectionFactory = connectionFactory;
     }
 
+    @Autowired
     public void setUpgradeService( UpgradeService upgradeService )
     {
         this.upgradeService = upgradeService;
@@ -86,6 +89,7 @@ public final class QuartzSchedulerManager
         this.clustered = clustered;
     }
 
+    @Autowired
     public void setWorkRunner( WorkRunner workRunner )
     {
         this.workRunner = workRunner;
@@ -150,6 +154,7 @@ public final class QuartzSchedulerManager
         return INSTANCE;
     }
 
+    @Autowired
     public void setDialect( Dialect dialect )
     {
         this.dialect = dialect;

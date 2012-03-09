@@ -2,6 +2,7 @@ package com.enonic.vertical.work;
 
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -52,6 +53,7 @@ public class WorkRunnerImpl
         this.transactionTemplate = transactionTemplate;
     }
 
+    @Autowired
     public void setPluginManager( final PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;

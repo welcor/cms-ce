@@ -2,7 +2,7 @@
 <!DOCTYPE xsl:stylesheet [
 	<!ENTITY nbsp "&#160;">
 ]>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 
     <xsl:output method="html"/>
 
@@ -14,8 +14,6 @@
     <xsl:include href="common/displaysystempath.xsl"/>
     <xsl:include href="common/formatdate.xsl"/>
     <xsl:include href="common/browse_table_js.xsl"/>
-
-    <xsl:param name="page"/>
 
     <xsl:variable name="pageURL">
         <xsl:text>adminpage?page=</xsl:text>

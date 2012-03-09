@@ -9,6 +9,7 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.vertical.work.WorkEntry;
 import com.enonic.vertical.work.WorkException;
@@ -24,6 +25,9 @@ public final class QuartzWorkService
 
     private PluginManager pluginManager;
 
+    private QuartzSchedulerManager schedulerManager;
+
+    @Autowired
     public void setPluginManager( final PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
@@ -31,7 +35,13 @@ public final class QuartzWorkService
 
     public boolean isEnabled()
     {
-        return QuartzSchedulerManager.getInstance().isEnabled();
+        return this.schedulerManager.isEnabled();
+    }
+
+    @Autowired
+    public void setSchedulerManager( final QuartzSchedulerManager schedulerManager )
+    {
+        this.schedulerManager = schedulerManager;
     }
 
     private Scheduler getScheduler()
@@ -39,7 +49,7 @@ public final class QuartzWorkService
     {
         if ( isEnabled() )
         {
-            return QuartzSchedulerManager.getInstance().getScheduler();
+            return this.schedulerManager.getScheduler();
         }
         else
         {

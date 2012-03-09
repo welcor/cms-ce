@@ -50,6 +50,7 @@
   <bean id="connectionFactory" class="com.enonic.cms.store.support.ConnectionFactory">
     <property name="sessionFactory" ref="sessionFactory"/>
     <property name="decorator" ref="decoratorManager"/>
+    <property name="dataSource" ref="dataSource"/>
   </bean>
 
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -606,6 +607,23 @@
 
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
     <property name="mimetypesLocation" value="#{config.homeDir}/config/mimetypes.properties"/>
+  </bean>
+
+  <bean id="schedulerManager" class="com.enonic.vertical.work.quartz.QuartzSchedulerManager">
+    <property name="enabled" value="#{config.schedulerEnabled}"/>
+    <property name="clustered" value="true"/>
+  </bean>
+
+  <bean class="com.enonic.vertical.work.quartz.QuartzWorkService"/>
+
+  <bean name="schedulerTranscationTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+    <property name="transactionManager" ref="transactionManager"/>
+    <property name="propagationBehaviorName" value="PROPAGATION_REQUIRES_NEW"/>
+    <property name="timeout" value="#{config.schedulerTxTimeout}"/>
+  </bean>
+
+  <bean id="workRunner" class="com.enonic.vertical.work.WorkRunnerImpl">
+    <property name="transactionTemplate" ref="schedulerTranscationTemplate"/>
   </bean>
 
 </beans>

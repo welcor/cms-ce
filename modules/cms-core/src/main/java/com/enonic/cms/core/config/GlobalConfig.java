@@ -49,4 +49,8 @@ public interface GlobalConfig
     public Map<String, String> getMap();
 
     public Properties getProperties();
+
+    public boolean isSchedulerEnabled();
+
+    public int getSchedulerTxTimeout();
 }

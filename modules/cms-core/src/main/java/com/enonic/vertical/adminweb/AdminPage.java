@@ -344,6 +344,9 @@ public class AdminPage
                 case 991:
                     servlet = "/admin/servlet/com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet";
                     break;
+                case 370:
+                    servlet = "/admin/servlet/com.enonic.vertical.adminweb.SchedulerServlet";
+                    break;
 
                 // Try-out: A fixed way of reaching the image handler servlet. Needed by html-editor edit-image functionality.
                 case 992:

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.quartz.utils.ConnectionProvider;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import com.enonic.cms.store.support.ConnectionFactory;
 
@@ -33,7 +32,7 @@ public final class SimpleConnectionProvider
     public Connection getConnection()
         throws SQLException
     {
-        return this.factory.getConnection( true );
+        return this.factory.getConnectionFromDataSource( true );
     }
 
     /**

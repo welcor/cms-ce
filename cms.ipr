@@ -63,14 +63,7 @@
             <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.springframework/spring-jdbc/3.1.0.RELEASE/jar/7aa355d36411f9816b0338f0dfaac63399abd60e/spring-jdbc-3.1.0.RELEASE.jar" />
             <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.jdom/jdom/1.1.1/jar/9986f2db44c7d183a861e72d3003eea1fcfe7a99/jdom-1.1.1.jar" />
             <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/jaxen/jaxen/1.1.1/jar/9f5d3c5974dbe5cf69c2c2ec7d8a4eb6e0fce7f9/jaxen-1.1.1.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.elasticsearch/elasticsearch/0.19.0/jar/28cd1ae6656948f86f32d26efe1e8f06f8d1c76/elasticsearch-0.19.0.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.json/json/20090211/jar/c183aa3a2a6250293808bba12262c8920ce5a51c/json-20090211.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-core/3.5.0/jar/90ff0731fafb05c01fee4f2247140d56e9c30a3b/lucene-core-3.5.0.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-analyzers/3.5.0/jar/e2a58f8fbfa84402f08aa981a888cb8c4fd82aab/lucene-analyzers-3.5.0.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/jakarta-regexp/jakarta-regexp/1.4/jar/ea514a179ac1dd7e81c7e6594468b9b9910d298/jakarta-regexp-1.4.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-queries/3.5.0/jar/f009bb8b766b5d88663ebbe090ebaf06c2b17d36/lucene-queries-3.5.0.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-memory/3.5.0/jar/7908e954e8c1b4b2463aa712b34fa4a5612e241d/lucene-memory-3.5.0.jar" />
-            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-highlighter/3.5.0/jar/9b38acfa185337dac65e350073a26fe2416f2b0e/lucene-highlighter-3.5.0.jar" />
+            <element id="file-copy" path="$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.quartz-scheduler/quartz/1.8.5/jar/c8e9e9128a82d16cd16ba2283cee92412e0edee3/quartz-1.8.5.jar" />
           </element>
         </element>
         <element id="javaee-facet-resources" facet="cms-webapp/web/Web" />

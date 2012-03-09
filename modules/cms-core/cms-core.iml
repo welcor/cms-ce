@@ -359,6 +359,17 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.quartz-scheduler/quartz/1.8.5/jar/c8e9e9128a82d16cd16ba2283cee92412e0edee3/quartz-1.8.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.quartz-scheduler/quartz/1.8.5/source/16504187674e7378d00bbe4d8e1393e947f42757/quartz-1.8.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
           <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.elasticsearch/elasticsearch/0.19.0/jar/28cd1ae6656948f86f32d26efe1e8f06f8d1c76/elasticsearch-0.19.0.jar!/" />
         </CLASSES>
         <JAVADOC />

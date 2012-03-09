@@ -15,9 +15,9 @@ public interface XsltProcessorManager
     public XsltProcessor createProcessor( Source xsl, URIResolver resolver )
         throws XsltProcessorException;
 
-    /**
-     * Create processor.
-     */
-    public XsltProcessor createProcessor( XsltResource styleSheet, URIResolver uriResolver )
+    public XsltProcessor createProcessor( XsltResource xsl, URIResolver resolver )
+        throws XsltProcessorException;
+
+    public XsltProcessor createCachedProcessor( XsltResource xsl, URIResolver resolver )
         throws XsltProcessorException;
 }

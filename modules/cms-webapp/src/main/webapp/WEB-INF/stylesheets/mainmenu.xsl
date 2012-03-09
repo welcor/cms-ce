@@ -277,6 +277,20 @@
                 </a>
               </td>
             </tr>
+            <xsl:if test="$scheduler = 'true'">
+              <tr>
+                <td width="16">
+                  <img src="javascript/images/L.png" border="0"/>
+                </td>
+                <td>
+                  <a href="adminpage?page=370&amp;op=browse" target="mainFrame">
+                    <img src="images/icon_scheduler.gif" border="0"/>
+                    <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
+                    <xsl:text>%mnuScheduler%</xsl:text>
+                  </a>
+                </td>
+              </tr>
+            </xsl:if>
             <tr>
               <td width="16">
                 <img src="javascript/images/T.png" border="0"/>

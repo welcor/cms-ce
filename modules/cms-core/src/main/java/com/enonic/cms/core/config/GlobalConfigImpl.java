@@ -119,6 +119,18 @@ final class GlobalConfigImpl
         return this.props.getValue( "cms.livePortalTrace.history.size", Integer.class );
     }
 
+    @Override
+    public boolean isSchedulerEnabled()
+    {
+        return this.props.getValue("cms.scheduler.enabled", Boolean.class);
+    }
+
+    @Override
+    public int getSchedulerTxTimeout()
+    {
+        return this.props.getValue("cms.scheduler.tx.timeout", Integer.class);
+    }
+
     public Map<String, String> getMap()
     {
         return this.props.getMap();

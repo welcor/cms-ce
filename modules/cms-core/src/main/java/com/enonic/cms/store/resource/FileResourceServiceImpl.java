@@ -13,7 +13,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.blob.BlobKey;
 import com.enonic.cms.framework.blob.BlobRecord;
@@ -29,7 +29,7 @@ import com.enonic.cms.store.support.EntityChangeListenerHub;
 import com.enonic.cms.store.vfs.db.VirtualFileEntity;
 
 public final class FileResourceServiceImpl
-    implements FileResourceService, EntityChangeListener, BeanPostProcessor
+    implements FileResourceService, EntityChangeListener
 {
     private BlobStore blobStore;
 
@@ -37,11 +37,10 @@ public final class FileResourceServiceImpl
 
     private MimeTypeResolver mimeTypeResolver;
 
-    private final ArrayList<FileResourceListener> listeners;
+    private List<FileResourceListener> listeners;
 
     public FileResourceServiceImpl()
     {
-        this.listeners = new ArrayList<FileResourceListener>();
         EntityChangeListenerHub.getInstance().addListener( this );
     }
 
@@ -504,18 +503,9 @@ public final class FileResourceServiceImpl
         }
     }
 
-    public Object postProcessBeforeInitialization( Object bean, String name )
+    @Autowired(required = false)
+    public void setListeners(final List<FileResourceListener> listeners)
     {
-        return bean;
-    }
-
-    public Object postProcessAfterInitialization( Object bean, String name )
-    {
-        if ( bean instanceof FileResourceListener )
-        {
-            this.listeners.add( (FileResourceListener) bean );
-        }
-
-        return bean;
+        this.listeners = listeners;
     }
 }

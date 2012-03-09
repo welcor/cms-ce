@@ -117,6 +117,18 @@ public class MockGlobalConfig
         return 100;
     }
 
+    @Override
+    public boolean isSchedulerEnabled()
+    {
+        return false;
+    }
+
+    @Override
+    public int getSchedulerTxTimeout()
+    {
+        return 1000;
+    }
+
     public Map<String, String> getMap()
     {
         return Maps.newHashMap();

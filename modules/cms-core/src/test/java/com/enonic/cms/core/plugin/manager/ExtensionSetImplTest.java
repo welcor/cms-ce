@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import static org.junit.Assert.*;
 import java.util.List;
+import java.util.Properties;
 
 public class ExtensionSetImplTest
 {
@@ -152,8 +153,15 @@ public class ExtensionSetImplTest
     @Test
     public void testFindTaskHandler()
     {
-        final TaskHandler ext = Mockito.mock(TaskHandler.class);
-        ext.setName("task");
+        final TaskHandler ext = new TaskHandler()
+        {
+            @Override
+            public void execute( final Properties props )
+                throws Exception
+            {
+
+            }
+        };
 
         final List<Extension> list = Lists.newArrayList((Extension)ext);
         final ExtensionSetImpl set = new ExtensionSetImpl(list);
@@ -161,7 +169,7 @@ public class ExtensionSetImplTest
         TaskHandler result = set.findTaskPlugin("other");
         assertNull(result);
 
-        result = set.findTaskPlugin("task");
+        result = set.findTaskPlugin(ext.getName());
         assertSame(ext, result);
     }
 

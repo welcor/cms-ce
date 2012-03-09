@@ -153,8 +153,9 @@
                value-ref="livePortalTraceController"/>
         <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController"
                value-ref="reindexContentToolController"/>
-                <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.IndexMonitorController"
-                       value-ref="indexMonitorController"/>
+        <entry key="/admin/servlet/com.enonic.vertical.adminweb.SchedulerServlet" value-ref="schedulerServletWrapper"/>
+        <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.IndexMonitorController"
+               value-ref="indexMonitorController"/>
       </map>
     </property>
   </bean>

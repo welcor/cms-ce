@@ -37,9 +37,9 @@ dependencies {
 	}
     compile 'org.eclipse.osgi:org.eclipse.osgi:3.6.0.v20100517'
 	compile 'org.directwebremoting:dwr:2.0.6'
+    compile 'org.elasticsearch:elasticsearch:0.19.0'
+    compile 'org.json:json:20090211'
     compile('org.quartz-scheduler:quartz:1.8.5') {
         transitive = false
     }
-    compile 'org.elasticsearch:elasticsearch:0.19.0'
-    compile 'org.json:json:20090211'
 }

@@ -1,6 +1,5 @@
 package com.enonic.cms.core.xslt.cache;
 
-import javax.annotation.PostConstruct;
 import javax.xml.transform.Templates;
 
 import org.springframework.beans.factory.annotation.Autowired;

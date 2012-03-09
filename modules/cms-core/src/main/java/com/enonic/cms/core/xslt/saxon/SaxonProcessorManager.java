@@ -116,7 +116,7 @@ public final class SaxonProcessorManager
         throws XsltProcessorException
     {
         Templates templates = this.cache.get( xsl );
-        if (templates != null) {
+        if (templates == null) {
             templates = createTemplates( xsl.getAsSource(), resolver );
             this.cache.put( xsl, templates );
         }

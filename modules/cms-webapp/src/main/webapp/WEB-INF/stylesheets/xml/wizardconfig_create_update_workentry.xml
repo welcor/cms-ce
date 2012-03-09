@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<wizardconfig class="com.enonic.vertical.adminweb.SchedulerServlet$CreateUpdateWorkEntryWizard">
+
+  <displayconfig>
+    <includes>
+      <include href="common/genericheader.xsl"/>
+      <include href="common/button.xsl"/>
+      <include href="common/labelcolumn.xsl"/>
+      <include href="common/formatdate.xsl"/>
+      <include href="common/textfield.xsl"/>
+      <include href="common/textfielddatetime.xsl"/>
+      <include href="common/readonlydatetime.xsl"/>
+      <include href="common/readonlyvalue.xsl"/>
+      <include href="common/displaysystempath.xsl"/>
+      <include href="common/displaypath.xsl"/>
+      <include href="common/displayerror.xsl"/>
+      <include href="common/displayhelp.xsl"/>
+      <include href="workentry_form.xsl"/>
+    </includes>
+    <header>
+      <call-template name="workentryheader"/>
+    </header>
+    <title>
+      <main/>
+      <sub/>
+    </title>
+    <form/>
+    <buttons/>
+  </displayconfig>
+
+  <steps>
+    <step name="step0" type="normal" statedependent="false">
+      <title>
+        <main>
+          <!--call-template name="workentry_form_title"/-->
+	</main>
+      </title>
+
+      <dataconfig/>
+
+      <form>
+        <call-template name="step0"/>
+        <css>
+          <include src="javascript/tab.webfx.css"/>
+        </css>
+
+      	<javascript>
+	  <include src="tabpane.js"/>
+	  <include src="admin.js"/>
+	  <include src="validate.js"/>
+	  <include src="workentry.js"/>
+	  <include src="calendar_picker.js"/>
+	  <events>
+            <event name="onNext" function="checkAll('formAdmin', validatedFields)"/>
+            <event name="onNext">
+              var _date_start = document.getElementsByName('datestart')[0];
+              var _time_start = document.getElementsByName('timestart')[0];
+              var _date_end = document.getElementsByName('dateend')[0];
+              var _time_end = document.getElementsByName('timeend')[0];
+
+              if (!validateDate( _date_start) )
+              {
+                return;
+              }
+              if (!validateTimeSeconds( _time_start) )
+              {
+                return;
+              }
+              if (!validateDate( _date_end) )
+              {
+                return;
+              }
+              if (!validateTimeSeconds( _time_end) )
+              {
+                return;
+              }
+              // ---------------------------------------------------------------------------------------------------------------------------
+
+              if ( _date_start.value == '' &amp;&amp; _time_start.value != '' )
+              {
+                alert('%msgTimeCanNotBeSetWithoutDate%');
+                _date_start.focus();
+                return;
+              }
+
+              if ( _date_end.value == '' &amp;&amp; _time_end.value != '' )
+              {
+                alert('%msgTimeCanNotBeSetWithoutDate%');
+                _date_end.focus();
+                return;
+              }
+              // ---------------------------------------------------------------------------------------------------------------------------
+
+              // dateTimeRangeValidator is instantiated in workentry_form.xsl
+              if ( dateTimeRangeValidator.isStartDateTimeLaterThanOrSameAsEndDateTime() )
+              {
+                alert('%errOnlineFromIsLaterThanOnlineTo%');
+                return;
+              }
+            </event>
+          </events>
+	</javascript>
+      </form>
+
+      <buttons>
+        <button name="save" caption="%cmdSave%" type="next">
+	  <default goto="finish0"/>
+	</button>
+      </buttons>
+    </step>
+
+    <step name="finish0" type="finish"/>
+    
+  </steps>
+
+</wizardconfig>

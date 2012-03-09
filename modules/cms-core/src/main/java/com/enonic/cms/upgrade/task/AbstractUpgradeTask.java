@@ -9,7 +9,7 @@ import com.enonic.cms.upgrade.UpgradeContext;
 public abstract class AbstractUpgradeTask
     implements UpgradeTask
 {
-    private final static int START_MODEL_NUMBER = 119;
+    private final static int START_MODEL_NUMBER = 121;
 
     private final int modelNumber;
 

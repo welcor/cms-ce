@@ -6,6 +6,9 @@ package com.enonic.cms.store.support;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.hibernate.SessionFactory;
 import com.enonic.cms.framework.jdbc.ConnectionDecorator;
 
@@ -16,6 +19,7 @@ public final class ConnectionFactory
 {
     private SessionFactory sessionFactory;
     private ConnectionDecorator decorator;
+    private DataSource dataSource;
 
     public void setSessionFactory( SessionFactory sessionFactory )
     {
@@ -27,10 +31,22 @@ public final class ConnectionFactory
         this.decorator = decorator;
     }
 
+    public void setDataSource( final DataSource dataSource )
+    {
+        this.dataSource = dataSource;
+    }
+
     public Connection getConnection( boolean decorated )
         throws SQLException
     {
         final Connection conn = this.sessionFactory.getCurrentSession().connection();
+        return decorated ? this.decorator.decorate( conn ) : conn;
+    }
+
+    public Connection getConnectionFromDataSource( boolean decorated )
+        throws SQLException
+    {
+        final Connection conn = this.dataSource.getConnection();
         return decorated ? this.decorator.decorate( conn ) : conn;
     }
 }

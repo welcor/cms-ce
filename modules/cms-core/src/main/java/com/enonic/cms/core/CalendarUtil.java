@@ -23,7 +23,7 @@ public class CalendarUtil
         return formatDate( System.currentTimeMillis(), timestampFormat );
     }
 
-    private static synchronized String formatDate( long time, boolean timestampFormat )
+    public static synchronized String formatDate( long time, boolean timestampFormat )
     {
 
         if ( timestampFormat )

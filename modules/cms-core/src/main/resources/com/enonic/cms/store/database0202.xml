@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="Vertical" version="201">
+<database name="Vertical" version="202">
   <table name="tModelVersion">
     <column name="mve_sKey" primaryKey="true" required="true" type="VARCHAR" size="32"/>
     <column name="mve_lVersion" required="true" type="INTEGER"/>

@@ -15,6 +15,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -22,6 +23,7 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.MenuAccessRight;
+import com.enonic.vertical.work.WorkService;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -39,6 +41,8 @@ import com.enonic.cms.core.service.AdminService;
 public class MainMenuServlet
     extends AdminHandlerBaseServlet
 {
+    @Autowired
+    private WorkService workService;
 
     public void handlerBrowse( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems )
@@ -200,6 +204,7 @@ public class MainMenuServlet
                 parameters.put( "loadmainstartpage", tmp );
             }
 
+            parameters.put( "scheduler", this.workService.isEnabled() );
             transformXML( session, response.getWriter(), xmlSource, xslSource, parameters );
         }
         catch ( TransformerException te )

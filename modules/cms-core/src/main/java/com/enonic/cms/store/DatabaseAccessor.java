@@ -17,13 +17,13 @@ import com.enonic.esl.sql.model.DatabaseXMLFactory;
  */
 public final class DatabaseAccessor
 {
-    private static String DATABASE_XML_FILE = "com/enonic/cms/store/database{0,number,0000}.xml";
+    private final static String DATABASE_XML_FILE = "com/enonic/cms/store/database{0,number,0000}.xml";
 
     private static final int firstModelNumber = 201;
 
     // NOTE: Must reflect the latest database.xml file
 
-    private static int latestModelNumber = 201;
+    private final static int latestModelNumber = 202;
 
     private static Map<Integer, Database> cache = new HashMap<Integer, Database>();
 

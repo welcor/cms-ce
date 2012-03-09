@@ -153,6 +153,7 @@
                value-ref="livePortalTraceController"/>
         <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController"
                value-ref="reindexContentToolController"/>
+        <entry key="/admin/servlet/com.enonic.vertical.adminweb.SchedulerServlet" value-ref="schedulerServletWrapper"/>
       </map>
     </property>
   </bean>
@@ -272,6 +273,7 @@
   <bean id="pagelinkHandlerServletWrapper" class="com.enonic.vertical.adminweb.handlers.PagelinkHandlerServlet"/>
   <bean id="simpleContentHandlerServletWrapper"
         class="com.enonic.vertical.adminweb.handlers.SimpleContentHandlerServlet"/>
+  <bean id="schedulerServletWrapper" class="com.enonic.vertical.adminweb.SchedulerServlet"/>
 
   <bean id="adminImageController" class="com.enonic.cms.server.service.admin.mvc.controller.ImageController">
     <property name="imageService" ref="imageService"/>
@@ -302,5 +304,7 @@
 
   <bean class="com.enonic.vertical.adminweb.handlers.ContentEnhancedImageHandlerServlet$ImportImagesWizard" scope="prototype"/>
   <bean class="com.enonic.vertical.adminweb.handlers.ContentFileHandlerServlet$ImportFilesWizard" scope="prototype"/>
+
+  <bean class="com.enonic.vertical.adminweb.SchedulerServlet$CreateUpdateWorkEntryWizard" scope="prototype"/>
 
 </beans>

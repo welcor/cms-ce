@@ -126,6 +126,12 @@ public class MockGlobalConfig
         return 1000;
     }
 
+    @Override
+    public File getElasticStorageDir()
+    {
+        return new File( getHomeDir(), "data/index" );
+    }
+
     public Map<String, String> getMap()
     {
         return Maps.newHashMap();

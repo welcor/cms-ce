@@ -53,4 +53,6 @@ public interface GlobalConfig
     public boolean isSchedulerEnabled();
 
     public int getSchedulerTxTimeout();
+
+    public File getElasticStorageDir();
 }

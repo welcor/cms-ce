@@ -1745,10 +1745,12 @@
                       <xsl:attribute name="id">
                         <xsl:text>tbl</xsl:text>
                         <xsl:value-of select="$currentparametername"/>
+                        <xsl:text>_portlet</xsl:text>
                       </xsl:attribute>
                       <xsl:attribute name="name">
                         <xsl:text>tbl</xsl:text>
                         <xsl:value-of select="$currentparametername"/>
+                        <xsl:text>_portlet</xsl:text>
                       </xsl:attribute>
                       <tr>
                         <td nowrap="nowrap" colspan="2">
@@ -1767,7 +1769,7 @@
                             <input type="hidden">
                               <xsl:attribute name="name">
                                 <xsl:value-of select="$objectname"/>
-                                <xsl:text>-defaultobject</xsl:text>
+                                <xsl:text>_portlet-defaultobject</xsl:text>
                               </xsl:attribute>
                               <xsl:attribute name="value">
                                 <xsl:value-of select="@conobjkey"/>
@@ -1814,14 +1816,16 @@
                     </tbody>
                   </table>
                   <xsl:call-template name="button">
-                    <xsl:with-param name="name">add
+                    <xsl:with-param name="name">
+                      <xsl:text>add</xsl:text>
                       <xsl:value-of select="$currentparametername"/>
+                      <xsl:text>_portlet')</xsl:text>
                     </xsl:with-param>
                     <xsl:with-param name="caption" select="'%cmdNewPortlet%'"/>
                     <xsl:with-param name="onclick">
                       <xsl:text>addObjectSelector('</xsl:text>
                       <xsl:value-of select="$currentparametername"/>
-                      <xsl:text>')</xsl:text>
+                      <xsl:text>_portlet')</xsl:text>
                     </xsl:with-param>
                   </xsl:call-template>
                 </xsl:when>
@@ -1840,7 +1844,7 @@
                           <input type="hidden">
                             <xsl:attribute name="name">
                               <xsl:value-of select="$currentparametername"/>
-                              <xsl:text>-defaultobject</xsl:text>
+                              <xsl:text>_portlet-defaultobject</xsl:text>
                             </xsl:attribute>
                             <xsl:attribute name="value">
                               <xsl:value-of
@@ -1872,7 +1876,7 @@
 
               <!-- Initial enabling/disabling of move up/down buttons -->
               <script type="text/javascript" language="JavaScript">
-                enableDisableButtons( '<xsl:value-of select="name"/>' );
+                enableDisableButtons( '<xsl:value-of select="name"/><xsl:text>_portlet</xsl:text>' );
               </script>
 
             </td>

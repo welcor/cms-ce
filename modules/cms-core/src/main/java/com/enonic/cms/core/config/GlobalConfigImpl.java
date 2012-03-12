@@ -126,6 +126,12 @@ final class GlobalConfigImpl
         return this.props.getValue("cms.scheduler.tx.timeout", Integer.class);
     }
 
+    @Override
+    public File getElasticStorageDir()
+    {
+        return this.props.getValue( "cms.search.index.dir", File.class );
+    }
+
     public Map<String, String> getMap()
     {
         return this.props.getMap();

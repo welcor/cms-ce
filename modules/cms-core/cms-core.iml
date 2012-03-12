@@ -370,6 +370,26 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.elasticsearch/elasticsearch/0.19.0/jar/28cd1ae6656948f86f32d26efe1e8f06f8d1c76/elasticsearch-0.19.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.elasticsearch/elasticsearch/0.19.0/source/4917dfa1907ed28ce6d7da6e81d269b33654966d/elasticsearch-0.19.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.json/json/20090211/jar/c183aa3a2a6250293808bba12262c8920ce5a51c/json-20090211.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
           <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/com.google.code.findbugs/jsr305/1.3.9/jar/40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf/jsr305-1.3.9.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -527,6 +547,70 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.springframework/spring-jdbc/3.1.0.RELEASE/source/818fa065377869b3d4d045d9c1804a2166bad0c8/spring-jdbc-3.1.0.RELEASE-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-core/3.5.0/jar/90ff0731fafb05c01fee4f2247140d56e9c30a3b/lucene-core-3.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-core/3.5.0/source/757113199f9c8c18c678c96d61c2c4160b9baa6/lucene-core-3.5.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-analyzers/3.5.0/jar/e2a58f8fbfa84402f08aa981a888cb8c4fd82aab/lucene-analyzers-3.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-analyzers/3.5.0/source/134d99440cd47f87047fca230fc397f86d9166a8/lucene-analyzers-3.5.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/jakarta-regexp/jakarta-regexp/1.4/jar/ea514a179ac1dd7e81c7e6594468b9b9910d298/jakarta-regexp-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-queries/3.5.0/jar/f009bb8b766b5d88663ebbe090ebaf06c2b17d36/lucene-queries-3.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-queries/3.5.0/source/d22efdcc651ef6906923f5e8af1fc255174a5191/lucene-queries-3.5.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-memory/3.5.0/jar/7908e954e8c1b4b2463aa712b34fa4a5612e241d/lucene-memory-3.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-memory/3.5.0/source/69b19b38d78cc3b27ea5542a14f0ebbb1625ffdd/lucene-memory-3.5.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-highlighter/3.5.0/jar/9b38acfa185337dac65e350073a26fe2416f2b0e/lucene-highlighter-3.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.apache.lucene/lucene-highlighter/3.5.0/source/200a9b9857e589b9f5bc9f65ecf5daa37e19527d/lucene-highlighter-3.5.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

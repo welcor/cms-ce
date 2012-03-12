@@ -18,7 +18,7 @@ function clickElement(elem)
 }
 test( 'internal links plug-in', function()
 {
-    expect( 3 );
+    expect( 6 );
 
     editor.setContent( '<img src="_image/247?_size=regular&_format=jpg&_filter=scalewidth(234)" alt="Salta" title="Salta" />' );
     equals(editor.getContent(), '<p><img title="Salta" src="image://247?_size=regular&amp;_format=jpg" alt="Salta" /></p>');
@@ -26,8 +26,18 @@ test( 'internal links plug-in', function()
     editor.setContent( '<img src="image://247?_size=regular&_format=jpg" alt="Fjell - Salta" />' );
     equals(editor.getContent(), '<p><img src="image://247?_size=regular&amp;_format=jpg" alt="Fjell - Salta" /></p>');
 
+    editor.setContent( '<img alt="Fjell - Salta" src="image://247?_size=regular&_format=jpg" />' );
+    equals(editor.getContent(), '<p><img src="image://247?_size=regular&amp;_format=jpg" alt="Fjell - Salta" /></p>');
+
     editor.setContent( '<img src="_attachment/64177" alt="Fjell - Salta" />' );
     equals(editor.getContent(), '<p><img src="attachment://64177" alt="Fjell - Salta" /></p>');
+
+    editor.setContent( '<img src="images/developer.png" alt="Developer" />' );
+    equals(editor.getContent(), '<p><img src="images/developer.png" alt="Developer" /></p>');
+
+    editor.setContent( '<img src="http://www.enonic.com/_public/skins/advanced/standard/images/logo-screen.gif" alt="Enonic Logo" />' );
+    equals(editor.getContent(), '<p><img src="http://www.enonic.com/_public/skins/advanced/standard/images/logo-screen.gif" alt="Enonic Logo" /></p>');
+
 });
 
 test( 'img/@src values should not be url encoded', function()
@@ -60,128 +70,135 @@ test( 'form elements', function()
 
     editor.setContent( select );
 
-    if (tinymce.isIE) {
+    if (tinyMCE.isIE) {
         equals(editor.getContent(), '<p><select id="select_id" name="select="><option selected="selected" value="1">Ost</option><option value="2">Fisk</option><option value="3">Sj&oslash;stjerne</option></select></p>');
     } else {
         equals(editor.getContent(), '<p><select id="select_id" name="select="><option value="1">Ost</option><option value="2">Fisk</option><option value="3">Sj&oslash;stjerne</option></select></p>');
     }
 });
 
-if ( tinymce.isGecko ) {
 
-	test( 'image align when document has image only', function()
-	{
-	    expect( 4 );
+test( 'Firefox: image align when document has image only', function()
+{
+    if ( tinyMCE.isGecko ) {
+        expect( 4 );
 
-	    var content = '<img src="test-image.jpg" alt="" />';
-	    editor.setContent( content );
+        var content = '<img src="images/developer.png" alt="" />';
+        editor.setContent( content );
 
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
 
-	    editor.execCommand( 'JustifyLeft' );
+        editor.execCommand( 'JustifyLeft' );
 
-	    equals( editor.getContent(), '<p><img class="editor-image-left" src="test-image.jpg" alt="" /></p>' );
+        equals( editor.getContent(), '<p><img class="editor-image-left" src="images/developer.png" alt="" /></p>' );
 
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
 
-	    editor.execCommand( 'JustifyCenter' );
-	    equals( editor.getContent(), '<p class="editor-p-center"><img src="test-image.jpg" alt="" /></p>\n<p>&nbsp;</p>' );
+        editor.execCommand( 'JustifyCenter' );
+        equals( editor.getContent(), '<p class="editor-p-center"><img src="images/developer.png" alt="" /></p>\n<p>&nbsp;</p>' );
 
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
 
-	    editor.execCommand( 'JustifyRight' );
-	    equals( editor.getContent(), '<p><img class="editor-image-right" src="test-image.jpg" alt="" /></p>' );
+        editor.execCommand( 'JustifyRight' );
+        equals( editor.getContent(), '<p><img class="editor-image-right" src="images/developer.png" alt="" /></p>' );
 
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
 
-	    editor.execCommand( 'JustifyFull' );
-	    equals( editor.getContent(), '<p class="editor-p-block"><img src="test-image.jpg" alt="" /></p>\n<p>&nbsp;</p>' );
+        editor.execCommand( 'JustifyFull' );
+        equals( editor.getContent(), '<p class="editor-p-block"><img src="images/developer.png" alt="" /></p>\n<p>&nbsp;</p>' );
+    }
 
-	} );
+} );
 
-	test( 'image align with text block below image', function()
-	{
-	    expect( 4 );
+test( 'Firefox: image align with text block below image', function()
+{
+    if ( tinyMCE.isGecko ) {
+        expect( 4 );
 
-	    var content = '<p class="editor-p-block"><img src="test-image.jpg" alt="" /></p>';
-	    content += '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
+        var content = '<p class="editor-p-block"><img src="images/developer.png" alt="" /></p>';
+        content += '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
 
-	    editor.setContent( content );
-	    editor.selection.select(editor.dom.select('img')[0]);
-	    editor.execCommand('JustifyLeft');
-	    equals(editor.getContent(), '<p><img class="editor-image-left" src="test-image.jpg" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
+        editor.setContent( content );
+        editor.selection.select(editor.dom.select('img')[0]);
+        editor.execCommand('JustifyLeft');
+        equals(editor.getContent(), '<p><img class="editor-image-left" src="images/developer.png" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
 
-	    editor.setContent( content );
-	    editor.selection.select(editor.dom.select('img')[0]);
-	    editor.execCommand('JustifyCenter');
-	    equals(editor.getContent(), '<p class="editor-p-center"><img src="test-image.jpg" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
+        editor.setContent( content );
+        editor.selection.select(editor.dom.select('img')[0]);
+        editor.execCommand('JustifyCenter');
+        equals(editor.getContent(), '<p class="editor-p-center"><img src="images/developer.png" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
 
-	    editor.setContent( content );
-	    editor.selection.select(editor.dom.select('img')[0]);
-	    editor.execCommand('JustifyRight');
-	    equals(editor.getContent(), '<p><img class="editor-image-right" src="test-image.jpg" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
+        editor.setContent( content );
+        editor.selection.select(editor.dom.select('img')[0]);
+        editor.execCommand('JustifyRight');
+        equals(editor.getContent(), '<p><img class="editor-image-right" src="images/developer.png" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
 
-	    editor.setContent( content );
-	    editor.selection.select(editor.dom.select('img')[0]);
-	    editor.execCommand('JustifyFull');
-	    equals(editor.getContent(), '<p class="editor-p-block"><img src="test-image.jpg" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
-	});
+        editor.setContent( content );
+        editor.selection.select(editor.dom.select('img')[0]);
+        editor.execCommand('JustifyFull');
+        equals(editor.getContent(), '<p class="editor-p-block"><img src="images/developer.png" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>');
+    }
+});
 
-	test( 'image align with text block above image', function()
-	{
-	    expect( 4 );
+test( 'Firefox: image align with text block above image', function()
+{
+    if ( tinyMCE.isGecko ) {
 
-	    var content = '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
-	    content += '<p class="editor-p-block"><img src="test-image.jpg" alt="" /></p>';
+        expect( 4 );
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyLeft' );
-	    equals( editor.getContent(), '<p><img class="editor-image-left" src="test-image.jpg" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
+        var content = '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
+        content += '<p class="editor-p-block"><img src="images/developer.png" alt="" /></p>';
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyCenter' );
-	    equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-center"><img src="test-image.jpg" alt="" /></p>' );
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyLeft' );
+        equals( editor.getContent(), '<p><img class="editor-image-left" src="images/developer.png" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyRight' );
-	    equals( editor.getContent(), '<p><img class="editor-image-right" src="test-image.jpg" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyCenter' );
+        equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-center"><img src="images/developer.png" alt="" /></p>' );
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyFull' );
-	    equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-block"><img src="test-image.jpg" alt="" /></p>' );
-	} );
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyRight' );
+        equals( editor.getContent(), '<p><img class="editor-image-right" src="images/developer.png" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
 
-	test( 'image align with image between two text blocks', function()
-	{
-	    expect( 4 );
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyFull' );
+        equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-block"><img src="images/developer.png" alt="" /></p>' );
+    }
+} );
 
-	    var content = '';
-	    content += '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
-	    content += '<p class="editor-p-block"><img src="test-image.jpg" alt="" /></p>';
-	    content += '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
+test( 'Firefox: image align with image between two text blocks', function()
+{
+    if ( tinyMCE.isGecko ) {
+        expect( 4 );
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyLeft' );
-	    equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p><img class="editor-image-left" src="test-image.jpg" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
+        var content = '';
+        content += '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
+        content += '<p class="editor-p-block"><img src="images/developer.png" alt="" /></p>';
+        content += '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus. </p>';
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyRight' );
-	    equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p><img class="editor-image-right" src="test-image.jpg" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyLeft' );
+        equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p><img class="editor-image-left" src="images/developer.png" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyFull' );
-	    equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-block"><img src="test-image.jpg" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyRight' );
+        equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p><img class="editor-image-right" src="images/developer.png" alt="" />Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
 
-	    editor.setContent( content );
-	    editor.selection.select( editor.dom.select( 'img' )[0] );
-	    editor.execCommand( 'JustifyCenter' );
-	    equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-center"><img src="test-image.jpg" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
-	} );
-}
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyFull' );
+        equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-block"><img src="images/developer.png" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
+
+        editor.setContent( content );
+        editor.selection.select( editor.dom.select( 'img' )[0] );
+        editor.execCommand( 'JustifyCenter' );
+        equals( editor.getContent(), '<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>\n<p class="editor-p-center"><img src="images/developer.png" alt="" /></p>\n<p>Etiam id leo nulla, a euismod mi. Nullam eleifend venenatis facilisis. Praesent dolor sem, commodo dapibus ultrices sed, vestibulum sed eros. Morbi porttitor pellentesque fermentum. Donec lacinia suscipit justo, nec facilisis tellus vehicula sed. Duis accumsan ligula non arcu fermentum ac porttitor diam viverra. Nam sit amet nibh eu dui rhoncus interdum. Suspendisse gravida magna ut lorem tempor vehicula. Nunc lorem libero, iaculis eu sollicitudin non, volutpat id nibh. Vivamus vitae lorem nec erat dapibus tincidunt vitae at tellus. Ut laoreet tellus gravida libero porttitor ac vestibulum erat facilisis. Praesent urna diam, laoreet vitae euismod at, porta at lorem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed consequat pretium quam, at ullamcorper nunc euismod sed. Vestibulum vel lacus risus.</p>' );
+    }
+} );

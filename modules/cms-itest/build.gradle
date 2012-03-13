@@ -1,5 +1,0 @@
-
-dependencies {
-	compile project(':cms-core')
-	testRuntime 'com.h2database:h2:1.3.151'
-}

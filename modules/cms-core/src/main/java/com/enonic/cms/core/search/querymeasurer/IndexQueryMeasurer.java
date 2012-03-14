@@ -13,10 +13,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasureAvgTimeDiffComparator;
-import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasureInvocationComparator;
-import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasurerAvgTimeComparator;
-import com.enonic.cms.core.search.querymeasurer.comparator.IndexQueryMeasurerMaxTimeComparator;
+import com.enonic.cms.core.search.querymeasurer.comparators.*;
 
 /**
  * Created by IntelliJ IDEA.

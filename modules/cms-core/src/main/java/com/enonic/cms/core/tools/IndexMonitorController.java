@@ -24,6 +24,7 @@ import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
+import com.enonic.cms.core.search.query.QueryTranslator;
 import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasure;
 import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasurer;
 import com.enonic.cms.core.search.querymeasurer.QueryDiffEntry;
@@ -53,6 +54,7 @@ public class IndexMonitorController
 
     private ElasticSearchIndexService elasticSearchIndexService;
 
+    private QueryTranslator elasticSearchQueryTranslator;
 
     private IndexQueryMeasurer indexQueryMeasurer;
 
@@ -67,6 +69,7 @@ public class IndexMonitorController
         final String queryContent = req.getParameter( "queryContent" );
 
         clearQueryMeasures( req );
+        clearDiffEntries( req );
 
         SortValue orderBy = getOrderBy( req );
 
@@ -99,6 +102,7 @@ public class IndexMonitorController
 
             model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
             model.put( "queryResultDiffList", createQueryResultDiffList() );
+
             process( req, res, model, "indexMonitorDiffList" );
         }
 

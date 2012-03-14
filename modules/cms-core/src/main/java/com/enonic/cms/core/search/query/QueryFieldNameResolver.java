@@ -77,5 +77,10 @@ public class QueryFieldNameResolver
         return CONTENT_TYPE_PREFIX + "key" + NUMERIC_FIELD_POSTFIX;
     }
 
+    public static String getContentStatusQueryFieldName()
+    {
+        return "status_numeric";
+    }
+
 
 }

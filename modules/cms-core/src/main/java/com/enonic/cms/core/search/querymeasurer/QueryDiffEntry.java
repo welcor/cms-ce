@@ -2,13 +2,12 @@ package com.enonic.cms.core.search.querymeasurer;
 
 
 import java.io.Serializable;
-import java.util.HashSet;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
 
 public class QueryDiffEntry
     implements Serializable
@@ -21,20 +20,30 @@ public class QueryDiffEntry
 
     private ContentIndexQuery fullQuery;
 
+    private String elasticSearchQuery;
+
+    private String hibernateQuery;
+
     private int newSize;
 
     private int oldSize;
 
+    private int newTotalCount;
+
+    private int oldTotalCount;
+
     public QueryDiffEntry( final IndexQuerySignature querySignature, final ImmutableSet<ContentKey> inNewOnly,
-                           final ImmutableSet<ContentKey> inOldOnly, final ContentIndexQuery fullQuery, final int newSize,
-                           final int oldSize )
+                           final ImmutableSet<ContentKey> inOldOnly, final ContentIndexQuery fullQuery, ContentResultSet oldResultSet,
+                           ContentResultSet newResultSet )
     {
         this.querySignature = querySignature;
         this.inNewOnly = inNewOnly;
         this.inOldOnly = inOldOnly;
         this.fullQuery = fullQuery;
-        this.newSize = newSize;
-        this.oldSize = oldSize;
+        this.newSize = newResultSet.getKeys().size();
+        this.oldSize = oldResultSet.getKeys().size();
+        this.newTotalCount = newResultSet.getTotalCount();
+        this.oldTotalCount = oldResultSet.getTotalCount();
     }
 
     public IndexQuerySignature getQuerySignature()
@@ -80,6 +89,36 @@ public class QueryDiffEntry
     public int getOldSize()
     {
         return oldSize;
+    }
+
+    public String getElasticSearchQuery()
+    {
+        return elasticSearchQuery;
+    }
+
+    public void setElasticSearchQuery( final String elasticSearchQuery )
+    {
+        this.elasticSearchQuery = elasticSearchQuery;
+    }
+
+    public String getHibernateQuery()
+    {
+        return hibernateQuery;
+    }
+
+    public void setHibernateQuery( final String hibernateQuery )
+    {
+        this.hibernateQuery = hibernateQuery;
+    }
+
+    public int getNewTotalCount()
+    {
+        return newTotalCount;
+    }
+
+    public int getOldTotalCount()
+    {
+        return oldTotalCount;
     }
 }
 

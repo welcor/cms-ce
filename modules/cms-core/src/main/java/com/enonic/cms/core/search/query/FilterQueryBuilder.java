@@ -15,6 +15,7 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.MissingFilterBuilder;
 import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.RangeFilterBuilder;
+import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.index.query.TermsFilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
@@ -77,6 +78,11 @@ public class FilterQueryBuilder
             filtersToApply.add( publishedAtFilter );
         }
 
+        if ( query.hasContentStatusFilter() )
+        {
+            filtersToApply.add( buildContentStatusFilter( query.getContentStatusFilter() ) );
+        }
+
         if ( query.hasSecurityFilter() )
         {
             final FilterBuilder securityFilter = buildSecurityFilter( query.getSecurityFilter() );
@@ -114,13 +120,13 @@ public class FilterQueryBuilder
     {
         final String[] groups = new String[groupKeys.size()];
         int i = 0;
-        for ( GroupKey groupKey : groupKeys)
+        for ( GroupKey groupKey : groupKeys )
         {
             groups[i] = groupKey.toString().toLowerCase();
             i++;
         }
-        final TermsFilterBuilder securityFilter = FilterBuilders.termsFilter( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME,
-                                                                              groups );
+        final TermsFilterBuilder securityFilter =
+            FilterBuilders.termsFilter( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME, groups );
         return securityFilter;
     }
 
@@ -133,8 +139,7 @@ public class FilterQueryBuilder
         doAddFilters( builder, boolFilterBuilder, filtersToApply );
     }
 
-    private void doAddFilters( SearchSourceBuilder builder, BoolFilterBuilder boolFilterBuilder,
-                                      List<FilterBuilder> filtersToApply )
+    private void doAddFilters( SearchSourceBuilder builder, BoolFilterBuilder boolFilterBuilder, List<FilterBuilder> filtersToApply )
     {
         if ( filtersToApply.isEmpty() )
         {
@@ -207,6 +212,11 @@ public class FilterQueryBuilder
             query.must( subQuery );
         }
     */
+
+    private TermFilterBuilder buildContentStatusFilter( Integer contentStatus )
+    {
+        return new TermFilterBuilder( QueryFieldNameResolver.getContentStatusQueryFieldName(), contentStatus );
+    }
 
     private TermsFilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
     {

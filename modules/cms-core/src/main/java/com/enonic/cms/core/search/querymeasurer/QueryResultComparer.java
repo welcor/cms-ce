@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.index.TranslatedQuery;
+import com.enonic.cms.core.content.index.translator.ContentQueryTranslator;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.query.QueryTranslator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,6 +31,10 @@ public class QueryResultComparer
 
     private final static String LS = System.getProperty( "line.separator" );
 
+    private QueryTranslator elasticSearchTranslator;
+
+    private ContentQueryTranslator hibernateTranslator = new ContentQueryTranslator();
+
     public void compareResults( ContentIndexQuery query, ContentResultSet resultNew, ContentResultSet resultOld )
     {
         final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query );
@@ -35,6 +45,11 @@ public class QueryResultComparer
         }
 
         checkedQueries.add( querySignature );
+
+        if ( resultNew.getKeys().size() == resultOld.getKeys().size() && resultNew.getTotalCount() == resultOld.getTotalCount() )
+        {
+            return;
+        }
 
         final HashSet<ContentKey> newResultContentKeys = Sets.newHashSet( resultNew.getKeys() );
         final HashSet<ContentKey> oldResultContentKeys = Sets.newHashSet( resultOld.getKeys() );
@@ -47,9 +62,24 @@ public class QueryResultComparer
             return;
         }
 
-        QueryDiffEntry queryDiffEntry =
-            new QueryDiffEntry( querySignature, newOnly, oldOnly, query, newResultContentKeys.size(), oldResultContentKeys.size() );
+        QueryDiffEntry queryDiffEntry = new QueryDiffEntry( querySignature, newOnly, oldOnly, query, resultOld, resultNew );
         queryDiffEntries.add( queryDiffEntry );
+
+        try
+        {
+            final SearchSourceBuilder esQuery = elasticSearchTranslator.build( query );
+            queryDiffEntry.setElasticSearchQuery( esQuery.toString() );
+
+            final TranslatedQuery hibernateQuery = hibernateTranslator.translate( query );
+            queryDiffEntry.setHibernateQuery( hibernateQuery.getQuery() );
+
+
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
     }
 
     public List<QueryDiffEntry> getQueryDiffEntries()
@@ -60,6 +90,12 @@ public class QueryResultComparer
     public void clear()
     {
         queryDiffEntries.clear();
+    }
+
+    @Autowired
+    public void setElasticSearchTranslator( final QueryTranslator elasticSearchTranslator )
+    {
+        this.elasticSearchTranslator = elasticSearchTranslator;
     }
 
 }

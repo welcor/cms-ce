@@ -60,7 +60,9 @@ public class TermQueryBuilderCreator
 
         if ( queryValue.isNumeric() )
         {
-            return QueryBuilders.termQuery( QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ), queryValue.getDoubleValue() );
+            return QueryBuilders.termQuery(
+                QueryFieldNameResolver.resolveQueryFieldName( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX ),
+                queryValue.getDoubleValue() );
         }
 
         if ( path.isDateField() && queryValue.isEmpty() )

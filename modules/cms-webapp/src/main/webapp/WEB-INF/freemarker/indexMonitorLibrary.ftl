@@ -26,8 +26,10 @@ ${measure.querySignature.queryDisplayValue}"
 <div class="measureTable">
 ${entry.querySignature.queryDisplayValue}"
     <table>
-        <th>New only (${entry.newSize} total)</th>
-        <th>Old (${entry.oldSize} total)</th>
+        <th>New only (count: ${entry.newSize}, total : ${entry.newTotalCount})</th>
+        <th>Old only (count: ${entry.oldSize}, total : ${entry.oldTotalCount})</th>
+        <th>Full ES-query</th>
+        <th>Full Hibernate-query</th>
         <tr>
             <td>
                 [#list entry.inNewOnly as contentKey]
@@ -38,6 +40,12 @@ ${entry.querySignature.queryDisplayValue}"
                 [#list entry.inOldOnly as contentKey]
                     <span id="diffListDetails- ${contentKey}" onclick="queryContent( ${contentKey} )">  ${contentKey}<br></span>
                 [/#list]
+            </td>
+            <td>
+                ${entry.elasticSearchQuery}
+            </td>
+            <td>
+                ${entry.hibernateQuery}
             </td>
 
         </tr>

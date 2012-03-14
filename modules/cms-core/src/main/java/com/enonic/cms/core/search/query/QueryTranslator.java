@@ -144,7 +144,8 @@ public class QueryTranslator
         {
             if ( value.isNumeric() )
             {
-                boolQuery.should( QueryBuilders.termQuery( field, value.getDoubleValue() ) );
+                boolQuery.should(
+                    QueryBuilders.termQuery( field + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, value.getDoubleValue() ) );
             }
             else
             {

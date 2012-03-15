@@ -43,8 +43,56 @@ public class ContentIndexServiceImplTest_customdata
         final ContentResultSet resultSet = contentIndexService.query( query );
         assertEquals( 1, resultSet.getTotalCount() );
         assertTrue( resultSet.containsContent( contentKey ) );
+    }
 
+    @Test
+    public void testDoubleTermQuery()
+    {
+        setUpStandardTestValues();
+
+        ContentIndexQuery query = new ContentIndexQuery( "data/person/age = 5 or data/person/age = 38.0 " );
+
+        final ContentResultSet resultSet = contentIndexService.query( query );
+        assertEquals( 2, resultSet.getTotalCount() );
 
     }
+
+    @Test
+    public void testDoubleRangeQuery()
+    {
+        setUpStandardTestValues();
+
+        ContentIndexQuery query = new ContentIndexQuery( "data/person/age > 5 and data/person/age < 38.0 " );
+
+        final ContentResultSet resultSet = contentIndexService.query( query );
+        assertEquals( 2, resultSet.getTotalCount() );
+    }
+
+
+    @Test
+    public void testDoubleInQuery()
+    {
+        setUpStandardTestValues();
+
+        ContentIndexQuery query = new ContentIndexQuery( "data/person/age in (28.0, 10.0)" );
+
+        final ContentResultSet resultSet = contentIndexService.query( query );
+        assertEquals( 2, resultSet.getTotalCount() );
+
+    }
+
+
+    @Test
+    public void testDoubleAndStringInQuery()
+    {
+        setUpStandardTestValues();
+
+        ContentIndexQuery query = new ContentIndexQuery( "data/person/age in (28.0, '10')" );
+
+        final ContentResultSet resultSet = contentIndexService.query( query );
+        assertEquals( 2, resultSet.getTotalCount() );
+
+    }
+
 
 }

@@ -24,6 +24,7 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -39,22 +40,25 @@ public class FilterQueryBuilder
 
     public void buildFilterQuery( SearchSourceBuilder builder, ContentIndexQuery contentIndexQuery )
     {
-        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
-
         List<FilterBuilder> filtersToApply = getListOfFiltersToApply( contentIndexQuery );
 
-        doAddFilters( builder, boolFilterBuilder, filtersToApply );
+        doAddFilters( builder, filtersToApply );
+    }
+
+    public void buildFilterQuery( SearchSourceBuilder builder, IndexValueQuery query )
+    {
+        List<FilterBuilder> filtersToApply = getListOfFiltersToApply( query );
+
+        doAddFilters( builder, filtersToApply );
     }
 
     private List<FilterBuilder> getListOfFiltersToApply( ContentIndexQuery query )
     {
         List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
 
-        final Collection<ContentKey> contentFilter = query.getContentFilter();
-
-        if ( contentFilter != null && !contentFilter.isEmpty() )
+        if ( query.getContentFilter() != null && !query.getContentFilter().isEmpty() )
         {
-            filtersToApply.add( buildContentFilter( contentFilter ) );
+            filtersToApply.add( buildContentFilter( query.getContentFilter() ) );
         }
 
         if ( query.hasSectionFilter() )
@@ -83,6 +87,12 @@ public class FilterQueryBuilder
             filtersToApply.add( buildContentStatusFilter( query.getContentStatusFilter() ) );
         }
 
+        if ( query.getCategoryAccessTypeFilter() != null && !query.getCategoryAccessTypeFilter().isEmpty() )
+        {
+            filtersToApply.add(
+                buildCategoryAccessTypeFilter( query.getCategoryAccessTypeFilter(), query.getCategoryAccessTypeFilterPolicy() ) );
+        }
+
         if ( query.hasSecurityFilter() )
         {
             final FilterBuilder securityFilter = buildSecurityFilter( query.getSecurityFilter() );
@@ -91,6 +101,55 @@ public class FilterQueryBuilder
 
         return filtersToApply;
     }
+
+    private List<FilterBuilder> getListOfFiltersToApply( IndexValueQuery query )
+    {
+        List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
+
+        if ( query.hasCategoryFilter() )
+        {
+            filtersToApply.add( buildCategoryFilter( query.getCategoryFilter() ) );
+        }
+
+        if ( query.hasContentTypeFilter() )
+        {
+            filtersToApply.add( buildContentTypeFilter( query.getContentTypeFilter() ) );
+        }
+
+        if ( query.hasSecurityFilter() )
+        {
+            final FilterBuilder securityFilter = buildSecurityFilter( query.getSecurityFilter() );
+            filtersToApply.add( securityFilter );
+        }
+
+        return filtersToApply;
+    }
+
+    private void doAddFilters( SearchSourceBuilder builder, List<FilterBuilder> filtersToApply )
+    {
+
+        if ( filtersToApply.isEmpty() )
+        {
+            return;
+        }
+
+        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+
+        if ( filtersToApply.size() == 1 )
+        {
+            builder.filter( filtersToApply.get( 0 ) );
+        }
+        else
+        {
+            for ( FilterBuilder filter : filtersToApply )
+            {
+                boolFilterBuilder.must( filter );
+            }
+
+            builder.filter( boolFilterBuilder );
+        }
+    }
+
 
     private FilterBuilder buildContentPublishedAtFilter( final DateTime dateTime )
     {
@@ -128,53 +187,6 @@ public class FilterQueryBuilder
         final TermsFilterBuilder securityFilter =
             FilterBuilders.termsFilter( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME, groups );
         return securityFilter;
-    }
-
-    public void buildFilterQuery( SearchSourceBuilder builder, IndexValueQuery query )
-    {
-        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
-
-        List<FilterBuilder> filtersToApply = getListOfFiltersToApply( query );
-
-        doAddFilters( builder, boolFilterBuilder, filtersToApply );
-    }
-
-    private void doAddFilters( SearchSourceBuilder builder, BoolFilterBuilder boolFilterBuilder, List<FilterBuilder> filtersToApply )
-    {
-        if ( filtersToApply.isEmpty() )
-        {
-            // Do nothing
-        }
-        else if ( filtersToApply.size() == 1 )
-        {
-            builder.filter( filtersToApply.get( 0 ) );
-        }
-        else
-        {
-            for ( FilterBuilder filter : filtersToApply )
-            {
-                boolFilterBuilder.must( filter );
-            }
-
-            builder.filter( boolFilterBuilder );
-        }
-    }
-
-    private List<FilterBuilder> getListOfFiltersToApply( IndexValueQuery query )
-    {
-        List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
-
-        if ( query.hasCategoryFilter() )
-        {
-            filtersToApply.add( buildCategoryFilter( query.getCategoryFilter() ) );
-        }
-
-        if ( query.hasContentTypeFilter() )
-        {
-            filtersToApply.add( buildContentTypeFilter( query.getContentTypeFilter() ) );
-        }
-
-        return filtersToApply;
     }
 
     /*
@@ -227,6 +239,37 @@ public class FilterQueryBuilder
     private TermsFilterBuilder buildContentFilter( Collection<ContentKey> contentKeys )
     {
         return new TermsFilterBuilder( QueryFieldNameResolver.getContentKeyQueryFieldName(), getKeysAsList( contentKeys ).toArray() );
+    }
+
+    private FilterBuilder buildCategoryAccessTypeFilter( final Collection<CategoryAccessType> categoryAccessTypeFilter,
+                                                         ContentIndexQuery.CategoryAccessTypeFilterPolicy policy )
+    {
+        if ( categoryAccessTypeFilter.size() == 1 )
+        {
+            return new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName(),
+                                          categoryAccessTypeFilter.iterator().next() );
+        }
+
+        final boolean must = policy.equals( ContentIndexQuery.CategoryAccessTypeFilterPolicy.AND );
+
+        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+
+        for ( CategoryAccessType type : categoryAccessTypeFilter )
+        {
+
+            final TermFilterBuilder term = new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName(), type );
+
+            if ( must )
+            {
+                boolFilterBuilder.must( term );
+            }
+            else
+            {
+                boolFilterBuilder.should( term );
+            }
+        }
+
+        return boolFilterBuilder;
     }
 
 

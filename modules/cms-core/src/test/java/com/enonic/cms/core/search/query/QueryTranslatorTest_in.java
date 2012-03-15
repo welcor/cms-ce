@@ -52,22 +52,22 @@ public class QueryTranslatorTest_in
             "    \"bool\" : {\n" +
             "      \"should\" : [ {\n" +
             "        \"term\" : {\n" +
-            "          \"key\" : 1.0\n" +
+            "          \"myIntField_numeric\" : 1.0\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"term\" : {\n" +
-            "          \"key\" : 2.0\n" +
+            "          \"myIntField_numeric\" : 2.0\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"term\" : {\n" +
-            "          \"key\" : 3.0\n" +
+            "          \"myIntField_numeric\" : 3.0\n" +
             "        }\n" +
             "      } ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key IN (1, 2, 3)" );
+        ContentIndexQuery query = createContentQuery( "myIntField IN (1, 2, 3)" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 

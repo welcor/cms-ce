@@ -61,7 +61,7 @@ public class TermQueryBuilderCreator
         if ( queryValue.isNumeric() )
         {
             return QueryBuilders.termQuery(
-                QueryFieldNameResolver.resolveQueryFieldName( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX ),
+                QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ),
                 queryValue.getDoubleValue() );
         }
 

@@ -66,15 +66,15 @@ public class QueryTranslatorTest_not_in
             "        \"bool\" : {\n" +
             "          \"should\" : [ {\n" +
             "            \"term\" : {\n" +
-            "              \"key\" : 1.0\n" +
+            "              \"myIntField_numeric\" : 1.0\n" +
             "            }\n" +
             "          }, {\n" +
             "            \"term\" : {\n" +
-            "              \"key\" : 2.0\n" +
+            "              \"myIntField_numeric\" : 2.0\n" +
             "            }\n" +
             "          }, {\n" +
             "            \"term\" : {\n" +
-            "              \"key\" : 3.0\n" +
+            "              \"myIntField_numeric\" : 3.0\n" +
             "            }\n" +
             "          } ]\n" +
             "        }\n" +
@@ -83,7 +83,7 @@ public class QueryTranslatorTest_not_in
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key NOT IN (1, 2, 3)" );
+        ContentIndexQuery query = createContentQuery( "myIntField NOT IN (1, 2, 3)" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 

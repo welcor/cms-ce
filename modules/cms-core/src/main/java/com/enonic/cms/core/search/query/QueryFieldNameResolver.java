@@ -82,5 +82,10 @@ public class QueryFieldNameResolver
         return "status_numeric";
     }
 
+    public static String getCategoryAccessTypeFieldName()
+    {
+        return "categoryaccesstype";
+    }
+
 
 }

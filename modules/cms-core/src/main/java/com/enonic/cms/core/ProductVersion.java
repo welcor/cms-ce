@@ -45,7 +45,7 @@ public final class ProductVersion
     {
         try
         {
-            Class.forName( "com.enonic.cms.ee.Marker" );
+            Class.forName( "com.enonic.cms.ee.Bootstrap" );
             return true;
         }
         catch ( final Exception e )

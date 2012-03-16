@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import com.enonic.cms.core.product.Product;
+import com.enonic.cms.core.ProductVersion;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.upgrade.UpgradeService;
@@ -54,9 +54,9 @@ public final class WelcomeController
         final boolean upgradeNeeded = modelUpgradeNeeded || softwareUpgradeNeeded;
 
         HashMap<String, Object> model = new HashMap<String, Object>();
-        model.put( "versionTitle", Product.getFullTitle() );
-        model.put( "versionTitleVersion", Product.getFullTitleAndVersion() );
-        model.put( "versionCopyright", Product.getCopyright() );
+        model.put( "versionTitle", ProductVersion.getFullTitle() );
+        model.put( "versionTitleVersion", ProductVersion.getFullTitleAndVersion() );
+        model.put( "versionCopyright", ProductVersion.getCopyright() );
         model.put( "baseUrl", createBaseUrl( req ) );
         if ( !upgradeNeeded )
         {

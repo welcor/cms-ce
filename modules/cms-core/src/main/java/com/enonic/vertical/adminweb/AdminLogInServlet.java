@@ -29,10 +29,10 @@ import com.enonic.esl.util.StringUtil;
 
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.ProductVersion;
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
-import com.enonic.cms.core.product.Product;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.LoginAdminUserCommand;
 import com.enonic.cms.core.security.PasswordGenerator;
@@ -326,8 +326,8 @@ public final class AdminLogInServlet
         }
 
         // version and copyright info
-        parameters.put( "version", Product.getVersion() );
-        parameters.put( "copyright", Product.getCopyright() );
+        parameters.put( "titleAndVersion", ProductVersion.getFullTitleAndVersion() );
+        parameters.put( "copyright", ProductVersion.getCopyright() );
 
         String selectedUserStore = (String) session.getAttribute( "selectedloginuserstore" );
         if ( StringUtils.isNotEmpty( selectedUserStore ) )
@@ -561,8 +561,8 @@ public final class AdminLogInServlet
         }
 
         // version and copyright info
-        parameters.put( "version", Product.getVersion() );
-        parameters.put( "copyright", Product.getCopyright() );
+        parameters.put( "titleAndVersion", ProductVersion.getFullTitleAndVersion() );
+        parameters.put( "copyright", ProductVersion.getCopyright() );
 
         String selectedUserStore = (String) session.getAttribute( "selectedloginuserstore" );
         if ( StringUtils.isNotEmpty( selectedUserStore ) )

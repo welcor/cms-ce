@@ -29,7 +29,7 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.core.product.Product;
+import com.enonic.cms.core.ProductVersion;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
 
@@ -103,7 +103,7 @@ public class SystemHandlerServlet
             if ( mode.equals( "system" ) )
             {
                 root.appendChild( buildJavaInfo( doc ) );
-                root.setAttribute( "version", Product.getVersion() );
+                root.setAttribute( "version", ProductVersion.getVersion() );
                 root.setAttribute( "modelVersion", String.valueOf( this.upgradeService.getCurrentModelNumber() ) );
                 root.appendChild( buildComponentsInfo( doc ) );
             }

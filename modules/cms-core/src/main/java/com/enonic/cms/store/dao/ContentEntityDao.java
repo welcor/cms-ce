@@ -9,26 +9,23 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.google.common.collect.Lists;
-
+import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentSpecification;
-import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.ContentVersionKey;
 import com.enonic.cms.core.content.RelatedContentEntity;
-import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
-import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("contentDao")
@@ -36,12 +33,20 @@ public class ContentEntityDao
     extends AbstractBaseEntityDao<ContentEntity>
     implements ContentDao
 {
+    private CacheFacade entityCache;
 
     public ContentEntity findByKey( ContentKey contentKey )
     {
         return get( ContentEntity.class, contentKey );
     }
 
+    public List<ContentEntity> findByKeys( final List<ContentKey> contentKeys )
+    {
+        final FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, getHibernateTemplate(),
+                                                                               new FindContentByKeysQuerier(
+                                                                                   getHibernateTemplate().getSessionFactory().getCurrentSession() ) );
+        return command.execute( contentKeys );
+    }
 
     @SuppressWarnings("unchecked")
     public List<ContentKey> findBySpecification( ContentSpecification specification, String orderBy, int count )
@@ -110,98 +115,14 @@ public class ContentEntityDao
 
     public Collection<RelatedChildContent> findRelatedChildrenByKeys( RelatedChildContentQuery relatedChildContentQuery )
     {
-        if ( relatedChildContentQuery.getContentVersions() == null || relatedChildContentQuery.getContentVersions().size() == 0 )
-        {
-            throw new IllegalArgumentException( "Given contentVersionKeys must contain values" );
-        }
-
-        String hql = getRelatedChildrenByKeyHQL( relatedChildContentQuery );
-
-        Query compiled = getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery( hql );
-        compiled.setCacheable( false );
-        compiled.setParameter( "deleted", 0 );
-        if ( !relatedChildContentQuery.isIncludeOfflineContent() )
-        {
-            compiled.setParameter( "status", ContentStatus.APPROVED.getKey() );
-            compiled.setParameter( "timeNow", relatedChildContentQuery.getNow().minuteOfHour().roundFloorCopy().toDate() );
-        }
-
-        final List<ContentVersionKey> contentVersionKeys = relatedChildContentQuery.getContentVersions();
-        for ( int i = 0; i < contentVersionKeys.size(); i++ )
-        {
-            compiled.setParameter( "cv" + i, contentVersionKeys.get( i ) );
-        }
-
-        if ( relatedChildContentQuery.hasSecurityFilter() )
-        {
-            List<GroupKey> securityFilter = Lists.newArrayList( relatedChildContentQuery.getSecurityFilter() );
-            for ( int i = 0; i < securityFilter.size(); i++ )
-            {
-                compiled.setParameter( "g" + i, securityFilter.get( i ) );
-            }
-        }
-
-        @SuppressWarnings({"unchecked"}) List<Object[]> list = compiled.list();
-
-        List<RelatedChildContent> relatedChildContrents = new ArrayList<RelatedChildContent>();
-        for ( Object[] row : list )
-        {
-            ContentVersionKey versionKey = (ContentVersionKey) row[0];
-            ContentEntity content = (ContentEntity) row[1];
-            RelatedChildContent relatedChildContent = new RelatedChildContent( versionKey, content );
-            relatedChildContrents.add( relatedChildContent );
-        }
-
-        return relatedChildContrents;
+        final FindRelatedChildrenCommand command = new FindRelatedChildrenCommand( entityCache, getHibernateTemplate() );
+        return command.execute( relatedChildContentQuery );
     }
 
     public Collection<RelatedParentContent> findRelatedParentByKeys( final RelatedParentContentQuery relatedParentContentQuery )
     {
-        if ( relatedParentContentQuery.getContents() == null || relatedParentContentQuery.getContents().size() == 0 )
-        {
-            throw new IllegalArgumentException( "Given contentKeys must contain values" );
-        }
-
-        final String hql = getRelatedParentsByKeyHQL( relatedParentContentQuery );
-
-        final Query compiled = getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery( hql );
-        compiled.setCacheable( false );
-        compiled.setParameter( "deleted", 0 );
-        if ( !relatedParentContentQuery.isIncludeOfflineContent() )
-        {
-            compiled.setParameter( "timeNow", relatedParentContentQuery.getNow().minuteOfHour().roundFloorCopy().toDate() );
-            compiled.setParameter( "status", ContentStatus.APPROVED.getKey() );
-        }
-
-        final List<ContentKey> contentKeys = relatedParentContentQuery.getContents();
-        for ( int i = 0; i < contentKeys.size(); i++ )
-        {
-            compiled.setParameter( "c" + i, contentKeys.get( i ) );
-        }
-
-        if ( relatedParentContentQuery.hasSecurityFilter() )
-        {
-            final List<GroupKey> securityFilter = Lists.newArrayList( relatedParentContentQuery.getSecurityFilter() );
-            for ( int i = 0; i < securityFilter.size(); i++ )
-            {
-                compiled.setParameter( "g" + i, securityFilter.get( i ) );
-            }
-        }
-
-        @SuppressWarnings({"unchecked"}) List<Object[]> list = compiled.list();
-
-        final List<RelatedParentContent> relatedChildContents = new ArrayList<RelatedParentContent>();
-        for ( Object[] row : list )
-        {
-            ContentKey childContentKey = (ContentKey) row[0];
-            ContentVersionKey parentContentMainVersionKey = (ContentVersionKey) row[1];
-            ContentEntity parentContent = (ContentEntity) row[2];
-            RelatedParentContent relatedParentContent =
-                new RelatedParentContent( childContentKey, parentContent, parentContentMainVersionKey );
-            relatedChildContents.add( relatedParentContent );
-        }
-
-        return relatedChildContents;
+        final FindRelatedParentsCommand command = new FindRelatedParentsCommand( entityCache, getHibernateTemplate() );
+        return command.execute( relatedParentContentQuery );
     }
 
     public List<ContentKey> findContentKeysByContentType( ContentTypeEntity contentType )
@@ -245,105 +166,6 @@ public class ContentEntityDao
         @SuppressWarnings({"unchecked"}) int count = ( (Number) compiled.uniqueResult() ).intValue();
 
         return count;
-    }
-
-    private String getRelatedChildrenByKeyHQL( final RelatedChildContentQuery relatedChildContentQuery )
-    {
-        final SelectBuilder hqlQuery = new SelectBuilder( 0 );
-        hqlQuery.addSelect( "rc.key.parentContentVersionKey" );
-        hqlQuery.addSelectColumn( "c" );
-        hqlQuery.addFromTable( RelatedContentEntity.class.getName(), "rc", SelectBuilder.NO_JOIN, null );
-        hqlQuery.addFromTable( ContentEntity.class.getName(), "c", SelectBuilder.NO_JOIN, null );
-        hqlQuery.addFromTable( ContentVersionEntity.class.getName(), "mainVersion", SelectBuilder.NO_JOIN, null );
-        hqlQuery.addFilter( "AND", "rc.key.childContentKey = c.key" );
-        hqlQuery.addFilter( "AND", "mainVersion.key = c.mainVersion.key" );
-        hqlQuery.addFilter( "AND", new InClauseBuilder<ContentVersionKey>( "rc.key.parentContentVersionKey",
-                                                                           relatedChildContentQuery.getContentVersions() )
-        {
-            public void appendValue( final StringBuffer sql, final ContentVersionKey value )
-            {
-                sql.append( ":cv" ).append( getIndex() );
-            }
-        }.toString() );
-        if ( !relatedChildContentQuery.isIncludeOfflineContent() )
-        {
-            hqlQuery.addFilter( "AND", "mainVersion.status = :status" );
-            hqlQuery.addFilter( "AND", "c.availableFrom <= :timeNow" );
-            hqlQuery.addFilter( "AND", "(c.availableTo is null OR c.availableTo > :timeNow)" );
-        }
-        hqlQuery.addFilter( "AND", "c.deleted = :deleted" );
-        if ( relatedChildContentQuery.hasSecurityFilter() )
-        {
-            final SelectBuilder securitySubQuery = new SelectBuilder( 0 );
-            securitySubQuery.addSelect( "ca.content.key" );
-            securitySubQuery.addFromTable( ContentAccessEntity.class.getName(), "ca", SelectBuilder.NO_JOIN, null );
-            securitySubQuery.addFilter( "AND", new InClauseBuilder<GroupKey>( "ca.group.key", relatedChildContentQuery.getSecurityFilter() )
-            {
-                public void appendValue( final StringBuffer sql, final GroupKey value )
-                {
-                    sql.append( ":g" + getIndex() );
-                }
-            }.toString() );
-            hqlQuery.append( "AND c.key IN ( " + securitySubQuery + " )" );
-        }
-        hqlQuery.addOrderBy( "c.createdAt" );
-        return hqlQuery.toString();
-    }
-
-    private String getRelatedParentsByKeyHQL( final RelatedParentContentQuery relatedParentContentQuery )
-    {
-        final SelectBuilder hqlQuery = new SelectBuilder( 0 );
-        hqlQuery.addSelect( "rc.key.childContentKey" );
-        hqlQuery.addSelectColumn( "c.mainVersion.key" );
-        hqlQuery.addSelectColumn( "c" );
-        hqlQuery.addFromTable( ContentVersionEntity.class.getName(), "mainVersion", SelectBuilder.NO_JOIN, null );
-        hqlQuery.addFromTable( RelatedContentEntity.class.getName(), "rc", SelectBuilder.NO_JOIN, null );
-        hqlQuery.addFromTable( ContentEntity.class.getName(), "c", SelectBuilder.NO_JOIN, null );
-
-        if ( relatedParentContentQuery.isIncludeOnlyMainVersions() )
-        {
-            hqlQuery.addFilter( "AND", "mainVersion.key = c.mainVersion.key" );
-        }
-        else
-        {
-            hqlQuery.addFilter( "AND", "c.key = mainVersion.content.key" );
-        }
-
-        hqlQuery.addFilter( "AND", "mainVersion.key = rc.key.parentContentVersionKey" );
-
-        // the content to find parents to
-        hqlQuery.addFilter( "AND", new InClauseBuilder<ContentKey>( "rc.key.childContentKey", relatedParentContentQuery.getContents() )
-        {
-            public void appendValue( final StringBuffer sql, final ContentKey value )
-            {
-                sql.append( ":c" ).append( getIndex() );
-            }
-        }.toString() );
-
-        if ( !relatedParentContentQuery.isIncludeOfflineContent() )
-        {
-            hqlQuery.addFilter( "AND", "mainVersion.status = :status" );
-            hqlQuery.addFilter( "AND", "c.availableFrom <= :timeNow" );
-            hqlQuery.addFilter( "AND", "(c.availableTo is null OR c.availableTo > :timeNow)" );
-        }
-        hqlQuery.addFilter( "AND", "c.deleted = :deleted" );
-        if ( relatedParentContentQuery.hasSecurityFilter() )
-        {
-            final SelectBuilder securitySubQuery = new SelectBuilder( 0 );
-            securitySubQuery.addSelect( "ca.content.key" );
-            securitySubQuery.addFromTable( ContentAccessEntity.class.getName(), "ca", SelectBuilder.NO_JOIN, null );
-            securitySubQuery.addFilter( "AND",
-                                        new InClauseBuilder<GroupKey>( "ca.group.key", relatedParentContentQuery.getSecurityFilter() )
-                                        {
-                                            public void appendValue( final StringBuffer sql, final GroupKey value )
-                                            {
-                                                sql.append( ":g" + getIndex() );
-                                            }
-                                        }.toString() );
-            hqlQuery.append( "AND c.key IN ( " + securitySubQuery + " )" );
-        }
-        hqlQuery.addOrderBy( "c.createdAt" );
-        return hqlQuery.toString();
     }
 
     public String getNumberOfRelatedParentsByKeyHQL( List<ContentKey> contentKeys )
@@ -390,5 +212,11 @@ public class ContentEntityDao
     public EntityPageList<ContentEntity> findAll( int index, int count )
     {
         return findPageList( ContentEntity.class, "x.deleted = 0", index, count );
+    }
+
+    @Autowired
+    public void setCacheManager( CacheManager cacheManager )
+    {
+        this.entityCache = cacheManager.getOrCreateCache( "entity" );
     }
 }

@@ -32,7 +32,6 @@ import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.UnitEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.content.resultset.ContentVersionResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContent;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.language.LanguageEntity;
@@ -148,8 +147,6 @@ public class ContentXMLCreator
 
     private boolean includeDraftInfo = false;
 
-    private String resultRootName;
-
     private static final String ASSIGNMENT_DUEDATE_XML_KEY = "assignment-due-date";
 
     private static final String ASSIGNEE_XML_KEY = "assignee";
@@ -169,28 +166,6 @@ public class ContentXMLCreator
     {
         ContentEntity content = version.getContent();
         return doCreateContentElement( content, version, runningUser, includeContentData, false );
-    }
-
-    public XMLDocument createContentsDocument( UserEntity runningUser, ContentAndVersion contentAndVersion,
-                                               RelatedContentResultSet children )
-    {
-        Element contentsEl = new Element( "contents" );
-
-        relatedContentKeysXmlCreator = new RelatedContentKeysXmlCreator( children );
-
-        final Element contentEl =
-            doCreateContentElement( contentAndVersion.getContent(), contentAndVersion.getVersion(), runningUser, includeContentData,
-                                    false );
-        contentEl.addContent( relatedContentKeysXmlCreator.createForContent( contentAndVersion.getVersion() ) );
-
-        contentsEl.addContent( contentEl );
-
-        if ( includeRelatedContentsInfo )
-        {
-            contentsEl.addContent( doCreateRelatedContentsElement( runningUser, children ) );
-        }
-
-        return XMLDocumentFactory.create( new Document( contentsEl ) );
     }
 
     public Element createContentElement( UserEntity runningUser, ContentAndVersion contentAndVersion )
@@ -295,55 +270,6 @@ public class ContentXMLCreator
 
     }
 
-    public XMLDocument createContentVersionsDocument( UserEntity user, ContentVersionResultSet contentVersionResultSet,
-                                                      RelatedContentResultSet relatedContents )
-    {
-        if ( contentVersionResultSet == null )
-        {
-            throw new IllegalArgumentException( "The ContentVersionResultSet argument may not be NULL" );
-        }
-        if ( relatedContents == null )
-        {
-            throw new IllegalArgumentException( "The RelatedContentResultSet argument may not be NULL" );
-        }
-
-        if ( contentVersionResultSet.hasErrors() )
-        {
-            return doCreateErrorDocument( contentVersionResultSet.getErrors(), index, count );
-        }
-
-        relatedContentKeysXmlCreator = new RelatedContentKeysXmlCreator( relatedContents );
-
-        final Element contentsEl = createContentsElement();
-
-        for ( int i = 0; i < contentVersionResultSet.getLength(); i++ )
-        {
-            final ContentVersionEntity contentVersion = contentVersionResultSet.getContent( i );
-            final Element contentEl =
-                doCreateContentElement( contentVersion.getContent(), contentVersion, user, includeContentData, false );
-            contentEl.addContent( relatedContentKeysXmlCreator.createForContent( contentVersion ) );
-
-            contentsEl.addContent( contentEl );
-        }
-
-        contentsEl.setAttribute( "totalcount", Integer.toString( contentVersionResultSet.getTotalCount() ) );
-        // searchcount is deprecated, since it is the same as totalCount - to be removed some beautiful day
-        // (jvs@2008-07-01)
-        contentsEl.setAttribute( "searchcount", Integer.toString( contentVersionResultSet.getTotalCount() ) );
-        contentsEl.setAttribute( "index", Integer.toString( index ) );
-        contentsEl.setAttribute( "count", Integer.toString( count ) );
-        contentsEl.setAttribute( "resultcount", Integer.toString( contentVersionResultSet.getLength() ) );
-
-        if ( includeRelatedContentsInfo )
-        {
-            final Element relatedContentsElement = doCreateRelatedContentsElement( user, relatedContents );
-            contentsEl.addContent( relatedContentsElement );
-        }
-
-        return XMLDocumentFactory.create( new Document( contentsEl ) );
-
-    }
-
     public XMLDocument createContentVersionsDocument( UserEntity user, ContentResultSet contentResultSet,
                                                       RelatedContentResultSet relatedContents )
     {
@@ -413,10 +339,6 @@ public class ContentXMLCreator
 
     private Element createContentsElement()
     {
-        if ( resultRootName != null && resultRootName.length() > 0 )
-        {
-            return new Element( resultRootName );
-        }
         return new Element( DEFAULT_RESULTROOTNAME );
     }
 
@@ -577,7 +499,7 @@ public class ContentXMLCreator
 
         if ( ( includeVersionsInfoForPortal || includeVersionsInfoForClient ) && !isRelatedContent )
         {
-            final Element versionsEl = doCreateVersionsElementForSite( content );
+            final Element versionsEl = doCreateVersionsElementForPortal( content );
             contentEl.addContent( versionsEl );
         }
 
@@ -700,12 +622,11 @@ public class ContentXMLCreator
         return versionsEl;
     }
 
-    private Element doCreateVersionsElementForSite( ContentEntity content )
+    private Element doCreateVersionsElementForPortal( final ContentEntity content )
     {
         final Element versionsEl = new Element( "versions" );
 
-        ArrayList<ContentVersionEntity> versions = new ArrayList<ContentVersionEntity>( content.getVersionCount() );
-
+        final List<ContentVersionEntity> versions = new ArrayList<ContentVersionEntity>( content.getVersionCount() );
         for ( ContentVersionEntity version : content.getVersions() )
         {
             versions.add( version );
@@ -886,7 +807,7 @@ public class ContentXMLCreator
             }
             else
             {
-                return 0;
+                return entity1.getKey().toInt() > entity2.getKey().toInt() ? 1 : -1;
             }
         }
     }
@@ -970,11 +891,6 @@ public class ContentXMLCreator
         includeRelatedContentsInfo = value;
     }
 
-    public boolean isIncludeRepositoryPathInfo()
-    {
-        return includeRepositoryPathInfo;
-    }
-
     public void setIncludeRepositoryPathInfo( boolean includeRepositoryPathInfo )
     {
         this.includeRepositoryPathInfo = includeRepositoryPathInfo;
@@ -985,19 +901,9 @@ public class ContentXMLCreator
         this.includeSectionActivationInfo = includeSectionActivationInfo;
     }
 
-    public void setResultRootName( final String value )
-    {
-        resultRootName = value;
-    }
-
     public void setOnlineCheckDate( Date onlineCheckDate )
     {
         this.onlineCheckDate = onlineCheckDate;
-    }
-
-    public boolean isIncludeUserRightsInfoForRelated()
-    {
-        return includeUserRightsInfoForRelated;
     }
 
     public void setIncludeUserRightsInfoForRelated( final boolean includeUserRightsInfoForRelated,
@@ -1012,11 +918,6 @@ public class ContentXMLCreator
     public void setOrderByCreatedAtDescending( boolean orderByCreatedAtDescending )
     {
         this.orderByCreatedAtDescending = orderByCreatedAtDescending;
-    }
-
-    public boolean isIncludeDraftInfo()
-    {
-        return includeDraftInfo;
     }
 
     public void setIncludeDraftInfo( boolean includeDraftInfo )

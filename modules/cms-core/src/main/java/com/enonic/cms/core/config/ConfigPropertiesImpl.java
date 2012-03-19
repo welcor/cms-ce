@@ -1,5 +1,6 @@
 package com.enonic.cms.core.config;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 
@@ -41,6 +42,56 @@ final class ConfigPropertiesImpl
         }
 
         return this.converter.convert(value, type);
+    }
+
+    public String getString( final String key )
+    {
+        return getValue( key, String.class );
+    }
+
+    public String getString( final String key, final String defValue )
+    {
+        return getValue( key, String.class, defValue );
+    }
+
+    public Boolean getBoolean( final String key )
+    {
+        return getValue( key, Boolean.class );
+    }
+
+    public Boolean getBoolean( final String key, final Boolean defValue )
+    {
+        return getValue( key, Boolean.class, defValue );
+    }
+
+    public Integer getInteger( final String key )
+    {
+        return getValue( key, Integer.class );
+    }
+
+    public Integer getInteger( final String key, final Integer defValue )
+    {
+        return getValue( key, Integer.class, defValue );
+    }
+
+    public Long getLong( final String key )
+    {
+        return getValue( key, Long.class );
+    }
+
+    public Long getLong( final String key, final Long defValue )
+    {
+        return getValue( key, Long.class, defValue );
+    }
+
+    public File getFile( final String key )
+    {
+        return getValue( key, File.class );
+    }
+
+    public File getFile( final String key, final File defValue )
+    {
+        return getValue( key, File.class, defValue );
     }
 
     public Properties getProperties()

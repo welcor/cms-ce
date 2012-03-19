@@ -9,127 +9,124 @@ final class GlobalConfigImpl
 {
     private final ConfigProperties props;
 
-    public GlobalConfigImpl(final ConfigProperties props)
+    public GlobalConfigImpl( final ConfigProperties props )
     {
         this.props = props;
     }
 
     public File getHomeDir()
     {
-        return this.props.getValue("cms.home", File.class);
+        return this.props.getFile( "cms.home" );
     }
 
     public File getConfigDir()
     {
-        return new File(getHomeDir(), "config");
+        return new File( getHomeDir(), "config" );
     }
 
     public String getJdbcDialect()
     {
-        return this.props.getValue("cms.jdbc.dialect", String.class);
+        return this.props.getString( "cms.jdbc.dialect" );
     }
 
     public File getPluginConfigDir()
     {
-        return this.props.getValue("cms.plugin.configDir", File.class);
+        return this.props.getFile( "cms.plugin.configDir" );
     }
 
     public File getPluginDeployDir()
     {
-        return this.props.getValue("cms.plugin.deployDir", File.class);
+        return this.props.getFile( "cms.plugin.deployDir" );
     }
 
     public long getPluginScanPeriod()
     {
-        return this.props.getValue("cms.plugin.scanPeriod", Long.class);
+        return this.props.getLong( "cms.plugin.scanPeriod" );
     }
 
     public File getCountriesFile()
     {
-        return new File(getConfigDir(), "countries.xml");
+        return new File( getConfigDir(), "countries.xml" );
     }
 
     public File getVirtualHostConfigFile()
     {
-        return new File(getConfigDir(), "vhost.properties");
+        return new File( getConfigDir(), "vhost.properties" );
     }
 
     public boolean getJdbcLogging()
     {
-        return this.props.getValue("cms.jdbc.logging", Boolean.class);
+        return this.props.getBoolean( "cms.jdbc.logging" );
     }
 
     public boolean getJdbcConnectionTrace()
     {
-        return this.props.getValue("cms.jdbc.connectionTrace", Boolean.class);
+        return this.props.getBoolean( "cms.jdbc.connectionTrace" );
     }
 
     public int getTxDefaultTimeout()
     {
-        return this.props.getValue("cms.tx.defaultTimeout", Integer.class);
+        return this.props.getInteger( "cms.tx.defaultTimeout" );
     }
 
     public File getBlobStoreDir()
     {
-        return this.props.getValue("cms.blobstore.dir", File.class);
+        return this.props.getFile( "cms.blobstore.dir" );
     }
 
     public int getAutoLoginTimeout()
     {
-        return this.props.getValue("com.enonic.vertical.presentation.autologinTimeout", Integer.class);
+        return this.props.getInteger( "com.enonic.vertical.presentation.autologinTimeout" );
     }
 
     public String getAdminDefaultLanguage()
     {
-        return this.props.getValue("cms.admin.defaultLanguage", String.class);
+        return this.props.getString( "cms.admin.defaultLanguage" );
     }
 
     public String getMainSmtpHost()
     {
-        return this.props.getValue("cms.mail.smtpHost", String.class);
+        return this.props.getString( "cms.mail.smtpHost" );
     }
 
     public String getAdminEmail()
     {
-        return this.props.getValue("cms.admin.email", String.class);
+        return this.props.getString( "cms.admin.email" );
     }
 
     public String getAdminPassword()
     {
-        return this.props.getValue("cms.admin.password", String.class);
+        return this.props.getString( "cms.admin.password" );
     }
 
     public boolean getLivePortalTraceEnabled()
     {
-        return this.props.getValue("cms.livePortalTrace.enabled", Boolean.class);
+        return this.props.getBoolean( "cms.livePortalTrace.enabled" );
     }
 
     public int getLivePortalTraceLongestSize()
     {
-        return this.props.getValue("cms.livePortalTrace.longest.size", Integer.class);
+        return this.props.getInteger( "cms.livePortalTrace.longest.size" );
     }
 
     public int getLivePortalTraceHistorySize()
     {
-        return this.props.getValue("cms.livePortalTrace.history.size", Integer.class);
+        return this.props.getInteger( "cms.livePortalTrace.history.size" );
     }
 
-    @Override
     public boolean isSchedulerEnabled()
     {
-        return this.props.getValue("cms.scheduler.enabled", Boolean.class);
+        return this.props.getBoolean( "cms.scheduler.enabled" );
     }
 
-    @Override
     public int getSchedulerTxTimeout()
     {
-        return this.props.getValue("cms.scheduler.tx.timeout", Integer.class);
+        return this.props.getInteger( "cms.scheduler.tx.timeout" );
     }
 
-    @Override
     public File getElasticStorageDir()
     {
-        return this.props.getValue( "cms.search.index.dir", File.class );
+        return this.props.getFile( "cms.search.index.dir" );
     }
 
     public Map<String, String> getMap()

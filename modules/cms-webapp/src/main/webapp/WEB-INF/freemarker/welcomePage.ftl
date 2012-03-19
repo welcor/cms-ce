@@ -37,13 +37,6 @@
 </div>
 
 <div id="content-outer" class="clearfix">
-    [#if licenseError == true]
-      <div class="error">
-        <b>${licenseMessage}</b><br/>
-        Update your license key in cms.properties. If you do not have a valid license, please contact
-        <a href="http://www.enonic.com/licensing">Enonic</a>.
-      </div>
-    [/#if]
     [#if modelUpgradeNeeded == true]
         <div class="error">
             <strong>Upgrade Needed!</strong>

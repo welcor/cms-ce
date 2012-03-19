@@ -76,6 +76,7 @@ import com.enonic.cms.api.client.model.UpdateFileContentParams;
 import com.enonic.cms.api.client.model.preference.Preference;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
+import com.enonic.cms.core.boot.ConfigProperties;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
@@ -256,7 +257,8 @@ public final class InternalClientImpl
         this.sitePropertiesService = sitePropertiesService;
     }
 
-    public void setCmsProperties( Properties cmsProperties )
+    @Autowired
+    public void setCmsProperties( ConfigProperties cmsProperties )
     {
         this.cmsProperties = cmsProperties;
     }

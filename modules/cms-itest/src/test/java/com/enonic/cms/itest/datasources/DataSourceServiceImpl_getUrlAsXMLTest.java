@@ -21,6 +21,7 @@ import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
+import com.enonic.cms.core.boot.ConfigProperties;
 import com.enonic.cms.core.http.HTTPService;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.security.SecurityService;
@@ -68,7 +69,7 @@ public class DataSourceServiceImpl_getUrlAsXMLTest
         dataSourceService.setUserDao( userDao );
         dataSourceService.setHTTPService( httpService );
 
-        Properties props = new Properties();
+        ConfigProperties props = new ConfigProperties();
         props.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
                            "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
         VerticalProperties.getVerticalProperties().setProperties( props );

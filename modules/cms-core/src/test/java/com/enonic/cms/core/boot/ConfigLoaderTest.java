@@ -1,4 +1,4 @@
-package com.enonic.cms.core.config;
+package com.enonic.cms.core.boot;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,8 +11,7 @@ import org.springframework.core.env.StandardEnvironment;
 
 import java.io.*;
 import java.util.Properties;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Assert;
 
 public class ConfigLoaderTest
 {
@@ -96,13 +95,13 @@ public class ConfigLoaderTest
         setupClassPathProperties();
         
         final Properties props = this.configLoader.load();
-        assertNotNull( props );
-        assertEquals( 5, props.size() );
-        assertEquals( this.homeDir.toString(), props.getProperty( "cms.home" ) );
-        assertEquals( this.homeDir.toURI().toString(), props.getProperty( "cms.home.uri" ) );
-        assertEquals( "classpath.value", props.getProperty( "classpath.param" ) );
-        assertEquals( "classpath", props.getProperty( "override" ) );
-        assertEquals( "classpath.value ${system.param}", props.getProperty( "interpolate" ) );
+        Assert.assertNotNull( props );
+        Assert.assertEquals( 5, props.size() );
+        Assert.assertEquals( this.homeDir.toString(), props.getProperty( "cms.home" ) );
+        Assert.assertEquals( this.homeDir.toURI().toString(), props.getProperty( "cms.home.uri" ) );
+        Assert.assertEquals( "classpath.value", props.getProperty( "classpath.param" ) );
+        Assert.assertEquals( "classpath", props.getProperty( "override" ) );
+        Assert.assertEquals( "classpath.value ${system.param}", props.getProperty( "interpolate" ) );
     }
 
     @Test
@@ -113,14 +112,14 @@ public class ConfigLoaderTest
         setupHomeProperties();
         
         final Properties props = this.configLoader.load();
-        assertNotNull( props );
-        assertEquals( 6, props.size() );
-        assertEquals( this.homeDir.toString(), props.getProperty( "cms.home" ) );
-        assertEquals( this.homeDir.toURI().toString(), props.getProperty( "cms.home.uri" ) );
-        assertEquals( "home.value", props.getProperty( "home.param" ) );
-        assertEquals( "classpath.value", props.getProperty( "classpath.param" ) );
-        assertEquals( "home", props.getProperty( "override" ) );
-        assertEquals( "home.value ${system.param}", props.getProperty( "interpolate" ) );
+        Assert.assertNotNull( props );
+        Assert.assertEquals( 6, props.size() );
+        Assert.assertEquals( this.homeDir.toString(), props.getProperty( "cms.home" ) );
+        Assert.assertEquals( this.homeDir.toURI().toString(), props.getProperty( "cms.home.uri" ) );
+        Assert.assertEquals( "home.value", props.getProperty( "home.param" ) );
+        Assert.assertEquals( "classpath.value", props.getProperty( "classpath.param" ) );
+        Assert.assertEquals( "home", props.getProperty( "override" ) );
+        Assert.assertEquals( "home.value ${system.param}", props.getProperty( "interpolate" ) );
     }
 
     @Test
@@ -131,12 +130,12 @@ public class ConfigLoaderTest
         setupClassPathProperties();
 
         final Properties props = this.configLoader.load();
-        assertNotNull( props );
-        assertEquals( 5, props.size() );
-        assertEquals( this.homeDir.toString(), props.getProperty( "cms.home" ) );
-        assertEquals( this.homeDir.toURI().toString(), props.getProperty( "cms.home.uri" ) );
-        assertEquals( "classpath.value", props.getProperty( "classpath.param" ) );
-        assertEquals( "classpath", props.getProperty( "override" ) );
-        assertEquals( "classpath.value system.value", props.getProperty( "interpolate" ) );
+        Assert.assertNotNull( props );
+        Assert.assertEquals( 5, props.size() );
+        Assert.assertEquals( this.homeDir.toString(), props.getProperty( "cms.home" ) );
+        Assert.assertEquals( this.homeDir.toURI().toString(), props.getProperty( "cms.home.uri" ) );
+        Assert.assertEquals( "classpath.value", props.getProperty( "classpath.param" ) );
+        Assert.assertEquals( "classpath", props.getProperty( "override" ) );
+        Assert.assertEquals( "classpath.value system.value", props.getProperty( "interpolate" ) );
     }
 }

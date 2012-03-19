@@ -12,9 +12,7 @@
   <context:component-scan base-package="com.enonic.cms.business"/>
   <context:component-scan base-package="com.enonic.cms.framework"/>
 
-  <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties">
-    <property name="properties" value="#{config.properties}"/>
-  </bean>
+  <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
@@ -24,7 +22,7 @@
 
   <bean id="dialect" class="com.enonic.cms.framework.jdbc.dialect.DialectFactory">
     <property name="dataSource" ref="dataSource"/>
-    <property name="dialectName" value="#{config.jdbcDialect}"/>
+    <property name="dialectName" value="${cms.jdbc.dialect}"/>
   </bean>
 
   <bean id="sessionFactory" class="com.enonic.cms.store.support.HibernateConfigurator">
@@ -33,7 +31,7 @@
     <property name="cacheManager" ref="cacheFacadeManager"/>
     <property name="configLocation" value="classpath:com/enonic/cms/store/hibernate.cfg.xml"/>
     <property name="useTransactionAwareDataSource" value="false"/>
-    <property name="logging" value="#{config.jdbcLogging}"/>
+    <property name="logging" value="${cms.jdbc.logging}"/>
   </bean>
 
   <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
@@ -41,7 +39,7 @@
   </bean>
 
   <bean id="decoratorManager" class="com.enonic.cms.store.support.DecoratorManager">
-    <property name="logging" value="#{config.jdbcLogging}"/>
+    <property name="logging" value="${cms.jdbc.logging}"/>
     <property name="sessionFactory" ref="sessionFactory"/>
     <property name="cacheManager" ref="cacheFacadeManager"/>
     <property name="dialect" ref="dialect"/>
@@ -56,7 +54,7 @@
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
     <property name="dataSource" ref="dataSource"/>
     <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="defaultTimeout" value="#{config.txDefaultTimeout}"/>
+    <property name="defaultTimeout" value="${cms.tx.defaultTimeout}"/>
   </bean>
 
   <bean name="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
@@ -153,7 +151,7 @@
 
   <bean id="adminConsoleTranslationService"
         class="com.enonic.cms.core.AdminConsoleTranslationService" init-method="init">
-    <property name="defaultLanguageCode" value="#{config.adminDefaultLanguage}"/>
+    <property name="defaultLanguageCode" value="${cms.admin.defaultLanguage}"/>
   </bean>
 
   <bean id="adminConsoleLoginAccessResolver"
@@ -168,15 +166,15 @@
   <bean id="timeService" class="com.enonic.cms.core.time.SystemTimeService"/>
 
   <bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
-    <property name="host" value="#{config.mainSmtpHost}"/>
+    <property name="host" value="${cms.mail.smtpHost}"/>
   </bean>
 
   <bean id="sendMailService" class="com.enonic.cms.core.mail.SendMailServiceImpl">
-    <property name="fromMail" value="#{config.adminEmail}"/>
+    <property name="fromMail" value="${cms.admin.email}"/>
   </bean>
 
   <bean id="loginService" class="com.enonic.cms.core.login.LoginServiceImpl">
-    <property name="autologinTimeoutInDays" value="#{config.autoLoginTimeout}"/>
+    <property name="autologinTimeoutInDays" value="${com.enonic.vertical.presentation.autologinTimeout}"/>
   </bean>
 
   <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
@@ -187,7 +185,6 @@
     <property name="userDao" ref="userDao"/>
     <property name="resourceService" ref="resourceService"/>
     <property name="preferenceService" ref="preferenceService"/>
-    <property name="cmsProperties" value="#{config.properties}"/>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
     <property name="securityService" ref="securityService"/>
     <property name="contentService" ref="contentService"/>
@@ -205,7 +202,6 @@
     <property name="userDao" ref="userDao"/>
     <property name="resourceService" ref="resourceService"/>
     <property name="preferenceService" ref="preferenceService"/>
-    <property name="cmsProperties" value="#{config.properties}"/>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
     <property name="securityService" ref="securityService"/>
     <property name="contentService" ref="contentService"/>
@@ -247,12 +243,12 @@
   </bean>
 
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
-    <property name="directory" value="#{config.blobStoreDir}"/>
+    <property name="directory" value="${cms.blobstore.dir}"/>
     <property name="imageCache" ref="imageCache"/>
   </bean>
 
   <bean id="blobStore" class="com.enonic.cms.framework.blob.file.FileBlobStore">
-    <property name="directory" value="#{config.blobStoreDir}"/>
+    <property name="directory" value="${cms.blobstore.dir}"/>
   </bean>
 
   <bean id="fileResourceService" class="com.enonic.cms.store.resource.FileResourceServiceImpl">
@@ -381,9 +377,9 @@
   </bean>
 
   <bean id="livePortalTraceService" class="com.enonic.cms.core.portal.livetrace.LivePortalTraceServiceImpl">
-    <property name="enabled" value="#{config.livePortalTraceEnabled}"/>
-    <property name="longestSize" value="#{config.livePortalTraceLongestSize}"/>
-    <property name="historySize" value="#{config.livePortalTraceHistorySize}"/>
+    <property name="enabled" value="${cms.livePortalTrace.enabled}"/>
+    <property name="longestSize" value="${cms.livePortalTrace.longest.size}"/>
+    <property name="historySize" value="${cms.livePortalTrace.history.size}"/>
   </bean>
 
   <bean id="pageRequestProcessorFactory"
@@ -592,11 +588,11 @@
   <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
-    <property name="mimetypesLocation" value="#{config.homeDir}/config/mimetypes.properties"/>
+    <property name="mimetypesLocation" value="${cms.home}/config/mimetypes.properties"/>
   </bean>
 
   <bean id="schedulerManager" class="com.enonic.vertical.work.quartz.QuartzSchedulerManager">
-    <property name="enabled" value="#{config.schedulerEnabled}"/>
+    <property name="enabled" value="${cms.scheduler.enabled}"/>
     <property name="clustered" value="true"/>
   </bean>
 
@@ -605,7 +601,7 @@
   <bean name="schedulerTranscationTemplate" class="org.springframework.transaction.support.TransactionTemplate">
     <property name="transactionManager" ref="transactionManager"/>
     <property name="propagationBehaviorName" value="PROPAGATION_REQUIRES_NEW"/>
-    <property name="timeout" value="#{config.schedulerTxTimeout}"/>
+    <property name="timeout" value="${cms.scheduler.tx.timeout}"/>
   </bean>
 
   <bean id="workRunner" class="com.enonic.vertical.work.WorkRunnerImpl">

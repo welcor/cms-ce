@@ -1,4 +1,4 @@
-package com.enonic.cms.core.config;
+package com.enonic.cms.core.boot;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,35 +14,40 @@ import com.enonic.cms.api.util.LogFacade;
 
 final class ConfigLoader
 {
-    private final static LogFacade LOG = LogFacade.get(ConfigLoader.class);
+    private final static LogFacade LOG = LogFacade.get( ConfigLoader.class );
 
     private final static String CMS_PROPERTIES = "config/cms.properties";
+
     private final static String DEFAULT_PROPERTIES = "com/enonic/vertical/default.properties";
 
     private final File homeDir;
+
     private final Environment env;
+
     private ClassLoader classLoader;
 
-    public ConfigLoader(final File homeDir, final Environment env)
+    public ConfigLoader( final File homeDir, final Environment env )
     {
         this.homeDir = homeDir;
         this.env = env;
-        setClassLoader(getClass().getClassLoader());
+        setClassLoader( getClass().getClassLoader() );
     }
 
-    public void setClassLoader(final ClassLoader classLoader)
+    public void setClassLoader( final ClassLoader classLoader )
     {
         this.classLoader = classLoader;
     }
 
-    public Properties load()
+    public ConfigProperties load()
     {
         final Properties props = new Properties();
         props.putAll( loadDefaultProperties() );
         props.putAll( loadCmsProperties() );
         props.putAll( getHomeDirProperties() );
 
-        return PropertiesUtil.interpolate(props, this.env);
+        final ConfigProperties config = new ConfigProperties();
+        config.putAll( PropertiesUtil.interpolate( props, this.env ) );
+        return config;
     }
 
     private Properties getHomeDirProperties()
@@ -59,7 +64,7 @@ final class ConfigLoader
         if ( in == null )
         {
             throw new IllegalArgumentException( "Could not find default.properties [" +
-                    DEFAULT_PROPERTIES + "] in classpath" );
+                                                    DEFAULT_PROPERTIES + "] in classpath" );
         }
 
         try
@@ -69,22 +74,26 @@ final class ConfigLoader
         catch ( final Exception e )
         {
             throw new IllegalArgumentException( "Could not load default.properties [" +
-                    DEFAULT_PROPERTIES + "] from classpath", e );
+                                                    DEFAULT_PROPERTIES + "] from classpath", e );
         }
     }
 
     private Properties loadCmsProperties()
     {
-        final File file = new File(this.homeDir, CMS_PROPERTIES);
-        if (!file.exists() || file.isDirectory()) {
-            LOG.info("Could not find cms.properties from [{0}]. Using defaults.", file.getAbsolutePath());
+        final File file = new File( this.homeDir, CMS_PROPERTIES );
+        if ( !file.exists() || file.isDirectory() )
+        {
+            LOG.info( "Could not find cms.properties from [{0}]. Using defaults.", file.getAbsolutePath() );
             return new Properties();
         }
 
-        try {
-            return loadFromStream(new FileInputStream(file));
-        } catch (final Exception e) {
-            LOG.errorCause("Failed to load cms.properties from [{0}]. Using defaults.", e, file.getAbsolutePath());
+        try
+        {
+            return loadFromStream( new FileInputStream( file ) );
+        }
+        catch ( final Exception e )
+        {
+            LOG.errorCause( "Failed to load cms.properties from [{0}]. Using defaults.", e, file.getAbsolutePath() );
         }
 
         return new Properties();

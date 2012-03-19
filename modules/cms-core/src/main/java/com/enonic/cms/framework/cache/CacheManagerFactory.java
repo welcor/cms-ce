@@ -10,8 +10,11 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.enonic.cms.framework.cache.standard.StandardCacheManager;
-import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.enonic.cms.core.boot.ConfigProperties;
 
 /**
  * This class switches between cache managers.
@@ -40,8 +43,8 @@ public final class CacheManagerFactory
         this.cacheManager.setProperties( this.properties );
     }
 
-    @Value("#{config.properties}")
-    public void setProperties( final Properties properties )
+    @Autowired
+    public void setProperties( final ConfigProperties properties )
     {
         this.properties = properties;
     }

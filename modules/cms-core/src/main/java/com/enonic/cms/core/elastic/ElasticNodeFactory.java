@@ -23,19 +23,16 @@ public final class ElasticNodeFactory
 
     private File storageDir;
 
-    @Override
     public Node getObject()
     {
         return this.node;
     }
 
-    @Override
     public Class<?> getObjectType()
     {
         return Node.class;
     }
 
-    @Override
     public boolean isSingleton()
     {
         return true;
@@ -67,7 +64,7 @@ public final class ElasticNodeFactory
         return settings.build();
     }
 
-    @Value("#{config.elasticStorageDir}")
+    @Value("${cms.search.index.dir}")
     public void setStorageDir( final File storageDir )
     {
         this.storageDir = storageDir;

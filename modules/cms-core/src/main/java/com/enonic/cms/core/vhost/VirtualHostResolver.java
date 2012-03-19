@@ -109,7 +109,7 @@ public final class VirtualHostResolver
         }
     }
 
-    @Value("#{config.virtualHostConfigFile}")
+    @Value("${cms.home}/config/vhost.properties")
     public void setConfigFile(final File file)
     {
         this.configFile = file;

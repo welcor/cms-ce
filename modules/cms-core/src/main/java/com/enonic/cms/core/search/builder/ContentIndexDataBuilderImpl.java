@@ -5,12 +5,16 @@
 package com.enonic.cms.core.search.builder;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.category.CategoryAccessEntity;
+import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
@@ -18,6 +22,7 @@ import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.security.group.GroupKey;
 
 
 public final class ContentIndexDataBuilderImpl
@@ -88,10 +93,14 @@ public final class ContentIndexDataBuilderImpl
     private void addAccessRights( ContentDocument contentDocument, XContentBuilder result )
         throws Exception
     {
-        Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
+        final CategoryEntity category = contentDocument.getCategory();
+        final Map<GroupKey, CategoryAccessEntity> categoryAccessRights =
+            category == null ? Collections.<GroupKey, CategoryAccessEntity>emptyMap() : category.getAccessRights();
+
+        final Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
         if ( !accessRights.isEmpty() )
         {
-            accessRightsBuilder.build( result, accessRights );
+            accessRightsBuilder.build( result, accessRights, categoryAccessRights );
         }
     }
 

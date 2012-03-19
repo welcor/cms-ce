@@ -1,5 +1,6 @@
 package com.enonic.cms.core.search.builder;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
@@ -51,7 +53,7 @@ public class ContentIndexDataAccessRightsBuilderTest
         contentAccessRights.add( accessRight4 );
 
         result.startObject();
-        accessRightsBuilder.build( result, contentAccessRights );
+        accessRightsBuilder.build( result, contentAccessRights, Collections.<GroupKey, CategoryAccessEntity>emptyMap() );
         result.endObject();
 
         final String jsonString = result.string();

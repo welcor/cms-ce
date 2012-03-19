@@ -89,8 +89,14 @@ public class FilterQueryBuilder
 
         if ( query.getCategoryAccessTypeFilter() != null && !query.getCategoryAccessTypeFilter().isEmpty() )
         {
-            filtersToApply.add(
-                buildCategoryAccessTypeFilter( query.getCategoryAccessTypeFilter(), query.getCategoryAccessTypeFilterPolicy() ) );
+
+            final FilterBuilder categoryAccessFilter =
+                buildCategoryAccessTypeFilter( query.getCategoryAccessTypeFilter(), query.getCategoryAccessTypeFilterPolicy(),
+                                               query.getSecurityFilter() );
+            if ( categoryAccessFilter != null )
+            {
+                filtersToApply.add( categoryAccessFilter );
+            }
         }
 
         if ( query.hasSecurityFilter() )
@@ -272,6 +278,51 @@ public class FilterQueryBuilder
         return boolFilterBuilder;
     }
 
+    private FilterBuilder buildCategoryAccessTypeFilter( final Collection<CategoryAccessType> categoryAccessTypeFilter,
+                                                         ContentIndexQuery.CategoryAccessTypeFilterPolicy policy,
+                                                         Collection<GroupKey> securityFilter )
+    {
+        // cannot apply category access type filter without security filter
+        if ( ( categoryAccessTypeFilter == null ) || ( securityFilter == null ) )
+        {
+            return null;
+        }
+
+        final String[] groups = new String[securityFilter.size()];
+        int i = 0;
+        for ( GroupKey groupKey : securityFilter )
+        {
+            groups[i] = groupKey.toString().toLowerCase();
+            i++;
+        }
+
+        if ( categoryAccessTypeFilter.size() == 1 )
+        {
+            CategoryAccessType type = categoryAccessTypeFilter.iterator().next();
+            return new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName( type ), groups );
+        }
+
+        final boolean must = policy.equals( ContentIndexQuery.CategoryAccessTypeFilterPolicy.AND );
+
+        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+
+        for ( CategoryAccessType type : categoryAccessTypeFilter )
+        {
+
+            final TermFilterBuilder term = new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName(type), groups );
+
+            if ( must )
+            {
+                boolFilterBuilder.must( term );
+            }
+            else
+            {
+                boolFilterBuilder.should( term );
+            }
+        }
+
+        return boolFilterBuilder;
+    }
 
     private FilterBuilder buildSectionFilter( ContentIndexQuery query )
     {

@@ -325,6 +325,7 @@ public final class IndexServiceImpl
 
         final Collection<ContentAccessEntity> contentAccessRights = content.getContentAccessRights();
         indexedDoc.addContentAccessRights( contentAccessRights );
+        indexedDoc.setCategory( content.getCategory() );
 
         return indexedDoc;
 

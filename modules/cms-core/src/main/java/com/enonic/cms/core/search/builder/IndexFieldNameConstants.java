@@ -41,6 +41,12 @@ public class IndexFieldNameConstants
 
     public static final String CONTENT_ACCESS_DELETE_FIELDNAME = "access_delete";
 
+    public static final String CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME = "access_category_browse";
+
+    public static final String CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME = "access_category_approve";
+
+    public static final String CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME = "access_category_administrate";
+
     protected static final String USER_KEY_POSTFIX = "_key";
 
     protected static final String USER_NAME_POSTFIX = "_name";

@@ -2,6 +2,7 @@ package com.enonic.cms.core.search.query;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
@@ -88,4 +89,21 @@ public class QueryFieldNameResolver
     }
 
 
+    public static String getCategoryAccessTypeFieldName( CategoryAccessType type )
+    {
+        switch ( type )
+        {
+            case READ:
+                return CONTENT_ACCESS_READ_FIELDNAME;
+            case ADMIN_BROWSE:
+                return CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME;
+            case APPROVE:
+                return CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME;
+            case CREATE:
+                return CONTENT_ACCESS_UPDATE_FIELDNAME;
+            case ADMINISTRATE:
+                return CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME;
+        }
+        throw new UnsupportedOperationException( "Unexpected CategoryAccessType: " + type.name() );
+    }
 }

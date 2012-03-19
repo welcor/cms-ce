@@ -13,6 +13,7 @@ import java.util.HashSet;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 
@@ -89,6 +90,8 @@ public final class ContentDocument
     private BigText binaryExtractedText;
 
     private final Collection<ContentAccessEntity> contentAccessRights;
+
+    private CategoryEntity category;
 
     public ContentDocument( ContentKey contentKey )
     {
@@ -418,4 +421,15 @@ public final class ContentDocument
     {
         this.contentAccessRights.addAll( contentAccessRights );
     }
+
+    public CategoryEntity getCategory()
+    {
+        return category;
+    }
+
+    public void setCategory( CategoryEntity category )
+    {
+        this.category = category;
+    }
+
 }

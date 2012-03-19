@@ -162,7 +162,7 @@ public final class IndexServiceImpl
         insertUserDefinedIndexValues( content, indexedDoc );
 
         //TODO: Fix binary extraction
-        //insertBinaryIndexValues( content, indexedDoc );
+        insertBinaryIndexValues( content, indexedDoc );
         contentIndexService.index( indexedDoc, deleteExisting );
 
         contentDao.getHibernateTemplate().flush();

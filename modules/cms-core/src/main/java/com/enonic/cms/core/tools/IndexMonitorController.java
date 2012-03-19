@@ -42,6 +42,16 @@ public class IndexMonitorController
 
     protected static final int DEFAULT_COUNT = 500;
 
+    public static final String getAllQUery = "{\n" +
+        "  \"from\" : 0,\n" +
+        "  \"size\" : 0,\n" +
+        "  \"query\" : {\n" +
+        "    \"match_all\" : {\n" +
+        "    }\n" +
+        "  }\n" +
+        "}\n" +
+        "";
+
     protected static enum SortValue
     {
         MaxTime,
@@ -113,7 +123,8 @@ public class IndexMonitorController
             model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
             model.put( "totalHitsOnIndex", indexQueryMeasurer.getTotalQueriesOnIndex() );
             model.put( "numberOfRecoredQueries", indexQueryMeasurer.getRecordedQueries() );
-            model.put( "newIndexNumberOfContent", getTotalHits() );
+            model.put( "numberOfContent", getTotalHitsContent() );
+            model.put( "numberOfBinaries", getTotalHitsBinaries() );
             model.put( "numberOfNodes", 1 );
             model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
             model.put( "count", count );
@@ -245,20 +256,17 @@ public class IndexMonitorController
         return elasticSearchIndexService.search( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content, termQuery );
     }
 
-
-    private long getTotalHits()
+    private long getTotalHitsBinaries()
     {
-        String termQuery = "{\n" +
-            "  \"from\" : 0,\n" +
-            "  \"size\" : 0,\n" +
-            "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
-            "  }\n" +
-            "}\n" +
-            "";
+        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Binaries, getAllQUery );
 
-        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content, termQuery );
+        return response.getHits().getTotalHits();
+    }
+
+    private long getTotalHitsContent()
+    {
+
+        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content, getAllQUery );
 
         return response.getHits().getTotalHits();
     }

@@ -221,7 +221,7 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public SearchResponse search( String indexName, IndexType indexType, String sourceBuilder )
     {
-        SearchRequest searchRequest = new SearchRequest( "cms" ).types( IndexType.Content.toString() ).source( sourceBuilder );
+        SearchRequest searchRequest = new SearchRequest( "cms" ).types( indexType.toString() ).source( sourceBuilder );
 
         return doSearchRequest( searchRequest );
     }
@@ -230,7 +230,7 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public Map<String, GetField> search( String indexName, IndexType indexType, ContentKey contentKey )
     {
-        final GetRequest getRequest = new GetRequest( indexName, IndexType.Content.toString(), contentKey.toString() );
+        final GetRequest getRequest = new GetRequest( indexName, indexType.toString(), contentKey.toString() );
         getRequest.fields( "*" );
 
         final GetResponse getResponse = this.client.get( getRequest ).actionGet();

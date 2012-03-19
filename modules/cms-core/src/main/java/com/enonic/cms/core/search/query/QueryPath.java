@@ -38,7 +38,7 @@ public class QueryPath
         this.path = path;
     }
 
-    public boolean isRenderAsIdQuery()
+    public boolean doBuildAsIdQuery()
     {
         return renderAsIdQuery;
     }

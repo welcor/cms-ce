@@ -67,9 +67,12 @@ public class IndexFieldNameConstants
 
     protected static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
 
-    protected static final String CONTENTDATA_ALIAS = "contentdata_";
 
-    protected static final String CUSTOMDATA_KEY = "data_";
+    protected static final String CONTENTDATA_ALIAS_FOR_BW_COMPATABILITY = "contentdata_";
+
+    protected static final String ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY = "fulltext";
+
+    protected static final String CUSTOMDATA_FIELDNAME = "data_";
 
     protected static final String CONTENTKEY_FIELDNAME = "key";
 

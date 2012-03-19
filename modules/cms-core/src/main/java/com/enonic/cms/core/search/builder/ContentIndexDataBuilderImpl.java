@@ -128,11 +128,10 @@ public final class ContentIndexDataBuilderImpl
 
         if ( binaryData != null && !binaryData.getText().isEmpty() )
         {
-
             final XContentBuilder result = XContentFactory.jsonBuilder();
             result.startObject();
             addField( "key", new Double( content.getContentKey().toInt() ), result, false );
-            addBinaryExtractedData( result, binaryData );
+            addField( "attachment", binaryData.getText(), result );
             result.endObject();
             return result;
         }
@@ -140,42 +139,6 @@ public final class ContentIndexDataBuilderImpl
         return null;
     }
 
-    private void addBinaryExtractedData( XContentBuilder result, BigText contentBinaryData )
-        throws Exception
-    {
-
-        //TODO: To be implemented when extractor is decided
-
-        /*
-
-        result.startArray( "attachments" );
-
-        for ( ContentBinaryDataEntity data : contentBinaryData )
-        {
-            AttachmentData attachmentData = attachmentDataExtractor.extractAttachmentValues( data.getBinaryData() );
-
-            if ( attachmentData == null )
-            {
-                continue;
-            }
-
-            result.startObject();
-
-            addField( "attachmentkey", new Double( data.getKey().toInt() ), result, false );
-            addField( "author", attachmentData.getAuthor(), result, false );
-            addField( "title", attachmentData.getTitle(), result, false );
-            addField( "mimetype", attachmentData.getMimetype(), result, false );
-            addField( "text", attachmentData.getAttachmentText(), result, false );
-            addField( "createddate", attachmentData.getCreationDate(), result, false );
-            addField( "filename", attachmentData.getFileName(), result, false );
-
-            result.endObject();
-        }
-
-        result.endArray();
-
-        */
-    }
 
     private void addContentType( ContentDocument content, XContentBuilder result )
         throws Exception

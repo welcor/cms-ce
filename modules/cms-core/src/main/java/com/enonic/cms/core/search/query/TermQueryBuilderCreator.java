@@ -19,7 +19,6 @@ public class TermQueryBuilderCreator
 
     public static QueryBuilder buildTermQuery( final QueryPath path, final QueryValue queryValue )
     {
-
         final boolean isWildCardPath = path.isWildCardPath();
 
         if ( isWildCardPath )
@@ -27,7 +26,7 @@ public class TermQueryBuilderCreator
             path.setMatchAllPath();
         }
 
-        final QueryBuilder termQuery = handleQueryTypesTemporaryMethodNameThisIs( path, queryValue, isWildCardPath );
+        final QueryBuilder termQuery = doBuildTermQuery( path, queryValue, isWildCardPath );
 
         if ( path.doRenderAsHasChildQuery() )
         {
@@ -37,46 +36,53 @@ public class TermQueryBuilderCreator
         {
             return termQuery;
         }
-
     }
 
-    private static QueryBuilder handleQueryTypesTemporaryMethodNameThisIs( QueryPath path, QueryValue queryValue, boolean wildCardPath )
+    private static QueryBuilder doBuildTermQuery( QueryPath path, QueryValue queryValue, boolean wildCardPath )
     {
-
-        if ( path.isRenderAsIdQuery() )
+        if ( path.doBuildAsIdQuery() )
         {
-            if ( queryValue.isNumeric() )
-            {
-                return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getNumericValueAsString() );
-            }
-
-            return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getStringValueNormalized() );
-        }
-
-        if ( queryValue.isNumeric() && !wildCardPath )
-        {
-            return QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, queryValue.getDoubleValue() );
+            return doRenderIdQuery( queryValue );
         }
 
         if ( queryValue.isNumeric() )
         {
-            return QueryBuilders.termQuery(
-                QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ),
-                queryValue.getDoubleValue() );
+            return doBuildQueryForNumericValue( path, queryValue, wildCardPath );
         }
-
+        //TODO: Alex, should the "path.isDateField()" - test surround both these date-expressions?
         if ( path.isDateField() && queryValue.isEmpty() )
         {
             MissingFilterBuilder filter = FilterBuilders.missingFilter( path.getPath() );
             return QueryBuilders.filteredQuery( matchAllQuery(), filter );
         }
-
         if ( queryValue.isValidDateString() )
         {
             return QueryBuilders.termQuery( path.getPath(), queryValue.getDateAsStringValue() );
         }
 
         return QueryBuilders.termQuery( path.getPath(), queryValue.getStringValueNormalized() );
+    }
+
+    private static QueryBuilder doBuildQueryForNumericValue( final QueryPath path, final QueryValue queryValue, final boolean wildCardPath )
+    {
+        if ( !wildCardPath )
+        {
+            return QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, queryValue.getDoubleValue() );
+        }
+        else
+        {
+            return QueryBuilders.termQuery( QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ), queryValue.getDoubleValue() );
+        }
+    }
+
+    private static QueryBuilder doRenderIdQuery( final QueryValue queryValue )
+    {
+        if ( queryValue.isNumeric() )
+        {
+            return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getNumericValueAsString() );
+        }
+
+        return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getStringValueNormalized() );
     }
 
 

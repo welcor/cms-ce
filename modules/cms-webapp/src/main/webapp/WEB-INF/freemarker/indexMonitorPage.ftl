@@ -27,8 +27,8 @@
 
         <h2>Index types</h2>
         <ul>
-            <li><span class="keyField">Content</span> = <span class="valueField">(${newIndexNumberOfContent})</span></li>
-            <li><span class="keyField">Binaries</span> = <span class="valueField">(0)</span></li>
+            <li><span class="keyField">Content</span> = <span class="valueField">(${numberOfContent})</span></li>
+            <li><span class="keyField">Binaries</span> = <span class="valueField">(${numberOfBinaries})</span></li>
         </ul>
     </div>
     <div class="tab-page" id="tab-page-2">

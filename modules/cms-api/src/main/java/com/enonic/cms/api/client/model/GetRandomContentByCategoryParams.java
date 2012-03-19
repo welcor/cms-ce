@@ -62,6 +62,11 @@ public class GetRandomContentByCategoryParams
     public boolean includeUserRights = false;
 
     /**
+     * Specifies if information about content's versions should be included in the XML.
+     */
+    public boolean includeVersionsInfo = false;
+
+    /**
      * Specifies if content that matches the search, but is offline, should be included in the result set.
      * Default is false.
      */

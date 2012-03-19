@@ -33,7 +33,7 @@ public class GetContentXmlCreator
 
     private boolean includeUserRights = false;
 
-    private VersionInfoStyle versionInfoStyle = null;
+    private VersionInfoStyle versionInfoStyle = VersionInfoStyle.NONE;
 
     public GetContentXmlCreator( CategoryAccessResolver categoryAccessResolver, ContentAccessResolver contentAccessResolver )
     {
@@ -120,6 +120,7 @@ public class GetContentXmlCreator
     {
         PORTAL,
         CLIENT,
-        ADMIN
+        ADMIN,
+        NONE
     }
 }

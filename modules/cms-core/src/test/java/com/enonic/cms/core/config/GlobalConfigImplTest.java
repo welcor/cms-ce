@@ -11,14 +11,14 @@ import java.util.Properties;
 
 public class GlobalConfigImplTest
 {
-    private ConfigProperties props;
+    private ConfigPropertiesImpl props;
     private GlobalConfigImpl config;
 
     @Before
     public void setUp()
     {
         final ConversionService converter = new DefaultConversionService();
-        this.props = new ConfigProperties(converter);
+        this.props = new ConfigPropertiesImpl(converter);
         this.config = new GlobalConfigImpl(this.props);
     }
     

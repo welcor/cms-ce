@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 
+import com.google.common.base.Strings;
+
 public interface GlobalConfig
 {
     public File getHomeDir();

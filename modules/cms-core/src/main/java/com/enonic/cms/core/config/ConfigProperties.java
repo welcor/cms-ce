@@ -3,40 +3,13 @@ package com.enonic.cms.core.config;
 import java.util.Map;
 import java.util.Properties;
 
-import org.springframework.core.convert.ConversionService;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-
-final class ConfigProperties
-    extends Properties
+public interface ConfigProperties
 {
-    private final ConversionService converter;
+    public Properties getProperties();
 
-    public ConfigProperties(final ConversionService converter)
-    {
-        this.converter = converter;
-    }
+    public Map<String, String> getMap();
 
-    public Map<String, String> getMap()
-    {
-        return Maps.fromProperties(this);
-    }
+    public <T> T getValue(final String key, final Class<T> type);
 
-    public <T> T getValue(final String key, final Class<T> type)
-    {
-        final String value = getProperty(key);
-        if (Strings.isNullOrEmpty(value)) {
-            throw new IllegalArgumentException("No value for configuration property [" + key + "]");
-        }
-
-        return this.converter.convert(value, type);
-    }
-
-    public Properties getProperties()
-    {
-        final Properties target = new Properties();
-        target.putAll(this);
-        return target;
-    }
+    public <T> T getValue(final String key, final Class<T> type, final T defValue);
 }

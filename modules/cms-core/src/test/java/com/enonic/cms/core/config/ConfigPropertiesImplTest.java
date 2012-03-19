@@ -11,15 +11,15 @@ import java.util.Properties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ConfigPropertiesTest
+public class ConfigPropertiesImplTest
 {
-    private ConfigProperties props;
+    private ConfigPropertiesImpl props;
 
     @Before
     public void setUp()
     {
         final ConversionService converter = new DefaultConversionService();
-        this.props = new ConfigProperties(converter);
+        this.props = new ConfigPropertiesImpl(converter);
     }
 
     @Test

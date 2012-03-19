@@ -12,11 +12,17 @@ import com.enonic.cms.core.boot.BootEnvironment;
 public class ConfigBeans
 {
     @Bean
-    public GlobalConfig config(final ConfigurableEnvironment env)
+    public GlobalConfig config(final ConfigProperties props)
+    {
+        return new GlobalConfigImpl(props);
+    }
+
+    @Bean
+    public ConfigProperties configProperties(final ConfigurableEnvironment env)
     {
         final File homeDir = BootEnvironment.getHomeDir(env);
-        final ConfigProperties props = new ConfigProperties(env.getConversionService());
+        final ConfigPropertiesImpl props = new ConfigPropertiesImpl(env.getConversionService());
         props.putAll(new ConfigLoader(homeDir, env).load());
-        return new GlobalConfigImpl(props);
+        return props;
     }
 }

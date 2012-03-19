@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
-import com.enonic.cms.core.ProductVersion;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceData;
 import com.enonic.cms.core.resource.FileResourceName;

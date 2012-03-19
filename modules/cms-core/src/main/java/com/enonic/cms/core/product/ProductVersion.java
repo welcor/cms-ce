@@ -1,4 +1,4 @@
-package com.enonic.cms.core;
+package com.enonic.cms.core.product;
 
 import com.enonic.cms.api.Version;
 

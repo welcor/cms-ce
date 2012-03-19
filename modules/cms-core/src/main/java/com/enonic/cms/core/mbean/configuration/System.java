@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 
-import com.enonic.cms.core.ProductVersion;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.upgrade.UpgradeService;
 
 public class System

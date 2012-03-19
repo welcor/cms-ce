@@ -29,7 +29,7 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.core.ProductVersion;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
 

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.enonic.cms.framework.util.HtmlEncoder;
 
-import com.enonic.cms.core.ProductVersion;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 

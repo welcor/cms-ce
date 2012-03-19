@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import com.enonic.cms.core.ProductVersion;
+import com.enonic.cms.core.product.ProductVersion;
+import com.enonic.cms.core.product.LicenseChecker;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.upgrade.UpgradeService;
@@ -30,6 +31,9 @@ public final class WelcomeController
 
     @Autowired
     private SiteDao siteDao;
+
+    @Autowired(required = false)
+    private LicenseChecker licenseChecker;
 
     @Autowired
     public void setUpgradeService( final UpgradeService upgradeService )
@@ -67,6 +71,16 @@ public final class WelcomeController
         model.put( "softwareUpgradeNeeded", softwareUpgradeNeeded );
         model.put( "upgradeFrom", this.upgradeService.getCurrentModelNumber() );
         model.put( "upgradeTo", this.upgradeService.getTargetModelNumber() );
+        
+        if (this.licenseChecker != null) {
+            model.put( "licenseError", this.licenseChecker.isError() );
+            model.put( "licenseMessage", this.licenseChecker.getMessage() );
+        } else {
+            model.put( "licenseError", false );
+            model.put( "licenseMessage", null );
+        }
+        
+        model.put( "licenseMessage", this.licenseChecker );
         return new ModelAndView( "welcomePage", model );
     }
 

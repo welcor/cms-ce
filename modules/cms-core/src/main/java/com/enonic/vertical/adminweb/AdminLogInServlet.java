@@ -29,7 +29,7 @@ import com.enonic.esl.util.StringUtil;
 
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.ProductVersion;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;

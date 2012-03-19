@@ -50,7 +50,7 @@ public class SitePropertiesServiceImpl
         }
     }
 
-    @Value("#{config.homeDir}")
+    @Value("${cms.home}")
     public void setHomeDir( File homeDir )
     {
         this.homeDir = homeDir;

@@ -11,8 +11,10 @@ import java.util.Properties;
 import org.springframework.beans.factory.InitializingBean;
 import com.enonic.cms.framework.util.PropertiesUtil;
 import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.boot.ConfigProperties;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 public final class StandardPropertyResolver
     implements PropertyResolver, InitializingBean
@@ -36,14 +38,14 @@ public final class StandardPropertyResolver
         this.configDir = new File( this.homeDir, "config" );
     }
 
-    @Value("#{config.homeDir}")
+    @Value("${cms.home}")
     public void setHomeDir( File homeDir )
     {
         this.homeDir = homeDir;
     }
 
-    @Value("#{config.properties}")
-    public void setProperties( final Properties props )
+    @Autowired
+    public void setProperties( final ConfigProperties props )
     {
         this.cmsProperties = props;
     }

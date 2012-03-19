@@ -17,6 +17,8 @@ import org.springframework.core.io.ResourceLoader;
 
 import com.enonic.vertical.VerticalProperties;
 
+import com.enonic.cms.core.boot.ConfigProperties;
+
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
@@ -74,7 +76,7 @@ public class SitePropertiesServiceTest
     {
         VerticalProperties verticalProperties = new VerticalProperties();
 
-        Properties properties = new Properties();
+        ConfigProperties properties = new ConfigProperties();
         properties.setProperty( "cms.url.characterEncoding", "UTF-8" );
 
         verticalProperties.setProperties( properties );

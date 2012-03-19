@@ -7,8 +7,11 @@ package com.enonic.vertical;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.util.PropertiesUtil;
+
+import com.enonic.cms.core.boot.ConfigProperties;
 
 /**
  * Properties for Vertical Site. Loaded from default properties defined in default.properties file and custom properties file specified a
@@ -30,7 +33,8 @@ public final class VerticalProperties
         verticalProperties = this;
     }
 
-    public void setProperties( Properties properties )
+    @Autowired
+    public void setProperties( ConfigProperties properties )
     {
         this.properties = properties;
     }

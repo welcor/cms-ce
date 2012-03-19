@@ -26,14 +26,14 @@ public class BootEnvironmentTest
     }
 
     @Test
-    public void testConfigureSetHome()
+    public void testConfigureSetConfig()
     {
         final StandardEnvironment env = new StandardEnvironment();
         BootEnvironment.configure(env, this.homeDir);
 
         final PropertySource source = env.getPropertySources().iterator().next();
         assertNotNull(source);
-        assertTrue(source instanceof HomePropertySource);
+        assertTrue(source instanceof ConfigPropertySource);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class BootEnvironmentTest
 
         final PropertySource source = env.getPropertySources().iterator().next();
         assertNotNull(source);
-        assertTrue(source instanceof HomePropertySource);
+        assertTrue(source instanceof ConfigPropertySource);
     }
 
     @Test

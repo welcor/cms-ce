@@ -71,16 +71,7 @@ public final class WelcomeController
         model.put( "softwareUpgradeNeeded", softwareUpgradeNeeded );
         model.put( "upgradeFrom", this.upgradeService.getCurrentModelNumber() );
         model.put( "upgradeTo", this.upgradeService.getTargetModelNumber() );
-        
-        if (this.licenseChecker != null) {
-            model.put( "licenseError", this.licenseChecker.isError() );
-            model.put( "licenseMessage", this.licenseChecker.getMessage() );
-        } else {
-            model.put( "licenseError", false );
-            model.put( "licenseMessage", null );
-        }
-        
-        model.put( "licenseMessage", this.licenseChecker );
+        model.put( "license", this.licenseChecker );
         return new ModelAndView( "welcomePage", model );
     }
 

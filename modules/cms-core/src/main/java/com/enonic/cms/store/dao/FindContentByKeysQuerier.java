@@ -28,6 +28,9 @@ class FindContentByKeysQuerier
         hqlQuery.addSelect( "c" );
         hqlQuery.addFromTable( ContentEntity.class.getName(), "c", SelectBuilder.NO_JOIN, null );
         hqlQuery.addFromTable( "c.mainVersion", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        hqlQuery.addFromTable( "c.sectionContents", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        hqlQuery.addFromTable( "c.directMenuItemPlacements", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        hqlQuery.addFromTable( "c.contentHomes", null, SelectBuilder.LEFT_JOIN_FETCH, null );
         hqlQuery.addFilter( "AND", new InClauseBuilder<ContentKey>( "c.key", contentKeys )
         {
             public void appendValue( StringBuffer sql, ContentKey value )

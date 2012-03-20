@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
@@ -112,20 +111,24 @@ public final class FileResourceServiceImpl
         doCreateFolder( session, name.getParent() );
 
         String key = createKey( name );
-        VirtualFileEntity entity = findEntity( session, key );
-        if ( entity != null )
+        VirtualFileEntity newVirtualFile = findEntity( session, key );
+        if ( newVirtualFile != null )
         {
             return false;
         }
 
-        entity = new VirtualFileEntity();
-        entity.setKey( key );
-        entity.setBlobKey( null );
-        entity.setParentKey( createKey( name.getParent() ) );
-        entity.setLength( -1 );
-        entity.setName( name.getName() );
-        entity.setLastModified( System.currentTimeMillis() );
-        session.saveOrUpdate( entity );
+        newVirtualFile = createVirtualFileEntity( key, name, true );
+
+        String parentKey = createKey( name.getParent() );
+        if ( parentKey != null )
+        {
+            VirtualFileEntity parent = findEntity( session, parentKey );
+            parent.addChild( newVirtualFile );
+            session.update( parent );
+        }
+
+        session.save( newVirtualFile );
+
         return true;
     }
 
@@ -150,16 +153,33 @@ public final class FileResourceServiceImpl
         }
 
         doCreateFolder( session, name.getParent() );
-        VirtualFileEntity entity = new VirtualFileEntity();
-        entity.setKey( key );
-        entity.setBlobKey( null );
-        entity.setParentKey( createKey( name.getParent() ) );
-        entity.setLength( 0 );
-        entity.setName( name.getName() );
-        entity.setLastModified( System.currentTimeMillis() );
-        setBlob( entity, data != null ? data.getAsBytes() : new byte[0] );
-        session.saveOrUpdate( entity );
+
+        VirtualFileEntity newVirtualFile = createVirtualFileEntity( key, name, false );
+        setBlob( session, newVirtualFile, data != null ? data.getAsBytes() : new byte[0] );
+
+        String parentKey = createKey( name.getParent() );
+        if ( parentKey != null )
+        {
+            VirtualFileEntity parent = findEntity( session, parentKey );
+            parent.addChild( newVirtualFile );
+            session.saveOrUpdate( parent );
+        }
+
+        session.saveOrUpdate( newVirtualFile );
+
         return true;
+    }
+
+    private VirtualFileEntity createVirtualFileEntity( String key, FileResourceName name, boolean isFolder )
+    {
+        VirtualFileEntity virtualFile = new VirtualFileEntity();
+        virtualFile.setKey( key );
+        virtualFile.setBlobKey( null );
+        virtualFile.setLength( isFolder ? -1 : 0 );
+        virtualFile.setName( name.getName() );
+        virtualFile.setLastModified( System.currentTimeMillis() );
+
+        return virtualFile;
     }
 
     public boolean deleteResource( FileResourceName name )
@@ -182,12 +202,16 @@ public final class FileResourceServiceImpl
             return false;
         }
 
-        for ( VirtualFileEntity child : findChildren( session, entity.getKey() ) )
+        VirtualFileEntity parent = entity.getParent();
+        if ( parent != null )
         {
-            doDeleteResource( session, child );
+            parent.removeChild( entity );
+            session.update( parent );
         }
 
+        entity.setParent( null );
         session.delete( entity );
+
         return true;
     }
 
@@ -202,9 +226,14 @@ public final class FileResourceServiceImpl
         ArrayList<FileResourceName> list = new ArrayList<FileResourceName>();
 
         String key = createKey( name );
-        for ( VirtualFileEntity entity : findChildren( session, key ) )
+        VirtualFileEntity entity = findEntity( session, key );
+
+        if ( entity != null )
         {
-            list.add( new FileResourceName( name, entity.getName() ) );
+            for ( VirtualFileEntity child : entity.getChildren() )
+            {
+                list.add( new FileResourceName( name, child.getName() ) );
+            }
         }
 
         return list;
@@ -263,17 +292,33 @@ public final class FileResourceServiceImpl
             return false;
         }
 
-        setBlob( entity, data.getAsBytes() );
+        setBlob( session, entity, data.getAsBytes() );
+
         return true;
     }
 
-    private void setBlob( VirtualFileEntity entity, byte[] data )
+    private void setBlob( Session session, VirtualFileEntity entity, byte[] data )
     {
         BlobRecord blob = new MemoryBlobRecord( data );
         this.blobStore.addRecord( blob.getStream() );
         entity.setBlobKey( blob.getKey().toString() );
         entity.setLength( blob.getLength() );
         entity.setLastModified( System.currentTimeMillis() );
+
+        VirtualFileEntity parent = getRoot( entity );
+        session.saveOrUpdate( parent );
+    }
+
+    private VirtualFileEntity getRoot( VirtualFileEntity entity )
+    {
+        VirtualFileEntity parent = entity;
+
+        while ( parent.getParent() != null )
+        {
+            parent = parent.getParent();
+        }
+
+        return parent;
     }
 
     private byte[] getBlob( VirtualFileEntity entity )
@@ -308,14 +353,6 @@ public final class FileResourceServiceImpl
     private VirtualFileEntity findEntity( Session session, String key )
     {
         return (VirtualFileEntity) session.get( VirtualFileEntity.class, key );
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<VirtualFileEntity> findChildren( Session session, String key )
-    {
-        Query query = session.getNamedQuery( "VirtualFileEntity.findChildren" );
-        query.setParameter( "parentKey", key );
-        return query.list();
     }
 
     public boolean moveResource( FileResourceName from, FileResourceName to )
@@ -376,7 +413,7 @@ public final class FileResourceServiceImpl
         }
 
         doCreateFolder( session, to.getParent() );
-        toEntity = createNewEntity( from, to );
+        toEntity = createNewEntity( session, from, to );
         session.saveOrUpdate( toEntity );
         return true;
     }
@@ -397,14 +434,17 @@ public final class FileResourceServiceImpl
         }
 
         doCreateFolder( session, to );
-        for ( VirtualFileEntity child : findChildren( session, from.getKey() ) )
+
+        String fromKey = from.getKey();
+        VirtualFileEntity parent = findEntity( session, fromKey );
+
+        for ( VirtualFileEntity child : parent.getChildren() )
         {
             doCopyResource( session, child, new FileResourceName( to, child.getName() ) );
         }
 
         return true;
     }
-
 
     private boolean moveToSubfolderOfSelf( VirtualFileEntity parent, FileResourceName potentialChild )
     {
@@ -433,44 +473,52 @@ public final class FileResourceServiceImpl
         return allParents;
     }
 
-    private VirtualFileEntity createNewEntity( VirtualFileEntity oldEntity, FileResourceName newName )
+    private VirtualFileEntity createNewEntity( Session session, VirtualFileEntity oldEntity, FileResourceName newName )
     {
-        VirtualFileEntity entity = new VirtualFileEntity();
-        entity.setKey( createKey( newName ) );
-        entity.setParentKey( createKey( newName.getParent() ) );
-        entity.setLastModified( System.currentTimeMillis() );
-        entity.setLength( oldEntity.getLength() );
-        entity.setBlobKey( oldEntity.getBlobKey() );
-        entity.setName( newName.getName() );
-        return entity;
+        VirtualFileEntity newVirtualFile = new VirtualFileEntity();
+        newVirtualFile.setKey( createKey( newName ) );
+        newVirtualFile.setLastModified( System.currentTimeMillis() );
+        newVirtualFile.setLength( oldEntity.getLength() );
+        newVirtualFile.setBlobKey( oldEntity.getBlobKey() );
+        newVirtualFile.setName( newName.getName() );
+
+        String parentKey = createKey( newName.getParent() );
+
+        if ( parentKey != null )
+        {
+            VirtualFileEntity parent = findEntity( session, parentKey );
+            parent.addChild( newVirtualFile );
+        }
+
+        return newVirtualFile;
     }
 
-    private FileResourceName createNameFromEntity( Session session, VirtualFileEntity entity )
+    private FileResourceName createNameFromEntity( VirtualFileEntity entity )
     {
-        if ( entity.getParentKey() == null )
+        if ( entity.getParent() == null )
         {
             return new FileResourceName( "/" );
         }
 
-        final VirtualFileEntity parent = (VirtualFileEntity) session.get( VirtualFileEntity.class, entity.getParentKey() );
+        final VirtualFileEntity parent = entity.getParent();
         if ( parent == null )
         {
             return new FileResourceName( entity.getName() );
         }
         else
         {
-            return new FileResourceName( createNameFromEntity( session, parent ), entity.getName() );
+            return new FileResourceName( createNameFromEntity( parent ), entity.getName() );
         }
     }
 
-    private void publishResourceEvent( Session session, VirtualFileEntity entity, FileResourceEvent.Type type )
+    private void publishResourceEvent( VirtualFileEntity entity, FileResourceEvent.Type type )
     {
         if ( this.listeners.isEmpty() )
         {
             return;
         }
 
-        final FileResourceName name = createNameFromEntity( session, entity );
+        final FileResourceName name = createNameFromEntity( entity );
         final FileResourceEvent event = new FileResourceEvent( type, name );
 
         for ( FileResourceListener listener : this.listeners )
@@ -483,7 +531,7 @@ public final class FileResourceServiceImpl
     {
         if ( entity instanceof VirtualFileEntity )
         {
-            publishResourceEvent( session, (VirtualFileEntity) entity, FileResourceEvent.Type.ADDED );
+            publishResourceEvent( (VirtualFileEntity) entity, FileResourceEvent.Type.ADDED );
         }
     }
 
@@ -491,7 +539,7 @@ public final class FileResourceServiceImpl
     {
         if ( entity instanceof VirtualFileEntity )
         {
-            publishResourceEvent( session, (VirtualFileEntity) entity, FileResourceEvent.Type.UPDATED );
+            publishResourceEvent( (VirtualFileEntity) entity, FileResourceEvent.Type.UPDATED );
         }
     }
 
@@ -499,7 +547,7 @@ public final class FileResourceServiceImpl
     {
         if ( entity instanceof VirtualFileEntity )
         {
-            publishResourceEvent( session, (VirtualFileEntity) entity, FileResourceEvent.Type.DELETED );
+            publishResourceEvent( (VirtualFileEntity) entity, FileResourceEvent.Type.DELETED );
         }
     }
 

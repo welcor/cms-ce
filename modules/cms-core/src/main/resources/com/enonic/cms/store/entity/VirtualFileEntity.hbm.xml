@@ -8,9 +8,6 @@
       <column name="vf_sKey" length="40"/>
       <generator class="assigned"/>
     </id>
-    <property name="parentKey" type="string">
-      <column name="vf_sParentKey" length="40" not-null="false"/>
-    </property>
     <property name="name" type="string">
       <column name="vf_sName" length="255" not-null="true"/>
     </property>
@@ -23,12 +20,20 @@
     <property name="blobKey" type="string">
       <column name="vf_sBlobKey" not-null="false" length="40"/>
     </property>
+
+  <many-to-one name="parent" class="com.enonic.cms.store.vfs.db.VirtualFileEntity" fetch="select">
+        <column name="vf_sParentKey"/>
+      </many-to-one>
+
+   <bag name="children" inverse="true" fetch="select" lazy="true" cascade="all,delete-orphan" batch-size="500" order-by="vf_sName">
+        <cache usage="nonstrict-read-write"/>
+        <key>
+          <column name="vf_sParentKey"/>
+        </key>
+          <one-to-many class="com.enonic.cms.store.vfs.db.VirtualFileEntity" />
+      </bag>
+
   </class>
-  <query name="VirtualFileEntity.findChildren" cacheable="true">
-    from VirtualFileEntity x
-    where x.parentKey = :parentKey
-    order by x.name
-  </query>
   <query name="VirtualFileEntity.getAll" cacheable="true" read-only="true">
     from VirtualFileEntity
   </query>

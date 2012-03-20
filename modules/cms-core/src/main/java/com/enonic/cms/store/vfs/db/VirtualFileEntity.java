@@ -1,8 +1,7 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.store.vfs.db;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements the virtual file entity.
@@ -17,7 +16,9 @@ public class VirtualFileEntity
     /**
      * Parent key.
      */
-    private String parentKey;
+    private VirtualFileEntity parent;
+
+    private List<VirtualFileEntity> children = new ArrayList<VirtualFileEntity>();
 
     /**
      * File name.
@@ -60,17 +61,45 @@ public class VirtualFileEntity
     /**
      * Return the parent key.
      */
-    public String getParentKey()
+    public VirtualFileEntity getParent()
     {
-        return this.parentKey;
+        return this.parent;
     }
 
     /**
      * Set the parent key.
      */
-    public void setParentKey( String parentKey )
+    public void setParent( VirtualFileEntity parent )
     {
-        this.parentKey = parentKey;
+        this.parent = parent;
+    }
+
+    /**
+     * Return the parent key.
+     */
+    public List<VirtualFileEntity> getChildren()
+    {
+        return this.children;
+    }
+
+    /**
+     * Set the parent key.
+     */
+    public void setChildren( List<VirtualFileEntity> children )
+    {
+        this.children = children;
+    }
+
+
+    public void addChild( VirtualFileEntity child )
+    {
+        this.children.add( child );
+        child.setParent( this );
+    }
+
+    public void removeChild( VirtualFileEntity child )
+    {
+        this.children.remove( child );
     }
 
     /**
@@ -78,7 +107,7 @@ public class VirtualFileEntity
      */
     public String getName()
     {
-        if ( this.parentKey == null && this.name.equals( "#" ) )
+        if ( this.parent == null && this.name.equals( "#" ) )
         {
             return "";
         }

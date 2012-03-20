@@ -42,7 +42,7 @@ import static junit.framework.Assert.assertTrue;
  * Date: 11/23/11
  * Time: 11:54 AM
  */
-public class ContentIndexDataBuilderImplTest
+public class ContentIndexDataFactoryTest
 {
 
     protected final static String[] REQUIRED_ORDERBY_FIELDS =
@@ -53,7 +53,7 @@ public class ContentIndexDataBuilderImplTest
         new String[]{"categorykey", "categorykey_numeric", "contenttype", "contenttypekey", "contenttypekey_numeric", "key", "key_numeric",
             "priority", "priority_numeric", "publishfrom", "status", "status_numeric", "title"};
 
-    ContentIndexDataBuilder indexDataBuilder = new ContentIndexDataBuilderImpl();
+    ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
 
     @Test
     public void testMetadata()
@@ -63,7 +63,7 @@ public class ContentIndexDataBuilderImplTest
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
 
-        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
 
         final String indexDataAsString = indexData.getMetadataJson();
 
@@ -87,7 +87,7 @@ public class ContentIndexDataBuilderImplTest
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
 
-        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
 
         final String indexDataAsString = indexData.getMetadataJson();
 
@@ -115,7 +115,7 @@ public class ContentIndexDataBuilderImplTest
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
 
-        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
 
         final String indexDataAsString = indexData.getMetadataJson();
 
@@ -160,7 +160,7 @@ public class ContentIndexDataBuilderImplTest
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
 
-        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
 
         final String indexDataAsString = indexData.getMetadataJson();
 
@@ -196,7 +196,7 @@ public class ContentIndexDataBuilderImplTest
 
         ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
 
-        ContentIndexData indexData = indexDataBuilder.build( content, spec );
+        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
 
     }
 
@@ -232,7 +232,7 @@ public class ContentIndexDataBuilderImplTest
 
         ContentIndexDataBuilderSpecification builderSpec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
 
-        ContentIndexData indexData = indexDataBuilder.build( contentDocument, builderSpec );
+        ContentIndexData indexData = contentIndexDataFactory.create( contentDocument, builderSpec );
 
         System.out.println( indexData.getMetadataJson() );
 

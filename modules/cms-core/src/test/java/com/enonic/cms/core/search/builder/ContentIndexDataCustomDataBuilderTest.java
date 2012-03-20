@@ -29,7 +29,7 @@ public class ContentIndexDataCustomDataBuilderTest
 
     private XContentBuilder result;
 
-    private ContentIndexDataCustomDataBuilder customDataBuilder = new ContentIndexDataCustomDataBuilder();
+    private ContentIndexDataCustomDataFactory customDataBuilder = new ContentIndexDataCustomDataFactory();
 
 
     @Before

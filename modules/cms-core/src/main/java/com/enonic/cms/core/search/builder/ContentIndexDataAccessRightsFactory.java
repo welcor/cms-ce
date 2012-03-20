@@ -17,8 +17,8 @@ import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
 
-public class ContentIndexDataAccessRightsBuilder
-    extends AbstractIndexDataBuilder
+public class ContentIndexDataAccessRightsFactory
+    extends AbstractIndexDataFactory
 {
 
     public void build( final XContentBuilder result, final Collection<ContentAccessEntity> contentAccessRights,

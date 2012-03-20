@@ -17,20 +17,13 @@ import com.google.common.collect.Sets;
  * Date: 11/22/11
  * Time: 4:35 PM
  */
-class AbstractIndexDataBuilder
+class AbstractIndexDataFactory
     extends IndexFieldNameConstants
 {
-
     protected void addField( String fieldName, final String value, final XContentBuilder builder )
         throws Exception
     {
         doAddField( fieldName, value, builder, true );
-    }
-
-    protected void addField( String fieldName, final String value, final XContentBuilder builder, boolean addOrderField )
-        throws Exception
-    {
-        doAddField( fieldName, value, builder, addOrderField );
     }
 
     private void doAddField( final String fieldName, final String value, final XContentBuilder builder, boolean addOrderField )
@@ -98,13 +91,6 @@ class AbstractIndexDataBuilder
         doAddField( fieldName, value, builder, true );
     }
 
-    protected void addField( String fieldName, final Integer value, final XContentBuilder builder, boolean addOrderField )
-        throws Exception
-    {
-        doAddField( fieldName, value, builder, addOrderField );
-    }
-
-
     private void doAddField( final String fieldName, final Integer value, final XContentBuilder builder, boolean addOrderField )
         throws Exception
     {
@@ -119,7 +105,6 @@ class AbstractIndexDataBuilder
         }
     }
 
-
     protected void addField( String fieldName, final Double value, final XContentBuilder builder )
         throws Exception
     {
@@ -131,7 +116,6 @@ class AbstractIndexDataBuilder
     {
         doAddField( fieldName, value, builder, addOrderField );
     }
-
 
     private void doAddField( final String fieldName, final Double value, final XContentBuilder builder, boolean addOrderField )
         throws Exception
@@ -171,15 +155,6 @@ class AbstractIndexDataBuilder
         {
             builder.field( orderByFieldName, value );
         }
-    }
-
-    private void addOrderField( String fieldName, final Date value, final XContentBuilder builder )
-        throws Exception
-    {
-
-        String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
-        builder.field( orderByFieldName, value );
-
     }
 
     public void addStringSet( final String fieldName, final Set<String> values, final XContentBuilder builder, final boolean includeNumeric,

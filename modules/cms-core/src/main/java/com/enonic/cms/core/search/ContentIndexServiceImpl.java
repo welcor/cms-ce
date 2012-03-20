@@ -15,7 +15,6 @@ import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StopWatch;
 
 import com.google.common.collect.Sets;
 
@@ -35,7 +34,7 @@ import com.enonic.cms.core.content.index.IndexValueResultSetImpl;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
-import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
+import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.IndexValueQueryTranslator;
@@ -56,7 +55,7 @@ public class ContentIndexServiceImpl
 
     private Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
 
-    private ContentIndexDataBuilder contentIndexDataBuilder;
+    private ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
 
     private QueryTranslator queryTranslator;
 
@@ -152,7 +151,7 @@ public class ContentIndexServiceImpl
     public void index( ContentDocument doc, boolean deleteExisting )
     {
         ContentIndexData contentIndexData =
-            contentIndexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+            contentIndexDataFactory.create( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
 
         elasticSearchIndexService.index( INDEX_NAME, contentIndexData );
     }
@@ -165,7 +164,7 @@ public class ContentIndexServiceImpl
         for ( ContentDocument doc : docs )
         {
             ContentIndexData contentIndexData =
-                contentIndexDataBuilder.build( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+                contentIndexDataFactory.create( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
 
             contentIndexDatas.add( contentIndexData );
         }
@@ -323,12 +322,6 @@ public class ContentIndexServiceImpl
     public void setQueryTranslator( QueryTranslator queryTranslator )
     {
         this.queryTranslator = queryTranslator;
-    }
-
-    @Autowired
-    public void setContentIndexDataBuilder( ContentIndexDataBuilder contentIndexDataBuilder )
-    {
-        this.contentIndexDataBuilder = contentIndexDataBuilder;
     }
 
     @Autowired

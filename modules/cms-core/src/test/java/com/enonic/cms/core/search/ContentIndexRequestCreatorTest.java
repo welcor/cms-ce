@@ -39,7 +39,7 @@ public class ContentIndexRequestCreatorTest
     {
         ContentIndexData data = new ContentIndexData( new ContentKey( "1" ), buildMetadata( 1, "contentdata" ) );
         //data.setCustomdata( buildMetadata( 2, "customdata" ) );
-        data.setExtractedBinaryData( buildMetadata( 3, "binarydata" ) );
+        data.setBinaryData( buildMetadata( 3, "binarydata" ) );
 
         Set<IndexRequest> requests = contentIndexRequestCreator.createIndexRequests( "TEST_INDEX", data );
 

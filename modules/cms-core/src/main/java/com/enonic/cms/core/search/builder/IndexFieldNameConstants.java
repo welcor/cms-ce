@@ -67,7 +67,6 @@ public class IndexFieldNameConstants
 
     protected static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
 
-
     protected static final String CONTENTDATA_ALIAS_FOR_BW_COMPATABILITY = "contentdata_";
 
     protected static final String ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY = "fulltext";

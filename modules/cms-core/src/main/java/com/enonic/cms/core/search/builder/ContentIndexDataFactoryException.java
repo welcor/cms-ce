@@ -6,11 +6,11 @@ package com.enonic.cms.core.search.builder;
  * Date: 12/6/11
  * Time: 10:45 AM
  */
-public class ContentIndexDataBuilderException
+public class ContentIndexDataFactoryException
     extends RuntimeException
 {
 
-    public ContentIndexDataBuilderException( String s, Throwable throwable )
+    public ContentIndexDataFactoryException( String s, Throwable throwable )
     {
         super( s, throwable );
     }

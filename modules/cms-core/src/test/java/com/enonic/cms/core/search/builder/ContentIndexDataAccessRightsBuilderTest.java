@@ -26,7 +26,7 @@ public class ContentIndexDataAccessRightsBuilderTest
 
     private XContentBuilder result;
 
-    private ContentIndexDataAccessRightsBuilder accessRightsBuilder = new ContentIndexDataAccessRightsBuilder();
+    private ContentIndexDataAccessRightsFactory accessRightsBuilder = new ContentIndexDataAccessRightsFactory();
 
 
     @Before

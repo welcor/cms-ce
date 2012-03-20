@@ -15,8 +15,8 @@ import com.enonic.cms.core.content.ContentLocations;
  * Date: 2/2/12
  * Time: 1:49 PM
  */
-public class ContentIndexDataSectionBuilder
-    extends AbstractIndexDataBuilder
+public class ContentIndexDataSectionFactory
+    extends AbstractIndexDataFactory
 {
 
     public void build( final ContentLocations contentLocations, final XContentBuilder result )

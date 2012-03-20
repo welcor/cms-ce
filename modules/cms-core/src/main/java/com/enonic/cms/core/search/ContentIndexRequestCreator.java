@@ -33,10 +33,10 @@ final class ContentIndexRequestCreator
             indexRequests.add( indexRequest );
         }
 
-        if ( contentIndexData.getExtractedBinaryData() != null )
+        if ( contentIndexData.getBinaryData() != null )
         {
             final IndexRequest indexRequest =
-                createIndexRequest( indexName, id, contentIndexData.getExtractedBinaryData(), IndexType.Binaries, id );
+                createIndexRequest( indexName, id, contentIndexData.getBinaryData(), IndexType.Binaries, id );
             //indexRequest.operationThreaded( multithreaded );
             indexRequests.add( indexRequest );
         }

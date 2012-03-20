@@ -10,8 +10,6 @@ public enum IndexType
 {
     Content,
     Binaries;
-    //Customdata;
-
 
     @Override
     public String toString()

@@ -633,8 +633,6 @@
 
   <bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/>
 
-  <bean id="contentIndexDataBuilder" class="com.enonic.cms.core.search.builder.ContentIndexDataBuilderImpl"/>
-
   <bean id="contentQueryTranslator" class="com.enonic.cms.core.search.query.QueryTranslator"/>
 
   <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceDispatcher">

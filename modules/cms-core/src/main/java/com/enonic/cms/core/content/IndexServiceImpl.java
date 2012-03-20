@@ -161,7 +161,6 @@ public final class IndexServiceImpl
         ContentDocument indexedDoc = insertStandardValues( content );
         insertUserDefinedIndexValues( content, indexedDoc );
 
-        //TODO: Fix binary extraction
         insertBinaryIndexValues( content, indexedDoc );
         contentIndexService.index( indexedDoc, deleteExisting );
 

@@ -4,24 +4,18 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import com.enonic.cms.core.content.ContentKey;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 11/22/11
- * Time: 1:46 PM
- */
 public class ContentIndexData
 {
     private final ContentKey key;
 
-    private final XContentBuilder metadata;
+    private final XContentBuilder contentData;
 
-    private XContentBuilder extractedBinaryData;
+    private XContentBuilder binaryData;
 
-    public ContentIndexData( final ContentKey key, final XContentBuilder metadata )
+    public ContentIndexData( final ContentKey key, final XContentBuilder contentData )
     {
         this.key = key;
-        this.metadata = metadata;
+        this.contentData = contentData;
     }
 
     public ContentKey getKey()
@@ -31,7 +25,7 @@ public class ContentIndexData
 
     public XContentBuilder getContentdata()
     {
-        return this.metadata;
+        return this.contentData;
     }
 
     public String getMetadataJson()
@@ -40,16 +34,13 @@ public class ContentIndexData
         return getContentdata().string();
     }
 
-
-    public XContentBuilder getExtractedBinaryData()
+    public XContentBuilder getBinaryData()
     {
-        return extractedBinaryData;
+        return binaryData;
     }
 
-    public void setExtractedBinaryData( XContentBuilder extractedBinaryData )
+    public void setBinaryData( XContentBuilder binaryData )
     {
-        this.extractedBinaryData = extractedBinaryData;
+        this.binaryData = binaryData;
     }
-
-
 }

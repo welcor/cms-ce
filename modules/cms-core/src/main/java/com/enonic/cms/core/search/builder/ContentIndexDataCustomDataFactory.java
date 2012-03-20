@@ -17,8 +17,8 @@ import com.enonic.cms.core.content.index.UserDefinedField;
  * Date: 2/1/12
  * Time: 3:18 PM
  */
-public class ContentIndexDataCustomDataBuilder
-    extends AbstractIndexDataBuilder
+public class ContentIndexDataCustomDataFactory
+    extends AbstractIndexDataFactory
 {
 
     public void build( final XContentBuilder result, final Collection<UserDefinedField> userDefinedFields )

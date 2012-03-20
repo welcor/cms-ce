@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.search.query;
 
+import java.util.logging.Logger;
+
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -22,33 +24,28 @@ import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 public class QueryTranslator
 {
+    private Logger LOG = Logger.getLogger( QueryTranslator.class.getName() );
+
     private final FilterQueryBuilder filterQueryBuilder = new FilterQueryBuilder();
 
     public SearchSourceBuilder build( ContentIndexQuery contentIndexQuery )
         throws Exception
     {
-
         final QueryExpr queryExpr = applyFunctionsAndDateTranslations( contentIndexQuery );
 
         final SearchSourceBuilder builder = new SearchSourceBuilder();
-
         builder.from( contentIndexQuery.getIndex() );
-
         builder.size( contentIndexQuery.getCount() );
 
-        // final QueryExpr queryExpr = QueryParser.newInstance().parse( contentIndexQuery.getQuery() );
-
         final Expression expression = queryExpr.getExpr();
-        final Expression optimizedExpr = expression; //new LogicalOrOptimizer().optimize( expression );
 
-        final QueryBuilder queryBuilder = buildExpr( optimizedExpr );
-
-        builder.query( queryBuilder );
+        final QueryBuilder builtQuery = buildQuery( expression );
+        builder.query( builtQuery );
 
         OrderQueryBuilder.buildOrderByExpr( builder, queryExpr.getOrderBy() );
         filterQueryBuilder.buildFilterQuery( builder, contentIndexQuery );
 
-        System.out.println( "****************************\n\r" + builder.toString() );
+        LOG.fine( builder.toString() );
 
         return builder;
     }
@@ -58,10 +55,9 @@ public class QueryTranslator
         return ContentIndexQueryExprParser.parse( contentIndexQuery );
     }
 
-    private QueryBuilder buildExpr( Expression expr )
+    private QueryBuilder buildQuery( Expression expr )
         throws Exception
     {
-
         if ( expr == null )
         {
             return QueryBuilders.matchAllQuery();
@@ -132,7 +128,7 @@ public class QueryTranslator
     private QueryBuilder buildNotExpr( NotExpr expr )
         throws Exception
     {
-        final QueryBuilder negated = buildExpr( expr.getExpr() );
+        final QueryBuilder negated = buildQuery( expr.getExpr() );
         return buildNotQuery( negated );
     }
 
@@ -160,8 +156,8 @@ public class QueryTranslator
         throws Exception
     {
 
-        final QueryBuilder left = buildExpr( expr.getLeft() );
-        final QueryBuilder right = buildExpr( expr.getRight() );
+        final QueryBuilder left = buildQuery( expr.getLeft() );
+        final QueryBuilder right = buildQuery( expr.getRight() );
 
         if ( expr.getOperator() == LogicalExpr.OR )
         {

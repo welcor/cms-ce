@@ -196,9 +196,6 @@ public class ContentIndexServiceImpl
 
     public ContentResultSet query( ContentIndexQuery query )
     {
-        StopWatch timer = new StopWatch();
-
-        timer.start( "build query" );
 
         final SearchSourceBuilder build;
         try
@@ -209,16 +206,11 @@ public class ContentIndexServiceImpl
         {
             throw new IndexQueryException( "Failed to translate query: " + query.getQuery(), e );
         }
-        finally
-        {
-            timer.stop();
-        }
 
         final SearchHits hits = doExecuteSearchRequest( build );
 
         final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
 
-        //ContentIndexQueryTracer.traceMatchCount( queryResultTotalSize, trace );
         if ( query.getIndex() > queryResultTotalSize )
         {
             final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
@@ -235,11 +227,8 @@ public class ContentIndexServiceImpl
             keys.add( new ContentKey( hit.getId() ) );
         }
 
-        System.out.println( "Query finished in " + timer.getLastTaskTimeMillis() + " ms with " + queryResultTotalSize + " hits" );
-
         return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
     }
-
 
     public IndexValueResultSet query( IndexValueQuery query )
     {

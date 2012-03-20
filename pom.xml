@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.enonic.cms</groupId>
-  <artifactId>ce</artifactId>
+  <artifactId>cms-ce</artifactId>
   <packaging>pom</packaging>
   <name>Enonic CMS</name>
   <version>4.6.1-SNAPSHOT</version>

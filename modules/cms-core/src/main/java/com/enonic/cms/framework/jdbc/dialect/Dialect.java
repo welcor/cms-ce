@@ -62,6 +62,8 @@ public abstract class Dialect
 
     private final static String P_CHAR_TYPE = "char";
 
+    private final static String P_MINTIMESTAMP_VALUE = "mintimestamp";
+
     private final static String P_LENGTH_FUNCTION = "length";
 
     /**
@@ -108,6 +110,7 @@ public abstract class Dialect
         setVarcharTypeValue( "varchar(?)" );
         setBlobTypeValue( "blob" );
         setTimestampTypeValue( "timestamp" );
+        setMinTimeStampValue( "0000-01-01 00:00:00" );
         setLengthFunctionName( "length" );
     }
 
@@ -213,6 +216,14 @@ public abstract class Dialect
     public void setTimestampTypeValue( String value )
     {
         setPlaceholder( P_TIMESTAMP_TYPE, value );
+    }
+
+    /**
+     * Set minimum timestamp value placeholder.
+     */
+    public void setMinTimeStampValue( String value )
+    {
+        setPlaceholder( P_MINTIMESTAMP_VALUE, value );
     }
 
     /**
@@ -742,6 +753,11 @@ public abstract class Dialect
         StringBuffer sql = new StringBuffer();
         sql.append( " DROP INDEX " ).append( indexName );
         return sql.toString();
+    }
+
+    public Timestamp getMinDate()
+    {
+        return Timestamp.valueOf( getPlaceholder( P_MINTIMESTAMP_VALUE ) );
     }
 
     private synchronized void updateCurrentTimestamp()

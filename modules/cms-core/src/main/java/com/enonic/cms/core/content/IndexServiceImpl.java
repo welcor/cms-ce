@@ -171,7 +171,7 @@ public final class IndexServiceImpl
             BlobRecord blob = binaryDataDao.getBlob( binaryData );
             //InputStream stream = new ByteArrayInputStream( blob.getAsBytes() );
             InputStream stream = blob.getStream();
-            fullTextString = textExtractor.extractText( mimeType, stream );
+            fullTextString = textExtractor.extractText( mimeType, stream, "UTF-8" );
         }
 
         return fullTextString != null ? new BigText( fullTextString ) : null;

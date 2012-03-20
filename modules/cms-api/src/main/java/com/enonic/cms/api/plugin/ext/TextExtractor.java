@@ -22,9 +22,10 @@ public abstract class TextExtractor
      *
      * @param mimeType A mime-type.
      * @param stream An InputStream, connected to the binary document to extract text from.
+     * @param encoding Character encoding to use.
      * @return The pure text contained in the document.
      * @throws java.io.IOException If there are problems reading the input stream.
      */
-    public abstract String extractText( String mimeType, InputStream stream )
+    public abstract String extractText( String mimeType, InputStream stream, String encoding )
         throws IOException;
 }

@@ -147,7 +147,7 @@ public final class IndexServiceImpl
                 StringBuffer sb = new StringBuffer();
                 sb.append( "Failed to extract full text from binary data" );
                 sb.append( "(key: " ).append( binaryData.getKey() ).append( ", name: " ).append( binaryData.getName() ).append(
-                        ") from content" );
+                    ") from content" );
                 sb.append( "(key: " ).append( content.getKey() ).append( ", type: " ).append( content.getContentType().getName() );
                 sb.append( ", category: " ).append( content.getCategory().getName() ).append( "): " ).append( e.getMessage() );
                 LOG.warn( sb.toString() );
@@ -167,11 +167,11 @@ public final class IndexServiceImpl
             return null;
         }
         else
-    {
-            BlobRecord blob = binaryDataDao.getBlob(binaryData);
+        {
+            BlobRecord blob = binaryDataDao.getBlob( binaryData );
             //InputStream stream = new ByteArrayInputStream( blob.getAsBytes() );
             InputStream stream = blob.getStream();
-            fullTextString = textExtractor.extractText( stream );
+            fullTextString = textExtractor.extractText( mimeType, stream );
         }
 
         return fullTextString != null ? new BigText( fullTextString ) : null;

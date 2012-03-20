@@ -51,7 +51,6 @@ import com.enonic.cms.core.content.contentdata.custom.CustomContentDataModifier;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.ContentNotFoundException;
-import com.enonic.cms.core.search.builder.ContentIndexDataBuilder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserNotFoundException;
@@ -102,9 +101,6 @@ public class ContentStorer
 
     @Autowired
     private IndexService indexService;
-
-    @Autowired
-    private ContentIndexDataBuilder contentIndexDataBuilder;
 
     @Autowired
     private ContentValidator contentValidator;

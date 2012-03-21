@@ -1,9 +1,5 @@
 package com.enonic.cms.core.search;
 
-import com.sun.istack.internal.Interned;
-
-import com.enonic.cms.core.search.IndexType;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rmh

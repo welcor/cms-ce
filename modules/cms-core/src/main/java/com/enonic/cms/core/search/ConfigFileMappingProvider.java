@@ -6,6 +6,7 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.elasticsearch.ElasticSearchException;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,6 +14,7 @@ import org.elasticsearch.ElasticSearchException;
  * Date: 11/22/11
  * Time: 3:55 PM
  */
+@Component("indexMappingProvider")
 final class ConfigFileMappingProvider
     implements IndexMappingProvider
 {
@@ -48,6 +50,4 @@ final class ConfigFileMappingProvider
     {
         return indexName + "_" + indexType.toString() + "_mapping.json";
     }
-
-
 }

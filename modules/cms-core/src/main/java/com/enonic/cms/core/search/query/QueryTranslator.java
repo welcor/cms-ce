@@ -10,6 +10,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQueryExprParser;
@@ -21,7 +22,7 @@ import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
-
+@Component
 public class QueryTranslator
 {
     private Logger LOG = Logger.getLogger( QueryTranslator.class.getName() );

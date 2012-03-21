@@ -1,5 +1,7 @@
 package com.enonic.cms.core.search;
 
+import com.sun.istack.internal.Interned;
+
 import com.enonic.cms.core.search.IndexType;
 
 /**
@@ -8,6 +10,7 @@ import com.enonic.cms.core.search.IndexType;
  * Date: 11/22/11
  * Time: 3:58 PM
  */
+
 public interface IndexMappingProvider
 {
 

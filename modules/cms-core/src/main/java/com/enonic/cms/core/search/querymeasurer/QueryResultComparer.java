@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -23,6 +24,7 @@ import com.enonic.cms.core.search.query.QueryTranslator;
  * Date: 1/20/12
  * Time: 8:57 AM
  */
+@Component
 public class QueryResultComparer
 {
     private List<QueryDiffEntry> queryDiffEntries = new ArrayList<QueryDiffEntry>();
@@ -92,10 +94,10 @@ public class QueryResultComparer
         queryDiffEntries.clear();
     }
 
-    @Autowired
-    public void setElasticSearchTranslator( final QueryTranslator elasticSearchTranslator )
+    @Autowired()
+    public void setElasticSearchTranslator( final QueryTranslator queryTranslator )
     {
-        this.elasticSearchTranslator = elasticSearchTranslator;
+        this.elasticSearchTranslator = queryTranslator;
     }
 
 }

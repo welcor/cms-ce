@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.search.index.ContentIndexData;
 
@@ -15,6 +16,7 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  * Date: 11/28/11
  * Time: 10:00 AM
  */
+@Component
 final class ContentIndexRequestCreator
 {
     private final IndexRequestComparator comparator = new IndexRequestComparator();
@@ -35,8 +37,7 @@ final class ContentIndexRequestCreator
 
         if ( contentIndexData.getBinaryData() != null )
         {
-            final IndexRequest indexRequest =
-                createIndexRequest( indexName, id, contentIndexData.getBinaryData(), IndexType.Binaries, id );
+            final IndexRequest indexRequest = createIndexRequest( indexName, id, contentIndexData.getBinaryData(), IndexType.Binaries, id );
             //indexRequest.operationThreaded( multithreaded );
             indexRequests.add( indexRequest );
         }

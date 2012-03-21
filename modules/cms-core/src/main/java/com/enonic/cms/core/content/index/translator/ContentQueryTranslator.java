@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
@@ -36,6 +37,7 @@ import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 /**
  * This class implements the translation of content query.
  */
+@Component
 public final class ContentQueryTranslator
     extends AbstractQueryTranslator
 {

@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.elasticsearch.common.collect.Sets;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import com.google.common.collect.Iterables;
@@ -21,6 +22,7 @@ import com.enonic.cms.core.search.querymeasurer.comparators.*;
  * Date: 1/17/12
  * Time: 2:09 PM
  */
+@Component
 public class IndexQueryMeasurer
 {
     private final Map<IndexQuerySignature, IndexQueryMeasure> queryMeasures = Maps.newHashMap();

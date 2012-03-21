@@ -35,6 +35,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.search.index.ContentIndexData;
@@ -45,6 +46,7 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  * Date: 2/23/12
  * Time: 10:26 AM
  */
+@Component
 public class ElasticSearchIndexServiceImpl
     implements ElasticSearchIndexService
 {

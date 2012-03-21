@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;

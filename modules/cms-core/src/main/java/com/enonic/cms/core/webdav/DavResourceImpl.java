@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
-import com.enonic.cms.api.Version;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceData;
 import com.enonic.cms.core.resource.FileResourceName;
@@ -277,7 +277,7 @@ public final class DavResourceImpl
             }
 
             writer.print( "</ul><hr size=\"1\"><em>Powered by " );
-            writer.print( Version.getTitleAndVersion() );
+            writer.print( ProductVersion.getFullTitleAndVersion() );
             writer.print( "</em></body></html>" );
             writer.close();
         }

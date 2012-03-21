@@ -1293,11 +1293,11 @@
 											                    <tbody>
 	                                            <xsl:attribute name="id">
 	                                                <xsl:text>tbl</xsl:text>
-	                                                <xsl:value-of select="concat($paramname, 'co')"/>
+	                                                <xsl:value-of select="concat($paramname, 'co_portlet')"/>
 	                                            </xsl:attribute>
 	                                            <xsl:attribute name="name">
 	                                                <xsl:text>tbl</xsl:text>
-	                                                <xsl:value-of select="concat($paramname, 'co')"/>
+	                                                <xsl:value-of select="concat($paramname, 'co_portlet')"/>
 	                                            </xsl:attribute>
 	                                            <xsl:choose>
 	                                                <xsl:when test="not(/pagetemplates/pagetemplate/contentobjects/contentobject[@parameterkey = $pagetemplateparameterkey])">
@@ -1359,16 +1359,16 @@
 	                                                </xsl:attribute>
 	                                            </xsl:if>
 	                                            <xsl:call-template name="button">
-	                                                <xsl:with-param name="name">add<xsl:value-of select="$paramname"/></xsl:with-param>
+	                                                <xsl:with-param name="name">add<xsl:value-of select="$paramname"/>_portlet</xsl:with-param>
 	                                                <xsl:with-param name="caption" select="'%cmdNewPortlet%'"/>
 	                                                <xsl:with-param name="onclick">
 	                                                    <xsl:text>addObjectSelector('</xsl:text>
-	                                                    <xsl:value-of select="concat($paramname, 'co')"/>
+	                                                    <xsl:value-of select="concat($paramname, 'co_portlet')"/>
 	                                                    <xsl:text>',</xsl:text><xsl:value-of select="$param_pos -1"/><xsl:text>);</xsl:text>
 	                                                    <xsl:text>activateDeactivateMultiple('_multiple</xsl:text>
 	                                                    <xsl:value-of select="$param_pos"/>
 	                                                    <xsl:text>', 'btn</xsl:text>
-	                                                    <xsl:value-of select="concat($paramname, 'co')"/>
+	                                                    <xsl:value-of select="concat($paramname, 'co_portlet')"/>
 	                                                    <xsl:text>del');</xsl:text>
 	                                                </xsl:with-param>
 	                                            </xsl:call-template>

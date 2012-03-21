@@ -1,9 +1,12 @@
 package com.enonic.cms.itest.core.http;
 
-import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.itest.util.MockHTTPServer;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalProperties;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
+import java.util.Properties;
+import java.util.Random;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,15 +16,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.SecureRandom;
-import java.util.Properties;
-import java.util.Random;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.VerticalProperties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.http.HTTPService;
+import com.enonic.cms.itest.util.MockHTTPServer;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -46,7 +48,7 @@ public class HTTPServiceTest
     {
         serverPort = random( 8090, 9090 );
         httpServer = new MockHTTPServer( serverPort );
-        Properties props = new Properties();
+        ConfigProperties props = new ConfigProperties();
         props.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
                            "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
         VerticalProperties.getVerticalProperties().setProperties( props );

@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.PluginConfig;
 import com.enonic.cms.api.util.LogFacade;
+import com.enonic.cms.core.boot.ConfigProperties;
 
 @Component
 public final class ConfigFactoryImpl
@@ -21,7 +23,7 @@ public final class ConfigFactoryImpl
 
     private Map<String, String> globalProperties;
 
-    @Value("#{config.pluginConfigDir}")
+    @Value("${cms.plugin.configDir}")
     public void setConfigDir( final File configDir )
     {
         this.configDir = configDir;
@@ -54,9 +56,9 @@ public final class ConfigFactoryImpl
         return bundle.getSymbolicName();
     }
 
-    @Value("#{config.map}")
-    public final void setGlobalProperties( final Map<String, String> properties )
+    @Autowired
+    public final void setGlobalProperties( final ConfigProperties properties )
     {
-        this.globalProperties = properties;
+        this.globalProperties = properties.getMap();
     }
 }

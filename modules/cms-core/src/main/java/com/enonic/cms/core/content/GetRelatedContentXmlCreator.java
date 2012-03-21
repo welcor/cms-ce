@@ -33,7 +33,7 @@ public class GetRelatedContentXmlCreator
 
     private boolean includeCategoryData = false;
 
-    private VersionInfoStyle versionInfoStyle = null;
+    private VersionInfoStyle versionInfoStyle = VersionInfoStyle.NONE;
 
     public GetRelatedContentXmlCreator( CategoryAccessResolver categoryAccessResolver, ContentAccessResolver contentAccessResolver )
     {
@@ -113,20 +113,17 @@ public class GetRelatedContentXmlCreator
         xmlCreator.setIncludeAssignment( true );
         xmlCreator.setIncludeUserRightsInfo( includeUserRights, categoryAccessResolver, contentAccessResolver );
 
-        if ( versionInfoStyle != null )
+        if ( versionInfoStyle == VersionInfoStyle.CLIENT )
         {
-            if ( versionInfoStyle == VersionInfoStyle.CLIENT )
-            {
-                xmlCreator.setIncludeVersionsInfoForClient( true );
-            }
-            else if ( versionInfoStyle == VersionInfoStyle.PORTAL )
-            {
-                xmlCreator.setIncludeVersionsInfoForPortal( true );
-            }
-            else if ( versionInfoStyle == VersionInfoStyle.ADMIN )
-            {
-                xmlCreator.setIncludeVersionsInfoForAdmin( true );
-            }
+            xmlCreator.setIncludeVersionsInfoForClient( true );
+        }
+        else if ( versionInfoStyle == VersionInfoStyle.PORTAL )
+        {
+            xmlCreator.setIncludeVersionsInfoForPortal( true );
+        }
+        else if ( versionInfoStyle == VersionInfoStyle.ADMIN )
+        {
+            xmlCreator.setIncludeVersionsInfoForAdmin( true );
         }
 
         return xmlCreator.createContentsDocument( user, result.getContent(), result.getRelatedContent() );
@@ -136,6 +133,7 @@ public class GetRelatedContentXmlCreator
     {
         PORTAL,
         CLIENT,
-        ADMIN
+        ADMIN,
+        NONE
     }
 }

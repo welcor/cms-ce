@@ -14,7 +14,7 @@
   <xsl:param name="password"/>
   <xsl:param name="languagecode"/>
   <xsl:param name="logintitle" select="'%headLogin%'"/>
-  <xsl:param name="version"/>
+  <xsl:param name="titleAndVersion"/>
   <xsl:param name="copyright"/>
   <xsl:param name="license_status"/>
   <xsl:param name="license_message"/>
@@ -210,7 +210,7 @@
                 </div>
               </div>
               <p class="version">
-                <xsl:value-of select="concat('Enonic CMS ', $version)"/>
+                <xsl:value-of select="$titleAndVersion"/>
                 <br/>
                 <xsl:value-of select="$copyright"/>
                 <xsl:text> All rights reserved.</xsl:text>

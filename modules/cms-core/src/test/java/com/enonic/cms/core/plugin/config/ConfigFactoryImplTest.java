@@ -1,9 +1,7 @@
 package com.enonic.cms.core.plugin.config;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.Map;
-import java.util.Properties;
+import com.enonic.cms.api.plugin.PluginConfig;
+import com.enonic.cms.core.boot.ConfigProperties;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,12 +9,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
-
-import com.google.common.collect.Maps;
-
-import com.enonic.cms.api.plugin.PluginConfig;
-
 import static org.junit.Assert.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Properties;
 
 public class ConfigFactoryImplTest
 {
@@ -48,7 +44,7 @@ public class ConfigFactoryImplTest
         this.factory = new ConfigFactoryImpl();
         this.factory.setConfigDir( this.folder.getRoot() );
         
-        final Map<String, String> globalProperties = Maps.newHashMap();
+        final ConfigProperties globalProperties = new ConfigProperties();
         globalProperties.put("external1", "external-value1");
         this.factory.setGlobalProperties( globalProperties );
     }

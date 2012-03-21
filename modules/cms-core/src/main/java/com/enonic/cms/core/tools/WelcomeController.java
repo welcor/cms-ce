@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import com.enonic.cms.api.Version;
+import com.enonic.cms.core.product.ProductVersion;
+import com.enonic.cms.core.product.LicenseChecker;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.upgrade.UpgradeService;
@@ -30,6 +31,9 @@ public final class WelcomeController
 
     @Autowired
     private SiteDao siteDao;
+
+    @Autowired(required = false)
+    private LicenseChecker licenseChecker;
 
     @Autowired
     public void setUpgradeService( final UpgradeService upgradeService )
@@ -54,9 +58,9 @@ public final class WelcomeController
         final boolean upgradeNeeded = modelUpgradeNeeded || softwareUpgradeNeeded;
 
         HashMap<String, Object> model = new HashMap<String, Object>();
-        model.put( "versionTitle", Version.getTitle() );
-        model.put( "versionTitleVersion", Version.getTitleAndVersion() );
-        model.put( "versionCopyright", Version.getCopyright() );
+        model.put( "versionTitle", ProductVersion.getFullTitle() );
+        model.put( "versionTitleVersion", ProductVersion.getFullTitleAndVersion() );
+        model.put( "versionCopyright", ProductVersion.getCopyright() );
         model.put( "baseUrl", createBaseUrl( req ) );
         if ( !upgradeNeeded )
         {
@@ -67,6 +71,7 @@ public final class WelcomeController
         model.put( "softwareUpgradeNeeded", softwareUpgradeNeeded );
         model.put( "upgradeFrom", this.upgradeService.getCurrentModelNumber() );
         model.put( "upgradeTo", this.upgradeService.getTargetModelNumber() );
+        model.put( "license", this.licenseChecker );
         return new ModelAndView( "welcomePage", model );
     }
 

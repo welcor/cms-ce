@@ -27,11 +27,9 @@ public final class ContentEntityFetcherImpl
         Map<ContentKey, ContentEntity> map = new LinkedHashMap<ContentKey, ContentEntity>();
         if ( keys != null && keys.size() > 0 )
         {
-
-            // performance: fetching one and one will go faster when content is cached
-            for ( ContentKey key : keys )
+            for ( ContentEntity content : contentDao.findByKeys( keys ) )
             {
-                map.put( key, contentDao.findByKey( key ) );
+                map.put( content.getKey(), content );
             }
         }
 

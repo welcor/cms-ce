@@ -5,86 +5,88 @@
 
 package com.enonic.cms.api;
 
-import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 public final class Version
 {
-    private final static Properties PROPS =
-        loadProperties();
+    private final static Version INSTANCE = new Version();
 
-    private final static String TITLE =
-        "Enonic CMS";
-    
-    private final static String COPYRIGHT =
-        "Copyright (c) 2000-2011 Enonic AS";
+    private final String nowTimestamp;
 
-    /**
-     * Return the version title.
-     */
+    private final Properties props;
+
+    private Version()
+    {
+        final SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyyMMdd.HHmmss" );
+        this.nowTimestamp = dateFormat.format( new Date() );
+
+        try
+        {
+            this.props = new Properties();
+            this.props.load( getClass().getResourceAsStream( "version.properties" ) );
+        }
+        catch ( final Exception e )
+        {
+            throw new Error( "Failed to load version.properties", e );
+        }
+    }
+
+    private String getVersionProp()
+    {
+        final String value = this.props.getProperty( "version", "x.x.x" );
+        if ( value.equalsIgnoreCase( "${project.version}" ) )
+        {
+            return "x.x.x";
+        }
+        else
+        {
+            return value;
+        }
+    }
+
+    private String getTimestampProp()
+    {
+        final String value = this.props.getProperty( "timestamp", this.nowTimestamp );
+        if ( value.equalsIgnoreCase( "${buildTimestamp}" ) )
+        {
+            return this.nowTimestamp;
+        }
+        else
+        {
+            return value;
+        }
+    }
+
     public static String getTitle()
     {
-        return TITLE;
+        return "Enonic CMS";
     }
 
-    /**
-     * Return the copyright notice.
-     */
     public static String getCopyright()
     {
-        return COPYRIGHT;
+        return "Copyright (c) 2000-2012 Enonic AS";
     }
 
-    /**
-     * Return the version number.
-     */
+    public static String getTimestamp()
+    {
+        return INSTANCE.getTimestampProp();
+    }
+
     public static String getVersion()
     {
-        final String version = PROPS.getProperty("version", "x.x.x");
-        final String timestamp = getTimestamp();
-
-        if ((timestamp != null) && version.endsWith("-SNAPSHOT")) {
-            return version.replaceAll("-SNAPSHOT", "-" + timestamp);
+        final String version = INSTANCE.getVersionProp();
+        if ( version.endsWith( "-SNAPSHOT" ) )
+        {
+            return version.replace( "-SNAPSHOT", "-" + getTimestamp() );
         }
 
         return version;
     }
 
-    /**
-     * Return the version title.
-     */
-    public static String getTitleAndVersion()
-    {
-        return getTitle() + " " + getVersion();
-    }
-
-    public static String getTimestamp()
-    {
-        return PROPS.getProperty("timestamp", null);
-    }
-
-    /**
-     * Print out version.
-     */
     public static void main( String[] args )
     {
-        System.out.println( getTitleAndVersion() );
-    }
-
-    private static Properties loadProperties()
-    {
-        final Properties props = new Properties();
-        final InputStream in = Version.class.getResourceAsStream("version.properties");
-        if (in == null) {
-            return props;
-        }
-
-        try {
-            props.load(in);
-        } catch (Exception e) {
-            // Do nothing
-        }
-
-        return props;
+        System.out.println( getTitle() + " " + getVersion() );
     }
 }

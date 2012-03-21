@@ -29,13 +29,13 @@ public final class HotDeployTask
 
     private PluginManager pluginManager;
 
-    @Value("#{config.pluginDeployDir}")
+    @Value("${cms.plugin.deployDir}")
     public void setDeployDir( final File deployDir )
     {
         this.deployDir = deployDir;
     }
 
-    @Value("#{config.pluginScanPeriod}")
+    @Value("${cms.plugin.scanPeriod}")
     public void setScanPeriod( final long scanPeriod )
     {
         this.scanPeriod = scanPeriod;

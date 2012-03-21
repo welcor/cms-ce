@@ -80,6 +80,11 @@ public final class GetRelatedContentsParams
     public boolean includeOfflineContent = false;
 
     /**
+     * Specifies if information about content's versions should be included in the XML.
+     */
+    public boolean includeVersionsInfo = false;
+
+    /**
      * Specifies if the related content must be related to every content in the <code>contentKeys</code> field.
      * Setting this parameter to true basically returns the intersection of related content to the input keys, instead
      * of the union of the related content.

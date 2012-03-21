@@ -27,9 +27,9 @@ import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.util.StringUtil;
 
-import com.enonic.cms.api.Version;
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
@@ -326,8 +326,8 @@ public final class AdminLogInServlet
         }
 
         // version and copyright info
-        parameters.put( "version", Version.getVersion() );
-        parameters.put( "copyright", Version.getCopyright() );
+        parameters.put( "titleAndVersion", ProductVersion.getFullTitleAndVersion() );
+        parameters.put( "copyright", ProductVersion.getCopyright() );
 
         String selectedUserStore = (String) session.getAttribute( "selectedloginuserstore" );
         if ( StringUtils.isNotEmpty( selectedUserStore ) )
@@ -561,8 +561,8 @@ public final class AdminLogInServlet
         }
 
         // version and copyright info
-        parameters.put( "version", Version.getVersion() );
-        parameters.put( "copyright", Version.getCopyright() );
+        parameters.put( "titleAndVersion", ProductVersion.getFullTitleAndVersion() );
+        parameters.put( "copyright", ProductVersion.getCopyright() );
 
         String selectedUserStore = (String) session.getAttribute( "selectedloginuserstore" );
         if ( StringUtils.isNotEmpty( selectedUserStore ) )

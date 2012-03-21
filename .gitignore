@@ -4,5 +4,7 @@ target/
 .gradle/
 *.iws
 *.ids
+*.iml
+*.ipr
 .idea
-out/
+

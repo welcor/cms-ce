@@ -15,11 +15,11 @@ import java.util.Set;
 import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.ContentEntity;
@@ -27,7 +27,6 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.RelatedContentFetcher;
-import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -48,7 +47,6 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentEntityDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 import com.enonic.cms.store.dao.RelatedChildContentQuery;
 
 import static org.junit.Assert.*;
@@ -56,20 +54,17 @@ import static org.junit.Assert.*;
 public class RelatedContentFetcherTest
     extends AbstractSpringTest
 {
-    private static final Logger LOG = LoggerFactory.getLogger( RelatedContentFetcherTest.class.getName() );
-
     @Autowired
     private HibernateTemplate hibernateTemplate;
 
+    @Qualifier("cacheFacadeManager")
     @Autowired
-    private GroupEntityDao groupEntityDao;
+    private CacheManager cacheManager;
 
     private OverridingContentEntityDao contentDao;
 
     @Autowired
     protected ContentService contentService;
-
-    private ContentAccessResolver contentAccessResolver;
 
     @Autowired
     private DomainFixture fixture;
@@ -82,8 +77,6 @@ public class RelatedContentFetcherTest
     @Before
     public void setUp()
     {
-        contentAccessResolver = new ContentAccessResolver( groupEntityDao );
-
         DomainFactory factory = fixture.getFactory();
 
         // setup needed common data for each test
@@ -117,6 +110,7 @@ public class RelatedContentFetcherTest
 
         contentDao = new OverridingContentEntityDao();
         contentDao.setHibernateTemplate( hibernateTemplate );
+        contentDao.setCacheManager( cacheManager );
     }
 
     @Test

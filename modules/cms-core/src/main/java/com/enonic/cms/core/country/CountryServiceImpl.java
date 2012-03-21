@@ -84,7 +84,7 @@ public final class CountryServiceImpl
         return list;
     }
 
-    @Value("#{config.countriesFile}")
+    @Value("${cms.home}/config/countries.xml")
     public void setCountriesFile( final File file )
     {
         this.countryFile = file;

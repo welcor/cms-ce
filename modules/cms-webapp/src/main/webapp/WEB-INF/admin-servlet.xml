@@ -261,9 +261,7 @@
   <bean id="resourceHandlerServletWrapper" class="com.enonic.vertical.adminweb.ResourceHandlerServlet"/>
   <bean id="sectionHandlerServletWrapper" class="com.enonic.vertical.adminweb.SectionHandlerServlet"/>
   <bean id="splashServletWrapper" class="com.enonic.vertical.adminweb.SplashServlet"/>
-  <bean id="systemHandlerServletWrapper" class="com.enonic.vertical.adminweb.SystemHandlerServlet">
-    <property name="configurationProperties" value="#{config.properties}"/>
-  </bean>
+  <bean id="systemHandlerServletWrapper" class="com.enonic.vertical.adminweb.SystemHandlerServlet"/>
   <bean id="userHandlerServletWrapper" class="com.enonic.vertical.adminweb.UserHandlerServlet"/>
   <bean id="contentDocumentHandlerServletWrapper"
         class="com.enonic.vertical.adminweb.handlers.ContentDocumentHandlerServlet"/>

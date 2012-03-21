@@ -2232,18 +2232,18 @@ public class SectionHandlerServlet
         Element[] contentTitleElems = XMLTool.getElements( doc.getDocumentElement() );
         final Set<Integer> contentTypeKeys = Sets.newHashSet();
 
-        List<Integer> categoryKeys = new ArrayList<Integer>();
+        Set<Integer> categoryKeys = new LinkedHashSet<Integer>();
         for ( Element contentTitleElem : contentTitleElems )
         {
             contentTypeKeys.add( Integer.parseInt( contentTitleElem.getAttribute( "contenttypekey" ) ) );
             categoryKeys.add( Integer.parseInt( contentTitleElem.getAttribute( "categorykey" ) ) );
         }
-        Document contentTypeDoc = admin.getData( user, Types.CONTENTTYPE, Ints.toArray(contentTypeKeys)).getAsDOMDocument();
+        Document contentTypeDoc = admin.getData( user, Types.CONTENTTYPE, Ints.toArray( contentTypeKeys ) ).getAsDOMDocument();
         XMLTool.mergeDocuments( doc, contentTypeDoc, true );
         if ( categoryKeys.size() > 0 )
         {
             CategoryCriteria categoryCriteria = new CategoryCriteria();
-            categoryCriteria.addCategoryKeys( categoryKeys );
+            categoryCriteria.addCategoryKeys( Lists.newArrayList( categoryKeys ) );
             Document categoriesDoc = admin.getMenu( user, categoryCriteria ).getAsDOMDocument();
             XMLTool.mergeDocuments( doc, categoriesDoc, false );
         }

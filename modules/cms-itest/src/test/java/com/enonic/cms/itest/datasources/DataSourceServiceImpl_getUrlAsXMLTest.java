@@ -4,16 +4,12 @@
  */
 package com.enonic.cms.itest.datasources;
 
-import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.core.portal.datasource.DataSourceContext;
-import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.service.DataSourceServiceImpl;
-import com.enonic.cms.core.time.MockTimeService;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.MockHTTPServer;
-import com.enonic.cms.store.dao.UserDao;
-import com.enonic.vertical.VerticalProperties;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
+import java.util.Properties;
+import java.util.Random;
+
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -21,13 +17,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.SecureRandom;
-import java.util.Properties;
-import java.util.Random;
+import com.enonic.vertical.VerticalProperties;
 
-import static org.junit.Assert.assertEquals;
+import com.enonic.cms.framework.xml.XMLDocument;
+
+import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.http.HTTPService;
+import com.enonic.cms.core.portal.datasource.DataSourceContext;
+import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.service.DataSourceServiceImpl;
+import com.enonic.cms.core.time.MockTimeService;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.itest.util.MockHTTPServer;
+import com.enonic.cms.store.dao.UserDao;
+
+import static org.junit.Assert.*;
 
 public class DataSourceServiceImpl_getUrlAsXMLTest
     extends AbstractSpringTest
@@ -65,7 +69,7 @@ public class DataSourceServiceImpl_getUrlAsXMLTest
         dataSourceService.setUserDao( userDao );
         dataSourceService.setHTTPService( httpService );
 
-        Properties props = new Properties();
+        ConfigProperties props = new ConfigProperties();
         props.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
                            "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
         VerticalProperties.getVerticalProperties().setProperties( props );

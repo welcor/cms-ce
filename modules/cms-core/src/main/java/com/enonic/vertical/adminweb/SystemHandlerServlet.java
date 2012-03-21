@@ -29,8 +29,9 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.api.Version;
+import com.enonic.cms.core.boot.ConfigProperties;
 import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
 
@@ -56,7 +57,8 @@ public class SystemHandlerServlet
     @Autowired
     private ContentIndexService contentIndexService;
 
-    private Properties configurationProperties;
+    @Autowired
+    private ConfigProperties configurationProperties;
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
@@ -111,7 +113,7 @@ public class SystemHandlerServlet
             if ( mode.equals( "system" ) )
             {
                 root.appendChild( buildJavaInfo( doc ) );
-                root.setAttribute( "version", Version.getVersion() );
+                root.setAttribute( "version", ProductVersion.getVersion() );
                 root.setAttribute( "modelVersion", String.valueOf( this.upgradeService.getCurrentModelNumber() ) );
                 root.appendChild( buildComponentsInfo( doc ) );
             }
@@ -302,10 +304,4 @@ public class SystemHandlerServlet
     {
         this.datasourceInfoResolver = datasourceInfoResolver;
     }
-
-    public void setConfigurationProperties( Properties configurationProperties )
-    {
-        this.configurationProperties = configurationProperties;
-    }
-
 }

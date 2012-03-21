@@ -148,10 +148,10 @@ public class PageTemplateHandlerServlet
             int newObjectCounter = 0;
             for ( int i = 0; i < paramNameArray.length; ++i )
             {
-                if ( isArrayFormItem( formItems, paramNameArray[i] + "co" ) )
+                if ( isArrayFormItem( formItems, paramNameArray[i] + "co_portlet" ) )
                 {
-                    String[] coArray = (String[]) formItems.get( paramNameArray[i] + "co" );
-                    String[] coNameArray = (String[]) formItems.get( "view" + paramNameArray[i] + "co" );
+                    String[] coArray = (String[]) formItems.get( paramNameArray[i] + "co_portlet" );
+                    String[] coNameArray = (String[]) formItems.get( "view" + paramNameArray[i] + "co_portlet" );
                     boolean used = false;
                     for ( int j = 0; j < coArray.length; j++ )
                     {
@@ -179,11 +179,11 @@ public class PageTemplateHandlerServlet
                         newObjectCounter++;
                     }
                 }
-                else if ( formItems.containsKey( paramNameArray[i] + "co" ) )
+                else if ( formItems.containsKey( paramNameArray[i] + "co_portlet" ) )
                 {
-                    String coName = formItems.getString( "view" + paramNameArray[i] + "co" );
+                    String coName = formItems.getString( "view" + paramNameArray[i] + "co_portlet" );
                     Element contentObjectElem = XMLTool.createElement( doc, contentObjectsElem, "contentobject" );
-                    contentObjectElem.setAttribute( "conobjkey", formItems.getString( paramNameArray[i] + "co" ) );
+                    contentObjectElem.setAttribute( "conobjkey", formItems.getString( paramNameArray[i] + "co_portlet" ) );
                     if ( paramKeyArray != null && paramKeyArray[i].length() > 0 )
                     {
                         contentObjectElem.setAttribute( "parameterkey", paramKeyArray[i] );
@@ -217,9 +217,9 @@ public class PageTemplateHandlerServlet
             String paramKey = formItems.getString( "paramkey", "_0" );
 
             Element contentObjectsElem = XMLTool.createElement( doc, pageTemplate, "contentobjects" );
-            if ( isArrayFormItem( formItems, paramName + "co" ) )
+            if ( isArrayFormItem( formItems, paramName + "co_portlet" ) )
             {
-                String[] coArray = (String[]) formItems.get( paramName + "co" );
+                String[] coArray = (String[]) formItems.get( paramName + "co_portlet" );
                 for ( int j = 0; j < coArray.length; j++ )
                 {
                     Element contentObjectElem = XMLTool.createElement( doc, contentObjectsElem, "contentobject" );
@@ -236,10 +236,10 @@ public class PageTemplateHandlerServlet
                     }
                 }
             }
-            else if ( formItems.containsKey( paramName + "co" ) )
+            else if ( formItems.containsKey( paramName + "co_portlet" ) )
             {
                 Element contentObjectElem = XMLTool.createElement( doc, contentObjectsElem, "contentobject" );
-                contentObjectElem.setAttribute( "conobjkey", formItems.getString( paramName + "co" ) );
+                contentObjectElem.setAttribute( "conobjkey", formItems.getString( paramName + "co_portlet" ) );
                 if ( paramKey != null && paramKey.length() > 0 )
                 {
                     contentObjectElem.setAttribute( "parameterkey", paramKey );

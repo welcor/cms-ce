@@ -21,6 +21,8 @@ public interface ContentDao
 {
     ContentEntity findByKey( ContentKey contentKey );
 
+    List<ContentEntity> findByKeys( List<ContentKey> contentKeys );
+
     List<ContentKey> findBySpecification( ContentSpecification specification, String orderBy, int count );
 
     Collection<RelatedChildContent> findRelatedChildrenByKeys( RelatedChildContentQuery relatedChildContentQuery );

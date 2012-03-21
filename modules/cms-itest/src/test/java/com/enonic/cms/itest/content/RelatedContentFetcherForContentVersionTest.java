@@ -13,8 +13,10 @@ import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.ContentEntity;
@@ -23,7 +25,6 @@ import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.RelatedContentFetcherForContentVersion;
-import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -41,7 +42,6 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentEntityDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 import com.enonic.cms.store.dao.RelatedChildContentQuery;
 
 import static org.junit.Assert.*;
@@ -52,15 +52,14 @@ public class RelatedContentFetcherForContentVersionTest
     @Autowired
     private HibernateTemplate hibernateTemplate;
 
+    @Qualifier("cacheFacadeManager")
     @Autowired
-    private GroupEntityDao groupEntityDao;
+    private CacheManager cacheManager;
 
     private OverridingContentEntityDao contentDao;
 
     @Autowired
     private ContentService contentService;
-
-    private ContentAccessResolver contentAccessResolver;
 
     @Autowired
     private DomainFixture fixture;
@@ -68,8 +67,6 @@ public class RelatedContentFetcherForContentVersionTest
     @Before
     public void setUp()
     {
-        contentAccessResolver = new ContentAccessResolver( groupEntityDao );
-
         DomainFactory factory = fixture.getFactory();
 
         // setup needed common data for each test
@@ -103,9 +100,8 @@ public class RelatedContentFetcherForContentVersionTest
 
         contentDao = new OverridingContentEntityDao();
         contentDao.setHibernateTemplate( hibernateTemplate );
+        contentDao.setCacheManager( cacheManager );
     }
-
-
 
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_circular_reference_but_all_other_are_included()
@@ -162,7 +158,6 @@ public class RelatedContentFetcherForContentVersionTest
 
     }
 
-
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_multiple_circular_references()
     {
@@ -210,7 +205,6 @@ public class RelatedContentFetcherForContentVersionTest
         expectedRelatedContentKeys.add( content_4 );
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
     }
-
 
     @Test
     public void eternal_loop_is_prevented_for_related_children_of_children()
@@ -260,7 +254,6 @@ public class RelatedContentFetcherForContentVersionTest
         expectedRelatedContentKeys.add( content_4 );
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
     }
-
 
     @Test
     public void including_visited_returns_all_when_true_but_not_when_false()

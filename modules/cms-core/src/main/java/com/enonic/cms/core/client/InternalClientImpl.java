@@ -76,6 +76,7 @@ import com.enonic.cms.api.client.model.UpdateFileContentParams;
 import com.enonic.cms.api.client.model.preference.Preference;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
+import com.enonic.cms.core.boot.ConfigProperties;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
@@ -258,7 +259,8 @@ public final class InternalClientImpl
         this.sitePropertiesService = sitePropertiesService;
     }
 
-    public void setCmsProperties( Properties cmsProperties )
+    @Autowired
+    public void setCmsProperties( ConfigProperties cmsProperties )
     {
         this.cmsProperties = cmsProperties;
     }
@@ -1123,7 +1125,10 @@ public final class InternalClientImpl
             getContentXmlCreator.includeContentsContentData( params.includeData );
             getContentXmlCreator.includeRelatedContentsContentData( params.includeData );
             getContentXmlCreator.includeUserRights( params.includeUserRights );
-            getContentXmlCreator.versionInfoStyle( GetContentXmlCreator.VersionInfoStyle.CLIENT );
+            if ( params.includeVersionsInfo )
+            {
+                getContentXmlCreator.versionInfoStyle( GetContentXmlCreator.VersionInfoStyle.CLIENT );
+            }
 
             XMLDocument xml = getContentXmlCreator.create( getContentResult );
             return xml.getAsJDOMDocument();
@@ -1261,7 +1266,10 @@ public final class InternalClientImpl
             xmlCreator.setIncludeOwnerAndModifierData( true );
             xmlCreator.setIncludeUserRightsInfo( params.includeUserRights, new CategoryAccessResolver( groupDao ),
                                                  new ContentAccessResolver( groupDao ) );
-            xmlCreator.setIncludeVersionsInfoForClient( true );
+            if ( params.includeVersionsInfo )
+            {
+                xmlCreator.setIncludeVersionsInfoForClient( true );
+            }
             xmlCreator.setIncludeAssignment( true );
 
             return xmlCreator.createContentsDocument( user, contents, relatedContent ).getAsJDOMDocument();
@@ -1335,7 +1343,10 @@ public final class InternalClientImpl
             xmlCreator.setResultIndexing( params.index, params.count );
             xmlCreator.setIncludeUserRightsInfo( params.includeUserRights, new CategoryAccessResolver( groupDao ),
                                                  new ContentAccessResolver( groupDao ) );
-            xmlCreator.setIncludeVersionsInfoForClient( true );
+            if ( params.includeVersionsInfo )
+            {
+                xmlCreator.setIncludeVersionsInfoForClient( true );
+            }
             xmlCreator.setIncludeAssignment( true );
 
             return xmlCreator.createContentsDocument( user, contents, relatedContent ).getAsJDOMDocument();
@@ -1418,7 +1429,10 @@ public final class InternalClientImpl
             xmlCreator.setIncludeContentData( params.includeData );
             xmlCreator.setIncludeUserRightsInfo( params.includeUserRights, new CategoryAccessResolver( groupDao ),
                                                  new ContentAccessResolver( groupDao ) );
-            xmlCreator.setIncludeVersionsInfoForClient( true );
+            if ( params.includeVersionsInfo )
+            {
+                xmlCreator.setIncludeVersionsInfoForClient( true );
+            }
             xmlCreator.setIncludeAssignment( true );
 
             return xmlCreator.createContentsDocument( user, randomContents, relatedContent ).getAsJDOMDocument();
@@ -1475,7 +1489,10 @@ public final class InternalClientImpl
             xmlCreator.setResultIndexing( params.index, params.count );
             xmlCreator.setIncludeUserRightsInfo( params.includeUserRights, new CategoryAccessResolver( groupDao ),
                                                  new ContentAccessResolver( groupDao ) );
-            xmlCreator.setIncludeVersionsInfoForClient( true );
+            if ( params.includeVersionsInfo )
+            {
+                xmlCreator.setIncludeVersionsInfoForClient( true );
+            }
             xmlCreator.setIncludeAssignment( true );
 
             ContentResultSet contents = contentService.queryContent( spec );
@@ -1571,7 +1588,10 @@ public final class InternalClientImpl
             xmlCreator.setResultIndexing( 0, params.count );
             xmlCreator.setIncludeUserRightsInfo( params.includeUserRights, new CategoryAccessResolver( groupDao ),
                                                  new ContentAccessResolver( groupDao ) );
-            xmlCreator.setIncludeVersionsInfoForClient( true );
+            if ( params.includeVersionsInfo )
+            {
+                xmlCreator.setIncludeVersionsInfoForClient( true );
+            }
             xmlCreator.setIncludeAssignment( true );
 
             return xmlCreator.createContentsDocument( user, randomContents, relatedContent ).getAsJDOMDocument();
@@ -1718,7 +1738,10 @@ public final class InternalClientImpl
             final GetRelatedContentXmlCreator getRelatedContentXmlCreator =
                 new GetRelatedContentXmlCreator( new CategoryAccessResolver( groupDao ), new ContentAccessResolver( groupDao ) );
             getRelatedContentXmlCreator.user( impersonatedPortalUser );
-            getRelatedContentXmlCreator.versionInfoStyle( GetRelatedContentXmlCreator.VersionInfoStyle.CLIENT );
+            if ( params.includeVersionsInfo )
+            {
+                getRelatedContentXmlCreator.versionInfoStyle( GetRelatedContentXmlCreator.VersionInfoStyle.CLIENT );
+            }
             getRelatedContentXmlCreator.includeContentsContentData( params.includeData );
             getRelatedContentXmlCreator.includeRelatedContentsContentData( params.includeData );
             getRelatedContentXmlCreator.startingIndex( params.index );

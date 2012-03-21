@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="web" name="Web">
       <configuration>
@@ -11,122 +11,83 @@
         </webroots>
       </configuration>
     </facet>
-    <facet type="Spring" name="Spring">
-      <configuration>
-        <fileset id="web: application context" name="MVC application context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/applicationContext.xml</file>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/admin-servlet.xml</file>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/main-servlet.xml</file>
-          <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/site-servlet.xml</file>
-        </fileset>
-        <fileset id="web: application context" profiles="" autodetected="true" />
-      </configuration>
-    </facet>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
-    <exclude-output />
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/.gradle" />
-      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/javax.servlet/servlet-api/2.5/jar/5959582d97d8b61f4d154ca9e495aafd16726e34/servlet-api-2.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/javax.servlet/servlet-api/2.5/source/21599814ad9a605b86f3e6381571beccd861a32/servlet-api-2.5-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="cms-core" exported="" />
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/junit/junit/4.8.2/jar/c94f54227b08100974c36170dcb53329435fe5ad/junit-4.8.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/junit/junit/4.8.2/source/cccca612a66b8387c399be31d69daf000de2ac9e/junit-4.8.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/junit-addons/junit-addons/1.4/jar/5f5fa0be54734f07a0b8fe9fa7b1447b4a88d55a/junit-addons-1.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.springframework/spring-test/3.1.0.RELEASE/jar/23270c97d3582ce36d3e4a415b836ad16f848281/spring-test-3.1.0.RELEASE.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.springframework/spring-test/3.1.0.RELEASE/source/6ad2913544e8fc6fa0ff15a369a9202f8c834c28/spring-test-3.1.0.RELEASE-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.easymock/easymock/2.2/jar/b9536281a0d32253f97445999dcaf0572e57bbb/easymock-2.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.easymock/easymock/2.2/source/68f4a684c06d36d01931977532f17c5516755435/easymock-2.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.easymock/easymockclassextension/2.2.1/jar/7a86334961cbb40725423bf16c6490036c8aef26/easymockclassextension-2.2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.easymock/easymockclassextension/2.2.1/source/1269e8d1b998e14d4000d6451cbd58103fe2401a/easymockclassextension-2.2.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.mockito/mockito-all/1.8.5/jar/a927d8ae3b8d22eb745a74f94e59ce3882f2b524/mockito-all-1.8.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/org.mockito/mockito-all/1.8.5/source/d48cdc7660c8bb9b201b0b7ef21fd3421df90ae6/mockito-all-1.8.5-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/xmlunit/xmlunit/1.2/jar/9a8543988f6a1a1e584ae7bef34fd88825c54e1e/xmlunit-1.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/cglib/cglib-nodep/2.2/jar/59afed7ab65e7ec6585d5bc60556c3cbd203532b/cglib-nodep-2.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$GRADLE_USER_HOME$/caches/artifacts-8/filestore/cglib/cglib-nodep/2.2/source/962f2bbd66901a9d67b0bb3c8c4a64ce6de0a8c4/cglib-nodep-2.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
+    <orderEntry type="module" module-name="cms-core" />
+    <orderEntry type="module" module-name="cms-api" />
+    <orderEntry type="library" name="Maven: org.jdom:jdom:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: jaxen:jaxen:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:10.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.4" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.7.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.3" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: joda-time:joda-time:2.0" level="project" />
+    <orderEntry type="library" name="Maven: nl.captcha:simplecaptcha:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.saxon:saxon:9.1.0.8" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.saxon:saxon-dom:9.1.0.8" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.saxon:saxon-jdom:9.1.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jparsec:jparsec:2.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.mail:mail:1.4" level="project" />
+    <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:3.5.6-Final" level="project" />
+    <orderEntry type="library" name="Maven: antlr:antlr:2.7.6" level="project" />
+    <orderEntry type="library" name="Maven: javax.transaction:jta:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: javassist:javassist:3.4.GA" level="project" />
+    <orderEntry type="library" name="Maven: org.freemarker:freemarker:2.3.16" level="project" />
+    <orderEntry type="library" name="Maven: org.directwebremoting:dwr:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: tidy:tidy:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.2_jdk5" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:log4j-over-slf4j:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-jdk14:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jackrabbit:jackrabbit-webdav:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.jackrabbit:jackrabbit-jcr-commons:2.2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-expression:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-core:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-asm:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-beans:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-context:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-aop:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-context-support:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-web:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-orm:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-tx:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi:3.6.0.v20100517" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.osgi:spring-osgi-io:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.elasticsearch:elasticsearch:0.19.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:3.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers:3.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queries:3.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:3.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-highlighter:3.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
+    <orderEntry type="library" name="Maven: org.quartz-scheduler:quartz:1.8.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit-addons:junit-addons:1.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymockclassextension:2.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-all:1.8.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: xmlunit:xmlunit:1.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.h2database:h2:1.3.151" level="project" />
   </component>
 </module>
 

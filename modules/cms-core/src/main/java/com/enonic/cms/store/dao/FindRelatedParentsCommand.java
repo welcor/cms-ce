@@ -53,7 +53,7 @@ class FindRelatedParentsCommand
         compiled.setCacheable( false );
         compiled.setReadOnly( true );
         compiled.setParameter( "deleted", 0 );
-        compiled.setParameter( "one", 1 );
+
         if ( !relatedParentContentQuery.isIncludeOfflineContent() )
         {
             compiled.setParameter( "timeNow", relatedParentContentQuery.getNow().minuteOfHour().roundFloorCopy().toDate() );
@@ -68,6 +68,7 @@ class FindRelatedParentsCommand
 
         if ( relatedParentContentQuery.hasSecurityFilter() )
         {
+            compiled.setParameter( "one", 1 );
             final List<GroupKey> securityFilter = Lists.newArrayList( relatedParentContentQuery.getSecurityFilter() );
             for ( int i = 0; i < securityFilter.size(); i++ )
             {

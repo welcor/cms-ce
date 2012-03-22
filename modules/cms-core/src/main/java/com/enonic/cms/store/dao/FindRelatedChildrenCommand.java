@@ -53,7 +53,7 @@ class FindRelatedChildrenCommand
         compiled.setCacheable( false );
         compiled.setReadOnly( true );
         compiled.setParameter( "deleted", 0 );
-        compiled.setParameter( "one", 1 );
+
         if ( !relatedChildContentQuery.isIncludeOfflineContent() )
         {
             compiled.setParameter( "status", ContentStatus.APPROVED.getKey() );
@@ -68,6 +68,7 @@ class FindRelatedChildrenCommand
 
         if ( relatedChildContentQuery.hasSecurityFilter() )
         {
+            compiled.setParameter( "one", 1 );
             List<GroupKey> securityFilter = Lists.newArrayList( relatedChildContentQuery.getSecurityFilter() );
             for ( int i = 0; i < securityFilter.size(); i++ )
             {

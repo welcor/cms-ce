@@ -328,11 +328,16 @@
 
   <bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/>
 
-  <bean class="com.enonic.cms.core.search.ClientFactory"/>
 
   <bean id="nodeSettingsBuilder" class="com.enonic.cms.itest.search.NodeTestSettingsBuilder"/>
 
   <bean id="contentIndexRequestCreator" class="com.enonic.cms.core.search.ContentIndexRequestCreator"/>
+
+  <bean class="com.enonic.cms.core.elastic.ElasticClientFactory"/>
+
+  <bean class="com.enonic.cms.core.elastic.ElasticNodeFactory">
+    <property name="storageDir" value=""/>
+  </bean>
 
 
 </beans>

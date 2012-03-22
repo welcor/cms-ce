@@ -168,6 +168,7 @@
       <id>enonic.repo</id>
       <url>http://repo.enonic.com/maven</url>
     </repository>
+
     <repository>
       <id>elastic.repo</id>
       <url>https://oss.sonatype.org/content/repositories/releases</url>

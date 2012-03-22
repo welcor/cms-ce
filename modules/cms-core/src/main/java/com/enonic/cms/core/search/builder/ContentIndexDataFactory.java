@@ -36,7 +36,7 @@ public final class ContentIndexDataFactory
 
     public ContentIndexData create( ContentDocument content, ContentIndexDataBuilderSpecification spec )
     {
-        ContentIndexData contentIndexData = null;
+        ContentIndexData contentIndexData;
 
         try
         {
@@ -146,7 +146,6 @@ public final class ContentIndexDataFactory
 
         if ( categoryKey == null )
         {
-            // TODO: Is this allowed or illegalArgument?
             return;
         }
 
@@ -156,7 +155,6 @@ public final class ContentIndexDataFactory
 
         if ( categoryName == null || StringUtils.isNotBlank( categoryName.getText() ) )
         {
-            // TODO: Is this allowed or illegalArgument?
             return;
         }
 

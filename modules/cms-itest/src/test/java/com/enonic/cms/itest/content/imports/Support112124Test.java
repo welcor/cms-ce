@@ -7,10 +7,16 @@ import java.util.Collection;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import junit.framework.Assert;
 
@@ -34,8 +40,10 @@ import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:com/enonic/cms/itest/base-core-test-context.xml")
+@TransactionConfiguration(defaultRollback = true)
 public class Support112124Test
-    extends AbstractSpringTest
 {
     @Autowired
     private DomainFixture fixture;

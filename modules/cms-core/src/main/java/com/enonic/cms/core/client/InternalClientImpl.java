@@ -29,6 +29,7 @@ import com.enonic.cms.framework.xml.XMLException;
 
 import com.enonic.cms.api.client.ClientException;
 import com.enonic.cms.api.client.model.AssignContentParams;
+import com.enonic.cms.api.client.model.ChangeUserPasswordParams;
 import com.enonic.cms.api.client.model.CreateCategoryParams;
 import com.enonic.cms.api.client.model.CreateContentParams;
 import com.enonic.cms.api.client.model.CreateFileContentParams;
@@ -73,6 +74,7 @@ import com.enonic.cms.api.client.model.SnapshotContentParams;
 import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.preference.Preference;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
@@ -150,6 +152,7 @@ import com.enonic.cms.core.security.user.DeleteUserCommand;
 import com.enonic.cms.core.security.user.DisplayNameResolver;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
+import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserType;
@@ -343,7 +346,8 @@ public final class InternalClientImpl
             GroupEntity group = parseGroup( params.group );
             GroupXmlCreator xmlCreator = new GroupXmlCreator();
             xmlCreator.setAdminConsoleStyle( false );
-            return xmlCreator.createGroupDocument( group, params.includeMemberships, params.includeMembers, params.normalizeGroups );
+            return xmlCreator.createGroupDocument( group, params.includeMemberships, params.includeMembers,
+                                                   params.normalizeGroups );
         }
         catch ( Exception e )
         {
@@ -482,7 +486,7 @@ public final class InternalClientImpl
             {
                 UserEntity user =
                     new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser(
-                        params.user );
+                            params.user );
                 groupToUse = user.getUserGroup();
             }
 
@@ -745,7 +749,8 @@ public final class InternalClientImpl
         try
         {
             UserEntity userToImpersonate =
-                new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser( user );
+                new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser(
+                        user );
             final UserEntity impersonated =
                 securityService.impersonatePortalUser( new ImpersonateCommand( clientForRemoteInvocations, userToImpersonate.getKey() ) );
             return impersonated.getName();
@@ -871,6 +876,75 @@ public final class InternalClientImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updateUser( UpdateUserParams params )
+    {
+        try
+        {
+            if ( StringUtils.isBlank( params.userstore ) )
+            {
+                throw new IllegalArgumentException( "userstore cannot be blank" );
+            }
+            if ( StringUtils.isBlank( params.username ) )
+            {
+                throw new IllegalArgumentException( "username cannot be blank" );
+            }
+
+            UserSpecification specification = new UserSpecification();
+            UserStoreEntity userStore = getUserStoreEntity( params.userstore );
+            specification.setUserStoreKey( userStore.getKey() );
+            specification.setName( params.username );
+            specification.setDeletedStateNotDeleted();
+
+            UserEntity updater = securityService.getImpersonatedPortalUser();
+            UpdateUserCommand command = new UpdateUserCommand( updater.getKey(), specification );
+            if( UpdateUserParams.UpdateStrategy.UPDATE.equals( params.updateStrategy ) )
+            {
+                command.setupUpdateStrategy();
+            } else
+            {
+                command.setupModifyStrategy();
+            }
+            command.setAllowUpdateSelf( true );
+
+            command.setEmail( params.email );
+            command.setDisplayName( params.displayName );
+            command.setUserInfo( params.userInfo );
+
+            computeBirthdateForModify( command );
+
+            userStoreService.updateUser( command );
+        }
+        catch ( Exception e )
+        {
+            throw handleException( e );
+        }
+    }
+
+    private UserStoreEntity getUserStoreEntity( String userstoreName )
+    {
+        return new UserStoreParser( userStoreDao ).parseUserStore( userstoreName );
+    }
+
+    /**
+     * To change the birthday to null (read: remove it) you must use updateStrategy = UPDATE
+     * Currently there is no possibility to MODIFY birthday to null
+     */
+    private void computeBirthdateForModify( UpdateUserCommand command )
+    {
+        if( command.isModifyStrategy() && command.getUserInfo().getBirthday() == null )
+        {
+            final UserEntity userToUpdate = userDao.findSingleBySpecification( command.getSpecification() );
+            if ( userToUpdate == null )
+            {
+                throw new IllegalArgumentException( "User does not exists: " + command.getSpecification() );
+            }
+            final Date birthday = userToUpdate.getUserInfo().getBirthday();
+
+            command.getUserInfo().setBirthday( birthday );
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void deleteUser( DeleteUserParams params )
     {
         try
@@ -892,6 +966,15 @@ public final class InternalClientImpl
         {
             throw handleException( e );
         }
+    }
+
+    @Override
+    public void changeUserPassword( ChangeUserPasswordParams params )
+            throws ClientException
+    {
+        UserStoreEntity userStore = getUserStoreEntity( params.userstore );
+
+        userStoreService.changePassword( userStore.getKey(), params.username, params.password );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

@@ -1602,7 +1602,7 @@ public class UserHandlerServlet
         if ( isUpdatableUser )
         {
             UpdateUserCommand command = new UpdateUserCommand( user.getKey(), userSpecification );
-            command.setIsUpdateOperation();
+            command.setupUpdateStrategy();
             command.setAllowUpdateSelf( true );
             command.setDisplayName( formItems.getString( "display_name", "" ) );
             command.setEmail( formItems.getString( "email", "" ) );

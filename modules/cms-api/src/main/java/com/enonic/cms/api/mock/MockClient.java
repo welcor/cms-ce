@@ -12,6 +12,7 @@ import org.jdom.Document;
 import com.enonic.cms.api.client.Client;
 import com.enonic.cms.api.client.ClientException;
 import com.enonic.cms.api.client.model.AssignContentParams;
+import com.enonic.cms.api.client.model.ChangeUserPasswordParams;
 import com.enonic.cms.api.client.model.CreateCategoryParams;
 import com.enonic.cms.api.client.model.CreateContentParams;
 import com.enonic.cms.api.client.model.CreateFileContentParams;
@@ -56,6 +57,7 @@ import com.enonic.cms.api.client.model.SnapshotContentParams;
 import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.preference.Preference;
 
 /**
@@ -188,10 +190,19 @@ public class MockClient
         return null;
     }
 
-    public void deleteUser( DeleteUserParams params )
+    public void updateUser( UpdateUserParams params )
         throws ClientException
     {
+    }
 
+     public void deleteUser( DeleteUserParams params )
+         throws ClientException
+     {
+     }
+
+    public void changeUserPassword( ChangeUserPasswordParams params )
+            throws ClientException
+    {
     }
 
     public int createCategory( CreateCategoryParams params )

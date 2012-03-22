@@ -60,10 +60,8 @@ import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
-@TransactionConfiguration(defaultRollback = true)
-@Transactional
 public class ImportServiceImplTest
-    extends ContentIndexServiceTestBase
+    extends AbstractSpringTest
 {
     @Autowired
     private HibernateTemplate hibernateTemplate;
@@ -390,8 +388,6 @@ public class ImportServiceImplTest
 
         String importData = "";
         importData += "4;Grand daughter;2005-01-01|2010-01-01|2000-01-01";
-
-        printAllIndexContent();
 
         // exercise
         ImportContentCommand command = new ImportContentCommand();

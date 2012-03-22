@@ -40,10 +40,8 @@ import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:com/enonic/cms/itest/base-core-test-context.xml")
-@TransactionConfiguration(defaultRollback = true)
 public class Support112124Test
+    extends AbstractSpringTest
 {
     @Autowired
     private DomainFixture fixture;

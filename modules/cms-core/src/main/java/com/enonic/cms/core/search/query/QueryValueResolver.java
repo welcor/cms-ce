@@ -61,14 +61,14 @@ public class QueryValueResolver
         {
             return new QueryValue( formatDateForElasticSearch( (ReadableDateTime) expr.getValue() ) );
         }
-        else if ( expr.isValidDateString() )
-        {
-            return new QueryValue( formatDateStringForElasticSearch( (String) expr.getValue() ) );
-        }
-        else
-        {
+      //  else if ( expr.isValidDateString() )
+      //  {
+      //      return new QueryValue( formatDateStringForElasticSearch( (String) expr.getValue() ) );
+      //  }
+      //  else
+      //  {
             return new QueryValue( expr.getValue() );
-        }
+     //   }
     }
 
     private static String formatDateStringForElasticSearch( final String dateValue )

@@ -4,6 +4,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.enonic.cms.core.content.index.IndexValueQuery;
+import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,12 +22,13 @@ public class IndexValueQueryTranslator
     {
         final SearchSourceBuilder builder = new SearchSourceBuilder();
 
-        final String fieldName = QueryFieldNameResolver.resolveQueryFieldName( query.getField() );
+        final String path = QueryFieldNameResolver.resolveQueryFieldName( query.getField() );
+        final QueryPath queryPath = QueryPathResolver.resolveQueryPath( path );
 
         builder.from( query.getIndex() );
         builder.size( query.getCount() );
 
-        builder.fields( fieldName );
+        builder.fields( queryPath.getPath() );
 
         builder.query( QueryBuilders.matchAllQuery() );
 
@@ -35,8 +37,6 @@ public class IndexValueQueryTranslator
         //TODO: Fix orderby
         // Orderby
         String orderBy = "x.orderValue " + ( query.isDescOrder() ? "DESC" : "ASC" );
-
-        System.out.println( "*********** INDEX VALUE QUERY *****************\n\r" + builder.toString() );
 
         return builder;
 

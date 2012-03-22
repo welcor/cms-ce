@@ -309,7 +309,7 @@ public class FilterQueryBuilder
         for ( CategoryAccessType type : categoryAccessTypeFilter )
         {
 
-            final TermFilterBuilder term = new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName(type), groups );
+            final TermFilterBuilder term = new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName( type ), groups );
 
             if ( must )
             {
@@ -353,26 +353,26 @@ public class FilterQueryBuilder
         return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyQueryFieldName(), getKeysAsList( keys ).toArray() );
     }
 
-    private <T> List<String> getKeysAsList( Collection<T> keys )
+    private <T> List<Integer> getKeysAsList( Collection<T> keys )
     {
-        List<String> keysAsStringList = new ArrayList<String>();
+        List<Integer> keysAsStringList = new ArrayList<Integer>();
 
         for ( T key : keys )
         {
-            keysAsStringList.add( key.toString() );
+            keysAsStringList.add( new Integer( key.toString() ) );
         }
 
         return keysAsStringList;
 
     }
 
-    private List<String> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
+    private List<Integer> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
     {
-        List<String> menuItemKeysAsString = new ArrayList<String>();
+        List<Integer> menuItemKeysAsString = new ArrayList<Integer>();
 
         for ( MenuItemEntity entity : menuItemEntities )
         {
-            menuItemKeysAsString.add( "" + entity.getKey() );
+            menuItemKeysAsString.add( entity.getKey().toInt() );
         }
 
         return menuItemKeysAsString;

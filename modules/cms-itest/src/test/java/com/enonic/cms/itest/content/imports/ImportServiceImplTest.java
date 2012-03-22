@@ -16,6 +16,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -44,18 +47,23 @@ import com.enonic.cms.core.content.imports.ImportException;
 import com.enonic.cms.core.content.imports.ImportJob;
 import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.content.imports.ImportResult;
+import com.enonic.cms.core.search.ElasticSearchIndexServiceImpl;
+import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.itest.search.ContentIndexServiceTestBase;
 import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
 public class ImportServiceImplTest
-    extends AbstractSpringTest
+    extends ContentIndexServiceTestBase
 {
     @Autowired
     private HibernateTemplate hibernateTemplate;
@@ -72,6 +80,9 @@ public class ImportServiceImplTest
     private ContentService contentService;
 
     private String personContentTypeXml;
+
+    @Autowired
+    ElasticSearchIndexServiceImpl elasticSearchIndexService;
 
 
     @Before
@@ -380,6 +391,8 @@ public class ImportServiceImplTest
         String importData = "";
         importData += "4;Grand daughter;2005-01-01|2010-01-01|2000-01-01";
 
+        printAllIndexContent();
+
         // exercise
         ImportContentCommand command = new ImportContentCommand();
         command.importer = fixture.findUserByName( "testuser" );
@@ -394,11 +407,12 @@ public class ImportServiceImplTest
         assertEquals( 1, result.getInserted().size() );
         assertEquals( 0, result.getUpdated().size() );
 
+        fixture.flushAndClearHibernateSesssion();
+
         // verify: related content keys are in same order as in import source
         CustomContentData grandDaughterCCD = (CustomContentData) fixture.findMainContentVersionByTitle( "Grand daughter" ).getContentData();
-        RelatedContentsDataEntry related_persons = (RelatedContentsDataEntry) grandDaughterCCD.getEntry( "related_dates" );
-        Object[] actualKeys =
-            related_persons.getRelatedContentKeys().toArray( new ContentKey[related_persons.getRelatedContentKeys().size()] );
+        RelatedContentsDataEntry related_dates = (RelatedContentsDataEntry) grandDaughterCCD.getEntry( "related_dates" );
+        Object[] actualKeys = related_dates.getRelatedContentKeys().toArray( new ContentKey[related_dates.getRelatedContentKeys().size()] );
         ContentKey[] expectedKeys = {date2005ContentKey, date2010ContentKey, date2000ContentKey};
         assertArrayEquals( expectedKeys, actualKeys );
     }

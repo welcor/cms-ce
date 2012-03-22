@@ -208,6 +208,9 @@ public class ContentIndexServiceImpl
 
         final SearchHits hits = doExecuteSearchRequest( build );
 
+        System.out.println(
+            "query: " + build.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
+
         final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
 
         if ( query.getIndex() > queryResultTotalSize )
@@ -243,6 +246,9 @@ public class ContentIndexServiceImpl
         }
 
         IndexValueResultSetImpl resultSet = new IndexValueResultSetImpl( query.getIndex(), query.getCount() );
+
+        System.out.println(
+            "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " + resultSet.getTotalCount() );
 
         final SearchHits hits = doExecuteSearchRequest( build );
 

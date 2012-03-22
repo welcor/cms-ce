@@ -55,7 +55,7 @@ public class TermQueryBuilderCreator
             MissingFilterBuilder filter = FilterBuilders.missingFilter( path.getPath() );
             return QueryBuilders.filteredQuery( matchAllQuery(), filter );
         }
-        if ( queryValue.isValidDateString() )
+        if ( path.isDateField() && queryValue.isValidDateString() )
         {
             return QueryBuilders.termQuery( path.getPath(), queryValue.getDateAsStringValue() );
         }

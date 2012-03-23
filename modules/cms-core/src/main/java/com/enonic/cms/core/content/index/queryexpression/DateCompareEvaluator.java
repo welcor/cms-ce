@@ -45,7 +45,7 @@ public class DateCompareEvaluator
 
     private boolean isValidDateString( Expression expr )
     {
-        return ( expr instanceof ValueExpr ) && ( (ValueExpr) expr ).isValidDateString();
+        return ( expr instanceof ValueExpr ) && ( (ValueExpr) expr ).isDate();
     }
 
     private boolean isExpressionOperatorValidForDates( CompareExpr expr )

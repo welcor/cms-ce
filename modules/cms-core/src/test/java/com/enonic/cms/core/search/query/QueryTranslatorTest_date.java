@@ -1,7 +1,6 @@
 package com.enonic.cms.core.search.query;
 
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -16,19 +15,15 @@ public class QueryTranslatorTest_date
     public void test_equals_date()
         throws Exception
     {
-
-        DateTime startTime = new DateTime( QUERY_DATE );
-        DateTime endTime = new DateTime( 2011, 11, 15, 23, 59, 59, 999 );
-
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"range\" : {\n" +
             "          \"timestamp\" : {\n" +
-            "            \"from\" : \"" + startTime + "\",\n" +
+            "            \"from\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "            \"to\" : null,\n" +
             "            \"include_lower\" : true,\n" +
             "            \"include_upper\" : true\n" +
@@ -38,7 +33,7 @@ public class QueryTranslatorTest_date
             "        \"range\" : {\n" +
             "          \"timestamp\" : {\n" +
             "            \"from\" : null,\n" +
-            "            \"to\" : \"" + endTime + "\",\n" +
+            "            \"to\" : \"2011-11-15T22:59:59.999Z\",\n" +
             "            \"include_lower\" : true,\n" +
             "            \"include_upper\" : true\n" +
             "          }\n" +
@@ -48,7 +43,7 @@ public class QueryTranslatorTest_date
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "timestamp = '" + QUERY_DATE + "'" );
+        ContentIndexQuery query = createContentQuery( "timestamp = date('" + QUERY_DATE + "')" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -59,19 +54,15 @@ public class QueryTranslatorTest_date
     public void test_range_between_date()
         throws Exception
     {
-
-        DateTime expectedStartTime = new DateTime( QUERY_DATE );
-        DateTime expectedEndTime = new DateTime( 2011, 11, 15, 23, 59, 59, 000 );
-
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"range\" : {\n" +
             "          \"timestamp\" : {\n" +
-            "            \"from\" : \"" + expectedStartTime + "\",\n" +
+            "            \"from\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "            \"to\" : null,\n" +
             "            \"include_lower\" : true,\n" +
             "            \"include_upper\" : true\n" +
@@ -81,7 +72,7 @@ public class QueryTranslatorTest_date
             "        \"range\" : {\n" +
             "          \"timestamp\" : {\n" +
             "            \"from\" : null,\n" +
-            "            \"to\" : \"" + expectedEndTime + "\",\n" +
+            "            \"to\" : \"2011-11-15T22:59:59.000Z\",\n" +
             "            \"include_lower\" : true,\n" +
             "            \"include_upper\" : true\n" +
             "          }\n" +
@@ -91,7 +82,7 @@ public class QueryTranslatorTest_date
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "timestamp >= '" + QUERY_DATE + "' AND timestamp <= '2011-11-15T23:59:59'" );
+        ContentIndexQuery query = createContentQuery( "timestamp >= date('" + QUERY_DATE + "') AND timestamp <= date('2011-11-15T23:59:59')" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -102,15 +93,13 @@ public class QueryTranslatorTest_date
     public void test_after_date()
         throws Exception
     {
-        DateTime expectedStartTime = new DateTime( QUERY_DATE );
-
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp\" : {\n" +
-            "        \"from\" : \"" + expectedStartTime + "\",\n" +
+            "        \"from\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
             "        \"include_upper\" : true\n" +
@@ -119,7 +108,7 @@ public class QueryTranslatorTest_date
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "timestamp > '2011-11-15'" );
+        ContentIndexQuery query = createContentQuery( "timestamp > date('2011-11-15')" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -130,17 +119,14 @@ public class QueryTranslatorTest_date
     public void test_before_date()
         throws Exception
     {
-
-        DateTime expectedEndTime = new DateTime( QUERY_DATE );
-
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp\" : {\n" +
             "        \"from\" : null,\n" +
-            "        \"to\" : \"" + expectedEndTime + "\",\n" +
+            "        \"to\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : false\n" +
             "      }\n" +
@@ -148,7 +134,7 @@ public class QueryTranslatorTest_date
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "timestamp < '2011-11-15'" );
+        ContentIndexQuery query = createContentQuery( "timestamp < date('2011-11-15')" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -159,16 +145,14 @@ public class QueryTranslatorTest_date
     public void test_before_or_equal_date()
         throws Exception
     {
-        DateTime expectedEndTime = new DateTime( 2011, 11, 15, 23, 59, 59, 999 );
-
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp\" : {\n" +
             "        \"from\" : null,\n" +
-            "        \"to\" : \"" + expectedEndTime + "\",\n" +
+            "        \"to\" : \"2011-11-15T22:59:59.999Z\",\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : true\n" +
             "      }\n" +
@@ -176,7 +160,7 @@ public class QueryTranslatorTest_date
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "timestamp <= '2011-11-15'" );
+        ContentIndexQuery query = createContentQuery( "timestamp <= date('2011-11-15')" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -189,7 +173,7 @@ public class QueryTranslatorTest_date
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -216,9 +200,15 @@ public class QueryTranslatorTest_date
     public void test_number_date()
         throws Exception
     {
-        String expected_search_result =
-            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
-                "    \"term\" : {\r\n" + "      \"timestamp\" : \"12345678\"\r\n" + "    }\r\n" + "  }\r\n" + "}";
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"term\" : {\n" +
+            "      \"timestamp\" : \"12345678\"\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         ContentIndexQuery query = createContentQuery( "timestamp = '12345678'" );
 
@@ -260,7 +250,7 @@ public class QueryTranslatorTest_date
             "      \"must\" : [ {\n" +
             "        \"range\" : {\n" +
             "          \"my_date_field\" : {\n" +
-            "            \"from\" : \"2012-03-22T00:00:00.000+01:00\",\n" +
+            "            \"from\" : \"2012-03-21T23:00:00.000Z\",\n" +
             "            \"to\" : null,\n" +
             "            \"include_lower\" : true,\n" +
             "            \"include_upper\" : true\n" +
@@ -270,7 +260,7 @@ public class QueryTranslatorTest_date
             "        \"range\" : {\n" +
             "          \"my_date_field\" : {\n" +
             "            \"from\" : null,\n" +
-            "            \"to\" : \"2012-03-22T23:59:59.999+01:00\",\n" +
+            "            \"to\" : \"2012-03-22T22:59:59.999Z\",\n" +
             "            \"include_lower\" : true,\n" +
             "            \"include_upper\" : true\n" +
             "          }\n" +

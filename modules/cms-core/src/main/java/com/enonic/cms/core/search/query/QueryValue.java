@@ -1,21 +1,19 @@
 package com.enonic.cms.core.search.query;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
-import com.enonic.cms.core.content.index.util.ValueConverter;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 2/13/12
- * Time: 3:25 PM
- */
 public class QueryValue
 {
-    private Double doubleValue;
+    private final Double doubleValue;
 
-    private String stringValue;
+    private final String stringValue;
+
+    private final ReadableDateTime dateTimeValue;
 
 
     public QueryValue( Object value )
@@ -23,9 +21,21 @@ public class QueryValue
         if ( value instanceof Number )
         {
             doubleValue = ( (Number) value ).doubleValue();
+            stringValue = value.toString();
+            dateTimeValue = null;
         }
-
-        stringValue = value.toString();
+        else if ( value instanceof ReadableDateTime )
+        {
+            dateTimeValue = (ReadableDateTime) value;
+            stringValue = formatDateForElasticSearch( dateTimeValue );
+            doubleValue = null;
+        }
+        else
+        {
+            stringValue = value.toString();
+            doubleValue = null;
+            dateTimeValue = null;
+        }
     }
 
     public Double getDoubleValue()
@@ -38,8 +48,23 @@ public class QueryValue
         return doubleValue != null;
     }
 
+    public ReadableDateTime getDateTime()
+    {
+        return dateTimeValue;
+    }
+
+    public boolean isDateTime()
+    {
+        return dateTimeValue != null;
+    }
+
     public String getStringValueNormalized()
     {
+        if ( isDateTime() )
+        {
+            // do not lower-case datetime strings
+            return getDateAsStringValue();
+        }
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 
@@ -50,19 +75,7 @@ public class QueryValue
 
     public String getDateAsStringValue()
     {
-        return stringValue != null ? stringValue : null;
-    }
-
-
-    public boolean isValidDateString()
-    {
-        if ( this.isNumeric() )
-        {
-            return false;
-        }
-
-        ReadableDateTime date = ValueConverter.toDate( stringValue );
-        return date != null;
+        return dateTimeValue != null ? stringValue : null;
     }
 
     public boolean isEmpty()
@@ -70,4 +83,21 @@ public class QueryValue
         return StringUtils.isBlank( stringValue );
     }
 
+
+    private String formatDateForElasticSearch( final ReadableDateTime date )
+    {
+
+        return ISODateTimeFormat.dateTime().print( toUTCTimeZone(date) );
+    }
+
+    private ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )
+    {
+        if ( DateTimeZone.UTC.equals( dateTime.getZone() ) )
+        {
+            return dateTime;
+        }
+        final MutableDateTime dateInUTC = dateTime.toMutableDateTime();
+        dateInUTC.setZone( DateTimeZone.UTC );
+        return dateInUTC.toDateTime();
+    }
 }

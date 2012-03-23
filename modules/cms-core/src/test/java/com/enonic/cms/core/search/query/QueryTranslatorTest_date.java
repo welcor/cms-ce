@@ -248,4 +248,42 @@ public class QueryTranslatorTest_date
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
 
+    @Test
+    public void test_date_function()
+        throws Exception
+    {
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"bool\" : {\n" +
+            "      \"must\" : [ {\n" +
+            "        \"range\" : {\n" +
+            "          \"my_date_field\" : {\n" +
+            "            \"from\" : \"2012-03-22T00:00:00.000+01:00\",\n" +
+            "            \"to\" : null,\n" +
+            "            \"include_lower\" : true,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
+            "        }\n" +
+            "      }, {\n" +
+            "        \"range\" : {\n" +
+            "          \"my_date_field\" : {\n" +
+            "            \"from\" : null,\n" +
+            "            \"to\" : \"2012-03-22T23:59:59.999+01:00\",\n" +
+            "            \"include_lower\" : true,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
+            "        }\n" +
+            "      } ]\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
+
+        ContentIndexQuery query = createContentQuery( "my_date_field = date('2012-03-22')" );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
+    }
 }

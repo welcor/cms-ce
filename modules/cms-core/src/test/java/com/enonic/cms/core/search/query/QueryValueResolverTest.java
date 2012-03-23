@@ -9,6 +9,7 @@ import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
@@ -52,7 +53,7 @@ public class QueryValueResolverTest
 
         final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
 
-        assertTrue( actual.isValidDateString() );
+        assertTrue( actual.isDateTime() );
 
         // one hour behind because of timezone normalization
         assertDateTimeEquals( "2012-02-14T11:05:00.000Z", actual.getDateAsStringValue() );
@@ -66,9 +67,7 @@ public class QueryValueResolverTest
 
         final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
 
-        assertTrue( actual.isValidDateString() );
-
-        assertDateTimeEquals( "2012-02-14T12:05:00.000Z", actual.getDateAsStringValue() );
+        assertFalse( actual.isDateTime() );
     }
 
     private void assertDateTimeEquals( final String expectedDateTime, final String actualDateTime )

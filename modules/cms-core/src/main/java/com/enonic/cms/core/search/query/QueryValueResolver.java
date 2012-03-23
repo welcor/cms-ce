@@ -1,19 +1,10 @@
 package com.enonic.cms.core.search.query;
 
-import org.joda.time.ReadableDateTime;
-import org.joda.time.format.ISODateTimeFormat;
-
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FunctionExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 2/13/12
- * Time: 4:29 PM
- */
 public class QueryValueResolver
 {
 
@@ -54,18 +45,7 @@ public class QueryValueResolver
 
     public static QueryValue toQueryValue( ValueExpr expr )
     {
-        if ( expr.isDate() )
-        {
-            return new QueryValue( formatDateForElasticSearch( (ReadableDateTime) expr.getValue() ) );
-        }
-        else
-        {
-            return new QueryValue( expr.getValue() );
-        }
+        return new QueryValue( expr.getValue() );
     }
 
-    private static String formatDateForElasticSearch( final ReadableDateTime date )
-    {
-        return ISODateTimeFormat.dateTime().print( date );
-    }
 }

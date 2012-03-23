@@ -7,12 +7,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 2/14/12
- * Time: 7:53 AM
- */
 public class QueryValueTest
 {
     @Test
@@ -24,7 +18,7 @@ public class QueryValueTest
         assertEquals( "1", queryValue.getStringValueNormalized() );
 
         assertFalse( queryValue.isEmpty() );
-        assertFalse( queryValue.isValidDateString() );
+        assertFalse( queryValue.isDateTime() );
         assertTrue( queryValue.isNumeric() );
     }
 
@@ -34,19 +28,20 @@ public class QueryValueTest
         QueryValue queryValue = new QueryValue( "1" );
 
         assertFalse( queryValue.isEmpty() );
-        assertFalse( queryValue.isValidDateString() );
+        assertFalse( queryValue.isDateTime() );
         assertFalse( queryValue.isNumeric() );
 
         assertEquals( "1", queryValue.getStringValueNormalized() );
     }
 
     @Test
-    public void testDateFormat()
+    public void testStringWithDateFormat()
     {
         QueryValue queryValue = new QueryValue( "1975-08-01" );
 
-        assertTrue( queryValue.isValidDateString() );
-
+        assertFalse( queryValue.isEmpty() );
+        assertFalse( queryValue.isDateTime() );
+        assertFalse( queryValue.isNumeric() );
     }
 
     @Test

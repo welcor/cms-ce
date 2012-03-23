@@ -26,7 +26,7 @@ public class QueryValue
         }
         else if ( value instanceof ReadableDateTime )
         {
-            dateTimeValue = (ReadableDateTime) value;
+            dateTimeValue = toUTCTimeZone((ReadableDateTime) value);
             stringValue = formatDateForElasticSearch( dateTimeValue );
             doubleValue = null;
         }
@@ -87,7 +87,7 @@ public class QueryValue
     private String formatDateForElasticSearch( final ReadableDateTime date )
     {
 
-        return ISODateTimeFormat.dateTime().print( toUTCTimeZone(date) );
+        return ISODateTimeFormat.dateTime().print( date );
     }
 
     private ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )

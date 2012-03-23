@@ -1,16 +1,12 @@
 package com.enonic.cms.core.search.query;
 
 import org.elasticsearch.index.query.QueryBuilder;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
-/**
- * Created by IntelliJ IDEA.
- * User: udu
- * Date: 11/29/11
- * Time: 3:46 PM
- */
 public class RangeQueryBuilderTest
     extends QueryTranslatorBaseTest
 {
@@ -81,6 +77,71 @@ public class RangeQueryBuilderTest
             RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( 100 ), new QueryValue( 300 ),
                                                true, true );
         System.out.println( query.toString() );
+
+        assertEquals( expected_result, query.toString() );
+    }
+
+    @Test
+    public void testBuildRangeQuery_date_low()
+    {
+        String expected_result = "{\n" +
+            "  \"range\" : {\n" +
+            "    \"my_date_field\" : {\n" +
+            "      \"from\" : \"2012-03-23T14:23:45.678Z\",\n" +
+            "      \"to\" : null,\n" +
+            "      \"include_lower\" : false,\n" +
+            "      \"include_upper\" : true\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
+
+        DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID("Europe/Oslo") );
+        QueryBuilder query =
+            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ), null, false, true );
+
+        assertEquals( expected_result, query.toString() );
+    }
+
+    @Test
+    public void testBuildRangeQuery_date_low_include()
+    {
+        String expected_result = "{\n" +
+            "  \"range\" : {\n" +
+            "    \"my_date_field\" : {\n" +
+            "      \"from\" : \"2012-03-23T14:23:45.678Z\",\n" +
+            "      \"to\" : null,\n" +
+            "      \"include_lower\" : true,\n" +
+            "      \"include_upper\" : true\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
+
+        DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID("Europe/Oslo") );
+        QueryBuilder query =
+            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ), null, true, true );
+
+        assertEquals( expected_result, query.toString() );
+    }
+
+    @Test
+    public void testBuildRangeQuery_date_low_high()
+    {
+        String expected_result = "{\n" +
+            "  \"range\" : {\n" +
+            "    \"my_date_field\" : {\n" +
+            "      \"from\" : \"2012-03-23T14:23:45.678Z\",\n" +
+            "      \"to\" : \"2012-03-24T04:01:23.456Z\",\n" +
+            "      \"include_lower\" : false,\n" +
+            "      \"include_upper\" : true\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
+
+        DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID("Europe/Oslo") );
+        DateTime endTime = new DateTime( 2012, 3, 24, 5, 1, 23, 456, DateTimeZone.forID("Europe/Oslo") );
+        QueryBuilder query =
+            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ),
+                                               new QueryValue( endTime ), false, true );
 
         assertEquals( expected_result, query.toString() );
     }

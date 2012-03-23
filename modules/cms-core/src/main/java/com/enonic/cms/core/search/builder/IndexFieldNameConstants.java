@@ -9,17 +9,17 @@ package com.enonic.cms.core.search.builder;
 public class IndexFieldNameConstants
 {
 
-    protected static final String PUBLISH_FROM_FIELDNAME = "publishFrom";
+    public static final String PUBLISH_FROM_FIELDNAME = "publishFrom";
 
-    protected static final String PUBLISH_TO_FIELDNAME = "publishTo";
+    public static final String PUBLISH_TO_FIELDNAME = "publishTo";
 
-    protected static final String TIMESTAMP_FIELDNAME = "timestamp";
+    public static final String TIMESTAMP_FIELDNAME = "timestamp";
 
     protected static final String STATUS_FIELDNAME = "status";
 
     protected static final String PRIORITY_FIELDNAME = "priority";
 
-    protected static final String ASSIGNMENT_DUE_DATE_FIELDNAME = "assignmentDueDate";
+    public static final String ASSIGNMENT_DUE_DATE_FIELDNAME = "assignmentDueDate";
 
     protected static final String OWNER_FIELDNAME = "owner";
 
@@ -77,8 +77,8 @@ public class IndexFieldNameConstants
 
     protected static final String ATTACHMENT_FIELDNAME = "attachment";
 
-    protected static final String CONTENT_CREATED = "created";
+    public static final String CONTENT_CREATED = "created";
 
-    protected static final String CONTENT_MODIFIED = "modified";
+    public static final String CONTENT_MODIFIED = "modified";
 
 }

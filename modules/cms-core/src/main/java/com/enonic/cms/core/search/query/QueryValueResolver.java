@@ -1,7 +1,5 @@
 package com.enonic.cms.core.search.query;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -9,7 +7,6 @@ import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FunctionExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
-import com.enonic.cms.core.content.index.util.ValueConverter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,19 +58,10 @@ public class QueryValueResolver
         {
             return new QueryValue( formatDateForElasticSearch( (ReadableDateTime) expr.getValue() ) );
         }
-      //  else if ( expr.isValidDateString() )
-      //  {
-      //      return new QueryValue( formatDateStringForElasticSearch( (String) expr.getValue() ) );
-      //  }
-      //  else
-      //  {
+        else
+        {
             return new QueryValue( expr.getValue() );
-     //   }
-    }
-
-    private static String formatDateStringForElasticSearch( final String dateValue )
-    {
-        return formatDateForElasticSearch( ValueConverter.toDate( dateValue ) );
+        }
     }
 
     private static String formatDateForElasticSearch( final ReadableDateTime date )

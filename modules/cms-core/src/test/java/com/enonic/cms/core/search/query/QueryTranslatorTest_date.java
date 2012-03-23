@@ -191,8 +191,16 @@ public class QueryTranslatorTest_date
             "  \"from\" : 0,\n" +
             "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
-            "    \"term\" : {\n" +
-            "      \"timestamp\" : \"\"\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : {\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"filter\" : {\n" +
+            "        \"missing\" : {\n" +
+            "          \"field\" : \"timestamp\"\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

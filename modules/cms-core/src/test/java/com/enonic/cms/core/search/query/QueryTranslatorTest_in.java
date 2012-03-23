@@ -73,4 +73,70 @@ public class QueryTranslatorTest_in
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
+
+    @Test
+    public void testIn_date()
+        throws Exception
+    {
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"bool\" : {\n" +
+            "      \"should\" : [ {\n" +
+            "        \"term\" : {\n" +
+            "          \"myintfield\" : \"2012-03-22\"\n" +
+            "        }\n" +
+            "      }, {\n" +
+            "        \"term\" : {\n" +
+            "          \"myintfield\" : \"2012-03-23\"\n" +
+            "        }\n" +
+            "      }, {\n" +
+            "        \"term\" : {\n" +
+            "          \"myintfield\" : \"2012-03-24\"\n" +
+            "        }\n" +
+            "      } ]\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
+
+        ContentIndexQuery query = createContentQuery( "myIntField IN ('2012-03-22', '2012-03-23', '2012-03-24')" );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
+    }
+
+    @Test
+    public void testIn_mixed_types()
+        throws Exception
+    {
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"bool\" : {\n" +
+            "      \"should\" : [ {\n" +
+            "        \"term\" : {\n" +
+            "          \"myfield_numeric\" : 1.0\n" +
+            "        }\n" +
+            "      }, {\n" +
+            "        \"term\" : {\n" +
+            "          \"myField\" : \"test\"\n" +
+            "        }\n" +
+            "      }, {\n" +
+            "        \"term\" : {\n" +
+            "          \"myField\" : \"2012-03-24\"\n" +
+            "        }\n" +
+            "      } ]\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
+
+        ContentIndexQuery query = createContentQuery( "myField IN (1, 'test', '2012-03-24')" );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
+    }
 }

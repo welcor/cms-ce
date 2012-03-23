@@ -1,5 +1,6 @@
 package com.enonic.cms.core.search.query;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -7,14 +8,20 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.search.IndexType;
-
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.*;
 
 public class QueryPath
 {
 
     protected static final String ALL_FIELDS_PATH = "_all";
 
-    private static final Set<String> dateFields = Sets.newHashSet( "publishfrom", "publishto", "assignmentduedate" );
+    private static final Set<String> dateFields;
+    static
+    {
+        dateFields = Sets.newTreeSet( String.CASE_INSENSITIVE_ORDER );
+        Collections.addAll( dateFields, PUBLISH_FROM_FIELDNAME, PUBLISH_TO_FIELDNAME, ASSIGNMENT_DUE_DATE_FIELDNAME, TIMESTAMP_FIELDNAME,
+                            CONTENT_CREATED, CONTENT_MODIFIED);
+    }
 
     private String path;
 

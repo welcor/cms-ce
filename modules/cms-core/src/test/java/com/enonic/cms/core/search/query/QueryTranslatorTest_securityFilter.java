@@ -33,12 +33,12 @@ public class QueryTranslatorTest_securityFilter
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey_numeric\" : [ \"42\" ]\n" +
+            "          \"categorykey_numeric\" : [ 42 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey_numeric\" : [ \"1235\", \"1234\" ]\n" +
+            "          \"contenttypekey_numeric\" : [ 1235, 1234 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
@@ -82,12 +82,12 @@ public class QueryTranslatorTest_securityFilter
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey_numeric\" : [ \"42\" ]\n" +
+            "          \"categorykey_numeric\" : [ 42 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey_numeric\" : [ \"1235\", \"1234\" ]\n" +
+            "          \"contenttypekey_numeric\" : [ 1235, 1234 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
@@ -132,12 +132,12 @@ public class QueryTranslatorTest_securityFilter
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey_numeric\" : [ \"42\" ]\n" +
+            "          \"categorykey_numeric\" : [ 42 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey_numeric\" : [ \"1235\", \"1234\" ]\n" +
+            "          \"contenttypekey_numeric\" : [ 1235, 1234 ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

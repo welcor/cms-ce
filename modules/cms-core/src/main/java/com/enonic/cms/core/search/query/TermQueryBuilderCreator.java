@@ -49,7 +49,7 @@ public class TermQueryBuilderCreator
         {
             return doBuildQueryForNumericValue( path, queryValue, wildCardPath );
         }
-        //TODO: Alex, should the "path.isDateField()" - test surround both these date-expressions?
+
         if ( path.isDateField() && queryValue.isEmpty() )
         {
             MissingFilterBuilder filter = FilterBuilders.missingFilter( path.getPath() );

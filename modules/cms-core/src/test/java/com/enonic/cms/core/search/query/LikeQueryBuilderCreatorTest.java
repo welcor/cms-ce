@@ -3,15 +3,10 @@ package com.enonic.cms.core.search.query;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.Test;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 1/24/12
- * Time: 12:48 PM
- */
 public class LikeQueryBuilderCreatorTest
     extends QueryTranslatorBaseTest
 {
+    private final LikeQueryBuilderFactory likeQueryBuilderFactory = new LikeQueryBuilderFactory();
 
     @Test
     public void testWildCardQuery()
@@ -26,7 +21,7 @@ public class LikeQueryBuilderCreatorTest
 
         QueryPath queryPath = QueryPathResolver.resolveQueryPath( "*" );
 
-        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, new QueryValue( "test" ) );
+        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryPath, new QueryValue( "test" ) );
 
         System.out.println( queryBuilder.toString() );
 
@@ -52,7 +47,7 @@ public class LikeQueryBuilderCreatorTest
 
         QueryPath queryPath = QueryPathResolver.resolveQueryPath( "attachment_title" );
 
-        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, new QueryValue( "test" ) );
+        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryPath, new QueryValue( "test" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -70,7 +65,7 @@ public class LikeQueryBuilderCreatorTest
 
         QueryPath queryPath = QueryPathResolver.resolveQueryPath( "data_title" );
 
-        final QueryBuilder queryBuilder = LikeQueryBuilderCreator.buildLikeQuery( queryPath, new QueryValue( "test" ) );
+        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryPath, new QueryValue( "test" ) );
 
         System.out.println( queryBuilder.toString() );
 

@@ -17,7 +17,7 @@ import com.enonic.cms.core.security.group.GroupKey;
 public class FilterQueryBuilderTest
     extends QueryTranslatorBaseTest
 {
-    FilterQueryBuilder filterQueryBuilder = new FilterQueryBuilder();
+    FilterQueryBuilderFactory filterQueryBuilderFactory = new FilterQueryBuilderFactory();
 
     @Before
     public void setUp()
@@ -40,7 +40,7 @@ public class FilterQueryBuilderTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         query.setContentStatusFilter( ContentStatus.APPROVED.getKey() );
 
-        filterQueryBuilder.buildFilterQuery( builder, query );
+        filterQueryBuilderFactory.buildFilterQuery( builder, query );
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }
@@ -75,7 +75,7 @@ public class FilterQueryBuilderTest
         Collection<GroupKey> securityFilter = getSecurityFilter();
         query.setSecurityFilter( securityFilter );
 
-        filterQueryBuilder.buildFilterQuery( builder, query );
+        filterQueryBuilderFactory.buildFilterQuery( builder, query );
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }
@@ -120,7 +120,7 @@ public class FilterQueryBuilderTest
         query.setSecurityFilter( securityFilter );
 
 
-        filterQueryBuilder.buildFilterQuery( builder, query );
+        filterQueryBuilderFactory.buildFilterQuery( builder, query );
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }
@@ -165,7 +165,7 @@ public class FilterQueryBuilderTest
         query.setSecurityFilter( securityFilter );
 
 
-        filterQueryBuilder.buildFilterQuery( builder, query );
+        filterQueryBuilderFactory.buildFilterQuery( builder, query );
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }

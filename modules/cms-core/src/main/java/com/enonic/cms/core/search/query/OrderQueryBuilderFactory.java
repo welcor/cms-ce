@@ -13,19 +13,14 @@ import org.elasticsearch.search.sort.SortOrder;
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderFieldExpr;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 10/20/11
- * Time: 9:02 AM
- */
-public class OrderQueryBuilder
-        extends BaseQueryBuilder {
+public class OrderQueryBuilderFactory
+        extends BaseQueryBuilderFactory
+{
 
     private final static boolean createDefaultSortExpression = false;
 
 
-    public static void buildOrderByExpr(SearchSourceBuilder builder, OrderByExpr expr) {
+    public void buildOrderByExpr(SearchSourceBuilder builder, OrderByExpr expr) {
         List<SortBuilder> sorts;
 
         if (expr != null) {
@@ -41,11 +36,11 @@ public class OrderQueryBuilder
 
     }
 
-    private static ScoreSortBuilder getDefaultSorting() {
+    private ScoreSortBuilder getDefaultSorting() {
         return SortBuilders.scoreSort();
     }
 
-    private static List<SortBuilder> buildOrderFieldExpr(OrderFieldExpr[] expr) {
+    private List<SortBuilder> buildOrderFieldExpr(OrderFieldExpr[] expr) {
 
         List<SortBuilder> sort = new ArrayList<SortBuilder>();
 
@@ -56,7 +51,7 @@ public class OrderQueryBuilder
         return sort;
     }
 
-    private static SortBuilder buildOrderFieldExpr(OrderFieldExpr expr) {
+    private SortBuilder buildOrderFieldExpr(OrderFieldExpr expr) {
         final String name = QueryFieldNameResolver.getOrderByFieldName( expr.getField() );
 
         SortOrder order = SortOrder.DESC;

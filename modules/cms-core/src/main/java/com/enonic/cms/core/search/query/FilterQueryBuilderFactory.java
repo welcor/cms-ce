@@ -34,8 +34,8 @@ import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
 
-public class FilterQueryBuilder
-    extends BaseQueryBuilder
+public class FilterQueryBuilderFactory
+    extends BaseQueryBuilderFactory
 {
 
     public void buildFilterQuery( SearchSourceBuilder builder, ContentIndexQuery contentIndexQuery )
@@ -194,42 +194,6 @@ public class FilterQueryBuilder
             FilterBuilders.termsFilter( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME, groups );
         return securityFilter;
     }
-
-    /*
-        private static QueryBuilder buildHasChildQuery( AttachmentFilters attachmentFilter )
-        {
-            List<AttachmentFilter> attachmentFilters = attachmentFilter.getFilters();
-    
-            BoolQueryBuilder query = QueryBuilders.boolQuery();
-    
-            for ( AttachmentFilter filter : attachmentFilters )
-            {
-                buildAttachmentFilterSubQuery( query, filter );
-            }
-    
-            return query;
-        }
-    
-        private static void buildAttachmentFilterSubQuery( BoolQueryBuilder query, AttachmentFilter filter )
-        {
-            List<String> filterValues = filter.getValueList();
-    
-            if ( filterValues.size() == 1 )
-            {
-                query.must( QueryBuilders.termQuery( filter.getFilterType().getFieldRepresentation(), filterValues.get( 0 ) ) );
-                return;
-            }
-    
-            BoolQueryBuilder subQuery = QueryBuilders.boolQuery();
-    
-            for ( String value : filterValues )
-            {
-                subQuery.must( QueryBuilders.termQuery( filter.getFilterType().getFieldRepresentation(), value ) );
-            }
-    
-            query.must( subQuery );
-        }
-    */
 
     private TermFilterBuilder buildContentStatusFilter( Integer contentStatus )
     {

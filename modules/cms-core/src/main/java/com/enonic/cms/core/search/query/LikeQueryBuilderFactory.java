@@ -6,14 +6,14 @@ import org.elasticsearch.index.query.WildcardQueryBuilder;
 
 import com.enonic.cms.core.search.builder.IndexValueResolver;
 
-public class LikeQueryBuilderCreator
-    extends BaseQueryBuilder
+public class LikeQueryBuilderFactory
+    extends BaseQueryBuilderFactory
 {
-    public LikeQueryBuilderCreator()
+    public LikeQueryBuilderFactory()
     {
     }
 
-    public final static QueryBuilder buildLikeQuery( QueryPath path, QueryValue value )
+    public QueryBuilder buildLikeQuery( QueryPath path, QueryValue value )
     {
         if ( path.isWildCardPath() )
         {

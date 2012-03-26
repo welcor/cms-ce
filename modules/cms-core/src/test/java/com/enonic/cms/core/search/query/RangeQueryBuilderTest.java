@@ -10,6 +10,7 @@ import static junit.framework.Assert.assertEquals;
 public class RangeQueryBuilderTest
     extends QueryTranslatorBaseTest
 {
+    private final RangeQueryBuilderFactory rangeQueryBuilderFactory = new RangeQueryBuilderFactory();
     @Test
     public void testBuildRangeQuery_key_string()
     {
@@ -25,7 +26,7 @@ public class RangeQueryBuilderTest
             "}";
 
         QueryBuilder query =
-            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( "100" ), null, false, true );
+            rangeQueryBuilderFactory.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( "100" ), null, false, true );
 
         System.out.println( query.toString() );
 
@@ -47,7 +48,7 @@ public class RangeQueryBuilderTest
             "}";
 
         QueryBuilder query =
-            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( 100 ), null, false, true );
+            rangeQueryBuilderFactory.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( 100 ), null, false, true );
 
         System.out.println( query.toString() );
         assertEquals( expected_result, query.toString() );
@@ -56,7 +57,7 @@ public class RangeQueryBuilderTest
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void testBuildRangeQuery_null_range()
     {
-        QueryBuilder query = RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), null, null, false, true );
+        rangeQueryBuilderFactory.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), null, null, false, true );
     }
 
     @Test
@@ -74,7 +75,7 @@ public class RangeQueryBuilderTest
             "}";
 
         QueryBuilder query =
-            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( 100 ), new QueryValue( 300 ),
+            rangeQueryBuilderFactory.buildRangeQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( 100 ), new QueryValue( 300 ),
                                                true, true );
         System.out.println( query.toString() );
 
@@ -97,7 +98,7 @@ public class RangeQueryBuilderTest
 
         DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID("Europe/Oslo") );
         QueryBuilder query =
-            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ), null, false, true );
+            rangeQueryBuilderFactory.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ), null, false, true );
 
         assertEquals( expected_result, query.toString() );
     }
@@ -118,7 +119,7 @@ public class RangeQueryBuilderTest
 
         DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID("Europe/Oslo") );
         QueryBuilder query =
-            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ), null, true, true );
+            rangeQueryBuilderFactory.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ), null, true, true );
 
         assertEquals( expected_result, query.toString() );
     }
@@ -140,7 +141,7 @@ public class RangeQueryBuilderTest
         DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID("Europe/Oslo") );
         DateTime endTime = new DateTime( 2012, 3, 24, 5, 1, 23, 456, DateTimeZone.forID("Europe/Oslo") );
         QueryBuilder query =
-            RangeQueryBuilder.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ),
+            rangeQueryBuilderFactory.buildRangeQuery( QueryPathResolver.resolveQueryPath( "my_date_field" ), new QueryValue( initTime ),
                                                new QueryValue( endTime ), false, true );
 
         assertEquals( expected_result, query.toString() );

@@ -60,11 +60,6 @@ public class QueryValue
 
     public String getStringValueNormalized()
     {
-        if ( isDateTime() )
-        {
-            // do not lower-case datetime strings
-            return getDateAsStringValue();
-        }
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 
@@ -82,7 +77,6 @@ public class QueryValue
     {
         return StringUtils.isBlank( stringValue );
     }
-
 
     private String formatDateForElasticSearch( final ReadableDateTime date )
     {

@@ -4,18 +4,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.enonic.cms.core.content.index.IndexValueQuery;
-import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 2/9/12
- * Time: 11:51 AM
- */
 public class IndexValueQueryTranslator
 {
 
-    private final FilterQueryBuilder filterQueryBuilder = new FilterQueryBuilder();
+    private final FilterQueryBuilderFactory filterQueryBuilderFactory = new FilterQueryBuilderFactory();
 
     // Selects the values from a given field in index for all contents matching filter
     public SearchSourceBuilder build( IndexValueQuery query )
@@ -32,7 +25,7 @@ public class IndexValueQueryTranslator
 
         builder.query( QueryBuilders.matchAllQuery() );
 
-        filterQueryBuilder.buildFilterQuery( builder, query );
+        filterQueryBuilderFactory.buildFilterQuery( builder, query );
 
         //TODO: Fix orderby
         // Orderby

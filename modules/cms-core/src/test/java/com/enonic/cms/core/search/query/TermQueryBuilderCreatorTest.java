@@ -3,15 +3,11 @@ package com.enonic.cms.core.search.query;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.Test;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 1/24/12
- * Time: 3:31 PM
- */
+
 public class TermQueryBuilderCreatorTest
     extends QueryTranslatorBaseTest
 {
+    private final TermQueryBuilderFactory termQueryBuilderFactory = new TermQueryBuilderFactory();
 
     @Test
     public void testIdQueries()
@@ -24,7 +20,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( "123" ) );
+            termQueryBuilderFactory.buildTermQuery( QueryPathResolver.resolveQueryPath( "key" ), new QueryValue( "123" ) );
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
 
@@ -38,7 +34,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "*" ), new QueryValue( "123" ) );
+            termQueryBuilderFactory.buildTermQuery( QueryPathResolver.resolveQueryPath( "*" ), new QueryValue( "123" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -54,7 +50,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "*" ), new QueryValue( 123 ) );
+            termQueryBuilderFactory.buildTermQuery( QueryPathResolver.resolveQueryPath( "*" ), new QueryValue( 123 ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -74,7 +70,7 @@ public class TermQueryBuilderCreatorTest
             "}";
 
         final QueryBuilder queryBuilder =
-            TermQueryBuilderCreator.buildTermQuery( QueryPathResolver.resolveQueryPath( "attachments/*" ), new QueryValue( "123" ) );
+            termQueryBuilderFactory.buildTermQuery( QueryPathResolver.resolveQueryPath( "attachments/*" ), new QueryValue( "123" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }

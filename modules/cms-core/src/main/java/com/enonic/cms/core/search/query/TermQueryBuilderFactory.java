@@ -10,14 +10,14 @@ import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
-public class TermQueryBuilderCreator
-    extends BaseQueryBuilder
+public class TermQueryBuilderFactory
+    extends BaseQueryBuilderFactory
 {
-    public TermQueryBuilderCreator()
+    public TermQueryBuilderFactory()
     {
     }
 
-    public static QueryBuilder buildTermQuery( final QueryPath path, final QueryValue queryValue )
+    public QueryBuilder buildTermQuery( final QueryPath path, final QueryValue queryValue )
     {
         final boolean isWildCardPath = path.isWildCardPath();
 
@@ -38,7 +38,7 @@ public class TermQueryBuilderCreator
         }
     }
 
-    private static QueryBuilder doBuildTermQuery( QueryPath path, QueryValue queryValue, boolean wildCardPath )
+    private QueryBuilder doBuildTermQuery( QueryPath path, QueryValue queryValue, boolean wildCardPath )
     {
         if ( path.doBuildAsIdQuery() )
         {
@@ -63,7 +63,7 @@ public class TermQueryBuilderCreator
         return QueryBuilders.termQuery( path.getPath(), queryValue.getStringValueNormalized() );
     }
 
-    private static QueryBuilder doBuildQueryForNumericValue( final QueryPath path, final QueryValue queryValue, final boolean wildCardPath )
+    private QueryBuilder doBuildQueryForNumericValue( final QueryPath path, final QueryValue queryValue, final boolean wildCardPath )
     {
         if ( !wildCardPath )
         {
@@ -75,7 +75,7 @@ public class TermQueryBuilderCreator
         }
     }
 
-    private static QueryBuilder doRenderIdQuery( final QueryValue queryValue )
+    private QueryBuilder doRenderIdQuery( final QueryValue queryValue )
     {
         if ( queryValue.isNumeric() )
         {

@@ -29,7 +29,8 @@ public class OrderQueryBuilderTest
         OrderFieldExpr orderField = new OrderFieldExpr( field, true );
         OrderByExpr expr = new OrderByExpr( new OrderFieldExpr[]{orderField} );
 
-        OrderQueryBuilder.buildOrderByExpr( sourceBuilder, expr );
+        OrderQueryBuilderFactory orderQueryBuilderFactory = new OrderQueryBuilderFactory();
+        orderQueryBuilderFactory.buildOrderByExpr( sourceBuilder, expr );
 
 //        assertEquals( "{\n" + "  \"sort\" : [ {\n" + "    \"key_numeric\" : {\n" + "      \"order\" : \"desc\"\n" +
 //                              "    }\n" + "  } ]\n" + "}", sourceBuilder.toString() );

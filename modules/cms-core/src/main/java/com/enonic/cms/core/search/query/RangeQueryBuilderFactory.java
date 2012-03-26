@@ -7,17 +7,17 @@ import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.NUMERIC
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 
-public class RangeQueryBuilder
-    extends BaseQueryBuilder
+public class RangeQueryBuilderFactory
+    extends BaseQueryBuilderFactory
 {
 
-    public static QueryBuilder buildRangeQuery( final QueryPath queryPath, final QueryValue lower, final QueryValue upper,
+    public QueryBuilder buildRangeQuery( final QueryPath queryPath, final QueryValue lower, final QueryValue upper,
                                                 final boolean lowerInclusive, final boolean upperInclusive )
     {
         final boolean isNumericComparison = ( lower != null && lower.isNumeric() ) || ( upper != null && upper.isNumeric() );
-        final boolean isDateComparision =
+        final boolean isDateComparison =
             !isNumericComparison && ( ( lower != null && lower.isDateTime() ) || ( upper != null && upper.isDateTime() ) );
-        final boolean doStringComparison = !( isNumericComparison || isDateComparision );
+        final boolean doStringComparison = !( isNumericComparison || isDateComparison );
 
         if ( doStringComparison )
         {
@@ -39,7 +39,7 @@ public class RangeQueryBuilder
         }
     }
 
-    private static QueryBuilder buildRangeQueryDateTime( QueryPath queryPath, ReadableDateTime lowerDateTime, ReadableDateTime upperDateTime,
+    private QueryBuilder buildRangeQueryDateTime( QueryPath queryPath, ReadableDateTime lowerDateTime, ReadableDateTime upperDateTime,
                                                          boolean lowerInclusive, boolean upperInclusive )
     {
         if ( lowerDateTime == null && upperDateTime == null )
@@ -55,7 +55,7 @@ public class RangeQueryBuilder
             includeUpper( upperInclusive );
     }
 
-    private static QueryBuilder buildRangeQueryNumeric( QueryPath queryPath, Double lowerNumeric, Double upperNumeric,
+    private QueryBuilder buildRangeQueryNumeric( QueryPath queryPath, Double lowerNumeric, Double upperNumeric,
                                                         boolean lowerInclusive, boolean upperInclusive )
     {
         if ( lowerNumeric == null && upperNumeric == null )
@@ -71,7 +71,7 @@ public class RangeQueryBuilder
             includeUpper( upperInclusive );
     }
 
-    private static QueryBuilder buildRangeQueryString( QueryPath queryPath, QueryValue lower, QueryValue upper, boolean lowerInclusive,
+    private QueryBuilder buildRangeQueryString( QueryPath queryPath, QueryValue lower, QueryValue upper, boolean lowerInclusive,
                                                        boolean upperInclusive )
     {
         if ( lower == null && upper == null )

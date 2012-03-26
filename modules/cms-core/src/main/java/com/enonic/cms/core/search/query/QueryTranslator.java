@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.core.search.query;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -20,14 +20,38 @@ import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
-import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 @Component
 public class QueryTranslator
 {
-    private Logger LOG = Logger.getLogger( QueryTranslator.class.getName() );
+    private final static Logger LOG = Logger.getLogger( QueryTranslator.class.getName() );
 
-    private final FilterQueryBuilder filterQueryBuilder = new FilterQueryBuilder();
+    private final FilterQueryBuilderFactory filterQueryBuilderFactory;
+
+    private final OrderQueryBuilderFactory orderQueryBuilderFactory;
+
+    private final TermQueryBuilderFactory termQueryBuilderFactory;
+
+    private final RangeQueryBuilderFactory rangeQueryBuilderFactory;
+
+    private final LikeQueryBuilderFactory likeQueryBuilderFactory;
+
+    private final InQueryBuilderFactory inQueryBuilderFactory;
+
+    private final FullTextQueryBuilderFactory fullTextQueryBuilderFactory;
+
+
+    public QueryTranslator()
+    {
+        filterQueryBuilderFactory = new FilterQueryBuilderFactory();
+        orderQueryBuilderFactory = new OrderQueryBuilderFactory();
+        termQueryBuilderFactory = new TermQueryBuilderFactory();
+        rangeQueryBuilderFactory = new RangeQueryBuilderFactory();
+        likeQueryBuilderFactory = new LikeQueryBuilderFactory();
+        inQueryBuilderFactory = new InQueryBuilderFactory();
+        fullTextQueryBuilderFactory = new FullTextQueryBuilderFactory();
+    }
+
 
     public SearchSourceBuilder build( ContentIndexQuery contentIndexQuery )
         throws Exception
@@ -43,10 +67,13 @@ public class QueryTranslator
         final QueryBuilder builtQuery = buildQuery( expression );
         builder.query( builtQuery );
 
-        OrderQueryBuilder.buildOrderByExpr( builder, queryExpr.getOrderBy() );
-        filterQueryBuilder.buildFilterQuery( builder, contentIndexQuery );
+        orderQueryBuilderFactory.buildOrderByExpr( builder, queryExpr.getOrderBy() );
+        filterQueryBuilderFactory.buildFilterQuery( builder, contentIndexQuery );
 
-        LOG.fine( builder.toString() );
+        if ( LOG.isLoggable( Level.INFO ) )
+        {
+            LOG.info( "ES query:\r\n" + builder.toString() );
+        }
 
         return builder;
     }
@@ -95,35 +122,30 @@ public class QueryTranslator
         switch ( operator )
         {
             case CompareExpr.EQ:
-                return TermQueryBuilderCreator.buildTermQuery( queryPath, querySingleValue );
+                return termQueryBuilderFactory.buildTermQuery( queryPath, querySingleValue );
             case CompareExpr.NEQ:
-                return buildNotQuery( TermQueryBuilderCreator.buildTermQuery( queryPath, querySingleValue ) );
+                return buildNotQuery( termQueryBuilderFactory.buildTermQuery( queryPath, querySingleValue ) );
             case CompareExpr.GT:
-                return RangeQueryBuilder.buildRangeQuery( queryPath, querySingleValue, null, false, true );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, querySingleValue, null, false, true );
             case CompareExpr.GTE:
-                return RangeQueryBuilder.buildRangeQuery( queryPath, querySingleValue, null, true, true );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, querySingleValue, null, true, true );
             case CompareExpr.LT:
-                return RangeQueryBuilder.buildRangeQuery( queryPath, null, querySingleValue, true, false );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, null, querySingleValue, true, false );
             case CompareExpr.LTE:
-                return RangeQueryBuilder.buildRangeQuery( queryPath, null, querySingleValue, true, true );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, null, querySingleValue, true, true );
             case CompareExpr.LIKE:
-                return LikeQueryBuilderCreator.buildLikeQuery( queryPath, querySingleValue );
+                return likeQueryBuilderFactory.buildLikeQuery( queryPath, querySingleValue );
             case CompareExpr.NOT_LIKE:
-                return buildNotQuery( LikeQueryBuilderCreator.buildLikeQuery( queryPath, querySingleValue ) );
+                return buildNotQuery( likeQueryBuilderFactory.buildLikeQuery( queryPath, querySingleValue ) );
             case CompareExpr.IN:
-                return buildInQuery( path, queryValues );
+                return inQueryBuilderFactory.buildInQuery( path, queryValues );
             case CompareExpr.NOT_IN:
-                return buildNotQuery( buildInQuery( path, queryValues ) );
+                return buildNotQuery( inQueryBuilderFactory.buildInQuery( path, queryValues ) );
             case CompareExpr.FT:
-                return buildFulltextQuery( path, querySingleValue );
+                return fullTextQueryBuilderFactory.buildFulltextQuery( path, querySingleValue );
         }
 
         return null;
-    }
-
-    private QueryBuilder buildFulltextQuery( final String path, final QueryValue queryValue )
-    {
-        return QueryBuilders.termQuery( path + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX, queryValue.getStringValueNormalized() );
     }
 
     private QueryBuilder buildNotExpr( NotExpr expr )
@@ -131,26 +153,6 @@ public class QueryTranslator
     {
         final QueryBuilder negated = buildQuery( expr.getExpr() );
         return buildNotQuery( negated );
-    }
-
-    private QueryBuilder buildInQuery( String field, QueryValue[] values )
-    {
-        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-
-        for ( QueryValue value : values )
-        {
-            if ( value.isNumeric() )
-            {
-                boolQuery.should(
-                    QueryBuilders.termQuery( field + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, value.getDoubleValue() ) );
-            }
-            else
-            {
-                boolQuery.should( QueryBuilders.termQuery( field, value.getStringValueNormalized() ) );
-            }
-        }
-
-        return boolQuery;
     }
 
     private QueryBuilder buildLogicalExpr( LogicalExpr expr )

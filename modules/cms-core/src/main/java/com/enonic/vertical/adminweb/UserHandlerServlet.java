@@ -27,6 +27,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
 import org.jdom.transform.JDOMSource;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -86,7 +87,6 @@ import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
 import com.enonic.cms.core.security.userstore.connector.config.InvalidUserStoreConnectorConfigException;
-import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 import com.enonic.cms.core.timezone.TimeZoneXmlCreator;
@@ -1585,21 +1585,7 @@ public class UserHandlerServlet
         }
 
         UserEntity userToUpdate = userDao.findSingleBySpecification( userSpecification );
-        UserStoreEntity us = userToUpdate.getUserStore();
-
-        // Removed when migrated to 4.6, because the following code only applies to remote user stores.
-        Boolean isUpdatableUser;
-        if ( us.isLocal() )
-        {
-            isUpdatableUser = true;
-        }
-        else  // Remote user store
-        {
-            UserStoreConnectorConfig policy = userStoreService.getUserStoreConnectorConfigs().get( us.getConnectorName() );
-            isUpdatableUser = policy.canUpdateUser();
-        }
-
-        if ( isUpdatableUser )
+        if ( userStoreService.canUpdateUser( userStore.getKey() ) )
         {
             UpdateUserCommand command = new UpdateUserCommand( user.getKey(), userSpecification );
             command.setupUpdateStrategy();
@@ -1612,6 +1598,21 @@ public class UserHandlerServlet
             command.setUserInfo( userInfo );
 
             userStoreService.updateUser( command );
+        }
+        else
+        {
+            String uiDisplayName = formItems.getString( "display_name", "" );
+
+            if ( StringUtils.isNotBlank( uiDisplayName ) && !uiDisplayName.equals( userToUpdate.getDisplayName() ) )
+            {
+                UpdateUserCommand command = new UpdateUserCommand( user.getKey(), userSpecification );
+                command.setupUpdateStrategy();
+                command.setAllowUpdateSelf( true );
+                command.setDisplayName( uiDisplayName );
+                command.setEmail( userToUpdate.getEmail() );
+
+                userStoreService.updateUser( command );
+            }
         }
 
         // Synch memberships is necessary rights:

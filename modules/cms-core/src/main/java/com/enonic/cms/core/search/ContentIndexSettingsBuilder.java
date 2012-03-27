@@ -84,11 +84,8 @@ public class ContentIndexSettingsBuilder
     {
         try
         {
-            return jsonBuilder().startObject()
-                .field( NUMBER_OF_SHARDS_KEY, NUMBER_OF_SHARDS_VALUE )
-                .field( NUMBER_OF_REPLICAS_KEY, NUMBER_OF_REPLICAS_VALUE )
-                .endObject()
-                .string();
+            return jsonBuilder().startObject().field( NUMBER_OF_SHARDS_KEY, NUMBER_OF_SHARDS_VALUE ).field( NUMBER_OF_REPLICAS_KEY,
+                                                                                                            NUMBER_OF_REPLICAS_VALUE ).endObject().string();
         }
         catch ( IOException e )
         {
@@ -98,20 +95,16 @@ public class ContentIndexSettingsBuilder
 
     private String buildAnalyserSettings()
     {
-        /* return jsonBuilder()
-             .startObject()
-                 .startObject( "analysis" )
-                     .startObject( "analyzer" )
-                         .startObject( "keywordlowercase" )
-                             .field( "type", "custom" )
-                             .field( "tokenizer", "keyword" )
-                             .field( "filter", new String[]{"lowercase"} )
-                         .endObject()
-                     .endObject()
-                 .endObject()
-             .endObject()
-             .string();
-        */
-        return "";
+        try
+        {
+            return jsonBuilder().startObject().startObject( "analysis" ).startObject( "analyzer" ).startObject(
+                "whitespace_analyzer" ).field( "type", "custom" ).field( "tokenizer", "whitespace" ).field( "filter", new String[]{
+                "lowercase"} ).endObject().endObject().endObject().endObject().string();
+        }
+        catch ( IOException e )
+        {
+            throw new ContentIndexException( "Not able to create analyzer settings for index", e );
+        }
+
     }
 }

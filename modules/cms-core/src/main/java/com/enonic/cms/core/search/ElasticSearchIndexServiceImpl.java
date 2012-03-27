@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
@@ -98,7 +99,9 @@ public class ElasticSearchIndexServiceImpl
 
         createIndexRequest.settings( indexSettingsBuilder.buildSettings() );
 
-        client.admin().indices().create( createIndexRequest ).actionGet();
+        final CreateIndexResponse createIndexResponse = client.admin().indices().create( createIndexRequest ).actionGet();
+
+        createIndexResponse.getAcknowledged();
     }
 
     @Override

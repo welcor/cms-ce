@@ -11,6 +11,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  * Date: 1/3/12
  * Time: 1:02 PM
  */
+@Ignore
 public class ContentIndexServiceImplTest_query_text
     extends ContentIndexServiceTestBase
 {
@@ -46,6 +47,8 @@ public class ContentIndexServiceImplTest_query_text
         contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
         flushIndex();
 
+        printAllIndexContent();
+
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
 
@@ -58,7 +61,6 @@ public class ContentIndexServiceImplTest_query_text
         assertContentResultSetEquals( new int[]{}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk'" ) ) );
     }
-
 
     @Test
     public void testOneWordSearchOnTitleAndUnknown()
@@ -144,7 +146,6 @@ public class ContentIndexServiceImplTest_query_text
             new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
-
     @Test
     public void testOneWordSearchOnTitleAndFulltextAndUnknown()
     {
@@ -153,6 +154,8 @@ public class ContentIndexServiceImplTest_query_text
         contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ), false );
         contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
         flushIndex();
+
+        printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
             new ContentIndexQuery( "(title CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );
@@ -169,7 +172,6 @@ public class ContentIndexServiceImplTest_query_text
         assertContentResultSetEquals( new int[]{}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
-
 
     @Ignore // Decide how to handle fulltext
     @Test
@@ -233,7 +235,6 @@ public class ContentIndexServiceImplTest_query_text
         assertContentResultSetEquals( new int[]{}, contentIndexService.query( new ContentIndexQuery(
             "(fulltext CONTAINS 'ost' AND (title CONTAINS 'ost' OR data/* CONTAINS 'ost')) AND unknown CONTAINS 'fisk'" ) ) );
     }
-
 
     @Test
     public void testSplittedNormalIndexWithAnd()

@@ -9,6 +9,8 @@ package com.enonic.cms.core.search.builder;
 public class IndexFieldNameConstants
 {
 
+    public static final String ALL_USERDATA_FIELDNAME = "_all_userdata";
+
     public static final String PUBLISH_FROM_FIELDNAME = "publishFrom";
 
     public static final String PUBLISH_TO_FIELDNAME = "publishTo";

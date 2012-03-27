@@ -21,18 +21,18 @@ public class QueryValue
         if ( value instanceof Number )
         {
             doubleValue = ( (Number) value ).doubleValue();
-            stringValue = value.toString();
+            stringValue = doNormalizeString( value.toString() );
             dateTimeValue = null;
         }
         else if ( value instanceof ReadableDateTime )
         {
-            dateTimeValue = toUTCTimeZone((ReadableDateTime) value);
+            dateTimeValue = toUTCTimeZone( (ReadableDateTime) value );
             stringValue = formatDateForElasticSearch( dateTimeValue );
             doubleValue = null;
         }
         else
         {
-            stringValue = value.toString();
+            stringValue = doNormalizeString( value.toString() );
             doubleValue = null;
             dateTimeValue = null;
         }
@@ -63,6 +63,21 @@ public class QueryValue
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 
+    public boolean isWildcardValue()
+    {
+        return StringUtils.contains( this.stringValue, "%" );
+    }
+
+    public String getWildcardValue()
+    {
+        return StringUtils.replace( this.stringValue, "%", "*" );
+    }
+
+    private String doNormalizeString( String stringValue )
+    {
+        return StringUtils.lowerCase( stringValue );
+    }
+
     public String getNumericValueAsString()
     {
         return stringValue != null ? stringValue.substring( 0, stringValue.indexOf( '.' ) ) : null;
@@ -78,10 +93,10 @@ public class QueryValue
         return StringUtils.isBlank( stringValue );
     }
 
+
     private String formatDateForElasticSearch( final ReadableDateTime date )
     {
-
-        return ISODateTimeFormat.dateTime().print( date );
+        return ISODateTimeFormat.dateTime().print( date ).toLowerCase();
     }
 
     private ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )

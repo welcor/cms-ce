@@ -3,7 +3,6 @@ package com.enonic.cms.core.search.query;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.ReadableDateTime;
 
-import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX;
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 
@@ -12,7 +11,7 @@ public class RangeQueryBuilderFactory
 {
 
     public QueryBuilder buildRangeQuery( final QueryPath queryPath, final QueryValue lower, final QueryValue upper,
-                                                final boolean lowerInclusive, final boolean upperInclusive )
+                                         final boolean lowerInclusive, final boolean upperInclusive )
     {
         final boolean isNumericComparison = ( lower != null && lower.isNumeric() ) || ( upper != null && upper.isNumeric() );
         final boolean isDateComparison =
@@ -40,14 +39,14 @@ public class RangeQueryBuilderFactory
     }
 
     private QueryBuilder buildRangeQueryDateTime( QueryPath queryPath, ReadableDateTime lowerDateTime, ReadableDateTime upperDateTime,
-                                                         boolean lowerInclusive, boolean upperInclusive )
+                                                  boolean lowerInclusive, boolean upperInclusive )
     {
         if ( lowerDateTime == null && upperDateTime == null )
         {
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
 
-        final String queryName = queryPath.isWildCardPath() ? QueryPath.ALL_FIELDS_PATH : queryPath.getPath();
+        final String queryName = queryPath.isWildCardPath() ? ALL_USERDATA_FIELDNAME : queryPath.getPath();
         return rangeQuery( queryName ).
             from( lowerDateTime ).
             to( upperDateTime ).
@@ -55,15 +54,15 @@ public class RangeQueryBuilderFactory
             includeUpper( upperInclusive );
     }
 
-    private QueryBuilder buildRangeQueryNumeric( QueryPath queryPath, Double lowerNumeric, Double upperNumeric,
-                                                        boolean lowerInclusive, boolean upperInclusive )
+    private QueryBuilder buildRangeQueryNumeric( QueryPath queryPath, Double lowerNumeric, Double upperNumeric, boolean lowerInclusive,
+                                                 boolean upperInclusive )
     {
         if ( lowerNumeric == null && upperNumeric == null )
         {
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
 
-        final String queryName = queryPath.isWildCardPath() ? QueryPath.ALL_FIELDS_PATH : queryPath.getPath() + NUMERIC_FIELD_POSTFIX;
+        final String queryName = queryPath.isWildCardPath() ? ALL_USERDATA_FIELDNAME : queryPath.getPath() + NUMERIC_FIELD_POSTFIX;
         return rangeQuery( queryName ).
             from( lowerNumeric ).
             to( upperNumeric ).
@@ -72,13 +71,13 @@ public class RangeQueryBuilderFactory
     }
 
     private QueryBuilder buildRangeQueryString( QueryPath queryPath, QueryValue lower, QueryValue upper, boolean lowerInclusive,
-                                                       boolean upperInclusive )
+                                                boolean upperInclusive )
     {
         if ( lower == null && upper == null )
         {
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
-        final String queryName = queryPath.isWildCardPath() ? QueryPath.ALL_FIELDS_PATH : queryPath.getPath();
+        final String queryName = queryPath.isWildCardPath() ? ALL_USERDATA_FIELDNAME : queryPath.getPath();
         return rangeQuery( queryName ).
             from( lower != null ? lower.getStringValueNormalized() : null ).
             to( upper != null ? upper.getStringValueNormalized() : null ).

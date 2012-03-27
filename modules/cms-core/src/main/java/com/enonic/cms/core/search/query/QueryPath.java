@@ -8,32 +8,33 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.search.IndexType;
-import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.*;
+
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.ALL_USERDATA_FIELDNAME;
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.ASSIGNMENT_DUE_DATE_FIELDNAME;
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.CONTENT_CREATED;
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.CONTENT_MODIFIED;
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.PUBLISH_FROM_FIELDNAME;
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.PUBLISH_TO_FIELDNAME;
+import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.TIMESTAMP_FIELDNAME;
 
 public class QueryPath
 {
-
-    protected static final String ALL_FIELDS_PATH = "_all";
-
     private static final Set<String> dateFields;
+
     static
     {
         dateFields = Sets.newTreeSet( String.CASE_INSENSITIVE_ORDER );
         Collections.addAll( dateFields, PUBLISH_FROM_FIELDNAME, PUBLISH_TO_FIELDNAME, ASSIGNMENT_DUE_DATE_FIELDNAME, TIMESTAMP_FIELDNAME,
-                            CONTENT_CREATED, CONTENT_MODIFIED);
+                            CONTENT_CREATED, CONTENT_MODIFIED );
     }
 
     private String path;
 
     private boolean renderAsHasChildQuery = false;
 
-    private boolean renderAsFilter = false;
-
     private boolean renderAsIdQuery = false;
 
     private IndexType indexType;
-
-    private String contextRelativePath;
 
     public String getPath()
     {
@@ -90,7 +91,7 @@ public class QueryPath
 
     public void setMatchAllPath()
     {
-        this.path = ALL_FIELDS_PATH;
+        this.path = ALL_USERDATA_FIELDNAME;
     }
 
     public boolean isDateField()

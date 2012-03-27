@@ -1,7 +1,7 @@
 {
     "content":{
         "_all":{
-            "enabled":true
+            "enabled":false
         },
         "_source":{
             "enabled":false
@@ -9,6 +9,23 @@
         "date_detection":false,
         "numeric_detection":false,
         "properties":{
+            "_all_userdata":{
+                "type":"multi_field",
+                "fields":{
+                    "_all_userdata":{
+                        "include_in_all":false,
+                        "type":"string",
+                        "index":"not_analyzed",
+                        "store":"yes"
+                    },
+                    "_tokenized":{
+                        "include_in_all":false,
+                        "type":"string",
+                        "index":"analyzed",
+                        "store":"yes"
+                    }
+                }
+            },
             "title":{
                 "type":"multi_field",
                 "fields":{
@@ -71,12 +88,11 @@
                     }
                 }
             }
-
         },
         "dynamic_templates":[
             {
                 "template_userdata":{
-                    "include_in_all":true,
+                    "include_in_all":false,
                     "match":"data_*",
                     "unmatch":"*_numeric",
                     "mapping":{
@@ -90,7 +106,7 @@
                             },
                             "_tokenized":{
                                 "type":"string",
-                                "index":"analyzed",
+                                "analyzer":"whitespace_analyzer",
                                 "store":"yes",
                                 "include_in_all":true
                             }

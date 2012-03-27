@@ -7,8 +7,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.util.NumericUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.MutableDateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.base.Function;
@@ -119,13 +117,6 @@ public final class IndexValueResolver
         }
 
         return orderValue;
-    }
-
-
-    public static String getWildcardValue( final String value )
-    {
-        String replacedValue = StringUtils.replaceChars( value, '%', '*' );
-        return StringUtils.lowerCase( replacedValue );
     }
 
     public static String normalizeValue( final String value )

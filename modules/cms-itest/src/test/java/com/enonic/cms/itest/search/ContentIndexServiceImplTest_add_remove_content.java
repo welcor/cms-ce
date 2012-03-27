@@ -19,11 +19,10 @@ import com.enonic.cms.core.content.index.ContentDocument;
 
 import static org.junit.Assert.*;
 
-public class ContentIndexServiceImplTest_add_and_remove
+public class ContentIndexServiceImplTest_add_remove_content
     extends ContentIndexServiceTestBase
 {
-    private static final Logger LOG = LoggerFactory.getLogger( ContentIndexServiceImplTest_add_and_remove.class.getName() );
-
+    private static final Logger LOG = LoggerFactory.getLogger( ContentIndexServiceImplTest_add_remove_content.class.getName() );
 
     @Test
     public void testAddNewValue()

@@ -289,6 +289,12 @@ public abstract class ContentIndexServiceTestBase
         return createContentDocument( contentKey, title, new String[][]{{"data/preface", preface}, {"fulltext", fulltext}} );
     }
 
+    protected ContentDocument createContentDocumentWithTextField( int contentKey, String title, String preface, String fulltext )
+    {
+        return createContentDocument( contentKey, title, new String[][]{{"data/preface", preface}, {"data/textfield", fulltext}} );
+    }
+
+
     ContentDocument createContentDocument( int contentKey, String title, String[][] fields )
     {
         ContentDocument doc = new ContentDocument( new ContentKey( contentKey ) );

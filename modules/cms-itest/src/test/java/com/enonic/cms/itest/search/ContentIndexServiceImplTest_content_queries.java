@@ -23,8 +23,6 @@ import static org.junit.Assert.*;
 public class ContentIndexServiceImplTest_content_queries
     extends ContentIndexServiceTestBase
 {
-
-
     @Test
     public void testContentQueryWithCategoryFilter()
     {
@@ -41,13 +39,11 @@ public class ContentIndexServiceImplTest_content_queries
                                                       new String[][]{{"data/heading", "title3"}} );
         contentIndexService.index( doc3, false );
 
-        //flushIndex();
-
         ContentIndexQuery query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
         assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
 
-        query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "");
+        query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setCategoryFilter( createCategoryKeyList( 102 ) );
         assertContentResultSetEquals( new int[]{3}, contentIndexService.query( query ) );
     }
@@ -68,8 +64,6 @@ public class ContentIndexServiceImplTest_content_queries
                                                       new String[][]{{"data/heading", "title3"}} );
         contentIndexService.index( doc3, false );
 
-        //flushIndex();
-
         ContentIndexQuery query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setContentTypeFilter( createContentTypeList( 10 ) );
         assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
@@ -82,7 +76,6 @@ public class ContentIndexServiceImplTest_content_queries
     @Test
     public void testContentQueryWithCategoryFilterAndComplexLogicalExpression()
     {
-
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       new String[][]{{"data/a", "1"}, {"data/b", "2"}, {"data/c", "3"}} );
         contentIndexService.index( doc1, false );
@@ -95,8 +88,6 @@ public class ContentIndexServiceImplTest_content_queries
                                                       new String[][]{{"data/a", "2"}, {"data/b", "1"}, {"data/c", "3"}} );
         contentIndexService.index( doc3, false );
 
-        //flushIndex();
-
         ContentIndexQuery query = new ContentIndexQuery( "(data/a = 1 AND data/b = 2)", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
@@ -105,7 +96,7 @@ public class ContentIndexServiceImplTest_content_queries
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
         assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
 
-        query = new ContentIndexQuery( "(data/a = 1 OR data/b = 2) AND data/c = 1", "");
+        query = new ContentIndexQuery( "(data/a = 1 OR data/b = 2) AND data/c = 1", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
         assertContentResultSetEquals( new int[]{2}, contentIndexService.query( query ) );
 
@@ -117,7 +108,7 @@ public class ContentIndexServiceImplTest_content_queries
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
         assertContentResultSetEquals( new int[]{1, 3}, contentIndexService.query( query ) );
 
-        query = new ContentIndexQuery( "(data/a = 2 AND data/b = 2) OR (data/a = 1 AND data/c = 3)", "");
+        query = new ContentIndexQuery( "(data/a = 2 AND data/b = 2) OR (data/a = 1 AND data/c = 3)", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
         assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( query ) );
     }
@@ -125,7 +116,6 @@ public class ContentIndexServiceImplTest_content_queries
     @Test
     public void testContentQueryWithCategoryFilterAndContentTypeNameSearch()
     {
-
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       new String[][]{{"data/heading", "title1"}} );
         doc1.setContentTypeName( "Article3" );
@@ -140,8 +130,6 @@ public class ContentIndexServiceImplTest_content_queries
                                                       new String[][]{{"data/heading", "title3"}} );
         doc3.setContentTypeName( "Loooooooooooooong-content-type-name-it-is" );
         contentIndexService.index( doc3, false );
-
-        //flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "contenttype = 'Article3'", "" );
         query.setContentTypeFilter( createContentTypeList( 10 ) );
@@ -161,7 +149,7 @@ public class ContentIndexServiceImplTest_content_queries
         ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 3, res1.getLength() );
 
-        ContentIndexQuery query2 = new ContentIndexQuery( "data/person/gender = 'male'");
+        ContentIndexQuery query2 = new ContentIndexQuery( "data/person/gender = 'male'" );
         ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 3, res2.getLength() );
 
@@ -169,8 +157,7 @@ public class ContentIndexServiceImplTest_content_queries
         ContentResultSet res3 = contentIndexService.query( query3 );
         assertEquals( 2, res3.getLength() );
 
-        ContentIndexQuery query4 =
-            new ContentIndexQuery( "data/person/gender = 'male' AND data/person/description LIKE '%alcoholic%'" );
+        ContentIndexQuery query4 = new ContentIndexQuery( "data/person/gender = 'male' AND data/person/description LIKE '%alcoholic%'" );
         ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 1, res4.getLength() );
         assertEquals( 1322, res4.getKey( 0 ).toInt() );

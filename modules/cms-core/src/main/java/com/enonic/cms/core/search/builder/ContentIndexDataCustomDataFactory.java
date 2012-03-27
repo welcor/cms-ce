@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search.builder;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -24,6 +25,8 @@ public class ContentIndexDataCustomDataFactory
     public void build( final XContentBuilder result, final Collection<UserDefinedField> userDefinedFields )
         throws Exception
     {
+        Set<String> allUserdataValue = new HashSet<String>();
+
         Map<String, Set<String>> userDefinedValuesMap = getUserDefinedValuesMap( userDefinedFields );
 
         for ( String field : userDefinedValuesMap.keySet() )
@@ -31,7 +34,24 @@ public class ContentIndexDataCustomDataFactory
             final Set<String> values = userDefinedValuesMap.get( field );
 
             addStringSet( field, values, result, true, true );
+
+            allUserdataValue.addAll( values );
         }
+
+        addAllUserdataField( result, allUserdataValue );
+    }
+
+    private void addAllUserdataField( final XContentBuilder result, final Set<String> allUserdataValue )
+        throws Exception
+    {
+        StringBuffer buf = new StringBuffer();
+
+        for ( String value : allUserdataValue )
+        {
+            buf.append( value + " " );
+        }
+
+        addStringSet( ALL_USERDATA_FIELDNAME, allUserdataValue, result, true, false );
     }
 
     private Map<String, Set<String>> getUserDefinedValuesMap( Collection<UserDefinedField> userDefinedFields )

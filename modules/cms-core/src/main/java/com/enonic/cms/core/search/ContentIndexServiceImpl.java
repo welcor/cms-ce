@@ -72,7 +72,7 @@ public class ContentIndexServiceImpl
         }
         catch ( Exception e )
         {
-            LOG.severe( "Failed to initalize index on startup: " + e.getStackTrace() );
+            throw new RuntimeException( "Failed to initialize index", e );
         }
 
         addMapping();

@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
@@ -40,9 +39,7 @@ public final class ContentIndexDataFactory
 
         try
         {
-            final XContentBuilder contentData = createContentData( content );
-
-            contentIndexData = new ContentIndexData( content.getContentKey(), contentData );
+            contentIndexData = new ContentIndexData( content.getContentKey(), createContentData( content ) );
         }
         catch ( Exception e )
         {
@@ -70,7 +67,7 @@ public final class ContentIndexDataFactory
         final XContentBuilder builder = XContentFactory.jsonBuilder();
 
         builder.startObject();
-        addField( "key", new Double( content.getContentKey().toInt() ), builder );
+        addField( "key", (double) content.getContentKey().toInt(), builder );
         addMetadata( builder, content );
         addCategory( content, builder );
         addContentType( content, builder );
@@ -80,85 +77,6 @@ public final class ContentIndexDataFactory
         builder.endObject();
 
         return builder;
-    }
-
-    private void addAccessRights( ContentDocument contentDocument, XContentBuilder builder )
-        throws Exception
-    {
-        final CategoryEntity category = contentDocument.getCategory();
-        final Map<GroupKey, CategoryAccessEntity> categoryAccessRights =
-            category == null ? Collections.<GroupKey, CategoryAccessEntity>emptyMap() : category.getAccessRights();
-
-        final Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
-        if ( !accessRights.isEmpty() )
-        {
-            accessRightsBuilder.build( builder, accessRights, categoryAccessRights );
-        }
-    }
-
-    private void addSections( ContentDocument content, XContentBuilder builder )
-        throws Exception
-    {
-        sectionBuilder.build( content.getContentLocations(), builder );
-    }
-
-    private void addCustomData( ContentDocument contentDocument, XContentBuilder builder )
-        throws Exception
-    {
-        Collection<UserDefinedField> userDefinedFields = contentDocument.getUserDefinedFields();
-        if ( !userDefinedFields.isEmpty() )
-        {
-            customDataBuilder.build( builder, userDefinedFields );
-        }
-
-    }
-
-    private XContentBuilder buildExtractedBinaryData( ContentDocument content )
-        throws Exception
-    {
-        BigText binaryData = content.getBinaryExtractedText();
-
-        if ( binaryData != null && !binaryData.getText().isEmpty() )
-        {
-            final XContentBuilder result = XContentFactory.jsonBuilder();
-            result.startObject();
-            addField( "key", new Double( content.getContentKey().toInt() ), result, false );
-            addField( "attachment", binaryData.getText(), result );
-            result.endObject();
-            return result;
-        }
-
-        return null;
-    }
-
-
-    private void addContentType( ContentDocument content, XContentBuilder builder )
-        throws Exception
-    {
-        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), new Double( content.getContentTypeKey().toInt() ), builder );
-        addField( IndexFieldNameResolver.getContentTypeNameFieldName(), content.getContentTypeName().getText(), builder );
-    }
-
-    private void addCategory( ContentDocument content, XContentBuilder builder )
-        throws Exception
-    {
-        final CategoryKey categoryKey = content.getCategoryKey();
-
-        if ( categoryKey == null )
-        {
-            return;
-        }
-
-        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), categoryKey.toInt(), builder );
-
-        final SimpleText categoryName = content.getCategoryName();
-
-        if ( categoryName == null || StringUtils.isNotBlank( categoryName.getText() ) )
-        {
-            return;
-        }
-
-        addField( IndexFieldNameResolver.getCategoryNameFieldName(), categoryName.getText(), builder );
     }
 
     private void addMetadata( XContentBuilder builder, ContentDocument content )
@@ -185,6 +103,82 @@ public final class ContentIndexDataFactory
         addField( CONTENT_MODIFIED, content.getModified(), builder );
     }
 
+    private void addCategory( ContentDocument content, XContentBuilder builder )
+        throws Exception
+    {
+        final CategoryKey categoryKey = content.getCategoryKey();
+
+        if ( categoryKey == null )
+        {
+            return;
+        }
+
+        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), categoryKey.toInt(), builder );
+
+        final SimpleText categoryName = content.getCategoryName();
+
+        if ( categoryName == null || StringUtils.isNotBlank( categoryName.getText() ) )
+        {
+            return;
+        }
+
+        addField( IndexFieldNameResolver.getCategoryNameFieldName(), categoryName.getText(), builder );
+    }
+
+    private void addContentType( ContentDocument content, XContentBuilder builder )
+        throws Exception
+    {
+        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), (double) content.getContentTypeKey().toInt(), builder );
+        addField( IndexFieldNameResolver.getContentTypeNameFieldName(), content.getContentTypeName().getText(), builder );
+    }
+
+    private void addSections( ContentDocument content, XContentBuilder builder )
+        throws Exception
+    {
+        sectionBuilder.build( content.getContentLocations(), builder );
+    }
+
+    private void addAccessRights( ContentDocument contentDocument, XContentBuilder builder )
+        throws Exception
+    {
+        final CategoryEntity category = contentDocument.getCategory();
+        final Map<GroupKey, CategoryAccessEntity> categoryAccessRights =
+            category == null ? Collections.<GroupKey, CategoryAccessEntity>emptyMap() : category.getAccessRights();
+
+        final Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
+        if ( !accessRights.isEmpty() )
+        {
+            accessRightsBuilder.build( builder, accessRights, categoryAccessRights );
+        }
+    }
+
+    private void addCustomData( ContentDocument contentDocument, XContentBuilder builder )
+        throws Exception
+    {
+        Collection<UserDefinedField> userDefinedFields = contentDocument.getUserDefinedFields();
+        if ( !userDefinedFields.isEmpty() )
+        {
+            customDataBuilder.build( builder, userDefinedFields );
+        }
+    }
+
+    private XContentBuilder buildExtractedBinaryData( ContentDocument content )
+        throws Exception
+    {
+        BigText binaryData = content.getBinaryExtractedText();
+
+        if ( binaryData != null && !binaryData.getText().isEmpty() )
+        {
+            final XContentBuilder result = XContentFactory.jsonBuilder();
+            result.startObject();
+            addField( "key", (double) content.getContentKey().toInt(), result, false );
+            addField( "attachment", binaryData.getText(), result );
+            result.endObject();
+            return result;
+        }
+
+        return null;
+    }
 
     private void addUserValues( XContentBuilder builder, String prefix, SimpleText key, SimpleText name, SimpleText qualifiedName )
         throws Exception
@@ -197,7 +191,6 @@ public final class ContentIndexDataFactory
         addField( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null, builder );
         addField( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null, builder );
         addField( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null, builder );
-
     }
 
 }

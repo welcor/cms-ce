@@ -22,7 +22,6 @@ import static junit.framework.Assert.assertTrue;
 public class ContentIndexServiceImplTest_customdata
     extends ContentIndexServiceTestBase
 {
-
     @Test
     public void testQueryOnNumericAndNotNumericValue()
     {
@@ -54,7 +53,6 @@ public class ContentIndexServiceImplTest_customdata
 
         final ContentResultSet resultSet = contentIndexService.query( query );
         assertEquals( 2, resultSet.getTotalCount() );
-
     }
 
     @Test
@@ -68,7 +66,6 @@ public class ContentIndexServiceImplTest_customdata
         assertEquals( 2, resultSet.getTotalCount() );
     }
 
-
     @Test
     public void testDoubleInQuery()
     {
@@ -78,9 +75,7 @@ public class ContentIndexServiceImplTest_customdata
 
         final ContentResultSet resultSet = contentIndexService.query( query );
         assertEquals( 2, resultSet.getTotalCount() );
-
     }
-
 
     @Test
     public void testDoubleAndStringInQuery()
@@ -91,8 +86,5 @@ public class ContentIndexServiceImplTest_customdata
 
         final ContentResultSet resultSet = contentIndexService.query( query );
         assertEquals( 2, resultSet.getTotalCount() );
-
     }
-
-
 }

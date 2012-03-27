@@ -65,14 +65,7 @@ public class TermQueryBuilderFactory
 
     private QueryBuilder doBuildQueryForNumericValue( final QueryPath path, final QueryValue queryValue, final boolean wildCardPath )
     {
-        if ( !wildCardPath )
-        {
-            return QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, queryValue.getDoubleValue() );
-        }
-        else
-        {
-            return QueryBuilders.termQuery( QueryFieldNameResolver.resolveQueryFieldName( path.getPath() ), queryValue.getDoubleValue() );
-        }
+        return QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, queryValue.getDoubleValue() );
     }
 
     private QueryBuilder doRenderIdQuery( final QueryValue queryValue )

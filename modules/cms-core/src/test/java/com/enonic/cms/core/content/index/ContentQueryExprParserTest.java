@@ -22,7 +22,7 @@ public class ContentQueryExprParserTest
     @Test
     public void testImplicitDateFunctionComparedWithPublishFromField()
     {
-        checkDateFunction( "publishfrom = '2008-12-01'", 2008, 12, 1 );
+        checkDateFunction( "publishFrom = '2008-12-01'", 2008, 12, 1 );
     }
 
     @Test

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
@@ -19,9 +18,7 @@ import com.enonic.cms.core.search.index.ContentIndexData;
  */
 public interface ElasticSearchIndexService
 {
-    public Client getClient();
-
-    public void initalizeIndex( String indexName, boolean forceDelete );
+    public Map<String, Object> getMapping( IndexType indexType, String indexName );
 
     public void createIndex( String indexName );
 

@@ -78,21 +78,27 @@ public abstract class ContentIndexServiceTestBase
     public void initIndex()
         throws Exception
     {
-        elasticSearchIndexService.initalizeIndex( ContentIndexServiceImpl.INDEX_NAME, true );
-        addMapping();
+        final boolean indexExists = elasticSearchIndexService.indexExists( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
 
+        if ( indexExists )
+        {
+            elasticSearchIndexService.deleteIndex( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
+        }
+
+        elasticSearchIndexService.createIndex( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
+        addMapping();
     }
 
     private void addMapping()
     {
-        doAddMapping( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content );
-        doAddMapping( ContentIndexServiceImpl.INDEX_NAME, IndexType.Binaries );
+        doAddMapping( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content );
+        doAddMapping( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Binaries );
     }
 
     private void doAddMapping( String indexName, IndexType indexType )
     {
         String mapping = indexMappingProvider.getMapping( indexName, indexType );
-        elasticSearchIndexService.putMapping( ContentIndexServiceImpl.INDEX_NAME, indexType, mapping );
+        elasticSearchIndexService.putMapping( ContentIndexServiceImpl.CONTENT_INDEX_NAME, indexType, mapping );
     }
 
     protected IndexDataCreator indexDataCreator = new IndexDataCreator();
@@ -146,7 +152,7 @@ public abstract class ContentIndexServiceTestBase
             "  }\n" +
             "}";
 
-        return elasticSearchIndexService.search( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content, termQuery );
+        return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content, termQuery );
     }
 
 
@@ -197,7 +203,8 @@ public abstract class ContentIndexServiceTestBase
             "  }\n" +
             "}";
 
-        SearchResponse result = elasticSearchIndexService.search( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content, termQuery );
+        SearchResponse result =
+            elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content, termQuery );
 
         System.out.println( "\n\n------------------------------------------" );
         System.out.println( result.toString() );

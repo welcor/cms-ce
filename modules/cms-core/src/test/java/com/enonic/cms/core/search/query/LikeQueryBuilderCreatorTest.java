@@ -13,13 +13,13 @@ public class LikeQueryBuilderCreatorTest
     {
         String expected = "{\n" +
             "  \"wildcard\" : {\n" +
-            "    \"_all\" : {\n" +
+            "    \"_all_userdata\" : {\n" +
             "      \"wildcard\" : \"test\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        QueryPath queryPath = QueryPathResolver.resolveQueryPath( "*" );
+        QueryPath queryPath = QueryPathResolver.resolveQueryPath( "data/*" );
 
         final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryPath, new QueryValue( "test" ) );
 

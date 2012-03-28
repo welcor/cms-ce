@@ -1,5 +1,6 @@
 package com.enonic.cms.core.search;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,9 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.cluster.ClusterState;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,39 +73,39 @@ public class ElasticSearchIndexServiceImpl
     private Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
 
     @Override
-    public Client getClient()
-    {
-        return this.client;
-    }
-
-    public void initalizeIndex( String indexName, boolean forceDelete )
-    {
-        final boolean indexExists = indexExists( indexName );
-
-        if ( indexExists && !forceDelete )
-        {
-            return;
-        }
-        else if ( indexExists )
-        {
-            deleteIndex( indexName );
-        }
-
-        createIndex( indexName );
-    }
-
-    @Override
     public void createIndex( String indexName )
     {
         LOG.fine( "creating index: " + indexName );
 
         CreateIndexRequest createIndexRequest = new CreateIndexRequest( indexName );
-
         createIndexRequest.settings( indexSettingsBuilder.buildSettings() );
 
         final CreateIndexResponse createIndexResponse = client.admin().indices().create( createIndexRequest ).actionGet();
 
         createIndexResponse.getAcknowledged();
+    }
+
+    public Map<String, Object> getMapping( IndexType indexType, String indexName )
+    {
+        ClusterState clusterState = client.admin().cluster().prepareState().setFilterIndices( indexName ).execute().actionGet().getState();
+        IndexMetaData indexMetaData = clusterState.getMetaData().index( indexName );
+
+        if ( indexMetaData == null )
+        {
+            LOG.warning( "Not able to load existing mapping for index: " + indexName + ", type: " + indexType.toString() );
+            return null;
+        }
+
+        MappingMetaData mappingMetaData = indexMetaData.mapping( indexType.toString() );
+        try
+        {
+            return mappingMetaData.getSourceAsMap();
+        }
+        catch ( IOException e )
+        {
+            LOG.warning( "Not able to load existing mapping for index: " + indexName + ", type: " + indexType.toString() );
+            return null;
+        }
     }
 
     @Override

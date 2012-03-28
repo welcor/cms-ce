@@ -47,15 +47,15 @@ import com.enonic.cms.store.dao.ContentDao;
 public class ContentIndexServiceImpl
     implements ContentIndexService
 {
-    public final static String INDEX_NAME = "cms";
+    public final static String CONTENT_INDEX_NAME = "cms";
 
     private IndexMappingProvider indexMappingProvider;
 
     private ElasticSearchIndexService elasticSearchIndexService;
 
-    private Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
+    private final Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
 
-    private ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
+    private final ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
 
     private QueryTranslator queryTranslator;
 
@@ -64,37 +64,48 @@ public class ContentIndexServiceImpl
     private ContentDao contentDao;
 
     @PostConstruct
-    private void initializeContentIndex()
+    public void initializeContentIndex()
     {
-        try
-        {
-            elasticSearchIndexService.initalizeIndex( INDEX_NAME, false );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( "Failed to initialize index", e );
-        }
+        final boolean indexExists = elasticSearchIndexService.indexExists( CONTENT_INDEX_NAME );
 
-        addMapping();
+        if ( !indexExists )
+        {
+            elasticSearchIndexService.createIndex( CONTENT_INDEX_NAME );
+            addMapping();
+        }
+        else
+        {
+            verifyMapping();
+        }
+    }
+
+    // TODO: Implement
+    private void verifyMapping()
+    {
 
     }
 
     private void addMapping()
     {
-        doAddMapping( INDEX_NAME, IndexType.Content );
-        doAddMapping( INDEX_NAME, IndexType.Binaries );
+        doAddMapping( IndexType.Content );
+        doAddMapping( IndexType.Binaries );
     }
 
-    private void doAddMapping( String indexName, IndexType indexType )
+    private void doAddMapping( IndexType indexType )
     {
-        String mapping = indexMappingProvider.getMapping( indexName, indexType );
-        elasticSearchIndexService.putMapping( INDEX_NAME, indexType, mapping );
+        String mapping = getMapping( indexType );
+        elasticSearchIndexService.putMapping( CONTENT_INDEX_NAME, indexType, mapping );
+    }
+
+    private String getMapping( final IndexType indexType )
+    {
+        return indexMappingProvider.getMapping( CONTENT_INDEX_NAME, indexType );
     }
 
     public int remove( ContentKey contentKey )
     {
         // TODO : Delete children aswell
-        final boolean deleted = elasticSearchIndexService.delete( INDEX_NAME, IndexType.Content, contentKey );
+        final boolean deleted = elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
 
         if ( deleted )
         {
@@ -109,14 +120,14 @@ public class ContentIndexServiceImpl
     public void removeByCategory( CategoryKey categoryKey )
     {
         ContentIndexQuery contentIndexQuery = new ContentIndexQuery( "" );
-        contentIndexQuery.setCategoryFilter( Arrays.asList( new CategoryKey[]{categoryKey} ) );
+        contentIndexQuery.setCategoryFilter( Arrays.asList( categoryKey ) );
         doRemoveByQuery( contentIndexQuery );
     }
 
     public void removeByContentType( ContentTypeKey contentTypeKey )
     {
         ContentIndexQuery contentIndexQuery = new ContentIndexQuery( "" );
-        contentIndexQuery.setContentTypeFilter( Arrays.asList( new ContentTypeKey[]{contentTypeKey} ) );
+        contentIndexQuery.setContentTypeFilter( Arrays.asList( contentTypeKey ) );
         doRemoveByQuery( contentIndexQuery );
     }
 
@@ -137,14 +148,14 @@ public class ContentIndexServiceImpl
 
         final int entriesToDelete = hits.getHits().length;
 
-        LOG.fine( "Prepare to delete: " + entriesToDelete + " entries from index " + INDEX_NAME );
+        LOG.fine( "Prepare to delete: " + entriesToDelete + " entries from index " + CONTENT_INDEX_NAME );
 
         for ( SearchHit hit : hits )
         {
-            elasticSearchIndexService.delete( INDEX_NAME, IndexType.Content, new ContentKey( hit.getId() ) );
+            elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, new ContentKey( hit.getId() ) );
         }
 
-        LOG.fine( "Deleted from index " + INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
+        LOG.fine( "Deleted from index " + CONTENT_INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
     }
 
 
@@ -153,7 +164,7 @@ public class ContentIndexServiceImpl
         ContentIndexData contentIndexData =
             contentIndexDataFactory.create( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
 
-        elasticSearchIndexService.index( INDEX_NAME, contentIndexData );
+        elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }
 
     public void indexBulk( List<ContentDocument> docs )
@@ -169,33 +180,22 @@ public class ContentIndexServiceImpl
             contentIndexDatas.add( contentIndexData );
         }
 
-        elasticSearchIndexService.index( INDEX_NAME, contentIndexDatas );
+        elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexDatas );
     }
 
 
     public boolean isIndexed( ContentKey contentKey )
     {
-        return elasticSearchIndexService.get( INDEX_NAME, IndexType.Content, contentKey );
+        return elasticSearchIndexService.get( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
     }
 
     public void optimize()
     {
-        elasticSearchIndexService.optimize( INDEX_NAME );
-    }
-
-    public void deleteIndex()
-    {
-        elasticSearchIndexService.deleteIndex( INDEX_NAME );
-    }
-
-    public boolean indexExists()
-    {
-        return elasticSearchIndexService.indexExists( INDEX_NAME );
+        elasticSearchIndexService.optimize( CONTENT_INDEX_NAME );
     }
 
     public ContentResultSet query( ContentIndexQuery query )
     {
-
         final SearchSourceBuilder build;
         try
         {
@@ -208,8 +208,7 @@ public class ContentIndexServiceImpl
 
         final SearchHits hits = doExecuteSearchRequest( build );
 
-        System.out.println(
-            "query: " + build.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
+        LOG.finer( "query: " + build.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
 
         final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
 
@@ -247,12 +246,10 @@ public class ContentIndexServiceImpl
 
         IndexValueResultSetImpl resultSet = new IndexValueResultSetImpl( query.getIndex(), query.getCount() );
 
-        System.out.println(
+        LOG.finer(
             "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " + resultSet.getTotalCount() );
 
         final SearchHits hits = doExecuteSearchRequest( build );
-
-        final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();
 
         for ( SearchHit hit : hits )
         {
@@ -283,19 +280,19 @@ public class ContentIndexServiceImpl
 
     private SearchHits doExecuteSearchRequest( SearchSourceBuilder searchSourceBuilder )
     {
-        final SearchResponse res = elasticSearchIndexService.search( INDEX_NAME, IndexType.Content, searchSourceBuilder );
+        final SearchResponse res = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, searchSourceBuilder );
 
         return res.getHits();
     }
 
     public SearchResponse query( String query )
     {
-        return elasticSearchIndexService.search( INDEX_NAME, IndexType.Content, query );
+        return elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, query );
     }
 
     public void flush()
     {
-        elasticSearchIndexService.flush( INDEX_NAME );
+        elasticSearchIndexService.flush( CONTENT_INDEX_NAME );
     }
 
     // TODO: We dont implement this one yet
@@ -305,12 +302,6 @@ public class ContentIndexServiceImpl
             "Method not implemented in class " + this.getClass().getName() + ": " + "query( AggregatedQuery query )" );
         //return null;
     }
-
-    public void updateIndexSettings()
-    {
-        elasticSearchIndexService.updateIndexSettings( INDEX_NAME );
-    }
-
 
     @Autowired
     public void setIndexMappingProvider( IndexMappingProvider indexMappingProvider )

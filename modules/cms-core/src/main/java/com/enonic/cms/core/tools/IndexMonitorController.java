@@ -253,7 +253,7 @@ public class IndexMonitorController
             "  }\n" +
             "}";
 
-        return elasticSearchIndexService.search( ContentIndexServiceImpl.INDEX_NAME, IndexType.Content, termQuery );
+        return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content, termQuery );
     }
 
     private long getTotalHitsBinaries()

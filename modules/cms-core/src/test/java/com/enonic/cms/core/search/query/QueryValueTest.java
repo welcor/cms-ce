@@ -11,13 +11,6 @@ public class QueryValueTest
 {
 
     @Test
-    public void testNormalizeQueryValue()
-    {
-        QueryValue queryValue = new QueryValue( "%Testings 123%" );
-        assertEquals( "testings 123", queryValue.getStringValueNormalized() );
-    }
-
-    @Test
     public void testInt()
     {
         QueryValue queryValue = new QueryValue( 1 );

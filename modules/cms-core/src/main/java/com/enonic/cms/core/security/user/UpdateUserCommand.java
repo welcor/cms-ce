@@ -147,6 +147,16 @@ public class UpdateUserCommand
         return !updateStrategy.isModify();
     }
 
+    public boolean isModifyStrategy()
+    {
+        return UpdateStrategy.REPLACE_NEW.equals( updateStrategy );
+    }
+
+    public boolean isUpdateStrategy()
+    {
+        return UpdateStrategy.REPLACE_ALL.equals( updateStrategy );
+    }
+
     public UpdateStrategy getUpdateStrategy()
     {
         return updateStrategy;
@@ -157,12 +167,12 @@ public class UpdateUserCommand
         this.updateStrategy = updateStrategy;
     }
 
-    public void setIsUpdateOperation()
+    public void setupUpdateStrategy()
     {
         this.updateStrategy = UpdateStrategy.REPLACE_ALL;
     }
 
-    public void setIsModifyOperation()
+    public void setupModifyStrategy()
     {
         this.updateStrategy = UpdateStrategy.REPLACE_NEW;
     }

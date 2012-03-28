@@ -53,6 +53,7 @@ class FindRelatedChildrenCommand
         compiled.setCacheable( false );
         compiled.setReadOnly( true );
         compiled.setParameter( "deleted", 0 );
+
         if ( !relatedChildContentQuery.isIncludeOfflineContent() )
         {
             compiled.setParameter( "status", ContentStatus.APPROVED.getKey() );
@@ -67,6 +68,7 @@ class FindRelatedChildrenCommand
 
         if ( relatedChildContentQuery.hasSecurityFilter() )
         {
+            compiled.setParameter( "one", 1 );
             List<GroupKey> securityFilter = Lists.newArrayList( relatedChildContentQuery.getSecurityFilter() );
             for ( int i = 0; i < securityFilter.size(); i++ )
             {
@@ -132,6 +134,7 @@ class FindRelatedChildrenCommand
             final SelectBuilder securitySubQuery = new SelectBuilder( 0 );
             securitySubQuery.addSelect( "ca.content.key" );
             securitySubQuery.addFromTable( ContentAccessEntity.class.getName(), "ca", SelectBuilder.NO_JOIN, null );
+            securitySubQuery.addFilter( "AND", "ca.readAccess = :one" );
             securitySubQuery.addFilter( "AND", new InClauseBuilder<GroupKey>( "ca.group.key", relatedChildContentQuery.getSecurityFilter() )
             {
                 public void appendValue( final StringBuffer sql, final GroupKey value )

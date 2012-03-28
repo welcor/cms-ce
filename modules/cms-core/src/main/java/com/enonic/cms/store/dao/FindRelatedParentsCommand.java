@@ -53,6 +53,7 @@ class FindRelatedParentsCommand
         compiled.setCacheable( false );
         compiled.setReadOnly( true );
         compiled.setParameter( "deleted", 0 );
+
         if ( !relatedParentContentQuery.isIncludeOfflineContent() )
         {
             compiled.setParameter( "timeNow", relatedParentContentQuery.getNow().minuteOfHour().roundFloorCopy().toDate() );
@@ -67,6 +68,7 @@ class FindRelatedParentsCommand
 
         if ( relatedParentContentQuery.hasSecurityFilter() )
         {
+            compiled.setParameter( "one", 1 );
             final List<GroupKey> securityFilter = Lists.newArrayList( relatedParentContentQuery.getSecurityFilter() );
             for ( int i = 0; i < securityFilter.size(); i++ )
             {
@@ -145,6 +147,7 @@ class FindRelatedParentsCommand
             final SelectBuilder securitySubQuery = new SelectBuilder( 0 );
             securitySubQuery.addSelect( "ca.content.key" );
             securitySubQuery.addFromTable( ContentAccessEntity.class.getName(), "ca", SelectBuilder.NO_JOIN, null );
+            securitySubQuery.addFilter( "AND", "ca.readAccess = :one" );
             securitySubQuery.addFilter( "AND",
                                         new InClauseBuilder<GroupKey>( "ca.group.key", relatedParentContentQuery.getSecurityFilter() )
                                         {

@@ -789,7 +789,7 @@ public class UserHandlerController
             updateUserCommand.setAllowUpdateSelf( true );
             updateUserCommand.setUpdateOpenGroupsOnly( true );
 
-            updateUserCommand.setIsModifyOperation();
+            updateUserCommand.setupModifyStrategy();
             preservePossiblyMissingBirthdateForModify( formItems, updateUserCommand );
 
             updateGroupsInUpdateCommand( formItems, loggedInUser, updateUserCommand );

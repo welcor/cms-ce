@@ -10,6 +10,7 @@ import java.util.List;
 import org.jdom.Document;
 
 import com.enonic.cms.api.client.model.AssignContentParams;
+import com.enonic.cms.api.client.model.ChangeUserPasswordParams;
 import com.enonic.cms.api.client.model.CreateCategoryParams;
 import com.enonic.cms.api.client.model.CreateContentParams;
 import com.enonic.cms.api.client.model.CreateFileContentParams;
@@ -54,6 +55,7 @@ import com.enonic.cms.api.client.model.SnapshotContentParams;
 import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
+import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.preference.Preference;
 
 /**
@@ -200,10 +202,22 @@ public abstract class ClientWrapper
         return delegate.createUser( params );
     }
 
-    public void deleteUser( DeleteUserParams params )
+    public void updateUser( UpdateUserParams params )
         throws ClientException
     {
-        delegate.deleteUser( params );
+        delegate.updateUser( params );
+    }
+
+     public void deleteUser( DeleteUserParams params )
+         throws ClientException
+     {
+         delegate.deleteUser( params );
+     }
+
+    public void changeUserPassword( ChangeUserPasswordParams params )
+            throws ClientException
+    {
+        delegate.changeUserPassword( params );
     }
 
     public int createCategory( CreateCategoryParams params )

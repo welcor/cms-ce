@@ -28,6 +28,8 @@ public interface ElasticSearchIndexService
 
     public void putMapping( String indexName, IndexType indexType, String mapping );
 
+    public void deleteMapping( String indexName, IndexType indexType );
+
     public boolean delete( String indexName, IndexType indexType, ContentKey contentKey );
 
     public void index( String indexName, Collection<ContentIndexData> contentIndexDatas );

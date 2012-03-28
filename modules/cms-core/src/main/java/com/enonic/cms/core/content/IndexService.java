@@ -27,4 +27,6 @@ public interface IndexService
     void index( ContentEntity content, boolean deleteExisting );
 
     public void optimizeIndex();
+
+    public void initializeMapping();
 }

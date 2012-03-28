@@ -146,9 +146,16 @@ public final class IndexServiceImpl
         doIndex( content, deleteExisting );
     }
 
+    @Override
     public void optimizeIndex()
     {
         contentIndexService.optimize();
+    }
+
+    @Override
+    public void initializeMapping()
+    {
+        contentIndexService.initializeMapping();
     }
 
     private int doRemoveIndex( ContentEntity content )

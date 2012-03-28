@@ -34,6 +34,10 @@ public class ReindexContentToolServiceImpl
 
         Collection<ContentTypeEntity> contentTypes = contentService.getAllContentTypes();
 
+        logEntries.add( "Reinitialize mapping" );
+
+        indexService.initializeMapping();
+
         logEntries.add( "Generating indexes for " + contentTypes.size() + " content types..." );
 
         RegenerateIndexBatcher batcher = null;

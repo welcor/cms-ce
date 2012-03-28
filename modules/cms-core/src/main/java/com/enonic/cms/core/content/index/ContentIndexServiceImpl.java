@@ -611,4 +611,9 @@ public final class ContentIndexServiceImpl
         // DO NOTHING
     }
 
+    @Override
+    public void initializeMapping()
+    {
+        // DO NOTHING
+    }
 }

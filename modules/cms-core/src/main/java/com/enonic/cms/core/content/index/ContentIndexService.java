@@ -69,6 +69,8 @@ public interface ContentIndexService
 
     public void flush();
 
+    public void initializeMapping();
+
 }
 
 

@@ -13,6 +13,8 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
+import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest;
+import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
@@ -82,7 +84,7 @@ public class ElasticSearchIndexServiceImpl
 
         final CreateIndexResponse createIndexResponse = client.admin().indices().create( createIndexRequest ).actionGet();
 
-        createIndexResponse.getAcknowledged();
+        LOG.info( "Created index: " + indexName );
     }
 
     public Map<String, Object> getMapping( IndexType indexType, String indexName )
@@ -111,11 +113,12 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public void updateIndexSettings( String indexName )
     {
-        LOG.fine( "Refresh settings for index: " + indexName );
         UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest( indexName );
         updateSettingsRequest.settings( indexSettingsBuilder.buildSettings() );
 
         client.admin().indices().updateSettings( updateSettingsRequest ).actionGet();
+
+        LOG.info( "Settings updated for index: " + indexName );
     }
 
     @Override
@@ -124,6 +127,18 @@ public class ElasticSearchIndexServiceImpl
         PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType.toString() ).source( mapping );
 
         this.client.admin().indices().putMapping( mappingRequest ).actionGet();
+
+        LOG.info( "Mapping for index " + indexName + ", index-type: " + indexType + " deleted" );
+    }
+
+    @Override
+    public void deleteMapping( String indexName, IndexType indexType )
+    {
+        DeleteMappingRequest deleteMappingRequest = new DeleteMappingRequest( indexName ).type( indexType.toString() );
+
+        final DeleteMappingResponse deleteMappingResponse = this.client.admin().indices().deleteMapping( deleteMappingRequest ).actionGet();
+
+        LOG.info( "Mapping for index " + indexName + ", index-type: " + indexType + " deleted" );
     }
 
     @Override

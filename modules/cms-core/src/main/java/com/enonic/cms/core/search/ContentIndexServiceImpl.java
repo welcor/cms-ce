@@ -303,6 +303,14 @@ public class ContentIndexServiceImpl
         //return null;
     }
 
+    @Override
+    public void initializeMapping()
+    {
+        elasticSearchIndexService.deleteMapping( CONTENT_INDEX_NAME, IndexType.Content );
+        elasticSearchIndexService.deleteMapping( CONTENT_INDEX_NAME, IndexType.Binaries );
+        addMapping();
+    }
+
     @Autowired
     public void setIndexMappingProvider( IndexMappingProvider indexMappingProvider )
     {
@@ -326,4 +334,5 @@ public class ContentIndexServiceImpl
     {
         this.elasticSearchIndexService = elasticSearchIndexService;
     }
+
 }

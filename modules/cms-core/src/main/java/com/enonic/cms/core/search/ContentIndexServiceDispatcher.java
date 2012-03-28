@@ -69,7 +69,7 @@ public class ContentIndexServiceDispatcher
             newContentIndexService.index( doc, false );
         }
 
-         if ( !runNewOnly )
+        if ( !runNewOnly )
         {
             oldContentIndexService.index( doc, false );
         }
@@ -167,6 +167,12 @@ public class ContentIndexServiceDispatcher
     public void setResultComparer( final QueryResultComparer resultComparer )
     {
         this.resultComparer = resultComparer;
+    }
+
+    @Override
+    public void initializeMapping()
+    {
+        newContentIndexService.initializeMapping();
     }
 }
 

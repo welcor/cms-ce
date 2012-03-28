@@ -86,5 +86,11 @@ public class ContentIndexServiceTestWrapper
     {
         this.contentIndexService = contentIndexService;
     }
+
+    @Override
+    public void initializeMapping()
+    {
+
+    }
 }
 

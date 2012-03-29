@@ -9,6 +9,25 @@ public class ContentIndexServiceImplTest_query_text_tokens
 {
 
     @Test
+    public void testEmailAddress()
+    {
+        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "rmy@enonic.com" ), false );
+        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "esu@enonic.com" ), false );
+        flushIndex();
+
+        printAllIndexContent();
+        assertContentResultSetEquals( new int[]{1},
+                                      contentIndexService.query( new ContentIndexQuery( "data/textfield CONTAINS 'rmy' " ) ) );
+        assertContentResultSetEquals( new int[]{1},
+                                      contentIndexService.query( new ContentIndexQuery( "data/textfield = 'rmy@enonic.com' " ) ) );
+        assertContentResultSetEquals( new int[]{1, 2},
+                                      contentIndexService.query( new ContentIndexQuery( "data/textfield CONTAINS '@enonic' " ) ) );
+        assertContentResultSetEquals( new int[]{1, 2},
+                                      contentIndexService.query( new ContentIndexQuery( "data/* CONTAINS '@enonic.com' " ) ) );
+        assertContentResultSetEquals( new int[]{1}, contentIndexService.query( new ContentIndexQuery( "data/* = 'rmy@enonic.com' " ) ) );
+    }
+
+    @Test
     public void testTextWithSpaces_named_fields()
     {
         contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "Dette er en tekst med mange ord med mellomrom" ),

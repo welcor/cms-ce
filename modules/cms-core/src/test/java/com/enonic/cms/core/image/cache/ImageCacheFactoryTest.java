@@ -32,7 +32,6 @@ public class ImageCacheFactoryTest
         Mockito.when(manager.getOrCreateCache("image")).thenReturn(facade);
 
         final ImageCacheFactory factory = new ImageCacheFactory();
-        factory.setCacheName("image");
         factory.setCacheManager(manager);
 
         final ImageCache cache = factory.getObject();

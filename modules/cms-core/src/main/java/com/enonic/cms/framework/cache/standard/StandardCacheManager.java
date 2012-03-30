@@ -6,19 +6,23 @@ package com.enonic.cms.framework.cache.standard;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.boot.ConfigProperties;
+
 /**
  * This class implements the cache.
  */
+@Component
 public final class StandardCacheManager
     implements CacheManager
 {
@@ -37,7 +41,8 @@ public final class StandardCacheManager
         this.cacheMap = new HashMap<String, StandardCacheFacade>();
     }
 
-    public void setProperties( final Properties properties )
+    @Autowired
+    public void setProperties( final ConfigProperties properties )
     {
         this.config = new CacheManagerConfig( properties );
     }

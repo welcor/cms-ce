@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.adminweb.AdminHelper;
@@ -37,9 +38,6 @@ public final class LivePortalTraceController
     private LivePortalTraceService livePortalTraceService;
 
     private CacheManager cacheManager;
-
-    private SessionFactory sessionFactory;
-
 
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
@@ -178,13 +176,9 @@ public final class LivePortalTraceController
         this.livePortalTraceService = livePortalTraceService;
     }
 
+    @Autowired
     public void setCacheManager( CacheManager cacheManager )
     {
         this.cacheManager = cacheManager;
-    }
-
-    public void setSessionFactory( SessionFactory sessionFactory )
-    {
-        this.sessionFactory = sessionFactory;
     }
 }

@@ -182,8 +182,6 @@
   <bean id="livePortalTraceController" class="com.enonic.cms.core.tools.LivePortalTraceController"
         parent="abstractToolController">
     <property name="livePortalTraceService" ref="livePortalTraceService"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
   </bean>
 
   <bean id="reindexContentToolController" class="com.enonic.cms.core.tools.ReindexContentToolController"

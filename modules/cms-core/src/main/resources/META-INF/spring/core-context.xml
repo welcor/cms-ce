@@ -28,7 +28,6 @@
   <bean id="sessionFactory" class="com.enonic.cms.store.support.HibernateConfigurator">
     <property name="dialect" ref="dialect"/>
     <property name="dataSource" ref="dataSource"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
     <property name="configLocation" value="classpath:com/enonic/cms/store/hibernate.cfg.xml"/>
     <property name="useTransactionAwareDataSource" value="false"/>
     <property name="logging" value="${cms.jdbc.logging}"/>
@@ -41,7 +40,6 @@
   <bean id="decoratorManager" class="com.enonic.cms.store.support.DecoratorManager">
     <property name="logging" value="${cms.jdbc.logging}"/>
     <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
     <property name="dialect" ref="dialect"/>
   </bean>
 
@@ -132,12 +130,6 @@
 
   <bean id="localizationResourceBundleService"
         class="com.enonic.cms.core.localization.resource.LocalizationResourceBundleServiceImpl">
-    <property name="propertiesCache">
-      <bean class="com.enonic.cms.framework.cache.CacheFacadeFactory">
-        <property name="cacheManager" ref="cacheFacadeManager"/>
-        <property name="cacheName" value="localization"/>
-      </bean>
-    </property>
   </bean>
 
   <bean id="localeResolverService"
@@ -237,14 +229,8 @@
   <bean id="expressionFunctionsFactory"
         class="com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory"/>
 
-  <bean id="imageCache" class="com.enonic.cms.core.image.cache.ImageCacheFactory">
-    <property name="cacheName" value="image"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
-  </bean>
-
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
     <property name="directory" value="${cms.blobstore.dir}"/>
-    <property name="imageCache" ref="imageCache"/>
   </bean>
 
   <bean id="blobStore" class="com.enonic.cms.framework.blob.file.FileBlobStore">
@@ -417,12 +403,10 @@
   <bean id="siteCachesService" class="com.enonic.cms.core.portal.cache.SiteCachesServiceImpl">
     <property name="pageCacheServiceFactory">
       <bean class="com.enonic.cms.core.portal.cache.PageCacheServiceFactory">
-        <property name="cacheManager" ref="cacheFacadeManager"/>
         <property name="sitePropertiesService" ref="sitePropertiesService"/>
       </bean>
     </property>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
   </bean>
 
   <bean id="adminService" class="com.enonic.cms.core.service.AdminServiceImpl">

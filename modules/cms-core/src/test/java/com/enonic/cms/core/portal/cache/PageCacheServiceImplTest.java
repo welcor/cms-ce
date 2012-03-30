@@ -15,6 +15,7 @@ import com.enonic.cms.framework.cache.standard.StandardCacheManager;
 
 import com.enonic.cms.core.CacheObjectSettings;
 import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.boot.ConfigProperties;
 import com.enonic.cms.core.portal.rendering.PageCacheKey;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
 import com.enonic.cms.core.portal.rendering.RenderedWindowResult;
@@ -44,7 +45,7 @@ public class PageCacheServiceImplTest
         int maxEntries = 100;
         int timeToLiveSeconds = 1000;
 
-        final Properties props = new Properties();
+        final ConfigProperties props = new ConfigProperties();
         props.setProperty( "cms.cache.page.memoryCapacity", String.valueOf( maxEntries ) );
         props.setProperty( "cms.cache.page.timeToLive", String.valueOf( timeToLiveSeconds ) );
 

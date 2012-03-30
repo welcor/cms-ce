@@ -241,7 +241,7 @@
   <bean id="postProcessInstructionExecutor"
         class="com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutorImpl"/>
 
-  <bean id="cacheFacadeManager" class="com.enonic.cms.framework.cache.CacheManagerFactory">
+  <bean id="cacheFacadeManager" class="com.enonic.cms.framework.cache.standard.StandardCacheManager">
   </bean>
 
   <bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">

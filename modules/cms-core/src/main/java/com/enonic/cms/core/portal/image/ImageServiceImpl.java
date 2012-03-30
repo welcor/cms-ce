@@ -223,6 +223,7 @@ public final class ImageServiceImpl
         return imageResponse;
     }
 
+    @Autowired
     public void setImageCache( ImageCache imageCache )
     {
         this.imageCache = imageCache;

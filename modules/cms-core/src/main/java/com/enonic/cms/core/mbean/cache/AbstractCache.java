@@ -16,7 +16,6 @@ public abstract class AbstractCache
     implements Cache
 {
     @Autowired
-    @Qualifier("cacheFacadeManager")
     private CacheManager cacheManager;
 
     private String cacheName;

@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 
 import com.enonic.cms.framework.cache.CacheManager;
@@ -62,6 +63,7 @@ public final class HibernateConfigurator
     /**
      * Set the cache manager.
      */
+    @Autowired
     public void setCacheManager( CacheManager cacheManager )
     {
         this.cacheManager = cacheManager;

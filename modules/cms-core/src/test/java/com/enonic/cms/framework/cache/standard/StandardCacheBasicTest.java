@@ -10,6 +10,8 @@ import junit.framework.TestCase;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 
+import com.enonic.cms.core.boot.ConfigProperties;
+
 public class StandardCacheBasicTest
     extends TestCase
 {
@@ -19,7 +21,7 @@ public class StandardCacheBasicTest
         throws Exception
     {
 
-        Properties props = new Properties();
+        ConfigProperties props = new ConfigProperties();
         props.setProperty( "cms.cache.cache1.memoryCapacity", "10" );
         props.setProperty( "cms.cache.cache2.memoryCapacity", "2" );
 

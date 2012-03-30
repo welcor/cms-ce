@@ -36,7 +36,6 @@ public final class TemplatesXsltCacheImpl
     }
 
     @Autowired
-    @Qualifier("cacheFacadeManager")
     public void setCacheManager( final CacheManager cacheManager )
     {
         this.cacheFacade = cacheManager.getOrCreateCache( "xslt" );

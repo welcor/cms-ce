@@ -6,7 +6,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.enonic.cms.core.search.IndexType;
-import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
@@ -65,7 +64,7 @@ public class TermQueryBuilderFactory
 
     private QueryBuilder doBuildQueryForNumericValue( final QueryPath path, final QueryValue queryValue, final boolean wildCardPath )
     {
-        return QueryBuilders.termQuery( path.getPath() + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, queryValue.getDoubleValue() );
+        return QueryBuilders.termQuery( path.getPath(), queryValue.getDoubleValue() );
     }
 
     private QueryBuilder doRenderIdQuery( final QueryValue queryValue )

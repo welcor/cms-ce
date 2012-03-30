@@ -248,7 +248,7 @@ public class IndexMonitorController
             "\"fields\" : [\"*\"],\n" +
             "  \"query\" : {\n" +
             "    \"term\" : {\n" +
-            "      \"key_numeric\" : \"" + new Long( contentKey.toString() ).toString() + "\"\n" +
+            "      \"key\" : \"" + new Long( contentKey.toString() ).toString() + "\"\n" +
             "    }\n" +
             "  }\n" +
             "}";

@@ -62,7 +62,7 @@ public class RangeQueryBuilderFactory
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
 
-        final String queryName = queryPath.isWildCardPath() ? ALL_USERDATA_FIELDNAME : queryPath.getPath() + NUMERIC_FIELD_POSTFIX;
+        final String queryName = queryPath.isWildCardPath() ? ALL_USERDATA_FIELDNAME : queryPath.getPath();
         return rangeQuery( queryName ).
             from( lowerNumeric ).
             to( upperNumeric ).

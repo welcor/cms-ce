@@ -55,7 +55,7 @@ public class IndexFieldNameConstants
 
     protected static final String USER_QUALIFIED_NAME_POSTFIX = "_qualifiedName";
 
-    public static final String NUMERIC_FIELD_POSTFIX = "_numeric";
+//    public static final String NUMERIC_FIELD_POSTFIX = "_numeric";
 
     public static final String ORDER_FIELD_PREFIX = "orderby_";
 

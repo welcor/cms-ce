@@ -14,49 +14,59 @@ import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderFieldExpr;
 
 public class OrderQueryBuilderFactory
-        extends BaseQueryBuilderFactory
+    extends BaseQueryBuilderFactory
 {
 
     private final static boolean createDefaultSortExpression = false;
 
 
-    public void buildOrderByExpr(SearchSourceBuilder builder, OrderByExpr expr) {
+    public void buildOrderByExpr( SearchSourceBuilder builder, OrderByExpr expr )
+    {
         List<SortBuilder> sorts;
 
-        if (expr != null) {
-            sorts = buildOrderFieldExpr(expr.getFields());
+        if ( expr != null )
+        {
+            sorts = buildOrderFieldExpr( expr.getFields() );
 
-            for (SortBuilder sort : sorts) {
-                builder.sort(sort);
+            for ( SortBuilder sort : sorts )
+            {
+                builder.sort( sort );
             }
-        } else if (createDefaultSortExpression) {
+        }
+        else if ( createDefaultSortExpression )
+        {
             sorts = new ArrayList<SortBuilder>();
-            sorts.add(getDefaultSorting());
+            sorts.add( getDefaultSorting() );
         }
 
     }
 
-    private ScoreSortBuilder getDefaultSorting() {
+    private ScoreSortBuilder getDefaultSorting()
+    {
         return SortBuilders.scoreSort();
     }
 
-    private List<SortBuilder> buildOrderFieldExpr(OrderFieldExpr[] expr) {
+    private List<SortBuilder> buildOrderFieldExpr( OrderFieldExpr[] expr )
+    {
 
         List<SortBuilder> sort = new ArrayList<SortBuilder>();
 
-        for (int i = 0; i < expr.length; i++) {
-            sort.add(buildOrderFieldExpr(expr[i]));
+        for ( int i = 0; i < expr.length; i++ )
+        {
+            sort.add( buildOrderFieldExpr( expr[i] ) );
         }
 
         return sort;
     }
 
-    private SortBuilder buildOrderFieldExpr(OrderFieldExpr expr) {
-        final String name = QueryFieldNameResolver.getOrderByFieldName( expr.getField() );
+    private SortBuilder buildOrderFieldExpr( OrderFieldExpr expr )
+    {
+        final String name = QueryFieldNameResolver.resolveQueryFieldName( expr.getField() );
 
         SortOrder order = SortOrder.DESC;
 
-        if (expr.isAscending()) {
+        if ( expr.isAscending() )
+        {
             order = SortOrder.ASC;
         }
 

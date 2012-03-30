@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -30,7 +28,6 @@ import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexMappingProvider;
 import com.enonic.cms.core.search.IndexType;
-import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 import com.enonic.cms.core.search.builder.IndexFieldNameResolver;
 
 import static junit.framework.Assert.assertEquals;
@@ -61,9 +58,9 @@ public abstract class ContentIndexServiceTestBase
         new String[]{"categorykey", "categorykey_numeric", "contenttype", "contenttypekey", "contenttypekey_numeric", "key", "key_numeric",
             "priority", "priority_numeric", "publishfrom", "status", "status_numeric", "title", "title._tokenized"};
 
-    private final static Pattern SPECIAL_FIELD_PATTERN = Pattern.compile(
-        "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX +
-            "){1}$" );
+    //  private final static Pattern SPECIAL_FIELD_PATTERN = Pattern.compile(
+    //      "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX +
+    //          "){1}$" );
 
     @Autowired
     protected ContentService contentService;
@@ -175,7 +172,7 @@ public abstract class ContentIndexServiceTestBase
             compareValues( hitField, field.getValue().toString() );
         }
     }
-
+    /*
     private boolean isUserDataField( String hitField )
     {
         if ( StringUtils.startsWith( hitField, "data_" ) )
@@ -188,7 +185,7 @@ public abstract class ContentIndexServiceTestBase
         }
         return false;
     }
-
+    */
 
     protected void printAllIndexContent()
     {

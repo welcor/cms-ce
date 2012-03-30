@@ -9,6 +9,10 @@
         "date_detection":false,
         "numeric_detection":false,
         "properties":{
+            "key":{
+                "type":"long",
+                "store":"yes"
+            },
             "_all_userdata":{
                 "type":"multi_field",
                 "fields":{
@@ -64,29 +68,29 @@
                 "index":"not_analyzed",
                 "store":"yes"
             },
-            "contentlocations":{
-                "include_in_all":false,
-                "properties":{
-                    "home":{
-                        "type":"boolean",
-                        "store":"yes"
-                    },
-                    "menuitemkey":{
-                        "type":"string",
-                        "index":"not_analyzed",
-                        "store":"yes"
-                    },
-                    "sitekey":{
-                        "type":"string",
-                        "index":"not_analyzed",
-                        "store":"yes"
-                    },
-                    "menukey":{
-                        "type":"string",
-                        "index":"not_analyzed",
-                        "store":"yes"
-                    }
-                }
+            "status":{
+                "type":"integer",
+                "store":"yes"
+            },
+            "priority":{
+                "type":"integer",
+                "store":"yes"
+            },
+            "categorykey":{
+                "type":"integer",
+                "store":"yes"
+            },
+            "contenttypekey":{
+                "type":"integer",
+                "store":"yes"
+            },
+            "contentlocations_approved":{
+                "type":"integer",
+                "store":"yes"
+            },
+            "contentlocations_unapproved":{
+                "type":"integer",
+                "store":"yes"
             }
         },
         "dynamic_templates":[
@@ -94,7 +98,6 @@
                 "template_userdata":{
                     "include_in_all":false,
                     "match":"data_*",
-                    "unmatch":"*_numeric",
                     "mapping":{
                         "type":"multi_field",
                         "fields":{
@@ -106,45 +109,11 @@
                             },
                             "_tokenized":{
                                 "type":"string",
-                                "analyzer":"whitespace_analyzer",
+                                "index":"analyzed",
                                 "store":"yes",
                                 "include_in_all":true
                             }
                         }
-                    }
-                }
-            },
-            {
-                "template_orderby":{
-                    "match":"orderby_*",
-                    "unmatch":"*_numeric",
-                    "mapping":{
-                        "include_in_all":false,
-                        "type":"string",
-                        "index":"not_analyzed",
-                        "store":"yes"
-                    }
-                }
-            },
-            {
-                "template_numerics":{
-                    "unmatch":"data_*",
-                    "match":"*_numeric",
-                    "mapping":{
-                        "include_in_all":false,
-                        "type":"double",
-                        "store":"yes"
-                    }
-                }
-            },
-            {
-                "template_userdata_numeric":{
-                    "include_in_all":false,
-                    "match":"*_numeric",
-                    "mapping":{
-                        "include_in_all":true,
-                        "type":"double",
-                        "store":"yes"
                     }
                 }
             },

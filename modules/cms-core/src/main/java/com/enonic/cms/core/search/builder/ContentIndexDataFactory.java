@@ -67,7 +67,7 @@ public final class ContentIndexDataFactory
         final XContentBuilder builder = XContentFactory.jsonBuilder();
 
         builder.startObject();
-        addField( "key", (double) content.getContentKey().toInt(), builder );
+        addField( "key", content.getContentKey().toInt(), builder );
         addMetadata( builder, content );
         addCategory( content, builder );
         addContentType( content, builder );
@@ -128,7 +128,7 @@ public final class ContentIndexDataFactory
     private void addContentType( ContentDocument content, XContentBuilder builder )
         throws Exception
     {
-        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), (double) content.getContentTypeKey().toInt(), builder );
+        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), content.getContentTypeKey().toInt(), builder );
         addField( IndexFieldNameResolver.getContentTypeNameFieldName(), content.getContentTypeName().getText(), builder );
     }
 

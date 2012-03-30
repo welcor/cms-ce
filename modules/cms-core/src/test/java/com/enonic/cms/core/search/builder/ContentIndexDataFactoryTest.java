@@ -128,17 +128,17 @@ public class ContentIndexDataFactoryTest
 
         final List<String> keysAsList = getKeysAsList( indexDataAsString );
 
-        verifyFieldExists( keysAsList, "key" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldExists( keysAsList, "status" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldExists( keysAsList, "priority" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldExists( keysAsList, "data_person_age" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "key" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "status" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "priority" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "data_person_age" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
 
         verifyFieldDoesNotExists( keysAsList,
-                                  IndexFieldNameConstants.ORDER_FIELD_PREFIX + "key" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldDoesNotExists( keysAsList,
-                                  IndexFieldNameConstants.ORDER_FIELD_PREFIX + "status" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldDoesNotExists( keysAsList, "data_person_description" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldDoesNotExists( keysAsList, "data_person_gender" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+                                  IndexFieldNameConstants.ORDER_FIELD_PREFIX + "key" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldDoesNotExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX +
+            "status" );//) + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldDoesNotExists( keysAsList, "data_person_description" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldDoesNotExists( keysAsList, "data_person_gender" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
     }
 
     private void verifyFieldExists( List<String> keysAsList, String keyName )

@@ -25,14 +25,12 @@ final public class IndexFieldNameResolver
             return "";
         }
 
-        return fieldName.replace( QUERY_LANGUAGE_PROPERTY_SEPARATOR, INDEX_FIELDNAME_PROPERTY_SEPARATOR )
-            .replace( ".", INDEX_FIELDNAME_PROPERTY_SEPARATOR )
-            .replaceAll( "@", "" )
-            .toLowerCase();
+        return fieldName.replace( QUERY_LANGUAGE_PROPERTY_SEPARATOR, INDEX_FIELDNAME_PROPERTY_SEPARATOR ).replace( ".",
+                                                                                                                   INDEX_FIELDNAME_PROPERTY_SEPARATOR ).replaceAll(
+            "@", "" ).toLowerCase();
     }
 
-
-    public static String getNumericFieldName( String fieldName )
+    /*  public static String getNumericFieldName( String fieldName )
     {
         return normalizeFieldName( fieldName ) + NUMERIC_FIELD_POSTFIX;
     }
@@ -41,6 +39,7 @@ final public class IndexFieldNameResolver
     {
         return ORDER_FIELD_PREFIX + doNormalizeFieldName( fieldName );
     }
+    */
 
     public static String getCategoryKeyFieldName()
     {

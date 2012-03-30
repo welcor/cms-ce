@@ -43,49 +43,50 @@ public class QueryFieldNameResolver
         return normalized;
     }
 
-    public static String getOrderByFieldName( FieldExpr expression )
-    {
-        return doGetOrderByFieldName( expression.getPath() );
-    }
+    /*   public static String getOrderByFieldName( FieldExpr expression )
+     {
+         return doGetOrderByFieldName( expression.getPath() );
+     }
 
-    public static String getOrderByFieldName( String fieldName )
-    {
-        return doGetOrderByFieldName( fieldName );
-    }
+     public static String getOrderByFieldName( String fieldName )
+     {
+         return doGetOrderByFieldName( fieldName );
+     }
 
-    private static String doGetOrderByFieldName( String fieldName )
-    {
-        return ORDER_FIELD_PREFIX + doNormalizeQueryFieldName( fieldName );
-    }
+     private static String doGetOrderByFieldName( String fieldName )
+     {
+         return ORDER_FIELD_PREFIX + doNormalizeQueryFieldName( fieldName );
+     }
+    */
 
     public static String getSectionKeysApprovedQueryFieldName()
     {
-        return CONTENTLOCATION_APPROVED_FIELDNAME + NUMERIC_FIELD_POSTFIX;
+        return CONTENTLOCATION_APPROVED_FIELDNAME; //+ NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getSectionKeysUnapprovedQueryFieldName()
     {
-        return CONTENTLOCATION_UNAPPROVED_FIELDNAME + NUMERIC_FIELD_POSTFIX;
+        return CONTENTLOCATION_UNAPPROVED_FIELDNAME; // + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getCategoryKeyQueryFieldName()
     {
-        return CATEGORY_FIELD_PREFIX + "key" + NUMERIC_FIELD_POSTFIX;
+        return CATEGORY_FIELD_PREFIX + "key"; // + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getContentKeyQueryFieldName()
     {
-        return CONTENTKEY_FIELDNAME + NUMERIC_FIELD_POSTFIX;
+        return CONTENTKEY_FIELDNAME; // + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getContentTypeKeyQueryFieldName()
     {
-        return CONTENT_TYPE_PREFIX + "key" + NUMERIC_FIELD_POSTFIX;
+        return CONTENT_TYPE_PREFIX + "key"; // + NUMERIC_FIELD_POSTFIX;
     }
 
     public static String getContentStatusQueryFieldName()
     {
-        return "status_numeric";
+        return "status";
     }
 
     public static String getCategoryAccessTypeFieldName()

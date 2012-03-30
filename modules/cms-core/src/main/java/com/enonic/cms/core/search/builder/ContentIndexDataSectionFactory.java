@@ -28,8 +28,8 @@ public class ContentIndexDataSectionFactory
             return;
         }
 
-        final Set<Double> sectionKeysApproved = Sets.newTreeSet();
-        final Set<Double> sectionKeysUnapproved = Sets.newTreeSet();
+        Set<Integer> sectionKeysApproved = Sets.newTreeSet();
+        Set<Integer> sectionKeysUnapproved = Sets.newTreeSet();
 
         for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
         {
@@ -42,11 +42,11 @@ public class ContentIndexDataSectionFactory
 
             if ( contentLocation.isApproved() )
             {
-                sectionKeysApproved.add( (double) menuKey );
+                sectionKeysApproved.add( menuKey );
             }
             else
             {
-                sectionKeysUnapproved.add( (double) menuKey );
+                sectionKeysUnapproved.add( menuKey );
             }
         }
 

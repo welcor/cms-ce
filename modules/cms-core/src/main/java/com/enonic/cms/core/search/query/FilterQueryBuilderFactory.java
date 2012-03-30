@@ -65,6 +65,11 @@ public class FilterQueryBuilderFactory
         {
             filtersToApply.add( buildSectionFilter( query ) );
         }
+        else if ( query.isSectionFilter() )
+        {
+            // handle setSearchInAllSections
+            filtersToApply.add( buildAllSectionsFilter( query ) );
+        }
 
         if ( query.hasCategoryFilter() )
         {
@@ -212,37 +217,6 @@ public class FilterQueryBuilderFactory
     }
 
     private FilterBuilder buildCategoryAccessTypeFilter( final Collection<CategoryAccessType> categoryAccessTypeFilter,
-                                                         ContentIndexQuery.CategoryAccessTypeFilterPolicy policy )
-    {
-        if ( categoryAccessTypeFilter.size() == 1 )
-        {
-            return new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName(),
-                                          categoryAccessTypeFilter.iterator().next() );
-        }
-
-        final boolean must = policy.equals( ContentIndexQuery.CategoryAccessTypeFilterPolicy.AND );
-
-        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
-
-        for ( CategoryAccessType type : categoryAccessTypeFilter )
-        {
-
-            final TermFilterBuilder term = new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName(), type );
-
-            if ( must )
-            {
-                boolFilterBuilder.must( term );
-            }
-            else
-            {
-                boolFilterBuilder.should( term );
-            }
-        }
-
-        return boolFilterBuilder;
-    }
-
-    private FilterBuilder buildCategoryAccessTypeFilter( final Collection<CategoryAccessType> categoryAccessTypeFilter,
                                                          ContentIndexQuery.CategoryAccessTypeFilterPolicy policy,
                                                          Collection<GroupKey> securityFilter )
     {
@@ -309,6 +283,22 @@ public class FilterQueryBuilderFactory
                                                               getSectionKeysAsList( query.getSectionFilter() ).toArray() ) );
 
             return boolFilterBuilder;
+        }
+    }
+
+    private FilterBuilder buildAllSectionsFilter( ContentIndexQuery query )
+    {
+        if ( query.isApprovedSectionContentOnly() )
+        {
+            return FilterBuilders.existsFilter( QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName() );
+        }
+        else if ( query.isUnapprovedSectionContentOnly() )
+        {
+            return FilterBuilders.existsFilter( QueryFieldNameResolver.getSectionKeysUnapprovedQueryFieldName() );
+        }
+        else
+        {
+            return FilterBuilders.matchAllFilter();
         }
     }
 

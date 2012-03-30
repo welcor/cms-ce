@@ -61,11 +61,6 @@ public class ContentIndexDataAccessRightsFactory
         {
             CategoryAccessEntity categoryAccess = categoryAccessRights.get( categoryAccessGroup );
             final String groupKey = categoryAccessGroup.toString();
-            if ( categoryAccess.isReadAccess() )
-            {
-                // if a user has read access in a category, then the user will have read access to the content in the category
-                readAccess.add( groupKey );
-            }
             if ( categoryAccess.isAdminBrowseAccess() )
             {
                 browseAccess.add( groupKey );

@@ -4,9 +4,6 @@
  */
 package com.enonic.cms.core.search.query;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -24,8 +21,6 @@ import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 @Component
 public class QueryTranslator
 {
-    private final static Logger LOG = Logger.getLogger( QueryTranslator.class.getName() );
-
     private final FilterQueryBuilderFactory filterQueryBuilderFactory;
 
     private final OrderQueryBuilderFactory orderQueryBuilderFactory;
@@ -69,11 +64,6 @@ public class QueryTranslator
 
         orderQueryBuilderFactory.buildOrderByExpr( builder, queryExpr.getOrderBy() );
         filterQueryBuilderFactory.buildFilterQuery( builder, contentIndexQuery );
-
-        if ( LOG.isLoggable( Level.INFO ) )
-        {
-            LOG.info( "ES query:\r\n" + builder.toString() );
-        }
 
         return builder;
     }

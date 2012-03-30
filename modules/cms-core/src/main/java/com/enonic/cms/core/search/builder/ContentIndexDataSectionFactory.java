@@ -28,20 +28,25 @@ public class ContentIndexDataSectionFactory
             return;
         }
 
-        Set<Double> sectionKeysApproved = Sets.newTreeSet();
-        Set<Double> sectionKeysUnapproved = Sets.newTreeSet();
+        final Set<Double> sectionKeysApproved = Sets.newTreeSet();
+        final Set<Double> sectionKeysUnapproved = Sets.newTreeSet();
 
         for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
         {
+            if ( !contentLocation.isInSection() )
+            {
+                continue;
+            }
+
             final int menuKey = contentLocation.getMenuItemKey().toInt();
 
             if ( contentLocation.isApproved() )
             {
-                sectionKeysApproved.add( new Double( menuKey ) );
+                sectionKeysApproved.add( (double) menuKey );
             }
             else
             {
-                sectionKeysUnapproved.add( new Double( menuKey ) );
+                sectionKeysUnapproved.add( (double) menuKey );
             }
         }
 

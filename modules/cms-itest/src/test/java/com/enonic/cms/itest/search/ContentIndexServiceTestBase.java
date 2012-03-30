@@ -50,13 +50,9 @@ public abstract class ContentIndexServiceTestBase
 
     private IndexMappingProvider indexMappingProvider;
 
-    protected final static String[] REQUIRED_ORDERBY_FIELDS =
-        new String[]{"orderby_categorykey", "orderby_contenttype", "orderby_contenttypekey", "orderby_key", "orderby_priority",
-            "orderby_publishfrom", "orderby_status", "orderby_title"};
-
     protected final static String[] REQUIRED_STANDARD_FIELD =
-        new String[]{"categorykey", "categorykey_numeric", "contenttype", "contenttypekey", "contenttypekey_numeric", "key", "key_numeric",
-            "priority", "priority_numeric", "publishfrom", "status", "status_numeric", "title", "title._tokenized"};
+        new String[]{"categorykey", "contenttype", "contenttypekey", "key", "priority", "publishfrom", "status", "title",
+            "title._tokenized"};
 
     //  private final static Pattern SPECIAL_FIELD_PATTERN = Pattern.compile(
     //      "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX +
@@ -144,7 +140,7 @@ public abstract class ContentIndexServiceTestBase
             "\"fields\" : [\"*\"],\n" +
             "  \"query\" : {\n" +
             "    \"term\" : {\n" +
-            "      \"key_numeric\" : \"" + new Long( contentKey.toString() ).toString() + "\"\n" +
+            "      \"key\" : \"" + new Long( contentKey.toString() ).toString() + "\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -227,17 +223,9 @@ public abstract class ContentIndexServiceTestBase
             assertNotNull( "Missing required field: '" + requiredField + "'", fieldMapForId.get( requiredField ) );
         }
 
-        for ( String requiredField : REQUIRED_ORDERBY_FIELDS )
-        {
-            assertNotNull( "Missing orderby field: '" + requiredField + "'", fieldMapForId.get( requiredField ) );
-        }
-
         compareValues( fieldMapForId.get( "key" ), id );
-        compareValues( fieldMapForId.get( "key_numeric" ), id );
         compareValues( fieldMapForId.get( "categorykey" ), doc.getCategoryKey().toString() );
-        compareValues( fieldMapForId.get( "categorykey_numeric" ), doc.getCategoryKey().toString() );
         compareValues( fieldMapForId.get( "status" ), doc.getStatus() );
-        compareValues( fieldMapForId.get( "status_numeric" ), doc.getStatus() );
     }
 
     private void compareValues( final SearchHitField field, final String expected )
@@ -254,7 +242,15 @@ public abstract class ContentIndexServiceTestBase
 
         final String failureMessage = "Error in field value for field: " + field.getName();
 
-        if ( singleValue instanceof Double )
+        if ( singleValue instanceof Long )
+        {
+            assertEquals( failureMessage, new Long( expected ), singleValue );
+        }
+        else if ( singleValue instanceof Integer )
+        {
+            assertEquals( failureMessage, new Integer( expected ), singleValue );
+        }
+        else if ( singleValue instanceof Double )
         {
             assertEquals( failureMessage, new Double( expected ), singleValue );
         }

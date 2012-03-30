@@ -30,7 +30,7 @@ public class FilterQueryBuilderTest
         String expected = "{\n" +
             "  \"filter\" : {\n" +
             "    \"term\" : {\n" +
-            "      \"status_numeric\" : 2\n" +
+            "      \"status\" : 2\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -119,7 +119,6 @@ public class FilterQueryBuilderTest
         Collection<GroupKey> securityFilter = getSecurityFilter();
         query.setSecurityFilter( securityFilter );
 
-
         filterQueryBuilderFactory.buildFilterQuery( builder, query );
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
@@ -164,7 +163,6 @@ public class FilterQueryBuilderTest
         Collection<GroupKey> securityFilter = getSecurityFilter();
         query.setSecurityFilter( securityFilter );
 
-
         filterQueryBuilderFactory.buildFilterQuery( builder, query );
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
@@ -172,7 +170,7 @@ public class FilterQueryBuilderTest
 
     private Collection<GroupKey> getSecurityFilter()
     {
-        Collection<GroupKey> securityFilter = new ArrayList<GroupKey>(  );
+        Collection<GroupKey> securityFilter = new ArrayList<GroupKey>();
         GroupKey groupA = new GroupKey( "group_A" );
         securityFilter.add( groupA );
         GroupKey groupB = new GroupKey( "group_B" );

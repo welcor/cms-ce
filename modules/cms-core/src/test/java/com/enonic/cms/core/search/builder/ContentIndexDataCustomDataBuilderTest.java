@@ -15,7 +15,6 @@ import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -60,18 +59,19 @@ public class ContentIndexDataCustomDataBuilderTest
         JSONObject resultObject = new JSONObject( jsonString );
 
         assertEquals( true, resultObject.has( "test" ) );
-        assertTrue( resultObject.has( "test_numeric" ) );
-        JSONArray testNumericValues = resultObject.getJSONArray( "test_numeric" );
 
-        assertTrue( testNumericValues.length() == 4 );
+        /* assertTrue( resultObject.has( "test_numeric" ) );
+       JSONArray testNumericValues = resultObject.getJSONArray( "test_numeric" );
 
-        assertTrue( containsValue( testNumericValues, 1.0 ) );
-        assertTrue( containsValue( testNumericValues, 2.0 ) );
-        assertTrue( containsValue( testNumericValues, 3.0 ) );
-        assertTrue( containsValue( testNumericValues, 4.0 ) );
+       assertTrue( testNumericValues.length() == 4 );
 
-        assertTrue( resultObject.has( "orderby_test" ) );
+       assertTrue( containsValue( testNumericValues, 1.0 ) );
+       assertTrue( containsValue( testNumericValues, 2.0 ) );
+       assertTrue( containsValue( testNumericValues, 3.0 ) );
+       assertTrue( containsValue( testNumericValues, 4.0 ) );
 
+       assertTrue( resultObject.has( "orderby_test" ) );
+        */
     }
 
 
@@ -125,42 +125,15 @@ public class ContentIndexDataCustomDataBuilderTest
 
         assertTrue( resultObject.has( "test" ) );
         JSONArray testStringValues = resultObject.getJSONArray( "test" );
-        assertTrue( resultObject.has( "test_numeric" ) );
-        JSONArray testNumericValues = resultObject.getJSONArray( "test_numeric" );
+        //  assertTrue( resultObject.has( "test_numeric" ) );
+        //  JSONArray testNumericValues = resultObject.getJSONArray( "test_numeric" );
 
         assertEquals( 5, testStringValues.length() );
-        assertEquals( 2, testNumericValues.length() );
+        //  assertEquals( 2, testNumericValues.length() );
 
-        assertTrue( containsValue( testNumericValues, 4.0 ) );
-        assertTrue( containsValue( testNumericValues, 5.0 ) );
+        //  assertTrue( containsValue( testNumericValues, 4.0 ) );
+        //  assertTrue( containsValue( testNumericValues, 5.0 ) );
 
-    }
-
-    @Test
-    public void testOrderbyValue()
-        throws Exception
-    {
-        List<UserDefinedField> userDefinedFields = Lists.newArrayList();
-
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test3" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "5" ) ) );
-
-        result.startObject();
-        customDataBuilder.build( result, userDefinedFields );
-        result.endObject();
-
-        final String jsonString = result.string();
-
-        JSONObject resultObject = new JSONObject( jsonString );
-
-        assertTrue( resultObject.has( "orderby_test" ) );
-        String testOrderByValue = resultObject.getString( "orderby_test" );
-        assertNotNull( testOrderByValue );
-
-        assertEquals( false, resultObject.has( "orderby_test_numeric" ) );
     }
 
 
@@ -225,34 +198,7 @@ public class ContentIndexDataCustomDataBuilderTest
         assertTrue( resultObject.has( "test3" ) );
         assertTrue( resultObject.has( "test4" ) );
         assertTrue( resultObject.has( "test5" ) );
-        assertTrue( resultObject.has( "test3_numeric" ) );
-        assertTrue( resultObject.has( "test4_numeric" ) );
-        assertTrue( resultObject.has( "test5_numeric" ) );
 
     }
 
-    @Test
-    public void testOnlyStringValuesEqualsNoNumericArray()
-        throws Exception
-    {
-        List<UserDefinedField> userDefinedFields = Lists.newArrayList();
-
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test3" ) ) );
-
-        result.startObject();
-        customDataBuilder.build( result, userDefinedFields );
-        result.endObject();
-
-        final String jsonString = result.string();
-
-        JSONObject resultObject = new JSONObject( jsonString );
-
-        assertTrue( resultObject.has( "test" ) );
-        JSONArray testValueArray = resultObject.getJSONArray( "test" );
-
-        assertEquals( false, resultObject.has( "test_numeric" ) );
-
-    }
 }

@@ -8,21 +8,20 @@ public class InQueryBuilderFactory
     extends BaseQueryBuilderFactory
 {
 
-    public QueryBuilder buildInQuery( String field, QueryValue[] values )
+    public QueryBuilder buildInQuery( QueryPath path, QueryValue[] values )
     {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
         for ( QueryValue value : values )
         {
-            //  if ( value.isNumeric() )
-            //  {
-            //      boolQuery.should(
-            //          QueryBuilders.termQuery( field + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX, value.getDoubleValue() ) );
-            //  }
-            //  else
-            //  {
-            boolQuery.should( QueryBuilders.termQuery( field, value.getStringValueNormalized() ) );
-            //  }
+            if ( value.isNumeric() )
+            {
+                boolQuery.should( QueryBuilders.termQuery( path.getPath(), value.getDoubleValue() ) );
+            }
+            else
+            {
+                boolQuery.should( QueryBuilders.termQuery( path.getPath(), value.getStringValueNormalized() ) );
+            }
         }
 
         return boolQuery;

@@ -128,9 +128,9 @@ public class QueryTranslator
             case CompareExpr.NOT_LIKE:
                 return buildNotQuery( likeQueryBuilderFactory.buildLikeQuery( queryPath, querySingleValue ) );
             case CompareExpr.IN:
-                return inQueryBuilderFactory.buildInQuery( path, queryValues );
+                return inQueryBuilderFactory.buildInQuery( queryPath, queryValues );
             case CompareExpr.NOT_IN:
-                return buildNotQuery( inQueryBuilderFactory.buildInQuery( path, queryValues ) );
+                return buildNotQuery( inQueryBuilderFactory.buildInQuery( queryPath, queryValues ) );
             case CompareExpr.FT:
                 return fullTextQueryBuilderFactory.buildFulltextQuery( path, querySingleValue );
         }

@@ -172,6 +172,7 @@ class AbstractIndexDataFactory
 
         doAddStringSet( fieldName, values, builder, addOrderField );
 
+        /*
         if ( includeNumeric )
         {
             Set<Integer> valuesAsDoubles = getNumericValuesAsSet( values );
@@ -180,7 +181,7 @@ class AbstractIndexDataFactory
             {
                 doAddNumericSet( fieldName, valuesAsDoubles, builder, false );
             }
-        }
+        } */
     }
 
     private void doAddStringSet( final String fieldName, Set<String> values, XContentBuilder builder, final boolean addOrderField )

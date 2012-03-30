@@ -46,7 +46,7 @@ public class TermQueryBuilderCreatorTest
     {
         String expected = "{\n" +
             "  \"term\" : {\n" +
-            "    \"_all_userdata_numeric\" : 123.0\n" +
+            "    \"_all_userdata\" : 123.0\n" +
             "  }\n" +
             "}";
 

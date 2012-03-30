@@ -35,12 +35,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey_numeric\" : [ 15 ]\n" +
+            "          \"categorykey\" : [ 15 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey_numeric\" : [ 1002, 1001 ]\n" +
+            "          \"contenttypekey\" : [ 1002, 1001 ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -70,7 +70,7 @@ public class QueryTranslatorTest_filters
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key_numeric\" : {\n" +
+            "      \"key\" : {\n" +
             "        \"from\" : 100.0,\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
@@ -82,12 +82,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey_numeric\" : [ 15 ]\n" +
+            "          \"categorykey\" : [ 15 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey_numeric\" : [ 1001 ]\n" +
+            "          \"contenttypekey\" : [ 1001 ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -116,7 +116,7 @@ public class QueryTranslatorTest_filters
             "  \"size\" : 20,\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key_numeric\" : {\n" +
+            "      \"key\" : {\n" +
             "        \"from\" : 100.0,\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
@@ -128,12 +128,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey_numeric\" : [ 15 ]\n" +
+            "          \"categorykey\" : [ 15 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey_numeric\" : [ 1001 ]\n" +
+            "          \"contenttypekey\" : [ 1001 ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

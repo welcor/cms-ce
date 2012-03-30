@@ -2,7 +2,6 @@ package com.enonic.cms.core.search.builder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
@@ -45,13 +44,8 @@ import static junit.framework.Assert.assertTrue;
 public class ContentIndexDataFactoryTest
 {
 
-    protected final static String[] REQUIRED_ORDERBY_FIELDS =
-        new String[]{"orderby_categorykey", "orderby_contenttype", "orderby_contenttypekey", "orderby_key", "orderby_priority",
-            "orderby_publishfrom", "orderby_status", "orderby_title"};
-
     protected final static String[] REQUIRED_STANDARD_FIELD =
-        new String[]{"categorykey", "categorykey_numeric", "contenttype", "contenttypekey", "contenttypekey_numeric", "key", "key_numeric",
-            "priority", "priority_numeric", "publishfrom", "status", "status_numeric", "title"};
+        new String[]{"categorykey", "contenttype", "contenttypekey", "key", "priority", "publishfrom", "status", "title"};
 
     ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
 
@@ -71,11 +65,6 @@ public class ContentIndexDataFactoryTest
         {
             assertTrue( "Missing required field: " + field, indexDataAsString.contains( field ) );
         }
-
-        for ( String field : REQUIRED_ORDERBY_FIELDS )
-        {
-            assertTrue( "Missing required orderby field: " + field, indexDataAsString.contains( field ) );
-        }
     }
 
     @Test
@@ -92,11 +81,6 @@ public class ContentIndexDataFactoryTest
         final String indexDataAsString = indexData.getMetadataJson();
 
         System.out.println( indexDataAsString );
-
-        for ( String field : REQUIRED_ORDERBY_FIELDS )
-        {
-            assertTrue( "Missing required orderby field: " + field, indexDataAsString.contains( field ) );
-        }
 
         final List<String> keysAsList = getKeysAsList( indexDataAsString );
 
@@ -121,24 +105,12 @@ public class ContentIndexDataFactoryTest
 
         System.out.println( indexDataAsString );
 
-        for ( String field : REQUIRED_ORDERBY_FIELDS )
-        {
-            assertTrue( "Missing required orderby field: " + field, indexDataAsString.contains( field ) );
-        }
-
         final List<String> keysAsList = getKeysAsList( indexDataAsString );
 
         verifyFieldExists( keysAsList, "key" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
         verifyFieldExists( keysAsList, "status" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
         verifyFieldExists( keysAsList, "priority" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
         verifyFieldExists( keysAsList, "data_person_age" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-
-        verifyFieldDoesNotExists( keysAsList,
-                                  IndexFieldNameConstants.ORDER_FIELD_PREFIX + "key" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldDoesNotExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX +
-            "status" );//) + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldDoesNotExists( keysAsList, "data_person_description" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldDoesNotExists( keysAsList, "data_person_gender" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
     }
 
     private void verifyFieldExists( List<String> keysAsList, String keyName )
@@ -149,42 +121,6 @@ public class ContentIndexDataFactoryTest
     private void verifyFieldDoesNotExists( List<String> keysAsList, String keyName )
     {
         Assert.assertFalse( "Redundant key: " + keyName, keysAsList.contains( keyName ) );
-    }
-
-
-    @Test
-    public void testOrderByFields()
-        throws Exception
-    {
-        ContentDocument content = createTestContent();
-
-        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
-
-        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
-
-        final String indexDataAsString = indexData.getMetadataJson();
-
-        System.out.println( indexDataAsString );
-
-        for ( String field : REQUIRED_ORDERBY_FIELDS )
-        {
-            assertTrue( "Missing required orderby field: " + field, indexDataAsString.contains( field ) );
-        }
-
-        final List<String> keysAsList = getKeysAsList( indexDataAsString );
-
-        for ( String key : keysAsList )
-        {
-            if ( StringUtils.startsWith( key, IndexFieldNameConstants.ORDER_FIELD_PREFIX ) )
-            {
-                assertEquals( "Only one instance of each key allowed: " + key, 1, Collections.frequency( keysAsList, key ) );
-            }
-        }
-
-        // Check orderby for customdata fields
-        verifyFieldExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_age" );
-        verifyFieldExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_description" );
-        verifyFieldExists( keysAsList, IndexFieldNameConstants.ORDER_FIELD_PREFIX + "data_person_gender" );
     }
 
     @Test

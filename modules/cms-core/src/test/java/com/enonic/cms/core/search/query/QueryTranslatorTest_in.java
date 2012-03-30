@@ -52,15 +52,15 @@ public class QueryTranslatorTest_in
             "    \"bool\" : {\n" +
             "      \"should\" : [ {\n" +
             "        \"term\" : {\n" +
-            "          \"myIntField_numeric\" : 1.0\n" +
+            "          \"myIntField\" : 1.0\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"term\" : {\n" +
-            "          \"myIntField_numeric\" : 2.0\n" +
+            "          \"myIntField\" : 2.0\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"term\" : {\n" +
-            "          \"myIntField_numeric\" : 3.0\n" +
+            "          \"myIntField\" : 3.0\n" +
             "        }\n" +
             "      } ]\n" +
             "    }\n" +
@@ -118,7 +118,7 @@ public class QueryTranslatorTest_in
             "    \"bool\" : {\n" +
             "      \"should\" : [ {\n" +
             "        \"term\" : {\n" +
-            "          \"myfield_numeric\" : 1.0\n" +
+            "          \"myfield\" : 1.0\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"term\" : {\n" +

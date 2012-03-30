@@ -57,7 +57,7 @@ public class IndexFieldNameConstants
 
 //    public static final String NUMERIC_FIELD_POSTFIX = "_numeric";
 
-    public static final String ORDER_FIELD_PREFIX = "orderby_";
+//    public static final String ORDER_FIELD_PREFIX = "orderby_";
 
     public static final String CATEGORY_FIELD_PREFIX = "category";
 

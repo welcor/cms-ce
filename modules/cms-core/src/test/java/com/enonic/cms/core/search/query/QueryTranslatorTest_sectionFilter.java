@@ -35,12 +35,12 @@ public class QueryTranslatorTest_sectionFilter
             "    \"bool\" : {\n" +
             "      \"should\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contentlocations_approved_numeric\" : [ 3, 2, 1 ]\n" +
+            "          \"contentlocations_approved\" : [ 3, 2, 1 ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"should\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contentlocations_unapproved_numeric\" : [ 3, 2, 1 ]\n" +
+            "          \"contentlocations_unapproved\" : [ 3, 2, 1 ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -49,13 +49,13 @@ public class QueryTranslatorTest_sectionFilter
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity1 = new MenuItemEntity();
-        entity1.setKey( new MenuItemKey(1) );
+        entity1.setKey( new MenuItemKey( 1 ) );
         sectionFilter.add( entity1 );
         MenuItemEntity entity2 = new MenuItemEntity();
-        entity2.setKey( new MenuItemKey(2) );
+        entity2.setKey( new MenuItemKey( 2 ) );
         sectionFilter.add( entity2 );
         MenuItemEntity entity3 = new MenuItemEntity();
-        entity3.setKey( new MenuItemKey(3 ));
+        entity3.setKey( new MenuItemKey( 3 ) );
         sectionFilter.add( entity3 );
 
         ContentIndexQuery query = createContentQuery( sectionFilter );
@@ -78,20 +78,20 @@ public class QueryTranslatorTest_sectionFilter
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
-            "      \"contentlocations_unapproved_numeric\" : [ 3, 2, 1 ]\n" +
+            "      \"contentlocations_unapproved\" : [ 3, 2, 1 ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity1 = new MenuItemEntity();
-        entity1.setKey( new MenuItemKey(1) );
+        entity1.setKey( new MenuItemKey( 1 ) );
         sectionFilter.add( entity1 );
         MenuItemEntity entity2 = new MenuItemEntity();
-        entity2.setKey( new MenuItemKey(2) );
+        entity2.setKey( new MenuItemKey( 2 ) );
         sectionFilter.add( entity2 );
         MenuItemEntity entity3 = new MenuItemEntity();
-        entity3.setKey( new MenuItemKey(3) );
+        entity3.setKey( new MenuItemKey( 3 ) );
         sectionFilter.add( entity3 );
 
         ContentIndexQuery query = createContentQuery( "" );
@@ -116,20 +116,20 @@ public class QueryTranslatorTest_sectionFilter
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
-            "      \"contentlocations_approved_numeric\" : [ 3, 2, 1 ]\n" +
+            "      \"contentlocations_approved\" : [ 3, 2, 1 ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
         Set<MenuItemEntity> sectionFilter = new HashSet<MenuItemEntity>();
         MenuItemEntity entity1 = new MenuItemEntity();
-        entity1.setKey( new MenuItemKey(1 ));
+        entity1.setKey( new MenuItemKey( 1 ) );
         sectionFilter.add( entity1 );
         MenuItemEntity entity2 = new MenuItemEntity();
-        entity2.setKey( new MenuItemKey(2) );
+        entity2.setKey( new MenuItemKey( 2 ) );
         sectionFilter.add( entity2 );
         MenuItemEntity entity3 = new MenuItemEntity();
-        entity3.setKey(new MenuItemKey( 3) );
+        entity3.setKey( new MenuItemKey( 3 ) );
         sectionFilter.add( entity3 );
 
         ContentIndexQuery query = createContentQuery( "" );

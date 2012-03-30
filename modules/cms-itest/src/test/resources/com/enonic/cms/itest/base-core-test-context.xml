@@ -142,8 +142,6 @@
   </bean>
 
   <bean id="imageCache" class="com.enonic.cms.core.image.cache.ImageCacheFactory">
-    <property name="cacheName" value="image"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
   </bean>
 
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">

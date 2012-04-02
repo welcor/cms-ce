@@ -8,6 +8,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
+import com.enonic.cms.web.webdav.DavLocatorFactoryImpl;
 
 public class DavLocatorFactoryImplTest
 {

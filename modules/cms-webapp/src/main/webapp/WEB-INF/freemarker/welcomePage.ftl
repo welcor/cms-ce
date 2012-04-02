@@ -54,7 +54,7 @@
         </div>
     [/#if]
 
-    [#assign adminUrl = baseUrl + '/admin' ]
+    [#assign adminUrl = baseUrl + '/admin/index.html' ]
     [#assign webDavUrl = baseUrl + '/dav']
     [#assign componentsUrlMaxLength = 30]
 

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.tools;
+package com.enonic.cms.web.main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import com.enonic.cms.upgrade.UpgradeService;
 import com.enonic.cms.upgrade.log.UpgradeLog;
@@ -24,8 +27,9 @@ import com.enonic.cms.upgrade.log.UpgradeLogEntry;
 /**
  * This class manages the upgrade.
  */
+@Controller
 public final class UpgradeController
-    implements InitializingBean, Controller
+    implements InitializingBean
 {
 
     private static final String AUTHENTICATED_SESSION_KEY = "authenticatedUpgrade";
@@ -65,7 +69,8 @@ public final class UpgradeController
     /**
      * Handle the request.
      */
-    protected ModelAndView doHandleRequest( HttpServletRequest req, HttpServletResponse res )
+    @RequestMapping(value = "/upgrade", method = RequestMethod.GET)
+    public ModelAndView handle( HttpServletRequest req, HttpServletResponse res )
         throws Exception
     {
         boolean authenticated = doAuthenticate( req );
@@ -194,18 +199,9 @@ public final class UpgradeController
     }
 
     /**
-     * Handle the request.
-     */
-    public final ModelAndView handleRequest( HttpServletRequest req, HttpServletResponse res )
-        throws Exception
-    {
-        return doHandleRequest( req, res );
-    }
-
-    /**
      * Return the base path.
      */
-    protected String createBaseUrl( HttpServletRequest req )
+    private String createBaseUrl( HttpServletRequest req )
     {
         StringBuffer str = new StringBuffer();
         str.append( req.getScheme() ).append( "://" ).append( req.getServerName() );
@@ -222,7 +218,7 @@ public final class UpgradeController
     /**
      * Redirect to self.
      */
-    protected void redirectToSelf( HttpServletRequest req, HttpServletResponse res )
+    private void redirectToSelf( HttpServletRequest req, HttpServletResponse res )
         throws Exception
     {
         String url = req.getRequestURL().toString();
@@ -236,9 +232,9 @@ public final class UpgradeController
         res.sendRedirect( url );
     }
 
+    @Value("${cms.admin.password}")
     public void setEntrerpriseAdminPassword( String password )
     {
         this.entrerpriseAdminPassword = password;
     }
-
 }

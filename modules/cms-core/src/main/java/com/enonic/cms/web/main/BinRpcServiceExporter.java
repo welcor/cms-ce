@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.tools;
+package com.enonic.cms.web.main;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.util.NestedServletException;
 
 import com.enonic.cms.api.client.LocalClient;
@@ -28,9 +29,8 @@ import com.enonic.cms.api.client.binrpc.BinRpcInvocationResult;
 /**
  * This class implements the service exporter.
  */
-@RequestMapping(value = "/rpc/bin")
+@Controller
 public final class BinRpcServiceExporter
-    implements Controller
 {
     private final static String CONTENT_TYPE_SERIALIZED_OBJECT = "application/x-java-serialized-object";
 
@@ -38,36 +38,30 @@ public final class BinRpcServiceExporter
 
     @Autowired
     @Qualifier("remoteClient")
-    public void setLocalClient( LocalClient client )
+    public void setLocalClient( final LocalClient client )
     {
         this.client = client;
     }
 
-    public ModelAndView handleRequest( HttpServletRequest req, HttpServletResponse res )
+    @RequestMapping(value = "/rpc/bin", method = RequestMethod.POST)
+    public ModelAndView handleRequest( final HttpServletRequest req, final HttpServletResponse res )
         throws ServletException, IOException
     {
-        if ( "POST".equalsIgnoreCase( req.getMethod() ) )
+        try
         {
-            try
-            {
-                BinRpcInvocation invocation = readInvocation( req );
-                BinRpcInvocationResult result = invokeAndCreateResult( invocation, this.client );
-                writeInvocationResult( res, result );
-            }
-            catch ( ClassNotFoundException ex )
-            {
-                throw new NestedServletException( "Class not found during deserialization", ex );
-            }
+            BinRpcInvocation invocation = readInvocation( req );
+            BinRpcInvocationResult result = invokeAndCreateResult( invocation, this.client );
+            writeInvocationResult( res, result );
         }
-        else
+        catch ( ClassNotFoundException ex )
         {
-            res.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Only POST is allowed" );
+            throw new NestedServletException( "Class not found during deserialization", ex );
         }
 
         return null;
     }
 
-    private BinRpcInvocation readInvocation( HttpServletRequest req )
+    private BinRpcInvocation readInvocation( final HttpServletRequest req )
         throws IOException, ClassNotFoundException
     {
         InputStream in = req.getInputStream();
@@ -92,7 +86,7 @@ public final class BinRpcServiceExporter
         }
     }
 
-    private void writeInvocationResult( HttpServletResponse res, BinRpcInvocationResult result )
+    private void writeInvocationResult( final HttpServletResponse res, final BinRpcInvocationResult result )
         throws IOException
     {
         res.setContentType( BinRpcServiceExporter.CONTENT_TYPE_SERIALIZED_OBJECT );
@@ -110,7 +104,7 @@ public final class BinRpcServiceExporter
         }
     }
 
-    private BinRpcInvocationResult invokeAndCreateResult( BinRpcInvocation invocation, Object targetObject )
+    private BinRpcInvocationResult invokeAndCreateResult( final BinRpcInvocation invocation, final Object targetObject )
     {
         try
         {

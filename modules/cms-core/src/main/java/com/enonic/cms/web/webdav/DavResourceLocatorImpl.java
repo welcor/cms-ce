@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.webdav;
+package com.enonic.cms.web.webdav;
 
 import org.apache.jackrabbit.util.Text;
 import org.apache.jackrabbit.webdav.DavLocatorFactory;

@@ -9,5 +9,5 @@ package com.enonic.cms.core.search;
 
 public interface IndexMappingProvider
 {
-    public String getMapping( String indexName, IndexType indexType );
+    public String getMapping( String indexName, String indexType );
 }

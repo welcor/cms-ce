@@ -15,7 +15,7 @@ public class QueryValueTest
     {
         QueryValue queryValue = new QueryValue( 1 );
 
-        assertEquals( 1.0, queryValue.getDoubleValue() );
+        assertEquals( 1.0, queryValue.getNumericValue() );
         assertEquals( "1", queryValue.getStringValueNormalized() );
 
         assertFalse( queryValue.isEmpty() );

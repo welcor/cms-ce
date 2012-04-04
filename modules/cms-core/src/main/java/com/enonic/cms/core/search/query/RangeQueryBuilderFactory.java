@@ -24,8 +24,8 @@ public class RangeQueryBuilderFactory
         }
         else if ( isNumericComparison )
         {
-            Double lowerNumeric = lower != null ? lower.getDoubleValue() : null;
-            Double upperNumeric = upper != null ? upper.getDoubleValue() : null;
+            Number lowerNumeric = lower != null ? lower.getNumericValue() : null;
+            Number upperNumeric = upper != null ? upper.getNumericValue() : null;
 
             return buildRangeQueryNumeric( queryPath, lowerNumeric, upperNumeric, lowerInclusive, upperInclusive );
         }
@@ -54,7 +54,7 @@ public class RangeQueryBuilderFactory
             includeUpper( upperInclusive );
     }
 
-    private QueryBuilder buildRangeQueryNumeric( QueryPath queryPath, Double lowerNumeric, Double upperNumeric, boolean lowerInclusive,
+    private QueryBuilder buildRangeQueryNumeric( QueryPath queryPath, Number lowerNumeric, Number upperNumeric, boolean lowerInclusive,
                                                  boolean upperInclusive )
     {
         if ( lowerNumeric == null && upperNumeric == null )

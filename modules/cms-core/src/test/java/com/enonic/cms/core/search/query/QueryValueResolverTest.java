@@ -31,7 +31,7 @@ public class QueryValueResolverTest
         Expression expression = new ValueExpr( 100.0 );
 
         final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
-        assertEquals( 100.0, actual.getDoubleValue() );
+        assertEquals( 100.0, actual.getNumericValue() );
     }
 
     @Test

@@ -14,7 +14,6 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest;
-import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
@@ -122,9 +121,9 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public void putMapping( String indexName, IndexType indexType, String mapping )
+    public void putMapping( String indexName, String indexType, String mapping )
     {
-        PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType.toString() ).source( mapping );
+        PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType ).source( mapping );
 
         this.client.admin().indices().putMapping( mappingRequest ).actionGet();
 
@@ -136,7 +135,7 @@ public class ElasticSearchIndexServiceImpl
     {
         DeleteMappingRequest deleteMappingRequest = new DeleteMappingRequest( indexName ).type( indexType.toString() );
 
-        final DeleteMappingResponse deleteMappingResponse = this.client.admin().indices().deleteMapping( deleteMappingRequest ).actionGet();
+        this.client.admin().indices().deleteMapping( deleteMappingRequest ).actionGet();
 
         LOG.info( "Mapping for index " + indexName + ", index-type: " + indexType + " deleted" );
     }
@@ -184,6 +183,11 @@ public class ElasticSearchIndexServiceImpl
         }
     }
 
+    public void index( IndexRequest request )
+    {
+        doIndex( request );
+    }
+
     private IndexResponse doIndex( IndexRequest indexRequest )
     {
         return this.client.index( indexRequest ).actionGet();
@@ -192,7 +196,7 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public boolean get( String indexName, IndexType indexType, ContentKey contentKey )
     {
-        final GetRequest getRequest = new GetRequest( indexName, IndexType.Content.toString(), contentKey.toString() );
+        final GetRequest getRequest = new GetRequest( indexName, indexType.toString(), contentKey.toString() );
 
         final GetResponse getResponse = this.client.get( getRequest ).actionGet();
 
@@ -230,10 +234,10 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public SearchResponse search( String indexName, IndexType indexType, SearchSourceBuilder sourceBuilder )
+    public SearchResponse search( String indexName, String indexType, SearchSourceBuilder sourceBuilder )
     {
         final SearchRequest searchRequest =
-            Requests.searchRequest( indexName ).types( indexType.toString() ).searchType( DEFAULT_SEARCH_TYPE ).source( sourceBuilder );
+            Requests.searchRequest( indexName ).types( indexType ).searchType( DEFAULT_SEARCH_TYPE ).source( sourceBuilder );
 
         final SearchResponse searchResponse = doSearchRequest( searchRequest );
 
@@ -243,9 +247,9 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public SearchResponse search( String indexName, IndexType indexType, String sourceBuilder )
+    public SearchResponse search( String indexName, String indexType, String sourceBuilder )
     {
-        SearchRequest searchRequest = new SearchRequest( "cms" ).types( indexType.toString() ).source( sourceBuilder );
+        SearchRequest searchRequest = new SearchRequest( indexName ).types( indexType ).source( sourceBuilder );
 
         return doSearchRequest( searchRequest );
     }

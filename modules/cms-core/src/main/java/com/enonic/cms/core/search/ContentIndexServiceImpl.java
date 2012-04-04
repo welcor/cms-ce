@@ -94,12 +94,12 @@ public class ContentIndexServiceImpl
     private void doAddMapping( IndexType indexType )
     {
         String mapping = getMapping( indexType );
-        elasticSearchIndexService.putMapping( CONTENT_INDEX_NAME, indexType, mapping );
+        elasticSearchIndexService.putMapping( CONTENT_INDEX_NAME, indexType.toString(), mapping );
     }
 
     private String getMapping( final IndexType indexType )
     {
-        return indexMappingProvider.getMapping( CONTENT_INDEX_NAME, indexType );
+        return indexMappingProvider.getMapping( CONTENT_INDEX_NAME, indexType.toString() );
     }
 
     public int remove( ContentKey contentKey )
@@ -280,14 +280,15 @@ public class ContentIndexServiceImpl
 
     private SearchHits doExecuteSearchRequest( SearchSourceBuilder searchSourceBuilder )
     {
-        final SearchResponse res = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, searchSourceBuilder );
+        final SearchResponse res =
+            elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content.toString(), searchSourceBuilder );
 
         return res.getHits();
     }
 
     public SearchResponse query( String query )
     {
-        return elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, query );
+        return elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content.toString(), query );
     }
 
     public void flush()

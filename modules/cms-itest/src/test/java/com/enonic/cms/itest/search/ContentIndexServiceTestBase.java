@@ -21,7 +21,6 @@ import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.ContentIndexServiceImpl;
@@ -62,7 +61,7 @@ public abstract class ContentIndexServiceTestBase
     protected ContentService contentService;
 
     @Autowired
-    protected ContentIndexService contentIndexService;
+    protected ContentIndexServiceImpl contentIndexService;
 
     @Autowired
     protected ElasticSearchIndexService elasticSearchIndexService;
@@ -90,8 +89,8 @@ public abstract class ContentIndexServiceTestBase
 
     private void doAddMapping( String indexName, IndexType indexType )
     {
-        String mapping = indexMappingProvider.getMapping( indexName, indexType );
-        elasticSearchIndexService.putMapping( ContentIndexServiceImpl.CONTENT_INDEX_NAME, indexType, mapping );
+        String mapping = indexMappingProvider.getMapping( indexName, indexType.toString() );
+        elasticSearchIndexService.putMapping( ContentIndexServiceImpl.CONTENT_INDEX_NAME, indexType.toString(), mapping );
     }
 
     protected IndexDataCreator indexDataCreator = new IndexDataCreator();
@@ -145,7 +144,7 @@ public abstract class ContentIndexServiceTestBase
             "  }\n" +
             "}";
 
-        return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content, termQuery );
+        return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content.toString(), termQuery );
     }
 
 
@@ -197,7 +196,7 @@ public abstract class ContentIndexServiceTestBase
             "}";
 
         SearchResponse result =
-            elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content, termQuery );
+            elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content.toString(), termQuery );
 
         System.out.println( "\n\n------------------------------------------" );
         System.out.println( result.toString() );

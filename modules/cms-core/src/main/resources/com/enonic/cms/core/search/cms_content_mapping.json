@@ -10,7 +10,7 @@
         "numeric_detection":false,
         "properties":{
             "key":{
-                "type":"long",
+                "type":"double",
                 "store":"yes"
             },
             "_all_userdata":{
@@ -69,62 +69,66 @@
                 "store":"yes"
             },
             "status":{
-                "type":"integer",
+                "type":"double",
                 "store":"yes"
             },
             "priority":{
-                "type":"integer",
+                "type":"double",
                 "store":"yes"
             },
             "categorykey":{
-                "type":"integer",
+                "type":"double",
                 "store":"yes"
             },
             "contenttypekey":{
-                "type":"integer",
+                "type":"double",
                 "store":"yes"
             },
             "contentlocations_approved":{
-                "type":"integer",
+                "type":"double",
                 "store":"yes"
             },
             "contentlocations_unapproved":{
-                "type":"integer",
+                "type":"double",
                 "store":"yes"
             }
         },
         "dynamic_templates":[
             {
-                "template_userdata":{
-                    "include_in_all":false,
-                    "match":"data_*",
+                "template_userdata_date":{
+                    "match":"*.date",
+                    "mapping":{
+                        "type":"date",
+                        "store":"yes"
+                    }
+                }
+            },
+            {
+                "template_userdata_number":{
+                    "match":"*.number",
+                    "mapping":{
+                        "type":"double",
+                        "store":"yes"
+                    }
+                }
+            },
+            {
+                "template_userdata_strings":{
+                    "match":"*",
                     "mapping":{
                         "type":"multi_field",
                         "fields":{
                             "{name}":{
                                 "type":"string",
                                 "index":"not_analyzed",
-                                "store":"yes",
-                                "include_in_all":true
+                                "store":"yes"
                             },
                             "_tokenized":{
                                 "type":"string",
                                 "index":"analyzed",
-                                "store":"yes",
-                                "include_in_all":true
+                                "store":"yes"
                             }
                         }
-                    }
-                }
-            },
-            {
-                "template_general":{
-                    "match":"*",
-                    "mapping":{
-                        "include_in_all":false,
-                        "type":"string",
-                        "store":"yes",
-                        "index":"not_analyzed"
                     }
                 }
             }

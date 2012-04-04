@@ -46,9 +46,9 @@ public class ContentIndexServiceImplTest_assignment
         contentIndexService.index( assignedToJVS, false );
         contentIndexService.index( assignedToTAN, false );
         contentIndexService.index( assignedToNone, false );
-        //flushIndex();
+        flushIndex();
 
-        printAllIndexContent();
+        //printAllIndexContent();
 
         //assertContentResultSetEquals( new int[]{1101, 1102, 1103},
         //                              contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
@@ -90,7 +90,7 @@ public class ContentIndexServiceImplTest_assignment
         contentIndexService.index( assignedToJVS, false );
         contentIndexService.index( assignedToTAN, false );
         contentIndexService.index( assignedToNone, false );
-        //flushIndex();
+        flushIndex();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
                                       contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
@@ -135,7 +135,7 @@ public class ContentIndexServiceImplTest_assignment
         contentIndexService.index( assignerIsJVS, false );
         contentIndexService.index( assignerIsTAN, false );
         contentIndexService.index( assigerIsNone, false );
-        //flushIndex();
+        flushIndex();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
                                       contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
@@ -223,7 +223,7 @@ public class ContentIndexServiceImplTest_assignment
         contentIndexService.index( due2010_06_01T00_00_00, false );
         contentIndexService.index( due2010_06_01T12_00_00, false );
         contentIndexService.index( notDue, false );
-        //flushIndex();
+        flushIndex();
 
         printAllIndexContent();
 

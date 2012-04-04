@@ -95,7 +95,9 @@ public class ContentIndexServiceImplTest_add_remove_content
         doc1.setPriority( 0 );
         contentIndexService.index( doc1, false );
 
-        //flushIndex();
+        flushIndex();
+
+        printAllIndexContent();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -132,7 +134,7 @@ public class ContentIndexServiceImplTest_add_remove_content
         doc1.setPriority( 0 );
         contentIndexService.index( doc1, false );
 
-        //flushIndex();
+        flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );

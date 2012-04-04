@@ -65,6 +65,8 @@ public class QueryTranslator
         orderQueryBuilderFactory.buildOrderByExpr( builder, queryExpr.getOrderBy() );
         filterQueryBuilderFactory.buildFilterQuery( builder, contentIndexQuery );
 
+        System.out.println( "****************************\n\r" + builder.toString() );
+
         return builder;
     }
 

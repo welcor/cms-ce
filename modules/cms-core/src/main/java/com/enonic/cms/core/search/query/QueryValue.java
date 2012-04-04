@@ -9,7 +9,7 @@ import org.joda.time.format.ISODateTimeFormat;
 
 public class QueryValue
 {
-    private final Double doubleValue;
+    private final Number numericValue;
 
     private final String stringValue;
 
@@ -20,7 +20,7 @@ public class QueryValue
     {
         if ( value instanceof Number )
         {
-            doubleValue = ( (Number) value ).doubleValue();
+            numericValue = (Number) value;
             stringValue = doNormalizeString( value.toString() );
             dateTimeValue = null;
         }
@@ -28,24 +28,24 @@ public class QueryValue
         {
             dateTimeValue = toUTCTimeZone( (ReadableDateTime) value );
             stringValue = formatDateForElasticSearch( dateTimeValue );
-            doubleValue = null;
+            numericValue = null;
         }
         else
         {
             stringValue = doNormalizeString( value.toString() );
-            doubleValue = null;
+            numericValue = null;
             dateTimeValue = null;
         }
     }
 
-    public Double getDoubleValue()
+    public Double getNumericValue()
     {
-        return doubleValue;
+        return numericValue.doubleValue();
     }
 
     public boolean isNumeric()
     {
-        return doubleValue != null;
+        return numericValue != null;
     }
 
     public ReadableDateTime getDateTime()

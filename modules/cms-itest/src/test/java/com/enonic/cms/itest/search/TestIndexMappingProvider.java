@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search;
+package com.enonic.cms.itest.search;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,22 +6,17 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.elasticsearch.ElasticSearchException;
-import org.springframework.stereotype.Component;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 11/22/11
- * Time: 3:55 PM
- */
-@Component("indexMappingProvider")
-final class ConfigFileMappingProvider
+import com.enonic.cms.core.search.IndexMappingProvider;
+
+public class TestIndexMappingProvider
     implements IndexMappingProvider
 {
 
-    public String getMapping( String indexName, String indexType )
+    @Override
+    public String getMapping( final String indexName, final String indexType )
     {
-        InputStream stream = ConfigFileMappingProvider.class.getResourceAsStream( createMappingFileName( indexName, indexType ) );
+        InputStream stream = TestIndexMappingProvider.class.getResourceAsStream( createMappingFileName( indexName, indexType ) );
 
         if ( stream == null )
         {
@@ -43,11 +38,11 @@ final class ConfigFileMappingProvider
         {
             throw new ElasticSearchException( "Failed to get mapping-file as stream", e );
         }
-
     }
 
     private String createMappingFileName( String indexName, String indexType )
     {
-        return indexName + "_" + indexType + "_mapping.json";
+        return indexName + "_" + indexType.toString() + "_mapping.json";
     }
+
 }

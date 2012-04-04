@@ -16,7 +16,7 @@ public class InQueryBuilderFactory
         {
             if ( value.isNumeric() )
             {
-                boolQuery.should( QueryBuilders.termQuery( path.getPath(), value.getDoubleValue() ) );
+                boolQuery.should( QueryBuilders.termQuery( path.getPath(), value.getNumericValue() ) );
             }
             else
             {

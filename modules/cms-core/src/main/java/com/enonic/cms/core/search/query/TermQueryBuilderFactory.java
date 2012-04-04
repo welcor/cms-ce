@@ -64,7 +64,7 @@ public class TermQueryBuilderFactory
 
     private QueryBuilder doBuildQueryForNumericValue( final QueryPath path, final QueryValue queryValue, final boolean wildCardPath )
     {
-        return QueryBuilders.termQuery( path.getPath(), queryValue.getDoubleValue() );
+        return QueryBuilders.termQuery( path.getPath(), queryValue.getNumericValue() );
     }
 
     private QueryBuilder doRenderIdQuery( final QueryValue queryValue )

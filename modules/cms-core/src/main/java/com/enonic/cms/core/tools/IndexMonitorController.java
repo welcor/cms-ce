@@ -253,12 +253,12 @@ public class IndexMonitorController
             "  }\n" +
             "}";
 
-        return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content, termQuery );
+        return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content.toString(), termQuery );
     }
 
     private long getTotalHitsBinaries()
     {
-        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Binaries, getAllQUery );
+        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Binaries.toString(), getAllQUery );
 
         return response.getHits().getTotalHits();
     }
@@ -266,7 +266,7 @@ public class IndexMonitorController
     private long getTotalHitsContent()
     {
 
-        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content, getAllQUery );
+        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content.toString(), getAllQUery );
 
         return response.getHits().getTotalHits();
     }

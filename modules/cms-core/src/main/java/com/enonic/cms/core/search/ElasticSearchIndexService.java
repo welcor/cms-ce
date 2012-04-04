@@ -3,6 +3,7 @@ package com.enonic.cms.core.search;
 import java.util.Collection;
 import java.util.Map;
 
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -26,7 +27,7 @@ public interface ElasticSearchIndexService
 
     public void updateIndexSettings( String indexName );
 
-    public void putMapping( String indexName, IndexType indexType, String mapping );
+    public void putMapping( String indexName, String indexType, String mapping );
 
     public void deleteMapping( String indexName, IndexType indexType );
 
@@ -36,13 +37,15 @@ public interface ElasticSearchIndexService
 
     public void index( String indexName, ContentIndexData contentIndexData );
 
+    public void index( IndexRequest request );
+
     public boolean get( String indexName, IndexType indexType, ContentKey contentKey );
 
     public void optimize( String indexName );
 
-    public SearchResponse search( String indexName, IndexType indexType, SearchSourceBuilder sourceBuilder );
+    public SearchResponse search( String indexName, String indexType, SearchSourceBuilder sourceBuilder );
 
-    public SearchResponse search( String indexName, IndexType indexType, String sourceBuilder );
+    public SearchResponse search( String indexName, String indexType, String sourceBuilder );
 
     public Map<String, GetField> search( String indexName, IndexType indexType, ContentKey contentKey );
 

@@ -129,16 +129,6 @@ public final class IndexValueResolver
         return value.trim().toLowerCase();
     }
 
-    public static String normalizeDateValue( final Date value )
-    {
-        if ( value == null )
-        {
-            return "";
-        }
-
-        return ISODateTimeFormat.dateTime().print( new DateTime( value ) );
-    }
-
     public static String[] getNormalizedStringValues( Set<String> values )
     {
 

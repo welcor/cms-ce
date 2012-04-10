@@ -1,10 +1,9 @@
 package com.enonic.cms.core.search.query;
 
 import org.elasticsearch.index.query.QueryBuilder;
-import org.joda.time.ReadableDateTime;
+import org.joda.time.DateTime;
 
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
-
 
 public class RangeQueryBuilderFactory
     extends BaseQueryBuilderFactory
@@ -31,14 +30,14 @@ public class RangeQueryBuilderFactory
         }
         else
         {
-            ReadableDateTime lowerDateTime = lower != null ? lower.getDateTime() : null;
-            ReadableDateTime upperDateTime = upper != null ? upper.getDateTime() : null;
+            DateTime lowerDateTime = lower != null ? lower.getDateTime().toDateTime() : null;
+            DateTime upperDateTime = upper != null ? upper.getDateTime().toDateTime() : null;
 
             return buildRangeQueryDateTime( queryPath, lowerDateTime, upperDateTime, lowerInclusive, upperInclusive );
         }
     }
 
-    private QueryBuilder buildRangeQueryDateTime( QueryPath queryPath, ReadableDateTime lowerDateTime, ReadableDateTime upperDateTime,
+    private QueryBuilder buildRangeQueryDateTime( QueryPath queryPath, DateTime lowerDateTime, DateTime upperDateTime,
                                                   boolean lowerInclusive, boolean upperInclusive )
     {
         if ( lowerDateTime == null && upperDateTime == null )

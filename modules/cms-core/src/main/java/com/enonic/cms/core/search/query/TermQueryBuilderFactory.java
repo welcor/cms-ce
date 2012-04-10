@@ -56,7 +56,7 @@ public class TermQueryBuilderFactory
         }
         if ( path.isDateField() && queryValue.isDateTime() )
         {
-            return QueryBuilders.termQuery( path.getPath(), queryValue.getDateAsStringValue() );
+            return QueryBuilders.termQuery( path.getPath(), queryValue.getDateTime() );
         }
 
         return QueryBuilders.termQuery( path.getPath(), queryValue.getStringValueNormalized() );

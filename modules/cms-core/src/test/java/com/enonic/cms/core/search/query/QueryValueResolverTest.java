@@ -56,7 +56,7 @@ public class QueryValueResolverTest
         assertTrue( actual.isDateTime() );
 
         // one hour behind because of timezone normalization
-        assertDateTimeEquals( "2012-02-14T11:05:00.000Z", actual.getDateAsStringValue() );
+        assertDateTimeEquals( "2012-02-14T11:05:00.000Z", actual.getDateTime().toString(  ) );
     }
 
     @Test

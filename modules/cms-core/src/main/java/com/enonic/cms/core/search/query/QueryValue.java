@@ -83,11 +83,6 @@ public class QueryValue
         return stringValue != null ? stringValue.substring( 0, stringValue.indexOf( '.' ) ) : null;
     }
 
-    public String getDateAsStringValue()
-    {
-        return dateTimeValue != null ? stringValue : null;
-    }
-
     public boolean isEmpty()
     {
         return StringUtils.isBlank( stringValue );

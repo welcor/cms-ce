@@ -206,16 +206,34 @@ function selectCheckBoxChanged(selectCheckBox, publishCheckBoxName, homeRadioBut
 	else
 	{
         manuallyOrderCheckBox[index].disabled = true;
+        manuallyOrderCheckBox[index].checked = false;
 		radioButton.disabled = true;
+        radioButton.checked = false;
 	}
 
-    var numberOfSecionSelections = countSectionSelectionsInMenu(menuKey);
+    var numberOfSectionSelections = countSectionSelectionsInMenu(menuKey);
 
-    if (isFirstSectionSelection(selectCheckBox, numberOfSecionSelections)) {
+    if (isFirstSectionSelection(selectCheckBox, numberOfSectionSelections)) {
         radioButton.checked = true;
     }
-    else if (isNoSectionSelection(numberOfSecionSelections)) {
+    else if (isNoSectionSelection(numberOfSectionSelections)) {
         checkRadioButtonsOrCheckBoxes(homeRadioButtons, false);
+    }
+
+    // select some home radio if none is selected
+    radioButton = null;
+	for (i = 0; i < homeRadioButtons.length; i++) {
+		if (radioButton == null && !homeRadioButtons[i].checked && selectCheckBoxes[i].checked) {
+			radioButton = homeRadioButtons[i];
+	    }
+        else if (homeRadioButtons[i].checked)
+        {
+            radioButton = null;
+            break;
+        }
+	}
+    if (radioButton != null) {
+        radioButton.checked = true;
     }
 }
 

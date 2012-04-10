@@ -413,7 +413,7 @@ public class MenuItemServiceImpl
         final ContentHomeEntity contentHome =
             contentHomeDao.findByKey( new ContentHomeKey( section.getSite().getKey(), content.getKey() ) );
 
-        if ( contentHome != null )
+        if ( contentHome != null && section.getKey() == contentHome.getMenuItem().getKey())
         {
             content.removeContentHome( section.getSite().getKey() );
             contentHomeDao.delete( contentHome );

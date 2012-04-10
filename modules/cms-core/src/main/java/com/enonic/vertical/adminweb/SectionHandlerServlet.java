@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
@@ -63,6 +66,9 @@ import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentLocation;
+import com.enonic.cms.core.content.ContentLocationSpecification;
+import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionKey;
@@ -115,6 +121,13 @@ public class SectionHandlerServlet
 
     private static final String WIZARD_CONFIG_PUBLISH = "wizardconfig_publish_to_section.xml";
 
+    private static enum Action
+    {
+        none,
+        add,
+        remove
+    }
+
     public static final int COOKIE_TIMEOUT = 60 * 60 * 24 * 365 * 50;
 
     public static class PublishWizard
@@ -149,6 +162,8 @@ public class SectionHandlerServlet
 
         @Autowired
         private ContentDao contentDao;
+
+        private Document sectionsDoc;
 
         public PublishWizard()
         {
@@ -379,21 +394,21 @@ public class SectionHandlerServlet
 
         private void processWizardData1( WizardState wizardState, AdminService admin, User user )
         {
-            Document stateDoc = wizardState.getFirstStepState().getStateDoc();
-            Element elem = XMLTool.getElement( stateDoc.getDocumentElement(), "content" );
+            Document firstStepState = wizardState.getFirstStepState().getStateDoc();
+            Element elem = XMLTool.getElement( firstStepState.getDocumentElement(), "content" );
             int contentKey = Integer.parseInt( elem.getAttribute( "key" ) );
 
             Document sectionsDoc = XMLTool.createDocument( "sections" );
             Element sectionsElem = sectionsDoc.getDocumentElement();
             sectionsElem.setAttribute( "contentkey", String.valueOf( contentKey ) );
 
-            stateDoc = wizardState.getStepState( "step1" ).getStateDoc();
-            Element[] menuElems = XMLTool.getElements( stateDoc.getDocumentElement(), "menu" );
+            Document step1State = wizardState.getStepState( "step1" ).getStateDoc();
+            Element[] menuElems = XMLTool.getElements( step1State.getDocumentElement(), "menu" );
             Map<SiteKey, List<MenuItemKey>> listOfMenuItemKeysBySiteKey = new HashMap<SiteKey, List<MenuItemKey>>();
             int manualOrderIndex = 0;
 
             List<MenuItemServiceCommand> menuItemServiceCommands = Lists.newArrayList();
-            List<AddContentToSectionCommand> addContentToSectionCommands = new ArrayList<AddContentToSectionCommand>();
+            List<AddContentToSectionCommand> addContentToSectionCommands = Lists.newArrayList();
             for ( Element menuElem : menuElems )
             {
                 int menuKey = Integer.parseInt( menuElem.getAttribute( "key" ) );
@@ -404,99 +419,113 @@ public class SectionHandlerServlet
                 if ( categoryAccessRight.getPublish() )
                 {
                     Element homeElem = XMLTool.getElement( menuElem, "home" );
-                    int homeKey;
                     if ( homeElem != null )
                     {
-                        homeKey = Integer.parseInt( homeElem.getAttribute( "key" ) );
+                        Element pageTemplateElem = XMLTool.getElement( menuElem, "pagetemplate" );
+                        PageTemplateKey pageTemplateKey = null;
+                        if ( pageTemplateElem != null )
+                        {
+                            pageTemplateKey = new PageTemplateKey( Integer.parseInt( pageTemplateElem.getAttribute( "key" ) ) );
+                        }
+                        final int homeKey = Integer.parseInt( homeElem.getAttribute( "key" ) );
+                        SetContentHomeCommand setContentHomeCommand = new SetContentHomeCommand();
+                        setContentHomeCommand.setSetter( user.getKey() );
+                        setContentHomeCommand.setContent( new ContentKey( contentKey ) );
+                        setContentHomeCommand.setSection( new MenuItemKey( homeKey ) );
+                        setContentHomeCommand.setPageTemplate( pageTemplateKey );
+                        menuItemServiceCommands.add( setContentHomeCommand );
                     }
-                    else
-                    {
-                        homeKey = -1;
-                    }
-                    Element pageTemplateElem = XMLTool.getElement( menuElem, "pagetemplate" );
-                    PageTemplateKey pageTemplateKey = null;
-                    if ( pageTemplateElem != null )
-                    {
-                        pageTemplateKey = new PageTemplateKey( Integer.parseInt( pageTemplateElem.getAttribute( "key" ) ) );
-                    }
-
-                    SetContentHomeCommand setContentHomeCommand = new SetContentHomeCommand();
-                    setContentHomeCommand.setSetter( user.getKey() );
-                    setContentHomeCommand.setContent( new ContentKey( contentKey ) );
-                    setContentHomeCommand.setSection( new MenuItemKey( homeKey ) );
-                    setContentHomeCommand.setPageTemplate( pageTemplateKey );
-                    menuItemServiceCommands.add( setContentHomeCommand );
                 }
 
-                Element[] menuitemElems = XMLTool.getElements( menuElem, "menuitem" );
-                for ( Element menuitemElem : menuitemElems )
+                // iterate list of menus
+                Element[] menuItemElems = XMLTool.getElements( menuElem, "menuitem" );
+                for ( Element menuItemElem : menuItemElems )
                 {
-                    AddContentToSectionCommand addContentToSectionCommand = new AddContentToSectionCommand();
-
-                    boolean manuallyOrder = Boolean.valueOf( menuitemElem.getAttribute( "manuallyOrder" ) );
-                    boolean ordered = Boolean.valueOf( menuitemElem.getAttribute( "ordered" ) );
-                    MenuItemKey menuItemKey = new MenuItemKey( menuitemElem.getAttribute( "key" ) );
+                    boolean manuallyOrder = Boolean.valueOf( menuItemElem.getAttribute( "manuallyOrder" ) );
+                    boolean ordered = Boolean.valueOf( menuItemElem.getAttribute( "ordered" ) );
+                    MenuItemKey menuItemKey = new MenuItemKey( menuItemElem.getAttribute( "key" ) );
                     MenuItemKey sectionKey = admin.getSectionKeyByMenuItemKey( menuItemKey );
 
-                    addContentToSectionCommand.setSection( menuItemKey );
-                    addContentToSectionCommand.setContent( new ContentKey( contentKey ) );
-                    addContentToSectionCommand.setContributor( user.getKey() );
+                    final Action action = Action.valueOf( menuItemElem.getAttribute( "action" ) );
 
-                    List<MenuItemKey> menuItemKeysBySiteKey = listOfMenuItemKeysBySiteKey.get( siteKey );
-                    if ( menuItemKeysBySiteKey == null )
+                    switch ( action )
                     {
-                        menuItemKeysBySiteKey = new ArrayList<MenuItemKey>();
-                        listOfMenuItemKeysBySiteKey.put( siteKey, menuItemKeysBySiteKey );
+                        case add:
+                            final AddContentToSectionCommand addContentToSectionCommand = new AddContentToSectionCommand();
+                            addContentToSectionCommand.setSection( menuItemKey );
+                            addContentToSectionCommand.setContent( new ContentKey( contentKey ) );
+                            addContentToSectionCommand.setContributor( user.getKey() );
+
+                            List<MenuItemKey> menuItemKeysBySiteKey = listOfMenuItemKeysBySiteKey.get( siteKey );
+                            if ( menuItemKeysBySiteKey == null )
+                            {
+                                menuItemKeysBySiteKey = new ArrayList<MenuItemKey>();
+                                listOfMenuItemKeysBySiteKey.put( siteKey, menuItemKeysBySiteKey );
+                            }
+                            menuItemKeysBySiteKey.add( menuItemKey );
+
+                            Element sectionElem = XMLTool.createElement( sectionsDoc, sectionsElem, "section" );
+                            sectionElem.setAttribute( "key", String.valueOf( sectionKey ) );
+                            MenuItemAccessRight menuItemAccessRight = admin.getMenuItemAccessRight( user, menuItemKey );
+                            boolean approveInSection = menuItemAccessRight.getPublish();
+                            sectionElem.setAttribute( "approved", String.valueOf( approveInSection ) );
+                            sectionElem.setAttribute( "ordered", Boolean.toString( ordered ) );
+                            sectionElem.setAttribute( "manuallyOrder", Boolean.toString( manuallyOrder ) );
+
+                            addContentToSectionCommand.setApproveInSection( approveInSection );
+                            if ( !approveInSection )
+                            {
+                                addContentToSectionCommand.setAddOnTop( false );
+                            }
+
+                            if ( ordered && manuallyOrder )
+                            {
+                                final OrderContentsInSectionCommand orderContentsInSectionCommand =
+                                    addContentToSectionCommand.createOrderContentsInSectionCommand();
+                                final List<ContentKey> wantedOrder = new ArrayList<ContentKey>();
+
+                                StepState stepState = wizardState.getStepState( "step1" );
+                                int k = -1;
+                                do
+                                {
+                                    stepState = stepState.getNextStepState();
+                                    k++;
+                                }
+                                while ( k < manualOrderIndex );
+                                Element contentsElem = XMLTool.createElement( sectionsDoc, sectionElem, "contents" );
+                                Document tempStateDoc = stepState.getStateDoc();
+                                Element tempSectionElem = XMLTool.getFirstElement( tempStateDoc.getDocumentElement() );
+                                Element[] tempContentElems = XMLTool.getElements( tempSectionElem );
+                                for ( Element tempContentElem : tempContentElems )
+                                {
+                                    contentsElem.appendChild( sectionsDoc.importNode( tempContentElem, true ) );
+                                    wantedOrder.add( new ContentKey( tempContentElem.getAttribute( "key" ) ) );
+                                }
+                                manualOrderIndex++;
+
+                                orderContentsInSectionCommand.setWantedOrder( wantedOrder );
+                            }
+                            else if ( ordered && !manuallyOrder && approveInSection )
+                            {
+                                addContentToSectionCommand.setAddOnTop( true );
+                            }
+
+                            addContentToSectionCommands.add( addContentToSectionCommand );
+                            break;
+
+                        case remove:
+                            final RemoveContentsFromSectionCommand removeCommand = new RemoveContentsFromSectionCommand();
+                            removeCommand.setRemover( user.getKey() );
+                            removeCommand.setSection( menuItemKey );
+                            removeCommand.addContentToRemove( new ContentKey( contentKey ) );
+
+                            menuItemServiceCommands.add( removeCommand );
+                            break;
+
+                        case none:
+
+                            break;
                     }
-                    menuItemKeysBySiteKey.add( menuItemKey );
-
-                    Element sectionElem = XMLTool.createElement( sectionsDoc, sectionsElem, "section" );
-                    sectionElem.setAttribute( "key", String.valueOf( sectionKey ) );
-                    MenuItemAccessRight menuItemAccessRight = admin.getMenuItemAccessRight( user, menuItemKey );
-                    boolean approveInSection = menuItemAccessRight.getPublish();
-                    sectionElem.setAttribute( "approved", String.valueOf( approveInSection ) );
-                    sectionElem.setAttribute( "ordered", Boolean.toString( ordered ) );
-                    sectionElem.setAttribute( "manuallyOrder", Boolean.toString( manuallyOrder ) );
-
-                    addContentToSectionCommand.setApproveInSection( approveInSection );
-                    if ( !approveInSection )
-                    {
-                        addContentToSectionCommand.setAddOnTop( false );
-                    }
-
-                    if ( ordered && manuallyOrder )
-                    {
-                        final OrderContentsInSectionCommand orderContentsInSectionCommand =
-                            addContentToSectionCommand.createOrderContentsInSectionCommand();
-                        final List<ContentKey> wantedOrder = new ArrayList<ContentKey>();
-
-                        StepState stepState = wizardState.getStepState( "step1" );
-                        int k = -1;
-                        do
-                        {
-                            stepState = stepState.getNextStepState();
-                            k++;
-                        }
-                        while ( k < manualOrderIndex );
-                        Element contentsElem = XMLTool.createElement( sectionsDoc, sectionElem, "contents" );
-                        Document tempStateDoc = stepState.getStateDoc();
-                        Element tempSectionElem = XMLTool.getFirstElement( tempStateDoc.getDocumentElement() );
-                        Element[] tempContentElems = XMLTool.getElements( tempSectionElem );
-                        for ( Element tempContentElem : tempContentElems )
-                        {
-                            contentsElem.appendChild( sectionsDoc.importNode( tempContentElem, true ) );
-                            wantedOrder.add( new ContentKey( tempContentElem.getAttribute( "key" ) ) );
-                        }
-                        manualOrderIndex++;
-
-                        orderContentsInSectionCommand.setWantedOrder( wantedOrder );
-                    }
-                    else if ( ordered && !manuallyOrder && approveInSection )
-                    {
-                        addContentToSectionCommand.setAddOnTop( true );
-                    }
-
-                    addContentToSectionCommands.add( addContentToSectionCommand );
                 }
             }
 
@@ -648,7 +677,7 @@ public class SectionHandlerServlet
             Document stateDoc = wizardState.getFirstStepState().getStateDoc();
             Element stepstateElem = stateDoc.getDocumentElement();
             Element[] menuElems = XMLTool.getElements( stepstateElem, "menu" );
-            int[] menuKeys;
+            int[] menuKeys = new int[0];
             if ( menuElems.length > 0 )
             {
                 menuKeys = new int[menuElems.length];
@@ -660,9 +689,30 @@ public class SectionHandlerServlet
                     wizarddataElem.appendChild( wizarddataDoc.importNode( doc.getDocumentElement(), true ) );
                 }
 
+                final Document doc = wizardState.getStepState( "step1" ).getStateDoc();
+                final Element rootElem = doc.getDocumentElement();
+                final Set<String> menus = Sets.newHashSet();
+
+                final boolean firstStep = "".equals( rootElem.getAttribute( "buttonpressed" ) );
+                if ( !firstStep )
+                {
+                    final Element[] menuitems = XMLTool.selectElements( rootElem, "/stepstate/menu/menuitem" );
+
+                    for ( final Element menuitem : menuitems )
+                    {
+                        final String selected = menuitem.getAttribute( "selected" );
+                        final String menukey = menuitem.getAttribute( "key" );
+
+                        if ( selected.equals( "true" ) )
+                        {
+                            menus.add( menukey );
+                        }
+                    }
+                }
+
                 // sites
                 final List<MenuItemEntity> menuItems = getAccessibleMenuItems( user, menuKeys );
-                Document menuItemsDoc = createElementsToList( menuItems );
+                Document menuItemsDoc = createElementsToList( menuItems, menus, firstStep );
                 wizarddataElem.appendChild( wizarddataDoc.importNode( menuItemsDoc.getDocumentElement(), true ) );
 
                 // sections
@@ -684,7 +734,39 @@ public class SectionHandlerServlet
             Document doc = admin.getContentVersion( user, versionKey ).getAsDOMDocument();
             wizarddataElem.appendChild( wizarddataDoc.importNode( doc.getDocumentElement(), true ) );
 
+            // determine home of content on site
             doc = admin.getContentHomes( contentKey ).getAsDOMDocument();
+            final Element contentHomes = XMLTool.getElements( doc, "/contenthomes" )[0];
+
+            // content does not have exactly home ? - resolve it
+            if ( contentHomes.getChildNodes().getLength() == 0 )
+            {
+                for ( final int menuKey : menuKeys )
+                {
+                    final ContentEntity content = contentDao.findByKey( new ContentKey( contentKey  ) );
+
+                    final SiteKey siteKey = new SiteKey( menuKey );
+
+                    final ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
+                    contentLocationSpecification.setIncludeInactiveLocationsInSection( true );
+                    contentLocationSpecification.setSiteKey( siteKey );
+                    final ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
+
+                    // <contenthome contentkey="3" menuitemkey="6" menukey="0"/>
+                    final ContentLocation homeLocation = contentLocations.getHomeLocation( siteKey );
+                    if (homeLocation != null)
+                    {
+                        final Element contentHomeElem = XMLTool.createElement( doc, contentHomes, "contenthome" );
+                        contentHomeElem.setAttribute( "contentkey", "" + homeLocation.getContent().getKey() );
+                        contentHomeElem.setAttribute( "menuitemkey", "" + homeLocation.getMenuItem().getKey() );
+                        contentHomeElem.setAttribute( "menukey", "" + menuKey );
+
+                        contentHomes.appendChild( contentHomeElem );
+                    }
+
+                }
+            }
+
             wizarddataElem.appendChild( wizarddataDoc.importNode( doc.getDocumentElement(), true ) );
         }
 
@@ -853,7 +935,7 @@ public class SectionHandlerServlet
             Element wizarddataElem = wizarddataDoc.getDocumentElement();
 
             // get content version
-            Document doc = admin.getContentVersion( user, versionKey ).getAsDOMDocument();
+            final Document doc = admin.getContentVersion( user, versionKey ).getAsDOMDocument();
             wizarddataElem.appendChild( wizarddataDoc.importNode( doc.getDocumentElement(), true ) );
 
             // get step 1's menu and section keys
@@ -888,6 +970,18 @@ public class SectionHandlerServlet
 
                 // Added menu items
                 final TIntArrayList menuItemKeys = getSelectedMenuItemKeys( stateDoc );
+                final TIntArrayList displayMenuItemKeys = new TIntArrayList();
+
+                final List<MenuItemEntity> menuItemList = getAccessibleMenuItems( user, menuKeyList.toArray() );
+
+                for ( MenuItemEntity entity : menuItemList )
+                {
+                    if ( !menuItemKeys.contains( entity.getKey().toInt() ) )
+                    {
+                        menuItemKeys.add( entity.getKey().toInt() );
+                        displayMenuItemKeys.add( entity.getKey().toInt() );
+                    }
+                }
 
                 // Added sections
                 SectionCriteria criteria = new SectionCriteria();
@@ -899,26 +993,48 @@ public class SectionHandlerServlet
                 criteria.setContentTypeKeyFilter( contentTypeKey );
                 criteria.setIncludeSectionsWithoutContentTypeEvenWhenFilterIsSet( false );
                 criteria.setIncludeSectionContentTypesInfo( false );
-                doc = admin.getSections( user, criteria ).getAsDOMDocument();
-                wizarddataElem.appendChild( wizarddataDoc.importNode( doc.getDocumentElement(), true ) );
+                final XMLDocument xmlSectionsDocument = admin.getSections( user, criteria );
+                wizarddataElem.appendChild( wizarddataDoc.importNode( xmlSectionsDocument.getAsDOMDocument().getDocumentElement(), true ) );
+                wizarddataElem.appendChild( wizarddataDoc.importNode( this.sectionsDoc.getDocumentElement(), true ) );
+
+                final Map<Integer, Boolean> keys = Maps.newLinkedHashMap();
+                final Map<String, Set<String>> siteToMenus = getSitesToMenusMap( this.sectionsDoc, wizardState );
+
+                this.sectionsDoc = null; // free HTTP session. note: Wizard is not java.io.Serializable !
+
+                final TIntArrayList allKeysSet = new TIntArrayList();
+                for (final Set<String> menuItems : siteToMenus.values())
+                {
+                    for (final String menuItem : menuItems )
+                    {
+                        allKeysSet.add( Integer.parseInt( menuItem ) );
+                    }
+                }
+                final Set<Integer> previousMenuItemKeysSet = allKeysSet.toLinkedHashSet();
+                allKeysSet.add( menuItemKeys.toArray() );
+                final Set<Integer> currentMenuItemKeysSet = menuItemKeys.toLinkedHashSet();
+
+                for (final int key : allKeysSet.toArray())
+                {
+                    keys.put( key, !previousMenuItemKeysSet.contains( key ) || currentMenuItemKeysSet.contains( key ) );
+                }
+
+                final Document elementsToListDoc = createElementsToList( keys, displayMenuItemKeys.toLinkedHashSet() );
+                wizarddataElem.appendChild( wizarddataDoc.importNode( elementsToListDoc.getDocumentElement(), true ) );
+            }
+        }
 
                 // Previous sections
-                criteria = new SectionCriteria();
-                criteria.setTreeStructure( false );
-                criteria.setAppendAccessRights( false );
-                criteria.setContentKey( contentKey );
-                criteria.setMarkContentFilteredSections( true );
-                criteria.setIncludeSectionsWithoutContentTypeEvenWhenFilterIsSet( false );
-                criteria.setIncludeSectionContentTypesInfo( false );
-                doc = admin.getSections( user, criteria ).getAsDOMDocument();
-                wizarddataElem.appendChild( wizarddataDoc.importNode( doc.getDocumentElement(), true ) );
-
-                // Previous menu items
-                menuItemKeys.add( getPreviousSelectedMenuItemKeys( doc ).toArray() );
-
-                doc = createElementsToList( menuItemKeys );
-                wizarddataElem.appendChild( wizarddataDoc.importNode( doc.getDocumentElement(), true ) );
-            }
+        private Document readSectionsWhereContentIsPublished( final AdminService admin, final User user, final int contentKey )
+        {
+            final SectionCriteria criteria = new SectionCriteria();
+            criteria.setTreeStructure( false );
+            criteria.setAppendAccessRights( false );
+            criteria.setContentKey( contentKey );
+            criteria.setMarkContentFilteredSections( true );
+            criteria.setIncludeSectionsWithoutContentTypeEvenWhenFilterIsSet( false );
+            criteria.setIncludeSectionContentTypesInfo( false );
+            return admin.getSections( user, criteria ).getAsDOMDocument();
         }
 
         protected void saveState( WizardState wizardState, HttpServletRequest request, HttpServletResponse response, AdminService admin,
@@ -951,7 +1067,16 @@ public class SectionHandlerServlet
                 }
                 else if ( "step1".equals( currentStep.getName() ) )
                 {
-                    saveStateStep1( wizardState, admin, stepstateDoc, formItems );
+                    final int versionKey = formItems.getInt( "versionkey", -1 );
+                    final int contentKey = versionKey < 0 ?
+                        formItems.getInt( "contentkey" ) :
+                        admin.getContentKeyByVersionKey( versionKey );
+
+                    this.sectionsDoc = readSectionsWhereContentIsPublished( admin, user, contentKey );
+
+                    final Map<String, Set<String>> siteToMenus = getSitesToMenusMap( this.sectionsDoc, wizardState );
+
+                    saveStateStep1( wizardState, admin, stepstateDoc, formItems, siteToMenus );
                 }
                 else if ( "step2".equals( currentStep.getName() ) )
                 {
@@ -963,6 +1088,49 @@ public class SectionHandlerServlet
                 String message = "Failed to parse a date: %t";
                 WizardLogger.errorWizard( message, pe );
             }
+        }
+
+        private Map<String, Set<String>> getSitesToMenusMap( final Document sectionsDoc, final WizardState wizardState )
+        {
+            // get step 1's menu and section keys
+            Document stateDoc = wizardState.getStepState( "step0" ).getStateDoc();
+            Element stepstateElem = stateDoc.getDocumentElement();
+            Element[] menuElems = XMLTool.getElements( stepstateElem, "menu" );
+            TIntArrayList menuKeyList = new TIntArrayList();
+            if ( menuElems.length > 0 )
+            {
+                for ( Element menuElem : menuElems )
+                {
+                    int menuKey = Integer.parseInt( menuElem.getAttribute( "key" ) );
+                    menuKeyList.add( menuKey );
+                }
+            }
+
+            final Element rootElem = sectionsDoc.getDocumentElement();
+            final Element[] sections = XMLTool.getElements( rootElem, "section" );
+
+            final Map<String, Set<String>> siteToMenus = Maps.newHashMap();
+            for ( final Element section : sections )
+            {
+                final String siteKey = section.getAttribute( "menukey" );
+                final String menuKey = section.getAttribute( "key" );
+
+                final Set<Integer> sites = menuKeyList.toLinkedHashSet();
+
+                // check that site was selected on step 0
+                if ( sites.contains( Integer.parseInt( siteKey ) ) )
+                {
+                    Set<String> menus = siteToMenus.get( siteKey );
+                    if ( menus == null )
+                    {
+                        menus = Sets.newHashSet();
+                        siteToMenus.put( siteKey, menus );
+                    }
+                    menus.add( menuKey );
+                }
+            }
+
+            return siteToMenus;
         }
 
         // approval and site selection
@@ -1105,52 +1273,80 @@ public class SectionHandlerServlet
 
         // publishing
 
-        private void saveStateStep1( WizardState wizardState, AdminService admin, Document stepstateDoc, ExtendedMap formItems )
+        private void saveStateStep1( WizardState wizardState, AdminService admin, Document stepstateDoc, ExtendedMap formItems,
+                                     final Map<String, Set<String>> siteToMenus )
         {
             Document stateDoc = wizardState.getFirstStepState().getStateDoc();
             Element stepstateElem = stateDoc.getDocumentElement();
             Element[] menuElems = XMLTool.getElements( stepstateElem, "menu" );
-            if ( menuElems.length > 0 )
-            {
-                // select
-                for ( Element menuElem1 : menuElems )
-                {
-                    int menuKey = Integer.parseInt( menuElem1.getAttribute( "key" ) );
-                    Element rootElem = stepstateDoc.getDocumentElement();
-                    Element menuElem = XMLTool.createElement( stepstateDoc, rootElem, "menu" );
-                    menuElem.setAttribute( "key", String.valueOf( menuKey ) );
 
-                    // framework
-                    if ( formItems.containsKey( "contentframework_" + menuKey ) )
+            // select
+            for ( Element menuElem1 : menuElems )
+            {
+                final String site = menuElem1.getAttribute( "key" );
+                final int menuKey = Integer.parseInt( site );
+                Element rootElem = stepstateDoc.getDocumentElement();
+                Element menuElem = XMLTool.createElement( stepstateDoc, rootElem, "menu" );
+                menuElem.setAttribute( "key", String.valueOf( menuKey ) );
+
+                // framework
+                if ( formItems.containsKey( "contentframework_" + menuKey ) )
+                {
+                    Element pagetemplateElem = XMLTool.createElement( stepstateDoc, menuElem, "pagetemplate" );
+                    try
                     {
-                        Element pagetemplateElem = XMLTool.createElement( stepstateDoc, menuElem, "pagetemplate" );
                         int pageTemplateKey = Integer.parseInt( formItems.getString( "contentframework_" + menuKey ) );
                         pagetemplateElem.setAttribute( "key", String.valueOf( pageTemplateKey ) );
                     }
-
-                    String[] menuItemSelectedKeys = formItems.getStringArray( "menuitem_select_" + menuKey );
-                    List<String> menuItemManuallyOrderKeys =
-                        Arrays.asList( formItems.getStringArray( "menuitem_manually_order_" + menuKey ) );
-
-                    for ( String menuItemSelectedKey : menuItemSelectedKeys )
+                    catch ( Exception e )
                     {
-                        Element menuitemElem = XMLTool.createElement( stepstateDoc, menuElem, "menuitem" );
-                        menuitemElem.setAttribute( "key", menuItemSelectedKey );
-                        menuitemElem.setAttribute( "publish", "true" );
-                        menuitemElem.setAttribute( "manuallyOrder",
-                                                   String.valueOf( menuItemManuallyOrderKeys.contains( menuItemSelectedKey ) ) );
-                        MenuItemKey menuItemKey = new MenuItemKey( menuItemSelectedKey );
-                        MenuItemKey sectionKey = admin.getSectionKeyByMenuItemKey( menuItemKey );
-                        menuitemElem.setAttribute( "ordered", String.valueOf( admin.isSectionOrdered( sectionKey.toInt() ) ) );
+                        ;
                     }
+                }
 
-                    // home
-                    String homeKey = formItems.getString( "menuitem_home_" + menuKey, null );
-                    if ( homeKey != null )
-                    {
-                        Element homeElem = XMLTool.createElement( stepstateDoc, menuElem, "home" );
-                        homeElem.setAttribute( "key", homeKey );
-                    }
+                String[] menuItemSelectedKeysAsArray = formItems.getStringArray( "menuitem_select_" + menuKey );
+                List<String> toBePublishedMenuItems = Arrays.asList( menuItemSelectedKeysAsArray );
+
+                String[] menuItemManuallyOrderKeysArray = formItems.getStringArray( "menuitem_manually_order_" + menuKey );
+                List<String> menuItemManuallyOrderKeys = Arrays.asList( menuItemManuallyOrderKeysArray );
+
+                Set<String> menuItems = Sets.newHashSet();
+                final Set<String> alreadyPublishedMenuItems =
+                    Objects.firstNonNull( siteToMenus.get( site ), Collections.<String>emptySet() );
+                menuItems.addAll( alreadyPublishedMenuItems );
+                menuItems.addAll( toBePublishedMenuItems );
+
+                for ( final String menuItem : menuItems )
+                {
+                    final boolean isAmongAlreadyPublished = alreadyPublishedMenuItems.contains( menuItem );
+                    final boolean isAmongToBePublished = toBePublishedMenuItems.contains( menuItem );
+                    final boolean isChanged = isAmongAlreadyPublished ^ isAmongToBePublished;
+                    final boolean isPublish = !isAmongAlreadyPublished || isAmongToBePublished;
+
+                    final Action change = isAmongAlreadyPublished ? Action.remove : Action.add;
+                    final Action action = isChanged ? change : Action.none;
+
+                    final boolean manuallyOrder = menuItemManuallyOrderKeys.contains( menuItem );
+
+                    final Element menuItemElem = XMLTool.createElement( stepstateDoc, menuElem, "menuitem" );
+
+                    menuItemElem.setAttribute( "key", menuItem );
+                    menuItemElem.setAttribute( "publish", String.valueOf( isPublish ) ); // show on wizard page as checked
+                    menuItemElem.setAttribute( "selected", String.valueOf( isAmongToBePublished ) );
+                    menuItemElem.setAttribute( "action", String.valueOf( action ) );
+                    menuItemElem.setAttribute( "manuallyOrder", String.valueOf( manuallyOrder ) );
+
+                    MenuItemKey menuItemKey = new MenuItemKey( menuItem );
+                    MenuItemKey sectionKey = admin.getSectionKeyByMenuItemKey( menuItemKey );
+                    menuItemElem.setAttribute( "ordered", String.valueOf( admin.isSectionOrdered( sectionKey.toInt() ) ) );
+                }
+
+                // home
+                String homeKey = formItems.getString( "menuitem_home_" + menuKey, null );
+                if ( homeKey != null )
+                {
+                    Element homeElem = XMLTool.createElement( stepstateDoc, menuElem, "home" );
+                    homeElem.setAttribute( "key", homeKey );
                 }
             }
         }
@@ -1228,7 +1424,7 @@ public class SectionHandlerServlet
             return menuElems.length == 0;
         }
 
-        private Document createElementsToList( final TIntArrayList menuItemKeys )
+        private Document createElementsToList( final Map<Integer, Boolean> menuItemKeys, final Set<Integer> displayMenuItemKeys )
         {
             final MenuItemXmlCreator creator = getMenuItemXmlCreator();
 
@@ -1238,8 +1434,11 @@ public class SectionHandlerServlet
 
             final Map<SiteKey, org.jdom.Element> siteElSiteKeyMap = new HashMap<SiteKey, org.jdom.Element>();
 
-            for ( final Integer menuItemKey : menuItemKeys.toArray() )
+            for ( final Map.Entry<Integer, Boolean> entry : menuItemKeys.entrySet() )
             {
+                final Integer menuItemKey = entry.getKey();
+                final Boolean menuItemKeyChecked = entry.getValue();
+
                 final MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
                 final SiteEntity site = menuItem.getSite();
                 final SiteKey siteKey = site.getKey();
@@ -1256,13 +1455,17 @@ public class SectionHandlerServlet
                     rootEl.addContent( siteEl );
                 }
 
-                siteEl.addContent( creator.createMenuItemElement( menuItem ) );
+                final org.jdom.Element menuItemElement = creator.createMenuItemElement( menuItem );
+                menuItemElement.setAttribute( "publish", menuItemKeyChecked.toString() );
+                menuItemElement.setAttribute( "none", "" + displayMenuItemKeys.contains( menuItemKey ));
+
+                siteEl.addContent( menuItemElement );
             }
 
             return XMLDocumentFactory.create( doc ).getAsDOMDocument();
         }
 
-        private Document createElementsToList( final List<MenuItemEntity> menuItems )
+        private Document createElementsToList( final List<MenuItemEntity> menuItems, final Set<String> menus, final boolean firstStep )
         {
             final MenuItemXmlCreator creator = getMenuItemXmlCreator();
 
@@ -1289,7 +1492,19 @@ public class SectionHandlerServlet
                     rootEl.addContent( siteEl );
                 }
 
-                siteEl.addContent( creator.createMenuItemElement( menuItem ) );
+                final org.jdom.Element menuItemElement = creator.createMenuItemElement( menuItem );
+
+                if ( firstStep )
+                {
+                    menuItemElement.setAttribute( "publish", "true" );
+                }
+                else
+                {
+                    final String menuItemKey = String.valueOf( menuItem.getKey() );
+                    menuItemElement.setAttribute( "publish", String.valueOf( menus.contains( menuItemKey ) ) );
+                }
+
+                siteEl.addContent( menuItemElement );
             }
 
             return XMLDocumentFactory.create( doc ).getAsDOMDocument();
@@ -1360,29 +1575,17 @@ public class SectionHandlerServlet
         {
             final TIntArrayList menuItemKeys = new TIntArrayList();
             final Element[] menuEls = XMLTool.getElements( stateDoc.getDocumentElement(), "menu" );
-            for ( int j = 0; j < menuEls.length; j++ )
+            for ( final Element menuEl : menuEls )
             {
-                final Element[] menuItemEls = XMLTool.getElements( menuEls[j], "menuitem" );
-                for ( int i = 0; i < menuItemEls.length; i++ )
+                final Element[] menuItemEls = XMLTool.getElements( menuEl, "menuitem" );
+                for ( final Element menuItemEl : menuItemEls )
                 {
-                    final int menuItemKey = Integer.parseInt( menuItemEls[i].getAttribute( "key" ) );
-                    menuItemKeys.add( menuItemKey );
-                }
-            }
-            return menuItemKeys;
-        }
-
-        private TIntArrayList getPreviousSelectedMenuItemKeys( final Document sectionDoc )
-        {
-            final TIntArrayList menuItemKeys = new TIntArrayList();
-            final Element[] sectionEls = XMLTool.getElements( sectionDoc.getDocumentElement(), "section" );
-            for ( int i = 0; i < sectionEls.length; i++ )
-            {
-                final boolean filtered = Boolean.parseBoolean( sectionEls[i].getAttribute( "filtered" ) );
-                if ( filtered )
-                {
-                    final int menuItemKey = Integer.parseInt( sectionEls[i].getAttribute( "menuitemkey" ) );
-                    menuItemKeys.add( menuItemKey );
+                    final int menuItemKey = Integer.parseInt( menuItemEl.getAttribute( "key" ) );
+                    final boolean selected = Boolean.parseBoolean( menuItemEl.getAttribute( "selected" ) );
+                    if (selected)
+                    {
+                        menuItemKeys.add( menuItemKey );
+                    }
                 }
             }
             return menuItemKeys;

@@ -5,6 +5,8 @@
 package com.enonic.cms.framework.util;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.google.common.primitives.Ints;
 
@@ -46,5 +48,10 @@ public final class TIntArrayList
     public int[] toArray()
     {
         return Ints.toArray( this.list );
+    }
+
+    public Set<Integer> toLinkedHashSet()
+    {
+        return new LinkedHashSet<Integer>( this.list );
     }
 }

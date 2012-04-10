@@ -178,6 +178,8 @@ public class ContentIndexServiceImplTest_assignment
         contentIndexService.index( assignerIsTAN, false );
         contentIndexService.index( assignerIsNone, false );
 
+        flushIndex();
+
         printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
@@ -223,6 +225,7 @@ public class ContentIndexServiceImplTest_assignment
         contentIndexService.index( due2010_06_01T00_00_00, false );
         contentIndexService.index( due2010_06_01T12_00_00, false );
         contentIndexService.index( notDue, false );
+
         flushIndex();
 
         printAllIndexContent();

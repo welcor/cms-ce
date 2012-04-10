@@ -49,8 +49,8 @@ public class MappingTest
 
         elasticSearchIndexService.createIndex( "test" );
 
-        final String mapping = mappingProvider.getMapping( "test", "testType" );
-        elasticSearchIndexService.putMapping( "test", "testType", mapping );
+        final String mapping = mappingProvider.getMapping( "test", "testtype" );
+        elasticSearchIndexService.putMapping( "test", "testtype", mapping );
 
         indexADocument( 8.0, "2" );
         indexADocument( "torsk", "1" );
@@ -84,7 +84,7 @@ public class MappingTest
         ContentIndexQuery query = new ContentIndexQuery( queryString );
         final SearchSourceBuilder build = queryTranslator.build( query );
 
-        return elasticSearchIndexService.search( "test", "testType", build );
+        return elasticSearchIndexService.search( "test", "testtype", build );
     }
 
     private void indexADocument( String value, String id )
@@ -92,7 +92,7 @@ public class MappingTest
     {
         final XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject().field( "fisk", value ).endObject();
-        IndexRequest request = new IndexRequest( "test" ).type( "testType" ).id( id ).source( builder );
+        IndexRequest request = new IndexRequest( "test" ).type( "testtype" ).id( id ).source( builder );
         elasticSearchIndexService.index( request );
     }
 
@@ -102,7 +102,7 @@ public class MappingTest
         final XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject().field( "fisk", value ).field( "fisk.number", value ).endObject();
 
-        IndexRequest request = new IndexRequest( "test" ).type( "testType" ).id( id ).source( builder );
+        IndexRequest request = new IndexRequest( "test" ).type( "testtype" ).id( id ).source( builder );
         elasticSearchIndexService.index( request );
     }
 
@@ -112,7 +112,7 @@ public class MappingTest
         final XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject().field( "fisk", value ).field( "fisk.date", value ).endObject();
 
-        IndexRequest request = new IndexRequest( "test" ).type( "testType" ).id( id ).source( builder );
+        IndexRequest request = new IndexRequest( "test" ).type( "testtype" ).id( id ).source( builder );
         elasticSearchIndexService.index( request );
     }
 
@@ -129,7 +129,7 @@ public class MappingTest
             "  }\n" +
             "}";
 
-        SearchResponse result = elasticSearchIndexService.search( "test", "testType", termQuery );
+        SearchResponse result = elasticSearchIndexService.search( "test", "testtype", termQuery );
 
         System.out.println( "\n\n------------------------------------------" );
         System.out.println( result.toString() );

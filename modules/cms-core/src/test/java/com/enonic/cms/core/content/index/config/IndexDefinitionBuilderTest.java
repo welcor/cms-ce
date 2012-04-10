@@ -37,22 +37,26 @@ public class IndexDefinitionBuilderTest
     public void testBuilder()
     {
         List<IndexDefinition> result = this.builder.buildList( this.inputDoc.getRootElement() );
-        Assert.assertEquals( 9, result.size() );
-        assertEquals( result.get( 0 ), "data/person/firstName", "contentdata/person/firstName" );
-        assertEquals( result.get( 1 ), "data/colorCount", "count(//favouriteColor)" );
-        assertEquals( result.get( 2 ), "data/colorList", "string-join(saxon:sort(//favouriteColor), ',')" );
-        assertEquals( result.get( 3 ), "data/a", "contentdata/a" );
-        assertEquals( result.get( 4 ), "data/b", "contentdata/b" );
-        assertEquals( result.get( 5 ), "data/c", "c" );
-        assertEquals( result.get( 6 ), "data/d", "contentdata/d" );
-        assertEquals( result.get( 7 ), "data/e", "contentdata/e" );
-        assertEquals( result.get( 8 ), "data/f", "contentdata/f" );
+        Assert.assertEquals( 12, result.size() );
+        assertEquals( result.get( 0 ), "data/person/firstName", "contentdata/person/firstName", IndexFieldType.STRING );
+        assertEquals( result.get( 1 ), "data/colorCount", "count(//favouriteColor)", IndexFieldType.STRING );
+        assertEquals( result.get( 2 ), "data/colorList", "string-join(saxon:sort(//favouriteColor), ',')", IndexFieldType.STRING );
+        assertEquals( result.get( 3 ), "data/a", "contentdata/a", IndexFieldType.STRING );
+        assertEquals( result.get( 4 ), "data/b", "contentdata/b", IndexFieldType.STRING );
+        assertEquals( result.get( 5 ), "data/c", "c", IndexFieldType.STRING );
+        assertEquals( result.get( 6 ), "data/d", "contentdata/d", IndexFieldType.DATE );
+        assertEquals( result.get( 7 ), "data/e", "contentdata/e", IndexFieldType.STRING );
+        assertEquals( result.get( 8 ), "data/f", "contentdata/f", IndexFieldType.NUMBER );
+        assertEquals( result.get( 9 ), "data/g", "contentdata/g", IndexFieldType.DATE );
+        assertEquals( result.get( 10 ), "data/h", "contentdata/h", IndexFieldType.STRING );
+        assertEquals( result.get( 11 ), "data/i", "i", IndexFieldType.NUMBER );
     }
 
-    private void assertEquals( IndexDefinition def, String name, String xpath )
+    private void assertEquals( IndexDefinition def, String name, String xpath, IndexFieldType indexFieldType )
     {
         Assert.assertNotNull( def );
         Assert.assertEquals( name, def.getName() );
         Assert.assertEquals( xpath, def.getXPath() );
+        Assert.assertEquals( indexFieldType, def.getIndexFieldType() );
     }
 }

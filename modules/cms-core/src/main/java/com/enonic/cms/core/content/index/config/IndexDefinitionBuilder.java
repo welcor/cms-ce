@@ -7,6 +7,7 @@ package com.enonic.cms.core.content.index.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
@@ -22,6 +23,7 @@ public final class IndexDefinitionBuilder
     private IndexDefinition buildSingle( Element elem )
     {
         String xpath = elem.getAttributeValue( "xpath" );
+
         if ( xpath == null )
         {
             /* Xpath missing - invalid index def */
@@ -29,14 +31,35 @@ public final class IndexDefinitionBuilder
         }
 
         String name = elem.getAttributeValue( "name" );
+
+        IndexFieldType indexFieldType = getIndexFieldType( elem );
+
         if ( name == null )
         {
             /* Name missing - old index def */
-            return new IndexDefinition( IndexPathHelper.transformName( xpath ), IndexPathHelper.transformOldPath( xpath ) );
+            return new IndexDefinition( IndexPathHelper.transformName( xpath ), IndexPathHelper.transformOldPath( xpath ), indexFieldType );
         }
 
         /* Name present - new index def */
-        return new IndexDefinition( name, IndexPathHelper.transformNewPath( xpath ) );
+        return new IndexDefinition( name, IndexPathHelper.transformNewPath( xpath ), indexFieldType );
+    }
+
+    private IndexFieldType getIndexFieldType( final Element elem )
+    {
+        IndexFieldType indexFieldType;
+
+        final String typeElement = elem.getAttributeValue( "type" );
+
+        if ( StringUtils.isBlank( typeElement ) )
+        {
+            indexFieldType = IndexFieldType.STRING;
+        }
+        else
+        {
+            indexFieldType = IndexFieldType.getValue( typeElement );
+        }
+
+        return indexFieldType;
     }
 
     /**

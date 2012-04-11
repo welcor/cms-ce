@@ -27,7 +27,7 @@ public class MenuItemKeysByPathResolverTest
 
         // exercise & verify
         MenuItemKeysByPathResolver resolver = new MenuItemKeysByPathResolver( menuItem_1 );
-        assertEquals( menuItem_1.getKey().toString(), resolver.getPageKeyByPath( "/menuItem-1" ) );
+        assertEquals( menuItem_1.getKey().toString(), resolver.getPageKeyByPath( "/menuItem-1") );
     }
 
     @Test
@@ -38,7 +38,7 @@ public class MenuItemKeysByPathResolverTest
 
         // exercise & verify
         MenuItemKeysByPathResolver resolver = new MenuItemKeysByPathResolver( menuItem_1 );
-        assertEquals( "", resolver.getPageKeyByPath( "/menuItem-1/" ) );
+        assertEquals( "", resolver.getPageKeysByPath( "/menuItem-1/" ) );
     }
 
     @Test
@@ -51,7 +51,7 @@ public class MenuItemKeysByPathResolverTest
 
         // exercise & verify
         MenuItemKeysByPathResolver resolver = new MenuItemKeysByPathResolver( menuItem_1 );
-        assertEquals( "2,3", resolver.getPageKeyByPath( "/menuItem-1/" ) );
+        assertEquals( "2,3", resolver.getPageKeysByPath( "/menuItem-1/" ) );
     }
 
     @Test
@@ -93,7 +93,7 @@ public class MenuItemKeysByPathResolverTest
 
         // exercise & verify
         MenuItemKeysByPathResolver resolver = new MenuItemKeysByPathResolver( news_world );
-        assertEquals( "1,2", resolver.getPageKeyByPath( "/" ) );
+        assertEquals( "1,2", resolver.getPageKeysByPath( "/" ) );
     }
 
     @Test
@@ -110,7 +110,7 @@ public class MenuItemKeysByPathResolverTest
 
         // exercise & verify
         MenuItemKeysByPathResolver resolver = new MenuItemKeysByPathResolver( news_world );
-        assertEquals( "3,4,5,6,7", resolver.getPageKeyByPath( "./" ) );
+        assertEquals( "3,4,5,6,7", resolver.getPageKeysByPath( "./" ) );
     }
 
     @Test
@@ -150,7 +150,7 @@ public class MenuItemKeysByPathResolverTest
 
         MenuItemKeysByPathResolver resolver = new MenuItemKeysByPathResolver( topLevelMenuItem );
 
-        keys = resolver.getPageKeyByPath( "/" );
+        keys = resolver.getPageKeysByPath( "/" );
         assertEquals( "1", keys );
 
         keys = resolver.getPageKeyByPath( "/Top menu-item" );
@@ -165,19 +165,19 @@ public class MenuItemKeysByPathResolverTest
         keys = resolver.getPageKeyByPath( "/Top menu-item/child menu-item 2/nope" );
         assertEquals( "", keys );
 
-        keys = resolver.getPageKeyByPath( "/../" );
+        keys = resolver.getPageKeysByPath( "/../" );
         assertEquals( "", keys );
 
         keys = resolver.getPageKeyByPath( "/nope" );
         assertEquals( "", keys );
 
-        keys = resolver.getPageKeyByPath( "/Top menu-item/" );
+        keys = resolver.getPageKeysByPath( "/Top menu-item/" );
         assertEquals( "2,3", keys );
 
         keys = resolver.getPageKeyByPath( "." );
         assertEquals( "1", keys );
 
-        keys = resolver.getPageKeyByPath( "./" );
+        keys = resolver.getPageKeysByPath( "./" );
         assertEquals( "2,3", keys );
 
         keys = resolver.getPageKeyByPath( "./child menu-item 2" );
@@ -195,13 +195,13 @@ public class MenuItemKeysByPathResolverTest
         keys = resolver.getPageKeyByPath( "../." );
         assertEquals( "", keys );
 
-        keys = resolver.getPageKeyByPath( "../" );
+        keys = resolver.getPageKeysByPath( "../" );
         assertEquals( "1", keys );
 
         keys = resolver.getPageKeyByPath( "../nope" );
         assertEquals( "", keys );
 
-        keys = resolver.getPageKeyByPath( "../../" );
+        keys = resolver.getPageKeysByPath( "../../" );
         assertEquals( "", keys );
 
         keys = resolver.getPageKeyByPath( "../.." );
@@ -222,24 +222,33 @@ public class MenuItemKeysByPathResolverTest
         assertEquals( "2", keys );
 
         keys = resolver.getPageKeyByPath( "./" );
+        assertEquals( "2", keys );
+
+        keys = resolver.getPageKeysByPath( "./" );
         assertEquals( "", keys );
 
         keys = resolver.getPageKeyByPath( ".." );
         assertEquals( "1", keys );
 
+        keys = resolver.getPageKeyByPath( "../" );
+        assertEquals( "1", keys );
+
         keys = resolver.getPageKeyByPath( "./.." );
         assertEquals( "1", keys );
 
-        keys = resolver.getPageKeyByPath( "../" );
-        assertEquals( "2,3", keys );
-
         keys = resolver.getPageKeyByPath( "./../" );
+        assertEquals( "1", keys );
+
+        keys = resolver.getPageKeysByPath( "../" );
         assertEquals( "2,3", keys );
 
-        keys = resolver.getPageKeyByPath( "./.././././" );
+        keys = resolver.getPageKeysByPath( "./../" );
         assertEquals( "2,3", keys );
 
-        keys = resolver.getPageKeyByPath( "./././.././././" );
+        keys = resolver.getPageKeysByPath( "./.././././" );
+        assertEquals( "2,3", keys );
+
+        keys = resolver.getPageKeysByPath( "./././.././././" );
         assertEquals( "2,3", keys );
 
         keys = resolver.getPageKeyByPath( "../child menu-item 1" );

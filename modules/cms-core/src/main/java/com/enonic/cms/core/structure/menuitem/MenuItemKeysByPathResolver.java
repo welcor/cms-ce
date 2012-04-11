@@ -5,9 +5,13 @@ import java.util.Collection;
 
 public class MenuItemKeysByPathResolver
 {
-    private MenuItemEntity menuItem;
+    private static final MenuItemEntity MENUITEM_NOT_FOUND = new MenuItemEntity();
 
-    private boolean isFolder = false;
+    private static final String PATH_SEPARATOR = "/";
+
+    private static final String MENUITEM_SEPARATOR = ",";
+
+    private MenuItemEntity menuItem;
 
     /**
      * @param menuItem menu-item to resolve relative paths from
@@ -17,132 +21,136 @@ public class MenuItemKeysByPathResolver
         this.menuItem = menuItem;
     }
 
+    public String getPageKeyByPath( String path )
+    {
+        final MenuItemEntity menuItemEntityByPath = getMenuItemEntityByPath( path );
+
+        if ( menuItemEntityByPath == MENUITEM_NOT_FOUND )
+        {
+            return "";
+        }
+
+        if ( menuItemEntityByPath == null ) // root menu item
+        {
+            return "";
+        }
+
+        return menuItemEntityByPath.getKey().toString();
+    }
+
+    public String getPageKeysByPath( String path )
+    {
+        final MenuItemEntity menuItemEntityByPath = getMenuItemEntityByPath( path );
+
+        if ( menuItemEntityByPath == MENUITEM_NOT_FOUND )
+        {
+            return "";
+        }
+
+        final Collection<MenuItemEntity> itemEntityList = getMenuItemChildren( menuItemEntityByPath );
+
+        String result = "";
+
+        String separator = "";
+        for ( final MenuItemEntity mi : itemEntityList )
+        {
+            result = result + separator + mi.getKey().toString();
+            separator = MENUITEM_SEPARATOR;
+        }
+
+        return result;
+    }
+
     /**
-     * <p>reads page key by menu path or all keys in folder </p>
-     * <p>path may be absolute or relative format</p>
+     * returns children for menu item.
+     *
+     * for root folder ( menuItemEntity == null) will return root children.
+     *
+     * @param menuItemEntity - menu item
+     * @return children of menuItemEntity
+     */
+    private Collection<MenuItemEntity> getMenuItemChildren( final MenuItemEntity menuItemEntity )
+    {
+        return menuItemEntity == null ? menuItem.getSite().getTopMenuItems() : menuItemEntity.getChildren();
+    }
+
+    /**
+     * <p>reads page key by menu path </p>
+     * <p>path may be absolute or relative</p>
      * <p/>
      * Examples: <br/>
      * <p/>
-     * <code>/</code> - all keys in root folder<br/>
-     * <code>./</code> - all keys in current folder<br/>
-     * <code>fldr</code> - key of fldr folder in current folder<br/>
-     * <code>./fldr</code> - key of fldr folder in current folder<br/>
+     * <code>/</code> - MenuItemEntity of root folder<br/>
+     * <code>./</code> - MenuItemEntity of current folder<br/>
+     * <code>fldr</code> - MenuItemEntity of fldr folder in current folder<br/>
+     * <code>./fldr</code> - MenuItemEntity of fldr folder in current folder<br/>
      * <code>../welcome/fldr</code> - more relative path<br/>
      * <code>../././welcome/./fldr/../fldr</code> - complex path<br/>
      * <p/>
-     * if parent folder or relative folder does not exist function returns empty string
+     * if parent folder or relative folder does not exist function returns MENUITEM_NOT_FOUND constant
      *
      * @param path path to page
-     * @return comma separated keys of items in folder or empty
+     * @return MenuItemEntity
      */
-    public String getPageKeyByPath( String path )
+    protected MenuItemEntity getMenuItemEntityByPath( String path )
     {
-        final String SEPARATOR = "/";
+        final String[] parts = path.split( PATH_SEPARATOR ); // split works strange. "////" will return ZERO parts !
 
-        MenuItemEntity currentItemEntity = null;
-        Collection<MenuItemEntity> itemEntityList;
-
-        isFolder = path.endsWith( SEPARATOR );
-        String[] parts = path.split( SEPARATOR ); // split works strange. "////" will return ZERO parts !
-
-        if ( parts.length == 0 || "".equals( parts[0] ) )
-        { //  absolute path in format /root/folder
-            itemEntityList = menuItem.getSite().getTopMenuItems();
-        }
-        else
-        { // relative path in format ./relative/path or just relative/path
-            // get fresh copy of current menu item from hibernate cache
-            currentItemEntity = menuItem;
-            itemEntityList = currentItemEntity.getChildren();
-        }
+        // currentItemEntity = null for absolute path (root folder) or current menuItem for relative
+        MenuItemEntity currentItemEntity = parts.length == 0 || "".equals( parts[0] ) ? null : menuItem;
 
         searching:
         for ( int num = 0; num < parts.length; num++ )
         {
-            String part = parts[num];
+            final String part = parts[num];
 
-            if ( ".".equals( part ) || "".equals( part ) )
+            if ( "".equals( part ) || ".".equals( part ) )
             {
                 // nothing to do with . and empty parts
             }
-
             else if ( "..".equals( part ) )
             {
-                // check if system is trying go up to /
+                // check if system is trying go up from /
                 if ( currentItemEntity == null ) // already root
                 {
-                    isFolder = false; // also do not show content of root folder
+                    // do not go up to root - does not have sense
+                    currentItemEntity = MENUITEM_NOT_FOUND;
                     break; // searching
                 }
 
                 // go up
                 currentItemEntity = currentItemEntity.getParent();
-
-                // read items entity list
-                if ( currentItemEntity == null )
-                { // read contents of root folder
-                    itemEntityList = menuItem.getSite().getTopMenuItems();
-                }
-                else
-                { // just enter folder
-                    itemEntityList = currentItemEntity.getChildren();
-                }
             }
-
             else
-
             {
                 // something other than . or .. here
+                Collection<MenuItemEntity> itemEntityList = getMenuItemChildren( currentItemEntity );
+
                 for ( MenuItemEntity itemEntity : itemEntityList )
                 {
                     if ( part.equalsIgnoreCase( itemEntity.getName() ) )
                     {
-                        if ( num == parts.length - 1 )
-                        { // found
-                            if ( isFolder )
-                            {
-                                itemEntityList = itemEntity.getChildren();
-                            }
-                            else
-                            {
-                                currentItemEntity = itemEntity;
-                            }
+                        currentItemEntity = itemEntity;
 
-                            // go build result string
+                        if ( num == parts.length - 1 )
+                        {   // success! found and it is last in path
                             break searching;
                         }
                         else
                         {
-                            currentItemEntity = itemEntity;
-                            itemEntityList = currentItemEntity.getChildren();
+                            // found and it is not last in path
                             continue searching;
                         }
                     }
                 }
 
                 // did not find matching name in current folder
-                currentItemEntity = null;
-                break;
+                currentItemEntity = MENUITEM_NOT_FOUND;
+                break; // searching
             }
         }
 
-        String result = "";
-
-        if ( isFolder )
-        {
-            String separator = "";
-            for ( MenuItemEntity mi : itemEntityList )
-            {
-                result = result + separator + mi.getKey().toInt();
-                separator = ",";
-            }
-        }
-        else if ( currentItemEntity != null )
-        {
-            result = "" + currentItemEntity.getKey().toInt();
-        }
-
-        return result;
+        return currentItemEntity;
     }
 
 }

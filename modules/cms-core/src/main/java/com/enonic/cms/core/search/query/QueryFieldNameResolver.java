@@ -30,9 +30,9 @@ public class QueryFieldNameResolver
     {
         String normalized = name.replace( '/', '.' ).replace( '.', '_' ).replaceAll( "@", "" ).toLowerCase();
 
-        if ( StringUtils.startsWith( normalized, CONTENTDATA_ALIAS_FOR_BW_COMPATABILITY ) )
+        if ( StringUtils.startsWith( normalized, CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY ) )
         {
-            normalized = StringUtils.replaceOnce( normalized, CONTENTDATA_ALIAS_FOR_BW_COMPATABILITY, CUSTOMDATA_FIELDNAME );
+            normalized = StringUtils.replaceOnce( normalized, CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY, CONTENTDATA_PREFIX );
         }
 
         if ( StringUtils.startsWith( normalized, ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY ) )

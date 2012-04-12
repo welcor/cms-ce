@@ -30,36 +30,15 @@ final public class IndexFieldNameResolver
             "@", "" ).toLowerCase();
     }
 
-    /*  public static String getNumericFieldName( String fieldName )
+
+    public static String getNumericsFieldName( final String fieldBaseName )
     {
-        return normalizeFieldName( fieldName ) + NUMERIC_FIELD_POSTFIX;
+        return doNormalizeFieldName( fieldBaseName ) + ".number";
     }
 
-    public static String getOrderByFieldName( String fieldName )
+    public static String getDateFieldName( final String fieldBaseName )
     {
-        return ORDER_FIELD_PREFIX + doNormalizeFieldName( fieldName );
+        return doNormalizeFieldName( fieldBaseName ) + ".date";
     }
-    */
-
-    public static String getCategoryKeyFieldName()
-    {
-        return CATEGORY_FIELD_PREFIX + "key";
-    }
-
-    public static String getCategoryNameFieldName()
-    {
-        return CATEGORY_FIELD_PREFIX + "_name";
-    }
-
-    public static String getContentTypeKeyFieldName()
-    {
-        return CONTENT_TYPE_PREFIX + "key";
-    }
-
-    public static String getContentTypeNameFieldName()
-    {
-        return CONTENT_TYPE_PREFIX;
-    }
-
 
 }

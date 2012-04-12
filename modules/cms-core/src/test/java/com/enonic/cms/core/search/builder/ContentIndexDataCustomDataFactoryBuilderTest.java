@@ -23,7 +23,7 @@ import static junit.framework.Assert.assertTrue;
  * Date: 2/2/12
  * Time: 10:24 AM
  */
-public class ContentIndexDataCustomDataBuilderTest
+public class ContentIndexDataCustomDataFactoryBuilderTest
 {
 
     private XContentBuilder result;

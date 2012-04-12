@@ -16,6 +16,7 @@ import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.config.IndexFieldType;
 
 /**
  * This class implements the content resource.
@@ -173,6 +174,10 @@ public final class ContentDocument
         addUserDefinedField( new UserDefinedField( name, value ) );
     }
 
+    public void addUserDefinedField( String name, SimpleText value, IndexFieldType indexFieldType )
+    {
+        addUserDefinedField( new UserDefinedField( name, value, indexFieldType ) );
+    }
 
     public Collection<UserDefinedField> getUserDefinedFields()
     {

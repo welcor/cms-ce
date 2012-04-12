@@ -28,8 +28,8 @@ public class ContentIndexDataSectionFactory
             return;
         }
 
-        Set<Integer> sectionKeysApproved = Sets.newTreeSet();
-        Set<Integer> sectionKeysUnapproved = Sets.newTreeSet();
+        Set<Double> sectionKeysApproved = Sets.newTreeSet();
+        Set<Double> sectionKeysUnapproved = Sets.newTreeSet();
 
         for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
         {
@@ -38,7 +38,7 @@ public class ContentIndexDataSectionFactory
                 continue;
             }
 
-            final int menuKey = contentLocation.getMenuItemKey().toInt();
+            final Double menuKey = new Double( contentLocation.getMenuItemKey().toInt() );
 
             if ( contentLocation.isApproved() )
             {
@@ -50,8 +50,8 @@ public class ContentIndexDataSectionFactory
             }
         }
 
-        addNumericSet( CONTENTLOCATION_APPROVED_FIELDNAME, sectionKeysApproved, result, false );
-        addNumericSet( CONTENTLOCATION_UNAPPROVED_FIELDNAME, sectionKeysUnapproved, result, false );
+        addNumericSet( CONTENTLOCATION_APPROVED_FIELDNAME, sectionKeysApproved, result );
+        addNumericSet( CONTENTLOCATION_UNAPPROVED_FIELDNAME, sectionKeysUnapproved, result );
     }
 }
 

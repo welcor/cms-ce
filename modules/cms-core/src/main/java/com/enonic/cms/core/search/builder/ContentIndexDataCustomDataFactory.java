@@ -2,13 +2,13 @@ package com.enonic.cms.core.search.builder;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.index.UserDefinedField;
 
@@ -27,19 +27,63 @@ public class ContentIndexDataCustomDataFactory
     {
         Set<String> allUserdataValue = new HashSet<String>();
 
-        Map<String, Set<String>> userDefinedValuesMap = getUserDefinedValuesMap( userDefinedFields );
+        List<String> handledFieldNames = Lists.newArrayList();
 
-        for ( String field : userDefinedValuesMap.keySet() )
+        for ( UserDefinedField userDefinedField : userDefinedFields )
         {
-            final Set<String> values = userDefinedValuesMap.get( field );
+            final String fieldName = userDefinedField.getName();
 
-            addStringSet( field, values, result, true, true );
+            if ( handledFieldNames.contains( fieldName ) )
+            {
+                continue;
+            }
+
+            Set<String> values = getAllValuesForFieldName( fieldName, userDefinedFields );
+
+            addStringSet( IndexFieldNameResolver.normalizeFieldName( fieldName ), values, result );
+
+            switch ( userDefinedField.getIndexFieldType() )
+            {
+                case STRING:
+                {
+                    // Always added anyway
+                    break;
+                }
+                case NUMBER:
+                {
+                    translateAndAddNumericSet( IndexFieldNameResolver.getNumericsFieldName( fieldName ), values, result );
+                    break;
+                }
+                case DATE:
+                {
+                    translateAndAddDateSet( IndexFieldNameResolver.getDateFieldName( fieldName ), values, result );
+                    break;
+                }
+            }
 
             allUserdataValue.addAll( values );
+
+            handledFieldNames.add( fieldName );
         }
 
         addAllUserdataField( result, allUserdataValue );
     }
+
+    private Set<String> getAllValuesForFieldName( String fieldName, final Collection<UserDefinedField> userDefinedFields )
+    {
+        Set<String> values = Sets.newTreeSet();
+
+        for ( UserDefinedField userDefinedField : userDefinedFields )
+        {
+            if ( fieldName.equals( userDefinedField.getName() ) )
+            {
+                values.add( userDefinedField.getValue().getText() );
+            }
+        }
+
+        return values;
+    }
+
 
     private void addAllUserdataField( final XContentBuilder result, final Set<String> allUserdataValue )
         throws Exception
@@ -51,27 +95,7 @@ public class ContentIndexDataCustomDataFactory
             buf.append( value + " " );
         }
 
-        addStringSet( ALL_USERDATA_FIELDNAME, allUserdataValue, result, true, false );
-    }
-
-    private Map<String, Set<String>> getUserDefinedValuesMap( Collection<UserDefinedField> userDefinedFields )
-    {
-        Map<String, Set<String>> userDefinedValuesMap = Maps.newHashMap();
-
-        for ( UserDefinedField field : userDefinedFields )
-        {
-            Set<String> simpleTexts = userDefinedValuesMap.get( field.getName() );
-
-            if ( simpleTexts == null )
-            {
-                simpleTexts = new TreeSet<String>();
-                userDefinedValuesMap.put( field.getName(), simpleTexts );
-            }
-
-            simpleTexts.add( field.getValue().toString() );
-        }
-
-        return userDefinedValuesMap;
+        addStringSet( ALL_USERDATA_FIELDNAME, allUserdataValue, result );
     }
 
 

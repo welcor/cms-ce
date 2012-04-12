@@ -18,4 +18,11 @@ public enum IndexFieldType
             return STRING;
         }
     }
+
+
+    @Override
+    public String toString()
+    {
+        return this.name().toLowerCase();
+    }
 }

@@ -23,10 +23,10 @@ public class ContentIndexServiceImplTest_einarting
         contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
             {"data/description", "dette er en beskrivelse ja"}} ), false );
 
-       //flushIndex();
+        flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
-            new ContentIndexQuery( "data/preface CONTAINS 'ingress' AND data/description CONTAINS 'beskrivelse'") ) );
+            new ContentIndexQuery( "data/preface CONTAINS 'ingress' AND data/description CONTAINS 'beskrivelse'" ) ) );
 
     }
 
@@ -39,10 +39,10 @@ public class ContentIndexServiceImplTest_einarting
         contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
             {"data/description", "dette er en beskrivelse ja"}} ), false );
 
-        //flushIndex();
+        flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
-            new ContentIndexQuery( "data/* CONTAINS 'ingress' AND data/* CONTAINS 'beskrivelse'") ) );
+            new ContentIndexQuery( "data/* CONTAINS 'ingress' AND data/* CONTAINS 'beskrivelse'" ) ) );
 
     }
 
@@ -55,10 +55,10 @@ public class ContentIndexServiceImplTest_einarting
         contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
             {"data/description", "dette er en beskrivelse ja"}} ), false );
 
-        //flushIndex();
+        flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
-            new ContentIndexQuery( "data/* CONTAINS 'ingress' OR data/* CONTAINS 'beskrivelse'") ) );
+            new ContentIndexQuery( "data/* CONTAINS 'ingress' OR data/* CONTAINS 'beskrivelse'" ) ) );
 
     }
 

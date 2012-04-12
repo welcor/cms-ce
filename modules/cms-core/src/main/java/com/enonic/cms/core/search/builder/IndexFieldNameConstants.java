@@ -8,6 +8,11 @@ package com.enonic.cms.core.search.builder;
  */
 public class IndexFieldNameConstants
 {
+    protected static final String CONTENT_KEY_FIELDNAME = "key";
+
+    protected static final String INDEX_FIELDNAME_PROPERTY_SEPARATOR = "_";
+
+    protected static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
 
     public static final String ALL_USERDATA_FIELDNAME = "_all_userdata";
 
@@ -55,32 +60,32 @@ public class IndexFieldNameConstants
 
     protected static final String USER_QUALIFIED_NAME_POSTFIX = "_qualifiedName";
 
-//    public static final String NUMERIC_FIELD_POSTFIX = "_numeric";
-
-//    public static final String ORDER_FIELD_PREFIX = "orderby_";
-
     public static final String CATEGORY_FIELD_PREFIX = "category";
 
     public static final String CONTENT_TYPE_PREFIX = "contenttype";
 
     public static final String NON_ANALYZED_FIELD_POSTFIX = "._tokenized";
 
-    protected static final String INDEX_FIELDNAME_PROPERTY_SEPARATOR = "_";
+    protected static final String CONTENTDATA_PREFIX = "data_";
 
-    protected static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
+    protected static final String CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY = "contentdata_";
 
-    protected static final String CONTENTDATA_ALIAS_FOR_BW_COMPATABILITY = "contentdata_";
+    public static final String ATTACHMENT_FIELDNAME = "attachment";
 
     protected static final String ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY = "fulltext";
 
-    protected static final String CUSTOMDATA_FIELDNAME = "data_";
-
     protected static final String CONTENTKEY_FIELDNAME = "key";
-
-    protected static final String ATTACHMENT_FIELDNAME = "attachment";
 
     public static final String CONTENT_CREATED = "created";
 
     public static final String CONTENT_MODIFIED = "modified";
+
+    public static final String CATEGORY_KEY_FIELDNAME = CATEGORY_FIELD_PREFIX + "key";
+
+    public static final String CATEGORY_NAME_FIELDNAME = CATEGORY_FIELD_PREFIX + "_name";
+
+    public static final String CONTENTTYPE_KEY_FIELDNAME = CONTENT_TYPE_PREFIX + "key";
+
+    public static final String CONTENTTYPE_NAME_FIELDNAME = CONTENT_TYPE_PREFIX;
 
 }

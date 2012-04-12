@@ -2,6 +2,7 @@ package com.enonic.cms.core.search.builder;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -18,143 +19,77 @@ import com.google.common.collect.Sets;
 class AbstractIndexDataFactory
     extends IndexFieldNameConstants
 {
-    protected void addField( String fieldName, final String value, final XContentBuilder builder )
+    private final Logger LOG = Logger.getLogger( AbstractIndexDataFactory.class.getName() );
+
+    protected void addStringField( String indexFieldName, final String value, final XContentBuilder builder )
         throws Exception
     {
-        doAddField( fieldName, value, builder, true );
+        doAddStringField( indexFieldName, value, builder );
     }
 
-    private void doAddField( final String fieldName, final String value, final XContentBuilder builder, boolean addOrderField )
+    private void doAddStringField( final String indexFieldName, final String value, final XContentBuilder builder )
         throws Exception
     {
-        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        final String normalizedValue = IndexValueResolver.normalizeValue( value );
+        final String normalizedValue = getNormalizedFieldName( value );
 
         if ( StringUtils.isBlank( normalizedValue ) )
         {
             return;
         }
 
-        /*  try
-     {
-         Double numericValue = Double.parseDouble( normalizedValue );
-         builder.field( IndexFieldNameResolver.getNumericFieldName( normalizedFieldName ), numericValue );
-
-         if ( addOrderField )
-         {
-             addOrderField( normalizedFieldName, numericValue, builder );
-         }
-     }
-     catch ( NumberFormatException e )
-     {
-        if ( addOrderField )
-         {
-             addOrderField( normalizedFieldName, normalizedValue, builder );
-         }
-
-     }
-        */
-
-        builder.field( normalizedFieldName, normalizedValue );
+        builder.field( getNormalizedFieldName( indexFieldName ), normalizedValue );
     }
 
-    protected void addField( String fieldName, final Date value, final XContentBuilder builder )
+    private String getNormalizedFieldName( final String indexFieldName )
+    {
+        return IndexValueResolver.normalizeValue( indexFieldName );
+    }
+
+    protected void addDateField( String indexFieldName, final Date value, final XContentBuilder builder )
         throws Exception
     {
         if ( value == null )
         {
-            doAddField( fieldName, (String) null, builder, true );
+            doAddStringField( indexFieldName, null, builder );
             return;
         }
 
-        doAddField( fieldName, value, builder );
+        doAddDateField( indexFieldName, value, builder );
     }
 
-    private void doAddField( String fieldName, final Date value, final XContentBuilder builder )
+    private void doAddDateField( String indexFieldName, final Date value, final XContentBuilder builder )
         throws Exception
     {
-        fieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
+        final String fieldValue = IndexValueResolver.normalizeDateValue( value );
 
-        builder.field( fieldName, value );
+        builder.field( getNormalizedFieldName( indexFieldName ), fieldValue );
     }
 
-    protected void addField( String fieldName, final Integer value, final XContentBuilder builder )
+    protected void addIntegerField( String indexFieldName, final Integer value, final XContentBuilder builder )
         throws Exception
     {
-        doAddField( fieldName, value, builder, true );
+        doAddIntegerField( indexFieldName, value, builder );
     }
 
-    private void doAddField( final String fieldName, final Integer value, final XContentBuilder builder, boolean addOrderField )
+    private void doAddIntegerField( final String indexFieldName, final Integer value, final XContentBuilder builder )
         throws Exception
     {
-
-        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        builder.field( IndexFieldNameResolver.normalizeFieldName( fieldName ), value );
-
-        /*  builder.field( normalizedFieldName, value );
-        if ( addOrderField )
-        {
-            addOrderField( normalizedFieldName, value, builder );
-        }
-        */
+        builder.field( getNormalizedFieldName( indexFieldName ), value );
     }
 
-    protected void addField( String fieldName, final Double value, final XContentBuilder builder )
+    protected void addDoubleField( final String indexFieldName, final Double value, final XContentBuilder builder )
         throws Exception
     {
-        doAddField( fieldName, value, builder, true );
+        doAddDoubleField( indexFieldName, value, builder );
     }
 
-    protected void addField( String fieldName, final Double value, final XContentBuilder builder, boolean addOrderField )
+    private void doAddDoubleField( final String indexFieldName, final Double value, final XContentBuilder builder )
         throws Exception
     {
-        doAddField( fieldName, value, builder, addOrderField );
+        builder.field( getNormalizedFieldName( indexFieldName ), value );
     }
 
-    private void doAddField( final String fieldName, final Double value, final XContentBuilder builder, boolean addOrderField )
-        throws Exception
-    {
-
-        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        builder.field( IndexFieldNameResolver.normalizeFieldName( fieldName ), value );     //.getNumericFieldName( fieldName ), value );
-        builder.field( normalizedFieldName, value );
-        //   if ( addOrderField )
-        //   {
-        //       addOrderField( normalizedFieldName, value, builder );
-        //   }
-    }
-    /*
-
-    private void addOrderField( String fieldName, final Number value, final XContentBuilder builder )
-        throws Exception
-    {
-        String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
-        String orderByValue = IndexValueResolver.getOrderValueForNumber( value );
-
-        builder.field( orderByFieldName, orderByValue );
-    }
-
-    private void addOrderField( String fieldName, final String value, final XContentBuilder builder )
-        throws Exception
-    {
-
-        String orderByFieldName = IndexFieldNameResolver.getOrderByFieldName( fieldName );
-
-        try
-        {
-            Double numericValue = Double.parseDouble( value );
-            String orderByValue = NumericUtils.doubleToPrefixCoded( numericValue );
-            builder.field( orderByFieldName, orderByValue );
-        }
-        catch ( NumberFormatException e )
-        {
-            builder.field( orderByFieldName, value );
-        }
-    }
-    */
-
-    public void addStringSet( final String fieldName, final Set<String> values, final XContentBuilder builder, final boolean includeNumeric,
-                              boolean addOrderField )
+    public void addStringSet( final String indexFieldName, final Set<String> values, final XContentBuilder builder )
         throws Exception
     {
         if ( values.size() == 0 )
@@ -162,101 +97,70 @@ class AbstractIndexDataFactory
             return;
         }
 
-        doAddStringSet( fieldName, values, builder, addOrderField );
-
-        /*
-        if ( includeNumeric )
-        {
-            Set<Integer> valuesAsDoubles = getNumericValuesAsSet( values );
-
-            if ( !valuesAsDoubles.isEmpty() )
-            {
-                doAddNumericSet( fieldName, valuesAsDoubles, builder, false );
-            }
-        } */
+        doAddStringSet( indexFieldName, values, builder );
     }
 
-    private void doAddStringSet( final String fieldName, Set<String> values, XContentBuilder builder, final boolean addOrderField )
+    private void doAddStringSet( final String indexFieldName, Set<String> values, XContentBuilder builder )
         throws Exception
     {
-        final String normalizedFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-
-        builder.array( normalizedFieldName, IndexValueResolver.getNormalizedStringValues( values ) );
-        /*
-          if ( addOrderField )
-          {
-              addOrderField( fieldName, getSortValueForSet( values ), builder );
-          }
-
-        */
+        builder.array( indexFieldName, IndexValueResolver.getNormalizedStringValues( values ) );
     }
 
-    public void addNumericSet( String fieldName, final Set<Integer> values, final XContentBuilder builder, final boolean addOrderField )
+
+    public void translateAndAddNumericSet( final String indexFieldName, final Set<String> values, final XContentBuilder builder )
         throws Exception
     {
-        if ( values.size() == 0 )
-        {
-            return;
-        }
-
-        doAddNumericSet( fieldName, values, builder, addOrderField );
-    }
-
-    private void doAddNumericSet( final String fieldName, final Set<Integer> values, final XContentBuilder builder,
-                                  final boolean addOrderField )
-        throws Exception
-    {
-
-        String numericFieldName = IndexFieldNameResolver.normalizeFieldName( fieldName );
-        builder.array( numericFieldName, values.toArray( new Integer[values.size()] ) );
-
-        //Double sortValue = getSortValueForSet( values );
-
-        /* if ( addOrderField )
-        {
-            addOrderField( fieldName, sortValue, builder );
-        }
-        */
-    }
-    /*
-    private Double getSortValueForSet( Set<Double> values )
-    {
-        return Iterables.get( values, 0 );
-    }
-
-    private String getSortValueForSet( Set<String> values )
-    {
-        return Iterables.get( values, 0 );
-    }
-      */
-
-    private Set<Integer> getNumericValuesAsSet( final Set<String> values )
-    {
-        final Set<Integer> valuesAsDoubles = Sets.newHashSet();
+        Set<Double> doubleValues = Sets.newTreeSet();
 
         for ( String value : values )
         {
-            final Integer numericValue = parseNumericValue( value );
-            if ( numericValue != null )
+            try
             {
-                valuesAsDoubles.add( numericValue );
+                doubleValues.add( Double.parseDouble( value ) );
             }
+            catch ( NumberFormatException e )
+            {
+                LOG.warning( "Failed to map index value " + value + " for field " + indexFieldName +
+                                 " to number as expected by index field definition, skipping" );
+            }
+
         }
 
-        return valuesAsDoubles;
+        if ( doubleValues.size() == 0 )
+        {
+            return;
+        }
+
+        doAddNumericSet( indexFieldName, doubleValues, builder );
     }
 
-    private Integer parseNumericValue( final String value )
+    public void translateAndAddDateSet( final String indexFieldName, final Set<String> values, final XContentBuilder builder )
+        throws Exception
     {
-        try
-        {
-            return Integer.parseInt( value );
+        Set<Date> dateValues = ContentIndexDateSetBuilder.translateIndexValueSetToDates( indexFieldName, values );
 
-        }
-        catch ( NumberFormatException e )
+        if ( dateValues.size() == 0 )
         {
-            return null;
+            return;
         }
+
+        builder.array( getNormalizedFieldName( indexFieldName ), dateValues.toArray( new Date[dateValues.size()] ) );
     }
 
+    public void addNumericSet( final String indexFieldName, final Set<Double> values, final XContentBuilder builder )
+        throws Exception
+    {
+        if ( values.size() == 0 )
+        {
+            return;
+        }
+
+        doAddNumericSet( indexFieldName, values, builder );
+    }
+
+    private void doAddNumericSet( final String indexFieldName, final Set<Double> values, final XContentBuilder builder )
+        throws Exception
+    {
+        builder.array( getNormalizedFieldName( indexFieldName ), values.toArray( new Number[values.size()] ) );
+    }
 }

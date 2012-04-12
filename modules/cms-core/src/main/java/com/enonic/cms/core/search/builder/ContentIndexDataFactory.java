@@ -67,7 +67,6 @@ public final class ContentIndexDataFactory
         final XContentBuilder builder = XContentFactory.jsonBuilder();
 
         builder.startObject();
-        addField( "key", content.getContentKey().toInt(), builder );
         addMetadata( builder, content );
         addCategory( content, builder );
         addContentType( content, builder );
@@ -82,7 +81,8 @@ public final class ContentIndexDataFactory
     private void addMetadata( XContentBuilder builder, ContentDocument content )
         throws Exception
     {
-        addField( TITLE_FIELDNAME, content.getTitle().getText(), builder );
+        addIntegerField( CONTENT_KEY_FIELDNAME, content.getContentKey().toInt(), builder );
+        addStringField( TITLE_FIELDNAME, content.getTitle().getText(), builder );
 
         addUserValues( builder, OWNER_FIELDNAME, content.getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
         addUserValues( builder, MODIFIER_FIELDNAME, content.getModifierKey(), content.getModifierName(),
@@ -92,15 +92,15 @@ public final class ContentIndexDataFactory
         addUserValues( builder, ASSIGNER_FIELDNAME, content.getAssignerKey(), content.getAssignerName(),
                        content.getAssignerQualifiedName() );
 
-        addField( PUBLISH_FROM_FIELDNAME, content.getPublishFrom(), builder );
-        addField( PUBLISH_TO_FIELDNAME, content.getPublishTo(), builder );
-        addField( TIMESTAMP_FIELDNAME, content.getTimestamp(), builder );
-        addField( STATUS_FIELDNAME, content.getStatus(), builder );
-        addField( PRIORITY_FIELDNAME, content.getPriority(), builder );
-        addField( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate(), builder );
+        addDateField( PUBLISH_FROM_FIELDNAME, content.getPublishFrom(), builder );
+        addDateField( PUBLISH_TO_FIELDNAME, content.getPublishTo(), builder );
+        addDateField( TIMESTAMP_FIELDNAME, content.getTimestamp(), builder );
+        addIntegerField( STATUS_FIELDNAME, content.getStatus(), builder );
+        addIntegerField( PRIORITY_FIELDNAME, content.getPriority(), builder );
+        addDateField( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate(), builder );
 
-        addField( CONTENT_CREATED, content.getCreated(), builder );
-        addField( CONTENT_MODIFIED, content.getModified(), builder );
+        addDateField( CONTENT_CREATED, content.getCreated(), builder );
+        addDateField( CONTENT_MODIFIED, content.getModified(), builder );
     }
 
     private void addCategory( ContentDocument content, XContentBuilder builder )
@@ -113,7 +113,7 @@ public final class ContentIndexDataFactory
             return;
         }
 
-        addField( IndexFieldNameResolver.getCategoryKeyFieldName(), categoryKey.toInt(), builder );
+        addIntegerField( CATEGORY_KEY_FIELDNAME, categoryKey.toInt(), builder );
 
         final SimpleText categoryName = content.getCategoryName();
 
@@ -122,14 +122,14 @@ public final class ContentIndexDataFactory
             return;
         }
 
-        addField( IndexFieldNameResolver.getCategoryNameFieldName(), categoryName.getText(), builder );
+        addStringField( CATEGORY_NAME_FIELDNAME, categoryName.getText(), builder );
     }
 
     private void addContentType( ContentDocument content, XContentBuilder builder )
         throws Exception
     {
-        addField( IndexFieldNameResolver.getContentTypeKeyFieldName(), content.getContentTypeKey().toInt(), builder );
-        addField( IndexFieldNameResolver.getContentTypeNameFieldName(), content.getContentTypeName().getText(), builder );
+        addIntegerField( CONTENTTYPE_KEY_FIELDNAME, content.getContentTypeKey().toInt(), builder );
+        addStringField( CONTENTTYPE_NAME_FIELDNAME, content.getContentTypeName().getText(), builder );
     }
 
     private void addSections( ContentDocument content, XContentBuilder builder )
@@ -171,8 +171,8 @@ public final class ContentIndexDataFactory
         {
             final XContentBuilder result = XContentFactory.jsonBuilder();
             result.startObject();
-            addField( "key", (double) content.getContentKey().toInt(), result, false );
-            addField( "attachment", binaryData.getText(), result );
+            addDoubleField( "key", (double) content.getContentKey().toInt(), result );
+            addStringField( IndexFieldNameConstants.ATTACHMENT_FIELDNAME, binaryData.getText(), result );
             result.endObject();
             return result;
         }
@@ -188,9 +188,9 @@ public final class ContentIndexDataFactory
             return;
         }
 
-        addField( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null, builder );
-        addField( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null, builder );
-        addField( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null, builder );
+        addStringField( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null, builder );
+        addStringField( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null, builder );
+        addStringField( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null, builder );
     }
 
 }

@@ -35,6 +35,7 @@ public class ContentIndexServiceImplTest_largeText
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
         contentIndexService.index( doc1, false );
+
         flushIndex();
 
         verifyStandardFields( doc1, contentKey );
@@ -65,7 +66,8 @@ public class ContentIndexServiceImplTest_largeText
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
         contentIndexService.index( doc1, false );
-        //flushIndex();
+
+        flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -95,14 +97,17 @@ public class ContentIndexServiceImplTest_largeText
         doc1.addUserDefinedField( "data/text", createStringFillingXRows( numberOfRowsExpected ) );
 
         contentIndexService.index( doc1, false );
-        //flushIndex();
+        flushIndex();
+
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
+
         // Set new, shorter value for the text-field, and index again
         doc1 = createContentDocWithNoUserFields( contentKey );
 
         contentIndexService.index( doc1, false );
         flushIndex();
+
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
     }
@@ -121,7 +126,7 @@ public class ContentIndexServiceImplTest_largeText
         doc1.addUserDefinedField( "data/text", userText );
 
         contentIndexService.index( doc1, false );
-        //flushIndex();
+        flushIndex();
 
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
@@ -134,7 +139,8 @@ public class ContentIndexServiceImplTest_largeText
         doc1.addUserDefinedField( "data/text", userText );
 
         contentIndexService.index( doc1, false );
-        //flushIndex();
+        flushIndex();
+
         verifyStandardFields( doc1, contentKey );
         verifyUserDefinedFields( contentKey, doc1 );
     }

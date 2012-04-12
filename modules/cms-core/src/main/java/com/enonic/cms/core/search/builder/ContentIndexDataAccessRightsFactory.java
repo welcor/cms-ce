@@ -75,12 +75,12 @@ public class ContentIndexDataAccessRightsFactory
             }
         }
 
-        addStringSet( CONTENT_ACCESS_READ_FIELDNAME, readAccess, result, false, false );
-        addStringSet( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess, result, false, false );
-        addStringSet( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess, result, false, false );
-        addStringSet( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess, result, false, false );
-        addStringSet( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess, result, false, false );
-        addStringSet( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess, result, false, false );
+        addStringSet( CONTENT_ACCESS_READ_FIELDNAME, readAccess, result );
+        addStringSet( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess, result );
+        addStringSet( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess, result );
+        addStringSet( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess, result );
+        addStringSet( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess, result );
+        addStringSet( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess, result );
     }
 }
 

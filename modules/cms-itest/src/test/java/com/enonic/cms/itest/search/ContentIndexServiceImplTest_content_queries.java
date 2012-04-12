@@ -5,11 +5,16 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.index.SimpleText;
+import com.enonic.cms.core.content.index.UserDefinedField;
+import com.enonic.cms.core.content.index.config.IndexFieldType;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 
 import static org.junit.Assert.*;
@@ -28,16 +33,21 @@ public class ContentIndexServiceImplTest_content_queries
     {
 
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
-                                                      new String[][]{{"data/heading", "title1"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title1" ) ) ) );
         contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
-                                                      new String[][]{{"data/heading", "title2"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title2" ) ) ) );
         contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 102 ), new ContentTypeKey( 10 ), "title3",
-                                                      new String[][]{{"data/heading", "title3"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title3" ) ) ) );
         contentIndexService.index( doc3, false );
+
+        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
@@ -53,16 +63,21 @@ public class ContentIndexServiceImplTest_content_queries
     {
 
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
-                                                      new String[][]{{"data/heading", "title1"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title1" ) ) ) );
         contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
-                                                      new String[][]{{"data/heading", "title2"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title2" ) ) ) );
         contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
-                                                      new String[][]{{"data/heading", "title3"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title3" ) ) ) );
         contentIndexService.index( doc3, false );
+
+        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "data/heading CONTAINS 'title'", "" );
         query.setContentTypeFilter( createContentTypeList( 10 ) );
@@ -77,16 +92,33 @@ public class ContentIndexServiceImplTest_content_queries
     public void testContentQueryWithCategoryFilterAndComplexLogicalExpression()
     {
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
-                                                      new String[][]{{"data/a", "1"}, {"data/b", "2"}, {"data/c", "3"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/a", new SimpleText( "1" ), IndexFieldType.NUMBER ),
+                                                          new UserDefinedField( "data/b", new SimpleText( "2" ), IndexFieldType.NUMBER ),
+                                                          new UserDefinedField( "data/c", new SimpleText( "3" ),
+                                                                                IndexFieldType.NUMBER ) ) );
+
         contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title2",
-                                                      new String[][]{{"data/a", "2"}, {"data/b", "2"}, {"data/c", "1"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/a", new SimpleText( "2" ), IndexFieldType.NUMBER ),
+                                                          new UserDefinedField( "data/b", new SimpleText( "2" ), IndexFieldType.NUMBER ),
+                                                          new UserDefinedField( "data/c", new SimpleText( "1" ),
+                                                                                IndexFieldType.NUMBER ) ) );
         contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title3",
-                                                      new String[][]{{"data/a", "2"}, {"data/b", "1"}, {"data/c", "3"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/a", new SimpleText( "2" ), IndexFieldType.NUMBER ),
+                                                          new UserDefinedField( "data/b", new SimpleText( "1" ), IndexFieldType.NUMBER ),
+                                                          new UserDefinedField( "data/c", new SimpleText( "3" ),
+                                                                                IndexFieldType.NUMBER ) ) );
         contentIndexService.index( doc3, false );
+
+        flushIndex();
+
+        printAllIndexContent();
 
         ContentIndexQuery query = new ContentIndexQuery( "(data/a = 1 AND data/b = 2)", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
@@ -117,19 +149,25 @@ public class ContentIndexServiceImplTest_content_queries
     public void testContentQueryWithCategoryFilterAndContentTypeNameSearch()
     {
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
-                                                      new String[][]{{"data/heading", "title1"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title1" ) ) ) );
+        ;
         doc1.setContentTypeName( "Article3" );
         contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
-                                                      new String[][]{{"data/heading", "title2"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title2" ) ) ) );
         doc2.setContentTypeName( "Article3" );
         contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
-                                                      new String[][]{{"data/heading", "title3"}} );
+                                                      Lists.newArrayList(
+                                                          new UserDefinedField( "data/heading", new SimpleText( "title3" ) ) ) );
         doc3.setContentTypeName( "Loooooooooooooong-content-type-name-it-is" );
         contentIndexService.index( doc3, false );
+
+        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "contenttype = 'Article3'", "" );
         query.setContentTypeFilter( createContentTypeList( 10 ) );
@@ -180,12 +218,6 @@ public class ContentIndexServiceImplTest_content_queries
         ContentIndexQuery query2 = new ContentIndexQuery( "data.person.gender = 'male'" );
         ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 3, res2.getLength() );
-    }
-
-    private ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,
-                                                   String title, String[][] fields )
-    {
-        return createContentDocument( contentKey, categoryKey, contentTypeKey, 2, title, fields );
     }
 
     private List<CategoryKey> createCategoryKeyList( Integer... array )

@@ -11,6 +11,8 @@ import com.google.common.collect.Sets;
 
 public class ContentIndexDateSetBuilder
 {
+    //TODO: THis is shit, fix fix fix
+
     private final static Logger LOG = Logger.getLogger( ContentIndexDateSetBuilder.class.getName() );
 
     //private static String dateFormat = "dd.MM.yyyy";
@@ -21,7 +23,7 @@ public class ContentIndexDateSetBuilder
 
     private static String isoDateFormatNoTime = "yyyy-MM-dd";
 
-    private static String isoDateFormatWithTime = "yyyy-MM-dd HH:mm";
+    private static String isoDateFormatWithTime = "yyyy-MM-dd HH:mm:ss";
 
     private static String[] validDatePatterns = new String[]{isoDateFormatNoTime, isoDateFormatWithTime};
 

@@ -5,20 +5,13 @@
 package com.enonic.vertical.adminweb;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -83,10 +76,8 @@ import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.timezone.TimeZoneService;
 
 public abstract class AbstractAdminwebServlet
-    extends HttpServlet
-    implements Controller, ServletContextAware, InitializingBean, DisposableBean, ApplicationContextAware
+    implements Controller, ServletContextAware, ApplicationContextAware
 {
-
     @Autowired
     protected VerticalProperties verticalProperties;
 
@@ -256,56 +247,38 @@ public abstract class AbstractAdminwebServlet
     public ModelAndView handleRequest( final HttpServletRequest request, final HttpServletResponse response )
         throws Exception
     {
-        service( request, response );
+        if ( request.getMethod().equalsIgnoreCase( "GET" ) )
+        {
+            doGet( request, response );
+        }
+        else if ( request.getMethod().equalsIgnoreCase( "POST" ) )
+        {
+            doPost( request, response );
+        }
+        else
+        {
+            response.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED );
+        }
+
         return null;
     }
 
-    public void afterPropertiesSet()
+    protected void doGet( final HttpServletRequest request, final HttpServletResponse response )
         throws Exception
     {
-        final String servletName = getClass().getSimpleName();
-
-        init( new ServletConfig()
-        {
-            public String getServletName()
-            {
-                return servletName;
-            }
-
-            public ServletContext getServletContext()
-            {
-                return servletContext;
-            }
-
-            public String getInitParameter( final String name )
-            {
-                return null;
-            }
-
-            public Enumeration getInitParameterNames()
-            {
-                return Collections.enumeration( Collections.EMPTY_LIST );
-            }
-        } );
+        response.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED );
     }
 
-    public void init( ServletConfig servletConfig )
-        throws ServletException
+    protected void doPost( final HttpServletRequest request, final HttpServletResponse response )
+        throws Exception
     {
-        super.init( servletConfig );
+        response.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED );
     }
 
     protected AdminService lookupAdminBean()
     {
         return adminService;
     }
-
-    protected KeyService lookupKeyBean()
-        throws VerticalAdminException
-    {
-        return keyService;
-    }
-
 
     protected boolean isRequestForAdminPath( String path, HttpServletRequest request )
     {
@@ -390,12 +363,12 @@ public abstract class AbstractAdminwebServlet
         catch ( IOException ioe )
         {
             String message = "Failed to forward request to \"{0}\": %t";
-            VerticalAdminLogger.errorAdmin(message, adminPath, ioe );
+            VerticalAdminLogger.errorAdmin( message, adminPath, ioe );
         }
         catch ( ServletException se )
         {
             String message = "Failed to forward request to \"{0}\": %t";
-            VerticalAdminLogger.errorAdmin(message, adminPath, se );
+            VerticalAdminLogger.errorAdmin( message, adminPath, se );
         }
     }
 

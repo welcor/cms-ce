@@ -113,6 +113,7 @@ public abstract class BaseHandler
     {
     }
 
+    @Autowired
     public void setVerticalProperties( VerticalProperties value )
     {
         this.verticalProperties = value;
@@ -129,6 +130,7 @@ public abstract class BaseHandler
         this.languageMap = languageMap;
     }
 
+    @Autowired
     public void setKeyService( KeyService value )
     {
         this.keyService = value;

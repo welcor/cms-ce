@@ -4,28 +4,21 @@
  */
 package com.enonic.vertical.adminweb.handlers;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-
-import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentXMLBuildersSpringManagedBeansBridge;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentArticle3XMLBuilder;
 
 public class ContentArticle3HandlerServlet
     extends ContentBaseHandlerServlet
 {
-
     public ContentArticle3HandlerServlet()
     {
         super();
-
-        // Set filenames:
         FORM_XSL = "article3_form.xsl";
     }
 
-    public void init( ServletConfig servletConfig )
-        throws ServletException
+    @Autowired
+    public void setContentArticle3XMLBuilder( final ContentArticle3XMLBuilder builder )
     {
-        super.init( servletConfig );
-        setContentXMLBuilder( ContentXMLBuildersSpringManagedBeansBridge.getContentArticle3XMLBuilder() );
+        setContentXMLBuilder( builder );
     }
-
 }

@@ -4,19 +4,18 @@
  */
 package com.enonic.vertical.adminweb.handlers;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentXMLBuildersSpringManagedBeansBridge;
+import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentBaseXMLBuilder;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.core.security.user.User;
@@ -25,20 +24,17 @@ import com.enonic.cms.core.service.AdminService;
 public class PagelinkHandlerServlet
     extends ContentBaseHandlerServlet
 {
-
-
-    public void init( ServletConfig servletConfig )
-        throws ServletException
+    @Autowired
+    public void setContentBaseXMLBuilder( final ContentBaseXMLBuilder builder )
     {
-        super.init( servletConfig );
-        setContentXMLBuilder( ContentXMLBuildersSpringManagedBeansBridge.getContentBaseXMLBuilder() );
+        setContentXMLBuilder( builder );
     }
 
     public void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, User user )
         throws VerticalAdminException, VerticalEngineException
     {
-        VerticalAdminLogger.errorAdmin("OperationWrapper CREATE not implemented" );
+        VerticalAdminLogger.errorAdmin( "OperationWrapper CREATE not implemented" );
     }
 
     public boolean handlerSelect( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,

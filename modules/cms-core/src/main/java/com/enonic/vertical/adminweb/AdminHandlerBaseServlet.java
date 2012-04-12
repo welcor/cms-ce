@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.servlet.ServletConfig;
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,12 +86,9 @@ public abstract class AdminHandlerBaseServlet
 
     protected String SMTP_HOST;
 
-
-    public void init( ServletConfig servletConfig )
-        throws ServletException
+    @PostConstruct
+    public void initialize()
     {
-        super.init( servletConfig );
-
         fileUpload = new DiskFileUpload();
         fileUpload.setHeaderEncoding( "UTF-8" );
         fileUpload.setSizeMax( verticalProperties.getMultiPartRequestMaxSize() );

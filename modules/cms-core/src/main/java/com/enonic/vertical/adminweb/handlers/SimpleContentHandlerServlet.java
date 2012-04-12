@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -24,6 +22,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,7 +32,7 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.AdminStore;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentXMLBuildersSpringManagedBeansBridge;
+import com.enonic.vertical.adminweb.handlers.xmlbuilders.SimpleContentXMLBuilder;
 import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalEngineException;
 
@@ -56,13 +55,10 @@ import com.enonic.cms.core.security.user.UserEntity;
 final public class SimpleContentHandlerServlet
     extends ContentBaseHandlerServlet
 {
-
-
-    public void init( ServletConfig servletConfig )
-        throws ServletException
+    @Autowired
+    public void setSimpleContentXMLBuilder(final SimpleContentXMLBuilder builder)
     {
-        super.init( servletConfig );
-        setContentXMLBuilder( ContentXMLBuildersSpringManagedBeansBridge.getSimpleContentXMLBuilder() );
+        setContentXMLBuilder(builder);
     }
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,

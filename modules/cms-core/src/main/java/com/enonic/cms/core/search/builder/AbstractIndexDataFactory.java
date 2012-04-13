@@ -60,9 +60,7 @@ class AbstractIndexDataFactory
     private void doAddDateField( String indexFieldName, final Date value, final XContentBuilder builder )
         throws Exception
     {
-        final String fieldValue = IndexValueResolver.normalizeDateValue( value );
-
-        builder.field( getNormalizedFieldName( indexFieldName ), fieldValue );
+        builder.field( getNormalizedFieldName( indexFieldName ), value );
     }
 
     protected void addIntegerField( String indexFieldName, final Integer value, final XContentBuilder builder )

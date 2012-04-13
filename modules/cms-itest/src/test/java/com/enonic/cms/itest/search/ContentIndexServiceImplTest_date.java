@@ -180,4 +180,31 @@ public class ContentIndexServiceImplTest_date
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
+    @Test
+    public void testQueryDateEqualsPublishToFromFields()
+    {
+        ContentDocument doc1 = new ContentDocument( new ContentKey( 3001 ) );
+        doc1.setCategoryKey( new CategoryKey( 201 ) );
+        doc1.setContentTypeKey( new ContentTypeKey( 101 ) );
+        doc1.setContentTypeName( "Person" );
+        doc1.setTitle( "Jørund Vier Skriubakken" );
+        doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
+        doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
+        doc1.setStatus( 2 );
+        doc1.setPriority( 0 );
+        contentIndexService.index( doc1, true );
+
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "@publishFrom = date('2010-04-19 13:01') AND @publishTo = date('2010-04-19 13:02')");
+
+        ContentResultSet contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        ContentIndexQuery queryNotEquals = new ContentIndexQuery( "@publishFrom != date('2010-04-19 13:01') OR @publishTo != date('2010-04-19 13:02')");
+
+        ContentResultSet contentResultSet2 = contentIndexService.query( queryNotEquals );
+        assertEquals( 0, contentResultSet2.getKeys().size() );
+    }
+
 }

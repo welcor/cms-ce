@@ -169,6 +169,11 @@ public final class ContentDocument
         addUserDefinedField( new UserDefinedField( name, new SimpleText( value ) ) );
     }
 
+    public void addUserDefinedField( String name, String value, IndexFieldType indexFieldType )
+    {
+        addUserDefinedField( new UserDefinedField( name, new SimpleText( value ), indexFieldType ) );
+    }
+
     public void addUserDefinedField( String name, SimpleText value )
     {
         addUserDefinedField( new UserDefinedField( name, value ) );

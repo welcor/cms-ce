@@ -25,7 +25,7 @@ public class ContentIndexDateSetBuilder
 
     private static String isoDateFormatWithTime = "yyyy-MM-dd HH:mm:ss";
 
-    private static String[] validDatePatterns = new String[]{isoDateFormatNoTime, isoDateFormatWithTime};
+    public static String[] validDatePatterns = new String[]{isoDateFormatNoTime, isoDateFormatWithTime};
 
     public static Set<Date> translateIndexValueSetToDates( final String indexFieldName, final Set<String> values )
     {

@@ -16,6 +16,7 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentBaseXMLBuilder;
+import com.enonic.vertical.adminweb.handlers.xmlbuilders.GeneralContentXMLBuilder;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.core.security.user.User;
@@ -25,7 +26,7 @@ public class PagelinkHandlerServlet
     extends ContentBaseHandlerServlet
 {
     @Autowired
-    public void setContentBaseXMLBuilder( final ContentBaseXMLBuilder builder )
+    public void setGeneralContentXMLBuilder( final GeneralContentXMLBuilder builder )
     {
         setContentXMLBuilder( builder );
     }

@@ -109,10 +109,6 @@ public abstract class BaseHandler
 
     }
 
-    public void init()
-    {
-    }
-
     @Autowired
     public void setVerticalProperties( VerticalProperties value )
     {

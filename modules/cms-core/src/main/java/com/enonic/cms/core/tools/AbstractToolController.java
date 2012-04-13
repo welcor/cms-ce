@@ -30,7 +30,6 @@ import com.enonic.cms.core.service.AdminService;
  */
 public abstract class AbstractToolController
     extends AdminHandlerBaseServlet
-    implements Controller
 {
     private ViewResolver viewResolver;
 

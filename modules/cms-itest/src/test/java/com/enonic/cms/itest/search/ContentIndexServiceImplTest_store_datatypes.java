@@ -32,7 +32,7 @@ public class ContentIndexServiceImplTest_store_datatypes
         doc1.setCategoryKey( new CategoryKey( 9 ) );
         doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
         doc1.setContentTypeName( "Adults" );
-        doc1.setTitle( "Family1" );
+        doc1.setTitle( "Family" );
 
         doc1.addUserDefinedField( "data/person/age", "36", IndexFieldType.NUMBER );
         doc1.addUserDefinedField( "data/person/gender", "male" );
@@ -59,14 +59,24 @@ public class ContentIndexServiceImplTest_store_datatypes
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        doc1.setCreated( date.getTime() );
 
+        doc1.setCreated( date.getTime() );
         doc1.setOwnerName( "testuser" );
         doc1.setOwnerQualifiedName( "enonic/testuser" );
         doc1.setOwnerKey( "1" );
+
+        doc1.setModified( date.getTime() );
+        doc1.setModifierKey( "1" );
+        doc1.setModifierName( "modifierUser" );
+        doc1.setModifierQualifiedName( "enonic/modifierUser" );
+
+        doc1.setAssignmentDueDate( date.getTime() );
         doc1.setAssigneeName( "testuser" );
         doc1.setAssigneeQualifiedName( "enonic/testuser" );
         doc1.setAssigneeKey( "1" );
+        doc1.setAssignerName( "testuser" );
+        doc1.setAssignerQualifiedName( "enonic/testuser" );
+        doc1.setAssignerKey( "1" );
 
         contentIndexService.index( doc1, true );
 
@@ -91,15 +101,24 @@ public class ContentIndexServiceImplTest_store_datatypes
         verifyField( "publishto", 1, fieldMapForId, IndexFieldType.DATE );
         verifyField( "contenttype", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "contenttypekey", 1, fieldMapForId, IndexFieldType.NUMBER );
+
+        verifyField( "created", 1, fieldMapForId, IndexFieldType.DATE );
         verifyField( "owner_key", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "owner_name", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "owner_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "modified", 1, fieldMapForId, IndexFieldType.DATE );
+        verifyField( "modifier_key", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "modifier_name", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "modifier_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
+
+        verifyField( "assignmentduedate", 1, fieldMapForId, IndexFieldType.DATE );
         verifyField( "assignee_key", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "assignee_name", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "assignee_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
-
+        verifyField( "assigner_key", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "assigner_name", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "assigner_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
     }
-
 
     @Test
     public void testStoreUserdefinedFields()
@@ -119,21 +138,6 @@ public class ContentIndexServiceImplTest_store_datatypes
         verifyField( "data_person_description.number", 0, fieldMapForId, IndexFieldType.NUMBER );
         verifyField( "data_person_birthdate", 3, fieldMapForId, IndexFieldType.STRING );
         verifyField( "data_person_birthdate.date", 3, fieldMapForId, IndexFieldType.DATE );
-    }
-
-    private void verifyField( String fieldName, int expected, Map<String, SearchHitField> fieldMapForId )
-    {
-        final SearchHitField hits = fieldMapForId.get( fieldName );
-
-        if ( expected > 0 )
-        {
-            assertNotNull( hits );
-            Assert.assertEquals( expected, hits.values().size() );
-        }
-        else
-        {
-            assertNull( hits );
-        }
     }
 
     private void verifyField( String fieldName, int expected, Map<String, SearchHitField> fieldMapForId, IndexFieldType indexFieldType )

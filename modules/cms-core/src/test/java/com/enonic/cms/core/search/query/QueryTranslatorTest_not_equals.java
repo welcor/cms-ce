@@ -25,7 +25,7 @@ public class QueryTranslatorTest_not_equals
             "      \"must_not\" : {\n" +
             "        \"ids\" : {\n" +
             "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"100\" ]\n" +
+            "          \"values\" : [ \"100.0\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -62,7 +62,7 @@ public class QueryTranslatorTest_not_equals
             "          \"must_not\" : {\n" +
             "            \"ids\" : {\n" +
             "              \"type\" : \"content\",\n" +
-            "              \"values\" : [ \"100\" ]\n" +
+            "              \"values\" : [ \"100.0\" ]\n" +
             "            }\n" +
             "          }\n" +
             "        }\n" +

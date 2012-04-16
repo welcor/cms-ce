@@ -21,7 +21,7 @@ public class QueryValue
         if ( value instanceof Number )
         {
             numericValue = (Number) value;
-            stringValue = doNormalizeString( value.toString() );
+            stringValue = doNormalizeString( value == null ? "" : value.toString() );
             dateTimeValue = null;
         }
         else if ( value instanceof ReadableDateTime )
@@ -32,7 +32,7 @@ public class QueryValue
         }
         else
         {
-            stringValue = doNormalizeString( value.toString() );
+            stringValue = doNormalizeString( value == null ? "" : value.toString() );
             numericValue = null;
             dateTimeValue = null;
         }

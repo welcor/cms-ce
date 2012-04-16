@@ -19,9 +19,9 @@ public class LikeQueryBuilderCreatorTest
             "  }\n" +
             "}";
 
-        QueryPath queryPath = QueryPathResolver.resolveQueryPath( "data/*" );
+        QueryField queryField = QueryPathResolver.resolveQueryPath( "data/*" );
 
-        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryPath, new QueryValue( "test" ) );
+        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryField, new QueryValue( "test" ) );
 
         System.out.println( queryBuilder.toString() );
 
@@ -45,9 +45,9 @@ public class LikeQueryBuilderCreatorTest
             "  }\n" +
             "}";
 
-        QueryPath queryPath = QueryPathResolver.resolveQueryPath( "attachment_title" );
+        QueryField queryField = QueryPathResolver.resolveQueryPath( "attachment_title" );
 
-        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryPath, new QueryValue( "test" ) );
+        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryField, new QueryValue( "test" ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -63,9 +63,9 @@ public class LikeQueryBuilderCreatorTest
             "  }\n" +
             "}";
 
-        QueryPath queryPath = QueryPathResolver.resolveQueryPath( "data_title" );
+        QueryField queryField = QueryPathResolver.resolveQueryPath( "data_title" );
 
-        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryPath, new QueryValue( "test" ) );
+        final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryField, new QueryValue( "test" ) );
 
         System.out.println( queryBuilder.toString() );
 

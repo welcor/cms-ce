@@ -76,7 +76,7 @@ public class QueryTranslatorTest_orderby
             "  \"query\" : {\n" +
             "    \"ids\" : {\n" +
             "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "      \"values\" : [ \"100.0\" ]\n" +
             "    }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +

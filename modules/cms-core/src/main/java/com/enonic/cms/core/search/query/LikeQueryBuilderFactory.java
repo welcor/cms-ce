@@ -10,20 +10,21 @@ public class LikeQueryBuilderFactory
     {
     }
 
-    public QueryBuilder buildLikeQuery( QueryPath path, QueryValue value )
+    // TODO: Refactor to use QueryPathValue
+    public QueryBuilder buildLikeQuery( QueryField queryField, QueryValue value )
     {
-        final boolean isWildcardPath = path.isWildCardPath();
+        final boolean isWildcardPath = queryField.isWildcardQueyField();
 
         if ( isWildcardPath )
         {
-            path.setMatchAllPath();
+            queryField.setMatchAllPath();
         }
 
-        QueryBuilder queryBuilder = QueryBuilders.wildcardQuery( path.getPath(), value.getWildcardValue() );
+        QueryBuilder queryBuilder = QueryBuilders.wildcardQuery( queryField.getFieldName(), value.getWildcardValue() );
 
-        if ( path.doRenderAsHasChildQuery() )
+        if ( queryField.doRenderAsHasChildQuery() )
         {
-            return wrapInHasChildQuery( path, queryBuilder );
+            return wrapInHasChildQuery( new QueryFieldAndValue( queryField, value ), queryBuilder );
         }
         else
         {

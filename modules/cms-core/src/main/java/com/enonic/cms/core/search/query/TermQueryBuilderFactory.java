@@ -16,20 +16,14 @@ public class TermQueryBuilderFactory
     {
     }
 
-    public QueryBuilder buildTermQuery( final QueryPath path, final QueryValue queryValue )
+    public QueryBuilder buildTermQuery( final QueryFieldAndValue queryFieldAndValue )
     {
-        final boolean isWildCardPath = path.isWildCardPath();
 
-        if ( isWildCardPath )
+        final QueryBuilder termQuery = doBuildTermQuery( queryFieldAndValue );
+
+        if ( queryFieldAndValue.doRenderAsHasChildQuery() )
         {
-            path.setMatchAllPath();
-        }
-
-        final QueryBuilder termQuery = doBuildTermQuery( path, queryValue, isWildCardPath );
-
-        if ( path.doRenderAsHasChildQuery() )
-        {
-            return wrapInHasChildQuery( path, termQuery );
+            return wrapInHasChildQuery( queryFieldAndValue, termQuery );
         }
         else
         {
@@ -37,44 +31,25 @@ public class TermQueryBuilderFactory
         }
     }
 
-    private QueryBuilder doBuildTermQuery( QueryPath path, QueryValue queryValue, boolean wildCardPath )
+    private QueryBuilder doBuildTermQuery( final QueryFieldAndValue queryFieldAndValue )
     {
-        if ( path.doBuildAsIdQuery() )
+        if ( queryFieldAndValue.doBuildAsIdQuery() )
         {
-            return doRenderIdQuery( queryValue );
+            return buildAsIdQuery( queryFieldAndValue );
         }
 
-        if ( queryValue.isNumeric() )
+        if ( queryFieldAndValue.doBuildAsEmptyDateFieldQuery() )
         {
-            return doBuildQueryForNumericValue( path, queryValue, wildCardPath );
-        }
-
-        if ( path.isDateField() && queryValue.isEmpty() )
-        {
-            MissingFilterBuilder filter = FilterBuilders.missingFilter( path.getPath() );
+            MissingFilterBuilder filter = FilterBuilders.missingFilter( queryFieldAndValue.getFieldName() );
             return QueryBuilders.filteredQuery( matchAllQuery(), filter );
         }
-        if ( path.isDateField() && queryValue.isDateTime() )
-        {
-            return QueryBuilders.termQuery( path.getPath(), queryValue.getDateTime() );
-        }
 
-        return QueryBuilders.termQuery( path.getPath(), queryValue.getStringValueNormalized() );
+        return QueryBuilders.termQuery( queryFieldAndValue.getFieldName(), queryFieldAndValue.getValue() );
     }
 
-    private QueryBuilder doBuildQueryForNumericValue( final QueryPath path, final QueryValue queryValue, final boolean wildCardPath )
+    private QueryBuilder buildAsIdQuery( final QueryFieldAndValue queryFieldAndValue )
     {
-        return QueryBuilders.termQuery( path.getPath(), queryValue.getNumericValue() );
-    }
-
-    private QueryBuilder doRenderIdQuery( final QueryValue queryValue )
-    {
-        if ( queryValue.isNumeric() )
-        {
-            return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getNumericValueAsString() );
-        }
-
-        return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryValue.getStringValueNormalized() );
+        return QueryBuilders.idsQuery( IndexType.Content.toString() ).addIds( queryFieldAndValue.getValueForIdQuery() );
     }
 
 

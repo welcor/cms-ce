@@ -9,9 +9,9 @@ public abstract class BaseQueryBuilderFactory
     extends IndexFieldNameConstants
 {
 
-    protected QueryBuilder wrapInHasChildQuery( QueryPath path, QueryBuilder query )
+    protected QueryBuilder wrapInHasChildQuery( QueryFieldAndValue queryFieldAndValue, QueryBuilder query )
     {
-        return QueryBuilders.hasChildQuery( path.getIndexType().toString(), query );
+        return QueryBuilders.hasChildQuery( queryFieldAndValue.getIndexType(), query );
     }
 
 }

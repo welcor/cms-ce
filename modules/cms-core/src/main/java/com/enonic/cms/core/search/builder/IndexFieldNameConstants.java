@@ -14,6 +14,8 @@ public class IndexFieldNameConstants
 
     protected static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
 
+    protected static final String INDEX_FIELD_TYPE_SEPARATOR = ".";
+
     public static final String ALL_USERDATA_FIELDNAME = "_all_userdata";
 
     public static final String PUBLISH_FROM_FIELDNAME = "publishFrom";

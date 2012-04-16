@@ -27,8 +27,9 @@ public class ContentIndexQueryExprParser
         // invoke any functions...
         expr = (QueryExpr) expr.evaluate( functionEvaluator );
 
+        // TODO: This should probably not be done anymore, since we should separate strings and numbers
         // convert numbers given as strings to real numbers
-        expr = (QueryExpr) expr.evaluate( numberFieldEvaluator );
+        // expr = (QueryExpr) expr.evaluate( numberFieldEvaluator );
 
         // do some tricks with dates in some special cases...
         expr = (QueryExpr) expr.evaluate( dateCompareEvaluator );

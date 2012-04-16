@@ -19,40 +19,24 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.*;
 
-public class ContentIndexServiceImplTest_store_datatypes
+public class ContentIndexServiceImplTest_index_data
     extends ContentIndexServiceTestBase
 {
 
-    private void indexTestValues()
+    private ContentDocument createContentDocument( int contentKey )
+    {
+        ContentDocument doc1 = new ContentDocument( new ContentKey( contentKey ) );
+        doc1.setCategoryKey( new CategoryKey( 9 ) );
+        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc1.setTitle( "Family" );
+        doc1.setContentTypeName( "Adults" );
+        return doc1;
+    }
+
+    private void addMetaData( final ContentDocument doc1 )
     {
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
 
-        // Index content 1, 2 og 3:
-        ContentDocument doc1 = new ContentDocument( new ContentKey( 1 ) );
-        doc1.setCategoryKey( new CategoryKey( 9 ) );
-        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
-        doc1.setContentTypeName( "Adults" );
-        doc1.setTitle( "Family" );
-
-        doc1.addUserDefinedField( "data/person/age", "36", IndexFieldType.NUMBER );
-        doc1.addUserDefinedField( "data/person/gender", "male" );
-        doc1.addUserDefinedField( "data/person/description", "description1" );
-        doc1.addUserDefinedField( "data/person/birthdate", "1975-05-05", IndexFieldType.DATE );
-        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
-
-        doc1.addUserDefinedField( "data/person/age", "18", IndexFieldType.NUMBER );
-        doc1.addUserDefinedField( "data/person/gender", "female" );
-        doc1.addUserDefinedField( "data/person/description", "description2" );
-        doc1.addUserDefinedField( "data/person/birthdate", "1994-06-06", IndexFieldType.DATE );
-        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
-
-        doc1.addUserDefinedField( "data/person/age", "37", IndexFieldType.NUMBER );
-        doc1.addUserDefinedField( "data/person/gender", "male" );
-        doc1.addUserDefinedField( "data/person/description", "description3" );
-        doc1.addUserDefinedField( "data/person/birthdate", "1974-06-06", IndexFieldType.DATE );
-        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
-
-        // Publish from February 28th to March 28th.
         doc1.setPublishFrom( date.getTime() );
         date.add( Calendar.MONTH, 1 );
         doc1.setPublishTo( date.getTime() );
@@ -77,18 +61,37 @@ public class ContentIndexServiceImplTest_store_datatypes
         doc1.setAssignerName( "testuser" );
         doc1.setAssignerQualifiedName( "enonic/testuser" );
         doc1.setAssignerKey( "1" );
+    }
 
-        contentIndexService.index( doc1, true );
+    private void addUserdefinedData( final ContentDocument doc1 )
+    {
+        doc1.addUserDefinedField( "data/person/age", "36", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/gender", "male" );
+        doc1.addUserDefinedField( "data/person/description", "description1" );
+        doc1.addUserDefinedField( "data/person/birthdate", "1975-05-05", IndexFieldType.DATE );
+        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
 
-        flushIndex();
+        doc1.addUserDefinedField( "data/person/age", "18", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/gender", "female" );
+        doc1.addUserDefinedField( "data/person/description", "description2" );
+        doc1.addUserDefinedField( "data/person/birthdate", "1994-06-06", IndexFieldType.DATE );
+        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
+
+        doc1.addUserDefinedField( "data/person/age", "37", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/gender", "male" );
+        doc1.addUserDefinedField( "data/person/description", "description3" );
+        doc1.addUserDefinedField( "data/person/birthdate", "1974-06-06", IndexFieldType.DATE );
+        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
     }
 
     @Test
     public void testAllUserFields()
     {
-        indexTestValues();
-
-        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId();
+        final int contentKey = 1;
+        final ContentDocument contentDocument = createContentDocument( contentKey );
+        addUserdefinedData( contentDocument );
+        indexContentDocument( contentDocument );
+        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
         final int numberOfUniqueUserDataValuesInTestValues = 12;
 
@@ -96,18 +99,21 @@ public class ContentIndexServiceImplTest_store_datatypes
         verifyField( "_all_userdata._tokenized", numberOfUniqueUserDataValuesInTestValues, fieldMapForId, IndexFieldType.STRING );
     }
 
-    private Map<String, SearchHitField> getAllFieldsForId()
+    private Map<String, SearchHitField> getAllFieldsForId( int id )
     {
-        final ContentKey contentKey = new ContentKey( 1 );
+        final ContentKey contentKey = new ContentKey( id );
         return getFieldMapForId( contentKey );
     }
 
     @Test
     public void testMetadataFields()
     {
-        indexTestValues();
+        final int contentKey = 1;
 
-        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId();
+        final ContentDocument contentDocument = createContentDocument( contentKey );
+        addMetaData( contentDocument );
+        indexContentDocument( contentDocument );
+        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
         verifyField( "key", 1, fieldMapForId, IndexFieldType.NUMBER );
         verifyField( "title", 1, fieldMapForId, IndexFieldType.STRING );
@@ -136,12 +142,19 @@ public class ContentIndexServiceImplTest_store_datatypes
         verifyField( "assigner_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
     }
 
+    private void indexContentDocument( final ContentDocument contentDocument )
+    {
+        contentIndexService.index( contentDocument, true );
+        flushIndex();
+    }
+
     @Test
     public void testStoreUserdefinedFields()
     {
-        indexTestValues();
-
-        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId();
+        final int contentKey = 1;
+        final ContentDocument contentDocument = createContentDocument( contentKey );
+        indexContentDocument( contentDocument );
+        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
         verifyField( "data_person_age", 3, fieldMapForId, IndexFieldType.STRING );
         verifyField( "data_person_age.number", 3, fieldMapForId, IndexFieldType.NUMBER );

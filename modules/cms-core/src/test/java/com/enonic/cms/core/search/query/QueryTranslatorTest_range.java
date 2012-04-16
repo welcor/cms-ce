@@ -63,7 +63,7 @@ public class QueryTranslatorTest_range
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"key\" : {\n" +
-            "        \"from\" : 100.0,\n" +
+            "        \"from\" : \"100\",\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
             "        \"include_upper\" : true\n" +
@@ -89,7 +89,7 @@ public class QueryTranslatorTest_range
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"key\" : {\n" +
-            "        \"from\" : 100.0,\n" +
+            "        \"from\" : \"100\",\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : true\n" +
@@ -116,7 +116,7 @@ public class QueryTranslatorTest_range
             "    \"range\" : {\n" +
             "      \"key\" : {\n" +
             "        \"from\" : null,\n" +
-            "        \"to\" : 100.0,\n" +
+            "        \"to\" : \"100\",\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : false\n" +
             "      }\n" +
@@ -142,7 +142,7 @@ public class QueryTranslatorTest_range
             "    \"range\" : {\n" +
             "      \"key\" : {\n" +
             "        \"from\" : null,\n" +
-            "        \"to\" : 100.0,\n" +
+            "        \"to\" : \"100\",\n" +
             "        \"include_lower\" : true,\n" +
             "        \"include_upper\" : true\n" +
             "      }\n" +

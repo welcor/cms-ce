@@ -5,10 +5,9 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_equals
+public class QueryTranslatorTest_contentKeyQueries
     extends QueryTranslatorBaseTest
 {
-
     @Test
     public void testEquals_key_string()
         throws Exception
@@ -24,13 +23,12 @@ public class QueryTranslatorTest_equals
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key = '100'" );
+        ContentIndexQuery query = createContentQuery( "key = \"100\"" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
-
 
     @Test
     public void testEquals_key_int()
@@ -42,7 +40,7 @@ public class QueryTranslatorTest_equals
             "  \"query\" : {\n" +
             "    \"ids\" : {\n" +
             "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "      \"values\" : [ \"100.0\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -64,7 +62,7 @@ public class QueryTranslatorTest_equals
             "  \"query\" : {\n" +
             "    \"ids\" : {\n" +
             "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "      \"values\" : [ \"100.0\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -75,5 +73,4 @@ public class QueryTranslatorTest_equals
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
-
 }

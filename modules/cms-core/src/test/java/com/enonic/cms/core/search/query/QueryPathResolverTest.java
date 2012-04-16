@@ -9,12 +9,12 @@ public class QueryPathResolverTest
     @Test
     public void testCreateQueryPath()
     {
-        QueryPath startDataPath = QueryPathResolver.resolveQueryPath( "data" );
-        assertEquals( false, startDataPath.doRenderAsHasChildQuery() );
-        assertEquals( "content", startDataPath.getIndexType().toString() );
+        QueryField startDataField = QueryPathResolver.resolveQueryPath( "data" );
+        assertEquals( false, startDataField.doRenderAsHasChildQuery() );
+        assertEquals( "content", startDataField.getIndexType().toString() );
 
-        QueryPath startAttachmentPath = QueryPathResolver.resolveQueryPath( "attachment" );
-        assertEquals( true, startAttachmentPath.doRenderAsHasChildQuery() );
-        assertEquals( "binaries", startAttachmentPath.getIndexType().toString() );
+        QueryField startAttachmentField = QueryPathResolver.resolveQueryPath( "attachment" );
+        assertEquals( true, startAttachmentField.doRenderAsHasChildQuery() );
+        assertEquals( "binaries", startAttachmentField.getIndexType().toString() );
     }
 }

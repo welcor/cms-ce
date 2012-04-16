@@ -16,12 +16,12 @@ public class IndexValueQueryTranslator
         final SearchSourceBuilder builder = new SearchSourceBuilder();
 
         final String path = QueryFieldNameResolver.resolveQueryFieldName( query.getField() );
-        final QueryPath queryPath = QueryPathResolver.resolveQueryPath( path );
+        final QueryField queryField = QueryPathResolver.resolveQueryPath( path );
 
         builder.from( query.getIndex() );
         builder.size( query.getCount() );
 
-        builder.fields( queryPath.getPath() );
+        builder.fields( queryField.getFieldName() );
 
         builder.query( QueryBuilders.matchAllQuery() );
 

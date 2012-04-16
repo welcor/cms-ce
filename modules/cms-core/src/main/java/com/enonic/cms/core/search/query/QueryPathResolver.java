@@ -14,26 +14,44 @@ import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 public class QueryPathResolver
     extends IndexFieldNameConstants
 {
-    public static QueryPath resolveQueryPath( String path )
+    public static QueryField resolveQueryPath( String path )
     {
-        QueryPath queryPath = new QueryPath( path );
+        QueryField queryField = new QueryField( path );
 
-        if ( StringUtils.equals( path, CONTENTKEY_FIELDNAME ) )
-        {
-            queryPath.setRenderAsIdQuery( true );
-        }
+        detectContentKeyPath( path, queryField );
 
+        detectAttachmentPath( path, queryField );
+
+        detectedCustomDataField( path, queryField );
+
+        return queryField;
+    }
+
+    private static void detectAttachmentPath( final String path, final QueryField queryField )
+    {
         if ( StringUtils.startsWith( path, ATTACHMENT_FIELDNAME ) )
         {
-            queryPath.setRenderAsHasChildQuery( true ).setIndexType( IndexType.Binaries );
+            queryField.setRenderAsHasChildQuery( true ).setIndexType( IndexType.Binaries );
         }
         else
         {
-            queryPath.setIndexType( IndexType.Content );
+            queryField.setIndexType( IndexType.Content );
         }
-
-        return queryPath;
     }
 
+    private static void detectContentKeyPath( final String path, final QueryField queryField )
+    {
+        if ( StringUtils.equals( path, CONTENTKEY_FIELDNAME ) )
+        {
+            queryField.setRenderAsIdQuery( true );
+        }
+    }
 
+    private static void detectedCustomDataField( String path, final QueryField queryField )
+    {
+        if ( path.startsWith( CONTENTDATA_PREFIX ) || path.startsWith( CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY ) )
+        {
+            queryField.setIsCustomDataField( true );
+        }
+    }
 }

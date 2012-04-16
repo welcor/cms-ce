@@ -105,34 +105,36 @@ public class QueryTranslator
     private QueryBuilder buildCompareExpr( CompareExpr expr )
     {
         final String path = QueryFieldNameResolver.resolveQueryFieldName( (FieldExpr) expr.getLeft() );
-        final QueryPath queryPath = QueryPathResolver.resolveQueryPath( path );
+        final QueryField queryField = QueryPathResolver.resolveQueryPath( path );
         final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expr.getRight() );
         final QueryValue querySingleValue = queryValues.length > 0 ? queryValues[0] : null;
+
+        final QueryFieldAndValue queryFieldAndValue = new QueryFieldAndValue( queryField, querySingleValue );
 
         final int operator = expr.getOperator();
 
         switch ( operator )
         {
             case CompareExpr.EQ:
-                return termQueryBuilderFactory.buildTermQuery( queryPath, querySingleValue );
+                return termQueryBuilderFactory.buildTermQuery( queryFieldAndValue );
             case CompareExpr.NEQ:
-                return buildNotQuery( termQueryBuilderFactory.buildTermQuery( queryPath, querySingleValue ) );
+                return buildNotQuery( termQueryBuilderFactory.buildTermQuery( queryFieldAndValue ) );
             case CompareExpr.GT:
-                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, querySingleValue, null, false, true );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryField, querySingleValue, null, false, true );
             case CompareExpr.GTE:
-                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, querySingleValue, null, true, true );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryField, querySingleValue, null, true, true );
             case CompareExpr.LT:
-                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, null, querySingleValue, true, false );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryField, null, querySingleValue, true, false );
             case CompareExpr.LTE:
-                return rangeQueryBuilderFactory.buildRangeQuery( queryPath, null, querySingleValue, true, true );
+                return rangeQueryBuilderFactory.buildRangeQuery( queryField, null, querySingleValue, true, true );
             case CompareExpr.LIKE:
-                return likeQueryBuilderFactory.buildLikeQuery( queryPath, querySingleValue );
+                return likeQueryBuilderFactory.buildLikeQuery( queryField, querySingleValue );
             case CompareExpr.NOT_LIKE:
-                return buildNotQuery( likeQueryBuilderFactory.buildLikeQuery( queryPath, querySingleValue ) );
+                return buildNotQuery( likeQueryBuilderFactory.buildLikeQuery( queryField, querySingleValue ) );
             case CompareExpr.IN:
-                return inQueryBuilderFactory.buildInQuery( queryPath, queryValues );
+                return inQueryBuilderFactory.buildInQuery( queryField, queryValues );
             case CompareExpr.NOT_IN:
-                return buildNotQuery( inQueryBuilderFactory.buildInQuery( queryPath, queryValues ) );
+                return buildNotQuery( inQueryBuilderFactory.buildInQuery( queryField, queryValues ) );
             case CompareExpr.FT:
                 return fullTextQueryBuilderFactory.buildFulltextQuery( path, querySingleValue );
         }

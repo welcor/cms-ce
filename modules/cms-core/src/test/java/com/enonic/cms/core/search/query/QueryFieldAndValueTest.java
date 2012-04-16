@@ -3,6 +3,7 @@ package com.enonic.cms.core.search.query;
 
 import org.joda.time.DateTime;
 import org.joda.time.ReadableDateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
@@ -14,6 +15,7 @@ public class QueryFieldAndValueTest
     extends IndexFieldNameConstants
 {
 
+    @Ignore
     @Test
     public void testWildcardPathGeneration()
     {

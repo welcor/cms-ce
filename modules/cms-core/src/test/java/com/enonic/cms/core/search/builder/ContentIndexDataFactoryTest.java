@@ -9,6 +9,7 @@ import java.util.Random;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import junit.framework.Assert;
@@ -107,10 +108,10 @@ public class ContentIndexDataFactoryTest
 
         final List<String> keysAsList = getKeysAsList( indexDataAsString );
 
-        verifyFieldExists( keysAsList, "key" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldExists( keysAsList, "status" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldExists( keysAsList, "priority" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
-        verifyFieldExists( keysAsList, "data_person_age" );// + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX );
+        verifyFieldExists( keysAsList, "key" );
+        verifyFieldExists( keysAsList, "status" );
+        verifyFieldExists( keysAsList, "priority" );
+        verifyFieldExists( keysAsList, "data_person_age" );
     }
 
     private void verifyFieldExists( List<String> keysAsList, String keyName )
@@ -123,6 +124,7 @@ public class ContentIndexDataFactoryTest
         Assert.assertFalse( "Redundant key: " + keyName, keysAsList.contains( keyName ) );
     }
 
+    @Ignore // TO BE IMPLEMENTED
     @Test
     public void testAttachmentData()
         throws Exception

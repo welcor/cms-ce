@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
+import com.enonic.cms.core.content.index.config.IndexFieldType;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -40,15 +41,15 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
 
     @Test
-    public void testNumericValuesOnly()
+    public void testNumericValuesOnlyToNumberField()
         throws Exception
     {
         List<UserDefinedField> userDefinedFields = Lists.newArrayList();
 
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "3" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "3" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ), IndexFieldType.NUMBER ) );
 
         result.startObject();
         customDataBuilder.build( result, userDefinedFields );
@@ -60,60 +61,29 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
         assertEquals( true, resultObject.has( "test" ) );
 
-        /* assertTrue( resultObject.has( "test_numeric" ) );
-       JSONArray testNumericValues = resultObject.getJSONArray( "test_numeric" );
+        assertTrue( resultObject.has( "test.number" ) );
+        JSONArray testNumericValues = resultObject.getJSONArray( "test.number" );
 
-       assertTrue( testNumericValues.length() == 4 );
+        assertTrue( testNumericValues.length() == 4 );
 
-       assertTrue( containsValue( testNumericValues, 1.0 ) );
-       assertTrue( containsValue( testNumericValues, 2.0 ) );
-       assertTrue( containsValue( testNumericValues, 3.0 ) );
-       assertTrue( containsValue( testNumericValues, 4.0 ) );
-
-       assertTrue( resultObject.has( "orderby_test" ) );
-        */
+        assertTrue( containsValue( testNumericValues, 1.0 ) );
+        assertTrue( containsValue( testNumericValues, 2.0 ) );
+        assertTrue( containsValue( testNumericValues, 3.0 ) );
+        assertTrue( containsValue( testNumericValues, 4.0 ) );
     }
 
-
-    public boolean containsValue( JSONArray valueArray, Double doubleValue )
-        throws Exception
-    {
-        for ( int i = 0; i < valueArray.length(); i++ )
-        {
-            if ( valueArray.get( i ).equals( doubleValue ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean containsValue( JSONArray valueArray, String stringValue )
-        throws Exception
-    {
-        for ( int i = 0; i < valueArray.length(); i++ )
-        {
-            if ( valueArray.get( i ).equals( stringValue ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     @Test
-    public void testBothStringAndNumericValues()
+    public void testBothStringAndNumericValuesToNumberField()
         throws Exception
     {
         List<UserDefinedField> userDefinedFields = Lists.newArrayList();
 
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test3" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "5" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test3" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "5" ), IndexFieldType.NUMBER ) );
 
         result.startObject();
         customDataBuilder.build( result, userDefinedFields );
@@ -125,14 +95,14 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
         assertTrue( resultObject.has( "test" ) );
         JSONArray testStringValues = resultObject.getJSONArray( "test" );
-        //  assertTrue( resultObject.has( "test_numeric" ) );
-        //  JSONArray testNumericValues = resultObject.getJSONArray( "test_numeric" );
+        assertTrue( resultObject.has( "test.number" ) );
+        JSONArray testNumericValues = resultObject.getJSONArray( "test.number" );
 
         assertEquals( 5, testStringValues.length() );
-        //  assertEquals( 2, testNumericValues.length() );
+        assertEquals( 2, testNumericValues.length() );
 
-        //  assertTrue( containsValue( testNumericValues, 4.0 ) );
-        //  assertTrue( containsValue( testNumericValues, 5.0 ) );
+        assertTrue( containsValue( testNumericValues, 4.0 ) );
+        assertTrue( containsValue( testNumericValues, 5.0 ) );
 
     }
 
@@ -144,12 +114,15 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
         List<UserDefinedField> userDefinedFields = Lists.newArrayList();
 
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ), IndexFieldType.NUMBER ) );
+
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ), IndexFieldType.NUMBER ) );
 
         result.startObject();
         customDataBuilder.build( result, userDefinedFields );
@@ -161,15 +134,18 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
         assertTrue( resultObject.has( "test" ) );
         JSONArray testValueArray = resultObject.getJSONArray( "test" );
-
-        System.out.println( testValueArray.toString() );
-        assertEquals( 2, testValueArray.length() );
-
+        assertEquals( 4, testValueArray.length() );
         containsValue( testValueArray, "test1" );
         containsValue( testValueArray, "test2" );
+        containsValue( testValueArray, "1" );
+        containsValue( testValueArray, "2" );
 
+        assertTrue( resultObject.has( "test.number" ) );
+        JSONArray testNumberValueArray = resultObject.getJSONArray( "test.number" );
+        assertEquals( 2, testNumberValueArray.length() );
+        containsValue( testNumberValueArray, 1.0 );
+        containsValue( testNumberValueArray, 2.0 );
     }
-
 
     @Test
     public void testSingleValues()
@@ -201,4 +177,31 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
     }
 
+    public boolean containsValue( JSONArray valueArray, Double doubleValue )
+        throws Exception
+    {
+        for ( int i = 0; i < valueArray.length(); i++ )
+        {
+            if ( valueArray.get( i ).equals( doubleValue ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean containsValue( JSONArray valueArray, String stringValue )
+        throws Exception
+    {
+        for ( int i = 0; i < valueArray.length(); i++ )
+        {
+            if ( valueArray.get( i ).equals( stringValue ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -84,14 +84,30 @@ public class ContentIndexServiceImplTest_store_datatypes
     }
 
     @Test
+    public void testAllUserFields()
+    {
+        indexTestValues();
+
+        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId();
+
+        final int numberOfUniqueUserDataValuesInTestValues = 12;
+
+        verifyField( "_all_userdata", numberOfUniqueUserDataValuesInTestValues, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "_all_userdata._tokenized", numberOfUniqueUserDataValuesInTestValues, fieldMapForId, IndexFieldType.STRING );
+    }
+
+    private Map<String, SearchHitField> getAllFieldsForId()
+    {
+        final ContentKey contentKey = new ContentKey( 1 );
+        return getFieldMapForId( contentKey );
+    }
+
+    @Test
     public void testMetadataFields()
     {
         indexTestValues();
 
-        printAllIndexContent();
-
-        final ContentKey contentKey = new ContentKey( 1 );
-        final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( contentKey );
+        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId();
 
         verifyField( "key", 1, fieldMapForId, IndexFieldType.NUMBER );
         verifyField( "title", 1, fieldMapForId, IndexFieldType.STRING );
@@ -125,8 +141,7 @@ public class ContentIndexServiceImplTest_store_datatypes
     {
         indexTestValues();
 
-        final ContentKey contentKey = new ContentKey( 1 );
-        final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( contentKey );
+        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId();
 
         verifyField( "data_person_age", 3, fieldMapForId, IndexFieldType.STRING );
         verifyField( "data_person_age.number", 3, fieldMapForId, IndexFieldType.NUMBER );
@@ -183,5 +198,4 @@ public class ContentIndexServiceImplTest_store_datatypes
             assertNull( hits );
         }
     }
-
 }

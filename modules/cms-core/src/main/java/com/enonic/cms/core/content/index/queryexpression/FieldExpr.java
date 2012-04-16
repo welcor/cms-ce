@@ -65,6 +65,11 @@ public final class FieldExpr
         return INTEGER_FIELDS.contains( path );
     }
 
+    public boolean isContentType()
+    {
+        return ContentIndexConstants.F_CONTENT_TYPE_NAME.equalsIgnoreCase( path );
+    }
+
     /**
      * Evaluate the expression.
      */

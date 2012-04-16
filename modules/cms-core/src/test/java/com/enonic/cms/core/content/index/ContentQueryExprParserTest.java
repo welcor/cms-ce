@@ -13,7 +13,10 @@ import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 
 public class ContentQueryExprParserTest
@@ -49,7 +52,7 @@ public class ContentQueryExprParserTest
         String query = "timestamp = '2008/12/01'";
 
         ContentIndexQuery contentQuery = new ContentIndexQuery( query );
-        QueryExpr queryExpr = ContentIndexQueryExprParser.parse( contentQuery );
+        QueryExpr queryExpr = ContentIndexQueryExprParser.parse( contentQuery, null );
 
         assertTrue( queryExpr.getExpr() instanceof CompareExpr );
         CompareExpr logical = (CompareExpr) queryExpr.getExpr();
@@ -71,7 +74,7 @@ public class ContentQueryExprParserTest
     {
         ContentIndexQuery contentQuery = new ContentIndexQuery( "timestamp LIKE '2008-%'" );
 
-        QueryExpr expr = ContentIndexQueryExprParser.parse( contentQuery );
+        QueryExpr expr = ContentIndexQueryExprParser.parse( contentQuery, null );
 
         assertTrue( expr.getExpr() instanceof CompareExpr );
         CompareExpr cexpr = (CompareExpr) expr.getExpr();
@@ -86,7 +89,7 @@ public class ContentQueryExprParserTest
     {
         ContentIndexQuery contentQuery = new ContentIndexQuery( query );
 
-        QueryExpr queryExpr = ContentIndexQueryExprParser.parse( contentQuery );
+        QueryExpr queryExpr = ContentIndexQueryExprParser.parse( contentQuery, null );
 
         assertTrue( queryExpr.getExpr() instanceof LogicalExpr );
         LogicalExpr logical = (LogicalExpr) queryExpr.getExpr();
@@ -134,7 +137,7 @@ public class ContentQueryExprParserTest
         //We use a date compare expression to check that both function and dateCompare evaluators are called.
         ContentIndexQuery contentQuery = new ContentIndexQuery( "x = date('2008-12-01')" );
 
-        QueryExpr queryExpr = ContentIndexQueryExprParser.parse( contentQuery );
+        QueryExpr queryExpr = ContentIndexQueryExprParser.parse( contentQuery, null );
 
         assertTrue( queryExpr.getExpr() instanceof LogicalExpr );
         LogicalExpr logical = (LogicalExpr) queryExpr.getExpr();
@@ -183,7 +186,7 @@ public class ContentQueryExprParserTest
         QueryExpr queryExpr;
 
         contentQuery = new ContentIndexQuery( "ORDER BY contentdata/id DESC" );
-        queryExpr = ContentIndexQueryExprParser.parse( contentQuery );
+        queryExpr = ContentIndexQueryExprParser.parse( contentQuery, null );
         assertNull( queryExpr.getExpr() );
         assertEquals( contentQuery.getQuery(), queryExpr.getOrderBy().toString() );
         assertEquals( 1, queryExpr.getOrderBy().getFields().length );
@@ -191,14 +194,14 @@ public class ContentQueryExprParserTest
 
         contentQuery = new ContentIndexQuery( "ORDER BY contentdata/sap-id DESC" );
         assertNull( queryExpr.getExpr() );
-        queryExpr = ContentIndexQueryExprParser.parse( contentQuery );
+        queryExpr = ContentIndexQueryExprParser.parse( contentQuery, null );
         assertEquals( contentQuery.getQuery(), queryExpr.getOrderBy().toString() );
         assertEquals( 1, queryExpr.getOrderBy().getFields().length );
         assertTrue( queryExpr.getOrderBy().getFields()[0].isDescending() );
 
         contentQuery = new ContentIndexQuery( "ORDER BY contentdata.other ASC" );
         assertNull( queryExpr.getExpr() );
-        queryExpr = ContentIndexQueryExprParser.parse( contentQuery );
+        queryExpr = ContentIndexQueryExprParser.parse( contentQuery, null );
         assertEquals( contentQuery.getQuery(), queryExpr.getOrderBy().toString() );
         assertEquals( 1, queryExpr.getOrderBy().getFields().length );
         assertTrue( queryExpr.getOrderBy().getFields()[0].isAscending() );

@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import org.springframework.util.Assert;
 
 
 public class QueryValue
@@ -27,7 +27,7 @@ public class QueryValue
         else if ( value instanceof ReadableDateTime )
         {
             dateTimeValue = toUTCTimeZone( (ReadableDateTime) value );
-            stringValue = formatDateForElasticSearch( dateTimeValue );
+            stringValue = null;
             numericValue = null;
         }
         else
@@ -60,6 +60,8 @@ public class QueryValue
 
     public String getStringValueNormalized()
     {
+        Assert.isTrue( !isDateTime(),
+                       "Attempt to use QueryValue with date-time content as a string value: " + dateTimeValue );
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 
@@ -86,12 +88,6 @@ public class QueryValue
     public boolean isEmpty()
     {
         return StringUtils.isBlank( stringValue );
-    }
-
-
-    private String formatDateForElasticSearch( final ReadableDateTime date )
-    {
-        return ISODateTimeFormat.dateTime().print( date ).toLowerCase();
     }
 
     private ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )

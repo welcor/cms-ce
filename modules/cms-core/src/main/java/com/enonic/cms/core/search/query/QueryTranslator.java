@@ -72,7 +72,7 @@ public class QueryTranslator
 
     private QueryExpr applyFunctionsAndDateTranslations( ContentIndexQuery contentIndexQuery )
     {
-        return ContentIndexQueryExprParser.parse( contentIndexQuery );
+        return ContentIndexQueryExprParser.parse( contentIndexQuery, false );
     }
 
     private QueryBuilder buildQuery( Expression expr )

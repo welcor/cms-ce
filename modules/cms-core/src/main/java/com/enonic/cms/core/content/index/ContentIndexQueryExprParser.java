@@ -22,18 +22,31 @@ public class ContentIndexQueryExprParser
 
     public static QueryExpr parse( ContentIndexQuery query )
     {
+        return doParse( query, true );
+    }
+
+    public static QueryExpr parse( ContentIndexQuery query, boolean convertNumerics )
+    {
+        return doParse( query, convertNumerics );
+    }
+
+    private static QueryExpr doParse( final ContentIndexQuery query, final boolean convertNumerics )
+    {
         QueryExpr expr = QueryParser.newInstance().parse( query.getQuery() );
 
         // invoke any functions...
         expr = (QueryExpr) expr.evaluate( functionEvaluator );
 
-        // TODO: This should probably not be done anymore, since we should separate strings and numbers
         // convert numbers given as strings to real numbers
-        // expr = (QueryExpr) expr.evaluate( numberFieldEvaluator );
+        if ( convertNumerics )
+        {
+            expr = (QueryExpr) expr.evaluate( numberFieldEvaluator );
+        }
 
         // do some tricks with dates in some special cases...
         expr = (QueryExpr) expr.evaluate( dateCompareEvaluator );
 
         return expr;
     }
+
 }

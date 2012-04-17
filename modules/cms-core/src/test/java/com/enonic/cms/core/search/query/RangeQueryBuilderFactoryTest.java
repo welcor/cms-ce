@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
-public class RangeQueryBuilderTest
+public class RangeQueryBuilderFactoryTest
     extends QueryTranslatorBaseTest
 {
     private final RangeQueryBuilderFactory rangeQueryBuilderFactory = new RangeQueryBuilderFactory();

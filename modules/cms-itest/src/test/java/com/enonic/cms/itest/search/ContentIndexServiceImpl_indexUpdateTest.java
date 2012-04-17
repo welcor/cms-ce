@@ -20,7 +20,7 @@ import static junit.framework.Assert.assertEquals;
  * Date: 1/2/12
  * Time: 3:05 PM
  */
-public class ContentIndexServiceImplTest_update_index
+public class ContentIndexServiceImpl_indexUpdateTest
     extends ContentIndexServiceTestDBBase
 {
 

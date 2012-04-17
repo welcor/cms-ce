@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  * Date: 1/3/12
  * Time: 2:56 PM
  */
-public class ContentIndexServiceImplTest_query_orderby
+public class ContentIndexServiceImpl_queryOrderbyTest
     extends ContentIndexServiceTestBase
 {
 

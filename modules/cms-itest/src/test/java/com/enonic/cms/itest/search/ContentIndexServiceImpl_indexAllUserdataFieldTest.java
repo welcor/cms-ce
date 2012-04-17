@@ -19,7 +19,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 @Ignore
-public class ContentIndexServiceImplTest_alluserdatafield
+public class ContentIndexServiceImpl_indexAllUserdataFieldTest
     extends ContentIndexServiceTestBase
 {
 

@@ -13,7 +13,7 @@ import static junit.framework.Assert.assertEquals;
  * Date: 2/14/12
  * Time: 1:00 PM
  */
-public class ContentIndexServiceImplTest_wildcards
+public class ContentIndexServiceImpl_queryWildcardsTest
     extends ContentIndexServiceTestBase
 {
 

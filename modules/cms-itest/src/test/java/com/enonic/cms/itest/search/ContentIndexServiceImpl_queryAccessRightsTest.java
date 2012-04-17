@@ -22,11 +22,12 @@ import com.enonic.cms.core.security.group.GroupKey;
 
 import static org.junit.Assert.*;
 
-public class ContentIndexServiceImplTest_query_access_rights
+public class ContentIndexServiceImpl_queryAccessRightsTest
     extends ContentIndexServiceTestBase
 {
-    
+
     private GroupEntity groupA;
+
     private GroupEntity groupB;
 
     @Before
@@ -40,7 +41,7 @@ public class ContentIndexServiceImplTest_query_access_rights
         groupB.setKey( new GroupKey( "groupB" ) );
         groupB.setName( "group B" );
     }
-    
+
     @Test
     public void query_access_rights_allowed()
     {

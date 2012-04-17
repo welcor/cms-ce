@@ -19,7 +19,7 @@ import static junit.framework.Assert.assertTrue;
  * Date: 2/6/12
  * Time: 9:57 AM
  */
-public class ContentIndexServiceImplTest_customdata
+public class ContentIndexServiceImpl_queryCustomdataTest
     extends ContentIndexServiceTestBase
 {
     @Test

@@ -10,7 +10,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  * Date: 1/4/12
  * Time: 10:33 AM
  */
-public class ContentIndexServiceImplTest_einarting
+public class ContentIndexServiceImpl_queryEinartingTest
     extends ContentIndexServiceTestBase
 {
 

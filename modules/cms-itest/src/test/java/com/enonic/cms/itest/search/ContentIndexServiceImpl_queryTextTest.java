@@ -12,7 +12,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  * Time: 1:02 PM
  */
 @Ignore
-public class ContentIndexServiceImplTest_query_text
+public class ContentIndexServiceImpl_queryTextTest
     extends ContentIndexServiceTestBase
 {
     @Test

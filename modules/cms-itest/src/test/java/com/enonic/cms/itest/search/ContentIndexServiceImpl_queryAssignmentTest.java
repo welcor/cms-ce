@@ -10,7 +10,7 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
 
-public class ContentIndexServiceImplTest_assignment
+public class ContentIndexServiceImpl_queryAssignmentTest
     extends ContentIndexServiceTestBase
 {
 

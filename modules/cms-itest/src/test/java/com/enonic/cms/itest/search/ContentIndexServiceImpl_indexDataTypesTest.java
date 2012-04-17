@@ -19,7 +19,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.*;
 
-public class ContentIndexServiceImplTest_index_data
+public class ContentIndexServiceImpl_indexDataTypesTest
     extends ContentIndexServiceTestBase
 {
 

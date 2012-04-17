@@ -19,7 +19,7 @@ import com.enonic.cms.core.content.index.ContentIndexFieldSet;
  * Date: 1/13/12
  * Time: 2:05 PM
  */
-public class ContentIndexServiceImplTest_largeText
+public class ContentIndexServiceImpl_queryLargeTextTest
     extends ContentIndexServiceTestBase
 {
 

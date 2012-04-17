@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
  * Date: 12/29/11
  * Time: 3:11 PM
  */
-public class ContentIndexServiceImplTest_query_index_and_count
+public class ContentIndexServiceImpl_queryIndexAndCountTest
     extends ContentIndexServiceTestDBBase
 {
 

@@ -22,7 +22,7 @@ import static junit.framework.Assert.fail;
  * Date: 2/9/12
  * Time: 12:27 PM
  */
-public class ContentIndexServiceImplTest_indexValueQuery
+public class ContentIndexServiceImpl_indexValueQueryTest
     extends ContentIndexServiceTestBase
 {
 

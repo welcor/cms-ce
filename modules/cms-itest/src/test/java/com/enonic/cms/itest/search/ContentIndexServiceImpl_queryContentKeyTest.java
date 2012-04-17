@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * Date: 2/13/12
  * Time: 3:15 PM
  */
-public class ContentIndexServiceImplTest_contentkey_queries
+public class ContentIndexServiceImpl_queryContentKeyTest
     extends ContentIndexServiceTestBase
 
 {

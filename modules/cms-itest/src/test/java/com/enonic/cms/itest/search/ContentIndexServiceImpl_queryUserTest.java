@@ -11,7 +11,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  * Date: 1/13/12
  * Time: 2:18 PM
  */
-public class ContentIndexServiceImplTest_user
+public class ContentIndexServiceImpl_queryUserTest
     extends ContentIndexServiceTestBase
 {
 
@@ -25,7 +25,8 @@ public class ContentIndexServiceImplTest_user
 
         flushIndex();
 
-        assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "owner/qualifiedName = 'incamono\\jvs'" ) ) );
+        assertContentResultSetEquals( new int[]{101},
+                                      contentIndexService.query( new ContentIndexQuery( "owner/qualifiedName = 'incamono\\jvs'" ) ) );
     }
 
 

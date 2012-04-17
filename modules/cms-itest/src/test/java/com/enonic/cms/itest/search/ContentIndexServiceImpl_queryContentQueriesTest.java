@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
  * Date: 1/13/12
  * Time: 12:20 PM
  */
-public class ContentIndexServiceImplTest_content_queries
+public class ContentIndexServiceImpl_queryContentQueriesTest
     extends ContentIndexServiceTestBase
 {
     @Test

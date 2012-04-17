@@ -60,8 +60,7 @@ public class QueryValue
 
     public String getStringValueNormalized()
     {
-        Assert.isTrue( !isDateTime(),
-                       "Attempt to use QueryValue with date-time content as a string value: " + dateTimeValue );
+        Assert.isTrue( !isDateTime(), "Attempt to use QueryValue with date-time content as a string value: " + dateTimeValue );
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 
@@ -87,7 +86,7 @@ public class QueryValue
 
     public boolean isEmpty()
     {
-        return StringUtils.isBlank( stringValue );
+        return StringUtils.isBlank( stringValue ) && dateTimeValue == null && numericValue == null;
     }
 
     private ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )

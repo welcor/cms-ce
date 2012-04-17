@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class ContentIndexServiceImplTest_query_text_tokens
+public class ContentIndexServiceImpl_queryTextTokensTest
     extends ContentIndexServiceTestBase
 {
 

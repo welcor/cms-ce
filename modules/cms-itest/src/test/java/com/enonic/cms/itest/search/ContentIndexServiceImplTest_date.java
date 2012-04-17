@@ -8,6 +8,7 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.index.config.IndexFieldType;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 
 import static org.junit.Assert.*;
@@ -196,15 +197,126 @@ public class ContentIndexServiceImplTest_date
 
         flushIndex();
 
-        ContentIndexQuery query = new ContentIndexQuery( "@publishFrom = date('2010-04-19 13:01') AND @publishTo = date('2010-04-19 13:02')");
+        ContentIndexQuery query =
+            new ContentIndexQuery( "@publishFrom = date('2010-04-19 13:01') AND @publishTo = date('2010-04-19 13:02')" );
 
         ContentResultSet contentResultSet = contentIndexService.query( query );
         assertEquals( 1, contentResultSet.getKeys().size() );
 
-        ContentIndexQuery queryNotEquals = new ContentIndexQuery( "@publishFrom != date('2010-04-19 13:01') OR @publishTo != date('2010-04-19 13:02')");
+        ContentIndexQuery queryNotEquals =
+            new ContentIndexQuery( "@publishFrom != date('2010-04-19 13:01') OR @publishTo != date('2010-04-19 13:02')" );
 
         ContentResultSet contentResultSet2 = contentIndexService.query( queryNotEquals );
         assertEquals( 0, contentResultSet2.getKeys().size() );
     }
+
+    @Test
+    public void testQueryDateFieldsInUserData_equals()
+    {
+        final ContentDocument contentDocument = createContentDocument( 1 );
+        addUserDefinedBlock( contentDocument, "36", "1975-05-05" );
+        contentIndexService.index( contentDocument, true );
+        flushIndex();
+
+        /*
+           Enonic Content Query Language supported date-formates:
+                yyyy-MM-ddTHH:mm:ss
+                yyyy-MM-dd HH:mm:ss
+                yyyy-MM-dd HH:mm
+                yyyy-MM-dd
+        */
+
+        ContentIndexQuery query = new ContentIndexQuery( "data/person/birthdate = date('1975-05-05')" );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate = date('1975-05-05 00:00')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate = date('1975-05-05 00:00:00')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate = date('1975-05-04T23:00:00.000Z')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+    }
+
+    @Test
+    public void testQueryDateFieldsInUserData_range_multiple_entries_in_one_doc()
+    {
+        final ContentDocument contentDocument = createContentDocument( 1 );
+        addUserDefinedBlock( contentDocument, "36", "1975-05-05" );
+        addUserDefinedBlock( contentDocument, "18", "1994-06-06" );
+        addUserDefinedBlock( contentDocument, "37", "1975-06-06" );
+        contentIndexService.index( contentDocument, true );
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "data/person/birthdate <= date('1975-05-05')" );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate >= date('1976-06-06 00:00')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate < date('1975-05-05 00:00:00')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate > date('1994-06-06T23:00:00.000Z')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+    }
+
+    @Test
+    public void testQueryDateFieldsInUserData_range_single_entry_in_multiple_docs()
+    {
+        final ContentDocument contentDocument1 = createContentDocument( 1 );
+        addUserDefinedBlock( contentDocument1, "36", "1975-05-05" );
+        final ContentDocument contentDocument2 = createContentDocument( 2 );
+        addUserDefinedBlock( contentDocument2, "18", "1994-06-06" );
+        final ContentDocument contentDocument3 = createContentDocument( 3 );
+        addUserDefinedBlock( contentDocument3, "37", "1975-06-06" );
+        contentIndexService.index( contentDocument1, true );
+        contentIndexService.index( contentDocument2, true );
+        contentIndexService.index( contentDocument3, true );
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "data/person/birthdate <= date('1975-05-05')" );
+        ContentResultSet contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate >= date('1975-05-05 00:00')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 3, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate < date('1994-06-06 00:00:00')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 2, contentResultSet.getKeys().size() );
+
+        query = new ContentIndexQuery( "data/person/birthdate > date('1975-06-06T23:00:00.000Z')" );
+        contentResultSet = contentIndexService.query( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+    }
+
+
+    private ContentDocument createContentDocument( int contentKey )
+    {
+        ContentDocument doc1 = new ContentDocument( new ContentKey( contentKey ) );
+        doc1.setCategoryKey( new CategoryKey( 9 ) );
+        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc1.setTitle( "Family" );
+        doc1.setContentTypeName( "Adults" );
+        return doc1;
+    }
+
+    private void addUserDefinedBlock( final ContentDocument doc1, String age, String birthdate )
+    {
+        doc1.addUserDefinedField( "data/person/age", age, IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/birthdate", birthdate, IndexFieldType.DATE );
+    }
+
 
 }

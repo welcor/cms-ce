@@ -20,11 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -124,7 +125,7 @@ public abstract class AbstractUserServicesHandlerController
 
     public AbstractUserServicesHandlerController()
     {
-        fileUpload = new DiskFileUpload();
+        fileUpload = new FileUpload( new DiskFileItemFactory() );
         fileUpload.setHeaderEncoding( "UTF-8" );
     }
 
@@ -307,7 +308,7 @@ public abstract class AbstractUserServicesHandlerController
         ExtendedMap formItems = new ExtendedMap( true );
         try
         {
-            List paramList = fileUpload.parseRequest( request );
+            List paramList = fileUpload.parseRequest( new ServletRequestContext( request ) );
             for ( Iterator iter = paramList.iterator(); iter.hasNext(); )
             {
                 FileItem fileItem = (FileItem) iter.next();
@@ -408,7 +409,7 @@ public abstract class AbstractUserServicesHandlerController
 
     private ExtendedMap parseForm( HttpServletRequest request )
     {
-        if ( FileUpload.isMultipartContent( request ) )
+        if ( FileUploadBase.isMultipartContent( new ServletRequestContext( request ) ) )
         {
             return parseMultiPartRequest( request );
         }

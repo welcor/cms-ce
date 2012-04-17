@@ -28,10 +28,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -80,7 +82,7 @@ public abstract class AdminHandlerBaseServlet
 
     private Vector<ErrorCode> errorCodes = new Vector<ErrorCode>();
 
-    private DiskFileUpload fileUpload;
+    private FileUpload fileUpload;
 
     // SMTP server to use when sending mail:
 
@@ -89,10 +91,12 @@ public abstract class AdminHandlerBaseServlet
     @PostConstruct
     public void initialize()
     {
-        fileUpload = new DiskFileUpload();
+        final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+        diskFileItemFactory.setSizeThreshold( 64000 );
+
+        fileUpload = new FileUpload( diskFileItemFactory );
         fileUpload.setHeaderEncoding( "UTF-8" );
         fileUpload.setSizeMax( verticalProperties.getMultiPartRequestMaxSize() );
-        fileUpload.setSizeThreshold( 64000 );
 
         // Parameters for the mail sent to users when generating a new password:
         SMTP_HOST = verticalProperties.getMailSmtpHost();
@@ -574,7 +578,7 @@ public abstract class AdminHandlerBaseServlet
     protected ExtendedMap parseForm( HttpServletRequest request )
         throws FileUploadException, IOException
     {
-        if ( FileUpload.isMultipartContent( request ) )
+        if ( FileUploadBase.isMultipartContent( new ServletRequestContext( request ) ) )
         {
             return parseMultiPartRequest( request );
         }
@@ -588,7 +592,8 @@ public abstract class AdminHandlerBaseServlet
         throws FileUploadException, IOException
     {
         ExtendedMap formItems = new ExtendedMap();
-        List paramList = fileUpload.parseRequest( request );
+
+        List paramList = fileUpload.parseRequest( new ServletRequestContext( request ) );
         for ( Object parameter : paramList )
         {
             FileItem fileItem = (FileItem) parameter;

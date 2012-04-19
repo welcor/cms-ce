@@ -20,13 +20,4 @@ public final class ContentIndexDataBuilderSpecification
         return buildAttachments;
     }
 
-    public static ContentIndexDataBuilderSpecification createBuildAllConfig()
-    {
-        return new ContentIndexDataBuilderSpecification( true );
-    }
-
-    public static ContentIndexDataBuilderSpecification createMetadataConfig()
-    {
-        return new ContentIndexDataBuilderSpecification( false );
-    }
 }

@@ -2,12 +2,11 @@ package com.enonic.cms.core.search.builder;
 
 import java.util.Set;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
-
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.search.index.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,8 +18,7 @@ public class ContentIndexDataSectionFactory
     extends AbstractIndexDataFactory
 {
 
-    public void build( final ContentLocations contentLocations, final XContentBuilder result )
-        throws Exception
+    public void build( final ContentIndexData contentIndexData, final ContentLocations contentLocations )
     {
 
         if ( contentLocations == null || !contentLocations.hasLocations() )
@@ -28,8 +26,8 @@ public class ContentIndexDataSectionFactory
             return;
         }
 
-        Set<Double> sectionKeysApproved = Sets.newTreeSet();
-        Set<Double> sectionKeysUnapproved = Sets.newTreeSet();
+        Set<Object> sectionKeysApproved = Sets.newHashSet();
+        Set<Object> sectionKeysUnapproved = Sets.newHashSet();
 
         for ( final ContentLocation contentLocation : contentLocations.getAllLocations() )
         {
@@ -50,8 +48,8 @@ public class ContentIndexDataSectionFactory
             }
         }
 
-        addNumericSet( CONTENTLOCATION_APPROVED_FIELDNAME, sectionKeysApproved, result );
-        addNumericSet( CONTENTLOCATION_UNAPPROVED_FIELDNAME, sectionKeysUnapproved, result );
+        contentIndexData.addContentData( CONTENTLOCATION_APPROVED_FIELDNAME, sectionKeysApproved );
+        contentIndexData.addContentData( CONTENTLOCATION_UNAPPROVED_FIELDNAME, sectionKeysUnapproved );
     }
 }
 

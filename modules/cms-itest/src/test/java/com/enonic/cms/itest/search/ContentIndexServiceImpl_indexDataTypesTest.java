@@ -65,23 +65,23 @@ public class ContentIndexServiceImpl_indexDataTypesTest
 
     private void addUserdefinedData( final ContentDocument doc1 )
     {
-        doc1.addUserDefinedField( "data/person/age", "36", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/age", "36" );
         doc1.addUserDefinedField( "data/person/gender", "male" );
         doc1.addUserDefinedField( "data/person/description", "description1" );
-        doc1.addUserDefinedField( "data/person/birthdate", "1975-05-05", IndexFieldType.DATE );
-        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/birthdate", "1975-05-05" );
+        doc1.addUserDefinedField( "data/person/samenumber", "1" );
 
-        doc1.addUserDefinedField( "data/person/age", "18", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/age", "18" );
         doc1.addUserDefinedField( "data/person/gender", "female" );
         doc1.addUserDefinedField( "data/person/description", "description2" );
-        doc1.addUserDefinedField( "data/person/birthdate", "1994-06-06", IndexFieldType.DATE );
-        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/birthdate", "1994-06-06" );
+        doc1.addUserDefinedField( "data/person/samenumber", "1" );
 
-        doc1.addUserDefinedField( "data/person/age", "37", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/age", "37" );
         doc1.addUserDefinedField( "data/person/gender", "male" );
         doc1.addUserDefinedField( "data/person/description", "description3" );
-        doc1.addUserDefinedField( "data/person/birthdate", "1974-06-06", IndexFieldType.DATE );
-        doc1.addUserDefinedField( "data/person/samenumber", "1", IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/birthdate", "1974-06-06" );
+        doc1.addUserDefinedField( "data/person/samenumber", "1" );
     }
 
     @Test
@@ -92,6 +92,8 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         addUserdefinedData( contentDocument );
         indexContentDocument( contentDocument );
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
+
+        printAllIndexContent();
 
         final int numberOfUniqueUserDataValuesInTestValues = 12;
 
@@ -113,27 +115,38 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         final ContentDocument contentDocument = createContentDocument( contentKey );
         addMetaData( contentDocument );
         indexContentDocument( contentDocument );
+
+        printAllIndexContent();
+
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
-        verifyField( "key", 1, fieldMapForId, IndexFieldType.NUMBER );
+        verifyField( "key", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "key.number", 1, fieldMapForId, IndexFieldType.NUMBER );
         verifyField( "title", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "title._tokenized", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "status", 1, fieldMapForId, IndexFieldType.NUMBER );
-        verifyField( "publishfrom", 1, fieldMapForId, IndexFieldType.DATE );
-        verifyField( "publishto", 1, fieldMapForId, IndexFieldType.DATE );
+        verifyField( "status", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "status.number", 1, fieldMapForId, IndexFieldType.NUMBER );
+        verifyField( "publishfrom", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "publishfrom.date", 1, fieldMapForId, IndexFieldType.DATE );
+        verifyField( "publishto", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "publishto.date", 1, fieldMapForId, IndexFieldType.DATE );
         verifyField( "contenttype", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "contenttypekey", 1, fieldMapForId, IndexFieldType.NUMBER );
+        verifyField( "contenttypekey", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "contenttypekey.number", 1, fieldMapForId, IndexFieldType.NUMBER );
 
-        verifyField( "created", 1, fieldMapForId, IndexFieldType.DATE );
+        verifyField( "created", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "created.date", 1, fieldMapForId, IndexFieldType.DATE );
         verifyField( "owner_key", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "owner_name", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "owner_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "modified", 1, fieldMapForId, IndexFieldType.DATE );
+        verifyField( "modified", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "modified.date", 1, fieldMapForId, IndexFieldType.DATE );
         verifyField( "modifier_key", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "modifier_name", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "modifier_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
 
-        verifyField( "assignmentduedate", 1, fieldMapForId, IndexFieldType.DATE );
+        verifyField( "assignmentduedate", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "assignmentduedate.date", 1, fieldMapForId, IndexFieldType.DATE );
         verifyField( "assignee_key", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "assignee_name", 1, fieldMapForId, IndexFieldType.STRING );
         verifyField( "assignee_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
@@ -156,6 +169,8 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         addUserdefinedData( contentDocument );
         indexContentDocument( contentDocument );
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
+
+        printAllIndexContent();
 
         verifyField( "data_person_age", 3, fieldMapForId, IndexFieldType.STRING );
         verifyField( "data_person_age.number", 3, fieldMapForId, IndexFieldType.NUMBER );
@@ -184,7 +199,7 @@ public class ContentIndexServiceImpl_indexDataTypesTest
                 {
                     case NUMBER:
                     {
-                        assertTrue( hit instanceof Double );
+                        assertTrue( "Not instance of double: " + fieldName + " = " + hit.toString(), hit instanceof Double );
                         break;
                     }
                     case DATE:

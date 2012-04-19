@@ -49,6 +49,8 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         setUpTestValues();
         flushIndex();
 
+        printAllIndexContent();
+
         final ImmutableSet<GroupKey> filterGroupA = ImmutableSet.of( groupA.getGroupKey() );
         final ImmutableSet<GroupKey> filterGroupB = ImmutableSet.of( groupB.getGroupKey() );
         final ImmutableSet<GroupKey> filterGroupAB = ImmutableSet.of( groupA.getGroupKey(), groupB.getGroupKey() );

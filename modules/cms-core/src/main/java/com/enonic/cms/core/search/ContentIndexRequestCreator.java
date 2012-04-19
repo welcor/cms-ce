@@ -27,10 +27,20 @@ final class ContentIndexRequestCreator
 
         final String id = contentIndexData.getKey().toString();
 
-        if ( contentIndexData.getContentdata() != null )
+        final XContentBuilder contentData;
+
+        try
         {
-            final IndexRequest indexRequest =
-                createIndexRequest( indexName, id, contentIndexData.getContentdata(), IndexType.Content, null );
+            contentData = contentIndexData.buildContentDataJson();
+        }
+        catch ( Exception e )
+        {
+            throw new ContentIndexException( "Failed to build json: ", e );
+        }
+
+        if ( contentData != null )
+        {
+            final IndexRequest indexRequest = createIndexRequest( indexName, id, contentData, IndexType.Content, null );
             //indexRequest.operationThreaded( multithreaded );
             indexRequests.add( indexRequest );
         }

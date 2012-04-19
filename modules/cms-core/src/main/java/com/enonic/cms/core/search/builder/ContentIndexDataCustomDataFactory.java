@@ -5,12 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.index.UserDefinedField;
+import com.enonic.cms.core.search.index.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,8 +21,7 @@ public class ContentIndexDataCustomDataFactory
     extends AbstractIndexDataFactory
 {
 
-    public void build( final XContentBuilder result, final Collection<UserDefinedField> userDefinedFields )
-        throws Exception
+    public void build( final ContentIndexData contentIndexData, final Collection<UserDefinedField> userDefinedFields )
     {
         Set<String> allUserdataValue = new HashSet<String>();
 
@@ -38,35 +36,17 @@ public class ContentIndexDataCustomDataFactory
                 continue;
             }
 
+            // TODO Optimize this after refactoring
             Set<String> values = getAllValuesForFieldName( fieldName, userDefinedFields );
 
-            addStringSet( IndexFieldNameResolver.normalizeFieldName( fieldName ), values, result );
-
-            switch ( userDefinedField.getIndexFieldType() )
-            {
-                case STRING:
-                {
-                    // Always added anyway
-                    break;
-                }
-                case NUMBER:
-                {
-                    translateAndAddNumericSet( IndexFieldNameResolver.getNumericsFieldName( fieldName ), values, result );
-                    break;
-                }
-                case DATE:
-                {
-                    translateAndAddDateSet( IndexFieldNameResolver.getDateFieldName( fieldName ), values, result );
-                    break;
-                }
-            }
+            contentIndexData.addContentData( IndexFieldNameResolver.normalizeFieldName( fieldName ), values );
 
             allUserdataValue.addAll( values );
 
             handledFieldNames.add( fieldName );
         }
 
-        addAllUserdataField( result, allUserdataValue );
+        addAllUserdataField( contentIndexData, allUserdataValue );
     }
 
     private Set<String> getAllValuesForFieldName( String fieldName, final Collection<UserDefinedField> userDefinedFields )
@@ -85,8 +65,7 @@ public class ContentIndexDataCustomDataFactory
     }
 
 
-    private void addAllUserdataField( final XContentBuilder result, final Set<String> allUserdataValue )
-        throws Exception
+    private void addAllUserdataField( final ContentIndexData contentIndexData, final Set<String> allUserdataValue )
     {
         StringBuffer buf = new StringBuffer();
 
@@ -95,7 +74,7 @@ public class ContentIndexDataCustomDataFactory
             buf.append( value + " " );
         }
 
-        addStringSet( ALL_USERDATA_FIELDNAME, allUserdataValue, result );
+        contentIndexData.addContentData( ALL_USERDATA_FIELDNAME, allUserdataValue );
     }
 
 

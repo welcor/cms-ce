@@ -31,8 +31,6 @@ public class QueryField
 
     private IndexType indexType;
 
-    private boolean isCustomDataField = false;
-
     public String getFieldName()
     {
         return fieldName;
@@ -40,22 +38,12 @@ public class QueryField
 
     public String getFieldNameForNumericQueries()
     {
-        if ( isCustomDataField )
-        {
-            return fieldName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.NUMBER.toString();
-        }
-
-        return fieldName;
+        return fieldName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.NUMBER.toString();
     }
 
     public String getFieldNameForDateQueries()
     {
-        if ( isCustomDataField )
-        {
-            return fieldName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.DATE.toString();
-        }
-
-        return fieldName;
+        return fieldName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.DATE.toString();
     }
 
     public void setPath( String path )
@@ -116,13 +104,4 @@ public class QueryField
         return dateFields.contains( this.fieldName );
     }
 
-    public boolean isCustomDataField()
-    {
-        return isCustomDataField;
-    }
-
-    public void setIsCustomDataField( final boolean customDataField )
-    {
-        isCustomDataField = customDataField;
-    }
 }

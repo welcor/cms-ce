@@ -161,8 +161,7 @@ public class ContentIndexServiceImpl
 
     public void index( ContentDocument doc, boolean deleteExisting )
     {
-        ContentIndexData contentIndexData =
-            contentIndexDataFactory.create( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+        ContentIndexData contentIndexData = contentIndexDataFactory.create( doc );
 
         elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }
@@ -174,8 +173,7 @@ public class ContentIndexServiceImpl
 
         for ( ContentDocument doc : docs )
         {
-            ContentIndexData contentIndexData =
-                contentIndexDataFactory.create( doc, ContentIndexDataBuilderSpecification.createBuildAllConfig() );
+            ContentIndexData contentIndexData = contentIndexDataFactory.create( doc );
 
             contentIndexDatas.add( contentIndexData );
         }

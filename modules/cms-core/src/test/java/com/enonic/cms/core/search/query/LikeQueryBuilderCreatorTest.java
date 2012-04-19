@@ -19,7 +19,7 @@ public class LikeQueryBuilderCreatorTest
             "  }\n" +
             "}";
 
-        QueryField queryField = QueryPathResolver.resolveQueryPath( "data/*" );
+        QueryField queryField = QueryFieldResolver.resolveQueryField( "data/*" );
 
         final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryField, new QueryValue( "test" ) );
 
@@ -45,7 +45,7 @@ public class LikeQueryBuilderCreatorTest
             "  }\n" +
             "}";
 
-        QueryField queryField = QueryPathResolver.resolveQueryPath( "attachment_title" );
+        QueryField queryField = QueryFieldResolver.resolveQueryField( "attachment_title" );
 
         final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryField, new QueryValue( "test" ) );
 
@@ -63,7 +63,7 @@ public class LikeQueryBuilderCreatorTest
             "  }\n" +
             "}";
 
-        QueryField queryField = QueryPathResolver.resolveQueryPath( "data_title" );
+        QueryField queryField = QueryFieldResolver.resolveQueryField( "data_title" );
 
         final QueryBuilder queryBuilder = likeQueryBuilderFactory.buildLikeQuery( queryField, new QueryValue( "test" ) );
 

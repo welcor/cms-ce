@@ -30,14 +30,16 @@ public class ContentIndexRequestCreatorTest
     @Before
     public void setUp()
     {
-        contentIndexRequestCreator = new ContentIndexRequestCreator( );
+        contentIndexRequestCreator = new ContentIndexRequestCreator();
     }
 
     @Test
     public void testCreateIndexRequests()
         throws Exception
     {
-        ContentIndexData data = new ContentIndexData( new ContentKey( "1" ), buildMetadata( 1, "contentdata" ) );
+        ContentIndexData data = new ContentIndexData( new ContentKey( "1" ) );
+        data.addContentData( "contentdata", 1 );
+
         //data.setCustomdata( buildMetadata( 2, "customdata" ) );
         data.setBinaryData( buildMetadata( 3, "binarydata" ) );
 
@@ -66,7 +68,7 @@ public class ContentIndexRequestCreatorTest
             }
         }
 
-        assertTrue( contentWasFirst && binarydataFound  );
+        assertTrue( contentWasFirst && binarydataFound );
 
     }
 

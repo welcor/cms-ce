@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
@@ -20,7 +19,6 @@ import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupKey;
 
@@ -33,20 +31,28 @@ public final class ContentIndexDataFactory
 
     private final ContentIndexDataAccessRightsFactory accessRightsBuilder = new ContentIndexDataAccessRightsFactory();
 
-    public ContentIndexData create( ContentDocument content, ContentIndexDataBuilderSpecification spec )
+    public ContentIndexData create( ContentDocument content, boolean skipAttachments )
     {
-        ContentIndexData contentIndexData;
+        return doCreate( content, skipAttachments );
+    }
 
-        try
-        {
-            contentIndexData = new ContentIndexData( content.getContentKey(), createContentData( content ) );
-        }
-        catch ( Exception e )
-        {
-            throw new ContentIndexDataFactoryException( "Failed to build index-data for contentdata", e );
-        }
+    public ContentIndexData create( ContentDocument content )
+    {
+        return doCreate( content, false );
+    }
 
-        if ( spec.doBuildAttachments() )
+    private ContentIndexData doCreate( final ContentDocument content, boolean skipAttachments )
+    {
+        ContentIndexData contentIndexData = new ContentIndexData( content.getContentKey() );
+
+        addMetaData( contentIndexData, content );
+        addCategory( contentIndexData, content );
+        addContentType( contentIndexData, content );
+        addSections( contentIndexData, content );
+        addAccessRights( contentIndexData, content );
+        addCustomData( contentIndexData, content );
+
+        if ( !skipAttachments )
         {
             try
             {
@@ -64,82 +70,90 @@ public final class ContentIndexDataFactory
     private XContentBuilder createContentData( ContentDocument content )
         throws Exception
     {
-        final XContentBuilder builder = XContentFactory.jsonBuilder();
 
-        builder.startObject();
-        addMetadata( builder, content );
-        addCategory( content, builder );
-        addContentType( content, builder );
-        addSections( content, builder );
-        addCustomData( content, builder );
-        addAccessRights( content, builder );
-        builder.endObject();
+        // addMetadata( builder, content );
+        // addCategory( content, builder );
+        // addContentType( content, builder );
+        // addSections( content, builder );
+        // addCustomData( content, builder );
+        // addAccessRights( content, builder );
 
-        return builder;
+        // return builder;
+        return null;
     }
 
-    private void addMetadata( XContentBuilder builder, ContentDocument content )
-        throws Exception
+    private void addMetaData( ContentIndexData contentIndexData, ContentDocument content )
     {
-        addIntegerField( CONTENT_KEY_FIELDNAME, content.getContentKey().toInt(), builder );
-        addStringField( TITLE_FIELDNAME, content.getTitle().getText(), builder );
+        contentIndexData.addContentData( CONTENT_KEY_FIELDNAME, content.getContentKey().toInt() );
+        contentIndexData.addContentData( TITLE_FIELDNAME, content.getTitle() );
+        contentIndexData.addContentData( TIMESTAMP_FIELDNAME, content.getTimestamp() );
+        contentIndexData.addContentData( PUBLISH_FROM_FIELDNAME, content.getPublishFrom() );
+        contentIndexData.addContentData( PUBLISH_TO_FIELDNAME, content.getPublishTo() );
+        contentIndexData.addContentData( TIMESTAMP_FIELDNAME, content.getTimestamp() );
+        contentIndexData.addContentData( STATUS_FIELDNAME, content.getStatus() );
+        contentIndexData.addContentData( PRIORITY_FIELDNAME, content.getPriority() );
+        contentIndexData.addContentData( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate() );
+        contentIndexData.addContentData( CONTENT_CREATED, content.getCreated() );
+        contentIndexData.addContentData( CONTENT_MODIFIED, content.getModified() );
 
-        addUserValues( builder, OWNER_FIELDNAME, content.getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
-        addUserValues( builder, MODIFIER_FIELDNAME, content.getModifierKey(), content.getModifierName(),
-                       content.getModifierQualifiedName() );
-        addUserValues( builder, ASSIGNEE_FIELDNAME, content.getAssigneeKey(), content.getAssigneeName(),
-                       content.getAssigneeQualifiedName() );
-        addUserValues( builder, ASSIGNER_FIELDNAME, content.getAssignerKey(), content.getAssignerName(),
-                       content.getAssignerQualifiedName() );
-
-        addDateField( PUBLISH_FROM_FIELDNAME, content.getPublishFrom(), builder );
-        addDateField( PUBLISH_TO_FIELDNAME, content.getPublishTo(), builder );
-        addDateField( TIMESTAMP_FIELDNAME, content.getTimestamp(), builder );
-        addIntegerField( STATUS_FIELDNAME, content.getStatus(), builder );
-        addIntegerField( PRIORITY_FIELDNAME, content.getPriority(), builder );
-        addDateField( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate(), builder );
-
-        addDateField( CONTENT_CREATED, content.getCreated(), builder );
-        addDateField( CONTENT_MODIFIED, content.getModified(), builder );
+        addUsers( contentIndexData, content );
     }
 
-    private void addCategory( ContentDocument content, XContentBuilder builder )
-        throws Exception
+    private void addUsers( ContentIndexData contentIndexData, ContentDocument content )
+    {
+
+        addUserValues( contentIndexData, OWNER_FIELDNAME, content.getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
+        addUserValues( contentIndexData, MODIFIER_FIELDNAME, content.getModifierKey(), content.getModifierName(),
+                       content.getModifierQualifiedName() );
+        addUserValues( contentIndexData, ASSIGNEE_FIELDNAME, content.getAssigneeKey(), content.getAssigneeName(),
+                       content.getAssigneeQualifiedName() );
+        addUserValues( contentIndexData, ASSIGNER_FIELDNAME, content.getAssignerKey(), content.getAssignerName(),
+                       content.getAssignerQualifiedName() );
+    }
+
+    private void addUserValues( ContentIndexData contentIndexData, String prefix, SimpleText key, SimpleText name,
+                                SimpleText qualifiedName )
+    {
+        if ( key == null && name == null && qualifiedName == null )
+        {
+            return;
+        }
+
+        contentIndexData.addContentData( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null );
+        contentIndexData.addContentData( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null );
+        contentIndexData.addContentData( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null );
+    }
+
+
+    private void addCategory( ContentIndexData contentIndexData, ContentDocument content )
     {
         final CategoryKey categoryKey = content.getCategoryKey();
-
         if ( categoryKey == null )
         {
             return;
         }
-
-        addIntegerField( CATEGORY_KEY_FIELDNAME, categoryKey.toInt(), builder );
+        contentIndexData.addContentData( CATEGORY_KEY_FIELDNAME, categoryKey.toInt() );
 
         final SimpleText categoryName = content.getCategoryName();
-
         if ( categoryName == null || StringUtils.isNotBlank( categoryName.getText() ) )
         {
             return;
         }
-
-        addStringField( CATEGORY_NAME_FIELDNAME, categoryName.getText(), builder );
+        contentIndexData.addContentData( CATEGORY_NAME_FIELDNAME, categoryName.getText() );
     }
 
-    private void addContentType( ContentDocument content, XContentBuilder builder )
-        throws Exception
+    private void addContentType( ContentIndexData contentIndexData, ContentDocument content )
     {
-        addIntegerField( CONTENTTYPE_KEY_FIELDNAME, content.getContentTypeKey().toInt(), builder );
-        addStringField( CONTENTTYPE_NAME_FIELDNAME, content.getContentTypeName().getText(), builder );
+        contentIndexData.addContentData( CONTENTTYPE_KEY_FIELDNAME, content.getContentTypeKey().toInt() );
+        contentIndexData.addContentData( CONTENTTYPE_NAME_FIELDNAME, content.getContentTypeName().getText() );
     }
 
-    private void addSections( ContentDocument content, XContentBuilder builder )
-        throws Exception
+    private void addSections( final ContentIndexData contentIndexData, final ContentDocument content )
     {
-        sectionBuilder.build( content.getContentLocations(), builder );
+        sectionBuilder.build( contentIndexData, content.getContentLocations() );
     }
 
-    private void addAccessRights( ContentDocument contentDocument, XContentBuilder builder )
-        throws Exception
+    private void addAccessRights( final ContentIndexData contentIndexData, ContentDocument contentDocument )
     {
         final CategoryEntity category = contentDocument.getCategory();
         final Map<GroupKey, CategoryAccessEntity> categoryAccessRights =
@@ -148,17 +162,16 @@ public final class ContentIndexDataFactory
         final Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
         if ( !accessRights.isEmpty() )
         {
-            accessRightsBuilder.build( builder, accessRights, categoryAccessRights );
+            accessRightsBuilder.build( contentIndexData, accessRights, categoryAccessRights );
         }
     }
 
-    private void addCustomData( ContentDocument contentDocument, XContentBuilder builder )
-        throws Exception
+    private void addCustomData( final ContentIndexData contentIndexData, final ContentDocument contentDocument )
     {
         Collection<UserDefinedField> userDefinedFields = contentDocument.getUserDefinedFields();
         if ( !userDefinedFields.isEmpty() )
         {
-            customDataBuilder.build( builder, userDefinedFields );
+            customDataBuilder.build( contentIndexData, userDefinedFields );
         }
     }
 
@@ -166,31 +179,19 @@ public final class ContentIndexDataFactory
         throws Exception
     {
         BigText binaryData = content.getBinaryExtractedText();
-
-        if ( binaryData != null && !binaryData.getText().isEmpty() )
-        {
-            final XContentBuilder result = XContentFactory.jsonBuilder();
-            result.startObject();
-            addDoubleField( "key", (double) content.getContentKey().toInt(), result );
-            addStringField( IndexFieldNameConstants.ATTACHMENT_FIELDNAME, binaryData.getText(), result );
-            result.endObject();
-            return result;
-        }
-
+        /*
+       if ( binaryData != null && !binaryData.getText().isEmpty() )
+       {
+           final XContentBuilder result = XContentFactory.jsonBuilder();
+           result.startObject();
+           addDoubleField( "key", (double) content.getContentKey().toInt(), result );
+           addStringField( IndexFieldNameConstants.ATTACHMENT_FIELDNAME, binaryData.getText(), result );
+           result.endObject();
+           return result;
+       }
+        */
         return null;
     }
 
-    private void addUserValues( XContentBuilder builder, String prefix, SimpleText key, SimpleText name, SimpleText qualifiedName )
-        throws Exception
-    {
-        if ( key == null && name == null && qualifiedName == null )
-        {
-            return;
-        }
-
-        addStringField( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null, builder );
-        addStringField( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null, builder );
-        addStringField( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null, builder );
-    }
 
 }

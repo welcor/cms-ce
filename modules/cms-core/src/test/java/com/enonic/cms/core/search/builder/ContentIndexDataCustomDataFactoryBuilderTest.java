@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.content.index.config.IndexFieldType;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -46,14 +45,10 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
     {
         List<UserDefinedField> userDefinedFields = Lists.newArrayList();
 
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "3" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ), IndexFieldType.NUMBER ) );
-
-        result.startObject();
-        customDataBuilder.build( result, userDefinedFields );
-        result.endObject();
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "3" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
 
         final String jsonString = result.string();
 
@@ -79,15 +74,11 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
     {
         List<UserDefinedField> userDefinedFields = Lists.newArrayList();
 
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test3" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "5" ), IndexFieldType.NUMBER ) );
-
-        result.startObject();
-        customDataBuilder.build( result, userDefinedFields );
-        result.endObject();
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test3" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "5" ) ) );
 
         final String jsonString = result.string();
 
@@ -114,19 +105,16 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
         List<UserDefinedField> userDefinedFields = Lists.newArrayList();
 
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ), IndexFieldType.NUMBER ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test2" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
 
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ), IndexFieldType.NUMBER ) );
-        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ), IndexFieldType.NUMBER ) );
-
-        result.startObject();
-        customDataBuilder.build( result, userDefinedFields );
-        result.endObject();
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ) ) );
+        ;
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ) ) );
+        userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ) ) );
 
         final String jsonString = result.string();
 
@@ -159,10 +147,6 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test3", new SimpleText( "3" ) ) );
         userDefinedFields.add( new UserDefinedField( "test4", new SimpleText( "4" ) ) );
         userDefinedFields.add( new UserDefinedField( "test5", new SimpleText( "5" ) ) );
-
-        result.startObject();
-        customDataBuilder.build( result, userDefinedFields );
-        result.endObject();
 
         final String jsonString = result.string();
 

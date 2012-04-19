@@ -247,7 +247,7 @@ public final class IndexServiceImpl
         {
             for ( final String stringValue : def.evaluate( doc ) )
             {
-                indexedDoc.addUserDefinedField( def.getName(), new SimpleText( stringValue ), def.getIndexFieldType() );
+                indexedDoc.addUserDefinedField( def.getName(), new SimpleText( stringValue ) );
             }
         }
     }

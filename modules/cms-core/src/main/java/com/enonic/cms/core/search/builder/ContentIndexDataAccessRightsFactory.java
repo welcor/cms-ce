@@ -8,12 +8,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
-
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
+import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupKey;
 
 
@@ -21,9 +20,8 @@ public class ContentIndexDataAccessRightsFactory
     extends AbstractIndexDataFactory
 {
 
-    public void build( final XContentBuilder result, final Collection<ContentAccessEntity> contentAccessRights,
+    public void build( final ContentIndexData contentIndexData, final Collection<ContentAccessEntity> contentAccessRights,
                        Map<GroupKey, CategoryAccessEntity> categoryAccessRights )
-        throws Exception
     {
 
         if ( contentAccessRights == null || contentAccessRights.isEmpty() )
@@ -75,12 +73,12 @@ public class ContentIndexDataAccessRightsFactory
             }
         }
 
-        addStringSet( CONTENT_ACCESS_READ_FIELDNAME, readAccess, result );
-        addStringSet( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess, result );
-        addStringSet( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess, result );
-        addStringSet( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess, result );
-        addStringSet( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess, result );
-        addStringSet( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess, result );
+        contentIndexData.addContentData( CONTENT_ACCESS_READ_FIELDNAME, readAccess );
+        contentIndexData.addContentData( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess );
+        contentIndexData.addContentData( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess );
+        contentIndexData.addContentData( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess );
+        contentIndexData.addContentData( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess );
+        contentIndexData.addContentData( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess );
     }
 }
 

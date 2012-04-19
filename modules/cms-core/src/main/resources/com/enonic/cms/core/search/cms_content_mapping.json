@@ -9,10 +9,6 @@
         "date_detection":false,
         "numeric_detection":false,
         "properties":{
-            "key":{
-                "type":"double",
-                "store":"yes"
-            },
             "_all_userdata":{
                 "type":"multi_field",
                 "fields":{
@@ -46,54 +42,18 @@
                         "store":"yes"
                     }
                 }
-            },
-            "timestamp":{
-                "include_in_all":false,
-                "type":"date",
-                "index":"not_analyzed",
-                "store":"yes"
-            },
-            "publishfrom":{
-                "type":"date",
-                "index":"not_analyzed",
-                "store":"yes"
-            },
-            "publishto":{
-                "type":"date",
-                "index":"not_analyzed",
-                "store":"yes"
-            },
-            "assignmentduedate":{
-                "type":"date",
-                "index":"not_analyzed",
-                "store":"yes"
-            },
-            "status":{
-                "type":"double",
-                "store":"yes"
-            },
-            "priority":{
-                "type":"double",
-                "store":"yes"
-            },
-            "categorykey":{
-                "type":"double",
-                "store":"yes"
-            },
-            "contenttypekey":{
-                "type":"double",
-                "store":"yes"
-            },
-            "contentlocations_approved":{
-                "type":"double",
-                "store":"yes"
-            },
-            "contentlocations_unapproved":{
-                "type":"double",
-                "store":"yes"
             }
         },
         "dynamic_templates":[
+            {
+                "template_userdata_orderby":{
+                    "match":"*.orderby",
+                    "mapping":{
+                        "type":"string",
+                        "store":"yes"
+                    }
+                }
+            },
             {
                 "template_userdata_date":{
                     "match":"*.date",
@@ -114,7 +74,7 @@
             },
             {
                 "template_userdata_strings":{
-                    "match":"*",
+                    "match":"data_*",
                     "mapping":{
                         "type":"multi_field",
                         "fields":{
@@ -129,6 +89,15 @@
                                 "store":"yes"
                             }
                         }
+                    }
+                }
+            },
+            {
+                "template_metadata_strings":{
+                    "match":"*",
+                    "mapping":{
+                        "type":"string",
+                        "store":"yes"
                     }
                 }
             }

@@ -8,7 +8,6 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.content.index.config.IndexFieldType;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 
 import static org.junit.Assert.*;
@@ -317,7 +316,7 @@ public class ContentIndexServiceImpl_queryDatesTest
 
     private void addUserDefinedBlock( final ContentDocument doc1, String birthdate )
     {
-        doc1.addUserDefinedField( "data/person/birthdate", birthdate, IndexFieldType.DATE );
+        doc1.addUserDefinedField( "data/person/birthdate", birthdate );
     }
 
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -23,9 +23,9 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.ContentIndexFieldSet;
-import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.index.ContentIndexDataElement;
+import com.enonic.cms.core.search.index.ContentIndexDataFieldValue;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -35,6 +35,7 @@ import com.enonic.cms.core.structure.menuitem.section.SectionContentKey;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,9 +46,6 @@ import static junit.framework.Assert.assertTrue;
 public class ContentIndexDataFactoryTest
 {
 
-    protected final static String[] REQUIRED_STANDARD_FIELD =
-        new String[]{"categorykey", "contenttype", "contenttypekey", "key", "priority", "publishfrom", "status", "title"};
-
     ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
 
     @Test
@@ -56,38 +54,53 @@ public class ContentIndexDataFactoryTest
     {
         ContentDocument content = createTestContent();
 
-        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
+        ContentIndexData indexData = contentIndexDataFactory.create( content );
 
-        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
+        final String indexDataAsString = indexData.getContentDataAsJsonString();
 
-        final String indexDataAsString = indexData.getMetadataJson();
+        System.out.println( indexDataAsString );
 
-        for ( String field : REQUIRED_STANDARD_FIELD )
+        final String[] expectedFields =
+            new String[]{"key", "key.number", "categorykey", "categorykey.number", "title", "contenttypekey", "priority", "publishfrom",
+                "status", "title"};
+
+        for ( String field : expectedFields )
         {
             assertTrue( "Missing required field: " + field, indexDataAsString.contains( field ) );
         }
+
     }
 
     @Test
     public void testUserFields()
         throws Exception
     {
-
         ContentDocument content = createTestContent();
 
-        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
+        ContentIndexData indexData = contentIndexDataFactory.create( content );
 
-        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
+        //verifyFieldName( indexData, "data_person_age" );
+        //verifyFieldName( indexData, "data_person_age.number" );
+        //verifyFieldName( indexData, "data_person_description" );
+        verifyFieldName( indexData, "data_person_gender.number" );
+    }
 
-        final String indexDataAsString = indexData.getMetadataJson();
+    protected void verifyFieldName( ContentIndexData contentIndexData, String fieldName )
+    {
+        for ( ContentIndexDataElement contentIndexDataElement : contentIndexData.getContentData() )
+        {
+            final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentIndexDataElement.getAllFieldValuesForElement();
 
-        System.out.println( indexDataAsString );
+            for ( ContentIndexDataFieldValue value : allFieldValuesForElement )
+            {
+                if ( value.getFieldName().equals( fieldName ) )
+                {
+                    return;
+                }
+            }
+        }
 
-        final List<String> keysAsList = getKeysAsList( indexDataAsString );
-
-        Assert.assertTrue( keysAsList.contains( "data_person_age" ) );
-        Assert.assertTrue( keysAsList.contains( "data_person_description" ) );
-        Assert.assertTrue( keysAsList.contains( "data_person_gender" ) );
+        fail( "ContentData did not contain : " + fieldName );
     }
 
 
@@ -95,14 +108,11 @@ public class ContentIndexDataFactoryTest
     public void testNumericValues()
         throws Exception
     {
-
         ContentDocument content = createTestContent();
 
-        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createMetadataConfig();
+        ContentIndexData indexData = contentIndexDataFactory.create( content, false );
 
-        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
-
-        final String indexDataAsString = indexData.getMetadataJson();
+        final String indexDataAsString = indexData.getContentDataAsJsonString();
 
         System.out.println( indexDataAsString );
 
@@ -124,7 +134,7 @@ public class ContentIndexDataFactoryTest
         Assert.assertFalse( "Redundant key: " + keyName, keysAsList.contains( keyName ) );
     }
 
-    @Ignore // TO BE IMPLEMENTED
+    @Ignore
     @Test
     public void testAttachmentData()
         throws Exception
@@ -132,9 +142,7 @@ public class ContentIndexDataFactoryTest
         ContentDocument content = createTestContent();
         content.setBinaryExtractedText( new BigText( "This is a binary text" ) );
 
-        ContentIndexDataBuilderSpecification spec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
-
-        ContentIndexData indexData = contentIndexDataFactory.create( content, spec );
+        ContentIndexData indexData = contentIndexDataFactory.create( content );
 
     }
 
@@ -168,13 +176,9 @@ public class ContentIndexDataFactoryTest
 
         assertEquals( 3, contentDocument.getContentLocations().numberOfLocations() );
 
-        ContentIndexDataBuilderSpecification builderSpec = ContentIndexDataBuilderSpecification.createBuildAllConfig();
+        ContentIndexData indexData = contentIndexDataFactory.create( contentDocument );
 
-        ContentIndexData indexData = contentIndexDataFactory.create( contentDocument, builderSpec );
-
-        System.out.println( indexData.getMetadataJson() );
-
-        JSONObject resultObject = new JSONObject( indexData.getMetadataJson() );
+        JSONObject resultObject = new JSONObject( indexData.buildContentDataJson() );
 
         final String approvedSectionsFieldName = QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName();
         assertTrue( resultObject.has( approvedSectionsFieldName ) );
@@ -234,6 +238,12 @@ public class ContentIndexDataFactoryTest
         content.setContentTypeName( "MyContentType" );
 
         content.setCreated( date.getTime() );
+        content.setTimestamp( date.getTime() );
+        content.setModified( date.getTime() );
+
+        content.setTitle( "MyTitle" );
+        content.setStatus( 2 );
+        content.setPriority( 1 );
 
         content.setModifierKey( "10" );
         content.setModifierName( "ModifierName" );
@@ -251,23 +261,13 @@ public class ContentIndexDataFactoryTest
         content.setAssignerName( "AssignerName" );
         content.setAssignerQualifiedName( "AssignerQName" );
 
-        content.setPublishFrom( date.getTime() );
-
-        date.add( Calendar.MONTH, 1 );
-        content.setPublishTo( date.getTime() );
-
         date.add( Calendar.MONTH, 1 );
         content.setAssignmentDueDate( date.getTime() );
 
-        content.setTimestamp( date.getTime() );
+        content.setPublishFrom( date.getTime() );
+        date.add( Calendar.MONTH, 1 );
+        content.setPublishTo( date.getTime() );
 
-        content.setModified( date.getTime() );
-
-        content.setTitle( "MyTitle" );
-        content.setStatus( 2 );
-        content.setPriority( 1 );
-
-        // content locations set. but it's really not used now.
         content.setContentLocations( new ContentLocations( new ContentEntity() ) );
 
         content.addUserDefinedField( "data/person/age", "38" );
@@ -282,30 +282,7 @@ public class ContentIndexDataFactoryTest
         content.addUserDefinedField( "data/person/gender", "male" );
         content.addUserDefinedField( "data/person/description", "description 10" );
 
-        int numberOfRowsExpected = 10;
-        content.setBinaryExtractedText( new BigText( createStringFillingXRows( numberOfRowsExpected ) ) );
-
         return content;
-    }
-
-    private String createStringFillingXRows( int numberOfRows )
-    {
-        return createRandomTextOfSize( ContentIndexFieldSet.SPLIT_TRESHOLD * numberOfRows - 5 );
-    }
-
-    private String createRandomTextOfSize( int size )
-    {
-        String str = new String( "ABCDEFGHIJKLMNOPQRSTUVWZYZabcdefghijklmnopqrstuvw " );
-        StringBuffer sb = new StringBuffer();
-        Random r = new Random();
-        int te = 0;
-        for ( int i = 1; i <= size; i++ )
-        {
-            te = r.nextInt( str.length() - 1 );
-            sb.append( str.charAt( te ) );
-        }
-
-        return sb.toString();
     }
 
 }

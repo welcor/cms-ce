@@ -23,7 +23,6 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.content.index.config.IndexFieldType;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
@@ -352,15 +351,15 @@ public abstract class ContentIndexServiceTestBase
         doc1.setContentTypeName( "Adults" );
         doc1.setTitle( "Homer" );
 
-        doc1.addUserDefinedField( "data/person/age", new SimpleText( "38" ), IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/age", new SimpleText( "38" ) );
         doc1.addUserDefinedField( "data/person/gender", "male" );
         doc1.addUserDefinedField( "data/person/description", "crude" );
-        doc1.addUserDefinedField( "data/person/birthdate", new SimpleText( "1975-05-05" ), IndexFieldType.DATE );
+        doc1.addUserDefinedField( "data/person/birthdate", new SimpleText( "1975-05-05" ) );
 
-        doc1.addUserDefinedField( "data/person/age", new SimpleText( "39" ), IndexFieldType.NUMBER );
+        doc1.addUserDefinedField( "data/person/age", new SimpleText( "39" ) );
         doc1.addUserDefinedField( "data/person/gender", "male2" );
         doc1.addUserDefinedField( "data/person/description", "description2" );
-        doc1.addUserDefinedField( "data/person/birthdate", new SimpleText( "1976-06-06" ), IndexFieldType.DATE );
+        doc1.addUserDefinedField( "data/person/birthdate", new SimpleText( "1976-06-06" ) );
 
         // Publish from February 28th to March 28th.
         doc1.setPublishFrom( date.getTime() );
@@ -377,10 +376,10 @@ public abstract class ContentIndexServiceTestBase
         doc2.setContentTypeKey( new ContentTypeKey( 32 ) );
         doc2.setContentTypeName( "Adults" );
         doc2.setTitle( "Fry" );
-        doc2.addUserDefinedField( "data/person/age", new SimpleText( "28" ), IndexFieldType.NUMBER );
+        doc2.addUserDefinedField( "data/person/age", new SimpleText( "28" ) );
         doc2.addUserDefinedField( "data/person/gender", "male" );
         doc2.addUserDefinedField( "data/person/description", "an extratemporal character, unable to comprehend the future" );
-        doc2.addUserDefinedField( "data/person/birthdate", new SimpleText( "1978-08-01" ), IndexFieldType.DATE );
+        doc2.addUserDefinedField( "data/person/birthdate", new SimpleText( "1978-08-01" ) );
         // Publish from February 29th to March 29th.
         doc2.setPublishFrom( date.getTime() );
         date.add( Calendar.MONTH, 1 );
@@ -396,10 +395,10 @@ public abstract class ContentIndexServiceTestBase
         doc3.setContentTypeKey( new ContentTypeKey( 37 ) );
         doc3.setContentTypeName( "Children" );
         doc3.setTitle( "Bart" );
-        doc3.addUserDefinedField( "data/person/age", new SimpleText( "10" ), IndexFieldType.NUMBER );
+        doc3.addUserDefinedField( "data/person/age", new SimpleText( "10" ) );
         doc3.addUserDefinedField( "data/person/gender", "male" );
         doc3.addUserDefinedField( "data/person/description", "mischievous, rebellious, disrespecting authority and sharp witted" );
-        doc3.addUserDefinedField( "data/person/birthdate", new SimpleText( "2003-03-28" ), IndexFieldType.DATE );
+        doc3.addUserDefinedField( "data/person/birthdate", new SimpleText( "2003-03-28" ) );
         // Publish from March 1st to April 1st
         doc3.setPublishFrom( date.getTime() );
         date.add( Calendar.MONTH, 1 );
@@ -414,11 +413,11 @@ public abstract class ContentIndexServiceTestBase
         doc4.setContentTypeKey( new ContentTypeKey( 32 ) );
         doc4.setContentTypeName( "Adults" );
         doc4.setTitle( "Bender" );
-        doc4.addUserDefinedField( "data/person/age", new SimpleText( "5" ), IndexFieldType.NUMBER );
+        doc4.addUserDefinedField( "data/person/age", new SimpleText( "5" ) );
         doc4.addUserDefinedField( "data/person/gender", "man-bot" );
         doc4.addUserDefinedField( "data/person/description",
                                   "alcoholic, whore-mongering, chain-smoking gambler with a swarthy Latin charm" );
-        doc3.addUserDefinedField( "data/person/birthdate", new SimpleText( "2010-05-22" ), IndexFieldType.DATE );
+        doc3.addUserDefinedField( "data/person/birthdate", new SimpleText( "2010-05-22" ) );
         // Publish from March 1st to March 28th.
         doc4.setPublishFrom( date.getTime() );
         date.add( Calendar.DAY_OF_MONTH, 27 );

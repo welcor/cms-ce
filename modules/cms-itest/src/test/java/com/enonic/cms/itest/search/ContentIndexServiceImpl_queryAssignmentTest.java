@@ -48,7 +48,7 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         contentIndexService.index( assignedToNone, false );
         flushIndex();
 
-        //printAllIndexContent();
+        printAllIndexContent();
 
         //assertContentResultSetEquals( new int[]{1101, 1102, 1103},
         //                              contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );

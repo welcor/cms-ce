@@ -105,7 +105,7 @@ public class QueryTranslator
     private QueryBuilder buildCompareExpr( CompareExpr expr )
     {
         final String path = QueryFieldNameResolver.resolveQueryFieldName( (FieldExpr) expr.getLeft() );
-        final QueryField queryField = QueryPathResolver.resolveQueryPath( path );
+        final QueryField queryField = QueryFieldResolver.resolveQueryField( path );
         final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expr.getRight() );
         final QueryValue querySingleValue = queryValues.length > 0 ? queryValues[0] : null;
 

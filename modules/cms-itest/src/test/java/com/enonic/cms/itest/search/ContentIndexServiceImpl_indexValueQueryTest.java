@@ -59,7 +59,7 @@ public class ContentIndexServiceImpl_indexValueQueryTest
 
         List<String> foundValues = getValueList( result );
 
-        assertTrue( foundValues.contains( "38" ) );
+        assertTrue( foundValues.contains( "39" ) );
         assertTrue( foundValues.contains( "28" ) );
         assertTrue( foundValues.contains( "10" ) );
         assertTrue( foundValues.contains( "5" ) );
@@ -86,7 +86,7 @@ public class ContentIndexServiceImpl_indexValueQueryTest
 
         assertEquals( 3, result.getCount() );
         foundValues = getValueList( result );
-        assertTrue( foundValues.contains( "38" ) );
+        assertTrue( foundValues.contains( "39" ) );
         assertTrue( foundValues.contains( "10" ) );
         assertTrue( foundValues.contains( "5" ) );
     }
@@ -112,7 +112,7 @@ public class ContentIndexServiceImpl_indexValueQueryTest
 
         assertEquals( 3, result.getCount() );
         foundValues = getValueList( result );
-        assertTrue( foundValues.contains( "38" ) );
+        assertTrue( foundValues.contains( "39" ) );
         assertTrue( foundValues.contains( "28" ) );
         assertTrue( foundValues.contains( "5" ) );
     }
@@ -152,7 +152,7 @@ public class ContentIndexServiceImpl_indexValueQueryTest
         assertEquals( 2, result.getCount() );
         List<String> foundValues = getValueList( result );
         assertTrue( foundValues.contains( "5" ) );
-        assertTrue( foundValues.contains( "38" ) );
+        assertTrue( foundValues.contains( "39" ) );
 
         query.setContentTypeFilter( Lists.newArrayList( new ContentTypeKey( 37 ) ) );
 

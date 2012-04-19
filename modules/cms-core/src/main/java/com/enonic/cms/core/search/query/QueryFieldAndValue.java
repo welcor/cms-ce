@@ -15,7 +15,7 @@ public class QueryFieldAndValue
     public QueryFieldAndValue( final String path, final Object value )
     {
 
-        this.queryField = QueryPathResolver.resolveQueryPath( path );
+        this.queryField = QueryFieldResolver.resolveQueryField( path );
         this.queryValue = new QueryValue( value );
     }
 

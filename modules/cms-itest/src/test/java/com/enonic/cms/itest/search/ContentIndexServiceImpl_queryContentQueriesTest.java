@@ -14,7 +14,6 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.content.index.config.IndexFieldType;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 
 import static org.junit.Assert.*;
@@ -92,28 +91,22 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
     public void testContentQueryWithCategoryFilterAndComplexLogicalExpression()
     {
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
-                                                      Lists.newArrayList(
-                                                          new UserDefinedField( "data/a", new SimpleText( "1" ), IndexFieldType.NUMBER ),
-                                                          new UserDefinedField( "data/b", new SimpleText( "2" ), IndexFieldType.NUMBER ),
-                                                          new UserDefinedField( "data/c", new SimpleText( "3" ),
-                                                                                IndexFieldType.NUMBER ) ) );
+                                                      Lists.newArrayList( new UserDefinedField( "data/a", new SimpleText( "1" ) ),
+                                                                          new UserDefinedField( "data/b", new SimpleText( "2" ) ),
+                                                                          new UserDefinedField( "data/c", new SimpleText( "3" ) ) ) );
 
         contentIndexService.index( doc1, false );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title2",
-                                                      Lists.newArrayList(
-                                                          new UserDefinedField( "data/a", new SimpleText( "2" ), IndexFieldType.NUMBER ),
-                                                          new UserDefinedField( "data/b", new SimpleText( "2" ), IndexFieldType.NUMBER ),
-                                                          new UserDefinedField( "data/c", new SimpleText( "1" ),
-                                                                                IndexFieldType.NUMBER ) ) );
+                                                      Lists.newArrayList( new UserDefinedField( "data/a", new SimpleText( "2" ) ),
+                                                                          new UserDefinedField( "data/b", new SimpleText( "2" ) ),
+                                                                          new UserDefinedField( "data/c", new SimpleText( "1" ) ) ) );
         contentIndexService.index( doc2, false );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title3",
-                                                      Lists.newArrayList(
-                                                          new UserDefinedField( "data/a", new SimpleText( "2" ), IndexFieldType.NUMBER ),
-                                                          new UserDefinedField( "data/b", new SimpleText( "1" ), IndexFieldType.NUMBER ),
-                                                          new UserDefinedField( "data/c", new SimpleText( "3" ),
-                                                                                IndexFieldType.NUMBER ) ) );
+                                                      Lists.newArrayList( new UserDefinedField( "data/a", new SimpleText( "2" ) ),
+                                                                          new UserDefinedField( "data/b", new SimpleText( "1" ) ),
+                                                                          new UserDefinedField( "data/c", new SimpleText( "3" ) ) ) );
         contentIndexService.index( doc3, false );
 
         flushIndex();

@@ -90,4 +90,6 @@ public class IndexFieldNameConstants
 
     public static final String CONTENTTYPE_NAME_FIELDNAME = CONTENT_TYPE_PREFIX;
 
+    public static final String ORDERBY_FIELDNAME_POSTFIX = "orderby";
+
 }

@@ -1772,7 +1772,6 @@
                               </xsl:otherwise>
                             </xsl:choose>
 
-
                             <!-- Browser hack -->
                             <a>
                               <xsl:attribute name="style">display:none;</xsl:attribute>
@@ -1848,7 +1847,9 @@
                               </xsl:otherwise>
                             </xsl:choose>
 
-                            <xsl:comment><!-- Make sure the table cell is not empty (for browser html rendering engines) --></xsl:comment>
+                              <!-- Make sure the table cell is never empty so it not collapses in some browsers -->
+                              <br/>
+
                           </td>
 
                         </xsl:for-each>

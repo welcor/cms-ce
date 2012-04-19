@@ -1,5 +1,7 @@
 package com.enonic.cms.core.search.query;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 public class QueryFieldAndValue
@@ -61,6 +63,11 @@ public class QueryFieldAndValue
 
     public String getValueForIdQuery()
     {
+        if ( queryValue.isNumeric() )
+        {
+            return StringUtils.substringBefore( queryValue.getStringValueNormalized(), "." );
+        }
+
         return queryValue.getStringValueNormalized();
     }
 

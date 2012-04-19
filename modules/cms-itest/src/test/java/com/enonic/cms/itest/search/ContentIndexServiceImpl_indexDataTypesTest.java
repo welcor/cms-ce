@@ -153,6 +153,7 @@ public class ContentIndexServiceImpl_indexDataTypesTest
     {
         final int contentKey = 1;
         final ContentDocument contentDocument = createContentDocument( contentKey );
+        addUserdefinedData( contentDocument );
         indexContentDocument( contentDocument );
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 

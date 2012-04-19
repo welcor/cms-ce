@@ -54,6 +54,7 @@ public class ContentIndexServiceImpl_indexUpdateTest
         contentIndexService.index( doc1, false );
 
         flushIndex();
+        printAllIndexContent();
 
         ContentIndexQuery query = new ContentIndexQuery( "key = 1322" );
         query.setCount( 10 );

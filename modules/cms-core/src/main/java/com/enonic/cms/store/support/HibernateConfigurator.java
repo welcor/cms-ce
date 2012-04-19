@@ -87,11 +87,6 @@ public final class HibernateConfigurator
         listenerMap.put( "post-delete", EntityChangeListenerHub.getInstance() );
         listenerMap.put( "post-insert", EntityChangeListenerHub.getInstance() );
         listenerMap.put( "post-update", EntityChangeListenerHub.getInstance() );
-
-        listenerMap.put( "post-commit-insert", EntityPostCommitListenerHub.getInstance() );
-        listenerMap.put( "post-commit-update", EntityPostCommitListenerHub.getInstance() );
-        listenerMap.put( "post-commit-delete", EntityPostCommitListenerHub.getInstance() );
-
         setEventListeners( listenerMap );
 
         super.afterPropertiesSet();

@@ -96,6 +96,7 @@
       <x:param name="excludekey"/>
 
       <x:param name="isRemote" select="/users/userstore/@remote = 'true'"/>
+      <x:param name="isEmailReadOnly" select="/users/userstore/@isEmailReadOnly = 'true'"/>
 
       <x:param name="generated-display-name"/>
 
@@ -1073,7 +1074,7 @@
                 <x:with-param name="name" select="'email'"/>
                 <x:with-param name="label" select="'%fldEmail%:'"/>
                 <x:with-param name="selectnode" select="$user/block/email"/>
-                <x:with-param name="readonly" select="false()"/>
+                <x:with-param name="readonly" select="$isEmailReadOnly"/>
                 <x:with-param name="required" select="true()"/>
                 <x:with-param name="useIcon" select="$isRemote"/>
                 <x:with-param name="iconClass" select="'icon-remote'"/>

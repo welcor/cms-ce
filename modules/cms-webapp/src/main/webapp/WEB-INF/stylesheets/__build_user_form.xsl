@@ -5,9 +5,7 @@
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:namespace-alias stylesheet-prefix="x" result-prefix="xsl"/>
   <xsl:output method="xml"/>
@@ -1412,21 +1410,17 @@
                     </div>
                   </x:if>
                   <p>
+                  <x:if test="$canUpdateUser != 'false' and not($configuration/photo/@readonly = 'true')">
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td valign="top">
-                          <input type="file" name="photo" onchange="removePhoto(false);">
-                            <x:if test="$configuration/photo/@readonly = 'true'">
-                              <x:attribute name="readonly">true</x:attribute>
-                            </x:if>
-                          </input>
+                          <input type="file" name="photo" onchange="removePhoto(false);"/>
                           <input type="hidden" name="remove_photo" id="remove_photo" value="false"/>
                         </td>
                         <td valign="top">
                           <x:call-template name="button">
                             <x:with-param name="image" select="'images/icon_remove.gif'"/>
                             <x:with-param name="name" select="'photo_removebutton'"/>
-                            <x:with-param name="disabled" select="$canUpdateUser = 'false' or $configuration/photo/@readonly = 'true'"/>
                             <x:with-param name="onclick">
                               <xsl:text>javascript:removePhoto(true);</xsl:text>
                             </x:with-param>
@@ -1434,6 +1428,7 @@
                         </td>
                       </tr>
                     </table>
+                  </x:if>
                   </p>
 
                   <x:if test="$configuration/photo/@required = 'true' and not($user/block/photo/@exists)">

@@ -20,7 +20,7 @@ public class QueryFieldAndValueTest
     public void testWildcardPathGeneration()
     {
         QueryFieldAndValue queryFieldAndValue = new QueryFieldAndValue( "data/*", 35 );
-        assertEquals( "_all_userdata.number", queryFieldAndValue.getFieldName() );
+        assertEquals( "_all_userdata", queryFieldAndValue.getFieldName() );
 
         queryFieldAndValue = new QueryFieldAndValue( "data/*", "35" );
         assertEquals( "_all_userdata", queryFieldAndValue.getFieldName() );
@@ -42,7 +42,7 @@ public class QueryFieldAndValueTest
         assertEquals( "data_person_age", queryFieldAndValue.getFieldName() );
 
         queryFieldAndValue = new QueryFieldAndValue( "person_age", 35 );
-        assertEquals( "person_age", queryFieldAndValue.getFieldName() );
+        assertEquals( "person_age.number", queryFieldAndValue.getFieldName() );
         assertTrue( queryFieldAndValue.getValue() instanceof Number );
     }
 
@@ -60,14 +60,14 @@ public class QueryFieldAndValueTest
         assertEquals( "data_person_birthdate", queryFieldAndValue.getFieldName() );
 
         queryFieldAndValue = new QueryFieldAndValue( "person_birthdate", validDateTime );
-        assertEquals( "person_birthdate", queryFieldAndValue.getFieldName() );
+        assertEquals( "person_birthdate.date", queryFieldAndValue.getFieldName() );
 
         queryFieldAndValue = new QueryFieldAndValue( PUBLISH_FROM_FIELDNAME, validDateTime );
-        assertEquals( PUBLISH_FROM_FIELDNAME, queryFieldAndValue.getFieldName() );
+        assertEquals( PUBLISH_FROM_FIELDNAME + ".date", queryFieldAndValue.getFieldName() );
         assertTrue( queryFieldAndValue.getValue() instanceof ReadableDateTime );
 
         queryFieldAndValue = new QueryFieldAndValue( PUBLISH_FROM_FIELDNAME, null );
-        assertEquals( PUBLISH_FROM_FIELDNAME, queryFieldAndValue.getFieldName() );
+        assertEquals( PUBLISH_FROM_FIELDNAME + ".date", queryFieldAndValue.getFieldName() );
     }
 
 }

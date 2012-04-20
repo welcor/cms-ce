@@ -10,11 +10,11 @@ public class IndexFieldNameConstants
 {
     protected static final String CONTENT_KEY_FIELDNAME = "key";
 
-    protected static final String INDEX_FIELDNAME_PROPERTY_SEPARATOR = "_";
+    public static final String INDEX_FIELDNAME_PROPERTY_SEPARATOR = "_";
 
-    protected static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
+    public static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
 
-    protected static final String INDEX_FIELD_TYPE_SEPARATOR = ".";
+    public static final String INDEX_FIELD_TYPE_SEPARATOR = ".";
 
     public static final String ALL_USERDATA_FIELDNAME = "_all_userdata";
 
@@ -24,25 +24,25 @@ public class IndexFieldNameConstants
 
     public static final String TIMESTAMP_FIELDNAME = "timestamp";
 
-    protected static final String STATUS_FIELDNAME = "status";
+    public static final String STATUS_FIELDNAME = "status";
 
-    protected static final String PRIORITY_FIELDNAME = "priority";
+    public static final String PRIORITY_FIELDNAME = "priority";
 
     public static final String ASSIGNMENT_DUE_DATE_FIELDNAME = "assignmentDueDate";
 
-    protected static final String OWNER_FIELDNAME = "owner";
+    public static final String OWNER_FIELDNAME = "owner";
 
-    protected static final String MODIFIER_FIELDNAME = "modifier";
+    public static final String MODIFIER_FIELDNAME = "modifier";
 
-    protected static final String ASSIGNEE_FIELDNAME = "assignee";
+    public static final String ASSIGNEE_FIELDNAME = "assignee";
 
-    protected static final String ASSIGNER_FIELDNAME = "assigner";
+    public static final String ASSIGNER_FIELDNAME = "assigner";
 
-    protected static final String TITLE_FIELDNAME = "title";
+    public static final String TITLE_FIELDNAME = "title";
 
-    protected static final String CONTENTLOCATION_APPROVED_FIELDNAME = "contentlocations_approved";
+    public static final String CONTENTLOCATION_APPROVED_FIELDNAME = "contentlocations_approved";
 
-    protected static final String CONTENTLOCATION_UNAPPROVED_FIELDNAME = "contentlocations_unapproved";
+    public static final String CONTENTLOCATION_UNAPPROVED_FIELDNAME = "contentlocations_unapproved";
 
     public static final String CONTENT_ACCESS_READ_FIELDNAME = "access_read";
 
@@ -56,11 +56,11 @@ public class IndexFieldNameConstants
 
     public static final String CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME = "access_category_administrate";
 
-    protected static final String USER_KEY_POSTFIX = "_key";
+    public static final String USER_KEY_POSTFIX = "_key";
 
-    protected static final String USER_NAME_POSTFIX = "_name";
+    public static final String USER_NAME_POSTFIX = "_name";
 
-    protected static final String USER_QUALIFIED_NAME_POSTFIX = "_qualifiedName";
+    public static final String USER_QUALIFIED_NAME_POSTFIX = "_qualifiedName";
 
     public static final String CATEGORY_FIELD_PREFIX = "category";
 
@@ -68,15 +68,15 @@ public class IndexFieldNameConstants
 
     public static final String NON_ANALYZED_FIELD_POSTFIX = "._tokenized";
 
-    protected static final String CONTENTDATA_PREFIX = "data_";
+    public static final String CONTENTDATA_PREFIX = "data_";
 
-    protected static final String CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY = "contentdata_";
+    public static final String CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY = "contentdata_";
 
     public static final String ATTACHMENT_FIELDNAME = "attachment";
 
-    protected static final String ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY = "fulltext";
+    public static final String ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY = "fulltext";
 
-    protected static final String CONTENTKEY_FIELDNAME = "key";
+    public static final String CONTENTKEY_FIELDNAME = "key";
 
     public static final String CONTENT_CREATED = "created";
 

@@ -82,7 +82,8 @@ public class QueryTranslatorTest_date
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "timestamp >= date('" + QUERY_DATE + "') AND timestamp <= date('2011-11-15T23:59:59')" );
+        ContentIndexQuery query =
+            createContentQuery( "timestamp >= date('" + QUERY_DATE + "') AND timestamp <= date('2011-11-15T23:59:59')" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -182,7 +183,7 @@ public class QueryTranslatorTest_date
             "      },\n" +
             "      \"filter\" : {\n" +
             "        \"missing\" : {\n" +
-            "          \"field\" : \"timestamp\"\n" +
+            "          \"field\" : \"timestamp.date\"\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

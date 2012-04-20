@@ -1,17 +1,18 @@
 package com.enonic.cms.core.search.builder;
 
+import java.util.Collections;
 import java.util.List;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.category.CategoryAccessEntity;
+import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
@@ -22,17 +23,7 @@ import static junit.framework.Assert.assertTrue;
 public class ContentIndexDataAccessRightsBuilderTest
 {
 
-    private XContentBuilder result;
-
     private ContentIndexDataAccessRightsFactory accessRightsBuilder = new ContentIndexDataAccessRightsFactory();
-
-
-    @Before
-    public void setUp()
-        throws Exception
-    {
-        result = XContentFactory.jsonBuilder();
-    }
 
 
     @Test
@@ -50,8 +41,10 @@ public class ContentIndexDataAccessRightsBuilderTest
         contentAccessRights.add( accessRight3 );
         contentAccessRights.add( accessRight4 );
 
-        final String jsonString = result.string();
-        System.out.println( jsonString );
+        final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
+        accessRightsBuilder.build( contentIndexData, contentAccessRights, Collections.<GroupKey, CategoryAccessEntity>emptyMap() );
+        final String jsonString = contentIndexData.getContentDataAsJsonString();
+
         JSONObject resultObject = new JSONObject( jsonString );
 
         assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME ) );

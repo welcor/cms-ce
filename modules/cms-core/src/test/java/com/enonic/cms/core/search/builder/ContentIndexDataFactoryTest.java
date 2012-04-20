@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,7 +24,6 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.search.index.ContentIndexData;
 import com.enonic.cms.core.search.index.ContentIndexDataElement;
 import com.enonic.cms.core.search.index.ContentIndexDataFieldValue;
-import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
@@ -44,6 +41,7 @@ import static junit.framework.Assert.fail;
  * Time: 11:54 AM
  */
 public class ContentIndexDataFactoryTest
+    extends IndexFieldNameConstants
 {
 
     ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
@@ -79,10 +77,9 @@ public class ContentIndexDataFactoryTest
 
         ContentIndexData indexData = contentIndexDataFactory.create( content );
 
-        //verifyFieldName( indexData, "data_person_age" );
-        //verifyFieldName( indexData, "data_person_age.number" );
-        //verifyFieldName( indexData, "data_person_description" );
-        verifyFieldName( indexData, "data_person_gender.number" );
+        verifyFieldName( indexData, "data_person_age" );
+        verifyFieldName( indexData, "data_person_age.number" );
+        verifyFieldName( indexData, "data_person_description" );
     }
 
     protected void verifyFieldName( ContentIndexData contentIndexData, String fieldName )
@@ -178,17 +175,11 @@ public class ContentIndexDataFactoryTest
 
         ContentIndexData indexData = contentIndexDataFactory.create( contentDocument );
 
-        JSONObject resultObject = new JSONObject( indexData.buildContentDataJson() );
+        final Set<ContentIndexDataElement> contentData = indexData.getContentData();
 
-        final String approvedSectionsFieldName = QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName();
-        assertTrue( resultObject.has( approvedSectionsFieldName ) );
-        JSONArray approvedSections = resultObject.getJSONArray( approvedSectionsFieldName );
-        assertEquals( 2, approvedSections.length() );
+        verifyFieldName( indexData, CONTENTLOCATION_APPROVED_FIELDNAME );
+        verifyFieldName( indexData, CONTENTLOCATION_UNAPPROVED_FIELDNAME );
 
-        final String unApprovedSectionsFieldName = QueryFieldNameResolver.getSectionKeysUnapprovedQueryFieldName();
-        assertTrue( resultObject.has( approvedSectionsFieldName ) );
-        JSONArray unApprovedSections = resultObject.getJSONArray( unApprovedSectionsFieldName );
-        assertEquals( 1, unApprovedSections.length() );
     }
 
     private SectionContentEntity createSectionContent( SiteEntity site, ContentEntity content, int sectionKey, boolean approved )

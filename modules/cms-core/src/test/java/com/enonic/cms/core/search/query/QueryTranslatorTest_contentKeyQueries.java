@@ -40,7 +40,7 @@ public class QueryTranslatorTest_contentKeyQueries
             "  \"query\" : {\n" +
             "    \"ids\" : {\n" +
             "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100.0\" ]\n" +
+            "      \"values\" : [ \"100\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -62,7 +62,7 @@ public class QueryTranslatorTest_contentKeyQueries
             "  \"query\" : {\n" +
             "    \"ids\" : {\n" +
             "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100.0\" ]\n" +
+            "      \"values\" : [ \"100\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";

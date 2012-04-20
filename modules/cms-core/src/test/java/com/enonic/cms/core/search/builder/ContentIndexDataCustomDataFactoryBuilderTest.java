@@ -2,17 +2,16 @@ package com.enonic.cms.core.search.builder;
 
 import java.util.List;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
+import com.enonic.cms.core.search.index.ContentIndexData;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -25,19 +24,7 @@ import static junit.framework.Assert.assertTrue;
  */
 public class ContentIndexDataCustomDataFactoryBuilderTest
 {
-
-    private XContentBuilder result;
-
     private ContentIndexDataCustomDataFactory customDataBuilder = new ContentIndexDataCustomDataFactory();
-
-
-    @Before
-    public void setUp()
-        throws Exception
-    {
-        result = XContentFactory.jsonBuilder();
-    }
-
 
     @Test
     public void testNumericValuesOnlyToNumberField()
@@ -50,7 +37,10 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "3" ) ) );
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
 
-        final String jsonString = result.string();
+        final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
+        customDataBuilder.build( contentIndexData, userDefinedFields );
+
+        final String jsonString = contentIndexData.getContentDataAsJsonString();
 
         JSONObject resultObject = new JSONObject( jsonString );
 
@@ -80,7 +70,10 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "5" ) ) );
 
-        final String jsonString = result.string();
+        final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
+        customDataBuilder.build( contentIndexData, userDefinedFields );
+
+        final String jsonString = contentIndexData.getContentDataAsJsonString();
 
         JSONObject resultObject = new JSONObject( jsonString );
 
@@ -94,7 +87,6 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
         assertTrue( containsValue( testNumericValues, 4.0 ) );
         assertTrue( containsValue( testNumericValues, 5.0 ) );
-
     }
 
 
@@ -102,7 +94,6 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
     public void testOnlyDistinctValues()
         throws Exception
     {
-
         List<UserDefinedField> userDefinedFields = Lists.newArrayList();
 
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "test1" ) ) );
@@ -112,11 +103,13 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
 
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ) ) );
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "1" ) ) );
-        ;
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ) ) );
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ) ) );
 
-        final String jsonString = result.string();
+        final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
+        customDataBuilder.build( contentIndexData, userDefinedFields );
+
+        final String jsonString = contentIndexData.getContentDataAsJsonString();
 
         JSONObject resultObject = new JSONObject( jsonString );
 
@@ -148,7 +141,10 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test4", new SimpleText( "4" ) ) );
         userDefinedFields.add( new UserDefinedField( "test5", new SimpleText( "5" ) ) );
 
-        final String jsonString = result.string();
+        final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
+        customDataBuilder.build( contentIndexData, userDefinedFields );
+
+        final String jsonString = contentIndexData.getContentDataAsJsonString();
 
         JSONObject resultObject = new JSONObject( jsonString );
 

@@ -21,12 +21,12 @@ public class QueryTranslatorTest_logical
             "      \"should\" : [ {\n" +
             "        \"ids\" : {\n" +
             "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"100.0\" ]\n" +
+            "          \"values\" : [ \"100\" ]\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"ids\" : {\n" +
             "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"200.0\" ]\n" +
+            "          \"values\" : [ \"200\" ]\n" +
             "        }\n" +
             "      } ]\n" +
             "    }\n" +
@@ -52,7 +52,7 @@ public class QueryTranslatorTest_logical
             "      \"must\" : [ {\n" +
             "        \"ids\" : {\n" +
             "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"100.0\" ]\n" +
+            "          \"values\" : [ \"100\" ]\n" +
             "        }\n" +
             "      }, {\n" +
             "        \"term\" : {\n" +

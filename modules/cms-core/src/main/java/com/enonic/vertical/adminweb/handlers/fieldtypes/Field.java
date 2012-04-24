@@ -7,9 +7,10 @@ package com.enonic.vertical.adminweb.handlers.fieldtypes;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -30,7 +31,7 @@ public abstract class Field
 
     static
     {
-        fileUpload = new DiskFileUpload();
+        fileUpload = new FileUpload( new DiskFileItemFactory() );
         fileUpload.setHeaderEncoding( "UTF-8" );
         fileUpload.setSizeMax( VerticalProperties.getVerticalProperties().getMultiPartRequestMaxSize() );
     }

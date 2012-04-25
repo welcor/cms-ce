@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
@@ -139,6 +140,7 @@ public class ContentIndexDataElementTest
         verifyValues( allFieldValuesForElement, 2 );
     }
 
+    @Ignore // Format to be decided
     @Test
     public void testValidStringFormatForDate()
     {

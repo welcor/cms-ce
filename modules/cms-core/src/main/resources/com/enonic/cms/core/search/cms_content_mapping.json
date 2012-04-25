@@ -50,7 +50,8 @@
                     "match":"*.orderby",
                     "mapping":{
                         "type":"string",
-                        "store":"yes"
+                        "store":"yes",
+                        "index":"not_analyzed"
                     }
                 }
             },
@@ -97,7 +98,8 @@
                     "match":"*",
                     "mapping":{
                         "type":"string",
-                        "store":"yes"
+                        "store":"yes",
+                        "index":"not_analyzed"
                     }
                 }
             }

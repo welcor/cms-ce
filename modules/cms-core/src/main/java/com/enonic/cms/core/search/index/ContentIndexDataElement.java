@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.ReadableDateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.collect.Sets;
 
@@ -39,6 +42,7 @@ public class ContentIndexDataElement
         }
         else
         {
+            // TODO: FIX ORDERBY
             this.orderBy = ContentIndexOrderbyResolver.resolveOrderbyValue( values );
         }
 
@@ -49,18 +53,19 @@ public class ContentIndexDataElement
                 continue;
             }
 
-            stringValues.add( doNormalizeString( value.toString() ) );
-
             if ( value instanceof Number )
             {
                 numericValues.add( ( (Number) value ).doubleValue() );
+                stringValues.add( doNormalizeString( value.toString() ) );
             }
             else if ( value instanceof Date )
             {
                 dateTimeValues.add( (Date) value );
+                stringValues.add( formatDateForElasticSearch( new DateTime( value ) ) );
             }
             else
             {
+                stringValues.add( doNormalizeString( value.toString() ) );
                 tryConvertValuesToValidTypes( value );
             }
         }
@@ -82,6 +87,12 @@ public class ContentIndexDataElement
                 dateTimeValues.add( dateValue );
             }
         }
+    }
+
+
+    private String formatDateForElasticSearch( final ReadableDateTime date )
+    {
+        return ISODateTimeFormat.dateTime().withZoneUTC().print( date ).toLowerCase();
     }
 
 

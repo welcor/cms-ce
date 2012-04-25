@@ -1,17 +1,21 @@
 package com.enonic.cms.core.search.index;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 public class ContentIndexDataElementTest
 {
@@ -135,5 +139,38 @@ public class ContentIndexDataElementTest
         verifyValues( allFieldValuesForElement, 2 );
     }
 
+    @Test
+    public void testValidStringFormatForDate()
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-DD'T'HH:mm:ss" );
+
+        final DateTime dateTime = new DateTime( 1975, 8, 1, 12, 00 );
+
+        ContentIndexDataElement contentIndexDataElement = new ContentIndexDataElement( "date-test", Sets.newHashSet( (Object) dateTime ) );
+
+        final Set<ContentIndexDataFieldValue> allFieldValuesForElements = contentIndexDataElement.getAllFieldValuesForElement();
+
+        // Should contain: String, date, order
+        assertEquals( 3, allFieldValuesForElements.size() );
+
+        for ( ContentIndexDataFieldValue allFieldValuesForElement : allFieldValuesForElements )
+        {
+            if ( allFieldValuesForElement.getFieldName().toString().equals( "date-test" ) )
+            {
+                final String dateStringValue = allFieldValuesForElement.getValue().toString();
+
+                try
+                {
+
+                    simpleDateFormat.parse( dateStringValue );
+                }
+                catch ( ParseException e )
+                {
+                    fail( "Not correct format: " + dateStringValue );
+                }
+
+            }
+        }
+    }
 
 }

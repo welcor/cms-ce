@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query;
+package com.enonic.cms.core.search.query.factories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import org.elasticsearch.search.sort.SortOrder;
 
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderFieldExpr;
+import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 
 public class OrderQueryBuilderFactory
     extends BaseQueryBuilderFactory

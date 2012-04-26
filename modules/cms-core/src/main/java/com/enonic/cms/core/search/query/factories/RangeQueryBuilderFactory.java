@@ -1,7 +1,10 @@
-package com.enonic.cms.core.search.query;
+package com.enonic.cms.core.search.query.factories;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;
+
+import com.enonic.cms.core.search.query.QueryField;
+import com.enonic.cms.core.search.query.QueryValue;
 
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 

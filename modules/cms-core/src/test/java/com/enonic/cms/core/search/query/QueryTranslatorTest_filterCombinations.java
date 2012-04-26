@@ -6,18 +6,11 @@ import java.util.Set;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
-import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-/**
- * Created by IntelliJ IDEA.
- * User: udu
- * Date: 11/29/11
- * Time: 1:32 PM
- */
-public class QueryTranslatorTest_filters
+public class QueryTranslatorTest_filterCombinations
     extends QueryTranslatorBaseTest
 {
     @Test
@@ -35,12 +28,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ 15 ]\n" +
+            "          \"categorykey\" : [ \"15\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ 1002, 1001 ]\n" +
+            "          \"contenttypekey\" : [ \"1001\", \"1002\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -70,7 +63,7 @@ public class QueryTranslatorTest_filters
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
+            "      \"key.number\" : {\n" +
             "        \"from\" : 100.0,\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
@@ -82,12 +75,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ 15 ]\n" +
+            "          \"categorykey\" : [ \"15\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ 1001 ]\n" +
+            "          \"contenttypekey\" : [ \"1001\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -116,7 +109,7 @@ public class QueryTranslatorTest_filters
             "  \"size\" : 20,\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
+            "      \"key.number\" : {\n" +
             "        \"from\" : 100.0,\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
@@ -128,12 +121,12 @@ public class QueryTranslatorTest_filters
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ 15 ]\n" +
+            "          \"categorykey\" : [ \"15\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ 1001 ]\n" +
+            "          \"contenttypekey\" : [ \"1001\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -151,23 +144,6 @@ public class QueryTranslatorTest_filters
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
-    }
-
-    @Test
-    public void testFilterQuery_content_filter()
-        throws Exception
-    {
-        Set<ContentKey> contentKeys = new HashSet<ContentKey>();
-        contentKeys.add( new ContentKey( "1" ) );
-        contentKeys.add( new ContentKey( "2" ) );
-        contentKeys.add( new ContentKey( "3" ) );
-
-        ContentIndexQuery query = createContentQueryContentFilter( contentKeys );
-
-        SearchSourceBuilder builder = getQueryTranslator().build( query );
-
-        System.out.println( builder.toString() );
-
     }
 
 }

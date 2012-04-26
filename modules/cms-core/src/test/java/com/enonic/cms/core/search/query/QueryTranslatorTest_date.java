@@ -22,7 +22,7 @@ public class QueryTranslatorTest_date
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"range\" : {\n" +
-            "          \"timestamp\" : {\n" +
+            "          \"timestamp.date\" : {\n" +
             "            \"from\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "            \"to\" : null,\n" +
             "            \"include_lower\" : true,\n" +
@@ -31,7 +31,7 @@ public class QueryTranslatorTest_date
             "        }\n" +
             "      }, {\n" +
             "        \"range\" : {\n" +
-            "          \"timestamp\" : {\n" +
+            "          \"timestamp.date\" : {\n" +
             "            \"from\" : null,\n" +
             "            \"to\" : \"2011-11-15T22:59:59.999Z\",\n" +
             "            \"include_lower\" : true,\n" +
@@ -61,7 +61,7 @@ public class QueryTranslatorTest_date
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"range\" : {\n" +
-            "          \"timestamp\" : {\n" +
+            "          \"timestamp.date\" : {\n" +
             "            \"from\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "            \"to\" : null,\n" +
             "            \"include_lower\" : true,\n" +
@@ -70,7 +70,7 @@ public class QueryTranslatorTest_date
             "        }\n" +
             "      }, {\n" +
             "        \"range\" : {\n" +
-            "          \"timestamp\" : {\n" +
+            "          \"timestamp.date\" : {\n" +
             "            \"from\" : null,\n" +
             "            \"to\" : \"2011-11-15T22:59:59.000Z\",\n" +
             "            \"include_lower\" : true,\n" +
@@ -99,7 +99,7 @@ public class QueryTranslatorTest_date
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"timestamp\" : {\n" +
+            "      \"timestamp.date\" : {\n" +
             "        \"from\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
@@ -125,7 +125,7 @@ public class QueryTranslatorTest_date
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"timestamp\" : {\n" +
+            "      \"timestamp.date\" : {\n" +
             "        \"from\" : null,\n" +
             "        \"to\" : \"2011-11-14T23:00:00.000Z\",\n" +
             "        \"include_lower\" : true,\n" +
@@ -151,7 +151,7 @@ public class QueryTranslatorTest_date
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"timestamp\" : {\n" +
+            "      \"timestamp.date\" : {\n" +
             "        \"from\" : null,\n" +
             "        \"to\" : \"2011-11-15T22:59:59.999Z\",\n" +
             "        \"include_lower\" : true,\n" +
@@ -250,7 +250,7 @@ public class QueryTranslatorTest_date
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
             "        \"range\" : {\n" +
-            "          \"my_date_field\" : {\n" +
+            "          \"my_date_field.date\" : {\n" +
             "            \"from\" : \"2012-03-21T23:00:00.000Z\",\n" +
             "            \"to\" : null,\n" +
             "            \"include_lower\" : true,\n" +
@@ -259,7 +259,7 @@ public class QueryTranslatorTest_date
             "        }\n" +
             "      }, {\n" +
             "        \"range\" : {\n" +
-            "          \"my_date_field\" : {\n" +
+            "          \"my_date_field.date\" : {\n" +
             "            \"from\" : null,\n" +
             "            \"to\" : \"2012-03-22T22:59:59.999Z\",\n" +
             "            \"include_lower\" : true,\n" +

@@ -1,9 +1,13 @@
-package com.enonic.cms.core.search.query;
+package com.enonic.cms.core.search.query.factories;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
+
+import com.enonic.cms.core.search.query.QueryFieldResolver;
+import com.enonic.cms.core.search.query.QueryTranslatorBaseTest;
+import com.enonic.cms.core.search.query.QueryValue;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -40,7 +44,7 @@ public class RangeQueryBuilderFactoryTest
     {
         String expected_result = "{\n" +
             "  \"range\" : {\n" +
-            "    \"key\" : {\n" +
+            "    \"key.number\" : {\n" +
             "      \"from\" : 100.0,\n" +
             "      \"to\" : null,\n" +
             "      \"include_lower\" : false,\n" +
@@ -68,7 +72,7 @@ public class RangeQueryBuilderFactoryTest
     {
         String expected_result = "{\n" +
             "  \"range\" : {\n" +
-            "    \"key\" : {\n" +
+            "    \"key.number\" : {\n" +
             "      \"from\" : 100.0,\n" +
             "      \"to\" : 300.0,\n" +
             "      \"include_lower\" : true,\n" +
@@ -89,7 +93,7 @@ public class RangeQueryBuilderFactoryTest
     {
         String expected_result = "{\n" +
             "  \"range\" : {\n" +
-            "    \"my_date_field\" : {\n" +
+            "    \"my_date_field.date\" : {\n" +
             "      \"from\" : \"2012-03-23T14:23:45.678Z\",\n" +
             "      \"to\" : null,\n" +
             "      \"include_lower\" : false,\n" +
@@ -111,7 +115,7 @@ public class RangeQueryBuilderFactoryTest
     {
         String expected_result = "{\n" +
             "  \"range\" : {\n" +
-            "    \"my_date_field\" : {\n" +
+            "    \"my_date_field.date\" : {\n" +
             "      \"from\" : \"2012-03-23T14:23:45.678Z\",\n" +
             "      \"to\" : null,\n" +
             "      \"include_lower\" : true,\n" +
@@ -133,7 +137,7 @@ public class RangeQueryBuilderFactoryTest
     {
         String expected_result = "{\n" +
             "  \"range\" : {\n" +
-            "    \"my_date_field\" : {\n" +
+            "    \"my_date_field.date\" : {\n" +
             "      \"from\" : \"2012-03-23T14:23:45.678Z\",\n" +
             "      \"to\" : \"2012-03-24T04:01:23.456Z\",\n" +
             "      \"include_lower\" : false,\n" +

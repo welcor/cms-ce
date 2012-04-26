@@ -1,9 +1,10 @@
-package com.enonic.cms.core.search.query;
+package com.enonic.cms.core.search.query.factories;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
+import com.enonic.cms.core.search.query.QueryValue;
 
 public class FullTextQueryBuilderFactory
     extends BaseQueryBuilderFactory

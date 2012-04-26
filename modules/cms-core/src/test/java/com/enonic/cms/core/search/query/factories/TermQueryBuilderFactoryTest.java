@@ -1,9 +1,11 @@
-package com.enonic.cms.core.search.query;
+package com.enonic.cms.core.search.query.factories;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.enonic.cms.core.search.query.QueryFieldAndValue;
+import com.enonic.cms.core.search.query.QueryTranslatorBaseTest;
 
 
 public class TermQueryBuilderFactoryTest
@@ -53,8 +55,6 @@ public class TermQueryBuilderFactoryTest
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
 
-
-    @Ignore // TODO Decide what to do here
     @Test
     public void testWildcardQueryWithNumeric()
     {
@@ -68,6 +68,22 @@ public class TermQueryBuilderFactoryTest
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
+
+    @Test
+    public void testWildcardQueryWithDate()
+    {
+        String expected = "{\n" +
+            "  \"term\" : {\n" +
+            "    \"_all_userdata.date\" : \"2010-08-01T08:00:00.000Z\"\n" +
+            "  }\n" +
+            "}";
+
+        final QueryBuilder queryBuilder =
+            termQueryBuilderFactory.buildTermQuery( new QueryFieldAndValue( "data/*", new DateTime( 2010, 8, 1, 10, 0 ) ) );
+
+        compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
+    }
+
 
     @Test
     public void testContentdataQueryNumber()
@@ -117,8 +133,6 @@ public class TermQueryBuilderFactoryTest
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
 
-
-    @Ignore //The handling of attachments/* must be checked
     @Test
     public void testWrapInHasChild()
     {
@@ -126,14 +140,14 @@ public class TermQueryBuilderFactoryTest
             "  \"has_child\" : {\n" +
             "    \"query\" : {\n" +
             "      \"term\" : {\n" +
-            "        \"_all\" : \"123\"\n" +
+            "        \"_all_userdata.number\" : 123.0\n" +
             "      }\n" +
             "    },\n" +
             "    \"type\" : \"binaries\"\n" +
             "  }\n" +
             "}";
 
-        final QueryBuilder queryBuilder = termQueryBuilderFactory.buildTermQuery( new QueryFieldAndValue( "attachments/*", "123" ) );
+        final QueryBuilder queryBuilder = termQueryBuilderFactory.buildTermQuery( new QueryFieldAndValue( "attachments/*", 123 ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }

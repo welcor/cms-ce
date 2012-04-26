@@ -16,7 +16,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
  * Date: 2/2/12
  * Time: 2:54 PM
  */
-public class QueryTranslatorTest_sectionFilter
+public class QueryTranslatorTest_filterSection
     extends QueryTranslatorBaseTest
 {
 
@@ -35,12 +35,12 @@ public class QueryTranslatorTest_sectionFilter
             "    \"bool\" : {\n" +
             "      \"should\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contentlocations_approved\" : [ 3, 2, 1 ]\n" +
+            "          \"contentlocations_approved\" : [ \"3\", \"2\", \"1\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"should\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contentlocations_unapproved\" : [ 3, 2, 1 ]\n" +
+            "          \"contentlocations_unapproved\" : [ \"3\", \"2\", \"1\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -78,7 +78,7 @@ public class QueryTranslatorTest_sectionFilter
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
-            "      \"contentlocations_unapproved\" : [ 3, 2, 1 ]\n" +
+            "      \"contentlocations_unapproved\" : [ \"3\", \"2\", \"1\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -116,7 +116,7 @@ public class QueryTranslatorTest_sectionFilter
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
-            "      \"contentlocations_approved\" : [ 3, 2, 1 ]\n" +
+            "      \"contentlocations_approved\" : [ \"3\", \"2\", \"1\" ]\n" +
             "    }\n" +
             "  }\n" +
             "}";

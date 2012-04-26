@@ -3,7 +3,6 @@ package com.enonic.cms.core.search.query;
 
 import org.joda.time.DateTime;
 import org.joda.time.ReadableDateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
@@ -15,25 +14,25 @@ public class QueryFieldAndValueTest
     extends IndexFieldNameConstants
 {
 
-    @Ignore
     @Test
     public void testWildcardPathGeneration()
     {
         QueryFieldAndValue queryFieldAndValue = new QueryFieldAndValue( "data/*", 35 );
-        assertEquals( "_all_userdata", queryFieldAndValue.getFieldName() );
+        assertEquals( "_all_userdata.number", queryFieldAndValue.getFieldName() );
 
         queryFieldAndValue = new QueryFieldAndValue( "data/*", "35" );
         assertEquals( "_all_userdata", queryFieldAndValue.getFieldName() );
 
         queryFieldAndValue = new QueryFieldAndValue( "*", 35 );
         assertEquals( "_all_userdata.number", queryFieldAndValue.getFieldName() );
-    }
 
+        queryFieldAndValue = new QueryFieldAndValue( "*", new DateTime( 2010, 8, 1, 10, 00 ) );
+        assertEquals( "_all_userdata.date", queryFieldAndValue.getFieldName() );
+    }
 
     @Test
     public void testNumericPathGeneration()
     {
-
         QueryFieldAndValue queryFieldAndValue = new QueryFieldAndValue( "data_person_age", 35 );
         assertEquals( "data_person_age.number", queryFieldAndValue.getFieldName() );
         assertTrue( queryFieldAndValue.getValue() instanceof Number );

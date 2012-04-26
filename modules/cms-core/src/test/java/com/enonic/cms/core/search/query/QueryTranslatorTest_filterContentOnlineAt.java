@@ -13,7 +13,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
 
-public class QueryTranslatorTest_contentOnlineAtFilter
+public class QueryTranslatorTest_filterContentOnlineAt
     extends QueryTranslatorBaseTest
 {
 
@@ -32,19 +32,19 @@ public class QueryTranslatorTest_contentOnlineAtFilter
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ 42 ]\n" +
+            "          \"categorykey\" : [ \"42\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ 1234 ]\n" +
+            "          \"contenttypekey\" : [ \"1234\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"and\" : {\n" +
             "          \"filters\" : [ {\n" +
             "            \"range\" : {\n" +
-            "              \"publishfrom\" : {\n" +
+            "              \"publishfrom.date\" : {\n" +
             "                \"from\" : null,\n" +
             "                \"to\" : \"2011-11-15T16:23:00.000Z\",\n" +
             "                \"include_lower\" : true,\n" +
@@ -55,11 +55,11 @@ public class QueryTranslatorTest_contentOnlineAtFilter
             "            \"or\" : {\n" +
             "              \"filters\" : [ {\n" +
             "                \"missing\" : {\n" +
-            "                  \"field\" : \"publishto\"\n" +
+            "                  \"field\" : \"publishto.date\"\n" +
             "                }\n" +
             "              }, {\n" +
             "                \"range\" : {\n" +
-            "                  \"publishto\" : {\n" +
+            "                  \"publishto.date\" : {\n" +
             "                    \"from\" : \"2011-11-15T16:23:00.000Z\",\n" +
             "                    \"to\" : null,\n" +
             "                    \"include_lower\" : false,\n" +

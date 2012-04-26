@@ -17,6 +17,13 @@ import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
+import com.enonic.cms.core.search.query.factories.FilterQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factories.FullTextQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factories.InQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factories.LikeQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factories.OrderQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factories.RangeQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factories.TermQueryBuilderFactory;
 
 @Component
 public class QueryTranslator
@@ -128,9 +135,9 @@ public class QueryTranslator
             case CompareExpr.LTE:
                 return rangeQueryBuilderFactory.buildRangeQuery( queryField, null, querySingleValue, true, true );
             case CompareExpr.LIKE:
-                return likeQueryBuilderFactory.buildLikeQuery( queryField, querySingleValue );
+                return likeQueryBuilderFactory.buildLikeQuery( queryFieldAndValue );
             case CompareExpr.NOT_LIKE:
-                return buildNotQuery( likeQueryBuilderFactory.buildLikeQuery( queryField, querySingleValue ) );
+                return buildNotQuery( likeQueryBuilderFactory.buildLikeQuery( queryFieldAndValue ) );
             case CompareExpr.IN:
                 return inQueryBuilderFactory.buildInQuery( queryField, queryValues );
             case CompareExpr.NOT_IN:

@@ -14,7 +14,7 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.security.group.GroupKey;
 
 
-public class QueryTranslatorTest_securityFilter
+public class QueryTranslatorTest_filterSecurity
     extends QueryTranslatorBaseTest
 {
 
@@ -33,12 +33,12 @@ public class QueryTranslatorTest_securityFilter
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ 42 ]\n" +
+            "          \"categorykey\" : [ \"42\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ 1235, 1234 ]\n" +
+            "          \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
@@ -82,12 +82,12 @@ public class QueryTranslatorTest_securityFilter
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ 42 ]\n" +
+            "          \"categorykey\" : [ \"42\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ 1235, 1234 ]\n" +
+            "          \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
@@ -132,12 +132,12 @@ public class QueryTranslatorTest_securityFilter
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ 42 ]\n" +
+            "          \"categorykey\" : [ \"42\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
             "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ 1235, 1234 ]\n" +
+            "          \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

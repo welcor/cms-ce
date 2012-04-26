@@ -4,46 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.search.query.factories.FilterQueryBuilderFactory;
 import com.enonic.cms.core.security.group.GroupKey;
 
-public class FilterQueryBuilderTest
+public class QueryTranslatorTest_filterCategoryAccessFilter
     extends QueryTranslatorBaseTest
 {
     FilterQueryBuilderFactory filterQueryBuilderFactory = new FilterQueryBuilderFactory();
-
-    @Before
-    public void setUp()
-    {
-    }
-
-    @Test
-    public void testContentStatusFilter()
-    {
-        String expected = "{\n" +
-            "  \"filter\" : {\n" +
-            "    \"term\" : {\n" +
-            "      \"status\" : 2\n" +
-            "    }\n" +
-            "  }\n" +
-            "}";
-
-        SearchSourceBuilder builder = new SearchSourceBuilder();
-
-        ContentIndexQuery query = new ContentIndexQuery( "" );
-        query.setContentStatusFilter( ContentStatus.APPROVED.getKey() );
-
-        filterQueryBuilderFactory.buildFilterQuery( builder, query );
-
-        compareStringsIgnoreFormatting( expected, builder.toString() );
-    }
 
     @Test
     public void testCategoryAccessFilter_single()
@@ -52,13 +25,13 @@ public class FilterQueryBuilderTest
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
-            "        \"term\" : {\n" +
-            "          \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
+            "        \"terms\" : {\n" +
+            "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
+            "        \"term\" : {\n" +
+            "          \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -87,6 +60,11 @@ public class FilterQueryBuilderTest
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"must\" : {\n" +
             "        \"bool\" : {\n" +
             "          \"must\" : {\n" +
             "            \"term\" : {\n" +
@@ -98,11 +76,6 @@ public class FilterQueryBuilderTest
             "              \"access_category_approve\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
             "          }\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -131,6 +104,11 @@ public class FilterQueryBuilderTest
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"must\" : {\n" +
             "        \"bool\" : {\n" +
             "          \"should\" : {\n" +
             "            \"term\" : {\n" +
@@ -142,11 +120,6 @@ public class FilterQueryBuilderTest
             "              \"access_category_approve\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
             "          }\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -167,6 +140,7 @@ public class FilterQueryBuilderTest
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }
+
 
     private Collection<GroupKey> getSecurityFilter()
     {

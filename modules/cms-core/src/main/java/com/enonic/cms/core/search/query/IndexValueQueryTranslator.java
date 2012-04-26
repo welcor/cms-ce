@@ -4,6 +4,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import com.enonic.cms.core.content.index.IndexValueQuery;
+import com.enonic.cms.core.search.query.factories.FilterQueryBuilderFactory;
 
 public class IndexValueQueryTranslator
 {

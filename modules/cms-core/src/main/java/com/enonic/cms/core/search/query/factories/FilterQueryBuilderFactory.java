@@ -2,11 +2,12 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.search.query;
+package com.enonic.cms.core.search.query.factories;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.BoolFilterBuilder;
@@ -23,13 +24,19 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
+import com.google.common.collect.Sets;
+
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.IndexValueQuery;
-import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
+import com.enonic.cms.core.search.query.QueryFieldAndMultiValue;
+import com.enonic.cms.core.search.query.QueryFieldAndValue;
+import com.enonic.cms.core.search.query.QueryFieldNameResolver;
+import com.enonic.cms.core.search.query.QueryFieldResolver;
+import com.enonic.cms.core.search.query.QueryValue;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
@@ -56,19 +63,18 @@ public class FilterQueryBuilderFactory
     {
         List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
 
-        if ( query.getContentFilter() != null && !query.getContentFilter().isEmpty() )
-        {
-            filtersToApply.add( buildContentFilter( query.getContentFilter() ) );
-        }
-
         if ( query.hasSectionFilter() )
         {
             filtersToApply.add( buildSectionFilter( query ) );
         }
         else if ( query.isSectionFilter() )
         {
-            // handle setSearchInAllSections
             filtersToApply.add( buildAllSectionsFilter( query ) );
+        }
+
+        if ( query.getContentFilter() != null && !query.getContentFilter().isEmpty() )
+        {
+            filtersToApply.add( buildContentFilter( query.getContentFilter() ) );
         }
 
         if ( query.hasCategoryFilter() )
@@ -83,8 +89,7 @@ public class FilterQueryBuilderFactory
 
         if ( query.getContentOnlineAtFilter() != null )
         {
-            final FilterBuilder publishedAtFilter = buildContentPublishedAtFilter( query.getContentOnlineAtFilter() );
-            filtersToApply.add( publishedAtFilter );
+            filtersToApply.add( buildContentPublishedAtFilter( query.getContentOnlineAtFilter() ) );
         }
 
         if ( query.hasContentStatusFilter() )
@@ -92,9 +97,13 @@ public class FilterQueryBuilderFactory
             filtersToApply.add( buildContentStatusFilter( query.getContentStatusFilter() ) );
         }
 
+        if ( query.hasSecurityFilter() )
+        {
+            filtersToApply.add( buildSecurityFilter( query.getSecurityFilter() ) );
+        }
+
         if ( query.getCategoryAccessTypeFilter() != null && !query.getCategoryAccessTypeFilter().isEmpty() )
         {
-
             final FilterBuilder categoryAccessFilter =
                 buildCategoryAccessTypeFilter( query.getCategoryAccessTypeFilter(), query.getCategoryAccessTypeFilterPolicy(),
                                                query.getSecurityFilter() );
@@ -102,12 +111,6 @@ public class FilterQueryBuilderFactory
             {
                 filtersToApply.add( categoryAccessFilter );
             }
-        }
-
-        if ( query.hasSecurityFilter() )
-        {
-            final FilterBuilder securityFilter = buildSecurityFilter( query.getSecurityFilter() );
-            filtersToApply.add( securityFilter );
         }
 
         return filtersToApply;
@@ -161,10 +164,10 @@ public class FilterQueryBuilderFactory
         }
     }
 
-
     private FilterBuilder buildContentPublishedAtFilter( final DateTime dateTime )
     {
         final ReadableDateTime dateTimeRoundedDownToNearestMinute = toUTCTimeZone( dateTime.minuteOfHour().roundFloorCopy() );
+
         final RangeFilterBuilder publishFromFilter =
             FilterBuilders.rangeFilter( QueryFieldResolver.resolveQueryField( PUBLISH_FROM_FIELDNAME ).getFieldNameForDateQueries() ).lte(
                 dateTimeRoundedDownToNearestMinute );
@@ -193,33 +196,31 @@ public class FilterQueryBuilderFactory
 
     private FilterBuilder buildSecurityFilter( final Collection<GroupKey> groupKeys )
     {
-        final String[] groups = new String[groupKeys.size()];
-        int i = 0;
-        for ( GroupKey groupKey : groupKeys )
-        {
-            groups[i] = groupKey.toString().toLowerCase();
-            i++;
-        }
-        final TermsFilterBuilder securityFilter =
-            FilterBuilders.termsFilter( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME, groups );
-        return securityFilter;
+        return buildTermsFilterForValues( getKeysAsQueryValues( groupKeys ), CONTENT_ACCESS_READ_FIELDNAME );
     }
 
     private TermFilterBuilder buildContentStatusFilter( Integer contentStatus )
     {
-        return new TermFilterBuilder( QueryFieldNameResolver.getContentStatusQueryFieldName(), contentStatus );
+        QueryFieldAndValue queryFieldAndValue = new QueryFieldAndValue( STATUS_FIELDNAME, contentStatus.toString() );
+
+        return new TermFilterBuilder( queryFieldAndValue.getFieldName(), queryFieldAndValue.getValue() );
     }
 
-    private TermsFilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
+    private FilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getContentTypeKeyQueryFieldName(),
-                                       getKeysAsList( contentTypeFilter ).toArray() );
+        return buildTermsFilterForValues( getKeysAsQueryValues( contentTypeFilter ), CONTENTTYPE_KEY_FIELDNAME );
     }
 
-    private TermsFilterBuilder buildContentFilter( Collection<ContentKey> contentKeys )
+    private FilterBuilder buildContentFilter( Collection<ContentKey> contentKeys )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getContentKeyQueryFieldName(), getKeysAsList( contentKeys ).toArray() );
+        return buildTermsFilterForValues( getKeysAsQueryValues( contentKeys ), CONTENTKEY_FIELDNAME );
     }
+
+    private FilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )
+    {
+        return buildTermsFilterForValues( getKeysAsQueryValues( keys ), CATEGORY_KEY_FIELDNAME );
+    }
+
 
     private FilterBuilder buildCategoryAccessTypeFilter( final Collection<CategoryAccessType> categoryAccessTypeFilter,
                                                          ContentIndexQuery.CategoryAccessTypeFilterPolicy policy,
@@ -269,37 +270,46 @@ public class FilterQueryBuilderFactory
 
     private FilterBuilder buildSectionFilter( ContentIndexQuery query )
     {
-        if ( query.isApprovedSectionContentOnly() )
-        {
-            return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName(),
-                                           getSectionKeysAsList( query.getSectionFilter() ).toArray() );
-        }
-        else if ( query.isUnapprovedSectionContentOnly() )
-        {
-            return new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysUnapprovedQueryFieldName(),
-                                           getSectionKeysAsList( query.getSectionFilter() ).toArray() );
-        }
-        else
-        {
-            BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
-            boolFilterBuilder.should( new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName(),
-                                                              getSectionKeysAsList( query.getSectionFilter() ).toArray() ) );
-            boolFilterBuilder.should( new TermsFilterBuilder( QueryFieldNameResolver.getSectionKeysUnapprovedQueryFieldName(),
-                                                              getSectionKeysAsList( query.getSectionFilter() ).toArray() ) );
+        final Set<QueryValue> keysAsQueryValues = getSectionKeysAsList( query.getSectionFilter() );
 
-            return boolFilterBuilder;
+        final boolean buildBothApprovedAndUnapproved = !query.isApprovedSectionContentOnly() && !query.isUnapprovedSectionContentOnly();
+        if ( buildBothApprovedAndUnapproved )
+        {
+            return buildBothApprovedAndUnapprovedSectionFilter( keysAsQueryValues );
         }
+
+        String fieldName = query.isApprovedSectionContentOnly() ? CONTENTLOCATION_APPROVED_FIELDNAME : CONTENTLOCATION_UNAPPROVED_FIELDNAME;
+
+        return buildTermsFilterForValues( keysAsQueryValues, fieldName );
     }
+
+    private FilterBuilder buildBothApprovedAndUnapprovedSectionFilter( final Set<QueryValue> keysAsQueryValues )
+    {
+        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+
+        boolFilterBuilder.should( buildTermsFilterForValues( keysAsQueryValues, CONTENTLOCATION_APPROVED_FIELDNAME ) );
+        boolFilterBuilder.should( buildTermsFilterForValues( keysAsQueryValues, CONTENTLOCATION_UNAPPROVED_FIELDNAME ) );
+
+        return boolFilterBuilder;
+    }
+
+    private FilterBuilder buildTermsFilterForValues( final Set<QueryValue> keysAsQueryValues, final String fieldName )
+    {
+        final QueryFieldAndMultiValue queryFieldAndMultiValue = new QueryFieldAndMultiValue( fieldName, keysAsQueryValues );
+
+        return new TermsFilterBuilder( queryFieldAndMultiValue.getFieldName(), queryFieldAndMultiValue.getValues() );
+    }
+
 
     private FilterBuilder buildAllSectionsFilter( ContentIndexQuery query )
     {
         if ( query.isApprovedSectionContentOnly() )
         {
-            return FilterBuilders.existsFilter( QueryFieldNameResolver.getSectionKeysApprovedQueryFieldName() );
+            return FilterBuilders.existsFilter( CONTENTLOCATION_APPROVED_FIELDNAME );
         }
         else if ( query.isUnapprovedSectionContentOnly() )
         {
-            return FilterBuilders.existsFilter( QueryFieldNameResolver.getSectionKeysUnapprovedQueryFieldName() );
+            return FilterBuilders.existsFilter( CONTENTLOCATION_UNAPPROVED_FIELDNAME );
         }
         else
         {
@@ -307,34 +317,29 @@ public class FilterQueryBuilderFactory
         }
     }
 
-    private TermsFilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )
+    private <T> Set<QueryValue> getKeysAsQueryValues( Collection<T> keys )
     {
-        return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryKeyQueryFieldName(), getKeysAsList( keys ).toArray() );
-    }
-
-    private <T> List<Integer> getKeysAsList( Collection<T> keys )
-    {
-        List<Integer> keysAsStringList = new ArrayList<Integer>();
+        Set<QueryValue> queryValues = Sets.newHashSet();
 
         for ( T key : keys )
         {
-            keysAsStringList.add( new Integer( key.toString() ) );
+            queryValues.add( new QueryValue( key.toString() ) );
         }
 
-        return keysAsStringList;
+        return queryValues;
 
     }
 
-    private List<Integer> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
+
+    private Set<QueryValue> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
     {
-        List<Integer> menuItemKeysAsString = new ArrayList<Integer>();
+        Set<QueryValue> menuItemKeysAsString = Sets.newHashSet();
 
         for ( MenuItemEntity entity : menuItemEntities )
         {
-            menuItemKeysAsString.add( entity.getKey().toInt() );
+            menuItemKeysAsString.add( new QueryValue( entity.getKey().toString() ) );
         }
 
         return menuItemKeysAsString;
     }
-
 }

@@ -46,11 +46,6 @@ public class QueryField
         return fieldName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.DATE.toString();
     }
 
-    public void setPath( String path )
-    {
-        this.fieldName = path;
-    }
-
     public boolean doBuildAsIdQuery()
     {
         return renderAsIdQuery;

@@ -66,15 +66,15 @@ public class QueryTranslatorTest_not_in
             "        \"bool\" : {\n" +
             "          \"should\" : [ {\n" +
             "            \"term\" : {\n" +
-            "              \"myIntField\" : 1.0\n" +
+            "              \"myintfield.number\" : 1.0\n" +
             "            }\n" +
             "          }, {\n" +
             "            \"term\" : {\n" +
-            "              \"myIntField\" : 2.0\n" +
+            "              \"myintfield.number\" : 2.0\n" +
             "            }\n" +
             "          }, {\n" +
             "            \"term\" : {\n" +
-            "              \"myIntField\" : 3.0\n" +
+            "              \"myintfield.number\" : 3.0\n" +
             "            }\n" +
             "          } ]\n" +
             "        }\n" +

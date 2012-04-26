@@ -18,7 +18,7 @@ public class QueryTranslatorTest_range
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
+            "      \"key.number\" : {\n" +
             "        \"from\" : 100.0,\n" +
             "        \"to\" : null,\n" +
             "        \"include_lower\" : false,\n" +
@@ -41,7 +41,7 @@ public class QueryTranslatorTest_range
     {
         String expected_search_result =
             "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
-                "    \"range\" : {\r\n" + "      \"key\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
+                "    \"range\" : {\r\n" + "      \"key.number\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
                 "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
                 "  }\r\n}";
 

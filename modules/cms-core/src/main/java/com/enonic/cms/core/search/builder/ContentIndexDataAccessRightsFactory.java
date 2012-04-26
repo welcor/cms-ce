@@ -17,7 +17,7 @@ import com.enonic.cms.core.security.group.GroupKey;
 
 
 public class ContentIndexDataAccessRightsFactory
-    extends AbstractIndexDataFactory
+    extends IndexFieldNameConstants
 {
 
     public void create( final ContentIndexData contentIndexData, final Collection<ContentAccessEntity> contentAccessRights,

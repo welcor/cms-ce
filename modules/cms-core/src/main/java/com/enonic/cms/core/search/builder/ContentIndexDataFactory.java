@@ -23,7 +23,7 @@ import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupKey;
 
 public final class ContentIndexDataFactory
-    extends AbstractIndexDataFactory
+    extends IndexFieldNameConstants
 {
     private final ContentIndexDataCustomDataFactory customDataFactory = new ContentIndexDataCustomDataFactory();
 

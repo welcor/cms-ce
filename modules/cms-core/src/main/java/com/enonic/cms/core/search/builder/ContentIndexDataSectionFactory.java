@@ -15,7 +15,7 @@ import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
  * Time: 1:49 PM
  */
 public class ContentIndexDataSectionFactory
-    extends AbstractIndexDataFactory
+    extends IndexFieldNameConstants
 {
 
     public void create( final ContentIndexData contentIndexData, final ContentLocations contentLocations )

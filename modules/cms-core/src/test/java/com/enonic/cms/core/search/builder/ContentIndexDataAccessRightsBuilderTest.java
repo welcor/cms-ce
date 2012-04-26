@@ -12,7 +12,8 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
-import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
@@ -42,7 +43,7 @@ public class ContentIndexDataAccessRightsBuilderTest
         contentAccessRights.add( accessRight4 );
 
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
-        accessRightsBuilder.build( contentIndexData, contentAccessRights, Collections.<GroupKey, CategoryAccessEntity>emptyMap() );
+        accessRightsBuilder.create( contentIndexData, contentAccessRights, Collections.<GroupKey, CategoryAccessEntity>emptyMap() );
         final String jsonString = contentIndexData.getContentDataAsJsonString();
 
         JSONObject resultObject = new JSONObject( jsonString );
@@ -74,6 +75,17 @@ public class ContentIndexDataAccessRightsBuilderTest
         assertFalse( containsValue( updateAccessValues, "g4" ) );
     }
 
+
+    @Test
+    public void testCategoryAccessRightsFilter()
+        throws Exception
+    {
+        List<CategoryAccessEntity> categoryAccessRights = Lists.newArrayList();
+
+        // TODO: Mr Rodriguez to fixorino
+
+    }
+
     private ContentAccessEntity createContentAccessEntity( String contentKey, String groupKey, boolean readAccess, boolean updateAccess,
                                                            boolean deleteAccess )
     {
@@ -88,6 +100,12 @@ public class ContentIndexDataAccessRightsBuilderTest
         accessRights.setGroup( group );
 
         return accessRights;
+    }
+
+    private CategoryAccessEntity crateCategoryAccessEntity( CategoryKey categoryKey, String groupKey, boolean readAccess,
+                                                            boolean updateAccess, boolean deleteAccess )
+    {
+        return null;
     }
 
     private boolean containsValue( JSONArray valueArray, String stringValue )

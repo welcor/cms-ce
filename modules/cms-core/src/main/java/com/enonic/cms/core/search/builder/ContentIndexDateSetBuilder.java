@@ -15,12 +15,6 @@ public class ContentIndexDateSetBuilder
 
     private final static Logger LOG = Logger.getLogger( ContentIndexDateSetBuilder.class.getName() );
 
-    //private static String dateFormat = "dd.MM.yyyy";
-
-    //private static String dateFormatWithTime = "dd.MM.yyyy HH:mm";
-
-    //private static String dateFormatWithTimeSeconds = "dd.MM.yyyy HH:mm:ss";
-
     private static String isoDateFormatNoTime = "yyyy-MM-dd";
 
     private static String isoDateFormatWithTime = "yyyy-MM-dd HH:mm:ss";
@@ -45,7 +39,5 @@ public class ContentIndexDateSetBuilder
         }
 
         return dateValues;
-
     }
-
 }

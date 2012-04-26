@@ -14,6 +14,9 @@ import org.junit.Test;
 
 import com.google.common.collect.Sets;
 
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexDataElement;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexDataFieldValue;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;

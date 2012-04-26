@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;

@@ -35,7 +35,7 @@ import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
-import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.IndexValueQueryTranslator;
 import com.enonic.cms.core.search.query.QueryTranslator;

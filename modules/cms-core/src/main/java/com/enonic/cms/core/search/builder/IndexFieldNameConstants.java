@@ -14,7 +14,9 @@ public class IndexFieldNameConstants
 
     public static final String INDEX_FIELDNAME_PROPERTY_SEPARATOR = "_";
 
-    public static final String QUERY_LANGUAGE_PROPERTY_SEPARATOR = "/";
+    public static final String QUERYLANGUAGE_PROPERTY_SEPARATOR = "/";
+
+    public static final String QUERYLANGUAGE_ATTRIBUTE_SEPARATOR = "@";
 
     public static final String INDEX_FIELD_TYPE_SEPARATOR = ".";
 

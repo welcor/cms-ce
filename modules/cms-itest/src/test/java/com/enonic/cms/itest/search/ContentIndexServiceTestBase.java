@@ -28,7 +28,6 @@ import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexMappingProvider;
 import com.enonic.cms.core.search.IndexType;
-import com.enonic.cms.core.search.builder.IndexFieldName;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -161,7 +160,7 @@ public abstract class ContentIndexServiceTestBase
 
         for ( UserDefinedField field : userDefinedFields )
         {
-            final String indexFieldName = new IndexFieldName( field.getName() ).getFieldName();
+            final String indexFieldName = field.getName();
             final SearchHitField hitField = hitFieldMap.get( indexFieldName );
 
             assertNotNull( "Could not find field in index: " + indexFieldName, hitField );

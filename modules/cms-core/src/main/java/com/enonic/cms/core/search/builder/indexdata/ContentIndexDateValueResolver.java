@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.index;
+package com.enonic.cms.core.search.builder.indexdata;
 
 import java.util.Date;
 
@@ -10,6 +10,11 @@ public class ContentIndexDateValueResolver
 {
     public static Date resolveDateValue( Object value )
     {
+        if ( value == null )
+        {
+            return null;
+        }
+
         ReadableDateTime date = ValueConverter.toDate( value.toString() );
 
         if ( date == null )

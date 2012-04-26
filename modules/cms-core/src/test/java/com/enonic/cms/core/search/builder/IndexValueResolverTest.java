@@ -3,13 +3,9 @@ package com.enonic.cms.core.search.builder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
-
-import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
@@ -159,20 +155,6 @@ public class IndexValueResolverTest
 
         result = IndexValueResolver.toValue( new ValueExpr( new Long( "123" ) ) );
         assertTrue( result instanceof Long );
-    }
-
-    @Test
-    public void getNormalizedStringValues()
-    {
-
-        Set<String> myTestSet = Sets.newHashSet( "A", "b", "C", "d" );
-
-        final String[] normalizedStringValues = IndexValueResolver.getNormalizedStringValues( myTestSet );
-
-        final HashSet<String> normalizedStrings = Sets.newHashSet( normalizedStringValues );
-
-        assertTrue( normalizedStrings.contains( "a" ) && normalizedStrings.contains( "b" ) && normalizedStrings.contains( "c" ) &&
-                        normalizedStrings.contains( "d" ) );
     }
 
 

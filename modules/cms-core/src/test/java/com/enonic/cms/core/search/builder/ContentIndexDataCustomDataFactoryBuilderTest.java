@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -38,7 +38,7 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "4" ) ) );
 
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
-        customDataBuilder.build( contentIndexData, userDefinedFields );
+        customDataBuilder.create( contentIndexData, userDefinedFields );
 
         final String jsonString = contentIndexData.getContentDataAsJsonString();
 
@@ -71,7 +71,7 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "5" ) ) );
 
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
-        customDataBuilder.build( contentIndexData, userDefinedFields );
+        customDataBuilder.create( contentIndexData, userDefinedFields );
 
         final String jsonString = contentIndexData.getContentDataAsJsonString();
 
@@ -107,7 +107,7 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test", new SimpleText( "2" ) ) );
 
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
-        customDataBuilder.build( contentIndexData, userDefinedFields );
+        customDataBuilder.create( contentIndexData, userDefinedFields );
 
         final String jsonString = contentIndexData.getContentDataAsJsonString();
 
@@ -142,7 +142,7 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         userDefinedFields.add( new UserDefinedField( "test5", new SimpleText( "5" ) ) );
 
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
-        customDataBuilder.build( contentIndexData, userDefinedFields );
+        customDataBuilder.create( contentIndexData, userDefinedFields );
 
         final String jsonString = contentIndexData.getContentDataAsJsonString();
 

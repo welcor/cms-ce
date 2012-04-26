@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +21,7 @@ public class ContentIndexDataCustomDataFactory
     extends AbstractIndexDataFactory
 {
 
-    public void build( final ContentIndexData contentIndexData, final Collection<UserDefinedField> userDefinedFields )
+    public void create( final ContentIndexData contentIndexData, final Collection<UserDefinedField> userDefinedFields )
     {
         Set<String> allUserdataValue = new HashSet<String>();
 
@@ -39,7 +39,7 @@ public class ContentIndexDataCustomDataFactory
             // TODO Optimize this after refactoring
             Set<String> values = getAllValuesForFieldName( fieldName, userDefinedFields );
 
-            contentIndexData.addContentData( IndexFieldNameResolver.normalizeFieldName( fieldName ), values );
+            contentIndexData.addContentData( fieldName, values );
 
             allUserdataValue.addAll( values );
 

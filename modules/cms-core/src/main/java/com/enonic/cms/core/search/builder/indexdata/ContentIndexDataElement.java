@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.index;
+package com.enonic.cms.core.search.builder.indexdata;
 
 import java.util.Date;
 import java.util.Set;
@@ -98,9 +98,32 @@ public class ContentIndexDataElement
 
     private String doNormalizeString( final String stringValue )
     {
-        return StringUtils.lowerCase( stringValue );
+        if ( StringUtils.isBlank( stringValue ) )
+        {
+            return "";
+        }
+
+        String normalized = replaceSeparators( stringValue );
+        normalized = replaceFieldTypeSeparators( normalized );
+        normalized = removeAttributeSeparator( normalized );
+
+        return normalized.toLowerCase();
     }
 
+    private String replaceSeparators( final String stringValue )
+    {
+        return StringUtils.replace( stringValue, QUERYLANGUAGE_PROPERTY_SEPARATOR, INDEX_FIELDNAME_PROPERTY_SEPARATOR );
+    }
+
+    private String replaceFieldTypeSeparators( final String stringValue )
+    {
+        return StringUtils.replace( stringValue, INDEX_FIELD_TYPE_SEPARATOR, INDEX_FIELDNAME_PROPERTY_SEPARATOR );
+    }
+
+    private String removeAttributeSeparator( final String stringValue )
+    {
+        return StringUtils.remove( stringValue, "@" );
+    }
 
     public Set<ContentIndexDataFieldValue> getAllFieldValuesForElement()
     {

@@ -1,13 +1,9 @@
 package com.enonic.cms.core.search.builder;
 
-import java.util.Collection;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.util.NumericUtils;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
@@ -115,24 +111,4 @@ public final class IndexValueResolver
 
         return orderValue;
     }
-
-    public static String normalizeValue( final String value )
-    {
-        if ( StringUtils.isBlank( value ) )
-        {
-            return "";
-        }
-
-        return value.trim().toLowerCase();
-    }
-
-    public static String[] getNormalizedStringValues( Set<String> values )
-    {
-
-        final Collection<String> lowerCased = Collections2.transform( values, lowerCaseFunction );
-
-        return lowerCased.toArray( new String[lowerCased.size()] );
-    }
-
-
 }

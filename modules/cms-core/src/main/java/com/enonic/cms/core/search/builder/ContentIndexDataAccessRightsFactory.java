@@ -12,7 +12,7 @@ import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
-import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupKey;
 
 
@@ -20,8 +20,8 @@ public class ContentIndexDataAccessRightsFactory
     extends AbstractIndexDataFactory
 {
 
-    public void build( final ContentIndexData contentIndexData, final Collection<ContentAccessEntity> contentAccessRights,
-                       Map<GroupKey, CategoryAccessEntity> categoryAccessRights )
+    public void create( final ContentIndexData contentIndexData, final Collection<ContentAccessEntity> contentAccessRights,
+                        Map<GroupKey, CategoryAccessEntity> categoryAccessRights )
     {
 
         if ( contentAccessRights == null || contentAccessRights.isEmpty() )

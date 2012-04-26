@@ -19,17 +19,17 @@ import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.search.index.ContentIndexData;
+import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupKey;
 
 public final class ContentIndexDataFactory
     extends AbstractIndexDataFactory
 {
-    private final ContentIndexDataCustomDataFactory customDataBuilder = new ContentIndexDataCustomDataFactory();
+    private final ContentIndexDataCustomDataFactory customDataFactory = new ContentIndexDataCustomDataFactory();
 
-    private final ContentIndexDataSectionFactory sectionBuilder = new ContentIndexDataSectionFactory();
+    private final ContentIndexDataSectionFactory sectionFactory = new ContentIndexDataSectionFactory();
 
-    private final ContentIndexDataAccessRightsFactory accessRightsBuilder = new ContentIndexDataAccessRightsFactory();
+    private final ContentIndexDataAccessRightsFactory accessRightsFactory = new ContentIndexDataAccessRightsFactory();
 
     public ContentIndexData create( ContentDocument content, boolean skipAttachments )
     {
@@ -65,21 +65,6 @@ public final class ContentIndexDataFactory
         }
 
         return contentIndexData;
-    }
-
-    private XContentBuilder createContentData( ContentDocument content )
-        throws Exception
-    {
-
-        // addMetadata( builder, content );
-        // addCategory( content, builder );
-        // addContentType( content, builder );
-        // addSections( content, builder );
-        // addCustomData( content, builder );
-        // addAccessRights( content, builder );
-
-        // return builder;
-        return null;
     }
 
     private void addMetaData( ContentIndexData contentIndexData, ContentDocument content )
@@ -150,7 +135,7 @@ public final class ContentIndexDataFactory
 
     private void addSections( final ContentIndexData contentIndexData, final ContentDocument content )
     {
-        sectionBuilder.build( contentIndexData, content.getContentLocations() );
+        sectionFactory.create( contentIndexData, content.getContentLocations() );
     }
 
     private void addAccessRights( final ContentIndexData contentIndexData, ContentDocument contentDocument )
@@ -162,7 +147,7 @@ public final class ContentIndexDataFactory
         final Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
         if ( !accessRights.isEmpty() )
         {
-            accessRightsBuilder.build( contentIndexData, accessRights, categoryAccessRights );
+            accessRightsFactory.create( contentIndexData, accessRights, categoryAccessRights );
         }
     }
 
@@ -171,7 +156,7 @@ public final class ContentIndexDataFactory
         Collection<UserDefinedField> userDefinedFields = contentDocument.getUserDefinedFields();
         if ( !userDefinedFields.isEmpty() )
         {
-            customDataBuilder.build( contentIndexData, userDefinedFields );
+            customDataFactory.create( contentIndexData, userDefinedFields );
         }
     }
 

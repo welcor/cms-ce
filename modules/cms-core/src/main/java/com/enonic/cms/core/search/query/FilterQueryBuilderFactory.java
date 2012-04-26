@@ -165,10 +165,15 @@ public class FilterQueryBuilderFactory
     private FilterBuilder buildContentPublishedAtFilter( final DateTime dateTime )
     {
         final ReadableDateTime dateTimeRoundedDownToNearestMinute = toUTCTimeZone( dateTime.minuteOfHour().roundFloorCopy() );
-        final RangeFilterBuilder publishFromFilter = FilterBuilders.rangeFilter( "publishfrom" ).lte( dateTimeRoundedDownToNearestMinute );
+        final RangeFilterBuilder publishFromFilter =
+            FilterBuilders.rangeFilter( QueryFieldResolver.resolveQueryField( PUBLISH_FROM_FIELDNAME ).getFieldNameForDateQueries() ).lte(
+                dateTimeRoundedDownToNearestMinute );
 
-        final MissingFilterBuilder publishToMissing = FilterBuilders.missingFilter( "publishto" );
-        final RangeFilterBuilder publishToGTDate = FilterBuilders.rangeFilter( "publishto" ).gt( dateTimeRoundedDownToNearestMinute );
+        final MissingFilterBuilder publishToMissing =
+            FilterBuilders.missingFilter( QueryFieldResolver.resolveQueryField( PUBLISH_TO_FIELDNAME ).getFieldNameForDateQueries() );
+        final RangeFilterBuilder publishToGTDate =
+            FilterBuilders.rangeFilter( QueryFieldResolver.resolveQueryField( PUBLISH_TO_FIELDNAME ).getFieldNameForDateQueries() ).gt(
+                dateTimeRoundedDownToNearestMinute );
         final OrFilterBuilder publishToFilter = FilterBuilders.orFilter( publishToMissing, publishToGTDate );
 
         final AndFilterBuilder filter = FilterBuilders.andFilter( publishFromFilter, publishToFilter );

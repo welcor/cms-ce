@@ -1,5 +1,7 @@
 package com.enonic.cms.core.search.builder;
 
+import com.enonic.cms.core.content.index.config.IndexFieldType;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
@@ -18,9 +20,13 @@ public class IndexFieldNameConstants
 
     public static final String ALL_USERDATA_FIELDNAME = "_all_userdata";
 
-    public static final String PUBLISH_FROM_FIELDNAME = "publishFrom";
+    public static final String ALL_USERDATA_FIELDNAME_DATE = ALL_USERDATA_FIELDNAME + "." + IndexFieldType.DATE.toString();
 
-    public static final String PUBLISH_TO_FIELDNAME = "publishTo";
+    public static final String ALL_USERDATA_FIELDNAME_NUMBER = ALL_USERDATA_FIELDNAME + "." + IndexFieldType.NUMBER.toString();
+
+    public static final String PUBLISH_FROM_FIELDNAME = "publishfrom";
+
+    public static final String PUBLISH_TO_FIELDNAME = "publishto";
 
     public static final String TIMESTAMP_FIELDNAME = "timestamp";
 
@@ -28,7 +34,7 @@ public class IndexFieldNameConstants
 
     public static final String PRIORITY_FIELDNAME = "priority";
 
-    public static final String ASSIGNMENT_DUE_DATE_FIELDNAME = "assignmentDueDate";
+    public static final String ASSIGNMENT_DUE_DATE_FIELDNAME = "assignmentduedate";
 
     public static final String OWNER_FIELDNAME = "owner";
 

@@ -249,18 +249,29 @@
 
             function setReadOnly()
             {
-              var form = document.forms['formAdmin'];
-              var formElements = form.elements;
-              var elementsLn = formElements.length;
+                var form = document.forms['formAdmin'];
+                var formElements = form.elements;
 
-              for ( var i = 0; i &lt; elementsLn; i++ )
-              {
-                // NB: Display name must always be writeable
-                if ( formElements[i].id != 'avbryt' &amp;&amp; formElements[i].id != 'display_name' )
+                for ( var i = 0; i &lt; formElements.length; i++ )
                 {
-                  formElements[i].readOnly = true;
+                    var element = formElements[i];
+                    var isInputElement = element.type !== 'fieldset' &amp;&amp; element.type !== 'button' &amp;&amp; element.id !== 'display_name';
+
+                    if ( isInputElement )
+                    {
+                        var isSelectElement = element.tagName.toLowerCase() === 'select';
+
+                        // Disable select elements. It's ok as the server handles elements that are null.
+                        if ( isSelectElement )
+                        {
+                            element.disabled = true;
+                        }
+                        else
+                        {
+                            element.readOnly = true;
+                        }
+                    }
                 }
-              }
             }
             // -----------------------------------------------------------------------------------------------------------------------------
 

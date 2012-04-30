@@ -59,15 +59,15 @@ public class ContentIndexDataAccessRightsFactory
         {
             CategoryAccessEntity categoryAccess = categoryAccessRights.get( categoryAccessGroup );
             final String groupKey = categoryAccessGroup.toString();
-            if ( categoryAccess.isAdminBrowseAccess() )
+            if ( categoryAccess.givesAdminBrowse() )
             {
                 browseAccess.add( groupKey );
             }
-            if ( categoryAccess.isPublishAccess() )
+            if ( categoryAccess.givesApprove() )
             {
                 approveAccess.add( groupKey );
             }
-            if ( categoryAccess.isAdminAccess() )
+            if ( categoryAccess.givesAdministrate() )
             {
                 administrateAccess.add( groupKey );
             }

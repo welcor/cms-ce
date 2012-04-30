@@ -2,17 +2,18 @@ package com.enonic.cms.core.search.builder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
-import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
@@ -78,16 +79,85 @@ public class ContentIndexDataAccessRightsBuilderTest
 
     @Test
     public void testCategoryAccessRightsFilter()
-        throws Exception
+            throws Exception
     {
-        List<CategoryAccessEntity> categoryAccessRights = Lists.newArrayList();
+        final List<ContentAccessEntity> contentAccessRights = Lists.newArrayList();
+        ContentAccessEntity contentAccessRights1 = createContentAccessEntity( "c", "g1", false, false, false );
+        ContentAccessEntity contentAccessRights2 = createContentAccessEntity( "c", "g2", false, false, false );
+        ContentAccessEntity contentAccessRights3 = createContentAccessEntity( "c", "g3", false, false, false );
+        ContentAccessEntity contentAccessRights4 = createContentAccessEntity( "c", "g4", false, false, false );
 
-        // TODO: Mr Rodriguez to fixorino
+        contentAccessRights.add( contentAccessRights1 );
+        contentAccessRights.add( contentAccessRights2 );
+        contentAccessRights.add( contentAccessRights3 );
+        contentAccessRights.add( contentAccessRights4 );
 
+        final Map<GroupKey, CategoryAccessEntity> categoryAccessRights = Maps.newHashMap();
+
+        CategoryAccessEntity catAccessAdmin = crateCategoryAccessEntity( "g1", false, false, false, false, true );
+        CategoryAccessEntity catAccessRead = crateCategoryAccessEntity( "g2", true, false, false, false, false );
+        CategoryAccessEntity catAccessReadBrowsePublish = crateCategoryAccessEntity( "g3", true, true, true, false, false );
+        CategoryAccessEntity catAccessReadCreate = crateCategoryAccessEntity( "g4", true, false, false, true, false );
+        CategoryAccessEntity catAccessNoRights = crateCategoryAccessEntity( "g5", false, false, false, false, false );
+        CategoryAccessEntity catAccessReadPublish = crateCategoryAccessEntity( "g6", true, false, true, false, false );
+
+        final CategoryAccessEntity[] categoryAccessEntities =
+                {catAccessAdmin, catAccessRead, catAccessReadBrowsePublish, catAccessReadCreate,
+                        catAccessNoRights, catAccessReadPublish};
+        for ( CategoryAccessEntity cae : categoryAccessEntities )
+        {
+            categoryAccessRights.put( cae.getGroup().getGroupKey(), cae );
+        }
+
+        final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
+
+        accessRightsBuilder.create( contentIndexData, contentAccessRights, categoryAccessRights );
+        final String jsonString = contentIndexData.getContentDataAsJsonString();
+
+        final JSONObject resultObject = new JSONObject( jsonString );
+
+        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME ) );
+        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME ) );
+        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME ) );
+
+        final JSONArray administrateAccessValues =
+                resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME );
+        final JSONArray approveAccessValues =
+                resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME );
+        final JSONArray browseAccessValues =
+                resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME );
+
+        assertEquals( administrateAccessValues.length(), 1 );
+        assertEquals( approveAccessValues.length(), 3 );
+        assertEquals( browseAccessValues.length(), 2 );
+
+        assertTrue( containsValue( administrateAccessValues, "g1" ) );
+        assertTrue( containsValue( approveAccessValues, "g1" ) );
+        assertTrue( containsValue( browseAccessValues, "g1" ) );
+
+        assertFalse( containsValue( administrateAccessValues, "g2" ) );
+        assertFalse( containsValue( approveAccessValues, "g2" ) );
+        assertFalse( containsValue( browseAccessValues, "g2" ) );
+
+        assertFalse( containsValue( administrateAccessValues, "g3" ) );
+        assertTrue( containsValue( approveAccessValues, "g3" ) );
+        assertTrue( containsValue( browseAccessValues, "g3" ) );
+
+        assertFalse( containsValue( administrateAccessValues, "g4" ) );
+        assertFalse( containsValue( approveAccessValues, "g4" ) );
+        assertFalse( containsValue( browseAccessValues, "g4" ) );
+
+        assertFalse( containsValue( administrateAccessValues, "g5" ) );
+        assertFalse( containsValue( approveAccessValues, "g5" ) );
+        assertFalse( containsValue( browseAccessValues, "g5" ) );
+
+        assertFalse( containsValue( administrateAccessValues, "g6" ) );
+        assertTrue( containsValue( approveAccessValues, "g6" ) );
+        assertFalse( containsValue( browseAccessValues, "g6" ) );
     }
 
-    private ContentAccessEntity createContentAccessEntity( String contentKey, String groupKey, boolean readAccess, boolean updateAccess,
-                                                           boolean deleteAccess )
+    private ContentAccessEntity createContentAccessEntity( String contentKey, String groupKey, boolean readAccess,
+                                                           boolean updateAccess, boolean deleteAccess )
     {
         final ContentAccessEntity accessRights = new ContentAccessEntity();
         accessRights.setKey( contentKey );
@@ -102,10 +172,21 @@ public class ContentIndexDataAccessRightsBuilderTest
         return accessRights;
     }
 
-    private CategoryAccessEntity crateCategoryAccessEntity( CategoryKey categoryKey, String groupKey, boolean readAccess,
-                                                            boolean updateAccess, boolean deleteAccess )
+    private CategoryAccessEntity crateCategoryAccessEntity( String groupKey, boolean readAccess,
+                                                            boolean adminBrowseAccess, boolean publishAccess,
+                                                            boolean createAccess, boolean adminAccess )
     {
-        return null;
+        final CategoryAccessEntity accessRights = new CategoryAccessEntity();
+        accessRights.setReadAccess( readAccess );
+        accessRights.setCreateAccess( createAccess );
+        accessRights.setAdminAccess( adminAccess );
+        accessRights.setAdminBrowseAccess( adminBrowseAccess );
+        accessRights.setPublishAccess( publishAccess );
+
+        final GroupEntity group = new GroupEntity();
+        group.setKey( new GroupKey( groupKey ) );
+        accessRights.setGroup( group );
+        return accessRights;
     }
 
     private boolean containsValue( JSONArray valueArray, String stringValue )

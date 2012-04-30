@@ -5,6 +5,7 @@
 package com.enonic.cms.core.content.imports;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStorer;
 import com.enonic.cms.core.content.command.UnassignContentCommand;
 import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
@@ -36,15 +38,20 @@ public class ImportServiceImpl
     @Autowired
     private ContentIndexService contentIndexService;
 
+    @Autowired
+    private IndexTransactionService indexTransactionService;
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     public boolean importData( ImportDataReader importDataReader, ImportJob importJob )
     {
+        indexTransactionService.startTransaction();
         return doimportData( importDataReader, importJob );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
     public boolean importDataWithoutRequiresNewPropagation( ImportDataReader importDataReader, ImportJob importJob )
     {
+        indexTransactionService.startTransaction();
         return doimportData( importDataReader, importJob );
     }
 
@@ -59,12 +66,41 @@ public class ImportServiceImpl
             RelatedContentFinder relatedContentFinder = new RelatedContentFinder( contentTypeDao, contentIndexService );
             contentImporter.setRelatedContentFinder( relatedContentFinder );
 
-            return contentImporter.importData();
+            final boolean result = contentImporter.importData();
+            updateIndex( importJob.getImportResult() );
+            return result;
         }
         finally
         {
             /* Clear all intances in first level cache since the transaction boundary doesn't (single session) */
             contentDao.getHibernateTemplate().clear();
+        }
+    }
+
+    private void updateIndex( ImportResult importResult )
+    {
+        final Map<ContentKey, String> updated = importResult.getUpdated();
+        for ( ContentKey contentKey : updated.keySet() )
+        {
+            indexTransactionService.updateContent( contentKey );
+        }
+
+        final Map<ContentKey, String> inserted = importResult.getInserted();
+        for ( ContentKey contentKey : inserted.keySet() )
+        {
+            indexTransactionService.updateContent( contentKey );
+        }
+
+        final Map<ContentKey, String> assigned = importResult.getAssigned();
+        for ( ContentKey contentKey : assigned.keySet() )
+        {
+            indexTransactionService.updateContent( contentKey );
+        }
+
+        final Map<ContentKey, String> deleted = importResult.getDeleted();
+        for ( ContentKey contentKey : deleted.keySet() )
+        {
+            indexTransactionService.deleteContent( contentKey );
         }
     }
 

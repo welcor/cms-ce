@@ -143,6 +143,8 @@ public class InternalClientImpl_getContentTest
             factory.createCategoryAccessForUser( "MyRelatedCategory", "content-creator", "read, create, approve, admin_browse" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyRelatedCategory", "content-querier", "read, admin_browse" ) );
 
+        fixture.flushIndexTransaction();
+
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "content-querier" ).getKey() );
 
         internalClient = new InternalClientImpl();
@@ -159,6 +161,7 @@ public class InternalClientImpl_getContentTest
     public void getContent()
     {
         ContentKey expectedContentKey = createPersonContent( "Test Dummy" );
+        fixture.flushIndexTransaction();
 
         DataSourceContext context = new DataSourceContext();
         context.setUser( fixture.findUserByName( "content-querier" ) );

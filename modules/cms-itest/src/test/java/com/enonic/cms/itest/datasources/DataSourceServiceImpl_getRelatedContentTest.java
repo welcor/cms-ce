@@ -107,6 +107,7 @@ public class DataSourceServiceImpl_getRelatedContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyOtherCategory", "content-querier", "read, admin_browse" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     @Test
@@ -141,6 +142,8 @@ public class DataSourceServiceImpl_getRelatedContentTest
         ContentKey grandMothersFather = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Grand mothers father", grandMother ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify content is created
         assertEquals( 9, fixture.countAllContent() );

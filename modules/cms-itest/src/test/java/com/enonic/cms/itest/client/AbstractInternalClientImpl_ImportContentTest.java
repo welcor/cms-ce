@@ -78,6 +78,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
 
         fixture.initSystemData();
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     protected void setupImport( final Document config )
@@ -92,6 +93,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser", "read, browse, create, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser2", "read, browse, create, approve" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     protected void setupImageCategory()

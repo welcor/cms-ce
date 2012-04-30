@@ -108,6 +108,7 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyOtherCategory", "content-querier", "read, admin_browse" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     @Test
@@ -124,6 +125,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey contentB = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Content B", commonChildContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that 2 content is created
         assertEquals( 3, fixture.countAllContent() );
@@ -173,6 +176,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );
@@ -224,6 +229,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );
@@ -277,6 +284,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );

@@ -51,6 +51,7 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryStatistics;
 import com.enonic.cms.core.content.category.CategoryXmlCreator;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.CategoryDao;
@@ -91,6 +92,10 @@ public class CategoryHandler
 
     @Autowired
     private CategoryDao categoryDao;
+
+    @Autowired
+    private IndexTransactionService indexTransactionService;
+
 
     public void init()
     {
@@ -405,6 +410,8 @@ public class CategoryHandler
         {
             // get the keys
             categoryKey = Integer.parseInt( root.getAttribute( "key" ) );
+            indexTransactionService.startTransaction();
+            indexTransactionService.updateCategory( new CategoryKey(categoryKey) );
             int unitKey = -1;
             String keyStr = root.getAttribute( "unitkey" );
             if ( keyStr.length() > 0 )

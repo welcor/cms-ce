@@ -124,8 +124,11 @@ public class InternalClientImpl_ImportContentCsvTest
     {
         final long count = 10L;
         setupImport( getConfigForStringBasedCSVImport() );
+        fixture.flushIndexTransaction();
         doImport( getStringBasedCSVImportData( count, "Oslo" ), "testuser", "MyImport" );
+        fixture.flushIndexTransaction();
         doImport( getStringBasedCSVImportData( count, null ), "testuser2", "MyImport2" );
+        fixture.flushIndexTransaction();
 
         List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
         assertEquals( count, contentKeys.size() );
@@ -137,6 +140,7 @@ public class InternalClientImpl_ImportContentCsvTest
         }
 
         doImport( getStringBasedCSVImportData( count, "Majorstua" ), "testuser", "MyImport" );
+        fixture.flushIndexTransaction();
 
         contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
         assertEquals( count, contentKeys.size() );
@@ -262,10 +266,13 @@ public class InternalClientImpl_ImportContentCsvTest
         final long count = 10L;
         setupImport( getConfigForCustomRelatedContentCSVImport() );
         setupRelatedContentCategory();
+        fixture.flushIndexTransaction();
         final ContentKey key1 = setupRelatedContent( "A" );
         final ContentKey key2 = setupRelatedContent( "B" );
         final ContentKey key3 = setupRelatedContent( "C" );
+        fixture.flushIndexTransaction();
         doImport( getRelatedContentCSVImportData( count, "A", "B", "C" ) );
+        fixture.flushIndexTransaction();
 
         final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
         assertEquals( count, contentKeys.size() );
@@ -298,10 +305,13 @@ public class InternalClientImpl_ImportContentCsvTest
         final long count = 10L;
         setupImport( getConfigForImageRelatedContentCSVImport() );
         setupImageCategory();
+        fixture.flushIndexTransaction();
         final ContentKey key1 = setupImage( "A" );
         final ContentKey key2 = setupImage( "B" );
         final ContentKey key3 = setupImage( "C" );
+        fixture.flushIndexTransaction();
         doImport( getRelatedContentCSVImportData( count, "A", "B", "C" ) );
+        fixture.flushIndexTransaction();
 
         final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
         assertEquals( count, contentKeys.size() );

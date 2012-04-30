@@ -87,6 +87,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "a-1", "a-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -107,6 +108,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         // setup
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -128,6 +130,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -150,6 +153,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -173,6 +177,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         final String orderBy = "title desc";

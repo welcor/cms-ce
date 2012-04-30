@@ -147,6 +147,16 @@ public final class IndexServiceImpl
     }
 
     @Override
+    public ContentDocument createContentDocument( ContentEntity content )
+    {
+        ContentDocument indexedDoc = insertStandardValues( content );
+        insertUserDefinedIndexValues( content, indexedDoc );
+
+        insertBinaryIndexValues( content, indexedDoc );
+        return indexedDoc;
+    }
+
+    @Override
     public void optimizeIndex()
     {
         contentIndexService.optimize();
@@ -165,10 +175,7 @@ public final class IndexServiceImpl
 
     private void doIndex( ContentEntity content, boolean deleteExisting )
     {
-        ContentDocument indexedDoc = insertStandardValues( content );
-        insertUserDefinedIndexValues( content, indexedDoc );
-
-        insertBinaryIndexValues( content, indexedDoc );
+        ContentDocument indexedDoc = createContentDocument( content );
         contentIndexService.index( indexedDoc, deleteExisting );
 
         contentDao.getHibernateTemplate().flush();

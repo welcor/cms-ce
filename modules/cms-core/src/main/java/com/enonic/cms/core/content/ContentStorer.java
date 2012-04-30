@@ -173,7 +173,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexService.index( newContent );
+//        indexService.index( newContent );
 
         flushPendingHibernateWork();
 
@@ -387,7 +387,7 @@ public class ContentStorer
 
         if ( result.isAnyChangesMade() )
         {
-            indexService.index( persistedContent );
+//            indexService.index( persistedContent );
         }
 
         flushPendingHibernateWork();
@@ -865,7 +865,7 @@ public class ContentStorer
 
         result.setNewAssignee( assignee );
 
-        indexService.index( content );
+//        indexService.index( content );
 
         return result;
     }
@@ -936,7 +936,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexService.index( content );
+//        indexService.index( content );
     }
 
     public UnassignContentResult unassignContent( UnassignContentCommand command )
@@ -967,7 +967,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexService.index( content );
+//        indexService.index( content );
 
         return result;
     }
@@ -1019,7 +1019,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexService.index( parentContent );
+//        indexService.index( parentContent );
 
         return result;
     }
@@ -1105,7 +1105,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexService.index( content );
+//        indexService.index( content );
     }
 
     public ContentKey copyContent( final UserEntity copier, final ContentEntity sourceContent, final CategoryEntity toCategory )
@@ -1191,7 +1191,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexService.index( newContent );
+//        indexService.index( newContent );
 
         flushPendingHibernateWork();
 
@@ -1340,7 +1340,7 @@ public class ContentStorer
         doDeleteContentHome( content );
         doDeleteSectionContent( content );
 
-        indexService.removeContent( content );
+//        indexService.removeContent( content );
     }
 
     private void doDeleteSectionContent( ContentEntity content )

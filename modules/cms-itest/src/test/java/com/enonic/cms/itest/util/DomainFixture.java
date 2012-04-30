@@ -32,6 +32,7 @@ import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.language.LanguageEntity;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
@@ -61,6 +62,9 @@ public class DomainFixture
 
     @Autowired
     private GroupDao groupDao;
+
+    @Autowired
+    private IndexTransactionService indexTransactionService;
 
     public DomainFixture()
     {
@@ -508,6 +512,14 @@ public class DomainFixture
     {
         hibernateTemplate.flush();
         hibernateTemplate.clear();
+    }
+
+    public void flushIndexTransaction()
+    {
+        if ( indexTransactionService.isActive() )
+        {
+            indexTransactionService.commit();
+        }
     }
 
     private List findByExample( Object example )

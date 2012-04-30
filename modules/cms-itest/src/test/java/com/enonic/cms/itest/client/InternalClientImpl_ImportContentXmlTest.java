@@ -457,7 +457,10 @@ public class InternalClientImpl_ImportContentXmlTest
         final ContentKey key1 = setupRelatedContent( "A" );
         final ContentKey key2 = setupRelatedContent( "B" );
         final ContentKey key3 = setupRelatedContent( "C" );
+        fixture.flushIndexTransaction();
         doImport( getRelatedContentXmlImportData( count, "A", "B", "C" ) );
+
+        fixture.flushIndexTransaction();
 
         final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
         assertEquals( count, contentKeys.size() );
@@ -489,11 +492,15 @@ public class InternalClientImpl_ImportContentXmlTest
     {
         final long count = 10L;
         setupImport( getConfigForImageRelatedContentXmlImport() );
+        fixture.flushIndexTransaction();
         setupImageCategory();
         final ContentKey key1 = setupImage( "A" );
         final ContentKey key2 = setupImage( "B" );
         final ContentKey key3 = setupImage( "C" );
+        fixture.flushIndexTransaction();
         doImport( getRelatedContentXmlImportData( count, "A", "B", "C" ) );
+
+        fixture.flushIndexTransaction();
 
         final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
         assertEquals( count, contentKeys.size() );

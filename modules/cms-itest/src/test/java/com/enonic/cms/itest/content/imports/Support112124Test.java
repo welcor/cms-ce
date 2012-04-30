@@ -93,7 +93,7 @@ public class Support112124Test
         throws IOException
     {
         ImportResult result = doImport( "Kontakt", "SRKontaktListeImport", "kontakter.xml" );
-
+        fixture.flushIndexTransaction();
         // verify
         assertEquals( 4, result.getInserted().size() );
         assertEquals( 4, fixture.countAllContent() );
@@ -105,6 +105,7 @@ public class Support112124Test
 
         // import 1 pass
         result = doImport( "Statistikk", "SRImport", "statistikk.xml" );
+        fixture.flushIndexTransaction();
         assertEquals( 1, result.getInserted().size() );
         assertEquals( 0, result.getUpdated().size() );
         assertEquals( 5, fixture.countAllContent() );
@@ -116,6 +117,7 @@ public class Support112124Test
 
         // reimport the same
         result = doImport( "Statistikk", "SRImport", "statistikk.xml" );
+        fixture.flushIndexTransaction();
         assertEquals( 1, result.getSkipped().size() );
         assertEquals( 5, fixture.countAllContent() );
         assertEquals( 1, fixture.countContentVersionsByTitle( "Veitrafikkulykker" ) );

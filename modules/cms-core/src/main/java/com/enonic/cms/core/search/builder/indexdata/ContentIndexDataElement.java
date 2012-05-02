@@ -5,12 +5,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.ReadableDateTime;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.index.config.IndexFieldType;
+import com.enonic.cms.core.search.ElasticSearchUtils;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 public class ContentIndexDataElement
@@ -43,7 +42,7 @@ public class ContentIndexDataElement
         else
         {
             // TODO: FIX ORDERBY
-            this.orderBy = ContentIndexOrderbyResolver.resolveOrderbyValue( values );
+            this.orderBy = ContentIndexOrderbyValueResolver.resolveOrderbyValue( values );
         }
 
         for ( final Object value : values )
@@ -61,7 +60,7 @@ public class ContentIndexDataElement
             else if ( value instanceof Date )
             {
                 dateTimeValues.add( (Date) value );
-                stringValues.add( formatDateForElasticSearch( new DateTime( value ) ) );
+                stringValues.add( ElasticSearchUtils.formatDateForElasticSearch( new DateTime( value ) ) );
             }
             else
             {
@@ -87,12 +86,6 @@ public class ContentIndexDataElement
                 dateTimeValues.add( dateValue );
             }
         }
-    }
-
-
-    private String formatDateForElasticSearch( final ReadableDateTime date )
-    {
-        return ISODateTimeFormat.dateTime().withZoneUTC().print( date ).toLowerCase();
     }
 
 

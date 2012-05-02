@@ -1,7 +1,6 @@
 package com.enonic.cms.core.search.builder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.util.NumericUtils;
 
 import com.google.common.base.Function;
 
@@ -81,34 +80,5 @@ public final class IndexValueResolver
         return toValues( (Expression) expr.evaluate( eval ) );
     }
 
-    public static String getOrderValueForNumber( Number value )
-    {
-        if ( value == null )
-        {
-            return null;
-        }
 
-        String orderValue;
-
-        if ( value instanceof Double )
-        {
-            orderValue = NumericUtils.doubleToPrefixCoded( value.doubleValue() );
-        }
-
-        else if ( value instanceof Float )
-        {
-            orderValue = NumericUtils.floatToPrefixCoded( value.floatValue() );
-        }
-
-        else if ( value instanceof Long )
-        {
-            orderValue = NumericUtils.longToPrefixCoded( value.longValue() );
-        }
-        else
-        {
-            orderValue = NumericUtils.intToPrefixCoded( value.intValue() );
-        }
-
-        return orderValue;
-    }
 }

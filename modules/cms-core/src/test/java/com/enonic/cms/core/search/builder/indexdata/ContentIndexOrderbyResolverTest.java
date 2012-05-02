@@ -9,7 +9,7 @@ public class ContentIndexOrderbyResolverTest
     @Test
     public void testNullValues()
     {
-        assertNull( ContentIndexOrderbyResolver.resolveOrderbyValue( null ) );
+        assertNull( ContentIndexOrderbyValueResolver.resolveOrderbyValue( null ) );
 
     }
 

@@ -1,6 +1,5 @@
 package com.enonic.cms.core.search.query;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -10,19 +9,7 @@ public class QueryFieldAndMultiValue
 {
     private final Set<QueryValue> queryValues = Sets.newHashSet();
 
-    public QueryFieldAndMultiValue( final QueryField queryField, final QueryValue[] queryValues )
-    {
-        super( queryField );
-
-        this.queryValues.addAll( Arrays.asList( queryValues ) );
-    }
-
-    public QueryFieldAndMultiValue( final QueryField queryField, final Set<QueryValue> queryValues )
-    {
-        super( queryField );
-
-        this.queryValues.addAll( queryValues );
-    }
+    private Boolean isEmpty;
 
     public QueryFieldAndMultiValue( final String fieldName, final Set<QueryValue> queryValues )
     {
@@ -30,7 +17,6 @@ public class QueryFieldAndMultiValue
 
         this.queryValues.addAll( queryValues );
     }
-
 
     public Object[] getValues()
     {
@@ -40,7 +26,10 @@ public class QueryFieldAndMultiValue
         {
             for ( QueryValue value : queryValues )
             {
-                values.add( value.getNumericValue() );
+                if ( !value.isEmpty() )
+                {
+                    values.add( value.getNumericValue() );
+                }
             }
 
         }
@@ -48,14 +37,20 @@ public class QueryFieldAndMultiValue
         {
             for ( QueryValue value : queryValues )
             {
-                values.add( value.getDateTime() );
+                if ( !value.isEmpty() )
+                {
+                    values.add( value.getDateTime() );
+                }
             }
         }
         else
         {
             for ( QueryValue value : queryValues )
             {
-                values.add( value.getStringValueNormalized() );
+                if ( !value.isEmpty() )
+                {
+                    values.add( value.getStringValueNormalized() );
+                }
             }
         }
         return values.toArray();
@@ -64,29 +59,68 @@ public class QueryFieldAndMultiValue
     @Override
     protected boolean isQueryOnDateValue()
     {
-        final QueryValue firstValue = getFirstQueryValue();
+        if ( isEmpty() )
+        {
+            return false;
+        }
 
-        return firstValue != null && firstValue.isDateTime();
+        for ( QueryValue queryValue : queryValues )
+        {
+            if ( !queryValue.isEmpty() && !queryValue.isDateTime() )
+            {
+                return false;
+            }
+        }
 
+        return true;
     }
 
     @Override
     protected boolean isQueryValueNumeric()
     {
-        final QueryValue firstValue = getFirstQueryValue();
+        if ( isEmpty() )
+        {
+            return false;
+        }
 
-        return firstValue != null && firstValue.isNumeric();
+        for ( QueryValue queryValue : queryValues )
+        {
+            if ( !queryValue.isEmpty() && !queryValue.isNumeric() )
+            {
+                return false;
+            }
+        }
 
+        return true;
     }
 
-    private QueryValue getFirstQueryValue()
+    protected boolean isEmpty()
     {
-        return queryValues.iterator().next();
+        if ( isEmpty == null )
+        {
+            isEmpty = getIsEmptyValue();
+        }
+
+        return isEmpty;
+    }
+
+    private boolean getIsEmptyValue()
+    {
+        for ( QueryValue queryValue : queryValues )
+        {
+            if ( queryValue == null || !queryValue.isEmpty() )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
-    protected boolean useDateFieldPath()
+    protected boolean queryPathIsDateAndValueEmpty()
     {
-        return false;
+        return isDateField() && isEmpty();
     }
+
 }

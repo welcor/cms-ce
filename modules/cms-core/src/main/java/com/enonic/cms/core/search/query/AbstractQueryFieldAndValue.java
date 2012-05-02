@@ -9,9 +9,9 @@ public abstract class AbstractQueryFieldAndValue
 
     protected abstract boolean isQueryValueNumeric();
 
-    protected abstract boolean useDateFieldPath();
-
     protected abstract boolean isQueryOnDateValue();
+
+    protected abstract boolean queryPathIsDateAndValueEmpty();
 
     protected AbstractQueryFieldAndValue( final QueryField queryField )
     {
@@ -61,5 +61,10 @@ public abstract class AbstractQueryFieldAndValue
     public String getIndexType()
     {
         return queryField.getIndexType().toString();
+    }
+
+    protected final boolean useDateFieldPath()
+    {
+        return queryPathIsDateAndValueEmpty() || isQueryOnDateValue();
     }
 }

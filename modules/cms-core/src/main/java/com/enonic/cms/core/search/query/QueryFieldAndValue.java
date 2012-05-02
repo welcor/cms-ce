@@ -50,19 +50,13 @@ public class QueryFieldAndValue
         return queryValue.isNumeric();
     }
 
-
     public boolean doBuildAsEmptyDateFieldQuery()
     {
         return queryPathIsDateAndValueEmpty();
     }
 
     @Override
-    protected boolean useDateFieldPath()
-    {
-        return queryPathIsDateAndValueEmpty() || isQueryOnDateValue();
-    }
-
-    private boolean queryPathIsDateAndValueEmpty()
+    protected boolean queryPathIsDateAndValueEmpty()
     {
         return isDateField() && queryValue.isEmpty();
     }
@@ -72,6 +66,5 @@ public class QueryFieldAndValue
     {
         return queryValue.isDateTime();
     }
-
 
 }

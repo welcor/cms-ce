@@ -4,7 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
-import org.springframework.util.Assert;
+
+import com.enonic.cms.core.search.ElasticSearchUtils;
 
 
 public class QueryValue
@@ -21,13 +22,13 @@ public class QueryValue
         if ( value instanceof Number )
         {
             numericValue = (Number) value;
-            stringValue = doNormalizeString( value == null ? "" : value.toString() );
+            stringValue = doNormalizeString( value.toString() );
             dateTimeValue = null;
         }
         else if ( value instanceof ReadableDateTime )
         {
             dateTimeValue = toUTCTimeZone( (ReadableDateTime) value );
-            stringValue = null;
+            stringValue = doNormalizeString( ElasticSearchUtils.formatDateForElasticSearch( (ReadableDateTime) value ) );
             numericValue = null;
         }
         else
@@ -40,7 +41,7 @@ public class QueryValue
 
     public Double getNumericValue()
     {
-        return numericValue.doubleValue();
+        return numericValue != null ? numericValue.doubleValue() : null;
     }
 
     public boolean isNumeric()
@@ -60,7 +61,7 @@ public class QueryValue
 
     public String getStringValueNormalized()
     {
-        Assert.isTrue( !isDateTime(), "Attempt to use QueryValue with date-time content as a string value: " + dateTimeValue );
+//        Assert.isTrue( !isDateTime(), "Attempt to use QueryValue with date-time content as a string value: " + dateTimeValue );
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 

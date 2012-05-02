@@ -36,7 +36,7 @@ public class ContentIndexDataSectionFactory
                 continue;
             }
 
-            final Double menuKey = new Double( contentLocation.getMenuItemKey().toInt() );
+            final String menuKey = contentLocation.getMenuItemKey().toString();
 
             if ( contentLocation.isApproved() )
             {

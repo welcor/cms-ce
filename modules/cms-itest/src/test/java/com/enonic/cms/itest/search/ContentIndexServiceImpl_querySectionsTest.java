@@ -39,14 +39,11 @@ public class ContentIndexServiceImpl_querySectionsTest
         throws Exception
     {
         final ContentKey contentKey = new ContentKey( 1 );
-
         ContentDocument doc1 = createTestContentWithSections( contentKey );
 
         contentIndexService.index( doc1, false );
-
+        flushIndex();
         printAllIndexContent();
-        verifyStandardFields( doc1, contentKey );
-        verifyUserDefinedFields( contentKey, doc1 );
 
         final ContentIndexQuery query = new ContentIndexQuery( "" );
 

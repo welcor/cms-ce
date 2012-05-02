@@ -34,7 +34,7 @@ public class ContentIndexDataElement
 
     private void doSetValues( String fieldBaseName, final Set<Object> values )
     {
-        this.fieldBaseName = doNormalizeString( fieldBaseName );
+        this.fieldBaseName = doNormalizeFieldName( fieldBaseName );
 
         if ( values == null || values.isEmpty() )
         {
@@ -56,7 +56,7 @@ public class ContentIndexDataElement
             if ( value instanceof Number )
             {
                 numericValues.add( ( (Number) value ).doubleValue() );
-                stringValues.add( doNormalizeString( value.toString() ) );
+                stringValues.add( doNormalizeStringValue( value.toString() ) );
             }
             else if ( value instanceof Date )
             {
@@ -65,7 +65,7 @@ public class ContentIndexDataElement
             }
             else
             {
-                stringValues.add( doNormalizeString( value.toString() ) );
+                stringValues.add( doNormalizeStringValue( value.toString() ) );
                 tryConvertValuesToValidTypes( value );
             }
         }
@@ -96,7 +96,7 @@ public class ContentIndexDataElement
     }
 
 
-    private String doNormalizeString( final String stringValue )
+    private String doNormalizeFieldName( final String stringValue )
     {
         if ( StringUtils.isBlank( stringValue ) )
         {
@@ -108,6 +108,16 @@ public class ContentIndexDataElement
         normalized = removeAttributeSeparator( normalized );
 
         return normalized.toLowerCase();
+    }
+
+    private String doNormalizeStringValue( final String stringValue )
+    {
+        if ( StringUtils.isBlank( stringValue ) )
+        {
+            return "";
+        }
+
+        return stringValue.toLowerCase();
     }
 
     private String replaceSeparators( final String stringValue )

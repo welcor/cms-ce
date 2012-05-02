@@ -176,6 +176,8 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
     {
         setUpStandardTestValues();
 
+        printAllIndexContent();
+
         ContentIndexQuery query1 = new ContentIndexQuery( "data/person/age > 9" );
         ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 3, res1.getLength() );
@@ -184,18 +186,18 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
         ContentResultSet res2 = contentIndexService.query( query2 );
         assertEquals( 3, res2.getLength() );
 
-        ContentIndexQuery query3 = new ContentIndexQuery( "data/person/description LIKE '%alcoholic%'" );
+        ContentIndexQuery query3 = new ContentIndexQuery( "data/person/description LIKE '%description%'" );
         ContentResultSet res3 = contentIndexService.query( query3 );
-        assertEquals( 2, res3.getLength() );
+        assertEquals( 4, res3.getLength() );
 
-        ContentIndexQuery query4 = new ContentIndexQuery( "data/person/gender = 'male' AND data/person/description LIKE '%alcoholic%'" );
+        ContentIndexQuery query4 = new ContentIndexQuery( "data/person/gender = 'male' AND data/person/description LIKE '%description%'" );
         ContentResultSet res4 = contentIndexService.query( query4 );
-        assertEquals( 1, res4.getLength() );
+        assertEquals( 3, res4.getLength() );
         assertEquals( 1322, res4.getKey( 0 ).toInt() );
 
-        ContentIndexQuery query5 = new ContentIndexQuery( "data/person/description LIKE '%alcoholic%' ORDER BY data/person/age DESC" );
+        ContentIndexQuery query5 = new ContentIndexQuery( "data/person/description LIKE '%description%' ORDER BY data/person/age DESC" );
         ContentResultSet res5 = contentIndexService.query( query5 );
-        assertEquals( 2, res5.getLength() );
+        assertEquals( 4, res5.getLength() );
         assertEquals( 1322, res5.getKey( 0 ).toInt() );
     }
 

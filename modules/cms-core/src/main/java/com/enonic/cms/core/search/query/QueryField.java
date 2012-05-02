@@ -89,11 +89,6 @@ public class QueryField
         return StringUtils.contains( this.fieldName, "*" );
     }
 
-    public void setMatchAllPath()
-    {
-        this.fieldName = ALL_USERDATA_FIELDNAME;
-    }
-
     public boolean isDateField()
     {
         return dateFields.contains( this.fieldName );

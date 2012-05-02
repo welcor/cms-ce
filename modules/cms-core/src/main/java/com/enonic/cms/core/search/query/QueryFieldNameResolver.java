@@ -25,6 +25,11 @@ public class QueryFieldNameResolver
         return doNormalizeQueryFieldName( expression.getPath() );
     }
 
+    public static String resolveOrderFieldName( FieldExpr expression )
+    {
+        return doNormalizeQueryFieldName( expression.getPath() + "." + ORDERBY_FIELDNAME_POSTFIX );
+    }
+
     private static String doNormalizeQueryFieldName( String name )
     {
         String normalized = name.replace( '/', '.' ).replace( '.', '_' ).replaceAll( "@", "" ).toLowerCase();

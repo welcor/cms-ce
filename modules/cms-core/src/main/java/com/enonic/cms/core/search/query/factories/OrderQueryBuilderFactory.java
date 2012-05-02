@@ -49,7 +49,6 @@ public class OrderQueryBuilderFactory
 
     private List<SortBuilder> buildOrderFieldExpr( OrderFieldExpr[] expr )
     {
-
         List<SortBuilder> sort = new ArrayList<SortBuilder>();
 
         for ( int i = 0; i < expr.length; i++ )
@@ -62,7 +61,7 @@ public class OrderQueryBuilderFactory
 
     private SortBuilder buildOrderFieldExpr( OrderFieldExpr expr )
     {
-        final String name = QueryFieldNameResolver.resolveQueryFieldName( expr.getField() );
+        final String name = QueryFieldNameResolver.resolveOrderFieldName( expr.getField() );
 
         SortOrder order = SortOrder.DESC;
 

@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -148,6 +149,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
+
+        System.out.println( JDOMUtil.prettyPrintDocument( jdomDocResult ) );
 
         AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "2" );
         AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, contentA.toString(), contentB.toString() );

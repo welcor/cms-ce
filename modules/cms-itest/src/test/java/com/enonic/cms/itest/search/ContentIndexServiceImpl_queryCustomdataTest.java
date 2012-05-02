@@ -32,7 +32,7 @@ public class ContentIndexServiceImpl_queryCustomdataTest
 
         final SearchHitField data_person_age = fieldMapForId.get( "data_person_age" );
         assertNotNull( data_person_age );
-        final SearchHitField data_person_age_numeric = fieldMapForId.get( "data_person_age_numeric" );
+        final SearchHitField data_person_age_numeric = fieldMapForId.get( "data_person_age.number" );
         assertNotNull( data_person_age_numeric );
 
         final Object age = data_person_age.getValue();

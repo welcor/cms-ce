@@ -48,10 +48,18 @@ public class QueryValueTest
     @Test
     public void testNormalizedString()
     {
-
         QueryValue queryValue = new QueryValue( "AbCdE" );
 
         Assert.assertEquals( "abcde", queryValue.getStringValueNormalized() );
+
+    }
+
+    @Test
+    public void testWildcardValue()
+    {
+        QueryValue queryValue = new QueryValue( "%Content%" );
+
+        Assert.assertEquals( "*content*", queryValue.getStringValueNormalized() );
 
     }
 

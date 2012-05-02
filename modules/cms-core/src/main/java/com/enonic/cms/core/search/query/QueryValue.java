@@ -62,6 +62,12 @@ public class QueryValue
     public String getStringValueNormalized()
     {
 //        Assert.isTrue( !isDateTime(), "Attempt to use QueryValue with date-time content as a string value: " + dateTimeValue );
+
+        if ( isWildcardValue() )
+        {
+            return getWildcardValue();
+        }
+
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 

@@ -29,12 +29,12 @@ public class ContentIndexOrderbyValueResolver
 
                 if ( value instanceof Date )
                 {
-                    ElasticSearchUtils.formatDateForElasticSearch( new DateTime( value ) );
+                    return ElasticSearchUtils.formatDateForElasticSearch( new DateTime( value ) );
                 }
 
                 if ( value instanceof DateTime )
                 {
-                    ElasticSearchUtils.formatDateForElasticSearch( (DateTime) value );
+                    return ElasticSearchUtils.formatDateForElasticSearch( (DateTime) value );
                 }
 
                 return StringUtils.lowerCase( value.toString() );

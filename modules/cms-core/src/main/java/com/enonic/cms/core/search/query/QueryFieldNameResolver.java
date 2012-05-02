@@ -27,7 +27,7 @@ public class QueryFieldNameResolver
 
     public static String resolveOrderFieldName( FieldExpr expression )
     {
-        return doNormalizeQueryFieldName( expression.getPath() + "." + ORDERBY_FIELDNAME_POSTFIX );
+        return doNormalizeQueryFieldName( expression.getPath() ) + "." + ORDERBY_FIELDNAME_POSTFIX;
     }
 
     private static String doNormalizeQueryFieldName( String name )

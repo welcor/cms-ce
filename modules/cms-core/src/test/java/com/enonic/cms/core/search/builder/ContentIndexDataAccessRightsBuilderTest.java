@@ -94,12 +94,13 @@ public class ContentIndexDataAccessRightsBuilderTest
 
         final Map<GroupKey, CategoryAccessEntity> categoryAccessRights = Maps.newHashMap();
 
-        CategoryAccessEntity catAccessAdmin = crateCategoryAccessEntity( "g1", false, false, false, false, true );
-        CategoryAccessEntity catAccessRead = crateCategoryAccessEntity( "g2", true, false, false, false, false );
-        CategoryAccessEntity catAccessReadBrowsePublish = crateCategoryAccessEntity( "g3", true, true, true, false, false );
-        CategoryAccessEntity catAccessReadCreate = crateCategoryAccessEntity( "g4", true, false, false, true, false );
-        CategoryAccessEntity catAccessNoRights = crateCategoryAccessEntity( "g5", false, false, false, false, false );
-        CategoryAccessEntity catAccessReadPublish = crateCategoryAccessEntity( "g6", true, false, true, false, false );
+        CategoryAccessEntity catAccessAdmin = createCategoryAccessEntity( "g1", false, false, false, false, true );
+        CategoryAccessEntity catAccessRead = createCategoryAccessEntity( "g2", true, false, false, false, false );
+        CategoryAccessEntity catAccessReadBrowsePublish = createCategoryAccessEntity( "g3", true, true, true, false,
+                                                                                      false );
+        CategoryAccessEntity catAccessReadCreate = createCategoryAccessEntity( "g4", true, false, false, true, false );
+        CategoryAccessEntity catAccessNoRights = createCategoryAccessEntity( "g5", false, false, false, false, false );
+        CategoryAccessEntity catAccessReadPublish = createCategoryAccessEntity( "g6", true, false, true, false, false );
 
         final CategoryAccessEntity[] categoryAccessEntities =
                 {catAccessAdmin, catAccessRead, catAccessReadBrowsePublish, catAccessReadCreate,
@@ -172,9 +173,9 @@ public class ContentIndexDataAccessRightsBuilderTest
         return accessRights;
     }
 
-    private CategoryAccessEntity crateCategoryAccessEntity( String groupKey, boolean readAccess,
-                                                            boolean adminBrowseAccess, boolean publishAccess,
-                                                            boolean createAccess, boolean adminAccess )
+    private CategoryAccessEntity createCategoryAccessEntity( String groupKey, boolean readAccess,
+                                                             boolean adminBrowseAccess, boolean publishAccess,
+                                                             boolean createAccess, boolean adminAccess )
     {
         final CategoryAccessEntity accessRights = new CategoryAccessEntity();
         accessRights.setReadAccess( readAccess );

@@ -180,8 +180,6 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
 
         flushIndex();
 
-        printAllIndexContent();
-
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
         //ContentIndexQuery query = new ContentIndexQuery( "" );

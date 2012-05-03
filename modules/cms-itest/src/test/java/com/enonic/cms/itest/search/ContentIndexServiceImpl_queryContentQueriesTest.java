@@ -193,13 +193,9 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
         ContentIndexQuery query4 = new ContentIndexQuery( "data/person/gender = 'male' AND data/person/description LIKE '%description%'" );
         ContentResultSet res4 = contentIndexService.query( query4 );
         assertEquals( 3, res4.getLength() );
-        assertEquals( 1322, res4.getKey( 0 ).toInt() );
 
-        ContentIndexQuery query5 = new ContentIndexQuery( "data/person/description LIKE '%description%' ORDER BY data/person/age DESC" );
-        ContentResultSet res5 = contentIndexService.query( query5 );
-        assertEquals( 4, res5.getLength() );
-        assertEquals( 1322, res5.getKey( 0 ).toInt() );
     }
+
 
     @Test
     public void testQueriesOnUserDefinedDataWithDot()

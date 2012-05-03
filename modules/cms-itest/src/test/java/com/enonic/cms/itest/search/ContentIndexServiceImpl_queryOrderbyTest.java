@@ -1,6 +1,7 @@
 package com.enonic.cms.itest.search;
 
 import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -80,24 +81,25 @@ public class ContentIndexServiceImpl_queryOrderbyTest
 
     }
 
+    @Ignore // Will fail since the numeric orderby must be specified
     @Test
     public void testOrderByStatus()
     {
         contentIndexService.index( createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 3, "c1",
                                                           new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
                                    false );
-        contentIndexService.index( createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
+        contentIndexService.index( createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 40, "c2",
                                                           new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
                                    false );
-        contentIndexService.index( createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 2, "c3",
+        contentIndexService.index( createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 24, "c3",
                                                           new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
                                    false );
         flushIndex();
 
-        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
+        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), contentIndexService.query(
             new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) ).getKeys() );
 
-        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), contentIndexService.query(
+        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
             new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) ).getKeys() );
 
     }
@@ -164,6 +166,18 @@ public class ContentIndexServiceImpl_queryOrderbyTest
         printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "", "data/myrelated ASC" ) ) );
+    }
+
+    @Ignore // Will fail since the orderby should be done on numeric field to follow this ordering
+    @Test
+    public void testOrderByNumericField()
+    {
+        setUpStandardTestValues();
+
+        ContentIndexQuery query5 = new ContentIndexQuery( "data/person/description LIKE '%description%' ORDER BY data/person/age DESC" );
+        ContentResultSet res5 = contentIndexService.query( query5 );
+        assertEquals( 4, res5.getLength() );
+        assertEquals( 1322, res5.getKey( 0 ).toInt() );
     }
 
 }

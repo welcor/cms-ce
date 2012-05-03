@@ -199,7 +199,7 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         printAllIndexContent();
 
         verifyField( "data_person_age.orderby", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "data_person_age.orderby_number", 1, fieldMapForId, IndexFieldType.NUMBER );
+        verifyField( "data_person_age.orderby_number", 1, fieldMapForId, IndexFieldType.STRING );
 
     }
 

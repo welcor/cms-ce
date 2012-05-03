@@ -184,6 +184,25 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         verifyField( "data_person_birthdate.date", 3, fieldMapForId, IndexFieldType.DATE );
     }
 
+
+    @Test
+    public void testOrderbyFields()
+    {
+
+        final int contentKey = 1;
+        final ContentDocument contentDocument = createContentDocument( contentKey );
+        addUserdefinedData( contentDocument );
+        addMetaData( contentDocument );
+        indexContentDocument( contentDocument );
+        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
+
+        printAllIndexContent();
+
+        verifyField( "data_person_age.orderby", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "data_person_age.orderby_number", 1, fieldMapForId, IndexFieldType.NUMBER );
+
+    }
+
     private void verifyField( String fieldName, int expected, Map<String, SearchHitField> fieldMapForId, IndexFieldType indexFieldType )
     {
         final SearchHitField hits = fieldMapForId.get( fieldName );

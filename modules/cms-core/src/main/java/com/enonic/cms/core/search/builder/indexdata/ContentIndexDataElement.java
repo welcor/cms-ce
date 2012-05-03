@@ -25,6 +25,8 @@ public class ContentIndexDataElement
 
     private String orderBy;
 
+    private String orderByNumber;
+
 
     public ContentIndexDataElement( final String fieldBaseName, final Set<Object> values )
     {
@@ -39,11 +41,6 @@ public class ContentIndexDataElement
         {
             return;
         }
-        else
-        {
-            // TODO: FIX ORDERBY
-            this.orderBy = ContentIndexOrderbyValueResolver.resolveOrderbyValue( values );
-        }
 
         for ( final Object value : values )
         {
@@ -56,17 +53,46 @@ public class ContentIndexDataElement
             {
                 numericValues.add( ( (Number) value ).doubleValue() );
                 stringValues.add( doNormalizeStringValue( value.toString() ) );
+                setOrderbyNumericIfNull( (Number) value );
+                setOrderbyStringIfNull( value );
             }
             else if ( value instanceof Date )
             {
                 dateTimeValues.add( (Date) value );
                 stringValues.add( ElasticSearchUtils.formatDateForElasticSearch( new DateTime( value ) ) );
+                setOrderbyDateIfNull( (Date) value );
+                setOrderbyStringIfNull( value );
             }
             else
             {
                 stringValues.add( doNormalizeStringValue( value.toString() ) );
+                setOrderbyStringIfNull( value );
                 tryConvertValuesToValidTypes( value );
             }
+        }
+    }
+
+    private void setOrderbyStringIfNull( final Object value )
+    {
+        if ( orderBy == null )
+        {
+            orderBy = ContentIndexOrderbyValueResolver.getOrderbyValueForString( value.toString() );
+        }
+    }
+
+    private void setOrderbyDateIfNull( final Date value )
+    {
+        if ( orderBy == null )
+        {
+            orderBy = ContentIndexOrderbyValueResolver.getOrderbyValueForDate( value );
+        }
+    }
+
+    private void setOrderbyNumericIfNull( final Number value )
+    {
+        if ( orderByNumber == null )
+        {
+            orderByNumber = ContentIndexOrderbyValueResolver.getNumericOrderBy( value );
         }
     }
 
@@ -76,15 +102,15 @@ public class ContentIndexDataElement
         if ( doubleValue != null )
         {
             numericValues.add( doubleValue );
+            setOrderbyNumericIfNull( doubleValue );
+            return;
         }
-        else
-        {
-            final Date dateValue = ContentIndexDateValueResolver.resolveDateValue( value );
 
-            if ( dateValue != null )
-            {
-                dateTimeValues.add( dateValue );
-            }
+        final Date dateValue = ContentIndexDateValueResolver.resolveDateValue( value );
+
+        if ( dateValue != null )
+        {
+            dateTimeValues.add( dateValue );
         }
     }
 
@@ -147,6 +173,13 @@ public class ContentIndexDataElement
             set.add(
                 new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + ORDERBY_FIELDNAME_POSTFIX, orderBy ) );
         }
+
+        if ( StringUtils.isNotBlank( this.orderByNumber ) )
+        {
+            set.add( new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + ORDERBY_NUMERIC_FIELDNAME_POSTFIX,
+                                                     orderByNumber ) );
+        }
+
     }
 
     private void addStringFieldValue( final Set<ContentIndexDataFieldValue> set )

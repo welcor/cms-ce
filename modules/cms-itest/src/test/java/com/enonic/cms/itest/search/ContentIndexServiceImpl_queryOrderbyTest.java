@@ -45,7 +45,6 @@ public class ContentIndexServiceImpl_queryOrderbyTest
 
         printAllIndexContent();
 
-        // TODO: Should contenttypekey be contenttypekey or contenttype_key ??
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
             new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom asc" ) ).getKeys() );
 

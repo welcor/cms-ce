@@ -21,7 +21,8 @@ public class IndexValueResolverTest
     @Test
     public void testArrayExpressionAsString()
     {
-        Object[] result = IndexValueResolver.toValues( new ArrayExpr( new ValueExpr[]{new ValueExpr( "abc" ), new ValueExpr( "efg" )} ) );
+        Object[] result =
+            ExpressionValueResolver.toValues( new ArrayExpr( new ValueExpr[]{new ValueExpr( "abc" ), new ValueExpr( "efg" )} ) );
 
         assertEquals( "abc", result[0].toString() );
         assertEquals( "efg", result[1].toString() );
@@ -30,7 +31,7 @@ public class IndexValueResolverTest
     @Test
     public void testArrayExpressionAsNumber()
     {
-        Object[] result = IndexValueResolver.toValues( new ArrayExpr( new ValueExpr[]{new ValueExpr( 1 ), new ValueExpr( 2 )} ) );
+        Object[] result = ExpressionValueResolver.toValues( new ArrayExpr( new ValueExpr[]{new ValueExpr( 1 ), new ValueExpr( 2 )} ) );
 
         assertEquals( 2, result.length );
 
@@ -44,7 +45,7 @@ public class IndexValueResolverTest
     @Test
     public void testValueExpressionAsNumber()
     {
-        Object[] result = IndexValueResolver.toValues( new ValueExpr( 1 ) );
+        Object[] result = ExpressionValueResolver.toValues( new ValueExpr( 1 ) );
 
         assertEquals( 1, result.length );
 
@@ -56,7 +57,7 @@ public class IndexValueResolverTest
     @Test
     public void testToValuesString()
     {
-        Object result = IndexValueResolver.toValue( new ValueExpr( "abc" ) );
+        Object result = ExpressionValueResolver.toValue( new ValueExpr( "abc" ) );
         assertTrue( result instanceof String );
 
         assertEquals( result.toString(), "abc" );
@@ -65,7 +66,7 @@ public class IndexValueResolverTest
     @Test
     public void testToValuesNumber()
     {
-        Object result = IndexValueResolver.toValue( new ValueExpr( 123 ) );
+        Object result = ExpressionValueResolver.toValue( new ValueExpr( 123 ) );
         assertTrue( result instanceof Number );
 
         assertEquals( new Double( 123 ), ( (Number) result ).doubleValue() );
@@ -75,19 +76,19 @@ public class IndexValueResolverTest
     @Test
     public void testExpressionToValue()
     {
-        Object result = IndexValueResolver.toValue( new ValueExpr( "123" ) );
+        Object result = ExpressionValueResolver.toValue( new ValueExpr( "123" ) );
         assertTrue( result instanceof String );
 
-        result = IndexValueResolver.toValue( new ValueExpr( 123 ) );
+        result = ExpressionValueResolver.toValue( new ValueExpr( 123 ) );
         assertEquals( new Float( 123 ), result );
 
-        result = IndexValueResolver.toValue( new ValueExpr( new Double( "123.0" ) ) );
+        result = ExpressionValueResolver.toValue( new ValueExpr( new Double( "123.0" ) ) );
         assertTrue( result instanceof Double );
 
-        result = IndexValueResolver.toValue( new ValueExpr( new Float( "123.0" ) ) );
+        result = ExpressionValueResolver.toValue( new ValueExpr( new Float( "123.0" ) ) );
         assertTrue( result instanceof Float );
 
-        result = IndexValueResolver.toValue( new ValueExpr( new Long( "123" ) ) );
+        result = ExpressionValueResolver.toValue( new ValueExpr( new Long( "123" ) ) );
         assertTrue( result instanceof Long );
     }
 

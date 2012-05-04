@@ -2,8 +2,6 @@ package com.enonic.cms.core.search.builder;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.google.common.base.Function;
-
 import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FunctionEvaluator;
@@ -16,18 +14,9 @@ import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
  * Date: 11/23/11
  * Time: 12:26 PM
  */
-public final class IndexValueResolver
+public final class ExpressionValueResolver
 {
-    private final static Function<String, String> lowerCaseFunction = new Function<String, String>()
-    {
-        @Override
-        public String apply( String input )
-        {
-            return input.toLowerCase();
-        }
-    };
-
-    public static Object[] toValues( Expression expr )
+    public static Object[] toValues( final Expression expr )
     {
         if ( expr instanceof ArrayExpr )
         {
@@ -47,7 +36,7 @@ public final class IndexValueResolver
         }
     }
 
-    public static Object toValue( ValueExpr expr )
+    public static Object toValue( final ValueExpr expr )
     {
         if ( expr.isNumber() )
         {
@@ -61,7 +50,7 @@ public final class IndexValueResolver
         }
     }
 
-    private static Object[] toValues( ArrayExpr expr )
+    private static Object[] toValues( final ArrayExpr expr )
     {
         final ValueExpr[] list = expr.getValues();
         final Object[] result = new Object[list.length];
@@ -74,7 +63,7 @@ public final class IndexValueResolver
         return result;
     }
 
-    private static Object[] toValues( FunctionExpr expr )
+    private static Object[] toValues( final FunctionExpr expr )
     {
         final FunctionEvaluator eval = new FunctionEvaluator();
         return toValues( (Expression) expr.evaluate( eval ) );

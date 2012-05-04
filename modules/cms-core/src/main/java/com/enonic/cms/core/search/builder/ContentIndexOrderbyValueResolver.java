@@ -10,7 +10,6 @@ import com.enonic.cms.core.search.ElasticSearchUtils;
 
 public class ContentIndexOrderbyValueResolver
 {
-
     public static String getNumericOrderBy( Number value )
     {
         if ( value == null )
@@ -34,7 +33,6 @@ public class ContentIndexOrderbyValueResolver
         }
 
         return NumericUtils.intToPrefixCoded( value.intValue() );
-
     }
 
     public static String getOrderbyValueForDate( Date value )
@@ -46,5 +44,4 @@ public class ContentIndexOrderbyValueResolver
     {
         return StringUtils.lowerCase( value );
     }
-
 }

@@ -19,7 +19,6 @@ import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupKey;
 
 public final class ContentIndexDataFactory
@@ -38,7 +37,7 @@ public final class ContentIndexDataFactory
 
     public ContentIndexData create( ContentDocument content )
     {
-        return doCreate( content, false );
+        return doCreate( content, true );
     }
 
     private ContentIndexData doCreate( final ContentDocument content, boolean skipAttachments )

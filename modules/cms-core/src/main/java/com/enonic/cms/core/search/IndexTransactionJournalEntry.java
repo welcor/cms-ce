@@ -1,7 +1,7 @@
 package com.enonic.cms.core.search;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
+import com.enonic.cms.core.search.builder.ContentIndexData;
 
 class IndexTransactionJournalEntry
 {

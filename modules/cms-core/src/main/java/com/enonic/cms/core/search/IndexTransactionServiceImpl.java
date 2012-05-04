@@ -14,14 +14,14 @@ import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.ContentDocument;
+import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.store.dao.ContentDao;
 
 @Service
 @Scope("singleton")
 public class IndexTransactionServiceImpl
-        implements IndexTransactionService
+    implements IndexTransactionService
 {
 
     private final static LogFacade LOG = LogFacade.get( IndexTransactionServiceImpl.class );
@@ -95,14 +95,14 @@ public class IndexTransactionServiceImpl
     public boolean isActive()
     {
         IndexTransactionJournal indexTransactionJournal =
-                (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
+            (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
         return ( indexTransactionJournal != null );
     }
 
     private IndexTransactionJournal newTransactionJournal()
     {
         IndexTransactionJournal indexTransactionJournal =
-                (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
+            (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
         if ( indexTransactionJournal != null )
         {
 //            TransactionSynchronizationManager.unbindResource( TRANSACTION_JOURNAL_KEY );
@@ -118,7 +118,7 @@ public class IndexTransactionServiceImpl
     private IndexTransactionJournal getCurrentTransactionJournal()
     {
         IndexTransactionJournal indexTransactionJournal =
-                (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
+            (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
         if ( indexTransactionJournal == null )
         {
             throw new IllegalStateException( "No index transaction is currently active" );
@@ -129,6 +129,6 @@ public class IndexTransactionServiceImpl
     private ContentIndexData createContentIndexData( ContentEntity content )
     {
         ContentDocument doc = indexService.createContentDocument( content );
-        return contentIndexDataFactory.create( doc, false );
+        return contentIndexDataFactory.create( doc, true );
     }
 }

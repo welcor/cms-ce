@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.index.UserDefinedField;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.

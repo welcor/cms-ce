@@ -20,27 +20,27 @@ public abstract class AbstractQueryFieldAndValue
 
     protected AbstractQueryFieldAndValue( final String path )
     {
-        this.queryField = QueryFieldResolver.resolveQueryField( path );
+        this.queryField = QueryFieldFactory.resolveQueryField( path );
     }
 
     public String getFieldName()
     {
         if ( isQueryValueNumeric() )
         {
-            return isWildcardQueyField() ? ALL_USERDATA_FIELDNAME_NUMBER : queryField.getFieldNameForNumericQueries();
+            return isWildcardQuery() ? ALL_USERDATA_FIELDNAME_NUMBER : queryField.getFieldNameForNumericQueries();
         }
 
         if ( useDateFieldPath() )
         {
-            return isWildcardQueyField() ? ALL_USERDATA_FIELDNAME_DATE : queryField.getFieldNameForDateQueries();
+            return isWildcardQuery() ? ALL_USERDATA_FIELDNAME_DATE : queryField.getFieldNameForDateQueries();
         }
 
-        return isWildcardQueyField() ? ALL_USERDATA_FIELDNAME : queryField.getFieldName();
+        return isWildcardQuery() ? ALL_USERDATA_FIELDNAME : queryField.getFieldName();
     }
 
-    protected boolean isWildcardQueyField()
+    private boolean isWildcardQuery()
     {
-        return queryField.isWildcardQueyField();
+        return queryField.isWildcardQueryField();
     }
 
     public boolean doRenderAsHasChildQuery()
@@ -63,7 +63,7 @@ public abstract class AbstractQueryFieldAndValue
         return queryField.getIndexType().toString();
     }
 
-    protected final boolean useDateFieldPath()
+    final boolean useDateFieldPath()
     {
         return queryPathIsDateAndValueEmpty() || isQueryOnDateValue();
     }

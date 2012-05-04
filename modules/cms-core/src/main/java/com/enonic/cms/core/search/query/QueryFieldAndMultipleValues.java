@@ -4,14 +4,14 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-public class QueryFieldAndMultiValue
+public class QueryFieldAndMultipleValues
     extends AbstractQueryFieldAndValue
 {
     private final Set<QueryValue> queryValues = Sets.newHashSet();
 
     private Boolean isEmpty;
 
-    public QueryFieldAndMultiValue( final String fieldName, final Set<QueryValue> queryValues )
+    public QueryFieldAndMultipleValues( final String fieldName, final Set<QueryValue> queryValues )
     {
         super( new QueryField( fieldName ) );
 

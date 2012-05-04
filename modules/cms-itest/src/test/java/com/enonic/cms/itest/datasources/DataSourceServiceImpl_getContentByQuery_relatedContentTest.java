@@ -6,6 +6,7 @@ package com.enonic.cms.itest.datasources;
 
 import org.jdom.Document;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,17 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
 
     private static final DateTime DATE_TIME_2010_01_01 = new DateTime( 2010, 1, 1, 0, 0, 0, 0 );
 
+    @After
+    public void shutdown()
+        throws Exception
+    {
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+        System.out.println( "Shutting down everything" );
+
+        Thread.sleep( 1000 );
+    }
 
     @Before
     public void setUp()

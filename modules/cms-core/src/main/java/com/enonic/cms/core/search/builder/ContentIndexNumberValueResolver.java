@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.builder.indexdata;
+package com.enonic.cms.core.search.builder;
 
 public class ContentIndexNumberValueResolver
 {

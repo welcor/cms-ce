@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.builder.indexdata;
+package com.enonic.cms.core.search.builder.contentindexdata;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+
+import com.enonic.cms.core.search.builder.ContentIndexOrderbyValueResolver;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;

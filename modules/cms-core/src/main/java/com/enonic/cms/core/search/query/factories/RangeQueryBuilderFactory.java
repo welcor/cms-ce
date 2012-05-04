@@ -50,7 +50,7 @@ public class RangeQueryBuilderFactory
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
 
-        final String fieldName = queryField.isWildcardQueyField() ? ALL_USERDATA_FIELDNAME_DATE : queryField.getFieldNameForDateQueries();
+        final String fieldName = queryField.isWildcardQueryField() ? ALL_USERDATA_FIELDNAME_DATE : queryField.getFieldNameForDateQueries();
 
         return rangeQuery( fieldName ).
             from( lowerDateTime ).
@@ -68,7 +68,7 @@ public class RangeQueryBuilderFactory
         }
 
         final String queryName =
-            queryField.isWildcardQueyField() ? ALL_USERDATA_FIELDNAME_NUMBER : queryField.getFieldNameForNumericQueries();
+            queryField.isWildcardQueryField() ? ALL_USERDATA_FIELDNAME_NUMBER : queryField.getFieldNameForNumericQueries();
         return rangeQuery( queryName ).
             from( lowerNumeric ).
             to( upperNumeric ).
@@ -83,7 +83,7 @@ public class RangeQueryBuilderFactory
         {
             throw new IllegalArgumentException( "Invalid lower and upper - values in range query" );
         }
-        final String queryName = queryField.isWildcardQueyField() ? ALL_USERDATA_FIELDNAME : queryField.getFieldName();
+        final String queryName = queryField.isWildcardQueryField() ? ALL_USERDATA_FIELDNAME : queryField.getFieldName();
         return rangeQuery( queryName ).
             from( lower != null ? lower.getStringValueNormalized() : null ).
             to( upper != null ? upper.getStringValueNormalized() : null ).

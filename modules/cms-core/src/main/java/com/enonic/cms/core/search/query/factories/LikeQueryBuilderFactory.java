@@ -12,10 +12,8 @@ public class LikeQueryBuilderFactory
     {
     }
 
-    // TODO: Refactor to use QueryPathValue
-    public QueryBuilder buildLikeQuery( QueryFieldAndValue queryFieldAndValue )
+    public QueryBuilder buildLikeQuery( final QueryFieldAndValue queryFieldAndValue )
     {
-
         QueryBuilder queryBuilder =
             QueryBuilders.wildcardQuery( queryFieldAndValue.getFieldName(), queryFieldAndValue.getValue().toString() );
 

@@ -14,7 +14,7 @@ public final class ElasticClientFactory
     implements FactoryBean<Client>
 {
     private Node node;
-    
+
     private Client client;
 
     @Override
@@ -50,6 +50,7 @@ public final class ElasticClientFactory
     @PreDestroy
     public void stop()
     {
+
         this.client.close();
     }
 }

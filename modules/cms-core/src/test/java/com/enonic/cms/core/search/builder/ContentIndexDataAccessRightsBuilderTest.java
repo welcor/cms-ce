@@ -14,7 +14,6 @@ import com.google.common.collect.Maps;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
@@ -79,7 +78,7 @@ public class ContentIndexDataAccessRightsBuilderTest
 
     @Test
     public void testCategoryAccessRightsFilter()
-            throws Exception
+        throws Exception
     {
         final List<ContentAccessEntity> contentAccessRights = Lists.newArrayList();
         ContentAccessEntity contentAccessRights1 = createContentAccessEntity( "c", "g1", false, false, false );
@@ -96,15 +95,13 @@ public class ContentIndexDataAccessRightsBuilderTest
 
         CategoryAccessEntity catAccessAdmin = createCategoryAccessEntity( "g1", false, false, false, false, true );
         CategoryAccessEntity catAccessRead = createCategoryAccessEntity( "g2", true, false, false, false, false );
-        CategoryAccessEntity catAccessReadBrowsePublish = createCategoryAccessEntity( "g3", true, true, true, false,
-                                                                                      false );
+        CategoryAccessEntity catAccessReadBrowsePublish = createCategoryAccessEntity( "g3", true, true, true, false, false );
         CategoryAccessEntity catAccessReadCreate = createCategoryAccessEntity( "g4", true, false, false, true, false );
         CategoryAccessEntity catAccessNoRights = createCategoryAccessEntity( "g5", false, false, false, false, false );
         CategoryAccessEntity catAccessReadPublish = createCategoryAccessEntity( "g6", true, false, true, false, false );
 
         final CategoryAccessEntity[] categoryAccessEntities =
-                {catAccessAdmin, catAccessRead, catAccessReadBrowsePublish, catAccessReadCreate,
-                        catAccessNoRights, catAccessReadPublish};
+            {catAccessAdmin, catAccessRead, catAccessReadBrowsePublish, catAccessReadCreate, catAccessNoRights, catAccessReadPublish};
         for ( CategoryAccessEntity cae : categoryAccessEntities )
         {
             categoryAccessRights.put( cae.getGroup().getGroupKey(), cae );
@@ -122,11 +119,10 @@ public class ContentIndexDataAccessRightsBuilderTest
         assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME ) );
 
         final JSONArray administrateAccessValues =
-                resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME );
+            resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME );
         final JSONArray approveAccessValues =
-                resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME );
-        final JSONArray browseAccessValues =
-                resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME );
+            resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME );
+        final JSONArray browseAccessValues = resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME );
 
         assertEquals( administrateAccessValues.length(), 1 );
         assertEquals( approveAccessValues.length(), 3 );
@@ -157,8 +153,8 @@ public class ContentIndexDataAccessRightsBuilderTest
         assertFalse( containsValue( browseAccessValues, "g6" ) );
     }
 
-    private ContentAccessEntity createContentAccessEntity( String contentKey, String groupKey, boolean readAccess,
-                                                           boolean updateAccess, boolean deleteAccess )
+    private ContentAccessEntity createContentAccessEntity( String contentKey, String groupKey, boolean readAccess, boolean updateAccess,
+                                                           boolean deleteAccess )
     {
         final ContentAccessEntity accessRights = new ContentAccessEntity();
         accessRights.setKey( contentKey );
@@ -173,9 +169,8 @@ public class ContentIndexDataAccessRightsBuilderTest
         return accessRights;
     }
 
-    private CategoryAccessEntity createCategoryAccessEntity( String groupKey, boolean readAccess,
-                                                             boolean adminBrowseAccess, boolean publishAccess,
-                                                             boolean createAccess, boolean adminAccess )
+    private CategoryAccessEntity createCategoryAccessEntity( String groupKey, boolean readAccess, boolean adminBrowseAccess,
+                                                             boolean publishAccess, boolean createAccess, boolean adminAccess )
     {
         final CategoryAccessEntity accessRights = new CategoryAccessEntity();
         accessRights.setReadAccess( readAccess );

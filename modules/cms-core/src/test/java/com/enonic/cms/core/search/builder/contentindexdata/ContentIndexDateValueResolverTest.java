@@ -1,9 +1,11 @@
-package com.enonic.cms.core.search.builder.indexdata;
+package com.enonic.cms.core.search.builder.contentindexdata;
 
 import java.util.Date;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+
+import com.enonic.cms.core.search.builder.ContentIndexDateValueResolver;
 
 import static org.junit.Assert.*;
 

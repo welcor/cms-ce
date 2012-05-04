@@ -21,9 +21,9 @@ public class QueryFieldAndMultiValueTest
         queryValues.add( new QueryValue( 2 ) );
         queryValues.add( new QueryValue( null ) );
 
-        QueryFieldAndMultiValue queryFieldAndMultiValue = new QueryFieldAndMultiValue( "test", queryValues );
+        QueryFieldAndMultipleValues queryFieldAndMultipleValues = new QueryFieldAndMultipleValues( "test", queryValues );
 
-        final Object[] values = queryFieldAndMultiValue.getValues();
+        final Object[] values = queryFieldAndMultipleValues.getValues();
 
         assertEquals( 2, values.length );
 
@@ -32,7 +32,7 @@ public class QueryFieldAndMultiValueTest
             assertTrue( value instanceof Double );
         }
 
-        final String fieldName = queryFieldAndMultiValue.getFieldName();
+        final String fieldName = queryFieldAndMultipleValues.getFieldName();
         assertEquals( "test.number", fieldName );
     }
 
@@ -45,9 +45,9 @@ public class QueryFieldAndMultiValueTest
         queryValues.add( new QueryValue( new DateTime( 2011, 5, 2, 9, 46 ) ) );
         queryValues.add( new QueryValue( null ) );
 
-        QueryFieldAndMultiValue queryFieldAndMultiValue = new QueryFieldAndMultiValue( "test", queryValues );
+        QueryFieldAndMultipleValues queryFieldAndMultipleValues = new QueryFieldAndMultipleValues( "test", queryValues );
 
-        final Object[] values = queryFieldAndMultiValue.getValues();
+        final Object[] values = queryFieldAndMultipleValues.getValues();
 
         assertEquals( 2, values.length );
 
@@ -56,7 +56,7 @@ public class QueryFieldAndMultiValueTest
             assertTrue( value instanceof ReadableDateTime );
         }
 
-        final String fieldName = queryFieldAndMultiValue.getFieldName();
+        final String fieldName = queryFieldAndMultipleValues.getFieldName();
         assertEquals( "test.date", fieldName );
     }
 
@@ -69,13 +69,13 @@ public class QueryFieldAndMultiValueTest
         queryValues.add( new QueryValue( null ) );
         queryValues.add( new QueryValue( null ) );
 
-        QueryFieldAndMultiValue queryFieldAndMultiValue = new QueryFieldAndMultiValue( "test", queryValues );
+        QueryFieldAndMultipleValues queryFieldAndMultipleValues = new QueryFieldAndMultipleValues( "test", queryValues );
 
-        final Object[] values = queryFieldAndMultiValue.getValues();
+        final Object[] values = queryFieldAndMultipleValues.getValues();
 
         assertEquals( 0, values.length );
 
-        final String fieldName = queryFieldAndMultiValue.getFieldName();
+        final String fieldName = queryFieldAndMultipleValues.getFieldName();
         assertEquals( "test", fieldName );
     }
 
@@ -89,9 +89,9 @@ public class QueryFieldAndMultiValueTest
         queryValues.add( new QueryValue( null ) );
         queryValues.add( new QueryValue( "testValue" ) );
 
-        QueryFieldAndMultiValue queryFieldAndMultiValue = new QueryFieldAndMultiValue( "test", queryValues );
+        QueryFieldAndMultipleValues queryFieldAndMultipleValues = new QueryFieldAndMultipleValues( "test", queryValues );
 
-        final Object[] values = queryFieldAndMultiValue.getValues();
+        final Object[] values = queryFieldAndMultipleValues.getValues();
 
         assertEquals( 3, values.length );
 
@@ -100,7 +100,7 @@ public class QueryFieldAndMultiValueTest
             assertTrue( value instanceof String );
         }
 
-        final String fieldName = queryFieldAndMultiValue.getFieldName();
+        final String fieldName = queryFieldAndMultipleValues.getFieldName();
         assertEquals( "test", fieldName );
     }
 

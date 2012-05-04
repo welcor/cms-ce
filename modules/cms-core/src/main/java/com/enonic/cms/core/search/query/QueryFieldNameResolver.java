@@ -4,50 +4,48 @@ import org.apache.commons.lang.StringUtils;
 
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
+import com.enonic.cms.core.search.IndexFieldnameNormalizer;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 10/20/11
- * Time: 9:16 AM
- */
+
 public class QueryFieldNameResolver
     extends IndexFieldNameConstants
 {
-    public static String resolveQueryFieldName( String name )
+    public static String resolveQueryFieldName( final String name )
     {
         return doNormalizeQueryFieldName( name );
     }
 
-    public static String resolveQueryFieldName( FieldExpr expression )
+    public static String resolveQueryFieldName( final FieldExpr expression )
     {
         return doNormalizeQueryFieldName( expression.getPath() );
     }
 
-    public static String resolveOrderFieldName( FieldExpr expression )
+    public static String resolveOrderFieldName( final FieldExpr expression )
     {
         return doNormalizeQueryFieldName( expression.getPath() ) + "." + ORDERBY_FIELDNAME_POSTFIX;
     }
 
-    private static String doNormalizeQueryFieldName( String name )
+    private static String doNormalizeQueryFieldName( final String fieldName )
     {
-        String normalized = name.replace( '/', '.' ).replace( '.', '_' ).replaceAll( "@", "" ).toLowerCase();
+        String normalizedFieldName = IndexFieldnameNormalizer.normalizeFieldName( fieldName );
 
-        if ( StringUtils.startsWith( normalized, CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY ) )
+        if ( StringUtils.startsWith( normalizedFieldName, CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY ) )
         {
-            normalized = StringUtils.replaceOnce( normalized, CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY, CONTENTDATA_PREFIX );
+            normalizedFieldName =
+                StringUtils.replaceOnce( normalizedFieldName, CONTENTDATA_PREFIX_ALIAS_FOR_BW_COMPATABILITY, CONTENTDATA_PREFIX );
         }
 
-        if ( StringUtils.startsWith( normalized, ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY ) )
+        if ( StringUtils.startsWith( normalizedFieldName, ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY ) )
         {
-            normalized = StringUtils.replaceOnce( normalized, ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY, ATTACHMENT_FIELDNAME );
+            normalizedFieldName =
+                StringUtils.replaceOnce( normalizedFieldName, ATTACHMENT_ALIAS_FOR_BW_COMPATABILITY, ATTACHMENT_FIELDNAME );
         }
 
-        return normalized;
+        return normalizedFieldName;
     }
 
-    public static String getCategoryAccessTypeFieldName( CategoryAccessType type )
+    public static String getCategoryAccessTypeFieldName( final CategoryAccessType type )
     {
         switch ( type )
         {

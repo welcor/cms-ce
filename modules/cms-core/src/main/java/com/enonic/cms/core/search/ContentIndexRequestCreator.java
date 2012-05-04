@@ -8,7 +8,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
+import com.enonic.cms.core.search.builder.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.

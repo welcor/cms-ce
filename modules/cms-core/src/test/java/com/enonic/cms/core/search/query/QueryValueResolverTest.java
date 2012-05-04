@@ -20,7 +20,7 @@ public class QueryValueResolverTest
     {
         Expression expression = new ValueExpr( "100.0" );
 
-        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
+        final QueryValue actual = QueryValueFactory.resolveQueryValues( expression )[0];
 
         assertEquals( "100.0", actual.getStringValueNormalized() );
     }
@@ -30,7 +30,7 @@ public class QueryValueResolverTest
     {
         Expression expression = new ValueExpr( 100.0 );
 
-        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
+        final QueryValue actual = QueryValueFactory.resolveQueryValues( expression )[0];
         assertEquals( 100.0, actual.getNumericValue() );
     }
 
@@ -39,9 +39,9 @@ public class QueryValueResolverTest
     {
         Expression expression = new FieldExpr( "" );
 
-        assertNotNull( QueryValueResolver.resolveQueryValues( expression ) );
+        assertNotNull( QueryValueFactory.resolveQueryValues( expression ) );
 
-        final int length = QueryValueResolver.resolveQueryValues( expression ).length;
+        final int length = QueryValueFactory.resolveQueryValues( expression ).length;
         assertEquals( 0, length );
     }
 
@@ -49,23 +49,23 @@ public class QueryValueResolverTest
     public void testDateValue()
     {
         Expression expression = new ValueExpr( new DateTime( 2012, 02, 14, 12, 5, 0 ) );
-        final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expression );
+        final QueryValue[] queryValues = QueryValueFactory.resolveQueryValues( expression );
 
-        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
+        final QueryValue actual = QueryValueFactory.resolveQueryValues( expression )[0];
 
         assertTrue( actual.isDateTime() );
 
         // one hour behind because of timezone normalization
-        assertDateTimeEquals( "2012-02-14T11:05:00.000Z", actual.getDateTime().toString(  ) );
+        assertDateTimeEquals( "2012-02-14T11:05:00.000Z", actual.getDateTime().toString() );
     }
 
     @Test
     public void testDateAsStringValue()
     {
         Expression expression = new ValueExpr( "2012-02-14T12:05:00.000Z" );
-        final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expression );
+        final QueryValue[] queryValues = QueryValueFactory.resolveQueryValues( expression );
 
-        final QueryValue actual = QueryValueResolver.resolveQueryValues( expression )[0];
+        final QueryValue actual = QueryValueFactory.resolveQueryValues( expression )[0];
 
         assertFalse( actual.isDateTime() );
     }

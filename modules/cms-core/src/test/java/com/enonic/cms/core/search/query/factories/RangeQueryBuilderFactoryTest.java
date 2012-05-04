@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
-import com.enonic.cms.core.search.query.QueryFieldResolver;
+import com.enonic.cms.core.search.query.QueryFieldFactory;
 import com.enonic.cms.core.search.query.QueryTranslatorBaseTest;
 import com.enonic.cms.core.search.query.QueryValue;
 
@@ -31,7 +31,7 @@ public class RangeQueryBuilderFactoryTest
             "}";
 
         QueryBuilder query =
-            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldResolver.resolveQueryField( "key" ), new QueryValue( "100" ), null, false,
+            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "key" ), new QueryValue( "100" ), null, false,
                                                       true );
 
         System.out.println( query.toString() );
@@ -54,7 +54,7 @@ public class RangeQueryBuilderFactoryTest
             "}";
 
         QueryBuilder query =
-            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldResolver.resolveQueryField( "key" ), new QueryValue( 100 ), null, false,
+            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "key" ), new QueryValue( 100 ), null, false,
                                                       true );
 
         System.out.println( query.toString() );
@@ -64,7 +64,7 @@ public class RangeQueryBuilderFactoryTest
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void testBuildRangeQuery_null_range()
     {
-        rangeQueryBuilderFactory.buildRangeQuery( QueryFieldResolver.resolveQueryField( "key" ), null, null, false, true );
+        rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "key" ), null, null, false, true );
     }
 
     @Test
@@ -81,7 +81,7 @@ public class RangeQueryBuilderFactoryTest
             "  }\n" +
             "}";
 
-        QueryBuilder query = rangeQueryBuilderFactory.buildRangeQuery( QueryFieldResolver.resolveQueryField( "key" ), new QueryValue( 100 ),
+        QueryBuilder query = rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "key" ), new QueryValue( 100 ),
                                                                        new QueryValue( 300 ), true, true );
         System.out.println( query.toString() );
 
@@ -104,7 +104,7 @@ public class RangeQueryBuilderFactoryTest
 
         DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID( "Europe/Oslo" ) );
         QueryBuilder query =
-            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldResolver.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
+            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
                                                       null, false, true );
 
         assertEquals( expected_result, query.toString() );
@@ -126,7 +126,7 @@ public class RangeQueryBuilderFactoryTest
 
         DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID( "Europe/Oslo" ) );
         QueryBuilder query =
-            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldResolver.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
+            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
                                                       null, true, true );
 
         assertEquals( expected_result, query.toString() );
@@ -149,7 +149,7 @@ public class RangeQueryBuilderFactoryTest
         DateTime initTime = new DateTime( 2012, 3, 23, 15, 23, 45, 678, DateTimeZone.forID( "Europe/Oslo" ) );
         DateTime endTime = new DateTime( 2012, 3, 24, 5, 1, 23, 456, DateTimeZone.forID( "Europe/Oslo" ) );
         QueryBuilder query =
-            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldResolver.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
+            rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
                                                       new QueryValue( endTime ), false, true );
 
         assertEquals( expected_result, query.toString() );

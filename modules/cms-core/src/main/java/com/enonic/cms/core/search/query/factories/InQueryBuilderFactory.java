@@ -11,7 +11,7 @@ import com.enonic.cms.core.search.query.QueryValue;
 public class InQueryBuilderFactory
     extends BaseQueryBuilderFactory
 {
-    public QueryBuilder buildInQuery( QueryField queryField, QueryValue[] values )
+    public QueryBuilder buildInQuery( final QueryField queryField, final QueryValue[] values )
     {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 

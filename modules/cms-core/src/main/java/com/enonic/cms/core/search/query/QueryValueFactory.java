@@ -5,10 +5,9 @@ import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FunctionExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 
-public class QueryValueResolver
+public class QueryValueFactory
 {
-
-    public static QueryValue[] resolveQueryValues( Expression expr )
+    public static QueryValue[] resolveQueryValues( final Expression expr )
     {
         if ( expr instanceof ArrayExpr )
         {
@@ -20,7 +19,7 @@ public class QueryValueResolver
         }
         else if ( expr instanceof FunctionExpr )
         {
-            return resolveQueryValues( (FunctionExpr) expr );
+            return resolveQueryValues( expr );
         }
         else
         {
@@ -29,7 +28,7 @@ public class QueryValueResolver
     }
 
 
-    private static QueryValue[] toQueryValues( ArrayExpr expr )
+    private static QueryValue[] toQueryValues( final ArrayExpr expr )
     {
         final ValueExpr[] list = expr.getValues();
         final QueryValue[] result = new QueryValue[list.length];
@@ -43,7 +42,7 @@ public class QueryValueResolver
     }
 
 
-    public static QueryValue toQueryValue( ValueExpr expr )
+    private static QueryValue toQueryValue( ValueExpr expr )
     {
         return new QueryValue( expr.getValue() );
     }

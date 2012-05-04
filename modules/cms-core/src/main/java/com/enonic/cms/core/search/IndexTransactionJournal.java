@@ -8,12 +8,12 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
+import com.enonic.cms.core.search.builder.ContentIndexData;
 
 import static com.enonic.cms.core.search.ContentIndexServiceImpl.CONTENT_INDEX_NAME;
 
 public class IndexTransactionJournal
-        implements TransactionSynchronization
+    implements TransactionSynchronization
 {
     private final static LogFacade LOG = LogFacade.get( IndexTransactionJournal.class );
 

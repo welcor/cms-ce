@@ -152,7 +152,7 @@ public final class IndexServiceImpl
         ContentDocument indexedDoc = insertStandardValues( content );
         insertUserDefinedIndexValues( content, indexedDoc );
 
-        insertBinaryIndexValues( content, indexedDoc );
+        //insertBinaryIndexValues( content, indexedDoc );
         return indexedDoc;
     }
 

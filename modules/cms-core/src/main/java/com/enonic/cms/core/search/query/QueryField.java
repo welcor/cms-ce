@@ -23,13 +23,18 @@ public class QueryField
                             CONTENT_CREATED, CONTENT_MODIFIED );
     }
 
-    private String fieldName;
+    private final String fieldName;
 
     private boolean renderAsHasChildQuery = false;
 
     private boolean renderAsIdQuery = false;
 
     private IndexType indexType;
+
+    public QueryField( final String fieldName )
+    {
+        this.fieldName = fieldName;
+    }
 
     public String getFieldName()
     {
@@ -51,21 +56,17 @@ public class QueryField
         return renderAsIdQuery;
     }
 
-    public void setRenderAsIdQuery( boolean renderAsIdQuery )
+    public void setRenderAsIdQuery( final boolean renderAsIdQuery )
     {
         this.renderAsIdQuery = renderAsIdQuery;
     }
 
-    public QueryField setRenderAsHasChildQuery( boolean renderAsHasChildQuery )
+    public QueryField setRenderAsHasChildQuery( final boolean renderAsHasChildQuery )
     {
         this.renderAsHasChildQuery = renderAsHasChildQuery;
         return this;
     }
 
-    public QueryField( String fieldName )
-    {
-        this.fieldName = fieldName;
-    }
 
     public boolean doRenderAsHasChildQuery()
     {
@@ -78,13 +79,13 @@ public class QueryField
     }
 
 
-    public QueryField setIndexType( IndexType indexType )
+    public QueryField setIndexType( final IndexType indexType )
     {
         this.indexType = indexType;
         return this;
     }
 
-    public boolean isWildcardQueyField()
+    public boolean isWildcardQueryField()
     {
         return StringUtils.contains( this.fieldName, "*" );
     }

@@ -9,7 +9,7 @@ package com.enonic.cms.core.search.query;
 public class IndexQueryException
     extends RuntimeException
 {
-    public IndexQueryException( String s, Throwable throwable )
+    public IndexQueryException( final String s, final Throwable throwable )
     {
         super( s, throwable );
     }

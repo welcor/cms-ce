@@ -55,7 +55,7 @@ public class QueryTranslator
     }
 
 
-    public SearchSourceBuilder build( ContentIndexQuery contentIndexQuery )
+    public SearchSourceBuilder build( final ContentIndexQuery contentIndexQuery )
         throws Exception
     {
         final QueryExpr queryExpr = applyFunctionsAndDateTranslations( contentIndexQuery );
@@ -77,12 +77,12 @@ public class QueryTranslator
         return builder;
     }
 
-    private QueryExpr applyFunctionsAndDateTranslations( ContentIndexQuery contentIndexQuery )
+    private QueryExpr applyFunctionsAndDateTranslations( final ContentIndexQuery contentIndexQuery )
     {
         return ContentIndexQueryExprParser.parse( contentIndexQuery, false );
     }
 
-    private QueryBuilder buildQuery( Expression expr )
+    private QueryBuilder buildQuery( final Expression expr )
         throws Exception
     {
         if ( expr == null )
@@ -109,11 +109,11 @@ public class QueryTranslator
     }
 
 
-    private QueryBuilder buildCompareExpr( CompareExpr expr )
+    private QueryBuilder buildCompareExpr( final CompareExpr expr )
     {
         final String path = QueryFieldNameResolver.resolveQueryFieldName( (FieldExpr) expr.getLeft() );
-        final QueryField queryField = QueryFieldResolver.resolveQueryField( path );
-        final QueryValue[] queryValues = QueryValueResolver.resolveQueryValues( expr.getRight() );
+        final QueryField queryField = QueryFieldFactory.resolveQueryField( path );
+        final QueryValue[] queryValues = QueryValueFactory.resolveQueryValues( expr.getRight() );
         final QueryValue querySingleValue = queryValues.length > 0 ? queryValues[0] : null;
 
         final QueryFieldAndValue queryFieldAndValue = new QueryFieldAndValue( queryField, querySingleValue );
@@ -149,14 +149,14 @@ public class QueryTranslator
         return null;
     }
 
-    private QueryBuilder buildNotExpr( NotExpr expr )
+    private QueryBuilder buildNotExpr( final NotExpr expr )
         throws Exception
     {
         final QueryBuilder negated = buildQuery( expr.getExpr() );
         return buildNotQuery( negated );
     }
 
-    private QueryBuilder buildLogicalExpr( LogicalExpr expr )
+    private QueryBuilder buildLogicalExpr( final LogicalExpr expr )
         throws Exception
     {
 
@@ -177,8 +177,7 @@ public class QueryTranslator
         }
     }
 
-    // TODO: Why? Should not have to create a match all and then add the negated?
-    private QueryBuilder buildNotQuery( QueryBuilder negated )
+    private QueryBuilder buildNotQuery( final QueryBuilder negated )
     {
         return QueryBuilders.boolQuery().must( QueryBuilders.matchAllQuery() ).mustNot( negated );
     }

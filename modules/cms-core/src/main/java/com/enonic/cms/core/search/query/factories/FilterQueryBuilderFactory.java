@@ -32,10 +32,10 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.IndexValueQuery;
-import com.enonic.cms.core.search.query.QueryFieldAndMultiValue;
+import com.enonic.cms.core.search.query.QueryFieldAndMultipleValues;
 import com.enonic.cms.core.search.query.QueryFieldAndValue;
+import com.enonic.cms.core.search.query.QueryFieldFactory;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
-import com.enonic.cms.core.search.query.QueryFieldResolver;
 import com.enonic.cms.core.search.query.QueryValue;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -45,21 +45,21 @@ public class FilterQueryBuilderFactory
     extends BaseQueryBuilderFactory
 {
 
-    public void buildFilterQuery( SearchSourceBuilder builder, ContentIndexQuery contentIndexQuery )
+    public void buildFilterQuery( final SearchSourceBuilder builder, final ContentIndexQuery contentIndexQuery )
     {
         List<FilterBuilder> filtersToApply = getListOfFiltersToApply( contentIndexQuery );
 
         doAddFilters( builder, filtersToApply );
     }
 
-    public void buildFilterQuery( SearchSourceBuilder builder, IndexValueQuery query )
+    public void buildFilterQuery( final SearchSourceBuilder builder, final IndexValueQuery query )
     {
         List<FilterBuilder> filtersToApply = getListOfFiltersToApply( query );
 
         doAddFilters( builder, filtersToApply );
     }
 
-    private List<FilterBuilder> getListOfFiltersToApply( ContentIndexQuery query )
+    private List<FilterBuilder> getListOfFiltersToApply( final ContentIndexQuery query )
     {
         List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
 
@@ -116,7 +116,7 @@ public class FilterQueryBuilderFactory
         return filtersToApply;
     }
 
-    private List<FilterBuilder> getListOfFiltersToApply( IndexValueQuery query )
+    private List<FilterBuilder> getListOfFiltersToApply( final IndexValueQuery query )
     {
         List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
 
@@ -139,7 +139,7 @@ public class FilterQueryBuilderFactory
         return filtersToApply;
     }
 
-    private void doAddFilters( SearchSourceBuilder builder, List<FilterBuilder> filtersToApply )
+    private void doAddFilters( final SearchSourceBuilder builder, final List<FilterBuilder> filtersToApply )
     {
 
         if ( filtersToApply.isEmpty() )
@@ -169,13 +169,13 @@ public class FilterQueryBuilderFactory
         final ReadableDateTime dateTimeRoundedDownToNearestMinute = toUTCTimeZone( dateTime.minuteOfHour().roundFloorCopy() );
 
         final RangeFilterBuilder publishFromFilter =
-            FilterBuilders.rangeFilter( QueryFieldResolver.resolveQueryField( PUBLISH_FROM_FIELDNAME ).getFieldNameForDateQueries() ).lte(
+            FilterBuilders.rangeFilter( QueryFieldFactory.resolveQueryField( PUBLISH_FROM_FIELDNAME ).getFieldNameForDateQueries() ).lte(
                 dateTimeRoundedDownToNearestMinute );
 
         final MissingFilterBuilder publishToMissing =
-            FilterBuilders.missingFilter( QueryFieldResolver.resolveQueryField( PUBLISH_TO_FIELDNAME ).getFieldNameForDateQueries() );
+            FilterBuilders.missingFilter( QueryFieldFactory.resolveQueryField( PUBLISH_TO_FIELDNAME ).getFieldNameForDateQueries() );
         final RangeFilterBuilder publishToGTDate =
-            FilterBuilders.rangeFilter( QueryFieldResolver.resolveQueryField( PUBLISH_TO_FIELDNAME ).getFieldNameForDateQueries() ).gt(
+            FilterBuilders.rangeFilter( QueryFieldFactory.resolveQueryField( PUBLISH_TO_FIELDNAME ).getFieldNameForDateQueries() ).gt(
                 dateTimeRoundedDownToNearestMinute );
         final OrFilterBuilder publishToFilter = FilterBuilders.orFilter( publishToMissing, publishToGTDate );
 
@@ -199,32 +199,32 @@ public class FilterQueryBuilderFactory
         return buildTermsFilterForValues( getKeysAsQueryValues( groupKeys ), CONTENT_ACCESS_READ_FIELDNAME );
     }
 
-    private TermFilterBuilder buildContentStatusFilter( Integer contentStatus )
+    private TermFilterBuilder buildContentStatusFilter( final Integer contentStatus )
     {
         QueryFieldAndValue queryFieldAndValue = new QueryFieldAndValue( STATUS_FIELDNAME, contentStatus.toString() );
 
         return new TermFilterBuilder( queryFieldAndValue.getFieldName(), queryFieldAndValue.getValue() );
     }
 
-    private FilterBuilder buildContentTypeFilter( Collection<ContentTypeKey> contentTypeFilter )
+    private FilterBuilder buildContentTypeFilter( final Collection<ContentTypeKey> contentTypeFilter )
     {
         return buildTermsFilterForValues( getKeysAsQueryValues( contentTypeFilter ), CONTENTTYPE_KEY_FIELDNAME );
     }
 
-    private FilterBuilder buildContentFilter( Collection<ContentKey> contentKeys )
+    private FilterBuilder buildContentFilter( final Collection<ContentKey> contentKeys )
     {
         return buildTermsFilterForValues( getKeysAsQueryValues( contentKeys ), CONTENTKEY_FIELDNAME );
     }
 
-    private FilterBuilder buildCategoryFilter( Collection<CategoryKey> keys )
+    private FilterBuilder buildCategoryFilter( final Collection<CategoryKey> keys )
     {
         return buildTermsFilterForValues( getKeysAsQueryValues( keys ), CATEGORY_KEY_FIELDNAME );
     }
 
 
     private FilterBuilder buildCategoryAccessTypeFilter( final Collection<CategoryAccessType> categoryAccessTypeFilter,
-                                                         ContentIndexQuery.CategoryAccessTypeFilterPolicy policy,
-                                                         Collection<GroupKey> securityFilter )
+                                                         final ContentIndexQuery.CategoryAccessTypeFilterPolicy policy,
+                                                         final Collection<GroupKey> securityFilter )
     {
         // cannot apply category access type filter without security filter
         if ( ( categoryAccessTypeFilter == null ) || ( securityFilter == null ) )
@@ -268,7 +268,7 @@ public class FilterQueryBuilderFactory
         return boolFilterBuilder;
     }
 
-    private FilterBuilder buildSectionFilter( ContentIndexQuery query )
+    private FilterBuilder buildSectionFilter( final ContentIndexQuery query )
     {
         final Set<QueryValue> keysAsQueryValues = getSectionKeysAsList( query.getSectionFilter() );
 
@@ -295,13 +295,13 @@ public class FilterQueryBuilderFactory
 
     private FilterBuilder buildTermsFilterForValues( final Set<QueryValue> keysAsQueryValues, final String fieldName )
     {
-        final QueryFieldAndMultiValue queryFieldAndMultiValue = new QueryFieldAndMultiValue( fieldName, keysAsQueryValues );
+        final QueryFieldAndMultipleValues queryFieldAndMultipleValues = new QueryFieldAndMultipleValues( fieldName, keysAsQueryValues );
 
-        return new TermsFilterBuilder( queryFieldAndMultiValue.getFieldName(), queryFieldAndMultiValue.getValues() );
+        return new TermsFilterBuilder( queryFieldAndMultipleValues.getFieldName(), queryFieldAndMultipleValues.getValues() );
     }
 
 
-    private FilterBuilder buildAllSectionsFilter( ContentIndexQuery query )
+    private FilterBuilder buildAllSectionsFilter( final ContentIndexQuery query )
     {
         if ( query.isApprovedSectionContentOnly() )
         {
@@ -317,7 +317,7 @@ public class FilterQueryBuilderFactory
         }
     }
 
-    private <T> Set<QueryValue> getKeysAsQueryValues( Collection<T> keys )
+    private <T> Set<QueryValue> getKeysAsQueryValues( final Collection<T> keys )
     {
         Set<QueryValue> queryValues = Sets.newHashSet();
 
@@ -331,7 +331,7 @@ public class FilterQueryBuilderFactory
     }
 
 
-    private Set<QueryValue> getSectionKeysAsList( Collection<MenuItemEntity> menuItemEntities )
+    private Set<QueryValue> getSectionKeysAsList( final Collection<MenuItemEntity> menuItemEntities )
     {
         Set<QueryValue> menuItemKeysAsString = Sets.newHashSet();
 

@@ -44,7 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
+import com.enonic.cms.core.search.builder.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.

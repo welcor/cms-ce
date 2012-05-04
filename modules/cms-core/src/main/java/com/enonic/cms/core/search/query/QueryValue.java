@@ -17,7 +17,7 @@ public class QueryValue
     private final ReadableDateTime dateTimeValue;
 
 
-    public QueryValue( Object value )
+    public QueryValue( final Object value )
     {
         if ( value instanceof Number )
         {
@@ -61,8 +61,6 @@ public class QueryValue
 
     public String getStringValueNormalized()
     {
-//        Assert.isTrue( !isDateTime(), "Attempt to use QueryValue with date-time content as a string value: " + dateTimeValue );
-
         if ( isWildcardValue() )
         {
             return getWildcardValue();
@@ -71,24 +69,20 @@ public class QueryValue
         return stringValue != null ? StringUtils.lowerCase( stringValue ) : null;
     }
 
-    public boolean isWildcardValue()
+    boolean isWildcardValue()
     {
         return StringUtils.contains( this.stringValue, "%" );
     }
 
-    public String getWildcardValue()
+    String getWildcardValue()
     {
-        return StringUtils.replace( this.stringValue, "%", "*" );
+        final String replacedWildcardsString = StringUtils.replace( this.stringValue, "%", "*" );
+        return StringUtils.lowerCase( replacedWildcardsString );
     }
 
-    private String doNormalizeString( String stringValue )
+    private String doNormalizeString( final String stringValue )
     {
         return StringUtils.lowerCase( stringValue );
-    }
-
-    public String getNumericValueAsString()
-    {
-        return stringValue != null ? stringValue.substring( 0, stringValue.indexOf( '.' ) ) : null;
     }
 
     public boolean isEmpty()

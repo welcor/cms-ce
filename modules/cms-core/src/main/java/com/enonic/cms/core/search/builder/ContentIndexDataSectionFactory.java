@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocations;
-import com.enonic.cms.core.search.builder.indexdata.ContentIndexData;
 
 /**
  * Created by IntelliJ IDEA.

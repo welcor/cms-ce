@@ -5,16 +5,10 @@ import org.apache.commons.lang.StringUtils;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 11/9/11
- * Time: 2:12 PM
- */
-public class QueryFieldResolver
+public class QueryFieldFactory
     extends IndexFieldNameConstants
 {
-    public static QueryField resolveQueryField( String field )
+    public static QueryField resolveQueryField( final String field )
     {
         QueryField queryField = new QueryField( field );
 
@@ -23,6 +17,14 @@ public class QueryFieldResolver
         detectAttachmentField( field, queryField );
 
         return queryField;
+    }
+
+    private static void detectContentKeyField( final String field, final QueryField queryField )
+    {
+        if ( StringUtils.equals( field, CONTENTKEY_FIELDNAME ) )
+        {
+            queryField.setRenderAsIdQuery( true );
+        }
     }
 
     private static void detectAttachmentField( final String field, final QueryField queryField )
@@ -36,14 +38,5 @@ public class QueryFieldResolver
             queryField.setIndexType( IndexType.Content );
         }
     }
-
-    private static void detectContentKeyField( final String field, final QueryField queryField )
-    {
-        if ( StringUtils.equals( field, CONTENTKEY_FIELDNAME ) )
-        {
-            queryField.setRenderAsIdQuery( true );
-        }
-    }
-
 
 }

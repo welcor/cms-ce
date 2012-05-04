@@ -9,7 +9,6 @@ package com.enonic.cms.core.search.builder;
 public class ContentIndexDataFactoryException
     extends RuntimeException
 {
-
     public ContentIndexDataFactoryException( String s, Throwable throwable )
     {
         super( s, throwable );

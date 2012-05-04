@@ -35,7 +35,6 @@ public class ContentIndexDataCustomDataFactory
                 continue;
             }
 
-            // TODO Optimize this after refactoring
             Set<String> values = getAllValuesForFieldName( fieldName, userDefinedFields );
 
             contentIndexData.addContentData( fieldName, values );

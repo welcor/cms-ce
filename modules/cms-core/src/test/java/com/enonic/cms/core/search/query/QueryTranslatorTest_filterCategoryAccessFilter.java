@@ -10,7 +10,7 @@ import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.query.factories.FilterQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 import com.enonic.cms.core.security.group.GroupKey;
 
 public class QueryTranslatorTest_filterCategoryAccessFilter

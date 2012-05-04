@@ -12,13 +12,13 @@ public class AttachmentFilter
 
     AttachmentFilterType filterType;
 
-    public AttachmentFilter( AttachmentFilterType filterType, String value )
+    public AttachmentFilter( final AttachmentFilterType filterType, final String value )
     {
         this.values = getValues( value );
         this.filterType = filterType;
     }
 
-    private String[] getValues( String value )
+    private String[] getValues( final String value )
     {
         return StringUtils.split( value, " ,;:" );
     }
@@ -28,10 +28,6 @@ public class AttachmentFilter
         return Arrays.asList( values );
     }
 
-    public boolean hasValues()
-    {
-        return !getValueList().isEmpty();
-    }
 
     public String[] getValues()
     {

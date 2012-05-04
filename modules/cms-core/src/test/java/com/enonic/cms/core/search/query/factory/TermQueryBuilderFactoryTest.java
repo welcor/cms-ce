@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factories;
+package com.enonic.cms.core.search.query.factory;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;

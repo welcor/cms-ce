@@ -5,19 +5,16 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
 
 class IndexTransactionJournalEntry
 {
-
     public enum JournalOperation
     {
         UPDATE, DELETE
     }
-
 
     private final JournalOperation operation;
 
     private final ContentIndexData contentIndexData;
 
     private final ContentKey contentKey;
-
 
     public IndexTransactionJournalEntry( JournalOperation operation, ContentIndexData contentIndexData )
     {
@@ -32,7 +29,6 @@ class IndexTransactionJournalEntry
         this.contentIndexData = null;
         this.contentKey = contentKey;
     }
-
 
     public JournalOperation getOperation()
     {

@@ -19,7 +19,6 @@ public class ContentIndexDataSectionFactory
 
     public void create( final ContentIndexData contentIndexData, final ContentLocations contentLocations )
     {
-
         if ( contentLocations == null || !contentLocations.hasLocations() )
         {
             return;

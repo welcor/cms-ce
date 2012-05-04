@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factories;
+package com.enonic.cms.core.search.query.factory;
 
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.MissingFilterBuilder;
@@ -13,13 +13,9 @@ import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 public class TermQueryBuilderFactory
     extends BaseQueryBuilderFactory
 {
-    public TermQueryBuilderFactory()
-    {
-    }
 
     public QueryBuilder buildTermQuery( final QueryFieldAndValue queryFieldAndValue )
     {
-
         final QueryBuilder termQuery = doBuildTermQuery( queryFieldAndValue );
 
         if ( queryFieldAndValue.doRenderAsHasChildQuery() )

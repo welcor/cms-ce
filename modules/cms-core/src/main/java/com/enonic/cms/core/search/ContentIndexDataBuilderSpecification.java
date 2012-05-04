@@ -10,7 +10,7 @@ public final class ContentIndexDataBuilderSpecification
 {
     private boolean buildAttachments = false;
 
-    public ContentIndexDataBuilderSpecification( boolean buildAttachments )
+    public ContentIndexDataBuilderSpecification( final boolean buildAttachments )
     {
         this.buildAttachments = buildAttachments;
     }

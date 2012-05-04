@@ -19,7 +19,7 @@ final class ConfigFileMappingProvider
     implements IndexMappingProvider
 {
 
-    public String getMapping( String indexName, String indexType )
+    public String getMapping( final String indexName, final String indexType )
     {
         InputStream stream = ConfigFileMappingProvider.class.getResourceAsStream( createMappingFileName( indexName, indexType ) );
 
@@ -46,7 +46,7 @@ final class ConfigFileMappingProvider
 
     }
 
-    private String createMappingFileName( String indexName, String indexType )
+    private String createMappingFileName( final String indexName, final String indexType )
     {
         return indexName + "_" + indexType + "_mapping.json";
     }

@@ -28,7 +28,6 @@ public class ContentIndexDataElement
 
     private String orderByNumber;
 
-
     public ContentIndexDataElement( final String fieldBaseName, final Set<Object> values )
     {
         this.fieldBaseName = IndexFieldnameNormalizer.normalizeFieldName( fieldBaseName );

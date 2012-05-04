@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factories;
+package com.enonic.cms.core.search.query.factory;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;
@@ -42,8 +42,8 @@ public class RangeQueryBuilderFactory
         }
     }
 
-    private QueryBuilder buildRangeQueryDateTime( QueryField queryField, DateTime lowerDateTime, DateTime upperDateTime,
-                                                  boolean lowerInclusive, boolean upperInclusive )
+    private QueryBuilder buildRangeQueryDateTime( final QueryField queryField, final DateTime lowerDateTime, final DateTime upperDateTime,
+                                                  final boolean lowerInclusive, final boolean upperInclusive )
     {
         if ( lowerDateTime == null && upperDateTime == null )
         {
@@ -59,8 +59,8 @@ public class RangeQueryBuilderFactory
             includeUpper( upperInclusive );
     }
 
-    private QueryBuilder buildRangeQueryNumeric( QueryField queryField, Number lowerNumeric, Number upperNumeric, boolean lowerInclusive,
-                                                 boolean upperInclusive )
+    private QueryBuilder buildRangeQueryNumeric( final QueryField queryField, final Number lowerNumeric, final Number upperNumeric,
+                                                 final boolean lowerInclusive, final boolean upperInclusive )
     {
         if ( lowerNumeric == null && upperNumeric == null )
         {
@@ -76,8 +76,8 @@ public class RangeQueryBuilderFactory
             includeUpper( upperInclusive );
     }
 
-    private QueryBuilder buildRangeQueryString( QueryField queryField, QueryValue lower, QueryValue upper, boolean lowerInclusive,
-                                                boolean upperInclusive )
+    private QueryBuilder buildRangeQueryString( final QueryField queryField, final QueryValue lower, final QueryValue upper,
+                                                final boolean lowerInclusive, final boolean upperInclusive )
     {
         if ( lower == null && upper == null )
         {

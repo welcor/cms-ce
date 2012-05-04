@@ -81,7 +81,7 @@ public class ContentIndexDataFactoryTest
 
     protected void verifyFieldName( ContentIndexData contentIndexData, String fieldName )
     {
-        for ( ContentIndexDataElement contentIndexDataElement : contentIndexData.getContentData() )
+        for ( ContentIndexDataElement contentIndexDataElement : contentIndexData.getContentIndexDataElements() )
         {
             final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentIndexDataElement.getAllFieldValuesForElement();
 
@@ -172,7 +172,7 @@ public class ContentIndexDataFactoryTest
 
         ContentIndexData indexData = contentIndexDataFactory.create( contentDocument );
 
-        final Set<ContentIndexDataElement> contentData = indexData.getContentData();
+        final Set<ContentIndexDataElement> contentData = indexData.getContentIndexDataElements();
 
         verifyFieldName( indexData, CONTENTLOCATION_APPROVED_FIELDNAME );
         verifyFieldName( indexData, CONTENTLOCATION_UNAPPROVED_FIELDNAME );

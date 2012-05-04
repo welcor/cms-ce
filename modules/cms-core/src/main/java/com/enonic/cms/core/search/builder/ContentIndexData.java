@@ -15,9 +15,7 @@ public class ContentIndexData
 
     private XContentBuilder binaryData;
 
-    private Set<ContentIndexDataElement> contentData = Sets.newHashSet();
-
-    private XContentBuilder metadata;
+    private Set<ContentIndexDataElement> contentIndexDataElements = Sets.newHashSet();
 
     public String getContentDataAsJsonString()
         throws Exception
@@ -32,9 +30,9 @@ public class ContentIndexData
 
         builder.startObject();
 
-        for ( ContentIndexDataElement contentDataElement : contentData )
+        for ( ContentIndexDataElement contentIndexDataElement : contentIndexDataElements )
         {
-            for ( ContentIndexDataFieldValue fieldValue : contentDataElement.getAllFieldValuesForElement() )
+            for ( ContentIndexDataFieldValue fieldValue : contentIndexDataElement.getAllFieldValuesForElement() )
             {
                 builder.field( fieldValue.getFieldName(), fieldValue.getValue() );
             }
@@ -62,7 +60,7 @@ public class ContentIndexData
             contentIndexDataElement = new ContentIndexDataElement( dataElementName, Sets.newHashSet( value ) );
         }
 
-        this.contentData.add( contentIndexDataElement );
+        this.contentIndexDataElements.add( contentIndexDataElement );
     }
 
     public ContentIndexData( final ContentKey key )
@@ -85,25 +83,8 @@ public class ContentIndexData
         this.binaryData = binaryData;
     }
 
-    public String getContentDataAsString()
+    public Set<ContentIndexDataElement> getContentIndexDataElements()
     {
-        StringBuilder builder = new StringBuilder();
-
-        for ( ContentIndexDataElement element : this.contentData )
-        {
-            for ( ContentIndexDataFieldValue fieldValue : element.getAllFieldValuesForElement() )
-            {
-                builder.append( fieldValue.toString() + "," );
-            }
-        }
-
-        builder.deleteCharAt( builder.length() - 1 );
-
-        return builder.toString();
-    }
-
-    public Set<ContentIndexDataElement> getContentData()
-    {
-        return contentData;
+        return contentIndexDataElements;
     }
 }

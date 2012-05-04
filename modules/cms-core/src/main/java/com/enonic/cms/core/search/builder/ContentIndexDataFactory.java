@@ -85,7 +85,6 @@ public final class ContentIndexDataFactory
 
     private void addUsers( ContentIndexData contentIndexData, ContentDocument content )
     {
-
         addUserValues( contentIndexData, OWNER_FIELDNAME, content.getOwnerKey(), content.getOwnerName(), content.getOwnerQualifiedName() );
         addUserValues( contentIndexData, MODIFIER_FIELDNAME, content.getModifierKey(), content.getModifierName(),
                        content.getModifierQualifiedName() );
@@ -107,7 +106,6 @@ public final class ContentIndexDataFactory
         contentIndexData.addContentData( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null );
         contentIndexData.addContentData( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null );
     }
-
 
     private void addCategory( ContentIndexData contentIndexData, ContentDocument content )
     {

@@ -36,5 +36,4 @@ public class IndexFieldnameNormalizer
         return StringUtils.remove( stringValue, "@" );
     }
 
-
 }

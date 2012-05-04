@@ -17,13 +17,13 @@ import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
-import com.enonic.cms.core.search.query.factories.FilterQueryBuilderFactory;
-import com.enonic.cms.core.search.query.factories.FullTextQueryBuilderFactory;
-import com.enonic.cms.core.search.query.factories.InQueryBuilderFactory;
-import com.enonic.cms.core.search.query.factories.LikeQueryBuilderFactory;
-import com.enonic.cms.core.search.query.factories.OrderQueryBuilderFactory;
-import com.enonic.cms.core.search.query.factories.RangeQueryBuilderFactory;
-import com.enonic.cms.core.search.query.factories.TermQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.FullTextQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.InQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.LikeQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.OrderQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.RangeQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.TermQueryBuilderFactory;
 
 @Component
 public class QueryTranslator

@@ -21,13 +21,11 @@ public class IndexTransactionJournal
 
     private final List<IndexTransactionJournalEntry> changeHistory;
 
-
     public IndexTransactionJournal( ElasticSearchIndexService indexService )
     {
         this.indexService = indexService;
         this.changeHistory = new ArrayList<IndexTransactionJournalEntry>();
     }
-
 
     public void startTransaction()
     {

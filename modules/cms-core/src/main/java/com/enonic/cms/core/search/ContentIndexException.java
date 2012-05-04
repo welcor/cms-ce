@@ -10,12 +10,12 @@ public class ContentIndexException
     extends RuntimeException
 {
 
-    public ContentIndexException( String message )
+    public ContentIndexException( final String message )
     {
         super( message );
     }
 
-    public ContentIndexException( String message, Exception e )
+    public ContentIndexException( final String message, final Exception e )
     {
         super( message, e );
     }

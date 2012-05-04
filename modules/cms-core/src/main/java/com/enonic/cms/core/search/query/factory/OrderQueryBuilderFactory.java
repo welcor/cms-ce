@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factories;
+package com.enonic.cms.core.search.query.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class OrderQueryBuilderFactory
     private final static boolean createDefaultSortExpression = false;
 
 
-    public void buildOrderByExpr( SearchSourceBuilder builder, OrderByExpr expr )
+    public void buildOrderByExpr( final SearchSourceBuilder builder, final OrderByExpr expr )
     {
         List<SortBuilder> sorts;
 
@@ -47,7 +47,7 @@ public class OrderQueryBuilderFactory
         return SortBuilders.scoreSort();
     }
 
-    private List<SortBuilder> buildOrderFieldExpr( OrderFieldExpr[] expr )
+    private List<SortBuilder> buildOrderFieldExpr( final OrderFieldExpr[] expr )
     {
         List<SortBuilder> sort = new ArrayList<SortBuilder>();
 
@@ -59,7 +59,7 @@ public class OrderQueryBuilderFactory
         return sort;
     }
 
-    private SortBuilder buildOrderFieldExpr( OrderFieldExpr expr )
+    private SortBuilder buildOrderFieldExpr( final OrderFieldExpr expr )
     {
         final String name = QueryFieldNameResolver.resolveOrderFieldName( expr.getField() );
 

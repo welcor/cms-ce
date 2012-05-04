@@ -4,7 +4,7 @@
             "enabled":false
         },
         "_source":{
-            "enabled":true
+            "enabled":false
         },
         "date_detection":false,
         "numeric_detection":false,
@@ -16,13 +16,13 @@
                         "include_in_all":false,
                         "type":"string",
                         "index":"not_analyzed",
-                        "store":"no"
+                        "store":"yes"
                     },
                     "_tokenized":{
                         "include_in_all":false,
                         "type":"string",
                         "index":"analyzed",
-                        "store":"no"
+                        "store":"yes"
                     }
                 }
             },
@@ -33,13 +33,13 @@
                         "include_in_all":false,
                         "type":"string",
                         "index":"not_analyzed",
-                        "store":"no"
+                        "store":"yes"
                     },
                     "_tokenized":{
                         "include_in_all":false,
                         "type":"string",
                         "index":"analyzed",
-                        "store":"no"
+                        "store":"yes"
                     }
                 }
             }
@@ -50,8 +50,7 @@
                     "match":"*.orderby",
                     "mapping":{
                         "type":"string",
-                        "store":"no",
-                        "index":"not_analyzed"
+                        "store":"yes"
                     }
                 }
             },
@@ -60,7 +59,7 @@
                     "match":"*.date",
                     "mapping":{
                         "type":"date",
-                        "store":"no"
+                        "store":"yes"
                     }
                 }
             },
@@ -69,7 +68,7 @@
                     "match":"*.number",
                     "mapping":{
                         "type":"double",
-                        "store":"no"
+                        "store":"yes"
                     }
                 }
             },
@@ -82,12 +81,12 @@
                             "{name}":{
                                 "type":"string",
                                 "index":"not_analyzed",
-                                "store":"no"
+                                "store":"yes"
                             },
                             "_tokenized":{
                                 "type":"string",
                                 "index":"analyzed",
-                                "store":"no"
+                                "store":"yes"
                             }
                         }
                     }
@@ -98,8 +97,7 @@
                     "match":"*",
                     "mapping":{
                         "type":"string",
-                        "store":"no",
-                        "index":"not_analyzed"
+                        "store":"yes"
                     }
                 }
             }

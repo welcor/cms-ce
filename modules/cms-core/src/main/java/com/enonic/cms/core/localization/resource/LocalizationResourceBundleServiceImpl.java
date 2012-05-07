@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.CacheManager;
 
 import com.enonic.cms.core.localization.LocalizationResourceBundle;
 import com.enonic.cms.core.localization.LocalizationResourceException;
@@ -150,7 +151,6 @@ public class LocalizationResourceBundleServiceImpl
         return new LocalizationResourceBundle( props );
     }
 
-
     public void setPropertiesCache( CacheFacade propertiesCache )
     {
         this.propertiesCache = propertiesCache;
@@ -160,6 +160,12 @@ public class LocalizationResourceBundleServiceImpl
     public void setLocalizationResourceFileService( ResourceService resourceService )
     {
         this.resourceService = resourceService;
+    }
+
+    @Autowired
+    public void setCacheManager( final CacheManager cacheManager )
+    {
+        this.propertiesCache = cacheManager.getOrCreateCache( "localization" );
     }
 
     public void resourceChanged( FileResourceEvent event )

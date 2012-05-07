@@ -7,6 +7,7 @@ package com.enonic.cms.core.search.query;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -24,6 +25,7 @@ import com.enonic.cms.core.search.query.factory.LikeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.OrderQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.RangeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.TermQueryBuilderFactory;
+import com.enonic.cms.store.dao.ContentTypeDao;
 
 @Component
 public class QueryTranslator
@@ -42,6 +44,8 @@ public class QueryTranslator
 
     private final FullTextQueryBuilderFactory fullTextQueryBuilderFactory;
 
+    @Autowired
+    private ContentTypeDao contentTypeDao;
 
     public QueryTranslator()
     {
@@ -79,7 +83,7 @@ public class QueryTranslator
 
     private QueryExpr applyFunctionsAndDateTranslations( final ContentIndexQuery contentIndexQuery )
     {
-        return ContentIndexQueryExprParser.parse( contentIndexQuery, false );
+        return ContentIndexQueryExprParser.parse( contentIndexQuery, false, contentTypeDao );
     }
 
     private QueryBuilder buildQuery( final Expression expr )

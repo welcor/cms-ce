@@ -184,18 +184,16 @@
   <bean id="livePortalTraceController" class="com.enonic.cms.core.tools.LivePortalTraceController"
         parent="abstractToolController">
     <property name="livePortalTraceService" ref="livePortalTraceService"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
   </bean>
 
   <bean id="reindexContentToolController" class="com.enonic.cms.core.tools.ReindexContentToolController"
         parent="abstractToolController"/>
 
 
-    <bean id="indexMonitorController" class="com.enonic.cms.core.tools.IndexMonitorController"
-          parent="abstractToolController">
-        <property name="newContentIndexService" ref="contentIndexService"/>
-    </bean>
+  <bean id="indexMonitorController" class="com.enonic.cms.core.tools.IndexMonitorController"
+        parent="abstractToolController">
+    <property name="newContentIndexService" ref="contentIndexService"/>
+  </bean>
 
   <!-- Construct the resource controller. -->
   <bean id="resourceController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceController">

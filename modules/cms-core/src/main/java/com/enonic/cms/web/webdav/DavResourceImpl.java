@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.webdav;
+package com.enonic.cms.web.webdav;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -57,7 +57,7 @@ import com.enonic.cms.core.resource.FileResourceName;
  * This class implements the resource.
  */
 public final class DavResourceImpl
-        implements DavResource
+    implements DavResource
 {
     /**
      * Logger.
@@ -100,7 +100,8 @@ public final class DavResourceImpl
     /**
      * Construct the resource.
      */
-    public DavResourceImpl( MimeTypeResolver mimeTypeResolver, DavResourceLocator locator, DavResourceFactoryImpl factory, DavSession session, boolean isCollection )
+    public DavResourceImpl( MimeTypeResolver mimeTypeResolver, DavResourceLocator locator, DavResourceFactoryImpl factory,
+                            DavSession session, boolean isCollection )
         throws DavException
     {
         this( mimeTypeResolver, locator, factory, session, null );
@@ -110,8 +111,9 @@ public final class DavResourceImpl
     /**
      * Construct the resource.
      */
-    public DavResourceImpl( MimeTypeResolver mimeTypeResolver, DavResourceLocator locator, DavResourceFactoryImpl factory, DavSession session, FileResource file )
-            throws DavException
+    public DavResourceImpl( MimeTypeResolver mimeTypeResolver, DavResourceLocator locator, DavResourceFactoryImpl factory,
+                            DavSession session, FileResource file )
+        throws DavException
     {
         this.mimeTypeResolver = mimeTypeResolver;
 
@@ -133,7 +135,7 @@ public final class DavResourceImpl
      * Set the file object.
      */
     private void setFile( FileResource file )
-            throws DavException
+        throws DavException
     {
         this.file = file;
         if ( this.file != null )
@@ -219,7 +221,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public void spool( OutputContext outputContext )
-            throws IOException
+        throws IOException
     {
         if ( this.isCollection )
         {
@@ -243,7 +245,7 @@ public final class DavResourceImpl
      * Spool collection.
      */
     private void spoolCollection( OutputContext context )
-            throws IOException
+        throws IOException
     {
         context.setModificationTime( new Date().getTime() );
         context.setContentType( "text/html" );
@@ -295,7 +297,7 @@ public final class DavResourceImpl
      * Spool resource.
      */
     private void spoolResource( OutputContext context )
-            throws IOException
+        throws IOException
     {
         final long length = this.file.getSize();
         final long modTime = this.file.getLastModified().getMillis();
@@ -341,7 +343,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public void setProperty( DavProperty property )
-            throws DavException
+        throws DavException
     {
         alterProperty( property );
     }
@@ -350,7 +352,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public void removeProperty( DavPropertyName propertyName )
-            throws DavException
+        throws DavException
     {
         alterProperty( propertyName );
     }
@@ -359,7 +361,7 @@ public final class DavResourceImpl
      * Alter property.
      */
     private void alterProperty( Object prop )
-            throws DavException
+        throws DavException
     {
         if ( !exists() )
         {
@@ -373,7 +375,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public MultiStatusResponse alterProperties( DavPropertySet setProperties, DavPropertyNameSet removePropertyNames )
-            throws DavException
+        throws DavException
     {
         List<Object> changeList = new ArrayList<Object>();
         if ( removePropertyNames != null )
@@ -401,7 +403,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public MultiStatusResponse alterProperties( List changeList )
-            throws DavException
+        throws DavException
     {
         if ( !exists() )
         {
@@ -426,8 +428,7 @@ public final class DavResourceImpl
             }
 
             DavResourceLocator parentloc =
-                    this.locator.getFactory().createResourceLocator( this.locator.getPrefix(), this.locator.getWorkspacePath(),
-                                                                     parentPath );
+                this.locator.getFactory().createResourceLocator( this.locator.getPrefix(), this.locator.getWorkspacePath(), parentPath );
 
             try
             {
@@ -446,7 +447,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public void addMember( DavResource member, InputContext inputContext )
-            throws DavException
+        throws DavException
     {
         if ( !exists() )
         {
@@ -476,7 +477,7 @@ public final class DavResourceImpl
      * Create collection.
      */
     private void createCollection( String memberName, InputContext inputContext )
-            throws IOException, DavException
+        throws IOException, DavException
     {
         if ( inputContext.hasStream() )
         {
@@ -491,7 +492,7 @@ public final class DavResourceImpl
      * Create file.
      */
     private void createFile( String memberName, InputContext inputContext )
-            throws IOException
+        throws IOException
     {
         final FileResourceName name = new FileResourceName( this.file.getName(), memberName );
         FileResourceData data = FileResourceData.create( new byte[0] );
@@ -545,8 +546,9 @@ public final class DavResourceImpl
 
         for ( FileResourceName name : this.factory.getFileResourceService().getChildren( this.file.getName() ) )
         {
-            list.add( this.locator.getFactory().createResourceLocator( this.locator.getPrefix(), this.locator.getWorkspacePath(), name.getPath(),
-                                                                       false ) );
+            list.add(
+                this.locator.getFactory().createResourceLocator( this.locator.getPrefix(), this.locator.getWorkspacePath(), name.getPath(),
+                                                                 false ) );
         }
 
         return list;
@@ -556,7 +558,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public void removeMember( DavResource member )
-            throws DavException
+        throws DavException
     {
         if ( !exists() || !member.exists() )
         {
@@ -578,7 +580,7 @@ public final class DavResourceImpl
      * Remove member.
      */
     private void removeMember( String fileName )
-            throws IOException
+        throws IOException
     {
         final FileResourceName name = new FileResourceName( fileName );
         this.factory.getFileResourceService().deleteResource( name );
@@ -588,7 +590,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public void move( DavResource destination )
-            throws DavException
+        throws DavException
     {
         if ( !exists() )
         {
@@ -610,7 +612,7 @@ public final class DavResourceImpl
      * Move.
      */
     private void move( String fileName )
-            throws IOException
+        throws IOException
     {
         final FileResourceName name = new FileResourceName( fileName );
         this.factory.getFileResourceService().moveResource( this.file.getName(), name );
@@ -620,7 +622,7 @@ public final class DavResourceImpl
      * {@inheritDoc}
      */
     public void copy( DavResource destination, boolean shallow )
-            throws DavException
+        throws DavException
     {
         if ( !exists() )
         {
@@ -647,7 +649,7 @@ public final class DavResourceImpl
      * Copy.
      */
     private void copy( String fileName )
-            throws IOException
+        throws IOException
     {
         final FileResourceName name = new FileResourceName( fileName );
         this.factory.getFileResourceService().copyResource( this.file.getName(), name );
@@ -680,7 +682,7 @@ public final class DavResourceImpl
     }
 
     public ActiveLock lock( LockInfo lockInfo )
-            throws DavException
+        throws DavException
     {
         if ( isLockable( lockInfo.getType(), lockInfo.getScope() ) )
         {
@@ -693,7 +695,7 @@ public final class DavResourceImpl
     }
 
     public ActiveLock refreshLock( LockInfo lockInfo, String lockToken )
-            throws DavException
+        throws DavException
     {
         if ( !exists() )
         {
@@ -712,7 +714,7 @@ public final class DavResourceImpl
     }
 
     public void unlock( String lockToken )
-            throws DavException
+        throws DavException
     {
         ActiveLock lock = getLock( Type.WRITE, Scope.EXCLUSIVE );
         if ( lock == null )

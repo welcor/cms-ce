@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
@@ -33,11 +32,12 @@ import com.enonic.cms.core.content.index.translator.expression.OrderByExprTransl
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
+import com.enonic.cms.store.dao.ContentTypeDao;
 
 /**
  * This class implements the translation of content query.
  */
-@Component
+
 public final class ContentQueryTranslator
     extends AbstractQueryTranslator
 {
@@ -45,12 +45,19 @@ public final class ContentQueryTranslator
 
     private static final String SECTIONCONTENTENITTY_CLASSNAME = SectionContentEntity.class.getName();
 
+    private ContentTypeDao contentTypeDao;
+
+    public ContentQueryTranslator( ContentTypeDao contentTypeDao )
+    {
+        this.contentTypeDao = contentTypeDao;
+    }
+
     public TranslatedQuery translate( ContentIndexQuery query )
     {
         String generalSubSelectFilter = createCommonFilterHQL( query, null );
 
         // This code block must be run before everyting else...
-        QueryExpr expr = ContentIndexQueryExprParser.parse( query );
+        QueryExpr expr = ContentIndexQueryExprParser.parse( query, contentTypeDao );
 
         Expression optimizedExpr = new LogicalOrOptimizer().optimize( expr.getExpr() );
 

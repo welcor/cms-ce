@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -96,11 +98,9 @@ public class CategoryHandler
     @Autowired
     private IndexTransactionService indexTransactionService;
 
-
+    @PostConstruct
     public void init()
     {
-        super.init();
-
         categoryStatisticsHelper = new CategoryStatisticsHelper( this );
     }
 
@@ -410,8 +410,6 @@ public class CategoryHandler
         {
             // get the keys
             categoryKey = Integer.parseInt( root.getAttribute( "key" ) );
-            indexTransactionService.startTransaction();
-            indexTransactionService.updateCategory( new CategoryKey(categoryKey) );
             int unitKey = -1;
             String keyStr = root.getAttribute( "unitkey" );
             if ( keyStr.length() > 0 )

@@ -20,8 +20,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,6 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -45,7 +44,7 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.AdminStore;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentXMLBuildersSpringManagedBeansBridge;
+import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentNewsletterXMLBuilder;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.framework.util.URLUtils;
@@ -107,11 +106,10 @@ public class ContentNewsletterHandlerServlet
         VIEWRECIPIENTS_XSL = "newsletter_viewrecipients.xsl";
     }
 
-    public void init( ServletConfig servletConfig )
-        throws ServletException
+    @Autowired
+    public void setContentNewsletterXMLBuilder( final ContentNewsletterXMLBuilder builder )
     {
-        super.init( servletConfig );
-        setContentXMLBuilder( ContentXMLBuildersSpringManagedBeansBridge.getContentNewsletterXMLBuilder() );
+        setContentXMLBuilder( builder );
     }
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
@@ -165,7 +163,7 @@ public class ContentNewsletterHandlerServlet
             }
             catch ( UnsupportedEncodingException uee )
             {
-                VerticalAdminLogger.errorAdmin("%t", uee);
+                VerticalAdminLogger.errorAdmin( "%t", uee );
             }
         }
         else
@@ -197,7 +195,7 @@ public class ContentNewsletterHandlerServlet
             catch ( IOException ioe )
             {
                 String message = "I/O error: %t";
-                VerticalAdminLogger.errorAdmin(message, ioe );
+                VerticalAdminLogger.errorAdmin( message, ioe );
             }
         }
     }
@@ -271,7 +269,7 @@ public class ContentNewsletterHandlerServlet
                 for ( String paramName : paramMap.keySet() )
                 {
                     String paramValue = paramMap.get( paramName );
-                    mailBody = mailBody.replaceAll("\\%" + paramName + "\\%", paramValue);
+                    mailBody = mailBody.replaceAll( "\\%" + paramName + "\\%", paramValue );
                 }
                 String name = paramMap.get( "recipientName" );
                 mail.clearRecipients();
@@ -300,7 +298,7 @@ public class ContentNewsletterHandlerServlet
             catch ( Exception esle )
             {
                 String msg = "Failed to send email: {0}";
-                VerticalAdminLogger.warn(msg, esle.getMessage(), null );
+                VerticalAdminLogger.warn( msg, esle.getMessage(), null );
                 Element sentElem = XMLTool.createElement( doc, sendhistoryElem, "sent" );
                 sentElem.setAttribute( "timestamp", DateUtil.formatISODateTime( new Date() ) );
                 sentElem.setAttribute( "uid", user.getName() );
@@ -359,12 +357,12 @@ public class ContentNewsletterHandlerServlet
         catch ( TransformerException te )
         {
             String msg = "XSLT transformation error: %t";
-            VerticalAdminLogger.errorAdmin(msg, te );
+            VerticalAdminLogger.errorAdmin( msg, te );
         }
         catch ( IOException ioe )
         {
             String msg = "I/O error: %t";
-            VerticalAdminLogger.errorAdmin(msg, ioe );
+            VerticalAdminLogger.errorAdmin( msg, ioe );
         }
 
     }
@@ -448,7 +446,8 @@ public class ContentNewsletterHandlerServlet
         final Set<UserEntity> members = findUserMembers( admin, formItems );
         final Map<String, Map<String, String>> emailMap = new HashMap<String, Map<String, String>>();
 
-        for (final UserEntity member : members) {
+        for ( final UserEntity member : members )
+        {
             final Map<String, String> paramMap = new HashMap<String, String>();
             final String email = member.getEmail() != null ? member.getEmail() : "";
             paramMap.put( "recipientName", member.getDisplayName() );
@@ -540,12 +539,12 @@ public class ContentNewsletterHandlerServlet
         catch ( TransformerException te )
         {
             String msg = "XSLT transformation error: %t";
-            VerticalAdminLogger.errorAdmin(msg, te );
+            VerticalAdminLogger.errorAdmin( msg, te );
         }
         catch ( IOException ioe )
         {
             String msg = "I/O error: %t";
-            VerticalAdminLogger.errorAdmin(msg, ioe );
+            VerticalAdminLogger.errorAdmin( msg, ioe );
         }
     }
 
@@ -645,7 +644,7 @@ public class ContentNewsletterHandlerServlet
         }
         catch ( UnsupportedEncodingException uee )
         {
-            VerticalAdminLogger.errorAdmin("%t", uee);
+            VerticalAdminLogger.errorAdmin( "%t", uee );
         }
         super.handlerCreate( request, response, session, admin, formItems, user );
     }
@@ -674,7 +673,7 @@ public class ContentNewsletterHandlerServlet
         }
         catch ( UnsupportedEncodingException uee )
         {
-            VerticalAdminLogger.errorAdmin("%t", uee);
+            VerticalAdminLogger.errorAdmin( "%t", uee );
         }
         super.handlerUpdate( request, response, formItems, user );
     }

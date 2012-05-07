@@ -11,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.SessionFactoryImplementor;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.jdbc.ConnectionDecorator;
@@ -81,6 +82,7 @@ public final class DecoratorManager
     /**
      * Set the cache manager.
      */
+    @Autowired
     public void setCacheManager( CacheManager cacheManager )
     {
         this.cacheManager = cacheManager;

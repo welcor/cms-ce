@@ -3,7 +3,6 @@ package com.enonic.cms.store.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,13 +82,9 @@ class FindRelatedChildrenCommand
         {
             contentKeys.add( (ContentKey) row[1] );
         }
-        final Map<ContentKey, ContentEntity> contentMapByKey = new HashMap<ContentKey, ContentEntity>( contentKeys.size() );
-        FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, hibernateTemplate, new FindContentByKeysQuerier(
+        final FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, hibernateTemplate, new FindContentByKeysQuerier(
             hibernateTemplate.getSessionFactory().getCurrentSession() ) );
-        for ( ContentEntity c : command.execute( new ArrayList<ContentKey>( contentKeys ) ) )
-        {
-            contentMapByKey.put( c.getKey(), c );
-        }
+        final Map<ContentKey, ContentEntity> contentMapByKey = command.execute( new ArrayList<ContentKey>( contentKeys ) );
 
         final List<RelatedChildContent> relatedChildContrents = new ArrayList<RelatedChildContent>();
         for ( Object[] row : list )

@@ -2,20 +2,22 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.tools;
+package com.enonic.cms.web.main;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
 
-import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.product.LicenseChecker;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.upgrade.UpgradeService;
@@ -24,8 +26,8 @@ import com.enonic.cms.upgrade.UpgradeService;
  * Controller for displaying the welcome page, the root page for an installation, listing all sites, plugins, etcs, and linking to DAV,
  * Admin pages, and other information pages.
  */
+@Controller
 public final class WelcomeController
-    extends AbstractController
 {
     private UpgradeService upgradeService;
 
@@ -44,14 +46,16 @@ public final class WelcomeController
     private Map<String, Integer> createSiteMap()
     {
         final HashMap<String, Integer> siteMap = new HashMap<String, Integer>();
-        for (final SiteEntity entity : this.siteDao.findAll()) {
-            siteMap.put(entity.getName(), entity.getKey().toInt());
+        for ( final SiteEntity entity : this.siteDao.findAll() )
+        {
+            siteMap.put( entity.getName(), entity.getKey().toInt() );
         }
 
         return siteMap;
     }
 
-    protected ModelAndView handleRequestInternal( HttpServletRequest req, HttpServletResponse res )
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    protected ModelAndView handle( final HttpServletRequest req )
     {
         final boolean modelUpgradeNeeded = this.upgradeService.needsUpgrade();
         final boolean softwareUpgradeNeeded = this.upgradeService.needsSoftwareUpgrade();
@@ -75,9 +79,9 @@ public final class WelcomeController
         return new ModelAndView( "welcomePage", model );
     }
 
-    private String createBaseUrl( HttpServletRequest req )
+    private String createBaseUrl( final HttpServletRequest req )
     {
-        StringBuffer str = new StringBuffer();
+        final StringBuilder str = new StringBuilder();
         str.append( req.getScheme() ).append( "://" ).append( req.getServerName() );
 
         if ( req.getServerPort() != 80 )

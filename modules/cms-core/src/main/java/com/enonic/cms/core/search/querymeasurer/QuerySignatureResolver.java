@@ -3,6 +3,7 @@ package com.enonic.cms.core.search.querymeasurer;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQueryExprParser;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
+import com.enonic.cms.store.dao.ContentTypeDao;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,9 +15,9 @@ public class QuerySignatureResolver
 {
     private final static String LS = System.getProperty( "line.separator" );
 
-    public static IndexQuerySignature createQuerySignature( ContentIndexQuery query )
+    public static IndexQuerySignature createQuerySignature( ContentIndexQuery query, ContentTypeDao contentTypeDao )
     {
-        final QueryExpr queryExpr = ContentIndexQueryExprParser.parse( query );
+        final QueryExpr queryExpr = ContentIndexQueryExprParser.parse( query, false, contentTypeDao );
 
         StringBuffer s = new StringBuffer();
 

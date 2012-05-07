@@ -28,7 +28,6 @@
   <bean id="sessionFactory" class="com.enonic.cms.store.support.HibernateConfigurator">
     <property name="dialect" ref="dialect"/>
     <property name="dataSource" ref="dataSource"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
     <property name="configLocation" value="classpath:com/enonic/cms/store/hibernate.cfg.xml"/>
     <property name="useTransactionAwareDataSource" value="false"/>
     <property name="logging" value="${cms.jdbc.logging}"/>
@@ -41,7 +40,6 @@
   <bean id="decoratorManager" class="com.enonic.cms.store.support.DecoratorManager">
     <property name="logging" value="${cms.jdbc.logging}"/>
     <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
     <property name="dialect" ref="dialect"/>
   </bean>
 
@@ -132,12 +130,6 @@
 
   <bean id="localizationResourceBundleService"
         class="com.enonic.cms.core.localization.resource.LocalizationResourceBundleServiceImpl">
-    <property name="propertiesCache">
-      <bean class="com.enonic.cms.framework.cache.CacheFacadeFactory">
-        <property name="cacheManager" ref="cacheFacadeManager"/>
-        <property name="cacheName" value="localization"/>
-      </bean>
-    </property>
   </bean>
 
   <bean id="localeResolverService"
@@ -237,14 +229,8 @@
   <bean id="expressionFunctionsFactory"
         class="com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory"/>
 
-  <bean id="imageCache" class="com.enonic.cms.core.image.cache.ImageCacheFactory">
-    <property name="cacheName" value="image"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
-  </bean>
-
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
     <property name="directory" value="${cms.blobstore.dir}"/>
-    <property name="imageCache" ref="imageCache"/>
   </bean>
 
   <bean id="blobStore" class="com.enonic.cms.framework.blob.file.FileBlobStore">
@@ -324,7 +310,7 @@
 
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
 
-  <bean id="davConfiguration" class="com.enonic.cms.core.webdav.DavConfiguration">
+  <bean id="davConfiguration" class="com.enonic.cms.web.webdav.DavConfiguration">
     <property name="fileResourceService" ref="fileResourceService"/>
     <property name="securityService" ref="securityService"/>
     <property name="resourceAccessResolver" ref="resourceAccessResolver"/>
@@ -417,12 +403,10 @@
   <bean id="siteCachesService" class="com.enonic.cms.core.portal.cache.SiteCachesServiceImpl">
     <property name="pageCacheServiceFactory">
       <bean class="com.enonic.cms.core.portal.cache.PageCacheServiceFactory">
-        <property name="cacheManager" ref="cacheFacadeManager"/>
         <property name="sitePropertiesService" ref="sitePropertiesService"/>
       </bean>
     </property>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
   </bean>
 
   <bean id="adminService" class="com.enonic.cms.core.service.AdminServiceImpl">
@@ -472,63 +456,16 @@
     <property name="userHandler" ref="userHandler"/>
   </bean>
 
-  <bean id="abstractBaseXMLBuilder" abstract="true"
-        class="com.enonic.vertical.adminweb.handlers.xmlbuilders.AbstractBaseXMLBuilder">
-    <property name="adminService" ref="adminService"/>
-    <property name="verticalProperties" ref="verticalProperties"/>
-  </bean>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentArticle3XMLBuilder"/>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.GeneralContentXMLBuilder"/>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentDocumentXMLBuilder"/>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentEnhancedImageXMLBuilder"/>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentFileXMLBuilder"/>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentNewsletterXMLBuilder"/>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentPollXMLBuilder"/>
+  <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.SimpleContentXMLBuilder"/>
 
-  <bean id="contentBaseXMLBuilder" class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentBaseXMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="contentArticle3XMLBuilder"
-        class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentArticle3XMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="contentDocumentXMLBuilder"
-        class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentDocumentXMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="contentEnhancedImageXMLBuilder"
-        class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentEnhancedImageXMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="contentFileXMLBuilder" class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentFileXMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="contentNewsletterXMLBuilder"
-        class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentNewsletterXMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="contentPollXMLBuilder" class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentPollXMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="simpleContentXMLBuilder" class="com.enonic.vertical.adminweb.handlers.xmlbuilders.SimpleContentXMLBuilder"
-        parent="abstractBaseXMLBuilder">
-  </bean>
-
-  <bean id="contentXMLBuildersSpringManagedBeansBridge"
-        class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentXMLBuildersSpringManagedBeansBridge">
-    <property name="contentBaseXMLBuilder" ref="contentBaseXMLBuilder"/>
-    <property name="contentArticle3XMLBuilder" ref="contentArticle3XMLBuilder"/>
-    <property name="contentDocumentXMLBuilder" ref="contentDocumentXMLBuilder"/>
-    <property name="contentEnhancedImageXMLBuilder" ref="contentEnhancedImageXMLBuilder"/>
-    <property name="contentFileXMLBuilder" ref="contentFileXMLBuilder"/>
-    <property name="contentNewsletterXMLBuilder" ref="contentNewsletterXMLBuilder"/>
-    <property name="contentPollXMLBuilder" ref="contentPollXMLBuilder"/>
-    <property name="simpleContentXMLBuilder" ref="simpleContentXMLBuilder"/>
-  </bean>
-
-  <bean id="baseHandler" abstract="true" class="com.enonic.vertical.engine.handlers.BaseHandler" init-method="init">
-    <property name="keyService" ref="keyService"/>
-    <property name="verticalProperties" ref="verticalProperties"/>
+  <bean id="baseHandler" abstract="true" class="com.enonic.vertical.engine.handlers.BaseHandler">
     <property name="baseEngine" ref="presentationEngine"/>
     <property name="adminConsoleTranslationService" ref="adminConsoleTranslationService"/>
     <property name="securityService" ref="securityService"/>
@@ -608,7 +545,7 @@
     <property name="transactionTemplate" ref="schedulerTranscationTemplate"/>
   </bean>
 
-<!--  <bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/> -->
+  <!--  <bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/> -->
 
   <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceDispatcher">
     <property name="newContentIndexService" ref="newContentIndexService"/>

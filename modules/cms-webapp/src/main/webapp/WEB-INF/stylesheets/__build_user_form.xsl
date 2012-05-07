@@ -5,7 +5,7 @@
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-        >
+    >
 
   <xsl:namespace-alias stylesheet-prefix="x" result-prefix="xsl"/>
   <xsl:output method="xml"/>
@@ -94,6 +94,7 @@
       <x:param name="excludekey"/>
 
       <x:param name="isRemote" select="/users/userstore/@remote = 'true'"/>
+      <x:param name="isEmailReadOnly" select="/users/userstore/@isEmailReadOnly = 'true'"/>
 
       <x:param name="generated-display-name"/>
 
@@ -160,8 +161,8 @@
           <link rel="stylesheet" type="text/css" href="javascript/cms/ui/style.css"/>
 
           <script type="text/javascript">
-            var g_isRemote = <x:value-of select="$isRemote"/>;
-            var g_addressIsRequired = <x:value-of select="boolean($configuration/address/@required = 'true')"/>;
+            var g_isRemote =<x:value-of select="$isRemote"/>;
+            var g_addressIsRequired =<x:value-of select="boolean($configuration/address/@required = 'true')"/>;
           </script>
 
           <x:if test="$callback">
@@ -180,16 +181,16 @@
 
             function updateNotifyInputField(bNotify)
             {
-              document.getElementById('notification').value = bNotify;
+            document.getElementById('notification').value = bNotify;
             }
 
             function validateUserGroupAdd(key, type, name, userstorename)
             {
-              if (type == 3)
-              {
-                return "%alertUserGroupCannotBeAdded%";
-              }
-              return null;
+            if (type == 3)
+            {
+            return "%alertUserGroupCannotBeAdded%";
+            }
+            return null;
             }
 
             function validateAll(formName) {
@@ -222,14 +223,14 @@
 
             if ( !checkAll(formName, validatedFields) )
             {
-              return;
+            return;
             }
 
             <x:if test="not($wizard) or $step = 1">
               <x:if test="$configuration/address/@required = 'true'">
                 if ( !validateAddressTab() )
                 {
-                  return;
+                return;
                 }
               </x:if>
             </x:if>
@@ -237,29 +238,40 @@
             <x:if test="$create = 1 and not($wizard)">
               if (f['password_dummy'].value != f['password2_dummy'].value)
               {
-                alert("%errPasswordsDontMatch%");
-                return;
+              alert("%errPasswordsDontMatch%");
+              return;
               }
             </x:if>
 
-              f.submit();
+            f.submit();
             }
             // -----------------------------------------------------------------------------------------------------------------------------
 
             function setReadOnly()
             {
-              var form = document.forms['formAdmin'];
-              var formElements = form.elements;
-              var elementsLn = formElements.length;
+            var form = document.forms['formAdmin'];
+            var formElements = form.elements;
 
-              for ( var i = 0; i &lt; elementsLn; i++ )
-              {
-                // NB: Display name must always be writeable
-                if ( formElements[i].id != 'avbryt' &amp;&amp; formElements[i].id != 'display_name' )
-                {
-                  formElements[i].readOnly = true;
-                }
-              }
+            for ( var i = 0; i &lt; formElements.length; i++ )
+            {
+            var element = formElements[i];
+            var isInputElement = element.type !== 'fieldset' &amp;&amp; element.type !== 'button' &amp;&amp; element.id !== 'display_name';
+
+            if ( isInputElement )
+            {
+            var isSelectElement = element.tagName.toLowerCase() === 'select';
+
+            // Disable select elements. It's ok as the server handles elements that are null.
+            if ( isSelectElement )
+            {
+            element.disabled = true;
+            }
+            else
+            {
+            element.readOnly = true;
+            }
+            }
+            }
             }
             // -----------------------------------------------------------------------------------------------------------------------------
 
@@ -392,7 +404,8 @@
                   <tr>
                     <td colspan="10">
                       <div class="tab-pane" id="tab-pane-1">
-                        <script type="text/javascript" language="JavaScript">var tabPane1 = new WebFXTabPane( document.getElementById("tab-pane-1" ), true );
+                        <script type="text/javascript" language="JavaScript">var tabPane1 = new WebFXTabPane(
+                          document.getElementById("tab-pane-1" ), true );
                         </script>
 
                         <x:choose>
@@ -769,64 +782,64 @@
 
           <fieldset>
             <legend>&nbsp;%blockLastLogins%&nbsp;</legend>
-              <table width="99%" cellspacing="2" cellpadding="2">
-                  <x:if test="/users/user/@key">
+            <table width="99%" cellspacing="2" cellpadding="2">
+              <x:if test="/users/user/@key">
+                <tr>
+                  <td>
+                    <table>
                       <tr>
-                          <td>
-                              <table>
-                                  <tr>
-                                      <th style="width:100px; text-align:left">%fldTimestamp%</th>
-                                      <th style="width:150px; text-align:left">%fldSite%</th>
-                                      <th style="text-align:left">%fldClient%</th>
-                                  </tr>
-                                  <x:for-each select="/users/logentries/logentry">
-                                      <tr>
-                                          <td>
-                                              <x:value-of select="@timestamp"/>
-                                          </td>
-                                          <td>
-                                              <x:choose>
-                                                  <x:when test="@menukey">
-                                                      <x:value-of select="@menuname"/>
-                                                  </x:when>
-                                                  <x:otherwise>
-                                                      <x:text>Adminweb</x:text>
-                                                  </x:otherwise>
-                                              </x:choose>
-                                          </td>
-                                          <td>
-                                              <x:value-of select="@inetaddress"/>
-                                          </td>
-                                      </tr>
-                                  </x:for-each>
-                              </table>
-                          </td>
+                        <th style="width:100px; text-align:left">%fldTimestamp%</th>
+                        <th style="width:150px; text-align:left">%fldSite%</th>
+                        <th style="text-align:left">%fldClient%</th>
                       </tr>
-                      <tr>
+                      <x:for-each select="/users/logentries/logentry">
+                        <tr>
                           <td>
-                              <x:call-template name="button">
-                                  <x:with-param name="name" select="'vieweventlog'"/>
-                                  <x:with-param name="type" select="'button'"/>
-                                  <x:with-param name="caption" select="'%cmdViewEventLog%'"/>
-                                  <x:with-param name="onclick">
-                                      <x:text>viewEventLog(-1,</x:text>
-                                      <x:text>-1,</x:text>
-                                      <x:text>-1, '</x:text>
-                                      <x:value-of select="/users/user/@key"/>
-                                      <x:text>')</x:text>
-                                  </x:with-param>
-                              </x:call-template>
+                            <x:value-of select="@timestamp"/>
                           </td>
-                      </tr>
-                  </x:if>
-              </table>
+                          <td>
+                            <x:choose>
+                              <x:when test="@menukey">
+                                <x:value-of select="@menuname"/>
+                              </x:when>
+                              <x:otherwise>
+                                <x:text>Adminweb</x:text>
+                              </x:otherwise>
+                            </x:choose>
+                          </td>
+                          <td>
+                            <x:value-of select="@inetaddress"/>
+                          </td>
+                        </tr>
+                      </x:for-each>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <x:call-template name="button">
+                      <x:with-param name="name" select="'vieweventlog'"/>
+                      <x:with-param name="type" select="'button'"/>
+                      <x:with-param name="caption" select="'%cmdViewEventLog%'"/>
+                      <x:with-param name="onclick">
+                        <x:text>viewEventLog(-1,</x:text>
+                        <x:text>-1,</x:text>
+                        <x:text>-1, '</x:text>
+                        <x:value-of select="/users/user/@key"/>
+                        <x:text>')</x:text>
+                      </x:with-param>
+                    </x:call-template>
+                  </td>
+                </tr>
+              </x:if>
+            </table>
           </fieldset>
         </div>
       </x:template>
 
       <x:template name="groupmembershipform">
         <x:param name="name" select="'%blockMemberOfGroups%'"/>
-        
+
         <div class="tab-page" id="tab-page-groups">
           <span class="tab">
             <x:value-of select="$name"/>
@@ -930,7 +943,7 @@
 
             function handle_tabpane_onclick( pageIndex )
             {
-              UserPreferenceTable.init('<x:value-of select="/users/user/@key"/>');
+            UserPreferenceTable.init('<x:value-of select="/users/user/@key"/>');
             }
           </script>
           <fieldset>
@@ -1011,8 +1024,8 @@
                   <script type="text/javascript">
                     $('input[id=uid_dummy]').bind('keyup', function( event )
                     {
-                      updateBreadCrumbHeader('titlename', this);
-                      updateDisplayNameValue(event);
+                    updateBreadCrumbHeader('titlename', this);
+                    updateDisplayNameValue(event);
                     });
                   </script>
 
@@ -1071,7 +1084,7 @@
                 <x:with-param name="name" select="'email'"/>
                 <x:with-param name="label" select="'%fldEmail%:'"/>
                 <x:with-param name="selectnode" select="$user/block/email"/>
-                <x:with-param name="readonly" select="false()"/>
+                <x:with-param name="readonly" select="$isEmailReadOnly"/>
                 <x:with-param name="required" select="true()"/>
                 <x:with-param name="useIcon" select="$isRemote"/>
                 <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1106,7 +1119,8 @@
           </x:variable>
 
           <x:variable name="generated-display-name-is-same" select="$generated-display-name = $value-for-display-name"/>
-          <x:variable name="editable-display-name" select="( $wizard and not($one-or-more-name-fields-is-configured) ) or ( $create = 0 and $one-or-more-name-fields-is-configured and not($generated-display-name-is-same) ) or ( $create = 0 and not( $one-or-more-name-fields-is-configured ) )"/>
+          <x:variable name="editable-display-name"
+                      select="( $wizard and not($one-or-more-name-fields-is-configured) ) or ( $create = 0 and $one-or-more-name-fields-is-configured and not($generated-display-name-is-same) ) or ( $create = 0 and not( $one-or-more-name-fields-is-configured ) )"/>
 
           <table border="0" cellspacing="2" cellpadding="0">
             <x:if test="boolean($configuration/prefix)">
@@ -1126,7 +1140,7 @@
               <script type="text/javascript">
                 $('input[id=prefix]').bind('keyup', function( event )
                 {
-                  updateDisplayNameValue(event);
+                updateDisplayNameValue(event);
                 });
               </script>
 
@@ -1156,7 +1170,7 @@
               <script type="text/javascript">
                 $('input[id=first_name]').bind('keyup', function( event )
                 {
-                  updateDisplayNameValue(event);
+                updateDisplayNameValue(event);
                 });
               </script>
 
@@ -1186,7 +1200,7 @@
               <script type="text/javascript">
                 $('input[id=middle_name]').bind('keyup', function( event )
                 {
-                  updateDisplayNameValue(event);
+                updateDisplayNameValue(event);
                 });
               </script>
 
@@ -1216,7 +1230,7 @@
               <script type="text/javascript">
                 $('input[id=last_name]').bind('keyup', function( event )
                 {
-                  updateDisplayNameValue(event);
+                updateDisplayNameValue(event);
                 });
               </script>
 
@@ -1245,7 +1259,7 @@
                 <script type="text/javascript">
                   $('input[id=suffix]').bind('keyup', function( event )
                   {
-                    updateDisplayNameValue(event);
+                  updateDisplayNameValue(event);
                   });
                 </script>
 
@@ -1276,7 +1290,7 @@
               <script type="text/javascript">
                 $('input[id=initials]').bind('keyup', function( event )
                 {
-                  updateDisplayNameValue(event);
+                updateDisplayNameValue(event);
                 });
               </script>
 
@@ -1306,7 +1320,7 @@
               <script type="text/javascript">
                 $('input[id=nick_name]').bind('keyup', function( event )
                 {
-                  updateDisplayNameValue(event);
+                updateDisplayNameValue(event);
                 });
               </script>
 
@@ -1349,7 +1363,9 @@
                 </script>
               </td>
               <td>
-                <img width="16" height="16" onclick="admin_lockUnlockTextInput(this,'display_name', 'readonly');" alt="%tooltipUnlockToEditManually%" title="%tooltipUnlockToEditManually%" id="display_name_lock_icon" class="hand" style="vertical-align: bottom;">
+                <img width="16" height="16" onclick="admin_lockUnlockTextInput(this,'display_name', 'readonly');"
+                     alt="%tooltipUnlockToEditManually%" title="%tooltipUnlockToEditManually%" id="display_name_lock_icon" class="hand"
+                     style="vertical-align: bottom;">
                   <x:attribute name="src">
                     <x:choose>
                       <x:when test="$editable-display-name">
@@ -1409,28 +1425,25 @@
                     </div>
                   </x:if>
                   <p>
-                    <table border="0" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td valign="top">
-                          <input type="file" name="photo" onchange="removePhoto(false);">
-                            <x:if test="$configuration/photo/@readonly = 'true'">
-                              <x:attribute name="readonly">true</x:attribute>
-                            </x:if>
-                          </input>
-                          <input type="hidden" name="remove_photo" id="remove_photo" value="false"/>
-                        </td>
-                        <td valign="top">
-                          <x:call-template name="button">
-                            <x:with-param name="image" select="'images/icon_remove.gif'"/>
-                            <x:with-param name="name" select="'photo_removebutton'"/>
-                            <x:with-param name="disabled" select="$canUpdateUser = 'false' or $configuration/photo/@readonly = 'true'"/>
-                            <x:with-param name="onclick">
-                              <xsl:text>javascript:removePhoto(true);</xsl:text>
-                            </x:with-param>
-                          </x:call-template>
-                        </td>
-                      </tr>
-                    </table>
+                    <x:if test="$canUpdateUser != 'false' and not($configuration/photo/@readonly = 'true')">
+                      <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td valign="top">
+                            <input type="file" name="photo" onchange="removePhoto(false);"/>
+                            <input type="hidden" name="remove_photo" id="remove_photo" value="false"/>
+                          </td>
+                          <td valign="top">
+                            <x:call-template name="button">
+                              <x:with-param name="image" select="'images/icon_remove.gif'"/>
+                              <x:with-param name="name" select="'photo_removebutton'"/>
+                              <x:with-param name="onclick">
+                                <xsl:text>javascript:removePhoto(true);</xsl:text>
+                              </x:with-param>
+                            </x:call-template>
+                          </td>
+                        </tr>
+                      </table>
+                    </x:if>
                   </p>
 
                   <x:if test="$configuration/photo/@required = 'true' and not($user/block/photo/@exists)">
@@ -1950,177 +1963,178 @@
             // -----------------------------------------------------------------------------------------------------------------------------
 
             $(g_fieldsThatUseCountryCallingCodes).autocomplete(g_countryCallingCodes, {
-              minChars: 0,
-              width: 310,
-              max: 1000,
-              formatItem: function( row, i, max )
-              {
-                return '+' + row.code + ' (' + row.country + ')';
-              },
+            minChars: 0,
+            width: 310,
+            max: 1000,
+            formatItem: function( row, i, max )
+            {
+            return '+' + row.code + ' (' + row.country + ')';
+            },
 
-              formatMatch: function( row, i, max )
-              {
-                return '+' + row.code + function() { };
-              },
+            formatMatch: function( row, i, max )
+            {
+            return '+' + row.code + function() { };
+            },
 
-              formatResult: function( row )
-              {
-                return '+' + row.code + ' ';
-              }
+            formatResult: function( row )
+            {
+            return '+' + row.code + ' ';
+            }
             });
             // -----------------------------------------------------------------------------------------------------------------------------
 
             function disableAutoComplete()
             {
-              $("input#phone").unautocomplete();
+            $("input#phone").unautocomplete();
             }
           </script>
 
         </fieldset>
       </x:template>
 
-        <x:template name="fieldset-address">
-            <x:variable name="show-new-address-tab-link" select="$canUpdateUser = 'true' and boolean($configuration/address/@readonly) = false()"/>
-            <fieldset>
-                <legend>%blockAddress%</legend>
-                <x:if test="$show-new-address-tab-link">
-                    <p>
-                        <a href="javascript:;" onclick="openNewAddressTab();" class="text-link-button">%cmdAddAddressTab%</a>
-                    </p>
+      <x:template name="fieldset-address">
+        <x:variable name="show-new-address-tab-link"
+                    select="$canUpdateUser = 'true' and boolean($configuration/address/@readonly) = false()"/>
+        <fieldset>
+          <legend>%blockAddress%</legend>
+          <x:if test="$show-new-address-tab-link">
+            <p>
+              <a href="javascript:;" onclick="openNewAddressTab();" class="text-link-button">%cmdAddAddressTab%</a>
+            </p>
+          </x:if>
+
+          <x:variable name="use-address-iso" select="not($configuration/address/@iso) or $configuration/address/@iso = 'true'"/>
+
+          <div id="address-tabs">
+            <x:choose>
+              <x:when test="count($user/block/addresses/address) &gt; 1">
+
+                <ul class="ui-tabs-nav">
+                  <x:for-each select="$user/block/addresses/address">
+                    <x:call-template name="address-tab-template">
+                      <x:with-param name="urlFragment" select="concat('#address-tab-', position())"/>
+                      <x:with-param name="addressName" select="label"/>
+                      <x:with-param name="primary" select="position() = 1 and $isRemote"/>
+                      <x:with-param name="displayCloseIcon" select="true()"/>
+                      <x:with-param name="required" select="position() = 1 and $configuration/address/@required = 'true'"/>
+                    </x:call-template>
+                  </x:for-each>
+                </ul>
+
+                <x:for-each select="$user/block/addresses/address">
+
+                  <x:variable name="country">
+                    <x:choose>
+                      <x:when test="$use-address-iso">
+                        <x:value-of select="iso-country"/>
+                      </x:when>
+                      <x:otherwise>
+                        <x:value-of select="country"/>
+                      </x:otherwise>
+                    </x:choose>
+                  </x:variable>
+
+                  <x:variable name="region">
+                    <x:choose>
+                      <x:when test="$use-address-iso">
+                        <x:value-of select="iso-region"/>
+                      </x:when>
+                      <x:otherwise>
+                        <x:value-of select="region"/>
+                      </x:otherwise>
+                    </x:choose>
+                  </x:variable>
+
+                  <x:call-template name="address-tab-panel-template">
+                    <x:with-param name="readonly" select="$configuration/address/@readonly = 'true'"/>
+                    <x:with-param name="id" select="concat('address-tab-', position())"/>
+                    <x:with-param name="addressName" select="label"/>
+                    <x:with-param name="street" select="street"/>
+                    <x:with-param name="postalCode" select="postal-code"/>
+                    <x:with-param name="postalAddress" select="postal-address"/>
+                    <x:with-param name="country" select="$country"/>
+                    <x:with-param name="region" select="$region"/>
+                    <x:with-param name="remoteIcon" select="false()"/>
+                  </x:call-template>
+
+                  <x:variable name="update-region" select="$use-address-iso and ( $create = 0 or ( $wizard = true() and $step = 1 ) )"/>
+
+                  <x:if test="$update-region">
+                    <script type="text/javascript">
+                      <x:text>updateRegion( $('.user-country-combo:eq(</x:text>
+                      <x:value-of select="position() - 1"/>
+                      <x:text>)')[0] );</x:text>
+                    </script>
+                  </x:if>
+
+                </x:for-each>
+              </x:when>
+              <x:otherwise>
+
+                <x:variable name="country">
+                  <x:choose>
+                    <x:when test="$use-address-iso">
+                      <x:value-of select="$user/block/addresses/address/iso-country"/>
+                    </x:when>
+                    <x:otherwise>
+                      <x:value-of select="$user/block/addresses/address/country"/>
+                    </x:otherwise>
+                  </x:choose>
+                </x:variable>
+
+                <x:variable name="region">
+                  <x:choose>
+                    <x:when test="$use-address-iso">
+                      <x:value-of select="$user/block/addresses/address/iso-region"/>
+                    </x:when>
+                    <x:otherwise>
+                      <x:value-of select="$user/block/addresses/address/region"/>
+                    </x:otherwise>
+                  </x:choose>
+                </x:variable>
+
+                <ul class="ui-tabs-nav">
+                  <x:call-template name="address-tab-template">
+                    <x:with-param name="addressName" select="$user/block/addresses/address/label"/>
+                    <x:with-param name="urlFragment" select="'#address-tab-1'"/>
+                    <x:with-param name="primary" select="$isRemote"/>
+                    <x:with-param name="displayCloseIcon" select="false()"/>
+                    <x:with-param name="required" select="$configuration/address/@required = 'true'"/>
+                  </x:call-template>
+                </ul>
+                <x:call-template name="address-tab-panel-template">
+                  <x:with-param name="readonly" select="$configuration/address/@readonly = 'true'"/>
+                  <x:with-param name="id" select="'address-tab-1'"/>
+                  <x:with-param name="addressName" select="$user/block/addresses/address/label"/>
+                  <x:with-param name="street" select="$user/block/addresses/address/street"/>
+                  <x:with-param name="postalCode" select="$user/block/addresses/address/postal-code"/>
+                  <x:with-param name="postalAddress" select="$user/block/addresses/address/postal-address"/>
+                  <x:with-param name="country" select="$country"/>
+                  <x:with-param name="region" select="$region"/>
+                  <x:with-param name="remoteIcon" select="false()"/>
+                </x:call-template>
+
+                <x:variable name="update-region" select="$use-address-iso and ( $create = 0 or ( $wizard = true() and $step = 1 ) )"/>
+
+                <x:if test="$update-region">
+                  <script type="text/javascript">
+                    <x:text>updateRegion( $('.user-country-combo:eq(0)')[0] );</x:text>
+                  </script>
                 </x:if>
 
-                <x:variable name="use-address-iso" select="not($configuration/address/@iso) or $configuration/address/@iso = 'true'"/>
+              </x:otherwise>
+            </x:choose>
 
-                <div id="address-tabs">
-                    <x:choose>
-                        <x:when test="count($user/block/addresses/address) &gt; 1">
+          </div>
+        </fieldset>
 
-                            <ul class="ui-tabs-nav">
-                                <x:for-each select="$user/block/addresses/address">
-                                    <x:call-template name="address-tab-template">
-                                        <x:with-param name="urlFragment" select="concat('#address-tab-', position())"/>
-                                        <x:with-param name="addressName" select="label"/>
-                                        <x:with-param name="primary" select="position() = 1 and $isRemote"/>
-                                        <x:with-param name="displayCloseIcon" select="true()"/>
-                                        <x:with-param name="required" select="position() = 1 and $configuration/address/@required = 'true'"/>
-                                    </x:call-template>
-                                </x:for-each>
-                            </ul>
-
-                            <x:for-each select="$user/block/addresses/address">
-
-                                <x:variable name="country">
-                                    <x:choose>
-                                        <x:when test="$use-address-iso">
-                                            <x:value-of select="iso-country"/>
-                                        </x:when>
-                                        <x:otherwise>
-                                            <x:value-of select="country"/>
-                                        </x:otherwise>
-                                    </x:choose>
-                                </x:variable>
-
-                                <x:variable name="region">
-                                    <x:choose>
-                                        <x:when test="$use-address-iso">
-                                            <x:value-of select="iso-region"/>
-                                        </x:when>
-                                        <x:otherwise>
-                                            <x:value-of select="region"/>
-                                        </x:otherwise>
-                                    </x:choose>
-                                </x:variable>
-
-                                <x:call-template name="address-tab-panel-template">
-                                    <x:with-param name="readonly" select="$configuration/address/@readonly = 'true'"/>
-                                    <x:with-param name="id" select="concat('address-tab-', position())"/>
-                                    <x:with-param name="addressName" select="label"/>
-                                    <x:with-param name="street" select="street"/>
-                                    <x:with-param name="postalCode" select="postal-code"/>
-                                    <x:with-param name="postalAddress" select="postal-address"/>
-                                    <x:with-param name="country" select="$country"/>
-                                    <x:with-param name="region" select="$region"/>
-                                    <x:with-param name="remoteIcon" select="false()"/>
-                                </x:call-template>
-
-                                <x:variable name="update-region" select="$use-address-iso and ( $create = 0 or ( $wizard = true() and $step = 1 ) )"/>
-
-                                <x:if test="$update-region">
-                                    <script type="text/javascript">
-                                        <x:text>updateRegion( $('.user-country-combo:eq(</x:text>
-                                        <x:value-of select="position() - 1"/>
-                                        <x:text>)')[0] );</x:text>
-                                    </script>
-                                </x:if>
-
-                            </x:for-each>
-                        </x:when>
-                        <x:otherwise>
-
-                            <x:variable name="country">
-                                <x:choose>
-                                    <x:when test="$use-address-iso">
-                                        <x:value-of select="$user/block/addresses/address/iso-country"/>
-                                    </x:when>
-                                    <x:otherwise>
-                                        <x:value-of select="$user/block/addresses/address/country"/>
-                                    </x:otherwise>
-                                </x:choose>
-                            </x:variable>
-
-                            <x:variable name="region">
-                                <x:choose>
-                                    <x:when test="$use-address-iso">
-                                        <x:value-of select="$user/block/addresses/address/iso-region"/>
-                                    </x:when>
-                                    <x:otherwise>
-                                        <x:value-of select="$user/block/addresses/address/region"/>
-                                    </x:otherwise>
-                                </x:choose>
-                            </x:variable>
-
-                            <ul class="ui-tabs-nav">
-                                <x:call-template name="address-tab-template">
-                                    <x:with-param name="addressName" select="$user/block/addresses/address/label"/>
-                                    <x:with-param name="urlFragment" select="'#address-tab-1'"/>
-                                    <x:with-param name="primary" select="$isRemote"/>
-                                    <x:with-param name="displayCloseIcon" select="false()"/>
-                                    <x:with-param name="required" select="$configuration/address/@required = 'true'"/>
-                                </x:call-template>
-                            </ul>
-                            <x:call-template name="address-tab-panel-template">
-                                <x:with-param name="readonly" select="$configuration/address/@readonly = 'true'"/>
-                                <x:with-param name="id" select="'address-tab-1'"/>
-                                <x:with-param name="addressName" select="$user/block/addresses/address/label"/>
-                                <x:with-param name="street" select="$user/block/addresses/address/street"/>
-                                <x:with-param name="postalCode" select="$user/block/addresses/address/postal-code"/>
-                                <x:with-param name="postalAddress" select="$user/block/addresses/address/postal-address"/>
-                                <x:with-param name="country" select="$country"/>
-                                <x:with-param name="region" select="$region"/>
-                                <x:with-param name="remoteIcon" select="false()"/>
-                            </x:call-template>
-
-                            <x:variable name="update-region" select="$use-address-iso and ( $create = 0 or ( $wizard = true() and $step = 1 ) )"/>
-
-                            <x:if test="$update-region">
-                                <script type="text/javascript">
-                                    <x:text>updateRegion( $('.user-country-combo:eq(0)')[0] );</x:text>
-                                </script>
-                            </x:if>
-
-                        </x:otherwise>
-                    </x:choose>
-
-                </div>
-            </fieldset>
-
-            <!-- Hidden panel template used by the jQuery Tab JS -->
-            <div id="address-tab-panel-template" style="display:none">
-                <x:call-template name="address-tab-panel-template">
-                    <x:with-param name="remoteIcon" select="false()"/>
-                </x:call-template>
-            </div>
-        </x:template>
+        <!-- Hidden panel template used by the jQuery Tab JS -->
+        <div id="address-tab-panel-template" style="display:none">
+          <x:call-template name="address-tab-panel-template">
+            <x:with-param name="remoteIcon" select="false()"/>
+          </x:call-template>
+        </div>
+      </x:template>
 
       <x:template name="address-tab-template">
         <x:param name="urlFragment" select="''"/>
@@ -2138,7 +2152,7 @@
               <x:attribute name="class">
                 <x:text>icon-remote ui-tabs-address-primary-icon</x:text>
                 <x:if test="$primary = false()">
-                  <x:text> primary-icon-hidden</x:text>
+                  <x:text>primary-icon-hidden</x:text>
                 </x:if>
               </x:attribute>
               <x:if test="$primary">
@@ -2175,7 +2189,7 @@
               <x:attribute name="class">
                 <x:text>ui-tabs-address-remove-icon</x:text>
                 <x:if test="$canUpdateUser = 'false'">
-                  <x:text> cursor-move</x:text>
+                  <x:text>cursor-move</x:text>
                 </x:if>
               </x:attribute>
               <x:if test="$displayCloseIcon">
@@ -2211,173 +2225,173 @@
         </li>
       </x:template>
 
-        <x:template name="address-tab-panel-template">
-            <x:param name="readonly" select="false()"/>
-            <x:param name="id" select="''"/>
-            <x:param name="addressName"/>
-            <x:param name="street"/>
-            <x:param name="postalCode"/>
-            <x:param name="postalAddress"/>
-            <x:param name="country"/>
-            <x:param name="region"/>
-            <x:param name="remoteIcon" select="false()"/>
+      <x:template name="address-tab-panel-template">
+        <x:param name="readonly" select="false()"/>
+        <x:param name="id" select="''"/>
+        <x:param name="addressName"/>
+        <x:param name="street"/>
+        <x:param name="postalCode"/>
+        <x:param name="postalAddress"/>
+        <x:param name="country"/>
+        <x:param name="region"/>
+        <x:param name="remoteIcon" select="false()"/>
 
-            <div>
-                <x:if test="$id != ''">
-                    <x:attribute name="id">
-                        <x:value-of select="$id"/>
-                    </x:attribute>
-                </x:if>
+        <div>
+          <x:if test="$id != ''">
+            <x:attribute name="id">
+              <x:value-of select="$id"/>
+            </x:attribute>
+          </x:if>
 
-                <table border="0" cellspacing="2" cellpadding="0" width="100%">
-                    <tr>
-                        <x:call-template name="textfield">
-                            <x:with-param name="name" select="'address[].label'"/>
-                            <x:with-param name="label" select="'%fldAddressLabel%:'"/>
-                            <x:with-param name="selectnode" select="$addressName"/>
-                            <x:with-param name="onkeyup" select="'updateAddressTabLabel(this);'"/>
-                            <x:with-param name="readonly" select="$readonly"/>
-                            <x:with-param name="useIcon" select="$remoteIcon"/>
-                            <x:with-param name="iconClass" select="'icon-remote'"/>
-                            <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
-                        </x:call-template>
-                    </tr>
-                    <tr>
-                        <x:call-template name="textfield">
-                            <x:with-param name="name" select="'address[].street'"/>
-                            <x:with-param name="label" select="'%fldAddressStreet%:'"/>
-                            <x:with-param name="selectnode" select="$street"/>
-                            <x:with-param name="readonly" select="$readonly"/>
-                            <x:with-param name="useIcon" select="$remoteIcon"/>
-                            <x:with-param name="iconClass" select="'icon-remote'"/>
-                            <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
-                        </x:call-template>
-                    </tr>
-                    <tr>
-                        <x:call-template name="textfield">
-                            <x:with-param name="name" select="'address[].postal_code'"/>
-                            <x:with-param name="label" select="'%fldAddressPostalCode%:'"/>
-                            <x:with-param name="selectnode" select="$postalCode"/>
-                            <x:with-param name="readonly" select="$readonly"/>
-                            <x:with-param name="useIcon" select="$remoteIcon"/>
-                            <x:with-param name="iconClass" select="'icon-remote'"/>
-                            <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
-                        </x:call-template>
-                    </tr>
-                    <tr>
-                        <x:call-template name="textfield">
-                            <x:with-param name="name" select="'address[].postal_address'"/>
-                            <x:with-param name="label" select="'%fldAddressPostalAddress%:'"/>
-                            <x:with-param name="selectnode" select="$postalAddress"/>
-                            <x:with-param name="readonly" select="$readonly"/>
-                            <x:with-param name="useIcon" select="$remoteIcon"/>
-                            <x:with-param name="iconClass" select="'icon-remote'"/>
-                            <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
-                        </x:call-template>
-                    </tr>
+          <table border="0" cellspacing="2" cellpadding="0" width="100%">
+            <tr>
+              <x:call-template name="textfield">
+                <x:with-param name="name" select="'address[].label'"/>
+                <x:with-param name="label" select="'%fldAddressLabel%:'"/>
+                <x:with-param name="selectnode" select="$addressName"/>
+                <x:with-param name="onkeyup" select="'updateAddressTabLabel(this);'"/>
+                <x:with-param name="readonly" select="$readonly"/>
+                <x:with-param name="useIcon" select="$remoteIcon"/>
+                <x:with-param name="iconClass" select="'icon-remote'"/>
+                <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
+              </x:call-template>
+            </tr>
+            <tr>
+              <x:call-template name="textfield">
+                <x:with-param name="name" select="'address[].street'"/>
+                <x:with-param name="label" select="'%fldAddressStreet%:'"/>
+                <x:with-param name="selectnode" select="$street"/>
+                <x:with-param name="readonly" select="$readonly"/>
+                <x:with-param name="useIcon" select="$remoteIcon"/>
+                <x:with-param name="iconClass" select="'icon-remote'"/>
+                <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
+              </x:call-template>
+            </tr>
+            <tr>
+              <x:call-template name="textfield">
+                <x:with-param name="name" select="'address[].postal_code'"/>
+                <x:with-param name="label" select="'%fldAddressPostalCode%:'"/>
+                <x:with-param name="selectnode" select="$postalCode"/>
+                <x:with-param name="readonly" select="$readonly"/>
+                <x:with-param name="useIcon" select="$remoteIcon"/>
+                <x:with-param name="iconClass" select="'icon-remote'"/>
+                <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
+              </x:call-template>
+            </tr>
+            <tr>
+              <x:call-template name="textfield">
+                <x:with-param name="name" select="'address[].postal_address'"/>
+                <x:with-param name="label" select="'%fldAddressPostalAddress%:'"/>
+                <x:with-param name="selectnode" select="$postalAddress"/>
+                <x:with-param name="readonly" select="$readonly"/>
+                <x:with-param name="useIcon" select="$remoteIcon"/>
+                <x:with-param name="iconClass" select="'icon-remote'"/>
+                <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
+              </x:call-template>
+            </tr>
 
+            <x:choose>
+              <x:when test="not($configuration/address/@iso) or $configuration/address/@iso = 'true'">
+                <tr>
+                  <x:call-template name="country-combo">
+                    <x:with-param name="name" select="'address[].iso_country'"/>
+                    <x:with-param name="label" select="'%fldAddressCountry%:'"/>
+                    <x:with-param name="class" select="'user-country-combo'"/>
+                    <x:with-param name="selectnode" select="$country"/>
+                    <x:with-param name="readonly" select="$readonly"/>
+                    <x:with-param name="on-change-callback">
+                      <x:text>javascript:updateRegion(this);</x:text>
+                    </x:with-param>
+                    <x:with-param name="remoteIcon" select="$remoteIcon"/>
+                  </x:call-template>
+                </tr>
+                <tr>
+                  <td class="form_labelcolumn" nowrap="true">
+                    <div style="float: left">
+                      <x:text>%fldAddressRegion%:</x:text>
+                    </div>
+
+                    <x:if test="$remoteIcon">
+                      <div style="float: right">
+                        <x:call-template name="remote-icon"/>
+                      </div>
+                    </x:if>
+
+                  </td>
+                  <td nowrap="true">
                     <x:choose>
-                        <x:when test="not($configuration/address/@iso) or $configuration/address/@iso = 'true'">
-                            <tr>
-                                <x:call-template name="country-combo">
-                                    <x:with-param name="name" select="'address[].iso_country'"/>
-                                    <x:with-param name="label" select="'%fldAddressCountry%:'"/>
-                                    <x:with-param name="class" select="'user-country-combo'"/>
-                                    <x:with-param name="selectnode" select="$country"/>
-                                    <x:with-param name="readonly" select="$readonly"/>
-                                    <x:with-param name="on-change-callback">
-                                        <x:text>javascript:updateRegion(this);</x:text>
-                                    </x:with-param>
-                                    <x:with-param name="remoteIcon" select="$remoteIcon"/>
-                                </x:call-template>
-                            </tr>
-                            <tr>
-                                <td class="form_labelcolumn" nowrap="true">
-                                    <div style="float: left">
-                                        <x:text>%fldAddressRegion%:</x:text>
-                                    </div>
-
-                                    <x:if test="$remoteIcon">
-                                        <div style="float: right">
-                                            <x:call-template name="remote-icon"/>
-                                        </div>
-                                    </x:if>
-
-                                </td>
-                                <td nowrap="true">
-                                    <x:choose>
-                                        <x:when test="$readonly">
-                                            <input name="address[].region" readonly="true">
-                                                <x:attribute name="value">
-                                                    <x:value-of select="$region"/>
-                                                </x:attribute>
-                                            </input>
-                                        </x:when>
-                                        <x:otherwise>
-                                            <select>
-                                                <x:attribute name="class">
-                                                    <x:text>user-region-combo</x:text>
-                                                </x:attribute>
-                                                <x:attribute name="id">
-                                                    <x:text>address[].iso_region</x:text>
-                                                </x:attribute>
-                                                <x:attribute name="name">
-                                                    <x:text>address[].iso_region</x:text>
-                                                </x:attribute>
-                                                <option value="">
-                                                    <x:if test="$create = 1">
-                                                        <x:attribute name="selected">true</x:attribute>
-                                                    </x:if>
-                                                    <x:text>-- %txtSelect% --</x:text>
-                                                </option>
-                                            </select>
-                                        </x:otherwise>
-                                    </x:choose>
-
-                                    <input type="hidden" name="temp_region" class="temp-region">
-                                        <x:attribute name="value">
-                                            <x:value-of select="$region"/>
-                                        </x:attribute>
-                                    </input>
-
-                                    <span style="display:none">
-                                        <x:attribute name="id">
-                                            <x:value-of select="concat('', '-loader')"/>
-                                        </x:attribute>
-                                        %msgLoading% ...
-                                    </span>
-
-                                </td>
-                            </tr>
-                        </x:when>
-                        <x:otherwise>
-                            <tr>
-                                <x:call-template name="textfield">
-                                    <x:with-param name="name" select="'address[].country'"/>
-                                    <x:with-param name="label" select="'%fldAddressCountry%:'"/>
-                                    <x:with-param name="selectnode" select="$country"/>
-                                    <x:with-param name="readonly" select="$readonly"/>
-                                    <x:with-param name="useIcon" select="$remoteIcon"/>
-                                    <x:with-param name="iconClass" select="'icon-remote'"/>
-                                    <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
-                                </x:call-template>
-                            </tr>
-                            <tr>
-                                <x:call-template name="textfield">
-                                    <x:with-param name="name" select="'address[].region'"/>
-                                    <x:with-param name="label" select="'%fldAddressRegion%:'"/>
-                                    <x:with-param name="selectnode" select="$region"/>
-                                    <x:with-param name="readonly" select="$readonly"/>
-                                    <x:with-param name="useIcon" select="$remoteIcon"/>
-                                    <x:with-param name="iconClass" select="'icon-remote'"/>
-                                    <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
-                                </x:call-template>
-                            </tr>
-                        </x:otherwise>
+                      <x:when test="$readonly">
+                        <input name="address[].region" readonly="true">
+                          <x:attribute name="value">
+                            <x:value-of select="$region"/>
+                          </x:attribute>
+                        </input>
+                      </x:when>
+                      <x:otherwise>
+                        <select>
+                          <x:attribute name="class">
+                            <x:text>user-region-combo</x:text>
+                          </x:attribute>
+                          <x:attribute name="id">
+                            <x:text>address[].iso_region</x:text>
+                          </x:attribute>
+                          <x:attribute name="name">
+                            <x:text>address[].iso_region</x:text>
+                          </x:attribute>
+                          <option value="">
+                            <x:if test="$create = 1">
+                              <x:attribute name="selected">true</x:attribute>
+                            </x:if>
+                            <x:text>-- %txtSelect% --</x:text>
+                          </option>
+                        </select>
+                      </x:otherwise>
                     </x:choose>
-                </table>
-            </div>
-        </x:template>
+
+                    <input type="hidden" name="temp_region" class="temp-region">
+                      <x:attribute name="value">
+                        <x:value-of select="$region"/>
+                      </x:attribute>
+                    </input>
+
+                    <span style="display:none">
+                      <x:attribute name="id">
+                        <x:value-of select="concat('', '-loader')"/>
+                      </x:attribute>
+                      %msgLoading% ...
+                    </span>
+
+                  </td>
+                </tr>
+              </x:when>
+              <x:otherwise>
+                <tr>
+                  <x:call-template name="textfield">
+                    <x:with-param name="name" select="'address[].country'"/>
+                    <x:with-param name="label" select="'%fldAddressCountry%:'"/>
+                    <x:with-param name="selectnode" select="$country"/>
+                    <x:with-param name="readonly" select="$readonly"/>
+                    <x:with-param name="useIcon" select="$remoteIcon"/>
+                    <x:with-param name="iconClass" select="'icon-remote'"/>
+                    <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
+                  </x:call-template>
+                </tr>
+                <tr>
+                  <x:call-template name="textfield">
+                    <x:with-param name="name" select="'address[].region'"/>
+                    <x:with-param name="label" select="'%fldAddressRegion%:'"/>
+                    <x:with-param name="selectnode" select="$region"/>
+                    <x:with-param name="readonly" select="$readonly"/>
+                    <x:with-param name="useIcon" select="$remoteIcon"/>
+                    <x:with-param name="iconClass" select="'icon-remote'"/>
+                    <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
+                  </x:call-template>
+                </tr>
+              </x:otherwise>
+            </x:choose>
+          </table>
+        </div>
+      </x:template>
 
       <x:template name="mail-form">
         <x:param name="notification" select="'true'"/>
@@ -2396,28 +2410,28 @@
 
             function notify_checkbox( checked )
             {
-              var f = document.formAdmin;
-              var disabledColor = "#CCCCCC";
-              var enabledColor = "#FFFFFF";
+            var f = document.formAdmin;
+            var disabledColor = "#CCCCCC";
+            var enabledColor = "#FFFFFF";
 
-              if ( checked )
-              {
-                f.from_name.disabled = false;
-                f.from_mail.disabled = false;
-                f.to_name.disabled = false;
-                f.to_mail.disabled = false;
-                f.subject.disabled = false;
-                f.mail_body.disabled = false;
-              }
-              else
-              {
-                f.from_name.disabled = true;
-                f.from_mail.disabled = true;
-                f.to_name.disabled = true;
-                f.to_mail.disabled = true;
-                f.subject.disabled = true;
-                f.mail_body.disabled = true;
-              }
+            if ( checked )
+            {
+            f.from_name.disabled = false;
+            f.from_mail.disabled = false;
+            f.to_name.disabled = false;
+            f.to_mail.disabled = false;
+            f.subject.disabled = false;
+            f.mail_body.disabled = false;
+            }
+            else
+            {
+            f.from_name.disabled = true;
+            f.from_mail.disabled = true;
+            f.to_name.disabled = true;
+            f.to_mail.disabled = true;
+            f.subject.disabled = true;
+            f.mail_body.disabled = true;
+            }
             }
           </script>
 
@@ -2588,118 +2602,118 @@
         </x:choose>
       </x:template>
 
-        <x:template name="time-zone-combo">
-            <x:param name="selectnode"/>
-            <x:param name="readonly" select="false()"/>
-            <x:param name="required" select="false()"/>
-            <x:param name="remoteIcon" select="false()"/>
+      <x:template name="time-zone-combo">
+        <x:param name="selectnode"/>
+        <x:param name="readonly" select="false()"/>
+        <x:param name="required" select="false()"/>
+        <x:param name="remoteIcon" select="false()"/>
 
-            <td class="form_labelcolumn" nowrap="true">
-                <div style="float: left">
-                    <xsl:text>%fldTimeZone%:</xsl:text>
-                    <x:if test="$required">
-                        <span class="requiredfield">*</span>
+        <td class="form_labelcolumn" nowrap="true">
+          <div style="float: left">
+            <xsl:text>%fldTimeZone%:</xsl:text>
+            <x:if test="$required">
+              <span class="requiredfield">*</span>
+            </x:if>
+          </div>
+          <x:if test="$remoteIcon != ''">
+            <div style="float: right">
+              <x:call-template name="remote-icon"/>
+            </div>
+          </x:if>
+        </td>
+        <td nowrap="true">
+          <x:choose>
+            <x:when test="$readonly">
+              <input type="text" name="time_zone" id="time_zone" readonly="true">
+                <x:attribute name="value">
+                  <x:value-of select="$selectnode"/>
+                </x:attribute>
+              </input>
+            </x:when>
+            <x:otherwise>
+              <select name="time_zone" id="time_zone">
+                <option value="">
+                  <x:if test="$create = 1">
+                    <x:attribute name="selected">true</x:attribute>
+                  </x:if>
+                  <x:text>-- %txtSelect% --</x:text>
+                </option>
+                <x:for-each select="/users/time-zones/time-zone">
+                  <x:variable name="value" select="@ID"/>
+                  <x:variable name="display"
+                              select="concat( display-name, ' (', hours-from-utc-as-human-readable, ')' ) "/>
+                  <option>
+                    <x:attribute name="value">
+                      <x:value-of select="$value"/>
+                    </x:attribute>
+                    <x:if test="$user/block/time-zone = $value">
+                      <x:attribute name="selected">true</x:attribute>
                     </x:if>
-                </div>
-                <x:if test="$remoteIcon != ''">
-                    <div style="float: right">
-                        <x:call-template name="remote-icon"/>
-                    </div>
-                </x:if>
-            </td>
-            <td nowrap="true">
-                <x:choose>
-                    <x:when test="$readonly">
-                        <input type="text" name="time_zone" id="time_zone" readonly="true">
-                            <x:attribute name="value">
-                                <x:value-of select="$selectnode"/>
-                            </x:attribute>
-                        </input>
-                    </x:when>
-                    <x:otherwise>
-                        <select name="time_zone" id="time_zone">
-                            <option value="">
-                                <x:if test="$create = 1">
-                                    <x:attribute name="selected">true</x:attribute>
-                                </x:if>
-                                <x:text>-- %txtSelect% --</x:text>
-                            </option>
-                            <x:for-each select="/users/time-zones/time-zone">
-                                <x:variable name="value" select="@ID"/>
-                                <x:variable name="display"
-                                            select="concat( display-name, ' (', hours-from-utc-as-human-readable, ')' ) "/>
-                                <option>
-                                    <x:attribute name="value">
-                                        <x:value-of select="$value"/>
-                                    </x:attribute>
-                                    <x:if test="$user/block/time-zone = $value">
-                                        <x:attribute name="selected">true</x:attribute>
-                                    </x:if>
-                                    <x:value-of select="$display"/>
-                                </option>
-                            </x:for-each>
-                        </select>
-                    </x:otherwise>
-                </x:choose>
-            </td>
-        </x:template>
+                    <x:value-of select="$display"/>
+                  </option>
+                </x:for-each>
+              </select>
+            </x:otherwise>
+          </x:choose>
+        </td>
+      </x:template>
 
-        <x:template name="locale-combo">
-            <x:param name="selectnode"/>
-            <x:param name="required" select="false()"/>
-            <x:param name="remoteIcon" select="false()"/>
-            <x:param name="readonly" select="false()"/>
-            <td class="form_labelcolumn" valign="top" nowrap="true">
-                <div style="float: left">
-                    <x:text>%fldLocale%:</x:text>
-                    <x:if test="$required">
-                        <span class="requiredfield">*</span>
+      <x:template name="locale-combo">
+        <x:param name="selectnode"/>
+        <x:param name="required" select="false()"/>
+        <x:param name="remoteIcon" select="false()"/>
+        <x:param name="readonly" select="false()"/>
+        <td class="form_labelcolumn" valign="top" nowrap="true">
+          <div style="float: left">
+            <x:text>%fldLocale%:</x:text>
+            <x:if test="$required">
+              <span class="requiredfield">*</span>
+            </x:if>
+          </div>
+          <x:if test="$remoteIcon != ''">
+            <div style="float: right">
+              <x:call-template name="remote-icon"/>
+            </div>
+          </x:if>
+        </td>
+        <td nowrap="true">
+          <x:choose>
+            <x:when test="$readonly">
+              <input type="text" name="locale" id="locale" readonly="true">
+                <x:attribute name="value">
+                  <x:value-of select="$selectnode"/>
+                </x:attribute>
+              </input>
+            </x:when>
+            <x:otherwise>
+              <select name="locale" id="locale">
+                <option value="">
+                  <x:if test="$create = 1">
+                    <x:attribute name="selected">true</x:attribute>
+                  </x:if>
+                  <x:text>-- %txtSelect% --</x:text>
+                </option>
+                <x:for-each select="/users/locales/locale">
+                  <x:variable name="name" select="name"/>
+                  <x:variable name="display-name" select="display-name"/>
+                  <option>
+                    <x:attribute name="value">
+                      <x:value-of select="$name"/>
+                    </x:attribute>
+                    <x:if test="$selectnode = $name">
+                      <x:attribute name="selected">true</x:attribute>
                     </x:if>
-                </div>
-                <x:if test="$remoteIcon != ''">
-                    <div style="float: right">
-                        <x:call-template name="remote-icon"/>
-                    </div>
-                </x:if>
-            </td>
-            <td nowrap="true">
-                <x:choose>
-                    <x:when test="$readonly">
-                        <input type="text" name="locale" id="locale" readonly="true">
-                            <x:attribute name="value">
-                                <x:value-of select="$selectnode"/>
-                            </x:attribute>
-                        </input>
-                    </x:when>
-                    <x:otherwise>
-                        <select name="locale" id="locale">
-                            <option value="">
-                                <x:if test="$create = 1">
-                                    <x:attribute name="selected">true</x:attribute>
-                                </x:if>
-                                <x:text>-- %txtSelect% --</x:text>
-                            </option>
-                            <x:for-each select="/users/locales/locale">
-                                <x:variable name="name" select="name"/>
-                                <x:variable name="display-name" select="display-name"/>
-                                <option>
-                                    <x:attribute name="value">
-                                        <x:value-of select="$name"/>
-                                    </x:attribute>
-                                    <x:if test="$selectnode = $name">
-                                        <x:attribute name="selected">true</x:attribute>
-                                    </x:if>
-                                    <x:value-of select="$display-name"/>
-                                </option>
-                            </x:for-each>
-                        </select>
+                    <x:value-of select="$display-name"/>
+                  </option>
+                </x:for-each>
+              </select>
 
-                    </x:otherwise>
-                </x:choose>
-            </td>
-        </x:template>
+            </x:otherwise>
+          </x:choose>
+        </td>
+      </x:template>
 
-        <x:template name="dropdown-language">
+      <x:template name="dropdown-language">
         <x:param name="label"/>
         <x:param name="name"/>
         <x:param name="selectedkey"/>

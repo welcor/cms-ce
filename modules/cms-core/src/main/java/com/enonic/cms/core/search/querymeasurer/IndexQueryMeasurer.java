@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.elasticsearch.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -14,7 +15,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.querymeasurer.comparators.*;
+import com.enonic.cms.core.search.querymeasurer.comparators.IndexQueryMeasureAvgTimeDiffComparator;
+import com.enonic.cms.core.search.querymeasurer.comparators.IndexQueryMeasureInvocationComparator;
+import com.enonic.cms.core.search.querymeasurer.comparators.IndexQueryMeasurerAvgTimeComparator;
+import com.enonic.cms.core.search.querymeasurer.comparators.IndexQueryMeasurerMaxTimeComparator;
+import com.enonic.cms.store.dao.ContentTypeDao;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,6 +30,10 @@ import com.enonic.cms.core.search.querymeasurer.comparators.*;
 @Component
 public class IndexQueryMeasurer
 {
+
+    @Autowired
+    private ContentTypeDao contentTypeDao;
+
     private final Map<IndexQuerySignature, IndexQueryMeasure> queryMeasures = Maps.newHashMap();
 
     private int totalQueriesOnIndex = 0;
@@ -35,7 +44,7 @@ public class IndexQueryMeasurer
 
         final long lastTaskTimeMillis = stopWatch.getLastTaskTimeMillis();
 
-        final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query );
+        final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query, this.contentTypeDao );
 
         IndexQueryMeasure indexQueryMeasure = queryMeasures.get( querySignature );
 

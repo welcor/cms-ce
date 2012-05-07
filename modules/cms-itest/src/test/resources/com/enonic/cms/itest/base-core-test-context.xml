@@ -154,8 +154,6 @@
   </bean>
 
   <bean id="imageCache" class="com.enonic.cms.core.image.cache.ImageCacheFactory">
-    <property name="cacheName" value="image"/>
-    <property name="cacheManager" ref="cacheFacadeManager"/>
   </bean>
 
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
@@ -253,7 +251,7 @@
   <bean id="postProcessInstructionExecutor"
         class="com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutorImpl"/>
 
-  <bean id="cacheFacadeManager" class="com.enonic.cms.framework.cache.CacheManagerFactory">
+  <bean id="cacheFacadeManager" class="com.enonic.cms.framework.cache.standard.StandardCacheManager">
   </bean>
 
   <bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">

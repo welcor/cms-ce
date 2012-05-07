@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.webdav;
+package com.enonic.cms.web.webdav;
 
 import java.io.IOException;
 
@@ -64,7 +64,7 @@ public final class SimpleDavServlet
         final boolean beansFound = beanNames != null && beanNames.length > 0;
         final DavConfiguration davConfig = beansFound ? (DavConfiguration) appContext.getBean( beanNames[0] ) : null;
 
-        if (davConfig == null)
+        if ( davConfig == null )
         {
             throw new ServletException( "No dav configuration set" );
         }

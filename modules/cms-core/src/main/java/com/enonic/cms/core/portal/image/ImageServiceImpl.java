@@ -120,7 +120,8 @@ public final class ImageServiceImpl
             }
             catch ( AttachmentNotFoundException e )
             {
-                LOG.error( "Cannot read image with key {} from configured BLOB directory ( {} ). Check your CMS configuration.", blobKey, directory.getAbsolutePath() );
+                LOG.error( "Cannot read image with key {} from configured BLOB directory ( {} ). Check your CMS configuration.", blobKey,
+                           directory.getAbsolutePath() );
                 return ImageResponse.notFound();
             }
             catch ( Exception e )
@@ -222,6 +223,7 @@ public final class ImageServiceImpl
         return imageResponse;
     }
 
+    @Autowired
     public void setImageCache( ImageCache imageCache )
     {
         this.imageCache = imageCache;

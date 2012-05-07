@@ -4,22 +4,24 @@
  */
 package com.enonic.cms.core.portal.cache;
 
+import java.util.Locale;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.standard.StandardCacheManager;
+
 import com.enonic.cms.core.CacheObjectSettings;
 import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.boot.ConfigProperties;
 import com.enonic.cms.core.portal.rendering.PageCacheKey;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
 import com.enonic.cms.core.portal.rendering.RenderedWindowResult;
 import com.enonic.cms.core.portal.rendering.WindowCacheKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-import com.enonic.cms.framework.cache.CacheFacade;
-import com.enonic.cms.framework.cache.standard.StandardCacheManager;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.util.Locale;
-import java.util.Properties;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 public class PageCacheServiceImplTest
@@ -42,13 +44,13 @@ public class PageCacheServiceImplTest
         int maxEntries = 100;
         int timeToLiveSeconds = 1000;
 
-        final Properties props = new Properties();
+        final ConfigProperties props = new ConfigProperties();
         props.setProperty( "cms.cache.page.memoryCapacity", String.valueOf( maxEntries ) );
         props.setProperty( "cms.cache.page.timeToLive", String.valueOf( timeToLiveSeconds ) );
 
         final StandardCacheManager cacheManager = new StandardCacheManager();
         cacheManager.setProperties( props );
-        
+
         cacheFacade = cacheManager.getOrCreateCache( "page" );
 
         pageCacheService_site_1 = new PageCacheServiceImpl( siteKey_1 );

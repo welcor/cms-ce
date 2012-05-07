@@ -4,17 +4,6 @@
  */
 package com.enonic.cms.core.tools;
 
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
-import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
-import com.enonic.cms.framework.cache.CacheFacade;
-import com.enonic.cms.framework.cache.CacheManager;
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.vertical.adminweb.AdminHelper;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.SessionFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -22,6 +11,21 @@ import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.vertical.adminweb.AdminHelper;
+
+import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.CacheManager;
+
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
+import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 
 /**
  * This class implements the connection info controller.
@@ -33,9 +37,6 @@ public final class LivePortalTraceController
     private LivePortalTraceService livePortalTraceService;
 
     private CacheManager cacheManager;
-
-    private SessionFactory sessionFactory;
-
 
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
@@ -174,13 +175,9 @@ public final class LivePortalTraceController
         this.livePortalTraceService = livePortalTraceService;
     }
 
+    @Autowired
     public void setCacheManager( CacheManager cacheManager )
     {
         this.cacheManager = cacheManager;
-    }
-
-    public void setSessionFactory( SessionFactory sessionFactory )
-    {
-        this.sessionFactory = sessionFactory;
     }
 }

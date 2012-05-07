@@ -5,21 +5,18 @@
 package com.enonic.cms.core.image.cache;
 
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheManager;
 
+@Component
 public final class ImageCacheFactory
     implements FactoryBean<ImageCache>
 {
-    private String cacheName;
-
     private CacheManager cacheManager;
 
-    public void setCacheName( final String cacheName )
-    {
-        this.cacheName = cacheName;
-    }
-
+    @Autowired
     public void setCacheManager( final CacheManager cacheManager )
     {
         this.cacheManager = cacheManager;
@@ -27,7 +24,7 @@ public final class ImageCacheFactory
 
     public ImageCache getObject()
     {
-        return new WrappedImageCache( this.cacheManager.getOrCreateCache( this.cacheName ) );
+        return new WrappedImageCache( this.cacheManager.getOrCreateCache( "image" ) );
     }
 
     public Class getObjectType()

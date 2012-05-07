@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.mvc.Controller;
 import org.w3c.dom.Document;
 
 import com.enonic.esl.containers.ExtendedMap;
@@ -30,7 +29,6 @@ import com.enonic.cms.core.service.AdminService;
  */
 public abstract class AbstractToolController
     extends AdminHandlerBaseServlet
-    implements Controller
 {
     private ViewResolver viewResolver;
 
@@ -54,12 +52,13 @@ public abstract class AbstractToolController
         doHandleRequest( request, response, formItems );
     }
 
-    protected void process(HttpServletRequest request, HttpServletResponse response, final HashMap<String, Object> model, final String templateName)
+    protected void process( HttpServletRequest request, HttpServletResponse response, final HashMap<String, Object> model,
+                            final String templateName )
     {
         try
         {
-            final View view = this.viewResolver.resolveViewName(templateName, Locale.getDefault());
-            view.render(model, request, response);
+            final View view = this.viewResolver.resolveViewName( templateName, Locale.getDefault() );
+            view.render( model, request, response );
         }
         catch ( Exception e )
         {

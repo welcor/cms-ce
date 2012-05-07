@@ -17,6 +17,7 @@ import com.enonic.cms.core.content.index.TranslatedQuery;
 import com.enonic.cms.core.content.index.translator.ContentQueryTranslator;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.query.QueryTranslator;
+import com.enonic.cms.store.dao.ContentTypeDao;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,11 +36,14 @@ public class QueryResultComparer
 
     private QueryTranslator elasticSearchTranslator;
 
-    private ContentQueryTranslator hibernateTranslator = new ContentQueryTranslator();
+    @Autowired
+    private ContentTypeDao contentTypeDao;
+
+    private ContentQueryTranslator hibernateTranslator = new ContentQueryTranslator( contentTypeDao );
 
     public void compareResults( ContentIndexQuery query, ContentResultSet resultNew, ContentResultSet resultOld )
     {
-        final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query );
+        final IndexQuerySignature querySignature = QuerySignatureResolver.createQuerySignature( query, contentTypeDao );
 
         if ( checkedQueries.contains( querySignature ) )
         {

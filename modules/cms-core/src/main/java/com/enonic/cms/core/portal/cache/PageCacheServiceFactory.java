@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.portal.cache;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
 
@@ -18,6 +20,7 @@ public class PageCacheServiceFactory
 
     private SitePropertiesService sitePropertiesService;
 
+    @Autowired
     public void setCacheManager( CacheManager value )
     {
         this.cacheManager = value;

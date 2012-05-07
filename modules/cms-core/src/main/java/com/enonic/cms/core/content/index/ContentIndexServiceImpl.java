@@ -29,6 +29,7 @@ import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentIndexDao;
+import com.enonic.cms.store.dao.ContentTypeDao;
 
 /**
  * This class implements the content index service based on hibernate.
@@ -41,6 +42,9 @@ public final class ContentIndexServiceImpl
 
     @Autowired
     private ContentDao contentDao;
+
+    @Autowired
+    private ContentTypeDao contentTypeDao;
 
     @Autowired
     private LivePortalTraceService livePortalTraceService;
@@ -118,7 +122,7 @@ public final class ContentIndexServiceImpl
 
             try
             {
-                translatedContentQuery = new ContentQueryTranslator().translate( contentIndexQuery );
+                translatedContentQuery = new ContentQueryTranslator( this.contentTypeDao ).translate( contentIndexQuery );
             }
             catch ( Throwable e )
             {

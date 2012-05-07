@@ -8,7 +8,6 @@ import org.joda.time.DateTime;
 
 import com.google.common.collect.Sets;
 
-import com.enonic.cms.core.content.index.config.IndexFieldType;
 import com.enonic.cms.core.search.ElasticSearchUtils;
 import com.enonic.cms.core.search.IndexFieldnameNormalizer;
 import com.enonic.cms.core.search.IndexValueNormalizer;
@@ -133,8 +132,8 @@ public class ContentIndexDataElement
     {
         if ( numericValues != null && !numericValues.isEmpty() )
         {
-            set.add( new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.NUMBER.toString(),
-                                                     numericValues ) );
+            set.add(
+                new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + NUMBER_FIELD_POSTFIX, numericValues ) );
         }
     }
 
@@ -142,8 +141,8 @@ public class ContentIndexDataElement
     {
         if ( dateTimeValues != null && !dateTimeValues.isEmpty() )
         {
-            set.add( new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.DATE.toString(),
-                                                     dateTimeValues ) );
+            set.add(
+                new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + DATE_FIELD_POSTFIX, dateTimeValues ) );
         }
     }
 

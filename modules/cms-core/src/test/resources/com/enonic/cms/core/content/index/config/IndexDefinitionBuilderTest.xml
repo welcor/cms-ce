@@ -6,10 +6,7 @@
   <index name="a" xpath="contentdata/a"/>
   <index name="b" xpath="data/b"/>
   <index name="c" xpath="c"/>
-  <index xpath="contentdata/d" type="date"/>/>
-  <index xpath="data/e" type="string"/>
-  <index xpath="f" type="number"/>/>
-  <index name="g" xpath="contentdata/g" type="DaTe"/>
-  <index name="h" xpath="data/h" type="StrinG"/>
-  <index name="i" xpath="i" type="Number"/>
+  <index xpath="contentdata/d"/>
+  <index xpath="data/e"/>
+  <index xpath="f"/>
 </indexes>

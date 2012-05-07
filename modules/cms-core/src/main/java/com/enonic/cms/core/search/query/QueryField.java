@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.Sets;
 
-import com.enonic.cms.core.content.index.config.IndexFieldType;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
@@ -43,12 +42,12 @@ public class QueryField
 
     public String getFieldNameForNumericQueries()
     {
-        return fieldName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.NUMBER.toString();
+        return fieldName + INDEX_FIELD_TYPE_SEPARATOR + NUMBER_FIELD_POSTFIX;
     }
 
     public String getFieldNameForDateQueries()
     {
-        return fieldName + INDEX_FIELD_TYPE_SEPARATOR + IndexFieldType.DATE.toString();
+        return fieldName + INDEX_FIELD_TYPE_SEPARATOR + DATE_FIELD_POSTFIX;
     }
 
     public boolean doBuildAsIdQuery()

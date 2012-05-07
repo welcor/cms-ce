@@ -15,20 +15,10 @@ public final class IndexDefinition
 
     private final String xpath;
 
-    private final IndexFieldType indexFieldType;
-
     public IndexDefinition( String name, String xpath )
     {
         this.xpath = xpath.trim();
         this.name = name.trim();
-        this.indexFieldType = IndexFieldType.STRING;
-    }
-
-    public IndexDefinition( String name, String xpath, IndexFieldType indexFieldType )
-    {
-        this.xpath = xpath.trim();
-        this.name = name.trim();
-        this.indexFieldType = indexFieldType;
     }
 
     public String getName()
@@ -46,11 +36,6 @@ public final class IndexDefinition
     public String getXPath()
     {
         return this.xpath;
-    }
-
-    public IndexFieldType getIndexFieldType()
-    {
-        return indexFieldType;
     }
 
     public int hashCode()

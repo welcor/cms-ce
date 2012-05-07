@@ -1,7 +1,5 @@
 package com.enonic.cms.core.search.builder;
 
-import com.enonic.cms.core.content.index.config.IndexFieldType;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
@@ -10,6 +8,10 @@ import com.enonic.cms.core.content.index.config.IndexFieldType;
  */
 public class IndexFieldNameConstants
 {
+    public static final String NUMBER_FIELD_POSTFIX = "number";
+
+    public static final String DATE_FIELD_POSTFIX = "date";
+
     protected static final String CONTENT_KEY_FIELDNAME = "key";
 
     public static final String INDEX_FIELDNAME_PROPERTY_SEPARATOR = "_";
@@ -22,9 +24,9 @@ public class IndexFieldNameConstants
 
     public static final String ALL_USERDATA_FIELDNAME = "_all_userdata";
 
-    public static final String ALL_USERDATA_FIELDNAME_DATE = ALL_USERDATA_FIELDNAME + "." + IndexFieldType.DATE.toString();
+    public static final String ALL_USERDATA_FIELDNAME_DATE = ALL_USERDATA_FIELDNAME + "." + DATE_FIELD_POSTFIX;
 
-    public static final String ALL_USERDATA_FIELDNAME_NUMBER = ALL_USERDATA_FIELDNAME + "." + IndexFieldType.NUMBER.toString();
+    public static final String ALL_USERDATA_FIELDNAME_NUMBER = ALL_USERDATA_FIELDNAME + "." + NUMBER_FIELD_POSTFIX;
 
     public static final String PUBLISH_FROM_FIELDNAME = "publishfrom";
 

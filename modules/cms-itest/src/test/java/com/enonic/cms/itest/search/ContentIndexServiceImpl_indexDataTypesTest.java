@@ -5,7 +5,6 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.elasticsearch.search.SearchHitField;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,10 +12,8 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.config.IndexFieldType;
 
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.*;
 
 public class ContentIndexServiceImpl_indexDataTypesTest
@@ -97,8 +94,8 @@ public class ContentIndexServiceImpl_indexDataTypesTest
 
         final int numberOfUniqueUserDataValuesInTestValues = 12;
 
-        verifyField( "_all_userdata", numberOfUniqueUserDataValuesInTestValues, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "_all_userdata._tokenized", numberOfUniqueUserDataValuesInTestValues, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "_all_userdata", numberOfUniqueUserDataValuesInTestValues, fieldMapForId );
+        verifyField( "_all_userdata._tokenized", numberOfUniqueUserDataValuesInTestValues, fieldMapForId );
     }
 
     private Map<String, SearchHitField> getAllFieldsForId( int id )
@@ -120,39 +117,39 @@ public class ContentIndexServiceImpl_indexDataTypesTest
 
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
-        verifyField( "key", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "key.number", 1, fieldMapForId, IndexFieldType.NUMBER );
-        verifyField( "title", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "title._tokenized", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "status", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "status.number", 1, fieldMapForId, IndexFieldType.NUMBER );
-        verifyField( "publishfrom", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "publishfrom.date", 1, fieldMapForId, IndexFieldType.DATE );
-        verifyField( "publishto", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "publishto.date", 1, fieldMapForId, IndexFieldType.DATE );
-        verifyField( "contenttype", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "contenttypekey", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "contenttypekey.number", 1, fieldMapForId, IndexFieldType.NUMBER );
+        verifyField( "key", 1, fieldMapForId );
+        verifyField( "key.number", 1, fieldMapForId );
+        verifyField( "title", 1, fieldMapForId );
+        verifyField( "title._tokenized", 1, fieldMapForId );
+        verifyField( "status", 1, fieldMapForId );
+        verifyField( "status.number", 1, fieldMapForId );
+        verifyField( "publishfrom", 1, fieldMapForId );
+        verifyField( "publishfrom.date", 1, fieldMapForId );
+        verifyField( "publishto", 1, fieldMapForId );
+        verifyField( "publishto.date", 1, fieldMapForId );
+        verifyField( "contenttype", 1, fieldMapForId );
+        verifyField( "contenttypekey", 1, fieldMapForId );
+        verifyField( "contenttypekey.number", 1, fieldMapForId );
 
-        verifyField( "created", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "created.date", 1, fieldMapForId, IndexFieldType.DATE );
-        verifyField( "owner_key", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "owner_name", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "owner_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "modified", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "modified.date", 1, fieldMapForId, IndexFieldType.DATE );
-        verifyField( "modifier_key", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "modifier_name", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "modifier_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "created", 1, fieldMapForId );
+        verifyField( "created.date", 1, fieldMapForId );
+        verifyField( "owner_key", 1, fieldMapForId );
+        verifyField( "owner_name", 1, fieldMapForId );
+        verifyField( "owner_qualifiedname", 1, fieldMapForId );
+        verifyField( "modified", 1, fieldMapForId );
+        verifyField( "modified.date", 1, fieldMapForId );
+        verifyField( "modifier_key", 1, fieldMapForId );
+        verifyField( "modifier_name", 1, fieldMapForId );
+        verifyField( "modifier_qualifiedname", 1, fieldMapForId );
 
-        verifyField( "assignmentduedate", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "assignmentduedate.date", 1, fieldMapForId, IndexFieldType.DATE );
-        verifyField( "assignee_key", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "assignee_name", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "assignee_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "assigner_key", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "assigner_name", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "assigner_qualifiedname", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "assignmentduedate", 1, fieldMapForId );
+        verifyField( "assignmentduedate.date", 1, fieldMapForId );
+        verifyField( "assignee_key", 1, fieldMapForId );
+        verifyField( "assignee_name", 1, fieldMapForId );
+        verifyField( "assignee_qualifiedname", 1, fieldMapForId );
+        verifyField( "assigner_key", 1, fieldMapForId );
+        verifyField( "assigner_name", 1, fieldMapForId );
+        verifyField( "assigner_qualifiedname", 1, fieldMapForId );
     }
 
     private void indexContentDocument( final ContentDocument contentDocument )
@@ -172,16 +169,16 @@ public class ContentIndexServiceImpl_indexDataTypesTest
 
         printAllIndexContent();
 
-        verifyField( "data_person_age", 3, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "data_person_age.number", 3, fieldMapForId, IndexFieldType.NUMBER );
-        verifyField( "data_person_samenumber", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "data_person_samenumber.number", 1, fieldMapForId, IndexFieldType.NUMBER );
-        verifyField( "data_person_gender", 2, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "data_person_gender.number", 0, fieldMapForId, IndexFieldType.NUMBER );
-        verifyField( "data_person_description", 3, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "data_person_description.number", 0, fieldMapForId, IndexFieldType.NUMBER );
-        verifyField( "data_person_birthdate", 3, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "data_person_birthdate.date", 3, fieldMapForId, IndexFieldType.DATE );
+        verifyField( "data_person_age", 3, fieldMapForId );
+        verifyField( "data_person_age.number", 3, fieldMapForId );
+        verifyField( "data_person_samenumber", 1, fieldMapForId );
+        verifyField( "data_person_samenumber.number", 1, fieldMapForId );
+        verifyField( "data_person_gender", 2, fieldMapForId );
+        verifyField( "data_person_gender.number", 0, fieldMapForId );
+        verifyField( "data_person_description", 3, fieldMapForId );
+        verifyField( "data_person_description.number", 0, fieldMapForId );
+        verifyField( "data_person_birthdate", 3, fieldMapForId );
+        verifyField( "data_person_birthdate.date", 3, fieldMapForId );
     }
 
 
@@ -198,12 +195,12 @@ public class ContentIndexServiceImpl_indexDataTypesTest
 
         printAllIndexContent();
 
-        verifyField( "data_person_age.orderby", 1, fieldMapForId, IndexFieldType.STRING );
-        verifyField( "data_person_age.orderby_number", 1, fieldMapForId, IndexFieldType.STRING );
+        verifyField( "data_person_age.orderby", 1, fieldMapForId );
+        verifyField( "data_person_age.orderby_number", 1, fieldMapForId );
 
     }
 
-    private void verifyField( String fieldName, int expected, Map<String, SearchHitField> fieldMapForId, IndexFieldType indexFieldType )
+    private void verifyField( String fieldName, int expected, Map<String, SearchHitField> fieldMapForId )
     {
         final SearchHitField hits = fieldMapForId.get( fieldName );
 
@@ -212,34 +209,6 @@ public class ContentIndexServiceImpl_indexDataTypesTest
             assertNotNull( "Hits is null for field: " + fieldName, hits );
             Assert.assertEquals( "Wrong number of hits for field: " + fieldName, expected, hits.values().size() );
 
-            for ( Object hit : hits )
-            {
-                switch ( indexFieldType )
-                {
-                    case NUMBER:
-                    {
-                        assertTrue( "Not instance of double: " + fieldName + " = " + hit.toString(), hit instanceof Double );
-                        break;
-                    }
-                    case DATE:
-                    {
-                        try
-                        {
-                            ISODateTimeFormat.dateTimeParser().parseDateTime( hit.toString() );
-                        }
-                        catch ( Exception e )
-                        {
-                            fail( "Not a valid date: " + hit.toString() );
-                        }
-
-                        break;
-                    }
-                    default:
-                    {
-                        assertTrue( hit instanceof String );
-                    }
-                }
-            }
         }
         else
         {

@@ -15,7 +15,6 @@ public class ContentIndexServiceImpl_queryTextTokensTest
         contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "esu@enonic.com" ), false );
         flushIndex();
 
-        printAllIndexContent();
         assertContentResultSetEquals( new int[]{1},
                                       contentIndexService.query( new ContentIndexQuery( "data/textfield CONTAINS 'rmy' " ) ) );
         assertContentResultSetEquals( new int[]{1},
@@ -36,7 +35,6 @@ public class ContentIndexServiceImpl_queryTextTokensTest
                                    false );
         flushIndex();
 
-        printAllIndexContent();
         assertContentResultSetEquals( new int[]{1, 2},
                                       contentIndexService.query( new ContentIndexQuery( "data/textfield CONTAINS 'ord' " ) ) );
         assertContentResultSetEquals( new int[]{1},
@@ -55,7 +53,6 @@ public class ContentIndexServiceImpl_queryTextTokensTest
         contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "Dette en er med tekst ord mange med" ), false );
         flushIndex();
 
-        printAllIndexContent();
         assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( new ContentIndexQuery( "data/* CONTAINS 'ord' " ) ) );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( new ContentIndexQuery( "data/* CONTAINS 'tekst med' " ) ) );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query(
@@ -70,7 +67,6 @@ public class ContentIndexServiceImpl_queryTextTokensTest
         contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "ord1" ), false );
         flushIndex();
 
-        printAllIndexContent();
         assertContentResultSetEquals( new int[]{1, 2},
                                       contentIndexService.query( new ContentIndexQuery( "data/textfield CONTAINS 'ord1' " ) ) );
         assertContentResultSetEquals( new int[]{1},
@@ -85,7 +81,6 @@ public class ContentIndexServiceImpl_queryTextTokensTest
         contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "ord1" ), false );
         flushIndex();
 
-        printAllIndexContent();
         assertContentResultSetEquals( new int[]{1, 2},
                                       contentIndexService.query( new ContentIndexQuery( "data/textfield CONTAINS 'ord1' " ) ) );
         assertContentResultSetEquals( new int[]{1},

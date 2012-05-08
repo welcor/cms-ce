@@ -23,8 +23,6 @@ public class ContentIndexServiceImpl_queryWildcardsTest
     {
         setUpStandardTestValues();
 
-        printAllIndexContent();
-
         ContentIndexQuery query = new ContentIndexQuery( "data/* = 38" );
 
         ContentResultSet resultSet = contentIndexService.query( query );

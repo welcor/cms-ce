@@ -90,8 +90,6 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         indexContentDocument( contentDocument );
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
-        printAllIndexContent();
-
         final int numberOfUniqueUserDataValuesInTestValues = 12;
 
         verifyField( "_all_userdata", numberOfUniqueUserDataValuesInTestValues, fieldMapForId );
@@ -112,8 +110,6 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         final ContentDocument contentDocument = createContentDocument( contentKey );
         addMetaData( contentDocument );
         indexContentDocument( contentDocument );
-
-        printAllIndexContent();
 
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
@@ -167,8 +163,6 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         indexContentDocument( contentDocument );
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
-        printAllIndexContent();
-
         verifyField( "data_person_age", 3, fieldMapForId );
         verifyField( "data_person_age.number", 3, fieldMapForId );
         verifyField( "data_person_samenumber", 1, fieldMapForId );
@@ -192,8 +186,6 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         addMetaData( contentDocument );
         indexContentDocument( contentDocument );
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
-
-        printAllIndexContent();
 
         verifyField( "data_person_age.orderby", 1, fieldMapForId );
         verifyField( "data_person_age.orderby_number", 1, fieldMapForId );

@@ -111,8 +111,6 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
 
         flushIndex();
 
-        printAllIndexContent();
-
         ContentIndexQuery query = new ContentIndexQuery( "(data/a = 1 AND data/b = 2)", "" );
         query.setCategoryFilter( createCategoryKeyList( 101 ) );
         assertContentResultSetEquals( new int[]{1}, contentIndexService.query( query ) );
@@ -175,8 +173,6 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
     public void testQueriesOnUserDefinedData()
     {
         setUpStandardTestValues();
-
-        printAllIndexContent();
 
         ContentIndexQuery query1 = new ContentIndexQuery( "data/person/age > 9" );
         ContentResultSet res1 = contentIndexService.query( query1 );

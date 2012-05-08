@@ -41,7 +41,6 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
     public void testDataStarQueryWithNumericStringValue()
     {
         indexUserDataWithMultipleValuesDocument();
-        printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{1322}, contentIndexService.query( new ContentIndexQuery( "data/* = '11' " ) ) );
 
@@ -52,7 +51,6 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
     public void testDataStarQueryWithNumericValue()
     {
         indexUserDataWithMultipleValuesDocument();
-        printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{1322}, contentIndexService.query( new ContentIndexQuery( "data/* = 10 " ) ) );
 

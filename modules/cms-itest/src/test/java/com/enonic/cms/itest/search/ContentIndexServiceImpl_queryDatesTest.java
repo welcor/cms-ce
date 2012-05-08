@@ -22,8 +22,6 @@ public class ContentIndexServiceImpl_queryDatesTest
     {
         setUpStandardTestValues();
 
-        printAllIndexContent();
-
         ContentIndexQuery query1 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')" );
         ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 1, res1.getLength() );

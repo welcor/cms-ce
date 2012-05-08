@@ -49,10 +49,6 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         contentIndexService.index( assignedToNone, false );
         flushIndex();
 
-        printAllIndexContent();
-
-        //assertContentResultSetEquals( new int[]{1101, 1102, 1103},
-        //                              contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
         assertContentResultSetEquals( new int[]{1101}, contentIndexService.query(
             new ContentIndexQuery( "categorykey = 9 and assignee/qualifiedName = 'incamono\\jvs'" ) ) );
         assertContentResultSetEquals( new int[]{1102}, contentIndexService.query(
@@ -92,8 +88,6 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         contentIndexService.index( assignedToTAN, false );
         contentIndexService.index( assignedToNone, false );
         flushIndex();
-
-        printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
                                       contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
@@ -183,8 +177,6 @@ public class ContentIndexServiceImpl_queryAssignmentTest
 
         flushIndex();
 
-        printAllIndexContent();
-
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
                                       contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );
         assertContentResultSetEquals( new int[]{1102, 1101, 1103}, contentIndexService.query(
@@ -231,8 +223,6 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         contentIndexService.index( notDue, false );
 
         flushIndex();
-
-        printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
                                       contentIndexService.query( new ContentIndexQuery( "categorykey = 9" ) ) );

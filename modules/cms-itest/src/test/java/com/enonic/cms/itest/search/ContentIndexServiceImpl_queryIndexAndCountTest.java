@@ -95,8 +95,6 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
 
         contentIndexService.optimize();
 
-        printAllIndexContent();
-
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
         // query.setSecurityFilter( Lists.newArrayList( fixture.findUserByName( "content-querier" ).getUserGroupKey() ) );
         query.setIndex( 0 );
@@ -145,8 +143,6 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
         fixture.flushIndexTransaction();
 
         flushIndex();
-
-        printAllIndexContent();
 
         // exercise
         //ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -207,8 +203,6 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
         fixture.flushIndexTransaction();
 
         flushIndex();
-
-        printAllIndexContent();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );

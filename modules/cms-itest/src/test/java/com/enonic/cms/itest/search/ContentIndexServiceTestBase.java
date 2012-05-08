@@ -1,7 +1,6 @@
 package com.enonic.cms.itest.search;
 
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import com.enonic.cms.core.search.IndexType;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
-import static org.junit.Assert.*;
 
 
 /**
@@ -93,8 +91,6 @@ public abstract class ContentIndexServiceTestBase
         elasticSearchIndexService.putMapping( ContentIndexServiceImpl.CONTENT_INDEX_NAME, indexType.toString(), mapping );
     }
 
-    protected IndexDataCreator indexDataCreator = new IndexDataCreator();
-
     protected void assertContentResultSetEquals( int[] contentKeys, ContentResultSet result )
     {
         assertEquals( "contentResultSet length", contentKeys.length, result.getTotalCount() );
@@ -108,14 +104,6 @@ public abstract class ContentIndexServiceTestBase
             }
 
             assertTrue( "Unexpected ContentResultSet. ContentKey not found: " + contentKey, list.contains( new ContentKey( contentKey ) ) );
-        }
-    }
-
-    protected void doIndexContentDocuments( List<ContentDocument> docs )
-    {
-        for ( ContentDocument doc : docs )
-        {
-            this.contentIndexService.index( doc, false );
         }
     }
 
@@ -147,41 +135,6 @@ public abstract class ContentIndexServiceTestBase
         return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content.toString(), termQuery );
     }
 
-
-    protected void verifyUserDefinedFields( ContentKey contentKey, ContentDocument doc1 )
-    {
-        SearchResponse result = fetchDocumentByContentKey( contentKey );
-        assertEquals( "Should get one hit only", 1, result.getHits().getHits().length );
-
-        final Collection<UserDefinedField> userDefinedFields = doc1.getUserDefinedFields();
-
-        final SearchHit hit = result.getHits().getAt( 0 );
-        final Map<String, SearchHitField> hitFieldMap = hit.getFields();
-
-        for ( UserDefinedField field : userDefinedFields )
-        {
-            final String indexFieldName = field.getName();
-            final SearchHitField hitField = hitFieldMap.get( indexFieldName );
-
-            assertNotNull( "Could not find field in index: " + indexFieldName, hitField );
-            compareValues( hitField, field.getValue().toString() );
-        }
-    }
-    /*
-    private boolean isUserDataField( String hitField )
-    {
-        if ( StringUtils.startsWith( hitField, "data_" ) )
-        {
-            Matcher m = SPECIAL_FIELD_PATTERN.matcher( hitField );
-            if ( !m.find() )
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    */
-
     protected void printAllIndexContent()
     {
 
@@ -206,25 +159,6 @@ public abstract class ContentIndexServiceTestBase
     protected void flushIndex()
     {
         this.contentIndexService.flush();
-    }
-
-    protected void verifyStandardFields( ContentDocument doc1, ContentKey contentKey )
-    {
-        final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( contentKey );
-
-        verifyStandardFields( contentKey.toString(), fieldMapForId, doc1 );
-    }
-
-    private void verifyStandardFields( String id, Map<String, SearchHitField> fieldMapForId, ContentDocument doc )
-    {
-        for ( String requiredField : REQUIRED_STANDARD_FIELD )
-        {
-            assertNotNull( "Missing required field: '" + requiredField + "'", fieldMapForId.get( requiredField ) );
-        }
-
-        compareValues( fieldMapForId.get( "key" ), id );
-        compareValues( fieldMapForId.get( "categorykey" ), doc.getCategoryKey().toString() );
-        compareValues( fieldMapForId.get( "status" ), doc.getStatus() );
     }
 
     private void compareValues( final SearchHitField field, final String expected )
@@ -276,11 +210,6 @@ public abstract class ContentIndexServiceTestBase
         final String failureMessage = "Missing value " + expected + " in field: " + fieldName;
 
         assertTrue( failureMessage, values.contains( expected ) );
-    }
-
-    private void compareValues( SearchHitField field, int expected )
-    {
-        compareValues( field, Integer.toString( expected ) );
     }
 
     protected ContentDocument createContentDocument( int contentKey, String title, String preface, String fulltext )

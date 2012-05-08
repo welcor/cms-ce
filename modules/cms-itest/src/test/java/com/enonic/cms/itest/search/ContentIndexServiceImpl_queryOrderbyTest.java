@@ -43,8 +43,6 @@ public class ContentIndexServiceImpl_queryOrderbyTest
         contentIndexService.index( doc3, false );
         flushIndex();
 
-        printAllIndexContent();
-
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
             new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom asc" ) ).getKeys() );
 
@@ -161,7 +159,6 @@ public class ContentIndexServiceImpl_queryOrderbyTest
         contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/myrelated", "3"}, {"data/myrelated", "9"}} ),
                                    false );
         flushIndex();
-        printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "", "data/myrelated ASC" ) ) );
     }

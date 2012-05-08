@@ -47,8 +47,6 @@ public class ContentIndexServiceImpl_queryTextTest
         contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
         flushIndex();
 
-        printAllIndexContent();
-
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
 
@@ -154,8 +152,6 @@ public class ContentIndexServiceImpl_queryTextTest
         contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ), false );
         contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
         flushIndex();
-
-        printAllIndexContent();
 
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
             new ContentIndexQuery( "(title CONTAINS 'ost' AND fulltext CONTAINS 'ost') OR unknown CONTAINS 'fisk'" ) ) );

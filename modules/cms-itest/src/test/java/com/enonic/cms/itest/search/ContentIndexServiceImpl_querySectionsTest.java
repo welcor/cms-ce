@@ -43,7 +43,6 @@ public class ContentIndexServiceImpl_querySectionsTest
 
         contentIndexService.index( doc1, false );
         flushIndex();
-        printAllIndexContent();
 
         final ContentIndexQuery query = new ContentIndexQuery( "" );
 

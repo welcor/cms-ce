@@ -8,17 +8,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
 
+import com.enonic.cms.core.search.ElasticSearchFormatter;
 import com.enonic.cms.core.search.builder.ContentIndexDataElement;
 import com.enonic.cms.core.search.builder.ContentIndexDataFieldValue;
 import com.enonic.cms.core.search.builder.IndexFieldNameConstants;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
@@ -58,10 +57,10 @@ public class ContentIndexDataElementTest
 
         final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentIndexDataElement.getAllFieldValuesForElement();
 
-        // Should contain: String, number, orderby, orderby_number
-        assertEquals( 4, allFieldValuesForElement.size() );
+        // Should contain: String, number, orderby
+        assertEquals( 3, allFieldValuesForElement.size() );
 
-        verifyValues( "number-test", allFieldValuesForElement, 1, true );
+        verifyValues( "number-test", allFieldValuesForElement, 1 );
     }
 
     @Test
@@ -85,7 +84,7 @@ public class ContentIndexDataElementTest
 
         assertEquals( 2, allFieldValuesForElement.size() );
 
-        verifyValues( "string-test", allFieldValuesForElement, 2, false );
+        verifyValues( "string-test", allFieldValuesForElement, 2 );
     }
 
     @Test
@@ -96,9 +95,9 @@ public class ContentIndexDataElementTest
 
         final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentIndexDataElement.getAllFieldValuesForElement();
 
-        assertEquals( 4, allFieldValuesForElement.size() );
+        assertEquals( 3, allFieldValuesForElement.size() );
 
-        verifyValues( "number-test", allFieldValuesForElement, 2, true );
+        verifyValues( "number-test", allFieldValuesForElement, 2 );
     }
 
     @Test
@@ -109,9 +108,9 @@ public class ContentIndexDataElementTest
 
         final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentIndexDataElement.getAllFieldValuesForElement();
 
-        assertEquals( 4, allFieldValuesForElement.size() );
+        assertEquals( 3, allFieldValuesForElement.size() );
 
-        verifyValues( "number-test", allFieldValuesForElement, 1, true );
+        verifyValues( "number-test", allFieldValuesForElement, 1 );
     }
 
     @Test
@@ -129,18 +128,18 @@ public class ContentIndexDataElementTest
 
         assertEquals( 3, allFieldValuesForElement.size() );
 
-        verifyValues( "date-test", allFieldValuesForElement, 2, false );
+        verifyValues( "date-test", allFieldValuesForElement, 2 );
     }
 
-    @Ignore // Format to be decided
     @Test
-    public void testValidStringFormatForDate()
+    public void testValidStringFormatForDateAsSet()
     {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-DD'T'HH:mm:ss" );
+        SimpleDateFormat expectedFormat = ElasticSearchFormatter.elasticsearchSimpleDateFormat;
 
         final DateTime dateTime = new DateTime( 1975, 8, 1, 12, 00 );
 
-        ContentIndexDataElement contentIndexDataElement = new ContentIndexDataElement( "date-test", Sets.newHashSet( (Object) dateTime ) );
+        ContentIndexDataElement contentIndexDataElement =
+            new ContentIndexDataElement( "date-test", Sets.newHashSet( (Object) dateTime.toDate() ) );
 
         final Set<ContentIndexDataFieldValue> allFieldValuesForElements = contentIndexDataElement.getAllFieldValuesForElement();
 
@@ -151,16 +150,16 @@ public class ContentIndexDataElementTest
         {
             if ( allFieldValuesForElement.getFieldName().toString().equals( "date-test" ) )
             {
-                final String dateStringValue = allFieldValuesForElement.getValue().toString();
+
+                String dateStringValue = ( (Set) allFieldValuesForElement.getValue() ).iterator().next().toString();
 
                 try
                 {
-
-                    simpleDateFormat.parse( dateStringValue );
+                    expectedFormat.parse( dateStringValue );
                 }
                 catch ( ParseException e )
                 {
-                    fail( "Not correct format: " + dateStringValue );
+                    fail( "Not correct format: " + dateStringValue + " - " + e.getMessage() );
                 }
 
             }
@@ -181,11 +180,11 @@ public class ContentIndexDataElementTest
 
 
     private void verifyValues( String fieldBaseName, final Set<ContentIndexDataFieldValue> allFieldValuesForElement,
-                               int expectedElementsInValueArrays, boolean expectNumericOrderby )
+                               int expectedElementsInValueArrays )
     {
         for ( ContentIndexDataFieldValue value : allFieldValuesForElement )
         {
-            if ( value.getValue() instanceof HashSet )
+            if ( value.getValue() instanceof Set )
             {
                 assertEquals( expectedElementsInValueArrays, ( (HashSet) value.getValue() ).size() );
             }
@@ -193,17 +192,6 @@ public class ContentIndexDataElementTest
 
         assertTrue( containsField( fieldBaseName, allFieldValuesForElement ) );
         assertTrue( containsField( fieldBaseName + "." + IndexFieldNameConstants.ORDERBY_FIELDNAME_POSTFIX, allFieldValuesForElement ) );
-
-        final String numericOrderbyFieldName = fieldBaseName + "." + IndexFieldNameConstants.ORDERBY_NUMERIC_FIELDNAME_POSTFIX;
-
-        if ( expectNumericOrderby )
-        {
-            assertTrue( containsField( numericOrderbyFieldName, allFieldValuesForElement ) );
-        }
-        else
-        {
-            assertFalse( containsField( numericOrderbyFieldName, allFieldValuesForElement ) );
-        }
     }
 
     private boolean containsField( String fieldName, Set<ContentIndexDataFieldValue> allFieldValuesForElements )

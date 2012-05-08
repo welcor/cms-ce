@@ -26,7 +26,7 @@ public class QueryTranslatorTest_orderby
             "    }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
-            "    \"key\" : {\n" +
+            "    \"key.orderby\" : {\n" +
             "      \"order\" : \"desc\",\n" +
             "      \"ignore_unmapped\" : true\r\n" +
             "    }\n" +
@@ -52,7 +52,7 @@ public class QueryTranslatorTest_orderby
             "    }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
-            "    \"key\" : {\n" +
+            "    \"key.orderby\" : {\n" +
             "      \"order\" : \"asc\",\n" +
             "      \"ignore_unmapped\" : true\r\n" +
             "    }\n" +
@@ -80,7 +80,7 @@ public class QueryTranslatorTest_orderby
             "    }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
-            "    \"key\" : {\n" +
+            "    \"key.orderby\" : {\n" +
             "      \"order\" : \"asc\",\n" +
             "      \"ignore_unmapped\" : true\r\n" +
             "    }\n" +

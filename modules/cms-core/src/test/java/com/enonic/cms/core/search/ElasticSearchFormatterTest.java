@@ -5,18 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ElasticSearchUtilsTest
+public class ElasticSearchFormatterTest
 {
     @Test
-    public void testDateStuff()
+    public void testDateFormatting()
     {
         DateTime dateTime = new DateTime( 2010, 8, 1, 12, 0, 30, 333 );
 
-        final String esDateString = ElasticSearchUtils.formatDateAsStringIgnoreTimezone( dateTime.toDate() );
+        final String esDateString = ElasticSearchFormatter.formatDateAsStringIgnoreTimezone( dateTime.toDate() );
 
         assertEquals( "2010-08-01 12:00", esDateString );
 
     }
-
-
 }

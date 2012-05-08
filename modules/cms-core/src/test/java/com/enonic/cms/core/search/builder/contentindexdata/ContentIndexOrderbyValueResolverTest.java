@@ -22,16 +22,16 @@ public class ContentIndexOrderbyValueResolverTest
     @Test
     public void testOrderByValueBasics()
     {
-        String result = ContentIndexOrderbyValueResolver.getNumericOrderBy( null );
+        String result = ContentIndexOrderbyValueResolver.getOrderbyValue( null );
         assertNull( result );
 
-        result = ContentIndexOrderbyValueResolver.getNumericOrderBy( 123 );
+        result = ContentIndexOrderbyValueResolver.getOrderbyValue( 123 );
         assertNotNull( result );
 
-        result = ContentIndexOrderbyValueResolver.getNumericOrderBy( new Double( 123 ) );
+        result = ContentIndexOrderbyValueResolver.getOrderbyValue( new Double( 123 ) );
         assertNotNull( result );
 
-        result = ContentIndexOrderbyValueResolver.getNumericOrderBy( new Float( 123 ) );
+        result = ContentIndexOrderbyValueResolver.getOrderbyValue( new Float( 123 ) );
         assertNotNull( result );
     }
 
@@ -40,9 +40,9 @@ public class ContentIndexOrderbyValueResolverTest
     {
         List<String> resultList = new ArrayList<String>();
 
-        String minusTwo = ContentIndexOrderbyValueResolver.getNumericOrderBy( -2L );
-        String two = ContentIndexOrderbyValueResolver.getNumericOrderBy( 2L );
-        String hundredAndOne = ContentIndexOrderbyValueResolver.getNumericOrderBy( 101L );
+        String minusTwo = ContentIndexOrderbyValueResolver.getOrderbyValue( -2L );
+        String two = ContentIndexOrderbyValueResolver.getOrderbyValue( 2L );
+        String hundredAndOne = ContentIndexOrderbyValueResolver.getOrderbyValue( 101L );
 
         resultList.addAll( Arrays.asList( new String[]{two, minusTwo, hundredAndOne} ) );
 
@@ -58,12 +58,12 @@ public class ContentIndexOrderbyValueResolverTest
     {
         List<String> resultList = new ArrayList<String>();
 
-        String one = ContentIndexOrderbyValueResolver.getNumericOrderBy( 1.0 );
-        String one_point_one = ContentIndexOrderbyValueResolver.getNumericOrderBy( 1.1 );
-        String two = ContentIndexOrderbyValueResolver.getNumericOrderBy( 2.0 );
-        String twelwe = ContentIndexOrderbyValueResolver.getNumericOrderBy( 12.0 );
-        String ten = ContentIndexOrderbyValueResolver.getNumericOrderBy( new Double( 10.0 ) );
-        String hundred = ContentIndexOrderbyValueResolver.getNumericOrderBy( 100.0 );
+        String one = ContentIndexOrderbyValueResolver.getOrderbyValue( 1.0 );
+        String one_point_one = ContentIndexOrderbyValueResolver.getOrderbyValue( 1.1 );
+        String two = ContentIndexOrderbyValueResolver.getOrderbyValue( 2.0 );
+        String twelwe = ContentIndexOrderbyValueResolver.getOrderbyValue( 12.0 );
+        String ten = ContentIndexOrderbyValueResolver.getOrderbyValue( new Double( 10.0 ) );
+        String hundred = ContentIndexOrderbyValueResolver.getOrderbyValue( 100.0 );
 
         resultList.addAll( Arrays.asList( new String[]{one_point_one, two, one, ten, hundred, twelwe} ) );
 
@@ -82,7 +82,7 @@ public class ContentIndexOrderbyValueResolverTest
     public void testOrderbyString()
     {
 
-        String result = ContentIndexOrderbyValueResolver.getOrderbyValueForString( "TestSTring" );
+        String result = ContentIndexOrderbyValueResolver.getOrderbyValue( "TestSTring" );
         assertNotNull( result );
 
         assertEquals( "teststring", result );
@@ -90,13 +90,12 @@ public class ContentIndexOrderbyValueResolverTest
 
 
     @Test
-    //TODO: Decide date-format
     public void testOrderByValueDates()
     {
-
-        String result = ContentIndexOrderbyValueResolver.getOrderbyValueForDate( new DateTime( 2010, 1, 1, 10, 0 ).toDate() );
+        String result = ContentIndexOrderbyValueResolver.getOrderbyValue( new DateTime( 2010, 1, 1, 10, 30, 30, 333 ).toDate() );
         assertNotNull( result );
 
+        System.out.println( result );
     }
 
     @Test
@@ -104,7 +103,7 @@ public class ContentIndexOrderbyValueResolverTest
     {
         Set<Object> valueSet = new HashSet<Object>();
 
-        String result = ContentIndexOrderbyValueResolver.getNumericOrderBy( 2.0 );
+        String result = ContentIndexOrderbyValueResolver.getOrderbyValue( 2.0 );
         assertNotNull( result );
     }
 }

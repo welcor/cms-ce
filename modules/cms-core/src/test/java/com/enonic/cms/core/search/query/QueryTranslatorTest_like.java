@@ -14,12 +14,10 @@ public class QueryTranslatorTest_like
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
             "    \"wildcard\" : {\n" +
-            "      \"title\" : {\n" +
-            "        \"wildcard\" : \"boat*\"\n" +
-            "      }\n" +
+            "      \"title\" : \"boat*\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -37,12 +35,10 @@ public class QueryTranslatorTest_like
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
             "    \"wildcard\" : {\n" +
-            "      \"title\" : {\n" +
-            "        \"wildcard\" : \"*$&*\"\n" +
-            "      }\n" +
+            "      \"title\" : \"*$&*\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -60,12 +56,10 @@ public class QueryTranslatorTest_like
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
             "    \"wildcard\" : {\n" +
-            "      \"title\" : {\n" +
-            "        \"wildcard\" : \"*\\\\*\"\n" +
-            "      }\n" +
+            "      \"title\" : \"*\\\\*\"\n" +
             "    }\n" +
             "  }\n" +
             "}";

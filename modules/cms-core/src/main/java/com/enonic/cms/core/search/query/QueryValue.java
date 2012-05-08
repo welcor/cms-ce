@@ -5,7 +5,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
-import com.enonic.cms.core.search.ElasticSearchUtils;
+import com.enonic.cms.core.search.ElasticSearchFormatter;
 
 
 public class QueryValue
@@ -28,7 +28,7 @@ public class QueryValue
         else if ( value instanceof ReadableDateTime )
         {
             dateTimeValue = toUTCTimeZone( (ReadableDateTime) value );
-            stringValue = doNormalizeString( ElasticSearchUtils.formatDateAsStringIgnoreTimezone( (ReadableDateTime) value ) );
+            stringValue = doNormalizeString( ElasticSearchFormatter.formatDateAsStringIgnoreTimezone( (ReadableDateTime) value ) );
             numericValue = null;
         }
         else

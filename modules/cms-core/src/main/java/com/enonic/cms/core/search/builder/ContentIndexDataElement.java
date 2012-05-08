@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.Sets;
 
-import com.enonic.cms.core.search.ElasticSearchUtils;
+import com.enonic.cms.core.search.ElasticSearchFormatter;
 import com.enonic.cms.core.search.IndexFieldnameNormalizer;
 import com.enonic.cms.core.search.IndexValueNormalizer;
 
@@ -23,8 +23,6 @@ public class ContentIndexDataElement
     private final Set<String> stringValues = Sets.newHashSet();
 
     private String orderBy;
-
-    private String orderByNumber;
 
     public ContentIndexDataElement( final String fieldBaseName, final Set<Object> values )
     {
@@ -46,46 +44,29 @@ public class ContentIndexDataElement
             {
                 numericValues.add( ( (Number) value ).doubleValue() );
                 stringValues.add( IndexValueNormalizer.normalizeStringValue( value.toString() ) );
-                setOrderbyNumericIfNull( (Number) value );
-                setOrderbyStringIfNull( value );
+                setOrderby( value );
+
             }
             else if ( value instanceof Date )
             {
                 dateTimeValues.add( (Date) value );
-                stringValues.add( ElasticSearchUtils.formatDateAsStringIgnoreTimezone( (Date) value ) );
-                setOrderbyDateIfNull( (Date) value );
-                setOrderbyStringIfNull( value );
+                stringValues.add( ElasticSearchFormatter.formatDateAsStringIgnoreTimezone( (Date) value ) );
+                setOrderby( value );
             }
             else
             {
                 stringValues.add( IndexValueNormalizer.normalizeStringValue( value.toString() ) );
-                setOrderbyStringIfNull( value );
+                setOrderby( value );
                 addNumberOrDateIfPossible( value );
             }
         }
     }
 
-    private void setOrderbyStringIfNull( final Object value )
+    private void setOrderby( final Object value )
     {
         if ( orderBy == null )
         {
-            orderBy = ContentIndexOrderbyValueResolver.getOrderbyValueForString( value.toString() );
-        }
-    }
-
-    private void setOrderbyDateIfNull( final Date value )
-    {
-        if ( orderBy == null )
-        {
-            orderBy = ContentIndexOrderbyValueResolver.getOrderbyValueForDate( value );
-        }
-    }
-
-    private void setOrderbyNumericIfNull( final Number value )
-    {
-        if ( orderByNumber == null )
-        {
-            orderByNumber = ContentIndexOrderbyValueResolver.getNumericOrderBy( value );
+            orderBy = ContentIndexOrderbyValueResolver.getOrderbyValue( value );
         }
     }
 
@@ -95,7 +76,6 @@ public class ContentIndexDataElement
         if ( doubleValue != null )
         {
             numericValues.add( doubleValue );
-            setOrderbyNumericIfNull( doubleValue );
             return;
         }
 
@@ -152,13 +132,6 @@ public class ContentIndexDataElement
             set.add(
                 new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + ORDERBY_FIELDNAME_POSTFIX, orderBy ) );
         }
-
-        if ( StringUtils.isNotBlank( this.orderByNumber ) )
-        {
-            set.add( new ContentIndexDataFieldValue( this.fieldBaseName + INDEX_FIELD_TYPE_SEPARATOR + ORDERBY_NUMERIC_FIELDNAME_POSTFIX,
-                                                     orderByNumber ) );
-        }
-
     }
 
 }

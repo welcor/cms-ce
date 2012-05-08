@@ -23,9 +23,7 @@ public class QueryTranslatorTest_not_like
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"wildcard\" : {\n" +
-            "          \"title\" : {\n" +
-            "            \"wildcard\" : \"boat*\"\n" +
-            "          }\n" +
+            "          \"title\" : \"boat*\"\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -54,9 +52,7 @@ public class QueryTranslatorTest_not_like
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"wildcard\" : {\n" +
-            "          \"title\" : {\n" +
-            "            \"wildcard\" : \"*$&*\"\n" +
-            "          }\n" +
+            "          \"title\" : \"*$&*\"\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -85,9 +81,7 @@ public class QueryTranslatorTest_not_like
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"wildcard\" : {\n" +
-            "          \"title\" : {\n" +
-            "            \"wildcard\" : \"*\\\\*\"\n" +
-            "          }\n" +
+            "          \"title\" : \"*\\\\*\"\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

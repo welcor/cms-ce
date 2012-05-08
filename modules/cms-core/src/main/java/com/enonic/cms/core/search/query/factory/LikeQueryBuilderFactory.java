@@ -8,9 +8,6 @@ import com.enonic.cms.core.search.query.QueryFieldAndValue;
 public class LikeQueryBuilderFactory
     extends BaseQueryBuilderFactory
 {
-    public LikeQueryBuilderFactory()
-    {
-    }
 
     public QueryBuilder buildLikeQuery( final QueryFieldAndValue queryFieldAndValue )
     {

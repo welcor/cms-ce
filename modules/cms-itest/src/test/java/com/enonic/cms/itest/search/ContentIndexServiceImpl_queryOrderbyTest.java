@@ -1,7 +1,6 @@
 package com.enonic.cms.itest.search;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -81,7 +80,6 @@ public class ContentIndexServiceImpl_queryOrderbyTest
 
     }
 
-    @Ignore // Will fail since the numeric orderby must be specified
     @Test
     public void testOrderByStatus()
     {
@@ -168,7 +166,6 @@ public class ContentIndexServiceImpl_queryOrderbyTest
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "", "data/myrelated ASC" ) ) );
     }
 
-    @Ignore // Will fail since the orderby should be done on numeric field to follow this ordering
     @Test
     public void testOrderByNumericField()
     {

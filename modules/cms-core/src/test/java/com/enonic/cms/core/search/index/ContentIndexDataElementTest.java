@@ -23,8 +23,6 @@ import static junit.framework.Assert.fail;
 
 public class ContentIndexDataElementTest
 {
-
-
     @Test
     public void testCreateStringElement()
     {
@@ -46,7 +44,6 @@ public class ContentIndexDataElementTest
 
         // Should contain: String, date, order
         assertEquals( 3, allFieldValuesForElement.size() );
-
     }
 
     @Test
@@ -71,7 +68,6 @@ public class ContentIndexDataElementTest
         final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentIndexDataElement.getAllFieldValuesForElement();
 
         assertEquals( 0, allFieldValuesForElement.size() );
-
     }
 
     @Test

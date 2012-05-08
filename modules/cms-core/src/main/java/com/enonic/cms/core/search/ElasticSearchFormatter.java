@@ -13,7 +13,7 @@ public class ElasticSearchFormatter
     public final static SimpleDateFormat elasticsearchSimpleDateFormat =
         new SimpleDateFormat( CmsDateAndTimeFormats.XML_DATE_FORMAT_PATTERN );
 
-    public final static SimpleDateFormat elasticsearchFullDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    public final static SimpleDateFormat elasticsearchFullDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss:SSS" );
 
     public static String formatDateAsStringIgnoreTimezone( final Date date )
     {

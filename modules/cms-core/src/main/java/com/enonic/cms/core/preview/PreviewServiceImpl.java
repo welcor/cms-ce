@@ -18,10 +18,13 @@ import com.enonic.cms.core.servlet.ServletRequestAccessor;
 class PreviewServiceImpl
     implements PreviewService
 {
+    private static final String PREVIEW_CONTEXT_ATTRIBUTE = "_preview-context";
+
     public boolean isInPreview()
     {
         HttpServletRequest request = doGetRequest();
-        return "true".equals( request.getAttribute( Attribute.PREVIEW_ENABLED ) );
+
+        return request != null && "true".equals( request.getAttribute( Attribute.PREVIEW_ENABLED ) );
     }
 
     public PreviewContext getPreviewContext()
@@ -38,35 +41,44 @@ class PreviewServiceImpl
     {
         HttpSession session = doGetSession();
 
-        if ( previewContext.isPreviewingContent() )
+        if ( session != null )
         {
-            NoLazyInitializationEnforcerForPreview.enforceNoLazyInitialization(
-                previewContext.getContentPreviewContext().getContentPreviewed() );
-        }
+            if ( previewContext.isPreviewingContent() )
+            {
+                NoLazyInitializationEnforcerForPreview.enforceNoLazyInitialization(
+                    previewContext.getContentPreviewContext().getContentPreviewed() );
+            }
 
-        session.setAttribute( "_preview-context", previewContext );
+            session.setAttribute( PREVIEW_CONTEXT_ATTRIBUTE, previewContext );
+        }
     }
 
     private PreviewContext doGetPreviewContext()
     {
         HttpSession session = doGetSession();
-        PreviewContext previewContext = (PreviewContext) session.getAttribute( "_preview-context" );
-        Preconditions.checkNotNull( session, "Expected preview context to exist in session" );
-        return previewContext;
+
+        if ( session == null )
+        {
+            return null;
+        }
+
+        return (PreviewContext) session.getAttribute( PREVIEW_CONTEXT_ATTRIBUTE );
     }
 
     private HttpSession doGetSession()
     {
-        HttpServletRequest servletRequest = doGetRequest();
-        HttpSession session = servletRequest.getSession( false );
-        Preconditions.checkNotNull( session, "Expected HttpServletRequest to have a session" );
-        return session;
+        final HttpServletRequest servletRequest = doGetRequest();
+
+        if ( servletRequest == null )
+        {
+            return null;
+        }
+
+        return servletRequest.getSession( false );
     }
 
     private HttpServletRequest doGetRequest()
     {
-        HttpServletRequest request = ServletRequestAccessor.getRequest();
-        Preconditions.checkNotNull( request, "Expected ServletRequestAccessor to return a request" );
-        return request;
+        return ServletRequestAccessor.getRequest();
     }
 }

@@ -36,6 +36,8 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
 
     private GroupEntity groupB;
 
+    private GroupEntity groupC;
+
     @Before
     public void setUp()
     {
@@ -46,6 +48,10 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         groupB = new GroupEntity();
         groupB.setKey( new GroupKey( "groupB" ) );
         groupB.setName( "group B" );
+
+        groupC = new GroupEntity();
+        groupC.setKey( new GroupKey( "groupC" ) );
+        groupC.setName( "group C" );
     }
 
     @Test
@@ -125,6 +131,47 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         ContentIndexQuery query = createQuery( "key = 1327" );
         query.setSecurityFilter( filterGroupA );
         Collection<CategoryAccessType> categoryAccess = ImmutableSet.of( CategoryAccessType.ADMIN_BROWSE );
+        query.setCategoryAccessTypeFilter( categoryAccess, ContentIndexQuery.CategoryAccessTypeFilterPolicy.OR );
+        ContentResultSet res = contentIndexService.query( query );
+        assertEquals( 0, res.getLength() );
+    }
+
+    @Test
+    public void query_access_category_admin_rights_allowed()
+    {
+        // Setup standard values
+        setUpTestValues();
+        flushIndex();
+
+        printAllIndexContent();
+
+        final ImmutableSet<GroupKey> filterGroupB = ImmutableSet.of( groupC.getGroupKey() );
+
+        // accessible for group C, with category admin rights for groupC
+        ContentIndexQuery query = createQuery( "key = 1310" );
+        query.setSecurityFilter( filterGroupB );
+        Collection<CategoryAccessType> categoryAccess = ImmutableSet.of( CategoryAccessType.ADMINISTRATE );
+        query.setCategoryAccessTypeFilter( categoryAccess, ContentIndexQuery.CategoryAccessTypeFilterPolicy.OR );
+        ContentResultSet res = contentIndexService.query( query );
+        assertEquals( 1, res.getLength() );
+        assertEquals( 1310, res.getKey( 0 ).toInt());
+    }
+
+    @Test
+    public void query_access_category_admin_rights_not_allowed()
+    {
+        // Setup standard values
+        setUpTestValues();
+        flushIndex();
+
+        printAllIndexContent();
+
+        final ImmutableSet<GroupKey> filterGroupB = ImmutableSet.of( groupB.getGroupKey() );
+
+        // accessible for group C, with category admin rights for groupC
+        ContentIndexQuery query = createQuery( "key = 1310" );
+        query.setSecurityFilter( filterGroupB );
+        Collection<CategoryAccessType> categoryAccess = ImmutableSet.of( CategoryAccessType.ADMINISTRATE );
         query.setCategoryAccessTypeFilter( categoryAccess, ContentIndexQuery.CategoryAccessTypeFilterPolicy.OR );
         ContentResultSet res = contentIndexService.query( query );
         assertEquals( 0, res.getLength() );
@@ -245,12 +292,16 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
     {
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
 
+        final CategoryKey categoryGroupCAdminKey = new CategoryKey( 5 );
         final CategoryKey categoryNineKey = new CategoryKey( 9 );
         final CategoryKey categorySevenKey = new CategoryKey( 7 );
+
         final CategoryEntity categoryNine =
-                createCategory( categoryNineKey, true, false, false, false, groupA.getGroupKey() );
+                createCategory( categoryNineKey, true, false, false, false, false, groupA.getGroupKey() );
         final CategoryEntity categorySeven =
-                createCategory( categorySevenKey, true, true, true, true, groupB.getGroupKey() );
+                createCategory( categorySevenKey, true, true, true, true, false, groupB.getGroupKey() );
+        final CategoryEntity categoryGroupCAdmin =
+                createCategory( categoryGroupCAdminKey, false, false, false, false, true, groupC.getGroupKey() );
 
         // Index content 1, 2 og 3:
         final ContentDocument doc1 = new ContentDocument( new ContentKey( 1322 ) );
@@ -331,11 +382,31 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         doc4.setPriority( 0 );
         contentIndexService.index( doc4, true );
 
+        final ContentDocument doc5 = new ContentDocument( new ContentKey( 1310 ) );
+        doc5.setCategoryKey( categoryGroupCAdminKey );
+        doc5.setCategory( categoryGroupCAdmin );
+        doc5.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc5.setContentTypeName( "Adults" );
+        doc5.setTitle( "Zoidberg" );
+        doc5.addUserDefinedField( "data/person/age", "-" );
+        doc5.addUserDefinedField( "data/person/gender", "male" );
+        doc5.addUserDefinedField( "data/person/description",
+                                  "alien from Decapod 10" );
+        // Publish from February 28th to March 28th.
+        doc5.setPublishFrom( date.getTime() );
+        date.add( Calendar.MONTH, 1 );
+        doc5.setPublishTo( date.getTime() );
+        date.add( Calendar.MONTH, -1 );
+        doc5.setStatus( 2 );
+        doc5.setPriority( 0 );
+        setAccessRightsForContent( doc5, groupC );
+        contentIndexService.index( doc5, true );
+
         flushIndex();
     }
 
     private CategoryEntity createCategory( CategoryKey categoryKey, boolean readAccess, boolean adminBrowseAccess,
-                                           boolean publishAccess, boolean createAccess, GroupKey... groupKeys )
+                                           boolean publishAccess, boolean createAccess, boolean adminAccess, GroupKey... groupKeys )
     {
         CategoryEntity category = new CategoryEntity();
         category.setKey( categoryKey );
@@ -359,6 +430,10 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
             if ( createAccess )
             {
                 accessEntity.setCreateAccess( createAccess );
+            }
+            if ( adminAccess )
+            {
+                accessEntity.setAdminAccess( adminAccess );
             }
             accessRights.put( groupKey, accessEntity );
             category.setAccessRights( accessRights );

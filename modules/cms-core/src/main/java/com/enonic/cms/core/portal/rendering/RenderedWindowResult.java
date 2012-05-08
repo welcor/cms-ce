@@ -6,6 +6,8 @@ package com.enonic.cms.core.portal.rendering;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 
@@ -24,6 +26,8 @@ public class RenderedWindowResult
     private DateTime expirationTimeInCache;
 
     private String outputMethod;
+
+    private static final Pattern NAMESPACE_PATTERN = Pattern.compile( "xmlns(:\\w+)?=\\\"http://www\\.w3\\.org/1999/xhtml\\\"" );
 
     public boolean isErrorFree()
     {
@@ -93,7 +97,8 @@ public class RenderedWindowResult
             return;
         }
 
-        content = stripNamespaces( content, "http://www.w3.org/1999/xhtml" );
+        //content = stripNamespaces( content, "http://www.w3.org/1999/xhtml" );
+        content = stripNamespaces( content );
     }
 
     private String stripNamespaces( String content, String namespace )
@@ -101,6 +106,17 @@ public class RenderedWindowResult
         String regexp = "\\s+(\\w+:)?xmlns=\"" + namespace + "\"";
         return content.replaceAll( regexp, "" );
     }
+
+
+    private String stripNamespaces( String content )
+    {
+        final Matcher matcher = NAMESPACE_PATTERN.matcher( content );
+
+        final String result = matcher.replaceAll( "" );
+
+        return result;
+    }
+
 
     public RenderedWindowResult clone()
     {

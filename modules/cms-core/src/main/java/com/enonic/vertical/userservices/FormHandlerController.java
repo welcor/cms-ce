@@ -388,8 +388,14 @@ public class FormHandlerController
             if ( emailAddresses.size() > 0 )
             {
                 String[] emailAddr = emailAddresses.toArray( new String[emailAddresses.size()] );
-                mailForm( contentTitle, user, menuItemKey, emailAddr, formElement, formItems );
 
+                String subject = contentTitle;
+                if ( contentReference > 0 )
+                {
+                    subject += " #" + contentReference;
+                }
+
+                mailForm( subject, user, menuItemKey, emailAddr, formElement, formItems );
             }
 
             Element sendReceiptElem = XMLTool.selectElement( formElement, "receipt/sendreceipt" );

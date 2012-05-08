@@ -249,7 +249,7 @@ public final class SiteDebugInfoController
         str.append( "<a href='javascript: void(0)'" );
         str.append( " onclick='javascript: cms.ice.Utils.openWindow(\"" ).append( editContentUrl ).append( "\", 900, 600)'" );
         str.append( " style='background-image: url(" ).append( baseUrl ).append( "ice/images/edit.gif);'>" );
-        str.append( name );
+        str.append( StringEscapeUtils.escapeHtml( name ) );
         str.append( "</a>" );
 
         return str.toString();

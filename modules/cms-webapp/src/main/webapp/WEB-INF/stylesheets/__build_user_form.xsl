@@ -5,9 +5,7 @@
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:namespace-alias stylesheet-prefix="x" result-prefix="xsl"/>
   <xsl:output method="xml"/>
@@ -96,6 +94,7 @@
       <x:param name="excludekey"/>
 
       <x:param name="isRemote" select="/users/userstore/@remote = 'true'"/>
+      <x:param name="isEmailReadOnly" select="/users/userstore/@isEmailReadOnly = 'true'"/>
 
       <x:param name="generated-display-name"/>
 
@@ -250,18 +249,29 @@
 
             function setReadOnly()
             {
-              var form = document.forms['formAdmin'];
-              var formElements = form.elements;
-              var elementsLn = formElements.length;
+                var form = document.forms['formAdmin'];
+                var formElements = form.elements;
 
-              for ( var i = 0; i &lt; elementsLn; i++ )
-              {
-                // NB: Display name must always be writeable
-                if ( formElements[i].id != 'avbryt' &amp;&amp; formElements[i].id != 'display_name' )
+                for ( var i = 0; i &lt; formElements.length; i++ )
                 {
-                  formElements[i].readOnly = true;
+                    var element = formElements[i];
+                    var isInputElement = element.type !== 'fieldset' &amp;&amp; element.type !== 'button' &amp;&amp; element.id !== 'display_name';
+
+                    if ( isInputElement )
+                    {
+                        var isSelectElement = element.tagName.toLowerCase() === 'select';
+
+                        // Disable select elements. It's ok as the server handles elements that are null.
+                        if ( isSelectElement )
+                        {
+                            element.disabled = true;
+                        }
+                        else
+                        {
+                            element.readOnly = true;
+                        }
+                    }
                 }
-              }
             }
             // -----------------------------------------------------------------------------------------------------------------------------
 
@@ -1073,7 +1083,7 @@
                 <x:with-param name="name" select="'email'"/>
                 <x:with-param name="label" select="'%fldEmail%:'"/>
                 <x:with-param name="selectnode" select="$user/block/email"/>
-                <x:with-param name="readonly" select="false()"/>
+                <x:with-param name="readonly" select="$isEmailReadOnly"/>
                 <x:with-param name="required" select="true()"/>
                 <x:with-param name="useIcon" select="$isRemote"/>
                 <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1411,21 +1421,17 @@
                     </div>
                   </x:if>
                   <p>
+                  <x:if test="$canUpdateUser != 'false' and not($configuration/photo/@readonly = 'true')">
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td valign="top">
-                          <input type="file" name="photo" onchange="removePhoto(false);">
-                            <x:if test="$configuration/photo/@readonly = 'true'">
-                              <x:attribute name="readonly">true</x:attribute>
-                            </x:if>
-                          </input>
+                          <input type="file" name="photo" onchange="removePhoto(false);"/>
                           <input type="hidden" name="remove_photo" id="remove_photo" value="false"/>
                         </td>
                         <td valign="top">
                           <x:call-template name="button">
                             <x:with-param name="image" select="'images/icon_remove.gif'"/>
                             <x:with-param name="name" select="'photo_removebutton'"/>
-                            <x:with-param name="disabled" select="$canUpdateUser = 'false' or $configuration/photo/@readonly = 'true'"/>
                             <x:with-param name="onclick">
                               <xsl:text>javascript:removePhoto(true);</xsl:text>
                             </x:with-param>
@@ -1433,6 +1439,7 @@
                         </td>
                       </tr>
                     </table>
+                  </x:if>
                   </p>
 
                   <x:if test="$configuration/photo/@required = 'true' and not($user/block/photo/@exists)">

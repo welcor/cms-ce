@@ -7,19 +7,18 @@ package com.enonic.vertical.adminweb.handlers;
 import java.io.File;
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.TransformerException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminException;
-import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentXMLBuildersSpringManagedBeansBridge;
+import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentFileXMLBuilder;
 import com.enonic.vertical.adminweb.wizard.Wizard;
 import com.enonic.vertical.engine.VerticalEngineException;
 
@@ -66,11 +65,10 @@ public class ContentFileHandlerServlet
         FORM_XSL = "file_form.xsl";
     }
 
-    public void init( ServletConfig servletConfig )
-        throws ServletException
+    @Autowired
+    public void setContentFileXMLBuilder(final ContentFileXMLBuilder builder)
     {
-        super.init( servletConfig );
-        setContentXMLBuilder( ContentXMLBuildersSpringManagedBeansBridge.getContentFileXMLBuilder() );
+        setContentXMLBuilder( builder );
     }
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,

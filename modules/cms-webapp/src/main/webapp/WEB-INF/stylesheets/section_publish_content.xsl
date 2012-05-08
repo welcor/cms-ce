@@ -168,6 +168,9 @@
                         <xsl:with-param name="label" select="name"/>
                         <xsl:with-param name="name" select="'menukey'"/>
                         <xsl:with-param name="value" select="@key"/>
+                        <xsl:with-param name="selectnode-initial">
+                          <xsl:value-of select="/wizarddata/contents/content/sectionnames/sectionname[@menukey = $menukey]/@menukey"/>
+                        </xsl:with-param>
                         <xsl:with-param name="selectnode">
                           <xsl:choose>
                             <xsl:when test="/wizarddata/wizardstate/stepstate[1]/menu">
@@ -343,9 +346,9 @@
               </xsl:call-template>
             </xsl:if>
 
-            <table width="100%" border="0" cellspacing="2" cellpadding="2">
+            <table width="100%" border="0" cellspacing="0" cellpadding="3">
               <tr>
-                <th align="center" width="40">%fldSelect%</th>
+                <th align="center" width="40">%changes%</th>
                 <th align="center" width="50">%lblManuallyOrder%</th>
                 <th align="center" width="40">%fldHome%</th>
                 <th align="left">%fldSection%</th>
@@ -405,9 +408,37 @@
 
 
 
-      <xsl:if test="boolean($section) and (not($summary) or @key = $selectedmenuitemkey or @key = $selectedhomekey)">
+      <xsl:if test="boolean($section)">
+
+        <xsl:variable name="selectnode">
+          <xsl:choose>
+            <xsl:when test="$section/@filtered = 'true' and @publish = 'true'">
+              <xsl:value-of select="$menuitemkey"/>
+            </xsl:when>
+            <xsl:when test="@publish = 'false'">
+              <xsl:value-of select="''"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$menuInStepState/menuitem[@key = $menuitemkey]/@key"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+
+        <xsl:variable name="menuitem" select="$stepState1/menu/menuitem[@key = $menuitemkey]"/>
 
         <tr>
+
+          <xsl:if test="$summary">
+            <xsl:choose>
+              <xsl:when test="$menuitemkey = $selectnode">
+                <xsl:if test="$menuitem/@action = 'add'"><xsl:attribute name="bgcolor">#EEFFEE</xsl:attribute></xsl:if>
+                <xsl:if test="$menuitem/@action = 'remove'"><xsl:attribute name="bgcolor">#FFEEEE</xsl:attribute></xsl:if>
+              </xsl:when>
+              <xsl:otherwise>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:if>
+
           <xsl:variable name="onclick">
               <xsl:text>selectCheckBoxChanged(this, "menuitem_manually_order_</xsl:text>
               <xsl:value-of select="$menukey"/>
@@ -422,16 +453,16 @@
             <xsl:with-param name="value" select="$menuitemkey"/>
             <xsl:with-param name="selectnode">
               <xsl:choose>
-                <xsl:when test="$section/@filtered = 'true'">
-                  <xsl:value-of select="$menuitemkey"/>
+                <xsl:when test="$summary and $menuitem/@action = 'remove'">
+                  <xsl:value-of select="''" />
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="$menuInStepState/menuitem[@key = $menuitemkey]/@key"/>
+                  <xsl:value-of select="$selectnode" />
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:with-param>
             <xsl:with-param name="onclick" select="$onclick"/>
-            <xsl:with-param name="disabled" select="$summary or not($section/@marked = 'true') or $section/@filtered = 'true'"/>
+            <xsl:with-param name="disabled" select="$summary"/>
           </xsl:call-template>
 
           <xsl:call-template name="checkbox_nolabel">
@@ -506,13 +537,25 @@
                 <xsl:text>.gif</xsl:text>
 							</xsl:attribute>
 						</img>
-            			<img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
-						<xsl:call-template name="string-replace-all">
-							<xsl:with-param name="text" select="path"/>
-							<xsl:with-param name="replace" select="'/'"/>
-							<xsl:with-param name="by" select="' / '" />
-						</xsl:call-template>
+            <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
+            <xsl:call-template name="string-replace-all">
+              <xsl:with-param name="text" select="path"/>
+              <xsl:with-param name="replace" select="'/'"/>
+              <xsl:with-param name="by" select="' / '" />
+            </xsl:call-template>
 					</td>
+          <xsl:if test="$summary">
+            <td width="100px" align="center">
+              <xsl:choose>
+                <xsl:when test="$menuitemkey = $selectnode">
+                  <xsl:if test="$menuitem/@action = 'add'">%added%</xsl:if>
+                  <xsl:if test="$menuitem/@action = 'remove'">%removed%</xsl:if>
+                  <xsl:if test="$menuitem/@action = 'none'">&nbsp;</xsl:if>
+                </xsl:when>
+                <xsl:otherwise>&nbsp;</xsl:otherwise>
+              </xsl:choose>
+            </td>
+          </xsl:if>
 				</tr>
 			</xsl:if>
     </xsl:for-each>
@@ -772,12 +815,13 @@
 
             <br/>
 
-            <table width="100%" border="0" cellspacing="2" cellpadding="2">
+            <table width="100%" border="0" cellspacing="0" cellpadding="3">
               <tr>
                 <th align="center" width="40">%fldSelect%</th>
                 <th align="center" width="50">%lblManuallyOrder%</th>
                 <th align="center" width="40">%fldHome%</th>
                 <th align="left">%fldSection%</th>
+                <th align="center">%changes%</th>
               </tr>
 
               <xsl:call-template name="sectionradiobuttons">
@@ -812,9 +856,21 @@
     <xsl:param name="href" select="''"/>
     <xsl:param name="value"/>
     <xsl:param name="selectnode" />
+    <xsl:param name="selectnode-initial" />
     <xsl:param name="disabled" select="false()" />
 
+    <xsl:if test="$selectnode-initial = $value">
+      <input type="hidden">
+        <xsl:attribute name="name">
+          <xsl:value-of select="$name" />
+        </xsl:attribute>
+        <xsl:attribute name="value">
+          <xsl:value-of select="$value" />
+        </xsl:attribute>
+      </input>
+    </xsl:if>
 
+    <label>
     <input type="checkbox">
       <xsl:if test="$selectnode = $value">
         <xsl:attribute name="checked">
@@ -836,7 +892,7 @@
       <xsl:attribute name="onclick">
         <xsl:value-of select="'checkBoxSiteChanged(this)'" />
       </xsl:attribute>
-      <xsl:if test="$disabled">
+      <xsl:if test="$disabled or $selectnode-initial = $value">
         <xsl:attribute name="disabled">
           <xsl:text>disabled</xsl:text>
         </xsl:attribute>
@@ -857,6 +913,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </input>
+    </label>
   </xsl:template>
 
   <xsl:template name="checkbox_nolabel">

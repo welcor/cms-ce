@@ -7,6 +7,7 @@ package com.enonic.cms.itest.content.index;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -17,10 +18,15 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
+import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
+import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.AggregatedQuery;
 import com.enonic.cms.core.content.index.AggregatedResult;
@@ -37,7 +43,10 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.store.dao.ContentIndexDao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ContentIndexServiceImplTest
     extends AbstractSpringTest
@@ -51,6 +60,9 @@ public class ContentIndexServiceImplTest
 
     @Autowired
     private ContentIndexDao contentIndexDao;
+
+    @Autowired
+    protected HibernateTemplate hibernateTemplate;
 
     private void setUpStandardTestValues()
     {
@@ -1995,7 +2007,7 @@ public class ContentIndexServiceImplTest
             {"data/description", "dette skal ikke gi treff"}} ), false );
 
         service.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
-            {"data/description", "dette er en beskrivelse ja"}} ), false );
+                {"data/description", "dette er en beskrivelse ja"}} ), false );
 
         assertContentResultSetEquals( new int[]{101}, service.query(
             new ContentIndexQuery( "data/* CONTAINS 'ingress' AND data/* CONTAINS 'beskrivelse'" ) ) );
@@ -2021,16 +2033,18 @@ public class ContentIndexServiceImplTest
     {
         service.index( createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 3, "c1",
                                               new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
-        service.index( createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
-                                              new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
+        service.index(
+                createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
+                                       new String[][]{{"data/dummy", "dummy value"},
+                                               {"data/dummy2", "dummy value 2"}} ), false );
         service.index( createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 2, "c3",
                                               new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ), false );
 
-        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ),
-                      service.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) ).getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), service.query(
+                new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) ).getKeys() );
 
-        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
-                      service.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) ).getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), service.query(
+                new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) ).getKeys() );
 
     }
 
@@ -2051,10 +2065,12 @@ public class ContentIndexServiceImplTest
         service.index( doc3, false );
 
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), service.query(
-            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom asc" ) ).getKeys() );
+                new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'",
+                                       "publishFrom asc" ) ).getKeys() );
 
         assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), service.query(
-            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishFrom desc" ) ).getKeys() );
+                new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'",
+                                       "publishFrom desc" ) ).getKeys() );
 
     }
 
@@ -2075,10 +2091,10 @@ public class ContentIndexServiceImplTest
         service.index( doc3, false );
 
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), service.query(
-            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo asc" ) ).getKeys() );
+                new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo asc" ) ).getKeys() );
 
         assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), service.query(
-            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo desc" ) ).getKeys() );
+                new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo desc" ) ).getKeys() );
 
     }
 
@@ -2174,6 +2190,115 @@ public class ContentIndexServiceImplTest
     }
 
     @Test
+    public void testContentTypeINQuery()
+    {
+
+        ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
+                                                      new String[][]{{"data/heading", "title1"}} );
+        doc1.setContentTypeName( "Article3" );
+        service.index( doc1, false );
+
+        ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
+                                                      new String[][]{{"data/heading", "title2"}} );
+        doc2.setContentTypeName( "Article3" );
+        service.index( doc2, false );
+
+        ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
+                                                      new String[][]{{"data/heading", "title3"}} );
+        doc3.setContentTypeName( "Article4" );
+        service.index( doc3, false );
+
+        hibernateTemplate.save(
+                createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
+        hibernateTemplate.save(
+                createContentType( "Article3", ContentHandlerName.CUSTOM.getHandlerClassShortName(), 10 ) );
+        hibernateTemplate.save( createContentType( "Article4", ContentHandlerName.CUSTOM.getHandlerClassShortName(), 11 ) );
+
+        ContentIndexQuery query = new ContentIndexQuery( "contenttype IN ('Article3')", "" );
+        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype IN ('Article3', 'Article4')", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype IN ('Article3', 'Article4', 'Article666')", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype IN ('Article666')", "" );
+        assertContentResultSetEquals( new int[]{}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype IN ('Article666', 'Article777')", "" );
+        assertContentResultSetEquals( new int[]{}, service.query( query ) );
+
+
+        query = new ContentIndexQuery( "contenttype NOT IN ('Article3')", "" );
+        assertContentResultSetEquals( new int[]{3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype NOT IN ('Article3', 'Article4')", "" );
+        assertContentResultSetEquals( new int[]{}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype NOT IN ('Article666')", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype NOT IN ('Article666', 'Article777')", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+    }
+
+    @Test
+    public void testContentTypeEQUALQuery()
+    {
+
+        ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
+                                                      new String[][]{{"data/heading", "title1"}} );
+        doc1.setContentTypeName( "Article3" );
+        service.index( doc1, false );
+
+        ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
+                                                      new String[][]{{"data/heading", "title2"}} );
+        doc2.setContentTypeName( "Article3" );
+        service.index( doc2, false );
+
+        ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
+                                                      new String[][]{{"data/heading", "title3"}} );
+        doc3.setContentTypeName( "Article4" );
+        service.index( doc3, false );
+
+        hibernateTemplate.save(
+                createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
+        hibernateTemplate.save(
+                createContentType( "Article3", ContentHandlerName.CUSTOM.getHandlerClassShortName(), 10 ) );
+        hibernateTemplate.save(
+                createContentType( "Article4", ContentHandlerName.CUSTOM.getHandlerClassShortName(), 11 ) );
+
+        ContentIndexQuery query = new ContentIndexQuery( "contenttype = 'Article3'", "" );
+        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article3' OR contenttype = 'Article4'", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article3' OR contenttype = 'Article4' OR contenttype = 'Article666'", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article666'", "" );
+        assertContentResultSetEquals( new int[]{}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article666' OR contenttype = 'Article777'", "" );
+        assertContentResultSetEquals( new int[]{}, service.query( query ) );
+
+
+        query = new ContentIndexQuery( "contenttype != 'Article3'", "" );
+        assertContentResultSetEquals( new int[]{3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype != 'Article3' AND contenttype != 'Article4'", "" );
+        assertContentResultSetEquals( new int[]{}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype != 'Article666'", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype != 'Article666' AND contenttype != 'Article777'", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+    }
+
+    @Test
     public void testContentQueryWithCategoryFilterAndContentTypeNameSearch()
     {
 
@@ -2189,16 +2314,78 @@ public class ContentIndexServiceImplTest
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
                                                       new String[][]{{"data/heading", "title3"}} );
-        doc3.setContentTypeName( "Loooooooooooooong-content-type-name-it-is" );
+        doc3.setContentTypeName( "type-name-it-is" );
         service.index( doc3, false );
 
-        ContentIndexQuery query = new ContentIndexQuery( "contenttype = 'Article3'", "" );
+        hibernateTemplate.save(
+                createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
+        hibernateTemplate.save(
+                createContentType( "Article3", ContentHandlerName.CUSTOM.getHandlerClassShortName(), 10 ) );
+        hibernateTemplate.save( createContentType( "type-name-it-is", ContentHandlerName.CUSTOM.getHandlerClassShortName(), 11 ) );
+
+        ContentIndexQuery query = new ContentIndexQuery( "contenttypekey = 10", "" );
         query.setContentTypeFilter( createContentTypeList( 10 ) );
         assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
 
-        query = new ContentIndexQuery( "contenttype = 'Loooooooooooooong-content-type-name-it-is'", "" );
+        query = new ContentIndexQuery( "contenttypekey = 10", "" );
+        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article3'", "" );
+        query.setContentTypeFilter( createContentTypeList( 10 ) );
+        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article3'", "" );
+        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article3' OR contenttype = 'Article4' OR contenttype = 'Article5'", "" );
+        assertContentResultSetEquals( new int[]{1, 2}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'Article3' OR contenttype = 'type-name-it-is'", "" );
+        assertContentResultSetEquals( new int[]{1, 2, 3}, service.query( query ) );
+
+        query = new ContentIndexQuery( "contenttype = 'type-name-it-is'", "" );
         query.setContentTypeFilter( createContentTypeList( 11 ) );
         assertContentResultSetEquals( new int[]{3}, service.query( query ) );
+    }
+
+    private ContentHandlerEntity createContentHandler( String name, String handlerClassName )
+    {
+        ContentHandlerName contentHandlerName = ContentHandlerName.parse( handlerClassName );
+        ContentHandlerEntity contentHandler = new ContentHandlerEntity();
+        contentHandler.setKey( new ContentHandlerKey( 100 ) );
+        contentHandler.setName( name );
+        contentHandler.setClassName( contentHandlerName.getHandlerClassShortName() );
+        contentHandler.setTimestamp( new Date() );
+        return contentHandler;
+    }
+
+    private ContentTypeEntity createContentType( String name, String contentHandlerClassName, int key )
+    {
+        ContentTypeEntity contenType = new ContentTypeEntity();
+        contenType.setKey( key );
+        contenType.setName( name );
+        contenType.setHandler( findContentHandlerByClassName( contentHandlerClassName ) );
+        contenType.setTimestamp( new Date() );
+        contenType.setData( null );
+        return contenType;
+    }
+
+    private ContentHandlerEntity findContentHandlerByClassName( String value )
+    {
+        ContentHandlerEntity example = new ContentHandlerEntity();
+        example.setClassName( value );
+        return (ContentHandlerEntity) findFirstByExample( example );
+    }
+
+    private Object findFirstByExample( Object example )
+    {
+        List list = hibernateTemplate.findByExample( example );
+        if ( list.isEmpty() )
+        {
+            return null;
+        }
+
+        return list.get( 0 );
     }
 
     @Test

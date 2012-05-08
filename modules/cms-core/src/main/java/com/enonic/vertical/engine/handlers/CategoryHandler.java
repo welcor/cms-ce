@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -92,10 +94,9 @@ public class CategoryHandler
     @Autowired
     private CategoryDao categoryDao;
 
+    @PostConstruct
     public void init()
     {
-        super.init();
-
         categoryStatisticsHelper = new CategoryStatisticsHelper( this );
     }
 

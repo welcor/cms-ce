@@ -11,6 +11,7 @@ import java.util.HashMap;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
+import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 
 /**
  * Keeps track of all executed methods and the result returned.  If a method is invoked with the same parameters, the same result is
@@ -68,7 +69,7 @@ public final class InvocationCache
     {
         Object result;
 
-        if ( isCacheable )
+        if ( isCacheable && RenderTrace.isTraceOff() )
         {
             String key = getCacheKey( targetObject, method, args );
             result = this.cache.get( key );

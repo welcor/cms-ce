@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 
 import com.google.common.collect.Sets;
 
@@ -53,7 +52,7 @@ public class ContentIndexDataElement
             else if ( value instanceof Date )
             {
                 dateTimeValues.add( (Date) value );
-                stringValues.add( ElasticSearchUtils.formatDateForElasticSearch( new DateTime( value ) ) );
+                stringValues.add( ElasticSearchUtils.formatDateAsStringIgnoreTimezone( (Date) value ) );
                 setOrderbyDateIfNull( (Date) value );
                 setOrderbyStringIfNull( value );
             }

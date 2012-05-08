@@ -28,7 +28,7 @@ public class QueryValue
         else if ( value instanceof ReadableDateTime )
         {
             dateTimeValue = toUTCTimeZone( (ReadableDateTime) value );
-            stringValue = doNormalizeString( ElasticSearchUtils.formatDateForElasticSearch( (ReadableDateTime) value ) );
+            stringValue = doNormalizeString( ElasticSearchUtils.formatDateAsStringIgnoreTimezone( (ReadableDateTime) value ) );
             numericValue = null;
         }
         else

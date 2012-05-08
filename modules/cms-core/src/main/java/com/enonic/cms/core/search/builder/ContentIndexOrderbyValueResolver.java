@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.util.NumericUtils;
-import org.joda.time.DateTime;
 
 import com.enonic.cms.core.search.ElasticSearchUtils;
 
@@ -37,7 +36,7 @@ public class ContentIndexOrderbyValueResolver
 
     public static String getOrderbyValueForDate( Date value )
     {
-        return ElasticSearchUtils.formatDateForElasticSearch( new DateTime( value ) );
+        return ElasticSearchUtils.formatDateAsStringIgnoreTimezone( value );
     }
 
     public static String getOrderbyValueForString( String value )

@@ -1,24 +1,20 @@
 package com.enonic.cms.core.search;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class ElasticSearchUtilsTest
 {
-    SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd't'HH:mm:ss:SSS Z" );
-
     @Test
     public void testDateStuff()
     {
-        Date now = Calendar.getInstance().getTime();
+        DateTime dateTime = new DateTime( 2010, 8, 1, 12, 0, 30, 333 );
 
-        final String esDateString = ElasticSearchUtils.formatDateForElasticSearch( new DateTime( now ) );
+        final String esDateString = ElasticSearchUtils.formatDateAsStringIgnoreTimezone( dateTime.toDate() );
 
-        System.out.println( esDateString );
+        assertEquals( "2010-08-01 12:00", esDateString );
 
     }
 

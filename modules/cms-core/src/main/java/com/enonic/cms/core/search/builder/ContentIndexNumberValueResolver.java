@@ -6,8 +6,7 @@ public class ContentIndexNumberValueResolver
     {
         try
         {
-            final Double doubleValue = Double.parseDouble( value.toString() );
-            return doubleValue;
+            return Double.parseDouble( value.toString() );
         }
         catch ( NumberFormatException e )
         {

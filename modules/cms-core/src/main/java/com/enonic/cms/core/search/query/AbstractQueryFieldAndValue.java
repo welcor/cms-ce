@@ -13,12 +13,12 @@ public abstract class AbstractQueryFieldAndValue
 
     protected abstract boolean queryPathIsDateAndValueEmpty();
 
-    protected AbstractQueryFieldAndValue( final QueryField queryField )
+    AbstractQueryFieldAndValue( final QueryField queryField )
     {
         this.queryField = queryField;
     }
 
-    protected AbstractQueryFieldAndValue( final String path )
+    AbstractQueryFieldAndValue( final String path )
     {
         this.queryField = QueryFieldFactory.resolveQueryField( path );
     }
@@ -53,7 +53,7 @@ public abstract class AbstractQueryFieldAndValue
         return queryField.doBuildAsIdQuery();
     }
 
-    protected boolean isDateField()
+    boolean isDateField()
     {
         return queryField.isDateField();
     }

@@ -60,10 +60,9 @@ public class QueryField
         this.renderAsIdQuery = renderAsIdQuery;
     }
 
-    public QueryField setRenderAsHasChildQuery( final boolean renderAsHasChildQuery )
+    public void setRenderAsHasChildQuery( final boolean renderAsHasChildQuery )
     {
         this.renderAsHasChildQuery = renderAsHasChildQuery;
-        return this;
     }
 
 
@@ -77,11 +76,9 @@ public class QueryField
         return indexType;
     }
 
-
-    public QueryField setIndexType( final IndexType indexType )
+    public void setIndexType( final IndexType indexType )
     {
         this.indexType = indexType;
-        return this;
     }
 
     public boolean isWildcardQueryField()

@@ -45,7 +45,7 @@ public class QuerySignatureResolver
             return;
         }
 
-        s.append( fieldName + paramValue + LS );
+        s.append( fieldName ).append( paramValue ).append( LS );
 
     }
 

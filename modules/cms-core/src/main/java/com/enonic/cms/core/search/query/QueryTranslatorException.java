@@ -1,6 +1,6 @@
 package com.enonic.cms.core.search.query;
 
-public class QueryTranslatorException
+class QueryTranslatorException
     extends RuntimeException
 {
 

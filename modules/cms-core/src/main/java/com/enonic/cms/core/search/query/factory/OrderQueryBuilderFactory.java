@@ -51,9 +51,9 @@ public class OrderQueryBuilderFactory
     {
         List<SortBuilder> sort = new ArrayList<SortBuilder>();
 
-        for ( int i = 0; i < expr.length; i++ )
+        for ( final OrderFieldExpr anExpr : expr )
         {
-            sort.add( buildOrderFieldExpr( expr[i] ) );
+            sort.add( buildOrderFieldExpr( anExpr ) );
         }
 
         return sort;

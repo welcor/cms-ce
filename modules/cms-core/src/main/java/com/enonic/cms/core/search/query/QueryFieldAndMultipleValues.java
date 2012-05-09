@@ -94,7 +94,7 @@ public class QueryFieldAndMultipleValues
         return true;
     }
 
-    protected boolean isEmpty()
+    boolean isEmpty()
     {
         if ( isEmpty == null )
         {

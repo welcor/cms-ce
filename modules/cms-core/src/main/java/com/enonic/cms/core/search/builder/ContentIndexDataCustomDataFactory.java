@@ -62,16 +62,9 @@ public class ContentIndexDataCustomDataFactory
         return values;
     }
 
-
+    //TODO: Check this
     private void addAllUserdataField( final ContentIndexData contentIndexData, final Set<String> allUserdataValue )
     {
-        StringBuffer buf = new StringBuffer();
-
-        for ( String value : allUserdataValue )
-        {
-            buf.append( value + " " );
-        }
-
         contentIndexData.addContentData( ALL_USERDATA_FIELDNAME, allUserdataValue );
     }
 

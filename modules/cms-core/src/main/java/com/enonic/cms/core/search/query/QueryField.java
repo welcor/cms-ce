@@ -60,9 +60,10 @@ public class QueryField
         this.renderAsIdQuery = renderAsIdQuery;
     }
 
-    public void setRenderAsHasChildQuery( final boolean renderAsHasChildQuery )
+    public QueryField setRenderAsHasChildQuery( final boolean renderAsHasChildQuery )
     {
         this.renderAsHasChildQuery = renderAsHasChildQuery;
+        return this;
     }
 
 

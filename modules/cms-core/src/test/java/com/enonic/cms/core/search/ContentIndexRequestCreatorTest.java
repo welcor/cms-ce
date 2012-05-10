@@ -3,8 +3,6 @@ package com.enonic.cms.core.search;
 import java.util.Set;
 
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,16 +37,15 @@ public class ContentIndexRequestCreatorTest
     {
         ContentIndexData data = new ContentIndexData( new ContentKey( "1" ) );
         data.addContentData( "contentdata", 1 );
-
-        //data.setCustomdata( buildMetadata( 2, "customdata" ) );
-        data.setBinaryData( buildMetadata( 3, "binarydata" ) );
+        data.addBinaryData( "attachment", "This is a test-representation of binary data" );
 
         Set<IndexRequest> requests = contentIndexRequestCreator.createIndexRequests( "TEST_INDEX", data );
 
         assertEquals( 2, requests.size() );
 
         boolean contentWasFirst = false;
-        boolean customdataFound = false, binarydataFound = false;
+        boolean binarydataFound = false;
+        String contentId = null;
 
         for ( IndexRequest request : requests )
         {
@@ -61,29 +58,18 @@ public class ContentIndexRequestCreatorTest
             else if ( type.equals( IndexType.Content.toString() ) )
             {
                 contentWasFirst = true;
+                assertTrue( "ContentData should not have parent", request.parent() == null );
+                contentId = request.id();
             }
             else if ( type.equals( IndexType.Binaries.toString() ) )
             {
                 binarydataFound = true;
+                assertTrue( "Binary data should have parent, pointing to content", request.parent() != null );
+                assertEquals( contentId, request.parent() );
+                assertEquals( contentId, request.id() );
             }
         }
 
         assertTrue( contentWasFirst && binarydataFound );
-
     }
-
-
-    private XContentBuilder buildMetadata( Integer key, String data )
-        throws Exception
-    {
-
-        final XContentBuilder result = XContentFactory.jsonBuilder();
-        result.startObject();
-        result.field( "key", key );
-        result.field( "data", data );
-        result.endObject();
-
-        return result;
-    }
-
 }

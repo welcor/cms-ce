@@ -3,7 +3,7 @@ package com.enonic.cms.core.search.builder;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.util.NumericUtils;
+import org.elasticsearch.nodep.lucene.util.NumericUtils;
 
 import com.enonic.cms.core.search.ElasticSearchFormatter;
 

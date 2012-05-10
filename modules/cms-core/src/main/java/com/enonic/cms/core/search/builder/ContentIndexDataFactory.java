@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
@@ -55,7 +54,7 @@ public final class ContentIndexDataFactory
         {
             try
             {
-                contentIndexData.setBinaryData( buildExtractedBinaryData( content ) );
+                addExtractedBinaryData( contentIndexData, content );
             }
             catch ( Exception e )
             {
@@ -157,22 +156,16 @@ public final class ContentIndexDataFactory
         }
     }
 
-    private XContentBuilder buildExtractedBinaryData( ContentDocument content )
+    private void addExtractedBinaryData( final ContentIndexData contentIndexData, final ContentDocument content )
         throws Exception
     {
         BigText binaryData = content.getBinaryExtractedText();
-        /*
-       if ( binaryData != null && !binaryData.getText().isEmpty() )
-       {
-           final XContentBuilder result = XContentFactory.jsonBuilder();
-           result.startObject();
-           addDoubleField( "key", (double) content.getContentKey().toInt(), result );
-           addStringField( IndexFieldNameConstants.ATTACHMENT_FIELDNAME, binaryData.getText(), result );
-           result.endObject();
-           return result;
-       }
-        */
-        return null;
+
+        if ( binaryData != null && !binaryData.getText().isEmpty() )
+        {
+            contentIndexData.addBinaryData( "key", content.getContentKey().toInt() );
+            contentIndexData.addBinaryData( ATTACHMENT_FIELDNAME, binaryData.getText() );
+        }
     }
 
 

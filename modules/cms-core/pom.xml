@@ -217,8 +217,14 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>0.19.3</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>com.enonic.lib.repack</groupId>
       <artifactId>elasticsearch</artifactId>
       <version>0.19.3</version>
     </dependency>

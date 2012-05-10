@@ -25,36 +25,37 @@ final class ContentIndexRequestCreator
     {
         Set<IndexRequest> indexRequests = new TreeSet<IndexRequest>( comparator );
 
-        final String id = contentIndexData.getKey().toString();
+        addRequestsForBinaryData( indexName, contentIndexData, indexRequests );
 
-        final XContentBuilder contentData;
-
-        try
-        {
-            contentData = contentIndexData.buildContentDataJson();
-        }
-        catch ( Exception e )
-        {
-            throw new ContentIndexException( "Failed to build json: ", e );
-        }
-
-        if ( contentData != null )
-        {
-            final IndexRequest indexRequest = createIndexRequest( indexName, id, contentData, IndexType.Content, null );
-            //indexRequest.operationThreaded( multithreaded );
-            indexRequests.add( indexRequest );
-        }
-
-        if ( contentIndexData.getBinaryData() != null )
-        {
-            final IndexRequest indexRequest = createIndexRequest( indexName, id, contentIndexData.getBinaryData(), IndexType.Binaries, id );
-            //indexRequest.operationThreaded( multithreaded );
-            indexRequests.add( indexRequest );
-        }
+        addRequestsForContentData( indexName, contentIndexData, indexRequests );
 
         return indexRequests;
     }
 
+    private void addRequestsForContentData( final String indexName, final ContentIndexData contentIndexData,
+                                            final Set<IndexRequest> indexRequests )
+    {
+        final String id = contentIndexData.getKey().toString();
+        doAddRequests( indexName, contentIndexData.buildContentDataJson(), indexRequests, id, null, IndexType.Content );
+    }
+
+    private void addRequestsForBinaryData( final String indexName, final ContentIndexData contentIndexData,
+                                           final Set<IndexRequest> indexRequests )
+    {
+        final String parentId = contentIndexData.getKey().toString();
+
+        doAddRequests( indexName, contentIndexData.buildBinaryDataJson(), indexRequests, parentId, parentId, IndexType.Binaries );
+    }
+
+    private void doAddRequests( final String indexName, final XContentBuilder xContentBuilder, final Set<IndexRequest> indexRequests,
+                                final String id, final String parentId, IndexType indexType )
+    {
+        if ( xContentBuilder != null )
+        {
+            final IndexRequest indexRequest = createIndexRequest( indexName, id, xContentBuilder, indexType, parentId );
+            indexRequests.add( indexRequest );
+        }
+    }
 
     private IndexRequest createIndexRequest( String indexName, String id, XContentBuilder data, IndexType indexType, String parent )
     {

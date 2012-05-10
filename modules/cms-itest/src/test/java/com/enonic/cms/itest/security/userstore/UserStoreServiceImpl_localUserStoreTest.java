@@ -85,7 +85,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         UserSpecification userToUpdate = new UserSpecification();
         userToUpdate.setKey( fixture.findUserByName( "arn" ).getKey() );
         UpdateUserCommand updateCommand = new UpdateUserCommand( fixture.findUserByName( "admin" ).getKey(), userToUpdate );
-        updateCommand.setUpdateStrategy( UpdateUserCommand.UpdateStrategy.REPLACE_ALL );
+        updateCommand.setupUpdateStrategy();
         updateCommand.setDisplayName( "Wyatt-Skriubakken" );
         updateCommand.setEmail( "arn@test.com" );
         updateCommand.setPassword( "password" );
@@ -136,7 +136,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         UserSpecification userToUpdate = new UserSpecification();
         userToUpdate.setKey( fixture.findUserByName( "arn" ).getKey() );
         UpdateUserCommand updateCommand = new UpdateUserCommand( fixture.findUserByName( "admin" ).getKey(), userToUpdate );
-        updateCommand.setUpdateStrategy( UpdateUserCommand.UpdateStrategy.REPLACE_ALL );
+        updateCommand.setupUpdateStrategy();
         updateCommand.setDisplayName( "Wyatt-Skriubakken" );
         updateCommand.setEmail( "arn@test.com" );
         updateCommand.setPassword( "password" );

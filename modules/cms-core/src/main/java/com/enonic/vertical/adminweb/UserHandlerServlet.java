@@ -82,7 +82,6 @@ import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.user.field.UserInfoXmlCreator;
-import com.enonic.cms.core.security.userstore.GroupMembershipDiffResolver;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
@@ -1539,7 +1538,6 @@ public class UserHandlerServlet
     {
 
         UserStoreKey userStoreKey = new UserStoreKey( formItems.getInt( "userstorekey" ) );
-        UserStoreEntity userStore = userStoreDao.findByKey( userStoreKey );
 
         UserEntity user = securityService.getLoggedInAdminConsoleUserAsEntity();
 
@@ -1584,66 +1582,34 @@ public class UserHandlerServlet
             }
         }
 
-        UserEntity userToUpdate = userDao.findSingleBySpecification( userSpecification );
-        if ( userStoreService.canUpdateUser( userStore.getKey() ) )
-        {
-            UpdateUserCommand command = new UpdateUserCommand( user.getKey(), userSpecification );
-            command.setupUpdateStrategy();
-            command.setAllowUpdateSelf( true );
-            command.setDisplayName( formItems.getString( "display_name", "" ) );
-            command.setEmail( formItems.getString( "email", "" ) );
-            command.setRemovePhoto( formItems.getBoolean( "remove_photo", false ) );
+        UpdateUserCommand command = new UpdateUserCommand( user.getKey(), userSpecification );
+        command.setupModifyStrategy();
+        command.setAllowUpdateSelf( true );
+        command.setDisplayName( formItems.getString( "display_name", "" ) );
+        command.setEmail( formItems.getString( "email", "" ) );
+        command.setRemovePhoto( formItems.getBoolean( "remove_photo", false ) );
 
-            final UserInfo userInfo = parseCustomUserFieldValues( userStoreKey, formItems, true );
-            command.setUserInfo( userInfo );
+        final UserInfo userInfo = parseCustomUserFieldValues( userStoreKey, formItems, true );
+        command.setUserInfo( userInfo );
 
-            userStoreService.updateUser( command );
-        }
-        else
-        {
-            String uiDisplayName = formItems.getString( "display_name", "" );
-
-            if ( StringUtils.isNotBlank( uiDisplayName ) && !uiDisplayName.equals( userToUpdate.getDisplayName() ) )
-            {
-                UpdateUserCommand command = new UpdateUserCommand( user.getKey(), userSpecification );
-                command.setupUpdateStrategy();
-                command.setAllowUpdateSelf( true );
-                command.setDisplayName( uiDisplayName );
-                command.setEmail( userToUpdate.getEmail() );
-
-                userStoreService.updateUser( command );
-            }
-        }
-
-        // Synch memberships is necessary rights:
         if ( memberOfResolver.hasEnterpriseAdminPowers( user.getKey() ) ||
             memberOfResolver.hasUserStoreAdministratorPowers( user.getKey(), userStoreKey ) )
         {
-            final GroupEntity userGroupToUpdate = groupDao.findByKey( userToUpdate.getUserGroup().getGroupKey() );
-            GroupMembershipDiffResolver diffResolver = new GroupMembershipDiffResolver( userGroupToUpdate );
-            Set<GroupKey> groupsToJoin = diffResolver.resolveGroupsToJoin( requestedGroupMemberships );
-            Set<GroupKey> groupsToLeave = diffResolver.resolveGroupsToLeave( requestedGroupMemberships );
-
-            GroupSpecification userGroupToUpdateSpec = new GroupSpecification();
-            userGroupToUpdateSpec.setDeletedState( GroupSpecification.DeletedState.NOT_DELETED );
-            userGroupToUpdateSpec.setKey( userGroupToUpdate.getGroupKey() );
-
-            AddMembershipsCommand addMembershipsCommand = new AddMembershipsCommand( userGroupToUpdateSpec, user.getKey() );
-            addMembershipsCommand.addGroupsToAddTo( groupsToJoin );
-
-            RemoveMembershipsCommand removeMembershipsCommand = new RemoveMembershipsCommand( userGroupToUpdateSpec, user.getKey() );
-            removeMembershipsCommand.addGroupsToRemoveFrom( groupsToLeave );
-
-            if ( addMembershipsCommand.hasNewMemberships() )
+            for ( GroupKey requestedGroupMembership : requestedGroupMemberships )
             {
-                userStoreService.addMembershipsToGroup( addMembershipsCommand );
+                command.addMembership( requestedGroupMembership );
             }
+            command.setSyncMemberships( true );
 
-            if ( removeMembershipsCommand.hasMembershipsToRemove() )
-            {
-                userStoreService.removeMembershipsFromGroup( removeMembershipsCommand );
-            }
+
         }
+        else
+        {
+            command.setSyncMemberships( false );
+
+        }
+
+        userStoreService.updateUser( command );
 
         MultiValueMap queryParams = new MultiValueMap();
 

@@ -143,7 +143,7 @@ public class UserStoreConfig
         return value == null;
     }
 
-    public void validateReadOnlyFieldsNotExists( final UserFieldMap userFieldMap )
+    public void validateNoReadOnlyFields( final UserFieldMap userFieldMap )
     {
         for ( final UserStoreUserFieldConfig userFieldConfig : userFieldConfigs )
         {
@@ -157,7 +157,7 @@ public class UserStoreConfig
     public void validateUserFieldMap( final UserFieldMap userFieldMap )
     {
         validateAllRequiredFieldsArePresent( userFieldMap );
-        validateReadOnlyFieldsNotExists( userFieldMap );
+        validateNoReadOnlyFields( userFieldMap );
     }
 
     private Collection<UserStoreUserFieldConfig> getUserFieldConfigs( final boolean remoteFlagValue )

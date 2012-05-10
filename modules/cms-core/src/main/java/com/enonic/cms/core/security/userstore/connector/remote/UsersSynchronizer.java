@@ -25,7 +25,7 @@ import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.core.user.remote.RemoteUser;
 
 public class UsersSynchronizer
-        extends AbstractBaseUserSynchronizer
+    extends AbstractBaseUserSynchronizer
 {
     private static final Logger LOG = LoggerFactory.getLogger( UsersSynchronizer.class );
 

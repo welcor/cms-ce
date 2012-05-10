@@ -6,6 +6,11 @@ package com.enonic.cms.core.security.user;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.AbstractMembershipsCommand;
+import com.enonic.cms.core.user.field.UserField;
+import com.enonic.cms.core.user.field.UserFieldMap;
+import com.enonic.cms.core.user.field.UserInfoTransformer;
+import com.enonic.cms.core.user.remote.RemoteUser;
+
 
 public class UpdateUserCommand
     extends AbstractMembershipsCommand
@@ -36,24 +41,10 @@ public class UpdateUserCommand
 
     private boolean removePhoto = false;
 
-    public enum UpdateStrategy
+    private enum UpdateStrategy
     {
-        REPLACE_ALL
-                {
-                    boolean isModify()
-                    {
-                        return false;
-                    }
-                },
+        REPLACE_ALL,
         REPLACE_NEW
-                {
-                    boolean isModify()
-                    {
-                        return true;
-                    }
-                };
-
-        abstract boolean isModify();
     }
 
     public UpdateUserCommand( UserKey updater, UserSpecification specification )
@@ -65,6 +56,45 @@ public class UpdateUserCommand
     public UpdateUserCommand( UserSpecification specification )
     {
         this.specification = specification;
+    }
+
+    public UserFieldMap getUserFields()
+    {
+        return new UserInfoTransformer().toUserFields( getUserInfo() );
+    }
+
+    /**
+     * Picks out and returns all the fields in the command that are different from the fields of a remote user.
+     *
+     * @param remoteUser The object of the remote user whose fields will be compared.
+     * @return A set of all fields that are different from or does not exist in the <code>currentUserFields</code>.
+     */
+    public UserFieldMap getChangedFields( RemoteUser remoteUser )
+    {
+        final UserFieldMap commandUserFields = getUserFields();
+        UserFieldMap remoteUserFields = remoteUser.getUserFields();
+
+        final UserFieldMap changedCommandFields = new UserFieldMap( true );
+
+        for ( UserField commandField : commandUserFields )
+        {
+            UserField remoteField = remoteUserFields.getField( commandField.getType() );
+            if (commandField.compareTo( remoteField ) != 0) {
+                changedCommandFields.add( commandField );
+            }
+        }
+        if ( isUpdateStrategy() )
+        {
+            for ( UserField remoteField : remoteUserFields )
+            {
+                UserField commandFieldMatchingRemote = commandUserFields.getField( remoteField.getType() );
+                if ( commandFieldMatchingRemote == null )
+                {
+                    changedCommandFields.add( new UserField( remoteField.getType(), null ) );
+                }
+            }
+        }
+        return changedCommandFields;
     }
 
     public UserSpecification getSpecification()
@@ -137,16 +167,6 @@ public class UpdateUserCommand
         this.syncValue = syncValue;
     }
 
-    public boolean isModifyOperation()
-    {
-        return updateStrategy.isModify();
-    }
-
-    public boolean isUpdateOperation()
-    {
-        return !updateStrategy.isModify();
-    }
-
     public boolean isModifyStrategy()
     {
         return UpdateStrategy.REPLACE_NEW.equals( updateStrategy );
@@ -155,16 +175,6 @@ public class UpdateUserCommand
     public boolean isUpdateStrategy()
     {
         return UpdateStrategy.REPLACE_ALL.equals( updateStrategy );
-    }
-
-    public UpdateStrategy getUpdateStrategy()
-    {
-        return updateStrategy;
-    }
-
-    public void setUpdateStrategy( UpdateStrategy updateStrategy )
-    {
-        this.updateStrategy = updateStrategy;
     }
 
     public void setupUpdateStrategy()

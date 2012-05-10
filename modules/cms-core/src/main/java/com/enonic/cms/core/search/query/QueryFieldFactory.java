@@ -31,7 +31,7 @@ public class QueryFieldFactory
     {
         if ( StringUtils.startsWith( field, ATTACHMENT_FIELDNAME ) )
         {
-            queryField.setRenderAsHasChildQuery( true ).setIndexType( IndexType.Binaries );
+            queryField.setRenderAsHasChildQuery( true ).setIndexType( IndexType.Binaries ).setAttachmentField( true );
         }
         else
         {

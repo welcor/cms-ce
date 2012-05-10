@@ -26,6 +26,12 @@ public class ContentIndexData
         return buildContentDataJson().string();
     }
 
+    public String getBinaryDataAsJsonString()
+        throws Exception
+    {
+        return buildBinaryDataJson().string();
+    }
+
     public XContentBuilder buildContentDataJson()
     {
         return buildJsonForDateElements( contentDataElements );

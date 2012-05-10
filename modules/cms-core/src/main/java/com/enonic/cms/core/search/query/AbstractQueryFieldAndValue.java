@@ -35,12 +35,22 @@ public abstract class AbstractQueryFieldAndValue
             return isWildcardQuery() ? ALL_USERDATA_FIELDNAME_DATE : queryField.getFieldNameForDateQueries();
         }
 
-        return isWildcardQuery() ? ALL_USERDATA_FIELDNAME : queryField.getFieldName();
+        if ( isWildcardQuery() )
+        {
+            return isAttachmentQuery() ? ATTACHMENT_FIELDNAME : ALL_USERDATA_FIELDNAME;
+        }
+
+        return queryField.getFieldName();
     }
 
     private boolean isWildcardQuery()
     {
         return queryField.isWildcardQueryField();
+    }
+
+    private boolean isAttachmentQuery()
+    {
+        return queryField.isAttachmentField();
     }
 
     public boolean doRenderAsHasChildQuery()

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import junit.framework.Assert;
@@ -128,16 +127,28 @@ public class ContentIndexDataFactoryTest
         Assert.assertFalse( "Redundant key: " + keyName, keysAsList.contains( keyName ) );
     }
 
-    @Ignore
     @Test
     public void testAttachmentData()
         throws Exception
     {
         ContentDocument content = createTestContent();
-        content.setBinaryExtractedText( new BigText( "This is a binary text" ) );
+        final String binaryText = "This is a binary text";
+        content.setBinaryExtractedText( new BigText( binaryText ) );
 
         ContentIndexData indexData = contentIndexDataFactory.create( content );
+        final Set<ContentIndexDataElement> binaryDataElements = indexData.getBinaryDataElements();
 
+        assertEquals( 2, binaryDataElements.size() );
+
+        final String indexDataAsString = indexData.getBinaryDataAsJsonString();
+
+        final List<String> keysAsList = getKeysAsList( indexDataAsString );
+
+        verifyFieldExists( keysAsList, "key" );
+        verifyFieldExists( keysAsList, "key.number" );
+        verifyFieldExists( keysAsList, "key.orderby" );
+        verifyFieldExists( keysAsList, "attachment" );
+        verifyFieldExists( keysAsList, "attachment.orderby" );
     }
 
     @Test

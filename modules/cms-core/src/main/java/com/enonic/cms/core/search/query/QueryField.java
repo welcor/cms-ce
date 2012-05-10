@@ -28,6 +28,8 @@ public class QueryField
 
     private boolean renderAsIdQuery = false;
 
+    private boolean attachmentField = false;
+
     private IndexType indexType;
 
     public QueryField( final String fieldName )
@@ -55,9 +57,10 @@ public class QueryField
         return renderAsIdQuery;
     }
 
-    public void setRenderAsIdQuery( final boolean renderAsIdQuery )
+    public QueryField setRenderAsIdQuery( final boolean renderAsIdQuery )
     {
         this.renderAsIdQuery = renderAsIdQuery;
+        return this;
     }
 
     public QueryField setRenderAsHasChildQuery( final boolean renderAsHasChildQuery )
@@ -77,9 +80,10 @@ public class QueryField
         return indexType;
     }
 
-    public void setIndexType( final IndexType indexType )
+    public QueryField setIndexType( final IndexType indexType )
     {
         this.indexType = indexType;
+        return this;
     }
 
     public boolean isWildcardQueryField()
@@ -92,4 +96,14 @@ public class QueryField
         return dateFields.contains( this.fieldName );
     }
 
+    public boolean isAttachmentField()
+    {
+        return attachmentField;
+    }
+
+    public QueryField setAttachmentField( final boolean attachmentField )
+    {
+        this.attachmentField = attachmentField;
+        return this;
+    }
 }

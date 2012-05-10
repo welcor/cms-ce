@@ -36,7 +36,7 @@ public final class ContentIndexDataFactory
 
     public ContentIndexData create( ContentDocument content )
     {
-        return doCreate( content, true );
+        return doCreate( content, false );
     }
 
     private ContentIndexData doCreate( final ContentDocument content, boolean skipAttachments )

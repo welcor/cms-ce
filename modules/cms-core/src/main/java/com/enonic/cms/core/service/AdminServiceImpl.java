@@ -7,6 +7,7 @@ package com.enonic.cms.core.service;
 import java.util.Date;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -33,6 +34,7 @@ import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
@@ -54,6 +56,9 @@ public class AdminServiceImpl
     protected AdminEngine adminEngine;
 
     private ResourceService resourceService;
+
+    @Autowired
+    private IndexTransactionService indexTransactionService;
 
     public void setResourceService( ResourceService value )
     {
@@ -155,6 +160,13 @@ public class AdminServiceImpl
     public void updateAccessRights( User user, String xmlData )
     {
         adminEngine.updateAccessRights( user, xmlData );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updateIndexCategory( CategoryKey categoryKey )
+    {
+        indexTransactionService.startTransaction();
+        indexTransactionService.updateCategory( categoryKey );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

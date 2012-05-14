@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_not_in
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_notLikeTest
+    extends QueryTranslatorTestBase
 {
     @Test
-    public void testNotIn_string()
+    public void testNotLike_characters()
         throws Exception
     {
         String expected_search_result = "{\n" +
@@ -22,27 +22,15 @@ public class QueryTranslatorTest_not_in
             "        }\n" +
             "      },\n" +
             "      \"must_not\" : {\n" +
-            "        \"bool\" : {\n" +
-            "          \"should\" : [ {\n" +
-            "            \"term\" : {\n" +
-            "              \"title\" : \"hello\"\n" +
-            "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"title\" : \"test 2\"\n" +
-            "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"title\" : \"my testcontent\"\n" +
-            "            }\n" +
-            "          } ]\n" +
+            "        \"wildcard\" : {\n" +
+            "          \"title\" : \"boat*\"\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "title NOT IN (\"Hello\", \"Test 2\", \"my testcontent\")" );
+        ContentIndexQuery query = createContentQuery( "title NOT LIKE \"Boat*\"" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -50,7 +38,7 @@ public class QueryTranslatorTest_not_in
     }
 
     @Test
-    public void testNotIn_int()
+    public void testNotLike_special_characters()
         throws Exception
     {
         String expected_search_result = "{\n" +
@@ -63,27 +51,44 @@ public class QueryTranslatorTest_not_in
             "        }\n" +
             "      },\n" +
             "      \"must_not\" : {\n" +
-            "        \"bool\" : {\n" +
-            "          \"should\" : [ {\n" +
-            "            \"term\" : {\n" +
-            "              \"myintfield.number\" : 1.0\n" +
-            "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"myintfield.number\" : 2.0\n" +
-            "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"myintfield.number\" : 3.0\n" +
-            "            }\n" +
-            "          } ]\n" +
+            "        \"wildcard\" : {\n" +
+            "          \"title\" : \"*$&*\"\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "myIntField NOT IN (1, 2, 3)" );
+        ContentIndexQuery query = createContentQuery( "title NOT LIKE \"*$&*\"" );
+
+        SearchSourceBuilder builder = getQueryTranslator().build( query );
+
+        compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
+    }
+
+    @Test
+    public void testNotLike_backslash()
+        throws Exception
+    {
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"query\" : {\n" +
+            "    \"bool\" : {\n" +
+            "      \"must\" : {\n" +
+            "        \"match_all\" : {\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"must_not\" : {\n" +
+            "        \"wildcard\" : {\n" +
+            "          \"title\" : \"*\\\\*\"\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
+
+        ContentIndexQuery query = createContentQuery( "title NOT LIKE \"*\\\\*\"" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 

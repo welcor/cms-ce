@@ -13,7 +13,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import static junit.framework.Assert.assertEquals;
 
 
-public abstract class QueryTranslatorBaseTest
+public abstract class QueryTranslatorTestBase
 {
     private QueryTranslator queryTranslator = new QueryTranslator();
 

@@ -5,8 +5,8 @@ import org.junit.Test;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.queryexpression.QueryParserException;
 
-public class QueryTranslatorTest_invalid_expression
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_invalid_expressionTest
+    extends QueryTranslatorTestBase
 {
     @Test(expected = QueryParserException.class)
     public void testNotParsableExpression()

@@ -16,8 +16,8 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
  * Date: 2/2/12
  * Time: 2:54 PM
  */
-public class QueryTranslatorTest_filterSection
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_filterSectionTest
+    extends QueryTranslatorTestBase
 {
 
     @Test

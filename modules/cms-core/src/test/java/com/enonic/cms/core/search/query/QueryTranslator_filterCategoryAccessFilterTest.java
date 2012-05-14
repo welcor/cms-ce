@@ -13,8 +13,8 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 import com.enonic.cms.core.security.group.GroupKey;
 
-public class QueryTranslatorTest_filterCategoryAccessFilter
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_filterCategoryAccessFilterTest
+    extends QueryTranslatorTestBase
 {
     FilterQueryBuilderFactory filterQueryBuilderFactory = new FilterQueryBuilderFactory();
 

@@ -5,12 +5,12 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_logical
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_not_equalsTest
+    extends QueryTranslatorTestBase
 {
 
     @Test
-    public void testLogicalQuery_or_key()
+    public void testNotQuery_key()
         throws Exception
     {
         String expected_search_result = "{\n" +
@@ -18,30 +18,30 @@ public class QueryTranslatorTest_logical
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
-            "      \"should\" : [ {\n" +
+            "      \"must\" : {\n" +
+            "        \"match_all\" : {\n" +
+            "        }\n" +
+            "      },\n" +
+            "      \"must_not\" : {\n" +
             "        \"ids\" : {\n" +
             "          \"type\" : \"content\",\n" +
             "          \"values\" : [ \"100\" ]\n" +
             "        }\n" +
-            "      }, {\n" +
-            "        \"ids\" : {\n" +
-            "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"200\" ]\n" +
-            "        }\n" +
-            "      } ]\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key = 100 OR key = 200" );
+        ContentIndexQuery query = createContentQuery( "key != 100" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
+
     }
 
     @Test
-    public void testLogicalQuery_and_key_and_title()
+    public void testNotQuery_range_and_key()
         throws Exception
     {
         String expected_search_result = "{\n" +
@@ -50,26 +50,32 @@ public class QueryTranslatorTest_logical
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
-            "        \"ids\" : {\n" +
-            "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"100\" ]\n" +
-            "        }\n" +
-            "      }, {\n" +
             "        \"term\" : {\n" +
             "          \"title\" : \"test\"\n" +
+            "        }\n" +
+            "      }, {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"match_all\" : {\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must_not\" : {\n" +
+            "            \"ids\" : {\n" +
+            "              \"type\" : \"content\",\n" +
+            "              \"values\" : [ \"100\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      } ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key = 100 AND title = 'test'" );
+        ContentIndexQuery query = createContentQuery( "title = 'test' AND key != 100" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
 
     }
-
-
 }

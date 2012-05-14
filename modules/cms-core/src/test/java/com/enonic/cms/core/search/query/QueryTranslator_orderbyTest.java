@@ -11,8 +11,8 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  * Date: 11/29/11
  * Time: 2:29 PM
  */
-public class QueryTranslatorTest_orderby
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_orderbyTest
+    extends QueryTranslatorTestBase
 {
     @Test
     public void testOrderBy_key_desc()

@@ -7,8 +7,8 @@ import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 
-public class QueryTranslatorTest_filterStatus
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_filterStatusTest
+    extends QueryTranslatorTestBase
 {
     FilterQueryBuilderFactory filterQueryBuilderFactory = new FilterQueryBuilderFactory();
 

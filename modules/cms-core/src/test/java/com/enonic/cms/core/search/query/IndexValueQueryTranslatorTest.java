@@ -12,7 +12,7 @@ import com.enonic.cms.core.content.index.IndexValueQuery;
  * Time: 12:48 PM
  */
 public class IndexValueQueryTranslatorTest
-    extends QueryTranslatorBaseTest
+    extends QueryTranslatorTestBase
 {
 
     IndexValueQueryTranslator translator = new IndexValueQueryTranslator();

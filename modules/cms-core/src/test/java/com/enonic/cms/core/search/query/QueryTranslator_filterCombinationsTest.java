@@ -10,8 +10,8 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_filterCombinations
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_filterCombinationsTest
+    extends QueryTranslatorTestBase
 {
     @Test
     public void testLogicalQuery_category_and_contenttype_filters()

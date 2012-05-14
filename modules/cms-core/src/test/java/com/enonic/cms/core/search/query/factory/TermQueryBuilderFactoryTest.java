@@ -5,11 +5,11 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.query.QueryFieldAndValue;
-import com.enonic.cms.core.search.query.QueryTranslatorBaseTest;
+import com.enonic.cms.core.search.query.QueryTranslatorTestBase;
 
 
 public class TermQueryBuilderFactoryTest
-    extends QueryTranslatorBaseTest
+    extends QueryTranslatorTestBase
 {
     private final TermQueryBuilderFactory termQueryBuilderFactory = new TermQueryBuilderFactory();
 

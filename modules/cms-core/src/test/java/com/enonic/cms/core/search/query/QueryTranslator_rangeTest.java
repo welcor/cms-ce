@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_range
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_rangeTest
+    extends QueryTranslatorTestBase
 {
 
     @Test

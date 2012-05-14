@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
-
 
 public class RegenerateIndexBatcher
 {
@@ -42,8 +40,6 @@ public class RegenerateIndexBatcher
         }
 
         List<ContentKey> allContentKeys = contentService.findContentKeysByContentType( contentType );
-
-        ContentIndexDataBuilderSpecification spec = new ContentIndexDataBuilderSpecification( false );
 
         int currentIndex = 0;
 

@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_in
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_inTest
+    extends QueryTranslatorTestBase
 {
     @Test
     public void testIn_string()

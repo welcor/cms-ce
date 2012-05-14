@@ -6,13 +6,13 @@ import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.query.QueryFieldFactory;
-import com.enonic.cms.core.search.query.QueryTranslatorBaseTest;
+import com.enonic.cms.core.search.query.QueryTranslatorTestBase;
 import com.enonic.cms.core.search.query.QueryValue;
 
 import static junit.framework.Assert.assertEquals;
 
 public class RangeQueryBuilderFactoryTest
-    extends QueryTranslatorBaseTest
+    extends QueryTranslatorTestBase
 {
     private final RangeQueryBuilderFactory rangeQueryBuilderFactory = new RangeQueryBuilderFactory();
 

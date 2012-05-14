@@ -13,8 +13,8 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
 
-public class QueryTranslatorTest_filterContentOnlineAt
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_filterContentOnlineAtTest
+    extends QueryTranslatorTestBase
 {
 
     @Test

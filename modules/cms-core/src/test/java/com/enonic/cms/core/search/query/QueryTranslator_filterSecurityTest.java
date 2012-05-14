@@ -14,8 +14,8 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.security.group.GroupKey;
 
 
-public class QueryTranslatorTest_filterSecurity
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_filterSecurityTest
+    extends QueryTranslatorTestBase
 {
 
     @Test

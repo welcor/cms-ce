@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_date
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_dateTest
+    extends QueryTranslatorTestBase
 {
 
     protected static final String QUERY_DATE = "2011-11-15";

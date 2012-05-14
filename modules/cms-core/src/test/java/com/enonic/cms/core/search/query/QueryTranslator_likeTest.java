@@ -5,25 +5,24 @@ import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-public class QueryTranslatorTest_contentKeyQueries
-    extends QueryTranslatorBaseTest
+public class QueryTranslator_likeTest
+    extends QueryTranslatorTestBase
 {
     @Test
-    public void testEquals_key_string()
+    public void testLike_characters()
         throws Exception
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"ids\" : {\n" +
-            "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "    \"wildcard\" : {\n" +
+            "      \"title\" : \"boat*\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key = \"100\"" );
+        ContentIndexQuery query = createContentQuery( "title LIKE \"Boat*\"" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -31,21 +30,20 @@ public class QueryTranslatorTest_contentKeyQueries
     }
 
     @Test
-    public void testEquals_key_int()
+    public void testLike_special_characters()
         throws Exception
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"ids\" : {\n" +
-            "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "    \"wildcard\" : {\n" +
+            "      \"title\" : \"*$&*\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key = 100" );
+        ContentIndexQuery query = createContentQuery( "title LIKE \"*$&*\"" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 
@@ -53,21 +51,20 @@ public class QueryTranslatorTest_contentKeyQueries
     }
 
     @Test
-    public void testEquals_key_double()
+    public void testLike_backslash()
         throws Exception
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"ids\" : {\n" +
-            "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "    \"wildcard\" : {\n" +
+            "      \"title\" : \"*\\\\*\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
 
-        ContentIndexQuery query = createContentQuery( "key = 100.0" );
+        ContentIndexQuery query = createContentQuery( "title LIKE \"*\\\\*\"" );
 
         SearchSourceBuilder builder = getQueryTranslator().build( query );
 

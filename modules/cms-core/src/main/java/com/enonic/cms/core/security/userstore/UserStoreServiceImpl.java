@@ -212,7 +212,7 @@ public class UserStoreServiceImpl
         verifyUniqueEmailForUpdate( command );
 
         final UserFieldMap commandUserFields = new UserInfoTransformer().toUserFields( command.getUserInfo() );
-        if ( command.isUpdateOperation() )
+        if ( command.isUpdateStrategy() )
         {
             // user-update operation
             userStore.getConfig().validateAllRequiredFieldsArePresent( commandUserFields );
@@ -358,7 +358,7 @@ public class UserStoreServiceImpl
 
     private void verifyMandatoryFieldsForUpdate( final UpdateUserCommand command )
     {
-        boolean allowNullsForMandatoryValues = command.isModifyOperation();
+        boolean allowNullsForMandatoryValues = command.isModifyStrategy();
 
         String email = command.getEmail();
 

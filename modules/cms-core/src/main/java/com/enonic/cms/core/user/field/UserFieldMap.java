@@ -12,8 +12,10 @@ import java.util.Set;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 
+import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+
 public final class UserFieldMap
-    implements Iterable<UserField>
+    implements Iterable<UserField>, Comparable<UserFieldMap>
 {
     private final boolean mutlipleAddresses;
 
@@ -112,4 +114,71 @@ public final class UserFieldMap
         set.removeAll( types );
         remove( set );
     }
-}
+
+    public UserFieldMap getRemoteFields( UserStoreConfig userStoreConfig )
+    {
+        UserFieldMap remoteFields = clone();
+        remoteFields.retain( userStoreConfig.getRemoteOnlyUserFieldTypes() );
+        return remoteFields;
+    }
+
+    public UserFieldMap clone()
+    {
+        UserFieldMap newMap = new UserFieldMap( this.mutlipleAddresses );
+        newMap.addAll( this.getAll() );
+        return newMap;
+    }
+
+    /**
+     * Compares this userFieldMap with another.
+     *
+     * @param remoteUserFields The map of fields to compare to.
+     * @param twoWayCompare    Determines if it is necessary for this map to contain all the contents of the <code>remoteUserFields</code> map.
+     *                         If this parameter is set to <code>false</code>, <code>true</code> will be returned, as long as all the values of this map exist
+     *                         in the <code>remoteUserFields</code>.  If this parameter is set to <code>true</code>, all the values in both maps
+     *                         need to be exactly the same.
+     * @return 2 if both maps contain a value for a field, but they are not equal
+     *         1 if this map contain a value that does not exist in the remote map.
+     *         0 if both maps are equal.  If <code>twoWayCompare</code> is true, both maps are exactly the same, otherwise, a 0 indicates
+     *         that all fields in this map are contained with the same values in the remote map, but the remote map may contain other values.
+     *         -1 if the remote map contains values that are not in this map.  This can only happen if <code>twoWayCompare</code> is
+     *         <code>true</code>.
+     */
+    public int compareTo( UserFieldMap remoteUserFields, boolean twoWayCompare )
+    {
+        for ( UserField commandField : this )
+        {
+            UserField remoteField = remoteUserFields.getField( commandField.getType() );
+            int diff = commandField.compareTo( remoteField );
+            if ( diff != 0 )
+            {
+                return diff;
+            }
+        }
+        if ( twoWayCompare )
+        {
+            for ( UserField remoteField : remoteUserFields )
+            {
+                UserField commandFieldMatchingRemote = getField( remoteField.getType() );
+                if ( commandFieldMatchingRemote == null )
+                {
+                    return -1;
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Shorthand for <code>compareTo(userFields, true)</code>.
+     *
+     * @param userFields A map of the fields to compare to.
+     * @return 2 if both maps contain a value for a field, but they are not equal
+     *         1 if this map contain a value that does not exist in the remote map.
+     *         0 if both maps are exactly equal.
+     *         -1 if the remote map contains values that are not in this map.
+     */
+    public int compareTo( UserFieldMap userFields )
+    {
+        return compareTo( userFields, true );
+    }}

@@ -79,20 +79,7 @@ public class RemoteUserStoreConnector
 
     public boolean canUpdateUser()
     {
-        return connectorConfig.canUpdateUser() || userStoreHasLocalAndEditableUserFields();
-    }
-
-    private boolean userStoreHasLocalAndEditableUserFields()
-    {
-        Collection<UserStoreUserFieldConfig> fields = userStoreConfig.getLocalOnlyUserFieldConfigs();
-        for ( UserStoreUserFieldConfig field : fields )
-        {
-            if ( !field.isReadOnly() )
-            {
-                return true;
-            }
-        }
-        return false;
+        return connectorConfig.canUpdateUser();
     }
 
     public boolean canUpdateUserPassword()
@@ -141,7 +128,7 @@ public class RemoteUserStoreConnector
         remoteUser.setEmail( command.getEmail() );
 
         final UserFieldMap userFieldMap = new UserInfoTransformer().toUserFields( command.getUserInfo() );
-        userStoreConfig.validateReadOnlyFieldsNotExists( userFieldMap );
+        userStoreConfig.validateNoReadOnlyFields( userFieldMap );
         userFieldMap.retain( userStoreConfig.getRemoteOnlyUserFieldTypes() );
 
         remoteUser.getUserFields().addAll( userFieldMap.getAll() );
@@ -176,14 +163,6 @@ public class RemoteUserStoreConnector
 
     public void updateUser( final UpdateUserCommand command )
     {
-        if ( !canUpdateUser() )
-        {
-            throw new UserStoreConnectorPolicyBrokenException( userStoreName, connectorName,
-                                                               "Trying to update user without 'update' policy or any locally editable fields" );
-        }
-
-        validateFields( command );
-
         final UserEntity userToUpdate = userDao.findSingleBySpecification( command.getSpecification() );
 
         if ( userToUpdate == null )
@@ -199,6 +178,15 @@ public class RemoteUserStoreConnector
                 "User not found in remote userstore '" + userStoreName + "' from specification: " + command.getSpecification().toString() );
         }
 
+        if ( !connectorConfig.canUpdateUser() && commandContainsChangedRemoteFields( command, remoteUser ) )
+        {
+            // Trying to update remote fields:
+            throw new UserStoreConnectorPolicyBrokenException( userStoreName, connectorName,
+                                                               "Trying to update user without 'update' policy" );
+        }
+
+        validateFields( command, remoteUser );
+
         if ( connectorConfig.canUpdateUser() )
         {
             updateUserModifiableValues( command, remoteUser );
@@ -208,37 +196,47 @@ public class RemoteUserStoreConnector
             {
                 throw new RuntimeException( "User does not exists: " + command.getSpecification().getName() );
             }
+        }
 
-            if ( connectorConfig.groupsStoredRemote() )
-            {
-                updateMembershipsRemote( userToUpdate, remoteUser, command.getMemberships() );
-            }
+        if ( connectorConfig.canUpdateGroup() && connectorConfig.groupsStoredRemote() && command.syncMemberships() )
+        {
+            updateMembershipsRemote( userToUpdate, remoteUser, command.getMemberships() );
         }
 
         resetRemoteFieldsInCommand( command, remoteUser );
         updateUserLocally( command );
     }
 
-    private void validateFields( final UpdateUserCommand command )
+    private boolean commandContainsChangedRemoteFields( UpdateUserCommand command, RemoteUser remoteUser )
     {
-        final UserFieldMap commandUserFields = new UserInfoTransformer().toUserFields( command.getUserInfo() );
+        return command.getUserFields().getRemoteFields( userStoreConfig ).compareTo( remoteUser.getUserFields(), false ) != 0;
+    }
 
-        userStoreConfig.validateReadOnlyFieldsNotExists( commandUserFields );
+    /**
+     * Verify that remote update is allowed, or that there are no remote fields to update.
+     *
+     * @param command The update command with all changed fields.
+     */
+    private void validateFields( final UpdateUserCommand command, RemoteUser remoteUser )
+    {
+        final UserFieldMap changedCommandUserFields = command.getChangedFields( remoteUser );
+
+        userStoreConfig.validateNoReadOnlyFields( changedCommandUserFields );
 
         if ( connectorConfig.canUpdateUser() )
         {
             return;
         }
 
-        commandUserFields.retain( userStoreConfig.getRemoteOnlyUserFieldTypes() );
+        UserFieldMap changedRemoteCommandUserFields = changedCommandUserFields.getRemoteFields( userStoreConfig );
 
-        if ( commandUserFields.getSize() == 0 )
+        if ( changedRemoteCommandUserFields.getSize() == 0 )
         {
             return;
         }
 
         StringBuffer remoteFields = new StringBuffer();
-        Collection<UserField> remainingRemoteFields = commandUserFields.getAll();
+        Collection<UserField> remainingRemoteFields = changedRemoteCommandUserFields.getAll();
         for ( UserField userField : remainingRemoteFields )
         {
             remoteFields.append( userField.getType().getName() ).append( ", " );
@@ -270,7 +268,7 @@ public class RemoteUserStoreConnector
 
     private void updateUserModifiableValues( final UpdateUserCommand command, final RemoteUser remoteUser )
     {
-        final boolean replaceAll = command.getUpdateStrategy().equals( UpdateUserCommand.UpdateStrategy.REPLACE_ALL );
+        final boolean replaceAll = command.isUpdateStrategy();
 
         final String email = command.getEmail();
 
@@ -279,10 +277,7 @@ public class RemoteUserStoreConnector
             remoteUser.setEmail( email );
         }
 
-        final UserInfoTransformer infoTransformer = new UserInfoTransformer();
-        final UserFieldMap userFieldMap = infoTransformer.toUserFields( command.getUserInfo() );
-
-        userFieldMap.retain( userStoreConfig.getRemoteOnlyUserFieldTypes() );
+        final UserFieldMap remoteUserFieldMap = command.getUserFields().getRemoteFields( userStoreConfig );
 
         if ( replaceAll )
         {
@@ -290,12 +285,12 @@ public class RemoteUserStoreConnector
         }
 
         // Remove address field on "target" when address field is set
-        if ( userFieldMap.hasField( UserFieldType.ADDRESS ) )
+        if ( remoteUserFieldMap.hasField( UserFieldType.ADDRESS ) )
         {
             remoteUser.getUserFields().remove( UserFieldType.ADDRESS );
         }
 
-        remoteUser.getUserFields().addAll( userFieldMap.getAll() );
+        remoteUser.getUserFields().addAll( remoteUserFieldMap.getAll() );
     }
 
     public void deleteUser( final DeleteUserCommand command )
@@ -377,7 +372,14 @@ public class RemoteUserStoreConnector
 
         if ( connectorConfig.groupsStoredRemote() )
         {
-            addMembersToRemoteGroup( groupToAddTo.getName(), toPrincipalList( new RemoteGroup( groupToAdd.getName() ) ) );
+            if ( groupToAdd.isOfType( GroupType.USER, false ) )
+            {
+                addMembersToRemoteGroup( groupToAddTo.getName(), toPrincipalList( new RemoteUser( groupToAdd.getUser().getName() ) ) );
+            }
+            else
+            {
+                addMembersToRemoteGroup( groupToAddTo.getName(), toPrincipalList( new RemoteGroup( groupToAdd.getName() ) ) );
+            }
         }
         addMembershipToGroupLocally( groupToAdd, groupToAddTo );
     }
@@ -392,7 +394,15 @@ public class RemoteUserStoreConnector
 
         if ( connectorConfig.groupsStoredRemote() )
         {
-            removeMembersFromRemoteGroup( groupToRemoveFrom.getName(), toPrincipalList( new RemoteGroup( groupToRemove.getName() ) ) );
+            if ( groupToRemove.isOfType( GroupType.USER, false ) )
+            {
+                removeMembersFromRemoteGroup( groupToRemoveFrom.getName(),
+                                              toPrincipalList( new RemoteUser( groupToRemove.getUser().getName() ) ) );
+            }
+            else
+            {
+                removeMembersFromRemoteGroup( groupToRemoveFrom.getName(), toPrincipalList( new RemoteGroup( groupToRemove.getName() ) ) );
+            }
         }
         removeMembershipFromGroupLocally( groupToRemove, groupToRemoveFrom );
     }
@@ -456,9 +466,9 @@ public class RemoteUserStoreConnector
     {
         final UserStoreEntity userStore = userStoreDao.findByKey( userStoreKey );
 
-        final boolean doSyncMemberShips = connectorConfig.groupsStoredRemote() && syncMemberships;
+        final boolean doSyncMemberships = connectorConfig.groupsStoredRemote() && syncMemberships;
 
-        final UsersSynchronizer synchronizer = new UsersSynchronizer( userStore, syncUser, doSyncMemberShips );
+        final UsersSynchronizer synchronizer = new UsersSynchronizer( userStore, syncUser, doSyncMemberships );
         synchronizer.setUserStorageService( userStorageService );
         synchronizer.setGroupDao( groupDao );
         synchronizer.setUserDao( userDao );

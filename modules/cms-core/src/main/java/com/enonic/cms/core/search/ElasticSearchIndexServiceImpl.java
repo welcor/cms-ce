@@ -2,6 +2,8 @@ package com.enonic.cms.core.search;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -41,6 +43,8 @@ import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.search.builder.ContentIndexData;
@@ -258,11 +262,24 @@ public class ElasticSearchIndexServiceImpl
     public Map<String, GetField> search( String indexName, IndexType indexType, ContentKey contentKey )
     {
         final GetRequest getRequest = new GetRequest( indexName, indexType.toString(), contentKey.toString() );
-        getRequest.fields( "*" );
+        getRequest.fields( "_source" );
 
         final GetResponse getResponse = this.client.get( getRequest ).actionGet();
 
-        final Map<String, GetField> fields = getResponse.getFields();
+        final Map<String, Object> fieldValues = getResponse.getSource();
+        final Map<String, GetField> fields = new HashMap<String, GetField>();
+        for ( String key : fieldValues.keySet() )
+        {
+            final Object value = fieldValues.get( key );
+            if ( value instanceof List )
+            {
+                fields.put( key, new GetField( key, (List) value ) );
+            }
+            else
+            {
+                fields.put( key, new GetField( key, Lists.newArrayList( value ) ) );
+            }
+        }
         return fields;
     }
 

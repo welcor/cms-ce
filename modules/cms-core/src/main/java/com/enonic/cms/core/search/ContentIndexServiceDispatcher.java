@@ -1,10 +1,12 @@
 package com.enonic.cms.core.search;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
+import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -174,6 +176,20 @@ public class ContentIndexServiceDispatcher
     {
         newContentIndexService.initializeMapping();
     }
+
+    @Override
+    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
+    {
+        if ( !runOldOnly )
+        {
+            return newContentIndexService.getContentIndexedFields( contentKey );
+        }
+        else
+        {
+            return oldContentIndexService.getContentIndexedFields( contentKey );
+        }
+    }
+
 }
 
 

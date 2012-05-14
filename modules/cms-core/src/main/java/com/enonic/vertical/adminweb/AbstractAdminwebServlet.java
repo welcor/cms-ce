@@ -34,6 +34,7 @@ import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.category.CategoryService;
 import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.content.imports.ImportService;
+import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.country.CountryService;
 import com.enonic.cms.core.locale.LocaleService;
 import com.enonic.cms.core.log.LogService;
@@ -58,7 +59,6 @@ import com.enonic.cms.core.timezone.TimeZoneService;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentHandlerDao;
-import com.enonic.cms.store.dao.ContentIndexDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
 import com.enonic.cms.store.dao.GroupDao;
@@ -87,7 +87,7 @@ public abstract class AbstractAdminwebServlet
     protected ContentDao contentDao;
 
     @Autowired
-    protected ContentIndexDao contentIndexDao;
+    protected ContentIndexService contentIndexService;
 
     @Autowired
     protected ContentHandlerDao contentHandlerDao;

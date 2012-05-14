@@ -4,7 +4,7 @@
             "enabled":false
         },
         "_source":{
-            "enabled":false
+            "enabled":true
         },
         "date_detection":false,
         "numeric_detection":false,

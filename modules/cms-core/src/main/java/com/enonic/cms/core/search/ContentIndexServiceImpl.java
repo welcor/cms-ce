@@ -2,6 +2,7 @@ package com.enonic.cms.core.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentEntityFetcherImpl;
+import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -333,5 +336,16 @@ public class ContentIndexServiceImpl
     {
         this.elasticSearchIndexService = elasticSearchIndexService;
     }
+
+    @Override
+    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
+    {
+        final Map<String, GetField> fields =
+                elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+
+        final ElasticSearchIndexedFieldsTranslator indexFieldsTranslator = new ElasticSearchIndexedFieldsTranslator();
+        return indexFieldsTranslator.generateContentIndexFieldSet( contentKey, fields );
+    }
+
 
 }

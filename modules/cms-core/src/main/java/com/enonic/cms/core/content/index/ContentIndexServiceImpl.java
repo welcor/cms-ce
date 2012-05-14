@@ -5,6 +5,7 @@
 package com.enonic.cms.core.content.index;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -620,4 +621,11 @@ public final class ContentIndexServiceImpl
     {
         // DO NOTHING
     }
+
+    @Override
+    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
+    {
+        return contentIndexDao.findByContentKey( contentKey );
+    }
+
 }

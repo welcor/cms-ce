@@ -12,7 +12,7 @@ public class IndexFieldNameConstants
 
     public static final String DATE_FIELD_POSTFIX = "date";
 
-    protected static final String CONTENT_KEY_FIELDNAME = "key";
+    public static final String CONTENT_KEY_FIELDNAME = "key";
 
     public static final String INDEX_FIELDNAME_PROPERTY_SEPARATOR = "_";
 

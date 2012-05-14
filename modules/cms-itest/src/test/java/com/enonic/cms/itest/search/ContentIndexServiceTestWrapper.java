@@ -1,7 +1,9 @@
 package com.enonic.cms.itest.search;
 
+import java.util.Collection;
 import java.util.List;
 
+import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -91,6 +93,12 @@ public class ContentIndexServiceTestWrapper
     public void initializeMapping()
     {
 
+    }
+
+    @Override
+    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
+    {
+        return contentIndexService.getContentIndexedFields( contentKey );
     }
 }
 

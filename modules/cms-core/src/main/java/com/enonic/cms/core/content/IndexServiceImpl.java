@@ -152,7 +152,7 @@ public final class IndexServiceImpl
         ContentDocument indexedDoc = insertStandardValues( content );
         insertUserDefinedIndexValues( content, indexedDoc );
 
-        //insertBinaryIndexValues( content, indexedDoc );
+        insertBinaryIndexValues( content, indexedDoc );
         return indexedDoc;
     }
 
@@ -206,7 +206,7 @@ public final class IndexServiceImpl
                     indexedDoc.setBinaryExtractedText( extractedText );
                 }
             }
-            catch ( Exception e )
+            catch ( Throwable e )
             {
                 StringBuffer sb = new StringBuffer();
                 sb.append( "Failed to extract full text from binary data" );
@@ -214,7 +214,7 @@ public final class IndexServiceImpl
                     ") from content" );
                 sb.append( "(key: " ).append( content.getKey() ).append( ", type: " ).append( content.getContentType().getName() );
                 sb.append( ", category: " ).append( content.getCategory().getName() ).append( "): " ).append( e.getMessage() );
-                LOG.warn( sb.toString() );
+                LOG.warn( sb.toString(), e );
             }
         }
     }

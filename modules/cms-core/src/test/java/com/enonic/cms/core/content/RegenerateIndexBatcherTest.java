@@ -12,11 +12,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.search.ContentIndexDataBuilderSpecification;
 
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 

@@ -63,16 +63,16 @@ public class ElasticSearchIndexedFieldsTranslator
     {
         final GetField field;
         final String fieldPath = name.replace( "_", "/" );
-        if ( fields.containsKey( name + DATE_FIELD_POSTFIX ) )
+        if ( fields.containsKey( name + INDEX_FIELD_TYPE_SEPARATOR + DATE_FIELD_POSTFIX ) )
         {
-            field = fields.get( name + DATE_FIELD_POSTFIX );
-            DateTime dateTime = DateTime.parse( (String) field.getValue() );
+            field = fields.get( name + INDEX_FIELD_TYPE_SEPARATOR + DATE_FIELD_POSTFIX );
+            final DateTime dateTime = DateTime.parse( (String) field.getValue() );
             indexFieldSet.addFieldWithDateValue( fieldPath, dateTime.toDate(), "" );
         }
         else
         {
             field = fields.get( name );
-            indexFieldSet.addFieldWithStringValue( fieldPath, (String) field.getValue() );
+            indexFieldSet.addFieldWithAnyValue( fieldPath, (String) field.getValue() );
         }
     }
 

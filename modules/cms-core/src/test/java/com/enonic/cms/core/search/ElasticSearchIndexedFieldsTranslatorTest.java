@@ -41,18 +41,12 @@ public class ElasticSearchIndexedFieldsTranslatorTest
         final ElasticSearchIndexedFieldsTranslator translator = new ElasticSearchIndexedFieldsTranslator();
         final List<ContentIndexEntity> indexValues = translator.generateContentIndexFieldSet( contentKey, fields );
 
-        for ( ContentIndexEntity indexValue : indexValues )
-        {
-            System.out.println( indexValue.getPath() + "=" + indexValue.getValue() );
-        }
-
         assertField( indexValues, "contenttype", "destination" );
         assertField( indexValues, "categorykey", "35" );
         assertField( indexValues, "title", "the blue lagoon, iceland" );
         assertField( indexValues, "modified", "2012-04-19t14:30:40" );
         assertField( indexValues, "timestamp", "2012-04-19t14:30:40" );
         assertField( indexValues, "data#heading", "the blue lagoon, iceland" );
-
         assertField( indexValues, "modifier#qualifiedname", "admin" );
         assertField( indexValues, "publishfrom", "2012-04-19t14:30:00" );
         assertField( indexValues, "contenttypekey", "1007" );

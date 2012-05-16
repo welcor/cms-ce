@@ -349,7 +349,7 @@
 
             <table width="100%" border="0" cellspacing="0" cellpadding="3">
               <tr>
-                <th align="center" width="40">%changes%</th>
+                <th align="center" width="40">%fldSelect%</th>
                 <th align="center" width="50">%lblManuallyOrder%</th>
                 <th align="center" width="40">%fldHome%</th>
                 <th align="left">%fldSection%</th>
@@ -827,7 +827,7 @@
 
             <table width="100%" border="0" cellspacing="0" cellpadding="3">
               <tr>
-                <th align="center" width="40">%fldSelect%</th>
+                <th align="center" width="40">%fldSelected%</th>
                 <th align="center" width="50">%lblManuallyOrder%</th>
                 <th align="center" width="40">%fldHome%</th>
                 <th align="left">%fldSection%</th>

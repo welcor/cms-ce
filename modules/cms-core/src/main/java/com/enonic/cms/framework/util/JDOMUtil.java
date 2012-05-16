@@ -272,7 +272,7 @@ public final class JDOMUtil
     {
         final Format format =
             Format.getPrettyFormat().setIndent( Strings.repeat( " ", indent ) ).setOmitDeclaration( omitDecl ).setTextMode(
-                Format.TextMode.PRESERVE );
+                Format.TextMode.TRIM );
         return doSerialize( doc, format, includeSelf );
     }
 

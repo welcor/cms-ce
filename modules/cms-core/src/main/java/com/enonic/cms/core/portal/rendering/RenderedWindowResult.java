@@ -28,6 +28,8 @@ public class RenderedWindowResult
 
     private String outputMethod;
 
+    private static final Pattern NAMESPACE_PATTERN = Pattern.compile( "xmlns(:\\w+)?=\\\"http://www\\.w3\\.org/1999/xhtml\\\"" );
+
     public boolean isErrorFree()
     {
         return !( this instanceof ErrorRenderPortletResult );
@@ -96,7 +98,8 @@ public class RenderedWindowResult
             return;
         }
 
-        content = stripNamespaces( content, "http://www.w3.org/1999/xhtml" );
+        //content = stripNamespaces( content, "http://www.w3.org/1999/xhtml" );
+        content = stripNamespaces( content );
     }
 
     private String stripNamespaces( String content, String namespace )
@@ -145,6 +148,17 @@ public class RenderedWindowResult
 
         return result;
     }
+
+
+    private String stripNamespaces( String content )
+    {
+        final Matcher matcher = NAMESPACE_PATTERN.matcher( content );
+
+        final String result = matcher.replaceAll( "" );
+
+        return result;
+    }
+
 
     public RenderedWindowResult clone()
     {

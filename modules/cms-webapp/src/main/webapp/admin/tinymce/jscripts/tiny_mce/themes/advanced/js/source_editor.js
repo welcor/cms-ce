@@ -5,13 +5,11 @@ var g_codemirror;
 
 function onLoadInit()
 {
-    tinyMCEPopup.resizeToInnerSize();
-
     document.getElementById('htmlSource').value = blockElementsWithNewlines(tinyMCEPopup.editor.getContent());
 
-    resizeInputs();
-
     g_codemirror = CodeMirror.fromTextArea('htmlSource', {
+        width: '', // Leave blank for 100%
+        height: '450px',
         lineNumbers: true,
         textWrapping: true,
         path: "../../../../../codemirror/js/",
@@ -43,28 +41,4 @@ function saveContent()
 {
     tinyMCEPopup.editor.setContent(g_codemirror.getCode());
     tinyMCEPopup.close();
-}
-
-var wHeight = 0, wWidth = 0, owHeight = 0, owWidth = 0;
-
-function resizeInputs()
-{
-    var el = document.getElementsByTagName('iframe')[0] || document.getElementById('htmlSource');
-
-    if ( !el )
-        return;
-
-    if ( !tinymce.isIE )
-    {
-        wHeight = self.innerHeight - 65;
-        //wWidth = self.innerWidth - 16;
-    }
-    else
-    {
-        wHeight = document.body.clientHeight - 70;
-        //wWidth = document.body.clientWidth - 16;
-    }
-
-    el.style.height = Math.abs(wHeight) + 'px';
-    //el.style.width = Math.abs(wWidth) + 'px';
 }

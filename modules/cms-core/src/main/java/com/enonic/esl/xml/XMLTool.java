@@ -36,7 +36,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import com.google.common.base.Preconditions;
 import org.apache.commons.fileupload.FileItem;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -54,6 +53,7 @@ import org.w3c.tidy.Tidy;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.Closeables;
 
 import com.enonic.esl.containers.ExtendedMap;
@@ -199,7 +199,7 @@ public final class XMLTool
 
             // Run Tidy on the input
             Document tidied = HTMLtoXML( in, out );
-            html = XMLTool.documentToString( tidied, 4 );
+            html = XMLTool.documentToString( tidied, 0 );
 
             in.close();
             out.close();
@@ -1033,6 +1033,8 @@ public final class XMLTool
             final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
             transformer.setOutputProperty( OutputKeys.INDENT, indent > 0 ? "yes" : "no" );
             transformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setParameter("encoding", "UTF-8");
             transformer.transform( new DOMSource(node), result );
         } catch (Exception e) {
             throw new RuntimeException( e );

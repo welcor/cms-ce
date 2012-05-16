@@ -4,8 +4,16 @@
  */
 package com.enonic.cms.itest.security.userstore;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.core.security.user.*;
+import com.enonic.cms.core.security.user.StoreNewUserCommand;
+import com.enonic.cms.core.security.user.UpdateUserCommand;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
@@ -13,11 +21,8 @@ import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class UserStoreServiceImpl_localUserStoreTest
     extends AbstractSpringTest
@@ -80,7 +85,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         UserSpecification userToUpdate = new UserSpecification();
         userToUpdate.setKey( fixture.findUserByName( "arn" ).getKey() );
         UpdateUserCommand updateCommand = new UpdateUserCommand( fixture.findUserByName( "admin" ).getKey(), userToUpdate );
-        updateCommand.setUpdateStrategy( UpdateUserCommand.UpdateStrategy.REPLACE_ALL );
+        updateCommand.setupUpdateStrategy();
         updateCommand.setDisplayName( "Wyatt-Skriubakken" );
         updateCommand.setEmail( "arn@test.com" );
         updateCommand.setPassword( "password" );
@@ -131,7 +136,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         UserSpecification userToUpdate = new UserSpecification();
         userToUpdate.setKey( fixture.findUserByName( "arn" ).getKey() );
         UpdateUserCommand updateCommand = new UpdateUserCommand( fixture.findUserByName( "admin" ).getKey(), userToUpdate );
-        updateCommand.setUpdateStrategy( UpdateUserCommand.UpdateStrategy.REPLACE_ALL );
+        updateCommand.setupUpdateStrategy();
         updateCommand.setDisplayName( "Wyatt-Skriubakken" );
         updateCommand.setEmail( "arn@test.com" );
         updateCommand.setPassword( "password" );

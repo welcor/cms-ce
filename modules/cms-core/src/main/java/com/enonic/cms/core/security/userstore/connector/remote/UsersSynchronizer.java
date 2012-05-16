@@ -19,13 +19,12 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.connector.EmailAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.NameAlreadyExistsException;
-
 import com.enonic.cms.core.user.field.UserFieldMap;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.core.user.remote.RemoteUser;
 
 public class UsersSynchronizer
-        extends AbstractBaseUserSynchronizer
+    extends AbstractBaseUserSynchronizer
 {
     private static final Logger LOG = LoggerFactory.getLogger( UsersSynchronizer.class );
 

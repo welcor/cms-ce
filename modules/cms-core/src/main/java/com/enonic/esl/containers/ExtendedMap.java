@@ -247,7 +247,7 @@ public class ExtendedMap
     {
         try
         {
-            return Integer.parseInt( get( key ).toString() );
+            return Integer.parseInt( get( key ).toString().trim() );
         }
         catch ( NumberFormatException nfe )
         {

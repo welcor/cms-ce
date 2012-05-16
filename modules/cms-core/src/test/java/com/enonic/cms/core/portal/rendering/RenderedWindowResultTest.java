@@ -1,62 +1,59 @@
 package com.enonic.cms.core.portal.rendering;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-
-import org.apache.commons.io.IOUtils;
-import org.elasticsearch.ElasticSearchException;
-import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class RenderedWindowResultTest
 {
 
 
-    @Before
-    public void setUp()
-    {
-
-    }
-
     @Test
-    public void testStuff()
+    public void testStripNamespacesNoNamespace()
     {
 
         RenderedWindowResult result = new RenderedWindowResult();
 
-        result.setContent( getContentFromFile() );
+        result.setContent( createNoNamespaceContent() );
 
         result.stripXHTMLNamespaces();
 
+        assertEquals( createNoNamespaceContent(), result.getContent() );
+
+
     }
 
-
-    public String getContentFromFile()
+    private String createNoNamespaceContent()
     {
-        InputStream stream = RenderedWindowResultTest.class.getResourceAsStream( "largeContentFile.txt" );
+        return "<html><title>test</title></html >";
+    }
 
-        if ( stream == null )
-        {
-            throw new ElasticSearchException( "File not found: " + "largeContentFile.txt" );
-        }
+    @Test
+    public void testStripNamespacesWithNamespace()
+    {
 
-        StringWriter writer = new StringWriter();
-        try
-        {
+        RenderedWindowResult result = new RenderedWindowResult();
 
-            IOUtils.copy( stream, writer, "UTF-8" );
-            final String mapping = writer.toString();
+        result.setContent( createContentWithNameSpaces() );
 
-            //System.out.println( "Mapping file loaded: " + mapping );
+        result.stripXHTMLNamespaces();
 
-            return mapping;
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( "Failed to get mapping-file as stream", e );
-        }
+        assertEquals( "<html><title>test</title></html><html >\" <html lang=\"en\" >", result.getContent() );
 
     }
+
+
+    private String createContentWithNameSpaces()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(
+            "<html><title>test</title></html><html xmlns=\"http://www.w3.org/1999/xhtml\">\" <html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">" );
+
+        return builder.toString();
+
+
+    }
+
 
 }

@@ -385,7 +385,7 @@ public class UserHandlerController
         spec.setDeletedStateNotDeleted();
 
         UpdateUserCommand updateUserCommand = new UpdateUserCommand( user.getKey(), spec );
-        updateUserCommand.setUpdateStrategy( UpdateUserCommand.UpdateStrategy.REPLACE_NEW );
+        updateUserCommand.setupModifyStrategy();
         updateUserCommand.setSyncMemberships( true );
         updateUserCommand.setUpdateOpenGroupsOnly( true );
         updateUserCommand.setAllowUpdateSelf( true );
@@ -1114,7 +1114,7 @@ public class UserHandlerController
             updateUserCommand.setAllowUpdateSelf( true );
             updateUserCommand.setUpdateOpenGroupsOnly( true );
 
-            updateUserCommand.setUpdateStrategy( UpdateUserCommand.UpdateStrategy.REPLACE_ALL );
+            updateUserCommand.setupUpdateStrategy();
 
             updateGroupsInUpdateCommand( formItems, loggedInUser, updateUserCommand );
 

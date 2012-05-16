@@ -4,19 +4,34 @@
  */
 package com.enonic.cms.core.security.userstore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.google.common.base.Preconditions;
+
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupType;
-import com.enonic.cms.core.security.user.*;
+import com.enonic.cms.core.security.user.DisplayNameResolver;
+import com.enonic.cms.core.security.user.StoreNewUserCommand;
+import com.enonic.cms.core.security.user.UpdateUserCommand;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.user.UserNotFoundException;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.store.dao.*;
-import com.google.common.base.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.enonic.cms.store.dao.CategoryAccessDao;
+import com.enonic.cms.store.dao.ContentAccessDao;
+import com.enonic.cms.store.dao.DefaultSiteAccessDao;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.MenuItemAccessDao;
+import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.store.dao.UserStoreDao;
 
 @Component
 public class UserStorageService
@@ -181,7 +196,7 @@ public class UserStorageService
 
     private boolean updateUserModifyableValues( UpdateUserCommand command, UserEntity userToUpdate )
     {
-        boolean replaceAll = command.isUpdateOperation();
+        boolean replaceAll = command.isUpdateStrategy();
         boolean modified = false;
 
         final String displayName = command.getDisplayName();

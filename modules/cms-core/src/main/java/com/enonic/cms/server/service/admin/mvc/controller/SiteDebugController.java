@@ -6,6 +6,7 @@ package com.enonic.cms.server.service.admin.mvc.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.enonic.vertical.adminweb.AdminHelper;
@@ -13,12 +14,13 @@ import com.enonic.vertical.adminweb.AdminHelper;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePathResolver;
+import com.enonic.cms.core.admin.DebugSitePathResolver;
 import com.enonic.cms.core.security.SecurityService;
 
 public abstract class SiteDebugController
     extends AbstractController
 {
-    private SitePathResolver sitePathResolver;
+    private DebugSitePathResolver sitePathResolver;
 
     protected SecurityService securityService;
 
@@ -29,11 +31,13 @@ public abstract class SiteDebugController
         setUseExpiresHeader( false );
     }
 
-    public void setSitePathResolver( SitePathResolver value )
+    @Autowired
+    public void setSitePathResolver( DebugSitePathResolver value )
     {
         this.sitePathResolver = value;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService value )
     {
         this.securityService = value;

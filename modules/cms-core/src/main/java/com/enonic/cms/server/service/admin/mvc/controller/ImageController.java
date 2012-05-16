@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -42,7 +43,7 @@ public final class ImageController
 
     private ImageService imageService;
 
-    private boolean disableParamEncoding;
+    private boolean disableParamEncoding = true;
 
     private final ImageRequestParser requestParser = new ImageRequestParser( true );
 
@@ -125,6 +126,7 @@ public final class ImageController
         return access == ImageRequestAccessResolver.Access.OK;
     }
 
+    @Autowired
     public void setImageService( ImageService imageService )
     {
         this.imageService = imageService;
@@ -135,16 +137,19 @@ public final class ImageController
         this.disableParamEncoding = disableParamEncoding;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService securityService )
     {
         this.securityService = securityService;
     }
 
+    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setGroupDao( GroupDao groupDao )
     {
         this.groupDao = groupDao;

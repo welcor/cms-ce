@@ -149,10 +149,7 @@
     <property name="blobStore" ref="blobStore"/>
   </bean>
 
-  <bean id="sitePathResolver" class="com.enonic.cms.core.SitePathResolver">
-    <property name="sitePathPrefix" value="/site"/>
-    <property name="urlPathHelperManager" ref="urlPathHelperManager"/>
-  </bean>
+  <bean id="sitePathResolver" class="com.enonic.cms.web.portal.PortalSitePathResolver"/>
 
   <bean id="urlPathHelperManager" class="com.enonic.cms.core.UrlPathHelperManager">
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
@@ -249,18 +246,18 @@
   <bean id="menuItemService" class="com.enonic.cms.core.structure.menuitem.MenuItemServiceImpl"/>
 
   <bean id="siteRedirectAndForwardHelper"
-        class="com.enonic.cms.core.SiteRedirectAndForwardHelper">
+        class="com.enonic.cms.web.portal.SiteRedirectAndForwardHelper">
     <property name="replaceSpacesWithPlus" value="true"/>
   </bean>
 
-  <bean id="abstractSiteController" class="com.enonic.cms.core.portal.mvc.controller.AbstractSiteController"
+  <bean id="abstractSiteController" class="com.enonic.cms.web.portal.AbstractSiteController"
         abstract="true">
     <property name="cacheSeconds" value="-1"/>
     <property name="siteDao" ref="siteDao"/>
   </bean>
 
 
-  <bean id="attachmentController" class="com.enonic.cms.core.portal.mvc.controller.AttachmentController"
+  <bean id="attachmentController" class="com.enonic.cms.web.portal.AttachmentController"
         parent="abstractSiteController">
     <property name="sitePathResolver" ref="sitePathResolver"/>
     <property name="siteService" ref="siteService"/>
@@ -277,15 +274,9 @@
     <property name="groupDao" ref="groupDao"/>
   </bean>
 
-  <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController">
-    <property name="securityService" ref="securityService"/>
-    <property name="binaryDataDao" ref="binaryDataDao"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="groupDao" ref="groupDao"/>
-    <property name="urlEncodingUrlPathHelper" ref="urlDecodingUrlPathHelper"/>
-  </bean>
+  <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
 
-  <bean id="imageController" class="com.enonic.cms.core.portal.mvc.controller.ImageController">
+  <bean id="imageController" class="com.enonic.cms.web.portal.ImageController">
     <property name="autoLoginService" ref="autoLoginService"/>
     <property name="disableParamEncoding" value="true"/>
     <property name="imageService" ref="imageService"/>

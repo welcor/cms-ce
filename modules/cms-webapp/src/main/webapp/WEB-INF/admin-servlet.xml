@@ -7,17 +7,11 @@
   <context:annotation-config/>
 
   <bean class="com.enonic.vertical.adminweb.resource.AdminResourcesImpl"/>
+  <bean id="adminAutoLoginInterceptor" class="com.enonic.cms.server.service.admin.security.AutoLoginInterceptor"/>
+  <bean id="adminHttpInterceptorInterceptor" class="com.enonic.cms.server.service.admin.security.HttpInterceptorInterceptor"/>
 
-  <!-- Interceptor to trigger autologin plugins. -->
-  <bean id="adminAutoLoginInterceptor" class="com.enonic.cms.server.service.admin.security.AutoLoginInterceptor">
-    <property name="pluginManager" ref="pluginManager"/>
-    <property name="securityService" ref="securityService"/>
-  </bean>
-
-  <bean id="adminHttpInterceptorInterceptor"
-        class="com.enonic.cms.server.service.admin.security.HttpInterceptorInterceptor">
-    <property name="pluginManager" ref="pluginManager"/>
-  </bean>
+  <bean id="sitePathResolverForDebug" class="com.enonic.cms.core.admin.DebugSitePathResolver"/>
+  <bean id="sitePathResolverForPreview" class="com.enonic.cms.core.admin.PreviewSitePathResolver"/>
 
   <!-- Admin handler mappings. -->
   <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -169,58 +163,16 @@
     </property>
   </bean>
 
-  <!-- Tools -->
-  <bean id="abstractToolController" abstract="true"
-        class="com.enonic.cms.core.tools.AbstractToolController">
-  </bean>
+  <bean id="pluginInfoController" class="com.enonic.cms.core.tools.PluginInfoController"/>
+  <bean id="livePortalTraceController" class="com.enonic.cms.core.tools.LivePortalTraceController"/>
+  <bean id="reindexContentToolController" class="com.enonic.cms.core.tools.ReindexContentToolController"/>
+  <bean id="resourceController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceController"/>
 
-  <bean id="pluginInfoController" class="com.enonic.cms.core.tools.PluginInfoController"
-        parent="abstractToolController">
-    <property name="pluginManager" ref="pluginManager"/>
-  </bean>
+  <bean id="debugViewController" class="com.enonic.cms.server.service.admin.mvc.controller.SiteDebugViewController"/>
+  <bean id="debugInfoController" class="com.enonic.cms.server.service.admin.mvc.controller.SiteDebugInfoController"/>
+  <bean id="previewController" class="com.enonic.cms.server.service.admin.mvc.controller.SitePreviewController"/>
 
-  <bean id="livePortalTraceController" class="com.enonic.cms.core.tools.LivePortalTraceController"
-        parent="abstractToolController">
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-  </bean>
-
-  <bean id="reindexContentToolController" class="com.enonic.cms.core.tools.ReindexContentToolController"
-        parent="abstractToolController"/>
-
-
-  <!-- Construct the resource controller. -->
-  <bean id="resourceController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceController">
-    <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
-  </bean>
-
-  <!-- Debug controller that renders the debug view. -->
-  <bean id="debugViewController" class="com.enonic.cms.server.service.admin.mvc.controller.SiteDebugViewController">
-    <property name="sitePathResolver" ref="sitePathResolverForDebug"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="siteDao" ref="siteDao"/>
-  </bean>
-
-  <bean id="debugInfoController" class="com.enonic.cms.server.service.admin.mvc.controller.SiteDebugInfoController">
-    <property name="sitePathResolver" ref="sitePathResolverForDebug"/>
-    <property name="adminService" ref="adminService"/>
-    <property name="securityService" ref="securityService"/>
-  </bean>
-
-  <bean id="previewController" class="com.enonic.cms.server.service.admin.mvc.controller.SitePreviewController">
-    <property name="sitePathResolver" ref="sitePathResolverForPreview"/>
-    <property name="securityService" ref="securityService"/>
-  </bean>
-
-  <!-- Construct the resource translator. -->
-  <bean id="resourceTranslationController"
-        class="com.enonic.cms.server.service.admin.mvc.controller.ResourceTranslationController">
-    <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
-  </bean>
-
-  <!--
-      Adminweb Servlet Wrapping Controllers
-  -->
+  <bean id="resourceTranslationController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceTranslationController"/>
 
   <bean id="adminLogInServletWrapper" class="com.enonic.vertical.adminweb.AdminLogInServlet"/>
   <bean id="adminFrontPageServletWrapper" class="com.enonic.vertical.adminweb.AdminFrontPageServlet"/>
@@ -271,26 +223,9 @@
         class="com.enonic.vertical.adminweb.handlers.SimpleContentHandlerServlet"/>
   <bean id="schedulerServletWrapper" class="com.enonic.vertical.adminweb.SchedulerServlet"/>
 
-  <bean id="adminImageController" class="com.enonic.cms.server.service.admin.mvc.controller.ImageController">
-    <property name="imageService" ref="imageService"/>
-    <property name="disableParamEncoding" value="true"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="groupDao" ref="groupDao"/>
-  </bean>
-
-  <bean id="adminAttachmentController"
-        class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController">
-    <property name="securityService" ref="securityService"/>
-    <property name="binaryDataDao" ref="binaryDataDao"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="groupDao" ref="groupDao"/>
-    <property name="urlEncodingUrlPathHelper" ref="urlDecodingUrlPathHelper"/>
-  </bean>
-
-  <bean id="loginCheckInterceptor" class="com.enonic.cms.server.service.admin.mvc.LoginCheckInterceptor">
-    <property name="securityService" ref="securityService"/>
-  </bean>
+  <bean id="adminImageController" class="com.enonic.cms.server.service.admin.mvc.controller.ImageController"/>
+  <bean id="adminAttachmentController" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
+  <bean id="loginCheckInterceptor" class="com.enonic.cms.server.service.admin.mvc.LoginCheckInterceptor"/>
 
   <bean class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
 

@@ -21,14 +21,6 @@ public class LoginPagePathResolverServiceImpl
     @Autowired
     private SiteDao siteDao;
 
-    public SitePath resolvePathToUserServicesLoginPage( final SitePath sitePath )
-    {
-        final SitePath loginSitePath = new SitePath( sitePath.getSiteKey(), ReservedLocalPaths.PATH_USERSERVICES, sitePath.getParams() );
-        loginSitePath.addParam( "_handler", "user" );
-        loginSitePath.addParam( "_op", "login" );
-        return loginSitePath;
-    }
-
     public SitePath resolvePathToDefaultPageInMenu( final SitePath sitePath )
     {
         final SiteKey siteKey = sitePath.getSiteKey();

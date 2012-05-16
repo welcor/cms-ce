@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -22,6 +23,7 @@ import com.enonic.cms.framework.util.UrlPathEncoder;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePathResolver;
+import com.enonic.cms.core.admin.PreviewSitePathResolver;
 import com.enonic.cms.core.portal.mvc.view.SiteCustomForwardView;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
@@ -34,15 +36,17 @@ public class SitePreviewController
     extends AbstractController
 {
 
-    private SitePathResolver sitePathResolver;
+    private PreviewSitePathResolver sitePathResolver;
 
     private SecurityService securityService;
 
-    public void setSitePathResolver( SitePathResolver value )
+    @Autowired
+    public void setSitePathResolver( PreviewSitePathResolver value )
     {
         this.sitePathResolver = value;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService value )
     {
         this.securityService = value;

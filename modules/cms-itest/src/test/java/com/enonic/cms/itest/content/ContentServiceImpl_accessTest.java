@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.vertical.userservices.CustomContentHandlerController;
-import com.enonic.vertical.userservices.UserServicesRedirectUrlResolver;
+import com.enonic.cms.web.portal.userservices.CustomContentHandlerController;
+import com.enonic.cms.web.portal.userservices.UserServicesRedirectUrlResolver;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -30,7 +30,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
-import com.enonic.cms.core.portal.SiteRedirectHelper;
+import com.enonic.cms.web.portal.SiteRedirectHelper;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.GroupEntity;

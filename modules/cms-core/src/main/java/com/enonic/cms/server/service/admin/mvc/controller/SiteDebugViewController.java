@@ -8,6 +8,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
@@ -117,12 +118,13 @@ public final class SiteDebugViewController
         return site;
     }
 
-
+    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setSiteDao( SiteDao siteDao )
     {
         this.siteDao = siteDao;

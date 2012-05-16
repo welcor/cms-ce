@@ -1,5 +1,6 @@
 package com.enonic.cms.core.search;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,11 @@ public class ElasticSearchIndexedFieldsTranslator
 
     public List<ContentIndexEntity> generateContentIndexFieldSet( ContentKey contentKey, Map<String, GetField> fields )
     {
+        if ( fields.isEmpty() )
+        {
+            return Collections.emptyList();
+        }
+
         final CategoryKey categoryKey = new CategoryKey( (String) fields.get( CATEGORY_KEY_FIELDNAME ).getValue() );
         final ContentIndexFieldSet indexFieldSet = new ContentIndexFieldSet();
         indexFieldSet.setCategoryKey( categoryKey );

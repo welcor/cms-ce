@@ -268,16 +268,19 @@ public class ElasticSearchIndexServiceImpl
 
         final Map<String, Object> fieldValues = getResponse.getSource();
         final Map<String, GetField> fields = new HashMap<String, GetField>();
-        for ( String key : fieldValues.keySet() )
+        if ( fieldValues != null )
         {
-            final Object value = fieldValues.get( key );
-            if ( value instanceof List )
+            for ( String key : fieldValues.keySet() )
             {
-                fields.put( key, new GetField( key, (List) value ) );
-            }
-            else
-            {
-                fields.put( key, new GetField( key, Lists.newArrayList( value ) ) );
+                final Object value = fieldValues.get( key );
+                if ( value instanceof List )
+                {
+                    fields.put( key, new GetField( key, (List) value ) );
+                }
+                else
+                {
+                    fields.put( key, new GetField( key, Lists.newArrayList( value ) ) );
+                }
             }
         }
         return fields;

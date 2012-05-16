@@ -6,38 +6,33 @@ package com.enonic.cms.web.portal;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-
-import com.enonic.cms.web.portal.StandardModelFactory;
+import org.springframework.web.util.UrlPathHelper;
 
 public class ErrorPageController
     extends AbstractController
 {
-    private StandardModelFactory standardModelFactory;
+    private final UrlPathHelper urlDecodingUrlPathHelper;
 
     public ErrorPageController()
     {
         setCacheSeconds( -1 );
-    }
-
-    @Autowired
-    public void setStandardModelFactory( StandardModelFactory value )
-    {
-        this.standardModelFactory = value;
+        this.urlDecodingUrlPathHelper = new UrlPathHelper();
+        this.urlDecodingUrlPathHelper.setUrlDecode( true );
     }
 
     protected ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response )
         throws Exception
     {
-
-        Map<String, String> model = standardModelFactory.createStandardModel( request );
+        Map<String, String> model = new HashMap<String, String>();
+        model.put( "contextPath", urlDecodingUrlPathHelper.getContextPath( request ) );
         Integer statusCode = (Integer) request.getAttribute( "vertical.error.statusCode" );
         put( model, "error_statusCode", request.getAttribute( "vertical.error.statusCode" ), "" );
         put( model, "error_message", request.getAttribute( "vertical.error.message" ), "" );

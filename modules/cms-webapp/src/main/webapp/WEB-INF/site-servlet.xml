@@ -125,6 +125,5 @@
   <bean id="portalHandlerController" class="com.enonic.cms.web.portal.userservices.PortalHandlerController"/>
   <bean id="siteRedirectAndForwardHelper" class="com.enonic.cms.web.portal.SiteRedirectAndForwardHelper"/>
   <bean id="siteRedirectHelper" class="com.enonic.cms.web.portal.SiteRedirectHelper"/>
-  <bean id="standardModelFactory" class="com.enonic.cms.web.portal.StandardModelFactory"/>
 
 </beans>

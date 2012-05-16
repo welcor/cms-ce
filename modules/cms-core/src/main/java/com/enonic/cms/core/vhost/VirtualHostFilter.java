@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public final class VirtualHostFilter
@@ -24,6 +25,9 @@ public final class VirtualHostFilter
 
     @Autowired
     private VirtualHostResolver virtualHostResolver;
+
+    @Value("${cms.security.vhost.require}")
+    private boolean requireVirtualHost;
 
     protected void doFilterInternal( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
             throws IOException, ServletException
@@ -59,6 +63,11 @@ public final class VirtualHostFilter
             fullTargetPath = virtualHost.getFullTargetPath( req );
             String fullSourcePath = virtualHost.getFullSourcePath( req );
             VirtualHostHelper.setBasePath( req, fullSourcePath );
+        }
+        else if ( requireVirtualHost && !"localhost".equals( req.getServerName() ) )
+        {
+            res.setStatus( HttpServletResponse.SC_NOT_FOUND );
+            return;
         }
 
         if ( fullTargetPath != null )

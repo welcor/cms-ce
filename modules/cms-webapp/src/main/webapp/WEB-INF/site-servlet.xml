@@ -18,11 +18,7 @@
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
       <props>
-        <prop key="/site/**/login.cms">loginController</prop>
-        <prop key="/site/**/logout.cms">logoutController</prop>
         <prop key="/site/*/_captcha">captchaController</prop>
-        <prop key="/site/**/error.cms">errorPageController</prop>
-        <prop key="/site/**/fatal.cms">errorPageController</prop>
       </props>
     </property>
   </bean>
@@ -45,12 +41,9 @@
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
       <props>
-        <prop key="/site/**/page">pageRedirectController</prop>
-        <prop key="/site/**/errorpage">renderPageController</prop>
         <prop key="/site/*/_services/**">userServicesController</prop>
         <prop key="/site/**/_attachment">attachmentController</prop>
         <prop key="/site/**/_attachment/**">attachmentController</prop>
-        <prop key="/site/**/datasource">dataSourceController</prop>
         <prop key="/site/**/_image/**">imageController</prop>
       </props>
     </property>
@@ -104,13 +97,8 @@
   <bean id="attachmentController" class="com.enonic.cms.web.portal.AttachmentController"/>
   <bean id="imageController" class="com.enonic.cms.web.portal.ImageController"/>
   <bean id="resourceFileController" class="com.enonic.cms.web.portal.ResourceFileController"/>
-  <bean id="loginController" class="com.enonic.cms.web.portal.LoginController"/>
-  <bean id="logoutController" class="com.enonic.cms.web.portal.LogoutController"/>
   <bean id="captchaController" class="com.enonic.cms.web.portal.CaptchaController"/>
-  <bean id="pageRedirectController" class="com.enonic.cms.web.portal.PageRedirectController"/>
-  <bean id="dataSourceController" class="com.enonic.cms.web.portal.DataSourceController"/>
   <bean id="userServicesController" class="com.enonic.cms.web.portal.UserServicesController"/>
-  <bean id="errorPageController" class="com.enonic.cms.web.portal.ErrorPageController"/>
   <bean id="renderPageController" class="com.enonic.cms.web.portal.DefaultController"/>
   <bean id="portalRenderResultServer" class="com.enonic.cms.web.portal.PortalRenderResponseServer"/>
   <bean id="userServicesAccessManager" class="com.enonic.cms.web.portal.userservices.UserServicesAccessManagerImpl"/>

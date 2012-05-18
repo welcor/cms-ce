@@ -131,6 +131,7 @@ public abstract class AbstractUserServicesHandlerController
         fileUpload.setHeaderEncoding( "UTF-8" );
     }
 
+    @Autowired
     public void setUserServicesRedirectHelper( UserServicesRedirectUrlResolver value )
     {
         this.userServicesRedirectUrlResolver = value;
@@ -616,6 +617,7 @@ public abstract class AbstractUserServicesHandlerController
         return missingParameters;
     }
 
+    @Autowired
     public void setUserServicesAccessManager( UserServicesAccessManager userServicesAccessManager )
     {
         this.userServicesAccessManager = userServicesAccessManager;

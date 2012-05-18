@@ -16,6 +16,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessType;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
@@ -59,9 +60,13 @@ public class MenuItemServiceImpl
 
     private TimeService timeService;
 
+    @Autowired
+    private IndexTransactionService indexTransactionService;
+
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void execute( final MenuItemServiceCommand... commands )
     {
+        indexTransactionService.startTransaction();
         for ( final MenuItemServiceCommand command : commands )
         {
             if ( command instanceof SetContentHomeCommand )
@@ -138,6 +143,8 @@ public class MenuItemServiceImpl
 
             content.addContentHome( newContentHome );
         }
+
+        indexTransactionService.updateContent( command.getContent() );
     }
 
     private void doExecuteAddContentToSectionCommand( final AddContentToSectionCommand command )
@@ -215,6 +222,7 @@ public class MenuItemServiceImpl
             }
         }
 
+        indexTransactionService.updateContent( command.getContent() );
     }
 
     private void doExecuteRemoveContentsFromSectionCommand( final RemoveContentsFromSectionCommand command )
@@ -253,6 +261,7 @@ public class MenuItemServiceImpl
                 MenuItemEntity.class.getName() + ".sectionContents", section.getKey() );
 
             removeContentHomeIfThisSectionIs( content, section );
+            indexTransactionService.updateContent( content );
         }
     }
 
@@ -328,6 +337,11 @@ public class MenuItemServiceImpl
         for ( SectionContentEntity changedSectionContent : changedSectionContents )
         {
             changedSectionContent.setTimestamp( timeService.getNowAsDateTime().toDate() );
+        }
+
+        for ( ContentKey contentKey : command.getContentsToApprove() )
+        {
+            indexTransactionService.updateContent( contentKey );
         }
     }
 

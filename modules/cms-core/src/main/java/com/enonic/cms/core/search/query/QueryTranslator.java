@@ -17,6 +17,7 @@ import com.enonic.cms.core.content.index.queryexpression.Expression;
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
+import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.FullTextQueryBuilderFactory;
@@ -25,6 +26,7 @@ import com.enonic.cms.core.search.query.factory.LikeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.OrderQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.RangeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.TermQueryBuilderFactory;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
 @Component
@@ -73,12 +75,26 @@ public class QueryTranslator
         final QueryBuilder builtQuery = buildQuery( expression );
         builder.query( builtQuery );
 
-        orderQueryBuilderFactory.buildOrderByExpr( builder, queryExpr.getOrderBy() );
+        applySorting(builder, contentIndexQuery, queryExpr.getOrderBy());
         filterQueryBuilderFactory.buildFilterQuery( builder, contentIndexQuery );
 
         System.out.println( "****************************\n\r" + builder.toString() );
 
         return builder;
+    }
+
+    private void applySorting( SearchSourceBuilder builder, ContentIndexQuery contentIndexQuery,
+                               OrderByExpr orderByExpr )
+    {
+        final MenuItemKey orderBySection = contentIndexQuery.getOrderBySection();
+        if ( orderBySection != null )
+        {
+            orderQueryBuilderFactory.buildOrderBySection( builder, orderBySection );
+        }
+        else
+        {
+            orderQueryBuilderFactory.buildOrderByExpr( builder, orderByExpr );
+        }
     }
 
     private QueryExpr applyFunctionsAndDateTranslations( final ContentIndexQuery contentIndexQuery )

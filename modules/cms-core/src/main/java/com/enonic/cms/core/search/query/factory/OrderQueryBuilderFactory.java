@@ -10,9 +10,11 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
+import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderFieldExpr;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 public class OrderQueryBuilderFactory
     extends BaseQueryBuilderFactory
@@ -40,6 +42,13 @@ public class OrderQueryBuilderFactory
             sorts.add( getDefaultSorting() );
         }
 
+    }
+
+    public void buildOrderBySection( final SearchSourceBuilder builder, final MenuItemKey section )
+    {
+        final String orderBySectionName = CONTENT_SECTION_ORDER_PREFIX + section.toString();
+        final OrderFieldExpr orderFieldExpr = new OrderFieldExpr( new FieldExpr( orderBySectionName ), false );
+        builder.sort( buildOrderFieldExpr( orderFieldExpr ) );
     }
 
     private ScoreSortBuilder getDefaultSorting()

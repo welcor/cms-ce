@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 /**
  * This class implements the content query.
@@ -68,6 +69,7 @@ public final class ContentIndexQuery
 
     private Collection<CategoryAccessType> categoryAccessTypeFilter;
 
+    private MenuItemKey orderBySection;
 
     /**
      * Construct the query.
@@ -271,6 +273,7 @@ public final class ContentIndexQuery
         s.append( "categoryFilter", getCategoryFilter() );
         s.append( "contentTypeFilter", getContentTypeFilter() );
         s.append( "securityFilter", getSecurityFilter() );
+        s.append( "orderBySection", orderBySection );
         return s.toString();
     }
 
@@ -278,4 +281,15 @@ public final class ContentIndexQuery
     {
         return categoryAccessTypeFilterPolicy;
     }
+
+    public MenuItemKey getOrderBySection()
+    {
+        return orderBySection;
+    }
+
+    public void setOrderBySection( MenuItemKey orderBySection )
+    {
+        this.orderBySection = orderBySection;
+    }
+
 }

@@ -19,6 +19,7 @@ import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 public final class ContentIndexDataFactory
     extends IndexFieldNameConstants
@@ -47,6 +48,7 @@ public final class ContentIndexDataFactory
         addCategory( contentIndexData, content );
         addContentType( contentIndexData, content );
         addSections( contentIndexData, content );
+        addOrderedSections( contentIndexData, content );
         addAccessRights( contentIndexData, content );
         addCustomData( contentIndexData, content );
 
@@ -168,5 +170,14 @@ public final class ContentIndexDataFactory
         }
     }
 
+    private void addOrderedSections( ContentIndexData contentIndexData, ContentDocument content )
+    {
+        final Map<MenuItemKey, Integer> orderedSections = content.getOrderedSections();
+        for ( MenuItemKey sectionKey : orderedSections.keySet() )
+        {
+            final int position = orderedSections.get( sectionKey );
+            contentIndexData.addContentData( CONTENT_SECTION_ORDER_PREFIX + sectionKey.toString(), position );
+        }
+    }
 
 }

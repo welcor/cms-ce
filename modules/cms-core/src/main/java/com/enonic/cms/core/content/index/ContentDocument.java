@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocations;
@@ -16,12 +18,13 @@ import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 /**
  * This class implements the content resource.
  */
 public final class ContentDocument
-    implements ContentIndexConstants
+        implements ContentIndexConstants
 {
     private final static HashSet<String> PROTECTED_FIELDS = new HashSet<String>( Arrays.asList( ALL_FIELDS ) );
 
@@ -93,11 +96,14 @@ public final class ContentDocument
 
     private CategoryEntity category;
 
+    private final Map<MenuItemKey, Integer> orderedSections;
+
     public ContentDocument( ContentKey contentKey )
     {
         this.contentKey = contentKey;
         this.userDefinedFields = new ArrayList<UserDefinedField>();
         this.contentAccessRights = new ArrayList<ContentAccessEntity>();
+        this.orderedSections = new HashMap<MenuItemKey, Integer>();
     }
 
     public ContentKey getContentKey()
@@ -431,4 +437,13 @@ public final class ContentDocument
         this.category = category;
     }
 
+    public void addOrderedSection( MenuItemKey sectionKey, int orderPosition )
+    {
+        orderedSections.put( sectionKey, orderPosition );
+    }
+
+    public Map<MenuItemKey, Integer> getOrderedSections()
+    {
+        return orderedSections;
+    }
 }

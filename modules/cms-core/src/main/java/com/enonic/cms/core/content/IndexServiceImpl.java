@@ -38,6 +38,9 @@ import com.enonic.cms.core.content.index.config.IndexDefinition;
 import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
 
@@ -113,6 +116,7 @@ public final class IndexServiceImpl
             {
                 ContentDocument indexedDoc = insertStandardValues( currentContent );
                 insertUserDefinedIndexValues( currentContent, indexedDoc );
+                insertOrderedSections( currentContent, indexedDoc );
                 //TODO: fix binary extraction
                 //insertBinaryIndexValues( currentContent, indexedDoc );
                 contentToIndex.add( indexedDoc );
@@ -151,9 +155,25 @@ public final class IndexServiceImpl
     {
         ContentDocument indexedDoc = insertStandardValues( content );
         insertUserDefinedIndexValues( content, indexedDoc );
+        insertOrderedSections( content, indexedDoc );
 
         insertBinaryIndexValues( content, indexedDoc );
         return indexedDoc;
+    }
+
+    private void insertOrderedSections( ContentEntity content, ContentDocument indexedDoc )
+    {
+        final Set<SectionContentEntity> sectionContents = content.getSectionContents();
+        for ( SectionContentEntity sectionContent : sectionContents )
+        {
+            final MenuItemEntity menu = sectionContent.getMenuItem();
+            if ( menu.isOrderedSection() )
+            {
+                final MenuItemKey sectionKey = menu.getKey();
+                final int orderPosition = sectionContent.getOrder();
+                indexedDoc.addOrderedSection( sectionKey, orderPosition );
+            }
+        }
     }
 
     @Override

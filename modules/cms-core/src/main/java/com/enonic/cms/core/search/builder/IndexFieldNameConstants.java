@@ -103,4 +103,6 @@ public class IndexFieldNameConstants
     public static final String ORDERBY_FIELDNAME_POSTFIX = "orderby";
 
     public static final String ORDERBY_NUMERIC_FIELDNAME_POSTFIX = "orderby_number";
+
+    public static final String CONTENT_SECTION_ORDER_PREFIX ="position_section_";
 }

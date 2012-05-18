@@ -53,8 +53,12 @@ public class ElasticSearchIndexedFieldsTranslator
             if ( name.startsWith( CONTENTDATA_PREFIX ) && ( !name.contains( INDEX_FIELD_TYPE_SEPARATOR ) ) )
             {
                 final GetField field = fields.get( name );
-                final String customFieldName = StringUtils.substringAfter( name, CONTENTDATA_PREFIX );
-                indexFieldSet.addFieldWithStringValue( "data#" + customFieldName, field.getValue().toString() );
+                final String value = field.getValue().toString();
+                if ( StringUtils.isNotEmpty( value ) )
+                {
+                    final String customFieldName = StringUtils.substringAfter( name, CONTENTDATA_PREFIX );
+                    indexFieldSet.addFieldWithStringValue( "data#" + customFieldName, value );
+                }
             }
             else if ( ( !name.startsWith( CONTENTDATA_PREFIX ) ) && ( !name.contains( INDEX_FIELD_TYPE_SEPARATOR ) ) )
             {

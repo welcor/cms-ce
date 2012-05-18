@@ -25,6 +25,14 @@ public class UpgradeModel0202
             return;
         }
 
+        try {
+            context.executeStatement( "SELECT * FROM QRTZ_JOB_DETAILS" );
+            context.logInfo( "Quartz table are available. Skipping." );
+            return;
+        } catch (final Exception e) {
+            // Do nothing
+        }
+
         context.logInfo( "Creating Quartz Scheduler tables..." );
         final List<String> statements = context.getStatementsFromSchema( 202 );
         for ( String statement : statements )

@@ -9,12 +9,9 @@ package com.enonic.cms.core;
  */
 public class Attribute
 {
-
     public static final String ORIGINAL_URL = "com.enonic.render.url.original";
 
     public static final String ORIGINAL_SITEPATH = "com.enonic.render.sitePath.original";
-
-    public static final String CURRENT_SITEPATH = "com.enonic.render.sitePath.current";
 
     public static final String BASEPATH_OVERRIDE_ATTRIBUTE_NAME = "com.enonic.render.basePathOverride";
 

@@ -118,7 +118,6 @@ public class AttachmentController
 
             // Get and set the current sitePath
             SitePath currentSitePath = sitePathResolver.resolveSitePath( request );
-            request.setAttribute( Attribute.CURRENT_SITEPATH, currentSitePath );
 
             PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, currentSitePath );
             PortalRequestTracer.traceRequestedSite( portalRequestTrace, siteDao.findByKey( currentSitePath.getSiteKey() ) );

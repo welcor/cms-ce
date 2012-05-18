@@ -41,7 +41,6 @@ public class LoginController
 
         // Get and set the current sitePath
         final SitePath currentSitePath = sitePathResolver.resolveSitePath( request );
-        request.setAttribute( Attribute.CURRENT_SITEPATH, currentSitePath );
 
         final SitePath sitePathAndParams = loginPagePathResolverService.resolvePathToDefaultPageInMenu( currentSitePath );
         return siteRedirectAndForwardHelper.getForwardModelAndView( request, sitePathAndParams );

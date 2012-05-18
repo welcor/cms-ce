@@ -82,7 +82,6 @@ public abstract class AbstractSiteController
 
         // Get and set the current sitePath
         SitePath currentSitePath = sitePathResolver.resolveSitePath( request );
-        request.setAttribute( Attribute.CURRENT_SITEPATH, currentSitePath );
 
         return logAndReturn( handleRequestInternal( request, response, currentSitePath ) );
     }

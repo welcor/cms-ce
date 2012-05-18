@@ -635,7 +635,6 @@ public abstract class AbstractUserServicesHandlerController
 
         // Get and set the current sitePath
         SitePath currentSitePath = sitePathResolver.resolveSitePath( request );
-        request.setAttribute( Attribute.CURRENT_SITEPATH, currentSitePath );
 
         return handleRequestInternal( request, response, currentSitePath );
     }

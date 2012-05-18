@@ -365,6 +365,7 @@ public class MenuItemServiceImpl
                 continue;
             }
             doUnapproveContentInSection( sectionContent );
+            indexTransactionService.updateContent( contentKey );
         }
     }
 

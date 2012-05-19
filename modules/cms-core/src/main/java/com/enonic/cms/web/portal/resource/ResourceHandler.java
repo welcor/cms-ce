@@ -1,48 +1,47 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.resource;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.HttpServletUtil;
 
-import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
-import com.enonic.cms.core.portal.ReservedLocalPaths;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceKeyResolverForSiteLocalResources;
 import com.enonic.cms.core.resource.ResourceService;
+import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
-public class ResourceFileController
-    extends AbstractSiteController
+@Component
+public final class ResourceHandler
+    extends WebHandlerBase
 {
     private ResourceService resourceService;
 
-    private static String LOCAL_PREFIX = ReservedLocalPaths.PATH_RESOURCE.toString();
-
-    private static String FORWARD_PREFIX = "/_default";
-
-    public ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response, SitePath sitePath )
-        throws ServletException, IOException
+    @Override
+    protected boolean canHandle( final String localPath )
     {
+        return localPath.contains( "/_public/" ) || localPath.contains( "/~/" );
+    }
 
-        if ( sitePath.getLocalPath().endsWithSlash() && !sitePath.getLocalPath().contains( "/~" ) )
-        {
-            return createForwardToMenuItem( request, sitePath );
-        }
+    @Autowired
+    public void setResourceService( final ResourceService resourceService )
+    {
+        this.resourceService = resourceService;
+    }
+
+    @Override
+    protected void doHandle( final WebContext context )
+        throws Exception
+    {
+        final SitePath sitePath = context.getSitePath();
+        final HttpServletResponse response = context.getResponse();
 
         String sitePublicHome = null;
 
@@ -58,15 +57,10 @@ public class ResourceFileController
         final ResourceKey resourceKey = resourceKeyResolverForSiteLocalResources.resolveResourceKey( sitePath );
         final ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );
 
-        if ( resourceFile == null && sitePath.getLocalPath().contains( "/~" ) )
+        if ( resourceFile == null )
         {
             // this is to prevent redirect loop
             throw new ResourceNotFoundException( sitePath.getSiteKey(), sitePath.getLocalPath() );
-        }
-
-        if ( resourceFile == null )
-        {
-            return createForwardToMenuItem( request, sitePath );
         }
 
         setHttpHeaders( response, sitePath );
@@ -75,8 +69,6 @@ public class ResourceFileController
         response.setContentLength( (int) resourceFile.getSize() );
 
         HttpServletUtil.copyNoCloseOut( resourceFile.getDataAsInputStream(), response.getOutputStream() );
-
-        return null;
     }
 
     private void setHttpHeaders( final HttpServletResponse response, final SitePath sitePath )
@@ -103,18 +95,5 @@ public class ResourceFileController
 
             }
         }
-    }
-
-    private ModelAndView createForwardToMenuItem( final HttpServletRequest request, final SitePath sitePath )
-    {
-        final Path path = new Path( sitePath.getLocalPath().toString().replace( LOCAL_PREFIX, FORWARD_PREFIX ) );
-        final SitePath forward = new SitePath( sitePath.getSiteKey(), path, sitePath.getParams() );
-        return siteRedirectAndForwardHelper.getForwardModelAndView( request, forward );
-    }
-
-    @Autowired
-    public void setResourceService( ResourceService resourceService )
-    {
-        this.resourceService = resourceService;
     }
 }

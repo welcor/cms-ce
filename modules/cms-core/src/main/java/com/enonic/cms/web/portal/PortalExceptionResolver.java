@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,7 +26,6 @@ import com.enonic.cms.core.NotFoundErrorType;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.SitePathResolver;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.StacktraceLoggingUnrequired;
 import com.enonic.cms.core.portal.AbstractBaseError;
@@ -44,7 +44,11 @@ import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.cms.web.portal.attachment.AttachmentRequestException;
+import com.enonic.cms.web.portal.image.ImageRequestException;
+import com.enonic.cms.web.portal.render.DefaultRequestException;
 
+@Component
 public class PortalExceptionResolver
     implements HandlerExceptionResolver
 {

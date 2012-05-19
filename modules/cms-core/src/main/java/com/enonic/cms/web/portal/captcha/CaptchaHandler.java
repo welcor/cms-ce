@@ -1,47 +1,41 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.captcha;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
-import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.captcha.CaptchaRepository;
+import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
-/**
- * The captcha image generator.
- */
-public class CaptchaController
-        extends AbstractController
+@Component
+public final class CaptchaHandler
+    extends WebHandlerBase
 {
-    CaptchaRepository captchaRepository;
+    private CaptchaRepository captchaRepository;
 
-    protected ModelAndView handleRequestInternal( HttpServletRequest req, HttpServletResponse resp )
-            throws Exception
+    @Override
+    protected boolean canHandle( final String localPath )
     {
-        generateImageOnResponse( req, resp );
-        return null;
+        return localPath.endsWith( "/_captcha" );
     }
 
-    public void generateImageOnResponse( HttpServletRequest request, HttpServletResponse response )
-            throws IOException
+    @Override
+    protected void doHandle( final WebContext context )
+        throws Exception
     {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
 
         try
         {
-
             byte[] captchaChallengeAsJpeg;
             ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream();
 
@@ -60,21 +54,11 @@ public class CaptchaController
             responseOutputStream.write( captchaChallengeAsJpeg );
             responseOutputStream.flush();
             responseOutputStream.close();
-//            ( "CaptchaController: Image returned." );
-
-        }
-        catch ( IIOException e )
-        {
-            response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
-            return;
         }
         catch ( IllegalArgumentException e )
         {
             response.sendError( HttpServletResponse.SC_NOT_FOUND );
-            return;
         }
-
-
     }
 
     @Autowired

@@ -2,19 +2,19 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.image;
 
 import com.enonic.cms.core.SitePath;
 
 /**
  * Feb 17, 2010
  */
-public class DefaultRequestException
+public class ImageRequestException
     extends RuntimeException
 {
     private SitePath sitePath;
 
-    public DefaultRequestException( SitePath sitePath, String referer, Exception e )
+    public ImageRequestException( SitePath sitePath, String referer, Exception e )
     {
         super( buildMessage( sitePath, referer, e ), e );
         this.sitePath = sitePath;
@@ -23,7 +23,7 @@ public class DefaultRequestException
     private static String buildMessage( SitePath sitePath, String referer, Exception e )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( "Failed to serve request [" );
+        buf.append( "Failed to serve image request [" );
         buf.append( sitePath.asString() );
         buf.append( "] " );
         if ( referer != null )

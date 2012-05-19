@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.render;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.base.Preconditions;
@@ -47,10 +48,12 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 
 /**
  * May 26, 2009
  */
+@Component
 public class PortalRenderResponseServer
 {
     private final static String EXECUTED_PLUGINS = "EXECUTED_PLUGINS";
@@ -69,25 +72,26 @@ public class PortalRenderResponseServer
 
     public ModelAndView serveResponse( PortalRequest request, PortalResponse response, HttpServletResponse httpResponse,
                                        HttpServletRequest httpRequest )
-        throws IOException
+        throws Exception
     {
         if ( response.hasRedirectInstruction() )
         {
-            return serveRedirect( response, httpResponse, httpRequest );
+            serveRedirect( response, httpResponse, httpRequest );
         }
         else if ( response.isForwardToSitePath() )
         {
-            return serveForwardToSitePathResponse( response, httpRequest );
+            serveForwardToSitePathResponse( response, httpRequest, httpResponse );
         }
         else
         {
             servePageResponse( request, response, httpResponse, httpRequest );
-            return null;
         }
+
+        return null;
     }
 
     private void servePageResponse( PortalRequest request, PortalResponse response, HttpServletResponse httpResponse,
-                                            HttpServletRequest httpRequest )
+                                    HttpServletRequest httpRequest )
         throws IOException
     {
         HttpServletUtil.setDateHeader( httpResponse, request.getRequestTime().toDate() );
@@ -206,7 +210,7 @@ public class PortalRenderResponseServer
         return site.isDeviceClassificationEnabled() || site.isLocalizationEnabled();
     }
 
-    private ModelAndView serveRedirect( PortalResponse response, HttpServletResponse httpResponse, HttpServletRequest httpRequest )
+    private void serveRedirect( PortalResponse response, HttpServletResponse httpResponse, HttpServletRequest httpRequest )
         throws IOException
     {
 
@@ -217,11 +221,11 @@ public class PortalRenderResponseServer
 
         if ( redirectInstruction.hasRedirectSitePath() )
         {
-            return serveRedirectToSitePath( redirectInstruction.getRedirectSitePath(), redirectStatus, httpResponse, httpRequest );
+            serveRedirectToSitePath( redirectInstruction.getRedirectSitePath(), redirectStatus, httpResponse, httpRequest );
         }
         else if ( redirectInstruction.hasRedirectUrl() )
         {
-            return serveRedirectResponse( redirectInstruction.getRedirectUrl() );
+            serveRedirectResponse( httpResponse, redirectInstruction.getRedirectUrl(), redirectStatus );
         }
         else
         {
@@ -229,9 +233,8 @@ public class PortalRenderResponseServer
         }
     }
 
-
-    private ModelAndView serveRedirectToSitePath( SitePath toSitePath, int redirectStatus, HttpServletResponse httpResponse,
-                                                  HttpServletRequest httpRequest )
+    private void serveRedirectToSitePath( SitePath toSitePath, int redirectStatus, HttpServletResponse httpResponse,
+                                          HttpServletRequest httpRequest )
         throws IOException
     {
 
@@ -246,31 +249,34 @@ public class PortalRenderResponseServer
         siteBasePathAndSitePathToStringBuilder.setUrlEncodePath( true );
         String redirectUrl = siteBasePathAndSitePathToStringBuilder.toString( siteBasePathAndSitePath );
 
-        // It is this method that adds the jsessionid on the URL when accessing a shortcut after re-starting browser
-        String encodedRedirectUrl = httpResponse.encodeRedirectURL( redirectUrl );
+        sendRedirectResponse( httpResponse, redirectUrl, redirectStatus );
+    }
+
+    private void sendRedirectResponse( final HttpServletResponse response, final String redirectUrl, final int redirectStatus )
+    {
+        String encodedRedirectUrl = response.encodeRedirectURL( redirectUrl );
 
         if ( redirectStatus == HttpServletResponse.SC_MOVED_PERMANENTLY )
         {
-            httpResponse.setStatus( redirectStatus );
-            httpResponse.setHeader( "Location", encodedRedirectUrl );
-            return null;
+            response.setStatus( redirectStatus );
+            response.setHeader( "Location", encodedRedirectUrl );
         }
         else
         {
-            httpResponse.setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
-            httpResponse.setHeader( "Location", encodedRedirectUrl );
-            return null;
+            response.setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
+            response.setHeader( "Location", encodedRedirectUrl );
         }
     }
 
-    private ModelAndView serveForwardToSitePathResponse( PortalResponse response, HttpServletRequest httpRequest )
+    private void serveForwardToSitePathResponse( PortalResponse response, HttpServletRequest httpRequest, HttpServletResponse httpResponse )
+        throws Exception
     {
-        return siteRedirectAndForwardHelper.getForwardModelAndView( httpRequest, response.getForwardToSitePath() );
+        siteRedirectAndForwardHelper.forward( httpRequest, httpResponse, response.getForwardToSitePath() );
     }
 
-    private ModelAndView serveRedirectResponse( String redirectUrl )
+    private void serveRedirectResponse( HttpServletResponse response, String redirectUrl, int redirectStatus )
     {
-        return new ModelAndView( "redirect:" + redirectUrl );
+        sendRedirectResponse( response, redirectUrl, redirectStatus );
     }
 
     private DateTime resolveExpirationTime( DateTime requestTime, DateTime expirationTime )
@@ -302,7 +308,8 @@ public class PortalRenderResponseServer
                 httpRequest.setAttribute( EXECUTED_PLUGINS, executedPlugins );
             }
 
-            for ( HttpResponseFilter plugin : this.pluginManager.getExtensions().findMatchingHttpResponseFilters( originalSitePath.asString() ) )
+            for ( HttpResponseFilter plugin : this.pluginManager.getExtensions().findMatchingHttpResponseFilters(
+                originalSitePath.asString() ) )
             {
                 if ( !executedPlugins.contains( plugin ) )
                 {
@@ -361,7 +368,7 @@ public class PortalRenderResponseServer
     }
 
     @Autowired
-    public void setPluginManager(PluginManager pluginManager)
+    public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
     }

@@ -5,14 +5,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 
   <context:annotation-config/>
+  <mvc:annotation-driven/>
+  <context:component-scan base-package="com.enonic.cms.web.portal"/>
 
-  <bean id="siteExceptionResolver" class="com.enonic.cms.web.portal.PortalExceptionResolver"/>
+  <!--bean id="siteExceptionResolver" class="com.enonic.cms.web.portal.PortalExceptionResolver"/>
   <bean id="autoLoginInterceptor" class="com.enonic.cms.web.portal.interceptor.AutoLoginInterceptor"/>
   <bean id="basicAuthInterceptor" class="com.enonic.cms.web.portal.interceptor.BasicAuthInterceptor"/>
   <bean id="httpInterceptorInterceptor" class="com.enonic.cms.web.portal.interceptor.HttpInterceptorInterceptor"/>
   <bean id="sitePathResolver" class="com.enonic.cms.web.portal.PortalSitePathResolver"/>
 
-  <!-- default handler mapping -->
   <bean id="defaultHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="order" value="1"/>
     <property name="alwaysUseFullPath" value="true"/>
@@ -23,7 +24,6 @@
     </property>
   </bean>
 
-  <!-- legacy handler mapping without auto login plugin -->
   <bean id="legacyHandlerMappingWithoutAutoLoginPlugin" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="order" value="2"/>
     <property name="alwaysUseFullPath" value="true"/>
@@ -35,7 +35,6 @@
     </property>
   </bean>
 
-  <!-- legacy handler mapping with auto login plugin-->
   <bean id="legacyHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="order" value="3"/>
     <property name="alwaysUseFullPath" value="true"/>
@@ -76,7 +75,6 @@
     </property>
   </bean>
 
-  <!-- main handler mapping -->
   <bean id="mainHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="order" value="5"/>
     <property name="alwaysUseFullPath" value="true"/>
@@ -94,12 +92,7 @@
     </property>
   </bean>
 
-  <bean id="attachmentController" class="com.enonic.cms.web.portal.AttachmentController"/>
-  <bean id="imageController" class="com.enonic.cms.web.portal.ImageController"/>
-  <bean id="resourceFileController" class="com.enonic.cms.web.portal.ResourceFileController"/>
-  <bean id="captchaController" class="com.enonic.cms.web.portal.CaptchaController"/>
   <bean id="userServicesController" class="com.enonic.cms.web.portal.UserServicesController"/>
-  <bean id="renderPageController" class="com.enonic.cms.web.portal.DefaultController"/>
   <bean id="portalRenderResultServer" class="com.enonic.cms.web.portal.PortalRenderResponseServer"/>
   <bean id="userServicesAccessManager" class="com.enonic.cms.web.portal.userservices.UserServicesAccessManagerImpl"/>
   <bean id="contentHandlerBaseController" class="com.enonic.cms.web.portal.userservices.ContentHandlerBaseController"/>
@@ -112,6 +105,6 @@
   <bean id="verticalSessionHandlerController" class="com.enonic.cms.web.portal.userservices.VerticalSessionHandlerController"/>
   <bean id="portalHandlerController" class="com.enonic.cms.web.portal.userservices.PortalHandlerController"/>
   <bean id="siteRedirectAndForwardHelper" class="com.enonic.cms.web.portal.SiteRedirectAndForwardHelper"/>
-  <bean id="siteRedirectHelper" class="com.enonic.cms.web.portal.SiteRedirectHelper"/>
+  <bean id="siteRedirectHelper" class="com.enonic.cms.web.portal.SiteRedirectHelper"/-->
 
 </beans>

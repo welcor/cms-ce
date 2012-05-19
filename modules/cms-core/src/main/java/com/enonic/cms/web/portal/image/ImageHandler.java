@@ -1,8 +1,4 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.image;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -13,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.HttpServletUtil;
 
@@ -32,28 +28,37 @@ import com.enonic.cms.core.portal.image.ImageRequestAccessResolver;
 import com.enonic.cms.core.portal.image.ImageService;
 import com.enonic.cms.core.portal.livetrace.ImageRequestTrace;
 import com.enonic.cms.core.portal.livetrace.ImageRequestTracer;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
-public final class ImageController
-    extends AbstractSiteController
+@Component
+public final class ImageHandler
+    extends WebHandlerBase
 {
     private ImageService imageService;
 
-    private boolean disableParamEncoding;
-
     private final ImageRequestParser requestParser = new ImageRequestParser();
 
-    private LivePortalTraceService livePortalTraceService;
+    @Override
+    protected boolean canHandle( final String localPath )
+    {
+        return localPath.contains( "/_image/" );
+    }
 
-    public ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response, SitePath sitePath )
+    @Override
+    protected void doHandle( final WebContext context )
         throws Exception
     {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+        final SitePath sitePath = context.getSitePath();
+
         PortalRequestTrace portalRequestTrace =
             PortalRequestTracer.startTracing( (String) request.getAttribute( Attribute.ORIGINAL_URL ), livePortalTraceService );
 
@@ -96,7 +101,6 @@ public final class ImageController
             {
                 ImageRequestTracer.stopTracing( imageRequestTrace, livePortalTraceService );
             }
-            return null;
         }
         catch ( Exception e )
         {
@@ -119,7 +123,7 @@ public final class ImageController
             params.put( key, request.getParameter( key ) );
         }
 
-        final boolean encodeParams = !( disableParamEncoding || RenderTrace.isTraceOn() );
+        final boolean encodeParams = !RenderTrace.isTraceOn();
         final ImageRequest imageRequest = requestParser.parse( request.getPathInfo(), params, encodeParams );
 
         imageRequest.setRequester( securityService.getLoggedInPortalUser() );
@@ -229,20 +233,9 @@ public final class ImageController
         }
     }
 
-    public void setDisableParamEncoding( boolean disableParamEncoding )
-    {
-        this.disableParamEncoding = disableParamEncoding;
-    }
-
     @Autowired
-    public void setImageService( ImageService imageService )
+    public void setImageService( final ImageService imageService )
     {
         this.imageService = imageService;
-    }
-
-    @Autowired
-    public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
-    {
-        this.livePortalTraceService = livePortalTraceService;
     }
 }

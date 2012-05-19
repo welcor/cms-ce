@@ -1,17 +1,14 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.attachment;
 
 import java.io.IOException;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.io.ByteStreams;
@@ -19,26 +16,23 @@ import com.google.common.io.ByteStreams;
 import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.util.HttpCacheControlSettings;
 import com.enonic.cms.framework.util.HttpServletUtil;
+import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.binary.AttachmentNotFoundException;
 import com.enonic.cms.core.content.binary.AttachmentRequest;
-import com.enonic.cms.core.content.binary.AttachmentRequestResolver;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.portal.PathRequiresAuthenticationException;
 import com.enonic.cms.core.portal.ReservedLocalPaths;
 import com.enonic.cms.core.portal.livetrace.AttachmentRequestTrace;
 import com.enonic.cms.core.portal.livetrace.AttachmentRequestTracer;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
 import com.enonic.cms.core.preview.PreviewContext;
@@ -46,89 +40,55 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
+import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
-public class AttachmentController
-    extends AbstractSiteController
-    implements InitializingBean
+@Component
+public final class AttachmentHandler
+    extends WebHandlerBase
 {
     private BinaryDataDao binaryDataDao;
 
-    private AttachmentRequestResolver attachmentRequestResolver;
+    private AttachmentRequestResolverImpl attachmentRequestResolver;
 
-    private LivePortalTraceService livePortalTraceService;
+    private MimeTypeResolver mimeTypeResolver;
 
-    public void afterPropertiesSet()
-        throws Exception
+    @PostConstruct
+    public void init()
     {
-        attachmentRequestResolver = new AttachmentRequestResolver()
-        {
-            @Override
-            protected BinaryDataKey getBinaryData( ContentEntity content, String label )
-            {
-                BinaryDataEntity binaryData;
-                if ( label == null )
-                {
-                    binaryData = content.getMainVersion().getOneAndOnlyBinaryData();
-                }
-                else
-                {
-                    binaryData = content.getMainVersion().getBinaryData( label );
-                }
-
-                if ( "source".equals( label ) && binaryData == null )
-                {
-                    binaryData = content.getMainVersion().getOneAndOnlyBinaryData();
-                }
-
-                if ( binaryData != null )
-                {
-                    return new BinaryDataKey( binaryData.getKey() );
-                }
-                return null;
-            }
-
-            @Override
-            protected ContentEntity getContent( ContentKey contentKey )
-            {
-                return contentDao.findByKey( contentKey );
-            }
-        };
-
+        this.attachmentRequestResolver = new AttachmentRequestResolverImpl( this.contentDao );
     }
 
     @Override
-    public final ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response, SitePath sitePath )
+    protected boolean canHandle( final String localPath )
+    {
+        return localPath.contains( "/_attachment/" ) || localPath.endsWith( "/_attachment" );
+    }
+
+    @Override
+    protected void doHandle( final WebContext context )
         throws Exception
     {
-        PortalRequestTrace portalRequestTrace =
-            PortalRequestTracer.startTracing( (String) request.getAttribute( Attribute.ORIGINAL_URL ), livePortalTraceService );
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+        final SitePath currentSitePath = context.getSitePath();
+
+        PortalRequestTrace portalRequestTrace = PortalRequestTracer.startTracing( context.getOriginalUrl(), livePortalTraceService );
         try
         {
             PortalRequestTracer.traceMode( portalRequestTrace, previewService );
             PortalRequestTracer.traceHttpRequest( portalRequestTrace, request );
-
-            // Get check and eventually set original sitePath
-            SitePath originalSitePath = (SitePath) request.getAttribute( Attribute.ORIGINAL_SITEPATH );
-            if ( originalSitePath == null )
-            {
-                originalSitePath = sitePathResolver.resolveSitePath( request );
-                siteService.checkSiteExist( originalSitePath.getSiteKey() );
-                request.setAttribute( Attribute.ORIGINAL_SITEPATH, originalSitePath );
-            }
-
-            // Get and set the current sitePath
-            SitePath currentSitePath = sitePathResolver.resolveSitePath( request );
 
             PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, currentSitePath );
             PortalRequestTracer.traceRequestedSite( portalRequestTrace, siteDao.findByKey( currentSitePath.getSiteKey() ) );
 
             try
             {
-                return handleRequestInternal( request, response, currentSitePath, portalRequestTrace );
+                handleRequestInternal( request, response, currentSitePath, portalRequestTrace );
             }
             catch ( Exception e )
             {
-                throw new AttachmentRequestException( originalSitePath, request.getHeader( "referer" ), e );
+                throw new AttachmentRequestException( context.getOriginalSitePath(), context.getReferrerHeader(), e );
             }
         }
         finally
@@ -289,7 +249,7 @@ public class AttachmentController
         AttachmentRequestTracer.traceSize( trace, blob.getLength() );
         HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
 
-        response.setContentType( HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() ) );
+        response.setContentType( this.mimeTypeResolver.getMimeType( binaryData.getName() ) );
         response.setContentLength( (int) blob.getLength() );
 
         ByteStreams.copy( blob.getStream(), response.getOutputStream() );
@@ -371,14 +331,14 @@ public class AttachmentController
     }
 
     @Autowired
-    public void setBinaryDataDao( BinaryDataDao binaryDataDao )
+    public void setBinaryDataDao( final BinaryDataDao binaryDataDao )
     {
         this.binaryDataDao = binaryDataDao;
     }
 
     @Autowired
-    public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
+    public void setMimeTypeResolver( final MimeTypeResolver mimeTypeResolver )
     {
-        this.livePortalTraceService = livePortalTraceService;
+        this.mimeTypeResolver = mimeTypeResolver;
     }
 }

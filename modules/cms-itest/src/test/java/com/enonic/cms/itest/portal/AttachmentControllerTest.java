@@ -26,6 +26,7 @@ import com.enonic.cms.api.client.model.CreateFileContentParams;
 import com.enonic.cms.api.client.model.content.file.FileBinaryInput;
 import com.enonic.cms.api.client.model.content.file.FileContentDataInput;
 import com.enonic.cms.api.client.model.content.file.FileNameInput;
+import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.client.InternalClientContentService;
 import com.enonic.cms.core.content.ContentAndVersion;
 import com.enonic.cms.core.content.ContentEntity;
@@ -36,8 +37,6 @@ import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
-import com.enonic.cms.web.portal.AttachmentController;
-import com.enonic.cms.web.portal.AttachmentRequestException;
 import com.enonic.cms.core.preview.ContentPreviewContext;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.preview.PreviewService;
@@ -51,6 +50,9 @@ import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.web.portal.attachment.AttachmentHandler;
+import com.enonic.cms.web.portal.attachment.AttachmentRequestException;
+import com.enonic.cms.web.portal.handler.WebContext;
 
 import static org.junit.Assert.*;
 
@@ -71,7 +73,7 @@ public class AttachmentControllerTest
     private PreviewService previewService;
 
     @Autowired
-    private AttachmentController attachmentController;
+    private AttachmentHandler attachmentController;
 
     @Autowired
     private MimeTypeResolver mimeTypeResolver;
@@ -84,6 +86,7 @@ public class AttachmentControllerTest
 
     private SiteEntity site1;
 
+    private WebContext webContext;
 
     @Before
     public void before()
@@ -97,8 +100,6 @@ public class AttachmentControllerTest
         httpServletRequest.setCharacterEncoding( "UTF-8" );
         ServletRequestAccessor.setRequest( httpServletRequest );
         loginUserInPortal( fixture.findUserByName( "testuser" ).getKey() );
-
-        attachmentController.setServletContext( servletContext );
 
         previewService = Mockito.mock( PreviewService.class );
         Mockito.when( previewService.isInPreview() ).thenReturn( false );
@@ -128,6 +129,10 @@ public class AttachmentControllerTest
         servletContext.setAttribute( WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac );
 
         fixture.flushAndClearHibernateSesssion();
+
+        webContext = new WebContext();
+        webContext.setRequest( this.httpServletRequest );
+        webContext.setResponse( this.httpServletResponse );
     }
 
     @Test
@@ -140,7 +145,7 @@ public class AttachmentControllerTest
 
         String attachmentRequestPath = "_attachment/" + contentKey.toString() + "/label/source";
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
-        attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        attachmentController.handle( webContext );
 
         assertEquals( "text/plain", httpServletResponse.getContentType() );
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
@@ -157,7 +162,7 @@ public class AttachmentControllerTest
 
         String attachmentRequestPath = "_attachment/" + contentKey.toString();
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
-        attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        attachmentController.handle( webContext );
 
         assertEquals( "text/plain", httpServletResponse.getContentType() );
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
@@ -172,7 +177,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            attachmentController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -196,7 +201,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            attachmentController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -223,7 +228,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            attachmentController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -247,7 +252,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            attachmentController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -274,7 +279,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            attachmentController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -304,7 +309,7 @@ public class AttachmentControllerTest
         String attachmentRequestPath = "_attachment/" + contentKey + "/binary/" + binaryDataOfMainVersion.getKey() + ".jpg";
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
 
-        attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        attachmentController.handle( webContext );
 
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
         assertTrue( "Content Length", httpServletResponse.getContentLength() > 0 );
@@ -345,7 +350,7 @@ public class AttachmentControllerTest
 
         try
         {
-            attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            attachmentController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -386,7 +391,7 @@ public class AttachmentControllerTest
         String attachmentRequestPath = "_attachment/" + contentKey;
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
 
-        attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        attachmentController.handle( webContext );
 
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
         assertTrue( "Content Length", httpServletResponse.getContentLength() > 0 );
@@ -423,7 +428,7 @@ public class AttachmentControllerTest
 
         try
         {
-            attachmentController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            attachmentController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -486,5 +491,6 @@ public class AttachmentControllerTest
     {
         httpServletRequest.setRequestURI( "/site/" + site1.getKey() + "/" + attachmentRequestPath );
         httpServletRequest.setPathInfo( "/" + site1.getKey() + "/" + attachmentRequestPath );
+        webContext.setSitePath( new SitePath( site1.getKey(), "/" +attachmentRequestPath ) );
     }
 }

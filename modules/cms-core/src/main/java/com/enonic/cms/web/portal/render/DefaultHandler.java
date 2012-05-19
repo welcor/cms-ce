@@ -1,8 +1,4 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.render;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -13,91 +9,55 @@ import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
-
-import com.enonic.cms.core.SitePathResolver;
-import com.enonic.cms.core.structure.SiteService;
-import com.enonic.cms.core.time.TimeService;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalRequestService;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.RedirectInstruction;
 import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
-import com.enonic.cms.core.preview.PreviewService;
-import com.enonic.cms.core.security.AutoLoginService;
-import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
+import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
-/**
- * Apr 17, 2009
- */
-public class DefaultController
-    extends AbstractController
+@Component
+public final class DefaultHandler
+    extends WebHandlerBase
 {
-    private final static String LOCAL_PREFIX = "/_default";
-
-    private SecurityService securityService;
-
-    private SitePropertiesService sitePropertiesService;
-
     private PortalRequestService portalRequestService;
 
     private PortalRenderResponseServer portalRenderResultServer;
 
-    private AutoLoginService autoLoginService;
-
-    private TimeService timeService;
-
-    private PreviewService previewService;
-
-    private LivePortalTraceService livePortalTraceService;
-
-    private PortalSitePathResolver sitePathResolver;
-
-    private SiteService siteService;
-
-    protected ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response )
-        throws Exception
+    @Override
+    protected boolean canHandle( final String localPath )
     {
-        // Get check and eventually set original sitePath
-        SitePath originalSitePath = (SitePath) request.getAttribute( Attribute.ORIGINAL_SITEPATH );
-        if ( originalSitePath == null )
-        {
-            originalSitePath = sitePathResolver.resolveSitePath( request );
-
-            siteService.checkSiteExist( originalSitePath.getSiteKey() );
-
-            request.setAttribute( Attribute.ORIGINAL_SITEPATH, originalSitePath );
-        }
-
-        // Get and set the current sitePath
-        SitePath currentSitePath = sitePathResolver.resolveSitePath( request );
-
-        return handleRequestInternal( request, response, currentSitePath );
+        return true;
     }
 
-    protected ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response, SitePath sitePath )
+    @Override
+    protected void doHandle( final WebContext context )
         throws Exception
     {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+        final SitePath sitePath = context.getSitePath();
+
         try
         {
-            return handleDefaultRequest( request, response, sitePath );
+            handleDefaultRequest( request, response, sitePath );
         }
         catch ( Exception e )
         {
-            SitePath originalSitePath = (SitePath) request.getAttribute( Attribute.ORIGINAL_SITEPATH );
-            throw new DefaultRequestException( originalSitePath, request.getHeader( "referer" ), e );
+            SitePath originalSitePath = context.getOriginalSitePath();
+            throw new DefaultRequestException( originalSitePath, context.getReferrerHeader(), e );
         }
     }
 
@@ -106,11 +66,7 @@ public class DefaultController
     {
         HttpSession httpSession = httpRequest.getSession( true );
 
-        if ( sitePath.getLocalPath().startsWith( LOCAL_PREFIX ) )
-        {
-            sitePath = sitePath.createNewInSameSite( sitePath.getLocalPath().subtractPath( LOCAL_PREFIX ), sitePath.getParams() );
-        }
-        else if ( !sitePath.getLocalPath().startsWithSlash() )
+        if ( !sitePath.getLocalPath().startsWithSlash() )
         {
             return redirectToRoot( httpRequest, httpResponse, sitePath );
         }
@@ -220,62 +176,14 @@ public class DefaultController
     }
 
     @Autowired
-    public void setSecurityService( SecurityService service )
-    {
-        securityService = service;
-    }
-
-    @Autowired
-    public void setSitePropertiesService( SitePropertiesService service )
-    {
-        sitePropertiesService = service;
-    }
-
-    @Autowired
-    public void setPortalRequestService( PortalRequestService portalRequestService )
+    public void setPortalRequestService( final PortalRequestService portalRequestService )
     {
         this.portalRequestService = portalRequestService;
     }
 
     @Autowired
-    public void setPortalRenderResultServer( PortalRenderResponseServer portalRenderResultServer )
+    public void setPortalRenderResultServer( final PortalRenderResponseServer portalRenderResultServer )
     {
         this.portalRenderResultServer = portalRenderResultServer;
-    }
-
-    @Autowired
-    public void setAutoLoginService( AutoLoginService autoLoginService )
-    {
-        this.autoLoginService = autoLoginService;
-    }
-
-    @Autowired
-    public void setTimeService( TimeService timeService )
-    {
-        this.timeService = timeService;
-    }
-
-    @Autowired
-    public void setPreviewService( PreviewService previewService )
-    {
-        this.previewService = previewService;
-    }
-
-    @Autowired
-    public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
-    {
-        this.livePortalTraceService = livePortalTraceService;
-    }
-
-    @Autowired
-    public void setSitePathResolver( PortalSitePathResolver value )
-    {
-        this.sitePathResolver = value;
-    }
-
-    @Autowired
-    public void setSiteService( SiteService value )
-    {
-        this.siteService = value;
     }
 }

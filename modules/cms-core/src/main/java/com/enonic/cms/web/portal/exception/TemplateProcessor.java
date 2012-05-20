@@ -1,29 +1,28 @@
-package com.enonic.cms.core.template;
+package com.enonic.cms.web.portal.exception;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 @Component
-public final class FreeMarkerTemplateProcessor
-    implements TemplateProcessor
+public final class TemplateProcessor
 {
-    private final Configuration config;
+    private Configuration config;
 
-    public FreeMarkerTemplateProcessor()
+    @Autowired
+    public void setFreeMarkerConfigurer( final FreeMarkerConfigurer configurer )
     {
-        this.config = new Configuration();
-        this.config.setDefaultEncoding( "UTF-8" );
-        this.config.setClassForTemplateLoading( getClass(), "/" );
+        this.config = configurer.getConfiguration();
     }
 
-    @Override
     public String process( final String name, final Map<String, Object> model )
         throws IOException
     {
@@ -39,13 +38,5 @@ public final class FreeMarkerTemplateProcessor
         {
             throw new IOException( e );
         }
-    }
-
-    @Override
-    public String process( final Class context, final String name, final Map<String, Object> model )
-        throws IOException
-    {
-        final String fullName = getClass().getPackage().getName().replace( '.', '/' ) + "/" + name;
-        return process( fullName, model );
     }
 }

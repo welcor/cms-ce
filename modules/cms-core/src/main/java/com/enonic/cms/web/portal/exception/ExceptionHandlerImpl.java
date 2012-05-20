@@ -36,10 +36,8 @@ import com.enonic.cms.core.portal.SiteErrorDetails;
 import com.enonic.cms.core.portal.UnauthorizedErrorType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.core.template.TemplateProcessor;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SiteDao;
-import com.enonic.cms.web.portal.PortalSitePathResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.attachment.AttachmentRequestException;
@@ -50,11 +48,7 @@ import com.enonic.cms.web.portal.render.DefaultRequestException;
 public final class ExceptionHandlerImpl
     implements ExceptionHandler
 {
-    private static final String ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION = "ALREADY_PROCESSING_EXCEPTION";
-
     private static final Logger LOG = LoggerFactory.getLogger( ExceptionHandlerImpl.class );
-
-    private PortalSitePathResolver sitePathResolver;
 
     private SiteRedirectAndForwardHelper siteRedirectAndForwardHelper;
 
@@ -66,12 +60,6 @@ public final class ExceptionHandlerImpl
 
     @Autowired
     private SiteDao siteDao;
-
-    @Autowired
-    public void setSitePathResolver( PortalSitePathResolver value )
-    {
-        this.sitePathResolver = value;
-    }
 
     @Autowired
     public void setSiteRedirectAndForwardHelper( SiteRedirectAndForwardHelper value )
@@ -115,12 +103,11 @@ public final class ExceptionHandlerImpl
 
         try
         {
-            handleExceptions( request, response, causingExeption, error );
+            handleExceptions( context, causingExeption, error );
         }
         finally
         {
             response.setStatus( error.getStatusCode() );
-            request.setAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION, ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION );
         }
     }
 
@@ -238,45 +225,45 @@ public final class ExceptionHandlerImpl
         }
     }
 
-    private void handleExceptions( HttpServletRequest request, HttpServletResponse response, Throwable exception, AbstractBaseError error )
+    private void handleExceptions( PortalWebContext context, Throwable exception, AbstractBaseError error )
         throws ServletException, IOException
     {
         if ( isExceptionAnyOfThose( exception, new Class[]{InvalidKeyException.class} ) &&
             ( (InvalidKeyException) exception ).forClass( SiteKey.class ) )
         {
-            serveExceptionPage( request, response, error );
+            serveExceptionPage( context, error );
             return;
         }
         else if ( exception instanceof UnauthorizedErrorType )
         {
-            UnauthorizedErrorType unauthorizedErrorTypeException = (PathRequiresAuthenticationException) exception;
-            serveLoginPage( request, response, unauthorizedErrorTypeException.getSitePath() );
+            serveLoginPage( context );
             return;
         }
 
-        if ( request.getAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION ) == null )
+        try
         {
-            try
+            if ( serveErrorPage( context, error ) )
             {
-                if ( serveErrorPage( request, response, error ) )
-                {
-                    return;
-                }
-            }
-            catch ( Exception e )
-            {
-                LOG.error( "Failed to get error page: " + e.getMessage(), e );
-                serveExceptionPage( request, response, error );
+                return;
             }
         }
+        catch ( Exception e )
+        {
+            LOG.error( "Failed to get error page: " + e.getMessage(), e );
+            serveExceptionPage( context, error );
+            return;
+        }
 
-        serveExceptionPage( request, response, error );
+        serveExceptionPage( context, error );
     }
 
-    private boolean serveErrorPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError error )
+    private boolean serveErrorPage( PortalWebContext context, AbstractBaseError error )
         throws Exception
     {
-        SitePath sitePath = sitePathResolver.resolveSitePath( request );
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+        final SitePath sitePath = context.getSitePath();
+
         boolean siteExists = siteExists( sitePath.getSiteKey() );
         if ( siteExists && hasErrorPage( sitePath.getSiteKey().toInt() ) )
         {
@@ -310,43 +297,47 @@ public final class ExceptionHandlerImpl
         return menuItem.getPathAsString();
     }
 
-    private void serveExceptionPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+    private void serveExceptionPage( PortalWebContext context, AbstractBaseError e )
         throws IOException
     {
         if ( VerticalProperties.getVerticalProperties().doShowDetailedErrorInformation() )
         {
-            serveFullExceptionPage( request, response, e );
+            serveFullExceptionPage( context, e );
             return;
         }
 
-        serveMinimalExceptionPage( request, response, e );
+        serveMinimalExceptionPage( context, e );
     }
 
-    private void serveMinimalExceptionPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+    private void serveMinimalExceptionPage( PortalWebContext context, AbstractBaseError e )
         throws IOException
     {
-        serveExceptionPage( "errorPageMinimal.ftl", request, response, e );
+        serveExceptionPage( "errorPageMinimal.ftl", context, e );
     }
 
-    private void serveFullExceptionPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+    private void serveFullExceptionPage( PortalWebContext context, AbstractBaseError e )
         throws IOException
     {
-        serveExceptionPage( "errorPage.ftl", request, response, e );
+        serveExceptionPage( "errorPage.ftl", context, e );
     }
 
-    private void serveExceptionPage( String templateName, HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+    private void serveExceptionPage( String templateName, PortalWebContext context, AbstractBaseError e )
         throws IOException
     {
         final Map<String, Object> model = new HashMap<String, Object>();
-        model.put( "details", new SiteErrorDetails( request, e.getCause(), e.getStatusCode() ) );
+        model.put( "details", new SiteErrorDetails( context.getRequest(), e.getCause(), e.getStatusCode() ) );
 
-        final String result = this.templateProcessor.process( getClass(), templateName, model );
-        response.getWriter().println( result );
+        final String result = this.templateProcessor.process( templateName, model );
+        context.getResponse().getWriter().println( result );
     }
 
-    private void serveLoginPage( HttpServletRequest request, HttpServletResponse response, SitePath unauthPageSitePath )
+    private void serveLoginPage( PortalWebContext context )
         throws ServletException, IOException
     {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+        final SitePath unauthPageSitePath = context.getSitePath();
+
         SiteKey siteKey = unauthPageSitePath.getSiteKey();
         int menuItemKey = getLoginPage( siteKey.toInt() );
 

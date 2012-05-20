@@ -56,7 +56,7 @@ public class UserHandlerControllerTest_operation_ModifyTest
 
     private MockHttpServletResponse response = new MockHttpServletResponse();
 
-    private UserHandlerController userHandlerController;
+    private UserServicesProcessor userHandlerController;
 
     @Before
     public void setUp()
@@ -64,7 +64,7 @@ public class UserHandlerControllerTest_operation_ModifyTest
 
         fixture.initSystemData();
 
-        userHandlerController = new UserHandlerController();
+        userHandlerController = new UserServicesProcessor();
         userHandlerController.setUserDao( userDao );
         userHandlerController.setSecurityService( securityService );
         userHandlerController.setUserStoreService( userStoreService );

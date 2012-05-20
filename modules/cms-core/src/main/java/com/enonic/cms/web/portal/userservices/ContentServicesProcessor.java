@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.IOException;
@@ -11,6 +7,8 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Component;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
@@ -40,12 +38,14 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
 
-/**
- * Created by rmy - Date: Jun 24, 2009
- */
-public class CustomContentHandlerController
-    extends ContentHandlerBaseController
+@Component
+public final class ContentServicesProcessor
+    extends ContentServicesBase
 {
+    public ContentServicesProcessor()
+    {
+        super( "content" );
+    }
 
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )
@@ -347,5 +347,4 @@ public class CustomContentHandlerController
 
         return updateContentCommand;
     }
-
 }

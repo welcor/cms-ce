@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.IOException;
@@ -19,12 +15,11 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.Mail;
 import com.enonic.vertical.engine.VerticalEngineException;
 
+import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.service.UserServicesService;
 
-import com.enonic.cms.core.SiteKey;
-
-public class SendMailController
-    extends ContentHandlerBaseController
+public abstract class SendMailServicesBase
+    extends ContentServicesBase
 {
     public final static int ERR_RECIPIENT_HAS_NO_EMAIL_ADDRESS = 100;
 
@@ -37,6 +32,11 @@ public class SendMailController
     public final static int ERR_MISSING_TO_FIELD = 104;
 
     public final static int ERR_MISSING_SUBJECT_FIELD = 105;
+
+    public SendMailServicesBase( final String handlerName )
+    {
+        super( handlerName );
+    }
 
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )

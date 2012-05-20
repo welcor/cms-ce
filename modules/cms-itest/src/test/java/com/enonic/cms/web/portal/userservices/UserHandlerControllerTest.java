@@ -43,7 +43,6 @@ import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
@@ -68,9 +67,6 @@ public class UserHandlerControllerTest
     @Autowired
     private UserStoreService userStoreService;
 
-
-    private DomainFactory factory;
-
     @Autowired
     private DomainFixture fixture;
 
@@ -80,7 +76,7 @@ public class UserHandlerControllerTest
 
     private MockHttpSession session = new MockHttpSession();
 
-    private UserHandlerController userHandlerController;
+    private UserServicesProcessor userHandlerController;
 
     @Before
     public void setUp()
@@ -88,7 +84,7 @@ public class UserHandlerControllerTest
 
         fixture.initSystemData();
 
-        userHandlerController = new UserHandlerController();
+        userHandlerController = new UserServicesProcessor();
         userHandlerController.setUserDao( userDao );
         userHandlerController.setUserStoreDao( userStoreDao );
         userHandlerController.setSecurityService( securityService );
@@ -116,8 +112,8 @@ public class UserHandlerControllerTest
     {
         ExtendedMap formItems = new ExtendedMap();
 
-        formItems.put( UserHandlerController.ALLGROUPKEYS, "1,2,3,4,5" );
-        formItems.put( UserHandlerController.JOINGROUPKEY, new String[]{"2", "3", "6"} );
+        formItems.put( UserServicesProcessor.ALLGROUPKEYS, "1,2,3,4,5" );
+        formItems.put( UserServicesProcessor.JOINGROUPKEY, new String[]{"2", "3", "6"} );
 
         UpdateUserCommand updateUserCommand = new UpdateUserCommand( null, null );
 

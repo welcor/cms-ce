@@ -5,18 +5,21 @@
 package com.enonic.cms.web.portal.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.web.portal.PortalWebContext;
 
+@Component
+@Order(1)
 public final class BasicAuthInterceptor
-    extends HandlerInterceptorAdapter
+    implements RequestInterceptor
 {
     private SecurityService securityService;
 
@@ -26,9 +29,11 @@ public final class BasicAuthInterceptor
         this.securityService = securityService;
     }
 
-    public boolean preHandle( HttpServletRequest req, HttpServletResponse res, Object o )
+    @Override
+    public boolean preHandle( final PortalWebContext context )
         throws Exception
     {
+        final HttpServletRequest req = context.getRequest();
         String[] cred = getAuthCredentials( req );
         UserEntity current = this.securityService.getLoggedInPortalUserAsEntity();
 
@@ -37,7 +42,14 @@ public final class BasicAuthInterceptor
             login( cred[0], cred[1] );
         }
 
-        return super.preHandle( req, res, o );
+        return true;
+    }
+
+    @Override
+    public void postHandle( final PortalWebContext context )
+        throws Exception
+    {
+        // Do nothing
     }
 
     private String[] getAuthCredentials( HttpServletRequest req )

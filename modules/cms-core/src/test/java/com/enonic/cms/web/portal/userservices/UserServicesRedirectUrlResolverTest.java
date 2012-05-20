@@ -13,7 +13,6 @@ import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.UrlPathHelperManager;
 
 import com.enonic.cms.core.portal.httpservices.IllegalRedirectException;
-import com.enonic.cms.web.portal.userservices.UserServicesRedirectUrlResolver;
 
 public class UserServicesRedirectUrlResolverTest
     extends TestCase

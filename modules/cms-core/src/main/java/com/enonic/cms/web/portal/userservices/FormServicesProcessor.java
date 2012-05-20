@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.rmi.RemoteException;
@@ -13,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
+import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,10 +37,10 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 
-public class FormHandlerController
-    extends ContentHandlerBaseController
+@Component
+public final class FormServicesProcessor
+    extends ContentServicesBase
 {
-
     private final static int ERR_MISSING_REQ = 1;
 
     private final static String ERR_MSG_MISSING_REQ = "Mandatory field is missing.";
@@ -68,6 +65,11 @@ public class FormHandlerController
     }
 
     private final static int contentTypeKey = 50;
+
+    public FormServicesProcessor()
+    {
+        super( "form" );
+    }
 
     @Override
     protected void buildContentTypeXML( UserServicesService userServices, Element contentdataElem, ExtendedMap formItems,
@@ -680,5 +682,4 @@ public class FormHandlerController
         }
         return body;
     }
-
 }

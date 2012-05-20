@@ -62,7 +62,7 @@ public class CustomContentHandlerController_operation_ModifyTest
 
     private SiteRedirectHelper siteRedirectHelper;
 
-    private CustomContentHandlerController customContentHandlerController;
+    private ContentServicesProcessor customContentHandlerController;
 
     private MockHttpServletRequest request = new MockHttpServletRequest();
 
@@ -83,7 +83,7 @@ public class CustomContentHandlerController_operation_ModifyTest
 
         factory = fixture.getFactory();
 
-        customContentHandlerController = new CustomContentHandlerController();
+        customContentHandlerController = new ContentServicesProcessor();
         customContentHandlerController.setContentService( contenService );
         customContentHandlerController.setSecurityService( securityService );
         customContentHandlerController.setCategoryDao( categoryDao );

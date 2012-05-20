@@ -8,13 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.io.ByteStreams;
 
 import com.enonic.cms.framework.blob.BlobRecord;
-import com.enonic.cms.framework.util.HttpCacheControlSettings;
 import com.enonic.cms.framework.util.HttpServletUtil;
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
@@ -40,10 +40,11 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
-import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
+@Order(0)
 public final class AttachmentHandler
     extends WebHandlerBase
 {
@@ -66,7 +67,7 @@ public final class AttachmentHandler
     }
 
     @Override
-    protected void doHandle( final WebContext context )
+    protected void doHandle( final PortalWebContext context )
         throws Exception
     {
         final HttpServletRequest request = context.getRequest();
@@ -212,34 +213,9 @@ public final class AttachmentHandler
                 Integer siteCacheSettingsMaxAge =
                     sitePropertiesService.getPropertyAsInteger( SitePropertyNames.ATTACHMENT_CACHE_HEADERS_MAXAGE, sitePath.getSiteKey() );
                 boolean publicAccess = requester.isAnonymous();
-                enableHttpHeadersCache( response, sitePath, now, siteCacheSettingsMaxAge, publicAccess );
+                enableHttpCacheHeaders( response, sitePath, now, siteCacheSettingsMaxAge, publicAccess );
             }
         }
-    }
-
-    private void enableHttpHeadersCache( HttpServletResponse response, SitePath sitePath, DateTime now, Integer siteCacheSettingsMaxAge,
-                                         boolean publicAccess )
-    {
-        int maxAge;
-
-        boolean cacheForever = hasTimestampParameter( sitePath );
-
-        if ( cacheForever )
-        {
-            maxAge = HttpCacheControlSettings.CACHE_FOREVER_SECONDS;
-        }
-        else
-        {
-            maxAge = siteCacheSettingsMaxAge;
-        }
-
-        final DateTime expirationTime = now.plusSeconds( maxAge );
-
-        final HttpCacheControlSettings cacheControlSettings = new HttpCacheControlSettings();
-        cacheControlSettings.maxAgeSecondsToLive = (long) maxAge;
-        cacheControlSettings.publicAccess = publicAccess;
-        HttpServletUtil.setExpiresHeader( response, expirationTime.toDate() );
-        HttpServletUtil.setCacheControl( response, cacheControlSettings );
     }
 
     private void putBinaryOnResponse( boolean download, HttpServletResponse response, BinaryDataEntity binaryData, final BlobRecord blob,

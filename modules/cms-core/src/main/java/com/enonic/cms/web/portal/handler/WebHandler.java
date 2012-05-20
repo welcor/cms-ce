@@ -1,11 +1,11 @@
 package com.enonic.cms.web.portal.handler;
 
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.web.portal.PortalWebContext;
 
 public interface WebHandler
 {
-    public boolean canHandle( SitePath sitePath );
+    public boolean canHandle( PortalWebContext context );
 
-    public void handle( WebContext context )
+    public void handle( PortalWebContext context )
         throws Exception;
 }

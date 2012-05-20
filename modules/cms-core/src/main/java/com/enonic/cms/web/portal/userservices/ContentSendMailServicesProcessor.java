@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.IOException;
@@ -10,6 +6,8 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Component;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
@@ -27,17 +25,16 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
 
-/**
- * Extension of the standard sendmail servlet. <p/> <p> In addition to sending an email (using the functionality in {@link
- * SendMailController}), content is created in the category specified in the form. The content is created as specified in the appropriate
- * modulebuilder XML found in the database. So this servlet will naturally <i>only</i> work for modules created with the modulebuilder. </p>
- * <p> If this functionality is needed for other modules, the buildContentXML method can be overloaded in a child class. </p>
- */
-public class ContentSendMailController
-    extends SendMailController
+@Component
+public final class ContentSendMailServicesProcessor
+    extends SendMailServicesBase
 {
-
     private final static int ERR_MISSING_CATEGORY_KEY = 150;
+
+    public ContentSendMailServicesProcessor()
+    {
+        super( "content_sendmail" );
+    }
 
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )
@@ -119,6 +116,4 @@ public class ContentSendMailController
         // call parent method to ensure inherited functionality
         super.handlerCustom( request, response, session, formItems, userServices, siteKey, operation );
     }
-
 }
-

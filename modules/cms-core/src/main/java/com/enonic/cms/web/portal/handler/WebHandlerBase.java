@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.enonic.cms.framework.util.HttpCacheControlSettings;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
-import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -22,6 +21,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.web.portal.PortalWebContext;
 
 public abstract class WebHandlerBase
     implements WebHandler
@@ -49,15 +49,16 @@ public abstract class WebHandlerBase
     protected SiteService siteService;
 
     @Override
-    public final boolean canHandle( final SitePath sitePath )
+    public final boolean canHandle( final PortalWebContext context )
     {
-        return canHandle( sitePath.getLocalPath().toString() );
+        final String path = context.getSitePath().getLocalPath().toString();
+        return canHandle( path );
     }
 
     protected abstract boolean canHandle( final String localPath );
 
     @Override
-    public final void handle( final WebContext context )
+    public final void handle( final PortalWebContext context )
         throws Exception
     {
         final SitePath originalSitePath = context.getOriginalSitePath();
@@ -70,7 +71,7 @@ public abstract class WebHandlerBase
         doHandle( context );
     }
 
-    protected abstract void doHandle( final WebContext context )
+    protected abstract void doHandle( final PortalWebContext context )
         throws Exception;
 
     @Autowired

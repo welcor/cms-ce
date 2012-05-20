@@ -1,12 +1,10 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.exception;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.enonic.vertical.VerticalProperties;
 
@@ -33,29 +29,30 @@ import com.enonic.cms.core.portal.ClientError;
 import com.enonic.cms.core.portal.ContentNameMismatchClientError;
 import com.enonic.cms.core.portal.ContentNameMismatchException;
 import com.enonic.cms.core.portal.ForbiddenErrorType;
-import com.enonic.cms.core.portal.LoginPageNotFoundException;
 import com.enonic.cms.core.portal.PathRequiresAuthenticationException;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
 import com.enonic.cms.core.portal.ServerError;
 import com.enonic.cms.core.portal.SiteErrorDetails;
 import com.enonic.cms.core.portal.UnauthorizedErrorType;
-import com.enonic.cms.core.portal.mvc.view.BasicAuthView;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.template.TemplateProcessor;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.cms.web.portal.PortalSitePathResolver;
+import com.enonic.cms.web.portal.PortalWebContext;
+import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.attachment.AttachmentRequestException;
 import com.enonic.cms.web.portal.image.ImageRequestException;
 import com.enonic.cms.web.portal.render.DefaultRequestException;
 
 @Component
-public class PortalExceptionResolver
-    implements HandlerExceptionResolver
+public final class ExceptionHandlerImpl
+    implements ExceptionHandler
 {
-
     private static final String ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION = "ALREADY_PROCESSING_EXCEPTION";
 
-    private static final Logger LOG = LoggerFactory.getLogger( PortalExceptionResolver.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ExceptionHandlerImpl.class );
 
     private PortalSitePathResolver sitePathResolver;
 
@@ -64,6 +61,8 @@ public class PortalExceptionResolver
     private SiteURLResolver siteURLResolver;
 
     private MenuItemDao menuItemDao;
+
+    private TemplateProcessor templateProcessor;
 
     @Autowired
     private SiteDao siteDao;
@@ -92,9 +91,12 @@ public class PortalExceptionResolver
         this.menuItemDao = menuItemDao;
     }
 
-    public ModelAndView resolveException( HttpServletRequest request, HttpServletResponse response, Object handler,
-                                          Exception outerException )
+    @Override
+    public void handle( final PortalWebContext context, final Exception outerException )
+        throws ServletException, IOException
     {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
 
         final Throwable causingExeption;
         if ( isExceptionAnyOfThose( outerException, new Class[]{DefaultRequestException.class, AttachmentRequestException.class,
@@ -109,16 +111,11 @@ public class PortalExceptionResolver
         }
 
         logException( outerException, causingExeption, request );
-
         AbstractBaseError error = getError( causingExeption );
 
         try
         {
-            return handleExceptions( request, causingExeption, error );
-        }
-        catch ( LoginPageNotFoundException e )
-        {
-            return new ModelAndView( new BasicAuthView() );
+            handleExceptions( request, response, causingExeption, error );
         }
         finally
         {
@@ -241,43 +238,44 @@ public class PortalExceptionResolver
         }
     }
 
-    private ModelAndView handleExceptions( HttpServletRequest request, Throwable exception, AbstractBaseError error )
+    private void handleExceptions( HttpServletRequest request, HttpServletResponse response, Throwable exception, AbstractBaseError error )
+        throws ServletException, IOException
     {
-
         if ( isExceptionAnyOfThose( exception, new Class[]{InvalidKeyException.class} ) &&
             ( (InvalidKeyException) exception ).forClass( SiteKey.class ) )
         {
-            return getExceptionPage( request, error );
+            serveExceptionPage( request, response, error );
+            return;
         }
         else if ( exception instanceof UnauthorizedErrorType )
         {
             UnauthorizedErrorType unauthorizedErrorTypeException = (PathRequiresAuthenticationException) exception;
-            return getLoginPage( request, unauthorizedErrorTypeException.getSitePath() );
+            serveLoginPage( request, response, unauthorizedErrorTypeException.getSitePath() );
+            return;
         }
 
         if ( request.getAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION ) == null )
         {
             try
             {
-                ModelAndView errorPage = getErrorPage( request, error );
-                if ( errorPage != null )
+                if ( serveErrorPage( request, response, error ) )
                 {
-                    return errorPage;
+                    return;
                 }
             }
             catch ( Exception e )
             {
                 LOG.error( "Failed to get error page: " + e.getMessage(), e );
-                return getExceptionPage( request, error );
+                serveExceptionPage( request, response, error );
             }
         }
 
-        return getExceptionPage( request, error );
+        serveExceptionPage( request, response, error );
     }
 
-    private ModelAndView getErrorPage( HttpServletRequest request, AbstractBaseError error )
+    private boolean serveErrorPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError error )
+        throws Exception
     {
-
         SitePath sitePath = sitePathResolver.resolveSitePath( request );
         boolean siteExists = siteExists( sitePath.getSiteKey() );
         if ( siteExists && hasErrorPage( sitePath.getSiteKey().toInt() ) )
@@ -295,9 +293,11 @@ public class PortalExceptionResolver
                 errorPagePath.addParam( "content_key", contentNameMismatchClientError.getContentKey().toString() );
             }
 
-            return siteRedirectAndForwardHelper.getForwardModelAndView( request, errorPagePath );
+            siteRedirectAndForwardHelper.forward( request, response, errorPagePath );
+            return true;
         }
-        return null;
+
+        return false;
     }
 
     private String resolveMenuItemPath( int menuItemKey )
@@ -310,35 +310,43 @@ public class PortalExceptionResolver
         return menuItem.getPathAsString();
     }
 
-    private ModelAndView getExceptionPage( HttpServletRequest request, AbstractBaseError e )
+    private void serveExceptionPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+        throws IOException
     {
         if ( VerticalProperties.getVerticalProperties().doShowDetailedErrorInformation() )
         {
-            return createFullExceptionPage( request, e );
+            serveFullExceptionPage( request, response, e );
+            return;
         }
 
-        return createMinimalExceptionPage( request, e );
+        serveMinimalExceptionPage( request, response, e );
     }
 
-    private ModelAndView createMinimalExceptionPage( HttpServletRequest request, AbstractBaseError e )
+    private void serveMinimalExceptionPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+        throws IOException
     {
-        Map<String, Object> model = new HashMap<String, Object>();
-        SiteErrorDetails siteErrorDetails = new SiteErrorDetails( request, e.getCause(), e.getStatusCode() );
-        model.put( "details", siteErrorDetails );
-
-        return new ModelAndView( "errorPageMinimal", model );
+        serveExceptionPage( "errorPageMinimal.ftl", request, response, e );
     }
 
-    private ModelAndView createFullExceptionPage( HttpServletRequest request, AbstractBaseError e )
+    private void serveFullExceptionPage( HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+        throws IOException
     {
-        Map<String, Object> model = new HashMap<String, Object>();
+        serveExceptionPage( "errorPage.ftl", request, response, e );
+    }
+
+    private void serveExceptionPage( String templateName, HttpServletRequest request, HttpServletResponse response, AbstractBaseError e )
+        throws IOException
+    {
+        final Map<String, Object> model = new HashMap<String, Object>();
         model.put( "details", new SiteErrorDetails( request, e.getCause(), e.getStatusCode() ) );
-        return new ModelAndView( "errorPage", model );
+
+        final String result = this.templateProcessor.process( getClass(), templateName, model );
+        response.getWriter().println( result );
     }
 
-    private ModelAndView getLoginPage( HttpServletRequest request, SitePath unauthPageSitePath )
+    private void serveLoginPage( HttpServletRequest request, HttpServletResponse response, SitePath unauthPageSitePath )
+        throws ServletException, IOException
     {
-
         SiteKey siteKey = unauthPageSitePath.getSiteKey();
         int menuItemKey = getLoginPage( siteKey.toInt() );
 
@@ -355,11 +363,11 @@ public class PortalExceptionResolver
             String referer = siteURLResolver.createUrl( request, unauthPageSitePath, true );
             loginPageSitePath.addParam( "referer", referer );
 
-            return siteRedirectAndForwardHelper.getForwardModelAndView( request, loginPageSitePath );
+            siteRedirectAndForwardHelper.forward( request, response, loginPageSitePath );
         }
         else
         {
-            throw new LoginPageNotFoundException( siteKey );
+            response.setHeader( "WWW-Authenticate", "Basic" );
         }
     }
 
@@ -411,5 +419,11 @@ public class PortalExceptionResolver
     {
         final SiteEntity site = this.siteDao.findByKey( siteKey.toInt() );
         return site != null;
+    }
+
+    @Autowired
+    public void setTemplateProcessor( final TemplateProcessor templateProcessor )
+    {
+        this.templateProcessor = templateProcessor;
     }
 }

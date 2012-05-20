@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,11 +26,12 @@ import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
-import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
-public final class DefaultHandler
+@Order(100)
+public final class RenderHandler
     extends WebHandlerBase
 {
     private PortalRequestService portalRequestService;
@@ -43,7 +45,7 @@ public final class DefaultHandler
     }
 
     @Override
-    protected void doHandle( final WebContext context )
+    protected void doHandle( final PortalWebContext context )
         throws Exception
     {
         final HttpServletRequest request = context.getRequest();

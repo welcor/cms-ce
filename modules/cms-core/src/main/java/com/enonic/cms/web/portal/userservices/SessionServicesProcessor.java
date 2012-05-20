@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.IOException;
@@ -11,17 +7,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Component;
+
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.service.UserServicesService;
-
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.service.UserServicesService;
 
-public class VerticalSessionHandlerController
-    extends AbstractUserServicesHandlerController
+@Component
+public final class SessionServicesProcessor
+    extends ServicesProcessorBase
 {
+    public SessionServicesProcessor()
+    {
+        super( "session" );
+    }
+
     protected void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey, String operation )
         throws VerticalUserServicesException, VerticalEngineException, IOException, ClassNotFoundException, IllegalAccessException,
@@ -70,5 +73,4 @@ public class VerticalSessionHandlerController
 
         redirectToPage( request, response, formItems );
     }
-
 }

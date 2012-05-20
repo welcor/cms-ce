@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.IOException;
@@ -22,6 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.enonic.esl.containers.ExtendedMap;
@@ -90,8 +87,9 @@ import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
-public class UserHandlerController
-    extends AbstractUserServicesHandlerController
+@Component
+public final class UserServicesProcessor
+    extends ServicesProcessorBase
 {
     public static final int ERR_EMAIL_ALREADY_EXISTS = 100;
 
@@ -152,9 +150,9 @@ public class UserHandlerController
 
     private static final String FORMITEM_BIRTHDAY = UserFieldType.BIRTHDAY.getName();
 
-    public UserHandlerController()
+    public UserServicesProcessor()
     {
-        super();
+        super( "user" );
     }
 
     @Autowired

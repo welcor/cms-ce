@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.util.Map;
@@ -11,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -24,16 +21,16 @@ import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.UserServicesService;
 
-public class PollHandlerController
-    extends ContentHandlerBaseController
+@Component
+public final class PollServicesProcessor
+    extends ContentServicesBase
 {
-
     // error codes
     public final static int ERR_UNKNOWN_POLL_SELECTION = 100;
 
-    public PollHandlerController()
+    public PollServicesProcessor()
     {
-        super();
+        super( "poll" );
     }
 
     @Override

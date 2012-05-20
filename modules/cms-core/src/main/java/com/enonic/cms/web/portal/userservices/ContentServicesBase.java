@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.ByteArrayOutputStream;
@@ -61,16 +57,17 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
 
-/**
- * Base class for userservices servlets related to modifying content from "public" sites.  This class will take care of custom content. All
- * the other content types should extend this class to implement special logic for generating XML and changing the database.
- */
-public class ContentHandlerBaseController
-    extends AbstractUserServicesHandlerController
+public abstract class ContentServicesBase
+    extends ServicesProcessorBase
 {
     protected final static int ERR_MISSING_CATEGORY_KEY = 100;
 
     protected final static int SECONDS_IN_WEEK = 60 * 60 * 24 * 7;
+
+    public ContentServicesBase( final String handlerName )
+    {
+        super( handlerName );
+    }
 
     protected void buildContentTypeXML( UserServicesService userServices, Element contentdataElem, ExtendedMap formItems,
                                         boolean skipEmptyElements )

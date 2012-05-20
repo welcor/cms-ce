@@ -50,9 +50,9 @@ import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.attachment.AttachmentHandler;
 import com.enonic.cms.web.portal.attachment.AttachmentRequestException;
-import com.enonic.cms.web.portal.handler.WebContext;
 
 import static org.junit.Assert.*;
 
@@ -86,7 +86,7 @@ public class AttachmentControllerTest
 
     private SiteEntity site1;
 
-    private WebContext webContext;
+    private PortalWebContext webContext;
 
     @Before
     public void before()
@@ -130,7 +130,7 @@ public class AttachmentControllerTest
 
         fixture.flushAndClearHibernateSesssion();
 
-        webContext = new WebContext();
+        webContext = new PortalWebContext();
         webContext.setRequest( this.httpServletRequest );
         webContext.setResponse( this.httpServletResponse );
     }

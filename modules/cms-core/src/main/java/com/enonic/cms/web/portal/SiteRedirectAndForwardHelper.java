@@ -4,9 +4,11 @@
  */
 package com.enonic.cms.web.portal;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,7 +65,7 @@ public class SiteRedirectAndForwardHelper
     }
 
     public void forward( HttpServletRequest request, HttpServletResponse response, SitePath sitePath )
-        throws Exception
+        throws ServletException, IOException
     {
         String path = siteURLResolver.createPathWithinContextPath( request, sitePath, false );
         if ( replaceSpacesWithPlus )

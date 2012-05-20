@@ -47,7 +47,6 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.CategoryDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 
 import static junit.framework.Assert.assertTrue;
 import static junitx.framework.Assert.assertFalse;
@@ -64,9 +63,6 @@ public class CustomContentHandlerController_operation_CreateTest
     private CategoryDao categoryDao;
 
     @Autowired
-    private GroupEntityDao groupEntityDao;
-
-    @Autowired
     protected HibernateTemplate hibernateTemplate;
 
     @Autowired
@@ -74,7 +70,7 @@ public class CustomContentHandlerController_operation_CreateTest
 
     private SiteRedirectHelper siteRedirectHelper;
 
-    private CustomContentHandlerController customContentHandlerController;
+    private ContentServicesProcessor customContentHandlerController;
 
     private UserServicesRedirectUrlResolver userServicesRedirectUrlResolver;
 
@@ -98,7 +94,7 @@ public class CustomContentHandlerController_operation_CreateTest
 
         factory = fixture.getFactory();
 
-        customContentHandlerController = new CustomContentHandlerController();
+        customContentHandlerController = new ContentServicesProcessor();
         customContentHandlerController.setContentService( contentService );
         customContentHandlerController.setSecurityService( securityService );
         customContentHandlerController.setCategoryDao( categoryDao );

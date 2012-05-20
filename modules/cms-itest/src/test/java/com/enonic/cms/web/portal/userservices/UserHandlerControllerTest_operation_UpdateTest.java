@@ -65,14 +65,14 @@ public class UserHandlerControllerTest_operation_UpdateTest
 
     private MockHttpSession session = new MockHttpSession();
 
-    private UserHandlerController userHandlerController;
+    private UserServicesProcessor userHandlerController;
 
     @Before
     public void setUp()
     {
         fixture.initSystemData();
 
-        userHandlerController = new UserHandlerController();
+        userHandlerController = new UserServicesProcessor();
         userHandlerController.setUserDao( userDao );
         userHandlerController.setSecurityService( securityService );
         userHandlerController.setUserStoreService( userStoreService );

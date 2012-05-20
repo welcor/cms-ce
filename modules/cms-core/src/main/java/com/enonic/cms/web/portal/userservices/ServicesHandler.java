@@ -1,21 +1,33 @@
 package com.enonic.cms.web.portal.userservices;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.elasticsearch.common.collect.Maps;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
+import com.enonic.cms.core.portal.InvalidParameterValueException;
 import com.enonic.cms.core.portal.InvalidTicketException;
 import com.enonic.cms.core.portal.ticket.TicketValidator;
-import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
-public final class UserServicesHandler
+@Order(0)
+public final class ServicesHandler
     extends WebHandlerBase
 {
-    private CustomContentHandlerController customContentHandler;
+    private final Map<String, ServicesProcessor> processorMap;
+
+    public ServicesHandler()
+    {
+        this.processorMap = Maps.newHashMap();
+    }
 
     @Override
     protected boolean canHandle( final String localPath )
@@ -24,16 +36,13 @@ public final class UserServicesHandler
     }
 
     @Override
-    protected void doHandle( final WebContext context )
+    protected void doHandle( final PortalWebContext context )
         throws Exception
     {
-        final SitePath sitePath = context.getSitePath();
         final HttpServletRequest request = context.getRequest();
+        final SitePath sitePath = context.getSitePath();
 
-        final String handler = UserServicesParameterResolver.resolveHandlerFromSitePath( sitePath );
-        final String operation = UserServicesParameterResolver.resolveOperationFromSitePath( sitePath );
-
-        if ( ticketIsRequired( handler, operation ) && !ticketIsValid( request ) )
+        if ( ticketIsRequired( sitePath ) && !ticketIsValid( request ) )
         {
             throw new InvalidTicketException();
         }
@@ -43,10 +52,30 @@ public final class UserServicesHandler
             autoLoginService.autologinWithRemoteUser( request );
         }
 
+        final String handlerName = UserServicesParameterResolver.resolveHandlerFromSitePath( sitePath );
+        final ServicesProcessor processor = this.processorMap.get( handlerName );
+
+        if (processor == null) {
+            throw new InvalidParameterValueException( "handler", handlerName );
+        }
+
+        processor.handle( context );
     }
 
-    private boolean ticketIsRequired( final String handler, final String operation )
+    @Autowired
+    public void setProcessors( final ServicesProcessor... processors )
     {
+        for ( final ServicesProcessor processor : processors )
+        {
+            this.processorMap.put( processor.getHandlerName(), processor );
+        }
+    }
+
+    private boolean ticketIsRequired( SitePath sitePath )
+    {
+        String handler = UserServicesParameterResolver.resolveHandlerFromSitePath( sitePath );
+        String operation = UserServicesParameterResolver.resolveOperationFromSitePath( sitePath );
+
         if ( "user".equals( handler ) )
         {
             if ( "login".equals( operation ) || "logout".equals( operation ) )

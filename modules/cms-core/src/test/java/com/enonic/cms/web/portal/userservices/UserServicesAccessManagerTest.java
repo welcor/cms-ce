@@ -9,8 +9,6 @@ import junit.framework.TestCase;
 import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.structure.SiteService;
-import com.enonic.cms.web.portal.userservices.UserServicesAccessManager;
-import com.enonic.cms.web.portal.userservices.UserServicesAccessManagerImpl;
 
 import static org.easymock.EasyMock.isA;
 import static org.easymock.classextension.EasyMock.createMock;

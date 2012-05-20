@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.IOException;
@@ -13,27 +9,23 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.resolver.ForcedResolverValueLifetimeSettings;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.service.UserServicesService;
-
-import com.enonic.cms.core.resolver.ForcedResolverValueLifetimeSettings;
-
 import com.enonic.cms.core.structure.SiteEntity;
 
-/**
- * Created by rmy - Date: Apr 3, 2009
- */
-public class PortalHandlerController
-    extends AbstractUserServicesHandlerController
+@Component
+public final class PortalServicesProcessor
+    extends ServicesProcessorBase
 {
-
     private DeviceClassResolverService deviceClassResolverService;
 
     private LocaleResolverService localeResolverService;
@@ -43,6 +35,11 @@ public class PortalHandlerController
     private final static String FORM_ITEM_LOCALE = "locale";
 
     private static final String FORCE_VALUE_SETTING_KEY = "lifetime";
+
+    public PortalServicesProcessor()
+    {
+        super( "portal" );
+    }
 
     @Autowired
     public void setDeviceClassificationService( DeviceClassResolverService deviceClassResolverService )
@@ -62,11 +59,6 @@ public class PortalHandlerController
         resetdeviceclass,
         forcelocale,
         resetlocale
-    }
-
-    public PortalHandlerController()
-    {
-        super();
     }
 
     @Override

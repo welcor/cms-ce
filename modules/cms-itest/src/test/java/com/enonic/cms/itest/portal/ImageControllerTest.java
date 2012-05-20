@@ -33,7 +33,7 @@ import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
-import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.image.ImageHandler;
 import com.enonic.cms.web.portal.image.ImageRequestException;
 import com.enonic.cms.core.preview.ContentPreviewContext;
@@ -78,7 +78,7 @@ public class ImageControllerTest
 
     private SiteEntity site1;
 
-    private WebContext webContext;
+    private PortalWebContext webContext;
 
     @Before
     public void before()
@@ -117,7 +117,7 @@ public class ImageControllerTest
 
         fixture.flushAndClearHibernateSesssion();
 
-        webContext = new WebContext();
+        webContext = new PortalWebContext();
         webContext.setRequest( this.httpServletRequest );
         webContext.setResponse( this.httpServletResponse );
     }

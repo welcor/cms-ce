@@ -9,13 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.captcha.CaptchaRepository;
-import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
+@Order(0)
 public final class CaptchaHandler
     extends WebHandlerBase
 {
@@ -28,7 +30,7 @@ public final class CaptchaHandler
     }
 
     @Override
-    protected void doHandle( final WebContext context )
+    protected void doHandle( final PortalWebContext context )
         throws Exception
     {
         final HttpServletRequest request = context.getRequest();

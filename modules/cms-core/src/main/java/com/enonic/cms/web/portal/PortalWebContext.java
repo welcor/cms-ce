@@ -1,4 +1,4 @@
-package com.enonic.cms.web.portal.handler;
+package com.enonic.cms.web.portal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SitePath;
 
-public final class WebContext
+public final class PortalWebContext
 {
     private HttpServletRequest request;
 

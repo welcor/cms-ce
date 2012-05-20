@@ -1,7 +1,3 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.userservices;
 
 import java.io.IOException;
@@ -29,7 +25,6 @@ import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
@@ -45,15 +40,12 @@ import com.enonic.cms.framework.util.UrlPathDecoder;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.SitePathResolver;
 import com.enonic.cms.core.captcha.CaptchaService;
 import com.enonic.cms.core.content.ContentParserService;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.access.ContentAccessException;
 import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.mail.SendMailService;
-import com.enonic.cms.web.portal.PortalSitePathResolver;
-import com.enonic.cms.web.portal.SiteRedirectHelper;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
@@ -65,10 +57,15 @@ import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.cms.web.portal.PortalSitePathResolver;
+import com.enonic.cms.web.portal.PortalWebContext;
+import com.enonic.cms.web.portal.SiteRedirectHelper;
 
-public abstract class AbstractUserServicesHandlerController
-    implements Controller
+public abstract class ServicesProcessorBase
+    implements ServicesProcessor
 {
+    private final String handlerName;
+
     // fatal errors
 
     public final static int ERR_OPERATION_BACKEND = 504;
@@ -125,10 +122,25 @@ public abstract class AbstractUserServicesHandlerController
 
     private UserServicesService userServicesService;
 
-    public AbstractUserServicesHandlerController()
+    public ServicesProcessorBase( final String handlerName )
     {
+        this.handlerName = handlerName;
         fileUpload = new FileUpload( new DiskFileItemFactory() );
         fileUpload.setHeaderEncoding( "UTF-8" );
+    }
+
+    public final String getHandlerName()
+    {
+        return this.handlerName;
+    }
+
+    public final void handle( final PortalWebContext context )
+        throws Exception
+    {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+
+        handleRequest( request, response );
     }
 
     @Autowired
@@ -465,7 +477,7 @@ public abstract class AbstractUserServicesHandlerController
 
         try
         {
-            if ( !( this instanceof FormHandlerController ) )
+            if ( !( this instanceof FormServicesProcessor ) )
             {
                 // Note: The FormHandlerController is doing its own validation.
                 Boolean captchaOk = captchaService.validateCaptcha( formItems, request, handler, operation );
@@ -655,4 +667,6 @@ public abstract class AbstractUserServicesHandlerController
         }
         return sitePath;
     }
+
+
 }

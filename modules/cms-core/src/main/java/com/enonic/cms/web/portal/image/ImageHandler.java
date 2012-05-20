@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.HttpServletUtil;
@@ -34,10 +35,11 @@ import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.web.portal.handler.WebContext;
+import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
+@Order(0)
 public final class ImageHandler
     extends WebHandlerBase
 {
@@ -52,7 +54,7 @@ public final class ImageHandler
     }
 
     @Override
-    protected void doHandle( final WebContext context )
+    protected void doHandle( final PortalWebContext context )
         throws Exception
     {
         final HttpServletRequest request = context.getRequest();

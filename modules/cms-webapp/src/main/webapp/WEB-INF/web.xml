@@ -40,7 +40,7 @@
 
   <servlet>
     <servlet-name>site</servlet-name>
-    <servlet-class>com.enonic.cms.server.service.servlet.CmsDispatcherServlet</servlet-class>
+    <servlet-class>com.enonic.cms.web.portal.PortalServlet</servlet-class>
     <load-on-startup>2</load-on-startup>
   </servlet>
 

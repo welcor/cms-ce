@@ -150,7 +150,7 @@
         class="com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver"/>
 
   <bean id="userServicesRedirectHelper"
-        class="com.enonic.cms.web.portal.userservices.UserServicesRedirectUrlResolver"/>
+        class="com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver"/>
 
   <bean id="reindexContentToolService"
         class="com.enonic.cms.core.tools.ReindexContentToolServiceImpl"/>

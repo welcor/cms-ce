@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.web.portal.userservices.ContentServicesProcessor;
-import com.enonic.cms.web.portal.userservices.UserServicesRedirectUrlResolver;
+import com.enonic.cms.web.portal.services.ContentServicesProcessor;
+import com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 

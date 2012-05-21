@@ -6,7 +6,6 @@
   <display-name>Enonic CMS</display-name>
   <description>Enonic Content Management System</description>
 
-  <!-- Disable JSF enabling in JBoss 5.x. -->
   <context-param>
     <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
     <param-value>true</param-value>
@@ -28,14 +27,8 @@
 
   <servlet>
     <servlet-name>main</servlet-name>
-    <servlet-class>com.enonic.cms.server.service.servlet.CmsDispatcherServlet</servlet-class>
+    <servlet-class>com.enonic.cms.web.CmsDispatcherServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet>
-    <servlet-name>admin</servlet-name>
-    <servlet-class>com.enonic.cms.server.service.servlet.CmsDispatcherServlet</servlet-class>
-    <load-on-startup>2</load-on-startup>
   </servlet>
 
   <servlet>
@@ -59,11 +52,6 @@
   <servlet-mapping>
     <servlet-name>main</servlet-name>
     <url-pattern>/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>admin</servlet-name>
-    <url-pattern>/admin/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

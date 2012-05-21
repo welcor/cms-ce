@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.ServletContextAware;
 
 /**
@@ -181,6 +182,7 @@ public final class MimeTypeResolverImpl
         return systemProps;
     }
 
+    @Value("${cms.home}/config/mimetypes.properties")
     public void setMimetypesLocation( String mimetypesLocation )
     {
         this.mimetypesLocation = mimetypesLocation;

@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.base.Preconditions;
 
@@ -508,16 +509,19 @@ public class LivePortalTraceServiceImpl
         this.timeService = timeService;
     }
 
+    @Value("${cms.livePortalTrace.enabled}")
     public void setEnabled( String enabled )
     {
         this.enabled = Boolean.valueOf( enabled );
     }
 
+    @Value("${cms.livePortalTrace.history.size}")
     public void setHistorySize( int value )
     {
         this.historySize = value;
     }
 
+    @Value("${cms.livePortalTrace.longest.size}")
     public void setLongestSize( int value )
     {
         this.longestSize = value;

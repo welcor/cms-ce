@@ -255,6 +255,7 @@ public final class InternalClientImpl
         this.contentTypeDao = contentTypeDao;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
     {
         this.sitePropertiesService = sitePropertiesService;
@@ -2359,61 +2360,73 @@ public final class InternalClientImpl
         return list;
     }
 
+    @Autowired
     public void setResourceService( ResourceService value )
     {
         this.resourceService = value;
     }
 
+    @Autowired
     public void setPreferenceService( PreferenceService value )
     {
         this.preferenceService = value;
     }
 
+    @Autowired
     public void setDataSourceService( DataSourceService value )
     {
         this.dataSourceService = value;
     }
 
+    @Autowired
     public void setInternalClientRenderService( InternalClientRenderService value )
     {
         this.internalClientRenderService = value;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService value )
     {
         this.securityService = value;
     }
 
+    @Autowired
     public void setContentService( ContentService contentService )
     {
         this.contentService = contentService;
     }
 
+    @Autowired
     public void setInternalClientContentService( InternalClientContentService internalClientContentService )
     {
         this.internalClientContentService = internalClientContentService;
     }
 
+    @Autowired
     public void setPreviewService( PreviewService previewService )
     {
         this.previewService = previewService;
     }
 
+    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setTimeService( TimeService timeService )
     {
         this.timeService = timeService;
     }
 
+    @Autowired
     public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
     {
         this.livePortalTraceService = livePortalTraceService;
     }
 
+    @Autowired
     public void setUserDao( UserDao userDao )
     {
         this.userDao = userDao;

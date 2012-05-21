@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ public class KeyServiceImpl
 {
     private KeyHandler keyHandler;
 
+    @Autowired
     public void setKeyHandler( KeyHandler keyHandler )
     {
         this.keyHandler = keyHandler;

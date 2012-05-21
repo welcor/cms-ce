@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -49,16 +50,19 @@ public final class UpgradeServiceImpl
 
     private TransactionTemplate transactionTemplate;
 
+    @Autowired
     public void setDialect( Dialect dialect )
     {
         this.dialect = dialect;
     }
 
+    @Autowired
     public void setConnectionFactory( ConnectionFactory connectionFactory )
     {
         this.connectionFactory = connectionFactory;
     }
 
+    @Autowired
     public void setPropertyResolver( PropertyResolver propertyResolver )
     {
         this.propertyResolver = propertyResolver;

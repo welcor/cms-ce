@@ -7,6 +7,8 @@ package com.enonic.cms.framework.jdbc.dialect;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * This class implements the dialect factory.
@@ -22,11 +24,13 @@ public final class DialectFactory
         this.resolver = new DialectResolver();
     }
 
+    @Value("${cms.jdbc.dialect}")
     public void setDialectName(final String dialectName)
     {
         this.resolver.setDialectName(dialectName);
     }
 
+    @Autowired
     public void setDataSource(final DataSource dataSource)
     {
         this.resolver.setDataSource(dataSource);

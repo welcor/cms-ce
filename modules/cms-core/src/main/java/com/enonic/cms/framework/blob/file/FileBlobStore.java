@@ -14,6 +14,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.enonic.cms.framework.blob.BlobKey;
 import com.enonic.cms.framework.blob.BlobRecord;
@@ -30,6 +31,7 @@ public final class FileBlobStore
 
     private File dir;
 
+    @Value("${cms.blobstore.dir}")
     public void setDirectory( final File dir )
     {
         this.dir = dir;

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.JdbcUtils;
 
 import com.enonic.vertical.engine.handlers.CategoryHandler;
@@ -31,6 +32,7 @@ public abstract class BaseEngine
 {
     private ConnectionFactory connectionFactory;
 
+    @Autowired
     public void setConnectionFactory( ConnectionFactory connectionFactory )
     {
         this.connectionFactory = connectionFactory;
@@ -62,11 +64,6 @@ public abstract class BaseEngine
     }
 
     public LanguageHandler getLanguageHandler()
-    {
-        throw new RuntimeException();
-    }
-
-    public LogHandler getLogHandler()
     {
         throw new RuntimeException();
     }

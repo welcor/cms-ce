@@ -7,6 +7,7 @@ package com.enonic.vertical.engine;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 
 import com.enonic.vertical.engine.handlers.CategoryHandler;
@@ -33,26 +34,31 @@ public class UserServicesEngine
 
     private UserHandler userHandler;
 
+    @Autowired
     public void setCategoryHandler( CategoryHandler categoryHandler )
     {
         this.categoryHandler = categoryHandler;
     }
 
+    @Autowired
     public void setContentHandler( ContentHandler contentHandler )
     {
         this.contentHandler = contentHandler;
     }
 
+    @Autowired
     public void setLogHandler( LogHandler logHandler )
     {
         this.logHandler = logHandler;
     }
 
+    @Autowired
     public void setMenuHandler( MenuHandler menuHandler )
     {
         this.menuHandler = menuHandler;
     }
 
+    @Autowired
     public void setUserHandler( UserHandler userHandler )
     {
         this.userHandler = userHandler;

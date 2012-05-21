@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.HttpServletUtil;
@@ -39,7 +38,6 @@ import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
-@Order(0)
 public final class ImageHandler
     extends WebHandlerBase
 {

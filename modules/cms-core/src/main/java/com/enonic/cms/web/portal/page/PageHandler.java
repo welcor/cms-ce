@@ -1,4 +1,4 @@
-package com.enonic.cms.web.portal.render;
+package com.enonic.cms.web.portal.page;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -9,9 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
@@ -30,8 +28,7 @@ import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
-@Order(100)
-public final class RenderHandler
+public final class PageHandler
     extends WebHandlerBase
 {
     private PortalRequestService portalRequestService;
@@ -63,14 +60,15 @@ public final class RenderHandler
         }
     }
 
-    private ModelAndView handleDefaultRequest( HttpServletRequest httpRequest, HttpServletResponse httpResponse, SitePath sitePath )
+    private void handleDefaultRequest( HttpServletRequest httpRequest, HttpServletResponse httpResponse, SitePath sitePath )
         throws Exception
     {
         HttpSession httpSession = httpRequest.getSession( true );
 
         if ( !sitePath.getLocalPath().startsWithSlash() )
         {
-            return redirectToRoot( httpRequest, httpResponse, sitePath );
+            redirectToRoot( httpRequest, httpResponse, sitePath );
+            return;
         }
 
         String originalUrl = OriginalUrlResolver.get().resolveOriginalUrl( httpRequest );
@@ -116,8 +114,7 @@ public final class RenderHandler
 
             PortalResponse response = portalRequestService.processRequest( request );
 
-            return portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
-
+            portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
         }
         finally
         {
@@ -125,7 +122,7 @@ public final class RenderHandler
         }
     }
 
-    private ModelAndView redirectToRoot( HttpServletRequest httpRequest, HttpServletResponse httpResponse, SitePath sitePath )
+    private void redirectToRoot( HttpServletRequest httpRequest, HttpServletResponse httpResponse, SitePath sitePath )
         throws Exception
     {
         sitePath = sitePath.createNewInSameSite( Path.ROOT, sitePath.getParams() );
@@ -138,7 +135,7 @@ public final class RenderHandler
         redirectInstruction.setPermanentRedirect( true );
 
         PortalResponse response = PortalResponse.createRedirect( redirectInstruction );
-        return portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
+        portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
     }
 
     private HashMap<String, Object> getRequestParameters( HttpServletRequest request )

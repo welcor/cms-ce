@@ -26,7 +26,7 @@ import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
 
 import com.enonic.cms.core.MockSitePropertiesService;
-import com.enonic.cms.web.portal.render.PortalRenderResponseServer;
+import com.enonic.cms.web.portal.page.PortalRenderResponseServer;
 
 import static org.junit.Assert.*;
 

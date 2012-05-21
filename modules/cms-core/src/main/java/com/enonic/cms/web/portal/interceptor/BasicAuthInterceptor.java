@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.security.SecurityService;
@@ -17,7 +16,6 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.web.portal.PortalWebContext;
 
 @Component
-@Order(1)
 public final class BasicAuthInterceptor
     implements RequestInterceptor
 {

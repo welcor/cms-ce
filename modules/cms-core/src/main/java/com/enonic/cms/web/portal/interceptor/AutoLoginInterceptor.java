@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
@@ -18,7 +17,6 @@ import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
 
 @Component
-@Order(0)
 public final class AutoLoginInterceptor
     implements RequestInterceptor
 {

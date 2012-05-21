@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.elasticsearch.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SitePath;
@@ -18,7 +17,6 @@ import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
 @Component
-@Order(0)
 public final class ServicesHandler
     extends WebHandlerBase
 {
@@ -55,20 +53,12 @@ public final class ServicesHandler
         final String handlerName = UserServicesParameterResolver.resolveHandlerFromSitePath( sitePath );
         final ServicesProcessor processor = this.processorMap.get( handlerName );
 
-        if (processor == null) {
+        if ( processor == null )
+        {
             throw new InvalidParameterValueException( "handler", handlerName );
         }
 
         processor.handle( context );
-    }
-
-    @Autowired
-    public void setProcessors( final ServicesProcessor... processors )
-    {
-        for ( final ServicesProcessor processor : processors )
-        {
-            this.processorMap.put( processor.getHandlerName(), processor );
-        }
     }
 
     private boolean ticketIsRequired( SitePath sitePath )
@@ -106,5 +96,58 @@ public final class ServicesHandler
     private boolean ticketIsValid( HttpServletRequest request )
     {
         return TicketValidator.isValid( request );
+    }
+
+    private void addProcessor( final ServicesProcessor processor )
+    {
+        this.processorMap.put( processor.getHandlerName(), processor );
+    }
+
+    @Autowired
+    public void setContentSendMailServicesProcessor( final ContentSendMailServicesProcessor processor )
+    {
+        addProcessor( processor );
+    }
+
+    @Autowired
+    public void setContentServicesProcessor( final ContentServicesProcessor processor )
+    {
+        addProcessor( processor );
+    }
+
+    @Autowired
+    public void setFormServicesProcessor( final FormServicesProcessor processor )
+    {
+        addProcessor( processor );
+    }
+
+    @Autowired
+    public void setPollServicesProcessor( final PollServicesProcessor processor )
+    {
+        addProcessor( processor );
+    }
+
+    @Autowired
+    public void setPortalServicesProcessor( final PortalServicesProcessor processor )
+    {
+        addProcessor( processor );
+    }
+
+    @Autowired
+    public void setSendMailServicesProcessor( final SendMailServicesProcessor processor )
+    {
+        addProcessor( processor );
+    }
+
+    @Autowired
+    public void setSessionServicesProcessor( final SessionServicesProcessor processor )
+    {
+        addProcessor( processor );
+    }
+
+    @Autowired
+    public void setUserServicesProcessor( final UserServicesProcessor processor )
+    {
+        addProcessor( processor );
     }
 }

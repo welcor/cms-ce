@@ -1,10 +1,6 @@
 package com.enonic.cms.web.portal.interceptor;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
@@ -15,13 +11,22 @@ import com.enonic.cms.web.portal.PortalWebContext;
 public final class RequestInterceptorChainImpl
     implements RequestInterceptorChain
 {
-    private List<RequestInterceptor> list;
+    private AutoLoginInterceptor autoLoginInterceptor;
+
+    private BasicAuthInterceptor basicAuthInterceptor;
+
+    private HttpInterceptorInterceptor httpInterceptorInterceptor;
+
+    private Iterable<RequestInterceptor> getChain()
+    {
+        return Lists.newArrayList( this.autoLoginInterceptor, this.basicAuthInterceptor, this.httpInterceptorInterceptor );
+    }
 
     @Override
     public boolean preHandle( final PortalWebContext context )
         throws Exception
     {
-        for ( final RequestInterceptor entry : this.list )
+        for ( final RequestInterceptor entry : getChain() )
         {
             if ( !entry.preHandle( context ) )
             {
@@ -36,16 +41,27 @@ public final class RequestInterceptorChainImpl
     public void postHandle( final PortalWebContext context )
         throws Exception
     {
-        for ( final RequestInterceptor entry : this.list )
+        for ( final RequestInterceptor entry : getChain() )
         {
             entry.postHandle( context );
         }
     }
 
     @Autowired
-    public void setInterceptors( final RequestInterceptor... list )
+    public void setAuthLoginInterceptor( final AutoLoginInterceptor interceptor )
     {
-        this.list = Lists.newArrayList( list );
-        Collections.sort( this.list, new AnnotationAwareOrderComparator() );
+        this.autoLoginInterceptor = interceptor;
+    }
+
+    @Autowired
+    public void setBasicAuthInterceptor( final BasicAuthInterceptor interceptor )
+    {
+        this.basicAuthInterceptor = interceptor;
+    }
+
+    @Autowired
+    public void setHttpInterceptorInterceptor( final HttpInterceptorInterceptor interceptor )
+    {
+        this.httpInterceptorInterceptor = interceptor;
     }
 }

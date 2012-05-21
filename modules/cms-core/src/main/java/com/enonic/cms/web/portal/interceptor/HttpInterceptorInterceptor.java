@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
@@ -20,7 +19,6 @@ import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
 
 @Component
-@Order(10)
 public class HttpInterceptorInterceptor
     implements RequestInterceptor
 {

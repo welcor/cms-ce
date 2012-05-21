@@ -1215,96 +1215,115 @@ public final class AdminEngine
         }
     }
 
+    @Autowired
     public void setBinaryDataHandler( BinaryDataHandler binaryDataHandler )
     {
         this.binaryDataHandler = binaryDataHandler;
     }
 
+    @Autowired
     public void setCategoryHandler( CategoryHandler categoryHandler )
     {
         this.categoryHandler = categoryHandler;
     }
 
+    @Autowired
     public void setCommonHandler( CommonHandler commonHandler )
     {
         this.commonHandler = commonHandler;
     }
 
+    @Autowired
     public void setContentHandler( ContentHandler contentHandler )
     {
         this.contentHandler = contentHandler;
     }
 
+    @Autowired
     public void setContentService( ContentService service )
     {
         contentService = service;
     }
 
+    @Autowired
     public void setContentObjectHandler( ContentObjectHandler contentObjectHandler )
     {
         this.contentObjectHandler = contentObjectHandler;
     }
 
+    @Autowired
     public void setGroupHandler( GroupHandler groupHandler )
     {
         this.groupHandler = groupHandler;
     }
 
+    @Autowired
     public void setLanguageHandler( LanguageHandler languageHandler )
     {
         this.languageHandler = languageHandler;
     }
 
+    @Autowired
     public void setLogHandler( LogHandler logHandler )
     {
         this.logHandler = logHandler;
     }
 
+    @Autowired
     public void setMenuHandler( MenuHandler menuHandler )
     {
         this.menuHandler = menuHandler;
     }
 
+    @Autowired
     public void setPageHandler( PageHandler pageHandler )
     {
         this.pageHandler = pageHandler;
     }
 
+    @Autowired
     public void setPageTemplateHandler( PageTemplateHandler pageTemplateHandler )
     {
         this.pageTemplateHandler = pageTemplateHandler;
     }
 
+    @Autowired
     public void setSectionHandler( SectionHandler sectionHandler )
     {
         this.sectionHandler = sectionHandler;
     }
 
+    @Autowired
     public void setUserHandler( UserHandler userHandler )
     {
         this.userHandler = userHandler;
     }
 
+    @Autowired
     public void setUnitHandler( UnitHandler unitHandler )
     {
         this.unitHandler = unitHandler;
     }
 
+    @Autowired
     public void setSystemHandler( SystemHandler systemHandler )
     {
         this.systemHandler = systemHandler;
     }
 
+    @Autowired
     public void setSecurityHandler( SecurityHandler securityHandler )
     {
         this.securityHandler = securityHandler;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService service )
     {
         securityService = service;
     }
 
+    @Autowired
     public void setIndexService( IndexService service )
     {
         indexService = service;

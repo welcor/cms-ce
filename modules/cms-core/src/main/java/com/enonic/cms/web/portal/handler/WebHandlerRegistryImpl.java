@@ -1,21 +1,33 @@
 package com.enonic.cms.web.portal.handler;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.web.portal.PortalWebContext;
+import com.enonic.cms.web.portal.attachment.AttachmentHandler;
+import com.enonic.cms.web.portal.captcha.CaptchaHandler;
+import com.enonic.cms.web.portal.image.ImageHandler;
+import com.enonic.cms.web.portal.page.PageHandler;
+import com.enonic.cms.web.portal.page.PageRedirectHandler;
+import com.enonic.cms.web.portal.resource.ResourceHandler;
+import com.enonic.cms.web.portal.services.ServicesHandler;
 
 @Component
 public final class WebHandlerRegistryImpl
     implements WebHandlerRegistry
 {
-    private List<WebHandler> list;
+    private final List<WebHandler> list;
+
+    private PageHandler defaultHandler;
+
+    public WebHandlerRegistryImpl()
+    {
+        this.list = Lists.newArrayList();
+    }
 
     @Override
     public WebHandler find( final PortalWebContext context )
@@ -28,13 +40,48 @@ public final class WebHandlerRegistryImpl
             }
         }
 
-        throw new IllegalArgumentException( "Could not find handler for " + context.getSitePath() );
+        return this.defaultHandler;
     }
 
     @Autowired
-    public void setHandlers( final WebHandler... list )
+    public void setAttachmentHandler( final AttachmentHandler handler )
     {
-        this.list = Lists.newArrayList( list );
-        Collections.sort( this.list, new AnnotationAwareOrderComparator() );
+        this.list.add( handler );
+    }
+
+    @Autowired
+    public void setCaptchaHandler( final CaptchaHandler handler )
+    {
+        this.list.add( handler );
+    }
+
+    @Autowired
+    public void setImageHandler( final ImageHandler handler )
+    {
+        this.list.add( handler );
+    }
+
+    @Autowired
+    public void setResourceHandler( final ResourceHandler handler )
+    {
+        this.list.add( handler );
+    }
+
+    @Autowired
+    public void setServicesHandler( final ServicesHandler handler )
+    {
+        this.list.add( handler );
+    }
+
+    @Autowired
+    public void setPageRedirectHandler( final PageRedirectHandler handler )
+    {
+        this.list.add( handler );
+    }
+
+    @Autowired
+    public void setPageHandler( final PageHandler handler )
+    {
+        this.defaultHandler = handler;
     }
 }

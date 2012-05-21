@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.web.portal.render;
+package com.enonic.cms.web.portal.page;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,7 +17,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.base.Preconditions;
 
@@ -70,8 +69,8 @@ public class PortalRenderResponseServer
 
     private PluginManager pluginManager;
 
-    public ModelAndView serveResponse( PortalRequest request, PortalResponse response, HttpServletResponse httpResponse,
-                                       HttpServletRequest httpRequest )
+    public void serveResponse( PortalRequest request, PortalResponse response, HttpServletResponse httpResponse,
+                               HttpServletRequest httpRequest )
         throws Exception
     {
         if ( response.hasRedirectInstruction() )
@@ -86,8 +85,6 @@ public class PortalRenderResponseServer
         {
             servePageResponse( request, response, httpResponse, httpRequest );
         }
-
-        return null;
     }
 
     private void servePageResponse( PortalRequest request, PortalResponse response, HttpServletResponse httpResponse,

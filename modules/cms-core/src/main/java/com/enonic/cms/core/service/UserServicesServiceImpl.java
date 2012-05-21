@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class UserServicesServiceImpl
 
     protected UserServicesEngine userServicesEngine;
 
+    @Autowired
     public void setUserServicesEngine( UserServicesEngine userServicesEngine )
     {
         this.userServicesEngine = userServicesEngine;

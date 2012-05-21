@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.core;
 
-import java.util.Properties;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -14,10 +12,6 @@ import org.junit.rules.TemporaryFolder;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-
-import com.enonic.vertical.VerticalProperties;
-
-import com.enonic.cms.core.boot.ConfigProperties;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -67,19 +61,8 @@ public class SitePropertiesServiceTest
     public void setUp()
         throws Exception
     {
-        setupVerticalProperties();
         mockAndLoadTestProperties();
         setupSitePropertiesService();
-    }
-
-    private void setupVerticalProperties()
-    {
-        VerticalProperties verticalProperties = new VerticalProperties();
-
-        ConfigProperties properties = new ConfigProperties();
-        properties.setProperty( "cms.url.characterEncoding", "UTF-8" );
-
-        verticalProperties.setProperties( properties );
     }
 
     private void setupSitePropertiesService()
@@ -88,6 +71,7 @@ public class SitePropertiesServiceTest
         sitePropertiesService = new SitePropertiesServiceImpl();
         sitePropertiesService.setHomeDir(folder.newFolder("cms-home"));
         sitePropertiesService.setResourceLoader( resourceLoader );
+        sitePropertiesService.setCharacterEncoding( "UTF-8" );
         sitePropertiesService.afterPropertiesSet();
     }
 

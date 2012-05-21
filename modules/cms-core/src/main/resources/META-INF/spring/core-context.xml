@@ -150,7 +150,7 @@
         class="com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver"/>
 
   <bean id="userServicesRedirectHelper"
-        class="com.enonic.cms.web.portal.userservices.UserServicesRedirectUrlResolver"/>
+        class="com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver"/>
 
   <bean id="reindexContentToolService"
         class="com.enonic.cms.core.tools.ReindexContentToolServiceImpl"/>
@@ -349,10 +349,6 @@
 
   <bean id="pageTemplateXsltViewTransformer"
         class="com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer"/>
-
-  <bean id="loginPagePathResolverService"
-        class="com.enonic.cms.core.portal.support.LoginPagePathResolverServiceImpl">
-  </bean>
 
   <bean id="pageRendererFactory" class="com.enonic.cms.core.portal.rendering.PageRendererFactory"/>
 

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -31,8 +32,11 @@ public final class VirtualHostFilter
     @Autowired
     private VirtualHostResolver virtualHostResolver;
 
+    @Value("${cms.security.vhost.require}")
+    private boolean requireVirtualHost;
+
     protected void doFilterInternal( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-        throws IOException, ServletException
+            throws IOException, ServletException
     {
         try
         {
@@ -54,7 +58,7 @@ public final class VirtualHostFilter
     }
 
     private void doFilter( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-        throws Exception
+            throws Exception
     {
 
         String fullTargetPath = null;
@@ -65,6 +69,11 @@ public final class VirtualHostFilter
             fullTargetPath = virtualHost.getFullTargetPath( req );
             String fullSourcePath = virtualHost.getFullSourcePath( req );
             VirtualHostHelper.setBasePath( req, fullSourcePath );
+        }
+        else if ( requireVirtualHost )
+        {
+            res.setStatus( HttpServletResponse.SC_NOT_FOUND );
+            return;
         }
 
         if ( fullTargetPath != null )
@@ -78,6 +87,3 @@ public final class VirtualHostFilter
         }
     }
 }
-
-
-

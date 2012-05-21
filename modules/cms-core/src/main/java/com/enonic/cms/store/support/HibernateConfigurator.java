@@ -7,13 +7,9 @@ package com.enonic.cms.store.support;
 import java.util.HashMap;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 
 import com.enonic.cms.framework.cache.CacheManager;
@@ -54,14 +50,11 @@ public final class HibernateConfigurator
     public HibernateConfigurator()
     {
         INSTANCE = this;
-        setConfigLocation( new ClassPathResource( "com/enonic/cms/store/hibernate.cfg.xml" ) );
-        setUseTransactionAwareDataSource( false );
     }
 
     /**
      * Set the dialect name.
      */
-    @Autowired
     public void setDialect( Dialect dialect )
     {
         this.dialect = dialect;
@@ -75,14 +68,7 @@ public final class HibernateConfigurator
     {
         this.cacheManager = cacheManager;
     }
-
-    @Override
-    @Autowired
-    public void setDataSource( final DataSource dataSource )
-    {
-        super.setDataSource( dataSource );
-    }
-
+    
     public Configuration getHibernateConfiguration()
     {
         return getConfiguration();
@@ -108,7 +94,6 @@ public final class HibernateConfigurator
         super.afterPropertiesSet();
     }
 
-    @Value("${cms.jdbc.logging}")
     public void setLogging(boolean logging)
     {
         getHibernateProperties().setProperty(Environment.SHOW_SQL, String.valueOf(logging));

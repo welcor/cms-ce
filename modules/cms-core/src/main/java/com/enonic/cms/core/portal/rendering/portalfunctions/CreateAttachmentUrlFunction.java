@@ -6,8 +6,6 @@ package com.enonic.cms.core.portal.rendering.portalfunctions;
 
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -111,7 +109,6 @@ public class CreateAttachmentUrlFunction
         }
     }
 
-    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;

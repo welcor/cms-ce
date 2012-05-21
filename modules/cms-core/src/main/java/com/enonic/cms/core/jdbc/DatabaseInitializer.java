@@ -5,7 +5,6 @@
 package com.enonic.cms.core.jdbc;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.service.AdminService;
@@ -29,13 +28,11 @@ public final class DatabaseInitializer
     /**
      * Set the admin service.
      */
-    @Autowired
     public void setAdminService( AdminService adminService )
     {
         this.adminService = adminService;
     }
 
-    @Autowired
     public void setUpgradeService( UpgradeService upgradeService )
     {
         this.upgradeService = upgradeService;
@@ -59,7 +56,6 @@ public final class DatabaseInitializer
         }
     }
 
-    @Autowired
     public void setUserStoreService( final UserStoreService userStoreService )
     {
         this.userStoreService = userStoreService;

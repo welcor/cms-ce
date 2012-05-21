@@ -8,7 +8,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.enonic.vertical.work.WorkRunner;
 
@@ -47,6 +46,11 @@ public final class QuartzSchedulerManager
      */
     private Scheduler scheduler;
 
+    /**
+     * Clustered?
+     */
+    private boolean clustered;
+
     private WorkRunner workRunner;
 
     private UpgradeService upgradeService;
@@ -75,10 +79,14 @@ public final class QuartzSchedulerManager
         return this.enabled;
     }
 
-    @Value("${cms.scheduler.enabled}")
     public void setEnabled( boolean enabled )
     {
         this.enabled = enabled;
+    }
+
+    public void setClustered( boolean clustered )
+    {
+        this.clustered = clustered;
     }
 
     @Autowired
@@ -124,7 +132,7 @@ public final class QuartzSchedulerManager
         props.setProperty( "org.quartz.jobStore.class", QuartzJobStore.class.getName() );
         props.setProperty( "org.quartz.jobStore.driverDelegateClass", org.quartz.impl.jdbcjobstore.StdJDBCDelegate.class.getName() );
         props.setProperty( "org.quartz.jobStore.tablePrefix", "QRTZ_" );
-        props.setProperty( "org.quartz.jobStore.isClustered", "true" );
+        props.setProperty( "org.quartz.jobStore.isClustered", String.valueOf( this.clustered ) );
 
         // for MS SQL Server
         if ( dialect instanceof SqlServerDialect )
@@ -150,5 +158,10 @@ public final class QuartzSchedulerManager
     public void setDialect( Dialect dialect )
     {
         this.dialect = dialect;
+    }
+
+    public Dialect getDialect()
+    {
+        return dialect;
     }
 }

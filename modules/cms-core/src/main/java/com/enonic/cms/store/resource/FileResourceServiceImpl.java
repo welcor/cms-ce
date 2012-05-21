@@ -43,19 +43,16 @@ public final class FileResourceServiceImpl
         EntityChangeListenerHub.getInstance().addListener( this );
     }
 
-    @Autowired
     public void setBlobStore( BlobStore blobStore )
     {
         this.blobStore = blobStore;
     }
 
-    @Autowired
     public void setSessionFactory( SessionFactory sessionFactory )
     {
         this.sessionFactory = sessionFactory;
     }
 
-    @Autowired
     public void setMimeTypeResolver( final MimeTypeResolver mimeTypeResolver )
     {
         this.mimeTypeResolver = mimeTypeResolver;

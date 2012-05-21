@@ -9,8 +9,6 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.vhost.VirtualHostHelper;
@@ -288,7 +286,6 @@ public class SiteURLResolver
         this.sitePathPrefix = value;
     }
 
-    @Autowired
     public void setSitePropertiesService( SitePropertiesService value )
     {
         this.sitePropertiesService = value;

@@ -1892,37 +1892,31 @@ public final class DataSourceServiceImpl
         return userDao.findByKey( user.getKey() );
     }
 
-    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
-    @Autowired
     public void setUserDao( UserDao userDao )
     {
         this.userDao = userDao;
     }
 
-    @Autowired
     public void setPresentationEngine( PresentationEngine presentationEngine )
     {
         this.presentationEngine = presentationEngine;
     }
 
-    @Autowired
     public void setCalendarService( CalendarService service )
     {
         calendarService = service;
     }
 
-    @Autowired
     public void setContentService( ContentService service )
     {
         this.contentService = service;
     }
 
-    @Autowired
     public void setCountryService( CountryService countryService )
     {
         this.countryService = countryService;
@@ -1933,43 +1927,36 @@ public final class DataSourceServiceImpl
         httpService = service;
     }
 
-    @Autowired
     public void setLocaleService( LocaleService localeService )
     {
         this.localeService = localeService;
     }
 
-    @Autowired
     public void setPreferenceService( PreferenceService preferenceService )
     {
         this.preferenceService = preferenceService;
     }
 
-    @Autowired
     public void setSecurityService( SecurityService securityService )
     {
         this.securityService = securityService;
     }
 
-    @Autowired
     public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
     {
         this.sitePropertiesService = sitePropertiesService;
     }
 
-    @Autowired
     public void setTimeService( TimeService timeService )
     {
         this.timeService = timeService;
     }
 
-    @Autowired
     public void setTimeZoneService( TimeZoneService timeZoneService )
     {
         this.timeZoneService = timeZoneService;
     }
 
-    @Autowired
     public void setUserStoreService( UserStoreService userStoreService )
     {
         this.userStoreService = userStoreService;

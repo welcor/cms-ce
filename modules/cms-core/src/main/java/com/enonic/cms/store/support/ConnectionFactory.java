@@ -10,8 +10,6 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.enonic.cms.framework.jdbc.ConnectionDecorator;
 
 /**
@@ -23,19 +21,16 @@ public final class ConnectionFactory
     private ConnectionDecorator decorator;
     private DataSource dataSource;
 
-    @Autowired
     public void setSessionFactory( SessionFactory sessionFactory )
     {
         this.sessionFactory = sessionFactory;
     }
 
-    @Autowired
     public void setDecorator( ConnectionDecorator decorator )
     {
         this.decorator = decorator;
     }
 
-    @Autowired
     public void setDataSource( final DataSource dataSource )
     {
         this.dataSource = dataSource;

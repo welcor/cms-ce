@@ -32,13 +32,12 @@ public class SiteCachesServiceImpl
 
     private CacheManager cacheManager;
 
-    @Autowired
+
     public void setPageCacheServiceFactory( PageCacheServiceFactory value )
     {
         this.pageCacheServiceFactory = value;
     }
 
-    @Autowired
     public void setSitePropertiesService( SitePropertiesService value )
     {
         this.sitePropertiesService = value;

@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.web.webdav;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.enonic.cms.core.resource.access.ResourceAccessResolver;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.store.resource.FileResourceService;
@@ -29,7 +27,6 @@ public class DavConfiguration
         return this.fileResourceService;
     }
 
-    @Autowired
     public void setFileResourceService( FileResourceService value )
     {
         this.fileResourceService = value;
@@ -46,7 +43,6 @@ public class DavConfiguration
     /**
      * Set the login service.
      */
-    @Autowired
     public void setSecurityService( SecurityService securityService )
     {
         this.securityService = securityService;
@@ -57,7 +53,6 @@ public class DavConfiguration
         return resourceAccessResolver;
     }
 
-    @Autowired
     public void setResourceAccessResolver( ResourceAccessResolver resourceAccessResolver )
     {
         this.resourceAccessResolver = resourceAccessResolver;

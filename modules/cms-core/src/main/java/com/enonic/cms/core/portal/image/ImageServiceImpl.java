@@ -12,7 +12,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.base.Preconditions;
 
@@ -266,7 +265,6 @@ public final class ImageServiceImpl
         this.groupDao = groupDao;
     }
 
-    @Value("${cms.blobstore.dir}")
     public void setDirectory( File directory )
     {
         this.directory = directory;

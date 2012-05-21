@@ -26,7 +26,6 @@ public class PageCacheServiceFactory
         this.cacheManager = value;
     }
 
-    @Autowired
     public void setSitePropertiesService( SitePropertiesService value )
     {
         this.sitePropertiesService = value;

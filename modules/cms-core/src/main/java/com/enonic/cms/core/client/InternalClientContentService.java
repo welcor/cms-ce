@@ -885,7 +885,6 @@ public class InternalClientContentService
         return new Document( binaryElem );
     }
 
-    @Autowired
     public void setSiteCachesService( SiteCachesService value )
     {
         this.siteCachesService = value;

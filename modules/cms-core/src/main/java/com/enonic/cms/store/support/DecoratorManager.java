@@ -12,7 +12,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.SessionFactoryImplementor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.jdbc.ConnectionDecorator;
@@ -67,7 +66,6 @@ public final class DecoratorManager
     /**
      * Set true if logging.
      */
-    @Value("${cms.jdbc.logging}")
     public void setLogging( boolean logging )
     {
         this.logging = logging;
@@ -76,7 +74,6 @@ public final class DecoratorManager
     /**
      * Set the hibernate session factory.
      */
-    @Autowired
     public void setSessionFactory( SessionFactory sessionFactory )
     {
         this.sessionFactory = sessionFactory;
@@ -111,7 +108,6 @@ public final class DecoratorManager
     /**
      * Set the dialect.
      */
-    @Autowired
     public void setDialect( Dialect dialect )
     {
         this.dialect = dialect;

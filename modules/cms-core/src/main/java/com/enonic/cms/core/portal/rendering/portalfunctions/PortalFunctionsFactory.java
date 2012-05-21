@@ -121,7 +121,7 @@ public class PortalFunctionsFactory
         return portalFunctions;
     }
 
-    @Autowired
+
     public void setSiteURLResolver( SiteURLResolver value )
     {
         this.siteURLResolver = value;
@@ -133,7 +133,6 @@ public class PortalFunctionsFactory
         this.contentDao = contentDao;
     }
 
-    @Autowired
     public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
     {
         this.sitePropertiesService = sitePropertiesService;

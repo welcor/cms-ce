@@ -8,12 +8,11 @@
 
   <context:component-scan base-package="com.enonic.cms.web"/>
 
-  <bean class="com.enonic.vertical.adminweb.resource.AdminResourcesImpl"/>
+  <context:component-scan base-package="com.enonic.cms.core.admin"/>
+  <context:component-scan base-package="com.enonic.vertical.adminweb.resource"/>
+
   <bean id="adminAutoLoginInterceptor" class="com.enonic.cms.server.service.admin.security.AutoLoginInterceptor"/>
   <bean id="adminHttpInterceptorInterceptor" class="com.enonic.cms.server.service.admin.security.HttpInterceptorInterceptor"/>
-
-  <bean id="sitePathResolverForDebug" class="com.enonic.cms.core.admin.DebugSitePathResolver"/>
-  <bean id="sitePathResolverForPreview" class="com.enonic.cms.core.admin.PreviewSitePathResolver"/>
 
   <!-- Admin handler mappings. -->
   <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -229,15 +228,10 @@
   <bean id="adminAttachmentController" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
   <bean id="loginCheckInterceptor" class="com.enonic.cms.server.service.admin.mvc.LoginCheckInterceptor"/>
 
-  <bean class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
-
   <bean class="com.enonic.vertical.adminweb.SectionHandlerServlet$PublishWizard" scope="prototype"/>
-
   <bean class="com.enonic.vertical.adminweb.UserStoreHandlerServlet$CreateUpdateUserStoreWizard" scope="prototype"/>
-
   <bean class="com.enonic.vertical.adminweb.handlers.ContentEnhancedImageHandlerServlet$ImportImagesWizard" scope="prototype"/>
   <bean class="com.enonic.vertical.adminweb.handlers.ContentFileHandlerServlet$ImportFilesWizard" scope="prototype"/>
-
   <bean class="com.enonic.vertical.adminweb.SchedulerServlet$CreateUpdateWorkEntryWizard" scope="prototype"/>
 
 </beans>

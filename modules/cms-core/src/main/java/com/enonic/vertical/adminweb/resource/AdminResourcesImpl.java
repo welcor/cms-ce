@@ -9,6 +9,7 @@ import com.google.common.base.Charsets;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Component;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
+@Component
 public final class AdminResourcesImpl
     extends AdminResources implements ResourceLoaderAware
 {

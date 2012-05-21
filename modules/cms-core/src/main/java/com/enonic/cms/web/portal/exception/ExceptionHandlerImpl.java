@@ -11,9 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.BadRequestErrorType;
@@ -57,6 +56,10 @@ public final class ExceptionHandlerImpl
     private MenuItemDao menuItemDao;
 
     private TemplateProcessor templateProcessor;
+
+    private boolean detailInformation;
+
+    private boolean logRequestInfoOnException;
 
     @Autowired
     private SiteDao siteDao;
@@ -151,25 +154,11 @@ public final class ExceptionHandlerImpl
         {
             StringBuffer message = new StringBuffer();
             message.append( causingException.getMessage() ).append( "\n" );
-            if ( logRequestInfo() )
+            if ( this.logRequestInfoOnException )
             {
                 message.append( buildRequestInfo( request ) );
             }
             LOG.error( message.toString(), causingException );
-        }
-    }
-
-    private boolean logRequestInfo()
-    {
-
-        try
-        {
-            VerticalProperties verticalProperties = VerticalProperties.getVerticalProperties();
-            return Boolean.valueOf( verticalProperties.getProperty( "cms.render.logRequestInfoOnException" ) );
-        }
-        catch ( Exception e )
-        {
-            return false;
         }
     }
 
@@ -300,7 +289,7 @@ public final class ExceptionHandlerImpl
     private void serveExceptionPage( PortalWebContext context, AbstractBaseError e )
         throws IOException
     {
-        if ( VerticalProperties.getVerticalProperties().doShowDetailedErrorInformation() )
+        if ( this.detailInformation )
         {
             serveFullExceptionPage( context, e );
             return;
@@ -416,5 +405,17 @@ public final class ExceptionHandlerImpl
     public void setTemplateProcessor( final TemplateProcessor templateProcessor )
     {
         this.templateProcessor = templateProcessor;
+    }
+
+    @Value("${cms.error.page.detailInformation}")
+    public void setDetailInformation( final boolean value )
+    {
+        this.detailInformation = value;
+    }
+
+    @Value("${cms.render.logRequestInfoOnException}")
+    public void setLogRequestInfoOnException( final boolean value )
+    {
+        this.logRequestInfoOnException = value;
     }
 }

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.server.service.servlet;
+package com.enonic.cms.web.filter;
 
 import java.io.IOException;
 
@@ -12,21 +12,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.enonic.vertical.VerticalProperties;
-
-public class CharacterEncodingFilter
+@Component
+public final class CharacterEncodingFilter
     extends OncePerRequestFilter
 {
     private String encoding;
 
-    protected void initFilterBean()
-        throws ServletException
+    @Value("${cms.url.characterEncoding}")
+    public void setCharacterEncoding( final String encoding )
     {
-
-        String requestCharacterEncoding = VerticalProperties.getVerticalProperties().getUrlCharacterEncoding();
-        encoding = requestCharacterEncoding;
+        this.encoding = encoding;
     }
 
     protected void doFilterInternal( HttpServletRequest request, HttpServletResponse response, FilterChain filterChain )

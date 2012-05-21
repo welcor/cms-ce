@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.vhost;
+package com.enonic.cms.web.filter;
 
 import java.io.IOException;
 
@@ -15,8 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.enonic.cms.core.vhost.VirtualHost;
+import com.enonic.cms.core.vhost.VirtualHostHelper;
+import com.enonic.cms.core.vhost.VirtualHostResolver;
+
+@Component
 public final class VirtualHostFilter
     extends OncePerRequestFilter
 {
@@ -26,7 +32,7 @@ public final class VirtualHostFilter
     private VirtualHostResolver virtualHostResolver;
 
     protected void doFilterInternal( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-            throws IOException, ServletException
+        throws IOException, ServletException
     {
         try
         {
@@ -48,7 +54,7 @@ public final class VirtualHostFilter
     }
 
     private void doFilter( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-            throws Exception
+        throws Exception
     {
 
         String fullTargetPath = null;

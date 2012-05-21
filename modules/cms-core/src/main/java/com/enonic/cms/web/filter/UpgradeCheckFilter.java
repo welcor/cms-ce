@@ -1,6 +1,7 @@
-package com.enonic.cms.upgrade;
+package com.enonic.cms.web.filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -9,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import com.enonic.cms.upgrade.UpgradeChecker;
+import com.enonic.cms.upgrade.UpgradeService;
+
+@Component
 public final class UpgradeCheckFilter
     extends OncePerRequestFilter
 {

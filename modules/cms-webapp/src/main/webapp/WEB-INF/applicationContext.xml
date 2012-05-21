@@ -5,6 +5,5 @@
 
   <import resource="classpath:META-INF/spring/core-context.xml"/>
   <import resource="classpath:META-INF/spring/web-context.xml"/>
-  <import resource="classpath:META-INF/spring/admin-context.xml"/>
 
 </beans>

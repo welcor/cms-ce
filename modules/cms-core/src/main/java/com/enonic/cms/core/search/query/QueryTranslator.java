@@ -19,6 +19,7 @@ import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
+import com.enonic.cms.core.search.ContentIndexException;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.FullTextQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.InQueryBuilderFactory;
@@ -62,20 +63,38 @@ public class QueryTranslator
 
 
     public SearchSourceBuilder build( final ContentIndexQuery contentIndexQuery )
-        throws Exception
+    {
+        return doBuildSearchSource( contentIndexQuery, contentIndexQuery.getCount() );
+    }
+
+    public SearchSourceBuilder build( final ContentIndexQuery contentIndexQuery, int count )
+    {
+        return doBuildSearchSource( contentIndexQuery, count );
+    }
+
+    private SearchSourceBuilder doBuildSearchSource( final ContentIndexQuery contentIndexQuery, int count )
     {
         final QueryExpr queryExpr = applyFunctionsAndDateTranslations( contentIndexQuery );
 
         final SearchSourceBuilder builder = new SearchSourceBuilder();
         builder.from( contentIndexQuery.getIndex() );
-        builder.size( contentIndexQuery.getCount() );
+        builder.size( count );
 
         final Expression expression = queryExpr.getExpr();
 
-        final QueryBuilder builtQuery = buildQuery( expression );
+        final QueryBuilder builtQuery;
+        try
+        {
+            builtQuery = buildQuery( expression );
+        }
+        catch ( Exception e )
+        {
+            throw new ContentIndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
+        }
+
         builder.query( builtQuery );
 
-        applySorting(builder, contentIndexQuery, queryExpr.getOrderBy());
+        applySorting( builder, contentIndexQuery, queryExpr.getOrderBy() );
         filterQueryBuilderFactory.buildFilterQuery( builder, contentIndexQuery );
 
         System.out.println( "****************************\n\r" + builder.toString() );
@@ -83,8 +102,7 @@ public class QueryTranslator
         return builder;
     }
 
-    private void applySorting( SearchSourceBuilder builder, ContentIndexQuery contentIndexQuery,
-                               OrderByExpr orderByExpr )
+    private void applySorting( SearchSourceBuilder builder, ContentIndexQuery contentIndexQuery, OrderByExpr orderByExpr )
     {
         final MenuItemKey orderBySection = contentIndexQuery.getOrderBySection();
         if ( orderBySection != null )

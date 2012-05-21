@@ -41,6 +41,8 @@ public interface ElasticSearchIndexService
 
     public boolean get( String indexName, IndexType indexType, ContentKey contentKey );
 
+    public long count( String indexName, String indexType, SearchSourceBuilder sourceBuilder );
+
     public void optimize( String indexName );
 
     public SearchResponse search( String indexName, String indexType, SearchSourceBuilder sourceBuilder );

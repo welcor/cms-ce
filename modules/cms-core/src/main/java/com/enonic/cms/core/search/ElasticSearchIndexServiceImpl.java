@@ -206,6 +206,21 @@ public class ElasticSearchIndexServiceImpl
         return getResponse.exists();
     }
 
+    public long count( String indexName, String indexType, SearchSourceBuilder sourceBuilder )
+    {
+        // TODO: This should be optimized to use count, but then get rid of the sourceBuilder-stuff first
+
+        final SearchRequest searchRequest =
+            Requests.searchRequest( indexName ).types( indexType ).searchType( DEFAULT_SEARCH_TYPE ).source( sourceBuilder );
+
+        final SearchResponse searchResponse = doSearchRequest( searchRequest );
+
+        parseSearchResultFailures( searchResponse );
+
+        return searchResponse.getHits().getTotalHits();
+    }
+
+
     @Override
     public void optimize( String indexName )
     {

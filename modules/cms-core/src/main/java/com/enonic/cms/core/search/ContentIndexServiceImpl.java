@@ -19,6 +19,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
 
 import com.enonic.cms.core.content.ContentEntityFetcherImpl;
 import com.enonic.cms.core.content.ContentIndexEntity;
@@ -51,6 +52,8 @@ public class ContentIndexServiceImpl
     implements ContentIndexService
 {
     public final static String CONTENT_INDEX_NAME = "cms";
+
+    public static final int COUNT_THRESHOULD_VALUE = 1000;
 
     private IndexMappingProvider indexMappingProvider;
 
@@ -138,14 +141,7 @@ public class ContentIndexServiceImpl
     {
         final SearchSourceBuilder build;
 
-        try
-        {
-            build = queryTranslator.build( contentIndexQuery );
-        }
-        catch ( Exception e )
-        {
-            throw new ContentIndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
-        }
+        build = queryTranslator.build( contentIndexQuery );
 
         SearchHits hits = doExecuteSearchRequest( build );
 
@@ -195,21 +191,18 @@ public class ContentIndexServiceImpl
         elasticSearchIndexService.optimize( CONTENT_INDEX_NAME );
     }
 
-    public ContentResultSet query( ContentIndexQuery query )
+    public ContentResultSet query( final ContentIndexQuery query )
     {
-        final SearchSourceBuilder build;
-        try
-        {
-            build = this.queryTranslator.build( query );
-        }
-        catch ( Exception e )
-        {
-            throw new IndexQueryException( "Failed to translate query: " + query.getQuery(), e );
-        }
+        final SearchSourceBuilder querySource;
 
-        final SearchHits hits = doExecuteSearchRequest( build );
+        optimizeCount( query );
 
-        LOG.finer( "query: " + build.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
+        querySource = buildQuerySource( query );
+
+        final SearchHits hits = doExecuteSearchRequest( querySource );
+
+        LOG.finer(
+            "query: " + querySource.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
 
         final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
 
@@ -230,6 +223,33 @@ public class ContentIndexServiceImpl
         }
 
         return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
+    }
+
+    private void optimizeCount( final ContentIndexQuery query )
+    {
+        if ( query.getCount() >= COUNT_THRESHOULD_VALUE )
+        {
+            final int actualNumberOfHits = getActualNumberOfHits( query );
+
+            if ( actualNumberOfHits < query.getCount() )
+            {
+                query.setCount( actualNumberOfHits );
+            }
+        }
+    }
+
+    private SearchSourceBuilder buildQuerySource( final ContentIndexQuery query )
+    {
+        return this.queryTranslator.build( query );
+    }
+
+    private int getActualNumberOfHits( final ContentIndexQuery query )
+    {
+        final SearchSourceBuilder searchSource = queryTranslator.build( query, 1 );
+
+        final long actualCount = elasticSearchIndexService.count( CONTENT_INDEX_NAME, IndexType.Content.toString(), searchSource );
+
+        return Ints.saturatedCast( actualCount );
     }
 
     public IndexValueResultSet query( IndexValueQuery query )
@@ -340,8 +360,7 @@ public class ContentIndexServiceImpl
     @Override
     public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
     {
-        final Map<String, GetField> fields =
-                elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+        final Map<String, GetField> fields = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
 
         final ElasticSearchIndexedFieldsTranslator indexFieldsTranslator = new ElasticSearchIndexedFieldsTranslator();
         return indexFieldsTranslator.generateContentIndexFieldSet( contentKey, fields );

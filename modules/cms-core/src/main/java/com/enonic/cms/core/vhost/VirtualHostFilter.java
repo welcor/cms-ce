@@ -30,7 +30,7 @@ public final class VirtualHostFilter
     private boolean requireVirtualHost;
 
     protected void doFilterInternal( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-            throws IOException, ServletException
+        throws IOException, ServletException
     {
         try
         {
@@ -52,7 +52,7 @@ public final class VirtualHostFilter
     }
 
     private void doFilter( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-            throws Exception
+        throws Exception
     {
 
         String fullTargetPath = null;
@@ -64,7 +64,7 @@ public final class VirtualHostFilter
             String fullSourcePath = virtualHost.getFullSourcePath( req );
             VirtualHostHelper.setBasePath( req, fullSourcePath );
         }
-        else if ( requireVirtualHost && !"localhost".equals( req.getServerName() ) )
+        else if ( requireVirtualHost )
         {
             res.setStatus( HttpServletResponse.SC_NOT_FOUND );
             return;

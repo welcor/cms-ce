@@ -2,8 +2,11 @@ package com.enonic.cms.core.search.query;
 
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 import com.enonic.cms.core.content.index.IndexValueQuery;
+import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 
 public class IndexValueQueryTranslator
@@ -27,13 +30,18 @@ public class IndexValueQueryTranslator
         builder.query( QueryBuilders.matchAllQuery() );
 
         filterQueryBuilderFactory.buildFilterQuery( builder, query );
-
-        //TODO: Fix orderby
-        String orderBy = "x.orderValue " + ( query.isDescOrder() ? "DESC" : "ASC" );
+        applySorting( builder, queryField, query.isDescOrder() );
 
         return builder;
-
     }
 
-
+    private void applySorting( final SearchSourceBuilder builder, final QueryField queryField,
+                               final boolean isDescOrder )
+    {
+        final String sortFieldName = queryField.getFieldName();
+        final String name = QueryFieldNameResolver.resolveOrderFieldName( new FieldExpr( sortFieldName ) );
+        final SortOrder sortOrder = isDescOrder ? SortOrder.DESC : SortOrder.ASC;
+        final FieldSortBuilder sorting = new FieldSortBuilder( name ).order( sortOrder ).ignoreUnmapped( true );
+        builder.sort( sorting );
+    }
 }

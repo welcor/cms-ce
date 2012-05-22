@@ -265,17 +265,18 @@ public class ContentIndexServiceImpl
             throw new IndexQueryException( "Failed to translate query: " + query, e );
         }
 
-        IndexValueResultSetImpl resultSet = new IndexValueResultSetImpl( query.getIndex(), query.getCount() );
-
-        LOG.finer(
-            "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " + resultSet.getTotalCount() );
-
         final SearchHits hits = doExecuteSearchRequest( build );
+
+        final IndexValueResultSetImpl resultSet =
+                new IndexValueResultSetImpl( query.getIndex(), Ints.saturatedCast( hits.totalHits() ) );
 
         for ( SearchHit hit : hits )
         {
             resultSet.add( createIndexValueResult( hit ) );
         }
+
+        LOG.finer( "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " +
+                           resultSet.getTotalCount() );
 
         return resultSet;
     }

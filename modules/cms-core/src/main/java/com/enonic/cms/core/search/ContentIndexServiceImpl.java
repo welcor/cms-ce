@@ -233,7 +233,8 @@ public class ContentIndexServiceImpl
 
             if ( actualNumberOfHits < query.getCount() )
             {
-                query.setCount( actualNumberOfHits );
+                // TODO: Could be optimized to not execute query again
+                query.setCount( actualNumberOfHits == 0 ? 1 : actualNumberOfHits );
             }
         }
     }

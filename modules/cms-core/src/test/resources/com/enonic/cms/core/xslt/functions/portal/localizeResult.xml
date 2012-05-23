@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<output>
+  <value>localize,phrase,(),null</value>
+  <value>localize,phrase,(),null</value>
+  <value>localize,phrase,(a,3),null</value>
+  <value>localize,phrase,(),locale</value>
+  <value>localize,phrase,(a,3),locale</value>
+</output>

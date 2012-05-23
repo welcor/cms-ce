@@ -72,7 +72,7 @@
       <artifactId>simplecaptcha</artifactId>
       <version>1.2.1</version>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon</artifactId>
       <version>9.1.0.8</version>
@@ -86,6 +86,29 @@
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon-jdom</artifactId>
       <version>9.1.0.8</version>
+    </dependency-->
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>9.4</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>jdom</artifactId>
+          <groupId>org.jdom</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xom</artifactId>
+          <groupId>xom</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>dom4j</artifactId>
+          <groupId>dom4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xml-resolver</artifactId>
+          <groupId>xml-resolver</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jparsec</groupId>

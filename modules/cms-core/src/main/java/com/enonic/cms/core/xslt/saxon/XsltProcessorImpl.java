@@ -21,7 +21,6 @@ import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 
-
 final class XsltProcessorImpl
     implements XsltProcessor
 {
@@ -54,7 +53,7 @@ final class XsltProcessorImpl
 
     public String getContentType()
     {
-        StringBuffer contentType = new StringBuffer();
+        StringBuilder contentType = new StringBuilder();
         String outputMediaType = getOutputMediaType();
         if ( outputMediaType != null )
         {

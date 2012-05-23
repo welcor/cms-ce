@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<output>
+  <value>createImageUrl,image-key,null,null,null,null</value>
+  <value>createImageUrl,image-key,filter,null,null,null</value>
+  <value>createImageUrl,image-key,filter,background,null,null</value>
+  <value>createImageUrl,image-key,filter,background,format,null</value>
+  <value>createImageUrl,image-key,filter,background,format,quality</value>
+</output>

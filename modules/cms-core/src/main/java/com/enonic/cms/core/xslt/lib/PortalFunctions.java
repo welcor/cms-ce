@@ -25,10 +25,6 @@ import com.enonic.cms.core.structure.page.WindowKey;
  */
 public final class PortalFunctions
 {
-    public static final String NAMESPACE_URI = "http://www.enonic.com/cms/portal";
-
-    public static final String OLD_NAMESPACE_URI = "http://www.enonic.com/cms/xslt/portal";
-
     public static final String UNDEFINED = "[undefined]";
 
     private static final Logger LOG = LoggerFactory.getLogger( PortalFunctions.class );
@@ -676,6 +672,10 @@ public final class PortalFunctions
 
     private static String[] toStringArray(final Object[] params)
     {
+        if (params == null) {
+            return null;
+        }
+
         final String[] strings = new String[params.length];
         for (int i = 0; i< strings.length; i++) {
             strings[i] = toString(params[i]);
@@ -686,6 +686,10 @@ public final class PortalFunctions
 
     private static String toString(final Object value)
     {
+        if (value == null) {
+            return null;
+        }
+
         if (value instanceof Item) {
             return ((Item)value).getStringValue().trim();
         } else if (value != null) {

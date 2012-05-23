@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.xslt.saxon;
 
+import java.io.PrintStream;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -13,9 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.sf.saxon.Configuration;
+import net.sf.saxon.Controller;
 import net.sf.saxon.TransformerFactoryImpl;
-import net.sf.saxon.functions.FunctionLibraryList;
-import net.sf.saxon.functions.JavaExtensionLibrary;
+import net.sf.saxon.expr.XPathContext;
+import net.sf.saxon.lib.TraceListener;
+import net.sf.saxon.om.Item;
+import net.sf.saxon.trace.InstructionInfo;
 
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
@@ -24,7 +29,8 @@ import com.enonic.cms.core.xslt.XsltProcessorManager;
 import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
 import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.core.xslt.cache.TemplatesXsltCache;
-import com.enonic.cms.core.xslt.lib.PortalFunctions;
+import com.enonic.cms.core.xslt.functions.XsltFunctionRegistration;
+import com.enonic.cms.core.xslt.localizer.LocalizerFactoryImpl;
 
 /**
  * This class implements the standard xslt processor manager.
@@ -37,27 +43,20 @@ public final class SaxonProcessorManager
 
     private TemplatesXsltCache cache;
 
+    private Configuration configuration;
+
     public SaxonProcessorManager()
     {
         XsltProcessorManagerAccessor.setProcessorManager( this );
         this.transformerFactory = new TransformerFactoryImpl();
 
-        final Configuration configuration = this.transformerFactory.getConfiguration();
-        final FunctionLibraryList libraryList = new FunctionLibraryList();
-        final JavaExtensionLibrary extensionLibrary = new JavaExtensionLibrary( configuration );
-        libraryList.addFunctionLibrary( extensionLibrary );
-        registerExtensions( extensionLibrary );
-
-        configuration.setExtensionBinder( "java", libraryList );
-        configuration.setLineNumbering( true );
-        configuration.setHostLanguage( Configuration.XSLT );
-        configuration.setVersionWarning( false );
-    }
-
-    private void registerExtensions( final JavaExtensionLibrary library )
-    {
-        library.declareJavaClass( PortalFunctions.NAMESPACE_URI, PortalFunctions.class );
-        library.declareJavaClass( PortalFunctions.OLD_NAMESPACE_URI, PortalFunctions.class );
+        this.configuration = this.transformerFactory.getConfiguration();
+        this.configuration.setLineNumbering( true );
+        this.configuration.setHostLanguage( Configuration.XSLT );
+        this.configuration.setVersionWarning( false );
+        this.configuration.setLocalizerFactory( new LocalizerFactoryImpl() );
+        this.configuration.setCompileWithTracing( true );
+        this.configuration.setValidationWarnings( true );
     }
 
     public XsltProcessor createProcessor( final Source xsl, final URIResolver resolver )
@@ -75,7 +74,7 @@ public final class SaxonProcessorManager
     private Transformer createTransformer( final Source xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
-        final Templates templates = createTemplates(xsl, resolver);
+        final Templates templates = createTemplates( xsl, resolver );
         return createTransformer( templates, resolver );
     }
 
@@ -92,6 +91,7 @@ public final class SaxonProcessorManager
         }
         catch ( final Exception e )
         {
+
             throw new XsltProcessorException( e, errors );
         }
     }
@@ -115,12 +115,14 @@ public final class SaxonProcessorManager
     public XsltProcessor createCachedProcessor( final XsltResource xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
-        if (this.cache == null) {
-            return createProcessor(xsl, resolver );
+        if ( this.cache == null )
+        {
+            return createProcessor( xsl, resolver );
         }
 
         Templates templates = this.cache.get( xsl );
-        if (templates == null) {
+        if ( templates == null )
+        {
             templates = createTemplates( xsl.getAsSource(), resolver );
             this.cache.put( xsl, templates );
         }
@@ -132,5 +134,13 @@ public final class SaxonProcessorManager
     public void setTemplatesXsltCache( final TemplatesXsltCache cache )
     {
         this.cache = cache;
+    }
+
+    @Autowired
+    public void setXsltFunctionRegistrations( final XsltFunctionRegistration... registrations )
+    {
+        for (final XsltFunctionRegistration registration : registrations) {
+            registration.register( this.configuration );
+        }
     }
 }

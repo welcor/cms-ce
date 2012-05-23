@@ -57,4 +57,9 @@ public final class AdminFunctions
     {
         return UUID.randomUUID().toString().replaceAll( "-", "" );
     }
+
+    public static String randomId()
+    {
+        return String.valueOf( java.lang.Math.random() );
+    }
 }

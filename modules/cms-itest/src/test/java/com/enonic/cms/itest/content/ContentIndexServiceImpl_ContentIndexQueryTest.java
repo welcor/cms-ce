@@ -2,6 +2,7 @@ package com.enonic.cms.itest.content;
 
 import org.jdom.Document;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,13 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, admin_browse, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
+    }
+
+    @After
+    public void doAfter()
+        throws Exception
+    {
+        Thread.sleep( 1000 );
     }
 
     @Test

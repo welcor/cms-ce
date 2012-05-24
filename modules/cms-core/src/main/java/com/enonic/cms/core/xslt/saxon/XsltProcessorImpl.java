@@ -4,18 +4,32 @@
  */
 package com.enonic.cms.core.xslt.saxon;
 
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+
+import com.google.common.collect.Maps;
 import com.google.common.io.Closeables;
 
-import net.sf.saxon.value.UntypedAtomicValue;
+import net.sf.saxon.s9api.DOMDestination;
+import net.sf.saxon.s9api.Destination;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SAXDestination;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
+
+import com.enonic.esl.xml.XMLTool;
 
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
@@ -24,31 +38,41 @@ import com.enonic.cms.core.xslt.XsltProcessorException;
 final class XsltProcessorImpl
     implements XsltProcessor
 {
-    private final Transformer transformer;
+    private final XsltExecutable executable;
 
-    public XsltProcessorImpl( Transformer transformer )
+    private boolean omitXmlDecl;
+
+    private final Map<String, String> parameters;
+
+    public XsltProcessorImpl( final XsltExecutable executable )
     {
-        this.transformer = transformer;
+        this.executable = executable;
+        this.parameters = Maps.newHashMap();
+    }
+
+    private String getOutputProperty( final String name )
+    {
+        return this.executable.getUnderlyingCompiledStylesheet().getOutputProperties().getProperty( name );
     }
 
     public String getOutputMethod()
     {
-        return this.transformer.getOutputProperty( OutputKeys.METHOD );
+        return getOutputProperty( "method" );
     }
 
     public String getOutputMediaType()
     {
-        return this.transformer.getOutputProperty( OutputKeys.MEDIA_TYPE );
+        return getOutputProperty( "media-type" );
     }
 
     public String getOutputEncoding()
     {
-        return this.transformer.getOutputProperty( OutputKeys.ENCODING );
+        return getOutputProperty( "encoding" );
     }
 
     public void setOmitXmlDecl( boolean omitXmlDecl )
     {
-        this.transformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, omitXmlDecl ? "yes" : "no" );
+        this.omitXmlDecl = omitXmlDecl;
     }
 
     public String getContentType()
@@ -85,7 +109,7 @@ final class XsltProcessorImpl
     /**
      * Process the xml with stylesheet.
      */
-    public String process( Source xml )
+    public String process( final Source xml )
         throws XsltProcessorException
     {
         StringWriter writer = new StringWriter();
@@ -105,43 +129,106 @@ final class XsltProcessorImpl
     public void process( Source xml, Result result )
         throws XsltProcessorException
     {
-        XsltProcessorErrors errors = new XsltProcessorErrors();
+        if ( result instanceof DOMResult )
+        {
+            processDom( xml, (DOMResult) result );
+        }
+        else if ( result instanceof SAXResult )
+        {
+            processSax( xml, (SAXResult) result );
+        }
+        else if ( result instanceof StreamResult )
+        {
+            processStream( xml, (StreamResult) result );
+        }
+        else
+        {
+            throw new XsltProcessorException( "Cannot handle result of type [" + result.getClass().getName() + "]" );
+        }
+    }
+
+    private void processDom( final Source xml, final DOMResult result )
+        throws XsltProcessorException
+    {
+        final Document doc = XMLTool.createDocument();
+        result.setNode( doc );
+
+        final DOMDestination destination = new DOMDestination( doc );
+        doProcess( xml, destination );
+    }
+
+    private void processSax( final Source xml, final SAXResult result )
+        throws XsltProcessorException
+    {
+        final SAXDestination destination = new SAXDestination( result.getHandler() );
+        doProcess( xml, destination );
+    }
+
+    private void processStream( final Source xml, final StreamResult result )
+        throws XsltProcessorException
+    {
+        Writer writer = result.getWriter();
+        if ( writer == null )
+        {
+            writer = new OutputStreamWriter( result.getOutputStream() );
+        }
+
+        process( xml, writer );
+    }
+
+    public void process( final Source xml, final Writer writer )
+        throws XsltProcessorException
+    {
+        final Serializer serializer = new Serializer( writer );
+        serializer.setOutputProperty( Serializer.Property.OMIT_XML_DECLARATION, this.omitXmlDecl ? "yes" : "no" );
+
+        doProcess( xml, serializer );
+    }
+
+    private void doProcess( final Source xml, final Destination destination )
+        throws XsltProcessorException
+    {
+        final XsltProcessorErrors errors = new XsltProcessorErrors();
+        final XsltTransformer transformer = executable.load();
 
         try
         {
-            this.transformer.setErrorListener( errors );
-            this.transformer.transform( xml, result );
+            transformer.setSource( xml );
+            transformer.setDestination( destination );
+            transformer.setErrorListener( errors );
+            applyParameters( transformer );
 
-            if ( errors.hasErrors() )
-            {
-                throw new XsltProcessorException( errors );
-            }
+            transformer.transform();
+
+            transformer.close();
+            destination.close();
         }
-        catch ( Exception e )
+        catch ( final Exception e )
         {
             throw new XsltProcessorException( e, errors );
         }
     }
 
-    public void process( Source xml, Writer writer )
-        throws XsltProcessorException
+    private void applyParameters( final XsltTransformer transformer )
     {
-        StreamResult result = new StreamResult( writer );
-        process( xml, result );
+        for ( final Map.Entry<String, String> entry : this.parameters.entrySet() )
+        {
+            transformer.setParameter( new QName( entry.getKey() ), new XdmAtomicValue( entry.getValue() ) );
+        }
     }
 
-    public Object getParameter( String name )
+    public Object getParameter( final String name )
     {
-        return this.transformer.getParameter( name );
+        return this.parameters.get( name );
     }
 
-    public void setParameter( String name, Object value )
+    public void setParameter( final String name, final Object value )
     {
-        this.transformer.setParameter( name, value != null ? new UntypedAtomicValue( value.toString() ) : value );
+        this.parameters.put( name, value.toString() );
     }
 
     public void clearParameters()
     {
-        this.transformer.clearParameters();
+        this.parameters.clear();
     }
 }

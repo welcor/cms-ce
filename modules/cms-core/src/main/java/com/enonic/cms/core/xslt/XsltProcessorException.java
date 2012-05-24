@@ -28,6 +28,15 @@ public final class XsltProcessorException
     /**
      * Construct the errors.
      */
+    public XsltProcessorException( final String message )
+    {
+        super(message);
+        this.errors = new XsltProcessorErrors();
+    }
+
+    /**
+     * Construct the errors.
+     */
     public XsltProcessorException( final XsltProcessorErrors errors )
     {
         super( "Errors occurred during transformation" );

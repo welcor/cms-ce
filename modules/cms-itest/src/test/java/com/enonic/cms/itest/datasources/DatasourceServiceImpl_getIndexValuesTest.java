@@ -7,6 +7,7 @@ package com.enonic.cms.itest.datasources;
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -40,8 +41,10 @@ import com.enonic.cms.store.dao.UserDao;
 import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
 import static com.enonic.cms.itest.util.AssertTool.assertXPathExist;
 
+
+@Ignore
 public class DatasourceServiceImpl_getIndexValuesTest
-        extends AbstractSpringTest
+    extends AbstractSpringTest
 {
     private static final DateTime DATE_TIME_2010_07_01_12_00_00_0 = new DateTime( 2010, 7, 1, 12, 0, 0, 0 );
 
@@ -77,8 +80,7 @@ public class DatasourceServiceImpl_getIndexValuesTest
         // setup needed common data for each test
         fixture.initSystemData();
 
-        fixture.save( factory.createContentHandler( "Custom content",
-                                                    ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
+        fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
         httpRequest = new MockHttpServletRequest( "GET", "/" );
         ServletRequestAccessor.setRequest( httpRequest );
@@ -92,43 +94,36 @@ public class DatasourceServiceImpl_getIndexValuesTest
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "Person", "name" );
         ctyconf.startBlock( "Person" );
         ctyconf.addInput( "name", "text", "contentdata/name", "Name", true );
-        ctyconf.addRelatedContentInput( "my-relatedcontent", "contentdata/my-relatedcontent", "My relatedcontent",
-                                        false, false );
-        ctyconf.addRelatedContentInput( "my-relatedcontents", "contentdata/my-relatedcontents", "My relatedcontents",
-                                        false, true );
+        ctyconf.addRelatedContentInput( "my-relatedcontent", "contentdata/my-relatedcontent", "My relatedcontent", false, false );
+        ctyconf.addRelatedContentInput( "my-relatedcontents", "contentdata/my-relatedcontents", "My relatedcontents", false, true );
         ctyconf.endBlock();
         personConfigAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
 
-        fixture.save( factory.createContentType( "MyPersonType", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
-                                                 personConfigAsXmlBytes ) );
-
-        fixture.save( factory.createCategory( "MyPersonCategory", null, "MyPersonType", "MyUnit", User.ANONYMOUS_UID,
-                                              User.ANONYMOUS_UID, false ) );
-        fixture.save( factory.createCategoryAccessForUser( "MyPersonCategory", "content-creator",
-                                                           "read, create, approve, admin_browse" ) );
         fixture.save(
-                factory.createCategoryAccessForUser( "MyPersonCategory", "content-querier", "read, admin_browse" ) );
+            factory.createContentType( "MyPersonType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), personConfigAsXmlBytes ) );
+
+        fixture.save(
+            factory.createCategory( "MyPersonCategory", null, "MyPersonType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+        fixture.save( factory.createCategoryAccessForUser( "MyPersonCategory", "content-creator", "read, create, approve, admin_browse" ) );
+        fixture.save( factory.createCategoryAccessForUser( "MyPersonCategory", "content-querier", "read, admin_browse" ) );
 
         // setup content type: Related
         ContentTypeConfigBuilder ctyconfMyRelated = new ContentTypeConfigBuilder( "MyRelatedType", "title" );
         ctyconfMyRelated.startBlock( "General" );
         ctyconfMyRelated.addInput( "title", "text", "contentdata/title", "Title", true );
-        ctyconfMyRelated.addRelatedContentInput( "myRelatedContent", "contentdata/myRelatedContent",
-                                                 "My related content", false, true );
+        ctyconfMyRelated.addRelatedContentInput( "myRelatedContent", "contentdata/myRelatedContent", "My related content", false, true );
         ctyconfMyRelated.endBlock();
-        Document myRelatedconfigAsXmlBytes =
-                XMLDocumentFactory.create( ctyconfMyRelated.toString() ).getAsJDOMDocument();
+        Document myRelatedconfigAsXmlBytes = XMLDocumentFactory.create( ctyconfMyRelated.toString() ).getAsJDOMDocument();
 
-        fixture.save( factory.createContentType( "MyRelatedType", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
-                                                 myRelatedconfigAsXmlBytes ) );
-
-        fixture.save( factory.createCategory( "MyRelatedCategory", null, "MyRelatedType", "MyUnit", User.ANONYMOUS_UID,
-                                              User.ANONYMOUS_UID, false ) );
-
-        fixture.save( factory.createCategoryAccessForUser( "MyRelatedCategory", "content-creator",
-                                                           "read, create, approve, admin_browse" ) );
         fixture.save(
-                factory.createCategoryAccessForUser( "MyRelatedCategory", "content-querier", "read, admin_browse" ) );
+            factory.createContentType( "MyRelatedType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), myRelatedconfigAsXmlBytes ) );
+
+        fixture.save(
+            factory.createCategory( "MyRelatedCategory", null, "MyRelatedType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+
+        fixture.save(
+            factory.createCategoryAccessForUser( "MyRelatedCategory", "content-creator", "read, create, approve, admin_browse" ) );
+        fixture.save( factory.createCategoryAccessForUser( "MyRelatedCategory", "content-querier", "read, admin_browse" ) );
 
         dataSourceService = new DataSourceServiceImpl();
         dataSourceService.setUserDao( userDao );
@@ -224,8 +219,8 @@ public class DatasourceServiceImpl_getIndexValuesTest
         final ContentTypeEntity personContentType = fixture.findContentTypeByName( "MyPersonType" );
         final int[] contentTypes = new int[]{personContentType.getKey()};
 
-        return dataSourceService.getIndexValues( context, indexPath, categories, includeSubCategories, contentTypes,
-                                                 index, count, distinct, order );
+        return dataSourceService.getIndexValues( context, indexPath, categories, includeSubCategories, contentTypes, index, count, distinct,
+                                                 order );
     }
 
     private ContentKey createPersonContent( String name )
@@ -238,28 +233,24 @@ public class DatasourceServiceImpl_getIndexValuesTest
         return createPersonContentWithRelatedContent( name, ContentStatus.APPROVED, relatedContent );
     }
 
-    private ContentKey createPersonContentWithRelatedContent( String name, ContentStatus status,
-                                                              ContentKey relatedContent )
+    private ContentKey createPersonContentWithRelatedContent( String name, ContentStatus status, ContentKey relatedContent )
     {
-        CustomContentData contentData =
-                new CustomContentData( fixture.findContentTypeByName( "MyPersonType" ).getContentTypeConfig() );
+        CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyPersonType" ).getContentTypeConfig() );
         contentData.add( new TextDataEntry( contentData.getInputConfig( "name" ), name ) );
         if ( relatedContent != null )
         {
-            contentData.add(
-                    new RelatedContentDataEntry( contentData.getInputConfig( "my-relatedcontent" ), relatedContent ) );
+            contentData.add( new RelatedContentDataEntry( contentData.getInputConfig( "my-relatedcontent" ), relatedContent ) );
         }
 
         ContentKey expectedContentKey = contentService.createContent(
-                createCreateContentCommand( "MyPersonCategory", "content-creator", status, contentData,
-                                            new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+            createCreateContentCommand( "MyPersonCategory", "content-creator", status, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ),
+                                        null ) );
         fixture.flushIndexTransaction();
         return expectedContentKey;
     }
 
-    private CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid,
-                                                             ContentStatus contentStatus, ContentData contentData,
-                                                             DateTime availableFrom, DateTime availableTo )
+    private CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus,
+                                                             ContentData contentData, DateTime availableFrom, DateTime availableTo )
     {
         CreateContentCommand createContentCommand = new CreateContentCommand();
         createContentCommand.setCategory( fixture.findCategoryByName( categoryName ) );

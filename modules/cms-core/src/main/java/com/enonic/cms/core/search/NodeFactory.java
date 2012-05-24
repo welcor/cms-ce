@@ -69,6 +69,7 @@ public class NodeFactory
     @PreDestroy
     public void stop()
     {
+        this.node.stop();
         this.node.close();
     }
 

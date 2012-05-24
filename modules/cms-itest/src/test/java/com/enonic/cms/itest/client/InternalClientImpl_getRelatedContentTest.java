@@ -12,6 +12,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -49,6 +50,7 @@ import com.enonic.cms.store.dao.UserDao;
 import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
 import static org.junit.Assert.*;
 
+@Ignore
 public class InternalClientImpl_getRelatedContentTest
     extends AbstractSpringTest
 {

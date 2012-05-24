@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.jdom.Document;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.framework.util.JDOMUtil;
@@ -30,6 +31,7 @@ import com.enonic.cms.itest.util.AssertTool;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class InternalClientImpl_ImportContentXmlTest
     extends AbstractInternalClientImpl_ImportContentTest
 {

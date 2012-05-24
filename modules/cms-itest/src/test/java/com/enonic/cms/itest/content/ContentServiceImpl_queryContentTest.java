@@ -7,6 +7,7 @@ package com.enonic.cms.itest.content;
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +34,7 @@ import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class ContentServiceImpl_queryContentTest
     extends AbstractSpringTest
 {

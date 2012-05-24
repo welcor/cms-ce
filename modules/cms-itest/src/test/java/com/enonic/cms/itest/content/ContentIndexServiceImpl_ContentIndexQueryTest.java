@@ -4,6 +4,7 @@ import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import static org.junit.Assert.*;
 @TransactionConfiguration(defaultRollback = true)
 @DirtiesContext
 @Transactional
+@Ignore
 public class ContentIndexServiceImpl_ContentIndexQueryTest
     //extends AbstractSpringTest
 {

@@ -188,8 +188,6 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
 
         verifyField( "data_person_age.orderby", 1, fieldMapForId );
-        verifyField( "data_person_age.orderby_number", 1, fieldMapForId );
-
     }
 
     private void verifyField( String fieldName, int expected, Map<String, SearchHitField> fieldMapForId )

@@ -218,9 +218,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.elasticsearch</groupId>
+      <groupId>com.enonic.lib.repack</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>0.19.0</version>
+      <version>0.19.4</version>
     </dependency>
     <dependency>
       <groupId>org.quartz-scheduler</groupId>

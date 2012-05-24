@@ -34,6 +34,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>${skipITs}</skip>
+          <forkMode>always</forkMode>
         </configuration>
       </plugin>
     </plugins>

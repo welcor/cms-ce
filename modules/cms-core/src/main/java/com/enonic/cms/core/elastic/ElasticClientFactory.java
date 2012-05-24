@@ -50,7 +50,6 @@ public final class ElasticClientFactory
     @PreDestroy
     public void stop()
     {
-
         this.client.close();
     }
 }

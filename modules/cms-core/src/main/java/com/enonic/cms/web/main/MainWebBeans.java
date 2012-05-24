@@ -1,4 +1,4 @@
-package com.enonic.cms.web;
+package com.enonic.cms.web.main;
 
 import java.util.Properties;
 

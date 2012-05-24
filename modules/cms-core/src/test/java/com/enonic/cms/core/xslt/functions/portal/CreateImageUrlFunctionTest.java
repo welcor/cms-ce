@@ -2,6 +2,8 @@ package com.enonic.cms.core.xslt.functions.portal;
 
 import org.junit.Test;
 
+import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
+
 public class CreateImageUrlFunctionTest
     extends AbstractPortalFunctionTest
 {

@@ -1,4 +1,4 @@
-package com.enonic.cms.core.xslt.functions.portal;
+package com.enonic.cms.core.xslt.lib;
 
 public interface PortalFunctionsMediator
 {

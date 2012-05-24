@@ -1,7 +1,6 @@
-package com.enonic.cms.core.xslt.functions.portal;
+package com.enonic.cms.core.xslt.lib;
 
 import org.springframework.stereotype.Component;
-import com.enonic.cms.core.xslt.lib.PortalFunctions;
 
 @Component
 public final class PortalFunctionsMediatorImpl

@@ -14,6 +14,7 @@ import com.enonic.cms.core.portal.rendering.StyleSheetURIResolver;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.xslt.XsltProcessor;
+import com.enonic.cms.core.xslt.XsltProcessorError;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 import com.enonic.cms.core.xslt.XsltProcessorManager;
@@ -38,21 +39,10 @@ public abstract class AbstractXsltViewTransformer
         {
             return;
         }
-
-        for ( TransformerException error : errors.getFatalErrors() )
+        /*for ( XsltProcessorError error : errors.getErrors() )
         {
             logger.error( error.getMessageAndLocation() );
-        }
-
-        for ( TransformerException error : errors.getErrors() )
-        {
-            logger.error( error.getMessageAndLocation() );
-        }
-
-        for ( TransformerException error : errors.getWarnings() )
-        {
-            logger.warn( error.getMessageAndLocation() );
-        }
+        }*/
     }
 
     protected XsltProcessor createProcessor( ResourceKey styleSheetKey, XMLDocument xslt )

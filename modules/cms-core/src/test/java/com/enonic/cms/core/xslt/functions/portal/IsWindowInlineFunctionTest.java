@@ -3,6 +3,8 @@ package com.enonic.cms.core.xslt.functions.portal;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
+
 public class IsWindowInlineFunctionTest
     extends AbstractPortalFunctionTest
 {

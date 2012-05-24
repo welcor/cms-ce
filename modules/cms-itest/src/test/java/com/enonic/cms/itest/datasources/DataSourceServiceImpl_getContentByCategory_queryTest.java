@@ -7,7 +7,6 @@ package com.enonic.cms.itest.datasources;
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -40,7 +39,6 @@ import com.enonic.cms.store.dao.UserDao;
 
 import static org.junit.Assert.*;
 
-@Ignore
 public class DataSourceServiceImpl_getContentByCategory_queryTest
     extends AbstractSpringTest
 {

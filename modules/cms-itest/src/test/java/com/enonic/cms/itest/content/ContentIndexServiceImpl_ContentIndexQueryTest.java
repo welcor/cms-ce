@@ -5,8 +5,14 @@ import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 
@@ -25,14 +31,18 @@ import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:com/enonic/cms/itest/base-core-test-context.xml")
+@TransactionConfiguration(defaultRollback = true)
+@DirtiesContext
+@Transactional
 public class ContentIndexServiceImpl_ContentIndexQueryTest
-    extends AbstractSpringTest
+    //extends AbstractSpringTest
 {
     private DomainFactory factory;
 
@@ -85,7 +95,8 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
     public void doAfter()
         throws Exception
     {
-        Thread.sleep( 1000 );
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     @Test

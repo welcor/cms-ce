@@ -5,7 +5,6 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.elasticsearch.search.SearchHitField;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -18,7 +17,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
-@Ignore
 public class ContentIndexServiceImpl_indexAllUserdataFieldTest
     extends ContentIndexServiceTestBase
 {

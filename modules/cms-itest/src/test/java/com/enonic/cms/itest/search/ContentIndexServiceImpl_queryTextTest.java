@@ -11,7 +11,6 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
  * Date: 1/3/12
  * Time: 1:02 PM
  */
-@Ignore
 public class ContentIndexServiceImpl_queryTextTest
     extends ContentIndexServiceTestBase
 {
@@ -38,6 +37,7 @@ public class ContentIndexServiceImpl_queryTextTest
             new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk'" ) ) );
     }
 
+    @Ignore //Fix
     @Test
     public void testOneWordSearchOnTitleAndFulltext()
     {
@@ -46,6 +46,8 @@ public class ContentIndexServiceImpl_queryTextTest
         contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ), false );
         contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
         flushIndex();
+
+
 
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
             new ContentIndexQuery( "title CONTAINS 'ost' AND fulltext CONTAINS 'ost'" ) ) );
@@ -80,7 +82,8 @@ public class ContentIndexServiceImpl_queryTextTest
             new ContentIndexQuery( "title CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
-    @Ignore // Decide how to handle fulltext
+
+    @Ignore //Fix
     @Test
     public void testOneWordSearchOnTitleAndDataAndFulltext()
     {
@@ -144,6 +147,8 @@ public class ContentIndexServiceImpl_queryTextTest
             new ContentIndexQuery( "title CONTAINS 'fisk' OR data/* CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
+
+    @Ignore //Fix
     @Test
     public void testOneWordSearchOnTitleAndFulltextAndUnknown()
     {
@@ -169,7 +174,8 @@ public class ContentIndexServiceImpl_queryTextTest
             new ContentIndexQuery( "title CONTAINS 'fisk' OR fulltext CONTAINS 'fisk' OR unknown CONTAINS 'fisk'" ) ) );
     }
 
-    @Ignore // Decide how to handle fulltext
+
+    @Ignore //Fix
     @Test
     public void testOneWordSearchOnTitleAndDataAndFulltextAndUnknown()
     {
@@ -258,6 +264,8 @@ public class ContentIndexServiceImpl_queryTextTest
             new ContentIndexQuery( "data/text CONTAINS 'fisk' OR data/text CONTAINS 'torsk'", "" ) ) );
     }
 
+
+    @Ignore //Fix
     @Test
     public void testMultipleSameLikeExactWords()
         throws Exception

@@ -6,7 +6,6 @@ import java.util.GregorianCalendar;
 import org.jdom.Document;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -39,7 +38,6 @@ import static org.junit.Assert.*;
  * Date: 12/29/11
  * Time: 3:11 PM
  */
-@Ignore
 public class ContentIndexServiceImpl_queryIndexAndCountTest
     extends ContentIndexServiceTestDBBase
 {

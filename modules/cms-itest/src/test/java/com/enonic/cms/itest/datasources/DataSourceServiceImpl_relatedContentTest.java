@@ -11,7 +11,6 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -48,7 +47,6 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemService;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.search.ContentIndexServiceTestBase;
 import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
@@ -360,7 +358,6 @@ public class DataSourceServiceImpl_relatedContentTest
                                       sonContentKey.toString(), daughterContentKey.toString(), fatherContentKey.toString() );
     }
 
-    @Ignore
     @Test
     public void content_queried_with_related_children_having_different_read_permissions()
     {

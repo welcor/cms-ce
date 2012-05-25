@@ -11,7 +11,6 @@ import java.io.UnsupportedEncodingException;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateMidnight;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -41,7 +40,6 @@ import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
 
-@Ignore
 public class ImportServiceImpl_importWithBlockGroupsTest
     extends AbstractSpringTest
 {

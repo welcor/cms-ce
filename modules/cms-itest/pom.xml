@@ -34,10 +34,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>${skipITs}</skip>
-          <forkMode>always</forkMode>
-          <threadCount>2</threadCount>
-          <parallel>classes</parallel>
-        </configuration>
+       </configuration>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.surefire</groupId>

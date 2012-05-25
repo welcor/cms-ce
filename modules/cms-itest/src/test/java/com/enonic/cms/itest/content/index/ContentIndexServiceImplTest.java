@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import com.enonic.cms.store.dao.ContentIndexDao;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class ContentIndexServiceImplTest
     extends AbstractSpringTest
 {
@@ -2043,13 +2045,11 @@ public class ContentIndexServiceImplTest
                                                           new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
                                    false );
 
-        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) )
-                          .getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
+            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status asc" ) ).getKeys() );
 
-        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) )
-                          .getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), contentIndexService.query(
+            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "status desc" ) ).getKeys() );
 
     }
 
@@ -2093,9 +2093,8 @@ public class ContentIndexServiceImplTest
         doc3.setPublishTo( new DateTime( 2010, 10, 1, 0, 0, 0, 1 ).toDate() );
         contentIndexService.index( doc3, false );
 
-        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ),
-                      contentIndexService.query( new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo asc" ) )
-                          .getKeys() );
+        assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
+            new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo asc" ) ).getKeys() );
 
         assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), contentIndexService.query(
             new ContentIndexQuery( "contenttypekey = 10 and title STARTS WITH 'c'", "publishTo desc" ) ).getKeys() );

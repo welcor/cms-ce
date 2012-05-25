@@ -35,7 +35,16 @@
         <configuration>
           <skip>${skipITs}</skip>
           <forkMode>always</forkMode>
+          <threadCount>2</threadCount>
+          <parallel>classes</parallel>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>2.12</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

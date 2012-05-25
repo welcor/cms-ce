@@ -41,8 +41,6 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
         indexUserDataWithMultipleValuesDocument();
 
         assertContentResultSetEquals( new int[]{1322}, contentIndexService.query( new ContentIndexQuery( "data/* = '11' " ) ) );
-
-        assertContentResultSetEquals( new int[]{1322, 1323}, contentIndexService.query( new ContentIndexQuery( "data/* = '11' " ) ) );
     }
 
     @Test
@@ -50,11 +48,12 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
     {
         indexUserDataWithMultipleValuesDocument();
 
+        printAllIndexContent();
+
         assertContentResultSetEquals( new int[]{1322}, contentIndexService.query( new ContentIndexQuery( "data/* = 10 " ) ) );
 
-        assertContentResultSetEquals( new int[]{1322, 1323}, contentIndexService.query( new ContentIndexQuery( "data/* = 11 " ) ) );
+        assertContentResultSetEquals( new int[]{1322}, contentIndexService.query( new ContentIndexQuery( "data/* = 11 " ) ) );
 
-        assertContentResultSetEquals( new int[]{1322, 1323}, contentIndexService.query( new ContentIndexQuery( "data/* = 'eleven " ) ) );
     }
 
     private void indexUserDataWithMultipleValuesDocument()
@@ -98,6 +97,8 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
         contentIndexService.index( doc2, true );
+
+        flushIndex();
 
     }
 

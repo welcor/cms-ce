@@ -458,6 +458,8 @@ public class DataSourceServiceImpl_relatedContentTest
         command2.setContent( contentB );
         menuItemService.execute( command2 );
 
+        fixture.flushIndexTransaction();
+
         // setup: verify that the content was created
         assertEquals( 6, fixture.countAllContent() );
 

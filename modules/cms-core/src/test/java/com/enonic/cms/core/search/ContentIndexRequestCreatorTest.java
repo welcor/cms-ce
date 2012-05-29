@@ -72,4 +72,16 @@ public class ContentIndexRequestCreatorTest
 
         assertTrue( contentWasFirst && binarydataFound );
     }
+
+    @Test
+    public void testOnlyCreateBinaryRequestIfAnyBinaryData()
+        throws Exception
+    {
+        ContentIndexData data = new ContentIndexData( new ContentKey( "1" ) );
+        data.addContentData( "contentdata", 1 );
+
+        Set<IndexRequest> requests = contentIndexRequestCreator.createIndexRequests( "TEST_INDEX", data );
+
+        assertEquals( 1, requests.size() );
+    }
 }

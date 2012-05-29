@@ -34,15 +34,15 @@ public class ContentIndexData
 
     public XContentBuilder buildContentDataJson()
     {
-        return buildJsonForDateElements( contentDataElements );
+        return buildJsonForDataElements( contentDataElements );
     }
 
     public XContentBuilder buildBinaryDataJson()
     {
-        return buildJsonForDateElements( binaryDataElements );
+        return buildJsonForDataElements( binaryDataElements );
     }
 
-    private XContentBuilder buildJsonForDateElements( Collection<ContentIndexDataElement> contentIndexDataElements )
+    private XContentBuilder buildJsonForDataElements( Collection<ContentIndexDataElement> contentIndexDataElements )
     {
         try
         {
@@ -128,5 +128,10 @@ public class ContentIndexData
     public Set<ContentIndexDataElement> getBinaryDataElements()
     {
         return binaryDataElements;
+    }
+
+    public boolean hasBinaryData()
+    {
+        return !binaryDataElements.isEmpty();
     }
 }

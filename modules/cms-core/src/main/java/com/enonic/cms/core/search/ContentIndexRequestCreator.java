@@ -42,6 +42,12 @@ final class ContentIndexRequestCreator
     private void addRequestsForBinaryData( final String indexName, final ContentIndexData contentIndexData,
                                            final Set<IndexRequest> indexRequests )
     {
+
+        if ( !contentIndexData.hasBinaryData() )
+        {
+            return;
+        }
+
         final String parentId = contentIndexData.getKey().toString();
 
         doAddRequests( indexName, contentIndexData.buildBinaryDataJson(), indexRequests, parentId, parentId, IndexType.Binaries );

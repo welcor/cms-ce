@@ -158,7 +158,7 @@ var CMSImage = {
             ed.selection.select(selectedNode.parentNode);
         }
 
-        // Fix for IE8/https. mceInsertRawHTML seems to raise a "mixed content" warning popup. TODO: Test in IE 7 and IE 9
+        // Fix for IE8/https. mceInsertRawHTML seems to raise a "mixed content" warning popup.
         if ( isIE8 )
         {
             tinyMCEPopup.execCommand('mceInsertContent',false, html);

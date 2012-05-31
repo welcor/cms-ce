@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.URL;
 import com.enonic.vertical.adminweb.AdminHelper;
@@ -21,6 +23,7 @@ public final class PluginInfoController
 {
     private PluginManager pluginManager;
 
+    @Autowired
     public void setPluginManager(final PluginManager pluginManager)
     {
         this.pluginManager = pluginManager;

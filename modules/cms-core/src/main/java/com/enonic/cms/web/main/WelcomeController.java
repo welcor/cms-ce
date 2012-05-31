@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.product.LicenseChecker;
@@ -23,24 +24,33 @@ import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.upgrade.UpgradeService;
 
 /**
- * Controller for displaying the welcome page, the root page for an installation, listing all sites, plugins, etcs, and linking to DAV,
- * Admin pages, and other information pages.
+ * Controller for displaying the welcome page, the root page for an installation.
  */
 @Controller
 public final class WelcomeController
 {
     private UpgradeService upgradeService;
 
-    @Autowired
     private SiteDao siteDao;
 
-    @Autowired(required = false)
     private LicenseChecker licenseChecker;
 
     @Autowired
     public void setUpgradeService( final UpgradeService upgradeService )
     {
         this.upgradeService = upgradeService;
+    }
+
+    @Autowired
+    public void setSiteDao( final SiteDao siteDao )
+    {
+        this.siteDao = siteDao;
+    }
+
+    @Autowired(required = false)
+    public void setLicenseChecker( final LicenseChecker licenseChecker )
+    {
+        this.licenseChecker = licenseChecker;
     }
 
     private Map<String, Integer> createSiteMap()
@@ -55,7 +65,7 @@ public final class WelcomeController
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-    protected ModelAndView handle( final HttpServletRequest req )
+    public ModelAndView welcomePage( final HttpServletRequest req )
     {
         final boolean modelUpgradeNeeded = this.upgradeService.needsUpgrade();
         final boolean softwareUpgradeNeeded = this.upgradeService.needsSoftwareUpgrade();
@@ -81,20 +91,7 @@ public final class WelcomeController
 
     private String createBaseUrl( final HttpServletRequest req )
     {
-        final StringBuilder str = new StringBuilder();
-        str.append( req.getScheme() ).append( "://" ).append( req.getServerName() );
-
-        if ( req.getServerPort() != 80 )
-        {
-            str.append( ":" ).append( req.getServerPort() );
-        }
-
-        str.append( req.getContextPath() );
-        if ( str.charAt( str.length() - 1 ) == '/' )
-        {
-            str.deleteCharAt( str.length() - 1 );
-        }
-
-        return str.toString();
+        final String url = ServletUriComponentsBuilder.fromRequest( req ).build().toString();
+        return url.substring( 0, url.length() - 1 );
     }
 }

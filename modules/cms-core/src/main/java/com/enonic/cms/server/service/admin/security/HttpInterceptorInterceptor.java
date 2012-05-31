@@ -7,6 +7,8 @@ package com.enonic.cms.server.service.admin.security;
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -21,6 +23,7 @@ public class HttpInterceptorInterceptor extends HandlerInterceptorAdapter
 
     private PluginManager pluginManager;
 
+    @Autowired
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.enonic.esl.sql.model.Table;
 import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.engine.BaseEngine;
+import com.enonic.vertical.engine.PresentationEngine;
 import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
 
 import com.enonic.cms.core.log.LogService;
@@ -115,12 +116,13 @@ public abstract class BaseHandler
         this.verticalProperties = value;
     }
 
-    public void setBaseEngine( BaseEngine value )
+    @Autowired
+    public void setBaseEngine( PresentationEngine value )
     {
         this.baseEngine = value;
     }
 
-
+    @Autowired
     public void setAdminConsoleTranslationService( AdminConsoleTranslationService languageMap )
     {
         this.languageMap = languageMap;
@@ -132,6 +134,7 @@ public abstract class BaseHandler
         this.keyService = value;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService service )
     {
         securityService = service;

@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.util.UrlPathHelper;
@@ -68,6 +69,9 @@ public class AttachmentController
     public void afterPropertiesSet()
         throws Exception
     {
+        this.urlEncodingUrlPathHelper = new UrlPathHelper();
+        this.urlEncodingUrlPathHelper.setUrlDecode( true );
+
         attachmentRequestResolver = new AttachmentRequestResolver()
         {
             @Override
@@ -213,26 +217,25 @@ public class AttachmentController
         }
     }
 
+    @Autowired
     public void setBinaryDataDao( BinaryDataDao binaryDataDao )
     {
         this.binaryDataDao = binaryDataDao;
     }
 
+    @Autowired
     public void setContentDao( ContentDao dao )
     {
         contentDao = dao;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService value )
     {
         this.securityService = value;
     }
 
-    public void setUrlEncodingUrlPathHelper( UrlPathHelper value )
-    {
-        this.urlEncodingUrlPathHelper = value;
-    }
-
+    @Autowired
     public void setGroupDao( GroupDao groupDao )
     {
         this.groupDao = groupDao;

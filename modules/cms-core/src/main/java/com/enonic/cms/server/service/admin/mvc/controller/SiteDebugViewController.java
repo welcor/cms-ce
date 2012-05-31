@@ -8,10 +8,11 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
-import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.adminweb.AdminHelper;
 
 import com.enonic.cms.framework.util.UrlPathEncoder;
@@ -38,6 +39,8 @@ public final class SiteDebugViewController
     private ContentDao contentDao;
 
     private SiteDao siteDao;
+
+    private String characterEncoding;
 
     protected ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response )
             throws Exception
@@ -79,9 +82,8 @@ public final class SiteDebugViewController
 
     private String getEncodedUrlForForwarding( SitePath sitePath )
     {
-        final String urlCharacterEncoding = VerticalProperties.getVerticalProperties().getUrlCharacterEncoding();
         String encodedLocalPath = UrlPathEncoder.encodeUrlPathNoParameters( sitePath.getLocalPath().getPathAsString(),
-                                                                            urlCharacterEncoding );
+                                                                            this.characterEncoding );
         SitePath newSitePath = new SitePath( sitePath.getSiteKey(), encodedLocalPath, sitePath.getParams() );
         return "/site" + newSitePath.asString();
     }
@@ -117,14 +119,21 @@ public final class SiteDebugViewController
         return site;
     }
 
-
+    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setSiteDao( SiteDao siteDao )
     {
         this.siteDao = siteDao;
+    }
+
+    @Value("${cms.url.characterEncoding}")
+    public void setCharacterEncoding( String characterEncoding )
+    {
+        this.characterEncoding = characterEncoding;
     }
 }

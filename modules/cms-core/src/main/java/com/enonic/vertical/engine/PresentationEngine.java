@@ -5,6 +5,7 @@
 package com.enonic.vertical.engine;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import com.enonic.vertical.engine.handlers.BinaryDataHandler;
 import com.enonic.vertical.engine.handlers.CategoryHandler;
@@ -161,66 +162,79 @@ public class PresentationEngine
         }
     }
 
+    @Autowired
     public void setCategoryHandler( CategoryHandler categoryHandler )
     {
         this.categoryHandler = categoryHandler;
     }
 
+    @Autowired
     public void setCommonHandler( CommonHandler commonHandler )
     {
         this.commonHandler = commonHandler;
     }
 
+    @Autowired
     public void setContentHandler( ContentHandler contentHandler )
     {
         this.contentHandler = contentHandler;
     }
 
+    @Autowired
     public void setContentObjectHandler( ContentObjectHandler contentObjectHandler )
     {
         this.contentObjectHandler = contentObjectHandler;
     }
 
+    @Autowired
     public void setGroupHandler( GroupHandler groupHandler )
     {
         this.groupHandler = groupHandler;
     }
 
+    @Autowired
     public void setLanguageHandler( LanguageHandler languageHandler )
     {
         this.languageHandler = languageHandler;
     }
 
+    @Autowired
     public void setLogHandler( LogHandler logHandler )
     {
         this.logHandler = logHandler;
     }
 
+    @Autowired
     public void setMenuHandler( MenuHandler menuHandler )
     {
         this.menuHandler = menuHandler;
     }
 
+    @Autowired
     public void setPageHandler( PageHandler pageHandler )
     {
         this.pageHandler = pageHandler;
     }
 
+    @Autowired
     public void setPageTemplateHandler( PageTemplateHandler pageTemplateHandler )
     {
         this.pageTemplateHandler = pageTemplateHandler;
     }
 
+    @Autowired
     public void setSectionHandler( SectionHandler sectionHandler )
     {
         this.sectionHandler = sectionHandler;
     }
 
+    @Autowired
     public void setSecurityHandler( SecurityHandler securityHandler )
     {
         this.securityHandler = securityHandler;
     }
 
+    @Autowired
     public void setUserHandler( UserHandler userHandler )
     {
         this.userHandler = userHandler;

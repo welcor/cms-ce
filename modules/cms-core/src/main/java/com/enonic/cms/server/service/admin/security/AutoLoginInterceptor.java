@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.plugin.PluginManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.enonic.esl.servlet.http.CookieUtil;
@@ -34,11 +36,13 @@ public final class AutoLoginInterceptor
 
     private OriginalPathResolver originalPathResolver = new OriginalPathResolver();
 
+    @Autowired
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService securityService )
     {
         this.securityService = securityService;

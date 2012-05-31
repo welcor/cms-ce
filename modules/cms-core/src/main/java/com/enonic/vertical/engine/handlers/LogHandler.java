@@ -56,8 +56,8 @@ public final class LogHandler
         }
 
         ElementProcessor[] elementProcessors = new ElementProcessor[2];
-        elementProcessors[0] = new UserElementProcessor( baseEngine.getCommonHandler() );
-        elementProcessors[1] = new MenuElementProcessor( baseEngine.getCommonHandler() );
+        elementProcessors[0] = new UserElementProcessor( getCommonHandler() );
+        elementProcessors[1] = new MenuElementProcessor( getCommonHandler() );
 
         CommonHandler commonHandler = getCommonHandler();
         Document doc =

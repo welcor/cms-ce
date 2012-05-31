@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextResourceLoader;
 import org.springframework.web.servlet.ModelAndView;
@@ -88,6 +89,7 @@ public class ResourceController
         HttpServletUtil.copyNoCloseOut( in, out );
     }
 
+    @Autowired
     public void setMimeTypeResolver( MimeTypeResolver mimeTypeResolver )
     {
         this.mimeTypeResolver = mimeTypeResolver;

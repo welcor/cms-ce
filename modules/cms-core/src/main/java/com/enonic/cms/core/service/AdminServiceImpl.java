@@ -7,6 +7,7 @@ package com.enonic.cms.core.service;
 import java.util.Date;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -46,6 +47,7 @@ public class AdminServiceImpl
 
     private static final int TIMEOUT_24HOURS = 86400;
 
+    @Autowired
     public void setAdminEngine( AdminEngine value )
     {
         adminEngine = value;
@@ -55,6 +57,7 @@ public class AdminServiceImpl
 
     private ResourceService resourceService;
 
+    @Autowired
     public void setResourceService( ResourceService value )
     {
         this.resourceService = value;

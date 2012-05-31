@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.vertical.userservices.CustomContentHandlerController;
-import com.enonic.vertical.userservices.UserServicesRedirectUrlResolver;
+import com.enonic.cms.web.portal.services.ContentServicesProcessor;
+import com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -30,7 +30,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
-import com.enonic.cms.core.portal.SiteRedirectHelper;
+import com.enonic.cms.web.portal.SiteRedirectHelper;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -43,7 +43,6 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.junit.Assert.*;
@@ -51,9 +50,6 @@ import static org.junit.Assert.*;
 public class ContentServiceImpl_accessTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private GroupEntityDao groupEntityDao;
-
     @Autowired
     private SecurityService securityService;
 
@@ -68,7 +64,7 @@ public class ContentServiceImpl_accessTest
 
     private SiteRedirectHelper siteRedirectHelper;
 
-    private CustomContentHandlerController customContentHandlerController;
+    private ContentServicesProcessor customContentHandlerController;
 
     private UserServicesRedirectUrlResolver userServicesRedirectUrlResolver;
 
@@ -83,7 +79,7 @@ public class ContentServiceImpl_accessTest
     {
         factory = fixture.getFactory();
 
-        customContentHandlerController = new CustomContentHandlerController();
+        customContentHandlerController = new ContentServicesProcessor();
         customContentHandlerController.setContentService( contentService );
         customContentHandlerController.setSecurityService( securityService );
         customContentHandlerController.setCategoryDao( categoryDao );

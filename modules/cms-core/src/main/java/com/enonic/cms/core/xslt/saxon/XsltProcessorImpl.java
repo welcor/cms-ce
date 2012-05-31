@@ -15,6 +15,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import com.google.common.io.Closeables;
 
+import net.sf.saxon.value.UntypedAtomicValue;
+
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
 import com.enonic.cms.core.xslt.XsltProcessorException;
@@ -89,9 +91,12 @@ final class XsltProcessorImpl
     {
         StringWriter writer = new StringWriter();
 
-        try {
-            process(xml, writer);
-        } finally {
+        try
+        {
+            process( xml, writer );
+        }
+        finally
+        {
             Closeables.closeQuietly( writer );
         }
 
@@ -123,7 +128,7 @@ final class XsltProcessorImpl
         throws XsltProcessorException
     {
         StreamResult result = new StreamResult( writer );
-        process(xml, result);
+        process( xml, result );
     }
 
     public Object getParameter( String name )
@@ -133,7 +138,7 @@ final class XsltProcessorImpl
 
     public void setParameter( String name, Object value )
     {
-        this.transformer.setParameter( name, value );
+        this.transformer.setParameter( name, value != null ? new UntypedAtomicValue( value.toString() ) : value );
     }
 
     public void clearParameters()

@@ -545,17 +545,6 @@
     <property name="transactionTemplate" ref="schedulerTranscationTemplate"/>
   </bean>
 
-  <!--  <bean id="indexMappingProvider" class="com.enonic.cms.core.search.ConfigFileMappingProvider"/> -->
-
-  <bean id="contentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceDispatcher">
-    <property name="newContentIndexService" ref="newContentIndexService"/>
-    <property name="oldContentIndexService" ref="oldContentIndexService"/>
-  </bean>
-
-  <bean id="oldContentIndexService" class="com.enonic.cms.core.content.index.ContentIndexServiceImpl"/>
-
-  <bean id="newContentIndexService" class="com.enonic.cms.core.search.ContentIndexServiceImpl"/>
-
   <bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.ContentIndexSettingsBuilder"/>
 
   <bean id="nodeSettingsBuilder" class="com.enonic.cms.core.search.NodeSettingsBuilderImpl"/>

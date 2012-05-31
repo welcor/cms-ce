@@ -3,6 +3,8 @@ package com.enonic.cms.itest.search;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -25,6 +27,7 @@ import com.enonic.cms.core.content.resultset.ContentResultSet;
 public class ContentIndexServiceTestWrapper
     implements ContentIndexService
 {
+    @Autowired
     private ContentIndexService contentIndexService;
 
     public int remove( ContentKey contentKey )

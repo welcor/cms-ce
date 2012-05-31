@@ -1,8 +1,6 @@
 package com.enonic.cms.core.tools;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,15 +18,9 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.adminweb.AdminHelper;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
-import com.enonic.cms.core.search.query.QueryTranslator;
-import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasure;
-import com.enonic.cms.core.search.querymeasurer.IndexQueryMeasurer;
-import com.enonic.cms.core.search.querymeasurer.QueryDiffEntry;
-import com.enonic.cms.core.search.querymeasurer.QueryResultComparer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,79 +52,29 @@ public class IndexMonitorController
         AvgTime;
     }
 
-    private ContentIndexService newContentIndexService;
-
     private ElasticSearchIndexService elasticSearchIndexService;
-
-    private QueryTranslator elasticSearchQueryTranslator;
-
-    private IndexQueryMeasurer indexQueryMeasurer;
-
-    private QueryResultComparer queryResultComparer;
 
     @Override
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
-
-        final String systemInfo = req.getParameter( "measuresList" );
-        final String diffList = req.getParameter( "diffList" );
-        final String queryContent = req.getParameter( "queryContent" );
-
-        clearQueryMeasures( req );
-        clearDiffEntries( req );
-
         SortValue orderBy = getOrderBy( req );
 
         int count = getCount( req );
 
-        if ( StringUtils.isNotBlank( queryContent ) )
-        {
-            final HashMap<String, Object> model = new HashMap<String, Object>();
+        final HashMap<String, Object> model = new HashMap<String, Object>();
 
-            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
-            model.put( "contentFields", getContentFields( req ) );
-            process( req, res, model, "indexMonitorContentQueryWindow" );
+        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
 
-        }
-        else if ( StringUtils.isNotBlank( systemInfo ) )
-        {
-            final HashMap<String, Object> model = new HashMap<String, Object>();
+        model.put( "numberOfContent", getTotalHitsContent() );
+        model.put( "numberOfBinaries", getTotalHitsBinaries() );
+        model.put( "numberOfNodes", 1 );
 
-            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
-            model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
-            model.put( "totalHitsOnIndex", indexQueryMeasurer.getTotalQueriesOnIndex() );
-            model.put( "numberOfRecoredQueries", indexQueryMeasurer.getRecordedQueries() );
+        model.put( "count", count );
+        model.put( "orderBy", orderBy );
 
-            process( req, res, model, "indexMonitorMeasureList" );
-        }
-
-        else if ( StringUtils.isNotBlank( diffList ) )
-        {
-            final HashMap<String, Object> model = new HashMap<String, Object>();
-
-            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
-            model.put( "queryResultDiffList", createQueryResultDiffList() );
-
-            process( req, res, model, "indexMonitorDiffList" );
-        }
-
-        else
-        {
-            final HashMap<String, Object> model = new HashMap<String, Object>();
-
-            model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
-            model.put( "totalHitsOnIndex", indexQueryMeasurer.getTotalQueriesOnIndex() );
-            model.put( "numberOfRecoredQueries", indexQueryMeasurer.getRecordedQueries() );
-            model.put( "numberOfContent", getTotalHitsContent() );
-            model.put( "numberOfBinaries", getTotalHitsBinaries() );
-            model.put( "numberOfNodes", 1 );
-            model.put( "indexQueryMeasurerSnapshot", getIndexQueryMeasurerResult( orderBy, count ) );
-            model.put( "count", count );
-            model.put( "orderBy", orderBy );
-
-            process( req, res, model, "indexMonitorPage" );
-        }
+        process( req, res, model, "indexMonitorPage" );
     }
+
 
     private Map<String, String> getContentFields( final HttpServletRequest req )
     {
@@ -149,12 +91,6 @@ public class IndexMonitorController
         }
 
         return resultMap;
-    }
-
-    private List<QueryDiffEntry> createQueryResultDiffList()
-    {
-        return queryResultComparer.getQueryDiffEntries();
-
     }
 
     private SortValue getOrderBy( HttpServletRequest req )
@@ -191,43 +127,6 @@ public class IndexMonitorController
             count = new Integer( countString );
         }
         return count;
-    }
-
-    private void clearQueryMeasures( HttpServletRequest req )
-    {
-        String clear = req.getParameter( "clear" );
-
-        if ( StringUtils.isNotBlank( clear ) )
-        {
-            indexQueryMeasurer.clearStatistics();
-        }
-    }
-
-    private void clearDiffEntries( HttpServletRequest req )
-    {
-        String clear = req.getParameter( "clearDiffEntries" );
-
-        if ( StringUtils.isNotBlank( clear ) )
-        {
-            queryResultComparer.clear();
-        }
-    }
-
-    private Collection<IndexQueryMeasure> getIndexQueryMeasurerResult( SortValue orderBy, Integer count )
-    {
-        switch ( orderBy )
-        {
-            case MaxTime:
-                return indexQueryMeasurer.getMeasuresOrderedByMaxTime( count );
-            case AvgTime:
-                return indexQueryMeasurer.getMeasuresOrderedByAvgTime( count );
-            case AvgTimeDiff:
-                return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
-            case TotalHits:
-                return indexQueryMeasurer.getMeasuresOrderedByTotalExecutions( count );
-            default:
-                return indexQueryMeasurer.getMeasuresOrderedByAvgDiffTime( count );
-        }
     }
 
 
@@ -271,27 +170,11 @@ public class IndexMonitorController
         return response.getHits().getTotalHits();
     }
 
-
-    public void setNewContentIndexService( ContentIndexService newContentIndexService )
-    {
-        this.newContentIndexService = newContentIndexService;
-    }
-
     @Autowired
     public void setElasticSearchIndexService( ElasticSearchIndexService elasticSearchIndexService )
     {
         this.elasticSearchIndexService = elasticSearchIndexService;
     }
 
-    @Autowired
-    public void setIndexQueryMeasurer( IndexQueryMeasurer indexQueryMeasurer )
-    {
-        this.indexQueryMeasurer = indexQueryMeasurer;
-    }
 
-    @Autowired
-    public void setQueryResultComparer( final QueryResultComparer queryResultComparer )
-    {
-        this.queryResultComparer = queryResultComparer;
-    }
 }

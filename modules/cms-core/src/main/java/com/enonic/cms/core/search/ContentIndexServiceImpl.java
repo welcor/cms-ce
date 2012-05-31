@@ -3,6 +3,7 @@ package com.enonic.cms.core.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,7 @@ import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
@@ -38,6 +40,9 @@ import com.enonic.cms.core.content.index.IndexValueResultSetImpl;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
+import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTrace;
+import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTracer;
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
 import com.enonic.cms.core.search.query.IndexQueryException;
@@ -48,6 +53,7 @@ import com.enonic.cms.store.dao.ContentDao;
 /**
  * This class implements the content index service based on elasticsearch
  */
+@Component
 public class ContentIndexServiceImpl
     implements ContentIndexService
 {
@@ -68,6 +74,9 @@ public class ContentIndexServiceImpl
     private final IndexValueQueryTranslator indexValueQueryTranslator = new IndexValueQueryTranslator();
 
     private ContentDao contentDao;
+
+    @Autowired
+    private LivePortalTraceService livePortalTraceService;
 
     @PostConstruct
     public void initializeContentIndex()
@@ -195,34 +204,69 @@ public class ContentIndexServiceImpl
     {
         final SearchSourceBuilder querySource;
 
-        optimizeCount( query );
-
-        querySource = buildQuerySource( query );
-
-        final SearchHits hits = doExecuteSearchRequest( querySource );
-
-        LOG.finer(
-            "query: " + querySource.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
-
-        final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
-
-        if ( query.getIndex() > queryResultTotalSize )
+        if ( isFilterBlockingAllContent( query ) )
         {
-            final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
-            rs.addError( "Index greater than result count: " + query.getIndex() + " greater than " + queryResultTotalSize );
-            return rs;
+            return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), new LinkedList<ContentKey>(), 0, 0 );
         }
 
-        final int fromIndex = Math.max( query.getIndex(), 0 );
+        final ContentIndexQueryTrace trace = ContentIndexQueryTracer.startTracing( livePortalTraceService );
 
-        final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();
-
-        for ( SearchHit hit : hits )
+        try
         {
-            keys.add( new ContentKey( hit.getId() ) );
-        }
 
-        return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
+            optimizeCount( query );
+
+            querySource = buildQuerySource( query );
+
+            final SearchHits hits = doExecuteSearchRequest( querySource );
+
+            LOG.finer(
+                "query: " + querySource.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
+
+            final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
+
+            if ( query.getIndex() > queryResultTotalSize )
+            {
+                final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
+                rs.addError( "Index greater than result count: " + query.getIndex() + " greater than " + queryResultTotalSize );
+                return rs;
+            }
+
+            final int fromIndex = Math.max( query.getIndex(), 0 );
+
+            final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();
+
+            for ( SearchHit hit : hits )
+            {
+                keys.add( new ContentKey( hit.getId() ) );
+            }
+
+            return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
+        }
+        finally
+        {
+            ContentIndexQueryTracer.stopTracing( trace, livePortalTraceService );
+        }
+    }
+
+    /**
+     * Check the filters to see if they may be set so that everything is filtered out. This happens if the filters are not <code>null</code>
+     * so that they are applied, but does not contain any elements. If so, there's no point in running the query to the database, as all
+     * results will be filtered out anyway.
+     *
+     * @param query The query, containing all the filters.
+     * @return <code>true</code> if the filter does have openings. <code>false</code> if the filters are set so that no result will be let
+     *         through the filter, and running the query is superfluous.
+     */
+    private boolean isFilterBlockingAllContent( ContentIndexQuery query )
+    {
+        final boolean isCategoryFilterBlocked = ( ( query.getCategoryFilter() != null ) && ( query.getCategoryFilter().size() == 0 ) );
+        final boolean isContentFilterBlocked = ( ( query.getContentFilter() != null ) && ( query.getContentFilter().size() == 0 ) );
+        final boolean isContentTypeFilterBlocked =
+            ( ( query.getContentTypeFilter() != null ) && ( query.getContentTypeFilter().size() == 0 ) );
+        final boolean isSectionFilterBlocked = ( ( query.getSectionFilter() != null ) && ( query.getSectionFilter().size() == 0 ) );
+
+        return isCategoryFilterBlocked || isContentFilterBlocked || isContentTypeFilterBlocked || isSectionFilterBlocked;
     }
 
     private void optimizeCount( final ContentIndexQuery query )
@@ -268,8 +312,7 @@ public class ContentIndexServiceImpl
 
         final SearchHits hits = doExecuteSearchRequest( build );
 
-        final IndexValueResultSetImpl resultSet =
-                new IndexValueResultSetImpl( query.getIndex(), Ints.saturatedCast( hits.totalHits() ) );
+        final IndexValueResultSetImpl resultSet = new IndexValueResultSetImpl( query.getIndex(), Ints.saturatedCast( hits.totalHits() ) );
 
         for ( SearchHit hit : hits )
         {
@@ -277,7 +320,7 @@ public class ContentIndexServiceImpl
         }
 
         LOG.finer( "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " +
-                           resultSet.getTotalCount() );
+                       resultSet.getTotalCount() );
 
         return resultSet;
     }

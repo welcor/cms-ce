@@ -17,6 +17,7 @@ import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.content.index.IndexValueResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.IndexType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,9 +58,9 @@ public class ContentIndexServiceTestWrapper
         contentIndexService.flush();
     }
 
-    public boolean isIndexed( ContentKey contentKey )
+    public boolean isIndexed( ContentKey contentKey, final IndexType indexType )
     {
-        return contentIndexService.isIndexed( contentKey );
+        return contentIndexService.isIndexed( contentKey, IndexType.Content );
     }
 
     public ContentResultSet query( ContentIndexQuery query )

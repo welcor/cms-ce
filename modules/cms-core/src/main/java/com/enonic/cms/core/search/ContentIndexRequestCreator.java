@@ -24,11 +24,8 @@ final class ContentIndexRequestCreator
     public Set<IndexRequest> createIndexRequests( String indexName, ContentIndexData contentIndexData )
     {
         Set<IndexRequest> indexRequests = new TreeSet<IndexRequest>( comparator );
-
-        addRequestsForBinaryData( indexName, contentIndexData, indexRequests );
-
         addRequestsForContentData( indexName, contentIndexData, indexRequests );
-
+        addRequestsForBinaryData( indexName, contentIndexData, indexRequests );
         return indexRequests;
     }
 
@@ -42,7 +39,6 @@ final class ContentIndexRequestCreator
     private void addRequestsForBinaryData( final String indexName, final ContentIndexData contentIndexData,
                                            final Set<IndexRequest> indexRequests )
     {
-
         if ( !contentIndexData.hasBinaryData() )
         {
             return;

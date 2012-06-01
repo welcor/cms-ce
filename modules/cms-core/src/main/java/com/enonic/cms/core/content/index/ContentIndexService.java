@@ -12,6 +12,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.IndexType;
 
 /**
  * This interface defines the content index service.
@@ -50,7 +51,7 @@ public interface ContentIndexService
     /**
      * Return true if content is indexed.
      */
-    public boolean isIndexed( ContentKey contentKey );
+    public boolean isIndexed( ContentKey contentKey, final IndexType indexType );
 
     /**
      * Query the content.

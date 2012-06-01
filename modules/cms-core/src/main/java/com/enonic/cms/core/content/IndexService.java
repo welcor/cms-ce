@@ -22,8 +22,6 @@ public interface IndexService
 
     public void regenerateIndex( List<ContentKey> contentKeys );
 
-    public void regenerateIndexBatched( List<ContentKey> contentKeys );
-
     void index( ContentEntity content );
 
     void index( ContentEntity content, boolean deleteExisting );

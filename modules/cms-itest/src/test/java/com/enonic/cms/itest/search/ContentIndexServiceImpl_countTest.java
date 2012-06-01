@@ -13,7 +13,7 @@ public class ContentIndexServiceImpl_countTest
 {
 
 
-    @Test
+ @Test
     public void testLargeCountNumber()
         throws Exception
     {

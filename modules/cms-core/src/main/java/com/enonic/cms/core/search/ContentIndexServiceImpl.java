@@ -120,10 +120,11 @@ public class ContentIndexServiceImpl
 
     public int remove( ContentKey contentKey )
     {
-        // TODO : Delete children aswell
-        final boolean deleted = elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+        final boolean binaryDeleted = elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Binaries, contentKey );
 
-        if ( deleted )
+        final boolean contentDeleted = elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+
+        if ( contentDeleted )
         {
             return 1;
         }
@@ -161,6 +162,7 @@ public class ContentIndexServiceImpl
 
         for ( SearchHit hit : hits )
         {
+            elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Binaries, new ContentKey( hit.getId() ) );
             elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, new ContentKey( hit.getId() ) );
         }
 
@@ -191,9 +193,9 @@ public class ContentIndexServiceImpl
     }
 
 
-    public boolean isIndexed( ContentKey contentKey )
+    public boolean isIndexed( ContentKey contentKey, final IndexType indexType )
     {
-        return elasticSearchIndexService.get( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+        return elasticSearchIndexService.get( CONTENT_INDEX_NAME, indexType, contentKey );
     }
 
     public void optimize()

@@ -6,7 +6,6 @@ package com.enonic.cms.core.content;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -98,50 +97,9 @@ public final class IndexServiceImpl
     }
 
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600, readOnly = true)
-    public void regenerateIndexBatched( List<ContentKey> contentKeys )
-    {
-        List<ContentDocument> contentToIndex = new ArrayList<ContentDocument>();
-        List<ContentEntity> contentToRemove = new ArrayList<ContentEntity>();
-
-        for ( ContentKey contentKey : contentKeys )
-        {
-            ContentEntity currentContent = contentDao.findByKey( contentKey );
-
-            if ( currentContent.isDeleted() )
-            {
-                contentToRemove.add( currentContent );
-            }
-            else
-            {
-                ContentDocument indexedDoc = insertStandardValues( currentContent );
-                insertUserDefinedIndexValues( currentContent, indexedDoc );
-                insertOrderedSections( currentContent, indexedDoc );
-                //TODO: fix binary extraction
-                //insertBinaryIndexValues( currentContent, indexedDoc );
-                contentToIndex.add( indexedDoc );
-            }
-        }
-
-        if ( contentToIndex.isEmpty() )
-        {
-            return;
-        }
-
-        contentIndexService.indexBulk( contentToIndex );
-
-        for ( ContentEntity content : contentToRemove )
-        {
-            contentIndexService.remove( content.getKey() );
-        }
-
-        contentDao.getHibernateTemplate().flush();
-    }
-
 
     public void index( ContentEntity content )
     {
-//        doIndex( content, true );
         doIndex( content, false );
     }
 

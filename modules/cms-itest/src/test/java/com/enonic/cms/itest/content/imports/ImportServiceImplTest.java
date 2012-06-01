@@ -602,7 +602,6 @@ public class ImportServiceImplTest
         assertArrayEquals( expectedKeys, actualKeys );
     }
 
-    @Ignore // SHOULD WORK, FIX!!
     @Test
     public void order_of_related_contents_is_not_changed_when_imported_twice_with_same_order()
         throws UnsupportedEncodingException

@@ -110,7 +110,7 @@ public class IndexTransactionJournal
     @Override
     public void afterCommit()
     {
-        TransactionSynchronizationManager.unbindResource( IndexTransactionServiceImpl.TRANSACTION_JOURNAL_KEY );
+        TransactionSynchronizationManager.unbindResourceIfPossible( IndexTransactionServiceImpl.TRANSACTION_JOURNAL_KEY );
         flushIndexChanges();
     }
 

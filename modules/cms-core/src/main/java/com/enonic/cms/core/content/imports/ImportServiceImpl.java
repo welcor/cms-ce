@@ -44,22 +44,21 @@ public class ImportServiceImpl
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     public boolean importData( ImportDataReader importDataReader, ImportJob importJob )
     {
-        indexTransactionService.startTransaction();
-        return doimportData( importDataReader, importJob );
+        return doImportData( importDataReader, importJob );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
     public boolean importDataWithoutRequiresNewPropagation( ImportDataReader importDataReader, ImportJob importJob )
     {
-        indexTransactionService.startTransaction();
-        return doimportData( importDataReader, importJob );
+        return doImportData( importDataReader, importJob );
     }
 
-    private boolean doimportData( ImportDataReader importDataReader, ImportJob importJob )
+    private boolean doImportData( ImportDataReader importDataReader, ImportJob importJob )
     {
         try
         {
-            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataReader );
+            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataReader,
+                                                                           indexTransactionService );
             contentImporter.setContentStorer( contentStorer );
             contentImporter.setContentDao( contentDao );
 
@@ -67,36 +66,19 @@ public class ImportServiceImpl
             contentImporter.setRelatedContentFinder( relatedContentFinder );
 
             final boolean result = contentImporter.importData();
-            updateIndex( importJob.getImportResult() );
+            updateIndexWithDeletedContent( importJob.getImportResult() );
             return result;
         }
         finally
         {
-            /* Clear all intances in first level cache since the transaction boundary doesn't (single session) */
+            /* Clear all instances in first level cache since the transaction boundary doesn't (single session) */
             contentDao.getHibernateTemplate().clear();
         }
     }
 
-    private void updateIndex( ImportResult importResult )
+    private void updateIndexWithDeletedContent( ImportResult importResult )
     {
-        final Map<ContentKey, String> updated = importResult.getUpdated();
-        for ( ContentKey contentKey : updated.keySet() )
-        {
-            indexTransactionService.updateContent( contentKey );
-        }
-
-        final Map<ContentKey, String> inserted = importResult.getInserted();
-        for ( ContentKey contentKey : inserted.keySet() )
-        {
-            indexTransactionService.updateContent( contentKey );
-        }
-
-        final Map<ContentKey, String> assigned = importResult.getAssigned();
-        for ( ContentKey contentKey : assigned.keySet() )
-        {
-            indexTransactionService.updateContent( contentKey );
-        }
-
+        indexTransactionService.startTransaction();
         final Map<ContentKey, String> deleted = importResult.getDeleted();
         for ( ContentKey contentKey : deleted.keySet() )
         {

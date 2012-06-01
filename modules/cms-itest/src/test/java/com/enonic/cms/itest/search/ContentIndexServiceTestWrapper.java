@@ -31,9 +31,9 @@ public class ContentIndexServiceTestWrapper
     @Autowired
     private ContentIndexService contentIndexService;
 
-    public int remove( ContentKey contentKey )
+    public void remove( ContentKey contentKey )
     {
-        return contentIndexService.remove( contentKey );
+        contentIndexService.remove( contentKey );
     }
 
     public void removeByCategory( CategoryKey categoryKey )
@@ -44,6 +44,12 @@ public class ContentIndexServiceTestWrapper
     public void removeByContentType( ContentTypeKey contentTypeKey )
     {
         contentIndexService.removeByContentType( contentTypeKey );
+    }
+
+    public void index( ContentDocument doc )
+    {
+        contentIndexService.index( doc );
+        contentIndexService.flush();
     }
 
     public void index( ContentDocument doc, boolean deleteExisting )

@@ -43,9 +43,9 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         assignedToNone.setStatus( 2 );
         assignedToNone.setPriority( 0 );
 
-        contentIndexService.index( assignedToJVS, false );
-        contentIndexService.index( assignedToTAN, false );
-        contentIndexService.index( assignedToNone, false );
+        contentIndexService.index( assignedToJVS );
+        contentIndexService.index( assignedToTAN );
+        contentIndexService.index( assignedToNone );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1101}, contentIndexService.query(
@@ -83,9 +83,9 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         assignedToNone.setStatus( 2 );
         assignedToNone.setPriority( 0 );
 
-        contentIndexService.index( assignedToJVS, false );
-        contentIndexService.index( assignedToTAN, false );
-        contentIndexService.index( assignedToNone, false );
+        contentIndexService.index( assignedToJVS );
+        contentIndexService.index( assignedToTAN );
+        contentIndexService.index( assignedToNone );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
@@ -128,9 +128,9 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         assigerIsNone.setStatus( 2 );
         assigerIsNone.setPriority( 0 );
 
-        contentIndexService.index( assignerIsJVS, false );
-        contentIndexService.index( assignerIsTAN, false );
-        contentIndexService.index( assigerIsNone, false );
+        contentIndexService.index( assignerIsJVS );
+        contentIndexService.index( assignerIsTAN );
+        contentIndexService.index( assigerIsNone );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1101, 1102, 1103},
@@ -170,9 +170,9 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         assignerIsNone.setStatus( 2 );
         assignerIsNone.setPriority( 0 );
 
-        contentIndexService.index( assignerIsJVS, false );
-        contentIndexService.index( assignerIsTAN, false );
-        contentIndexService.index( assignerIsNone, false );
+        contentIndexService.index( assignerIsJVS );
+        contentIndexService.index( assignerIsTAN );
+        contentIndexService.index( assignerIsNone );
 
         flushIndex();
 
@@ -217,9 +217,9 @@ public class ContentIndexServiceImpl_queryAssignmentTest
         notDue.setStatus( 2 );
         notDue.setPriority( 0 );
 
-        contentIndexService.index( due2010_06_01T00_00_00, false );
-        contentIndexService.index( due2010_06_01T12_00_00, false );
-        contentIndexService.index( notDue, false );
+        contentIndexService.index( due2010_06_01T00_00_00 );
+        contentIndexService.index( due2010_06_01T12_00_00 );
+        contentIndexService.index( notDue );
 
         flushIndex();
 

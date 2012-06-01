@@ -29,7 +29,7 @@ public class ContentIndexServiceImpl_queryAttachmentsTest
         contentDocument.setPriority( 0 );
         contentDocument.setBinaryExtractedText( new BigText( "This is a BigText" ) );
 
-        contentIndexService.index( contentDocument, false );
+        contentIndexService.index( contentDocument );
 
         flushIndex();
 

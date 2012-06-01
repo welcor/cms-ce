@@ -18,10 +18,10 @@ public class ContentIndexServiceImpl_queryEinartingTest
     public void testEinarTing1()
     {
         contentIndexService.index( createContentDocument( 100, "title", new String[][]{{"data/preface", "denne skal ikke gi treff"},
-            {"data/description", "dette skal ikke gi treff"}} ), false );
+            {"data/description", "dette skal ikke gi treff"}} ) );
 
         contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/preface", "dette er en ingress ja"},
-            {"data/description", "dette er en beskrivelse ja"}} ), false );
+            {"data/description", "dette er en beskrivelse ja"}} ) );
 
         flushIndex();
 

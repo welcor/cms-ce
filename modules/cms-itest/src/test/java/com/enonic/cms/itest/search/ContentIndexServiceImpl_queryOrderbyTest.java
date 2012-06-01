@@ -28,19 +28,19 @@ public class ContentIndexServiceImpl_queryOrderbyTest
         ContentDocument doc1 = createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c1",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc1.setPublishFrom( new DateTime( 2010, 10, 1, 0, 0, 0, 2 ).toDate() );
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
         flushIndex();
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc2.setPublishFrom( new DateTime( 2010, 10, 1, 0, 0, 0, 0 ).toDate() );
-        contentIndexService.index( doc2, false );
+        contentIndexService.index( doc2 );
         flushIndex();
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c3",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc3.setPublishFrom( new DateTime( 2010, 10, 1, 0, 0, 0, 1 ).toDate() );
-        contentIndexService.index( doc3, false );
+        contentIndexService.index( doc3 );
         flushIndex();
 
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
@@ -57,17 +57,17 @@ public class ContentIndexServiceImpl_queryOrderbyTest
         ContentDocument doc1 = createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c1",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc1.setPublishTo( new DateTime( 2010, 10, 1, 0, 0, 0, 2 ).toDate() );
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
         flushIndex();
         ContentDocument doc2 = createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c2",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc2.setPublishTo( new DateTime( 2010, 10, 1, 0, 0, 0, 0 ).toDate() );
-        contentIndexService.index( doc2, false );
+        contentIndexService.index( doc2 );
         flushIndex();
         ContentDocument doc3 = createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 0, "c3",
                                                       new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} );
         doc3.setPublishTo( new DateTime( 2010, 10, 1, 0, 0, 0, 1 ).toDate() );
-        contentIndexService.index( doc3, false );
+        contentIndexService.index( doc3 );
         flushIndex();
 
         assertEquals( ContentKey.convertToList( new int[]{102, 103, 101} ), contentIndexService.query(
@@ -82,14 +82,14 @@ public class ContentIndexServiceImpl_queryOrderbyTest
     public void testOrderByStatus()
     {
         contentIndexService.index( createContentDocument( new ContentKey( 101 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 3, "c1",
-                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
-                                   false );
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} )
+                                   );
         contentIndexService.index( createContentDocument( new ContentKey( 102 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 40, "c2",
-                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
-                                   false );
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} )
+                                    );
         contentIndexService.index( createContentDocument( new ContentKey( 103 ), new CategoryKey( 1 ), new ContentTypeKey( 10 ), 24, "c3",
-                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} ),
-                                   false );
+                                                          new String[][]{{"data/dummy", "dummy value"}, {"data/dummy2", "dummy value 2"}} )
+                                    );
         flushIndex();
 
         assertEquals( ContentKey.convertToList( new int[]{101, 103, 102} ), contentIndexService.query(
@@ -156,8 +156,7 @@ public class ContentIndexServiceImpl_queryOrderbyTest
     @Test
     public void testQueryWithOrderByMultipleRelatedContentDoesNotCreateDuplicateContentKeys()
     {
-        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/myrelated", "3"}, {"data/myrelated", "9"}} ),
-                                   false );
+        contentIndexService.index( createContentDocument( 101, "title", new String[][]{{"data/myrelated", "3"}, {"data/myrelated", "9"}} ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query( new ContentIndexQuery( "", "data/myrelated ASC" ) ) );

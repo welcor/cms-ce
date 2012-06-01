@@ -77,7 +77,7 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         ContentDocument doc2 = new ContentDocument( new ContentKey( 1323 ) );
         doc2.setCategoryKey( new CategoryKey( 9 ) );
@@ -96,7 +96,7 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
         date.add( Calendar.MONTH, -1 );
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
-        contentIndexService.index( doc2, true );
+        contentIndexService.index( doc2 );
 
         flushIndex();
 

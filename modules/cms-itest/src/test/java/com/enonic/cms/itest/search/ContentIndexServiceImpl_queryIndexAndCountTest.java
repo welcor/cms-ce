@@ -89,9 +89,9 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
         final CategoryKey categoryKey = new CategoryKey( 1 );
 
         ContentDocument doc = createContentDocument( 1, "a-1", categoryKey );
-        contentIndexService.index( doc, false );
+        contentIndexService.index( doc );
         ContentDocument doc1 = createContentDocument( 2, "c-1", categoryKey );
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
 
         contentIndexService.optimize();
 

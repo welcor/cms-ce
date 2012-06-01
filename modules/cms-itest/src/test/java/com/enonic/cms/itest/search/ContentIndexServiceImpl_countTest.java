@@ -40,7 +40,7 @@ public class ContentIndexServiceImpl_countTest
         contentDoc.setContentTypeKey( new ContentTypeKey( 1 ) );
         contentDoc.setContentTypeName( "testContentType" );
 
-        contentIndexService.index( contentDoc, false );
+        contentIndexService.index( contentDoc );
     }
 
 }

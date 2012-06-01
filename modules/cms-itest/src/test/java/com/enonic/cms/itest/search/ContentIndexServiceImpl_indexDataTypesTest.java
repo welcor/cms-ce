@@ -150,7 +150,7 @@ public class ContentIndexServiceImpl_indexDataTypesTest
 
     private void indexContentDocument( final ContentDocument contentDocument )
     {
-        contentIndexService.index( contentDocument, true );
+        contentIndexService.index( contentDocument );
         flushIndex();
     }
 

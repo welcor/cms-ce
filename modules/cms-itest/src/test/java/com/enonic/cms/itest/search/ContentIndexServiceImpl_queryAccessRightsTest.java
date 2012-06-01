@@ -306,7 +306,7 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
         setAccessRightsForContent( doc1, groupA );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         final ContentDocument doc2 = new ContentDocument( new ContentKey( 1327 ) );
@@ -326,7 +326,7 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
         setAccessRightsForContent( doc2, groupB );
-        contentIndexService.index( doc2, true );
+        contentIndexService.index( doc2 );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         final ContentDocument doc3 = new ContentDocument( new ContentKey( 1323 ) );
@@ -346,7 +346,7 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         doc3.setStatus( 2 );
         doc3.setPriority( 0 );
         setAccessRightsForContent( doc3, groupA, groupB );
-        contentIndexService.index( doc3, true );
+        contentIndexService.index( doc3 );
 
         final ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
         doc4.setCategoryKey( categoryNineKey );
@@ -364,7 +364,7 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         doc4.setPublishTo( date.getTime() );
         doc4.setStatus( 2 );
         doc4.setPriority( 0 );
-        contentIndexService.index( doc4, true );
+        contentIndexService.index( doc4 );
 
         final ContentDocument doc5 = new ContentDocument( new ContentKey( 1310 ) );
         doc5.setCategoryKey( categoryGroupCAdminKey );
@@ -383,7 +383,7 @@ public class ContentIndexServiceImpl_queryAccessRightsTest
         doc5.setStatus( 2 );
         doc5.setPriority( 0 );
         setAccessRightsForContent( doc5, groupC );
-        contentIndexService.index( doc5, true );
+        contentIndexService.index( doc5 );
 
         flushIndex();
     }

@@ -57,7 +57,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         //flushIndex();
 
@@ -79,7 +79,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         flushIndex();
 
@@ -101,7 +101,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         doc1.setPublishFrom( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         flushIndex();
 
@@ -124,7 +124,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 1, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         //flushIndex();
 
@@ -147,7 +147,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         //flushIndex();
 
@@ -170,7 +170,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         flushIndex();
 
@@ -193,7 +193,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         doc1.setPublishTo( new DateTime( 2010, 4, 19, 13, 2, 0, 0 ).toDate() );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         flushIndex();
 
@@ -215,7 +215,7 @@ public class ContentIndexServiceImpl_queryDatesTest
     {
         final ContentDocument contentDocument = createContentDocument( 1 );
         addUserDefinedBlock( contentDocument, "1975-05-05" );
-        contentIndexService.index( contentDocument, true );
+        contentIndexService.index( contentDocument );
         flushIndex();
 
         /*
@@ -250,7 +250,7 @@ public class ContentIndexServiceImpl_queryDatesTest
         addUserDefinedBlock( contentDocument, "1975-05-05" );
         addUserDefinedBlock( contentDocument, "1994-06-06" );
         addUserDefinedBlock( contentDocument, "1975-06-06" );
-        contentIndexService.index( contentDocument, true );
+        contentIndexService.index( contentDocument );
         flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "data/person/birthdate <= date('1975-05-05')" );
@@ -279,9 +279,9 @@ public class ContentIndexServiceImpl_queryDatesTest
         addUserDefinedBlock( contentDocument2, "1994-06-06" );
         final ContentDocument contentDocument3 = createContentDocument( 3 );
         addUserDefinedBlock( contentDocument3, "1975-06-06" );
-        contentIndexService.index( contentDocument1, true );
-        contentIndexService.index( contentDocument2, true );
-        contentIndexService.index( contentDocument3, true );
+        contentIndexService.index( contentDocument1 );
+        contentIndexService.index( contentDocument2 );
+        contentIndexService.index( contentDocument3 );
         flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "data/person/birthdate <= date('1975-05-05')" );

@@ -118,20 +118,9 @@ public class ContentIndexServiceImpl
         return indexMappingProvider.getMapping( CONTENT_INDEX_NAME, indexType.toString() );
     }
 
-    public int remove( ContentKey contentKey )
+    public void remove( ContentKey contentKey )
     {
-        final boolean binaryDeleted = elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Binaries, contentKey );
-
-        final boolean contentDeleted = elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
-
-        if ( contentDeleted )
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+        doRemoveEntryWithId( contentKey );
     }
 
     public void removeByCategory( CategoryKey categoryKey )
@@ -162,17 +151,38 @@ public class ContentIndexServiceImpl
 
         for ( SearchHit hit : hits )
         {
-            elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Binaries, new ContentKey( hit.getId() ) );
-            elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, new ContentKey( hit.getId() ) );
+            final ContentKey contentKey = new ContentKey( hit.getId() );
+            doRemoveEntryWithId( contentKey );
         }
 
         LOG.fine( "Deleted from index " + CONTENT_INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
     }
 
+    private void doRemoveEntryWithId( final ContentKey contentKey )
+    {
+        elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Binaries, contentKey );
+        elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+    }
+
+    public void index( ContentDocument doc )
+    {
+        doDeleteExisting( doc, true );
+    }
+
 
     public void index( ContentDocument doc, boolean deleteExisting )
     {
+        doDeleteExisting( doc, deleteExisting );
+    }
+
+    private void doDeleteExisting( final ContentDocument doc, final boolean deleteExisting )
+    {
         ContentIndexData contentIndexData = contentIndexDataFactory.create( doc );
+
+        if ( deleteExisting )
+        {
+            doRemoveEntryWithId( doc.getContentKey() );
+        }
 
         elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }

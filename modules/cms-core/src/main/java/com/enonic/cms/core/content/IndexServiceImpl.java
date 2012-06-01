@@ -87,8 +87,7 @@ public final class IndexServiceImpl
             }
             else
             {
-//                doIndex( content, true );
-                doIndex( content, false );
+                doIndex( content, true );
             }
         }
 
@@ -97,10 +96,9 @@ public final class IndexServiceImpl
     }
 
 
-
     public void index( ContentEntity content )
     {
-        doIndex( content, false );
+        doIndex( content, true );
     }
 
     public void index( ContentEntity content, boolean deleteExisting )
@@ -146,9 +144,9 @@ public final class IndexServiceImpl
         contentIndexService.initializeMapping();
     }
 
-    private int doRemoveIndex( ContentEntity content )
+    private void doRemoveIndex( ContentEntity content )
     {
-        return contentIndexService.remove( content.getKey() );
+        contentIndexService.remove( content.getKey() );
     }
 
     private void doIndex( ContentEntity content, boolean deleteExisting )

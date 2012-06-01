@@ -94,7 +94,7 @@ public class ContentIndexServiceImpl_indexRemoveTest
 
         ContentDocument doc1 = createContentWithBinary( contentKey );
 
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1 );
 
         flushIndex();
 
@@ -115,8 +115,8 @@ public class ContentIndexServiceImpl_indexRemoveTest
         final ContentKey contentKey1 = new ContentKey( 1322 );
         final ContentKey contentKey2 = new ContentKey( 1322 );
 
-        contentIndexService.index( createContentWithBinary( contentKey1 ), false );
-        contentIndexService.index( createContentWithBinary( contentKey2 ), false );
+        contentIndexService.index( createContentWithBinary( contentKey1 ) );
+        contentIndexService.index( createContentWithBinary( contentKey2 ) );
         flushIndex();
 
         assertTrue( contentIndexService.isIndexed( contentKey1, IndexType.Content ) );
@@ -139,8 +139,8 @@ public class ContentIndexServiceImpl_indexRemoveTest
         final ContentKey contentKey1 = new ContentKey( 1322 );
         final ContentKey contentKey2 = new ContentKey( 1322 );
 
-        contentIndexService.index( createContentWithBinary( contentKey1 ), false );
-        contentIndexService.index( createContentWithBinary( contentKey2 ), false );
+        contentIndexService.index( createContentWithBinary( contentKey1 ) );
+        contentIndexService.index( createContentWithBinary( contentKey2 ) );
         flushIndex();
 
         assertTrue( contentIndexService.isIndexed( contentKey1, IndexType.Content ) );
@@ -156,6 +156,27 @@ public class ContentIndexServiceImpl_indexRemoveTest
         assertFalse( contentIndexService.isIndexed( contentKey2, IndexType.Content ) );
         assertFalse( contentIndexService.isIndexed( contentKey2, IndexType.Binaries ) );
     }
+
+    @Test
+    public void remove_child_on_reindex_if_no_longer_applicable()
+    {
+        final ContentKey contentKey1 = new ContentKey( 1322 );
+
+        final ContentDocument contentWithBinary = createContentWithBinary( contentKey1 );
+        contentIndexService.index( contentWithBinary );
+        flushIndex();
+
+        assertTrue( contentIndexService.isIndexed( contentKey1, IndexType.Content ) );
+        assertTrue( contentIndexService.isIndexed( contentKey1, IndexType.Binaries ) );
+
+        contentWithBinary.setBinaryExtractedText( null );
+        contentIndexService.index( contentWithBinary );
+        flushIndex();
+
+        assertTrue( contentIndexService.isIndexed( contentKey1, IndexType.Content ) );
+        assertFalse( contentIndexService.isIndexed( contentKey1, IndexType.Binaries ) );
+    }
+
 
     private ContentDocument createContentWithBinary( final ContentKey contentKey )
     {

@@ -24,7 +24,7 @@ public interface ContentIndexService
      * @param contentKey The key of the ContentEntity that should be deleted.
      * @return The number of entities that has been deleted.
      */
-    public int remove( ContentKey contentKey );
+    public void remove( ContentKey contentKey );
 
 
     /**
@@ -45,6 +45,8 @@ public interface ContentIndexService
      *                       order to optimize the indexing process.
      */
     public void index( ContentDocument doc, boolean deleteExisting );
+
+    public void index( ContentDocument doc );
 
     public void indexBulk( List<ContentDocument> docs );
 

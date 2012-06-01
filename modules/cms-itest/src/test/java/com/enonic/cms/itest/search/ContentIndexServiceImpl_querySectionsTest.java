@@ -41,7 +41,7 @@ public class ContentIndexServiceImpl_querySectionsTest
         final ContentKey contentKey = new ContentKey( 1 );
         ContentDocument doc1 = createTestContentWithSections( contentKey );
 
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
         flushIndex();
 
         final ContentIndexQuery query = new ContentIndexQuery( "" );

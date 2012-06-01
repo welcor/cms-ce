@@ -11,8 +11,8 @@ public class ContentIndexServiceImpl_queryTextTokensTest
     @Test
     public void testEmailAddress()
     {
-        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "rmy@enonic.com" ), false );
-        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "esu@enonic.com" ), false );
+        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "rmy@enonic.com" ));
+        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "esu@enonic.com" ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1},
@@ -48,9 +48,8 @@ public class ContentIndexServiceImpl_queryTextTokensTest
     @Test
     public void testTextWithSpaces_all_fields()
     {
-        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "Dette er en tekst med mange ord med mellomrom" ),
-                                   false );
-        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "Dette en er med tekst ord mange med" ), false );
+        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "Dette er en tekst med mange ord med mellomrom" ));
+        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "Dette en er med tekst ord mange med" ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1, 2}, contentIndexService.query( new ContentIndexQuery( "data/* CONTAINS 'ord' " ) ) );
@@ -63,8 +62,8 @@ public class ContentIndexServiceImpl_queryTextTokensTest
     @Test
     public void testWordsWithHyphens()
     {
-        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "ord1-ord2" ), false );
-        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "ord1" ), false );
+        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "ord1-ord2" ));
+        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "ord1" ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1, 2},
@@ -77,8 +76,8 @@ public class ContentIndexServiceImpl_queryTextTokensTest
     @Test
     public void testWordsWithCommas()
     {
-        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "ord1,ord2,ord3" ), false );
-        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "ord1" ), false );
+        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "ord1,ord2,ord3" ));
+        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "ord1" ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1, 2},

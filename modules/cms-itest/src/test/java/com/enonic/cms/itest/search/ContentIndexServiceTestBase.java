@@ -296,7 +296,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1, true );
+        contentIndexService.index( doc1);
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc2 = new ContentDocument( new ContentKey( 1327 ) );
@@ -315,7 +315,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
-        contentIndexService.index( doc2, true );
+        contentIndexService.index( doc2);
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc3 = new ContentDocument( new ContentKey( 1323 ) );
@@ -334,7 +334,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc3.setStatus( 2 );
         doc3.setPriority( 0 );
-        contentIndexService.index( doc3, true );
+        contentIndexService.index( doc3);
 
         ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
         doc4.setCategoryKey( new CategoryKey( 9 ) );
@@ -351,7 +351,7 @@ public abstract class ContentIndexServiceTestBase
         doc4.setPublishTo( date.getTime() );
         doc4.setStatus( 2 );
         doc4.setPriority( 0 );
-        contentIndexService.index( doc4, true );
+        contentIndexService.index( doc4);
 
         flushIndex();
     }

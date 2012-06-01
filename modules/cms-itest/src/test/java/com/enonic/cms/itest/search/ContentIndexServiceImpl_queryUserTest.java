@@ -21,7 +21,7 @@ public class ContentIndexServiceImpl_queryUserTest
         ContentDocument doc = createContentDocument( 101, "ost", null );
         doc.setOwnerQualifiedName( "incamono\\jvs" );
 
-        contentIndexService.index( doc, false );
+        contentIndexService.index( doc);
 
         flushIndex();
 

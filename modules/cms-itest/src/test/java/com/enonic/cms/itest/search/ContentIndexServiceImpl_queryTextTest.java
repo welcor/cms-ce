@@ -17,10 +17,10 @@ public class ContentIndexServiceImpl_queryTextTest
     @Test
     public void testOneWordSearchOnTitleAndData()
     {
-        contentIndexService.index( createContentDocument( 123, "ost", "ost", null ), false );
-        contentIndexService.index( createContentDocument( 124, "ost", "kake", null ), false );
-        contentIndexService.index( createContentDocument( 125, "kake", "ost", null ), false );
-        contentIndexService.index( createContentDocument( 126, "kake", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", "ost", null ) );
+        contentIndexService.index( createContentDocument( 124, "ost", "kake", null ) );
+        contentIndexService.index( createContentDocument( 125, "kake", "ost", null ) );
+        contentIndexService.index( createContentDocument( 126, "kake", "kake", null ) );
         flushIndex();
         //printAllIndexContent();
 
@@ -41,10 +41,10 @@ public class ContentIndexServiceImpl_queryTextTest
     @Test
     public void testOneWordSearchOnTitleAndFulltext()
     {
-        contentIndexService.index( createContentDocument( 123, "ost", null, "ost" ), false );
-        contentIndexService.index( createContentDocument( 124, "ost", null, "kake" ), false );
-        contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ), false );
-        contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", null, "ost" ));
+        contentIndexService.index( createContentDocument( 124, "ost", null, "kake" ));
+        contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ));
+        contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ));
         flushIndex();
 
 
@@ -65,8 +65,8 @@ public class ContentIndexServiceImpl_queryTextTest
     @Test
     public void testOneWordSearchOnTitleAndUnknown()
     {
-        contentIndexService.index( createContentDocument( 123, "ost", null, null ), false );
-        contentIndexService.index( createContentDocument( 124, "kake", null, null ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", null, null ));
+        contentIndexService.index( createContentDocument( 124, "kake", null, null ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{}, contentIndexService.query(
@@ -87,14 +87,14 @@ public class ContentIndexServiceImpl_queryTextTest
     @Test
     public void testOneWordSearchOnTitleAndDataAndFulltext()
     {
-        contentIndexService.index( createContentDocument( 121, "ost", "ost", "ost" ), false );
-        contentIndexService.index( createContentDocument( 122, "kake", "ost", "ost" ), false );
-        contentIndexService.index( createContentDocument( 123, "ost", "kake", "ost" ), false );
-        contentIndexService.index( createContentDocument( 124, "ost", "ost", "kake" ), false );
-        contentIndexService.index( createContentDocument( 125, "kake", "kake", "ost" ), false );
-        contentIndexService.index( createContentDocument( 126, "kake", "ost", "kake" ), false );
-        contentIndexService.index( createContentDocument( 127, "ost", "kake", "kake" ), false );
-        contentIndexService.index( createContentDocument( 128, "kake", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 121, "ost", "ost", "ost" ) );
+        contentIndexService.index( createContentDocument( 122, "kake", "ost", "ost" ) );
+        contentIndexService.index( createContentDocument( 123, "ost", "kake", "ost" ) );
+        contentIndexService.index( createContentDocument( 124, "ost", "ost", "kake" ) );
+        contentIndexService.index( createContentDocument( 125, "kake", "kake", "ost" ) );
+        contentIndexService.index( createContentDocument( 126, "kake", "ost", "kake" ) );
+        contentIndexService.index( createContentDocument( 127, "ost", "kake", "kake" ) );
+        contentIndexService.index( createContentDocument( 128, "kake", "kake", "kake" ) );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{121}, contentIndexService.query(
@@ -125,10 +125,10 @@ public class ContentIndexServiceImpl_queryTextTest
     @Test
     public void testOneWordSearchOnTitleAndDataAndUnknown()
     {
-        contentIndexService.index( createContentDocument( 123, "ost", "ost", null ), false );
-        contentIndexService.index( createContentDocument( 124, "ost", "kake", null ), false );
-        contentIndexService.index( createContentDocument( 125, "kake", "ost", null ), false );
-        contentIndexService.index( createContentDocument( 126, "kake", "kake", null ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", "ost", null ));
+        contentIndexService.index( createContentDocument( 124, "ost", "kake", null ));
+        contentIndexService.index( createContentDocument( 125, "kake", "ost", null ));
+        contentIndexService.index( createContentDocument( 126, "kake", "kake", null ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
@@ -152,10 +152,10 @@ public class ContentIndexServiceImpl_queryTextTest
     @Test
     public void testOneWordSearchOnTitleAndFulltextAndUnknown()
     {
-        contentIndexService.index( createContentDocument( 123, "ost", null, "ost" ), false );
-        contentIndexService.index( createContentDocument( 124, "ost", null, "kake" ), false );
-        contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ), false );
-        contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ), false );
+        contentIndexService.index( createContentDocument( 123, "ost", null, "ost" ));
+        contentIndexService.index( createContentDocument( 124, "ost", null, "kake" ));
+        contentIndexService.index( createContentDocument( 125, "kake", null, "ost" ));
+        contentIndexService.index( createContentDocument( 126, "kake", null, "kake" ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{123}, contentIndexService.query(
@@ -179,14 +179,14 @@ public class ContentIndexServiceImpl_queryTextTest
     @Test
     public void testOneWordSearchOnTitleAndDataAndFulltextAndUnknown()
     {
-        contentIndexService.index( createContentDocument( 121, "ost", "ost", "ost" ), false );
-        contentIndexService.index( createContentDocument( 122, "kake", "ost", "ost" ), false );
-        contentIndexService.index( createContentDocument( 123, "ost", "kake", "ost" ), false );
-        contentIndexService.index( createContentDocument( 124, "ost", "ost", "kake" ), false );
-        contentIndexService.index( createContentDocument( 125, "kake", "kake", "ost" ), false );
-        contentIndexService.index( createContentDocument( 126, "kake", "ost", "kake" ), false );
-        contentIndexService.index( createContentDocument( 127, "ost", "kake", "kake" ), false );
-        contentIndexService.index( createContentDocument( 128, "kake", "kake", "kake" ), false );
+        contentIndexService.index( createContentDocument( 121, "ost", "ost", "ost" ));
+        contentIndexService.index( createContentDocument( 122, "kake", "ost", "ost" ));
+        contentIndexService.index( createContentDocument( 123, "ost", "kake", "ost" ));
+        contentIndexService.index( createContentDocument( 124, "ost", "ost", "kake" ));
+        contentIndexService.index( createContentDocument( 125, "kake", "kake", "ost" ));
+        contentIndexService.index( createContentDocument( 126, "kake", "ost", "kake" ));
+        contentIndexService.index( createContentDocument( 127, "ost", "kake", "kake" ));
+        contentIndexService.index( createContentDocument( 128, "kake", "kake", "kake" ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{121}, contentIndexService.query( new ContentIndexQuery(
@@ -242,9 +242,9 @@ public class ContentIndexServiceImpl_queryTextTest
     public void testSplittedNormalIndexWithAnd()
     {
         contentIndexService.index(
-            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ), false );
+            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ));
         contentIndexService.index(
-            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ));
         flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
@@ -272,7 +272,7 @@ public class ContentIndexServiceImpl_queryTextTest
     {
         contentIndexService.index( createContentDocument( 101, "title",
                                                           new String[][]{{"data/heading", "enonic"}, {"data/preface", "enonic"},
-                                                              {"data/text", "enonic"}} ), false );
+                                                              {"data/text", "enonic"}} ) );
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(
             new ContentIndexQuery( "data/heading LIKE '%ENONIC%' or data/preface LIKE '%ENONIC%' or data/text LIKE '%ENONIC%'", "" ) ) );

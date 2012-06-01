@@ -34,17 +34,17 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title1" ) ) ) );
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title2" ) ) ) );
-        contentIndexService.index( doc2, false );
+        contentIndexService.index( doc2 );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 102 ), new ContentTypeKey( 10 ), "title3",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title3" ) ) ) );
-        contentIndexService.index( doc3, false );
+        contentIndexService.index( doc3 );
 
         flushIndex();
 
@@ -64,17 +64,17 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
         ContentDocument doc1 = createContentDocument( new ContentKey( 1 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title1",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title1" ) ) ) );
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title2" ) ) ) );
-        contentIndexService.index( doc2, false );
+        contentIndexService.index( doc2 );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title3" ) ) ) );
-        contentIndexService.index( doc3, false );
+        contentIndexService.index( doc3 );
 
         flushIndex();
 
@@ -95,19 +95,19 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
                                                                           new UserDefinedField( "data/b", new SimpleText( "2" ) ),
                                                                           new UserDefinedField( "data/c", new SimpleText( "3" ) ) ) );
 
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title2",
                                                       Lists.newArrayList( new UserDefinedField( "data/a", new SimpleText( "2" ) ),
                                                                           new UserDefinedField( "data/b", new SimpleText( "2" ) ),
                                                                           new UserDefinedField( "data/c", new SimpleText( "1" ) ) ) );
-        contentIndexService.index( doc2, false );
+        contentIndexService.index( doc2 );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title3",
                                                       Lists.newArrayList( new UserDefinedField( "data/a", new SimpleText( "2" ) ),
                                                                           new UserDefinedField( "data/b", new SimpleText( "1" ) ),
                                                                           new UserDefinedField( "data/c", new SimpleText( "3" ) ) ) );
-        contentIndexService.index( doc3, false );
+        contentIndexService.index( doc3 );
 
         flushIndex();
 
@@ -144,19 +144,19 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
                                                           new UserDefinedField( "data/heading", new SimpleText( "title1" ) ) ) );
         ;
         doc1.setContentTypeName( "Article3" );
-        contentIndexService.index( doc1, false );
+        contentIndexService.index( doc1 );
 
         ContentDocument doc2 = createContentDocument( new ContentKey( 2 ), new CategoryKey( 101 ), new ContentTypeKey( 10 ), "title2",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title2" ) ) ) );
         doc2.setContentTypeName( "Article3" );
-        contentIndexService.index( doc2, false );
+        contentIndexService.index( doc2 );
 
         ContentDocument doc3 = createContentDocument( new ContentKey( 3 ), new CategoryKey( 101 ), new ContentTypeKey( 11 ), "title3",
                                                       Lists.newArrayList(
                                                           new UserDefinedField( "data/heading", new SimpleText( "title3" ) ) ) );
         doc3.setContentTypeName( "Loooooooooooooong-content-type-name-it-is" );
-        contentIndexService.index( doc3, false );
+        contentIndexService.index( doc3 );
 
         flushIndex();
 

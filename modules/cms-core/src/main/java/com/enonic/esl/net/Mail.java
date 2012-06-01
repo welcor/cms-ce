@@ -4,13 +4,17 @@
  */
 package com.enonic.esl.net;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
+import javax.activation.DataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -27,9 +31,6 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.enonic.esl.activation.ByteArrayDataSource;
-import com.enonic.esl.activation.FileItemDataSource;
 
 public class Mail
 {
@@ -66,7 +67,7 @@ public class Mail
 
     private final static String ENCODING = "UTF-8";
 
-    private ArrayList<Object> attachments = new ArrayList<Object>();
+    private ArrayList<FileItem> attachments = new ArrayList<FileItem>();
 
     /**
      * <p/> Send the mail. The SMTP host is contacted and the mail is sent according to the parameters set. </p> <p/> If it fails, it is
@@ -105,16 +106,15 @@ public class Mail
             }
             msg.setFrom( addressFrom );
 
-            if ( ( to.size() == 0 && bcc.size() == 0 ) || subject == null || ( message == null && htmlMessage == null ) )
+            if ( ( to.size() == 0 && bcc.size() == 0 ) || subject == null ||
+                    ( message == null && htmlMessage == null ) )
             {
                 LOG.error( "Missing data. Unable to send mail." );
                 throw new IllegalArgumentException( "Missing data. Unable to send mail." );
             }
 
-            // set to:
-            for ( int i = 0; i < to.size(); ++i )
+            for ( final String[] recipient : this.to )
             {
-                String[] recipient = to.get( i );
                 InternetAddress addressTo = new InternetAddress( recipient[1] );
                 if ( recipient[0] != null )
                 {
@@ -123,10 +123,8 @@ public class Mail
                 msg.addRecipient( Message.RecipientType.TO, addressTo );
             }
 
-            // set bcc:
-            for ( int i = 0; i < bcc.size(); ++i )
+            for ( final String[] recipient : this.bcc )
             {
-                String[] recipient = bcc.get( i );
                 InternetAddress addressTo = null;
                 try
                 {
@@ -144,10 +142,8 @@ public class Mail
                 msg.addRecipient( Message.RecipientType.BCC, addressTo );
             }
 
-            // set cc:
-            for ( int i = 0; i < cc.size(); ++i )
+            for ( final String[] recipient : this.cc )
             {
-                String[] recipient = cc.get( i );
                 InternetAddress addressTo = new InternetAddress( recipient[1] );
                 if ( recipient[0] != null )
                 {
@@ -161,7 +157,7 @@ public class Mail
 
             if ( message != null )
             {
-                message = message.replaceAll("\\\\n", "\n");
+                message = message.replaceAll( "\\\\n", "\n" );
             }
 
             // if there are any attachments, treat this as a multipart message.
@@ -174,49 +170,21 @@ public class Mail
                 }
                 else
                 {
-                    DataHandler dataHandler = new DataHandler( new ByteArrayDataSource( htmlMessage, "text/html", ENCODING ) );
+                    DataHandler dataHandler =
+                            new DataHandler( new ByteArrayDataSource( htmlMessage, "text/html", ENCODING ) );
                     messageBodyPart.setDataHandler( dataHandler );
                 }
                 Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart( messageBodyPart );
 
                 // add all attachments
-                for ( int i = 0; i < attachments.size(); ++i )
+                for ( final FileItem fileItem : this.attachments )
                 {
-                    Object obj = attachments.get( i );
-                    if ( obj instanceof String )
-                    {
-                        System.err.println( "attachment is String" );
-                        messageBodyPart = new MimeBodyPart();
-                        ( (MimeBodyPart) messageBodyPart ).setText( (String) obj, ENCODING );
-                        multipart.addBodyPart( messageBodyPart );
-                    }
-                    else if ( obj instanceof File )
-                    {
-                        messageBodyPart = new MimeBodyPart();
-                        FileDataSource fds = new FileDataSource( (File) obj );
-                        messageBodyPart.setDataHandler( new DataHandler( fds ) );
-                        messageBodyPart.setFileName( fds.getName() );
-                        multipart.addBodyPart( messageBodyPart );
-                    }
-                    else if ( obj instanceof FileItem )
-                    {
-                        FileItem fileItem = (FileItem) obj;
-                        messageBodyPart = new MimeBodyPart();
-                        FileItemDataSource fds = new FileItemDataSource( fileItem );
-                        messageBodyPart.setDataHandler( new DataHandler( fds ) );
-                        messageBodyPart.setFileName( fds.getName() );
-                        multipart.addBodyPart( messageBodyPart );
-                    }
-                    else
-                    {
-                        // byte array
-                        messageBodyPart = new MimeBodyPart();
-                        ByteArrayDataSource bads = new ByteArrayDataSource( (byte[]) obj, "text/html", ENCODING );
-                        messageBodyPart.setDataHandler( new DataHandler( bads ) );
-                        messageBodyPart.setFileName( bads.getName() );
-                        multipart.addBodyPart( messageBodyPart );
-                    }
+                    messageBodyPart = new MimeBodyPart();
+                    FileItemDataSource fds = new FileItemDataSource( fileItem );
+                    messageBodyPart.setDataHandler( new DataHandler( fds ) );
+                    messageBodyPart.setFileName( fds.getName() );
+                    multipart.addBodyPart( messageBodyPart );
                 }
 
                 msg.setContent( multipart );
@@ -229,7 +197,8 @@ public class Mail
                 }
                 else
                 {
-                    DataHandler dataHandler = new DataHandler( new ByteArrayDataSource( htmlMessage, "text/html", ENCODING ) );
+                    DataHandler dataHandler =
+                            new DataHandler( new ByteArrayDataSource( htmlMessage, "text/html", ENCODING ) );
                     msg.setDataHandler( dataHandler );
                 }
             }
@@ -363,5 +332,111 @@ public class Mail
     public void addAttachment( FileItem fi )
     {
         attachments.add( fi );
+    }
+
+    private final class ByteArrayDataSource
+            implements DataSource
+    {
+        private byte[] data; // data
+
+        private String type; // content-type
+
+        /* Create a DataSource from a String */
+        public ByteArrayDataSource( String data, String type, String encoding )
+        {
+            try
+            {
+                // Assumption that the string contains only ASCII
+                // characters!  Otherwise just pass a charset into this
+                // constructor and use it in getBytes()
+                this.data = data.getBytes( encoding );
+            }
+            catch ( UnsupportedEncodingException uex )
+            {
+            }
+            this.type = type + "; charset=" + encoding;
+        }
+
+        public String getContentType()
+        {
+            return type;
+        }
+
+        /**
+         * Return an InputStream for the data. Note - a new stream must be returned each time.
+         */
+        public InputStream getInputStream()
+                throws IOException
+        {
+            if ( data == null )
+            {
+                throw new IOException( "no data" );
+            }
+            return new ByteArrayInputStream( data );
+        }
+
+        public String getName()
+        {
+            return "dummy";
+        }
+
+        public OutputStream getOutputStream()
+                throws IOException
+        {
+            throw new IOException( "cannot do this" );
+        }
+    }
+
+    private final class FileItemDataSource
+        implements DataSource
+    {
+
+        /**
+         * File item.
+         */
+        private final FileItem item;
+
+        /**
+         * Construct the data source.
+         */
+        public FileItemDataSource( FileItem item )
+        {
+            this.item = item;
+        }
+
+        /**
+         * Return the content type.
+         */
+        public String getContentType()
+        {
+            return this.item.getContentType();
+        }
+
+        /**
+         * Return the input stream.
+         */
+        public InputStream getInputStream()
+                throws IOException
+        {
+            return this.item.getInputStream();
+        }
+
+        /**
+         * Return the name.
+         */
+        public String getName()
+        {
+            File file = new File( this.item.getName() );
+            return file.getName();
+        }
+
+        /**
+         * Return the output stream.
+         */
+        public OutputStream getOutputStream()
+                throws IOException
+        {
+            return this.item.getOutputStream();
+        }
     }
 }

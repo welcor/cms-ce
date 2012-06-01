@@ -23,7 +23,7 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
 import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver;
+import com.enonic.cms.core.security.AdminConsoleLoginAccessResolver;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 

@@ -138,7 +138,7 @@
   </bean>
 
   <bean id="adminConsoleLoginAccessResolver"
-        class="com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver"/>
+        class="com.enonic.cms.core.security.AdminConsoleLoginAccessResolver"/>
 
   <bean id="userServicesRedirectHelper"
         class="com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver"/>

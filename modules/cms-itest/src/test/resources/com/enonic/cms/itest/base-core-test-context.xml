@@ -255,7 +255,7 @@
 
   <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
 
-  <bean id="adminConsoleLoginAccessResolver" class="com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver"/>
+  <bean id="adminConsoleLoginAccessResolver" class="com.enonic.cms.core.security.AdminConsoleLoginAccessResolver"/>
 
   <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 

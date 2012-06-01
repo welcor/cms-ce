@@ -64,33 +64,9 @@ public class Mail
 
     private String smtpHost;
 
-    private String ENCODING = "UTF-8";
+    private final static String ENCODING = "UTF-8";
 
     private ArrayList<Object> attachments = new ArrayList<Object>();
-
-    /**
-     * Mail constructor comment.
-     */
-    public Mail()
-    {
-        super();
-    }
-
-    /**
-     * Get the hostname used as the mail server. Outgoing mail is sent using the SMTP server at port 25 on this host.
-     */
-    public String getSMTPHost()
-    {
-        return smtpHost;
-    }
-
-    /**
-     * @deprecated Use {@link #addRecipient(String, String, short)} instead.
-     */
-    public void addBcc( String name, String email )
-    {
-        bcc.add( new String[]{name, email} );
-    }
 
     /**
      * <p/> Send the mail. The SMTP host is contacted and the mail is sent according to the parameters set. </p> <p/> If it fails, it is
@@ -127,7 +103,7 @@ public class Mail
             {
                 addressFrom.setPersonal( from_name, ENCODING );
             }
-            ( (MimeMessage) msg ).setFrom( addressFrom );
+            msg.setFrom( addressFrom );
 
             if ( ( to.size() == 0 && bcc.size() == 0 ) || subject == null || ( message == null && htmlMessage == null ) )
             {
@@ -144,7 +120,7 @@ public class Mail
                 {
                     addressTo.setPersonal( recipient[0], ENCODING );
                 }
-                ( (MimeMessage) msg ).addRecipient( Message.RecipientType.TO, addressTo );
+                msg.addRecipient( Message.RecipientType.TO, addressTo );
             }
 
             // set bcc:
@@ -165,7 +141,7 @@ public class Mail
                 {
                     addressTo.setPersonal( recipient[0], ENCODING );
                 }
-                ( (MimeMessage) msg ).addRecipient( Message.RecipientType.BCC, addressTo );
+                msg.addRecipient( Message.RecipientType.BCC, addressTo );
             }
 
             // set cc:
@@ -177,7 +153,7 @@ public class Mail
                 {
                     addressTo.setPersonal( recipient[0], ENCODING );
                 }
-                ( (MimeMessage) msg ).addRecipient( Message.RecipientType.CC, addressTo );
+                msg.addRecipient( Message.RecipientType.CC, addressTo );
             }
 
             // Setting subject and content type
@@ -199,7 +175,7 @@ public class Mail
                 else
                 {
                     DataHandler dataHandler = new DataHandler( new ByteArrayDataSource( htmlMessage, "text/html", ENCODING ) );
-                    ( (MimeBodyPart) messageBodyPart ).setDataHandler( dataHandler );
+                    messageBodyPart.setDataHandler( dataHandler );
                 }
                 Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart( messageBodyPart );
@@ -254,7 +230,7 @@ public class Mail
                 else
                 {
                     DataHandler dataHandler = new DataHandler( new ByteArrayDataSource( htmlMessage, "text/html", ENCODING ) );
-                    ( (MimeMessage) msg ).setDataHandler( dataHandler );
+                    msg.setDataHandler( dataHandler );
                 }
             }
 
@@ -359,16 +335,6 @@ public class Mail
     }
 
     /**
-     * Set the recipient name and email address.
-     *
-     * @deprecated Use {@link #addRecipient(String, String, short)} instead.
-     */
-    public void setTo( String name, String email )
-    {
-        to.add( new String[]{name, email} );
-    }
-
-    /**
      * Add a recipient. Duh..
      */
     public void addRecipient( String name, String email, short type )
@@ -394,23 +360,8 @@ public class Mail
         bcc.clear();
     }
 
-    public void addAttachment( byte[] attch )
-    {
-        attachments.add( attch );
-    }
-
-    public void addAttachment( File f )
-    {
-        attachments.add( f );
-    }
-
     public void addAttachment( FileItem fi )
     {
         attachments.add( fi );
-    }
-
-    public void addAttachment( String attch )
-    {
-        attachments.add( attch );
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.google.common.base.Preconditions;
 
 import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver;
 
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.security.group.GroupEntity;

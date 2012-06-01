@@ -348,8 +348,7 @@ public final class InternalClientImpl
             GroupEntity group = parseGroup( params.group );
             GroupXmlCreator xmlCreator = new GroupXmlCreator();
             xmlCreator.setAdminConsoleStyle( false );
-            return xmlCreator.createGroupDocument( group, params.includeMemberships, params.includeMembers,
-                                                   params.normalizeGroups );
+            return xmlCreator.createGroupDocument( group, params.includeMemberships, params.includeMembers, params.normalizeGroups );
         }
         catch ( Exception e )
         {
@@ -488,7 +487,7 @@ public final class InternalClientImpl
             {
                 UserEntity user =
                     new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser(
-                            params.user );
+                        params.user );
                 groupToUse = user.getUserGroup();
             }
 
@@ -751,8 +750,7 @@ public final class InternalClientImpl
         try
         {
             UserEntity userToImpersonate =
-                new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser(
-                        user );
+                new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser( user );
             final UserEntity impersonated =
                 securityService.impersonatePortalUser( new ImpersonateCommand( clientForRemoteInvocations, userToImpersonate.getKey() ) );
             return impersonated.getName();
@@ -899,10 +897,11 @@ public final class InternalClientImpl
 
             UserEntity updater = securityService.getImpersonatedPortalUser();
             UpdateUserCommand command = new UpdateUserCommand( updater.getKey(), specification );
-            if( UpdateUserParams.UpdateStrategy.UPDATE.equals( params.updateStrategy ) )
+            if ( UpdateUserParams.UpdateStrategy.UPDATE.equals( params.updateStrategy ) )
             {
                 command.setupUpdateStrategy();
-            } else
+            }
+            else
             {
                 command.setupModifyStrategy();
             }
@@ -933,7 +932,7 @@ public final class InternalClientImpl
      */
     private void computeBirthdateForModify( UpdateUserCommand command )
     {
-        if( command.isModifyStrategy() && command.getUserInfo().getBirthday() == null )
+        if ( command.isModifyStrategy() && command.getUserInfo().getBirthday() == null )
         {
             final UserEntity userToUpdate = userDao.findSingleBySpecification( command.getSpecification() );
             if ( userToUpdate == null )
@@ -972,7 +971,7 @@ public final class InternalClientImpl
 
     @Override
     public void changeUserPassword( ChangeUserPasswordParams params )
-            throws ClientException
+        throws ClientException
     {
         UserStoreEntity userStore = getUserStoreEntity( params.userstore );
 
@@ -1830,6 +1829,7 @@ public final class InternalClientImpl
             getRelatedContentXmlCreator.startingIndex( params.index );
             getRelatedContentXmlCreator.resultLength( params.count );
             getRelatedContentXmlCreator.includeUserRights( params.includeUserRights );
+            getRelatedContentXmlCreator.includeCategoryData( true );
 
             return getRelatedContentXmlCreator.create( result ).getAsJDOMDocument();
         }

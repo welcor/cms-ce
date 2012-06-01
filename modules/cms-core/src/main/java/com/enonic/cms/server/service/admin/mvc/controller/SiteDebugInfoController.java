@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.support.ServletContextResource;
@@ -36,9 +37,9 @@ import com.enonic.cms.core.structure.portlet.PortletKey;
 public final class SiteDebugInfoController
     extends SiteDebugController
 {
-
     private AdminService adminService;
 
+    @Autowired
     public void setAdminService( AdminService value )
     {
         this.adminService = value;

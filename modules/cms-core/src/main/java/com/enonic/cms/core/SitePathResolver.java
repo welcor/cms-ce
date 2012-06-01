@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UrlPathHelper;
 
 public class SitePathResolver
@@ -18,6 +19,7 @@ public class SitePathResolver
 
     private SiteKeyResolver siteKeyResolver = new SiteKeyResolver();
 
+    @Autowired
     public void setUrlPathHelperManager( UrlPathHelperManager value )
     {
         this.urlPathHelperManager = value;

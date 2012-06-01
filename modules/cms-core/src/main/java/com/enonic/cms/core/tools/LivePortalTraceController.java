@@ -170,6 +170,7 @@ public final class LivePortalTraceController
         return livePortalTraceService.tracingEnabled();
     }
 
+    @Autowired
     public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
     {
         this.livePortalTraceService = livePortalTraceService;

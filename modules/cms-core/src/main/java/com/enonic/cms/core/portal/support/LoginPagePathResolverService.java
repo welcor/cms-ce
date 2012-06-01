@@ -8,8 +8,5 @@ import com.enonic.cms.core.SitePath;
 
 public interface LoginPagePathResolverService
 {
-
-    SitePath resolvePathToUserServicesLoginPage( SitePath sitePath );
-
     SitePath resolvePathToDefaultPageInMenu( SitePath sitePath );
 }

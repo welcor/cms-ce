@@ -8,6 +8,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
@@ -19,15 +20,13 @@ import com.enonic.cms.framework.util.UrlPathEncoder;
 import com.enonic.cms.core.PathAndParams;
 import com.enonic.cms.core.PathAndParamsToStringBuilder;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.SiteDao;
-
-import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
-
 import com.enonic.cms.core.portal.PageRequestContext;
 import com.enonic.cms.core.portal.PageRequestContextResolver;
 import com.enonic.cms.core.portal.SiteNotFoundException;
+import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.SiteDao;
 
 /**
  * This class implements the debug controller.
@@ -117,12 +116,13 @@ public final class SiteDebugViewController
         return site;
     }
 
-
+    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setSiteDao( SiteDao siteDao )
     {
         this.siteDao = siteDao;

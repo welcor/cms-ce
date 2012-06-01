@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.enonic.vertical.adminweb.AdminHelper;
@@ -21,6 +22,7 @@ public final class LoginCheckInterceptor
 {
     private SecurityService securityService;
 
+    @Autowired
     public void setSecurityService( SecurityService securityService )
     {
         this.securityService = securityService;

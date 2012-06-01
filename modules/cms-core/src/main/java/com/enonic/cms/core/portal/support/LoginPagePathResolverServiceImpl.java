@@ -10,7 +10,6 @@ import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.LoginPageNotFoundException;
-import com.enonic.cms.core.portal.ReservedLocalPaths;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.SiteDao;
@@ -20,14 +19,6 @@ public class LoginPagePathResolverServiceImpl
 {
     @Autowired
     private SiteDao siteDao;
-
-    public SitePath resolvePathToUserServicesLoginPage( final SitePath sitePath )
-    {
-        final SitePath loginSitePath = new SitePath( sitePath.getSiteKey(), ReservedLocalPaths.PATH_USERSERVICES, sitePath.getParams() );
-        loginSitePath.addParam( "_handler", "user" );
-        loginSitePath.addParam( "_op", "login" );
-        return loginSitePath;
-    }
 
     public SitePath resolvePathToDefaultPageInMenu( final SitePath sitePath )
     {

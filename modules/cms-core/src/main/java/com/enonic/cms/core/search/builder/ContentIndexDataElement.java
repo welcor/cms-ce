@@ -24,7 +24,18 @@ public class ContentIndexDataElement
 
     private String orderBy;
 
+    public ContentIndexDataElement( final String fieldBaseName, final Set<Object> values, boolean addOrderBy )
+    {
+        doCreateContentIndexDataElement( fieldBaseName, values, addOrderBy );
+    }
+
+
     public ContentIndexDataElement( final String fieldBaseName, final Set<Object> values )
+    {
+        doCreateContentIndexDataElement( fieldBaseName, values, true );
+    }
+
+    private void doCreateContentIndexDataElement( final String fieldBaseName, final Set<Object> values, boolean addOrderBy )
     {
         this.fieldBaseName = IndexFieldnameNormalizer.normalizeFieldName( fieldBaseName );
 
@@ -44,25 +55,29 @@ public class ContentIndexDataElement
             {
                 numericValues.add( ( (Number) value ).doubleValue() );
                 stringValues.add( IndexValueNormalizer.normalizeStringValue( value.toString() ) );
-                setOrderby( value );
+
 
             }
             else if ( value instanceof Date )
             {
                 dateTimeValues.add( (Date) value );
                 stringValues.add( ElasticSearchFormatter.formatDateAsStringIgnoreTimezone( (Date) value ) );
-                setOrderby( value );
+
             }
             else
             {
                 stringValues.add( IndexValueNormalizer.normalizeStringValue( value.toString() ) );
-                setOrderby( value );
                 addNumberOrDateIfPossible( value );
+            }
+
+            if ( addOrderBy )
+            {
+                setOrderBy( value );
             }
         }
     }
 
-    private void setOrderby( final Object value )
+    private void setOrderBy( final Object value )
     {
         if ( orderBy == null )
         {

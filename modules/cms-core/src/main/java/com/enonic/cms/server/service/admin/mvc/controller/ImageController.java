@@ -14,26 +14,25 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.enonic.cms.framework.util.HttpServletUtil;
 
-import com.enonic.cms.core.image.ImageRequest;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupDao;
-
 import com.enonic.cms.core.content.access.ContentAccessResolver;
-import com.enonic.cms.core.security.SecurityService;
-
+import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageRequestParser;
 import com.enonic.cms.core.image.ImageResponse;
 import com.enonic.cms.core.portal.image.ImageProcessorException;
 import com.enonic.cms.core.portal.image.ImageRequestAccessResolver;
 import com.enonic.cms.core.portal.image.ImageService;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
+import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.GroupDao;
 
 public final class ImageController
     extends AbstractController
@@ -42,7 +41,7 @@ public final class ImageController
 
     private ImageService imageService;
 
-    private boolean disableParamEncoding;
+    private boolean disableParamEncoding = true;
 
     private final ImageRequestParser requestParser = new ImageRequestParser( true );
 
@@ -125,6 +124,7 @@ public final class ImageController
         return access == ImageRequestAccessResolver.Access.OK;
     }
 
+    @Autowired
     public void setImageService( ImageService imageService )
     {
         this.imageService = imageService;
@@ -135,16 +135,19 @@ public final class ImageController
         this.disableParamEncoding = disableParamEncoding;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService securityService )
     {
         this.securityService = securityService;
     }
 
+    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setGroupDao( GroupDao groupDao )
     {
         this.groupDao = groupDao;

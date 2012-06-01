@@ -31,43 +31,6 @@
             <li><span class="keyField">Binaries</span> = <span class="valueField">(${numberOfBinaries})</span></li>
         </ul>
     </div>
-    <div class="tab-page" id="tab-page-2">
-        <span class="tab">Elasticsearch Queries</span>
-
-        <div class="infoBox">
-            Order by
-            <a id="btnAvgTimeSort" href="javascript:;">[AvgTime]</a>
-            <a id="btnMaxTimeSort" href="javascript:;">[MaxTime]</a>
-            <a id="btnAvgTimeDiffSort" href="javascript:;">[AvgTime diff]</a>
-            <a id="btnTotalHitsSort" href="javascript:;">[TotalHits]</a>
-
-            <div id="measuresList">
-            </div>
-
-        </div>
-    </div>
-    <div class="tab-page" id="tab-page-3">
-        <span class="tab">Resultset Diff</span>
-
-        <a id="btnRefreshDiffList" href="javascript:;">[Refresh]</a>
-
-        <div class="infoBox">
-            <div id="diffList">
-            </div>
-        </div>
-    </div>
-
-    <div id="queryContent-window">
-        <div>
-           Content Index Details (<a href="javascript: void(0);" onclick="closeQueryContentWindow()">Close</a>)
-            <div>
-                <div id="queryContent">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
 
 </div>
 </body>

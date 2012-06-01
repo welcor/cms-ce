@@ -3,6 +3,7 @@ package com.enonic.cms.core.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -405,7 +406,12 @@ public class ContentIndexServiceImpl
     @Override
     public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
     {
-        final Map<String, GetField> fields = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+        final Map<String, GetField> contentFields = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+        final Map<String, GetField> binaryFields = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Binaries, contentKey );
+
+        // merge content and binary fields, overwrite using content value if same field name exists in both
+        final Map<String, GetField> fields = new HashMap<String, GetField>( binaryFields );
+        fields.putAll( contentFields );
 
         final ElasticSearchIndexedFieldsTranslator indexFieldsTranslator = new ElasticSearchIndexedFieldsTranslator();
         return indexFieldsTranslator.generateContentIndexFieldSet( contentKey, fields );

@@ -129,6 +129,6 @@ public class IndexTransactionServiceImpl
     private ContentIndexData createContentIndexData( ContentEntity content )
     {
         ContentDocument doc = indexService.createContentDocument( content );
-        return contentIndexDataFactory.create( doc, true );
+        return contentIndexDataFactory.create( doc );
     }
 }

@@ -16,12 +16,11 @@ import com.enonic.cms.core.resolver.locale.LocaleParser;
 
 public final class UserFieldHelper
 {
-
-    private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "yyyyMMdd" );
+    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat( "yyyyMMdd" );
 
     private final SimpleDateFormat dateFormat;
 
-    private static SimpleDateFormat[] getSupportedDateFormats()
+    private SimpleDateFormat[] getSupportedDateFormats()
     {
         SimpleDateFormat iso = new SimpleDateFormat( "yyyy-MM-dd" );
         iso.setLenient( false );
@@ -60,7 +59,7 @@ public final class UserFieldHelper
 
         if ( value instanceof Date )
         {
-            return value == null ? null : this.dateFormat.format( value );
+            return formatDate( (Date) value );
         }
 
         if ( value instanceof Boolean )
@@ -128,7 +127,7 @@ public final class UserFieldHelper
 
     private String formatDate( Date value )
     {
-        return this.dateFormat.format( value );
+        return value == null ? null : this.dateFormat.format( value );
     }
 
     private String formatBoolean( Boolean value )
@@ -153,11 +152,21 @@ public final class UserFieldHelper
 
     private Boolean parseBoolean( String value )
     {
+        if ( StringUtils.isBlank( value ) )
+        {
+            return null;
+        }
+
         return "|1|true|on".indexOf( value ) > 0;
     }
 
     private Gender parseGender( String value )
     {
+        if ( StringUtils.isBlank( value ) )
+        {
+            return null;
+        }
+
         if ( value.equalsIgnoreCase( "m" ) || value.equalsIgnoreCase( "male" ) )
         {
             return Gender.MALE;
@@ -173,11 +182,21 @@ public final class UserFieldHelper
 
     private Locale parseLocale( final String value )
     {
+        if ( StringUtils.isBlank( value ) )
+        {
+            return null;
+        }
+
         return LocaleParser.parseLocale( value );
     }
 
     private TimeZone parseTimeZone( String value )
     {
+        if ( StringUtils.isBlank( value ) )
+        {
+            return null;
+        }
+
         return TimeZone.getTimeZone( value );
     }
 
@@ -196,7 +215,6 @@ public final class UserFieldHelper
                 return date;
             }
         }
-
         throw new IllegalArgumentException( "Could not parse date " + value );
     }
 

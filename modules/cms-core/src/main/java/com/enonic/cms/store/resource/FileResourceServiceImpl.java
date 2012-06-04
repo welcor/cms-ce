@@ -261,9 +261,10 @@ public final class FileResourceServiceImpl
         }
 
         final byte[] bytes = getBlob( entity );
-        if (bytes == null) {
-            throw new IllegalStateException("Blob for resource [" + name.toString() +
-                "] is not found. Please check your blobstore configuration.");
+        if ( bytes == null )
+        {
+            throw new IllegalStateException( "Blob for resource [" + name.toString() +
+                                                 "] is not found. Please check your blobstore configuration." );
         }
 
         final FileResourceData data = new FileResourceData();
@@ -552,7 +553,7 @@ public final class FileResourceServiceImpl
     }
 
     @Autowired(required = false)
-    public void setListeners(final List<FileResourceListener> listeners)
+    public void setListeners( final List<FileResourceListener> listeners )
     {
         this.listeners = listeners;
     }

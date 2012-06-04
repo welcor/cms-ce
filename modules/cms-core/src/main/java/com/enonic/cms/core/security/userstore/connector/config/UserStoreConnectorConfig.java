@@ -22,12 +22,30 @@ public class UserStoreConnectorConfig
 
     private Properties pluginProperties;
 
+    private boolean resurrectDeletedUsers = false;
+
+    private boolean resurrectDeletedGroups = false;
+
     public UserStoreConnectorConfig( String name, String pluginType, UserPolicyConfig userPolicy, GroupPolicyConfig groupPolicy )
+    {
+        this( name, pluginType, userPolicy, groupPolicy, null, null );
+    }
+
+    public UserStoreConnectorConfig( String name, String pluginType, UserPolicyConfig userPolicy, GroupPolicyConfig groupPolicy,
+                                     Boolean resurrectDeletedUsers, Boolean resurrectDeletedGroups )
     {
         this.name = name;
         this.pluginType = pluginType;
         this.userPolicy = userPolicy;
         this.groupPolicy = groupPolicy;
+        if ( resurrectDeletedUsers != null )
+        {
+            this.resurrectDeletedUsers = resurrectDeletedUsers;
+        }
+        if ( resurrectDeletedGroups != null )
+        {
+            this.resurrectDeletedGroups = resurrectDeletedGroups;
+        }
     }
 
     public String getName()
@@ -105,9 +123,14 @@ public class UserStoreConnectorConfig
         return pluginType;
     }
 
-    public void setPluginType( final String value )
+    public boolean resurrectDeletedUsers()
     {
-        pluginType = value;
+        return resurrectDeletedUsers;
+    }
+
+    public boolean resurrectDeletedGroups()
+    {
+        return resurrectDeletedGroups;
     }
 
     public Properties getPluginProperties()

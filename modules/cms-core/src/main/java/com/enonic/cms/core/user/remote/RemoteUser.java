@@ -4,19 +4,19 @@
  */
 package com.enonic.cms.core.user.remote;
 
-import com.enonic.cms.core.user.field.UserFieldMap;
+import com.enonic.cms.core.user.field.UserFields;
 
 public final class RemoteUser
     extends RemotePrincipal
 {
     private String email;
 
-    private final UserFieldMap userFields;
+    private final UserFields userFields;
 
     public RemoteUser( String id )
     {
         super( id );
-        this.userFields = new UserFieldMap( false );
+        this.userFields = new UserFields( false );
     }
 
     public String getEmail()
@@ -29,7 +29,7 @@ public final class RemoteUser
         this.email = email;
     }
 
-    public UserFieldMap getUserFields()
+    public UserFields getUserFields()
     {
         return this.userFields;
     }

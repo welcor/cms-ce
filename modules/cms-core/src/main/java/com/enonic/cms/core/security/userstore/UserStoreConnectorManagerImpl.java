@@ -12,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.enonic.cms.core.time.TimeService;
-
-import com.enonic.cms.core.security.group.GroupStorageService;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigLoader;
@@ -22,6 +19,7 @@ import com.enonic.cms.core.security.userstore.connector.local.LocalUserStoreConn
 import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStoreFactory;
 import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStorePlugin;
+import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
@@ -43,10 +41,10 @@ public final class UserStoreConnectorManagerImpl
     private GroupDao groupDao;
 
     @Autowired
-    private GroupStorageService groupStorageService;
+    private GroupStorerFactory groupStorerFactory;
 
     @Autowired
-    private UserStorageService userStorageService;
+    private UserStorerFactory userStorerFactory;
 
     @Autowired
     private TimeService timeService;
@@ -69,14 +67,25 @@ public final class UserStoreConnectorManagerImpl
 
     public Map<String, UserStoreConnectorConfig> getUserStoreConnectorConfigs()
     {
-        return userStoreConnectorConfigLoader.getAllConfigs();
+        return userStoreConnectorConfigLoader.getAllUserStoreConnectorConfigs();
     }
 
     public UserStoreConnectorConfig getUserStoreConnectorConfig( final String configName )
     {
-        return userStoreConnectorConfigLoader.getConfig( configName );
+        return userStoreConnectorConfigLoader.getUserStoreConnectorConfig( configName );
     }
 
+    public UserStoreConnectorConfig getUserStoreConnectorConfig( final UserStoreKey userStoreKey )
+    {
+        UserStoreEntity userStore = userStoreDao.findByKey( userStoreKey );
+        if ( userStore.isLocal() )
+        {
+            throw new IllegalArgumentException( "Local user stores does not have a connector config" );
+        }
+        return userStoreConnectorConfigLoader.getUserStoreConnectorConfig( userStore.getConnectorName() );
+    }
+
+    @Override
     public void invalidateCachedConfig( UserStoreKey userStoreKey )
     {
         remoteUSConnectorMap.remove( userStoreKey );
@@ -154,7 +163,8 @@ public final class UserStoreConnectorManagerImpl
 
     private RemoteUserStoreConnector createRemoteUserStoreConnector( final UserStoreEntity userStore )
     {
-        final UserStoreConnectorConfig connectorConfig = userStoreConnectorConfigLoader.getConfig( userStore.getConnectorName() );
+        final UserStoreConnectorConfig connectorConfig =
+            userStoreConnectorConfigLoader.getUserStoreConnectorConfig( userStore.getConnectorName() );
         final RemoteUserStorePlugin remoteUserStorePlugin =
             remoteUserStoreFactory.create( connectorConfig.getPluginType(), connectorConfig.getPluginProperties() );
         remoteUserStorePlugin.initialize();
@@ -165,8 +175,8 @@ public final class UserStoreConnectorManagerImpl
         connector.setRemoteUserStorePlugin( remoteUserStorePlugin );
         connector.setUserDao( userDao );
         connector.setGroupDao( groupDao );
-        connector.setGroupStorageService( groupStorageService );
-        connector.setUserStorageService( userStorageService );
+        connector.setGroupStorerFactory( groupStorerFactory );
+        connector.setUserStorerFactory( userStorerFactory );
         connector.setUserStoreDao( userStoreDao );
         connector.setConnectorConfig( connectorConfig );
         connector.setUserStoreConfig( userStore.getConfig() );
@@ -178,8 +188,8 @@ public final class UserStoreConnectorManagerImpl
         final LocalUserStoreConnector connector = new LocalUserStoreConnector( userStore.getKey(), userStore.getName() );
         connector.setUserDao( userDao );
         connector.setGroupDao( groupDao );
-        connector.setGroupStorageService( groupStorageService );
-        connector.setUserStorageService( userStorageService );
+        connector.setGroupStorerFactory( groupStorerFactory );
+        connector.setUserStorerFactory( userStorerFactory );
         connector.setUserStoreDao( userStoreDao );
         return connector;
     }

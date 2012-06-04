@@ -7,11 +7,11 @@ package com.enonic.cms.store.dao;
 import java.util.Collection;
 import java.util.List;
 
-import com.enonic.cms.store.support.EntityPageList;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.store.support.EntityPageList;
 
 public interface SiteDao
     extends EntityDao<SiteEntity>
@@ -33,4 +33,6 @@ public interface SiteDao
     List<SiteEntity> findAll();
 
     EntityPageList<SiteEntity> findAll( int index, int count );
+
+    void removeUsage( UserEntity user );
 }

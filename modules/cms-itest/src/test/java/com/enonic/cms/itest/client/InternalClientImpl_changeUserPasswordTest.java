@@ -8,13 +8,13 @@ import java.io.IOException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jdom.JDOMException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.api.client.model.ChangeUserPasswordParams;
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.client.InternalClient;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
@@ -28,17 +28,15 @@ import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
 import static junit.framework.Assert.assertEquals;
 
 public class InternalClientImpl_changeUserPasswordTest
-        extends AbstractSpringTest
+    extends AbstractSpringTest
 {
-    private DomainFactory factory;
-
     @Autowired
     private DomainFixture fixture;
 
@@ -50,10 +48,8 @@ public class InternalClientImpl_changeUserPasswordTest
 
     @Before
     public void before()
-            throws IOException, JDOMException
+        throws IOException, JDOMException
     {
-        factory = fixture.getFactory();
-
         fixture.initSystemData();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -61,6 +57,12 @@ public class InternalClientImpl_changeUserPasswordTest
         ServletRequestAccessor.setRequest( request );
 
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( "anonymous" ).getKey() );
+    }
+
+    @After
+    public void after()
+    {
+        PortalSecurityHolder.setLoggedInUser( null );
     }
 
     @Test
@@ -74,15 +76,15 @@ public class InternalClientImpl_changeUserPasswordTest
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
         fixture.flushAndClearHibernateSesssion();
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setFirstName( "First name" );
-        userInfo.setLastName( "Last name" );
-        userInfo.setInitials( "INI" );
-        createNormalUser( "testuser", "myLocalStore", userInfo );
+        UserFields userFields = new UserFields();
+        userFields.setFirstName( "First name" );
+        userFields.setLastName( "Last name" );
+        userFields.setInitials( "INI" );
+        createNormalUser( "testuser", "myLocalStore", userFields );
 
         // verify
         UserEntity resultUser = fixture.findUserByName( "testuser" );
-        assertEquals( "INI", resultUser.getUserInfo().getInitials() );
+        assertEquals( "INI", resultUser.getUserFields().getInitials() );
         assertEquals( DigestUtils.shaHex( "password" ), resultUser.getPassword() );
 
         loginPortalUser( "testuser" );
@@ -126,7 +128,7 @@ public class InternalClientImpl_changeUserPasswordTest
         return userStoreService.storeNewUserStore( command );
     }
 
-    private UserKey createNormalUser( String userName, String userStoreName, UserInfo userInfo )
+    private UserKey createNormalUser( String userName, String userStoreName, UserFields userFields )
     {
         StoreNewUserCommand command = new StoreNewUserCommand();
         command.setStorer( fixture.findUserByName( "admin" ).getKey() );
@@ -137,7 +139,7 @@ public class InternalClientImpl_changeUserPasswordTest
         command.setPassword( "password" );
         command.setType( UserType.NORMAL );
         command.setDisplayName( userName );
-        command.setUserInfo( userInfo );
+        command.setUserFields( userFields );
 
         return userStoreService.storeNewUser( command );
     }

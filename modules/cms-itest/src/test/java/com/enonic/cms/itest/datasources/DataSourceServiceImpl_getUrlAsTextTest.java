@@ -7,7 +7,6 @@ package com.enonic.cms.itest.datasources;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
-import java.util.Properties;
 import java.util.Random;
 
 import org.jdom.Document;

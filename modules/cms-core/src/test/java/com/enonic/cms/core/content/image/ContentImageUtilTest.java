@@ -89,8 +89,7 @@ public class ContentImageUtilTest
         final String imageSize = "200";
         BufferedImage image = getImageFromFile( imageSize );
 
-        List<BinaryData> scaledImages = ContentImageUtil.createStandardSizeImages( image, "jpg",
-                                                                                   createFileName( imageSize ) );
+        List<BinaryData> scaledImages = ContentImageUtil.createStandardSizeImages( image, "jpg", createFileName( imageSize ) );
 
         assertTrue( image.getWidth() == 200 );
 

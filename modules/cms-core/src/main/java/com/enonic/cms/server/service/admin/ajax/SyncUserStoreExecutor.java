@@ -7,13 +7,11 @@ package com.enonic.cms.server.service.admin.ajax;
 import java.util.Date;
 
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
-import com.enonic.cms.server.service.admin.ajax.dto.SynchronizeStatusDto;
-
 import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJob;
 import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJobFactory;
-
+import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
+import com.enonic.cms.server.service.admin.ajax.dto.SynchronizeStatusDto;
 
 public final class SyncUserStoreExecutor
 {
@@ -68,11 +66,17 @@ public final class SyncUserStoreExecutor
             return false;
         }
 
-        this.started = new Date();
-        createJob( users, groups, batchSize );
-        this.job.start();
-        this.finished = new Date();
-        return true;
+        try
+        {
+            this.started = new Date();
+            createJob( users, groups, batchSize );
+            this.job.start();
+            return true;
+        }
+        finally
+        {
+            this.finished = new Date();
+        }
     }
 
     public SynchronizeStatusDto getStatus( final String languageCode )

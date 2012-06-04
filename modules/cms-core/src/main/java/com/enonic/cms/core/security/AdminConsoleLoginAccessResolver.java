@@ -5,7 +5,6 @@
 package com.enonic.cms.core.security;
 
 import com.enonic.cms.core.security.group.GroupEntity;
-
 import com.enonic.cms.core.security.user.UserEntity;
 
 public class AdminConsoleLoginAccessResolver

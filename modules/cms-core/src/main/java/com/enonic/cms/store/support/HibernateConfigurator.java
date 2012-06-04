@@ -68,7 +68,7 @@ public final class HibernateConfigurator
     {
         this.cacheManager = cacheManager;
     }
-    
+
     public Configuration getHibernateConfiguration()
     {
         return getConfiguration();
@@ -94,9 +94,9 @@ public final class HibernateConfigurator
         super.afterPropertiesSet();
     }
 
-    public void setLogging(boolean logging)
+    public void setLogging( boolean logging )
     {
-        getHibernateProperties().setProperty(Environment.SHOW_SQL, String.valueOf(logging));
+        getHibernateProperties().setProperty( Environment.SHOW_SQL, String.valueOf( logging ) );
     }
 
     /**

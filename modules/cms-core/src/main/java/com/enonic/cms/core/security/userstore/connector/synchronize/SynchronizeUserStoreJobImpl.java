@@ -26,7 +26,6 @@ import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.security.userstore.connector.remote.MemberCache;
 import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
-
 import com.enonic.cms.core.user.remote.RemoteGroup;
 import com.enonic.cms.core.user.remote.RemoteUser;
 
@@ -136,7 +135,7 @@ public class SynchronizeUserStoreJobImpl
         final BatchedList<UserKey> usersToDeleteAsBatchedList = new BatchedList<UserKey>( allUsersToDelete, batchSize );
         while ( usersToDeleteAsBatchedList.hasMoreBatches() )
         {
-            userStoreService.deleteUsersLocally( status.getLocalUsersStatus(), usersToDeleteAsBatchedList.getNextBatch() );
+            userStoreService.deleteUsersLocally( userStoreKey, status.getLocalUsersStatus(), usersToDeleteAsBatchedList.getNextBatch() );
         }
     }
 
@@ -187,7 +186,7 @@ public class SynchronizeUserStoreJobImpl
         final BatchedList<GroupKey> groupsToDeleteAsBatchedList = new BatchedList<GroupKey>( allGroupsToDelete, batchSize );
         while ( groupsToDeleteAsBatchedList.hasMoreBatches() )
         {
-            userStoreService.deleteGroupsLocally( status.getLocalGroupsStatus(), groupsToDeleteAsBatchedList.getNextBatch() );
+            userStoreService.deleteGroupsLocally( status.getLocalGroupsStatus(), userStoreKey, groupsToDeleteAsBatchedList.getNextBatch() );
         }
     }
 

@@ -5,7 +5,6 @@
 package com.enonic.cms.store.dao;
 
 import com.enonic.cms.core.security.group.GroupKey;
-
 import com.enonic.cms.core.structure.DefaultSiteAccessEntity;
 
 /**

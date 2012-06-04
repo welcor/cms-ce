@@ -14,23 +14,19 @@ import org.jdom.Element;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.client.model.user.Address;
 import com.enonic.cms.api.client.model.user.Gender;
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.user.field.UserFields;
 
 import static org.junit.Assert.*;
 
 public class UserInfoXmlCreatorTest
 {
-    private static final Logger LOG = LoggerFactory.getLogger( UserInfoXmlCreatorTest.class.getName() );
-
     private UserInfoXmlCreator creator;
 
     private User userWithBasicFieldValue;
@@ -44,11 +40,11 @@ public class UserInfoXmlCreatorTest
 
     private void setupUserWithBasicFieldValue()
     {
-        final UserInfo userInfo = new UserInfo();
-        userInfo.setPrefix( "user_prefix_value" );
+        final UserFields userFields = new UserFields();
+        userFields.setPrefix( "user_prefix_value" );
 
         final UserEntity user = new UserEntity();
-        user.updateUserInfo( userInfo );
+        user.setUserFields( userFields );
 
         this.userWithBasicFieldValue = user;
     }
@@ -59,11 +55,9 @@ public class UserInfoXmlCreatorTest
         final Element returnedRootEl = creator.createUserInfoElement( userWithBasicFieldValue );
 
         assertEquals( "block", returnedRootEl.getName() );
-        assertEquals( 2, returnedRootEl.getChildren().size() );
-        assertEquals( "birthday", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getName() );
-        assertEquals( "prefix", ( (Element) returnedRootEl.getChildren().get( 1 ) ).getName() );
-        assertEquals( "", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getValue() );
-        assertEquals( "user_prefix_value", ( (Element) returnedRootEl.getChildren().get( 1 ) ).getValue() );
+        assertEquals( 1, returnedRootEl.getChildren().size() );
+        assertEquals( "prefix", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getName() );
+        assertEquals( "user_prefix_value", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getValue() );
     }
 
     @Test
@@ -74,10 +68,10 @@ public class UserInfoXmlCreatorTest
         existingPrefixEl.setText( "existing_prefix_value" );
         givenRootEl.addContent( existingPrefixEl );
 
-        final Element returnedRootEl = creator.addUserInfoToElement( givenRootEl, userWithBasicFieldValue.getUserInfo(), false );
+        final Element returnedRootEl = creator.addUserInfoToElement( givenRootEl, userWithBasicFieldValue.getUserFields(), false );
 
         assertEquals( "given_root", returnedRootEl.getName() );
-        assertEquals( 2, returnedRootEl.getChildren().size() );
+        assertEquals( 1, returnedRootEl.getChildren().size() );
         assertEquals( "prefix", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getName() );
         assertEquals( "existing_prefix_value", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getValue() );
     }
@@ -90,52 +84,50 @@ public class UserInfoXmlCreatorTest
         existingPrefixEl.setText( "existing_prefix_value" );
         givenRootEl.addContent( existingPrefixEl );
 
-        final Element returnedRootEl = creator.addUserInfoToElement( givenRootEl, userWithBasicFieldValue.getUserInfo(), true );
+        final Element returnedRootEl = creator.addUserInfoToElement( givenRootEl, userWithBasicFieldValue.getUserFields(), true );
 
         assertEquals( "given_root", returnedRootEl.getName() );
-        assertEquals( 2, returnedRootEl.getChildren().size() );
-        assertEquals( "birthday", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getName() );
-        assertEquals( "prefix", ( (Element) returnedRootEl.getChildren().get( 1 ) ).getName() );
-        assertEquals( "", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getValue() );
-        assertEquals( "user_prefix_value", ( (Element) returnedRootEl.getChildren().get( 1 ) ).getValue() );
+        assertEquals( 1, returnedRootEl.getChildren().size() );
+        assertEquals( "prefix", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getName() );
+        assertEquals( "user_prefix_value", ( (Element) returnedRootEl.getChildren().get( 0 ) ).getValue() );
     }
 
     @Test
     public void testCreateFromUserWithAllValues_NoAddresses()
     {
-        final UserInfo userInfo = new UserInfo();
+        final UserFields userFields = new UserFields();
         final Date birthday = new Date();
-        userInfo.setBirthday( birthday );
-        userInfo.setCountry( "country_value" );
-        userInfo.setDescription( "description_value" );
-        userInfo.setFax( "fax_value" );
-        userInfo.setFirstName( "firstname_value" );
-        userInfo.setGender( Gender.MALE );
-        userInfo.setGlobalPosition( "globalposition_value" );
-        userInfo.setHomePage( "homepage_value" );
-        userInfo.setHtmlEmail( true );
-        userInfo.setInitials( "initials_value" );
-        userInfo.setLastName( "lastname_value" );
-        userInfo.setLocale( Locale.ENGLISH );
-        userInfo.setMemberId( "memberid_value" );
-        userInfo.setMiddleName( "middlename_value" );
-        userInfo.setMobile( "mobile_value" );
-        userInfo.setNickName( "nickname_value" );
-        userInfo.setOrganization( "organization_value" );
-        userInfo.setPersonalId( "personalid_value" );
-        userInfo.setPhone( "phone_value" );
-        userInfo.setPhoto( new byte[]{0x23, 0x24, 0x25} );
-        userInfo.setPrefix( "prefix_value" );
-        userInfo.setSuffix( "suffix_value" );
-        userInfo.setTimezone( TimeZone.getTimeZone( "GMT" ) );
-        userInfo.setTitle( "title_value" );
+        userFields.setBirthday( birthday );
+        userFields.setCountry( "country_value" );
+        userFields.setDescription( "description_value" );
+        userFields.setFax( "fax_value" );
+        userFields.setFirstName( "firstname_value" );
+        userFields.setGender( Gender.MALE );
+        userFields.setGlobalPosition( "globalposition_value" );
+        userFields.setHomePage( "homepage_value" );
+        userFields.setHtmlEmail( true );
+        userFields.setInitials( "initials_value" );
+        userFields.setLastName( "lastname_value" );
+        userFields.setLocale( Locale.ENGLISH );
+        userFields.setMemberId( "memberid_value" );
+        userFields.setMiddleName( "middlename_value" );
+        userFields.setMobile( "mobile_value" );
+        userFields.setNickName( "nickname_value" );
+        userFields.setOrganization( "organization_value" );
+        userFields.setPersonalId( "personalid_value" );
+        userFields.setPhone( "phone_value" );
+        userFields.setPhoto( new byte[]{0x23, 0x24, 0x25} );
+        userFields.setPrefix( "prefix_value" );
+        userFields.setSuffix( "suffix_value" );
+        userFields.setTimezone( TimeZone.getTimeZone( "GMT" ) );
+        userFields.setTitle( "title_value" );
 
         final UserEntity user = new UserEntity();
-        user.updateUserInfo( userInfo );
+        user.setUserFields( userFields );
 
         final Document doc = creator.createUserInfoDocument( user );
 
-        LOG.info( JDOMUtil.prettyPrintDocument( doc ) );
+        System.out.println( JDOMUtil.prettyPrintDocument( doc ) );
 
         assertEquals( "block", doc.getRootElement().getName() );
         assertSingleXPathValueEquals( "block/birthday", doc, new SimpleDateFormat( "yyyy-MM-dd" ).format( birthday ) );
@@ -164,7 +156,7 @@ public class UserInfoXmlCreatorTest
     @Test
     public void testCreateFromUserWithAddressValues()
     {
-        final UserInfo userInfo = new UserInfo();
+        final UserFields userFields = new UserFields();
 
         Address adr1 = new Address();
         adr1.setCountry( "NO" );
@@ -186,10 +178,10 @@ public class UserInfoXmlCreatorTest
         adr2.setIsoCountry( "ISO-NO" );
         adr2.setIsoRegion( "ISO-Oslo" );
 
-        userInfo.setAddresses( adr1, adr2 );
+        userFields.setAddresses( adr1, adr2 );
 
         final UserEntity user = new UserEntity();
-        user.updateUserInfo( userInfo );
+        user.setUserFields( userFields );
 
         Document doc = creator.createUserInfoDocument( user );
 

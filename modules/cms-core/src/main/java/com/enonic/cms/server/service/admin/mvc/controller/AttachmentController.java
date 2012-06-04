@@ -24,11 +24,13 @@ import com.google.common.io.ByteStreams;
 import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
+import com.enonic.cms.core.Path;
 import com.enonic.cms.core.PathAndParams;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.ContentVersionKey;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.binary.AttachmentNotFoundException;
 import com.enonic.cms.core.content.binary.AttachmentRequest;
@@ -42,10 +44,6 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
-
-import com.enonic.cms.core.Path;
-
-import com.enonic.cms.core.content.ContentVersionKey;
 
 public class AttachmentController
     extends AbstractController
@@ -125,7 +123,7 @@ public class AttachmentController
             final BinaryDataEntity binaryData = contentBinaryData.getBinaryData();
 
             boolean download = "true".equals( request.getParameter( "download" ) );
-            download |= "true".equals( request.getParameter( "_download" ) );
+            download = download || "true".equals( request.getParameter( "_download" ) );
 
             final BlobRecord blob = binaryDataDao.getBlob( binaryData.getBinaryDataKey() );
 

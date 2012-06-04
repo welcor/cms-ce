@@ -8,13 +8,14 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.enonic.cms.store.support.EntityPageList;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+
+import com.enonic.cms.store.support.EntityPageList;
 
 
 public abstract class AbstractBaseEntityDao<T>
@@ -26,6 +27,11 @@ public abstract class AbstractBaseEntityDao<T>
     protected final <T> T get( Class<T> clazz, Serializable key )
     {
         return typecast( clazz, getHibernateTemplate().get( clazz, key ) );
+    }
+
+    protected final <T> List<T> findByExample( Class<T> clazz, Object example )
+    {
+        return typecastList( clazz, getHibernateTemplate().findByExample( example ) );
     }
 
     protected final <T> List<T> findByNamedQuery( Class<T> clazz, String queryName )

@@ -45,7 +45,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.junit.Assert.*;
 
-public class CustomContentHandlerController_operation_UpdateTest
+public class ContentServicesProcessor_operation_UpdateTest
     extends AbstractSpringTest
 {
     @Autowired

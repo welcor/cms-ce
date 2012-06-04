@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
 import static org.junit.Assert.*;
 
 public class JarFileFilterTest
@@ -23,15 +24,15 @@ public class JarFileFilterTest
     public void testMatch()
         throws Exception
     {
-        assertTrue(this.filter.accept(this.folder.newFile("file.jar")));
+        assertTrue( this.filter.accept( this.folder.newFile( "file.jar" ) ) );
     }
 
     @Test
     public void testNoMatch()
         throws Exception
     {
-        assertFalse(this.filter.accept(this.folder.newFolder("folder")));
-        assertFalse(this.filter.accept(this.folder.newFile("file")));
-        assertFalse(this.filter.accept(this.folder.newFile("file.txt")));
+        assertFalse( this.filter.accept( this.folder.newFolder( "folder" ) ) );
+        assertFalse( this.filter.accept( this.folder.newFile( "file" ) ) );
+        assertFalse( this.filter.accept( this.folder.newFile( "file.txt" ) ) );
     }
 }

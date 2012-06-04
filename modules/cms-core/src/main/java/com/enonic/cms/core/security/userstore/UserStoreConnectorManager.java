@@ -20,5 +20,7 @@ public interface UserStoreConnectorManager
 
     UserStoreConnectorConfig getUserStoreConnectorConfig( final String configName );
 
+    UserStoreConnectorConfig getUserStoreConnectorConfig( final UserStoreKey userStoreKey );
+
     void invalidateCachedConfig( final UserStoreKey userStoreKey );
 }

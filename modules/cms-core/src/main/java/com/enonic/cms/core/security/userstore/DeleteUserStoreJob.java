@@ -70,7 +70,8 @@ public class DeleteUserStoreJob
         final BatchedList<UserKey> usersToDeleteAsBatchedList = new BatchedList<UserKey>( allUserKeys, batchSize );
         while ( usersToDeleteAsBatchedList.hasMoreBatches() )
         {
-            userStoreService.deleteUsersLocally( status.getLocalUsersStatus(), usersToDeleteAsBatchedList.getNextBatch() );
+            userStoreService.deleteUsersLocally( command.getKey(), status.getLocalUsersStatus(),
+                                                 usersToDeleteAsBatchedList.getNextBatch() );
         }
     }
 
@@ -86,7 +87,8 @@ public class DeleteUserStoreJob
         final BatchedList<GroupKey> groupsToDeleteAsBatchedList = new BatchedList<GroupKey>( allGroupKeys, batchSize );
         while ( groupsToDeleteAsBatchedList.hasMoreBatches() )
         {
-            userStoreService.deleteGroupsLocally( status.getLocalGroupsStatus(), groupsToDeleteAsBatchedList.getNextBatch() );
+            userStoreService.deleteGroupsLocally( status.getLocalGroupsStatus(), command.getKey(),
+                                                  groupsToDeleteAsBatchedList.getNextBatch() );
         }
     }
 

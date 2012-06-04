@@ -13,11 +13,9 @@ import org.springframework.mock.web.MockHttpSession;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.util.DateUtil;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.web.portal.SiteRedirectHelper;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
@@ -31,9 +29,11 @@ import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.web.portal.SiteRedirectHelper;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -42,7 +42,7 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.easymock.classextension.EasyMock.createMock;
 
-public class UserHandlerControllerTest_operation_UpdateTest
+public class UserServicesProcessorTest_operation_UpdateTest
     extends AbstractSpringTest
 {
 
@@ -107,17 +107,17 @@ public class UserHandlerControllerTest_operation_UpdateTest
 
         fixture.flushAndClearHibernateSesssion();
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setFirstName( "First name" );
-        userInfo.setLastName( "Last name" );
-        userInfo.setInitials( "INI" );
-        userInfo.setBirthday( DateUtil.parseDate( "12.12.2012" ) );
-        createNormalUser( "testuser", "myLocalStore", userInfo );
+        UserFields userFields = new UserFields();
+        userFields.setFirstName( "First name" );
+        userFields.setLastName( "Last name" );
+        userFields.setInitials( "INI" );
+        userFields.setBirthday( DateUtil.parseDate( "12.12.2012" ) );
+        createNormalUser( "testuser", "myLocalStore", userFields );
 
         // verify
-        UserInfo resultInfo = fixture.findUserByName( "testuser" ).getUserInfo();
-        assertNotNull( resultInfo.getBirthday() );
-        assertEquals( "12.12.2012", DateUtil.formatDate( resultInfo.getBirthday() ) );
+        UserFields resultUserFields = fixture.findUserByName( "testuser" ).getUserFields();
+        assertNotNull( resultUserFields.getBirthday() );
+        assertEquals( "12.12.2012", DateUtil.formatDate( resultUserFields.getBirthday() ) );
 
         // exercise
         request.setAttribute( Attribute.ORIGINAL_SITEPATH, new SitePath( new SiteKey( 0 ), "/_services/user/create" ) );
@@ -132,8 +132,8 @@ public class UserHandlerControllerTest_operation_UpdateTest
         userHandlerController.handlerUpdate( request, response, session, formItems, null, null );
 
         // verify
-        resultInfo = fixture.findUserByName( "testuser" ).getUserInfo();
-        assertNull( resultInfo.getBirthday() );
+        resultUserFields = fixture.findUserByName( "testuser" ).getUserFields();
+        assertNull( resultUserFields.getBirthday() );
     }
 
     @Test
@@ -150,15 +150,15 @@ public class UserHandlerControllerTest_operation_UpdateTest
 
         fixture.flushAndClearHibernateSesssion();
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setFirstName( "First name" );
-        userInfo.setLastName( "Last name" );
-        userInfo.setInitials( "INI" );
-        userInfo.setBirthday( DateUtil.parseDate( "12.12.2012" ) );
-        createNormalUser( "testuser", "myLocalStore", userInfo );
+        UserFields userFields = new UserFields();
+        userFields.setFirstName( "First name" );
+        userFields.setLastName( "Last name" );
+        userFields.setInitials( "INI" );
+        userFields.setBirthday( DateUtil.parseDate( "12.12.2012" ) );
+        createNormalUser( "testuser", "myLocalStore", userFields );
 
         // verify
-        Date birthday = fixture.findUserByName( "testuser" ).getUserInfo().getBirthday();
+        Date birthday = fixture.findUserByName( "testuser" ).getUserFields().getBirthday();
         assertNotNull( birthday );
         assertEquals( "12.12.2012", DateUtil.formatDate( birthday ) );
 
@@ -210,7 +210,7 @@ public class UserHandlerControllerTest_operation_UpdateTest
         return userStoreService.storeNewUserStore( command );
     }
 
-    private UserKey createNormalUser( String userName, String userStoreName, UserInfo userInfo )
+    private UserKey createNormalUser( String userName, String userStoreName, UserFields userFields )
     {
         StoreNewUserCommand command = new StoreNewUserCommand();
         command.setStorer( fixture.findUserByName( "admin" ).getKey() );
@@ -221,7 +221,7 @@ public class UserHandlerControllerTest_operation_UpdateTest
         command.setPassword( "password" );
         command.setType( UserType.NORMAL );
         command.setDisplayName( userName );
-        command.setUserInfo( userInfo );
+        command.setUserFields( userFields );
 
         return userStoreService.storeNewUser( command );
     }

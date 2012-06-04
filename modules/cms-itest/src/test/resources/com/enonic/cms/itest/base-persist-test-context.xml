@@ -58,6 +58,7 @@
                 <value>classpath:/com/enonic/cms/store/entity/PageTemplateEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/PageTemplatePortletEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/PageTemplateRegionEntity.hbm.xml</value>
+                <value>classpath:/com/enonic/cms/store/entity/RememberedLoginEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/SectionContentEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/SiteEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/DefaultSiteAccessEntity.hbm.xml</value>

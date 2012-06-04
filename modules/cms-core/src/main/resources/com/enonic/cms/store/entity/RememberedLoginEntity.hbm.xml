@@ -24,6 +24,10 @@
     where x.key.siteKey = :siteKey
     and x.guid = :guid
   </query>
+  <query name="RememberedLoginEntity.findByUser" cacheable="true">
+    from RememberedLoginEntity x
+    where x.key.userKey = :userKey
+  </query>
   <query name="RememberedLoginEntity.findByUserKeyAndSiteKey" cacheable="true">
     from RememberedLoginEntity x
     where x.key.siteKey = :siteKey

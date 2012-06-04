@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
-
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.security.user.UserKey;
 

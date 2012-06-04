@@ -4,11 +4,13 @@
  */
 package com.enonic.cms.core.preference;
 
-import org.junit.Test;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.core.AbstractXmlCreatorTest;
-
 import java.util.Arrays;
+
+import org.junit.Test;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+
+import com.enonic.cms.core.AbstractXmlCreatorTest;
 
 public class PreferenceXmlCreatorTest
     extends AbstractXmlCreatorTest
@@ -29,7 +31,7 @@ public class PreferenceXmlCreatorTest
         pref2.setKey( key2 );
         pref2.setValue( "value2" );
 
-        final XMLDocument xmlDoc = PreferenceXmlCreator.createPreferencesDocument( Arrays.asList(pref1, pref2) );
+        final XMLDocument xmlDoc = PreferenceXmlCreator.createPreferencesDocument( Arrays.asList( pref1, pref2 ) );
         assertEquals( expectedXml, getFormattedXmlString( xmlDoc ) );
     }
 

@@ -27,7 +27,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
 import org.jdom.transform.JDOMSource;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -50,7 +49,6 @@ import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.AbstractPagedXmlCreator;
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.DeploymentPathResolver;
@@ -62,21 +60,22 @@ import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.LoginAdminUserCommand;
 import com.enonic.cms.core.security.ObjectClassesXmlCreator;
 import com.enonic.cms.core.security.PasswordGenerator;
-import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupSpecification;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.group.GroupXmlCreator;
-import com.enonic.cms.core.security.group.RemoveMembershipsCommand;
 import com.enonic.cms.core.security.user.DeleteUserCommand;
 import com.enonic.cms.core.security.user.DisplayNameResolver;
 import com.enonic.cms.core.security.user.QualifiedUsername;
+import com.enonic.cms.core.security.user.ReadOnlyUserFieldValidator;
+import com.enonic.cms.core.security.user.RequiredUserFieldsValidator;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.user.UserNotFoundException;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
 import com.enonic.cms.core.security.user.UserType;
@@ -85,14 +84,14 @@ import com.enonic.cms.core.security.user.field.UserInfoXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
+import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.config.InvalidUserStoreConnectorConfigException;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 import com.enonic.cms.core.timezone.TimeZoneXmlCreator;
-import com.enonic.cms.core.user.field.UserFieldMap;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
 import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
+import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 import com.enonic.cms.core.xslt.XsltProcessorManager;
@@ -427,7 +426,7 @@ public class UserHandlerServlet
         throws VerticalAdminException
     {
 
-        User user = securityService.getLoggedInAdminConsoleUser();
+        User loggedInUser = securityService.getLoggedInAdminConsoleUser();
         UserStoreKey userStoreKey = UserStoreKey.parse( formItems.getString( "userstorekey", null ) );
         UserStoreEntity userStore = userStoreDao.findByKey( userStoreKey );
         try
@@ -444,24 +443,32 @@ public class UserHandlerServlet
             Document userDoc;
             if ( formItems.containsKey( "key" ) )
             {
-                String userGroupKeyStr = formItems.getString( "key" );
-                GroupKey userGroupKey = new GroupKey( userGroupKeyStr );
-                UserSpecification userSpec = new UserSpecification();
+                final String userGroupKeyStr = formItems.getString( "key" );
+                final GroupKey userGroupKey = new GroupKey( userGroupKeyStr );
+                final UserSpecification userSpec = new UserSpecification();
                 userSpec.setDeletedState( UserSpecification.DeletedState.ANY );
                 userSpec.setUserGroupKey( userGroupKey );
+                UserEntity user = userDao.findSingleBySpecification( userSpec );
+                if ( user == null )
+                {
+                    throw new UserNotFoundException( userSpec );
+                }
 
-                UserEntity synchronizedUser = userStoreService.synchronizeUser( userSpec );
+                if ( user.isInRemoteUserStore() )
+                {
+                    userStoreService.synchronizeUser( user.getUserStoreKey(), user.getName() );
+                    user = userDao.findSingleBySpecification( userSpec );
+                }
 
                 final UserXmlCreator userXmlCreator = new UserXmlCreator();
                 userXmlCreator.setIncludeUserFields( true );
-                XMLDocument userXmlDoc = XMLDocumentFactory.create( userXmlCreator.createUsersDocument( synchronizedUser, true, false ) );
+                XMLDocument userXmlDoc = XMLDocumentFactory.create( userXmlCreator.createUsersDocument( user, true, false ) );
                 userDoc = userXmlDoc.getAsDOMDocument();
 
                 DisplayNameResolver displayNameResolver = new DisplayNameResolver( userStore.getConfig() );
-                xslParams.put( "generated-display-name",
-                               displayNameResolver.resolveDisplayName( synchronizedUser.getName(), synchronizedUser.getDisplayName(),
-                                                                       synchronizedUser.getUserInfo() ) );
 
+                xslParams.put( "generated-display-name",
+                               displayNameResolver.resolveDisplayName( user.getName(), user.getDisplayName(), user.getUserFields() ) );
                 Element usersElem = userDoc.getDocumentElement();
                 Element userElem = XMLTool.getElement( usersElem, "user" );
                 String userKey = userElem.getAttribute( "key" );
@@ -469,7 +476,7 @@ public class UserHandlerServlet
                 MultiValueMap adminParams = new MultiValueMap();
                 adminParams.put( "@userkey", userKey );
                 adminParams.put( "@typekey", 1 );
-                Document logEntries = admin.getLogEntries( user, adminParams, 0, 5, true ).getAsDOMDocument();
+                Document logEntries = admin.getLogEntries( loggedInUser, adminParams, 0, 5, true ).getAsDOMDocument();
                 XMLTool.mergeDocuments( userDoc, logEntries, true );
             }
             else
@@ -506,7 +513,7 @@ public class UserHandlerServlet
             xslParams.put( "userstorekey", String.valueOf( userStoreKey ) );
             xslParams.put( "page", formItems.getString( "page" ) );
             xslParams.put( "create", String.valueOf( create ) );
-            if ( user.isEnterpriseAdmin() || admin.isUserStoreAdmin( user, userStoreKey ) )
+            if ( memberOfResolver.hasUserStoreAdministratorPowers( loggedInUser.getKey(), userStoreKey ) )
             {
                 xslParams.put( "showdn", "true" );
             }
@@ -551,10 +558,10 @@ public class UserHandlerServlet
                     session.removeAttribute( "grouparray" );
                     session.removeAttribute( SESSION_PHOTO_ITEM_KEY );
 
-                    session.setAttribute( "from_name", user.getDisplayName() );
-                    if ( user.getEmail() != null )
+                    session.setAttribute( "from_name", loggedInUser.getDisplayName() );
+                    if ( loggedInUser.getEmail() != null )
                     {
-                        session.setAttribute( "from_mail", user.getEmail() );
+                        session.setAttribute( "from_mail", loggedInUser.getEmail() );
                     }
                     else
                     {
@@ -569,8 +576,8 @@ public class UserHandlerServlet
                 // Store data from step 1 in session object
                 if ( prevstep == 1 )
                 {
-                    UserInfo userInfo = parseCustomUserFieldValues( userStoreKey, formItems );
-                    Document newDoc = XMLTool.domparse( buildUserXML( userInfo, formItems ) );
+                    UserFields userFields = parseCustomUserFieldValues( userStoreKey, formItems );
+                    Document newDoc = XMLTool.domparse( buildUserXML( userFields, formItems ) );
 
                     storeUserPhotoInSession( session, formItems );
 
@@ -656,8 +663,8 @@ public class UserHandlerServlet
                     }
                     else
                     {
-                        UserInfo userInfo = parseCustomUserFieldValues( userStoreKey, formItems );
-                        newDoc = XMLTool.domparse( buildUserXML( userInfo, formItems ) );
+                        UserFields userFields = parseCustomUserFieldValues( userStoreKey, formItems );
+                        newDoc = XMLTool.domparse( buildUserXML( userFields, formItems ) );
                     }
 
                     session.setAttribute( "userxml", XMLTool.documentToString( newDoc ) );
@@ -792,24 +799,31 @@ public class UserHandlerServlet
             {
                 xslParams.put( "canUpdateUser", String.valueOf( userStoreService.canUpdateUser( userStoreKey ) ) );
                 xslParams.put( "canUpdateGroup", String.valueOf( userStoreService.canUpdateGroup( userStoreKey ) ) );
+                final UserFormEditableFieldsResolver.FormAction formAction =
+                    create == 1 ? UserFormEditableFieldsResolver.FormAction.CREATE : UserFormEditableFieldsResolver.FormAction.UPDATE;
+                final boolean canCreateUserPolicy = userStoreService.canCreateUser( userStoreKey );
+                final boolean canUpdateUserPolicy = userStoreService.canUpdateUser( userStoreKey );
+                final UserFormEditableFieldsResolver userFormEditableFieldsResolver =
+                    new UserFormEditableFieldsResolver( userStore, formAction, canCreateUserPolicy, canUpdateUserPolicy );
+                userFormEditableFieldsResolver.resolveAndApply( xslParams );
+
             }
             catch ( final InvalidUserStoreConnectorConfigException e )
             {
                 xslParams.put( "userStoreConfigError", e.getMessage() );
             }
 
-            if ( user.getName().equals( formItems.get( "key", "" ) ) )
+            if ( loggedInUser.getName().equals( formItems.get( "key", "" ) ) )
             {
                 xslParams.put( "profile", Boolean.TRUE );
             }
 
-            if ( memberOfResolver.hasEnterpriseAdminPowers( user.getKey() ) ||
-                memberOfResolver.hasUserStoreAdministratorPowers( user.getKey(), userStoreKey ) )
+            if ( memberOfResolver.hasUserStoreAdministratorPowers( loggedInUser.getKey(), userStoreKey ) )
             {
                 xslParams.put( "isadmin", "true" );
             }
 
-            xslParams.put( "uid", user.getName() );
+            xslParams.put( "uid", loggedInUser.getName() );
 
             transformXML( session, response.getWriter(), xmlSource, xslSource, xslParams );
         }
@@ -862,7 +876,7 @@ public class UserHandlerServlet
         return result;
     }
 
-    private String buildUserXML( final UserInfo userInfo, final ExtendedMap formItems )
+    private String buildUserXML( final UserFields userFields, final ExtendedMap formItems )
         throws VerticalAdminException
     {
         Document doc = XMLTool.createDocument( "user" );
@@ -878,14 +892,14 @@ public class UserHandlerServlet
         XMLTool.createElement( doc, blockElement, "email", formItems.getString( "email", "" ) );
         XMLTool.createElement( doc, blockElement, "displayName", formItems.getString( "display_name", "" ) );
 
-        return addUserFieldsToUserXML( XMLDocumentFactory.create( doc ), userInfo );
+        return addUserFieldsToUserXML( XMLDocumentFactory.create( doc ), userFields );
     }
 
-    private String addUserFieldsToUserXML( final XMLDocument xmlDoc, final UserInfo userInfo )
+    private String addUserFieldsToUserXML( final XMLDocument xmlDoc, final UserFields userFields )
     {
         final org.jdom.Document doc = xmlDoc.getAsJDOMDocument();
         final UserInfoXmlCreator creator = new UserInfoXmlCreator();
-        creator.addUserInfoToElement( doc.getRootElement().getChild( "block" ), userInfo, true );
+        creator.addUserInfoToElement( doc.getRootElement().getChild( "block" ), userFields, true );
         return XMLTool.documentToString( doc );
     }
 
@@ -980,11 +994,11 @@ public class UserHandlerServlet
                 }
             }
 
-            final UserInfo userInfo = parseCustomUserFieldValues( userStoreKey, valuesFromXml );
+            final UserFields userFields = parseCustomUserFieldValues( userStoreKey, valuesFromXml );
 
-            addPhotoFromSession( session, userInfo );
+            addPhotoFromSession( session, userFields );
 
-            command.setUserInfo( userInfo );
+            command.setUserFields( userFields );
         }
         else
         {
@@ -993,8 +1007,8 @@ public class UserHandlerServlet
             command.setDisplayName( formItems.getString( "display_name", "" ) );
             command.setEmail( formItems.getString( "email", "" ) );
 
-            final UserInfo userInfo = parseCustomUserFieldValues( userStoreKey, formItems );
-            command.setUserInfo( userInfo );
+            final UserFields userFields = parseCustomUserFieldValues( userStoreKey, formItems );
+            command.setUserFields( userFields );
         }
 
         // Update user with group memberships
@@ -1110,41 +1124,40 @@ public class UserHandlerServlet
         }
     }
 
-    private void addPhotoFromSession( HttpSession session, UserInfo userInfo )
+    private void addPhotoFromSession( HttpSession session, UserFields userFields )
     {
         UserPhotoHolder userPhoto = (UserPhotoHolder) session.getAttribute( SESSION_PHOTO_ITEM_KEY );
 
         if ( userPhoto != null )
         {
-            userInfo.setPhoto( userPhoto.getPhoto() );
+            userFields.setPhoto( userPhoto.getPhoto() );
             session.removeAttribute( SESSION_PHOTO_ITEM_KEY );
         }
     }
 
-    private UserInfo parseCustomUserFieldValues( final UserStoreKey userStoreKey, final ExtendedMap formItems )
+    private UserFields parseCustomUserFieldValues( final UserStoreKey userStoreKey, final ExtendedMap formItems )
     {
         return parseCustomUserFieldValues( userStoreKey, formItems, false );
     }
 
-    private UserInfo parseCustomUserFieldValues( final UserStoreKey userStoreKey, final ExtendedMap formItems,
-                                                 boolean transformNullValuesToBlanksForConfiguredFields )
+    private UserFields parseCustomUserFieldValues( final UserStoreKey userStoreKey, final ExtendedMap formItems,
+                                                   boolean transformNullValuesToBlanksForConfiguredFields )
     {
         final UserStoreEntity userStore = userStoreService.getUserStore( userStoreKey );
-
+        final UserStoreConfig userStoreConfig = userStore.getConfig();
         final UserFieldTransformer fieldTransformer = new UserFieldTransformer();
         if ( transformNullValuesToBlanksForConfiguredFields )
         {
-            fieldTransformer.transformNullValuesToBlanksForConfiguredFields( userStore.getConfig() );
+            fieldTransformer.transformNullValuesToBlanksForConfiguredFields( userStoreConfig );
         }
-        final UserFieldMap userFieldMap = fieldTransformer.toUserFields( formItems );
+        fieldTransformer.transformNullHtmlEmailValueToFalseIfConfigured( userStoreConfig );
 
-        userStore.getConfig().removeReadOnlyFields( userFieldMap );
-        userStore.getConfig().validateUserFieldMap( userFieldMap );
+        final UserFields userFields = fieldTransformer.toUserFields( formItems );
 
-        final UserInfoTransformer infoTransformer = new UserInfoTransformer();
-        final UserInfo userInfo = infoTransformer.toUserInfo( userFieldMap );
-
-        return userInfo;
+        userFields.removeReadOnlyFields( userStoreConfig );
+        new RequiredUserFieldsValidator( userStoreConfig ).validateAllRequiredFieldsArePresentAndNotEmpty( userFields );
+        new ReadOnlyUserFieldValidator( userStoreConfig ).validate( userFields );
+        return userFields;
     }
 
     public void handlerRemove( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
@@ -1296,7 +1309,6 @@ public class UserHandlerServlet
                     org.jdom.Document usersDoc = userXmlCreator.createUsersDocument( new ArrayList<UserEntity>( users ), false, false );
                     reportDoc = XMLDocumentFactory.create( usersDoc ).getAsDOMDocument();
                 }
-
                 Element usersElem = reportDoc.getDocumentElement();
                 String datasourcesDefaultResultElementName = verticalProperties.getDatasourceDefaultResultRootElement();
                 Element verticaldataElem = XMLTool.createElement( reportDoc, datasourcesDefaultResultElementName );
@@ -1589,11 +1601,10 @@ public class UserHandlerServlet
         command.setEmail( formItems.getString( "email", "" ) );
         command.setRemovePhoto( formItems.getBoolean( "remove_photo", false ) );
 
-        final UserInfo userInfo = parseCustomUserFieldValues( userStoreKey, formItems, true );
-        command.setUserInfo( userInfo );
+        final UserFields userFields = parseCustomUserFieldValues( userStoreKey, formItems, true );
+        command.setUserFields( userFields );
 
-        if ( memberOfResolver.hasEnterpriseAdminPowers( user.getKey() ) ||
-            memberOfResolver.hasUserStoreAdministratorPowers( user.getKey(), userStoreKey ) )
+        if ( memberOfResolver.hasUserStoreAdministratorPowers( user.getKey(), userStoreKey ) )
         {
             for ( GroupKey requestedGroupMembership : requestedGroupMemberships )
             {
@@ -1636,8 +1647,7 @@ public class UserHandlerServlet
             queryParams.put( "excludekey", formItems.getString( "excludekey" ) );
         }
 
-        if ( memberOfResolver.hasEnterpriseAdminPowers( user.getKey() ) ||
-            memberOfResolver.hasUserStoreAdministratorPowers( user.getKey(), userStoreKey ) )
+        if ( memberOfResolver.hasUserStoreAdministratorPowers( user.getKey(), userStoreKey ) )
         {
 
             queryParams.put( "page", formItems.get( "page" ) );

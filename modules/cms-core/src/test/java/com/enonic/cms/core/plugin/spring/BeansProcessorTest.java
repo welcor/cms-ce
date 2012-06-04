@@ -2,35 +2,34 @@ package com.enonic.cms.core.plugin.spring;
 
 import java.util.Map;
 
-import com.enonic.cms.api.client.Client;
-import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.PluginContext;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.mockito.Mockito;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import com.google.common.collect.Maps;
 
+import com.enonic.cms.api.client.Client;
+import com.enonic.cms.api.plugin.PluginConfig;
+import com.enonic.cms.api.plugin.PluginContext;
+
+import static org.junit.Assert.*;
+
 public class BeansProcessorTest
 {
     private PluginContext context;
 
     private ConfigurableListableBeanFactory factory;
-    
+
     private Map<String, Object> serviceMap;
 
     @Before
     public void setUp()
     {
         this.context = Mockito.mock( PluginContext.class );
-        this.factory = new DefaultListableBeanFactory();       
-        
+        this.factory = new DefaultListableBeanFactory();
+
         this.serviceMap = Maps.newHashMap();
         Mockito.when( this.context.getServices() ).thenReturn( this.serviceMap );
     }
@@ -66,7 +65,7 @@ public class BeansProcessorTest
         this.serviceMap.put( "client", client );
 
         processBeanFactory();
-        checkBean("plugin.service.client", Client.class, client);
+        checkBean( "plugin.service.client", Client.class, client );
     }
 
     private void checkBean( final String name, final Class<?> type, final Object value )

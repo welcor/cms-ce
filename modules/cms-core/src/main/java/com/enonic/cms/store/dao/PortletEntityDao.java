@@ -6,12 +6,12 @@ package com.enonic.cms.store.dao;
 
 import java.util.List;
 
-import com.enonic.cms.store.support.EntityPageList;
+import org.springframework.stereotype.Repository;
+
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
-
-import org.springframework.stereotype.Repository;
+import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("portletDao")
 public final class PortletEntityDao

@@ -3,24 +3,24 @@ package com.enonic.cms.core.content;
 import junit.framework.TestCase;
 
 public class ContentNameForCopiesIteratorTest
-        extends TestCase
+    extends TestCase
 {
     public void testCurrentName()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage" );
         assertEquals( iterator.currentName(), "MyPage(0)" );
     }
 
     public void testNext()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage" );
         assertEquals( iterator.next(), "MyPage(1)" );
     }
 
     public void testOriginal_0()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage" );
         assertEquals( iterator.next(), "MyPage(1)" );
@@ -29,7 +29,7 @@ public class ContentNameForCopiesIteratorTest
 
 
     public void testOriginal_1()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage(1)" );
         assertEquals( iterator.next(), "MyPage(2)" );
@@ -37,7 +37,7 @@ public class ContentNameForCopiesIteratorTest
     }
 
     public void testOriginal_2()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage(2)" );
         assertEquals( iterator.next(), "MyPage(1)" );
@@ -45,7 +45,7 @@ public class ContentNameForCopiesIteratorTest
     }
 
     public void testUnbalanced1()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage2)" );
         assertEquals( iterator.next(), "MyPage2)(1)" );
@@ -53,7 +53,7 @@ public class ContentNameForCopiesIteratorTest
     }
 
     public void testUnbalanced2()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage(2" );
         assertEquals( iterator.next(), "MyPage(2(1)" );
@@ -61,7 +61,7 @@ public class ContentNameForCopiesIteratorTest
     }
 
     public void testUnbalanced3()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage(2))" );
         assertEquals( iterator.next(), "MyPage(2))(1)" );
@@ -69,7 +69,7 @@ public class ContentNameForCopiesIteratorTest
     }
 
     public void testUnbalanced4()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage(((2)" );
         assertEquals( iterator.next(), "MyPage(((1)" );
@@ -78,7 +78,7 @@ public class ContentNameForCopiesIteratorTest
 
 
     public void testBalancedWithText()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage(original)" );
         assertEquals( iterator.next(), "MyPage(original)(1)" );
@@ -87,14 +87,14 @@ public class ContentNameForCopiesIteratorTest
 
 
     public void testIterator()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage" );
         assertNotNull( iterator.iterator() );
     }
 
     public void testHasNext()
-            throws Exception
+        throws Exception
     {
         ContentNameForCopiesIterator iterator = new ContentNameForCopiesIterator( "MyPage" );
         assertTrue( iterator.hasNext() );
@@ -105,7 +105,7 @@ public class ContentNameForCopiesIteratorTest
     }
 
     public void testRemove()
-            throws Exception
+        throws Exception
     {
         try
         {

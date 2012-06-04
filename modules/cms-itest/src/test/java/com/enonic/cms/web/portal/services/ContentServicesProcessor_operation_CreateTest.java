@@ -53,7 +53,7 @@ import static junitx.framework.Assert.assertFalse;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.junit.Assert.*;
 
-public class CustomContentHandlerController_operation_CreateTest
+public class ContentServicesProcessor_operation_CreateTest
     extends AbstractSpringTest
 {
     @Autowired

@@ -62,10 +62,6 @@
     <property name="memberOfResolver" ref="memberOfResolver"/>
   </bean>
 
-  <bean id="groupStorageService" class="com.enonic.cms.core.security.group.GroupStorageService"/>
-
-  <bean id="userStorageService" class="com.enonic.cms.core.security.userstore.UserStorageService"/>
-
   <bean id="userStoreConnectorConfigLoader"
         class="com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigLoader"/>
 
@@ -262,5 +258,9 @@
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
     <property name="mimetypesLocation" value="config/mimetypes.properties"/>
   </bean>
+
+  <bean id="groupStorerFactory" class="com.enonic.cms.core.security.userstore.GroupStorerFactory"/>
+
+  <bean id="userStorerFactory" class="com.enonic.cms.core.security.userstore.UserStorerFactory"/>
 
 </beans>

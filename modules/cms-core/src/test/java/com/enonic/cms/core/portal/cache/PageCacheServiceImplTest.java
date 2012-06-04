@@ -5,7 +5,6 @@
 package com.enonic.cms.core.portal.cache;
 
 import java.util.Locale;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +50,7 @@ public class PageCacheServiceImplTest
 
         final StandardCacheManager cacheManager = new StandardCacheManager();
         cacheManager.setProperties( props );
-        
+
         cacheFacade = cacheManager.getOrCreateCache( "page" );
 
         pageCacheService_site_1 = new PageCacheServiceImpl( siteKey_1 );

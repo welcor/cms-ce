@@ -145,7 +145,7 @@ public class UserXmlCreator
 
         if ( includeUserFields )
         {
-            Element userFieldsRootEl = null;
+            Element userFieldsRootEl;
             if ( wrappUserFieldsInBlockElement )
             {
                 userFieldsRootEl = userInfoXmlCreator.createUserInfoElement( user );
@@ -154,7 +154,7 @@ public class UserXmlCreator
             }
             else
             {
-                userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserInfo(), false );
+                userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserFields(), false );
                 userFieldsRootEl = userEl;
             }
             userFieldsRootEl.addContent( 0, new Element( "email" ).setText( user.getEmail() ) );
@@ -215,7 +215,7 @@ public class UserXmlCreator
 
         if ( includeUserFields )
         {
-            userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserInfo(), false );
+            userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserFields(), false );
         }
 
         return userEl;

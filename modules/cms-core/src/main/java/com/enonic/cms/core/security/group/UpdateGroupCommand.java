@@ -95,16 +95,18 @@ public class UpdateGroupCommand
         return members;
     }
 
-    public boolean hasMember( GroupKey groupKey )
+    public Collection<GroupKey> getMembersAsKeys()
     {
-        for ( GroupEntity member : members )
+        if ( members == null )
         {
-            if ( member.getGroupKey().equals( groupKey ) )
-            {
-                return true;
-            }
+            return null;
         }
-        return false;
+        Set<GroupKey> keys = new LinkedHashSet<GroupKey>();
+        for ( GroupEntity group : members )
+        {
+            keys.add( group.getGroupKey() );
+        }
+        return keys;
     }
 
 }

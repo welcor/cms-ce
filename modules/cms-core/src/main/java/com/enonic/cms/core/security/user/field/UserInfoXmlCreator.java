@@ -11,14 +11,11 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.api.client.model.user.Address;
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.user.User;
-
 import com.enonic.cms.core.user.field.UserField;
 import com.enonic.cms.core.user.field.UserFieldHelper;
-import com.enonic.cms.core.user.field.UserFieldMap;
 import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
+import com.enonic.cms.core.user.field.UserFields;
 
 public final class UserInfoXmlCreator
 {
@@ -39,15 +36,12 @@ public final class UserInfoXmlCreator
     public Element createUserInfoElement( final User user )
     {
         final Element rootEl = new Element( DEFAULT_ROOT_ELEMENT_NAME );
-        return addUserInfoToElement( rootEl, user.getUserInfo(), true );
+        return addUserInfoToElement( rootEl, user.getUserFields(), true );
     }
 
-    public Element addUserInfoToElement( final Element rootEl, UserInfo userInfo, final boolean replaceExisting )
+    public Element addUserInfoToElement( final Element rootEl, final UserFields userFields, final boolean replaceExisting )
     {
-        final UserInfoTransformer transformer = new UserInfoTransformer();
-        final UserFieldMap userFieldMap = transformer.toUserFields( userInfo );
-
-        for ( final UserField userField : userFieldMap )
+        for ( final UserField userField : userFields )
         {
             if ( userField.getType() != UserFieldType.ADDRESS )
             {
@@ -71,7 +65,7 @@ public final class UserInfoXmlCreator
                 }
             }
         }
-        final Collection<UserField> addresses = userFieldMap.getFields( UserFieldType.ADDRESS );
+        final Collection<UserField> addresses = userFields.getFields( UserFieldType.ADDRESS );
         if ( addresses.size() > 0 )
         {
             rootEl.addContent( doCreateAddressesElement( addresses ) );

@@ -67,8 +67,8 @@ public class InternalClientImpl_CreateUserTest
         UserEntity actualUser = fixture.findUserByName( "test1" );
         assertEquals( "jvs@enonic.com", actualUser.getEmail() );
         assertEquals( "test1", actualUser.getName() );
-        assertEquals( "Jorund Vier", actualUser.getUserInfo().getFirstName() );
-        assertEquals( "Skriubakken", actualUser.getUserInfo().getLastName() );
+        assertEquals( "Jorund Vier", actualUser.getUserFields().getFirstName() );
+        assertEquals( "Skriubakken", actualUser.getUserFields().getLastName() );
     }
 
     private void clientLogin( String username, String password )

@@ -56,6 +56,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.itest.MockKeyService;
 
 /**
@@ -123,7 +124,7 @@ public class DomainFactory
         }
         user.setUserGroup( null );
 
-        user.updateUserInfo( userInfo );
+        user.setUserFields( new UserInfoTransformer().toUserFields( userInfo ) );
 
         return user;
     }

@@ -4,14 +4,14 @@
  */
 package com.enonic.cms.core.boot;
 
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
-
-import java.io.File;
 
 import static org.junit.Assert.*;
 
@@ -30,9 +30,9 @@ public class HomeResolverTest
     public void setUp()
         throws Exception
     {
-        this.validHomeDir = this.folder.newFolder("valid-home");
-        this.invalidHomeDir = this.folder.newFile("invalid-home");
-        this.missingHomeDir = new File(this.folder.getRoot(), "missing-home");
+        this.validHomeDir = this.folder.newFolder( "valid-home" );
+        this.invalidHomeDir = this.folder.newFile( "invalid-home" );
+        this.missingHomeDir = new File( this.folder.getRoot(), "missing-home" );
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -81,11 +81,11 @@ public class HomeResolverTest
 
     private File resolve( final String propValue, final String envValue )
     {
-        final Environment env = Mockito.mock(Environment.class);
-        Mockito.when(env.getProperty("cms.home")).thenReturn(propValue);
-        Mockito.when(env.getProperty("CMS_HOME")).thenReturn(envValue);
+        final Environment env = Mockito.mock( Environment.class );
+        Mockito.when( env.getProperty( "cms.home" ) ).thenReturn( propValue );
+        Mockito.when( env.getProperty( "CMS_HOME" ) ).thenReturn( envValue );
 
-        final HomeResolver resolver = new HomeResolver(env);
+        final HomeResolver resolver = new HomeResolver( env );
         return resolver.resolve();
     }
 }

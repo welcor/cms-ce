@@ -290,6 +290,45 @@ public class GroupEntityTest
 
     }
 
+    @Test
+    public void testIsInUserStore()
+    {
+        GroupEntity group = new GroupEntity();
+
+        group.setType( GroupType.ADMINS );
+        assertFalse( group.isInUserStore() );
+
+        group.setType( GroupType.ANONYMOUS );
+        assertFalse( group.isInUserStore() );
+
+        group.setType( GroupType.AUTHENTICATED_USERS );
+        assertTrue( group.isInUserStore() );
+
+        group.setType( GroupType.CONTRIBUTORS );
+        assertFalse( group.isInUserStore() );
+
+        group.setType( GroupType.DEVELOPERS );
+        assertFalse( group.isInUserStore() );
+
+        group.setType( GroupType.ENTERPRISE_ADMINS );
+        assertFalse( group.isInUserStore() );
+
+        group.setType( GroupType.EXPERT_CONTRIBUTORS );
+        assertFalse( group.isInUserStore() );
+
+        group.setType( GroupType.GLOBAL_GROUP );
+        assertFalse( group.isInUserStore() );
+
+        group.setType( GroupType.USER );
+        assertTrue( group.isInUserStore() );
+
+        group.setType( GroupType.USERSTORE_ADMINS );
+        assertTrue( group.isInUserStore() );
+
+        group.setType( GroupType.USERSTORE_GROUP );
+        assertTrue( group.isInUserStore() );
+    }
+
     private GroupEntity createGroup( String key, String name )
     {
         return createGroup( key, name, null );

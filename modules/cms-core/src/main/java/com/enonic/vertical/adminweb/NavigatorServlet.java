@@ -19,14 +19,12 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.xml.XMLTool;
 
-import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.security.userstore.connector.config.InvalidUserStoreConnectorConfigException;
-import com.enonic.cms.core.service.AdminService;
-
 import com.enonic.cms.core.AdminConsoleTranslationService;
-
+import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.security.userstore.connector.config.InvalidUserStoreConnectorConfigException;
+import com.enonic.cms.core.service.AdminService;
 
 public final class NavigatorServlet
     extends AdminHandlerBaseServlet
@@ -73,7 +71,7 @@ public final class NavigatorServlet
             }
 
             parameters.put( "userfullname", displayName );
-            parameters.put( "hasphoto", user.getUserInfo().getPhoto() != null );
+            parameters.put( "hasphoto", user.getUserFields().getPhoto() != null );
 
             final UserStoreKey userStoreKey = user.getUserStoreKey();
             if ( userStoreKey != null )
@@ -98,11 +96,11 @@ public final class NavigatorServlet
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error.", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error.", e );
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error.", e );
+            VerticalAdminLogger.errorAdmin( "I/O error.", e );
         }
     }
 }

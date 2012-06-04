@@ -4,20 +4,20 @@
  */
 package com.enonic.cms.core.security.userstore.connector.remote;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.store.dao.UserDao;
-
 import com.enonic.cms.core.user.remote.RemoteUser;
+import com.enonic.cms.store.dao.UserDao;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -30,12 +30,13 @@ import static org.junit.Assert.*;
  */
 public class AbstractBaseUserSynchronizerTest
 {
+    private AbstractBaseUserSynchronizer abstractBaseUserSynchronizer;
 
-    AbstractBaseUserSynchronizer abstractBaseUserSynchronizer;
+    private UserDao userDao;
 
-    UserDao userDao;
+    private UserStoreEntity userStore;
 
-    UserStoreEntity userStore;
+    private int lastUserKeyCounter;
 
     @Before
     public void setUp()
@@ -48,72 +49,71 @@ public class AbstractBaseUserSynchronizerTest
         abstractBaseUserSynchronizer.setUserDao( userDao );
     }
 
-    private void setUpUserDao( List<UserEntity> matchingUsers )
+
+    @Test
+    public void emailAlreadyUsedByOtherUser_returns_false_when_user_email_is_unique()
     {
+        UserEntity localUser = createUser( "rmy", "rmy@enonic.com", userStore, false );
+        RemoteUser remoteUser = createRemoteUser( "rmy" );
+
+        List<UserEntity> matchingUsers = Lists.newArrayList( localUser );
         expect( userDao.findBySpecification( isA( UserSpecification.class ) ) ).andReturn( matchingUsers ).anyTimes();
         replay( userDao );
+
+        final String email = abstractBaseUserSynchronizer.getEmailToVerify( localUser, remoteUser );
+        assertFalse( abstractBaseUserSynchronizer.emailAlreadyUsedByOtherUser( email, localUser ) );
     }
 
     @Test
-    public void testVerifyEmailForUpdateIsUnique()
+    public void emailAlreadyUsedByOtherUser_returns_false_when_other_user_with_same_email_is_deleted()
     {
-        UserEntity localUser = createUser( "rmy", userStore, false );
-
+        UserEntity localUser = createUser( "rmy", "rmy@enoni.com", userStore, false );
         RemoteUser remoteUser = createRemoteUser( "rmy" );
 
-        List<UserEntity> matchingUsers = new ArrayList<UserEntity>();
-        matchingUsers.add( localUser );
-
-        setUpUserDao( matchingUsers );
+        List<UserEntity> matchingUsers = Lists.newArrayList( localUser );
+        expect( userDao.findBySpecification( isA( UserSpecification.class ) ) ).andReturn( matchingUsers ).anyTimes();
+        replay( userDao );
 
         final String email = abstractBaseUserSynchronizer.getEmailToVerify( localUser, remoteUser );
-        assertFalse( abstractBaseUserSynchronizer.emailAlreadyUsedByOtherUser( userStore.getKey(), email, localUser ) );
+        assertFalse( abstractBaseUserSynchronizer.emailAlreadyUsedByOtherUser( email, localUser ) );
     }
 
     @Test
-    public void testVerifyEmailForUpdateFoundOtherUser()
+    public void emailAlreadyUsedByOtherUser_returns_true_when_other_user_with_same_email_exists()
     {
-        UserEntity localUser = createUser( "rmy", userStore, false );
-        UserEntity anotherUser = createUser( "jam", userStore, false );
-
         RemoteUser remoteUser = createRemoteUser( "rmy" );
+        UserEntity localUser = createUser( "rmy", "rmy@enoni.com", userStore, false );
 
-        List<UserEntity> matchingUsers = new ArrayList<UserEntity>();
-        matchingUsers.add( anotherUser );
-
-        setUpUserDao( matchingUsers );
+        List<UserEntity> matchingUsers = Lists.newArrayList( localUser, createUser( "extrmy", "rmy@enoni.com", userStore, false ) );
+        expect( userDao.findBySpecification( isA( UserSpecification.class ) ) ).andReturn( matchingUsers ).anyTimes();
+        replay( userDao );
 
         final String email = abstractBaseUserSynchronizer.getEmailToVerify( localUser, remoteUser );
-        assertTrue( abstractBaseUserSynchronizer.emailAlreadyUsedByOtherUser( userStore.getKey(), email, localUser ) );
+        assertTrue( abstractBaseUserSynchronizer.emailAlreadyUsedByOtherUser( email, localUser ) );
     }
-
 
     @Test
-    public void testVerifyEmailForUpdateSeveralFoundUsers()
+    public void emailAlreadyUsedByOtherUser_returns_true_when_same_user_exists_twice_with_same_email()
     {
         RemoteUser remoteUser = createRemoteUser( "rmy" );
+        UserEntity localUser = createUser( "rmy", "rmy@enoni.com", userStore, false );
 
-        UserEntity localUser = createUser( "rmy", userStore, false );
-        UserEntity anotherUser = createUser( "rmy", userStore, false );
-
-        List<UserEntity> matchingUsers = new ArrayList<UserEntity>();
-        matchingUsers.add( localUser );
-        matchingUsers.add( anotherUser );
-
-        setUpUserDao( matchingUsers );
+        List<UserEntity> matchingUsers = Lists.newArrayList( localUser, createUser( "rmy", "rmy@enoni.com", userStore, false ) );
+        expect( userDao.findBySpecification( isA( UserSpecification.class ) ) ).andReturn( matchingUsers ).anyTimes();
+        replay( userDao );
 
         final String email = abstractBaseUserSynchronizer.getEmailToVerify( localUser, remoteUser );
-        assertTrue( abstractBaseUserSynchronizer.emailAlreadyUsedByOtherUser( userStore.getKey(), email, localUser ) );
+        assertTrue( abstractBaseUserSynchronizer.emailAlreadyUsedByOtherUser( email, localUser ) );
     }
 
-    private UserEntity createUser( String uid, UserStoreEntity userStore, boolean isDeleted )
+    private UserEntity createUser( String uid, String email, UserStoreEntity userStore, boolean isDeleted )
     {
         UserEntity user = new UserEntity();
 
-        UserKey userKey = new UserKey( uid );
+        UserKey userKey = new UserKey( uid + ( lastUserKeyCounter++ ) );
         user.setKey( userKey );
         user.setName( uid );
-        user.setEmail( uid + "@enonic.com" );
+        user.setEmail( email );
         user.setUserStore( userStore );
         user.setDeleted( isDeleted );
 

@@ -9,19 +9,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.core.security.group.GroupEntity;
-import com.enonic.cms.core.security.group.GroupType;
-import com.enonic.cms.core.security.user.DisplayNameResolver;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserSpecification;
-import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.connector.EmailAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.NameAlreadyExistsException;
-
-import com.enonic.cms.core.user.field.UserFieldMap;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
+import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.user.remote.RemoteUser;
 
 public class UsersSynchronizer
@@ -29,9 +21,15 @@ public class UsersSynchronizer
 {
     private static final Logger LOG = LoggerFactory.getLogger( UsersSynchronizer.class );
 
-    protected UsersSynchronizer( final UserStoreEntity userStore, final boolean syncUser, final boolean syncMemberships )
+    public void setStatusCollector( final SynchronizeStatus value )
     {
-        super( userStore, syncUser, syncMemberships );
+        status = value;
+    }
+
+    protected UsersSynchronizer( final SynchronizeStatus synchronizeStatus, final UserStoreEntity userStore, final boolean syncUser,
+                                 final boolean syncMemberships )
+    {
+        super( synchronizeStatus, userStore, syncUser, syncMemberships, false );
     }
 
     public void synchronizeUsers( final List<RemoteUser> remoteUsers, final MemberCache memberCache )
@@ -44,13 +42,7 @@ public class UsersSynchronizer
 
     private void createUpdateOrResurrectLocalUser( final RemoteUser remoteUser, final MemberCache memberCache )
     {
-        final UserSpecification spec = new UserSpecification();
-        spec.setUserStoreKey( userStore.getKey() );
-        spec.setName( remoteUser.getId() );
-        spec.setSyncValue( remoteUser.getSync() );
-        spec.setDeletedState( UserSpecification.DeletedState.ANY );
-
-        UserEntity localUser = userDao.findSingleBySpecification( spec );
+        UserEntity localUser = findUserBySyncValue( remoteUser.getSync() );
 
         if ( syncUser )
         {
@@ -62,12 +54,12 @@ public class UsersSynchronizer
 
             if ( localUser == null )
             {
-                localUser = createLocalUser( remoteUser );
+                localUser = createUser( remoteUser, memberCache );
                 status.userCreated();
             }
             else
             {
-                final boolean resurrected = updateAndResurrectLocalUser( localUser, remoteUser, memberCache );
+                final boolean resurrected = updateAndResurrectUser( localUser, remoteUser );
                 status.userUpdated( resurrected );
             }
         }
@@ -79,61 +71,25 @@ public class UsersSynchronizer
 
     private boolean canBeCreatedOrUpdated( final UserEntity localUser, final RemoteUser remoteUser )
     {
-        final String name = getNameToVerify( localUser, remoteUser );
-        if ( nameAlreadyUsedByOtherUser( userStore.getKey(), name, localUser ) )
+        final String userName = getNameToVerify( localUser, remoteUser );
+        if ( nameAlreadyUsedByOtherUser( userName, localUser ) )
         {
-            LOG.warn( NameAlreadyExistsException.createMessage( userStore.getName(), name ) );
+            LOG.warn( NameAlreadyExistsException.createMessage( userStore.getName(), userName ) );
             return false;
         }
 
         final String email = getEmailToVerify( localUser, remoteUser );
-        if ( emailAlreadyUsedByOtherUser( userStore.getKey(), email, localUser ) )
+        if ( emailAlreadyUsedByOtherUser( email, localUser ) )
         {
-            LOG.warn( EmailAlreadyExistsException.createMessage( userStore.getName(), name, email ) );
-            return false;
+            synchronizeOtherUserWithSameEmail( email, localUser );
+
+            if ( emailAlreadyUsedByOtherUser( email, localUser ) )
+            {
+                LOG.warn( EmailAlreadyExistsException.createMessage( userStore.getName(), userName, email ) );
+                return false;
+            }
         }
+
         return true;
-    }
-
-    private UserEntity createLocalUser( final RemoteUser remoteUser )
-    {
-        final UserEntity newLocalUser = new UserEntity();
-        newLocalUser.setDeleted( 0 );
-        newLocalUser.setUserStore( userStore );
-        newLocalUser.setName( remoteUser.getId() );
-        newLocalUser.setSyncValue( remoteUser.getSync() );
-        newLocalUser.setEmail( remoteUser.getEmail() );
-        newLocalUser.setType( UserType.NORMAL );
-        newLocalUser.setTimestamp( timeService.getNowAsDateTime() );
-
-        final UserInfoTransformer infoTransformer = new UserInfoTransformer();
-        final UserFieldMap userFieldMap = remoteUser.getUserFields();
-        userFieldMap.retain( userStoreConfig.getRemoteOnlyUserFieldTypes() );
-        final UserInfo userInfo = infoTransformer.toUserInfo( userFieldMap );
-
-        newLocalUser.updateUserInfo( userInfo );
-        newLocalUser.setDisplayName(
-                new DisplayNameResolver( userStoreConfig ).resolveDisplayName( newLocalUser.getName(), newLocalUser.getDisplayName(),
-                                                                               newLocalUser.getUserInfo() ) );
-
-        userDao.storeNew( newLocalUser );
-
-        final GroupEntity newUserGroup = new GroupEntity();
-        newUserGroup.setDeleted( 0 );
-        newUserGroup.setDescription( null );
-        newUserGroup.setName( "userGroup" + newLocalUser.getKey() );
-        newUserGroup.setSyncValue( newLocalUser.getSync() );
-        newUserGroup.setUser( newLocalUser );
-        newUserGroup.setUserStore( userStore );
-        newUserGroup.setType( GroupType.USER );
-        newUserGroup.setRestricted( 1 );
-
-        groupDao.storeNew( newUserGroup );
-
-        newLocalUser.setUserGroup( newUserGroup );
-
-        userDao.getHibernateTemplate().flush();
-
-        return newLocalUser;
     }
 }

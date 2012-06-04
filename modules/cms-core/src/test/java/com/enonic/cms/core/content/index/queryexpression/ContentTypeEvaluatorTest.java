@@ -13,8 +13,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ContentTypeEvaluatorTest
 {
@@ -32,8 +31,8 @@ public class ContentTypeEvaluatorTest
     public void evaluate_does_not_change_value_when_left_is_not_an_contenttype()
     {
         ContentTypeEvaluator evaluator = new ContentTypeEvaluator( contentTypeDaoMock );
-        CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.EQ, new FieldExpr( "fullText" ), new ValueExpr( "article" ) ) );
+        CompareExpr compareExpr =
+            (CompareExpr) evaluator.evaluate( new CompareExpr( CompareExpr.EQ, new FieldExpr( "fullText" ), new ValueExpr( "article" ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( "fullText", ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -49,7 +48,7 @@ public class ContentTypeEvaluatorTest
     {
         ContentTypeEvaluator evaluator = new ContentTypeEvaluator( contentTypeDaoMock );
         CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.LIKE, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
+            new CompareExpr( CompareExpr.LIKE, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( CONTENT_TYPE, ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -68,7 +67,7 @@ public class ContentTypeEvaluatorTest
         OrderFieldExpr[] orderBy = new OrderFieldExpr[0];
 
         CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new OrderByExpr( orderBy ) ) );
+            new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new OrderByExpr( orderBy ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( CONTENT_TYPE, ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -83,8 +82,8 @@ public class ContentTypeEvaluatorTest
     public void evaluate_does_not_change_value_when_operation_is_EQUAL_but_value_is_not_string()
     {
         ContentTypeEvaluator evaluator = new ContentTypeEvaluator( contentTypeDaoMock );
-        CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( 100.0d ) ) );
+        CompareExpr compareExpr =
+            (CompareExpr) evaluator.evaluate( new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( 100.0d ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( CONTENT_TYPE, ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -104,7 +103,7 @@ public class ContentTypeEvaluatorTest
         replay( contentTypeDaoMock );
 
         CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
+            new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( CONTENT_TYPE, ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -129,7 +128,7 @@ public class ContentTypeEvaluatorTest
         replay( contentTypeDaoMock );
 
         CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
+            new CompareExpr( CompareExpr.EQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( "contenttypekey", ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -154,7 +153,7 @@ public class ContentTypeEvaluatorTest
         replay( contentTypeDaoMock );
 
         CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.NEQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
+            new CompareExpr( CompareExpr.NEQ, new FieldExpr( CONTENT_TYPE ), new ValueExpr( "article" ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( "contenttypekey", ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -175,7 +174,7 @@ public class ContentTypeEvaluatorTest
         OrderFieldExpr[] orderBy = new OrderFieldExpr[0];
 
         CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), new OrderByExpr( orderBy ) ) );
+            new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), new OrderByExpr( orderBy ) ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( CONTENT_TYPE, ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -194,8 +193,8 @@ public class ContentTypeEvaluatorTest
         ValueExpr[] values = new ValueExpr[]{new ValueExpr( 1.0d ), new ValueExpr( 2.0d )};
         ArrayExpr arrayExpr = new ArrayExpr( values );
 
-        CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
+        CompareExpr compareExpr =
+            (CompareExpr) evaluator.evaluate( new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( "contenttypekey", ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -217,8 +216,8 @@ public class ContentTypeEvaluatorTest
         ValueExpr[] values = new ValueExpr[]{new ValueExpr( "article" ), new ValueExpr( "document" )};
         ArrayExpr arrayExpr = new ArrayExpr( values );
 
-        CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
+        CompareExpr compareExpr =
+            (CompareExpr) evaluator.evaluate( new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( CONTENT_TYPE, ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -249,8 +248,8 @@ public class ContentTypeEvaluatorTest
         ValueExpr[] values = new ValueExpr[]{new ValueExpr( "article" ), new ValueExpr( "document" )};
         ArrayExpr arrayExpr = new ArrayExpr( values );
 
-        CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
+        CompareExpr compareExpr =
+            (CompareExpr) evaluator.evaluate( new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( "contenttypekey", ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -280,12 +279,11 @@ public class ContentTypeEvaluatorTest
         expect( contentTypeDaoMock.findByName( "wrong" ) ).andReturn( null ).times( 1 );
         replay( contentTypeDaoMock );
 
-        ValueExpr[] values =
-                new ValueExpr[]{new ValueExpr( "article" ), new ValueExpr( "document" ), new ValueExpr( "wrong" )};
+        ValueExpr[] values = new ValueExpr[]{new ValueExpr( "article" ), new ValueExpr( "document" ), new ValueExpr( "wrong" )};
         ArrayExpr arrayExpr = new ArrayExpr( values );
 
-        CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
+        CompareExpr compareExpr =
+            (CompareExpr) evaluator.evaluate( new CompareExpr( CompareExpr.IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( CONTENT_TYPE, ( (FieldExpr) compareExpr.getLeft() ).getPath() );
@@ -316,8 +314,8 @@ public class ContentTypeEvaluatorTest
         ValueExpr[] values = new ValueExpr[]{new ValueExpr( "article" ), new ValueExpr( "document" )};
         ArrayExpr arrayExpr = new ArrayExpr( values );
 
-        CompareExpr compareExpr = (CompareExpr) evaluator.evaluate(
-                new CompareExpr( CompareExpr.NOT_IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
+        CompareExpr compareExpr =
+            (CompareExpr) evaluator.evaluate( new CompareExpr( CompareExpr.NOT_IN, new FieldExpr( CONTENT_TYPE ), arrayExpr ) );
 
         assertTrue( compareExpr.getLeft() instanceof FieldExpr );
         assertEquals( "contenttypekey", ( (FieldExpr) compareExpr.getLeft() ).getPath() );

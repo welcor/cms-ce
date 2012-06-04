@@ -12,33 +12,37 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.enonic.cms.core.time.TimeService;
-
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupSpecification;
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.group.StoreNewGroupCommand;
 import com.enonic.cms.core.security.user.DisplayNameResolver;
+import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
-import com.enonic.cms.core.security.userstore.UserStorageService;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.security.userstore.GroupStorer;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.security.userstore.UserStorer;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStorePlugin;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
+import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.core.user.remote.RemoteGroup;
+import com.enonic.cms.core.user.remote.RemoteUser;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 
-import com.enonic.cms.core.user.field.UserFieldMap;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
-import com.enonic.cms.core.user.remote.RemoteGroup;
-import com.enonic.cms.core.user.remote.RemoteUser;
-
 public abstract class AbstractBaseUserSynchronizer
 {
-    protected UserStorageService userStorageService;
+    protected UserStorer userStorer;
+
+    private GroupStorer groupStorer;
 
     protected final UserStoreEntity userStore;
 
@@ -56,21 +60,22 @@ public abstract class AbstractBaseUserSynchronizer
 
     protected UserStoreConfig userStoreConfig;
 
-    protected SynchronizeStatus status = new SynchronizeStatus( SynchronizeUserStoreType.USERS_ONLY );
+    protected SynchronizeStatus status = null;
 
     protected final boolean syncUser;
 
-    public void setStatusCollector( final SynchronizeStatus value )
-    {
-        status = value;
-    }
+    protected final boolean createMissingGroupsLocallyForMemberships;
 
-    protected AbstractBaseUserSynchronizer( final UserStoreEntity userStore, final boolean syncUser, final boolean syncMemberships )
+    protected AbstractBaseUserSynchronizer( final SynchronizeStatus synchronizeStatus, final UserStoreEntity userStore,
+                                            final boolean syncUser, final boolean syncMemberships,
+                                            final boolean createMissingGroupsLocallyForMemberships )
     {
+        this.status = synchronizeStatus;
         this.userStore = userStore;
         this.syncMemberships = syncMemberships;
         this.userStoreConfig = userStore.getConfig();
         this.syncUser = syncUser;
+        this.createMissingGroupsLocallyForMemberships = createMissingGroupsLocallyForMemberships;
     }
 
     protected UserStoreKey getUserStoreKey()
@@ -78,7 +83,60 @@ public abstract class AbstractBaseUserSynchronizer
         return userStore.getKey();
     }
 
-    protected boolean updateAndResurrectLocalUser( final UserEntity localUser, final RemoteUser remoteUser, final MemberCache memberCache )
+    UserEntity createUser( final RemoteUser remoteUser, final MemberCache memberCache )
+    {
+        final UserFields userFields = remoteUser.getUserFields().getConfiguredFieldsOnly( userStoreConfig );
+        userFields.retain( userStoreConfig.getRemoteOnlyUserFieldTypes() );
+
+        final StoreNewUserCommand storeNewUserCommand = new StoreNewUserCommand();
+        storeNewUserCommand.setUserStoreKey( userStore.getKey() );
+        storeNewUserCommand.setUsername( remoteUser.getId() );
+        storeNewUserCommand.setSyncValue( remoteUser.getSync() );
+        storeNewUserCommand.setEmail( remoteUser.getEmail() );
+        storeNewUserCommand.setType( UserType.NORMAL );
+        storeNewUserCommand.setUserFields( userFields );
+        if ( syncMemberships )
+        {
+            final List<RemoteGroup> remoteMemberships = remoteUserStorePlugin.getMemberships( remoteUser );
+            for ( RemoteGroup remoteGroup : remoteMemberships )
+            {
+                GroupEntity groupToBeMemberOf = findLocalGroup( remoteGroup, memberCache );
+                if ( groupToBeMemberOf == null && createMissingGroupsLocallyForMemberships )
+                {
+                    groupToBeMemberOf = createGroup( remoteGroup );
+                }
+                if ( groupToBeMemberOf != null )
+                {
+                    storeNewUserCommand.addMembership( groupToBeMemberOf.getGroupKey() );
+                }
+            }
+        }
+
+        final UserKey newUserKey = userStorer.storeNewUser( storeNewUserCommand, new DisplayNameResolver( userStoreConfig ) );
+        return userDao.findByKey( newUserKey );
+    }
+
+    UserEntity findUserBySyncValue( String syncValue )
+    {
+        final UserSpecification spec = new UserSpecification();
+        spec.setUserStoreKey( userStore.getKey() );
+        spec.setSyncValue( syncValue );
+        spec.setDeletedState( UserSpecification.DeletedState.ANY );
+
+        return userDao.findSingleBySpecification( spec );
+    }
+
+    UserEntity findUserByName( String uid )
+    {
+        final UserSpecification spec = new UserSpecification();
+        spec.setUserStoreKey( userStore.getKey() );
+        spec.setName( uid );
+        spec.setDeletedState( UserSpecification.DeletedState.ANY );
+
+        return userDao.findSingleBySpecification( spec );
+    }
+
+    protected boolean updateAndResurrectUser( final UserEntity localUser, final RemoteUser remoteUser )
     {
         boolean resurrected = false;
         boolean modified = false;
@@ -90,12 +148,12 @@ public abstract class AbstractBaseUserSynchronizer
             localUser.setDeleted( false );
             if ( localUser.getUserGroup() != null )
             {
-                localUser.getUserGroup().setDeleted( 0 );
+                localUser.getUserGroup().setDeleted( false );
             }
             modified = true;
         }
 
-        if ( updateUserModifyableProperties( localUser, remoteUser ) )
+        if ( updateUserModifiableProperties( localUser, remoteUser ) )
         {
             modified = true;
         }
@@ -137,7 +195,7 @@ public abstract class AbstractBaseUserSynchronizer
         return null;
     }
 
-    protected boolean nameAlreadyUsedByOtherUser( final UserStoreKey userStoreKey, final String name, final UserEntity localUser )
+    protected boolean nameAlreadyUsedByOtherUser( final String name, final UserEntity localUser )
     {
         if ( name == null )
         {
@@ -145,28 +203,38 @@ public abstract class AbstractBaseUserSynchronizer
         }
         final UserSpecification userByEmailSpec = new UserSpecification();
         userByEmailSpec.setName( name );
-        userByEmailSpec.setUserStoreKey( userStoreKey );
+        userByEmailSpec.setUserStoreKey( getUserStoreKey() );
         userByEmailSpec.setDeletedStateNotDeleted();
 
-        return otherThanMeFound( userByEmailSpec, localUser );
+        return isOtherThanMeFound( userByEmailSpec, localUser );
     }
 
-    protected boolean emailAlreadyUsedByOtherUser( final UserStoreKey userStoreKey, final String email, final UserEntity localUser )
+    protected UserEntity getOtherUserWithSameEmail( final String email, final UserEntity localUser )
     {
         if ( email == null )
         {
-            return false;
+            return null;
         }
 
         final UserSpecification userByEmailSpec = new UserSpecification();
         userByEmailSpec.setEmail( email );
-        userByEmailSpec.setUserStoreKey( userStoreKey );
+        userByEmailSpec.setUserStoreKey( getUserStoreKey() );
         userByEmailSpec.setDeletedStateNotDeleted();
 
-        return otherThanMeFound( userByEmailSpec, localUser );
+        return findOtherThanMe( userByEmailSpec, localUser );
     }
 
-    private boolean otherThanMeFound( final UserSpecification specification, final UserEntity me )
+    protected boolean emailAlreadyUsedByOtherUser( final String email, final UserEntity localUser )
+    {
+        return getOtherUserWithSameEmail( email, localUser ) != null;
+    }
+
+    private boolean isOtherThanMeFound( final UserSpecification specification, final UserEntity me )
+    {
+        return findOtherThanMe( specification, me ) != null;
+    }
+
+    private UserEntity findOtherThanMe( final UserSpecification specification, final UserEntity me )
     {
         final List<UserEntity> users = userDao.findBySpecification( specification );
 
@@ -175,40 +243,77 @@ public abstract class AbstractBaseUserSynchronizer
             final boolean oneEntityFoundAndItsMe = users.size() == 1 && me.equals( users.get( 0 ) );
             if ( oneEntityFoundAndItsMe )
             {
-                return false;
+                return null;
             }
+
+            return getOtherThanMe( users, me );
         }
-        return users.size() > 0;
+
+        return users.isEmpty() ? null : users.get( 0 );
     }
 
-    private boolean updateUserModifyableProperties( final UserEntity localUser, final RemoteUser remoteUser )
+    private UserEntity getOtherThanMe( List<UserEntity> users, UserEntity me )
     {
+        for ( UserEntity user : users )
+        {
+            if ( !user.equals( me ) )
+            {
+                return user;
+            }
+        }
+
+        return null;
+    }
+
+    protected void synchronizeOtherUserWithSameEmail( final String email, final UserEntity localUser )
+    {
+        UserEntity otherUserWithSameEmail = getOtherUserWithSameEmail( email, localUser );
+
+        if ( otherUserWithSameEmail != null )
+        {
+            final RemoteUser remoteUser = remoteUserStorePlugin.getUser( otherUserWithSameEmail.getName() );
+
+            if ( remoteUser == null )
+            {
+                deleteUser( otherUserWithSameEmail );
+            }
+        }
+    }
+
+    private boolean updateUserModifiableProperties( final UserEntity userToModify, final RemoteUser remoteUser )
+    {
+        final DisplayNameResolver displayNameResolver = new DisplayNameResolver( userStoreConfig );
+        final boolean displayNameManuallyEdited = displayNameManuallyEdited( displayNameResolver, userToModify );
+
         boolean modified = false;
 
-        if ( !equals( localUser.getEmail(), remoteUser.getEmail() ) )
+        if ( !equals( userToModify.getEmail(), remoteUser.getEmail() ) )
         {
-            localUser.setEmail( remoteUser.getEmail() );
+            userToModify.setEmail( remoteUser.getEmail() );
             modified = true;
         }
 
-        final DisplayNameResolver displayNameResolver = new DisplayNameResolver( userStoreConfig );
-        final boolean displayNameManuallyEdited = displayNameManuallyEdited( displayNameResolver, localUser );
+        if ( !equals( userToModify.getName(), remoteUser.getId() ) )
+        {
+            userToModify.setName( remoteUser.getId() );
+            modified = true;
+        }
 
-        final UserFieldMap userFieldMap = remoteUser.getUserFields();
-        userFieldMap.retain( userStoreConfig.getRemoteOnlyUserFieldTypes() );
+        final UserFields remoteUserFields = remoteUser.getUserFields().getConfiguredFieldsOnly( userStoreConfig );
+        remoteUserFields.retain(
+            userStoreConfig.getRemoteOnlyUserFieldTypes() ); // TODO: isnt not this unecessary since these are coming from removeUser?
 
-        final UserInfo userInfo = localUser.getUserInfo();
-        final UserInfoTransformer transformer = new UserInfoTransformer();
-        transformer.updateUserInfo( userInfo, userFieldMap );
-        final boolean modifiedUserFields = localUser.updateUserInfo( userInfo );
+        // must only clear and update fields that are remote, otherwise locally stored user fields are lost
+        final UserFields userFieldsToModify = userToModify.getUserFields().getConfiguredFieldsOnly( userStoreConfig );
+        userFieldsToModify.replaceAllRemoteFieldsOnly( remoteUserFields, userStoreConfig );
+        final boolean modifiedUserFields = userToModify.setUserFields( userFieldsToModify );
+        modified = modified || modifiedUserFields;
 
         if ( !displayNameManuallyEdited )
         {
-            localUser.setDisplayName(
-                displayNameResolver.resolveDisplayName( localUser.getName(), localUser.getDisplayName(), localUser.getUserInfo() ) );
+            userToModify.setDisplayName( displayNameResolver.resolveDisplayName( userToModify.getName(), userToModify.getDisplayName(),
+                                                                                 userToModify.getUserFields() ) );
         }
-
-        modified |= modifiedUserFields;
 
         return modified;
     }
@@ -216,7 +321,7 @@ public abstract class AbstractBaseUserSynchronizer
     private boolean displayNameManuallyEdited( final DisplayNameResolver displayNameResolver, UserEntity user )
     {
         final String displayNameGeneratedFromExistingUser =
-            displayNameResolver.resolveDisplayName( user.getName(), user.getDisplayName(), user.getUserInfo() );
+            displayNameResolver.resolveDisplayName( user.getName(), user.getDisplayName(), user.getUserFields() );
 
         final String existingDisplayName = user.getDisplayName();
 
@@ -241,20 +346,7 @@ public abstract class AbstractBaseUserSynchronizer
     private void syncGroupMembershipOfTypeGroup( final GroupEntity localGroup, final RemoteGroup remoteGroupMember,
                                                  final MemberCache memberCache )
     {
-        final GroupSpecification spec = new GroupSpecification();
-        spec.setUserStoreKey( getUserStoreKey() );
-        spec.setName( remoteGroupMember.getId() );
-        spec.setSyncValue( remoteGroupMember.getSync() );
-
-        GroupEntity existingMember = memberCache.getMemberOfTypeGroup( spec );
-        if ( existingMember == null )
-        {
-            existingMember = groupDao.findSingleBySpecification( spec );
-            if ( existingMember != null )
-            {
-                memberCache.addMemeberOfTypeGroup( existingMember );
-            }
-        }
+        final GroupEntity existingMember = findLocalGroup( remoteGroupMember, memberCache );
 
         if ( existingMember == null )
         {
@@ -265,14 +357,43 @@ public abstract class AbstractBaseUserSynchronizer
             if ( localGroup.hasMembership( existingMember ) )
             {
                 // all is fine
-                status.userMembershipVerified();
+                if ( status != null )
+                {
+                    status.userMembershipVerified();
+                }
             }
             else
             {
                 localGroup.addMembership( existingMember );
-                status.userMembershipCreated();
+                if ( status != null )
+                {
+                    status.userMembershipCreated();
+                }
             }
         }
+    }
+
+    private GroupEntity findLocalGroup( final RemoteGroup remoteGroup, final MemberCache memberCache )
+    {
+        final GroupSpecification spec = createGroupSpecification( remoteGroup );
+        GroupEntity existingMember = memberCache.getMemberOfTypeGroup( spec );
+        if ( existingMember == null )
+        {
+            existingMember = groupDao.findSingleBySpecification( spec );
+            if ( existingMember != null )
+            {
+                memberCache.addMemeberOfTypeGroup( existingMember );
+            }
+        }
+        return existingMember;
+    }
+
+    private GroupSpecification createGroupSpecification( final RemoteGroup remoteGroup )
+    {
+        final GroupSpecification spec = new GroupSpecification();
+        spec.setUserStoreKey( getUserStoreKey() );
+        spec.setSyncValue( remoteGroup.getSync() );
+        return spec;
     }
 
     protected void removeLocalUserMembershipsNotExistingRemote( final UserEntity localUser, final List<RemoteGroup> remoteMemberships )
@@ -306,7 +427,24 @@ public abstract class AbstractBaseUserSynchronizer
         for ( final GroupEntity localMembershipToRemove : localMembershipsToRemove )
         {
             userGroup.removeMembership( localMembershipToRemove );
-            status.userMembershipDeleted();
+            if ( status != null )
+            {
+                status.userMembershipDeleted();
+            }
+        }
+    }
+
+    protected void deleteUser( final UserEntity localUser )
+    {
+        if ( !localUser.isDeleted() )
+        {
+            final UserSpecification userToDeleteSpec = new UserSpecification();
+            userToDeleteSpec.setKey( localUser.getKey() );
+            userStorer.deleteUser( userToDeleteSpec );
+            if ( status != null )
+            {
+                status.userDeleted();
+            }
         }
     }
 
@@ -321,6 +459,18 @@ public abstract class AbstractBaseUserSynchronizer
             return false;
         }
         return a.equals( b );
+    }
+
+    private GroupEntity createGroup( final RemoteGroup remoteGroup )
+    {
+        final StoreNewGroupCommand storeNewGroupCommand = new StoreNewGroupCommand();
+        storeNewGroupCommand.setName( remoteGroup.getId() );
+        storeNewGroupCommand.setSyncValue( remoteGroup.getSync() );
+        storeNewGroupCommand.setRestriced( true );
+        storeNewGroupCommand.setType( GroupType.USERSTORE_GROUP );
+        storeNewGroupCommand.setUserStoreKey( userStore.getKey() );
+        GroupKey groupKey = groupStorer.storeNewGroup( storeNewGroupCommand );
+        return groupDao.findByKey( groupKey );
     }
 
     public void setRemoteUserStorePlugin( final RemoteUserStorePlugin value )
@@ -348,8 +498,13 @@ public abstract class AbstractBaseUserSynchronizer
         this.connectorConfig = value;
     }
 
-    public void setUserStorageService( UserStorageService value )
+    public void setUserStorer( UserStorer value )
     {
-        this.userStorageService = value;
+        this.userStorer = value;
+    }
+
+    public void setGroupStorer( GroupStorer groupStorer )
+    {
+        this.groupStorer = groupStorer;
     }
 }

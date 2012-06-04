@@ -90,14 +90,8 @@ public class UserParser
         if ( user == null )
         {
             // User not in db, try triggering a synchronize against user storage...
-            UserKey userKey = synchronizeIfRemoteUserStore( userStoreAndQualifiedUsername.userStore, uid );
-
-            if ( userKey == null )
-            {
-                throw new UserNotFoundException( qualifiedUsername );
-            }
-
-            user = userDao.findByKey( userKey );
+            synchronizeIfRemoteUserStore( userStoreAndQualifiedUsername.userStore, uid );
+            user = userDao.findByQualifiedUsername( qualifiedUsername );
         }
         else
         {
@@ -147,13 +141,12 @@ public class UserParser
         return user;
     }
 
-    private UserKey synchronizeIfRemoteUserStore( UserStoreEntity userStore, String uid )
+    private void synchronizeIfRemoteUserStore( UserStoreEntity userStore, String uid )
     {
         if ( synchronizeUser && userStore.isRemote() )
         {
-            return userStoreService.synchronizeUser( userStore.getKey(), uid );
+            userStoreService.synchronizeUser( userStore.getKey(), uid );
         }
-        return null;
     }
 
     private UserStoreAndQualifiedUsername parseQualifiedUsername( String string )

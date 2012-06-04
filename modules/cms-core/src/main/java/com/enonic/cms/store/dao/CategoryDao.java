@@ -7,11 +7,9 @@ package com.enonic.cms.store.dao;
 import java.util.List;
 
 import com.enonic.cms.core.content.category.CategoryEntity;
-
-import com.enonic.cms.store.support.EntityPageList;
-
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.store.support.EntityPageList;
 
 public interface CategoryDao
     extends EntityDao<CategoryEntity>

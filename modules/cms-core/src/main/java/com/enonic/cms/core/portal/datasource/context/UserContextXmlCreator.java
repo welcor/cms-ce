@@ -55,7 +55,7 @@ public class UserContextXmlCreator
         userEl.addContent( new Element( "display-name" ).setText( user.getDisplayName() ) );
         userEl.addContent( new Element( "email" ).setText( user.getEmail() ) );
 
-        userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserInfo(), false );
+        userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserFields(), false );
 
         userEl.addContent( createMembershipsElement( user ) );
 

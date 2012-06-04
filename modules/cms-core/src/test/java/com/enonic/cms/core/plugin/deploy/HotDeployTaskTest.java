@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+
 import com.enonic.cms.core.plugin.PluginManager;
 
 public class HotDeployTaskTest
@@ -15,11 +16,11 @@ public class HotDeployTaskTest
     public void testStartup()
         throws Exception
     {
-        final PluginManager pluginManager = Mockito.mock(PluginManager.class);
+        final PluginManager pluginManager = Mockito.mock( PluginManager.class );
 
         final HotDeployTask task = new HotDeployTask();
-        task.setScanPeriod(100L);
-        task.setDeployDir(this.folder.newFolder("plugins"));
+        task.setScanPeriod( 100L );
+        task.setDeployDir( this.folder.newFolder( "plugins" ) );
         task.setPluginManager( pluginManager );
 
         task.start();

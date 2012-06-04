@@ -169,16 +169,16 @@ public class DateCompareEvaluatorTest
     {
         QueryExpr expr = parseQuery( "publishFrom LIKE '2008-10-10'" );
 
-        assertTrue(expr.getExpr() instanceof CompareExpr);
-        CompareExpr cexpr = (CompareExpr)expr.getExpr();
+        assertTrue( expr.getExpr() instanceof CompareExpr );
+        CompareExpr cexpr = (CompareExpr) expr.getExpr();
 
-        assertTrue(cexpr.getLeft() instanceof FieldExpr );
-        assertTrue(cexpr.getRight() instanceof ValueExpr);
+        assertTrue( cexpr.getLeft() instanceof FieldExpr );
+        assertTrue( cexpr.getRight() instanceof ValueExpr );
 
-        assertEquals(CompareExpr.LIKE, cexpr.getOperator());
+        assertEquals( CompareExpr.LIKE, cexpr.getOperator() );
 
         ValueExpr rightValExpr = (ValueExpr) cexpr.getRight();
-        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && (!rightValExpr.isDate()) );
+        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && ( !rightValExpr.isDate() ) );
     }
 
     @Test
@@ -186,16 +186,16 @@ public class DateCompareEvaluatorTest
     {
         QueryExpr expr = parseQuery( "publishFrom LIKE '2008-%'" );
 
-        assertTrue(expr.getExpr() instanceof CompareExpr);
-        CompareExpr cexpr = (CompareExpr)expr.getExpr();
+        assertTrue( expr.getExpr() instanceof CompareExpr );
+        CompareExpr cexpr = (CompareExpr) expr.getExpr();
 
-        assertTrue(cexpr.getLeft() instanceof FieldExpr);
-        assertTrue(cexpr.getRight() instanceof ValueExpr);
+        assertTrue( cexpr.getLeft() instanceof FieldExpr );
+        assertTrue( cexpr.getRight() instanceof ValueExpr );
 
-        assertEquals(CompareExpr.LIKE, cexpr.getOperator());
+        assertEquals( CompareExpr.LIKE, cexpr.getOperator() );
 
         ValueExpr rightValExpr = (ValueExpr) cexpr.getRight();
-        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && (!rightValExpr.isDate()) );
+        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && ( !rightValExpr.isDate() ) );
     }
 
     @Test
@@ -203,16 +203,16 @@ public class DateCompareEvaluatorTest
     {
         QueryExpr expr = parseQuery( "publishFrom NOT LIKE '2008-10-10'" );
 
-        assertTrue(expr.getExpr() instanceof CompareExpr);
-        CompareExpr cexpr = (CompareExpr)expr.getExpr();
+        assertTrue( expr.getExpr() instanceof CompareExpr );
+        CompareExpr cexpr = (CompareExpr) expr.getExpr();
 
-        assertTrue(cexpr.getLeft() instanceof FieldExpr);
-        assertTrue(cexpr.getRight() instanceof ValueExpr);
+        assertTrue( cexpr.getLeft() instanceof FieldExpr );
+        assertTrue( cexpr.getRight() instanceof ValueExpr );
 
         assertEquals( CompareExpr.NOT_LIKE, cexpr.getOperator() );
 
         ValueExpr rightValExpr = (ValueExpr) cexpr.getRight();
-        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && (!rightValExpr.isDate()) );
+        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && ( !rightValExpr.isDate() ) );
     }
 
     @Test
@@ -229,7 +229,7 @@ public class DateCompareEvaluatorTest
         assertEquals( CompareExpr.EQ, cexpr.getOperator() );
 
         ValueExpr rightValExpr = (ValueExpr) cexpr.getRight();
-        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && (!rightValExpr.isDate()) );
+        assertTrue( "Expected right expression value of type string", rightValExpr.isString() && ( !rightValExpr.isDate() ) );
     }
 
     @Test
@@ -246,7 +246,7 @@ public class DateCompareEvaluatorTest
 
         expr = new ValueExpr( "2010-12-12T23:59:59" );
         assertTrue( expr.isValidDateString() );
-}
+    }
 
     @Test
     public void testInvalidValueExprDate()

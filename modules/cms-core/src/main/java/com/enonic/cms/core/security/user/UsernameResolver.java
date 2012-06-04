@@ -6,8 +6,8 @@ package com.enonic.cms.core.security.user;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.cms.core.user.field.UserFields;
 
 /**
  * Created by rmy - Date: Sep 18, 2009
@@ -25,10 +25,10 @@ public class UsernameResolver
         userName = command.getUsername();
         displayName = command.getDisplayName();
 
-        UserInfo userInfo = command.getUserInfo();
-        if ( userInfo != null )
+        UserFields userFields = command.getUserFields();
+        if ( userFields != null )
         {
-            setUserInfoFields( userInfo );
+            setUserInfoFields( userFields );
         }
 
         String resolvedUsername = doResolve();

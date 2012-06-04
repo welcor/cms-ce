@@ -1,5 +1,12 @@
 package com.enonic.cms.core.boot;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Properties;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -9,18 +16,17 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
-import java.io.*;
-import java.util.Properties;
-import org.junit.Assert;
-
 public class ConfigLoaderTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     private File homeDir;
+
     private ConfigLoader configLoader;
+
     private MutablePropertySources sources;
+
     private ClassLoader classLoader;
 
     @Before
@@ -30,14 +36,14 @@ public class ConfigLoaderTest
         final StandardEnvironment env = new StandardEnvironment();
         this.sources = env.getPropertySources();
 
-        this.sources.remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
-        this.sources.remove(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
+        this.sources.remove( StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME );
+        this.sources.remove( StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME );
 
-        this.classLoader = Mockito.mock(ClassLoader.class);
+        this.classLoader = Mockito.mock( ClassLoader.class );
 
-        this.homeDir = this.folder.newFolder("cms-home");
-        this.configLoader = new ConfigLoader(this.homeDir, env);
-        this.configLoader.setClassLoader(this.classLoader);
+        this.homeDir = this.folder.newFolder( "cms-home" );
+        this.configLoader = new ConfigLoader( this.homeDir, env );
+        this.configLoader.setClassLoader( this.classLoader );
     }
 
     private void setupSystemProperties()
@@ -45,7 +51,7 @@ public class ConfigLoaderTest
         final Properties props = new Properties();
         props.setProperty( "system.param", "system.value" );
 
-        this.sources.addFirst(new PropertiesPropertySource("system", props));
+        this.sources.addFirst( new PropertiesPropertySource( "system", props ) );
     }
 
     private void setupHomeProperties()
@@ -54,7 +60,7 @@ public class ConfigLoaderTest
         final Properties props = new Properties();
         props.setProperty( "home.param", "home.value" );
         props.setProperty( "override", "home" );
-        props.setProperty( "interpolate", "${home.param} ${system.param}");
+        props.setProperty( "interpolate", "${home.param} ${system.param}" );
 
         final File file = new File( this.homeDir, "config/cms.properties" );
         file.getParentFile().mkdirs();
@@ -69,16 +75,15 @@ public class ConfigLoaderTest
     {
         final Properties props = new Properties();
         props.setProperty( "classpath.param", "classpath.value" );
-        props.setProperty("override", "classpath");
-        props.setProperty( "interpolate", "${classpath.param} ${system.param}");
+        props.setProperty( "override", "classpath" );
+        props.setProperty( "interpolate", "${classpath.param} ${system.param}" );
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         props.store( out, "" );
         out.close();
 
         final ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
-        Mockito.when( this.classLoader.getResourceAsStream("com/enonic/vertical/default.properties") )
-                .thenReturn( in );
+        Mockito.when( this.classLoader.getResourceAsStream( "com/enonic/vertical/default.properties" ) ).thenReturn( in );
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -93,7 +98,7 @@ public class ConfigLoaderTest
         throws Exception
     {
         setupClassPathProperties();
-        
+
         final Properties props = this.configLoader.load();
         Assert.assertNotNull( props );
         Assert.assertEquals( 5, props.size() );
@@ -110,7 +115,7 @@ public class ConfigLoaderTest
     {
         setupClassPathProperties();
         setupHomeProperties();
-        
+
         final Properties props = this.configLoader.load();
         Assert.assertNotNull( props );
         Assert.assertEquals( 6, props.size() );

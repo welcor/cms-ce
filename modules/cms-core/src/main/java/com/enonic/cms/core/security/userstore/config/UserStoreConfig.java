@@ -5,15 +5,10 @@
 package com.enonic.cms.core.security.userstore.config;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.enonic.cms.core.security.user.MissingRequiredUserFieldException;
-import com.enonic.cms.core.security.user.ReadOnlyUserFieldPolicyException;
-import com.enonic.cms.core.user.field.UserField;
-import com.enonic.cms.core.user.field.UserFieldMap;
 import com.enonic.cms.core.user.field.UserFieldType;
 
 public class UserStoreConfig
@@ -36,22 +31,27 @@ public class UserStoreConfig
         userFieldConfigs.addAll( value );
     }
 
-    public Collection<UserStoreUserFieldConfig> getRemoteOnlyUserFieldConfigs()
+    public Set<UserStoreUserFieldConfig> getRemoteOnlyUserFieldConfigs()
     {
         return getUserFieldConfigs( true );
     }
 
-    public Collection<UserStoreUserFieldConfig> getLocalOnlyUserFieldConfigs()
+    public Set<UserStoreUserFieldConfig> getLocalOnlyUserFieldConfigs()
     {
         return getUserFieldConfigs( false );
     }
 
-    public Collection<UserFieldType> getRemoteOnlyUserFieldTypes()
+    public Set<UserFieldType> getUserFieldTypes()
+    {
+        return getUserFieldTypes( null );
+    }
+
+    public Set<UserFieldType> getRemoteOnlyUserFieldTypes()
     {
         return getUserFieldTypes( true );
     }
 
-    public Collection<UserFieldType> getLocalOnlyUserFieldTypes()
+    public Set<UserFieldType> getLocalOnlyUserFieldTypes()
     {
         return getUserFieldTypes( false );
     }
@@ -68,105 +68,13 @@ public class UserStoreConfig
         return null;
     }
 
-    public void removeReadOnlyFields( final UserFieldMap userFieldMap )
+    private Set<UserStoreUserFieldConfig> getUserFieldConfigs( final Boolean remoteFlagValue )
     {
-        for ( final UserStoreUserFieldConfig userFieldConfig : userFieldConfigs )
-        {
-            if ( userFieldConfig.isReadOnly() && userFieldMap.hasField( userFieldConfig.getType() ) )
-            {
-                userFieldMap.remove( userFieldConfig.getType() );
-            }
-        }
-    }
-
-    public void validateNoRequiredFieldsAreBlank( final UserFieldMap userFieldMap )
-    {
-        for ( final UserStoreUserFieldConfig userFieldConfig : userFieldConfigs )
-        {
-            if ( userFieldConfig.isRequired() && isFieldPresentButBlank( userFieldMap, userFieldConfig.getType() ) )
-            {
-                throw new MissingRequiredUserFieldException( userFieldConfig.getType() );
-            }
-        }
-    }
-
-    private boolean isFieldPresentButBlank( UserFieldMap userFieldMap, UserFieldType userFieldType )
-    {
-        if ( !userFieldMap.hasField( userFieldType ) )
-        {
-            return false;
-        }
-
-        UserField userField = userFieldMap.getField( userFieldType );
-        Object value = userField.getValue();
-        if ( value instanceof String )
-        {
-            return StringUtils.isBlank( (String) value );
-        }
-        else if ( value instanceof byte[] )
-        {
-            return ( (byte[]) value ).length == 0;
-        }
-
-        return value == null;
-    }
-
-    public void validateAllRequiredFieldsArePresent( final UserFieldMap userFieldMap )
-    {
-        for ( final UserStoreUserFieldConfig userFieldConfig : userFieldConfigs )
-        {
-            if ( userFieldConfig.isRequired() && isFieldMissingOrEmpty( userFieldMap, userFieldConfig.getType() ) )
-            {
-                throw new MissingRequiredUserFieldException( userFieldConfig.getType() );
-            }
-        }
-    }
-
-    private boolean isFieldMissingOrEmpty( final UserFieldMap userFieldMap, final UserFieldType userFieldType )
-    {
-        if ( !userFieldMap.hasField( userFieldType ) )
-        {
-            return true;
-        }
-
-        UserField userField = userFieldMap.getField( userFieldType );
-        Object value = userField.getValue();
-        if ( value instanceof String )
-        {
-            return StringUtils.isBlank( (String) value );
-        }
-        else if ( value instanceof byte[] )
-        {
-            return ( (byte[]) value ).length == 0;
-        }
-
-        return value == null;
-    }
-
-    public void validateNoReadOnlyFields( final UserFieldMap userFieldMap )
-    {
-        for ( final UserStoreUserFieldConfig userFieldConfig : userFieldConfigs )
-        {
-            if ( userFieldConfig.isReadOnly() && userFieldMap.hasField( userFieldConfig.getType() ) )
-            {
-                throw new ReadOnlyUserFieldPolicyException( userFieldConfig.getType() );
-            }
-        }
-    }
-
-    public void validateUserFieldMap( final UserFieldMap userFieldMap )
-    {
-        validateAllRequiredFieldsArePresent( userFieldMap );
-        validateNoReadOnlyFields( userFieldMap );
-    }
-
-    private Collection<UserStoreUserFieldConfig> getUserFieldConfigs( final boolean remoteFlagValue )
-    {
-        final Collection<UserStoreUserFieldConfig> fieldConfigs = new HashSet<UserStoreUserFieldConfig>();
+        final Set<UserStoreUserFieldConfig> fieldConfigs = new LinkedHashSet<UserStoreUserFieldConfig>();
 
         for ( final UserStoreUserFieldConfig userFieldConfig : userFieldConfigs )
         {
-            if ( userFieldConfig.isRemote() == remoteFlagValue )
+            if ( remoteFlagValue == null || userFieldConfig.isRemote() == remoteFlagValue )
             {
                 fieldConfigs.add( userFieldConfig );
             }
@@ -174,11 +82,11 @@ public class UserStoreConfig
         return fieldConfigs;
     }
 
-    private Collection<UserFieldType> getUserFieldTypes( final boolean remoteFlagValue )
+    private Set<UserFieldType> getUserFieldTypes( final Boolean remotesOnly )
     {
-        final Collection<UserFieldType> fieldTypes = new HashSet<UserFieldType>();
+        final Set<UserFieldType> fieldTypes = new LinkedHashSet<UserFieldType>();
 
-        for ( final UserStoreUserFieldConfig userFieldConfig : getUserFieldConfigs( remoteFlagValue ) )
+        for ( final UserStoreUserFieldConfig userFieldConfig : getUserFieldConfigs( remotesOnly ) )
         {
             fieldTypes.add( userFieldConfig.getType() );
         }

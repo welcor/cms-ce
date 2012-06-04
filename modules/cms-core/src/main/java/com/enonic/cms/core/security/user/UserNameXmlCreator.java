@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.security;
+package com.enonic.cms.core.security.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
-
-import com.enonic.cms.core.security.user.User;
 
 /**
  * Jul 18, 2009

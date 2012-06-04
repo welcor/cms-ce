@@ -29,6 +29,11 @@ public abstract class AbstractBaseEntityDao<T>
         return typecast( clazz, getHibernateTemplate().get( clazz, key ) );
     }
 
+    protected final <T> List<T> findByExample( Class<T> clazz, Object example )
+    {
+        return typecastList( clazz, getHibernateTemplate().findByExample( example ) );
+    }
+
     protected final <T> List<T> findByNamedQuery( Class<T> clazz, String queryName )
     {
         return typecastList( clazz, getHibernateTemplate().findByNamedQuery( queryName ) );

@@ -190,31 +190,4 @@ public class UserStoreConfigParser
         return fieldConfig;
     }
 
-    /*
-     * remote='false',  readonly='false'                   - editable
-     * remote='false',  readonly='true'                    - r/o
-     * remote='true',   readonly='false',  userpolicy=r/o  - r/o
-     * remote='true',   readonly='false',  userpolicy=''   - editable
-     * remote='true',   readonly='true',   userpolicy=''   - r/o
-     */
-    public static Element parseRemote( final Element configEl, final boolean canUpdateUser )
-    {
-        final Element userFieldsEl = configEl.getChild( USER_FIELDS_ELEMENT_NAME );
-
-        final List<Element> fieldConfigElements = userFieldsEl.getChildren();
-        for ( Element fieldConfigEl : fieldConfigElements )
-        {
-            final String remote = fieldConfigEl.getAttributeValue( "remote" );
-            if ( "true".equals( remote ) )
-            {
-                final String readonly = fieldConfigEl.getAttributeValue( "readonly" );
-                if ( "false".equals( readonly ) && !canUpdateUser )
-                {
-                    fieldConfigEl.setAttribute( "readonly", "true" );
-                }
-            }
-        }
-
-        return configEl;
-    }
 }

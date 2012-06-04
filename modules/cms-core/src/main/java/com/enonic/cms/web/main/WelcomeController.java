@@ -92,6 +92,10 @@ public final class WelcomeController
     private String createBaseUrl( final HttpServletRequest req )
     {
         final String url = ServletUriComponentsBuilder.fromRequest( req ).build().toString();
-        return url.substring( 0, url.length() - 1 );
+        if (url.endsWith( "/" )) {
+            return url.substring( 0, url.length() - 1 );
+        } else {
+            return url;
+        }
     }
 }

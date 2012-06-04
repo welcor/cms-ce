@@ -19,7 +19,6 @@ import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.resolver.mock.ResolverHttpRequestInputCreatorMock;
 import com.enonic.cms.core.resolver.mock.ResolverHttpRequestInputXMLCreatorMock;
-
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -28,6 +27,7 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.user.field.UserFields;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.*;
@@ -44,7 +44,7 @@ public class ResolverInputXMLCreatorTest
 
     private ResolverHttpRequestInputXMLCreatorMock httpRequestInputXMLCreatorMock;
 
-    private static final String USER_LOCALE = "no_nb";
+    private static final Locale USER_LOCALE = new Locale( "no_NB" );
 
     @Before
     public void setUp()
@@ -103,7 +103,7 @@ public class ResolverInputXMLCreatorTest
         assertNotNull( "locale-element shold exist in XML", localeElement );
 
         String locale = localeElement.getValue();
-        assertEquals( "locale should be in XML with correct value", USER_LOCALE, locale );
+        assertEquals( "locale should be in XML with correct value", USER_LOCALE.toString().toLowerCase(), locale.toLowerCase() );
     }
 
     private UserEntity createNormalUser()
@@ -117,8 +117,9 @@ public class ResolverInputXMLCreatorTest
         user.setSyncValue( "syncValue" );
         user.setType( UserType.NORMAL );
         user.setTimestamp( new DateTime() );
-
-        user.getUserInfo().setLocale( new Locale( USER_LOCALE ) );
+        UserFields userFields = new UserFields();
+        userFields.setLocale( USER_LOCALE );
+        user.setUserFields( userFields );
 
         UserStoreEntity userStore = new UserStoreEntity();
         userStore.setName( "myUserStore" );

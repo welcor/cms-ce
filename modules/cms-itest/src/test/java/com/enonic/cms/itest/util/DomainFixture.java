@@ -5,7 +5,6 @@
 package com.enonic.cms.itest.util;
 
 import java.util.List;
-import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -35,6 +34,7 @@ import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -208,10 +208,33 @@ public class DomainFixture
         return (UserStoreEntity) findFirstByExample( example );
     }
 
+    public int countUsersByName( String name )
+    {
+        UserEntity example = new UserEntity();
+        example.setName( name );
+        return findByExample( example ).size();
+    }
+
     public int countUsersByType( UserType type )
     {
         UserEntity example = new UserEntity();
         example.setType( type );
+        return findByExample( example ).size();
+    }
+
+    public int countNonDeletedUsersByType( UserType type )
+    {
+        UserEntity example = new UserEntity();
+        example.setType( type );
+        example.setDeleted( false );
+        return findByExample( example ).size();
+    }
+
+    public int countDeletedUsersByType( UserType type )
+    {
+        UserEntity example = new UserEntity();
+        example.setType( type );
+        example.setDeleted( true );
         return findByExample( example ).size();
     }
 
@@ -222,9 +245,7 @@ public class DomainFixture
 
     public UserEntity findUserByKey( UserKey value )
     {
-        UserEntity example = new UserEntity();
-        example.setKey( value );
-        return (UserEntity) findFirstByExample( example );
+        return (UserEntity) requireOneOrNone( hibernateTemplate.find( "from UserEntity where key = ?", value ) );
     }
 
     public UserEntity findUserByName( String value )
@@ -241,11 +262,21 @@ public class DomainFixture
         return (UserEntity) findFirstByExample( example );
     }
 
-    public GroupEntity findGroupByKey( String groupKey )
+    public int countGroupsByType( GroupType type )
     {
         GroupEntity example = new GroupEntity();
-        example.setKey( groupKey );
-        return (GroupEntity) findFirstByExample( example );
+        example.setType( type );
+        return findByExample( example ).size();
+    }
+
+    public GroupEntity findGroupByKey( String value )
+    {
+        return findGroupByKey( new GroupKey( value ) );
+    }
+
+    public GroupEntity findGroupByKey( GroupKey value )
+    {
+        return (GroupEntity) requireOneOrNone( hibernateTemplate.find( "from GroupEntity where key = ?", value ) );
     }
 
     public GroupEntity findGroupByName( String groupName )
@@ -270,11 +301,9 @@ public class DomainFixture
         return (GroupEntity) findFirstByExample( example );
     }
 
-    public ContentHandlerEntity findContentHandlerByKey( String value )
+    public ContentHandlerEntity findContentHandlerByKey( ContentHandlerKey value )
     {
-        ContentHandlerEntity example = new ContentHandlerEntity();
-        example.setKey( new ContentHandlerKey( value ) );
-        return (ContentHandlerEntity) findFirstByExample( example );
+        return (ContentHandlerEntity) requireOneOrNone( hibernateTemplate.find( "from ContentHandlerEntity where key = ?", value ) );
     }
 
     public ContentHandlerEntity findContentHandlerByClassName( String value )
@@ -298,15 +327,9 @@ public class DomainFixture
         return (UnitEntity) findFirstByExample( example );
     }
 
-    public CategoryEntity findCategoryByKey( CategoryKey key )
+    public CategoryEntity findCategoryByKey( CategoryKey value )
     {
-        List<CategoryEntity> list =
-            typecastList( CategoryEntity.class, hibernateTemplate.find( "from CategoryEntity where key = ?", key ) );
-        if ( list.isEmpty() )
-        {
-            return null;
-        }
-        return list.get( 0 );
+        return (CategoryEntity) requireOneOrNone( hibernateTemplate.find( "from CategoryEntity where key = ?", value ) );
     }
 
     public CategoryEntity findCategoryByName( String value )
@@ -341,15 +364,9 @@ public class DomainFixture
         return typecastList( ContentEntity.class, hibernateTemplate.find( "from ContentEntity" ) );
     }
 
-    public ContentEntity findContentByKey( ContentKey contentKey )
+    public ContentEntity findContentByKey( ContentKey value )
     {
-        List<ContentEntity> list =
-            typecastList( ContentEntity.class, hibernateTemplate.find( "from ContentEntity where key = ?", contentKey ) );
-        if ( list.isEmpty() )
-        {
-            return null;
-        }
-        return list.get( 0 );
+        return (ContentEntity) requireOneOrNone( hibernateTemplate.find( "from ContentEntity where key = ?", value ) );
     }
 
     public ContentEntity findContentByName( String name )
@@ -357,6 +374,17 @@ public class DomainFixture
         ContentEntity example = new ContentEntity();
         example.setName( name );
         return (ContentEntity) findFirstByExample( example );
+    }
+
+    public ContentEntity findContentByPriority( int priority )
+    {
+        List<ContentEntity> list =
+            typecastList( ContentEntity.class, hibernateTemplate.find( "from ContentEntity where priority = ?", priority ) );
+        if ( list.isEmpty() )
+        {
+            return null;
+        }
+        return list.get( 0 );
     }
 
     public List<ContentVersionEntity> findContentVersionsByContent( ContentKey key )
@@ -410,15 +438,9 @@ public class DomainFixture
         return list.get( index );
     }
 
-    public ContentVersionEntity findContentVersionByKey( ContentVersionKey key )
+    public ContentVersionEntity findContentVersionByKey( ContentVersionKey value )
     {
-        List<ContentVersionEntity> list =
-            typecastList( ContentVersionEntity.class, hibernateTemplate.find( "from ContentVersionEntity where key = ?", key ) );
-        if ( list.isEmpty() )
-        {
-            return null;
-        }
-        return list.get( 0 );
+        return (ContentVersionEntity) requireOneOrNone( hibernateTemplate.find( "from ContentVersionEntity where key = ?", value ) );
     }
 
     public ContentVersionEntity findContentVersionByContent( int index, ContentKey key )
@@ -445,11 +467,9 @@ public class DomainFixture
                              hibernateTemplate.find( "from RelatedContentEntity where key.parentContentVersionKey = ?", versionKey ) );
     }
 
-    public BinaryDataEntity findBinaryDataByKey( BinaryDataKey binaryDataKey )
+    public BinaryDataEntity findBinaryDataByKey( BinaryDataKey value )
     {
-        BinaryDataEntity example = new BinaryDataEntity();
-        example.setKey( binaryDataKey.toInt() );
-        return (BinaryDataEntity) findFirstByExample( example );
+        return (BinaryDataEntity) requireOneOrNone( hibernateTemplate.find( "from BinaryDataEntity where key = ?", value ) );
     }
 
     public MenuItemEntity findMenuItemByName( String name )
@@ -459,11 +479,11 @@ public class DomainFixture
         return (MenuItemEntity) findFirstByExample( example );
     }
 
-    public ContentHomeEntity findContentHomeByKey( ContentHomeKey key )
+    public ContentHomeEntity findContentHomeByKey( ContentHomeKey value )
     {
-        ContentHomeEntity example = new ContentHomeEntity();
-        example.setKey( key );
-        return (ContentHomeEntity) findFirstByExample( example );
+        return (ContentHomeEntity) requireOneOrNone(
+            hibernateTemplate.find( "from ContentHomeEntity where key.siteKey = ? and key.contentKey = ?",
+                                    new Object[]{value.getSiteKey(), value.getContentKey()} ) );
     }
 
     public MenuItemEntity findMenuItemByNameAndOrder( String name, int order )
@@ -540,6 +560,23 @@ public class DomainFixture
         }
         return list.get( 0 );
     }
+
+    private Object requireOneOrNone( List list )
+    {
+        if ( list.size() > 1 )
+        {
+            throw new IllegalStateException( "Expected only one result, was: " + list.size() );
+        }
+        else if ( list.size() == 0 )
+        {
+            return null;
+        }
+        else
+        {
+            return list.get( 0 );
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
     private <T> List<T> typecastList( Class<T> clazz, Object list )

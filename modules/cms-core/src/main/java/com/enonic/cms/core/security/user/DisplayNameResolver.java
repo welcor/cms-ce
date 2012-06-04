@@ -6,8 +6,8 @@ package com.enonic.cms.core.security.user;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.cms.core.user.field.UserFields;
 
 public final class DisplayNameResolver
     extends AbstractUserPropertyResolver
@@ -17,14 +17,14 @@ public final class DisplayNameResolver
         super( userStoreConfig );
     }
 
-    public String resolveDisplayName( final String name, final String displayName, final UserInfo userInfo )
+    public String resolveDisplayName( final String name, final String displayName, final UserFields userFields )
     {
         this.displayName = displayName;
         this.userName = name;
 
-        if ( userInfo != null )
+        if ( userFields != null )
         {
-            setUserInfoFields( userInfo );
+            setUserInfoFields( userFields );
         }
 
         String resolvedDisplayName = doResolve();

@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.core.security.user;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.AbstractMembershipsCommand;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.user.field.UserFields;
 
 /**
  * Jun 18, 2009
@@ -30,7 +30,7 @@ public class StoreNewUserCommand
 
     private UserType type = UserType.NORMAL;
 
-    private UserInfo userInfo = null;
+    private UserFields userFields = null;
 
     private boolean allowAnyUserAccess = false;
 
@@ -114,14 +114,14 @@ public class StoreNewUserCommand
         syncValue = value;
     }
 
-    public UserInfo getUserInfo()
+    public UserFields getUserFields()
     {
-        return userInfo;
+        return userFields;
     }
 
-    public void setUserInfo( final UserInfo value )
+    public void setUserFields( final UserFields value )
     {
-        userInfo = value;
+        userFields = value;
     }
 
     public void setAllowAnyUserAccess( boolean allowAnyUserAccess )

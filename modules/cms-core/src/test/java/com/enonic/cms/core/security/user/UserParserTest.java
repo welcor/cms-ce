@@ -1,15 +1,17 @@
-package com.enonic.cms.core.security;
+package com.enonic.cms.core.security.user;
 
 
-import com.enonic.cms.core.security.user.*;
-import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.store.dao.UserDao;
-import com.enonic.cms.store.dao.UserStoreDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.security.userstore.UserStoreEntity;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.security.userstore.UserStoreParser;
+import com.enonic.cms.core.security.userstore.UserStoreService;
+import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.store.dao.UserStoreDao;
 
 import static org.junit.Assert.*;
 
@@ -178,8 +180,7 @@ public class UserParserTest
         // setup
         UserStoreEntity myUserStore = createUserStore( 1, "myUserStore" );
         UserEntity user = createUser( "ABC", "myuser", myUserStore );
-        Mockito.when( userDao.findByQualifiedUsername( Mockito.<QualifiedUsername>any() ) ).thenReturn( null );
-        Mockito.when( userStoreService.synchronizeUser( new UserStoreKey( 1 ), "myuser" ) ).thenReturn( user.getKey() );
+        Mockito.when( userDao.findByQualifiedUsername( Mockito.<QualifiedUsername>any() ) ).thenReturn( null ).thenReturn( user );
         Mockito.when( userDao.findByKey( new UserKey( "ABC" ) ) ).thenReturn( user );
         Mockito.when( userStoreDao.findByName( "myUserStore" ) ).thenReturn( myUserStore );
 
@@ -199,7 +200,6 @@ public class UserParserTest
         localUserStore.setConnectorName( null );
         UserEntity user = createUser( "ABC", "myuser", localUserStore );
         Mockito.when( userDao.findByQualifiedUsername( Mockito.<QualifiedUsername>any() ) ).thenReturn( null );
-        Mockito.when( userStoreService.synchronizeUser( new UserStoreKey( 1 ), "myuser" ) ).thenReturn( user.getKey() );
         Mockito.when( userDao.findByKey( new UserKey( "ABC" ) ) ).thenReturn( user );
         Mockito.when( userStoreDao.findByName( "localUserStore" ) ).thenReturn( localUserStore );
 
@@ -223,7 +223,6 @@ public class UserParserTest
         UserStoreEntity localUserStore = createUserStore( 1, "localUserStore" );
         UserEntity user = createUser( "ABC", "myuser", localUserStore );
         Mockito.when( userDao.findByQualifiedUsername( Mockito.<QualifiedUsername>any() ) ).thenReturn( null );
-        Mockito.when( userStoreService.synchronizeUser( new UserStoreKey( 1 ), "myuser" ) ).thenReturn( user.getKey() );
         Mockito.when( userDao.findByKey( new UserKey( "ABC" ) ) ).thenReturn( user );
         Mockito.when( userStoreDao.findByName( "localUserStore" ) ).thenReturn( localUserStore );
 
@@ -247,7 +246,6 @@ public class UserParserTest
         // setup
         UserStoreEntity myUserStore = createUserStore( 1, "myUserStore" );
         Mockito.when( userDao.findByQualifiedUsername( Mockito.<QualifiedUsername>any() ) ).thenReturn( null );
-        Mockito.when( userStoreService.synchronizeUser( new UserStoreKey( 1 ), "myuser" ) ).thenReturn( null );
         Mockito.when( userStoreDao.findByName( "myUserStore" ) ).thenReturn( myUserStore );
 
         // exercise

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.hibernate.Query;
 import org.hibernate.transform.ResultTransformer;
+import org.springframework.stereotype.Repository;
 
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
 
@@ -19,9 +20,8 @@ import com.enonic.cms.core.log.ContentLogEntrySpecification;
 import com.enonic.cms.core.log.LogEntryEntity;
 import com.enonic.cms.core.log.LogEntryKey;
 import com.enonic.cms.core.log.LogEntrySpecification;
-import com.enonic.cms.core.log.Table;
 import com.enonic.cms.core.log.LogType;
-import org.springframework.stereotype.Repository;
+import com.enonic.cms.core.log.Table;
 
 @Repository("logEntryDao")
 final class LogEntryEntityDao

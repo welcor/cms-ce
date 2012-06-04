@@ -7,6 +7,10 @@ package com.enonic.cms.api.util;
 
 import java.text.MessageFormat;
 
+/**
+ * @deprecated Use com.google.common.base.Preconditions instead.
+ */
+@Deprecated
 public final class Preconditions
 {
     private Preconditions()

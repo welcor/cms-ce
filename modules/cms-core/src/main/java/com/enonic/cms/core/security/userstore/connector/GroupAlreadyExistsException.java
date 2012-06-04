@@ -21,6 +21,12 @@ public class GroupAlreadyExistsException
         this.name = groupName;
     }
 
+    public GroupAlreadyExistsException( String groupName )
+    {
+        super( "Global group '" + groupName + "' already exists" );
+        this.name = groupName;
+    }
+
     public String getUserStoreName()
     {
         return userStoreName;

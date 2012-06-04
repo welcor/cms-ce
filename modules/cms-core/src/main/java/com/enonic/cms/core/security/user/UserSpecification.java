@@ -4,14 +4,17 @@
  */
 package com.enonic.cms.core.security.user;
 
+import org.springframework.core.style.ToStringCreator;
+
+import com.enonic.cms.core.Specification;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import org.springframework.core.style.ToStringCreator;
 
 /**
  * Jun 29, 2009
  */
 public class UserSpecification
+    implements Specification
 {
     public static UserSpecification usingKey( UserKey key )
     {

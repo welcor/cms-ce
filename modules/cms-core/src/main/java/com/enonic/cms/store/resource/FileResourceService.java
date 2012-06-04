@@ -9,9 +9,9 @@ import java.util.List;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceData;
 import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.core.resource.FileResource;
 
 public interface FileResourceService
 {

@@ -13,6 +13,7 @@ public class PreviewServiceImplWithRequestTest
     private final PreviewContext SOME_PREVIEW = new PreviewContext( new MenuItemPreviewContext( null ) );
 
     private PreviewServiceImpl previewService;
+
     private MockHttpServletRequest request;
 
 

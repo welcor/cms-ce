@@ -9,7 +9,7 @@ import com.enonic.cms.core.image.filter.ImageFilter;
 import static org.junit.Assert.*;
 
 public class ScaleBlockFilterTest
-        extends BaseImageFilterTest
+    extends BaseImageFilterTest
 {
     @Test
     public void testSize()
@@ -23,13 +23,13 @@ public class ScaleBlockFilterTest
         assertEquals( 320, scaled2.getHeight() );
     }
 
-    private BufferedImage scale( int width, int height)
+    private BufferedImage scale( int width, int height )
     {
         ImageFilter filter = new ScaleBlockFilter( width, height, 0.5f, 0.5f );
         return filter.filter( getOpaque() );
     }
 
-    private BufferedImage scaleWithOffset( int width, int height, float xOffset, float yOffset)
+    private BufferedImage scaleWithOffset( int width, int height, float xOffset, float yOffset )
     {
         ImageFilter filter = new ScaleBlockFilter( width, height, xOffset, yOffset );
         return filter.filter( getOpaque() );

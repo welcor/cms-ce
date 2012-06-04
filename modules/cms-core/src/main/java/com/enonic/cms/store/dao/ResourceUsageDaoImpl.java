@@ -4,23 +4,23 @@
  */
 package com.enonic.cms.store.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceReferencer;
 import com.enonic.cms.core.resource.ResourceReferencerType;
+import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
-
-import com.enonic.cms.core.structure.SiteEntity;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @Repository("resourceUsageDao")
 public final class ResourceUsageDaoImpl

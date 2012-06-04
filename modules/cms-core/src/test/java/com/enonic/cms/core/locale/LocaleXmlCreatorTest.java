@@ -34,7 +34,7 @@ public class LocaleXmlCreatorTest
     public void createDocument()
     {
         Locale[] locales = localeService.getLocales();
-        assertNotNull(locales);
+        assertNotNull( locales );
 
         Document localesDoc = localeXmlCreator.createLocalesDocument( locales );
         assertNotNull( localesDoc );

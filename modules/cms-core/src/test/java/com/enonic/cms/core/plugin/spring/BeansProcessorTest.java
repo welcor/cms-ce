@@ -21,15 +21,15 @@ public class BeansProcessorTest
     private PluginContext context;
 
     private ConfigurableListableBeanFactory factory;
-    
+
     private Map<String, Object> serviceMap;
 
     @Before
     public void setUp()
     {
         this.context = Mockito.mock( PluginContext.class );
-        this.factory = new DefaultListableBeanFactory();       
-        
+        this.factory = new DefaultListableBeanFactory();
+
         this.serviceMap = Maps.newHashMap();
         Mockito.when( this.context.getServices() ).thenReturn( this.serviceMap );
     }
@@ -65,7 +65,7 @@ public class BeansProcessorTest
         this.serviceMap.put( "client", client );
 
         processBeanFactory();
-        checkBean("plugin.service.client", Client.class, client);
+        checkBean( "plugin.service.client", Client.class, client );
     }
 
     private void checkBean( final String name, final Class<?> type, final Object value )

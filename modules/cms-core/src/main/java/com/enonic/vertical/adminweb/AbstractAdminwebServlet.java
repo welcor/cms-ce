@@ -121,7 +121,6 @@ public abstract class AbstractAdminwebServlet
     @Autowired
     protected UserDao userDao;
 
-    @Autowired
     protected UserStoreDao userStoreDao;
 
     // Services:
@@ -162,7 +161,6 @@ public abstract class AbstractAdminwebServlet
     @Autowired
     protected ResourceService resourceService;
 
-    @Autowired
     protected SecurityService securityService;
 
     @Autowired
@@ -192,7 +190,6 @@ public abstract class AbstractAdminwebServlet
     @Autowired
     protected UpgradeService upgradeService;
 
-    @Autowired
     protected UserStoreService userStoreService;
 
     // Factories:
@@ -211,7 +208,6 @@ public abstract class AbstractAdminwebServlet
     @Autowired
     protected AdminConsoleLoginAccessResolver adminConsoleLoginAccessResolver;
 
-    @Autowired
     protected MemberOfResolver memberOfResolver;
 
     @Autowired
@@ -369,4 +365,27 @@ public abstract class AbstractAdminwebServlet
         }
     }
 
+    @Autowired
+    public void setUserStoreDao( UserStoreDao value )
+    {
+        this.userStoreDao = value;
+    }
+
+    @Autowired
+    public void setSecurityService( SecurityService value )
+    {
+        this.securityService = value;
+    }
+
+    @Autowired
+    public void setUserStoreService( UserStoreService value )
+    {
+        this.userStoreService = value;
+    }
+
+    @Autowired
+    public void setMemberOfResolver( MemberOfResolver value )
+    {
+        this.memberOfResolver = value;
+    }
 }

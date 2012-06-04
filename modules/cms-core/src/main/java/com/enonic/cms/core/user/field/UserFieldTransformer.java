@@ -4,12 +4,14 @@
  */
 package com.enonic.cms.core.user.field;
 
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-import com.enonic.esl.containers.ExtendedMap;
-import org.apache.commons.fileupload.FileItem;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.fileupload.FileItem;
+
+import com.enonic.esl.containers.ExtendedMap;
+
+import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 
 public final class UserFieldTransformer
 {
@@ -19,20 +21,30 @@ public final class UserFieldTransformer
 
     private boolean transformNullValuesToBlanksForConfiguredFields = false;
 
+    private boolean transformNullHtmlEmailValueToFalseIfConfigured = false;
+
     private UserStoreConfig userStoreConfig = null;
 
-    public void transformNullValuesToBlanksForConfiguredFields( UserStoreConfig userStoreConfig )
+    public UserFieldTransformer transformNullValuesToBlanksForConfiguredFields( UserStoreConfig userStoreConfig )
     {
         transformNullValuesToBlanksForConfiguredFields = true;
         this.userStoreConfig = userStoreConfig;
+        return this;
     }
 
-    public UserFieldMap toUserFields( ExtendedMap form )
+    public UserFieldTransformer transformNullHtmlEmailValueToFalseIfConfigured( UserStoreConfig userStoreConfig )
     {
-        Map<String, String> map = toStringStringMap( form );
-        UserFieldMap fields = fromStoreableMap( map );
+        transformNullHtmlEmailValueToFalseIfConfigured = true;
+        this.userStoreConfig = userStoreConfig;
+        return this;
+    }
 
-        FileItem item = form.getFileItem( UserFieldType.PHOTO.getName(), null );
+    public UserFields toUserFields( ExtendedMap formValues )
+    {
+        Map<String, String> map = toStringStringMap( formValues );
+        UserFields fields = fromStoreableMap( map );
+
+        FileItem item = formValues.getFileItem( UserFieldType.PHOTO.getName(), null );
         if ( item != null )
         {
             updatePhoto( fields, UserPhotoHelper.convertPhoto( item.get() ) );
@@ -41,26 +53,9 @@ public final class UserFieldTransformer
         return fields;
     }
 
-    private Map<String, String> toStringStringMap( ExtendedMap form )
+    public UserFields fromStoreableMap( Map<String, String> map )
     {
-        HashMap<String, String> map = new HashMap<String, String>();
-        for ( Object key : form.keySet() )
-        {
-            String name = key.toString().replace( "_", "-" );
-            Object value = form.get( key );
-
-            if ( value instanceof String )
-            {
-                map.put( name, (String) value );
-            }
-        }
-
-        return map;
-    }
-
-    public UserFieldMap fromStoreableMap( Map<String, String> map )
-    {
-        UserFieldMap fields = new UserFieldMap( true );
+        UserFields fields = new UserFields( true );
         for ( UserFieldType type : UserFieldType.values() )
         {
             updateUserField( fields, type, map );
@@ -70,20 +65,7 @@ public final class UserFieldTransformer
         return fields;
     }
 
-    private void updateUserField( UserFieldMap fields, UserFieldType type, Map<String, String> map )
-    {
-        if ( type == UserFieldType.ADDRESS )
-        {
-            return;
-        }
-
-        if ( type != UserFieldType.PHOTO )
-        {
-            updateSimpleField( fields, type, map );
-        }
-    }
-
-    public void updatePhoto( UserFieldMap fields, byte[] value )
+    public void updatePhoto( UserFields fields, byte[] value )
     {
         if ( value != null )
         {
@@ -91,31 +73,7 @@ public final class UserFieldTransformer
         }
     }
 
-    private void updateSimpleField( UserFieldMap fields, UserFieldType type, Map<String, String> map )
-    {
-        String value = map.get( type.getName() );
-
-        if ( transformNullValuesToBlanksForConfiguredFields )
-        {
-            // This fixes issues with not able to empty string based fields from admin console,
-            // however it does not fix emptying date
-            // To fix this better, some refactoring is needed:
-            //  we need to be able to differ from null-as-in-not-set and null-as-in-set-to-null
-            boolean fieldIsConfigured = userStoreConfig.getUserFieldConfig( type ) != null;
-            if ( value == null && fieldIsConfigured )
-            {
-                value = "";
-            }
-        }
-
-        if ( value != null )
-        {
-            Object typedValue = this.helper.fromString( type, value );
-            fields.add( new UserField( type, typedValue ) );
-        }
-    }
-
-    public Map<String, String> toStoreableMap( UserFieldMap fields )
+    public Map<String, String> toStoreableMap( UserFields fields )
     {
         HashMap<String, String> result = new HashMap<String, String>();
         for ( UserField field : fields )
@@ -130,15 +88,72 @@ public final class UserFieldTransformer
         return result;
     }
 
+    private Map<String, String> toStringStringMap( ExtendedMap formValues )
+    {
+        HashMap<String, String> map = new HashMap<String, String>();
+        for ( Object key : formValues.keySet() )
+        {
+            String name = key.toString().replace( "_", "-" );
+            Object value = formValues.get( key );
+
+            if ( value instanceof String )
+            {
+                map.put( name, (String) value );
+            }
+        }
+
+        return map;
+    }
+
+    private void updateUserField( UserFields fields, UserFieldType type, Map<String, String> map )
+    {
+        if ( type == UserFieldType.ADDRESS )
+        {
+            return;
+        }
+
+        if ( type != UserFieldType.PHOTO )
+        {
+            updateSimpleField( fields, type, map );
+        }
+    }
+
+    private void updateSimpleField( UserFields fields, UserFieldType type, Map<String, String> map )
+    {
+        String value = map.get( type.getName() );
+
+        if ( value == null && type == UserFieldType.HTML_EMAIL && transformNullHtmlEmailValueToFalseIfConfigured &&
+            fieldIsConfigured( type ) )
+        {
+            value = "false";
+        }
+        else if ( value == null && transformNullValuesToBlanksForConfiguredFields && fieldIsConfigured( type ) )
+        {
+            value = "";
+        }
+
+        if ( value != null )
+        {
+            Object typedValue = this.helper.fromString( type, value );
+            fields.add( new UserField( type, typedValue ) );
+        }
+    }
+
+    private boolean fieldIsConfigured( UserFieldType type )
+    {
+        return userStoreConfig.getUserFieldConfig( type ) != null;
+    }
+
     private void addSimpleField( Map<String, String> result, UserField field )
     {
         UserFieldType type = field.getType();
         String strValue = this.helper.toString( field );
 
-        if ( field.isBirthday() )
+        if ( !field.getType().isStringBased() )
         {
             addNullable( result, type.getName(), strValue );
-        } else
+        }
+        else
         {
             addIfNotNull( result, type.getName(), strValue );
         }

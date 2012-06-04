@@ -6,10 +6,10 @@ package com.enonic.cms.store.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
-
-import org.springframework.stereotype.Repository;
 
 @Repository("languageDao")
 public final class LanguageEntityDao

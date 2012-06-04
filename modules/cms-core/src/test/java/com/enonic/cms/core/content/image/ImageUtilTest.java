@@ -44,8 +44,7 @@ public class ImageUtilTest
     @Test
     public void testScaleImage()
     {
-        BufferedImage scaledImage = ImageUtil.scaleImage( originalImage, 200, 200,
-                                                          ContentImageUtil.getBufferedImageType( "jpg" ) );
+        BufferedImage scaledImage = ImageUtil.scaleImage( originalImage, 200, 200, ContentImageUtil.getBufferedImageType( "jpg" ) );
 
         assertEquals( 200, scaledImage.getHeight() );
         assertEquals( 200, scaledImage.getWidth() );

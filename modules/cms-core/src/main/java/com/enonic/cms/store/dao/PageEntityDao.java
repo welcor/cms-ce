@@ -6,8 +6,9 @@ package com.enonic.cms.store.dao;
 
 import java.util.List;
 
-import com.enonic.cms.core.structure.page.PageEntity;
 import org.springframework.stereotype.Repository;
+
+import com.enonic.cms.core.structure.page.PageEntity;
 
 @Repository("pageDao")
 public final class PageEntityDao

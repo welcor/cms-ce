@@ -123,7 +123,7 @@ public class AttachmentController
             final BinaryDataEntity binaryData = contentBinaryData.getBinaryData();
 
             boolean download = "true".equals( request.getParameter( "download" ) );
-            download |= "true".equals( request.getParameter( "_download" ) );
+            download = download || "true".equals( request.getParameter( "_download" ) );
 
             final BlobRecord blob = binaryDataDao.getBlob( binaryData.getBinaryDataKey() );
 

@@ -8,12 +8,10 @@ import java.util.List;
 
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-
 import com.enonic.cms.store.support.EntityPageList;
-
-import com.enonic.cms.core.security.user.UserKey;
 
 public interface UserDao
     extends EntityDao<UserEntity>

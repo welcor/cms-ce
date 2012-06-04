@@ -26,7 +26,7 @@ public class PluginContextImplTest
     private PluginContextImpl pluginContext;
 
     private Map<String, Object> serviceMap;
-    
+
     private PluginConfig pluginConfig;
 
     @Before
@@ -44,10 +44,10 @@ public class PluginContextImplTest
         Mockito.when( bundle.getBundleContext() ).thenReturn( this.bundleContext );
 
         this.pluginContext = new PluginContextImpl( bundle );
-        
+
         this.serviceMap = Maps.newHashMap();
         final HostServices hostServices = Mockito.mock( HostServices.class );
-        Mockito.when( hostServices.getServiceMap() ).thenReturn( this.serviceMap );        
+        Mockito.when( hostServices.getServiceMap() ).thenReturn( this.serviceMap );
         this.pluginContext.setHostServices( hostServices );
 
         this.pluginConfig = Mockito.mock( PluginConfig.class );

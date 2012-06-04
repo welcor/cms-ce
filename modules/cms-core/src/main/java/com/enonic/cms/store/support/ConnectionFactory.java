@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
+
 import com.enonic.cms.framework.jdbc.ConnectionDecorator;
 
 /**
@@ -18,7 +19,9 @@ import com.enonic.cms.framework.jdbc.ConnectionDecorator;
 public final class ConnectionFactory
 {
     private SessionFactory sessionFactory;
+
     private ConnectionDecorator decorator;
+
     private DataSource dataSource;
 
     public void setSessionFactory( SessionFactory sessionFactory )

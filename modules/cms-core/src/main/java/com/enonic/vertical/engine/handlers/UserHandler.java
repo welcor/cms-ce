@@ -4,23 +4,26 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.cms.core.security.UserNameXmlCreator;
-import com.enonic.cms.core.security.group.GroupKey;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserSpecification;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.cms.store.dao.UserDao;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.VerticalEngineLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.VerticalEngineLogger;
+
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserNameXmlCreator;
+import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.store.dao.UserDao;
 
 public final class UserHandler
     extends BaseHandler
@@ -186,7 +189,7 @@ public final class UserHandler
 
         if ( newUID == null )
         {
-            VerticalEngineLogger.warn("Unable to generate UID for user ({0}, {1}).", new Object[]{fName, sName} );
+            VerticalEngineLogger.warn( "Unable to generate UID for user ({0}, {1}).", new Object[]{fName, sName} );
         }
 
         return newUID;

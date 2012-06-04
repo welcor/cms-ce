@@ -35,11 +35,15 @@ public class ElasticSearchIndexedFieldsTranslator
         }
 
         final CategoryKey categoryKey = new CategoryKey( (String) fields.get( CATEGORY_KEY_FIELDNAME ).getValue() );
+
+
         final ContentIndexFieldSet indexFieldSet = new ContentIndexFieldSet();
         indexFieldSet.setCategoryKey( categoryKey );
         indexFieldSet.setKey( contentKey );
+
         final String statusFieldName = STATUS_FIELDNAME + INDEX_FIELD_TYPE_SEPARATOR + NUMBER_FIELD_POSTFIX;
         indexFieldSet.setStatus( getFieldAsInt( fields.get( statusFieldName ) ) );
+
         final String ctypeFieldName = CONTENTTYPE_KEY_FIELDNAME + INDEX_FIELD_TYPE_SEPARATOR + NUMBER_FIELD_POSTFIX;
         indexFieldSet.setContentTypeKey( new ContentTypeKey( getFieldAsInt( fields.get( ctypeFieldName ) ) ) );
 

@@ -146,9 +146,7 @@ public class ContentIndexDataFactoryTest
 
         verifyFieldExists( keysAsList, "key" );
         verifyFieldExists( keysAsList, "key.number" );
-        verifyFieldExists( keysAsList, "key.orderby" );
         verifyFieldExists( keysAsList, "attachment" );
-        verifyFieldExists( keysAsList, "attachment.orderby" );
     }
 
     @Test

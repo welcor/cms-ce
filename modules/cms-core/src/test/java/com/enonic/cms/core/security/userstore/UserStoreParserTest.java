@@ -1,12 +1,9 @@
-package com.enonic.cms.core.security;
+package com.enonic.cms.core.security.userstore;
 
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.store.dao.UserStoreDao;
 
 import static org.junit.Assert.*;

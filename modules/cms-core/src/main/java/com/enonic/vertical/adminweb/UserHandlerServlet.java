@@ -58,7 +58,6 @@ import com.enonic.cms.core.locale.LocaleXmlCreator;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.LoginAdminUserCommand;
-import com.enonic.cms.core.security.ObjectClassesXmlCreator;
 import com.enonic.cms.core.security.PasswordGenerator;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;

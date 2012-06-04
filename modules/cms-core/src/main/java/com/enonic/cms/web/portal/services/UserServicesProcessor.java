@@ -51,7 +51,6 @@ import com.enonic.cms.core.preference.PreferenceService;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.PasswordGenerator;
 import com.enonic.cms.core.security.PortalSecurityHolder;
-import com.enonic.cms.core.security.UserStoreParser;
 import com.enonic.cms.core.security.group.AbstractMembershipsCommand;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -75,6 +74,7 @@ import com.enonic.cms.core.security.userstore.UserStoreConnectorPolicyBrokenExce
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
+import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteContext;

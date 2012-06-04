@@ -56,7 +56,7 @@
 
   <bean id="userStoreService" class="com.enonic.cms.core.security.userstore.UserStoreServiceImpl"/>
 
-  <bean id="groupAccessResolver" class="com.enonic.cms.core.security.group.access.GroupAccessResolverImpl"/>
+  <bean id="groupAccessResolver" class="com.enonic.cms.core.security.group.GroupAccessResolverImpl"/>
 
   <bean id="memberOfResolver" class="com.enonic.cms.core.security.userstore.MemberOfResolver"/>
 

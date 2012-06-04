@@ -40,10 +40,10 @@ public class WindowContextXmlCreator
         portletEl.addContent( new Element( "name" ).setText( portlet.getName() ) );
 
         Map<String, TemplateParameter> templateParameters = portlet.getTemplateParameters();
-        Element paramatersEl = new Element( "paramaters" );
+        Element parametersEl = new Element( "parameters" );
         for ( TemplateParameter templateParameter : templateParameters.values() )
         {
-            Element paramaterEl = new Element( "paramater" );
+            Element parameterEl = new Element( "parameter" );
 
             Element nameEl = new Element( "name" );
             Element valueEl = new Element( "value" );
@@ -51,12 +51,12 @@ public class WindowContextXmlCreator
             nameEl.setText( templateParameter.getName() );
             valueEl.setText( templateParameter.getValue() );
 
-            paramaterEl.addContent( nameEl );
-            paramaterEl.addContent( valueEl );
+            parameterEl.addContent( nameEl );
+            parameterEl.addContent( valueEl );
 
-            paramatersEl.addContent( paramaterEl );
+            parametersEl.addContent( parameterEl );
         }
-        portletEl.addContent( paramatersEl );
+        portletEl.addContent( parametersEl );
 
         if ( portletDocumentEl != null )
         {

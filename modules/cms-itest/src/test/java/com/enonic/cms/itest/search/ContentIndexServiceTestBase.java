@@ -5,7 +5,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
@@ -30,7 +29,6 @@ import com.enonic.cms.core.search.IndexType;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 
 
 /**
@@ -44,16 +42,7 @@ import static junit.framework.Assert.fail;
 @ContextConfiguration("classpath:com/enonic/cms/itest/base-core-test-context.xml")
 public abstract class ContentIndexServiceTestBase
 {
-
     private IndexMappingProvider indexMappingProvider;
-
-    protected final static String[] REQUIRED_STANDARD_FIELD =
-        new String[]{"categorykey", "contenttype", "contenttypekey", "key", "priority", "publishfrom", "status", "title",
-            "title._tokenized"};
-
-    //  private final static Pattern SPECIAL_FIELD_PATTERN = Pattern.compile(
-    //      "(\\" + IndexFieldNameConstants.NON_ANALYZED_FIELD_POSTFIX + "){1}$|(\\" + IndexFieldNameConstants.NUMERIC_FIELD_POSTFIX +
-    //          "){1}$" );
 
     @Autowired
     protected ContentService contentService;
@@ -161,57 +150,6 @@ public abstract class ContentIndexServiceTestBase
         this.contentIndexService.flush();
     }
 
-    private void compareValues( final SearchHitField field, final String expected )
-    {
-        final List<Object> values = field.getValues();
-
-        if ( values.size() > 1 )
-        {
-            doCompareArrayValues( field.getName(), values, expected );
-            return;
-        }
-
-        Object singleValue = values.get( 0 );
-
-        final String failureMessage = "Error in field value for field: " + field.getName();
-
-        if ( singleValue instanceof Long )
-        {
-            assertEquals( failureMessage, new Long( expected ), singleValue );
-        }
-        else if ( singleValue instanceof Integer )
-        {
-            assertEquals( failureMessage, new Integer( expected ), singleValue );
-        }
-        else if ( singleValue instanceof Double )
-        {
-            assertEquals( failureMessage, new Double( expected ), singleValue );
-        }
-        else if ( singleValue instanceof String )
-        {
-            try
-            {
-                Double actualAsDouble = Double.parseDouble( (String) singleValue );
-                assertEquals( failureMessage, new Double( expected ), actualAsDouble );
-            }
-            catch ( NumberFormatException e )
-            {
-                assertEquals( failureMessage, StringUtils.lowerCase( expected ), StringUtils.lowerCase( (String) singleValue ) );
-            }
-        }
-        else
-        {
-            fail( "Unexpected value for " + field.getName() );
-        }
-    }
-
-    private void doCompareArrayValues( String fieldName, List<Object> values, String expected )
-    {
-        final String failureMessage = "Missing value " + expected + " in field: " + fieldName;
-
-        assertTrue( failureMessage, values.contains( expected ) );
-    }
-
     protected ContentDocument createContentDocument( int contentKey, String title, String preface, String fulltext )
     {
         return createContentDocument( contentKey, title, new String[][]{{"data/preface", preface}, {"fulltext", fulltext}} );
@@ -296,7 +234,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
-        contentIndexService.index( doc1);
+        contentIndexService.index( doc1 );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc2 = new ContentDocument( new ContentKey( 1327 ) );
@@ -315,7 +253,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
-        contentIndexService.index( doc2);
+        contentIndexService.index( doc2 );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
         ContentDocument doc3 = new ContentDocument( new ContentKey( 1323 ) );
@@ -334,7 +272,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc3.setStatus( 2 );
         doc3.setPriority( 0 );
-        contentIndexService.index( doc3);
+        contentIndexService.index( doc3 );
 
         ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
         doc4.setCategoryKey( new CategoryKey( 9 ) );
@@ -351,30 +289,9 @@ public abstract class ContentIndexServiceTestBase
         doc4.setPublishTo( date.getTime() );
         doc4.setStatus( 2 );
         doc4.setPriority( 0 );
-        contentIndexService.index( doc4);
+        contentIndexService.index( doc4 );
 
         flushIndex();
-    }
-
-    protected ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,
-                                                     String title, UserDefinedField userDefinedField )
-    {
-        ContentDocument doc = new ContentDocument( contentKey );
-        doc.setCategoryKey( categoryKey );
-        doc.setContentTypeKey( contentTypeKey );
-        doc.setContentTypeName( "Article" );
-
-        if ( title != null )
-        {
-            doc.setTitle( title );
-        }
-
-        doc.addUserDefinedField( userDefinedField );
-
-        doc.setStatus( 2 );
-        doc.setPriority( 0 );
-        return doc;
-
     }
 
     protected ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,

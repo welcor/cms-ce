@@ -1,9 +1,8 @@
 package com.enonic.cms.core.search.builder;
 
 import java.util.List;
+import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -12,9 +11,6 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
@@ -22,6 +18,7 @@ import static junit.framework.Assert.assertTrue;
  * Time: 10:24 AM
  */
 public class ContentIndexDataCustomDataFactoryBuilderTest
+    extends ContentIndexDataTestBase
 {
     private ContentIndexDataCustomDataFactory customDataBuilder = new ContentIndexDataCustomDataFactory();
 
@@ -39,23 +36,10 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
         customDataBuilder.create( contentIndexData, userDefinedFields );
 
-        final String jsonString = contentIndexData.getContentDataAsJsonString();
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
 
-        JSONObject resultObject = new JSONObject( jsonString );
-
-        assertEquals( true, resultObject.has( "test" ) );
-
-        assertTrue( resultObject.has( "test.number" ) );
-        JSONArray testNumericValues = resultObject.getJSONArray( "test.number" );
-
-        assertTrue( testNumericValues.length() == 4 );
-
-        assertTrue( containsValue( testNumericValues, 1.0 ) );
-        assertTrue( containsValue( testNumericValues, 2.0 ) );
-        assertTrue( containsValue( testNumericValues, 3.0 ) );
-        assertTrue( containsValue( testNumericValues, 4.0 ) );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test.number", 4 );
     }
-
 
     @Test
     public void testBothStringAndNumericValuesToNumberField()
@@ -72,22 +56,11 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
         customDataBuilder.create( contentIndexData, userDefinedFields );
 
-        final String jsonString = contentIndexData.getContentDataAsJsonString();
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
 
-        JSONObject resultObject = new JSONObject( jsonString );
-
-        assertTrue( resultObject.has( "test" ) );
-        JSONArray testStringValues = resultObject.getJSONArray( "test" );
-        assertTrue( resultObject.has( "test.number" ) );
-        JSONArray testNumericValues = resultObject.getJSONArray( "test.number" );
-
-        assertEquals( 5, testStringValues.length() );
-        assertEquals( 2, testNumericValues.length() );
-
-        assertTrue( containsValue( testNumericValues, 4.0 ) );
-        assertTrue( containsValue( testNumericValues, 5.0 ) );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test", 5 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test.number", 2 );
     }
-
 
     @Test
     public void testOnlyDistinctValues()
@@ -108,23 +81,10 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
         customDataBuilder.create( contentIndexData, userDefinedFields );
 
-        final String jsonString = contentIndexData.getContentDataAsJsonString();
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
 
-        JSONObject resultObject = new JSONObject( jsonString );
-
-        assertTrue( resultObject.has( "test" ) );
-        JSONArray testValueArray = resultObject.getJSONArray( "test" );
-        assertEquals( 4, testValueArray.length() );
-        containsValue( testValueArray, "test1" );
-        containsValue( testValueArray, "test2" );
-        containsValue( testValueArray, "1" );
-        containsValue( testValueArray, "2" );
-
-        assertTrue( resultObject.has( "test.number" ) );
-        JSONArray testNumberValueArray = resultObject.getJSONArray( "test.number" );
-        assertEquals( 2, testNumberValueArray.length() );
-        containsValue( testNumberValueArray, 1.0 );
-        containsValue( testNumberValueArray, 2.0 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test", 4 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test.number", 2 );
     }
 
     @Test
@@ -143,44 +103,13 @@ public class ContentIndexDataCustomDataFactoryBuilderTest
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
         customDataBuilder.create( contentIndexData, userDefinedFields );
 
-        final String jsonString = contentIndexData.getContentDataAsJsonString();
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
 
-        JSONObject resultObject = new JSONObject( jsonString );
-
-        assertTrue( resultObject.has( "test" ) );
-        assertTrue( resultObject.has( "test1" ) );
-        assertTrue( resultObject.has( "test2" ) );
-        assertTrue( resultObject.has( "test3" ) );
-        assertTrue( resultObject.has( "test4" ) );
-        assertTrue( resultObject.has( "test5" ) );
-
-    }
-
-    public boolean containsValue( JSONArray valueArray, Double doubleValue )
-        throws Exception
-    {
-        for ( int i = 0; i < valueArray.length(); i++ )
-        {
-            if ( valueArray.get( i ).equals( doubleValue ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean containsValue( JSONArray valueArray, String stringValue )
-        throws Exception
-    {
-        for ( int i = 0; i < valueArray.length(); i++ )
-        {
-            if ( valueArray.get( i ).equals( stringValue ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test", 1 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test1", 1 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test2", 1 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test3.number", 1 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test4.number", 1 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, "test5.number", 1 );
     }
 }

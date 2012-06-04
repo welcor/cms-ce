@@ -3,9 +3,8 @@ package com.enonic.cms.core.search.builder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -17,19 +16,13 @@ import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-
 public class ContentIndexDataAccessRightsBuilderTest
+    extends ContentIndexDataTestBase
 {
-
     private ContentIndexDataAccessRightsFactory accessRightsBuilder = new ContentIndexDataAccessRightsFactory();
-
 
     @Test
     public void testContentAccessRightsFilter()
-        throws Exception
     {
         List<ContentAccessEntity> contentAccessRights = Lists.newArrayList();
         ContentAccessEntity accessRight1 = createContentAccessEntity( "c", "g1", true, true, true );
@@ -44,37 +37,13 @@ public class ContentIndexDataAccessRightsBuilderTest
 
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
         accessRightsBuilder.create( contentIndexData, contentAccessRights, Collections.<GroupKey, CategoryAccessEntity>emptyMap() );
-        final String jsonString = contentIndexData.getContentDataAsJsonString();
 
-        JSONObject resultObject = new JSONObject( jsonString );
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
 
-        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME ) );
-        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_ACCESS_DELETE_FIELDNAME ) );
-        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_ACCESS_UPDATE_FIELDNAME ) );
-
-        JSONArray readAccessValues = resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME );
-        JSONArray deleteAccessValues = resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_ACCESS_DELETE_FIELDNAME );
-        JSONArray updateAccessValues = resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_ACCESS_UPDATE_FIELDNAME );
-
-        assertEquals( readAccessValues.length(), 3 );
-        assertEquals( deleteAccessValues.length(), 2 );
-        assertEquals( updateAccessValues.length(), 2 );
-
-        assertTrue( containsValue( readAccessValues, "g1" ) );
-        assertTrue( containsValue( deleteAccessValues, "g1" ) );
-        assertTrue( containsValue( updateAccessValues, "g1" ) );
-
-        assertTrue( containsValue( readAccessValues, "g2" ) );
-        assertTrue( containsValue( deleteAccessValues, "g2" ) );
-
-        assertTrue( containsValue( readAccessValues, "g3" ) );
-        assertTrue( containsValue( updateAccessValues, "g3" ) );
-
-        assertFalse( containsValue( readAccessValues, "g4" ) );
-        assertFalse( containsValue( deleteAccessValues, "g4" ) );
-        assertFalse( containsValue( updateAccessValues, "g4" ) );
+        verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME, 3 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_ACCESS_DELETE_FIELDNAME, 2 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_ACCESS_UPDATE_FIELDNAME, 2 );
     }
-
 
     @Test
     public void testCategoryAccessRightsFilter()
@@ -110,47 +79,13 @@ public class ContentIndexDataAccessRightsBuilderTest
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
 
         accessRightsBuilder.create( contentIndexData, contentAccessRights, categoryAccessRights );
-        final String jsonString = contentIndexData.getContentDataAsJsonString();
 
-        final JSONObject resultObject = new JSONObject( jsonString );
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
 
-        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME ) );
-        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME ) );
-        assertTrue( resultObject.has( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME ) );
-
-        final JSONArray administrateAccessValues =
-            resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME );
-        final JSONArray approveAccessValues =
-            resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME );
-        final JSONArray browseAccessValues = resultObject.getJSONArray( IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME );
-
-        assertEquals( administrateAccessValues.length(), 1 );
-        assertEquals( approveAccessValues.length(), 3 );
-        assertEquals( browseAccessValues.length(), 2 );
-
-        assertTrue( containsValue( administrateAccessValues, "g1" ) );
-        assertTrue( containsValue( approveAccessValues, "g1" ) );
-        assertTrue( containsValue( browseAccessValues, "g1" ) );
-
-        assertFalse( containsValue( administrateAccessValues, "g2" ) );
-        assertFalse( containsValue( approveAccessValues, "g2" ) );
-        assertFalse( containsValue( browseAccessValues, "g2" ) );
-
-        assertFalse( containsValue( administrateAccessValues, "g3" ) );
-        assertTrue( containsValue( approveAccessValues, "g3" ) );
-        assertTrue( containsValue( browseAccessValues, "g3" ) );
-
-        assertFalse( containsValue( administrateAccessValues, "g4" ) );
-        assertFalse( containsValue( approveAccessValues, "g4" ) );
-        assertFalse( containsValue( browseAccessValues, "g4" ) );
-
-        assertFalse( containsValue( administrateAccessValues, "g5" ) );
-        assertFalse( containsValue( approveAccessValues, "g5" ) );
-        assertFalse( containsValue( browseAccessValues, "g5" ) );
-
-        assertFalse( containsValue( administrateAccessValues, "g6" ) );
-        assertTrue( containsValue( approveAccessValues, "g6" ) );
-        assertFalse( containsValue( browseAccessValues, "g6" ) );
+        verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME,
+                                              1 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, 3 );
+        verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, 2 );
     }
 
     private ContentAccessEntity createContentAccessEntity( String contentKey, String groupKey, boolean readAccess, boolean updateAccess,
@@ -183,20 +118,6 @@ public class ContentIndexDataAccessRightsBuilderTest
         group.setKey( new GroupKey( groupKey ) );
         accessRights.setGroup( group );
         return accessRights;
-    }
-
-    private boolean containsValue( JSONArray valueArray, String stringValue )
-        throws Exception
-    {
-        for ( int i = 0; i < valueArray.length(); i++ )
-        {
-            if ( valueArray.get( i ).equals( stringValue ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 }

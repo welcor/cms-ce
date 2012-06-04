@@ -949,7 +949,7 @@
 %msgConfirmSaveResource%|Vil du lagre ressursen?|Do you want to save the resource?|Vil du gemme ressourcen?|Vill du spara resursen?
 %msgClickToSelectVersion%|Klikk for å velge versjon|Click to select version|Klik for at vælge version|Klicka för att välja version
 %msgClickToSelectSnapshot%|Klikk for å velge øyeblikksbilde|Click to select snapshot|Klik for at vælge snapshot|Klicka för att välja snapshot
-%feedbackContentNothingToSave%|Ingen ting å lagre|Nothing to save|Intet at gemme|Inget att spara
+%feedbackContentNothingToSave%|Ingenting å lagre|Nothing to save|Intet at gemme|Inget att spara
 %feedbackContentSaved%|Innholdet ble lagret|The content was saved|Indholdet blev gemt|Innehållet sparades
 %feedbackContentPublished%|Innholdet ble gjort tilgjengelig|The content was made available|Indholdet blev gjort tilgængeligt|Innehållet blev tillgängligt
 %feedbackContentRejected%|Innholdet ble avvist|The content was rejected|Indholdet blev afvist|Innehållet avvisades

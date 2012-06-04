@@ -5,7 +5,6 @@
 package com.enonic.cms.web.portal;
 
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -28,6 +27,7 @@ import com.enonic.cms.core.portal.RedirectInstruction;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.server.DeploymentAndRequestSetup;
+import com.enonic.cms.web.portal.page.PortalRenderResponseServer;
 
 import static org.junit.Assert.*;
 
@@ -69,7 +69,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_vhost_and_portal_requested_at_vhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -110,7 +110,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_vhost_at_subpath_and_portal_requested_at_vhost_with_relative_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
@@ -140,7 +140,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_vhost_at_subpath_and_portal_requested_at_vhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -171,7 +171,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_no_vhost_and_portal_requested_at_localhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -198,7 +198,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_no_vhost_and_portal_requested_at_localhost_with_relative_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
@@ -225,7 +225,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirectToSitePath_when_deployed_at_cms_with_no_vhost_and_portal_requested_at_localhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -254,7 +254,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirectToSitePath_when_deployed_at_cms_with_no_vhost_and_portal_requested_at_localhost_with_relative_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
@@ -283,7 +283,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirectToSitePath_when_deployed_at_cms_with_no_vhost_and_portal_requested_at_namedhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -312,7 +312,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirectToSitePath_when_deployed_at_cms_with_no_vhost_and_portal_requested_at_namedhost_with_realtive_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
@@ -341,7 +341,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_no_vhost_and_portal_requested_at_localhost_with_absolute_urls_and_non_english_characther_in_redirect_path()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -370,7 +370,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_no_vhost_and_preview_requested_at_localhost_with_relative_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
@@ -399,7 +399,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_no_vhost_and_preview_requested_at_localhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -429,7 +429,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_no_vhost_and_debug_requested_at_localhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -462,7 +462,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_vhost_and_debug_requested_at_vhost_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -494,7 +494,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_vhost_and_debug_requested_at_vhost_under_admin_with_absolute_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
@@ -526,7 +526,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_vhost_and_debug_requested_at_vhost_under_admin_with_relative_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
@@ -558,7 +558,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_vhost_and_debug_requested_at_vhost_with_relative_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
@@ -589,7 +589,7 @@ public class PortalRenderResponseServerTest
      */
     @Test
     public void redirecToSitePath_when_deployed_at_root_with_no_vhost_and_debug_requested_at_localhost_with_relative_urls()
-        throws IOException
+        throws Exception
     {
         // setup
         sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );

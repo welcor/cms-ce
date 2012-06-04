@@ -68,7 +68,7 @@ public class ContentIndexData
 
     public void addBinaryData( String dataElementName, Object value )
     {
-        ContentIndexDataElement contentIndexDataElement = doCreateContentIndexDataElement( dataElementName, value );
+        ContentIndexDataElement contentIndexDataElement = doCreateContentIndexDataElement( dataElementName, value, false );
 
         if ( contentIndexDataElement == null )
         {
@@ -80,7 +80,7 @@ public class ContentIndexData
 
     public void addContentData( String dataElementName, Object value )
     {
-        ContentIndexDataElement contentIndexDataElement = doCreateContentIndexDataElement( dataElementName, value );
+        ContentIndexDataElement contentIndexDataElement = doCreateContentIndexDataElement( dataElementName, value, true );
 
         if ( contentIndexDataElement == null )
         {
@@ -90,7 +90,8 @@ public class ContentIndexData
         this.contentDataElements.add( contentIndexDataElement );
     }
 
-    private ContentIndexDataElement doCreateContentIndexDataElement( final String dataElementName, final Object value )
+    private ContentIndexDataElement doCreateContentIndexDataElement( final String dataElementName, final Object value,
+                                                                     boolean includeOrderby )
     {
         if ( value == null )
         {
@@ -101,11 +102,11 @@ public class ContentIndexData
 
         if ( value instanceof Set )
         {
-            contentIndexDataElement = new ContentIndexDataElement( dataElementName, (Set) value );
+            contentIndexDataElement = new ContentIndexDataElement( dataElementName, (Set) value, includeOrderby );
         }
         else
         {
-            contentIndexDataElement = new ContentIndexDataElement( dataElementName, Sets.newHashSet( value ) );
+            contentIndexDataElement = new ContentIndexDataElement( dataElementName, Sets.newHashSet( value ), includeOrderby );
         }
         return contentIndexDataElement;
     }

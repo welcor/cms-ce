@@ -39,10 +39,9 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupEntityDao;
 import com.enonic.cms.web.portal.SiteRedirectHelper;
-import com.enonic.cms.web.portal.userservices.CustomContentHandlerController;
-import com.enonic.cms.web.portal.userservices.UserServicesRedirectUrlResolver;
+import com.enonic.cms.web.portal.services.ContentServicesProcessor;
+import com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver;
 
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.junit.Assert.*;
@@ -50,9 +49,6 @@ import static org.junit.Assert.*;
 public class ContentServiceImpl_accessTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private GroupEntityDao groupEntityDao;
-
     @Autowired
     private SecurityService securityService;
 
@@ -67,7 +63,7 @@ public class ContentServiceImpl_accessTest
 
     private SiteRedirectHelper siteRedirectHelper;
 
-    private CustomContentHandlerController customContentHandlerController;
+    private ContentServicesProcessor customContentHandlerController;
 
     private UserServicesRedirectUrlResolver userServicesRedirectUrlResolver;
 
@@ -82,7 +78,7 @@ public class ContentServiceImpl_accessTest
     {
         factory = fixture.getFactory();
 
-        customContentHandlerController = new CustomContentHandlerController();
+        customContentHandlerController = new ContentServicesProcessor();
         customContentHandlerController.setContentService( contentService );
         customContentHandlerController.setSecurityService( securityService );
         customContentHandlerController.setCategoryDao( categoryDao );

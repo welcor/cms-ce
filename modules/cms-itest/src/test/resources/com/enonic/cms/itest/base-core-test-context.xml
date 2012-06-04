@@ -249,53 +249,15 @@
 
   <bean id="siteRedirectAndForwardHelper"
         class="com.enonic.cms.web.portal.SiteRedirectAndForwardHelper">
-    <property name="replaceSpacesWithPlus" value="true"/>
   </bean>
 
-  <bean id="abstractSiteController" class="com.enonic.cms.web.portal.AbstractSiteController"
-        abstract="true">
-    <property name="cacheSeconds" value="-1"/>
-    <property name="siteDao" ref="siteDao"/>
-  </bean>
+  <bean class="com.enonic.cms.web.portal.attachment.AttachmentHandler"/>
 
-
-  <bean id="attachmentController" class="com.enonic.cms.web.portal.AttachmentController"
-        parent="abstractSiteController">
-    <property name="sitePathResolver" ref="sitePathResolver"/>
-    <property name="siteService" ref="siteService"/>
-    <property name="autoLoginService" ref="autoLoginService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-    <property name="previewService" ref="previewService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="binaryDataDao" ref="binaryDataDao"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="siteDao" ref="siteDao"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="groupDao" ref="groupDao"/>
-  </bean>
+  <bean class="com.enonic.cms.web.portal.image.ImageHandler"/>
 
   <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
 
-  <bean id="imageController" class="com.enonic.cms.web.portal.ImageController">
-    <property name="autoLoginService" ref="autoLoginService"/>
-    <property name="disableParamEncoding" value="true"/>
-    <property name="imageService" ref="imageService"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-    <property name="previewService" ref="previewService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="sitePathResolver" ref="sitePathResolver"/>
-    <property name="siteService" ref="siteService"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="siteDao" ref="siteDao"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="groupDao" ref="groupDao"/>
-    <property name="userDao" ref="userDao"/>
-  </bean>
-
-  <bean id="adminConsoleLoginAccessResolver" class="com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver"/>
+  <bean id="adminConsoleLoginAccessResolver" class="com.enonic.cms.core.security.AdminConsoleLoginAccessResolver"/>
 
   <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 

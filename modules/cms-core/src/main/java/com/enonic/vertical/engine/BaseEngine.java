@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.JdbcUtils;
 
 import com.enonic.vertical.engine.handlers.CategoryHandler;
@@ -17,7 +18,6 @@ import com.enonic.vertical.engine.handlers.ContentHandler;
 import com.enonic.vertical.engine.handlers.ContentObjectHandler;
 import com.enonic.vertical.engine.handlers.GroupHandler;
 import com.enonic.vertical.engine.handlers.LanguageHandler;
-import com.enonic.vertical.engine.handlers.LogHandler;
 import com.enonic.vertical.engine.handlers.MenuHandler;
 import com.enonic.vertical.engine.handlers.PageHandler;
 import com.enonic.vertical.engine.handlers.PageTemplateHandler;
@@ -31,6 +31,7 @@ public abstract class BaseEngine
 {
     private ConnectionFactory connectionFactory;
 
+    @Autowired
     public void setConnectionFactory( ConnectionFactory connectionFactory )
     {
         this.connectionFactory = connectionFactory;
@@ -62,11 +63,6 @@ public abstract class BaseEngine
     }
 
     public LanguageHandler getLanguageHandler()
-    {
-        throw new RuntimeException();
-    }
-
-    public LogHandler getLogHandler()
     {
         throw new RuntimeException();
     }

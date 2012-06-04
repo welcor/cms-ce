@@ -29,7 +29,6 @@ public class ContentIndexDataElement
         doCreateContentIndexDataElement( fieldBaseName, values, addOrderBy );
     }
 
-
     public ContentIndexDataElement( final String fieldBaseName, final Set<Object> values )
     {
         doCreateContentIndexDataElement( fieldBaseName, values, true );

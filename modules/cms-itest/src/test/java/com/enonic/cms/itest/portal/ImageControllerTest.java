@@ -22,6 +22,7 @@ import com.enonic.cms.api.client.model.CreateImageContentParams;
 import com.enonic.cms.api.client.model.content.image.ImageBinaryInput;
 import com.enonic.cms.api.client.model.content.image.ImageContentDataInput;
 import com.enonic.cms.api.client.model.content.image.ImageNameInput;
+import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.client.InternalClientContentService;
 import com.enonic.cms.core.content.ContentAndVersion;
 import com.enonic.cms.core.content.ContentEntity;
@@ -46,8 +47,9 @@ import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import com.enonic.cms.web.portal.ImageController;
-import com.enonic.cms.web.portal.ImageRequestException;
+import com.enonic.cms.web.portal.PortalWebContext;
+import com.enonic.cms.web.portal.image.ImageHandler;
+import com.enonic.cms.web.portal.image.ImageRequestException;
 
 import static org.junit.Assert.*;
 
@@ -68,7 +70,7 @@ public class ImageControllerTest
     private PreviewService previewService;
 
     @Autowired
-    private ImageController imageController;
+    private ImageHandler imageController;
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -76,6 +78,7 @@ public class ImageControllerTest
 
     private SiteEntity site1;
 
+    private PortalWebContext webContext;
 
     @Before
     public void before()
@@ -113,6 +116,10 @@ public class ImageControllerTest
         fixture.save( factory.createCategoryAccessForUser( "ImageCategory", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
+
+        webContext = new PortalWebContext();
+        webContext.setRequest( this.httpServletRequest );
+        webContext.setResponse( this.httpServletResponse );
     }
 
     @Test
@@ -127,7 +134,7 @@ public class ImageControllerTest
         setPathInfoAndRequestURI( httpServletRequest, imageRequestPath );
         httpServletRequest.setParameter( "_background", "0xffffff" );
         httpServletRequest.setParameter( "_quality", "100" );
-        imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        imageController.handle( webContext );
 
         assertEquals( "image/png", httpServletResponse.getContentType() );
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
@@ -145,7 +152,7 @@ public class ImageControllerTest
         setPathInfoAndRequestURI( httpServletRequest, imageRequestPath );
         httpServletRequest.setParameter( "_background", "0xffffff" );
         httpServletRequest.setParameter( "_quality", "100" );
-        imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        imageController.handle( webContext );
 
         assertEquals( "image/jpg", httpServletResponse.getContentType() );
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
@@ -163,7 +170,7 @@ public class ImageControllerTest
         setPathInfoAndRequestURI( httpServletRequest, imageRequestPath );
         httpServletRequest.setParameter( "_background", "0xffffff" );
         httpServletRequest.setParameter( "_quality", "100" );
-        imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        imageController.handle( webContext );
 
         assertEquals( "image/png", httpServletResponse.getContentType() );
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
@@ -179,7 +186,7 @@ public class ImageControllerTest
         httpServletRequest.setParameter( "_quality", "100" );
         try
         {
-            imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            imageController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -204,7 +211,7 @@ public class ImageControllerTest
         httpServletRequest.setParameter( "_quality", "100" );
         try
         {
-            imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            imageController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -232,7 +239,7 @@ public class ImageControllerTest
         httpServletRequest.setParameter( "_quality", "100" );
         try
         {
-            imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            imageController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -257,7 +264,7 @@ public class ImageControllerTest
         httpServletRequest.setParameter( "_quality", "100" );
         try
         {
-            imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            imageController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -285,7 +292,7 @@ public class ImageControllerTest
         httpServletRequest.setParameter( "_quality", "100" );
         try
         {
-            imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            imageController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -316,7 +323,7 @@ public class ImageControllerTest
         httpServletRequest.setParameter( "_background", "0xffffff" );
         httpServletRequest.setParameter( "_quality", "100" );
 
-        imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        imageController.handle( webContext );
 
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
         assertTrue( "Content Length", httpServletResponse.getContentLength() > 0 );
@@ -360,7 +367,7 @@ public class ImageControllerTest
 
         try
         {
-            imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            imageController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -386,7 +393,7 @@ public class ImageControllerTest
         setPathInfoAndRequestURI( httpServletRequest, imageRequestPath );
         httpServletRequest.setParameter( "_background", "0xffffff" );
         httpServletRequest.setParameter( "_quality", "100" );
-        imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        imageController.handle( webContext );
 
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
         assertEquals( "image/jpg", httpServletResponse.getContentType() );
@@ -423,7 +430,7 @@ public class ImageControllerTest
         httpServletRequest.setParameter( "_background", "0xffffff" );
         httpServletRequest.setParameter( "_quality", "100" );
 
-        imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+        imageController.handle( webContext );
 
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
         assertTrue( "Content Length", httpServletResponse.getContentLength() > 0 );
@@ -462,7 +469,7 @@ public class ImageControllerTest
 
         try
         {
-            imageController.handleRequestInternal( httpServletRequest, httpServletResponse );
+            imageController.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -523,5 +530,6 @@ public class ImageControllerTest
     {
         httpServletRequest.setRequestURI( "/site/" + site1.getKey() + "/" + imageRequestPath );
         httpServletRequest.setPathInfo( "/" + site1.getKey() + "/" + imageRequestPath );
+        webContext.setSitePath( new SitePath( site1.getKey(), "/" + imageRequestPath ) );
     }
 }

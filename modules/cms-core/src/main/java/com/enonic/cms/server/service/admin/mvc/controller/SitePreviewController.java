@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.adminweb.AdminHelper;
 
 import com.enonic.cms.framework.util.UrlPathEncoder;
@@ -23,7 +23,6 @@ import com.enonic.cms.framework.util.UrlPathEncoder;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.admin.PreviewSitePathResolver;
-import com.enonic.cms.core.portal.mvc.view.SiteCustomForwardView;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
@@ -38,6 +37,8 @@ public class SitePreviewController
     private PreviewSitePathResolver sitePathResolver;
 
     private SecurityService securityService;
+
+    private String characterEncoding;
 
     @Autowired
     public void setSitePathResolver( PreviewSitePathResolver value )
@@ -91,7 +92,7 @@ public class SitePreviewController
         String url = "/site" + sitePath.asString();
         // We need to url-encode the path again,
         // since forwarding to an decoded url fails in some application servers (Oracle)
-        url = UrlPathEncoder.encodeUrlPath( url, VerticalProperties.getVerticalProperties().getUrlCharacterEncoding() );
+        url = UrlPathEncoder.encodeUrlPath( url, this.characterEncoding );
 
         request.setAttribute( Attribute.PREVIEW_ENABLED, "true" );
 
@@ -101,4 +102,9 @@ public class SitePreviewController
         return new ModelAndView( new SiteCustomForwardView(), model );
     }
 
+    @Value("${cms.url.characterEncoding}")
+    public void setCharacterEncoding( String characterEncoding )
+    {
+        this.characterEncoding = characterEncoding;
+    }
 }

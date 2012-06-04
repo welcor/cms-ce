@@ -48,6 +48,7 @@ public class AdminServiceImpl
 
     private static final int TIMEOUT_24HOURS = 86400;
 
+    @Autowired
     public void setAdminEngine( AdminEngine value )
     {
         adminEngine = value;

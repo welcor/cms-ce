@@ -25,6 +25,7 @@ import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.server.DeploymentAndRequestSetup;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.web.portal.page.PortalRenderResponseServer;
 
 import static org.junit.Assert.*;
 

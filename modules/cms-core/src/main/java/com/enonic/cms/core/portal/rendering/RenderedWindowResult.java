@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
-import org.springframework.util.StopWatch;
 
 /**
  * Apr 23, 2009
@@ -98,57 +97,8 @@ public class RenderedWindowResult
             return;
         }
 
-        //content = stripNamespaces( content, "http://www.w3.org/1999/xhtml" );
         content = stripNamespaces( content );
     }
-
-    private String stripNamespaces( String content, String namespace )
-    {
-
-        final String resultOld = oldwayStripNameSpaces( content, namespace );
-        final String resultNew = newwayStripNameSpaces( content, namespace );
-
-        if ( !resultOld.equals( resultNew ) )
-        {
-            System.out.println( "WARNING: New and old differs" );
-        }
-
-        return resultNew;
-    }
-
-    private String oldwayStripNameSpaces( final String content, final String namespace )
-    {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start( "stripNameSpaces-old-way" );
-        String regexp = "\\s+(\\w+:)?xmlns=\"" + namespace + "\"";
-
-        System.out.println( regexp );
-        String result = content.replaceAll( regexp, "" );
-        stopWatch.stop();
-
-        System.out.println( stopWatch.prettyPrint() );
-
-        return result;
-    }
-
-
-    private String newwayStripNameSpaces( final String content, final String namespace )
-    {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start( "stripNameSpaces-new-way" );
-
-        Pattern p = Pattern.compile( "<(\\w+:)?xmlns=\"http://www\\.w3\\.org/1999/xhtml\"" );
-        final Matcher matcher = p.matcher( content );
-
-        final String result = matcher.replaceFirst( "" );
-
-        stopWatch.stop();
-
-        System.out.println( stopWatch.prettyPrint() );
-
-        return result;
-    }
-
 
     private String stripNamespaces( String content )
     {
@@ -158,7 +108,6 @@ public class RenderedWindowResult
 
         return result;
     }
-
 
     public RenderedWindowResult clone()
     {

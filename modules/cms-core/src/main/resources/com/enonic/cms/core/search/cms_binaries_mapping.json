@@ -1,17 +1,18 @@
 {
-    "binaries" : {
+    "binaries":{
         "_source":{
             "enabled":true
         },
-        "_parent" : {
-            "type" : "content"
+        "_parent":{
+            "type":"content"
         },
-        "dynamic_templates" : [
+        "dynamic_templates":[
             {
-                "template_generic" : {
-                    "match" : "*",
-                    "mapping" : {
-                        "store":"yes"
+                "template_generic":{
+                    "match":"*",
+                    "mapping":{
+                        "store":"yes",
+                        "index":"analyzed"
                     }
                 }
             }

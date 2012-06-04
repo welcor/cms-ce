@@ -19,8 +19,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.core.structure.SiteProperties;
 
 @Component("sitePropertiesService")
@@ -34,6 +32,8 @@ public class SitePropertiesServiceImpl
     private File homeDir;
 
     private ResourceLoader resourceLoader = new FileSystemResourceLoader();
+
+    private String characterEncoding;
 
     public void afterPropertiesSet()
         throws Exception
@@ -54,6 +54,12 @@ public class SitePropertiesServiceImpl
     public void setHomeDir( File homeDir )
     {
         this.homeDir = homeDir;
+    }
+
+    @Value("${cms.url.characterEncoding}")
+    public void setCharacterEncoding( final String encoding )
+    {
+        this.characterEncoding = encoding;
     }
 
     public SiteProperties getSiteProperties( SiteKey siteKey )
@@ -127,8 +133,7 @@ public class SitePropertiesServiceImpl
             throw new RuntimeException( "Failed to load site properties file: " + relativePathToCmsHome, e );
         }
 
-        siteProperties.setProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING,
-                                    VerticalProperties.getVerticalProperties().getUrlCharacterEncoding() );
+        siteProperties.setProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, this.characterEncoding );
         sitePropertiesMap.put( siteKey, siteProperties );
 
         return siteProperties;

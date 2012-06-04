@@ -8,12 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SiteURLResolver;
 
+@Component
 public class SiteRedirectHelper
 {
     private PortalSitePathResolver sitePathResolver;

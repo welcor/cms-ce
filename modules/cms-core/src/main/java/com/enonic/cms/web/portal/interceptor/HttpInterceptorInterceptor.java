@@ -11,15 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
+import com.enonic.cms.web.portal.PortalWebContext;
 
+@Component
 public class HttpInterceptorInterceptor
-    extends HandlerInterceptorAdapter
+    implements RequestInterceptor
 {
     private static final String POST_HANDLE_PLUGINS_PARAM = "httpInterceptorInterceptor.postHandlePlugins";
 
@@ -34,10 +35,11 @@ public class HttpInterceptorInterceptor
     private OriginalPathResolver originalPathResolver = new OriginalPathResolver();
 
     @Override
-    public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler )
+    public boolean preHandle( final PortalWebContext context )
         throws Exception
     {
-        super.preHandle( request, response, handler );
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
 
         Stack<HttpInterceptor> pluginsReadyForPostHandle = new Stack<HttpInterceptor>();
         boolean continueExecutionAsNormal = executePreHandle( request, response, pluginsReadyForPostHandle );
@@ -47,10 +49,12 @@ public class HttpInterceptorInterceptor
     }
 
     @Override
-    public void postHandle( HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView )
+    public void postHandle( final PortalWebContext context )
         throws Exception
     {
-        super.postHandle( request, response, handler, modelAndView );
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+
         Stack<HttpInterceptor> pluginsReadyForPostHandle = (Stack<HttpInterceptor>) request.getAttribute( POST_HANDLE_PLUGINS_PARAM );
         if ( pluginsReadyForPostHandle != null )
         {

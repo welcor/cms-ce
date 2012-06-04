@@ -4,10 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 import com.enonic.cms.core.plugin.PluginManager;
@@ -15,12 +14,11 @@ import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
+import com.enonic.cms.web.portal.PortalWebContext;
 
-/**
- * This interceptor executes any auto login plugins available.
- */
+@Component
 public final class AutoLoginInterceptor
-    extends HandlerInterceptorAdapter
+    implements RequestInterceptor
 {
     private final static Logger LOG = Logger.getLogger( AutoLoginInterceptor.class.getName() );
 
@@ -45,10 +43,11 @@ public final class AutoLoginInterceptor
     /**
      * Execute the auto login, if an auto login plugin has been configured.
      */
-    public boolean preHandle( HttpServletRequest req, HttpServletResponse res, Object o )
+    @Override
+    public boolean preHandle( final PortalWebContext context )
         throws Exception
     {
-
+        final HttpServletRequest req = context.getRequest();
         String path = originalPathResolver.getRequestPathFromHttpRequest( req );
         HttpAutoLogin plugin = pluginManager.getExtensions().findMatchingHttpAutoLoginPlugin( path );
 
@@ -57,7 +56,14 @@ public final class AutoLoginInterceptor
             doAutoLogin( req, plugin );
         }
 
-        return super.preHandle( req, res, o );
+        return true;
+    }
+
+    @Override
+    public void postHandle( final PortalWebContext context )
+        throws Exception
+    {
+        // Do nothing
     }
 
     private void doAutoLogin( HttpServletRequest req, HttpAutoLogin plugin )

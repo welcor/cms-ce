@@ -14,9 +14,9 @@ import com.enonic.cms.framework.util.PropertiesUtil;
 import com.enonic.cms.core.boot.ConfigProperties;
 
 /**
- * Properties for Vertical Site. Loaded from default properties defined in default.properties file and custom properties file specified a
- * run-time.
+ * This class is deprecated. Use spring injection instead with @Value("${..}").
  */
+@Deprecated
 public final class VerticalProperties
 {
     private static VerticalProperties verticalProperties;
@@ -37,25 +37,6 @@ public final class VerticalProperties
     public void setProperties( ConfigProperties properties )
     {
         this.properties = properties;
-    }
-
-    public boolean getPropertyAsBoolean( final String key, final boolean defaultValue )
-    {
-        final String property = getProperty( key );
-
-        if ( property == null )
-        {
-            return defaultValue;
-        }
-        if ( property.toLowerCase().equals( "true" ) )
-        {
-            return true;
-        }
-        if ( property.toLowerCase().equals( "false" ) )
-        {
-            return false;
-        }
-        return defaultValue;
     }
 
     public String getProperty( final String key )
@@ -138,11 +119,6 @@ public final class VerticalProperties
         return getProperty( "cms.mail.smtpHost" );
     }
 
-    public String getUrlCharacterEncoding()
-    {
-        return getProperty( "cms.url.characterEncoding" );
-    }
-
     public String getDataSourceUserAgent()
     {
         return getProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent" );
@@ -151,10 +127,5 @@ public final class VerticalProperties
     public String getDatasourceDefaultResultRootElement()
     {
         return getProperty( "cms.datasource.defaultResultRootElement" );
-    }
-
-    public boolean doShowDetailedErrorInformation()
-    {
-        return !"false".equals( getProperty( "cms.error.page.detailInformation", "true" ) );
     }
 }

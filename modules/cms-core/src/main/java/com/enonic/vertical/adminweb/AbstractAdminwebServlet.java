@@ -24,7 +24,6 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
 import com.enonic.vertical.VerticalProperties;
-import com.enonic.vertical.adminweb.access.AdminConsoleLoginAccessResolver;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
@@ -46,6 +45,7 @@ import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.resource.access.ResourceAccessResolver;
+import com.enonic.cms.core.security.AdminConsoleLoginAccessResolver;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.security.userstore.UserStoreService;

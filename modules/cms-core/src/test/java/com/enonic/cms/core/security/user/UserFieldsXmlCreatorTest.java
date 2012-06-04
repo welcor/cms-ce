@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.security.user.field;
+package com.enonic.cms.core.security.user;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,15 +19,13 @@ import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.client.model.user.Address;
 import com.enonic.cms.api.client.model.user.Gender;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.user.field.UserFields;
 
 import static org.junit.Assert.*;
 
-public class UserInfoXmlCreatorTest
+public class UserFieldsXmlCreatorTest
 {
-    private UserInfoXmlCreator creator;
+    private UserFieldsXmlCreator creator;
 
     private User userWithBasicFieldValue;
 
@@ -35,7 +33,7 @@ public class UserInfoXmlCreatorTest
     public void setup()
     {
         setupUserWithBasicFieldValue();
-        this.creator = new UserInfoXmlCreator();
+        this.creator = new UserFieldsXmlCreator();
     }
 
     private void setupUserWithBasicFieldValue()

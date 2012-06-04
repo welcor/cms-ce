@@ -74,13 +74,13 @@ import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserFieldsXmlCreator;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserNotFoundException;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.user.UserXmlCreator;
-import com.enonic.cms.core.security.user.field.UserInfoXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
@@ -898,7 +898,7 @@ public class UserHandlerServlet
     private String addUserFieldsToUserXML( final XMLDocument xmlDoc, final UserFields userFields )
     {
         final org.jdom.Document doc = xmlDoc.getAsJDOMDocument();
-        final UserInfoXmlCreator creator = new UserInfoXmlCreator();
+        final UserFieldsXmlCreator creator = new UserFieldsXmlCreator();
         creator.addUserInfoToElement( doc.getRootElement().getChild( "block" ), userFields, true );
         return XMLTool.documentToString( doc );
     }

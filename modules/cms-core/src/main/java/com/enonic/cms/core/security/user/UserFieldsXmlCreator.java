@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.security.user.field;
+package com.enonic.cms.core.security.user;
 
 import java.util.Collection;
 
@@ -11,19 +11,18 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.api.client.model.user.Address;
-import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.user.field.UserField;
 import com.enonic.cms.core.user.field.UserFieldHelper;
 import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.core.user.field.UserFields;
 
-public final class UserInfoXmlCreator
+public final class UserFieldsXmlCreator
 {
     private final static String DEFAULT_ROOT_ELEMENT_NAME = "block";
 
     private final UserFieldHelper helper;
 
-    public UserInfoXmlCreator()
+    public UserFieldsXmlCreator()
     {
         this.helper = new UserFieldHelper( "yyyy-MM-dd" );
     }

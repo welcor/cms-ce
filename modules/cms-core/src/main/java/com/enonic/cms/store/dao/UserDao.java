@@ -41,4 +41,6 @@ public interface UserDao
     List<UserEntity> findByQuery( UserStoreKey userStoreKey, String queryStr, String orderBy, boolean orderAscending );
 
     EntityPageList<UserEntity> findAll( int index, int count );
+
+    void resetCachedValues();
 }

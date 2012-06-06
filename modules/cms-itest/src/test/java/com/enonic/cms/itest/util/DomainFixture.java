@@ -47,6 +47,7 @@ import com.enonic.cms.core.structure.menuitem.ContentHomeKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.UserDao;
 
 /**
  * Nov 26, 2009
@@ -59,6 +60,9 @@ public class DomainFixture
     private HibernateTemplate hibernateTemplate;
 
     private DomainFactory factory;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private GroupDao groupDao;
@@ -132,6 +136,8 @@ public class DomainFixture
 
         PortalSecurityHolder.setAnonUser( findUserByName( "anonymous" ).getKey() );
         PortalSecurityHolder.setLoggedInUser( findUserByName( "anonymous" ).getKey() );
+
+        userDao.resetCachedValues();
     }
 
     public UserEntity createAndStoreNormalUserWithUserGroup( String uid, String displayName, String userStoreName )

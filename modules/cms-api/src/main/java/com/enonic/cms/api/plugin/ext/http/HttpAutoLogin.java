@@ -9,7 +9,8 @@ public abstract class HttpAutoLogin
     extends HttpProcessor
 {
     /**
-     * Return the user name of person who should be logged in.
+     * Return the user name of person who should be logged in.  If an error occurs, or there are other reasons why no user should be logged
+     * in, this method should return NULL.  This will indicate to the framework that no user should be logged in.
      */
     public abstract String getAuthenticatedUser( HttpServletRequest request )
         throws Exception;

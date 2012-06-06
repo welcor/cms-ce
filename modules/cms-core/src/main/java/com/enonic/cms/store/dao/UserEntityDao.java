@@ -331,4 +331,9 @@ public final class UserEntityDao
     {
         return findPageList( UserEntity.class, "x.deleted = 0", index, count );
     }
+
+    public void resetCachedValues( )
+    {
+        this.initializedCacheKeys = false;
+    }
 }

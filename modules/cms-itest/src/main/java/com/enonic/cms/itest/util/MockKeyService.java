@@ -2,13 +2,13 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.itest;
-
-import com.enonic.cms.core.service.KeyService;
+package com.enonic.cms.itest.util;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.enonic.cms.core.service.KeyService;
 
 /**
  * Extend this mock class with functionality when needed.

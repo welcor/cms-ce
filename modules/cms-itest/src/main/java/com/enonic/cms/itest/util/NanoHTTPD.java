@@ -1,10 +1,27 @@
 package com.enonic.cms.itest.util;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
+import java.util.Vector;
 
 /**
  * A simple, tiny, nicely embeddable HTTP 1.0 (partially 1.1) server in Java
@@ -1171,14 +1188,19 @@ public class NanoHTTPD
 
     static
     {
-        StringTokenizer st = new StringTokenizer(
-            "css		text/css " + "htm		text/html " + "html		text/html " + "xml		text/xml " +
-                "txt		text/plain " + "asc		text/plain " + "gif		image/gif " + "jpg		image/jpeg " +
-                "jpeg		image/jpeg " + "png		image/png " + "mp3		audio/mpeg " + "m3u		audio/mpeg-url " +
-                "mp4		video/mp4 " + "ogv		video/ogg " + "flv		video/x-flv " + "mov		video/quicktime " +
-                "swf		application/x-shockwave-flash " + "js			application/javascript " + "pdf		application/pdf " +
-                "doc		application/msword " + "ogg		application/x-ogg " + "zip		application/octet-stream " +
-                "exe		application/octet-stream " + "class		application/octet-stream " );
+        StringTokenizer st =
+            new StringTokenizer( "css		text/css " + "htm		text/html " + "html		text/html " + "xml		text/xml " +
+                                     "txt		text/plain " + "asc		text/plain " + "gif		image/gif " +
+                                     "jpg		image/jpeg " +
+                                     "jpeg		image/jpeg " + "png		image/png " + "mp3		audio/mpeg " +
+                                     "m3u		audio/mpeg-url " +
+                                     "mp4		video/mp4 " + "ogv		video/ogg " + "flv		video/x-flv " +
+                                     "mov		video/quicktime " +
+                                     "swf		application/x-shockwave-flash " + "js			application/javascript " +
+                                     "pdf		application/pdf " +
+                                     "doc		application/msword " + "ogg		application/x-ogg " +
+                                     "zip		application/octet-stream " +
+                                     "exe		application/octet-stream " + "class		application/octet-stream " );
         while ( st.hasMoreTokens() )
         {
             theMimeTypes.put( st.nextToken(), st.nextToken() );

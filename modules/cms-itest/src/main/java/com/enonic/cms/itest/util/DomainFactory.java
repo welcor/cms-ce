@@ -57,7 +57,6 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
-import com.enonic.cms.itest.MockKeyService;
 
 /**
  * Nov 26, 2009

@@ -33,15 +33,15 @@ public class MockHTTPServer
         String type = params.getProperty( TYPE_PARAM );
         if ( TEXT_TYPE.equals( type ) )
         {
-            return new Response( HTTP_OK, MIME_PLAINTEXT, responseText );
+            return new Response( NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_PLAINTEXT, responseText );
         }
         else if ( BYTE_TYPE.equals( type ) )
         {
-            return new Response( HTTP_OK, MIME_XML, new ByteArrayInputStream( responseBytes ) );
+            return new Response( NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_XML, new ByteArrayInputStream( responseBytes ) );
         }
         else
         {
-            return new Response( HTTP_NOTIMPLEMENTED, MIME_PLAINTEXT, "Method is not emplemented" );
+            return new Response( NanoHTTPD.HTTP_NOTIMPLEMENTED, NanoHTTPD.MIME_PLAINTEXT, "Method is not emplemented" );
         }
     }
 

@@ -7,7 +7,7 @@ package com.enonic.vertical.engine.dbmodel;
 import com.enonic.esl.sql.model.Database;
 
 public final class VerticalDatabase extends Database {
-	private static final VerticalDatabase Vertical = new VerticalDatabase("Vertical",201);
+	private static final VerticalDatabase Vertical = new VerticalDatabase("Vertical",202);
 
 	public ModelVersionTable tModelVersion = ModelVersionTable.getInstance();
 	public BinaryDataTable tBinaryData = BinaryDataTable.getInstance();

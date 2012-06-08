@@ -1,5 +1,6 @@
 package com.enonic.cms.itest.structure.menuitem;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -112,6 +113,60 @@ public class MenuItemServiceImplTest
         fixture.save( factory.createSite( "The Newspaper", new Date(), null, "en" ) );
 
         fixture.flushAndClearHibernateSesssion();
+    }
+
+    @Test
+    public void orderContentToSectionTest()
+    {
+        fixture.save( createOrderedSection( "News" ) );
+        fixture.save( createMenuItemAccess( "News", "aru", "read, create, update, delete, add, publish" ) );
+
+        createContent( "c-1", "Articles" );
+        createContent( "c-2", "Articles" );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        AddContentToSectionCommand addContentToSectionCommand1 =
+            createAddContentToSectionCommand( "aru", fixture.findContentByName( "c-1" ), fixture.findMenuItemByName( "News" ), true );
+        menuItemService.execute( addContentToSectionCommand1 );
+
+        AddContentToSectionCommand addContentToSectionCommand2 =
+            createAddContentToSectionCommand( "aru", fixture.findContentByName( "c-2" ), fixture.findMenuItemByName( "News" ), true );
+        menuItemService.execute( addContentToSectionCommand2 );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // verify: content added in section
+        assertEquals( 1, fixture.findContentByName( "c-1" ).getSectionContents().size() );
+        assertEquals( 1, fixture.findContentByName( "c-2" ).getSectionContents().size() );
+        final Set<SectionContentEntity> sectionContents = fixture.findMenuItemByName( "News" ).getSectionContents();
+        assertEquals( 2, sectionContents.size() );
+
+        List<ContentKey> wantedOrder = new ArrayList<ContentKey>( 2 );
+
+        for ( SectionContentEntity sectionContentEntity : sectionContents )
+        {
+            // check that these are not ordered !
+            assertEquals( 0, sectionContentEntity.getOrder() );
+
+            wantedOrder.add( sectionContentEntity.getContent().getKey() );
+        }
+
+        OrderContentsInSectionCommand orderContentsInSectionCommand = new OrderContentsInSectionCommand();
+        orderContentsInSectionCommand.setSectionKey( fixture.findMenuItemByName( "News" ).getKey() );
+        orderContentsInSectionCommand.setWantedOrder( wantedOrder );
+        menuItemService.execute( orderContentsInSectionCommand );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        final Set<SectionContentEntity> sectionContents2 = fixture.findMenuItemByName( "News" ).getSectionContents();
+        assertEquals( 2, sectionContents2.size() );
+
+        for ( SectionContentEntity sectionContentEntity : sectionContents )
+        {
+            // check that these are ordered !
+            assertFalse( 0 == sectionContentEntity.getOrder() );
+        }
     }
 
     @Test

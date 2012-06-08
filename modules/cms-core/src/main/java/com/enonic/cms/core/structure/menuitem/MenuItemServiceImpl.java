@@ -93,6 +93,10 @@ public class MenuItemServiceImpl
             {
                 doExecuteUnapproveContentsInSectionCommand( (UnapproveContentsInSectionCommand) command );
             }
+            else if ( command instanceof OrderContentsInSectionCommand )
+            {
+                doExecuteOrderContentsInSectionCommand( (OrderContentsInSectionCommand) command );
+            }
             else
             {
                 throw new UnsupportedOperationException( "Unsupported menu-item service command: " + command.getClass().getName() );
@@ -100,6 +104,17 @@ public class MenuItemServiceImpl
 
             sectionContentDao.getHibernateTemplate().flush();
         }
+    }
+
+    private void doExecuteOrderContentsInSectionCommand( final OrderContentsInSectionCommand command )
+    {
+        Preconditions.checkNotNull( command.getSectionKey(), "section key cannot be null" );
+        Preconditions.checkNotNull( command.getWantedOrder(), "wanted order cannot be null" );
+
+        final MenuItemEntity section = menuItemDao.findByKey( command.getSectionKey() );
+        ContentsInSectionOrderer orderer =
+            new ContentsInSectionOrderer( command.getWantedOrder(), section, ORDER_SPACE );
+        orderer.order();
     }
 
     private void doExecuteSetContentHomeCommand( final SetContentHomeCommand command )

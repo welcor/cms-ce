@@ -95,6 +95,7 @@ public class QueryTranslator
         builder.query( builtQuery );
 
         applySorting( builder, contentIndexQuery, queryExpr.getOrderBy() );
+        filterQueryBuilderFactory.buildFilterQuery( builder, contentIndexQuery );
 
         return builder;
     }

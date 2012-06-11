@@ -45,17 +45,12 @@ import com.enonic.cms.core.structure.page.template.PageTemplateType;
 public class AdminServiceImpl
     implements AdminService
 {
-
     private static final int TIMEOUT_24HOURS = 86400;
 
     @Autowired
-    public void setAdminEngine( AdminEngine value )
-    {
-        adminEngine = value;
-    }
-
     protected AdminEngine adminEngine;
 
+    @Autowired
     private ResourceService resourceService;
 
     @Autowired
@@ -64,6 +59,11 @@ public class AdminServiceImpl
     public void setResourceService( ResourceService value )
     {
         this.resourceService = value;
+    }
+
+    public void setAdminEngine( AdminEngine value )
+    {
+        adminEngine = value;
     }
 
     public XMLDocument getPageTemplates( PageTemplateType type )

@@ -7,7 +7,7 @@
 
   <xsl:output method="html"/>
 
-  <xsl:param name="alwaysdisabled" select="false()"/>
+  <xsl:param name="alwaysdisabled" select="0"/>
   <xsl:param name="editlockedversionmode" select="false()"/>
 
   <xsl:include href="generic_parameters.xsl"/>
@@ -63,6 +63,6 @@
   <xsl:variable name="currentisdraft" select="$create = 1 or /contents/content/versions/version[@current = 'true']/@state = '0'"/>
   <xsl:variable name="hasversions" select="count(/contents/content/versions/version) > 1"/>
 
-  <xsl:variable name="enableform" select="not($alwaysdisabled) and ( $draft and ($categorycreate or $contentupdate or $categorypublish)) or ( $editlockedversionmode and ($categorycreate or $contentupdate or $categorypublish))"/>
+  <xsl:variable name="enableform" select="not($alwaysdisabled = 1) and ( $draft and ($categorycreate or $contentupdate or $categorypublish)) or ( $editlockedversionmode and ($categorycreate or $contentupdate or $categorypublish))"/>
 
 </xsl:stylesheet>

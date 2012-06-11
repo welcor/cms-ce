@@ -7,7 +7,7 @@ package com.enonic.cms.core.security.userstore.connector;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
-import com.enonic.vertical.engine.handlers.UserHandler;
+import com.enonic.vertical.engine.handlers.NameGenerator;
 
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -94,8 +94,7 @@ public abstract class AbstractBaseUserStoreConnector
     {
         Assert.isTrue( StringUtils.isNotBlank( suggestedUsername ) );
 
-        suggestedUsername = UserHandler.latinToAZ( suggestedUsername ).toLowerCase();
-        suggestedUsername.replaceAll( "\\s+", "" );
+        suggestedUsername = NameGenerator.simplifyString( suggestedUsername );
 
         int i = 0;
 

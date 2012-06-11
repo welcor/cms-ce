@@ -215,7 +215,7 @@ public class ContentIndexServiceImpl
 
     public ContentResultSet query( final ContentIndexQuery query )
     {
-        final SearchSourceBuilder querySource;
+        final SearchSourceBuilder translatedQuerySource;
 
         if ( isFilterBlockingAllContent( query ) )
         {
@@ -226,17 +226,20 @@ public class ContentIndexServiceImpl
 
         try
         {
-
             optimizeCount( query );
 
-            querySource = buildQuerySource( query );
+            translatedQuerySource = buildQuerySource( query );
 
-            final SearchHits hits = doExecuteSearchRequest( querySource );
+            ContentIndexQueryTracer.traceQuery( query, query.getIndex(), query.getCount(), translatedQuerySource.toString(), trace );
 
-            LOG.finer(
-                "query: " + querySource.toString() + " executed with " + hits.getHits().length + " hits of total " + hits.getTotalHits() );
+            final SearchHits hits = doExecuteSearchRequest( translatedQuerySource );
+
+            LOG.finer( "query: " + translatedQuerySource.toString() + " executed with " + hits.getHits().length + " hits of total " +
+                           hits.getTotalHits() );
 
             final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
+
+            ContentIndexQueryTracer.traceMatchCount( queryResultTotalSize, trace );
 
             if ( query.getIndex() > queryResultTotalSize )
             {

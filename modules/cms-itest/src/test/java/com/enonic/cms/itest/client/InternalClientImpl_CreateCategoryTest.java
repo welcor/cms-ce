@@ -34,8 +34,6 @@ public class InternalClientImpl_CreateCategoryTest
     @Qualifier("localClient")
     private InternalClient internalClient;
 
-    private DomainFactory factory;
-
     @Autowired
     private DomainFixture fixture;
 
@@ -43,7 +41,7 @@ public class InternalClientImpl_CreateCategoryTest
     public void before()
         throws IOException, JDOMException
     {
-        factory = fixture.getFactory();
+        final DomainFactory factory = fixture.getFactory();
 
         fixture.initSystemData();
 

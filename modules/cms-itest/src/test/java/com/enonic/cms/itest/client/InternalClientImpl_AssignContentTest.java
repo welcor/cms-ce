@@ -46,16 +46,12 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
-import com.enonic.cms.store.dao.GroupDao;
 
 import static org.junit.Assert.*;
 
 public class InternalClientImpl_AssignContentTest
     extends AbstractSpringTest
 {
-    @Autowired
-    private GroupDao groupDao;
-
     private DomainFactory factory;
 
     @Autowired
@@ -253,7 +249,7 @@ public class InternalClientImpl_AssignContentTest
 
     private void createContentTypeXml()
     {
-        StringBuffer standardConfigXml = new StringBuffer();
+        StringBuilder standardConfigXml = new StringBuilder();
         standardConfigXml.append( "<config name=\"MyContentType\" version=\"1.0\">" );
         standardConfigXml.append( "     <form>" );
 

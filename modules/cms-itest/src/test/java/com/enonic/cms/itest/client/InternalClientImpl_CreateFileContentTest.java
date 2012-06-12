@@ -72,7 +72,7 @@ public class InternalClientImpl_CreateFileContentTest
         factory = fixture.getFactory();
         fixture.initSystemData();
 
-        StringBuffer contentTypeConfigXml = new StringBuffer();
+        StringBuilder contentTypeConfigXml = new StringBuilder();
         contentTypeConfigXml.append( "<moduledata/>" );
         contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
 

@@ -70,7 +70,7 @@ public class InternalClientImpl_CreateContentTest
         factory = fixture.getFactory();
         fixture.initSystemData();
 
-        StringBuffer standardConfigXml = new StringBuffer();
+        StringBuilder standardConfigXml = new StringBuilder();
         standardConfigXml.append( "<config name=\"MyContentType\" version=\"1.0\">" );
         standardConfigXml.append( "     <form>" );
 

@@ -12,6 +12,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -29,7 +30,6 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyFileContentData;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
@@ -48,7 +48,6 @@ import static org.junit.Assert.*;
 public class InternalClientImpl_UpdateFileContentTest
     extends AbstractSpringTest
 {
-    private DomainFactory factory;
 
     @Autowired
     private DomainFixture fixture;
@@ -57,20 +56,19 @@ public class InternalClientImpl_UpdateFileContentTest
     private ContentDao contentDao;
 
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     private byte[] dummyBinary1 = new byte[]{1, 2, 3};
 
     private byte[] dummyBinary2 = new byte[]{1, 2, 3, 4, 5, 6};
 
-    private Document contentTypeConfig;
-
     @Before
     public void before()
         throws IOException, JDOMException
     {
 
-        factory = fixture.getFactory();
+        final DomainFactory factory = fixture.getFactory();
 
         fixture.initSystemData();
 
@@ -78,9 +76,9 @@ public class InternalClientImpl_UpdateFileContentTest
         request.setRemoteAddr( "127.0.0.1" );
         ServletRequestAccessor.setRequest( request );
 
-        StringBuffer contentTypeConfigXml = new StringBuffer();
+        StringBuilder contentTypeConfigXml = new StringBuilder();
         contentTypeConfigXml.append( "<moduledata/>" );
-        contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
+        final Document contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
 
         fixture.createAndStoreUserAndUserGroup( "testuser", "testuser fullname", UserType.NORMAL, "testuserstore" );
         fixture.save( factory.createContentHandler( "File content", ContentHandlerName.FILE.getHandlerClassShortName() ) );
@@ -100,12 +98,6 @@ public class InternalClientImpl_UpdateFileContentTest
 
         int contentKey = storeNewFileContent();
 
-        ContentEntity persistedContent = contentDao.findByKey( new ContentKey( contentKey ) );
-        ContentVersionEntity persistedVersion = persistedContent.getMainVersion();
-
-        BinaryDataKey persistedFileBinaryDataKey =
-            persistedVersion.getContentBinaryData().iterator().next().getBinaryData().getBinaryDataKey();
-
         FileContentDataInput fileContentData = new FileContentDataInput();
         fileContentData.binary = new FileBinaryInput( dummyBinary2, "Dummy Name 2" );
         fileContentData.description = new FileDescriptionInput( "Dummy description 2." );
@@ -124,8 +116,6 @@ public class InternalClientImpl_UpdateFileContentTest
 
         ContentEntity actualContent = contentDao.findByKey( new ContentKey( contentKey ) );
         ContentVersionEntity actualVersion = actualContent.getMainVersion();
-
-        // assertNull( "expected previous binary to not exist any more", binaryDao.findByKey( persistedFileBinaryDataKey ) );
 
         assertEquals( "test binary 2", actualVersion.getTitle() );
 

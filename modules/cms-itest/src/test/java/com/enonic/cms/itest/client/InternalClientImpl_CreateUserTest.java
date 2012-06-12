@@ -52,7 +52,7 @@ public class InternalClientImpl_CreateUserTest
     public void create_user_in_local_userstore()
         throws Exception
     {
-        clientLogin( "admin", "password" );
+        clientLogin( "admin" );
 
         // exercise:
         CreateUserParams params = new CreateUserParams();
@@ -73,12 +73,10 @@ public class InternalClientImpl_CreateUserTest
         assertEquals( "Skriubakken", actualUser.getUserFields().getLastName() );
     }
 
-    private void clientLogin( String username, String password )
+    private void clientLogin( String username )
     {
         UserEntity user = fixture.findUserByName( username );
         PortalSecurityHolder.setLoggedInUser( user.getKey() );
         PortalSecurityHolder.setImpersonatedUser( user.getKey() );
-
-        //internalClient.login( username, password );
     }
 }

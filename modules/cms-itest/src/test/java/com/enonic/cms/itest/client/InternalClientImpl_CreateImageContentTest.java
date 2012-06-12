@@ -59,10 +59,6 @@ public class InternalClientImpl_CreateImageContentTest
     @Qualifier("localClient")
     private InternalClient internalClient;
 
-    private byte[] dummyBinary =
-        new byte[]{66, 77, 58, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 40, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 24, 0, 0, 0, 0, 0, 4, 0, 0, 0,
-            -60, 14, 0, 0, -60, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -22, -18, -23, 0};
-
     private Document contentTypeConfig;
 
     @Before
@@ -73,7 +69,7 @@ public class InternalClientImpl_CreateImageContentTest
         factory = fixture.getFactory();
         fixture.initSystemData();
 
-        StringBuffer contentTypeConfigXml = new StringBuffer();
+        StringBuilder contentTypeConfigXml = new StringBuilder();
         contentTypeConfigXml.append( "<moduledata/>" );
         contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
 

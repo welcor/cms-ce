@@ -59,8 +59,6 @@ public class InternalClientImpl_getContentTest
 
     private static final DateTime DATE_TIME_2010_07_01_12_00_00_0 = new DateTime( 2010, 7, 1, 12, 0, 0, 0 );
 
-    private DomainFactory factory;
-
     @Autowired
     private DomainFixture fixture;
 
@@ -81,8 +79,6 @@ public class InternalClientImpl_getContentTest
 
     private InternalClientImpl internalClient;
 
-    private Document personConfigAsXmlBytes;
-
 
     private MockHttpServletRequest httpRequest;
 
@@ -92,8 +88,7 @@ public class InternalClientImpl_getContentTest
     @Before
     public void setUp()
     {
-
-        factory = fixture.getFactory();
+        final DomainFactory factory = fixture.getFactory();
 
         // setup needed common data for each test
         fixture.initSystemData();
@@ -115,7 +110,7 @@ public class InternalClientImpl_getContentTest
         ctyconf.addRelatedContentInput( "my-relatedcontent", "contentdata/my-relatedcontent", "My relatedcontent", false, false );
         ctyconf.addRelatedContentInput( "my-relatedcontents", "contentdata/my-relatedcontents", "My relatedcontents", false, true );
         ctyconf.endBlock();
-        personConfigAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
+        final Document personConfigAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
 
         fixture.save(
             factory.createContentType( "MyPersonType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), personConfigAsXmlBytes ) );
@@ -454,10 +449,9 @@ public class InternalClientImpl_getContentTest
             contentData.add( new RelatedContentDataEntry( contentData.getInputConfig( "my-relatedcontent" ), relatedContent ) );
         }
 
-        ContentKey expectedContentKey = contentService.createContent(
-            createCreateContentCommand( "MyPersonCategory", "content-creator", status, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
-                                        "content-creator", contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
-        return expectedContentKey;
+        return contentService.createContent(
+            createCreateContentCommand( "MyPersonCategory", "content-creator", status, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ),
+                                        null ) );
     }
 
     private ContentKey createPersonContentWithRelatedContents( String name, ContentStatus status, ContentKey... relatedContents )
@@ -476,15 +470,13 @@ public class InternalClientImpl_getContentTest
             }
         }
 
-        ContentKey expectedContentKey = contentService.createContent(
-            createCreateContentCommand( "MyPersonCategory", "content-creator", status, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
-                                        "content-creator", contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
-        return expectedContentKey;
+        return contentService.createContent(
+            createCreateContentCommand( "MyPersonCategory", "content-creator", status, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ),
+                                        null ) );
     }
 
     private CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus,
-                                                             DateTime dueDate, String assigneeUserName, ContentData contentData,
-                                                             DateTime availableFrom, DateTime availableTo )
+                                                             ContentData contentData, DateTime availableFrom, DateTime availableTo )
     {
         CreateContentCommand createContentCommand = new CreateContentCommand();
         createContentCommand.setCategory( fixture.findCategoryByName( categoryName ) );

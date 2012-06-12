@@ -15,7 +15,7 @@ import org.jdom.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +43,7 @@ import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
 
-@Component("indexService")
+@Service("indexService")
 public final class IndexServiceImpl
     implements IndexService
 {

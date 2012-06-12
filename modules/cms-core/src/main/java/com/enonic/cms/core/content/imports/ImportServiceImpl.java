@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
-@Component("importService")
+@Service("importService")
 public class ImportServiceImpl
     implements ImportService
 {
@@ -57,8 +57,7 @@ public class ImportServiceImpl
     {
         try
         {
-            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataReader,
-                                                                           indexTransactionService );
+            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataReader, indexTransactionService );
             contentImporter.setContentStorer( contentStorer );
             contentImporter.setContentDao( contentDao );
 

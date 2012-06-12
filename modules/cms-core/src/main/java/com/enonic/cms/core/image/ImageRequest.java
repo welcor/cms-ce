@@ -39,7 +39,7 @@ public final class ImageRequest
 
     public String getName()
     {
-        StringBuffer str = new StringBuffer();
+        final StringBuilder str = new StringBuilder();
         if ( this.userKey != null )
         {
             str.append( "user-" ).append( this.userKey.toString() );
@@ -163,7 +163,7 @@ public final class ImageRequest
 
     public String getCacheKey()
     {
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
         str.append( getBlobKey() ).append( "-" );
         str.append( getParams().getQuality() ).append( "-" );
         str.append( getParams().getFilter() ).append( "-" );

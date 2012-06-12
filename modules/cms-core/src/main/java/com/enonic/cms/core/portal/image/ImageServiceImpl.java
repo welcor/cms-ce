@@ -126,7 +126,8 @@ public final class ImageServiceImpl
             }
             catch ( Exception e )
             {
-                throw new ImageProcessorException( "Failed to process image: " + e.getMessage(), e );
+                throw new ImageProcessorException(
+                    "Failed to process image [contentKey=" + imageRequest.getContentKey() + "] : " + e.getMessage(), e );
             }
         }
         finally

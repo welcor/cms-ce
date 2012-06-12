@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.api.client.model.ChangeUserPasswordParams;
@@ -44,6 +45,7 @@ public class InternalClientImpl_changeUserPasswordTest
     private UserStoreService userStoreService;
 
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     @Before

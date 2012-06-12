@@ -8,6 +8,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -46,6 +47,7 @@ public class InternalClientImpl_getBinaryTest
     private DomainFixture fixture;
 
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     private Document contentTypeConfig;

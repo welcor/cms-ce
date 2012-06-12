@@ -7,6 +7,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.api.client.model.CreateUserParams;
@@ -24,6 +25,7 @@ public class InternalClientImpl_CreateUserTest
     extends AbstractSpringTest
 {
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     @Autowired

@@ -11,6 +11,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -55,6 +56,7 @@ public class InternalClientImpl_CreateImageContentTest
     private DomainFixture fixture;
 
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     private byte[] dummyBinary =

@@ -1,7 +1,5 @@
 package com.enonic.cms.itest.search;
 
-import java.io.File;
-
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 
@@ -34,16 +32,9 @@ public class NodeTestSettingsBuilder
 
     private final static String NODE_NAME = "name";
 
-    public Settings createNodeSettings( File storageDir )
+    public Settings createNodeSettings()
     {
-        System.out.println( "$$$$$$$$$$ Applying testsettings" );
-
-        return ImmutableSettings.settingsBuilder().put( LOG_PATH, new File( storageDir, "log" ).getAbsolutePath() ).put( DATA_PATH,
-                                                                                                                         new File(
-                                                                                                                             storageDir,
-                                                                                                                             "data" ).getAbsolutePath() ).put(
-            "path.config", new File( storageDir, "config" ).getAbsolutePath() ).put( "cluster.name", CLUSTER_NAME ).put( "gateway.type",
-                                                                                                                         "none" )
+        return ImmutableSettings.settingsBuilder().put( "gateway.type", "none" )
             // .put( "threadpool.index.type", "blocking")
             // .put( "threadpool.index.min", 1)
             // .put( "threadpool.index.size", 50)

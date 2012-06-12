@@ -1,7 +1,5 @@
 package com.enonic.cms.core.search;
 
-import java.io.File;
-
 import org.elasticsearch.common.settings.Settings;
 
 /**
@@ -12,5 +10,5 @@ import org.elasticsearch.common.settings.Settings;
  */
 public interface NodeSettingsBuilder
 {
-    public Settings createNodeSettings( File storageDir );
+    public Settings createNodeSettings( );
 }

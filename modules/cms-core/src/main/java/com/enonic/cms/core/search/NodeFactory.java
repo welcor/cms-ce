@@ -55,7 +55,7 @@ public class NodeFactory
     {
         setLogger();
 
-        final Settings settings = nodeSettingsBuilder.createNodeSettings( this.storageDir );
+        final Settings settings = nodeSettingsBuilder.createNodeSettings();
         this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
         this.node.start();
     }

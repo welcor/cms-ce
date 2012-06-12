@@ -260,9 +260,6 @@
 
   <bean class="com.enonic.cms.core.elastic.ElasticClientFactory"/>
 
-  <bean class="com.enonic.cms.core.elastic.ElasticNodeFactory">
-    <property name="storageDir" value=""/>
-  </bean>
-
+  <bean class="com.enonic.cms.core.elastic.ElasticNodeFactory"/>
 
 </beans>

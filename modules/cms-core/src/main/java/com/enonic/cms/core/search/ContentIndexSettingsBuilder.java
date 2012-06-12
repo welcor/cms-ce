@@ -54,15 +54,15 @@ public class ContentIndexSettingsBuilder
 
     private void buildSlowLogSettings( ImmutableSettings.Builder settings )
     {
-        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_TRACE_KEY, "150ms" );
-        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_DEBUG_KEY, "250ms" );
-        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_INFO_KEY, "500ms" );
-        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_WARN_KEY, "750ms" );
+        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_TRACE_KEY, "10ms" );
+        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_DEBUG_KEY, "50ms" );
+        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_INFO_KEY, "200ms" );
+        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_QUERY_WARN_KEY, "500ms" );
 
-        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_FETCH_TRACE_KEY, "50ms" );
+        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_FETCH_TRACE_KEY, "20ms" );
         settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_FETCH_DEBUG_KEY, "100ms" );
-        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_FETCH_INFO_KEY, "200ms" );
-        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_FETCH_WARN_KEY, "300ms" );
+        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_FETCH_INFO_KEY, "400ms" );
+        settings.put( INDEX_SEARCH_SLOWLOG_THRESHOLD_FETCH_WARN_KEY, "1s" );
     }
 
     private String buildStorageSettings()

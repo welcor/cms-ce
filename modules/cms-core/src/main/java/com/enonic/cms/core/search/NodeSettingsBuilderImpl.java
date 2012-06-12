@@ -1,9 +1,14 @@
 package com.enonic.cms.core.search;
 
-import java.io.File;
+import java.util.Map;
+import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.enonic.cms.core.boot.ConfigProperties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,34 +19,48 @@ import org.elasticsearch.common.settings.Settings;
 final class NodeSettingsBuilderImpl
     implements NodeSettingsBuilder
 {
-
-
-    private final static String NODE_MEMORY_MIN = "es_mim_mem";
-
-    private final static String NODE_MEMORY_MAX = "es_max_mem";
+    public static final String NODE_PROPERTIES_PREFIX = "cms.elasticsearch.node";
 
     private final static String TRANSPORT_TCP_PORT = "transport.tcp.port";
 
-    private final static String HTTP_PORT = "http.port";
+    private ConfigProperties configProperties;
 
-    private final static String LOG_PATH = "path.logs";
+    private Logger LOG = Logger.getLogger( NodeSettingsBuilderImpl.class.getName() );
 
-    private final static String DATA_PATH = "path.data";
-
-    private final static String CONFIG_PATH = "path.config";
-
-    private final static String CLUSTER_NAME = "enonic-cms-es-cluster";
-
-    private final static String NODE_NAME = "name";
-
-    public Settings createNodeSettings( File storageDir )
+    public Settings createNodeSettings()
     {
-        return ImmutableSettings.settingsBuilder()
-            .put( LOG_PATH, new File( storageDir, "log" ).getAbsolutePath() )
-            .put( DATA_PATH, new File( storageDir, "data" ).getAbsolutePath() )
-            .put( "path.config", new File( storageDir, "config" ).getAbsolutePath() )
-            .put( "cluster.name", CLUSTER_NAME )
-            .build();
+        final Map<String, String> nodeProperyMap = configProperties.getPropertiesStartingWith( NODE_PROPERTIES_PREFIX );
+
+        final ImmutableSettings.Builder settingsBuilder = populateNodeSettings( nodeProperyMap );
+
+        return settingsBuilder.build();
     }
 
+    private ImmutableSettings.Builder populateNodeSettings( final Map<String, String> nodeProperyMap )
+    {
+        final ImmutableSettings.Builder settingsBuilder = ImmutableSettings.settingsBuilder();
+
+        for ( String property : nodeProperyMap.keySet() )
+        {
+            final String nodePropertyName = getNodePropertyName( property );
+            final String propertyValue = nodeProperyMap.get( property );
+
+            LOG.info( "Setting elasticsearch node property: " + nodePropertyName + " = " + propertyValue );
+
+            settingsBuilder.put( nodePropertyName, propertyValue );
+        }
+        return settingsBuilder;
+    }
+
+    private String getNodePropertyName( final String property )
+    {
+        return StringUtils.substringAfter( property, NODE_PROPERTIES_PREFIX + "." );
+    }
+
+    @Autowired
+    public void setConfigProperties( final ConfigProperties configProperties )
+    {
+        this.configProperties = configProperties;
+
+    }
 }

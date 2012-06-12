@@ -95,6 +95,15 @@
   <bean id="siteCachesService" class="com.enonic.cms.itest.portal.cache.MockSiteCachesService"/>
 
   <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
+    <property name="clientForRemoteInvocations" value="false"/>
+    <property name="internalClientContentService" ref="internalClientContentService"/>
+    <property name="securityService" ref="securityService"/>
+    <property name="userDao" ref="userDao"/>
+    <property name="livePortalTraceService" ref="livePortalTraceService"/>
+  </bean>
+
+  <bean id="remoteClient" class="com.enonic.cms.core.client.InternalClientImpl">
+    <property name="clientForRemoteInvocations" value="true"/>
     <property name="internalClientContentService" ref="internalClientContentService"/>
     <property name="securityService" ref="securityService"/>
     <property name="userDao" ref="userDao"/>

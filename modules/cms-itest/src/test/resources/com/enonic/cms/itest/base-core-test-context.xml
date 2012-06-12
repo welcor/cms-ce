@@ -12,22 +12,13 @@
   <import resource="classpath:/com/enonic/cms/itest/base-persist-test-context.xml"/>
 
   <context:component-scan base-package="com.enonic.cms.itest"/>
+  <context:component-scan base-package="com.enonic.cms.core.content.category"/>
 
   <bean class="com.enonic.cms.core.boot.ConfigProperties"/>
 
   <bean id="pluginManager" class="com.enonic.cms.itest.plugin.MockPluginManager"/>
 
   <bean id="indexService" class="com.enonic.cms.core.content.IndexServiceImpl"/>
-
-  <bean id="categoryService" class="com.enonic.cms.core.content.category.CategoryServiceImpl"/>
-
-  <bean id="unitFactory" class="com.enonic.cms.core.content.category.UnitFactory"/>
-
-  <bean id="deleteCategoryCommandProcessorFactory"
-        class="com.enonic.cms.core.content.category.DeleteCategoryCommandProcessorFactory"/>
-
-  <bean id="createCategoryCommandProcessorFactory"
-        class="com.enonic.cms.core.content.category.CreateCategoryCommandProcessorFactory"/>
 
   <bean id="contentStorer" class="com.enonic.cms.core.content.ContentStorer"/>
 

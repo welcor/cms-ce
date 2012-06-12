@@ -203,8 +203,6 @@
     <property name="localClient" ref="localClient"/>
   </bean>
 
-  <bean id="categoryService" class="com.enonic.cms.core.content.category.CategoryServiceImpl"/>
-
   <bean id="createAttachmentUrclFunction"
         class="com.enonic.cms.core.portal.rendering.portalfunctions.CreateAttachmentUrlFunction">
     <property name="contentDao" ref="contentDao"/>

@@ -1608,7 +1608,7 @@ public class ContentBaseHandlerServlet
         parameters.put( "contenttypestring", formItems.getString( "contenttypestring", "" ) );
         parameters.put( "selectedtabpage", formItems.getString( "selectedtabpage", "" ) );
         parameters.put( "modulename", admin.getContentTypeName( contentTypeKey ) );
-        parameters.put( "alwaysdisabled", alwaysDisabled ? 1 : 0 );
+        parameters.put( "alwaysdisabled", alwaysDisabled );
         if ( formItems.containsKey( "creatednewversion" ) )
         {
             parameters.put( "creatednewversion", formItems.getString( "creatednewversion" ) );
@@ -3039,7 +3039,7 @@ public class ContentBaseHandlerServlet
                 parameters.put( "selectedtabpage", formItems.getString( "selectedtabpage", "" ) );
                 parameters.put( "feedback", formItems.getString( "feedback", "" ) );
 
-                parameters.put( "alwaysdisabled", alwaysDisabled ? 1 : 0 );
+                parameters.putBoolean( "alwaysdisabled", alwaysDisabled );
                 if ( formItems.containsKey( "creatednewversion" ) )
                 {
                     parameters.put( "creatednewversion", formItems.getString( "creatednewversion" ) );

@@ -13,6 +13,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
+import com.enonic.cms.core.home.HomeDir;
+
 public class ConfigLoaderTest
 {
     @Rule
@@ -31,7 +33,7 @@ public class ConfigLoaderTest
         this.classLoader = Mockito.mock( ClassLoader.class );
 
         this.homeDir = this.folder.newFolder( "cms-home" );
-        this.configLoader = new ConfigLoader( this.homeDir );
+        this.configLoader = new ConfigLoader( new HomeDir( this.homeDir ) );
         this.configLoader.setClassLoader( this.classLoader );
     }
 

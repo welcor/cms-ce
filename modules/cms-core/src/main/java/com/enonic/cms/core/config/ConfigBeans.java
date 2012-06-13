@@ -11,7 +11,7 @@ public class ConfigBeans
     @Bean
     public ConfigProperties config( final HomeDir homeDir )
     {
-        final ConfigLoader loader = new ConfigLoader( homeDir.toFile() );
+        final ConfigLoader loader = new ConfigLoader( homeDir );
         return loader.load();
     }
 }

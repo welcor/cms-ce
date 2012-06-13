@@ -10,6 +10,7 @@ import java.util.Properties;
 import com.enonic.cms.framework.util.PropertiesUtil;
 
 import com.enonic.cms.api.util.LogFacade;
+import com.enonic.cms.core.home.HomeDir;
 
 final class ConfigLoader
 {
@@ -19,13 +20,13 @@ final class ConfigLoader
 
     private final static String DEFAULT_PROPERTIES = "com/enonic/vertical/default.properties";
 
-    private final File homeDir;
+    private final HomeDir homeDir;
 
     private final Properties systemProperties;
 
     private ClassLoader classLoader;
 
-    public ConfigLoader( final File homeDir )
+    public ConfigLoader( final HomeDir homeDir )
     {
         this.homeDir = homeDir;
         this.systemProperties = new Properties();
@@ -55,19 +56,11 @@ final class ConfigLoader
         final Properties props = new Properties();
         props.putAll( loadDefaultProperties() );
         props.putAll( loadCmsProperties() );
-        props.putAll( getHomeDirProperties() );
+        props.putAll( this.homeDir.toProperties() );
 
         final ConfigProperties config = new ConfigProperties();
         config.putAll( PropertiesUtil.interpolate( props, this.systemProperties ) );
         return config;
-    }
-
-    private Properties getHomeDirProperties()
-    {
-        final Properties props = new Properties();
-        props.setProperty( "cms.home", this.homeDir.getAbsolutePath() );
-        props.setProperty( "cms.home.uri", this.homeDir.toURI().toString() );
-        return props;
     }
 
     private Properties loadDefaultProperties()
@@ -92,7 +85,7 @@ final class ConfigLoader
 
     private Properties loadCmsProperties()
     {
-        final File file = new File( this.homeDir, CMS_PROPERTIES );
+        final File file = new File( this.homeDir.toFile(), CMS_PROPERTIES );
         if ( !file.exists() || file.isDirectory() )
         {
             LOG.info( "Could not find cms.properties from [{0}]. Using defaults.", file.getAbsolutePath() );

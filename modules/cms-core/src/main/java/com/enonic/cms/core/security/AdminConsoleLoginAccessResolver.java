@@ -4,9 +4,12 @@
  */
 package com.enonic.cms.core.security;
 
+import org.springframework.stereotype.Component;
+
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.user.UserEntity;
 
+@Component
 public class AdminConsoleLoginAccessResolver
 {
     public boolean hasAccess( UserEntity user )

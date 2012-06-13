@@ -11,14 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SiteURLResolver;
 
-@Component
 public class SiteRedirectAndForwardHelper
 {
     private SiteURLResolver siteURLResolver;

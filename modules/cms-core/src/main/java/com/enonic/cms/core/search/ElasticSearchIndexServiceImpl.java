@@ -42,7 +42,7 @@ import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
 
@@ -55,7 +55,7 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
  * Date: 2/23/12
  * Time: 10:26 AM
  */
-@Component
+@Service
 public class ElasticSearchIndexServiceImpl
     implements ElasticSearchIndexService
 {

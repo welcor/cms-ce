@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
@@ -46,6 +47,7 @@ import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SectionContentDao;
 import com.enonic.cms.store.resource.FileResourceService;
 
+@Component
 public class PostProcessInstructionExecutorImpl
     implements PostProcessInstructionExecutor
 {

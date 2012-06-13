@@ -137,9 +137,6 @@
     <property name="defaultLanguageCode" value="${cms.admin.defaultLanguage}"/>
   </bean>
 
-  <bean id="adminConsoleLoginAccessResolver"
-        class="com.enonic.cms.core.security.AdminConsoleLoginAccessResolver"/>
-
   <bean id="userServicesRedirectHelper"
         class="com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver"/>
 
@@ -263,11 +260,6 @@
     <property name="userDao" ref="userDao"/>
   </bean>
 
-  <bean id="autoLoginService" class="com.enonic.cms.core.security.AutoLoginService">
-    <property name="securityService" ref="securityService"/>
-    <property name="loginService" ref="loginService"/>
-  </bean>
-
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
 
   <bean id="davConfiguration" class="com.enonic.cms.web.webdav.DavConfiguration">
@@ -345,9 +337,6 @@
 
   <bean id="datasourcesContextXmlCreator"
         class="com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator"/>
-
-  <bean id="postProcessInstructionExecutor"
-        class="com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutorImpl"/>
 
   <bean id="datasourceInfoResolver" class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
 

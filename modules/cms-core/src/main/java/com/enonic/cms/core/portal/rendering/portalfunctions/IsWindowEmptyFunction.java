@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
@@ -19,6 +21,7 @@ import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.portal.rendering.tracing.TraceMarkerHelper;
 import com.enonic.cms.core.structure.page.WindowKey;
 
+@Component
 public class IsWindowEmptyFunction
 {
     private WindowRendererFactory windowRendererFactory;
@@ -109,6 +112,7 @@ public class IsWindowEmptyFunction
         return map;
     }
 
+    @Autowired
     public void setWindowRendererFactory( WindowRendererFactory windowRendererFactory )
     {
         this.windowRendererFactory = windowRendererFactory;

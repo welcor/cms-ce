@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
@@ -25,9 +25,9 @@ import com.enonic.cms.framework.util.JDOMUtil;
  * This implements the country service. It load country codes from an xml file. It tries to find the first resource that exists and load
  * it.
  */
-@Component("countryService")
+@Service("countryService")
 public final class CountryServiceImpl
-        implements CountryService, InitializingBean
+    implements CountryService, InitializingBean
 {
     private final static Logger LOG = LoggerFactory.getLogger( CountryServiceImpl.class );
 
@@ -62,10 +62,13 @@ public final class CountryServiceImpl
 
     private Resource findCountryResource()
     {
-        if ((this.countryFile != null) && this.countryFile.exists() && this.countryFile.isFile()) {
-            return new FileSystemResource(this.countryFile);
-        } else {
-            return new ClassPathResource("com/enonic/cms/core/country/countries.xml");
+        if ( ( this.countryFile != null ) && this.countryFile.exists() && this.countryFile.isFile() )
+        {
+            return new FileSystemResource( this.countryFile );
+        }
+        else
+        {
+            return new ClassPathResource( "com/enonic/cms/core/country/countries.xml" );
         }
     }
 
@@ -74,8 +77,7 @@ public final class CountryServiceImpl
     {
         if ( !resource.exists() )
         {
-            throw new IllegalArgumentException(
-                    "Country code resource [" + resource.getDescription() + "] was not found" );
+            throw new IllegalArgumentException( "Country code resource [" + resource.getDescription() + "] was not found" );
         }
 
         Document doc = JDOMUtil.parseDocument( resource.getInputStream() );

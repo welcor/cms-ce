@@ -12,12 +12,22 @@
   <import resource="classpath:/com/enonic/cms/itest/base-persist-test-context.xml"/>
 
   <context:component-scan base-package="com.enonic.cms.itest"/>
+  <context:component-scan base-package="com.enonic.cms.core.calendar"/>
+  <context:component-scan base-package="com.enonic.cms.core.captcha"/>
   <context:component-scan base-package="com.enonic.cms.core.content"/>
-  <context:component-scan base-package="com.enonic.cms.core.portal.instruction"/>
-  <context:component-scan base-package="com.enonic.cms.core.security"/>
+  <context:component-scan base-package="com.enonic.cms.core.country"/>
+  <context:component-scan base-package="com.enonic.cms.core.http"/>
+  <context:component-scan base-package="com.enonic.cms.core.image.cache"/>
   <context:component-scan base-package="com.enonic.cms.core.locale"/>
-  <context:component-scan base-package="com.enonic.cms.web.portal.image"/>
+  <context:component-scan base-package="com.enonic.cms.core.localization"/>
+  <context:component-scan base-package="com.enonic.cms.core.portal.instruction"/>
+  <context:component-scan base-package="com.enonic.cms.core.portal.rendering"/>
   <context:component-scan base-package="com.enonic.cms.core.search"/>
+  <context:component-scan base-package="com.enonic.cms.core.security"/>
+  <context:component-scan base-package="com.enonic.cms.core.structure.menuitem"/>
+  <context:component-scan base-package="com.enonic.cms.core.timezone"/>
+  <context:component-scan base-package="com.enonic.cms.web.portal.image"/>
+  <context:component-scan base-package="com.enonic.cms.web.portal.attachment"/>
 
   <bean class="com.enonic.cms.core.config.ConfigProperties"/>
 
@@ -76,10 +86,6 @@
   <bean id="portalRequestService" class="com.enonic.cms.core.portal.PortalRequestServiceImpl">
   </bean>
 
-  <bean id="pageRendererFactory" class="com.enonic.cms.core.portal.rendering.PageRendererFactory"/>
-
-  <bean id="windowRendererFactory" class="com.enonic.cms.core.portal.rendering.WindowRendererFactory"/>
-
   <bean id="preferenceService" class="com.enonic.cms.core.preference.PreferenceServiceImpl"/>
 
   <bean id="datasourcesContextXmlCreator"
@@ -96,9 +102,6 @@
   <bean id="loginService" class="com.enonic.cms.core.login.LoginServiceImpl">
     <property name="autologinTimeoutInDays"
               value="1"/>
-  </bean>
-
-  <bean id="imageCache" class="com.enonic.cms.core.image.cache.ImageCacheFactory">
   </bean>
 
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
@@ -133,22 +136,10 @@
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
 
-  <bean id="pageTemplateXsltViewTransformer"
-        class="com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer"/>
-
-  <bean id="portletXsltViewTransformer"
-        class="com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer"/>
-
   <bean id="dataSourceService" class="com.enonic.cms.core.service.DataSourceServiceImpl">
     <property name="timeService" ref="timeService"/>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
-
-  <bean id="calendarService" class="com.enonic.cms.core.calendar.CalendarService"/>
-
-  <bean id="countryService" class="com.enonic.cms.core.country.CountryServiceImpl"/>
-
-  <bean id="timeZoneService" class="com.enonic.cms.core.timezone.TimeZoneServiceImpl"/>
 
   <bean id="portalAccessService" class="com.enonic.cms.core.portal.PortalAccessService"/>
 
@@ -195,17 +186,11 @@
     <property name="urlDecode" value="true"/>
   </bean>
 
-  <bean id="menuItemService" class="com.enonic.cms.core.structure.menuitem.MenuItemServiceImpl"/>
-
   <bean id="siteRedirectAndForwardHelper"
         class="com.enonic.cms.web.portal.SiteRedirectAndForwardHelper">
   </bean>
 
-  <bean class="com.enonic.cms.web.portal.attachment.AttachmentHandler"/>
-
   <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
-
-  <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
     <property name="mimetypesLocation" value="config/mimetypes.properties"/>

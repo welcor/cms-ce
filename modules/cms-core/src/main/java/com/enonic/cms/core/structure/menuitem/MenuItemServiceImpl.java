@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ import com.enonic.cms.store.dao.SectionContentDao;
 import com.enonic.cms.store.dao.UserDao;
 
 
-@Component("menuItemService")
+@Service("menuItemService")
 public class MenuItemServiceImpl
     implements MenuItemService
 {

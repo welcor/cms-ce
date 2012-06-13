@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheManager;
 
-@Component
+@Component("imageCache")
 public final class ImageCacheFactory
     implements FactoryBean<ImageCache>
 {

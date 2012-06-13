@@ -117,12 +117,6 @@
     <property name="cacheResolverValueService" ref="sessionCachedResolverValueService"/>
   </bean>
 
-  <bean id="localizeService" class="com.enonic.cms.core.localization.LocalizationServiceImpl"/>
-
-  <bean id="localizationResourceBundleService"
-        class="com.enonic.cms.core.localization.resource.LocalizationResourceBundleServiceImpl">
-  </bean>
-
   <bean id="localeResolverService"
         class="com.enonic.cms.core.resolver.locale.LocaleResolverServiceImpl">
     <property name="localeScriptResolver" ref="localeXsltScriptResolver"/>
@@ -200,16 +194,6 @@
     <property name="localClient" ref="localClient"/>
   </bean>
 
-  <bean id="createAttachmentUrclFunction"
-        class="com.enonic.cms.core.portal.rendering.portalfunctions.CreateAttachmentUrlFunction">
-    <property name="contentDao" ref="contentDao"/>
-  </bean>
-
-  <bean id="isWindowEmptyFunction"
-        class="com.enonic.cms.core.portal.rendering.portalfunctions.IsWindowEmptyFunction">
-    <property name="windowRendererFactory" ref="windowRendererFactory"/>
-  </bean>
-
   <bean id="datasourceExecutorFactory" class="com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory"/>
 
   <bean id="expressionFunctionsFactory"
@@ -237,12 +221,6 @@
   <bean id="usedBlobStoreFinder" class="com.enonic.cms.store.blob.DbUsedBlobKeyFinder">
     <property name="binaryDataDao" ref="binaryDataDao"/>
     <property name="virtualFileDao" ref="virtualFileDao"/>
-  </bean>
-
-  <bean id="portalFunctionsFactory"
-        class="com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsFactory">
-    <property name="siteURLResolver" ref="siteURLResolver"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
 
   <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
@@ -325,16 +303,6 @@
 
   <bean id="portalAccessService" class="com.enonic.cms.core.portal.PortalAccessService"/>
 
-  <bean id="portletXsltViewTransformer"
-        class="com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer"/>
-
-  <bean id="pageTemplateXsltViewTransformer"
-        class="com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer"/>
-
-  <bean id="pageRendererFactory" class="com.enonic.cms.core.portal.rendering.PageRendererFactory"/>
-
-  <bean id="windowRendererFactory" class="com.enonic.cms.core.portal.rendering.WindowRendererFactory"/>
-
   <bean id="datasourcesContextXmlCreator"
         class="com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator"/>
 
@@ -383,8 +351,6 @@
   <bean id="keyHandler" class="com.enonic.vertical.engine.handlers.KeyHandler">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
-
-  <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
     <property name="mimetypesLocation" value="${cms.home}/config/mimetypes.properties"/>

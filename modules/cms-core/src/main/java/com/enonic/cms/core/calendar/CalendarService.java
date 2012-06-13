@@ -80,7 +80,7 @@ public final class CalendarService
     public Document getCalendar( boolean relative, int year, int month, int count, boolean includeWeeks, boolean includeDays,
                                  String language, String country )
     {
-        Preconditions.checkArgument(count >= 0, "Parameter 'count' must be 0 or a positive integer.");
+        Preconditions.checkArgument( count >= 0, "Parameter 'count' must be 0 or a positive integer." );
 
         org.jdom.Element root = new org.jdom.Element( "calendar" );
         org.jdom.Document doc = new org.jdom.Document( root );

@@ -1,10 +1,5 @@
 package com.enonic.cms.core.http;
 
-import com.enonic.vertical.VerticalProperties;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +8,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Logger;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
+
+import com.enonic.vertical.VerticalProperties;
+
+@Component
 public class HTTPService
 {
 
@@ -93,7 +96,7 @@ public class HTTPService
     }
 
     private URLConnection setUpConnection( String address, int timeoutMs )
-            throws IOException
+        throws IOException
     {
         URL url = new URL( address );
         URLConnection urlConn = url.openConnection();
@@ -111,7 +114,7 @@ public class HTTPService
     }
 
     private BufferedReader setUpReader( String encoding, URLConnection urlConn )
-            throws IOException
+        throws IOException
     {
         InputStream in = urlConn.getInputStream();
         BufferedReader reader;
@@ -127,7 +130,7 @@ public class HTTPService
     }
 
     private void closeReader( BufferedReader reader )
-            throws IOException
+        throws IOException
     {
         if ( reader != null )
         {

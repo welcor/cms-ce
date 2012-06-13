@@ -29,7 +29,6 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchOperationThreading;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -59,20 +58,17 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
 public class ElasticSearchIndexServiceImpl
     implements ElasticSearchIndexService
 {
-
     protected static final SearchType DEFAULT_SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
 
     protected static final int MAX_NUM_SEGMENTS = 1;
 
     protected static final boolean WAIT_FOR_MERGE = true;
 
-    private IndexSettingsBuilder indexSettingsBuilder;
+    private IndexSettingBuilder indexSettingBuilder;
 
     private ContentIndexRequestCreator contentIndexRequestCreator;
 
     private Client client;
-
-    protected static final SearchOperationThreading OPERATION_THREADING = SearchOperationThreading.NO_THREADS;
 
     private Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
 
@@ -82,7 +78,7 @@ public class ElasticSearchIndexServiceImpl
         LOG.fine( "creating index: " + indexName );
 
         CreateIndexRequest createIndexRequest = new CreateIndexRequest( indexName );
-        createIndexRequest.settings( indexSettingsBuilder.buildSettings() );
+        createIndexRequest.settings( indexSettingBuilder.buildIndexSettings() );
 
         client.admin().indices().create( createIndexRequest ).actionGet();
 
@@ -116,7 +112,7 @@ public class ElasticSearchIndexServiceImpl
     public void updateIndexSettings( String indexName )
     {
         UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest( indexName );
-        updateSettingsRequest.settings( indexSettingsBuilder.buildSettings() );
+        updateSettingsRequest.settings( indexSettingBuilder.buildIndexSettings() );
 
         client.admin().indices().updateSettings( updateSettingsRequest ).actionGet();
 
@@ -351,15 +347,15 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Autowired
-    public void setClient( Client client )
+    public void setIndexSettingBuilder( final IndexSettingBuilder indexSettingBuilder )
     {
-        this.client = client;
+        this.indexSettingBuilder = indexSettingBuilder;
     }
 
     @Autowired
-    public void setIndexSettingsBuilder( IndexSettingsBuilder indexSettingsBuilder )
+    public void setClient( Client client )
     {
-        this.indexSettingsBuilder = indexSettingsBuilder;
+        this.client = client;
     }
 
     @Autowired

@@ -11,7 +11,7 @@ import com.enonic.cms.core.search.NodeSettingsBuilder;
  * Date: 2/7/12
  * Time: 1:38 PM
  */
-public class NodeTestSettingsBuilder
+public class NodeTestSettingsBuilderImpl
     implements NodeSettingsBuilder
 {
     private final static String NODE_MEMORY_MIN = "es_mim_mem";
@@ -32,7 +32,7 @@ public class NodeTestSettingsBuilder
 
     private final static String NODE_NAME = "name";
 
-    public Settings createNodeSettings()
+    public Settings buildNodeSettings()
     {
         return ImmutableSettings.settingsBuilder().put( "gateway.type", "none" )
             // .put( "threadpool.index.type", "blocking")

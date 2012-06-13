@@ -7,23 +7,23 @@ import com.enonic.cms.core.config.ConfigProperties;
 
 import static junitx.framework.Assert.assertEquals;
 
-public class NodeSettingsBuilderImplTest
+public class NodeSettingsBuilderTest
 {
     @Test
     public void testCreateSettings()
         throws Exception
     {
-        NodeSettingsBuilderImpl builder = new NodeSettingsBuilderImpl();
+        NodeSettingsBuilderImpl builderImpl = new NodeSettingsBuilderImpl();
 
         ConfigProperties configProperties = new ConfigProperties();
-        configProperties.setProperty( "cms.elasticsearch.node.path.logs", "logpath" );
+        configProperties.setProperty( "cms.elasticsearch.path.logs", "logpath" );
         configProperties.setProperty( "cms.elasticsearch.index.indexname", "indexname" );
-        builder.setConfigProperties( configProperties );
+        builderImpl.setConfigProperties( configProperties );
 
-        final Settings nodeSettings = builder.createNodeSettings();
+        final Settings settings = builderImpl.buildNodeSettings();
 
-        assertEquals( "logpath", nodeSettings.get( "path.logs" ) );
-        assertEquals( 1, nodeSettings.getAsMap().keySet().size() );
+        assertEquals( "logpath", settings.get( "path.logs" ) );
+        assertEquals( 1, settings.getAsMap().keySet().size() );
 
 
     }

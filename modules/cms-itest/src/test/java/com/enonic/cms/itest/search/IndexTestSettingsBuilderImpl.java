@@ -3,9 +3,10 @@ package com.enonic.cms.itest.search;
 import java.io.IOException;
 
 import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 
 import com.enonic.cms.core.search.ContentIndexException;
-import com.enonic.cms.core.search.IndexSettingsBuilder;
+import com.enonic.cms.core.search.IndexSettingBuilder;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
@@ -15,23 +16,22 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  * Date: 1/16/12
  * Time: 10:17 AM
  */
-public class ContentIndexTestSettingsBuilder
-    implements IndexSettingsBuilder
+public class IndexTestSettingsBuilderImpl
+    implements IndexSettingBuilder
 {
-
     protected static final String NUMBER_OF_SHARDS = "5";
 
     protected static final String NUMBER_OF_REPLICAS = "1";
 
 
-    public ImmutableSettings.Builder buildSettings()
+    public Settings buildIndexSettings()
     {
         ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
         settings.loadFromSource( buildDistributionSettings() );
         settings.loadFromSource( buildStorageSettings() );
         settings.loadFromSource( buildAnalyserSettings() );
 
-        return settings;
+        return settings.build();
     }
 
     private String buildStorageSettings()

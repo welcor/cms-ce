@@ -373,8 +373,8 @@
     <property name="transactionTemplate" ref="schedulerTranscationTemplate"/>
   </bean>
 
-  <bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.ContentIndexSettingsBuilder"/>
-
   <bean id="nodeSettingsBuilder" class="com.enonic.cms.core.search.NodeSettingsBuilderImpl"/>
 
-</beans>  
+  <bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.IndexSettingsBuilderImpl"/>
+
+</beans>

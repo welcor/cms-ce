@@ -55,7 +55,7 @@ public class NodeFactory
     {
         setLogger();
 
-        final Settings settings = nodeSettingsBuilder.createNodeSettings();
+        final Settings settings = nodeSettingsBuilder.buildNodeSettings();
         this.node = NodeBuilder.nodeBuilder().client( client ).local( local ).data( data ).settings( settings ).build();
         this.node.start();
     }
@@ -65,6 +65,11 @@ public class NodeFactory
         ESLoggerFactory.setDefaultFactory( new Slf4jESLoggerFactory() );
     }
 
+    @Autowired
+    public void setNodeSettingsBuilder( final NodeSettingsBuilder nodeSettingsBuilder )
+    {
+        this.nodeSettingsBuilder = nodeSettingsBuilder;
+    }
 
     @PreDestroy
     public void stop()
@@ -73,14 +78,4 @@ public class NodeFactory
         this.node.close();
     }
 
-    public void setStorageDir( File storageDir )
-    {
-        this.storageDir = storageDir;
-    }
-
-    @Autowired
-    public void setNodeSettingsBuilder( NodeSettingsBuilder nodeSettingsBuilder )
-    {
-        this.nodeSettingsBuilder = nodeSettingsBuilder;
-    }
 }

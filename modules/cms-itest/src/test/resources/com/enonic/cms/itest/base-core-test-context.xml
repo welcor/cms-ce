@@ -196,10 +196,13 @@
     <property name="mimetypesLocation" value="config/mimetypes.properties"/>
   </bean>
 
-  <bean id="nodeSettingsBuilder" class="com.enonic.cms.itest.search.NodeTestSettingsBuilder"/>
-
   <bean class="com.enonic.cms.core.elastic.ElasticClientFactory"/>
 
   <bean class="com.enonic.cms.core.elastic.ElasticNodeFactory"/>
+
+  <bean id="nodeSettingsBuilder" class="com.enonic.cms.itest.search.NodeTestSettingsBuilderImpl"/>
+
+  <bean id="indexSettingsBuilder" class="com.enonic.cms.itest.search.IndexTestSettingsBuilderImpl"/>
+
 
 </beans>

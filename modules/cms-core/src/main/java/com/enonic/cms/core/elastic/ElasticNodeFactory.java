@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.search.NodeSettingsBuilder;
 
+
 @Component
 public final class ElasticNodeFactory
     implements FactoryBean<Node>
 {
     private Node node;
 
-    @Autowired
     private NodeSettingsBuilder nodeSettingsBuilder;
 
     public Node getObject()
@@ -43,10 +43,16 @@ public final class ElasticNodeFactory
     {
         ESLoggerFactory.setDefaultFactory( new Slf4jESLoggerFactory() );
 
-        final Settings settings = nodeSettingsBuilder.createNodeSettings();
+        final Settings settings = nodeSettingsBuilder.buildNodeSettings();
 
         this.node = NodeBuilder.nodeBuilder().client( false ).local( true ).data( true ).settings( settings ).build();
         this.node.start();
+    }
+
+    @Autowired
+    public void setNodeSettingsBuilder( final NodeSettingsBuilder nodeSettingsBuilder )
+    {
+        this.nodeSettingsBuilder = nodeSettingsBuilder;
     }
 
     @PreDestroy

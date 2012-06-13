@@ -29,7 +29,7 @@ final class NodeSettingsBuilderImpl
 
     public Settings createNodeSettings()
     {
-        final Map<String, String> nodeProperyMap = configProperties.getPropertiesStartingWith( NODE_PROPERTIES_PREFIX );
+        final Map<String, String> nodeProperyMap = configProperties.getMapStartingWith( NODE_PROPERTIES_PREFIX );
 
         final ImmutableSettings.Builder settingsBuilder = populateNodeSettings( nodeProperyMap );
 

@@ -3,8 +3,6 @@ package com.enonic.cms.core.boot;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Predicate;
@@ -19,14 +17,14 @@ public final class ConfigProperties
         return Maps.fromProperties( this );
     }
 
-    public Map<String, String> getPropertiesStartingWith( final String prefix )
+    public Map<String, String> getMapStartingWith( final String prefix )
     {
-        return Maps.filterKeys( Maps.fromProperties( this ), new Predicate<String>()
+        return Maps.filterKeys( getMap(), new Predicate<String>()
         {
             @Override
-            public boolean apply( @Nullable final String input )
+            public boolean apply( final String input )
             {
-                return input != null && StringUtils.startsWith( input, prefix );
+                return StringUtils.startsWith( input, prefix );
             }
         } );
     }

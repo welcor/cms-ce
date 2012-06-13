@@ -1,7 +1,6 @@
 package com.enonic.cms.web.boot;
 
 import javax.servlet.ServletContextEvent;
-
 import org.springframework.web.context.ContextLoaderListener;
 
 public final class BootContextListener

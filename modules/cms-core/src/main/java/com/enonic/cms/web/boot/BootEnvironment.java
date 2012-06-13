@@ -55,7 +55,7 @@ final class BootEnvironment
     private String getFormattedOsInfo()
     {
         final StringBuilder str = new StringBuilder();
-        str.append( SystemUtils.OS_NAME ).append( " " ).append( SystemUtils.OS_NAME ).append( " (" ).append(
+        str.append( SystemUtils.OS_NAME ).append( " " ).append( SystemUtils.OS_VERSION ).append( " (" ).append(
             SystemUtils.OS_ARCH ).append( ")" );
         return str.toString();
     }

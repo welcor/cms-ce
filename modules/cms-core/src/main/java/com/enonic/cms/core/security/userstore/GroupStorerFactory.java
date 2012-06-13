@@ -4,7 +4,8 @@ package com.enonic.cms.core.security.userstore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.api.util.Preconditions;
+import com.google.common.base.Preconditions;
+
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreConnector;

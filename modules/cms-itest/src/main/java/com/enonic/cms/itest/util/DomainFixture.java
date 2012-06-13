@@ -16,7 +16,7 @@ import com.google.common.base.Preconditions;
 import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;

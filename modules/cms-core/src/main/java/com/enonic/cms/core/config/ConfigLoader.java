@@ -1,12 +1,11 @@
-package com.enonic.cms.core.boot;
+package com.enonic.cms.core.config;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
-
-import org.springframework.core.env.Environment;
 
 import com.enonic.cms.framework.util.PropertiesUtil;
 
@@ -22,15 +21,28 @@ final class ConfigLoader
 
     private final File homeDir;
 
-    private final Environment env;
+    private final Properties systemProperties;
 
     private ClassLoader classLoader;
 
-    public ConfigLoader( final File homeDir, final Environment env )
+    public ConfigLoader( final File homeDir )
     {
         this.homeDir = homeDir;
-        this.env = env;
+        this.systemProperties = new Properties();
         setClassLoader( getClass().getClassLoader() );
+
+        addSystemProperties( System.getenv() );
+        addSystemProperties( System.getProperties() );
+    }
+
+    public void addSystemProperties( final Properties props )
+    {
+        this.systemProperties.putAll( props );
+    }
+
+    public void addSystemProperties( final Map<String, String> map )
+    {
+        this.systemProperties.putAll( map );
     }
 
     public void setClassLoader( final ClassLoader classLoader )
@@ -46,7 +58,7 @@ final class ConfigLoader
         props.putAll( getHomeDirProperties() );
 
         final ConfigProperties config = new ConfigProperties();
-        config.putAll( PropertiesUtil.interpolate( props, this.env ) );
+        config.putAll( PropertiesUtil.interpolate( props, this.systemProperties ) );
         return config;
     }
 

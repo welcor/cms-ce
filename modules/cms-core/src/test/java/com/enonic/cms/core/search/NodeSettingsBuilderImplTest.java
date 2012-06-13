@@ -3,7 +3,7 @@ package com.enonic.cms.core.search;
 import org.elasticsearch.common.settings.Settings;
 import org.junit.Test;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 
 import static junitx.framework.Assert.assertEquals;
 

@@ -11,7 +11,7 @@ import java.util.Properties;
 import org.springframework.beans.factory.InitializingBean;
 import com.enonic.cms.framework.util.PropertiesUtil;
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

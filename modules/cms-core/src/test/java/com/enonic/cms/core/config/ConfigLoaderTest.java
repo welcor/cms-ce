@@ -1,4 +1,4 @@
-package com.enonic.cms.core.boot;
+package com.enonic.cms.core.config;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,9 +12,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.env.StandardEnvironment;
 
 public class ConfigLoaderTest
 {
@@ -25,24 +22,16 @@ public class ConfigLoaderTest
 
     private ConfigLoader configLoader;
 
-    private MutablePropertySources sources;
-
     private ClassLoader classLoader;
 
     @Before
     public void setUp()
         throws Exception
     {
-        final StandardEnvironment env = new StandardEnvironment();
-        this.sources = env.getPropertySources();
-
-        this.sources.remove( StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME );
-        this.sources.remove( StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME );
-
         this.classLoader = Mockito.mock( ClassLoader.class );
 
         this.homeDir = this.folder.newFolder( "cms-home" );
-        this.configLoader = new ConfigLoader( this.homeDir, env );
+        this.configLoader = new ConfigLoader( this.homeDir );
         this.configLoader.setClassLoader( this.classLoader );
     }
 
@@ -50,8 +39,7 @@ public class ConfigLoaderTest
     {
         final Properties props = new Properties();
         props.setProperty( "system.param", "system.value" );
-
-        this.sources.addFirst( new PropertiesPropertySource( "system", props ) );
+        this.configLoader.addSystemProperties( props );
     }
 
     private void setupHomeProperties()

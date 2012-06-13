@@ -20,7 +20,7 @@ import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.http.HTTPService;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.security.SecurityService;

@@ -2,16 +2,15 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.boot;
+package com.enonic.cms.core.home;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
-import org.springframework.core.env.Environment;
 
 import static org.junit.Assert.*;
 
@@ -60,11 +59,14 @@ public class HomeResolverTest
     {
         assertTrue( this.validHomeDir.exists() );
 
-        final File homeDir = resolve( this.validHomeDir.getAbsolutePath(), null );
+        final HomeDir homeDir = resolve( this.validHomeDir.getAbsolutePath(), null );
         assertNotNull( homeDir );
-        assertTrue( homeDir.exists() );
-        assertTrue( homeDir.isDirectory() );
-        assertEquals( this.validHomeDir, homeDir );
+
+        final File homeDirFile = homeDir.toFile();
+        assertNotNull( homeDirFile );
+        assertTrue( homeDirFile.exists() );
+        assertTrue( homeDirFile.isDirectory() );
+        assertEquals( this.validHomeDir, homeDirFile );
     }
 
     @Test
@@ -72,20 +74,30 @@ public class HomeResolverTest
     {
         assertTrue( this.validHomeDir.exists() );
 
-        final File homeDir = resolve( null, this.validHomeDir.getAbsolutePath() );
+        final HomeDir homeDir = resolve( null, this.validHomeDir.getAbsolutePath() );
         assertNotNull( homeDir );
-        assertTrue( homeDir.exists() );
-        assertTrue( homeDir.isDirectory() );
-        assertEquals( this.validHomeDir, homeDir );
+
+        final File homeDirFile = homeDir.toFile();
+        assertNotNull( homeDirFile );
+        assertTrue( homeDirFile.exists() );
+        assertTrue( homeDirFile.isDirectory() );
+        assertEquals( this.validHomeDir, homeDirFile );
     }
 
-    private File resolve( final String propValue, final String envValue )
+    private HomeDir resolve( final String propValue, final String envValue )
     {
-        final Environment env = Mockito.mock( Environment.class );
-        Mockito.when( env.getProperty( "cms.home" ) ).thenReturn( propValue );
-        Mockito.when( env.getProperty( "CMS_HOME" ) ).thenReturn( envValue );
+        final Properties props = new Properties();
 
-        final HomeResolver resolver = new HomeResolver( env );
+        if (propValue != null) {
+            props.put( "cms.home", propValue );
+        }
+
+        if (envValue != null) {
+            props.put( "CMS_HOME", envValue );
+        }
+
+        final HomeResolver resolver = new HomeResolver();
+        resolver.addSystemProperties( props );
         return resolver.resolve();
     }
 }

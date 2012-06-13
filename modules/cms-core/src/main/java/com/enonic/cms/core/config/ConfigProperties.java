@@ -1,4 +1,4 @@
-package com.enonic.cms.core.boot;
+package com.enonic.cms.core.config;
 
 import java.util.Map;
 import java.util.Properties;
@@ -27,6 +27,11 @@ public final class ConfigProperties
                 return StringUtils.startsWith( input, prefix );
             }
         } );
+    }
+
+    public String getJdbcLogging()
+    {
+        return getProperty( "cms.jdbc.logging" );
     }
 
 }

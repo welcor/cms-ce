@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 
 public class StandardCacheBasicTest
     extends TestCase

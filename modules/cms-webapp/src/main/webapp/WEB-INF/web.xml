@@ -33,7 +33,7 @@
   </filter-mapping>
 
   <listener>
-    <listener-class>com.enonic.cms.core.boot.BootContextListener</listener-class>
+    <listener-class>com.enonic.cms.web.boot.BootContextListener</listener-class>
   </listener>
 
   <servlet>

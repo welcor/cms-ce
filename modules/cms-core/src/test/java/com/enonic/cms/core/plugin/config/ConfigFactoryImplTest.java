@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 
 import static org.junit.Assert.*;
 

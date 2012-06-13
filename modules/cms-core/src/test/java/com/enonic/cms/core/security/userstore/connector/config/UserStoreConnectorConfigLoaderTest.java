@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.enonic.vertical.VerticalProperties;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.security.userstore.config.InvalidUserStoreConfigException;
 
 import static org.junit.Assert.*;

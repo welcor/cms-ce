@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.PluginConfig;
 import com.enonic.cms.api.util.LogFacade;
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 
 @Component
 public final class ConfigFactoryImpl

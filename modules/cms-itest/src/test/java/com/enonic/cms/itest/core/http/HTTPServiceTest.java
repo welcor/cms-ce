@@ -18,7 +18,7 @@ import org.w3c.dom.Document;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.VerticalProperties;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.http.HTTPService;
 import com.enonic.cms.itest.util.MockHTTPServer;
 

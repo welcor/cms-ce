@@ -7,7 +7,6 @@ package com.enonic.vertical.adminweb;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +28,7 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.service.AdminService;

@@ -16,6 +16,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import junit.framework.Assert;
+
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.api.client.model.CreateImageContentParams;
@@ -42,7 +44,8 @@ import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class InternalClientImpl_CreateImageContentTest
     extends AbstractSpringTest
@@ -134,6 +137,71 @@ public class InternalClientImpl_CreateImageContentTest
         AssertTool.assertSingleXPathValueEquals( "/contentdata/images/image/height", contentDataXml, "200" );
         AssertTool.assertSingleXPathValueEquals( "/contentdata/images/image/binarydata/@key", contentDataXml,
                                                  binaryDataResolvedFromContentBinaryData.getBinaryDataKey().toString() );
+    }
+
+    @Test
+    public void testNoScaleImageCreated()
+        throws Exception
+    {
+        setUpContentAndCategory();
+
+        setRunningUser();
+
+        CreateImageContentParams params = new CreateImageContentParams();
+        params.categoryKey = fixture.findCategoryByName( "MyCategory" ).getKey().toInt();
+        params.publishFrom = new Date();
+        params.publishTo = null;
+        params.status = ContentStatus.STATUS_DRAFT;
+        params.contentData = createImageContentData( "1024" );
+
+        int contentKey = internalClient.createImageContent( params );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        ContentEntity persistedContent = fixture.findContentByKey( new ContentKey( contentKey ) );
+        assertNotNull( persistedContent );
+        assertEquals( "MyCategory", persistedContent.getCategory().getName() );
+
+        ContentVersionEntity persistedVersion = persistedContent.getMainVersion();
+        assertNotNull( persistedVersion );
+        assertEquals( "test binary", persistedVersion.getTitle() );
+        assertEquals( ContentStatus.STATUS_DRAFT, persistedVersion.getStatus().getKey() );
+
+        Set<ContentBinaryDataEntity> contentBinaryDatas = persistedVersion.getContentBinaryData();
+
+        assertEquals( 4, contentBinaryDatas.size() );
+
+        String[] names = new String[4];
+        int i = 0;
+        for ( ContentBinaryDataEntity contentBinaryData : contentBinaryDatas )
+        {
+            names[i++] = contentBinaryData.getBinaryData().getName();
+        }
+
+        assertArrayEquals( new String[]{"Dummy Name_small.jpeg", "Dummy Name_medium.jpeg", "Dummy Name_large.jpeg", "Dummy Name"}, names );
+    }
+
+    private static void assertArrayEquals( Object[] a1, Object[] a2 )
+    {
+        Assert.assertEquals( arrayToString( a1 ), arrayToString( a2 ) );
+    }
+
+    private static String arrayToString( Object[] a )
+    {
+        StringBuilder result = new StringBuilder( "[" );
+
+        for ( int i = 0; i < a.length; i++ )
+        {
+            result.append( i ).append( ": " ).append( a[i] );
+            if ( i < a.length - 1 )
+            {
+                result.append( ", " );
+            }
+        }
+
+        result.append( "]" );
+
+        return result.toString();
     }
 
     private void setRunningUser()

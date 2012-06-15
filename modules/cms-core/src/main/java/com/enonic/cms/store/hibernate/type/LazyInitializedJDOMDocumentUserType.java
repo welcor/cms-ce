@@ -22,9 +22,12 @@ import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 public class LazyInitializedJDOMDocumentUserType
     extends AbstractBaseUserType
 {
+    // for H2 database Types.VARBINARY has not enough size for XML data (255 bytes)
+    public static int JDOM_DOCUMENT_TYPE = Types.VARBINARY;
+
     public LazyInitializedJDOMDocumentUserType()
     {
-        super( LazyInitializedJDOMDocument.class, Types.VARBINARY );
+        super( LazyInitializedJDOMDocument.class, JDOM_DOCUMENT_TYPE );
     }
 
     public boolean isMutable()

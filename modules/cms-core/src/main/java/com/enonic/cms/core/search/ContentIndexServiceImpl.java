@@ -60,7 +60,7 @@ public class ContentIndexServiceImpl
 {
     public final static String CONTENT_INDEX_NAME = "cms";
 
-    public static final int COUNT_THRESHOULD_VALUE = 1000;
+    private static final int COUNT_THRESHOULD_VALUE = 1000;
 
     private IndexMappingProvider indexMappingProvider;
 

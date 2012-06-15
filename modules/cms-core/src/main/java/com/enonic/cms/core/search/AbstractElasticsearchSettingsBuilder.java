@@ -17,7 +17,7 @@ public abstract class AbstractElasticsearchSettingsBuilder
 
     ConfigProperties configProperties;
 
-    private Logger LOG = Logger.getLogger( AbstractElasticsearchSettingsBuilder.class.getName() );
+    private final Logger LOG = Logger.getLogger( AbstractElasticsearchSettingsBuilder.class.getName() );
 
     String subtractPrefixFromProperty( final String property, final String propertyPrefix )
     {

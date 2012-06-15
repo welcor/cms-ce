@@ -31,19 +31,13 @@ final class ConfigFileMappingProvider
         StringWriter writer = new StringWriter();
         try
         {
-
             IOUtils.copy( stream, writer, "UTF-8" );
-            final String mapping = writer.toString();
-
-            //System.out.println( "Mapping file loaded: " + mapping );
-
-            return mapping;
+            return writer.toString();
         }
         catch ( IOException e )
         {
             throw new ElasticSearchException( "Failed to get mapping-file as stream", e );
         }
-
     }
 
     private String createMappingFileName( final String indexName, final String indexType )

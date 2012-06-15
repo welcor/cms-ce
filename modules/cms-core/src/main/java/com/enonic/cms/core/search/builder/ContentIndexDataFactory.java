@@ -160,7 +160,6 @@ public final class ContentIndexDataFactory
     }
 
     private void addExtractedBinaryData( final ContentIndexData contentIndexData, final ContentDocument content )
-        throws Exception
     {
         BigText binaryData = content.getBinaryExtractedText();
 

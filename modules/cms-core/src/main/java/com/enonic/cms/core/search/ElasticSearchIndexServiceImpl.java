@@ -58,11 +58,11 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
 public class ElasticSearchIndexServiceImpl
     implements ElasticSearchIndexService
 {
-    protected static final SearchType DEFAULT_SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
+    private static final SearchType DEFAULT_SEARCH_TYPE = SearchType.QUERY_THEN_FETCH;
 
-    protected static final int MAX_NUM_SEGMENTS = 1;
+    private static final int MAX_NUM_SEGMENTS = 1;
 
-    protected static final boolean WAIT_FOR_MERGE = true;
+    private static final boolean WAIT_FOR_MERGE = true;
 
     private IndexSettingBuilder indexSettingBuilder;
 
@@ -70,7 +70,7 @@ public class ElasticSearchIndexServiceImpl
 
     private Client client;
 
-    private Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
+    private final Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
 
     @Override
     public void createIndex( String indexName )
@@ -302,20 +302,22 @@ public class ElasticSearchIndexServiceImpl
         return this.client.search( searchRequest ).actionGet();
     }
 
-
-    //TODO: How should this be handled
     private void parseSearchResultFailures( SearchResponse res )
     {
         if ( res.getFailedShards() > 0 )
         {
             final ShardSearchFailure[] shardFailures = res.getShardFailures();
 
+            StringBuilder reasonBuilder = new StringBuilder();
+
             for ( ShardSearchFailure failure : shardFailures )
             {
                 final String reason = failure.reason();
                 LOG.severe( "Status: " + failure.status() + " - Search failed on shard: " + reason );
-                throw new ContentIndexException( "Search failed: " + reason );
+                reasonBuilder.append( reason );
             }
+
+            throw new ContentIndexException( "Search failed: " + reasonBuilder.toString() );
         }
     }
 

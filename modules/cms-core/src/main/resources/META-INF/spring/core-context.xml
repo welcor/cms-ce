@@ -194,23 +194,12 @@
     <property name="localClient" ref="localClient"/>
   </bean>
 
-  <bean id="datasourceExecutorFactory" class="com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory"/>
-
-  <bean id="expressionFunctionsFactory"
-        class="com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory"/>
-
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
     <property name="directory" value="${cms.blobstore.dir}"/>
   </bean>
 
   <bean id="blobStore" class="com.enonic.cms.framework.blob.file.FileBlobStore">
     <property name="directory" value="${cms.blobstore.dir}"/>
-  </bean>
-
-  <bean id="fileResourceService" class="com.enonic.cms.store.resource.FileResourceServiceImpl">
-    <property name="blobStore" ref="blobStore"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
   </bean>
 
   <bean id="blobStoreGarbageCollector" class="com.enonic.cms.framework.blob.gc.GarbageCollector">
@@ -302,9 +291,6 @@
         class="com.enonic.cms.core.portal.processor.PageRequestProcessorFactory"/>
 
   <bean id="portalAccessService" class="com.enonic.cms.core.portal.PortalAccessService"/>
-
-  <bean id="datasourcesContextXmlCreator"
-        class="com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator"/>
 
   <bean id="datasourceInfoResolver" class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
 

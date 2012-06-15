@@ -22,7 +22,7 @@ import com.enonic.cms.core.config.ConfigProperties;
 /**
  * This class implements the cache.
  */
-@Component
+@Component("cacheFacadeManager")
 public final class StandardCacheManager
     implements CacheManager
 {

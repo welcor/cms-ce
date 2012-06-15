@@ -7,12 +7,12 @@ package com.enonic.cms.core.preview;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 
-@Component("previewService")
+@Service("previewService")
 class PreviewServiceImpl
     implements PreviewService
 {

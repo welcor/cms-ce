@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY nbsp "&#160;">
     ]>
@@ -6,7 +6,6 @@
                 xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
                 xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
 
   <xsl:namespace-alias stylesheet-prefix="x" result-prefix="xsl"/>
@@ -2830,7 +2829,7 @@
         </xsl:if>
 
         <x:variable name="uniqueId">
-          <xsl:value-of select="admin:uniqueId()"/>
+          <xsl:value-of select="admin:randomId()"/>
         </x:variable>
 
         <div class="radiobutton-group">

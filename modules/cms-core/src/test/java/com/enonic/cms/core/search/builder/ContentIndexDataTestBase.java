@@ -13,12 +13,16 @@ public abstract class ContentIndexDataTestBase
     {
         for ( ContentIndexDataElement contentDataElement : contentDataElements )
         {
-            final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentDataElement.getAllFieldValuesForElement();
-            for ( ContentIndexDataFieldValue contentIndexDataFieldValue : allFieldValuesForElement )
+
+            final Set<ContentIndexDataFieldAndValue> contentIndexDataFieldAndValues =
+                ContentIndexDataFieldValueSetFactory.create( contentDataElement );
+
+            final Set<ContentIndexDataFieldAndValue> allFieldAndValuesForElement = contentIndexDataFieldAndValues;
+            for ( ContentIndexDataFieldAndValue contentIndexDataFieldAndValue : allFieldAndValuesForElement )
             {
-                if ( name.equals( contentIndexDataFieldValue.getFieldName() ) )
+                if ( name.equals( contentIndexDataFieldAndValue.getFieldName() ) )
                 {
-                    final Object value = contentIndexDataFieldValue.getValue();
+                    final Object value = contentIndexDataFieldAndValue.getValue();
 
                     if ( expectedValueElements > 1 )
                     {
@@ -33,7 +37,6 @@ public abstract class ContentIndexDataTestBase
                             assertEquals( 1, ( (Collection) value ).size() );
                         }
                     }
-
                     return;
                 }
             }
@@ -42,4 +45,21 @@ public abstract class ContentIndexDataTestBase
         fail( "Did not find Element with name: " + name );
     }
 
+    void verifyElementDoesNotExist( Set<ContentIndexDataElement> contentDataElements, String name )
+    {
+        for ( ContentIndexDataElement contentDataElement : contentDataElements )
+        {
+            final Set<ContentIndexDataFieldAndValue> contentIndexDataFieldAndValues =
+                ContentIndexDataFieldValueSetFactory.create( contentDataElement );
+
+            final Set<ContentIndexDataFieldAndValue> allFieldAndValuesForElement = contentIndexDataFieldAndValues;
+            for ( ContentIndexDataFieldAndValue contentIndexDataFieldAndValue : allFieldAndValuesForElement )
+            {
+                if ( name.equals( contentIndexDataFieldAndValue.getFieldName() ) )
+                {
+                    fail( "Element should not exist: " + name );
+                }
+            }
+        }
+    }
 }

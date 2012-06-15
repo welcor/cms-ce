@@ -39,7 +39,6 @@ import static junit.framework.Assert.fail;
 public class ContentIndexDataFactoryTest
     extends IndexFieldNameConstants
 {
-
     ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
 
     @Test
@@ -62,7 +61,6 @@ public class ContentIndexDataFactoryTest
         {
             assertTrue( "Missing required field: " + field, indexDataAsString.contains( field ) );
         }
-
     }
 
     @Test
@@ -80,11 +78,14 @@ public class ContentIndexDataFactoryTest
 
     protected void verifyFieldName( ContentIndexData contentIndexData, String fieldName )
     {
-        for ( ContentIndexDataElement contentIndexDataElement : contentIndexData.getContentDataElements() )
+        for ( ContentIndexDataElement contentIndexDataElement : contentIndexData.getContentIndexDataElements() )
         {
-            final Set<ContentIndexDataFieldValue> allFieldValuesForElement = contentIndexDataElement.getAllFieldValuesForElement();
+            final Set<ContentIndexDataFieldAndValue> contentIndexDataFieldAndValues =
+                ContentIndexDataFieldValueSetFactory.create( contentIndexDataElement );
 
-            for ( ContentIndexDataFieldValue value : allFieldValuesForElement )
+            final Set<ContentIndexDataFieldAndValue> allFieldAndValuesForElement = contentIndexDataFieldAndValues;
+
+            for ( ContentIndexDataFieldAndValue value : allFieldAndValuesForElement )
             {
                 if ( value.getFieldName().equals( fieldName ) )
                 {
@@ -181,7 +182,7 @@ public class ContentIndexDataFactoryTest
 
         ContentIndexData indexData = contentIndexDataFactory.create( contentDocument );
 
-        final Set<ContentIndexDataElement> contentData = indexData.getContentDataElements();
+        final Set<ContentIndexDataElement> contentData = indexData.getContentIndexDataElements();
 
         verifyFieldName( indexData, CONTENTLOCATION_APPROVED_FIELDNAME );
         verifyFieldName( indexData, CONTENTLOCATION_UNAPPROVED_FIELDNAME );

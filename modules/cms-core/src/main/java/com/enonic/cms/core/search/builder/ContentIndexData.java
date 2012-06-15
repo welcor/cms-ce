@@ -16,9 +16,9 @@ public class ContentIndexData
 {
     private final ContentKey key;
 
-    private Set<ContentIndexDataElement> contentDataElements = Sets.newHashSet();
+    private final Set<ContentIndexDataElement> contentIndexDataElements = Sets.newHashSet();
 
-    private Set<ContentIndexDataElement> binaryDataElements = Sets.newHashSet();
+    private final Set<ContentIndexDataElement> binaryDataElements = Sets.newHashSet();
 
     public String getContentDataAsJsonString()
         throws Exception
@@ -34,7 +34,7 @@ public class ContentIndexData
 
     public XContentBuilder buildContentDataJson()
     {
-        return buildJsonForDataElements( contentDataElements );
+        return buildJsonForDataElements( contentIndexDataElements );
     }
 
     public XContentBuilder buildBinaryDataJson()
@@ -51,9 +51,12 @@ public class ContentIndexData
 
             for ( ContentIndexDataElement contentIndexDataElement : contentIndexDataElements )
             {
-                for ( ContentIndexDataFieldValue fieldValue : contentIndexDataElement.getAllFieldValuesForElement() )
+                final Set<ContentIndexDataFieldAndValue> contentIndexDataFieldAndValues =
+                    ContentIndexDataFieldValueSetFactory.create( contentIndexDataElement );
+
+                for ( ContentIndexDataFieldAndValue fieldAndValue : contentIndexDataFieldAndValues )
                 {
-                    builder.field( fieldValue.getFieldName(), fieldValue.getValue() );
+                    builder.field( fieldAndValue.getFieldName(), fieldAndValue.getValue() );
                 }
             }
 
@@ -78,16 +81,26 @@ public class ContentIndexData
         this.binaryDataElements.add( contentIndexDataElement );
     }
 
-    public void addContentData( String dataElementName, Object value )
+    public void addContentIndexDataElement( String dataElementName, Object value )
     {
-        ContentIndexDataElement contentIndexDataElement = doCreateContentIndexDataElement( dataElementName, value, true );
+        doAddContentIndexDataElement( dataElementName, value, true );
+    }
+
+    public void addContentIndexDataElement( String dataElementName, Object value, boolean includeOrderby )
+    {
+        doAddContentIndexDataElement( dataElementName, value, includeOrderby );
+    }
+
+    private void doAddContentIndexDataElement( final String dataElementName, final Object value, boolean includeOrderby )
+    {
+        ContentIndexDataElement contentIndexDataElement = doCreateContentIndexDataElement( dataElementName, value, includeOrderby );
 
         if ( contentIndexDataElement == null )
         {
             return;
         }
 
-        this.contentDataElements.add( contentIndexDataElement );
+        this.contentIndexDataElements.add( contentIndexDataElement );
     }
 
     private ContentIndexDataElement doCreateContentIndexDataElement( final String dataElementName, final Object value,
@@ -102,11 +115,11 @@ public class ContentIndexData
 
         if ( value instanceof Set )
         {
-            contentIndexDataElement = new ContentIndexDataElement( dataElementName, (Set) value, includeOrderby );
+            contentIndexDataElement = ContentIndexDataElementFactory.create( dataElementName, (Set) value, includeOrderby );
         }
         else
         {
-            contentIndexDataElement = new ContentIndexDataElement( dataElementName, Sets.newHashSet( value ), includeOrderby );
+            contentIndexDataElement = ContentIndexDataElementFactory.create( dataElementName, Sets.newHashSet( value ), includeOrderby );
         }
         return contentIndexDataElement;
     }
@@ -121,9 +134,9 @@ public class ContentIndexData
         return this.key;
     }
 
-    public Set<ContentIndexDataElement> getContentDataElements()
+    public Set<ContentIndexDataElement> getContentIndexDataElements()
     {
-        return contentDataElements;
+        return contentIndexDataElements;
     }
 
     public Set<ContentIndexDataElement> getBinaryDataElements()

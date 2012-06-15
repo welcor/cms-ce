@@ -38,7 +38,7 @@ public class ContentIndexDataAccessRightsBuilderTest
         final ContentIndexData contentIndexData = new ContentIndexData( new ContentKey( 1 ) );
         accessRightsBuilder.create( contentIndexData, contentAccessRights, Collections.<GroupKey, CategoryAccessEntity>emptyMap() );
 
-        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentIndexDataElements();
 
         verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_ACCESS_READ_FIELDNAME, 3 );
         verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_ACCESS_DELETE_FIELDNAME, 2 );
@@ -80,7 +80,7 @@ public class ContentIndexDataAccessRightsBuilderTest
 
         accessRightsBuilder.create( contentIndexData, contentAccessRights, categoryAccessRights );
 
-        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentDataElements();
+        final Set<ContentIndexDataElement> contentDataElements = contentIndexData.getContentIndexDataElements();
 
         verifyElementExistsAndNumberOfValues( contentDataElements, IndexFieldNameConstants.CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME,
                                               1 );

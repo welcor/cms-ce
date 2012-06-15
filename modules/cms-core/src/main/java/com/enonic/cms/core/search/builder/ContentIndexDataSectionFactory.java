@@ -46,8 +46,8 @@ public class ContentIndexDataSectionFactory
             }
         }
 
-        contentIndexData.addContentData( CONTENTLOCATION_APPROVED_FIELDNAME, sectionKeysApproved );
-        contentIndexData.addContentData( CONTENTLOCATION_UNAPPROVED_FIELDNAME, sectionKeysUnapproved );
+        contentIndexData.addContentIndexDataElement( CONTENTLOCATION_APPROVED_FIELDNAME, sectionKeysApproved );
+        contentIndexData.addContentIndexDataElement( CONTENTLOCATION_UNAPPROVED_FIELDNAME, sectionKeysUnapproved );
     }
 }
 

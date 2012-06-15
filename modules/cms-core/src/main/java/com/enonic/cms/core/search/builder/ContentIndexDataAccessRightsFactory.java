@@ -71,12 +71,12 @@ public class ContentIndexDataAccessRightsFactory
             }
         }
 
-        contentIndexData.addContentData( CONTENT_ACCESS_READ_FIELDNAME, readAccess );
-        contentIndexData.addContentData( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess );
-        contentIndexData.addContentData( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess );
-        contentIndexData.addContentData( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess );
-        contentIndexData.addContentData( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess );
-        contentIndexData.addContentData( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess );
+        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_READ_FIELDNAME, readAccess );
+        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess );
+        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess );
+        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess );
+        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess );
+        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess );
     }
 }
 

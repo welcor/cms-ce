@@ -69,17 +69,17 @@ public final class ContentIndexDataFactory
 
     private void addMetaData( ContentIndexData contentIndexData, ContentDocument content )
     {
-        contentIndexData.addContentData( CONTENT_KEY_FIELDNAME, content.getContentKey().toInt() );
-        contentIndexData.addContentData( TITLE_FIELDNAME, content.getTitle() );
-        contentIndexData.addContentData( TIMESTAMP_FIELDNAME, content.getTimestamp() );
-        contentIndexData.addContentData( PUBLISH_FROM_FIELDNAME, content.getPublishFrom() );
-        contentIndexData.addContentData( PUBLISH_TO_FIELDNAME, content.getPublishTo() );
-        contentIndexData.addContentData( TIMESTAMP_FIELDNAME, content.getTimestamp() );
-        contentIndexData.addContentData( STATUS_FIELDNAME, content.getStatus() );
-        contentIndexData.addContentData( PRIORITY_FIELDNAME, content.getPriority() );
-        contentIndexData.addContentData( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate() );
-        contentIndexData.addContentData( CONTENT_CREATED, content.getCreated() );
-        contentIndexData.addContentData( CONTENT_MODIFIED, content.getModified() );
+        contentIndexData.addContentIndexDataElement( CONTENT_KEY_FIELDNAME, content.getContentKey().toInt() );
+        contentIndexData.addContentIndexDataElement( TITLE_FIELDNAME, content.getTitle() );
+        contentIndexData.addContentIndexDataElement( TIMESTAMP_FIELDNAME, content.getTimestamp() );
+        contentIndexData.addContentIndexDataElement( PUBLISH_FROM_FIELDNAME, content.getPublishFrom() );
+        contentIndexData.addContentIndexDataElement( PUBLISH_TO_FIELDNAME, content.getPublishTo() );
+        contentIndexData.addContentIndexDataElement( TIMESTAMP_FIELDNAME, content.getTimestamp() );
+        contentIndexData.addContentIndexDataElement( STATUS_FIELDNAME, content.getStatus() );
+        contentIndexData.addContentIndexDataElement( PRIORITY_FIELDNAME, content.getPriority() );
+        contentIndexData.addContentIndexDataElement( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate() );
+        contentIndexData.addContentIndexDataElement( CONTENT_CREATED, content.getCreated() );
+        contentIndexData.addContentIndexDataElement( CONTENT_MODIFIED, content.getModified() );
 
         addUsers( contentIndexData, content );
     }
@@ -103,9 +103,10 @@ public final class ContentIndexDataFactory
             return;
         }
 
-        contentIndexData.addContentData( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null );
-        contentIndexData.addContentData( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null );
-        contentIndexData.addContentData( prefix + USER_QUALIFIED_NAME_POSTFIX, qualifiedName != null ? qualifiedName.getText() : null );
+        contentIndexData.addContentIndexDataElement( prefix + USER_KEY_POSTFIX, key != null ? key.getText() : null );
+        contentIndexData.addContentIndexDataElement( prefix + USER_NAME_POSTFIX, name != null ? name.getText() : null );
+        contentIndexData.addContentIndexDataElement( prefix + USER_QUALIFIED_NAME_POSTFIX,
+                                                     qualifiedName != null ? qualifiedName.getText() : null );
     }
 
     private void addCategory( ContentIndexData contentIndexData, ContentDocument content )
@@ -115,20 +116,20 @@ public final class ContentIndexDataFactory
         {
             return;
         }
-        contentIndexData.addContentData( CATEGORY_KEY_FIELDNAME, categoryKey.toInt() );
+        contentIndexData.addContentIndexDataElement( CATEGORY_KEY_FIELDNAME, categoryKey.toInt() );
 
         final SimpleText categoryName = content.getCategoryName();
         if ( categoryName == null || StringUtils.isNotBlank( categoryName.getText() ) )
         {
             return;
         }
-        contentIndexData.addContentData( CATEGORY_NAME_FIELDNAME, categoryName.getText() );
+        contentIndexData.addContentIndexDataElement( CATEGORY_NAME_FIELDNAME, categoryName.getText() );
     }
 
     private void addContentType( ContentIndexData contentIndexData, ContentDocument content )
     {
-        contentIndexData.addContentData( CONTENTTYPE_KEY_FIELDNAME, content.getContentTypeKey().toInt() );
-        contentIndexData.addContentData( CONTENTTYPE_NAME_FIELDNAME, content.getContentTypeName().getText() );
+        contentIndexData.addContentIndexDataElement( CONTENTTYPE_KEY_FIELDNAME, content.getContentTypeKey().toInt() );
+        contentIndexData.addContentIndexDataElement( CONTENTTYPE_NAME_FIELDNAME, content.getContentTypeName().getText() );
     }
 
     private void addSections( final ContentIndexData contentIndexData, final ContentDocument content )
@@ -176,7 +177,7 @@ public final class ContentIndexDataFactory
         for ( MenuItemKey sectionKey : orderedSections.keySet() )
         {
             final int position = orderedSections.get( sectionKey );
-            contentIndexData.addContentData( CONTENT_SECTION_ORDER_PREFIX + sectionKey.toString(), position );
+            contentIndexData.addContentIndexDataElement( CONTENT_SECTION_ORDER_PREFIX + sectionKey.toString(), position );
         }
     }
 

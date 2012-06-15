@@ -36,7 +36,7 @@ public class ContentIndexRequestCreatorTest
         throws Exception
     {
         ContentIndexData data = new ContentIndexData( new ContentKey( "1" ) );
-        data.addContentData( "contentdata", 1 );
+        data.addContentIndexDataElement( "contentdata", 1 );
         data.addBinaryData( "attachment", "This is a test-representation of binary data" );
 
         Set<IndexRequest> requests = contentIndexRequestCreator.createIndexRequests( "TEST_INDEX", data );
@@ -78,7 +78,7 @@ public class ContentIndexRequestCreatorTest
         throws Exception
     {
         ContentIndexData data = new ContentIndexData( new ContentKey( "1" ) );
-        data.addContentData( "contentdata", 1 );
+        data.addContentIndexDataElement( "contentdata", 1 );
 
         Set<IndexRequest> requests = contentIndexRequestCreator.createIndexRequests( "TEST_INDEX", data );
 

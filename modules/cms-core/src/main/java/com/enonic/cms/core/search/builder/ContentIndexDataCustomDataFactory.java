@@ -22,36 +22,38 @@ public class ContentIndexDataCustomDataFactory
 
     public void create( final ContentIndexData contentIndexData, final Collection<UserDefinedField> userDefinedFields )
     {
-        Set<String> allUserdataValue = new HashSet<String>();
+        final Set<String> allUserdataFieldValues = new HashSet<String>();
 
-        List<String> handledFieldNames = Lists.newArrayList();
+        final List<String> handledFieldNames = Lists.newArrayList();
 
-        for ( UserDefinedField userDefinedField : userDefinedFields )
+        for ( final UserDefinedField userDefinedField : userDefinedFields )
         {
             final String fieldName = userDefinedField.getName();
 
-            if ( handledFieldNames.contains( fieldName ) )
+            final boolean alreadyHandledThisField = handledFieldNames.contains( fieldName );
+
+            if ( alreadyHandledThisField )
             {
                 continue;
             }
 
-            Set<String> values = getAllValuesForFieldName( fieldName, userDefinedFields );
+            final Set<String> allValuesForField = getAllValuesForFieldName( fieldName, userDefinedFields );
 
-            contentIndexData.addContentData( fieldName, values );
+            contentIndexData.addContentIndexDataElement( fieldName, allValuesForField );
 
-            allUserdataValue.addAll( values );
+            allUserdataFieldValues.addAll( allValuesForField );
 
             handledFieldNames.add( fieldName );
         }
 
-        addAllUserdataField( contentIndexData, allUserdataValue );
+        addAllUserdataField( contentIndexData, allUserdataFieldValues );
     }
 
     private Set<String> getAllValuesForFieldName( String fieldName, final Collection<UserDefinedField> userDefinedFields )
     {
-        Set<String> values = Sets.newTreeSet();
+        final Set<String> values = Sets.newTreeSet();
 
-        for ( UserDefinedField userDefinedField : userDefinedFields )
+        for ( final UserDefinedField userDefinedField : userDefinedFields )
         {
             if ( fieldName.equals( userDefinedField.getName() ) )
             {
@@ -62,10 +64,9 @@ public class ContentIndexDataCustomDataFactory
         return values;
     }
 
-    //TODO: Check this
     private void addAllUserdataField( final ContentIndexData contentIndexData, final Set<String> allUserdataValue )
     {
-        contentIndexData.addContentData( ALL_USERDATA_FIELDNAME, allUserdataValue );
+        contentIndexData.addContentIndexDataElement( ALL_USERDATA_FIELDNAME, allUserdataValue, false );
     }
 
 

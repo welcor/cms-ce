@@ -68,6 +68,8 @@ public interface AdminService
 
     public void updateAccessRights( User user, String xmlData );
 
+    public void updateIndexCategory( CategoryKey categoryKey );
+
     public void updateMenuItem( User user, String xmlData );
 
     public void removeMenuItem( User user, int mikey );

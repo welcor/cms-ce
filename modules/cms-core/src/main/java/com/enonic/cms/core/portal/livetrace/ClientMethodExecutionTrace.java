@@ -1,8 +1,8 @@
 package com.enonic.cms.core.portal.livetrace;
 
-import java.util.List;
-
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 public class ClientMethodExecutionTrace
     implements Trace, ContentIndexQuerier

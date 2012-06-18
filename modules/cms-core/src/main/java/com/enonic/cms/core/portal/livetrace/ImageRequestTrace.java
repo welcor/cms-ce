@@ -1,8 +1,7 @@
 package com.enonic.cms.core.portal.livetrace;
 
-import org.joda.time.DateTime;
-
 import com.enonic.cms.core.content.ContentKey;
+import org.joda.time.DateTime;
 
 /**
  * Oct 11, 2010

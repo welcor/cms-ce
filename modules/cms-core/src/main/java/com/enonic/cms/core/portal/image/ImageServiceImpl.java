@@ -24,7 +24,6 @@ import com.enonic.cms.framework.util.ImageHelper;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.binary.AttachmentNotFoundException;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageResponse;
 import com.enonic.cms.core.image.cache.ImageCache;
@@ -121,12 +120,14 @@ public final class ImageServiceImpl
             }
             catch ( AttachmentNotFoundException e )
             {
-                LOG.error( "Cannot read image with key {} from configured BLOB directory ( {} ). Check your CMS configuration.", blobKey, directory.getAbsolutePath() );
+                LOG.error( "Cannot read image with key {} from configured BLOB directory ( {} ). Check your CMS configuration.", blobKey,
+                           directory.getAbsolutePath() );
                 return ImageResponse.notFound();
             }
             catch ( Exception e )
             {
-                throw new ImageProcessorException( "Failed to process image: " + e.getMessage(), e );
+                throw new ImageProcessorException(
+                    "Failed to process image [contentKey=" + imageRequest.getContentKey() + "] : " + e.getMessage(), e );
             }
         }
         finally

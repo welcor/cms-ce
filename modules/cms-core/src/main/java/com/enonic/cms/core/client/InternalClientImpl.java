@@ -78,7 +78,7 @@ import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.preference.Preference;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
@@ -135,8 +135,6 @@ import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.resource.ResourceXmlCreator;
 import com.enonic.cms.core.security.ImpersonateCommand;
 import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.security.UserParser;
-import com.enonic.cms.core.security.UserStoreParser;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -154,16 +152,20 @@ import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserParser;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
+import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.time.TimeService;
+import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
@@ -181,6 +183,8 @@ public final class InternalClientImpl
 {
 
     private static final Logger LOG = LoggerFactory.getLogger( InternalClientImpl.class );
+
+    protected static final int DEFAULT_COUNT = 200;
 
     private InternalClientContentService internalClientContentService;
 
@@ -849,16 +853,17 @@ public final class InternalClientImpl
             StoreNewUserCommand storeNewUserCommand = new StoreNewUserCommand();
             storeNewUserCommand.setUsername( params.username );
             storeNewUserCommand.setEmail( params.email );
+            UserFields userFields = new UserInfoTransformer().toUserFields( params.userInfo );
             if ( params.displayName != null )
             {
                 storeNewUserCommand.setDisplayName( params.displayName );
             }
             else
             {
-                new DisplayNameResolver( userStore.getConfig() ).resolveDisplayName( params.username, params.displayName, params.userInfo );
+                new DisplayNameResolver( userStore.getConfig() ).resolveDisplayName( params.username, params.displayName, userFields );
             }
             storeNewUserCommand.setPassword( params.password );
-            storeNewUserCommand.setUserInfo( params.userInfo );
+            storeNewUserCommand.setUserFields( userFields );
 
             storeNewUserCommand.setType( UserType.NORMAL );
             storeNewUserCommand.setUserStoreKey( userStore.getKey() );
@@ -907,9 +912,7 @@ public final class InternalClientImpl
 
             command.setEmail( params.email );
             command.setDisplayName( params.displayName );
-            command.setUserInfo( params.userInfo );
-
-            computeBirthdateForModify( command );
+            command.setUserFields( new UserInfoTransformer().toUserFields( params.userInfo ) );
 
             userStoreService.updateUser( command );
         }
@@ -922,25 +925,6 @@ public final class InternalClientImpl
     private UserStoreEntity getUserStoreEntity( String userstoreName )
     {
         return new UserStoreParser( userStoreDao ).parseUserStore( userstoreName );
-    }
-
-    /**
-     * To change the birthday to null (read: remove it) you must use updateStrategy = UPDATE
-     * Currently there is no possibility to MODIFY birthday to null
-     */
-    private void computeBirthdateForModify( UpdateUserCommand command )
-    {
-        if ( command.isModifyStrategy() && command.getUserInfo().getBirthday() == null )
-        {
-            final UserEntity userToUpdate = userDao.findSingleBySpecification( command.getSpecification() );
-            if ( userToUpdate == null )
-            {
-                throw new IllegalArgumentException( "User does not exists: " + command.getSpecification() );
-            }
-            final Date birthday = userToUpdate.getUserInfo().getBirthday();
-
-            command.getUserInfo().setBirthday( birthday );
-        }
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -1462,7 +1446,7 @@ public final class InternalClientImpl
 
             contentByCategoryQuery.setUser( user );
             contentByCategoryQuery.setIndex( 0 );
-            contentByCategoryQuery.setCount( Integer.MAX_VALUE );
+            contentByCategoryQuery.setCount( DEFAULT_COUNT );
             contentByCategoryQuery.setQuery( params.query );
             if ( params.includeOfflineContent )
             {

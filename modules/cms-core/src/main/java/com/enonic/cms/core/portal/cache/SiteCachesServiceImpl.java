@@ -20,7 +20,7 @@ import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SitePropertyNames;
 
 public class SiteCachesServiceImpl
-        implements SiteCachesService
+    implements SiteCachesService
 {
     private static final Logger LOG = LoggerFactory.getLogger( SiteCachesServiceImpl.class );
 

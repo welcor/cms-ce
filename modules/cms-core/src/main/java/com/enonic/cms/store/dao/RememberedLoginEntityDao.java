@@ -4,12 +4,12 @@
  */
 package com.enonic.cms.store.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.RememberedLoginEntity;
 import com.enonic.cms.core.security.RememberedLoginKey;
 import com.enonic.cms.core.security.user.UserKey;
-
-import org.springframework.stereotype.Repository;
 
 @Repository("rememberedLoginDao")
 public final class RememberedLoginEntityDao
@@ -34,4 +34,13 @@ public final class RememberedLoginEntityDao
                                        new String[]{"userKey", "siteKey"}, new Object[]{userKey, siteKey} );
     }
 
+    @Override
+    public void removeUsage( UserKey user )
+    {
+        for ( RememberedLoginEntity rememberedLogin : findByNamedQuery( RememberedLoginEntity.class, "RememberedLoginEntity.findByUser",
+                                                                        "userKey", user ) )
+        {
+            delete( rememberedLogin );
+        }
+    }
 }

@@ -5,9 +5,10 @@
 package com.enonic.cms.core.content.imports;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,12 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStorer;
 import com.enonic.cms.core.content.command.UnassignContentCommand;
 import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
-@Component("importService")
+@Service("importService")
 public class ImportServiceImpl
     implements ImportService
 {
@@ -36,35 +38,50 @@ public class ImportServiceImpl
     @Autowired
     private ContentIndexService contentIndexService;
 
+    @Autowired
+    private IndexTransactionService indexTransactionService;
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     public boolean importData( ImportDataReader importDataReader, ImportJob importJob )
     {
-        return doimportData( importDataReader, importJob );
+        return doImportData( importDataReader, importJob );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
     public boolean importDataWithoutRequiresNewPropagation( ImportDataReader importDataReader, ImportJob importJob )
     {
-        return doimportData( importDataReader, importJob );
+        return doImportData( importDataReader, importJob );
     }
 
-    private boolean doimportData( ImportDataReader importDataReader, ImportJob importJob )
+    private boolean doImportData( ImportDataReader importDataReader, ImportJob importJob )
     {
         try
         {
-            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataReader );
+            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataReader, indexTransactionService );
             contentImporter.setContentStorer( contentStorer );
             contentImporter.setContentDao( contentDao );
 
             RelatedContentFinder relatedContentFinder = new RelatedContentFinder( contentTypeDao, contentIndexService );
             contentImporter.setRelatedContentFinder( relatedContentFinder );
 
-            return contentImporter.importData();
+            final boolean result = contentImporter.importData();
+            updateIndexWithDeletedContent( importJob.getImportResult() );
+            return result;
         }
         finally
         {
-            /* Clear all intances in first level cache since the transaction boundary doesn't (single session) */
+            /* Clear all instances in first level cache since the transaction boundary doesn't (single session) */
             contentDao.getHibernateTemplate().clear();
+        }
+    }
+
+    private void updateIndexWithDeletedContent( ImportResult importResult )
+    {
+        indexTransactionService.startTransaction();
+        final Map<ContentKey, String> deleted = importResult.getDeleted();
+        for ( ContentKey contentKey : deleted.keySet() )
+        {
+            indexTransactionService.deleteContent( contentKey );
         }
     }
 

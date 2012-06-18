@@ -14,12 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.enonic.cms.framework.util.HttpServletUtil;
-import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.service.AdminService;
-
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.service.AdminService;
 
 public class BinaryDataServlet
     extends AbstractAdminwebServlet

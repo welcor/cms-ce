@@ -78,6 +78,7 @@ public class ContentServiceImpl_queryContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, admin_browse" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // setup content assigned to content-creator
         CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyContentType" ).getContentTypeConfig() );
@@ -85,6 +86,7 @@ public class ContentServiceImpl_queryContentTest
         ContentKey expectedContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", "content-creator", ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
                                         "content-creator", contentData ) );
+        fixture.flushIndexTransaction();
 
         // setup another content assigned to some one else
         contentService.createContent(
@@ -102,6 +104,7 @@ public class ContentServiceImpl_queryContentTest
         assignCommand.setContentKey( expectedContentKey );
 
         contentService.assignContent( assignCommand );
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentByCategoryQuery contentByCategoryQuery = new ContentByCategoryQuery();

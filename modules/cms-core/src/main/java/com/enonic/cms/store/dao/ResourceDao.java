@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.store.dao;
 
+import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.resource.ResourceFile;
 
 
 public interface ResourceDao

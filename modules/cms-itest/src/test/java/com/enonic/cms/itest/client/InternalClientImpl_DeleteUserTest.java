@@ -7,6 +7,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.api.client.model.CreateUserParams;
@@ -25,6 +26,7 @@ public class InternalClientImpl_DeleteUserTest
     extends AbstractSpringTest
 {
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     @Autowired
@@ -47,7 +49,7 @@ public class InternalClientImpl_DeleteUserTest
         throws Exception
     {
         // setup:
-        clientLogin( "admin", "password" );
+        clientLogin( "admin" );
         createUser( "testuserstore", "myuser", "mypassword", "myemail@test.com", "My User" );
         fixture.flushAndClearHibernateSesssion();
 
@@ -69,7 +71,7 @@ public class InternalClientImpl_DeleteUserTest
         throws Exception
     {
         // setup:
-        clientLogin( "admin", "password" );
+        clientLogin( "admin" );
         UserKey userKey = createUser( "testuserstore", "myuser", "mypassword", "myemail@test.com", "My User" );
         fixture.flushAndClearHibernateSesssion();
 
@@ -97,7 +99,7 @@ public class InternalClientImpl_DeleteUserTest
         return new UserKey( internalClient.createUser( params ) );
     }
 
-    private void clientLogin( String username, String password )
+    private void clientLogin( String username )
     {
         UserEntity user = fixture.findUserByName( username );
         PortalSecurityHolder.setLoggedInUser( user.getKey() );

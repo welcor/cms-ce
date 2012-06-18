@@ -4,10 +4,15 @@
  */
 package com.enonic.cms.core.content.index;
 
+import java.util.Collection;
+import java.util.List;
+
+import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.IndexType;
 
 /**
  * This interface defines the content index service.
@@ -19,7 +24,7 @@ public interface ContentIndexService
      * @param contentKey The key of the ContentEntity that should be deleted.
      * @return The number of entities that has been deleted.
      */
-    public int remove( ContentKey contentKey );
+    public void remove( ContentKey contentKey );
 
 
     /**
@@ -41,10 +46,14 @@ public interface ContentIndexService
      */
     public void index( ContentDocument doc, boolean deleteExisting );
 
+    public void index( ContentDocument doc );
+
+    public void indexBulk( List<ContentDocument> docs );
+
     /**
      * Return true if content is indexed.
      */
-    public boolean isIndexed( ContentKey contentKey );
+    public boolean isIndexed( ContentKey contentKey, final IndexType indexType );
 
     /**
      * Query the content.
@@ -60,4 +69,14 @@ public interface ContentIndexService
      * Query the index values.
      */
     public AggregatedResult query( AggregatedQuery query );
+
+    public void optimize();
+
+    public void flush();
+
+    public void initializeMapping();
+
+    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey );
 }
+
+

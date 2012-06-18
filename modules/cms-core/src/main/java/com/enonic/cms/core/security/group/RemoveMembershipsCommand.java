@@ -4,11 +4,11 @@
  */
 package com.enonic.cms.core.security.group;
 
+import com.enonic.cms.core.security.user.UserKey;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import com.enonic.cms.core.security.user.UserKey;
 
 public class RemoveMembershipsCommand
 {

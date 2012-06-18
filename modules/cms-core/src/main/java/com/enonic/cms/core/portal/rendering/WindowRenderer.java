@@ -215,7 +215,7 @@ public class WindowRenderer
             {
                 WindowRenderingTracer.startConcurrencyBlockTimer( windowRenderingTrace );
                 locker.lock();
-                WindowRenderingTracer.stopConcurrencyBlockTimer( windowRenderingTrace );
+                WindowRenderingTracer.stopConcurrencyBlockTimer(windowRenderingTrace);
 
                 // see if window result is in cache
                 final CachedObject cachedPortletHolder = pageCacheService.getCachedPortletWindow( cacheKey );
@@ -367,7 +367,7 @@ public class WindowRenderer
             TraceMarkerHelper.wrapResultWithPortletMarker( portletResult, portletTraceInfo );
         }
 
-        portletResult.stripXHTMLNamespaces();
+        //portletResult.stripXHTMLNamespaces();
 
         return portletResult;
     }

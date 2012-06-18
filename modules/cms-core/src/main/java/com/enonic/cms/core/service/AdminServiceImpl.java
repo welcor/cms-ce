@@ -34,6 +34,7 @@ import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
@@ -44,23 +45,25 @@ import com.enonic.cms.core.structure.page.template.PageTemplateType;
 public class AdminServiceImpl
     implements AdminService
 {
-
     private static final int TIMEOUT_24HOURS = 86400;
 
     @Autowired
-    public void setAdminEngine( AdminEngine value )
-    {
-        adminEngine = value;
-    }
-
     protected AdminEngine adminEngine;
 
+    @Autowired
     private ResourceService resourceService;
 
     @Autowired
+    private IndexTransactionService indexTransactionService;
+
     public void setResourceService( ResourceService value )
     {
         this.resourceService = value;
+    }
+
+    public void setAdminEngine( AdminEngine value )
+    {
+        adminEngine = value;
     }
 
     public XMLDocument getPageTemplates( PageTemplateType type )
@@ -158,6 +161,13 @@ public class AdminServiceImpl
     public void updateAccessRights( User user, String xmlData )
     {
         adminEngine.updateAccessRights( user, xmlData );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updateIndexCategory( CategoryKey categoryKey )
+    {
+        indexTransactionService.startTransaction();
+        indexTransactionService.updateCategory( categoryKey );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

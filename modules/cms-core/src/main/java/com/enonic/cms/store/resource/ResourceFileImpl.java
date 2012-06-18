@@ -65,13 +65,13 @@ final class ResourceFileImpl
 
     public void setData( XMLDocument data )
     {
-        LazyInitializedJDOMDocument doc =  LazyInitializedJDOMDocument.parse(data.getAsJDOMDocument());
+        LazyInitializedJDOMDocument doc = LazyInitializedJDOMDocument.parse( data.getAsJDOMDocument() );
         doSetData( doc.getDocumentAsString().getBytes() );
     }
 
     public void setData( Document data )
     {
-        LazyInitializedJDOMDocument doc =  LazyInitializedJDOMDocument.parse(data);
+        LazyInitializedJDOMDocument doc = LazyInitializedJDOMDocument.parse( data );
         doSetData( doc.getDocumentAsString().getBytes() );
     }
 

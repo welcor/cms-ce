@@ -22,6 +22,7 @@ public final class IndexDefinitionBuilder
     private IndexDefinition buildSingle( Element elem )
     {
         String xpath = elem.getAttributeValue( "xpath" );
+
         if ( xpath == null )
         {
             /* Xpath missing - invalid index def */
@@ -29,6 +30,7 @@ public final class IndexDefinitionBuilder
         }
 
         String name = elem.getAttributeValue( "name" );
+
         if ( name == null )
         {
             /* Name missing - old index def */

@@ -15,10 +15,6 @@ import org.joda.time.DateTime;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
-import com.enonic.cms.core.language.LanguageEntity;
-import com.enonic.cms.core.language.LanguageResolver;
-import com.enonic.cms.core.time.TimeService;
-
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
@@ -28,33 +24,32 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.ContentVersionKey;
+import com.enonic.cms.core.language.LanguageEntity;
+import com.enonic.cms.core.language.LanguageResolver;
+import com.enonic.cms.core.portal.PageRequestType;
+import com.enonic.cms.core.portal.ReservedLocalPaths;
+import com.enonic.cms.core.portal.rendering.PageRenderer;
+import com.enonic.cms.core.portal.rendering.PageRendererContext;
+import com.enonic.cms.core.portal.rendering.PageRendererFactory;
+import com.enonic.cms.core.portal.rendering.RegionsResolver;
+import com.enonic.cms.core.portal.rendering.RenderedPageResult;
+import com.enonic.cms.core.preview.ContentPreviewContext;
+import com.enonic.cms.core.preview.PreviewContext;
+import com.enonic.cms.core.preview.PreviewService;
+import com.enonic.cms.core.resolver.ResolverContext;
+import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
+import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.Regions;
+import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
-
-import com.enonic.cms.core.portal.rendering.PageRenderer;
-import com.enonic.cms.core.portal.rendering.PageRendererContext;
-import com.enonic.cms.core.portal.rendering.PageRendererFactory;
-import com.enonic.cms.core.portal.rendering.RegionsResolver;
-import com.enonic.cms.core.preview.ContentPreviewContext;
-import com.enonic.cms.core.preview.PreviewContext;
-import com.enonic.cms.core.preview.PreviewService;
-import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
-import com.enonic.cms.core.resolver.locale.LocaleResolverService;
-
-import com.enonic.cms.core.content.ContentVersionEntity;
-
-import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.ReservedLocalPaths;
-import com.enonic.cms.core.portal.rendering.RenderedPageResult;
-import com.enonic.cms.core.resolver.ResolverContext;
-
-import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
 /**
  * Feb 22, 2010

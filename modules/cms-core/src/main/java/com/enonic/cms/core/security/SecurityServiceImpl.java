@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
 
@@ -37,7 +37,7 @@ import com.enonic.cms.store.dao.GroupQuery;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
-@Component("securityService")
+@Service("securityService")
 public class SecurityServiceImpl
     implements SecurityService
 {

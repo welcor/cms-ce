@@ -4,10 +4,9 @@
  */
 package com.enonic.cms.core.security.user;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-
 import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.core.user.field.UserFields;
 
 /**
  * Created by rmy - Date: Sep 18, 2009
@@ -39,41 +38,41 @@ public class AbstractUserPropertyResolver
         this.userStoreConfig = userStoreConfig;
     }
 
-    protected void setUserInfoFields( UserInfo userInfo )
+    protected void setUserInfoFields( UserFields userFields )
     {
         if ( isUserFieldActive( UserFieldType.PREFIX ) )
         {
-            this.prefix = userInfo.getPrefix();
+            this.prefix = userFields.getPrefix();
         }
 
         if ( isUserFieldActive( UserFieldType.FIRST_NAME ) )
         {
-            this.firstName = userInfo.getFirstName();
+            this.firstName = userFields.getFirstName();
         }
 
         if ( isUserFieldActive( UserFieldType.MIDDLE_NAME ) )
         {
-            this.middleName = userInfo.getMiddleName();
+            this.middleName = userFields.getMiddleName();
         }
 
         if ( isUserFieldActive( UserFieldType.LAST_NAME ) )
         {
-            this.lastName = userInfo.getLastName();
+            this.lastName = userFields.getLastName();
         }
 
         if ( isUserFieldActive( UserFieldType.SUFFIX ) )
         {
-            this.suffix = userInfo.getSuffix();
+            this.suffix = userFields.getSuffix();
         }
 
         if ( isUserFieldActive( UserFieldType.NICK_NAME ) )
         {
-            this.nickName = userInfo.getNickName();
+            this.nickName = userFields.getNickName();
         }
 
         if ( isUserFieldActive( UserFieldType.INITIALS ) )
         {
-            this.initials = userInfo.getInitials();
+            this.initials = userFields.getInitials();
         }
     }
 

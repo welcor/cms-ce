@@ -15,6 +15,8 @@ public class ContentIndexQueryTrace
 
     private MaxLengthedString query;
 
+    private MaxLengthedString translatedQuery;
+
     private String contentFilter;
 
     private String sectionFilter;
@@ -74,6 +76,16 @@ public class ContentIndexQueryTrace
     void setQuery( String query )
     {
         this.query = new MaxLengthedString( query, 6000 );
+    }
+
+    public MaxLengthedString getTranslatedQuery()
+    {
+        return translatedQuery;
+    }
+
+    public void setTranslatedQuery( final MaxLengthedString translatedQuery )
+    {
+        this.translatedQuery = translatedQuery;
     }
 
     public String getContentFilter()

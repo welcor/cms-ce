@@ -1,9 +1,9 @@
 package com.enonic.vertical.adminweb;
 
+import org.jdom.Element;
+
 import java.util.Map;
 import java.util.Properties;
-
-import org.jdom.Element;
 
 public class PropertiesXmlCreator
 {

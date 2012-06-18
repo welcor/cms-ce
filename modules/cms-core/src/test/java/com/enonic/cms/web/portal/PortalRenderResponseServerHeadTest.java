@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.enonic.cms.core.Attribute;
+import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
@@ -24,8 +25,6 @@ import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.server.DeploymentAndRequestSetup;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
-
-import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.web.portal.page.PortalRenderResponseServer;
 
 import static org.junit.Assert.*;

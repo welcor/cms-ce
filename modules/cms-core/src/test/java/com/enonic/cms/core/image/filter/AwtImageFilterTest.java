@@ -9,6 +9,7 @@ import org.junit.Before;
 public abstract class AwtImageFilterTest
 {
     private BufferedImage opaque;
+
     private BufferedImage transparent;
 
     @Before

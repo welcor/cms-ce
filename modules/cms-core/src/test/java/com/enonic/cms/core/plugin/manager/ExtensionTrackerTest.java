@@ -1,43 +1,48 @@
 package com.enonic.cms.core.plugin.manager;
 
-import com.enonic.cms.api.plugin.ext.Extension;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+
+import com.enonic.cms.api.plugin.ext.Extension;
+
 import static org.junit.Assert.*;
-import java.util.List;
 
 public class ExtensionTrackerTest
 {
     private ExtensionTracker tracker;
+
     private ExtensionHolder holder;
+
     private BundleContext context;
 
     @Before
     public void setUp()
     {
-        this.context = Mockito.mock(BundleContext.class);
+        this.context = Mockito.mock( BundleContext.class );
         this.holder = new ExtensionHolder();
-        this.tracker = new ExtensionTracker(this.context, this.holder);
+        this.tracker = new ExtensionTracker( this.context, this.holder );
     }
 
     @Test
     public void testAddRemove()
     {
-        final Extension ext = Mockito.mock(Extension.class);
-        final ServiceReference ref = Mockito.mock(ServiceReference.class);
-        Mockito.when(this.context.getService(ref)).thenReturn(ext);
+        final Extension ext = Mockito.mock( Extension.class );
+        final ServiceReference ref = Mockito.mock( ServiceReference.class );
+        Mockito.when( this.context.getService( ref ) ).thenReturn( ext );
 
-        this.tracker.addingService(ref);
+        this.tracker.addingService( ref );
         final List<Extension> list1 = this.holder.getAll();
-        assertNotNull(list1);
-        assertEquals(1, list1.size());
+        assertNotNull( list1 );
+        assertEquals( 1, list1.size() );
 
-        this.tracker.removedService(ref, ext);
+        this.tracker.removedService( ref, ext );
         final List<Extension> list2 = this.holder.getAll();
-        assertNotNull(list2);
-        assertEquals(0, list2.size());
+        assertNotNull( list2 );
+        assertEquals( 0, list2.size() );
     }
 }

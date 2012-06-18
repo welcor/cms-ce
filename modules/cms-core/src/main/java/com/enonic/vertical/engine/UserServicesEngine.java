@@ -4,8 +4,6 @@
  */
 package com.enonic.vertical.engine;
 
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
@@ -15,6 +13,9 @@ import com.enonic.vertical.engine.handlers.ContentHandler;
 import com.enonic.vertical.engine.handlers.LogHandler;
 import com.enonic.vertical.engine.handlers.MenuHandler;
 import com.enonic.vertical.engine.handlers.UserHandler;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.security.user.User;

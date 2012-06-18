@@ -7,6 +7,7 @@ package com.enonic.cms.web;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.DispatcherServlet;
+
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.server.service.servlet.OriginalUrlResolver;

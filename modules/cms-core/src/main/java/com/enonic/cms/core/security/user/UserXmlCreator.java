@@ -17,7 +17,6 @@ import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.core.AbstractPagedXmlCreator;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupXmlCreator;
-import com.enonic.cms.core.security.user.field.UserInfoXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 
 public class UserXmlCreator
@@ -31,7 +30,7 @@ public class UserXmlCreator
 
     private final GroupXmlCreator groupXmlCreator;
 
-    private final UserInfoXmlCreator userInfoXmlCreator = new UserInfoXmlCreator();
+    private final UserFieldsXmlCreator userFieldsXmlCreator = new UserFieldsXmlCreator();
 
     public UserXmlCreator( final GroupXmlCreator groupXmlCreator )
     {
@@ -145,16 +144,16 @@ public class UserXmlCreator
 
         if ( includeUserFields )
         {
-            Element userFieldsRootEl = null;
+            Element userFieldsRootEl;
             if ( wrappUserFieldsInBlockElement )
             {
-                userFieldsRootEl = userInfoXmlCreator.createUserInfoElement( user );
+                userFieldsRootEl = userFieldsXmlCreator.createUserInfoElement( user );
                 userFieldsRootEl.setAttribute( "oid", "dummy" );
                 userEl.addContent( userFieldsRootEl );
             }
             else
             {
-                userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserInfo(), false );
+                userFieldsXmlCreator.addUserInfoToElement( userEl, user.getUserFields(), false );
                 userFieldsRootEl = userEl;
             }
             userFieldsRootEl.addContent( 0, new Element( "email" ).setText( user.getEmail() ) );
@@ -215,7 +214,7 @@ public class UserXmlCreator
 
         if ( includeUserFields )
         {
-            userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserInfo(), false );
+            userFieldsXmlCreator.addUserInfoToElement( userEl, user.getUserFields(), false );
         }
 
         return userEl;

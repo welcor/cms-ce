@@ -7,11 +7,16 @@ package com.enonic.cms.itest.datasources;
 import java.util.Date;
 
 import org.jdom.Document;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -49,6 +54,9 @@ import com.enonic.cms.store.dao.UserDao;
 
 import static org.junit.Assert.*;
 
+@TransactionConfiguration(defaultRollback = true)
+@DirtiesContext
+@Transactional
 public class DataSourceServiceImpl_relatedContentTest
     extends AbstractSpringTest
 {
@@ -118,6 +126,7 @@ public class DataSourceServiceImpl_relatedContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyOtherCategory", "content-querier", "read, admin_browse" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     @Test
@@ -134,6 +143,8 @@ public class DataSourceServiceImpl_relatedContentTest
         ContentKey contentB = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Content B", commonChildContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that 2 content is created
         assertEquals( 3, fixture.countAllContent() );
@@ -184,6 +195,8 @@ public class DataSourceServiceImpl_relatedContentTest
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
 
+        fixture.flushIndexTransaction();
+
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );
 
@@ -224,16 +237,21 @@ public class DataSourceServiceImpl_relatedContentTest
         // setup: create same content in two different categories
         ContentKey grandChildContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Grand child" ), "content-creator" ) );
+        fixture.flushIndexTransaction();
 
         ContentKey sonContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Son", grandChildContentKey ), "content-creator" ) );
+        fixture.flushIndexTransaction();
 
         ContentKey daughterContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Daughter" ), "content-creator" ) );
+        fixture.flushIndexTransaction();
 
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );
@@ -256,6 +274,9 @@ public class DataSourceServiceImpl_relatedContentTest
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
 
+        XMLOutputter outputter = new XMLOutputter( Format.getPrettyFormat() );
+        System.out.println( outputter.outputString( jdomDocResult ) );
+
         AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "4" );
         AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, fatherContentKey.toString(), daughterContentKey.toString(),
                                       sonContentKey.toString(), grandChildContentKey.toString() );
@@ -277,16 +298,21 @@ public class DataSourceServiceImpl_relatedContentTest
         // setup: create same content in two different categories
         ContentKey grandChildContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Grand child" ), "content-creator" ) );
+        fixture.flushIndexTransaction();
 
         ContentKey sonContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Son", grandChildContentKey ), "content-creator" ) );
+        fixture.flushIndexTransaction();
 
         ContentKey daughterContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Daughter" ), "content-creator" ) );
+        fixture.flushIndexTransaction();
 
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );
@@ -308,6 +334,9 @@ public class DataSourceServiceImpl_relatedContentTest
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
+
+        XMLOutputter outputter = new XMLOutputter( Format.getPrettyFormat() );
+        System.out.println( outputter.outputString( jdomDocResult ) );
 
         AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "4" );
         AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, fatherContentKey.toString(), daughterContentKey.toString(),
@@ -428,6 +457,8 @@ public class DataSourceServiceImpl_relatedContentTest
         command2.setSection( fixture.findMenuItemByName( "MyLinks" ).getKey() );
         command2.setContent( contentB );
         menuItemService.execute( command2 );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 6, fixture.countAllContent() );

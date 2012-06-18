@@ -13,7 +13,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -28,18 +28,19 @@ import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.CreateGroupAccessException;
 import com.enonic.cms.core.security.group.DeleteGroupAccessException;
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
+import com.enonic.cms.core.security.group.GroupAccessResolver;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupSpecification;
-import com.enonic.cms.core.security.group.GroupStorageService;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.group.RemoveMembershipsCommand;
 import com.enonic.cms.core.security.group.StoreNewGroupCommand;
 import com.enonic.cms.core.security.group.UpdateGroupAccessException;
 import com.enonic.cms.core.security.group.UpdateGroupCommand;
-import com.enonic.cms.core.security.group.access.GroupAccessResolver;
 import com.enonic.cms.core.security.user.DeleteUserCommand;
 import com.enonic.cms.core.security.user.DeleteUserStoreCommand;
+import com.enonic.cms.core.security.user.ReadOnlyUserFieldValidator;
+import com.enonic.cms.core.security.user.RequiredUserFieldsValidator;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.user.User;
@@ -63,16 +64,16 @@ import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUser
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.security.userstore.status.LocalGroupsStatus;
 import com.enonic.cms.core.security.userstore.status.LocalUsersStatus;
-import com.enonic.cms.core.user.field.UserFieldMap;
+import com.enonic.cms.core.user.field.UserField;
 import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
+import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.core.user.remote.RemoteGroup;
 import com.enonic.cms.core.user.remote.RemoteUser;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
-@Component("userStoreService")
+@Service("userStoreService")
 public class UserStoreServiceImpl
     implements UserStoreService
 {
@@ -92,10 +93,10 @@ public class UserStoreServiceImpl
     private VerticalProperties verticalProperties;
 
     @Autowired
-    private GroupStorageService groupStorageService;
+    private GroupStorerFactory groupStorerFactory;
 
     @Autowired
-    private UserStorageService userStorageService;
+    private UserStorerFactory userStorerFactory;
 
     @Autowired
     private UserStoreAccessResolver userStoreAccessResolver;
@@ -133,8 +134,10 @@ public class UserStoreServiceImpl
         final UserStoreConnector usc = doGetUSConnector( command.getUserStoreKey() );
 
         verifyMandatoryFieldsForCreate( command );
-        verifyRequiredUserFieldsForCreate( command, userStore.getConfig() );
+        new RequiredUserFieldsValidator( userStore.getConfig() ).validateAllRequiredFieldsArePresentAndNotEmpty( command.getUserFields() );
         verifyUniqueEmailForCreate( command );
+
+        new ReadOnlyUserFieldValidator( userStore.getConfig() ).validate( command.getUserFields() );
 
         return usc.storeNewUser( command );
     }
@@ -150,8 +153,8 @@ public class UserStoreServiceImpl
 
         boolean hasUserName = StringUtils.isNotBlank( command.getUsername() );
         boolean hasDisplayName = StringUtils.isNotBlank( command.getDisplayName() );
-        boolean hasFirstName = StringUtils.isNotBlank( command.getUserInfo().getFirstName() );
-        boolean hasLastName = StringUtils.isNotBlank( command.getUserInfo().getLastName() );
+        boolean hasFirstName = StringUtils.isNotBlank( command.getUserFields().getFirstName() );
+        boolean hasLastName = StringUtils.isNotBlank( command.getUserFields().getLastName() );
 
         if ( !hasUserName && !hasDisplayName && !hasFirstName && !hasLastName )
         {
@@ -160,12 +163,6 @@ public class UserStoreServiceImpl
             throw new UserStorageInvalidArgumentException( Arrays.asList( oneOfRequiredArguments ),
                                                            "Invalid arguments in storage operation, missing one of the following arguments: " );
         }
-    }
-
-    private void verifyRequiredUserFieldsForCreate( final StoreNewUserCommand command, final UserStoreConfig userStoreConfig )
-    {
-        final UserFieldMap commandUserFields = new UserInfoTransformer().toUserFields( command.getUserInfo() );
-        userStoreConfig.validateAllRequiredFieldsArePresent( commandUserFields );
     }
 
     public void verifyUniqueEmailAddress( String email, UserStoreKey userStoreKey )
@@ -211,16 +208,16 @@ public class UserStoreServiceImpl
 
         verifyUniqueEmailForUpdate( command );
 
-        final UserFieldMap commandUserFields = new UserInfoTransformer().toUserFields( command.getUserInfo() );
+        final UserFields commandUserFields = command.getUserFields();
         if ( command.isUpdateStrategy() )
         {
             // user-update operation
-            userStore.getConfig().validateAllRequiredFieldsArePresent( commandUserFields );
+            new RequiredUserFieldsValidator( userStore.getConfig() ).validateAllRequiredFieldsArePresentAndNotEmpty( commandUserFields );
         }
         else
         {
             // user-modify operation
-            userStore.getConfig().validateNoRequiredFieldsAreBlank( commandUserFields );
+            new RequiredUserFieldsValidator( userStore.getConfig() ).validatePresentFieldsAreNotBlankIfRequired( commandUserFields );
         }
     }
 
@@ -314,7 +311,6 @@ public class UserStoreServiceImpl
         final UserSpecification updaterSpec = new UserSpecification();
         updaterSpec.setKey( command.getUpdater() );
         updaterSpec.setDeletedStateNotDeleted();
-
         final UserEntity updater = userDao.findSingleBySpecification( updaterSpec );
 
         final UserStoreEntity userStore = userToUpdate.getUserStore();
@@ -327,27 +323,25 @@ public class UserStoreServiceImpl
             throw new UserStoreAccessException( UserStoreAccessType.UPDATE_USER, updater.getQualifiedName(),
                                                 userToUpdate.getQualifiedName() );
         }
+        Preconditions.checkArgument( !userToUpdate.isBuiltIn(), "Cannot update a built-in user" );
 
-        Assert.isTrue( !userToUpdate.isBuiltIn(), "Cannot update a built-in user" );
-
-        final UserStoreKey userStoreKey = userToUpdate.getUserStoreKey();
-
-        final UserStoreConnector usc = doGetUSConnector( userStoreKey );
+        final UserStoreConnector usc = doGetUSConnector( userStore.getKey() );
 
         if ( command.getDisplayName() == null )
         {
             command.setDisplayName( userToUpdate.getDisplayName() );
         }
 
+        final UserFields userFields = command.getUserFields();
         if ( command.removePhoto() )
         {
             // Make sure a new photo isn't set
-            command.getUserInfo().setPhoto( null );
+            userFields.remove( UserFieldType.PHOTO );
         }
-        else if ( command.getUserInfo().getPhoto() == null )
+        else if ( !userFields.hasField( UserFieldType.PHOTO ) )
         {
             // No new photo found - use old photo
-            command.getUserInfo().setPhoto( userToUpdate.getPhoto() );
+            userFields.add( new UserField( UserFieldType.PHOTO, userToUpdate.getPhoto() ) );
         }
 
         verifyUpdateUserCommand( command, userStore );
@@ -445,7 +439,7 @@ public class UserStoreServiceImpl
 
         if ( command.getType().isGlobal() || command.getType().isBuiltIn() )
         {
-            return groupStorageService.storeNewGroup( command );
+            return groupStorerFactory.createForGlobalGroups().storeNewGroup( command );
         }
         else
         {
@@ -488,6 +482,7 @@ public class UserStoreServiceImpl
     private UserStoreKey doStoreNewUserStore( final StoreNewUserStoreCommand command )
     {
         Assert.isTrue( StringUtils.isNotEmpty( command.getName() ), "UserStore name is required" );
+        // TODO: Add possible other required
 
         final boolean newDefaultUserStore = command.isDefaultStore();
 
@@ -511,20 +506,21 @@ public class UserStoreServiceImpl
         {
             currentDefault.setDefaultStore( false );
         }
+        final GroupStorer groupStorer = groupStorerFactory.create( userStore.getKey() );
 
         final StoreNewGroupCommand storeNewUserStoreAdminGroupCommand = new StoreNewGroupCommand();
         storeNewUserStoreAdminGroupCommand.setUserStoreKey( userStore.getKey() );
         storeNewUserStoreAdminGroupCommand.setName( GroupType.USERSTORE_ADMINS.getName() );
         storeNewUserStoreAdminGroupCommand.setType( GroupType.USERSTORE_ADMINS );
         storeNewUserStoreAdminGroupCommand.setRestriced( true );
-        groupStorageService.storeNewGroup( storeNewUserStoreAdminGroupCommand );
+        groupStorer.storeNewGroup( storeNewUserStoreAdminGroupCommand );
 
         final StoreNewGroupCommand storeNewUserStoreAuthGroupCommand = new StoreNewGroupCommand();
         storeNewUserStoreAuthGroupCommand.setUserStoreKey( userStore.getKey() );
         storeNewUserStoreAuthGroupCommand.setName( GroupType.AUTHENTICATED_USERS.getName() );
         storeNewUserStoreAuthGroupCommand.setType( GroupType.AUTHENTICATED_USERS );
         storeNewUserStoreAuthGroupCommand.setRestriced( true );
-        groupStorageService.storeNewGroup( storeNewUserStoreAuthGroupCommand );
+        groupStorer.storeNewGroup( storeNewUserStoreAuthGroupCommand );
 
         return userStore.getKey();
     }
@@ -594,7 +590,7 @@ public class UserStoreServiceImpl
 
         if ( groupToBeUpdated.isGlobal() || groupToBeUpdated.isBuiltIn() )
         {
-            groupStorageService.updateGroup( command );
+            groupStorerFactory.createForGlobalGroups().updateGroup( command );
         }
         else
         {
@@ -630,7 +626,7 @@ public class UserStoreServiceImpl
             {
                 if ( groupToAddTo.isGlobal() )
                 {
-                    groupStorageService.addMembershipToGroup( groupToAdd, groupToAddTo );
+                    groupStorerFactory.createForGlobalGroups().addMembershipToGroup( groupToAdd, groupToAddTo );
                     groupsAddedTo.add( groupToAddTo );
                 }
                 else
@@ -680,7 +676,7 @@ public class UserStoreServiceImpl
             {
                 if ( groupToRemoveFrom.isGlobal() )
                 {
-                    groupStorageService.removeMembershipFromGroup( groupToRemove, groupToRemoveFrom );
+                    groupStorerFactory.createForGlobalGroups().removeMembershipFromGroup( groupToRemove, groupToRemoveFrom );
                     groupsRemovedFrom.add( groupToRemoveFrom );
                 }
                 else
@@ -725,7 +721,7 @@ public class UserStoreServiceImpl
 
         if ( groupToDelete.isGlobal() )
         {
-            groupStorageService.deleteGroup( command );
+            groupStorerFactory.createForGlobalGroups().deleteGroup( command );
         }
         else
         {
@@ -755,53 +751,14 @@ public class UserStoreServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public UserEntity synchronizeUser( final UserSpecification userSpec )
-    {
-        final UserEntity user = userDao.findSingleBySpecification( userSpec );
-        if ( user.isBuiltIn() )
-        {
-            return user;
-        }
-
-        final RemoteUserStoreConnector rusc = doGetRemoteUSConnector( user.getUserStore().getKey() );
-        if ( rusc != null )
-        {
-            rusc.synchronizeUser( user, true );
-        }
-        return user;
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public UserKey synchronizeUser( final UserStoreKey userStoreKey, final String uid )
+    public void synchronizeUser( final UserStoreKey userStoreKey, final String uid )
         throws UserNotFoundException
     {
         final RemoteUserStoreConnector rusc = doGetRemoteUSConnector( userStoreKey );
-
         if ( rusc != null )
         {
-            RemoteUser remoteUser = rusc.getRemoteUser( uid );
-
-            final UserSpecification spec = new UserSpecification();
-            spec.setDeletedState( UserSpecification.DeletedState.ANY );
-            spec.setUserStoreKey( userStoreKey );
-            spec.setName( uid );
-            spec.setSyncValue( remoteUser.getSync() );
-            UserEntity user = userDao.findSingleBySpecification( spec );
-            if ( user == null )
-            {
-                rusc.createUserNotExistingLocally( uid );
-                user = userDao.findSingleBySpecification( spec );
-            }
-
-            if ( user.isBuiltIn() )
-            {
-                throw new IllegalArgumentException( "Cannot synchronize built-in user: " + user.getQualifiedName() );
-            }
-
-            rusc.synchronizeUser( user, true );
-            return user.getKey();
+            rusc.synchronizeUser( uid );
         }
-        return null;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -828,14 +785,16 @@ public class UserStoreServiceImpl
 
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void deleteUsersLocally( final LocalUsersStatus status, final List<UserKey> users )
+    public void deleteUsersLocally( final UserStoreKey userStoreKey, final LocalUsersStatus status, final List<UserKey> users )
     {
+        final UserStorer userStorer = userStorerFactory.create( userStoreKey );
+
         for ( final UserKey userKey : users )
         {
             final UserSpecification userToDeleteSpec = new UserSpecification();
             userToDeleteSpec.setKey( userKey );
             userToDeleteSpec.setDeletedState( UserSpecification.DeletedState.ANY );
-            userStorageService.deleteUser( userToDeleteSpec );
+            userStorer.deleteUser( userToDeleteSpec );
             status.deleted();
         }
     }
@@ -856,6 +815,7 @@ public class UserStoreServiceImpl
         final RemoteUserStoreConnector rusc = doGetRemoteUSConnector( group.getUserStore().getKey() );
         if ( rusc != null && rusc.canReadGroup() )
         {
+            // TODO: Disabled sync of members due to timeout caused by large number of members. RemoteUserStorePlugin.geMembers must be batched!
             rusc.synchronizeGroup( group, true, false );
         }
         return group;
@@ -885,14 +845,15 @@ public class UserStoreServiceImpl
 
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void deleteGroupsLocally( final LocalGroupsStatus status, final List<GroupKey> groups )
+    public void deleteGroupsLocally( final LocalGroupsStatus status, final UserStoreKey userStoreKey, final List<GroupKey> groups )
     {
+        final GroupStorer groupStorer = groupStorerFactory.create( userStoreKey );
         for ( final GroupKey groupKey : groups )
         {
             final GroupSpecification groupToDeleteSpec = new GroupSpecification();
             groupToDeleteSpec.setKey( groupKey );
             final DeleteGroupCommand command = new DeleteGroupCommand( null, groupToDeleteSpec );
-            groupStorageService.deleteGroup( command );
+            groupStorer.deleteGroup( command );
             status.deleted();
         }
     }
@@ -1030,6 +991,7 @@ public class UserStoreServiceImpl
         }
     }
 
+    @Override
     public void invalidateUserStoreCachedConfig( UserStoreKey userStoreKey )
     {
         userConnectorStoreManager.invalidateCachedConfig( userStoreKey );

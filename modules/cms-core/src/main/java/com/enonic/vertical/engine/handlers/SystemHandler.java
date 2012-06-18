@@ -4,26 +4,18 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
+import com.enonic.cms.core.jdbc.DatabaseBaseValuesInitializer;
+import com.enonic.cms.framework.blob.gc.GarbageCollector;
+import com.enonic.cms.store.DatabaseAccessor;
+import com.enonic.cms.store.VacuumContentSQL;
+import com.enonic.esl.sql.model.DatabaseSchemaTool;
+import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.esl.sql.model.DatabaseSchemaTool;
-import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
-
-import com.enonic.cms.framework.blob.gc.GarbageCollector;
-
-import com.enonic.cms.store.DatabaseAccessor;
-import com.enonic.cms.store.VacuumContentSQL;
-
-import com.enonic.cms.core.jdbc.DatabaseBaseValuesInitializer;
+import java.sql.*;
+import java.util.List;
 
 /**
  * This class implements the system handler that takes care of creating database schema and populating version numbers.

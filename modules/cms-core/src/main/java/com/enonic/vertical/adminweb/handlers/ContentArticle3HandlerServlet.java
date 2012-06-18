@@ -5,6 +5,7 @@
 package com.enonic.vertical.adminweb.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentArticle3XMLBuilder;
 
 public class ContentArticle3HandlerServlet

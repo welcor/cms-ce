@@ -25,6 +25,12 @@
       <artifactId>cms-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -34,7 +40,15 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>${skipITs}</skip>
+          <forkMode>always</forkMode>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>2.12</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
   <context:annotation-config/>
-  <context:property-placeholder/>
+  <context:property-placeholder properties-ref="config"/>
 
   <context:component-scan base-package="com.enonic.cms.core"/>
   <context:component-scan base-package="com.enonic.cms.store"/>
@@ -117,12 +117,6 @@
     <property name="cacheResolverValueService" ref="sessionCachedResolverValueService"/>
   </bean>
 
-  <bean id="localizeService" class="com.enonic.cms.core.localization.LocalizationServiceImpl"/>
-
-  <bean id="localizationResourceBundleService"
-        class="com.enonic.cms.core.localization.resource.LocalizationResourceBundleServiceImpl">
-  </bean>
-
   <bean id="localeResolverService"
         class="com.enonic.cms.core.resolver.locale.LocaleResolverServiceImpl">
     <property name="localeScriptResolver" ref="localeXsltScriptResolver"/>
@@ -136,9 +130,6 @@
         class="com.enonic.cms.core.AdminConsoleTranslationService" init-method="init">
     <property name="defaultLanguageCode" value="${cms.admin.defaultLanguage}"/>
   </bean>
-
-  <bean id="adminConsoleLoginAccessResolver"
-        class="com.enonic.cms.core.security.AdminConsoleLoginAccessResolver"/>
 
   <bean id="userServicesRedirectHelper"
         class="com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver"/>
@@ -203,35 +194,12 @@
     <property name="localClient" ref="localClient"/>
   </bean>
 
-  <bean id="categoryService" class="com.enonic.cms.core.content.category.CategoryServiceImpl"/>
-
-  <bean id="createAttachmentUrclFunction"
-        class="com.enonic.cms.core.portal.rendering.portalfunctions.CreateAttachmentUrlFunction">
-    <property name="contentDao" ref="contentDao"/>
-  </bean>
-
-  <bean id="isWindowEmptyFunction"
-        class="com.enonic.cms.core.portal.rendering.portalfunctions.IsWindowEmptyFunction">
-    <property name="windowRendererFactory" ref="windowRendererFactory"/>
-  </bean>
-
-  <bean id="datasourceExecutorFactory" class="com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory"/>
-
-  <bean id="expressionFunctionsFactory"
-        class="com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory"/>
-
   <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
     <property name="directory" value="${cms.blobstore.dir}"/>
   </bean>
 
   <bean id="blobStore" class="com.enonic.cms.framework.blob.file.FileBlobStore">
     <property name="directory" value="${cms.blobstore.dir}"/>
-  </bean>
-
-  <bean id="fileResourceService" class="com.enonic.cms.store.resource.FileResourceServiceImpl">
-    <property name="blobStore" ref="blobStore"/>
-    <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="mimeTypeResolver" ref="mimeTypeResolver"/>
   </bean>
 
   <bean id="blobStoreGarbageCollector" class="com.enonic.cms.framework.blob.gc.GarbageCollector">
@@ -242,12 +210,6 @@
   <bean id="usedBlobStoreFinder" class="com.enonic.cms.store.blob.DbUsedBlobKeyFinder">
     <property name="binaryDataDao" ref="binaryDataDao"/>
     <property name="virtualFileDao" ref="virtualFileDao"/>
-  </bean>
-
-  <bean id="portalFunctionsFactory"
-        class="com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsFactory">
-    <property name="siteURLResolver" ref="siteURLResolver"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
 
   <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
@@ -263,11 +225,6 @@
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
     <property name="siteDao" ref="siteDao"/>
     <property name="userDao" ref="userDao"/>
-  </bean>
-
-  <bean id="autoLoginService" class="com.enonic.cms.core.security.AutoLoginService">
-    <property name="securityService" ref="securityService"/>
-    <property name="loginService" ref="loginService"/>
   </bean>
 
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
@@ -335,22 +292,6 @@
 
   <bean id="portalAccessService" class="com.enonic.cms.core.portal.PortalAccessService"/>
 
-  <bean id="portletXsltViewTransformer"
-        class="com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer"/>
-
-  <bean id="pageTemplateXsltViewTransformer"
-        class="com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer"/>
-
-  <bean id="pageRendererFactory" class="com.enonic.cms.core.portal.rendering.PageRendererFactory"/>
-
-  <bean id="windowRendererFactory" class="com.enonic.cms.core.portal.rendering.WindowRendererFactory"/>
-
-  <bean id="datasourcesContextXmlCreator"
-        class="com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator"/>
-
-  <bean id="postProcessInstructionExecutor"
-        class="com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutorImpl"/>
-
   <bean id="datasourceInfoResolver" class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
 
   <bean id="siteCachesService" class="com.enonic.cms.core.portal.cache.SiteCachesServiceImpl">
@@ -397,8 +338,6 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
-
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
     <property name="mimetypesLocation" value="${cms.home}/config/mimetypes.properties"/>
   </bean>
@@ -420,5 +359,8 @@
     <property name="transactionTemplate" ref="schedulerTranscationTemplate"/>
   </bean>
 
+  <bean id="nodeSettingsBuilder" class="com.enonic.cms.core.search.NodeSettingsBuilderImpl"/>
+
+  <bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.IndexSettingsBuilderImpl"/>
+
 </beans>
-        

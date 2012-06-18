@@ -238,7 +238,6 @@ public class DatasourceExecutorTest
         context.setPortletWindowRenderedInline( false );
         assertFalse( new DatasourceExecutor( context ).isRunnableByCondition( new Datasource( datasourceEl ) ) );
 
-
         datasourceEl.setAttribute( "condition", "${ portal.isWindowInline }" );
         context.setPortletWindowRenderedInline( true );
         assertEquals( new DatasourceExecutor( context ).isRunnableByCondition( new Datasource( datasourceEl ) ), true );

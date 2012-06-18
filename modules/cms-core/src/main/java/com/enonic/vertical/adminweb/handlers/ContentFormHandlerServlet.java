@@ -5,6 +5,7 @@
 package com.enonic.vertical.adminweb.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.GeneralContentXMLBuilder;
 
 public class ContentFormHandlerServlet
@@ -19,7 +20,7 @@ public class ContentFormHandlerServlet
     }
 
     @Autowired
-    public void setGeneralContentXMLBuilder(final GeneralContentXMLBuilder builder)
+    public void setGeneralContentXMLBuilder( final GeneralContentXMLBuilder builder )
     {
         setContentXMLBuilder( builder );
     }

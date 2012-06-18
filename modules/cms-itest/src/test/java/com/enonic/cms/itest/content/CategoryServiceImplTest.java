@@ -1,10 +1,6 @@
 package com.enonic.cms.itest.content;
 
 
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessRights;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -21,6 +17,9 @@ import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.*;
 

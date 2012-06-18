@@ -102,6 +102,7 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, admin_browse" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // setup content assigned to content-creator
         CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyContentType" ).getContentTypeConfig() );
@@ -109,6 +110,7 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
         ContentKey expectedContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", "content-creator", ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
                                         "content-creator", contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+        fixture.flushIndexTransaction();
 
         UserEntity contentCreator = fixture.findUserByName( "content-creator" );
 
@@ -118,11 +120,13 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
         assignCommand.setContentKey( expectedContentKey );
 
         contentService.assignContent( assignCommand );
+        fixture.flushIndexTransaction();
 
         // setup another content assigned to some one else
         contentService.createContent(
             createCreateContentCommand( "MyCategory", User.ROOT_UID, ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
                                         User.ROOT_UID, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+        fixture.flushIndexTransaction();
 
         // setup: verify that 2 content is created
         assertEquals( 2, fixture.countAllContent() );

@@ -1,19 +1,19 @@
 package com.enonic.cms.core.elastic;
 
-import java.io.File;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.common.logging.slf4j.Slf4jESLoggerFactory;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.enonic.cms.core.search.NodeSettingsBuilder;
+
 
 @Component
 public final class ElasticNodeFactory
@@ -21,7 +21,7 @@ public final class ElasticNodeFactory
 {
     private Node node;
 
-    private File storageDir;
+    private NodeSettingsBuilder nodeSettingsBuilder;
 
     public Node getObject()
     {
@@ -43,30 +43,21 @@ public final class ElasticNodeFactory
     {
         ESLoggerFactory.setDefaultFactory( new Slf4jESLoggerFactory() );
 
-        final Settings settings = createNodeSettings();
+        final Settings settings = nodeSettingsBuilder.buildNodeSettings();
+
         this.node = NodeBuilder.nodeBuilder().client( false ).local( true ).data( true ).settings( settings ).build();
         this.node.start();
+    }
+
+    @Autowired
+    public void setNodeSettingsBuilder( final NodeSettingsBuilder nodeSettingsBuilder )
+    {
+        this.nodeSettingsBuilder = nodeSettingsBuilder;
     }
 
     @PreDestroy
     public void stop()
     {
         this.node.close();
-    }
-
-    private Settings createNodeSettings()
-    {
-        final ImmutableSettings.Builder settings = ImmutableSettings.settingsBuilder();
-        settings.put( "path.logs", new File( this.storageDir, "log" ).getAbsolutePath() );
-        settings.put( "path.data", new File( this.storageDir, "data" ).getAbsolutePath() );
-        settings.put( "path.config", new File( this.storageDir, "config" ).getAbsolutePath() );
-        settings.put( "cluster.name", "enonic-cms-es-cluster" );
-        return settings.build();
-    }
-
-    @Value("${cms.search.index.dir}")
-    public void setStorageDir( final File storageDir )
-    {
-        this.storageDir = storageDir;
     }
 }

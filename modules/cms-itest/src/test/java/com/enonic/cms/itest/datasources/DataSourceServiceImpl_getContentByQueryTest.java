@@ -102,6 +102,7 @@ public class DataSourceServiceImpl_getContentByQueryTest
         fixture.save( factory.createCategoryAccessForUser( "MyOtherCategory", "content-querier", "read, admin_browse" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     @Test
@@ -114,6 +115,8 @@ public class DataSourceServiceImpl_getContentByQueryTest
 
         ContentKey content_2 =
             contentService.createContent( createCreateContentCommand( "MyOtherCategory", contentData, "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that 2 content is created
         assertEquals( 2, fixture.countAllContent() );

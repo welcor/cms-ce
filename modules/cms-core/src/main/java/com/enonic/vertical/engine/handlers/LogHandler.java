@@ -9,9 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.enonic.vertical.engine.VerticalEngineLogger;
-import com.enonic.vertical.engine.XDG;
-import com.enonic.vertical.engine.dbmodel.LogEntryTable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -19,7 +16,10 @@ import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.sql.model.Column;
 import com.enonic.vertical.engine.Types;
 import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.XDG;
+import com.enonic.vertical.engine.dbmodel.LogEntryTable;
 import com.enonic.vertical.engine.processors.ElementProcessor;
 import com.enonic.vertical.engine.processors.MenuElementProcessor;
 import com.enonic.vertical.engine.processors.UserElementProcessor;
@@ -27,8 +27,8 @@ import com.enonic.vertical.event.MenuHandlerEvent;
 import com.enonic.vertical.event.MenuHandlerListener;
 
 import com.enonic.cms.core.log.LogType;
-import com.enonic.cms.core.log.Table;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
+import com.enonic.cms.core.log.Table;
 
 public final class LogHandler
     extends BaseHandler

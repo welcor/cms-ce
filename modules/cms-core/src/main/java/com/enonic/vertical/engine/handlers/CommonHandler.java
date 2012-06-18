@@ -4,19 +4,7 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import java.io.ByteArrayInputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.w3c.dom.Document;
-
+import com.enonic.cms.framework.util.TIntArrayList;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.sql.model.ForeignKeyColumn;
@@ -27,7 +15,14 @@ import com.enonic.vertical.engine.Types;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.XDG;
 import com.enonic.vertical.engine.processors.ElementProcessor;
-import com.enonic.cms.framework.util.TIntArrayList;
+import org.w3c.dom.Document;
+
+import java.io.ByteArrayInputStream;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class CommonHandler
     extends BaseHandler

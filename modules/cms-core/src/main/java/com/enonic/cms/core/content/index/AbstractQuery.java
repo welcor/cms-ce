@@ -35,6 +35,11 @@ public abstract class AbstractQuery
         return contentTypeFilter;
     }
 
+    public boolean hasContentTypeFilter()
+    {
+        return this.contentTypeFilter != null && !this.contentTypeFilter.isEmpty();
+    }
+
     /**
      * @param filter The content types the returned contents must belong to.
      */
@@ -46,6 +51,11 @@ public abstract class AbstractQuery
     public Collection<CategoryKey> getCategoryFilter()
     {
         return this.categoryFilter;
+    }
+
+    public boolean hasCategoryFilter()
+    {
+        return this.categoryFilter != null && !this.categoryFilter.isEmpty();
     }
 
     public int getCategoryFilterSize()

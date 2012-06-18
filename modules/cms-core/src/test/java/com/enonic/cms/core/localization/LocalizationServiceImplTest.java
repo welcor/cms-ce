@@ -15,9 +15,7 @@ import org.junit.Test;
 
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.localization.resource.LocalizationResourceBundleService;
-
 import com.enonic.cms.core.resource.ResourceKey;
-
 import com.enonic.cms.core.structure.SiteEntity;
 
 import static org.easymock.EasyMock.createMock;

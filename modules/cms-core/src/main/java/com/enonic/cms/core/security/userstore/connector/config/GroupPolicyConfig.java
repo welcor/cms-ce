@@ -4,10 +4,10 @@
  */
 package com.enonic.cms.core.security.userstore.connector.config;
 
+import com.enonic.cms.core.security.userstore.config.AbstractPolicyConfig;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.enonic.cms.core.security.userstore.config.AbstractPolicyConfig;
 
 public final class GroupPolicyConfig
     extends AbstractPolicyConfig

@@ -1,14 +1,15 @@
 package com.enonic.cms.framework.jdbc;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.mockito.Mockito;
+import static org.junit.Assert.assertNotNull;
 
 public class DriverFixConnectionDecoratorTest
 {

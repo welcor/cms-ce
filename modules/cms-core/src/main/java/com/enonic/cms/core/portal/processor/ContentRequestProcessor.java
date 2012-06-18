@@ -12,11 +12,11 @@ import com.google.common.base.Preconditions;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
-import com.enonic.cms.core.language.LanguageEntity;
-import com.enonic.cms.core.language.LanguageResolver;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.language.LanguageEntity;
+import com.enonic.cms.core.language.LanguageResolver;
 import com.enonic.cms.core.portal.ContentNameMismatchException;
 import com.enonic.cms.core.portal.ContentNotFoundException;
 import com.enonic.cms.core.portal.ContentPath;

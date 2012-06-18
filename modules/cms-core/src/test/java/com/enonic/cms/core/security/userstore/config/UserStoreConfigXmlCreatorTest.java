@@ -51,7 +51,7 @@ public class UserStoreConfigXmlCreatorTest
     {
         Collection<UserStoreUserFieldConfig> userFieldConfigs = new TreeSet<UserStoreUserFieldConfig>();
 
-        UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( UserFieldType.FIRST_NAME);
+        UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( UserFieldType.FIRST_NAME );
         fieldConfig.setRequired( true );
         userFieldConfigs.add( fieldConfig );
 

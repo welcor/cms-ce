@@ -72,7 +72,7 @@ public final class PropertiesUtil
         return target;
     }
 
-    public static Properties interpolate( final Properties props, final Environment env )
+    public static Properties interpolate( final Properties props, final Properties env )
     {
         final PlaceholderResolver resolver = new PlaceholderResolver() {
             public String resolvePlaceholder(final String key)

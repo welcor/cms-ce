@@ -9,13 +9,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import static org.mockito.Mockito.when;
 
 
 public class RegenerateIndexBatcherTest
@@ -26,91 +24,80 @@ public class RegenerateIndexBatcherTest
 
     private RegenerateIndexBatcher regenerateIndexBatcher;
 
-
     @Before
     public void before()
     {
 
-        contentService = createMock( ContentService.class );
+        contentService = Mockito.mock( ContentService.class );
 
-        indexService = createMock( IndexService.class );
+        indexService = Mockito.mock( IndexService.class );
 
         regenerateIndexBatcher = new RegenerateIndexBatcher( indexService, contentService );
     }
 
     @Test
     public void testRegenrateIndexUnequalToBatchSize()
+        throws Exception
     {
 
         ContentTypeEntity cty1 = createContentTypeEntity( 1, "test" );
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 11 );
 
-        expect( contentService.findContentKeysByContentType( cty1 ) ).andReturn( contentKeysOfCty1 );
+        when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
+
         indexService.regenerateIndex( createContentKeys( new int[]{1, 2, 3, 4} ) );
         indexService.regenerateIndex( createContentKeys( new int[]{5, 6, 7, 8} ) );
         indexService.regenerateIndex( createContentKeys( new int[]{9, 10, 11} ) );
 
-        replay( contentService );
-        replay( indexService );
-
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
-        verify( indexService );
     }
 
     @Test
     public void testRegenrateIndexEqualToBatchSize()
+        throws Exception
     {
 
         ContentTypeEntity cty1 = createContentTypeEntity( 1, "test" );
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 8 );
 
-        expect( contentService.findContentKeysByContentType( cty1 ) ).andReturn( contentKeysOfCty1 );
+        when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
         indexService.regenerateIndex( createContentKeys( new int[]{1, 2, 3, 4} ) );
         indexService.regenerateIndex( createContentKeys( new int[]{5, 6, 7, 8} ) );
 
-        replay( contentService );
-        replay( indexService );
-
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
-        verify( indexService );
+
     }
 
     @Test
     public void testRegenrateIndexSameTotalAsBatchSize()
+        throws Exception
     {
 
         ContentTypeEntity cty1 = createContentTypeEntity( 1, "test" );
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 4 );
 
-        expect( contentService.findContentKeysByContentType( cty1 ) ).andReturn( contentKeysOfCty1 );
+        when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
         indexService.regenerateIndex( createContentKeys( new int[]{1, 2, 3, 4} ) );
-
-        replay( contentService );
-        replay( indexService );
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
-        verify( indexService );
+
     }
 
     @Test
     public void testRegenrateIndexWithContentKeysSmallerThanBatchSize()
+        throws Exception
     {
 
         ContentTypeEntity cty1 = createContentTypeEntity( 1, "test" );
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 2 );
 
-        expect( contentService.findContentKeysByContentType( cty1 ) ).andReturn( contentKeysOfCty1 );
+        when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
         indexService.regenerateIndex( createContentKeys( new int[]{1, 2} ) );
 
-        replay( contentService );
-        replay( indexService );
-
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
-
-        verify( indexService );
     }
 
     @Test
@@ -120,15 +107,10 @@ public class RegenerateIndexBatcherTest
         ContentTypeEntity cty1 = createContentTypeEntity( 1, "test" );
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 0 );
 
-        expect( contentService.findContentKeysByContentType( cty1 ) ).andReturn( contentKeysOfCty1 );
+        when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
         //indexService.regenerateIndex(createContentKeys(new int[] {1, 2}));
 
-        replay( contentService );
-        replay( indexService );
-
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
-
-        verify( indexService );
     }
 
     private List<ContentKey> createContentKeys( int[] contentKeys )

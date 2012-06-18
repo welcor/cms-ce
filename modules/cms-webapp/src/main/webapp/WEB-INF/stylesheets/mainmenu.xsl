@@ -4,8 +4,6 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
                 xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
 
   <xsl:output method="html"/>
@@ -317,6 +315,18 @@
                 </a>
               </td>
             </tr>
+              <tr>
+                  <td width="16">
+                      <img src="javascript/images/T.png" border="0"/>
+                  </td>
+                  <td>
+                      <a href="adminpage?page=914&amp;op=indexmonitor" target="mainFrame">
+                          <img src="images/utilities-system-monitor.png" border="0"/>
+                          <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
+                          <xsl:text>indexMonitor</xsl:text>
+                      </a>
+                  </td>
+              </tr>
           </table>
         </td>
       </tr>

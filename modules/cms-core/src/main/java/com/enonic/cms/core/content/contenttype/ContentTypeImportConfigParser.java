@@ -4,26 +4,24 @@
  */
 package com.enonic.cms.core.content.contenttype;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.jdom.Attribute;
-import org.jdom.Element;
-import org.jdom.transform.JDOMSource;
-
+import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfigType;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.RelatedContentDataEntryConfig;
 import net.sf.saxon.om.InscopeNamespaceResolver;
 import net.sf.saxon.om.NamespaceResolver;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.trans.XPathException;
+import org.apache.commons.lang.StringUtils;
+import org.jdom.Attribute;
+import org.jdom.Element;
+import org.jdom.transform.JDOMSource;
 
-import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfigType;
-import com.enonic.cms.core.content.contenttype.dataentryconfig.RelatedContentDataEntryConfig;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ContentTypeImportConfigParser
 {

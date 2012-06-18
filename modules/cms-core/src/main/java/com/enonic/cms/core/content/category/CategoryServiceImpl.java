@@ -5,6 +5,7 @@
 package com.enonic.cms.core.content.category;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import com.enonic.cms.core.security.user.UserKey;
 /**
  * Mar 9, 2010
  */
+@Service
 public class CategoryServiceImpl
     implements CategoryService
 {

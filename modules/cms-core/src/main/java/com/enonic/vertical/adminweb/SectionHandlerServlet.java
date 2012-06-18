@@ -743,7 +743,7 @@ public class SectionHandlerServlet
             {
                 for ( final int menuKey : menuKeys )
                 {
-                    final ContentEntity content = contentDao.findByKey( new ContentKey( contentKey  ) );
+                    final ContentEntity content = contentDao.findByKey( new ContentKey( contentKey ) );
 
                     final SiteKey siteKey = new SiteKey( menuKey );
 
@@ -754,7 +754,7 @@ public class SectionHandlerServlet
 
                     // <contenthome contentkey="3" menuitemkey="6" menukey="0"/>
                     final ContentLocation homeLocation = contentLocations.getHomeLocation( siteKey );
-                    if (homeLocation != null)
+                    if ( homeLocation != null )
                     {
                         final Element contentHomeElem = XMLTool.createElement( doc, contentHomes, "contenthome" );
                         contentHomeElem.setAttribute( "contentkey", "" + homeLocation.getContent().getKey() );
@@ -1003,9 +1003,9 @@ public class SectionHandlerServlet
                 this.sectionsDoc = null; // free HTTP session. note: Wizard is not java.io.Serializable !
 
                 final TIntArrayList allKeysSet = new TIntArrayList();
-                for (final Set<String> menuItems : siteToMenus.values())
+                for ( final Set<String> menuItems : siteToMenus.values() )
                 {
-                    for (final String menuItem : menuItems )
+                    for ( final String menuItem : menuItems )
                     {
                         allKeysSet.add( Integer.parseInt( menuItem ) );
                     }
@@ -1014,7 +1014,7 @@ public class SectionHandlerServlet
                 allKeysSet.add( menuItemKeys.toArray() );
                 final Set<Integer> currentMenuItemKeysSet = menuItemKeys.toLinkedHashSet();
 
-                for (final int key : allKeysSet.toArray())
+                for ( final int key : allKeysSet.toArray() )
                 {
                     keys.put( key, !previousMenuItemKeysSet.contains( key ) || currentMenuItemKeysSet.contains( key ) );
                 }
@@ -1024,7 +1024,7 @@ public class SectionHandlerServlet
             }
         }
 
-                // Previous sections
+        // Previous sections
         private Document readSectionsWhereContentIsPublished( final AdminService admin, final User user, final int contentKey )
         {
             final SectionCriteria criteria = new SectionCriteria();
@@ -1068,9 +1068,8 @@ public class SectionHandlerServlet
                 else if ( "step1".equals( currentStep.getName() ) )
                 {
                     final int versionKey = formItems.getInt( "versionkey", -1 );
-                    final int contentKey = versionKey < 0 ?
-                        formItems.getInt( "contentkey" ) :
-                        admin.getContentKeyByVersionKey( versionKey );
+                    final int contentKey =
+                        versionKey < 0 ? formItems.getInt( "contentkey" ) : admin.getContentKeyByVersionKey( versionKey );
 
                     this.sectionsDoc = readSectionsWhereContentIsPublished( admin, user, contentKey );
 
@@ -1457,7 +1456,7 @@ public class SectionHandlerServlet
 
                 final org.jdom.Element menuItemElement = creator.createMenuItemElement( menuItem );
                 menuItemElement.setAttribute( "publish", menuItemKeyChecked.toString() );
-                menuItemElement.setAttribute( "none", "" + displayMenuItemKeys.contains( menuItemKey ));
+                menuItemElement.setAttribute( "none", "" + displayMenuItemKeys.contains( menuItemKey ) );
 
                 siteEl.addContent( menuItemElement );
             }
@@ -1582,7 +1581,7 @@ public class SectionHandlerServlet
                 {
                     final int menuItemKey = Integer.parseInt( menuItemEl.getAttribute( "key" ) );
                     final boolean selected = Boolean.parseBoolean( menuItemEl.getAttribute( "selected" ) );
-                    if (selected)
+                    if ( selected )
                     {
                         menuItemKeys.add( menuItemKey );
                     }

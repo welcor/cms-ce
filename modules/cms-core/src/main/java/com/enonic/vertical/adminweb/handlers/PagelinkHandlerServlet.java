@@ -15,7 +15,6 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentBaseXMLBuilder;
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.GeneralContentXMLBuilder;
 import com.enonic.vertical.engine.VerticalEngineException;
 

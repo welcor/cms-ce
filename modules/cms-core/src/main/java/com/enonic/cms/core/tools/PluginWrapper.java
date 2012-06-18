@@ -8,8 +8,6 @@ import java.util.Map;
 
 import org.joda.time.format.DateTimeFormatterBuilder;
 
-import com.google.common.collect.Maps;
-
 import com.enonic.cms.core.plugin.PluginHandle;
 
 public final class PluginWrapper

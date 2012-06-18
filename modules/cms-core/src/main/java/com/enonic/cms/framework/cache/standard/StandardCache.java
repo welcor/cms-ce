@@ -4,15 +4,11 @@
  */
 package com.enonic.cms.framework.cache.standard;
 
-import java.lang.ref.SoftReference;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap.Builder;
+
+import java.lang.ref.SoftReference;
+import java.util.*;
 
 
 /**

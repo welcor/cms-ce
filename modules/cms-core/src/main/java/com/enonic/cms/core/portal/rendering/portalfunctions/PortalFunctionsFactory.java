@@ -7,6 +7,7 @@ package com.enonic.cms.core.portal.rendering.portalfunctions;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
@@ -21,6 +22,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.PortletDao;
 
+@Component
 public class PortalFunctionsFactory
 {
 
@@ -122,6 +124,7 @@ public class PortalFunctionsFactory
     }
 
 
+    @Autowired
     public void setSiteURLResolver( SiteURLResolver value )
     {
         this.siteURLResolver = value;
@@ -133,6 +136,7 @@ public class PortalFunctionsFactory
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
     {
         this.sitePropertiesService = sitePropertiesService;

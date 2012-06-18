@@ -16,6 +16,7 @@
 
     <context:annotation-config/>
     <context:component-scan base-package="com.enonic.cms.store.dao"/>
+    <context:component-scan base-package="com.enonic.cms.core.search"/>
 
     <!-- Setup transaction by annotations. -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
@@ -24,7 +25,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.connection.driver_class">org.h2.Driver</prop>
-                <prop key="hibernate.connection.url">jdbc:h2:mem:cms;DB_CLOSE_ON_EXIT=FALSE;LOCK_MODE=0</prop>
+                <prop key="hibernate.connection.url">jdbc:h2:mem:cms;DB_CLOSE_ON_EXIT=TRUE;LOCK_MODE=0</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
                 <prop key="hibernate.jdbc.batch_size">0</prop>
@@ -58,6 +59,7 @@
                 <value>classpath:/com/enonic/cms/store/entity/PageTemplateEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/PageTemplatePortletEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/PageTemplateRegionEntity.hbm.xml</value>
+                <value>classpath:/com/enonic/cms/store/entity/RememberedLoginEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/SectionContentEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/SiteEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/DefaultSiteAccessEntity.hbm.xml</value>
@@ -77,5 +79,5 @@
           class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-
+    
 </beans>

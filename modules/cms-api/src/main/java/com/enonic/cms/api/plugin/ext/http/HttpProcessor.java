@@ -1,7 +1,6 @@
 package com.enonic.cms.api.plugin.ext.http;
 
 import com.enonic.cms.api.plugin.ext.ExtensionBase;
-import com.enonic.cms.api.util.Preconditions;
 
 /**
  * This class implements the base for all http processor plugins.
@@ -37,7 +36,7 @@ public abstract class HttpProcessor
      */
     public final void setUrlPattern( final String pattern )
     {
-        Preconditions.checkNotNull( pattern );
+        checkNotNull( pattern );
         setUrlPatterns( new String[]{pattern} );
     }
 
@@ -49,7 +48,7 @@ public abstract class HttpProcessor
      */
     public final void setUrlPatterns( final String[] patterns )
     {
-        Preconditions.checkNotNull( patterns );
+        checkNotNull( patterns );
         this.patterns = patterns;
     }
 
@@ -84,7 +83,17 @@ public abstract class HttpProcessor
      */
     public final int compareTo( final HttpProcessor other )
     {
-        Preconditions.checkNotNull( other );
+        checkNotNull( other );
         return this.priority - other.priority;
+    }
+
+    private static <T> T checkNotNull( final T ref )
+    {
+        if ( ref == null )
+        {
+            throw new NullPointerException();
+        }
+
+        return ref;
     }
 }

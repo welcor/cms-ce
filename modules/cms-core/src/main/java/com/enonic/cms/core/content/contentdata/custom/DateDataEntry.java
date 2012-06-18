@@ -8,9 +8,9 @@ import java.util.Date;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.enonic.esl.util.DateUtil;
+import com.google.common.base.Preconditions;
 
-import com.enonic.cms.api.util.Preconditions;
+import com.enonic.esl.util.DateUtil;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 
 public class DateDataEntry

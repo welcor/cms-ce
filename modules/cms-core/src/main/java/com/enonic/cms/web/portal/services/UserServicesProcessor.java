@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +31,6 @@ import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
@@ -53,7 +51,6 @@ import com.enonic.cms.core.preference.PreferenceService;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.PasswordGenerator;
 import com.enonic.cms.core.security.PortalSecurityHolder;
-import com.enonic.cms.core.security.UserStoreParser;
 import com.enonic.cms.core.security.group.AbstractMembershipsCommand;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -77,13 +74,13 @@ import com.enonic.cms.core.security.userstore.UserStoreConnectorPolicyBrokenExce
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
+import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteContext;
-import com.enonic.cms.core.user.field.UserFieldMap;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
 import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
+import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
@@ -783,19 +780,11 @@ public final class UserServicesProcessor
                 updateUserCommand.setDisplayName( displayName );
             }
 
-            final UserStoreKey userStoreKey = parseUserStoreKeyFromUidAndUserstore( formItems );
-
-            final UserInfo userInfo = parseCustomUserFieldValues( formItems );
-
-            updateUserCommand.setUserInfo( userInfo );
+            updateUserCommand.setUserFields( new UserFieldTransformer().toUserFields( formItems ) );
             updateUserCommand.setAllowUpdateSelf( true );
             updateUserCommand.setUpdateOpenGroupsOnly( true );
-
             updateUserCommand.setupModifyStrategy();
-            preservePossiblyMissingBirthdateForModify( formItems, updateUserCommand );
-
             updateGroupsInUpdateCommand( formItems, loggedInUser, updateUserCommand );
-
             userStoreService.updateUser( updateUserCommand );
             redirectToPage( request, response, formItems );
         }
@@ -896,17 +885,6 @@ public final class UserServicesProcessor
         }
     }
 
-    private void preservePossiblyMissingBirthdateForModify( ExtendedMap formItems, UpdateUserCommand updateUserCommand )
-    {
-        if ( !formItems.containsKey( FORMITEM_BIRTHDAY ) )
-        {
-            UserEntity userEntity = userDao.findByKey( updateUserCommand.getSpecification().getKey() );
-            final Date birthday = userEntity.getUserInfo().getBirthday();
-
-            updateUserCommand.getUserInfo().setBirthday( birthday );
-        }
-    }
-
     @Override
     protected void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems,
                                   UserServicesService userServices, SiteKey siteKey )
@@ -941,8 +919,9 @@ public final class UserServicesProcessor
 
             storeNewUserCommand.setStorer( securityService.getLoggedInPortalUser().getKey() );
 
-            final UserInfo userInfo = parseCustomUserFieldValues( formItems );
-            storeNewUserCommand.setUserInfo( userInfo );
+            final UserFieldTransformer fieldTransformer = new UserFieldTransformer();
+            final UserFields userFields = fieldTransformer.toUserFields( formItems );
+            storeNewUserCommand.setUserFields( userFields );
 
             storeNewUserCommand.setAllowAnyUserAccess( true );
 
@@ -1044,19 +1023,6 @@ public final class UserServicesProcessor
         }
     }
 
-    /*
-    Same as UserHandlerServlet.parseCustomUserFieldValues();
-     */
-    private UserInfo parseCustomUserFieldValues( final ExtendedMap formItems )
-    {
-        final UserFieldTransformer fieldTransformer = new UserFieldTransformer();
-        final UserFieldMap userFieldMap = fieldTransformer.toUserFields( formItems );
-
-        final UserInfoTransformer infoTransformer = new UserInfoTransformer();
-
-        return infoTransformer.toUserInfo( userFieldMap );
-    }
-
     private String parseDisplayName( ExtendedMap formItems )
     {
         return formItems.containsKey( FORMITEM_DISPLAYNAME ) ? formItems.getString( FORMITEM_DISPLAYNAME ) : null;
@@ -1108,11 +1074,8 @@ public final class UserServicesProcessor
             updateUserCommand.setEmail( parseEmail( formItems ) );
             updateUserCommand.setDisplayName( parseDisplayName( formItems ) );
 
-            final UserStoreKey userStoreKey = parseUserStoreKeyFromUidAndUserstore( formItems );
-
-            final UserInfo userInfo = parseCustomUserFieldValues( formItems );
-
-            updateUserCommand.setUserInfo( userInfo );
+            final UserFields userFields = new UserFieldTransformer().toUserFields( formItems );
+            updateUserCommand.setUserFields( userFields );
             updateUserCommand.setAllowUpdateSelf( true );
             updateUserCommand.setUpdateOpenGroupsOnly( true );
 

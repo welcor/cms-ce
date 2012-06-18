@@ -59,6 +59,11 @@ public enum UserFieldType
         return this.typeClass;
     }
 
+    public boolean isStringBased()
+    {
+        return this.typeClass.equals( String.class );
+    }
+
     public boolean isOfType( Class<?> type )
     {
         return this.typeClass.isAssignableFrom( type );

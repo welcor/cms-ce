@@ -138,7 +138,14 @@ final class XsltProcessorImpl
 
     public void setParameter( String name, Object value )
     {
-        this.transformer.setParameter( name, value != null ? new UntypedAtomicValue( value.toString() ) : value );
+        if ( value instanceof String )
+        {
+            this.transformer.setParameter( name, new UntypedAtomicValue( value.toString() ) );
+        }
+        else
+        {
+            this.transformer.setParameter( name, value );
+        }
     }
 
     public void clearParameters()

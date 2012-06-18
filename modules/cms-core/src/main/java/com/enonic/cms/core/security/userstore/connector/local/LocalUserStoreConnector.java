@@ -14,6 +14,7 @@ import com.enonic.cms.core.security.group.StoreNewGroupCommand;
 import com.enonic.cms.core.security.group.UpdateGroupCommand;
 import com.enonic.cms.core.security.user.DeleteUserCommand;
 import com.enonic.cms.core.security.user.DisplayNameResolver;
+import com.enonic.cms.core.security.user.ReadOnlyUserFieldValidator;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.user.User;
@@ -23,8 +24,8 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.connector.AbstractBaseUserStoreConnector;
-import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
+import com.enonic.cms.core.user.field.UserFields;
 
 public class LocalUserStoreConnector
     extends AbstractBaseUserStoreConnector
@@ -78,19 +79,7 @@ public class LocalUserStoreConnector
     public UserKey storeNewUser( final StoreNewUserCommand command )
     {
         Assert.isTrue( command.getUserStoreKey().equals( userStoreKey ) );
-
         ensureValidUserName( command );
-
-        final UserSpecification spec = new UserSpecification();
-        spec.setUserStoreKey( command.getUserStoreKey() );
-        spec.setDeletedStateNotDeleted();
-        spec.setName( command.getUsername() );
-        final UserEntity existingUser = userDao.findSingleBySpecification( spec );
-
-        if ( existingUser != null )
-        {
-            throw new UserAlreadyExistsException( userStoreName, command.getUsername() );
-        }
 
         return storeNewUserLocally( command, new DisplayNameResolver( getUserStore().getConfig() ) );
     }
@@ -104,6 +93,10 @@ public class LocalUserStoreConnector
 
     public void updateUser( final UpdateUserCommand command )
     {
+        final UserEntity existingUser = userDao.findSingleBySpecification( command.getSpecification() );
+        final UserFields userFields = existingUser.getUserFields();
+        final UserFields changedUserFields = command.getUserFields().getChangedUserFields( userFields, command.isUpdateStrategy() );
+        new ReadOnlyUserFieldValidator( getUserStore().getConfig() ).validate( changedUserFields );
         updateUserLocally( command );
     }
 
@@ -155,7 +148,7 @@ public class LocalUserStoreConnector
 
     public void changePassword( final String uid, final String newPassword )
     {
-        userStorageService.changePassword( userStoreKey, uid, newPassword );
+        userStorerFactory.create( userStoreKey ).changePassword( uid, newPassword );
     }
 
     public User getUserByEntity( UserEntity userEntity )

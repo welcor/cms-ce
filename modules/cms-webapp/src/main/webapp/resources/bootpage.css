@@ -10,7 +10,7 @@ html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pr
 }
 
 body {
-    font-family: arial,helvetica,sans-serif;
+    font-family: arial, helvetica, sans-serif;
     font-size: 75%;
     color: #332F2D;
     line-height: 1.5;
@@ -102,7 +102,7 @@ h3,
 }
 
 #management-components .icon-webdav {
-    margin:  8px 10px 8px 10px;
+    margin: 8px 10px 8px 10px;
 }
 
 #management-components .component {
@@ -112,7 +112,7 @@ h3,
     cursor: pointer;
 }
 
-#management-components .component span{
+#management-components .component span {
     display: inline-block;
 }
 
@@ -197,17 +197,16 @@ h3,
     display: inline-block;
 }
 
-
 .box {
     border: 1px solid #D7D7D7;
     background: #f5f6f5;
     background: -moz-linear-gradient(top, #f5f6f5 0%, #fff 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f6f5), color-stop(100%,#fff));
-    background: -webkit-linear-gradient(top, #f5f6f5 0%,#fff 100%);
-    background: -o-linear-gradient(top, #f5f6f5 0%,#fff 100%);
-    background: -ms-linear-gradient(top, #f5f6f5 0%,#fff 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f5', endColorstr='#ffffff',GradientType=0 );
-    background: linear-gradient(top, #f5f6f5 0%,#fff 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f5f6f5), color-stop(100%, #fff));
+    background: -webkit-linear-gradient(top, #f5f6f5 0%, #fff 100%);
+    background: -o-linear-gradient(top, #f5f6f5 0%, #fff 100%);
+    background: -ms-linear-gradient(top, #f5f6f5 0%, #fff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f5f6f5', endColorstr = '#ffffff', GradientType = 0);
+    background: linear-gradient(top, #f5f6f5 0%, #fff 100%);
 }
 
 ul.menu.main {

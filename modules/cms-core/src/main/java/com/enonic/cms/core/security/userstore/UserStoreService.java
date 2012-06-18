@@ -25,7 +25,6 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserNotFoundException;
-import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.remote.MemberCache;
@@ -63,9 +62,7 @@ public interface UserStoreService
 
     void changePassword( final UserStoreKey userStoreKey, final String uid, final String newPassword );
 
-    UserEntity synchronizeUser( final UserSpecification userSpec );
-
-    UserKey synchronizeUser( UserStoreKey userStoreKey, String uid )
+    void synchronizeUser( UserStoreKey userStoreKey, String uid )
         throws UserNotFoundException;
 
     void synchronizeUsers( final SynchronizeStatus status, final UserStoreKey userStoreKey, final List<RemoteUser> remoteUsers,
@@ -74,7 +71,7 @@ public interface UserStoreService
     void synchronizeUserMemberships( final SynchronizeStatus status, final UserStoreKey userStoreKey, final RemoteUser remoteUser,
                                      final MemberCache memberCache );
 
-    void deleteUsersLocally( final LocalUsersStatus status, final List<UserKey> users );
+    void deleteUsersLocally( final UserStoreKey userStore, final LocalUsersStatus status, final List<UserKey> users );
 
     GroupEntity synchronizeGroup( final GroupKey groupKey );
 
@@ -84,7 +81,7 @@ public interface UserStoreService
     void synchronizeGroupMemberships( final SynchronizeStatus status, final UserStoreKey userStoreKey, final RemoteGroup remoteGroup,
                                       final MemberCache memberCache );
 
-    void deleteGroupsLocally( final LocalGroupsStatus status, final List<GroupKey> groups );
+    void deleteGroupsLocally( final LocalGroupsStatus status, final UserStoreKey userStoreKey, final List<GroupKey> groups );
 
     UserStoreEntity getDefaultUserStore();
 

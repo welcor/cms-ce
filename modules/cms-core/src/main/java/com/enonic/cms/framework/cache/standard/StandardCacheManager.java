@@ -17,12 +17,12 @@ import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 
 /**
  * This class implements the cache.
  */
-@Component
+@Component("cacheFacadeManager")
 public final class StandardCacheManager
     implements CacheManager
 {

@@ -264,7 +264,7 @@ public final class AttachmentHandler
     private boolean resolveDownloadRequested( HttpServletRequest request )
     {
         boolean downloadRequested = "true".equals( request.getParameter( "download" ) );
-        downloadRequested |= "true".equals( request.getParameter( "_download" ) );
+        downloadRequested = downloadRequested || "true".equals( request.getParameter( "_download" ) );
         return downloadRequested;
     }
 

@@ -4,6 +4,25 @@
  */
 package com.enonic.vertical.engine.handlers;
 
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.user.QualifiedUsername;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.framework.util.UUIDGenerator;
+import com.enonic.esl.sql.model.Column;
+import com.enonic.esl.sql.model.Table;
+import com.enonic.esl.util.ArrayUtil;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.*;
+import com.enonic.vertical.engine.dbmodel.*;
+import com.google.common.collect.Sets;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,41 +30,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
-
-import com.google.common.collect.Sets;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import com.enonic.esl.sql.model.Column;
-import com.enonic.esl.sql.model.Table;
-import com.enonic.esl.util.ArrayUtil;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.AccessRight;
-import com.enonic.vertical.engine.CategoryAccessRight;
-import com.enonic.vertical.engine.ContentAccessRight;
-import com.enonic.vertical.engine.MenuAccessRight;
-import com.enonic.vertical.engine.MenuItemAccessRight;
-import com.enonic.vertical.engine.VerticalCreateException;
-import com.enonic.vertical.engine.VerticalEngineLogger;
-import com.enonic.vertical.engine.VerticalRemoveException;
-import com.enonic.vertical.engine.XDG;
-import com.enonic.vertical.engine.dbmodel.CatAccessRightView;
-import com.enonic.vertical.engine.dbmodel.ConAccessRightView;
-import com.enonic.vertical.engine.dbmodel.ContentView;
-import com.enonic.vertical.engine.dbmodel.MenuARView;
-import com.enonic.vertical.engine.dbmodel.MenuItemARView;
-import com.enonic.vertical.engine.dbmodel.SectionContentView;
-
-import com.enonic.cms.framework.util.UUIDGenerator;
-
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.security.group.GroupType;
-import com.enonic.cms.core.security.user.QualifiedUsername;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 final public class SecurityHandler
     extends BaseHandler

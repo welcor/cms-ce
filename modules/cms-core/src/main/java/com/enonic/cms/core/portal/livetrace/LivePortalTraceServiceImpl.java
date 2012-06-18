@@ -4,18 +4,15 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.annotation.PostConstruct;
-
+import com.enonic.cms.core.time.TimeService;
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.base.Preconditions;
-
-import com.enonic.cms.core.time.TimeService;
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Oct 6, 2010

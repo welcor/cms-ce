@@ -9,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.store.dao.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,12 +18,28 @@ import com.enonic.vertical.engine.BaseEngine;
 import com.enonic.vertical.engine.PresentationEngine;
 import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
 
+import com.enonic.cms.core.AdminConsoleTranslationService;
+import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.service.KeyService;
-
-import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.store.dao.BinaryDataDao;
+import com.enonic.cms.store.dao.CategoryDao;
+import com.enonic.cms.store.dao.ContentBinaryDataDao;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.ContentTypeDao;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.LanguageDao;
+import com.enonic.cms.store.dao.MenuItemDao;
+import com.enonic.cms.store.dao.PageDao;
+import com.enonic.cms.store.dao.PageTemplateDao;
+import com.enonic.cms.store.dao.PortletDao;
+import com.enonic.cms.store.dao.ResourceDao;
+import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.cms.store.dao.UnitDao;
+import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.store.dao.UserStoreDao;
 
 public abstract class BaseHandler
 {

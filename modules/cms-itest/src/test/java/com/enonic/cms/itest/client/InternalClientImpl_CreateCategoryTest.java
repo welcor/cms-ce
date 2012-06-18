@@ -10,6 +10,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.api.client.model.CreateCategoryParams;
@@ -30,9 +31,8 @@ public class InternalClientImpl_CreateCategoryTest
     extends AbstractSpringTest
 {
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
-
-    private DomainFactory factory;
 
     @Autowired
     private DomainFixture fixture;
@@ -41,7 +41,7 @@ public class InternalClientImpl_CreateCategoryTest
     public void before()
         throws IOException, JDOMException
     {
-        factory = fixture.getFactory();
+        final DomainFactory factory = fixture.getFactory();
 
         fixture.initSystemData();
 

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,42 +24,37 @@ public class UserStoreConnectorConfigLoader
 {
     private VerticalProperties verticalProperties;
 
-    private Set<String> configNames = null;
+    private Set<String> userStoreConnectorNames = null;
 
-    public Set<String> getAllConfigNames()
+    public Map<String, UserStoreConnectorConfig> getAllUserStoreConnectorConfigs()
     {
-        return doGetAllConfigNames();
-    }
-
-    public Map<String, UserStoreConnectorConfig> getAllConfigs()
-    {
-        Collection<String> allNames = doGetAllConfigNames();
+        Collection<String> allNames = doGetAllUserStoreConnectorNames();
         Map<String, UserStoreConnectorConfig> configs = new LinkedHashMap<String, UserStoreConnectorConfig>( allNames.size() );
 
         for ( final String name : allNames )
         {
-            configs.put( name, doGetConfig( name, true ) );
+            configs.put( name, doGetUserStoreConnectorConfig( name, true ) );
         }
 
         return configs;
     }
 
-    public UserStoreConnectorConfig getConfig( final String configName )
+    public UserStoreConnectorConfig getUserStoreConnectorConfig( final String connectorName )
     {
-        return doGetConfig( configName, false );
+        return doGetUserStoreConnectorConfig( connectorName, false );
     }
 
-    private UserStoreConnectorConfig doGetConfig( final String configName, final boolean failSilent )
+    private UserStoreConnectorConfig doGetUserStoreConnectorConfig( final String connectorName, final boolean failSilent )
     {
-        if ( !doGetAllConfigNames().contains( configName ) )
+        if ( !doGetAllUserStoreConnectorNames().contains( connectorName ) )
         {
             //FIXME localization impossible, message shown directly in GUI
             final String errorMessage =
-                InvalidUserStoreConnectorConfigException.createMessage( configName, "No configuration found in cms.properties" );
+                InvalidUserStoreConnectorConfigException.createMessage( connectorName, "No configuration found in cms.properties" );
             if ( failSilent )
             {
                 final UserStoreConnectorConfig config =
-                    new UserStoreConnectorConfig( configName, null, UserPolicyConfig.ALL_FALSE, GroupPolicyConfig.ALL_FALSE );
+                    new UserStoreConnectorConfig( connectorName, null, UserPolicyConfig.ALL_FALSE, GroupPolicyConfig.ALL_FALSE );
                 config.addErrorMessage( errorMessage );
                 return config;
             }
@@ -68,16 +64,16 @@ public class UserStoreConnectorConfigLoader
             }
         }
 
-        return doLoadConfig( configName );
+        return doLoadConfig( connectorName );
     }
 
-    private UserStoreConnectorConfig doLoadConfig( final String configName )
+    private UserStoreConnectorConfig doLoadConfig( final String connectorName )
     {
         UserPolicyConfig userPolicyConfig;
         String userPolicyConfigErrorMessage = null;
         try
         {
-            userPolicyConfig = getUserPolicy( configName );
+            userPolicyConfig = getUserPolicy( connectorName );
         }
         catch ( InvalidUserStoreConnectorConfigException e )
         {
@@ -89,7 +85,7 @@ public class UserStoreConnectorConfigLoader
         String groupPolicyConfigErrorMessage = null;
         try
         {
-            groupPolicyConfig = getGroupPolicy( configName );
+            groupPolicyConfig = getGroupPolicy( connectorName );
         }
         catch ( Exception e )
         {
@@ -97,9 +93,15 @@ public class UserStoreConnectorConfigLoader
             groupPolicyConfig = GroupPolicyConfig.ALL_FALSE;
         }
 
-        final String pluginType = getPluginType( configName );
-        final UserStoreConnectorConfig config = new UserStoreConnectorConfig( configName, pluginType, userPolicyConfig, groupPolicyConfig );
-        config.addProperties( getPluginProperties( configName ) );
+        final String pluginType = getPluginType( connectorName );
+        final Boolean resurrectDeletedUsers = getResurrectDeletedUsers( connectorName );
+        final Boolean resurrectDeletedGroups = getResurrectDeletedGroups( connectorName );
+
+        final UserStoreConnectorConfig config =
+            new UserStoreConnectorConfig( connectorName, pluginType, userPolicyConfig, groupPolicyConfig, resurrectDeletedUsers,
+                                          resurrectDeletedGroups );
+
+        config.addProperties( getPluginProperties( connectorName ) );
 
         if ( userPolicyConfigErrorMessage != null )
         {
@@ -113,44 +115,66 @@ public class UserStoreConnectorConfigLoader
         return config;
     }
 
-    private Set<String> doGetAllConfigNames()
+    private Set<String> doGetAllUserStoreConnectorNames()
     {
-        if ( configNames != null )
+        if ( userStoreConnectorNames != null )
         {
-            return configNames;
+            return userStoreConnectorNames;
         }
-        configNames = new HashSet<String>();
+        userStoreConnectorNames = new HashSet<String>();
 
         final Properties allProperties = verticalProperties.getSubSet( "cms.userstore.connector." );
         for ( final Object propertyName : allProperties.keySet() )
         {
             final String configName = ( (String) propertyName ).replaceAll( "^(cms\\.userstore\\.)?(.*?)\\..*$", "$2" );
-            configNames.add( configName );
+            userStoreConnectorNames.add( configName );
         }
-        return configNames;
+        return userStoreConnectorNames;
     }
 
-    private String getPluginType( final String configName )
+    private String getPluginType( final String connectorName )
     {
-        return verticalProperties.getProperty( String.format( "cms.userstore.connector.%s.plugin", configName ) );
+        return verticalProperties.getProperty( String.format( "cms.userstore.connector.%s.plugin", connectorName ) );
     }
 
-    private Properties getPluginProperties( final String configName )
+    private Boolean getResurrectDeletedUsers( final String connectorName )
     {
-        return verticalProperties.getSubSet( String.format( "cms.userstore.connector.%s.plugin.", configName ) );
+        String stringValue =
+            verticalProperties.getProperty( String.format( "cms.userstore.connector.%s.resurrectDeletedUsers", connectorName ) );
+        if ( StringUtils.isBlank( stringValue ) )
+        {
+            return null;
+        }
+        return Boolean.valueOf( stringValue );
     }
 
-    private UserPolicyConfig getUserPolicy( final String configName )
+    private Boolean getResurrectDeletedGroups( final String connectorName )
+    {
+        String stringValue =
+            verticalProperties.getProperty( String.format( "cms.userstore.connector.%s.resurrectDeletedGroups", connectorName ) );
+        if ( StringUtils.isBlank( stringValue ) )
+        {
+            return null;
+        }
+        return Boolean.valueOf( stringValue );
+    }
+
+    private Properties getPluginProperties( final String connectorName )
+    {
+        return verticalProperties.getSubSet( String.format( "cms.userstore.connector.%s.plugin.", connectorName ) );
+    }
+
+    private UserPolicyConfig getUserPolicy( final String connectorName )
         throws InvalidUserStoreConnectorConfigException
     {
-        return new UserPolicyConfig( configName, verticalProperties.getProperty(
-            String.format( "cms.userstore.connector.%s.userPolicy", configName ) ) );
+        return new UserPolicyConfig( connectorName, verticalProperties.getProperty(
+            String.format( "cms.userstore.connector.%s.userPolicy", connectorName ) ) );
     }
 
-    private GroupPolicyConfig getGroupPolicy( final String configName )
+    private GroupPolicyConfig getGroupPolicy( final String connectorName )
     {
-        return new GroupPolicyConfig( configName, verticalProperties.getProperty(
-            String.format( "cms.userstore.connector.%s.groupPolicy", configName ) ) );
+        return new GroupPolicyConfig( connectorName, verticalProperties.getProperty(
+            String.format( "cms.userstore.connector.%s.groupPolicy", connectorName ) ) );
     }
 
     @Autowired

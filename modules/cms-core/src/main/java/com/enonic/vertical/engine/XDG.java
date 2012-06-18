@@ -24,6 +24,7 @@ import com.enonic.esl.sql.model.datatypes.DataType;
 import com.enonic.esl.util.StringUtil;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.processors.ElementProcessor;
+
 import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 
 public class XDG

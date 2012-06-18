@@ -267,8 +267,6 @@ public class ContentEnhancedImageXMLBuilder
     {
         ArrayList<BinaryData> binaryData = new ArrayList<BinaryData>();
 
-        binaryData.add( getOriginalImage( origImage, encodeType, originalFilenameWithoutExtension ) );
-
         formItems.put( "originalbinarydatakey", "%0" );
 
         final List<BinaryData> newStyleScaledImages =
@@ -276,18 +274,5 @@ public class ContentEnhancedImageXMLBuilder
         binaryData.addAll( newStyleScaledImages );
 
         return binaryData;
-    }
-
-    private BinaryData getOriginalImage( BufferedImage origImage, String encodeType, String originalFilenameWithoutExtension )
-        throws IOException
-    {
-        // Original image:
-        BufferedImage tmpImage = origImage;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageUtil.writeImage( tmpImage, encodeType, baos );
-        final String originalfileFilename =
-            ContentImageUtil.resolveFilenameForScaledImage( originalFilenameWithoutExtension, tmpImage, encodeType );
-
-        return BinaryData.createBinaryDataFromStream( baos, originalfileFilename );
     }
 }

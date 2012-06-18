@@ -64,7 +64,7 @@ public final class SimpleDavServlet
         final boolean beansFound = beanNames != null && beanNames.length > 0;
         final DavConfiguration davConfig = beansFound ? (DavConfiguration) appContext.getBean( beanNames[0] ) : null;
 
-        if (davConfig == null)
+        if ( davConfig == null )
         {
             throw new ServletException( "No dav configuration set" );
         }

@@ -3,7 +3,6 @@ package com.enonic.cms.core.xslt.cache;
 import javax.xml.transform.Templates;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheFacade;

@@ -7,6 +7,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
@@ -40,9 +41,8 @@ public class InternalClientImpl_DeleteCategoryTest
     extends AbstractSpringTest
 {
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
-
-    private Document contentTypeConfig;
 
     @Autowired
     private HibernateTemplate hibernateTemplate;
@@ -67,9 +67,9 @@ public class InternalClientImpl_DeleteCategoryTest
         fixture.createAndStoreNormalUserWithUserGroup( "deleter-noaccess", "deleter-noaccess", "testuserstore" );
 
         //prepare data for content creation
-        StringBuffer contentTypeConfigXml = new StringBuffer();
+        StringBuilder contentTypeConfigXml = new StringBuilder();
         contentTypeConfigXml.append( "<moduledata/>" );
-        contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
+        final Document contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
         hibernateTemplate.flush();
 
         fixture.save( factory.createContentHandler( "MyHandler", ContentHandlerName.FILE.getHandlerClassShortName() ) );

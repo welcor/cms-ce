@@ -4,6 +4,24 @@
  */
 package com.enonic.vertical.engine.handlers;
 
+import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.esl.sql.model.Column;
+import com.enonic.esl.util.ArrayUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.VerticalEngineLogger;
+import com.enonic.vertical.engine.XDG;
+import com.enonic.vertical.event.VerticalEventListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,25 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.store.dao.GroupDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import com.enonic.esl.sql.model.Column;
-import com.enonic.esl.util.ArrayUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.VerticalEngineLogger;
-import com.enonic.vertical.engine.XDG;
-import com.enonic.vertical.event.VerticalEventListener;
-import com.enonic.cms.core.security.group.GroupEntity;
-import com.enonic.cms.core.security.group.GroupKey;
-import com.enonic.cms.core.security.group.GroupType;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserType;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
 
 public final class GroupHandler
     extends BaseHandler

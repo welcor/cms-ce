@@ -1,0 +1,47 @@
+{
+    "customdata":{
+        "date_detection":false,
+        "numeric_detection":false,
+        "dynamic_templates":[
+            {
+                "template_userdata_date":{
+                    "match":"*.date",
+                    "mapping":{
+                        "type":"date",
+                        "store":"yes"
+                    }
+                }
+            },
+            {
+                "template_userdata_number":{
+                    "match":"*.number",
+                    "mapping":{
+                        "type":"double",
+                        "store":"yes"
+                    }
+                }
+            },
+            {
+                "template_userdata_strings":{
+                    "match":"*",
+                    "mapping":{
+                        "type":"multi_field",
+                        "fields":{
+                            "{name}":{
+                                "type":"string",
+                                "index":"not_analyzed",
+                                "store":"yes"
+                            },
+                            "_tokenized":{
+                                "type":"string",
+                                "index":"analyzed",
+                                "store":"yes"
+                            }
+                        }
+                    }
+                }
+            }
+
+        ]
+    }
+}

@@ -30,7 +30,7 @@ public final class AddressTransformer
 
     private final static String F_POSTAL_ADDRESS = "postal-address";
 
-    private Address[] toAddresses( UserFieldMap fields )
+    private Address[] toAddresses( UserFields fields )
     {
         LinkedList<Address> list = new LinkedList<Address>();
         for ( UserField field : fields.getFields( UserFieldType.ADDRESS ) )
@@ -41,7 +41,7 @@ public final class AddressTransformer
         return list.toArray( new Address[list.size()] );
     }
 
-    public Map<String, String> toStoreableMap( UserFieldMap fields )
+    public Map<String, String> toStoreableMap( UserFields fields )
     {
         HashMap<String, String> result = new HashMap<String, String>();
         Address[] addresses = toAddresses( fields );
@@ -110,9 +110,9 @@ public final class AddressTransformer
         return address;
     }
 
-    public UserFieldMap fromStoreableMap( Map<String, String> map )
+    public UserFields fromStoreableMap( Map<String, String> map )
     {
-        UserFieldMap fields = new UserFieldMap( true );
+        UserFields fields = new UserFields( true );
         for ( Address address : parseAddresses( map ) )
         {
             fields.add( new UserField( UserFieldType.ADDRESS, address ) );

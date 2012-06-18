@@ -1,17 +1,12 @@
 package com.enonic.cms.core.portal.livetrace;
 
 
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.joda.time.DateTime;
 import org.junit.Test;
+
+import java.security.SecureRandom;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.Assert.*;
 

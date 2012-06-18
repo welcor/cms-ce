@@ -18,14 +18,12 @@ import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStorePlugin;
-import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreType;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
-import com.enonic.cms.store.dao.GroupDao;
-import com.enonic.cms.store.dao.UserDao;
-
 import com.enonic.cms.core.user.remote.RemoteGroup;
 import com.enonic.cms.core.user.remote.RemotePrincipal;
 import com.enonic.cms.core.user.remote.RemoteUser;
+import com.enonic.cms.store.dao.GroupDao;
+import com.enonic.cms.store.dao.UserDao;
 
 /**
  * Jun 30, 2009
@@ -46,9 +44,9 @@ public abstract class AbstractBaseGroupSynchronizer
 
     protected final boolean syncGroup;
 
-    protected SynchronizeStatus status = new SynchronizeStatus( SynchronizeUserStoreType.GROUPS_ONLY );
+    protected SynchronizeStatus status = null;
 
-    public void setStatusCollector( final SynchronizeStatus value )
+    void setStatusCollector( final SynchronizeStatus value )
     {
         status = value;
     }
@@ -67,6 +65,13 @@ public abstract class AbstractBaseGroupSynchronizer
         return userStore.getKey();
     }
 
+    protected boolean resurrectGroup( final GroupEntity group )
+    {
+        final boolean resurrected = group.isDeleted();
+        group.setDeleted( false );
+        return resurrected;
+    }
+
     protected void syncGroupMemberships( final GroupEntity localGroupToSync, final RemoteGroup remoteGroup, final MemberCache memberCache )
     {
         final List<RemoteGroup> remoteMemberships = remoteUserStorePlugin.getMemberships( remoteGroup );
@@ -81,6 +86,7 @@ public abstract class AbstractBaseGroupSynchronizer
 
     protected void syncGroupMembers( final GroupEntity localGroupToSync, final RemoteGroup remoteGroup, final MemberCache memberCache )
     {
+        // TODO: retrieval of groups in remoteUserStorePlugin.getMembers should be batched due to timeout caused by large number of members.
         final List<RemotePrincipal> remoteMembers = remoteUserStorePlugin.getMembers( remoteGroup );
         removeLocalGroupMembersNotExistingRemote( localGroupToSync, remoteMembers );
 
@@ -157,7 +163,6 @@ public abstract class AbstractBaseGroupSynchronizer
     {
         final UserSpecification spec = new UserSpecification();
         spec.setUserStoreKey( getUserStoreKey() );
-        spec.setName( remoteUserMember.getId() );
         spec.setSyncValue( remoteUserMember.getSync() );
         spec.setDeletedState( UserSpecification.DeletedState.ANY );
 
@@ -193,20 +198,7 @@ public abstract class AbstractBaseGroupSynchronizer
     private void syncGroupMemberOfTypeGroup( final GroupEntity localGroup, final RemoteGroup remoteGroupMember,
                                              final MemberCache memberCache )
     {
-        final GroupSpecification spec = new GroupSpecification();
-        spec.setUserStoreKey( getUserStoreKey() );
-        spec.setName( remoteGroupMember.getId() );
-        spec.setSyncValue( remoteGroupMember.getSync() );
-
-        GroupEntity existingMember = memberCache.getMemberOfTypeGroup( spec );
-        if ( existingMember == null )
-        {
-            existingMember = groupDao.findSingleBySpecification( spec );
-            if ( existingMember != null )
-            {
-                memberCache.addMemeberOfTypeGroup( existingMember );
-            }
-        }
+        GroupEntity existingMember = findGroupBySyncValue( remoteGroupMember.getSync(), memberCache );
 
         if ( existingMember == null )
         {
@@ -228,20 +220,7 @@ public abstract class AbstractBaseGroupSynchronizer
     private void syncGroupMembershipOfTypeGroup( final GroupEntity localGroup, final RemoteGroup remoteGroupMember,
                                                  final MemberCache memberCache )
     {
-        final GroupSpecification spec = new GroupSpecification();
-        spec.setUserStoreKey( getUserStoreKey() );
-        spec.setName( remoteGroupMember.getId() );
-        spec.setSyncValue( remoteGroupMember.getSync() );
-
-        GroupEntity existingMember = memberCache.getMemberOfTypeGroup( spec );
-        if ( existingMember == null )
-        {
-            existingMember = groupDao.findSingleBySpecification( spec );
-            if ( existingMember != null )
-            {
-                memberCache.addMemeberOfTypeGroup( existingMember );
-            }
-        }
+        GroupEntity existingMember = findGroupBySyncValue( remoteGroupMember.getSync(), memberCache );
 
         if ( existingMember == null )
         {
@@ -252,12 +231,18 @@ public abstract class AbstractBaseGroupSynchronizer
             if ( localGroup.hasMembership( localGroup ) )
             {
                 // all is fine
-                status.groupMembershipVerified();
+                if ( status != null )
+                {
+                    status.groupMembershipVerified();
+                }
             }
             else
             {
                 localGroup.addMembership( existingMember );
-                status.groupMembershipCreated();
+                if ( status != null )
+                {
+                    status.groupMembershipCreated();
+                }
             }
         }
     }
@@ -291,8 +276,29 @@ public abstract class AbstractBaseGroupSynchronizer
         for ( final GroupEntity localMembershipToRemove : localMembershipsToRemove )
         {
             localGroup.removeMembership( localMembershipToRemove );
-            status.groupMembershipDeleted();
+            if ( status != null )
+            {
+                status.groupMembershipDeleted();
+            }
         }
+    }
+
+    private GroupEntity findGroupBySyncValue( final String syncValue, final MemberCache memberCache )
+    {
+        final GroupSpecification spec = new GroupSpecification();
+        spec.setUserStoreKey( getUserStoreKey() );
+        spec.setSyncValue( syncValue );
+
+        GroupEntity existingMember = memberCache.getMemberOfTypeGroup( spec );
+        if ( existingMember == null )
+        {
+            existingMember = groupDao.findSingleBySpecification( spec );
+            if ( existingMember != null )
+            {
+                memberCache.addMemeberOfTypeGroup( existingMember );
+            }
+        }
+        return existingMember;
     }
 
     public void setGroupDao( final GroupDao value )

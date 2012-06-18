@@ -4,14 +4,13 @@
  */
 package com.enonic.cms.framework.cache.standard;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jdom.Document;
-import org.jdom.Element;
-
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 final class StandardCacheFacade
     implements CacheFacade 

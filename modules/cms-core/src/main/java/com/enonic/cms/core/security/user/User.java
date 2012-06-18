@@ -6,9 +6,9 @@ package com.enonic.cms.core.security.user;
 
 import org.joda.time.DateTime;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.user.field.UserFields;
 
 
 public interface User
@@ -53,5 +53,5 @@ public interface User
 
     boolean hasUserGroup();
 
-    UserInfo getUserInfo();
+    UserFields getUserFields();
 }

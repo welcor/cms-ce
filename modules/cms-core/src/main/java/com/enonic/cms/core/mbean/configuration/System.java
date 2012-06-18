@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.upgrade.UpgradeService;
 

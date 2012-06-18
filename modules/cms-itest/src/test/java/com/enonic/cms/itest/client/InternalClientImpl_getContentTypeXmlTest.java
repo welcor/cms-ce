@@ -4,17 +4,16 @@ import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.api.client.model.GetContentTypeConfigXMLParams;
-import com.enonic.cms.core.client.InternalClientImpl;
+import com.enonic.cms.core.client.InternalClient;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
-import com.enonic.cms.store.dao.ContentTypeDao;
 
 import static com.enonic.cms.itest.util.AssertTool.assertSingleXPathValueEquals;
 import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
@@ -24,24 +23,18 @@ import static com.enonic.cms.itest.util.AssertTool.assertXPathNotExist;
 public class InternalClientImpl_getContentTypeXmlTest
     extends AbstractSpringTest
 {
-    private DomainFactory factory;
-
     @Autowired
     private DomainFixture fixture;
 
-    private InternalClientImpl internalClient;
-
     @Autowired
-    private ContentTypeDao contentTypeDao;
-
-    @Autowired
-    private LivePortalTraceService livePortalTraceService;
+    @Qualifier("localClient")
+    private InternalClient internalClient;
 
     @Before
     public void setUp()
     {
 
-        factory = fixture.getFactory();
+        final DomainFactory factory = fixture.getFactory();
 
         // setup
         fixture.initSystemData();
@@ -49,10 +42,6 @@ public class InternalClientImpl_getContentTypeXmlTest
 
         fixture.save( factory.createContentType( 1002, "document", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
                                                  getDocumentContentTypeXml() ) );
-
-        internalClient = new InternalClientImpl();
-        internalClient.setContentTypeDao( contentTypeDao );
-        internalClient.setLivePortalTraceService( livePortalTraceService );
     }
 
     @Test
@@ -103,7 +92,7 @@ public class InternalClientImpl_getContentTypeXmlTest
 
     private Document getDocumentContentTypeXml()
     {
-        final StringBuffer config = new StringBuffer();
+        final StringBuilder config = new StringBuilder();
         config.append( "<contenttype>" );
         config.append( "  <config>" );
         config.append( "    <form>" );

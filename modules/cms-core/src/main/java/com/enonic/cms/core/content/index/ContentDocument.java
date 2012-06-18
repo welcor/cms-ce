@@ -8,18 +8,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 /**
  * This class implements the content resource.
  */
 public final class ContentDocument
-    implements ContentIndexConstants
+        implements ContentIndexConstants
 {
     private final static HashSet<String> PROTECTED_FIELDS = new HashSet<String>( Arrays.asList( ALL_FIELDS ) );
 
@@ -27,25 +32,37 @@ public final class ContentDocument
 
     private CategoryKey categoryKey;
 
+    private SimpleText categoryName;
+
     private ContentTypeKey contentTypeKey;
 
     private SimpleText contentTypeName;
+
+    private ContentLocations contentLocations;
 
     private SimpleText title;
 
     private SimpleText ownerKey;
 
+    private SimpleText ownerName;
+
     private SimpleText ownerQualifiedName;
 
     private SimpleText modifierKey;
 
+    private SimpleText modifierName;
+
     private SimpleText modifierQualifiedName;
 
-    private UserKey assigneeKey;
+    private SimpleText assigneeKey;
+
+    private SimpleText assigneeName;
 
     private SimpleText assigneeQualifiedName;
 
-    private UserKey assignerKey;
+    private SimpleText assignerKey;
+
+    private SimpleText assignerName;
 
     private SimpleText assignerQualifiedName;
 
@@ -75,10 +92,18 @@ public final class ContentDocument
 
     private BigText binaryExtractedText;
 
+    private final Collection<ContentAccessEntity> contentAccessRights;
+
+    private CategoryEntity category;
+
+    private final Map<MenuItemKey, Integer> orderedSections;
+
     public ContentDocument( ContentKey contentKey )
     {
         this.contentKey = contentKey;
         this.userDefinedFields = new ArrayList<UserDefinedField>();
+        this.contentAccessRights = new ArrayList<ContentAccessEntity>();
+        this.orderedSections = new HashMap<MenuItemKey, Integer>();
     }
 
     public ContentKey getContentKey()
@@ -94,6 +119,16 @@ public final class ContentDocument
     public void setCategoryKey( CategoryKey categoryKey )
     {
         this.categoryKey = categoryKey;
+    }
+
+    public SimpleText getCategoryName()
+    {
+        return categoryName;
+    }
+
+    public void setCategoryName( String name )
+    {
+        categoryName = new SimpleText( name );
     }
 
     public ContentTypeKey getContentTypeKey()
@@ -116,6 +151,16 @@ public final class ContentDocument
         contentTypeName = new SimpleText( name );
     }
 
+    public ContentLocations getContentLocations()
+    {
+        return contentLocations;
+    }
+
+    public void setContentLocations( ContentLocations contentLocations )
+    {
+        this.contentLocations = contentLocations;
+    }
+
     public void addUserDefinedField( UserDefinedField field )
     {
         if ( !isProtectedField( field.getName() ) )
@@ -133,7 +178,6 @@ public final class ContentDocument
     {
         addUserDefinedField( new UserDefinedField( name, value ) );
     }
-
 
     public Collection<UserDefinedField> getUserDefinedFields()
     {
@@ -169,7 +213,7 @@ public final class ContentDocument
     {
         ownerKey = new SimpleText( key );
         // If the key contains ASCII control characters, something is seriously wrong.
-        assert ( ownerKey.getText().equals( key.trim() ) );
+        assert ( ownerKey.toString().equals( key.toString().trim() ) );
     }
 
     public SimpleText getModifierKey()
@@ -184,14 +228,26 @@ public final class ContentDocument
         assert ( modifierKey.getText().equals( key.trim() ) );
     }
 
-    public UserKey getAssigneeKey()
+    public SimpleText getAssigneeKey()
     {
         return assigneeKey;
     }
 
-    public void setAssigneeKey( UserKey assigneeKey )
+    public void setAssigneeKey( String key )
     {
-        this.assigneeKey = assigneeKey;
+        assigneeKey = new SimpleText( key );
+        // If the key contains ASCII control characters, something is seriously wrong.
+        assert ( assigneeKey.getText().equals( key.trim() ) );
+    }
+
+    public SimpleText getAssigneeName()
+    {
+        return assigneeName;
+    }
+
+    public void setAssigneeName( String name )
+    {
+        assigneeName = new SimpleText( name );
     }
 
     public SimpleText getAssigneeQualifiedName()
@@ -204,14 +260,26 @@ public final class ContentDocument
         this.assigneeQualifiedName = new SimpleText( value );
     }
 
-    public UserKey getAssignerKey()
+    public SimpleText getAssignerKey()
     {
         return assignerKey;
     }
 
-    public void setAssignerKey( UserKey value )
+    public void setAssignerKey( String key )
     {
-        this.assignerKey = value;
+        assignerKey = new SimpleText( key );
+        // If the key contains ASCII control characters, something is seriously wrong.
+        assert ( assignerKey.getText().equals( key.trim() ) );
+    }
+
+    public SimpleText getAssignerName()
+    {
+        return assignerName;
+    }
+
+    public void setAssignerName( String name )
+    {
+        this.assignerName = new SimpleText( name );
     }
 
     public SimpleText getAssignerQualifiedName()
@@ -304,6 +372,16 @@ public final class ContentDocument
         this.priority = value;
     }
 
+    public SimpleText getOwnerName()
+    {
+        return ownerName;
+    }
+
+    public void setOwnerName( String name )
+    {
+        ownerName = new SimpleText( name );
+    }
+
     public SimpleText getOwnerQualifiedName()
     {
         return ownerQualifiedName;
@@ -312,6 +390,16 @@ public final class ContentDocument
     public void setOwnerQualifiedName( String value )
     {
         ownerQualifiedName = new SimpleText( value );
+    }
+
+    public SimpleText getModifierName()
+    {
+        return modifierName;
+    }
+
+    public void setModifierName( String name )
+    {
+        modifierName = new SimpleText( name );
     }
 
     public SimpleText getModifierQualifiedName()
@@ -327,5 +415,35 @@ public final class ContentDocument
     private boolean isProtectedField( String field )
     {
         return PROTECTED_FIELDS.contains( field );
+    }
+
+    public Collection<ContentAccessEntity> getContentAccessRights()
+    {
+        return contentAccessRights;
+    }
+
+    public void addContentAccessRights( Collection<ContentAccessEntity> contentAccessRights )
+    {
+        this.contentAccessRights.addAll( contentAccessRights );
+    }
+
+    public CategoryEntity getCategory()
+    {
+        return category;
+    }
+
+    public void setCategory( CategoryEntity category )
+    {
+        this.category = category;
+    }
+
+    public void addOrderedSection( MenuItemKey sectionKey, int orderPosition )
+    {
+        orderedSections.put( sectionKey, orderPosition );
+    }
+
+    public Map<MenuItemKey, Integer> getOrderedSections()
+    {
+        return orderedSections;
     }
 }

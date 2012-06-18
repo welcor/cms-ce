@@ -3518,7 +3518,7 @@ public class ContentBaseHandlerServlet
 
     private void appendContentSource( Document doc, ContentVersionEntity version )
     {
-        ContentSourceXmlCreator contentSourceXmlCreator = new ContentSourceXmlCreator( contentIndexDao );
+        ContentSourceXmlCreator contentSourceXmlCreator = new ContentSourceXmlCreator( contentIndexService );
         XMLDocument sourceDocument = contentSourceXmlCreator.createSourceDocument( version );
 
         Element sourceEl = sourceDocument.getAsDOMDocument().getDocumentElement();

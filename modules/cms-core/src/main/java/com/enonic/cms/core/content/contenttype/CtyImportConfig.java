@@ -4,11 +4,11 @@
  */
 package com.enonic.cms.core.content.contenttype;
 
+import net.sf.saxon.om.NamespaceResolver;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.sf.saxon.om.NamespaceResolver;
 
 public class CtyImportConfig
     implements CtyImportMappingContainer

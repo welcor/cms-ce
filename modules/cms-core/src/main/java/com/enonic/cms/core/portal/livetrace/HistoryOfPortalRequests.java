@@ -4,10 +4,10 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Oct 6, 2010

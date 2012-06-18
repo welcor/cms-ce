@@ -2,6 +2,7 @@ package com.enonic.cms.itest.content;
 
 import org.jdom.Document;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
 import static org.junit.Assert.*;
+
 
 public class ContentIndexServiceImpl_ContentIndexQueryTest
     extends AbstractSpringTest
@@ -80,6 +82,14 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         fixture.flushAndClearHibernateSesssion();
     }
 
+    @After
+    public void doAfter()
+        throws Exception
+    {
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+    }
+
     @Test
     public void having_one_matching_content_query_returns_one_when_index_is_0_and_count_1()
     {
@@ -87,6 +97,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "a-1", "a-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -107,6 +118,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         // setup
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -128,6 +140,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -150,6 +163,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
@@ -173,9 +187,11 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
-        ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"" );
+        final String orderBy = "title desc";
+        ContentIndexQuery query = new ContentIndexQuery( "title CONTAINS \"c\"", orderBy );
         query.setSecurityFilter( Lists.newArrayList( fixture.findUserByName( "content-querier" ).getUserGroupKey() ) );
         query.setIndex( 1 );
         query.setCount( 1 );

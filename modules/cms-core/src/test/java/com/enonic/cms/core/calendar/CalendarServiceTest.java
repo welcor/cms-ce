@@ -16,11 +16,13 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class CalendarServiceTest
 {
     private CalendarService service;
+
     private XMLOutputter output = new XMLOutputter( Format.getPrettyFormat() );
 
     @Before

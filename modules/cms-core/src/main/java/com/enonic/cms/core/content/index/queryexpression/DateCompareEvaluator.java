@@ -23,7 +23,8 @@ public class DateCompareEvaluator
         }
         else
         {
-            if ( isDateField( left ) && isValidDateString( right ) && isExpressionOperatorValidForDates( expr ) )
+            boolean expressionsOfTypeDate = ( isDateField( left ) && isValidDateString( right ) ) || isDateValue( right );
+            if ( expressionsOfTypeDate && isExpressionOperatorValidForDates( expr ) )
             {
                 CompareExpr cexpr = new CompareExpr( expr.getOperator(), left,
                                                      new FunctionExpr( "date", new ArrayExpr( new ValueExpr[]{(ValueExpr) right} ) ) );
@@ -46,6 +47,11 @@ public class DateCompareEvaluator
     private boolean isValidDateString( Expression expr )
     {
         return ( expr instanceof ValueExpr ) && ( (ValueExpr) expr ).isValidDateString();
+    }
+
+    private boolean isDateValue( Expression expr )
+    {
+        return ( expr instanceof ValueExpr ) && ( (ValueExpr) expr ).isDate();
     }
 
     private boolean isExpressionOperatorValidForDates( CompareExpr expr )

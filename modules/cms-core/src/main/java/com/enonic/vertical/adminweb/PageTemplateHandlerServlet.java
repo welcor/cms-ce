@@ -30,6 +30,7 @@ import com.enonic.vertical.engine.VerticalSecurityException;
 
 import com.enonic.cms.framework.xml.XMLException;
 
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
@@ -43,8 +44,6 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-
-import com.enonic.cms.core.portal.cache.PageCacheService;
 
 public class PageTemplateHandlerServlet
     extends AdminHandlerBaseServlet

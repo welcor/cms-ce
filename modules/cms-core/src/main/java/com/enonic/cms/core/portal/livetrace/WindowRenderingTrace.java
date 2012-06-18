@@ -4,11 +4,10 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import java.util.List;
-
+import com.enonic.cms.core.security.user.QualifiedUsername;
 import org.joda.time.DateTime;
 
-import com.enonic.cms.core.security.user.QualifiedUsername;
+import java.util.List;
 
 /**
  * Oct 6, 2010

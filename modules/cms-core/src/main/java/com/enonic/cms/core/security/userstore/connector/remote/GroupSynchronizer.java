@@ -8,7 +8,6 @@ import org.springframework.util.Assert;
 
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
-
 import com.enonic.cms.core.user.remote.RemoteGroup;
 
 public class GroupSynchronizer
@@ -19,38 +18,31 @@ public class GroupSynchronizer
         super( userStore, true, syncMemberships, syncMembers );
     }
 
-    public void synchronize( final GroupEntity localGroupToSync, final MemberCache memberCache )
+    public void synchronize( final GroupEntity localGroup, final MemberCache memberCache )
     {
-        Assert.notNull( localGroupToSync );
+        Assert.notNull( localGroup );
 
-        status.setTotalRemoteGroupCount( 1 );
-
-        final RemoteGroup remoteGroup = remoteUserStorePlugin.getGroup( localGroupToSync.getName() );
+        final RemoteGroup remoteGroup = remoteUserStorePlugin.getGroup( localGroup.getName() );
         if ( remoteGroup == null )
         {
-            deleteGroup( localGroupToSync );
+            deleteGroup( localGroup );
         }
-        else if ( !remoteGroup.getSync().equals( localGroupToSync.getSyncValue() ) )
+        else if ( !remoteGroup.getSync().equals( localGroup.getSyncValue() ) )
         {
-            // No matcing sync value - group no longer in userstore , we delete it
-            deleteGroup( localGroupToSync );
+            // No matching sync value - group no longer in userstore , we delete it
+            deleteGroup( localGroup );
         }
         else
         {
-            final boolean resurrected = localGroupToSync.isDeleted() == true;
-
-            // force resurrection
-            localGroupToSync.setDeleted( 0 );
-
-            status.groupUpdated( resurrected );
+            resurrectGroup( localGroup );
 
             if ( syncMembers )
             {
-                syncGroupMembers( localGroupToSync, remoteGroup, memberCache );
+                syncGroupMembers( localGroup, remoteGroup, memberCache );
             }
             if ( syncMemberships )
             {
-                syncGroupMemberships( localGroupToSync, remoteGroup, memberCache );
+                syncGroupMemberships( localGroup, remoteGroup, memberCache );
             }
         }
     }
@@ -59,9 +51,7 @@ public class GroupSynchronizer
     {
         if ( !localGroup.isDeleted() )
         {
-            status.setTotalLocalUserCount( 1 );
             localGroup.setDeleted( 1 );
-            status.groupDeleted();
         }
     }
 }

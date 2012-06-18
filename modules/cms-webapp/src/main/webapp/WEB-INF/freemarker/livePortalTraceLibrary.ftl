@@ -575,6 +575,10 @@
                 <td>Security filter</td>
                 <td>${trace.securityFilter!}</td>
             </tr>
+            <tr>
+                <td>Translated query</td>
+                <td>${trace.translatedQuery!?html}</td>
+            </tr>
         </table>
     </td>
 </tr>

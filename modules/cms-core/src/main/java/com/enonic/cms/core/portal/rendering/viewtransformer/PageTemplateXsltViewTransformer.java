@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -28,9 +29,10 @@ import com.enonic.cms.core.xslt.XsltProcessorException;
 /**
  * Apr 26, 2009
  */
+@Component
 public class PageTemplateXsltViewTransformer
-        extends AbstractXsltViewTransformer
-        implements InitializingBean
+    extends AbstractXsltViewTransformer
+    implements InitializingBean
 {
     private static final Logger LOG = LoggerFactory.getLogger( PageTemplateXsltViewTransformer.class );
 
@@ -51,7 +53,7 @@ public class PageTemplateXsltViewTransformer
                 if ( parameter == null || parameter.getValue() == null )
                 {
                     if ( TemplateParameterType.OBJECT.equals( parameterType ) || TemplateParameterType.PAGE.equals( parameterType ) ||
-                            TemplateParameterType.CATEGORY.equals( parameterType ) || TemplateParameterType.CONTENT.equals( parameterType ) )
+                        TemplateParameterType.CATEGORY.equals( parameterType ) || TemplateParameterType.CONTENT.equals( parameterType ) )
                     {
                         processor.setParameter( parameterName, "" );
                     }
@@ -96,7 +98,7 @@ public class PageTemplateXsltViewTransformer
     }
 
     public void afterPropertiesSet()
-            throws Exception
+        throws Exception
     {
         setup();
     }

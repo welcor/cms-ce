@@ -137,6 +137,10 @@ public final class Address
         {
             return false;
         }
+        if ( postalAddress != null ? !postalAddress.equals( address.postalAddress ) : address.postalAddress != null )
+        {
+            return false;
+        }
         if ( postalCode != null ? !postalCode.equals( address.postalCode ) : address.postalCode != null )
         {
             return false;
@@ -146,10 +150,6 @@ public final class Address
             return false;
         }
         if ( street != null ? !street.equals( address.street ) : address.street != null )
-        {
-            return false;
-        }
-        if ( postalAddress != null ? !postalAddress.equals( address.postalAddress ) : address.postalAddress != null )
         {
             return false;
         }
@@ -163,6 +163,11 @@ public final class Address
         int result = label != null ? label.hashCode() : 0;
         result = 31 * result + ( street != null ? street.hashCode() : 0 );
         result = 31 * result + ( postalAddress != null ? postalAddress.hashCode() : 0 );
+        result = 31 * result + ( postalCode != null ? postalCode.hashCode() : 0 );
+        result = 31 * result + ( region != null ? region.hashCode() : 0 );
+        result = 31 * result + ( country != null ? country.hashCode() : 0 );
+        result = 31 * result + ( isoRegion != null ? isoRegion.hashCode() : 0 );
+        result = 31 * result + ( isoCountry != null ? isoCountry.hashCode() : 0 );
         return result;
     }
 }

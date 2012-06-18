@@ -5,12 +5,14 @@
 package com.enonic.cms.core.portal.datasource.expressionfunctions;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.preference.PreferenceService;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.MenuItemDao;
 
 
+@Component
 public class ExpressionFunctionsFactory
 {
     private static ExpressionFunctionsFactory instance;

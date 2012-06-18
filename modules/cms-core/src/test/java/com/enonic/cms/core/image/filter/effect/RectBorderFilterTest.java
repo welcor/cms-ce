@@ -9,7 +9,7 @@ import com.enonic.cms.core.image.filter.ImageFilter;
 import static org.junit.Assert.*;
 
 public class RectBorderFilterTest
-        extends BaseImageFilterTest
+    extends BaseImageFilterTest
 {
     @Test
     public void testBorder()

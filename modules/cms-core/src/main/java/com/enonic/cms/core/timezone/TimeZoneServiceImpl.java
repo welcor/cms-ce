@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTimeZone;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component("timeZoneService")
+@Service("timeZoneService")
 public class TimeZoneServiceImpl
     implements TimeZoneService
 {

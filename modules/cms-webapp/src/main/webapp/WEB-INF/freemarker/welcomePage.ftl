@@ -9,7 +9,7 @@
 [/#function]
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -37,26 +37,26 @@
 </div>
 
 <div id="content-outer" class="clearfix">
-    [#if modelUpgradeNeeded == true]
-        <div class="error">
-            <strong>Upgrade Needed!</strong>
-            <br/>
-            Database upgrade from model <b>${upgradeFrom}</b> to model <b>${upgradeTo}</b> is needed. Admin or site will not
-            work correctly if not upgraded. Go to <a href="${baseUrl}/upgrade">upgrade</a> to upgrade.
-        </div>
-    [/#if]
-    [#if softwareUpgradeNeeded == true]
-        <div class="error">
-            <strong>Software Upgrade Needed!</strong>
-            <br/>
-            Database model is newer than software allows. Please upgrade the software. Admin or site will not
-            work correctly if not upgraded.
-        </div>
-    [/#if]
+[#if modelUpgradeNeeded == true]
+    <div class="error">
+        <strong>Upgrade Needed!</strong>
+        <br/>
+        Database upgrade from model <b>${upgradeFrom}</b> to model <b>${upgradeTo}</b> is needed. Admin or site will not
+        work correctly if not upgraded. Go to <a href="${baseUrl}/upgrade">upgrade</a> to upgrade.
+    </div>
+[/#if]
+[#if softwareUpgradeNeeded == true]
+    <div class="error">
+        <strong>Software Upgrade Needed!</strong>
+        <br/>
+        Database model is newer than software allows. Please upgrade the software. Admin or site will not
+        work correctly if not upgraded.
+    </div>
+[/#if]
 
-    [#assign adminUrl = baseUrl + '/admin/index.html' ]
-    [#assign webDavUrl = baseUrl + '/dav']
-    [#assign componentsUrlMaxLength = 30]
+[#assign adminUrl = baseUrl + '/admin/index.html' ]
+[#assign webDavUrl = baseUrl + '/dav']
+[#assign componentsUrlMaxLength = 30]
 
     <div id="content" class="clearfix">
         <div id="management-components" class="clearfix">
@@ -68,7 +68,7 @@
                     <span class="name">Admin Console</span>
 
                     <span>
-                        ${elipsis(adminUrl, componentsUrlMaxLength)}
+                    ${elipsis(adminUrl, componentsUrlMaxLength)}
                     </span>
                 </span>
             </a>
@@ -81,7 +81,7 @@
                     <span class="name">WebDAV</span>
 
                     <span>
-                        ${elipsis(webDavUrl, componentsUrlMaxLength)}
+                    ${elipsis(webDavUrl, componentsUrlMaxLength)}
                     </span>
                 </span>
             </a>
@@ -171,7 +171,7 @@
                             <span class="name">${key}</span>
                             <br/>
                             <span>
-                                ${elipsis(url, 40)}
+                            ${elipsis(url, 40)}
                             </span>
                         </a>
                     </li>
@@ -189,7 +189,7 @@
 
 <div class="clearfix" id="footer">
     <div id="license" class="left">
-        ${versionTitleVersion} - Licensed under <a href="http://www.gnu.org/licenses/agpl.html" rel="external">AGPL 3.0</a>
+    ${versionTitleVersion} - Licensed under <a href="http://www.gnu.org/licenses/agpl.html" rel="external">AGPL 3.0</a>
     </div>
     <div id="social" class="right">
         <a href="http://www.enonic.com/en/rss" rel="external">

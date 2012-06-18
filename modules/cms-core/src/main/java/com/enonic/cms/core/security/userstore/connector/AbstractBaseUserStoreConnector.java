@@ -7,12 +7,11 @@ package com.enonic.cms.core.security.userstore.connector;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
-import com.enonic.vertical.engine.handlers.UserHandler;
+import com.enonic.vertical.engine.handlers.NameGenerator;
 
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
-import com.enonic.cms.core.security.group.GroupStorageService;
 import com.enonic.cms.core.security.group.StoreNewGroupCommand;
 import com.enonic.cms.core.security.group.UpdateGroupCommand;
 import com.enonic.cms.core.security.user.DeleteUserCommand;
@@ -23,9 +22,10 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UsernameResolver;
-import com.enonic.cms.core.security.userstore.UserStorageService;
+import com.enonic.cms.core.security.userstore.GroupStorerFactory;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.security.userstore.UserStorerFactory;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
@@ -47,9 +47,9 @@ public abstract class AbstractBaseUserStoreConnector
 
     protected UserStoreDao userStoreDao;
 
-    protected GroupStorageService groupStorageService;
+    protected GroupStorerFactory groupStorerFactory;
 
-    protected UserStorageService userStorageService;
+    protected UserStorerFactory userStorerFactory;
 
     protected abstract boolean isUsernameUnique( String username );
 
@@ -94,8 +94,7 @@ public abstract class AbstractBaseUserStoreConnector
     {
         Assert.isTrue( StringUtils.isNotBlank( suggestedUsername ) );
 
-        suggestedUsername = UserHandler.latinToAZ( suggestedUsername ).toLowerCase();
-        suggestedUsername.replaceAll( "\\s+", "" );
+        suggestedUsername = NameGenerator.simplifyString( suggestedUsername );
 
         int i = 0;
 
@@ -129,42 +128,42 @@ public abstract class AbstractBaseUserStoreConnector
 
     protected UserKey storeNewUserLocally( StoreNewUserCommand command, DisplayNameResolver displayNameResolver )
     {
-        return userStorageService.storeNewUser( command, displayNameResolver );
+        return userStorerFactory.create( userStoreKey ).storeNewUser( command, displayNameResolver );
     }
 
     protected void updateUserLocally( UpdateUserCommand command )
     {
-        userStorageService.updateUser( command );
+        userStorerFactory.create( userStoreKey ).updateUser( command );
     }
 
     protected void deleteUserLocally( DeleteUserCommand command )
     {
-        userStorageService.deleteUser( command.getSpecification() );
+        userStorerFactory.create( userStoreKey ).deleteUser( command.getSpecification() );
     }
 
     protected GroupKey storeNewGroupLocally( StoreNewGroupCommand command )
     {
-        return groupStorageService.storeNewGroup( command );
+        return groupStorerFactory.create( userStoreKey ).storeNewGroup( command );
     }
 
     protected void updateGroupLocally( UpdateGroupCommand command )
     {
-        groupStorageService.updateGroup( command );
+        groupStorerFactory.create( userStoreKey ).updateGroup( command );
     }
 
     protected void removeMembershipFromGroupLocally( GroupEntity groupToRemove, GroupEntity groupToRemoveFrom )
     {
-        groupStorageService.removeMembershipFromGroup( groupToRemove, groupToRemoveFrom );
+        groupStorerFactory.create( userStoreKey ).removeMembershipFromGroup( groupToRemove, groupToRemoveFrom );
     }
 
     protected void addMembershipToGroupLocally( GroupEntity groupToAdd, GroupEntity groupToAddTo )
     {
-        groupStorageService.addMembershipToGroup( groupToAdd, groupToAddTo );
+        groupStorerFactory.create( userStoreKey ).addMembershipToGroup( groupToAdd, groupToAddTo );
     }
 
     protected void deleteGroupLocally( DeleteGroupCommand command )
     {
-        groupStorageService.deleteGroup( command );
+        groupStorerFactory.create( userStoreKey ).deleteGroup( command );
     }
 
     public void setUserDao( UserDao value )
@@ -177,14 +176,14 @@ public abstract class AbstractBaseUserStoreConnector
         this.groupDao = groupDao;
     }
 
-    public void setGroupStorageService( GroupStorageService value )
+    public void setGroupStorerFactory( GroupStorerFactory value )
     {
-        this.groupStorageService = value;
+        this.groupStorerFactory = value;
     }
 
-    public void setUserStorageService( UserStorageService value )
+    public void setUserStorerFactory( UserStorerFactory value )
     {
-        this.userStorageService = value;
+        this.userStorerFactory = value;
     }
 
     public void setUserStoreDao( UserStoreDao value )

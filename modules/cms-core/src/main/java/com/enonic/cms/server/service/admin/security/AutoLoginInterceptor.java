@@ -7,20 +7,18 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.core.plugin.PluginManager;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.enonic.esl.servlet.http.CookieUtil;
 
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
+import com.enonic.cms.core.AdminConsoleTranslationService;
+import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
-
-import com.enonic.cms.core.security.user.QualifiedUsername;
 
 /**
  * This interceptor executes any auto login plugins available.

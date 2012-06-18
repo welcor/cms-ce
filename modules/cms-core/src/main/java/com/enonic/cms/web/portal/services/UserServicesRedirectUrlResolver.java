@@ -14,7 +14,6 @@ import com.enonic.esl.net.URL;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SitePath;
-
 import com.enonic.cms.core.portal.httpservices.IllegalRedirectException;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
 

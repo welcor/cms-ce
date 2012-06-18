@@ -36,29 +36,26 @@ import com.enonic.vertical.adminweb.handlers.xmlbuilders.SimpleContentXMLBuilder
 import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.content.command.ImportContentCommand;
-import com.enonic.cms.core.content.imports.ImportResult;
-import com.enonic.cms.core.content.mail.ImportedContentAssignmentMailTemplate;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.service.AdminService;
-
 import com.enonic.cms.core.content.AssignmentDataParser;
-
-import com.enonic.cms.core.content.imports.ImportJob;
-import com.enonic.cms.core.mail.MailRecipient;
-
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.command.ImportContentCommand;
+import com.enonic.cms.core.content.imports.ImportJob;
+import com.enonic.cms.core.content.imports.ImportResult;
 import com.enonic.cms.core.content.imports.ImportResultXmlCreator;
+import com.enonic.cms.core.content.mail.ImportedContentAssignmentMailTemplate;
+import com.enonic.cms.core.mail.MailRecipient;
+import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.service.AdminService;
 
 final public class SimpleContentHandlerServlet
     extends ContentBaseHandlerServlet
 {
     @Autowired
-    public void setSimpleContentXMLBuilder(final SimpleContentXMLBuilder builder)
+    public void setSimpleContentXMLBuilder( final SimpleContentXMLBuilder builder )
     {
-        setContentXMLBuilder(builder);
+        setContentXMLBuilder( builder );
     }
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
@@ -93,7 +90,7 @@ final public class SimpleContentHandlerServlet
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error: %t", e );
+            VerticalAdminLogger.errorAdmin( "I/O error: %t", e );
         }
     }
 
@@ -167,7 +164,7 @@ final public class SimpleContentHandlerServlet
                 catch ( ParseException pe )
                 {
                     String message = "Failed to parse publish from or to date: %t";
-                    VerticalAdminLogger.errorAdmin(message, pe );
+                    VerticalAdminLogger.errorAdmin( message, pe );
                 }
             }
 
@@ -233,14 +230,14 @@ final public class SimpleContentHandlerServlet
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error: %t", e );
+            VerticalAdminLogger.errorAdmin( "I/O error: %t", e );
         }
     }
 
     private void sendAssignmentMail( User oldUser, AssignmentDataParser assignmentDataParser, ImportJob importJob, ImportResult report )
     {
-        ImportedContentAssignmentMailTemplate mailTemplate = new ImportedContentAssignmentMailTemplate( report.getAssigned().keySet(),
-                                                                                                        contentDao );
+        ImportedContentAssignmentMailTemplate mailTemplate =
+            new ImportedContentAssignmentMailTemplate( report.getAssigned().keySet(), contentDao );
         mailTemplate.setAssignmentDescription( assignmentDataParser.getAssignmentDescription() );
         mailTemplate.setAssignmentDueDate( assignmentDataParser.getAssignmentDueDate() );
 
@@ -352,11 +349,11 @@ final public class SimpleContentHandlerServlet
         }
         catch ( TransformerConfigurationException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error: %t", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error: %t", e );
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error: %t", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error: %t", e );
         }
 
         return result;

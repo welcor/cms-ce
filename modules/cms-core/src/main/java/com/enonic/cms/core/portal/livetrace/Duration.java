@@ -4,12 +4,11 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import java.util.Date;
-
+import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-import com.google.common.base.Preconditions;
+import java.util.Date;
 
 /**
  * Oct 11, 2010

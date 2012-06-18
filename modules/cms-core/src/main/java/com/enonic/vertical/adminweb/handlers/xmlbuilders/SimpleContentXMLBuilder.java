@@ -4,17 +4,8 @@
  */
 package com.enonic.vertical.adminweb.handlers.xmlbuilders;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.regex.Pattern;
-
-import org.apache.commons.fileupload.FileItem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import com.enonic.cms.core.content.binary.BinaryData;
+import com.enonic.cms.core.security.user.User;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.util.DateUtil;
 import com.enonic.esl.util.StringUtil;
@@ -22,10 +13,16 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
+import org.apache.commons.fileupload.FileItem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import com.enonic.cms.core.content.binary.BinaryData;
-
-import com.enonic.cms.core.security.user.User;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 public class SimpleContentXMLBuilder
     extends ContentBaseXMLBuilder

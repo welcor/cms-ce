@@ -8,12 +8,13 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.SiteURLResolver;
+import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
@@ -27,6 +28,7 @@ import com.enonic.cms.store.dao.GroupDao;
 /**
  * May 15, 2009
  */
+@Component
 public class DatasourcesContextXmlCreator
     implements InitializingBean
 {

@@ -13,21 +13,20 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.stereotype.Repository;
 
 import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
 
-import com.enonic.cms.store.support.EntityPageList;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
-
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
-import org.springframework.stereotype.Repository;
+import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("siteDao")
 public final class SiteEntityDao
@@ -222,5 +221,17 @@ public final class SiteEntityDao
     public EntityPageList<SiteEntity> findAll( int index, int count )
     {
         return findPageList( SiteEntity.class, null, index, count );
+    }
+
+    @Override
+    public void removeUsage( UserEntity user )
+    {
+        SiteEntity example = new SiteEntity();
+        example.setDefaultRunAsUser( user );
+        List<SiteEntity> sites = findByExample( SiteEntity.class, example );
+        for ( SiteEntity site : sites )
+        {
+            site.setDefaultRunAsUser( null );
+        }
     }
 }

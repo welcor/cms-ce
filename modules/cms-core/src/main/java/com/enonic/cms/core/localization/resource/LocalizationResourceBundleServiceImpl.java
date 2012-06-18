@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
@@ -26,6 +27,7 @@ import com.enonic.cms.store.resource.FileResourceListener;
 /**
  * Created by rmy - Date: Apr 22, 2009
  */
+@Service
 public class LocalizationResourceBundleServiceImpl
     implements LocalizationResourceBundleService, FileResourceListener
 {

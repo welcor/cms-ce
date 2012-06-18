@@ -33,9 +33,6 @@ import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
-import com.enonic.cms.web.portal.PortalWebContext;
-import com.enonic.cms.web.portal.image.ImageHandler;
-import com.enonic.cms.web.portal.image.ImageRequestException;
 import com.enonic.cms.core.preview.ContentPreviewContext;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.preview.PreviewService;
@@ -50,6 +47,9 @@ import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
+import com.enonic.cms.web.portal.PortalWebContext;
+import com.enonic.cms.web.portal.image.ImageHandler;
+import com.enonic.cms.web.portal.image.ImageRequestException;
 
 import static org.junit.Assert.*;
 

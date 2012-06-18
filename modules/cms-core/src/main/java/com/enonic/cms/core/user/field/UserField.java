@@ -5,8 +5,17 @@
 package com.enonic.cms.core.user.field;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
-public final class UserField implements Comparable<UserField>
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import com.enonic.cms.api.client.model.user.Address;
+import com.enonic.cms.api.client.model.user.Gender;
+
+public final class UserField
 {
     private final UserFieldType type;
 
@@ -33,17 +42,6 @@ public final class UserField implements Comparable<UserField>
         return this.type == type;
     }
 
-    public Object getValue()
-    {
-        return this.value;
-    }
-
-    public void setValue( Object value )
-    {
-        checkType( value );
-        this.value = value;
-    }
-
     public boolean isBirthday()
     {
         return isOfType( UserFieldType.BIRTHDAY );
@@ -57,6 +55,57 @@ public final class UserField implements Comparable<UserField>
     public boolean isPhoto()
     {
         return isOfType( UserFieldType.PHOTO );
+    }
+
+    public Object getValue()
+    {
+        return this.value;
+    }
+
+    public String getValueAsString()
+    {
+        return (String) this.value;
+    }
+
+    public Date getValueAsDate()
+    {
+        return (Date) this.value;
+    }
+
+    public Locale getValueAsLocale()
+    {
+        return (Locale) this.value;
+    }
+
+    public Boolean getValueAsBoolean()
+    {
+        return (Boolean) this.value;
+    }
+
+    public Gender getValueAsGender()
+    {
+        return (Gender) this.value;
+    }
+
+    public TimeZone getValueAsTimeZone()
+    {
+        return (TimeZone) this.value;
+    }
+
+    public byte[] getValueAsBytes()
+    {
+        return (byte[]) this.value;
+    }
+
+    public Address getValueAsAddress()
+    {
+        return (Address) this.value;
+    }
+
+    public void setValue( Object value )
+    {
+        checkType( value );
+        this.value = value;
     }
 
     private void checkType( Object value )
@@ -73,26 +122,28 @@ public final class UserField implements Comparable<UserField>
         }
     }
 
-    /**
-     * Compares this userField with another.  String fields are considered equal if they are both blank in one way or the other.  I.e. if one
-     * value is null and the other is a string with only whitespace, they are considered equal.
-     *
-     * @param compareField The map of fields to compare to.
-     * @return 3 if the fields are not of the same type.
-     *         2 if both fields have values, but they are not the same.
-     *         1 if the compareField is zero.
-     *         0 if both fields are equal.
-     */
-    public int compareTo( UserField compareField )
+
+    public boolean equals( UserField compareField )
     {
-        // TODO: Improve compareTo implementation of method, so that values that exist in both places do not return the value 2, but a comparison of the values.
         if ( compareField == null )
         {
-            return 1;
+            return false;
         }
         else if ( getType() != compareField.getType() )
         {
-            return 3;
+            return false;
+        }
+        else if ( getValue() == null && compareField.getValue() == null )
+        {
+            return true;
+        }
+        else if ( getValue() == null && compareField.getValue() != null )
+        {
+            return false;
+        }
+        else if ( getValue() != null && compareField.getValue() == null )
+        {
+            return false;
         }
         else
         {
@@ -102,33 +153,31 @@ public final class UserField implements Comparable<UserField>
                 byte[] remotePhoto = (byte[]) compareField.getValue();
                 if ( !( Arrays.equals( commandPhoto, remotePhoto ) ) )
                 {
-                    return 2;
+                    return false;
                 }
             }
             else
             {
-                if ( !emptyValueEquals( getValue(), compareField.getValue() ) )
+                if ( bothAreBlankStrings( getValue(), compareField.getValue() ) )
                 {
-                    if ( !( getValue().equals( compareField.getValue() ) ) )
-                    {
-                        return 2;
-                    }
+                    return true;
+                }
+
+                if ( !( getValue().equals( compareField.getValue() ) ) )
+                {
+                    return false;
                 }
             }
         }
 
-        return 0;
+        return true;
     }
 
-    public boolean emptyValueEquals( Object commandValue, Object remoteValue )
+    private boolean bothAreBlankStrings( Object a, Object b )
     {
-        if ( commandValue == null && remoteValue == null )
+        if ( a instanceof String )
         {
-            return true;
-        }
-        if ( commandValue instanceof String )
-        {
-            if ( isBlank( (String) commandValue ) && isBlank( (String) remoteValue ) )
+            if ( StringUtils.isBlank( (String) a ) && StringUtils.isBlank( (String) b ) )
             {
                 return true;
             }
@@ -136,19 +185,37 @@ public final class UserField implements Comparable<UserField>
         return false;
     }
 
-    public boolean isBlank( String s )
+    @Override
+    public boolean equals( Object o )
     {
-        if ( s == null )
+        if ( this == o )
         {
             return true;
         }
-        else if ( s.trim().equals( "" ) )
-        {
-            return true;
-        }
-        else
+        if ( o == null || getClass() != o.getClass() )
         {
             return false;
         }
+
+        UserField userField = (UserField) o;
+
+        if ( type != userField.type )
+        {
+            return false;
+        }
+        if ( value != null ? !value.equals( userField.value ) : userField.value != null )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int initialNonZeroOddNumber = 443;
+        final int multiplierNonZeroOddNumber = 971;
+        return new HashCodeBuilder( initialNonZeroOddNumber, multiplierNonZeroOddNumber ).append( type ).append( value ).toHashCode();
     }
 }

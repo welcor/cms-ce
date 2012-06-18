@@ -551,6 +551,8 @@ final public class CategoryHandlerServlet
                                 }
                             }
                         }
+
+                        adminService.updateIndexCategory( new CategoryKey( curCategoryKey ) );
                     }
                 }
             }
@@ -597,6 +599,8 @@ final public class CategoryHandlerServlet
                                 }
                             }
                         }
+
+                        adminService.updateIndexCategory( new CategoryKey( curCategoryKey ) );
                     }
                 }
             }

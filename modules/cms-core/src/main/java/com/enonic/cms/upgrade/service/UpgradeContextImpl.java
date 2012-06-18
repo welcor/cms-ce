@@ -571,4 +571,10 @@ public final class UpgradeContextImpl
     {
         executeStatement( statement, true );
     }
+
+    public boolean hasTable( final String table )
+        throws Exception
+    {
+        return this.sqlHelper.hasTable( getConnection(), table );
+    }
 }

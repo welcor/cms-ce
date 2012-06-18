@@ -12,7 +12,7 @@ import com.google.common.collect.Maps;
 
 import com.enonic.cms.api.client.Client;
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.PluginContext;
+import com.enonic.cms.core.plugin.context.PluginContext;
 
 import static org.junit.Assert.*;
 

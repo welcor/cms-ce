@@ -6,7 +6,6 @@ import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import com.enonic.cms.api.plugin.PluginContext;
 import com.enonic.cms.core.plugin.config.ConfigFactory;
 import com.enonic.cms.core.plugin.host.HostServices;
 

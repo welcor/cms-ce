@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.PluginContext;
+import com.enonic.cms.core.plugin.context.PluginContext;
 
 import static org.junit.Assert.*;
 

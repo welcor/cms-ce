@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.osgi.framework.Bundle;
 
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.PluginContext;
+import com.enonic.cms.core.plugin.context.PluginContext;
 import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;

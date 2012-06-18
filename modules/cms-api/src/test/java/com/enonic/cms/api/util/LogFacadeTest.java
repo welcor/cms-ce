@@ -144,26 +144,6 @@ public class LogFacadeTest
         assertNull(this.logRecord);
     }
 
-    @Test
-    public void testFqcnNotFound()
-    {
-        final LogFacade facade = LogFacade.get(LogFacadeTest.class, String.class);
-
-        facade.debug("A message");
-        assertNotNull(this.logRecord);
-        assertNull(this.logRecord.getSourceMethodName());
-    }
-
-    @Test
-    public void testValidFqcn()
-    {
-        final LogFacade facade = LogFacade.get(LogFacadeTest.class, LogFacade.class);
-
-        facade.debug("A message");
-        assertNotNull(this.logRecord);
-        assertEquals("testValidFqcn", this.logRecord.getSourceMethodName());
-    }
-
     private void assertLogRecord(String message, Level level, String methodName, boolean hasThrown)
     {
         assertNotNull(this.logRecord);

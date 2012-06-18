@@ -1,7 +1,8 @@
-package com.enonic.cms.api.plugin;
+package com.enonic.cms.core.plugin.context;
 
 import java.util.Map;
 
+import com.enonic.cms.api.plugin.PluginConfig;
 import com.enonic.cms.api.plugin.ext.Extension;
 
 public interface PluginContext

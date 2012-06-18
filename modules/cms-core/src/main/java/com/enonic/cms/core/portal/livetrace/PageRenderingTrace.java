@@ -4,112 +4,40 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import com.enonic.cms.core.security.user.QualifiedUsername;
-import org.joda.time.DateTime;
-
-import java.util.List;
-
 /**
  * Oct 6, 2010
  */
 public class PageRenderingTrace
+    extends BaseTrace
     implements Trace
 {
-    private PortalRequestTrace portalRequestTrace;
+    private User renderer;
 
-    private Duration duration = new Duration();
+    private CacheUsage cacheUsage = new CacheUsage();
 
-    private QualifiedUsername renderer;
+    private Traces<WindowRenderingTrace> windowRenderingTraces = Traces.create();
 
-    private boolean cacheable = false;
-
-    private boolean usedCachedResult = false;
-
-    private long concurrencyBlockStartTime = 0;
-
-    private long concurrencyBlockingTime = 0;
-
-    private Traces<WindowRenderingTrace> windowRenderingTraces = new Traces<WindowRenderingTrace>();
-
-    private Traces<DatasourceExecutionTrace> datasourceExecutionTraces = new Traces<DatasourceExecutionTrace>();
+    private Traces<DatasourceExecutionTrace> datasourceExecutionTraces = Traces.create();
 
     private ViewTransformationTrace viewTransformationTrace;
 
     private InstructionPostProcessingTrace instructionPostProcessingTrace;
 
-    PageRenderingTrace( PortalRequestTrace portalRequestTrace )
-    {
-        this.portalRequestTrace = portalRequestTrace;
-    }
-
-    public PortalRequestTrace getPortalRequestTrace()
-    {
-        return portalRequestTrace;
-    }
-
-    void setStartTime( DateTime startTime )
-    {
-        this.duration.setStartTime( startTime );
-    }
-
-    void setStopTime( DateTime stopTime )
-    {
-        this.duration.setStopTime( stopTime );
-    }
-
-    public Duration getDuration()
-    {
-        return this.duration;
-    }
-
-    public QualifiedUsername getRenderer()
+    @SuppressWarnings("UnusedDeclaration")
+    public User getRenderer()
     {
         return renderer;
     }
 
-    public void setRenderer( QualifiedUsername renderer )
+    public void setRenderer( User renderer )
     {
         this.renderer = renderer;
     }
 
-    public boolean isCacheable()
+    @SuppressWarnings("UnusedDeclaration")
+    public CacheUsage getCacheUsage()
     {
-        return cacheable;
-    }
-
-    void setCacheable( boolean cacheable )
-    {
-        this.cacheable = cacheable;
-    }
-
-    public boolean isUsedCachedResult()
-    {
-        return usedCachedResult;
-    }
-
-    public void setUsedCachedResult( boolean value )
-    {
-        this.usedCachedResult = value;
-    }
-
-    public boolean isConcurrencyBlocked()
-    {
-        return concurrencyBlockingTime > CONCURRENCY_BLOCK_THRESHOLD;
-    }
-
-    public long getConcurrencyBlockingTime()
-    {
-        return isConcurrencyBlocked() ? concurrencyBlockingTime : 0;
-    }
-
-    void startConcurrencyBlockTimer()
-    {
-        concurrencyBlockStartTime = System.currentTimeMillis();
-    }
-
-    void stopConcurrencyBlockTimer()
-    {
-        this.concurrencyBlockingTime = System.currentTimeMillis() - concurrencyBlockStartTime;
+        return cacheUsage;
     }
 
     void addWindowRenderingTrace( WindowRenderingTrace trace )
@@ -117,51 +45,23 @@ public class PageRenderingTrace
         windowRenderingTraces.add( trace );
     }
 
-    public boolean hasWindowRenderingTraces()
-    {
-        return windowRenderingTraces.hasTraces();
-    }
-
-    public String getDurationOfWindowRenderingTracesInHRFormat()
-    {
-        return windowRenderingTraces.getTotalPeriodInHRFormat();
-    }
-
-    public List<WindowRenderingTrace> getWindowRenderingTraces()
-    {
-        return windowRenderingTraces.getList();
-    }
-
-    public Traces<WindowRenderingTrace> getWindowRenderingTracesAsTraces()
+    public Traces<WindowRenderingTrace> getWindowRenderingTraces()
     {
         return windowRenderingTraces;
     }
 
-    public void addDatasourceExecutionTrace( DatasourceExecutionTrace trace )
+    void addDatasourceExecutionTrace( DatasourceExecutionTrace datasourceExecutionTrace )
     {
-        datasourceExecutionTraces.add( trace );
+        datasourceExecutionTraces.add( datasourceExecutionTrace );
     }
 
-    public boolean hasDatasourceExecutionTraces()
+    @SuppressWarnings("UnusedDeclaration")
+    public Traces<DatasourceExecutionTrace> getDatasourceExecutionTraces()
     {
-        return datasourceExecutionTraces.hasTraces();
+        return datasourceExecutionTraces;
     }
 
-    public String getDurationOfDatasourceExecutionTracesInHRFormat()
-    {
-        return datasourceExecutionTraces.getTotalPeriodInHRFormat();
-    }
-
-    public List<DatasourceExecutionTrace> getDatasourceExecutionTraces()
-    {
-        return datasourceExecutionTraces.getList();
-    }
-
-    public boolean hasViewTransformationTrace()
-    {
-        return viewTransformationTrace != null;
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public ViewTransformationTrace getViewTransformationTrace()
     {
         return viewTransformationTrace;
@@ -172,11 +72,7 @@ public class PageRenderingTrace
         this.viewTransformationTrace = viewTransformationTrace;
     }
 
-    public boolean hasInstructionPostProcessingTrace()
-    {
-        return instructionPostProcessingTrace != null;
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public InstructionPostProcessingTrace getInstructionPostProcessingTrace()
     {
         return instructionPostProcessingTrace;

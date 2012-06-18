@@ -4,7 +4,6 @@ package com.enonic.cms.core.portal.livetrace;
 import org.joda.time.DateTime;
 
 public class InstructionPostProcessingTrace
-    implements Trace
 {
     private SimpleDuration duration = new SimpleDuration();
 

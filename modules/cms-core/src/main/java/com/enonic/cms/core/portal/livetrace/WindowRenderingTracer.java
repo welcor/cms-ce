@@ -6,6 +6,7 @@ package com.enonic.cms.core.portal.livetrace;
 
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.page.Window;
+import com.enonic.cms.core.structure.page.WindowKey;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 
 /**
@@ -13,18 +14,9 @@ import com.enonic.cms.core.structure.portlet.PortletEntity;
  */
 public class WindowRenderingTracer
 {
-    public static WindowRenderingTrace startTracing( final LivePortalTraceService livePortalTraceService )
+    public static WindowRenderingTrace startTracing( final WindowKey windowKey, final LivePortalTraceService livePortalTraceService )
     {
-        final PortalRequestTrace portalRequestTrace = livePortalTraceService.getCurrentPortalRequestTrace();
-
-        if ( portalRequestTrace != null )
-        {
-            return livePortalTraceService.startWindowRenderTracing( portalRequestTrace );
-        }
-        else
-        {
-            return null;
-        }
+        return livePortalTraceService.startWindowRenderTracing( windowKey );
     }
 
     public static void stopTracing( final WindowRenderingTrace trace, final LivePortalTraceService livePortalTraceService )
@@ -51,7 +43,7 @@ public class WindowRenderingTracer
     {
         if ( trace != null && renderer != null )
         {
-            trace.setRenderer( renderer.getQualifiedName() );
+            trace.setRenderer( User.createUser( renderer.getQualifiedName() ) );
         }
     }
 
@@ -59,8 +51,8 @@ public class WindowRenderingTracer
     {
         if ( trace != null )
         {
-            trace.setCacheable( cacheable );
-            trace.setUsedCachedResult( usedCachedResult );
+            trace.getCacheUsage().setCacheable( cacheable );
+            trace.getCacheUsage().setUsedCachedResult( usedCachedResult );
         }
     }
 
@@ -68,7 +60,7 @@ public class WindowRenderingTracer
     {
         if ( trace != null )
         {
-            trace.startConcurrencyBlockTimer();
+            trace.getCacheUsage().startConcurrencyBlockTimer();
         }
     }
 
@@ -76,7 +68,7 @@ public class WindowRenderingTracer
     {
         if ( trace != null )
         {
-            trace.stopConcurrencyBlockTimer();
+            trace.getCacheUsage().stopConcurrencyBlockTimer();
         }
     }
 }

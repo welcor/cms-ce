@@ -1,14 +1,19 @@
 package com.enonic.cms.core.portal.livetrace;
 
-import org.junit.Test;
-
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class HistoryOfPortalRequestsTest
+public class CompletedPortalRequestsTest
 {
     private final static Random RANDOM_WHEEL = new SecureRandom();
 
@@ -17,7 +22,7 @@ public class HistoryOfPortalRequestsTest
     @Test
     public void size_returns_1_after_one_trace_is_added()
     {
-        HistoryOfPortalRequests requests = new HistoryOfPortalRequests( 1000 );
+        CompletedPortalRequests requests = new CompletedPortalRequests( 1000 );
 
         PortalRequestTrace trace = createTrace( 1, "http://locahost:8080/site/0/home" );
         requests.add( trace );
@@ -27,7 +32,7 @@ public class HistoryOfPortalRequestsTest
     @Test
     public void getList_returns_1_item_after_trace_is_added()
     {
-        HistoryOfPortalRequests requests = new HistoryOfPortalRequests( 1000 );
+        CompletedPortalRequests requests = new CompletedPortalRequests( 1000 );
 
         PortalRequestTrace trace = createTrace( 1, "http://locahost:8080/site/0/home" );
         requests.add( trace );
@@ -40,7 +45,7 @@ public class HistoryOfPortalRequestsTest
     @Test
     public void getList_returns_items_in_opposite_order_as_they_where_inserted()
     {
-        HistoryOfPortalRequests requests = new HistoryOfPortalRequests( 1000 );
+        CompletedPortalRequests requests = new CompletedPortalRequests( 1000 );
 
         PortalRequestTrace trace1 = createTrace( 1, "http://locahost:8080/site/0/home" );
         requests.add( trace1 );
@@ -56,14 +61,14 @@ public class HistoryOfPortalRequestsTest
     @Test
     public void getListSince_returns_items_in_opposite_order_as_they_where_inserted()
     {
-        HistoryOfPortalRequests requests = new HistoryOfPortalRequests( 1000 );
+        CompletedPortalRequests requests = new CompletedPortalRequests( 1000 );
 
         PortalRequestTrace trace1 = new PortalRequestTrace( 1, "http://locahost:8080/site/0/home" );
         requests.add( trace1 );
         PortalRequestTrace trace2 = new PortalRequestTrace( 2, "http://locahost:8080/site/0/home" );
         requests.add( trace2 );
 
-        List<PortalRequestTrace> actualList = requests.getListSince( 0 );
+        List<PortalRequestTrace> actualList = requests.getCompletedAfter( 0 );
         assertEquals( 2, actualList.size() );
         assertSame( trace2, actualList.get( 0 ) );
         assertSame( trace1, actualList.get( 1 ) );
@@ -76,7 +81,7 @@ public class HistoryOfPortalRequestsTest
 
         final int numberOfThreadsToStart = 100;
 
-        final HistoryOfPortalRequests requests = new HistoryOfPortalRequests( 1000 );
+        final CompletedPortalRequests requests = new CompletedPortalRequests( 1000 );
 
         List<RequestSimulator> requestSimulators = new ArrayList<RequestSimulator>();
         for ( int i = 0; i < numberOfThreadsToStart; i++ )
@@ -109,7 +114,7 @@ public class HistoryOfPortalRequestsTest
 
         final int numberOfThreadsToStart = 100;
 
-        final HistoryOfPortalRequests requests = new HistoryOfPortalRequests( 1000 );
+        final CompletedPortalRequests requests = new CompletedPortalRequests( 1000 );
 
         List<RequestSimulator> requestSimulators = new ArrayList<RequestSimulator>();
         for ( int i = 0; i < numberOfThreadsToStart; i++ )
@@ -224,16 +229,17 @@ public class HistoryOfPortalRequestsTest
         extends Simulator
         implements Runnable
     {
-        private HistoryOfPortalRequests requests;
+        private CompletedPortalRequests requests;
 
         final int numberOfExecutions;
 
-        RequestSimulator( HistoryOfPortalRequests requests, int numberOfExecutions )
+        RequestSimulator( CompletedPortalRequests requests, int numberOfExecutions )
         {
             this.requests = requests;
             this.numberOfExecutions = numberOfExecutions;
         }
 
+        @Override
         public void run()
         {
             try
@@ -256,7 +262,7 @@ public class HistoryOfPortalRequestsTest
         extends Simulator
         implements Runnable
     {
-        private HistoryOfPortalRequests requests;
+        private CompletedPortalRequests requests;
 
         final int numberOfExecutions;
 
@@ -264,7 +270,7 @@ public class HistoryOfPortalRequestsTest
 
         long lastCompletedRequestNumber = -1;
 
-        TraceInfoReaderSimulator( HistoryOfPortalRequests requests, int numberOfExecutions )
+        TraceInfoReaderSimulator( CompletedPortalRequests requests, int numberOfExecutions )
         {
             this.requests = requests;
             this.numberOfExecutions = numberOfExecutions;
@@ -276,6 +282,7 @@ public class HistoryOfPortalRequestsTest
             }
         }
 
+        @Override
         public void run()
         {
             try
@@ -284,7 +291,7 @@ public class HistoryOfPortalRequestsTest
                 {
 
                     requests.getSize();
-                    List<PortalRequestTrace> listSince = requests.getListSince( lastCompletedRequestNumber );
+                    List<PortalRequestTrace> listSince = requests.getCompletedAfter( lastCompletedRequestNumber );
                     if ( listSince.size() > 0 )
                     {
                         lastCompletedRequestNumber = listSince.get( 0 ).getCompletedNumber();

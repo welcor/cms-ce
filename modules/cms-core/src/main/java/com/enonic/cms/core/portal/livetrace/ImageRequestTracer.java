@@ -34,12 +34,24 @@ public class ImageRequestTracer
     {
         if ( trace != null && imageRequest != null )
         {
-            trace.setContentKey( imageRequest.getContentKey() );
-            trace.setLabel( imageRequest.getLabel() );
-            trace.setImageParamFilter( imageRequest.getParams().getFilter() );
-            trace.setImageParamFormat( imageRequest.getFormat() );
-            trace.setImageParamBackgroundColor( imageRequest.getParams().getBackgroundColorAsString() );
-            trace.setImageParamQuality( imageRequest.getParams().getQualityAsString() );
+            if ( imageRequest.getContentKey() != null )
+            {
+                trace.setContentKey( imageRequest.getContentKey() != null ? imageRequest.getContentKey().toString() : null );
+                trace.setLabel( imageRequest.getLabel() );
+                trace.setImageParamFilter( imageRequest.getParams().getFilter() );
+                trace.setImageParamFormat( imageRequest.getFormat() );
+                trace.setImageParamBackgroundColor( imageRequest.getParams().getBackgroundColorAsString() );
+                trace.setImageParamQuality( imageRequest.getParams().getQualityAsString() );
+            }
+            else
+            {
+                // request to user image...
+                trace.setLabel( imageRequest.getLabel() );
+                trace.setImageParamFilter( imageRequest.getParams().getFilter() );
+                trace.setImageParamFormat( imageRequest.getFormat() );
+                trace.setImageParamBackgroundColor( imageRequest.getParams().getBackgroundColorAsString() );
+                trace.setImageParamQuality( imageRequest.getParams().getQualityAsString() );
+            }
         }
     }
 
@@ -55,7 +67,7 @@ public class ImageRequestTracer
     {
         if ( trace != null )
         {
-            trace.setUsedCachedResult( value );
+            trace.getCacheUsage().setUsedCachedResult( value );
         }
     }
 
@@ -72,7 +84,7 @@ public class ImageRequestTracer
     {
         if ( trace != null )
         {
-            trace.startConcurrencyBlockTimer();
+            trace.getCacheUsage().startConcurrencyBlockTimer();
         }
     }
 
@@ -80,7 +92,7 @@ public class ImageRequestTracer
     {
         if ( trace != null )
         {
-            trace.stopConcurrencyBlockTimer();
+            trace.getCacheUsage().stopConcurrencyBlockTimer();
         }
     }
 }

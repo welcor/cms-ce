@@ -4,48 +4,40 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.enonic.cms.core.PathAndParamsToStringBuilder;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.structure.SiteEntity;
-import org.joda.time.DateTime;
 
 /**
  * Oct 6, 2010
  */
 public class PortalRequestTrace
+    extends BaseTrace
     implements Trace
 {
     private long requestNumber;
 
     private long completedNumber;
 
+    private HttpRequest httpRequest;
+
     private RequestMode mode;
 
-    private MaxLengthedString url;
+    private MaxLengthedString url = new MaxLengthedString();
 
-    private Duration duration = new Duration();
+    private User requester;
 
-    private MaxLengthedString httpRequestRemoteAddress;
-
-    private MaxLengthedString httpRequestCharacterEncoding;
-
-    private MaxLengthedString httpRequestContentType;
-
-    private MaxLengthedString httpRequestUserAgent;
-
-    private MaxLengthedString requester;
-
-    private SiteKey siteKey;
+    private String siteKey;
 
     private String siteName;
 
-    private MaxLengthedString siteLocalPathAndParams;
+    private MaxLengthedString siteLocalPathAndParams = new MaxLengthedString();
 
-    private MaxLengthedString responseRedirect;
+    private MaxLengthedString responseRedirect = new MaxLengthedString();
 
-    private MaxLengthedString responseForward;
+    private MaxLengthedString responseForward = new MaxLengthedString();
 
     private PageRenderingTrace pageRenderingTrace;
 
@@ -54,6 +46,8 @@ public class PortalRequestTrace
     private AttachmentRequestTrace attachmentRequestTrace;
 
     private ImageRequestTrace imageRequestTrace;
+
+    private CacheUsages cacheUsages = new CacheUsages();
 
     PortalRequestTrace( long requestNumber, String url )
     {
@@ -76,11 +70,13 @@ public class PortalRequestTrace
         this.completedNumber = completedNumber;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getUrl()
     {
         return url != null ? url.toString() : null;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public RequestMode getMode()
     {
         return mode;
@@ -115,6 +111,7 @@ public class PortalRequestTrace
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getTypeDescription()
     {
         if ( pageRenderingTrace != null )
@@ -139,66 +136,24 @@ public class PortalRequestTrace
         }
     }
 
-    void setStartTime( DateTime time )
+    @SuppressWarnings("UnusedDeclaration")
+    public HttpRequest getHttpRequest()
     {
-        this.duration.setStartTime( time );
+        return httpRequest;
     }
 
-    void setStopTime( DateTime stopTime )
+    void setHttpRequest( HttpRequest httpRequest )
     {
-        this.duration.setStopTime( stopTime );
+        this.httpRequest = httpRequest;
     }
 
-    public Duration getDuration()
-    {
-        return duration;
-    }
-
-    public String getHttpRequestRemoteAddress()
-    {
-        return httpRequestRemoteAddress != null ? httpRequestRemoteAddress.toString() : null;
-    }
-
-    void setHttpRequestRemoteAddress( String httpRequestRemoteAddress )
-    {
-        this.httpRequestRemoteAddress = new MaxLengthedString( httpRequestRemoteAddress );
-    }
-
-    public String getHttpRequestCharacterEncoding()
-    {
-        return httpRequestCharacterEncoding != null ? httpRequestCharacterEncoding.toString() : null;
-    }
-
-    void setHttpRequestCharacterEncoding( String httpRequestCharacterEncoding )
-    {
-        this.httpRequestCharacterEncoding = new MaxLengthedString( httpRequestCharacterEncoding );
-    }
-
-    public String getHttpRequestContentType()
-    {
-        return httpRequestContentType != null ? httpRequestContentType.toString() : null;
-    }
-
-    void setHttpRequestContentType( String httpRequestContentType )
-    {
-        this.httpRequestContentType = new MaxLengthedString( httpRequestContentType );
-    }
-
-    public String getHttpRequestUserAgent()
-    {
-        return httpRequestUserAgent != null ? httpRequestUserAgent.toString() : null;
-    }
-
-    void setHttpRequestUserAgent( String httpRequestUserAgent )
-    {
-        this.httpRequestUserAgent = new MaxLengthedString( httpRequestUserAgent );
-    }
-
-    public SiteKey getSiteKey()
+    @SuppressWarnings("UnusedDeclaration")
+    public String getSiteKey()
     {
         return siteKey;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getSiteName()
     {
         return siteName;
@@ -206,7 +161,7 @@ public class PortalRequestTrace
 
     void setSite( SiteEntity site )
     {
-        this.siteKey = site.getKey();
+        this.siteKey = site.getKey().toString();
         this.siteName = site.getName();
     }
 
@@ -221,16 +176,18 @@ public class PortalRequestTrace
         return siteLocalPathAndParams != null ? siteLocalPathAndParams.toString() : null;
     }
 
-    public String getRequester()
+    @SuppressWarnings("UnusedDeclaration")
+    public User getRequester()
     {
-        return requester != null ? requester.toString() : null;
+        return requester;
     }
 
-    void setRequester( QualifiedUsername requester )
+    void setRequester( User requester )
     {
-        this.requester = new MaxLengthedString( requester.toString() );
+        this.requester = requester;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getResponseRedirect()
     {
         return responseRedirect != null ? responseRedirect.toString() : null;
@@ -241,6 +198,7 @@ public class PortalRequestTrace
         this.responseRedirect = new MaxLengthedString( responseRedirect );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getResponseForward()
     {
         return responseForward != null ? responseForward.toString() : null;
@@ -276,6 +234,7 @@ public class PortalRequestTrace
         return windowRenderingTrace != null;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public WindowRenderingTrace getWindowRenderingTrace()
     {
         return windowRenderingTrace;
@@ -286,6 +245,7 @@ public class PortalRequestTrace
         return attachmentRequestTrace != null;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AttachmentRequestTrace getAttachmentRequestTrace()
     {
         return attachmentRequestTrace;
@@ -301,6 +261,7 @@ public class PortalRequestTrace
         return imageRequestTrace != null;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ImageRequestTrace getImageRequestTrace()
     {
         return imageRequestTrace;
@@ -309,6 +270,32 @@ public class PortalRequestTrace
     void setImageRequestTrace( ImageRequestTrace imageRequestTrace )
     {
         this.imageRequestTrace = imageRequestTrace;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public CacheUsages getCacheUsages()
+    {
+        return cacheUsages;
+    }
+
+    void postProcess()
+    {
+        if ( imageRequestTrace != null )
+        {
+            cacheUsages.add( imageRequestTrace.getCacheUsage() );
+        }
+        else if ( windowRenderingTrace != null )
+        {
+            cacheUsages.add( windowRenderingTrace.getCacheUsage() );
+        }
+        else if ( pageRenderingTrace != null )
+        {
+            cacheUsages.add( PageCacheUsagesResolver.resolveCacheUsages( pageRenderingTrace ) );
+        }
+        else
+        {
+            cacheUsages = new CacheUsages();
+        }
     }
 
     @Override
@@ -342,11 +329,11 @@ public class PortalRequestTrace
     @Override
     public String toString()
     {
-        StringBuffer s = new StringBuffer();
-        s.append( "url: " ).append( url ).append( "\n" );
-        s.append( "duration: [" ).append( "\n" ).append( duration ).append( "]" ).append( "\n" );
-        s.append( "requester: " ).append( requester ).append( "\n" );
-        s.append( "siteKey: " ).append( siteKey ).append( "\n" );
-        return s.toString();
+        ToStringBuilder builder = new ToStringBuilder( this );
+        builder.append( "url", url );
+        builder.append( "duration", getDuration() );
+        builder.append( "requester", requester );
+        return builder.toString();
     }
+
 }

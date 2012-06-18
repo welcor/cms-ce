@@ -4,11 +4,11 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import com.google.common.base.Preconditions;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-import java.util.Date;
+import com.google.common.base.Preconditions;
 
 /**
  * Oct 11, 2010
@@ -30,15 +30,6 @@ public class Duration
         return startTime;
     }
 
-    public Date getStartTimeAsDate()
-    {
-        if ( startTime == null )
-        {
-            return null;
-        }
-        return startTime.toDate();
-    }
-
     void setStartTime( DateTime time )
     {
         this.startTime = time;
@@ -54,15 +45,6 @@ public class Duration
         return stopTime;
     }
 
-    public Date getStopTimeAsDate()
-    {
-        if ( stopTime == null )
-        {
-            return null;
-        }
-        return stopTime.toDate();
-    }
-
     void setStopTime( DateTime stopTime )
     {
         Preconditions.checkNotNull( startTime );
@@ -72,6 +54,7 @@ public class Duration
     }
 
     @Override
+    @JsonIgnore
     public long getAsMilliseconds()
     {
         if ( hasEnded() )

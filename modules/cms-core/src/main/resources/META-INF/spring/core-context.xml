@@ -281,11 +281,7 @@
     <property name="livePortalTraceService" ref="livePortalTraceService"/>
   </bean>
 
-  <bean id="livePortalTraceService" class="com.enonic.cms.core.portal.livetrace.LivePortalTraceServiceImpl">
-    <property name="enabled" value="${cms.livePortalTrace.enabled}"/>
-    <property name="longestSize" value="${cms.livePortalTrace.longest.size}"/>
-    <property name="historySize" value="${cms.livePortalTrace.history.size}"/>
-  </bean>
+  <bean id="livePortalTraceService" class="com.enonic.cms.core.portal.livetrace.LivePortalTraceServiceImpl"/>
 
   <bean id="pageRequestProcessorFactory"
         class="com.enonic.cms.core.portal.processor.PageRequestProcessorFactory"/>

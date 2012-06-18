@@ -45,6 +45,9 @@ import com.enonic.cms.core.portal.instruction.CreateResourceUrlInstruction;
 import com.enonic.cms.core.portal.instruction.PostProcessInstruction;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionSerializer;
 import com.enonic.cms.core.portal.instruction.RenderWindowInstruction;
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
+import com.enonic.cms.core.portal.livetrace.ViewFunctionTrace;
+import com.enonic.cms.core.portal.livetrace.ViewFunctionTracer;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
@@ -101,6 +104,8 @@ public class PortalFunctions
 
     private SitePropertiesService sitePropertiesService;
 
+    private LivePortalTraceService livePortalTraceService;
+
     public String getInstanceKey()
     {
         return context.getPortalInstanceKey().toString();
@@ -126,7 +131,17 @@ public class PortalFunctions
 
     public Boolean isWindowEmpty( final String portletWindowKey, String[] params )
     {
-        return isWindowEmptyFunction.isWindowEmpty( new WindowKey( portletWindowKey ), params );
+        ViewFunctionTrace trace = ViewFunctionTracer.startTracing( "isWindowEmpty", livePortalTraceService );
+        try
+        {
+            ViewFunctionTracer.traceFunctionArgument( "portletWindowKey", portletWindowKey, trace );
+            ViewFunctionTracer.traceFunctionArgument( "params", params, trace );
+            return isWindowEmptyFunction.isWindowEmpty( new WindowKey( portletWindowKey ), params );
+        }
+        finally
+        {
+            ViewFunctionTracer.stopTracing( trace, livePortalTraceService );
+        }
     }
 
     public String createUrl( String local )
@@ -168,7 +183,7 @@ public class PortalFunctions
     {
         MenuItemKey menuItemKey = windowKey.getMenuItemKey();
 
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey.toInt() );
+        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
         if ( menuItem == null )
         {
             throw new PortalFunctionException( "Menuitem does not exist: " + menuItemKey );
@@ -254,7 +269,7 @@ public class PortalFunctions
             return encodeURI( "page", String.valueOf( menuItemKey ), params );
         }
 
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey.toInt() );
+        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
 
         if ( menuItem == null )
         {
@@ -380,7 +395,7 @@ public class PortalFunctions
         }
 
         SitePath sitePath = new SitePath( context.getSite().getKey(), ReservedLocalPaths.PATH_USERSERVICES );
-        StringBuffer handlerAndOperationPath = new StringBuffer();
+        StringBuilder handlerAndOperationPath = new StringBuilder();
         handlerAndOperationPath.append( handler );
         handlerAndOperationPath.append( "/" ).append( operation );
         sitePath = sitePath.appendPath( new Path( handlerAndOperationPath.toString() ) );
@@ -687,7 +702,7 @@ public class PortalFunctions
      */
     private String encodeURI( String type, String key, String[] params )
     {
-        StringBuffer encodedURI = new StringBuffer( "{cmsurl:" );
+        StringBuilder encodedURI = new StringBuilder( "{cmsurl:" );
         encodedURI.append( type );
         encodedURI.append( "-" );
         encodedURI.append( key );
@@ -809,5 +824,10 @@ public class PortalFunctions
     public void setIsWindowEmptyFunction( IsWindowEmptyFunction windowEmptyFunction )
     {
         isWindowEmptyFunction = windowEmptyFunction;
+    }
+
+    public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
+    {
+        this.livePortalTraceService = livePortalTraceService;
     }
 }

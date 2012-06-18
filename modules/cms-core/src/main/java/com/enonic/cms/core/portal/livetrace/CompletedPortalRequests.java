@@ -4,23 +4,23 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Oct 6, 2010
  */
-public class HistoryOfPortalRequests
+public class CompletedPortalRequests
 {
     private static long historyCounter = 0;
 
     private int maxSize;
 
-    private LinkedList<PortalRequestTrace> list = new LinkedList<PortalRequestTrace>();
+    private final LinkedList<PortalRequestTrace> list = new LinkedList<PortalRequestTrace>();
 
-    public HistoryOfPortalRequests( int maxSize )
+    public CompletedPortalRequests( int maxSize )
     {
         this.maxSize = maxSize;
     }
@@ -43,17 +43,30 @@ public class HistoryOfPortalRequests
         }
     }
 
-    public List<PortalRequestTrace> getListSince( long historyRecordNumber )
+    public List<PortalRequestTrace> getCompletedAfter( long completedNumber )
     {
-        LinkedList<PortalRequestTrace> sinceList = new LinkedList<PortalRequestTrace>();
+        LinkedList<PortalRequestTrace> list = new LinkedList<PortalRequestTrace>();
         for ( PortalRequestTrace trace : getList() )
         {
-            if ( trace.getCompletedNumber() > historyRecordNumber )
+            if ( trace.getCompletedNumber() > completedNumber )
             {
-                sinceList.addLast( trace );
+                list.addLast( trace );
             }
         }
-        return sinceList;
+        return list;
+    }
+
+    public List<PortalRequestTrace> getCompletedBefore( long completedNumber )
+    {
+        LinkedList<PortalRequestTrace> list = new LinkedList<PortalRequestTrace>();
+        for ( PortalRequestTrace trace : getList() )
+        {
+            if ( trace.getCompletedNumber() < completedNumber )
+            {
+                list.addLast( trace );
+            }
+        }
+        return list;
     }
 
     private void doRetainSize()

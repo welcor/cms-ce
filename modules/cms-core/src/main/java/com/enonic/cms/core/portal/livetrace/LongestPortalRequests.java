@@ -4,10 +4,10 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.List;
 import java.util.TreeSet;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Oct 6, 2010
@@ -16,7 +16,7 @@ public class LongestPortalRequests
 {
     private int maxSize;
 
-    private TreeSet<PortalRequestTrace> list;
+    private final TreeSet<PortalRequestTrace> list;
 
     public LongestPortalRequests( int maxSize )
     {

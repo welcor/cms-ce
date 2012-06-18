@@ -35,7 +35,7 @@ public class ContentIndexQueryTracer
             trace.setCount( count );
 
             trace.setQuery( query.getQuery() );
-            trace.setTranslatedQuery( new MaxLengthedString( translatedQuery ) );
+            trace.setTranslatedQuery( translatedQuery );
             trace.setContentFilter( collectionToString( query.getContentFilter() ) );
             trace.setSectionFilter( collectionToString( query.getSectionFilter() ) );
             trace.setCategoryFilter( collectionToString( query.getCategoryFilter() ) );

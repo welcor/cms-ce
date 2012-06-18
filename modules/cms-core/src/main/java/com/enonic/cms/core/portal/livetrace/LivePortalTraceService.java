@@ -6,6 +6,9 @@ package com.enonic.cms.core.portal.livetrace;
 
 import java.util.List;
 
+import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.structure.page.WindowKey;
+
 /**
  * Oct 6, 2010
  */
@@ -17,17 +20,17 @@ public interface LivePortalTraceService
 
     PageRenderingTrace startPageRenderTracing( PortalRequestTrace portalRequestTrace );
 
-    WindowRenderingTrace startWindowRenderTracing( PortalRequestTrace portalRequestTrace );
+    WindowRenderingTrace startWindowRenderTracing( WindowKey windowKey );
 
-    DatasourceExecutionTrace startPageTemplateDatasourceExecutionTracing( String datasourceMethodName );
-
-    DatasourceExecutionTrace startPortletDatasourceExecutionTracing( String datasourceMethodName );
+    DatasourceExecutionTrace startDatasourceExecutionTracing( DatasourcesType datasourcesType, String datasourceMethodName );
 
     ClientMethodExecutionTrace startClientMethodExecutionTracing( String methodName );
 
     ContentIndexQueryTrace startContentIndexQueryTracing();
 
     ViewTransformationTrace startViewTransformationTracing();
+
+    ViewFunctionTrace startViewFunctionTracing( String functionName );
 
     InstructionPostProcessingTrace startInstructionPostProcessingTracingForWindow();
 
@@ -39,9 +42,7 @@ public interface LivePortalTraceService
 
     PortalRequestTrace getCurrentPortalRequestTrace();
 
-    DatasourceExecutionTrace getCurrentDatasourceExecutionTrace();
-
-    ImageRequestTrace getCurrentImageRequestTrace();
+    CurrentTrace getCurrentTrace();
 
     void stopTracing( PortalRequestTrace livePortalRequestTrace );
 
@@ -55,6 +56,8 @@ public interface LivePortalTraceService
 
     void stopTracing( ViewTransformationTrace trace );
 
+    void stopTracing( ViewFunctionTrace trace );
+
     void stopTracing( ContentIndexQueryTrace contentIndexQueryTrace );
 
     void stopTracing( AttachmentRequestTrace attachmentRequestTrace );
@@ -67,7 +70,9 @@ public interface LivePortalTraceService
 
     List<PortalRequestTrace> getCurrentPortalRequestTraces();
 
-    List<PortalRequestTrace> getHistorySince( long historyNumber );
+    List<PortalRequestTrace> getCompletedAfter( long historyNumber );
+
+    List<PortalRequestTrace> getCompletedBefore( long compltedNumber );
 
     List<PortalRequestTrace> getLongestTimePortalPageRequestTraces();
 

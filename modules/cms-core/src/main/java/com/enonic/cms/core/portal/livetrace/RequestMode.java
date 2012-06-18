@@ -11,5 +11,5 @@ public enum RequestMode
 {
     PORTAL,
     PREVIEW,
-    DEBUG;
+    ICE
 }

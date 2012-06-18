@@ -1,80 +1,40 @@
 package com.enonic.cms.core.portal.livetrace;
 
-import com.enonic.cms.core.content.ContentKey;
-import org.joda.time.DateTime;
-
 /**
  * Oct 11, 2010
  */
 public class ImageRequestTrace
+    extends BaseTrace
     implements Trace
 {
-    private PortalRequestTrace portalRequestTrace;
+    private MaxLengthedString contentKey = new MaxLengthedString();
 
-    private Duration duration = new Duration();
+    private MaxLengthedString label = new MaxLengthedString();
 
-    private ContentKey contentKey;
+    private MaxLengthedString imageParamQuality = new MaxLengthedString();
 
-    private MaxLengthedString label;
+    private MaxLengthedString imageParamFormat = new MaxLengthedString();
 
-    private MaxLengthedString imageParamQuality;
+    private MaxLengthedString imageParamFilter = new MaxLengthedString();
 
-    private MaxLengthedString imageParamFormat;
-
-    private MaxLengthedString imageParamFilter;
-
-    private MaxLengthedString imageParamBackgroundColor;
-
-    private MaxLengthedString imageName;
+    private MaxLengthedString imageParamBackgroundColor = new MaxLengthedString();
 
     private Long sizeInBytes;
 
-    private boolean usedCachedResult = false;
+    private CacheUsage cacheUsage = new CacheUsage().setCacheable( true );
 
-    private long concurrencyBlockStartTime = 0;
-
-    private long concurrencyBlockingTime = 0;
-
-    ImageRequestTrace( PortalRequestTrace portalRequestTrace )
+    @SuppressWarnings("UnusedDeclaration")
+    public String getContentKey()
     {
-        this.portalRequestTrace = portalRequestTrace;
+        return contentKey.toString();
     }
 
-    void setStartTime( DateTime start )
+    void setContentKey( String contentKey )
     {
-        duration.setStartTime( start );
+        this.contentKey = new MaxLengthedString( contentKey );
     }
 
-    void setStopTime( DateTime stop )
-    {
-        duration.setStopTime( stop );
-    }
-
-    public Duration getDuration()
-    {
-        return duration;
-    }
-
-    public PortalRequestTrace getPortalRequestTrace()
-    {
-        return portalRequestTrace;
-    }
-
-    public void setPortalRequestTrace( PortalRequestTrace portalRequestTrace )
-    {
-        this.portalRequestTrace = portalRequestTrace;
-    }
-
-    public ContentKey getContentKey()
-    {
-        return contentKey;
-    }
-
-    void setContentKey( ContentKey contentKey )
-    {
-        this.contentKey = contentKey;
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public String getLabel()
     {
         return label != null ? label.toString() : null;
@@ -85,6 +45,7 @@ public class ImageRequestTrace
         this.label = new MaxLengthedString( label );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getImageParamFormat()
     {
         return imageParamFormat != null ? imageParamFormat.toString() : null;
@@ -95,76 +56,40 @@ public class ImageRequestTrace
         this.imageParamFormat = new MaxLengthedString( imageParamFormat );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getImageParamQuality()
     {
         return imageParamQuality != null ? imageParamQuality.toString() : null;
     }
 
-    public void setImageParamQuality( String imageParamQuality )
+    void setImageParamQuality( String imageParamQuality )
     {
         this.imageParamQuality = new MaxLengthedString( imageParamQuality );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getImageParamFilter()
     {
         return imageParamFilter != null ? imageParamFilter.toString() : null;
     }
 
-    public void setImageParamFilter( String imageParamFilter )
+    void setImageParamFilter( String imageParamFilter )
     {
         this.imageParamFilter = new MaxLengthedString( imageParamFilter );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getImageParamBackgroundColor()
     {
         return imageParamBackgroundColor != null ? imageParamBackgroundColor.toString() : null;
     }
 
-    public void setImageParamBackgroundColor( String imageParamBackgroundColor )
+    void setImageParamBackgroundColor( String imageParamBackgroundColor )
     {
         this.imageParamBackgroundColor = new MaxLengthedString( imageParamBackgroundColor );
     }
 
-    public boolean isUsedCachedResult()
-    {
-        return usedCachedResult;
-    }
-
-    void setUsedCachedResult( boolean usedCachedResult )
-    {
-        this.usedCachedResult = usedCachedResult;
-    }
-
-    public boolean isConcurrencyBlocked()
-    {
-        return concurrencyBlockingTime > CONCURRENCY_BLOCK_THRESHOLD;
-    }
-
-    public long getConcurrencyBlockingTime()
-    {
-        return isConcurrencyBlocked() ? concurrencyBlockingTime : 0;
-    }
-
-    void startConcurrencyBlockTimer()
-    {
-        concurrencyBlockStartTime = System.currentTimeMillis();
-    }
-
-    void stopConcurrencyBlockTimer()
-    {
-        this.concurrencyBlockingTime = System.currentTimeMillis() - concurrencyBlockStartTime;
-    }
-
-    public String getImageName()
-    {
-        return imageName != null ? imageName.toString() : null;
-    }
-
-    void setImageName( String imageName )
-    {
-        this.imageName = new MaxLengthedString( imageName );
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public Long getSizeInBytes()
     {
         return sizeInBytes;
@@ -174,4 +99,10 @@ public class ImageRequestTrace
     {
         this.sizeInBytes = sizeInBytes;
     }
+
+    public CacheUsage getCacheUsage()
+    {
+        return cacheUsage;
+    }
+
 }

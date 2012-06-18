@@ -47,7 +47,7 @@ public class PortalRequestTracer
         {
             if ( RenderTrace.isTraceOn() )
             {
-                trace.setMode( RequestMode.DEBUG );
+                trace.setMode( RequestMode.ICE );
             }
             else if ( previewService.isInPreview() )
             {
@@ -64,10 +64,12 @@ public class PortalRequestTracer
     {
         if ( trace != null && httpRequest != null )
         {
-            trace.setHttpRequestRemoteAddress( httpRequest.getRemoteAddr() );
-            trace.setHttpRequestCharacterEncoding( httpRequest.getCharacterEncoding() );
-            trace.setHttpRequestContentType( httpRequest.getContentType() );
-            trace.setHttpRequestUserAgent( httpRequest.getHeader( "User-Agent" ) );
+            HttpRequest httpInfo = new HttpRequest();
+            httpInfo.setRemoteAddress( httpRequest.getRemoteAddr() );
+            httpInfo.setCharacterEncoding( httpRequest.getCharacterEncoding() );
+            httpInfo.setContentType( httpRequest.getContentType() );
+            httpInfo.setUserAgent( httpRequest.getHeader( "User-Agent" ) );
+            trace.setHttpRequest( httpInfo );
         }
     }
 
@@ -83,7 +85,7 @@ public class PortalRequestTracer
     {
         if ( trace != null && requester != null )
         {
-            trace.setRequester( requester.getQualifiedName() );
+            trace.setRequester( User.createUser( requester.getQualifiedName() ) );
         }
     }
 

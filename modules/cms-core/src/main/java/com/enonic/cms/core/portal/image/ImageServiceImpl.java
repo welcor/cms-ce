@@ -86,7 +86,7 @@ public final class ImageServiceImpl
     {
         Preconditions.checkNotNull( imageRequest, "imageRequest cannot be null" );
 
-        final ImageRequestTrace imageRequestTrace = livePortalTraceService.getCurrentImageRequestTrace();
+        final ImageRequestTrace imageRequestTrace = livePortalTraceService.getCurrentTrace().getImageRequestTrace();
 
         String blobKey = getBlobKey( imageRequest );
         if ( blobKey == null )

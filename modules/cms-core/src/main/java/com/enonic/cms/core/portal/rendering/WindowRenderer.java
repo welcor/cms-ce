@@ -121,7 +121,7 @@ public class WindowRenderer
 
     public RenderedWindowResult renderWindowInline( final WindowKey windowKey, final RequestParameters extraParams )
     {
-        windowRenderingTrace = WindowRenderingTracer.startTracing( liveTraceService );
+        windowRenderingTrace = WindowRenderingTracer.startTracing( windowKey, liveTraceService );
 
         try
         {
@@ -155,7 +155,7 @@ public class WindowRenderer
 
     public RenderedWindowResult renderWindowDirect( final WindowKey windowKey )
     {
-        windowRenderingTrace = WindowRenderingTracer.startTracing( liveTraceService );
+        windowRenderingTrace = WindowRenderingTracer.startTracing( windowKey, liveTraceService );
 
         try
         {
@@ -215,7 +215,7 @@ public class WindowRenderer
             {
                 WindowRenderingTracer.startConcurrencyBlockTimer( windowRenderingTrace );
                 locker.lock();
-                WindowRenderingTracer.stopConcurrencyBlockTimer(windowRenderingTrace);
+                WindowRenderingTracer.stopConcurrencyBlockTimer( windowRenderingTrace );
 
                 // see if window result is in cache
                 final CachedObject cachedPortletHolder = pageCacheService.getCachedPortletWindow( cacheKey );
@@ -419,7 +419,6 @@ public class WindowRenderer
         finally
         {
             PortalFunctionsFactory.get().removeContext();
-            ViewTransformationTracer.stopTracing( trace, liveTraceService );
         }
     }
 

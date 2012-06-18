@@ -37,8 +37,8 @@ public class AttachmentRequestTracer
     {
         if ( trace != null && attachmentRequest != null )
         {
-            trace.setContentKey( attachmentRequest.getContentKey() );
-            trace.setBinaryDataKey( attachmentRequest.getBinaryDataKey() );
+            trace.setContentKey( attachmentRequest.getContentKey().toString() );
+            trace.setBinaryDataKey( attachmentRequest.getBinaryDataKey().toString() );
         }
     }
 

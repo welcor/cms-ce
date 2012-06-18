@@ -14,6 +14,7 @@ import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.captcha.CaptchaService;
 import com.enonic.cms.core.localization.LocalizationService;
 import com.enonic.cms.core.portal.image.ImageService;
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -62,6 +63,9 @@ public class PortalFunctionsFactory
     @Autowired
     private IsWindowEmptyFunction isWindowEmptyFunction;
 
+    @Autowired
+    private LivePortalTraceService livePortalTraceService;
+
     private SitePropertiesService sitePropertiesService;
 
     private final ThreadLocal<PortalFunctionsContext> context = new ThreadLocal<PortalFunctionsContext>();
@@ -105,19 +109,20 @@ public class PortalFunctionsFactory
             portalFunctions.setSiteURLResolver( siteURLResolver );
         }
         portalFunctions.setCaptchaService( captchaService );
-        portalFunctions.setLocalizeService( localizeService );
-        portalFunctions.setLocaleResolvingService( localeResolverService );
+        portalFunctions.setContentBinaryDataDao( contentBinaryDataDao );
         portalFunctions.setContentDao( contentDao );
+        portalFunctions.setContext( getContext() );
+        portalFunctions.setCreateAttachmentUrlFunction( createAttachmentUrlFunction );
+        portalFunctions.setEncodeURIs( getContext().isEncodeURIs() );
+        portalFunctions.setImageService( imageService );
+        portalFunctions.setIsWindowEmptyFunction( isWindowEmptyFunction );
+        portalFunctions.setLivePortalTraceService( livePortalTraceService );
+        portalFunctions.setLocaleResolvingService( localeResolverService );
+        portalFunctions.setLocalizeService( localizeService );
         portalFunctions.setMenuItemDao( menuItemDao );
         portalFunctions.setPortletDao( portletDao );
         portalFunctions.setRequest( httpRequest );
-        portalFunctions.setEncodeURIs( getContext().isEncodeURIs() );
-        portalFunctions.setContext( getContext() );
-        portalFunctions.setContentBinaryDataDao( contentBinaryDataDao );
-        portalFunctions.setImageService( imageService );
         portalFunctions.setSecurityService( securityService );
-        portalFunctions.setCreateAttachmentUrlFunction( createAttachmentUrlFunction );
-        portalFunctions.setIsWindowEmptyFunction( isWindowEmptyFunction );
         portalFunctions.setSitePropertiesService( sitePropertiesService );
 
         return portalFunctions;

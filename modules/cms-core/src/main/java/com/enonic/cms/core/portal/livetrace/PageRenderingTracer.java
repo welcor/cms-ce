@@ -37,7 +37,7 @@ public class PageRenderingTracer
     {
         if ( trace != null && renderer != null )
         {
-            trace.setRenderer( renderer.getQualifiedName() );
+            trace.setRenderer( User.createUser( renderer.getQualifiedName() ) );
         }
     }
 
@@ -45,8 +45,8 @@ public class PageRenderingTracer
     {
         if ( trace != null )
         {
-            trace.setCacheable( cacheable );
-            trace.setUsedCachedResult( usedCachedResult );
+            trace.getCacheUsage().setCacheable( cacheable );
+            trace.getCacheUsage().setUsedCachedResult( usedCachedResult );
         }
     }
 
@@ -54,7 +54,7 @@ public class PageRenderingTracer
     {
         if ( trace != null )
         {
-            trace.startConcurrencyBlockTimer();
+            trace.getCacheUsage().startConcurrencyBlockTimer();
         }
     }
 
@@ -62,7 +62,7 @@ public class PageRenderingTracer
     {
         if ( trace != null )
         {
-            trace.stopConcurrencyBlockTimer();
+            trace.getCacheUsage().stopConcurrencyBlockTimer();
         }
     }
 }

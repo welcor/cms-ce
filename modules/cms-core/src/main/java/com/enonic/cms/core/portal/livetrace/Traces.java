@@ -1,13 +1,12 @@
 package com.enonic.cms.core.portal.livetrace;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 public class Traces<T extends Trace>
@@ -22,6 +21,7 @@ public class Traces<T extends Trace>
 
     private int totalPeriodTimeInMilliseconds = 0;
 
+    @Override
     public Iterator<T> iterator()
     {
         return list.iterator();
@@ -29,18 +29,12 @@ public class Traces<T extends Trace>
 
     public void add( T trace )
     {
-        synchronized ( list )
-        {
-            list.add( trace );
-            computeTotalPeriod();
-        }
+        trace.setContainer( this );
+        list.add( trace );
+        computeTotalPeriod();
     }
 
-    public boolean hasTraces()
-    {
-        return !list.isEmpty();
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public List<T> getList()
     {
         return list;
@@ -48,30 +42,28 @@ public class Traces<T extends Trace>
 
     public int getTotalPeriodInMilliseconds()
     {
-        synchronized ( list )
-        {
-            computeTotalPeriod();
-            return totalPeriodTimeInMilliseconds;
-        }
+        return totalPeriodTimeInMilliseconds;
     }
 
     public String getTotalPeriodInHRFormat()
     {
-        synchronized ( list )
-        {
-            computeTotalPeriod();
-            Period period = new Period( totalPeriodTimeInMilliseconds );
-            return hoursMinutesMillis.print( period );
-        }
+        return hoursMinutesMillis.print( new Period( totalPeriodTimeInMilliseconds ) );
     }
 
-    private void computeTotalPeriod()
+    void computeTotalPeriod()
     {
-        totalPeriodTimeInMilliseconds = 0;
-
+        int newTotalPeriodTimeInMilliseconds = 0;
         for ( Trace trace : list )
         {
-            totalPeriodTimeInMilliseconds += trace.getDuration().getAsMilliseconds();
+            long asMilliseconds = trace.getDuration().getAsMilliseconds();
+            newTotalPeriodTimeInMilliseconds += asMilliseconds;
         }
+
+        totalPeriodTimeInMilliseconds = newTotalPeriodTimeInMilliseconds;
+    }
+
+    public static <T extends Trace> Traces<T> create()
+    {
+        return new Traces<T>();
     }
 }

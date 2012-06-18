@@ -5,14 +5,13 @@
 }
 
 .trace-table {
-   table-layout: fixed;
-   width: 100%;
+    table-layout: fixed;
+    width: 100%;
 }
 
 .trace-table tr:nth-child(2n) {
     background-color: #dddddd;
 }
-
 
 .noBorderBottom {
     border-bottom: none !important;
@@ -165,16 +164,20 @@ pre {
     font-family: monospace;
 }
 
-#portalRequestTraceDetail-table td {
+#trace-details-tree-table {
+    padding-left: 20;
+}
+
+/*#portalRequestTraceDetail-table td {
     padding-left: 5px;
     padding-right: 15px;
     border-bottom: 1px solid gray;
     vertical-align: top;
-}
+}*/
 
-#portalRequestTraceDetail-table th {
+/*#portalRequestTraceDetail-table th {
     text-align: left;
-}
+}*/
 
 .cache-color-not-cacheable {
     color: #000000;

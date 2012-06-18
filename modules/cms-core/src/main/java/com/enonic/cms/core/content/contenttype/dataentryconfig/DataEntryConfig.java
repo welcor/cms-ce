@@ -24,4 +24,6 @@ public interface DataEntryConfig
     public CtySetConfig getSetConfig();
 
     public void setSetConfig( CtySetConfig value );
+
+    public String getDefaultValue();
 }

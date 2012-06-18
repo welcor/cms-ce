@@ -7,6 +7,7 @@ package com.enonic.cms.core.content.contenttype.dataentryconfig;
 public class UrlDataEntryConfig
     extends AbstractBaseDataEntryConfig
 {
+    private String defaultValue;
 
     private Integer maxLength;
 
@@ -21,4 +22,14 @@ public class UrlDataEntryConfig
         return maxLength;
     }
 
-}   
+    public String getDefaultValue()
+    {
+        return defaultValue;
+    }
+
+    public UrlDataEntryConfig setDefaultValue( final String defaultValue )
+    {
+        this.defaultValue = defaultValue;
+        return this;
+    }
+}

@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.BasicMarker;
-import org.slf4j.helpers.BasicMarkerFactory;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
@@ -220,6 +218,7 @@ public final class ExpressionFunctionsExecutor
         userMap.put( "userStore", userStoreName );
         userMap.put( "uid", uid );
         userMap.put( "fullName", user.getDisplayName() );
+        userMap.put( "email", user.getEmail() );
         return userMap;
     }
 

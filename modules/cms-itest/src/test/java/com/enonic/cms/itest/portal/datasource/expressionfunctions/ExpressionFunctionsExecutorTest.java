@@ -4,6 +4,12 @@
  */
 package com.enonic.cms.itest.portal.datasource.expressionfunctions;
 
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.portal.datasource.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
@@ -13,11 +19,6 @@ import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,6 +45,7 @@ public class ExpressionFunctionsExecutorTest
         fixture.initSystemData();
 
         defaultUser = fixture.createAndStoreNormalUserWithUserGroup( "testuser", "testuser", "testuserstore" );
+        defaultUser.setEmail( "email@email.com" );
 
         timeService = new MockTimeService();
 
@@ -62,8 +64,15 @@ public class ExpressionFunctionsExecutorTest
     }
 
     @Test
+    public void testUserGetEmailReturnsLoggedInUserEmail()
+            throws Exception {
+        String evaluted = efExecutor.evaluate( "${user.email}" );
+        assertEquals( "email@email.com", evaluted );
+    }
+
+    @Test
     public void testParametersEvaulation()
-        throws Exception
+            throws Exception
     {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter( "subCat", "18" );

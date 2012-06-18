@@ -296,17 +296,13 @@ var CMSImage = {
 
         var iContentKey = document.getElementById('selectedcontentkey').value;
         var sBinaryName = document.getElementById('selectedbinaryname').value;
-        var sFileExtension = getFileExtension(sBinaryName);
         var oSizeField = document.getElementsByName('size')[0];
         var sSize = oSizeField.options[oSizeField.selectedIndex].value;
         var iCustomWidthValue = document.getElementById('customwidth').value;
 
-        // Gif is not supported, use PNG
-        if ( sFileExtension === 'gif' ) sFileExtension = 'png';
-
         if ( sSize !== '')
         {
-            sImgSrc += '_image/' + iContentKey + '?_size=' + sSize + '&_format=' + sFileExtension;
+            sImgSrc += '_image/' + iContentKey + '?_size=' + sSize;
 
             var sFilter = oInternalLinkPlugin.resolveFilterParam(sImgSrc, iCustomWidthValue);
 
@@ -355,12 +351,6 @@ var CMSImage = {
     }
     // -------------------------------------------------------------------------------------------------------------------------------------
 };
-
-function getFileExtension( sFilename )
-{
-    var oExtension = (/[.]/.exec(sFilename)) ? /[^.]+$/.exec(sFilename) : undefined;
-    return (oExtension) ? oExtension.toString().toLowerCase() : '';
-}
 
 function addValidationOnKeyUpToMarginTextField( el )
 {

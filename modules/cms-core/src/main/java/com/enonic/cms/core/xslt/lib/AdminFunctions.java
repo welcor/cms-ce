@@ -53,11 +53,18 @@ public final class AdminFunctions
         }
     }
 
+    /**
+     * @return A huge hexadecimal random ID.
+     */
     public static String uniqueId()
     {
         return UUID.randomUUID().toString().replaceAll( "-", "" );
     }
 
+    /**
+     * @return A decimal number between 0 and 1, as a String.  Numbers less than 0.1, will contain scientific notation, like: 0.00012351
+     * will return 1.2351e-4, but the ID is much shorter than <code>uniqueID</code>.  Use this one, when the size of the ID may not be too large.
+     */
     public static String randomId()
     {
         return String.valueOf( java.lang.Math.random() );

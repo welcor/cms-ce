@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY nbsp "&#160;">
     ]>

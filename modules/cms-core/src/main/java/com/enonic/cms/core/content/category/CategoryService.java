@@ -12,4 +12,6 @@ public interface CategoryService
     public CategoryKey storeNewCategory( StoreNewCategoryCommand command );
 
     void deleteCategory( DeleteCategoryCommand command );
+
+    void moveCategory( MoveCategoryCommand command );
 }

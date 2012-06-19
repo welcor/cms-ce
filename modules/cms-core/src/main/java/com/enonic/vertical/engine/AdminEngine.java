@@ -783,26 +783,6 @@ public final class AdminEngine
         return memberOfResolver.hasDeveloperPowers( user.getKey() );
     }
 
-    public void moveCategory( User user, int catKey, int newSuperCategoryKey )
-    {
-
-        CategoryKey oldSuperCategoryKey = categoryHandler.getParentCategoryKey( CategoryKey.parse( catKey ) );
-        if ( !securityHandler.validateCategoryRemove( user, oldSuperCategoryKey ) ||
-            !securityHandler.validateCategoryCreate( user, CategoryKey.parse( newSuperCategoryKey ) ) )
-        {
-            String message = "User does not have access rights to move the category.";
-            VerticalEngineLogger.errorSecurity( message, null );
-        }
-
-        if ( categoryHandler.isSubCategory( CategoryKey.parse( catKey ), CategoryKey.parse( newSuperCategoryKey ) ) )
-        {
-            String message = "Cannot move a category to a subcategory";
-            VerticalEngineLogger.errorUpdate( message, null );
-        }
-
-        categoryHandler.moveCategory( user, CategoryKey.parse( catKey ), CategoryKey.parse( newSuperCategoryKey ) );
-    }
-
     public int[] getContentKeysByCategory( User user, int categoryKey )
     {
         return contentHandler.getContentKeysByCategory( user, CategoryKey.parse( categoryKey ) );

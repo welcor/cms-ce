@@ -81,5 +81,9 @@ public abstract class AbstractBaseDataEntryConfig
         return getName();
     }
 
+    public String getDefaultValue()
+    {
+        return null;
+    }
 }
 

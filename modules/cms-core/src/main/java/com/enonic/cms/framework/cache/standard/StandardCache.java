@@ -4,11 +4,13 @@
  */
 package com.enonic.cms.framework.cache.standard;
 
+import java.lang.ref.SoftReference;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap.Builder;
-
-import java.lang.ref.SoftReference;
-import java.util.*;
 
 
 /**
@@ -16,7 +18,6 @@ import java.util.*;
  */
 final class StandardCache
 {
-
     private final int maxEntries;
 
     private final ConcurrentLinkedHashMap<String, SoftReference<CacheEntry>> map;
@@ -135,8 +136,7 @@ final class StandardCache
 
         HashSet<String> keys = new HashSet<String>();
 
-        Map<String, SoftReference<CacheEntry>> mapClone = new HashMap<String, SoftReference<CacheEntry>>( map );
-        for ( String key : mapClone.keySet() )
+        for ( String key : map.keySet() )
         {
             if ( key.startsWith( prefix ) )
             {

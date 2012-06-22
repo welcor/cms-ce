@@ -22,24 +22,23 @@ public class IndexValueQueryTranslatorTest
     public void testCreateIndexValueQuery()
     {
         String expected_search_result = "{\n" +
-                "  \"from\" : 0,\n" +
-                "  \"size\" : 200,\n" +
-                "  \"query\" : {\n" +
-                "    \"match_all\" : {\n" +
-                "    }\n" +
-                "  },\n" +
-                "  \"fields\" : \"title\",\n" +
-                "  \"sort\" : [ {\n" +
-                "    \"title.orderby\" : {\n" +
-                "      \"order\" : \"asc\",\n" +
-                "      \"ignore_unmapped\" : true\n" +
-                "    }\n" +
-                "  } ]\n" +
-                "}";
+            "  \"from\" : 0,\n" +
+            "  \"size\" : 200,\n" +
+            "  \"query\" : {\n" +
+            "    \"match_all\" : {\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"sort\" : [ {\n" +
+            "    \"title.orderby\" : {\n" +
+            "      \"order\" : \"asc\",\n" +
+            "      \"ignore_unmapped\" : true\n" +
+            "    }\n" +
+            "  } ]\n" +
+            "}";
 
         IndexValueQuery query = new IndexValueQuery( "title" );
 
-        final SearchSourceBuilder builder = translator.build( query );
+        final SearchSourceBuilder builder = translator.build( query, new QueryField( "title" ) );
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
@@ -49,24 +48,23 @@ public class IndexValueQueryTranslatorTest
     public void testCustomDataField()
     {
         String expected_search_result = "{\n" +
-                "  \"from\" : 0,\n" +
-                "  \"size\" : 200,\n" +
-                "  \"query\" : {\n" +
-                "    \"match_all\" : {\n" +
-                "    }\n" +
-                "  },\n" +
-                "  \"fields\" : \"data_test\",\n" +
-                "  \"sort\" : [ {\n" +
-                "    \"data_test.orderby\" : {\n" +
-                "      \"order\" : \"asc\",\n" +
-                "      \"ignore_unmapped\" : true\n" +
-                "    }\n" +
-                "  } ]\n" +
-                "}";
+            "  \"from\" : 0,\n" +
+            "  \"size\" : 200,\n" +
+            "  \"query\" : {\n" +
+            "    \"match_all\" : {\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"sort\" : [ {\n" +
+            "    \"data_test.orderby\" : {\n" +
+            "      \"order\" : \"asc\",\n" +
+            "      \"ignore_unmapped\" : true\n" +
+            "    }\n" +
+            "  } ]\n" +
+            "}";
 
         IndexValueQuery query = new IndexValueQuery( "data/test" );
 
-        final SearchSourceBuilder builder = translator.build( query );
+        final SearchSourceBuilder builder = translator.build( query, new QueryField( "data_test" ) );
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }

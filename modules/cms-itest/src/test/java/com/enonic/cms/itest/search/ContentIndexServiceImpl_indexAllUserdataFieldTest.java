@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
-import org.elasticsearch.search.SearchHitField;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -13,9 +12,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 
 public class ContentIndexServiceImpl_indexAllUserdataFieldTest
     extends ContentIndexServiceTestBase
@@ -26,13 +23,12 @@ public class ContentIndexServiceImpl_indexAllUserdataFieldTest
     {
         indexUserDataWithMultipleValuesDocument();
 
-        final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( new ContentKey( 1322 ) );
+        final Map<String, Object> fieldMapForId = getFieldMapForId( new ContentKey( 1322 ) );
 
-        final SearchHitField all_userdata = fieldMapForId.get( "_all_userdata" );
+        final Object all_userdata = fieldMapForId.get( "_all_userdata" );
         assertNotNull( all_userdata );
-        assertEquals( 4, all_userdata.values().size() );
-        assertTrue( all_userdata.values().contains( "10" ) );
-        assertTrue( all_userdata.values().contains( "eleven" ) );
+
+        verifyField( "_all_userdata", 4, fieldMapForId );
     }
 
     @Test

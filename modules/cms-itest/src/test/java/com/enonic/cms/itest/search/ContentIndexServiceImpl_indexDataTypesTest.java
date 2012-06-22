@@ -4,17 +4,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
-import org.elasticsearch.search.SearchHitField;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentDocument;
-
-import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.*;
 
 public class ContentIndexServiceImpl_indexDataTypesTest
     extends ContentIndexServiceTestBase
@@ -88,15 +83,14 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         final ContentDocument contentDocument = createContentDocument( contentKey );
         addUserdefinedData( contentDocument );
         indexContentDocument( contentDocument );
-        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
+        final Map<String, Object> fieldMapForId = getAllFieldsForId( contentKey );
 
         final int numberOfUniqueUserDataValuesInTestValues = 12;
 
         verifyField( "_all_userdata", numberOfUniqueUserDataValuesInTestValues, fieldMapForId );
-        verifyField( "_all_userdata._tokenized", numberOfUniqueUserDataValuesInTestValues, fieldMapForId );
     }
 
-    private Map<String, SearchHitField> getAllFieldsForId( int id )
+    private Map<String, Object> getAllFieldsForId( int id )
     {
         final ContentKey contentKey = new ContentKey( id );
         return getFieldMapForId( contentKey );
@@ -111,12 +105,11 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         addMetaData( contentDocument );
         indexContentDocument( contentDocument );
 
-        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
+        final Map<String, Object> fieldMapForId = getAllFieldsForId( contentKey );
 
         verifyField( "key", 1, fieldMapForId );
         verifyField( "key.number", 1, fieldMapForId );
         verifyField( "title", 1, fieldMapForId );
-        verifyField( "title._tokenized", 1, fieldMapForId );
         verifyField( "status", 1, fieldMapForId );
         verifyField( "status.number", 1, fieldMapForId );
         verifyField( "publishfrom", 1, fieldMapForId );
@@ -161,7 +154,7 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         final ContentDocument contentDocument = createContentDocument( contentKey );
         addUserdefinedData( contentDocument );
         indexContentDocument( contentDocument );
-        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
+        final Map<String, Object> fieldMapForId = getAllFieldsForId( contentKey );
 
         verifyField( "data_person_age", 3, fieldMapForId );
         verifyField( "data_person_age.number", 3, fieldMapForId );
@@ -185,24 +178,10 @@ public class ContentIndexServiceImpl_indexDataTypesTest
         addUserdefinedData( contentDocument );
         addMetaData( contentDocument );
         indexContentDocument( contentDocument );
-        final Map<String, SearchHitField> fieldMapForId = getAllFieldsForId( contentKey );
+        final Map<String, Object> fieldMapForId = getAllFieldsForId( contentKey );
 
         verifyField( "data_person_age.orderby", 1, fieldMapForId );
     }
 
-    private void verifyField( String fieldName, int expected, Map<String, SearchHitField> fieldMapForId )
-    {
-        final SearchHitField hits = fieldMapForId.get( fieldName );
 
-        if ( expected > 0 )
-        {
-            assertNotNull( "Hits is null for field: " + fieldName, hits );
-            Assert.assertEquals( "Wrong number of hits for field: " + fieldName, expected, hits.values().size() );
-
-        }
-        else
-        {
-            assertNull( hits );
-        }
-    }
 }

@@ -15,11 +15,11 @@ import javax.annotation.PostConstruct;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
@@ -48,6 +48,9 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
 import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.IndexValueQueryTranslator;
+import com.enonic.cms.core.search.query.QueryField;
+import com.enonic.cms.core.search.query.QueryFieldFactory;
+import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 import com.enonic.cms.core.search.query.QueryTranslator;
 import com.enonic.cms.store.dao.ContentDao;
 
@@ -317,9 +320,12 @@ public class ContentIndexServiceImpl
     {
         final SearchSourceBuilder build;
 
+        final String path = QueryFieldNameResolver.resolveQueryFieldName( query.getField() );
+        final QueryField queryField = QueryFieldFactory.resolveQueryField( path );
+
         try
         {
-            build = this.indexValueQueryTranslator.build( query );
+            build = this.indexValueQueryTranslator.build( query, queryField );
         }
         catch ( Exception e )
         {
@@ -332,7 +338,7 @@ public class ContentIndexServiceImpl
 
         for ( SearchHit hit : hits )
         {
-            resultSet.add( createIndexValueResult( hit ) );
+            resultSet.add( createIndexValueResult( hit, queryField ) );
         }
 
         LOG.finer( "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " +
@@ -341,22 +347,17 @@ public class ContentIndexServiceImpl
         return resultSet;
     }
 
-    private IndexValueResultImpl createIndexValueResult( SearchHit hit )
+    private IndexValueResultImpl createIndexValueResult( SearchHit hit, QueryField queryField )
     {
-        final Map<String, SearchHitField> fields = hit.getFields();
+        Assert.notNull( hit.getSource(), "Source is empty from search result" );
 
-        if ( fields.size() != 1 )
-        {
-            throw new ContentIndexException( "Expected one field hit for query, found " + fields.size() );
-        }
+        final Map<String, Object> fields = hit.getSource();
 
         ContentKey contentKey = new ContentKey( hit.getId() );
 
-        final Map.Entry<String, SearchHitField> next = fields.entrySet().iterator().next();
+        final ArrayList<String> fieldValue = (ArrayList<String>) fields.get( queryField.getFieldName() );
 
-        final String value = (String) next.getValue().getValue();
-
-        return new IndexValueResultImpl( contentKey, value );
+        return new IndexValueResultImpl( contentKey, fieldValue.get( 0 ) );
     }
 
 

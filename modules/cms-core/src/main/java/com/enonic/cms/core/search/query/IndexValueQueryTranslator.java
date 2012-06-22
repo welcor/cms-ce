@@ -15,17 +15,14 @@ public class IndexValueQueryTranslator
     private final FilterQueryBuilderFactory filterQueryBuilderFactory = new FilterQueryBuilderFactory();
 
     // Selects the values from a given field in index for all contents matching filter
-    public SearchSourceBuilder build( final IndexValueQuery query )
+    public SearchSourceBuilder build( final IndexValueQuery query, QueryField queryField )
     {
         final SearchSourceBuilder builder = new SearchSourceBuilder();
-
-        final String path = QueryFieldNameResolver.resolveQueryFieldName( query.getField() );
-        final QueryField queryField = QueryFieldFactory.resolveQueryField( path );
 
         builder.from( query.getIndex() );
         builder.size( query.getCount() );
 
-        builder.fields( queryField.getFieldName() );
+        //builder.fields( queryField.getFieldName() );
 
         builder.query( QueryBuilders.matchAllQuery() );
 
@@ -35,8 +32,7 @@ public class IndexValueQueryTranslator
         return builder;
     }
 
-    private void applySorting( final SearchSourceBuilder builder, final QueryField queryField,
-                               final boolean isDescOrder )
+    private void applySorting( final SearchSourceBuilder builder, final QueryField queryField, final boolean isDescOrder )
     {
         final String sortFieldName = queryField.getFieldName();
         final String name = QueryFieldNameResolver.resolveOrderFieldName( new FieldExpr( sortFieldName ) );

@@ -1,13 +1,14 @@
 package com.enonic.cms.itest.search;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ import com.enonic.cms.core.search.IndexMappingProvider;
 import com.enonic.cms.core.search.IndexType;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 /**
@@ -96,7 +99,7 @@ public abstract class ContentIndexServiceTestBase
         }
     }
 
-    protected Map<String, SearchHitField> getFieldMapForId( ContentKey contentKey )
+    protected Map<String, Object> getFieldMapForId( ContentKey contentKey )
     {
         SearchResponse result = fetchDocumentByContentKey( contentKey );
 
@@ -104,8 +107,7 @@ public abstract class ContentIndexServiceTestBase
 
         SearchHit hit = result.getHits().getAt( 0 );
 
-        return hit.getFields();
-
+        return hit.getSource();
     }
 
     private SearchResponse fetchDocumentByContentKey( ContentKey contentKey )
@@ -113,7 +115,7 @@ public abstract class ContentIndexServiceTestBase
         String termQuery = "{\n" +
             "  \"from\" : 0,\n" +
             "  \"size\" : " + 100 + ",\n" +
-            "\"fields\" : [\"*\"],\n" +
+            //   "\"fields\" : [\"*\"],\n" +
             "  \"query\" : {\n" +
             "    \"term\" : {\n" +
             "      \"key\" : \"" + new Long( contentKey.toString() ).toString() + "\"\n" +
@@ -315,6 +317,35 @@ public abstract class ContentIndexServiceTestBase
         doc.setStatus( 2 );
         doc.setPriority( 0 );
         return doc;
+    }
+
+    protected void verifyField( String fieldName, int expected, Map<String, Object> fieldMapForId )
+    {
+        final Object hits = fieldMapForId.get( fieldName );
+
+        if ( expected > 1 )
+        {
+            assertNotNull( "Hits is null for field: " + fieldName, hits );
+
+            assertTrue( "Hits should be a collection", hits instanceof Collection );
+
+            Assert.assertEquals( "Wrong number of hits for field: " + fieldName, expected, ( (Collection) hits ).size() );
+
+        }
+        else if ( expected == 1 )
+        {
+            assertNotNull( "Hits is null for field: " + fieldName, hits );
+
+            if ( hits instanceof Collection )
+            {
+                Assert.assertEquals( "Wrong number of hits for field: " + fieldName, expected, ( (Collection) hits ).size() );
+            }
+
+        }
+        else
+        {
+            assertNull( "Should be null", hits );
+        }
     }
 
 

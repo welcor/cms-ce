@@ -194,7 +194,7 @@ public class ContentEnhancedImageXMLBuilder
                 }
 
                 // Check for unsupported image format
-                if ( !ContentImageUtil.isSupportedFormat( type ) )
+                if ( !isSupportedFormat( type ) )
                 {
                     VerticalAdminLogger.errorAdmin("I/O error processing file \"" + image.fileName + "\": Unsupported Image Type", (Throwable)null );
                 }
@@ -243,6 +243,11 @@ public class ContentEnhancedImageXMLBuilder
         {
             return binaryList.toArray( new BinaryData[binaryList.size()] );
         }
+    }
+
+    private boolean isSupportedFormat( String extension )
+    {
+        return "jpeg".equals( extension ) || "png".equals( extension ) || "gif".equals( extension ) || "bmp".equals( extension );
     }
 
     private byte[] rotateImage( String rotate, byte[] image, String encodeType )

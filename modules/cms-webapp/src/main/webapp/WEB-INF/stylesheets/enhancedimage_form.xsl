@@ -81,7 +81,7 @@
 
         <script type="text/javascript" language="JavaScript">
           // Globals
-          var g_validImageFileTypesPattern = /\.(jpg|jpeg|png|gif|tif|tiff|bmp)$/i;
+          var g_validImageFileTypesPattern = /\.(jpg|jpeg|png|gif|bmp)$/i;
 
           // variables used by menu.js
           var branchOpen = new Array();

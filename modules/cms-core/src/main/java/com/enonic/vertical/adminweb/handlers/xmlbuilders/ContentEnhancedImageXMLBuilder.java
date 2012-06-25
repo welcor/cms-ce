@@ -193,6 +193,12 @@ public class ContentEnhancedImageXMLBuilder
                     }
                 }
 
+                // Check for unsupported image format
+                if ( !ContentImageUtil.isSupportedFormat( type ) )
+                {
+                    VerticalAdminLogger.errorAdmin("I/O error processing file \"" + image.fileName + "\": Unsupported Image Type", (Throwable)null );
+                }
+
                 // Rotate source image?
                 String rotate = formItems.getString( "rotate", "none" );
                 if ( !"none".equals( rotate ) )

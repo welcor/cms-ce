@@ -96,4 +96,9 @@ public class ContentImageUtil
         }
         return encodeType;
     }
+
+    public static boolean isSupportedFormat( String extension )
+    {
+        return "jpeg".equals( extension ) || "png".equals( extension ) || "gif".equals( extension ) || "bmp".equals( extension );
+    }
 }

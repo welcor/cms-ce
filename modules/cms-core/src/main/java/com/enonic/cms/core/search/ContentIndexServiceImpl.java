@@ -17,6 +17,7 @@ import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.facet.statistical.StatisticalFacet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -31,6 +32,7 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.AggregatedQuery;
 import com.enonic.cms.core.content.index.AggregatedResult;
+import com.enonic.cms.core.content.index.AggregatedResultImpl;
 import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexService;
@@ -46,6 +48,7 @@ import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
+import com.enonic.cms.core.search.query.AggregatedQueryTranslator;
 import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.IndexValueQueryTranslator;
 import com.enonic.cms.core.search.query.QueryField;
@@ -76,6 +79,8 @@ public class ContentIndexServiceImpl
     private QueryTranslator queryTranslator;
 
     private final IndexValueQueryTranslator indexValueQueryTranslator = new IndexValueQueryTranslator();
+
+    private final AggregatedQueryTranslator aggregatedQueryTranslator = new AggregatedQueryTranslator();
 
     private ContentDao contentDao;
 
@@ -347,6 +352,7 @@ public class ContentIndexServiceImpl
         return resultSet;
     }
 
+
     private IndexValueResultImpl createIndexValueResult( SearchHit hit, QueryField queryField )
     {
         Assert.notNull( hit.getSource(), "Source is empty from search result" );
@@ -382,9 +388,24 @@ public class ContentIndexServiceImpl
     // TODO: We dont implement this one yet
     public AggregatedResult query( AggregatedQuery query )
     {
-        throw new RuntimeException(
-            "Method not implemented in class " + this.getClass().getName() + ": " + "query( AggregatedQuery query )" );
-        //return null;
+        final SearchSourceBuilder builder;
+
+        try
+        {
+            builder = this.aggregatedQueryTranslator.build( query );
+        }
+        catch ( Exception e )
+        {
+            throw new IndexQueryException( "Failed to translate aggregated query: " + query, e );
+        }
+
+        final SearchResponse response = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content.toString(), builder );
+
+        final StatisticalFacet statisticalFacet =
+            FacetExtractor.getStatisticalFacet( response, AggregatedQueryTranslator.AGGREGATED_FACET_NAME );
+
+        return new AggregatedResultImpl( statisticalFacet.count(), statisticalFacet.min(), statisticalFacet.max(), statisticalFacet.total(),
+                                         statisticalFacet.getMean() );
     }
 
     @Override

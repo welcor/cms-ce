@@ -30,6 +30,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.AggregatedQuery;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.search.query.QueryFieldAndMultipleValues;
@@ -57,6 +58,13 @@ public class FilterQueryBuilderFactory
         List<FilterBuilder> filtersToApply = getListOfFiltersToApply( query );
 
         doAddFilters( builder, filtersToApply );
+    }
+
+    public FilterBuilder buildFilterForAggregatedQuery( final AggregatedQuery query )
+    {
+        final List<FilterBuilder> listOfFiltersToApply = getListOfFiltersToApply( query );
+
+        return createFilter( listOfFiltersToApply );
     }
 
     private List<FilterBuilder> getListOfFiltersToApply( final ContentIndexQuery query )
@@ -139,28 +147,63 @@ public class FilterQueryBuilderFactory
         return filtersToApply;
     }
 
+    private List<FilterBuilder> getListOfFiltersToApply( final AggregatedQuery query )
+    {
+        List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
+
+        if ( query.hasCategoryFilter() )
+        {
+            filtersToApply.add( buildCategoryFilter( query.getCategoryFilter() ) );
+        }
+
+        if ( query.hasContentTypeFilter() )
+        {
+            filtersToApply.add( buildContentTypeFilter( query.getContentTypeFilter() ) );
+        }
+
+        if ( query.hasSecurityFilter() )
+        {
+            final FilterBuilder securityFilter = buildSecurityFilter( query.getSecurityFilter() );
+            filtersToApply.add( securityFilter );
+        }
+
+        return filtersToApply;
+    }
+
+
     private void doAddFilters( final SearchSourceBuilder builder, final List<FilterBuilder> filtersToApply )
     {
+        final FilterBuilder filter = createFilter( filtersToApply );
 
-        if ( filtersToApply.isEmpty() )
+        if ( filter == null )
         {
             return;
         }
 
-        BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+        builder.filter( filter );
+    }
+
+    private FilterBuilder createFilter( final List<FilterBuilder> filtersToApply )
+    {
+        if ( filtersToApply.isEmpty() )
+        {
+            return null;
+        }
 
         if ( filtersToApply.size() == 1 )
         {
-            builder.filter( filtersToApply.get( 0 ) );
+            return filtersToApply.get( 0 );
         }
         else
         {
+            BoolFilterBuilder boolFilterBuilder = FilterBuilders.boolFilter();
+
             for ( FilterBuilder filter : filtersToApply )
             {
                 boolFilterBuilder.must( filter );
             }
 
-            builder.filter( boolFilterBuilder );
+            return boolFilterBuilder;
         }
     }
 

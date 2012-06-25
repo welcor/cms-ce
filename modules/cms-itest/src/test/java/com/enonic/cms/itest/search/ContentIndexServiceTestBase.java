@@ -162,6 +162,29 @@ public abstract class ContentIndexServiceTestBase
         return createContentDocument( contentKey, title, new String[][]{{"data/preface", preface}, {"data/textfield", fulltext}} );
     }
 
+    protected ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,
+                                                     int status, String title, String[][] fields )
+    {
+        ContentDocument doc = new ContentDocument( contentKey );
+        doc.setCategoryKey( categoryKey );
+        doc.setContentTypeKey( contentTypeKey );
+        doc.setContentTypeName( "Article" );
+        if ( title != null )
+        {
+            doc.setTitle( title );
+        }
+        if ( fields != null )
+        {
+            for ( String[] field : fields )
+            {
+                doc.addUserDefinedField( field[0], field[1] );
+            }
+        }
+        doc.setStatus( status );
+        doc.setPriority( 0 );
+        return doc;
+    }
+
 
     ContentDocument createContentDocument( int contentKey, String title, String[][] fields )
     {
@@ -185,28 +208,6 @@ public abstract class ContentIndexServiceTestBase
         return doc;
     }
 
-    protected ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,
-                                                     int status, String title, String[][] fields )
-    {
-        ContentDocument doc = new ContentDocument( contentKey );
-        doc.setCategoryKey( categoryKey );
-        doc.setContentTypeKey( contentTypeKey );
-        doc.setContentTypeName( "Article" );
-        if ( title != null )
-        {
-            doc.setTitle( title );
-        }
-        if ( fields != null )
-        {
-            for ( String[] field : fields )
-            {
-                doc.addUserDefinedField( field[0], field[1] );
-            }
-        }
-        doc.setStatus( status );
-        doc.setPriority( 0 );
-        return doc;
-    }
 
     protected void setUpStandardTestValues()
     {

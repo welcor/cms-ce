@@ -13,32 +13,32 @@ public final class AggregatedResultImpl
     /**
      * Count.
      */
-    private final int count;
+    private final double count;
 
     /**
      * Min.
      */
-    private final float minValue;
+    private final double minValue;
 
     /**
      * Max.
      */
-    private final float maxValue;
+    private final double maxValue;
 
     /**
      * Sum.
      */
-    private final float sumValue;
+    private final double sumValue;
 
     /**
      * Average.
      */
-    private final float averageValue;
+    private final double averageValue;
 
     /**
      * Construct the result.
      */
-    public AggregatedResultImpl( int count, float minValue, float maxValue, float sumValue, float averageValue )
+    public AggregatedResultImpl( double count, double minValue, double maxValue, double sumValue, double averageValue )
     {
         this.count = count;
         this.minValue = minValue;
@@ -52,7 +52,7 @@ public final class AggregatedResultImpl
      */
     public int getCount()
     {
-        return this.count;
+        return (int) Math.round( this.count );
     }
 
     /**

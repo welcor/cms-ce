@@ -268,7 +268,6 @@ public class ElasticSearchIndexServiceImpl
         return doSearchRequest( searchRequest );
     }
 
-
     @Override
     public Map<String, GetField> search( String indexName, IndexType indexType, ContentKey contentKey )
     {

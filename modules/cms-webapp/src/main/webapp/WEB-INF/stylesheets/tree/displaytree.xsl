@@ -10,6 +10,14 @@
     <xsl:include href="configs/default.xsl"/>
     <xsl:include href="../common/string.xsl"/>
 
+    <xsl:template match="pageTemplates" mode="sortchildren">
+      <xsl:text>@name</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="contentObjects" mode="sortchildren">
+      <xsl:text>@name</xsl:text>
+    </xsl:template>
+
     <xsl:template match="*" mode="displaytree">
         <xsl:param name="topnode" select="true()"/>
         <xsl:param name="url"/>

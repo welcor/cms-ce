@@ -3,6 +3,7 @@ package com.enonic.cms.core.search.query;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
@@ -48,7 +49,12 @@ public class QueryTranslator_filterCategoryAccessFilterTest
         Collection<GroupKey> securityFilter = getSecurityFilter();
         query.setSecurityFilter( securityFilter );
 
-        filterQueryBuilderFactory.buildFilterQuery( builder, query );
+        final FilterBuilder filterToApply = filterQueryBuilderFactory.buildFilter( query );
+
+        if ( filterToApply != null )
+        {
+            builder.filter( filterToApply );
+        }
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }
@@ -92,7 +98,12 @@ public class QueryTranslator_filterCategoryAccessFilterTest
         Collection<GroupKey> securityFilter = getSecurityFilter();
         query.setSecurityFilter( securityFilter );
 
-        filterQueryBuilderFactory.buildFilterQuery( builder, query );
+        final FilterBuilder filterToApply = filterQueryBuilderFactory.buildFilter( query );
+
+        if ( filterToApply != null )
+        {
+            builder.filter( filterToApply );
+        }
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }
@@ -136,7 +147,12 @@ public class QueryTranslator_filterCategoryAccessFilterTest
         Collection<GroupKey> securityFilter = getSecurityFilter();
         query.setSecurityFilter( securityFilter );
 
-        filterQueryBuilderFactory.buildFilterQuery( builder, query );
+        final FilterBuilder filterToApply = filterQueryBuilderFactory.buildFilter( query );
+
+        if ( filterToApply != null )
+        {
+            builder.filter( filterToApply );
+        }
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }

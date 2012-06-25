@@ -1,5 +1,6 @@
 package com.enonic.cms.core.search.query;
 
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -26,7 +27,13 @@ public class IndexValueQueryTranslator
 
         builder.query( QueryBuilders.matchAllQuery() );
 
-        filterQueryBuilderFactory.buildFilterQuery( builder, query );
+        final FilterBuilder filterToApply = filterQueryBuilderFactory.buildFilter( query );
+
+        if ( filterToApply != null )
+        {
+            builder.filter( filterToApply );
+        }
+
         applySorting( builder, queryField, query.isDescOrder() );
 
         return builder;

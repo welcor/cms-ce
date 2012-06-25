@@ -1,5 +1,6 @@
 package com.enonic.cms.core.search.query;
 
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
@@ -29,7 +30,11 @@ public class QueryTranslator_filterStatusTest
 
         query.setContentStatusFilter( ContentStatus.APPROVED.getKey() );
 
-        filterQueryBuilderFactory.buildFilterQuery( builder, query );
+        final FilterBuilder filterToApply = filterQueryBuilderFactory.buildFilter( query );
+        if ( filterToApply != null )
+        {
+            builder.filter( filterToApply );
+        }
 
         compareStringsIgnoreFormatting( expected, builder.toString() );
     }

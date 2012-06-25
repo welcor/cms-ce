@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.search.query;
 
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -95,7 +96,12 @@ public class QueryTranslator
         builder.query( builtQuery );
 
         applySorting( builder, contentIndexQuery, queryExpr.getOrderBy() );
-        filterQueryBuilderFactory.buildFilterQuery( builder, contentIndexQuery );
+        final FilterBuilder filtersToApply = filterQueryBuilderFactory.buildFilter( contentIndexQuery );
+
+        if ( filtersToApply != null )
+        {
+            builder.filter( filtersToApply );
+        }
 
         return builder;
     }

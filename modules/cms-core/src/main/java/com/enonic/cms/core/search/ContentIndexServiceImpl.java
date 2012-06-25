@@ -385,7 +385,6 @@ public class ContentIndexServiceImpl
         elasticSearchIndexService.flush( CONTENT_INDEX_NAME );
     }
 
-    // TODO: We dont implement this one yet
     public AggregatedResult query( AggregatedQuery query )
     {
         final SearchSourceBuilder builder;

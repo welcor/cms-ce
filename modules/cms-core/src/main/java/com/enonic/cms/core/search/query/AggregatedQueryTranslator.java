@@ -35,11 +35,11 @@ public class AggregatedQueryTranslator
 
     private void applyFilters( final AggregatedQuery query, final StatisticalFacetBuilder facetBuilder )
     {
-        final FilterBuilder filterBuilder = filterQueryBuilderFactory.buildFilterForAggregatedQuery( query );
+        final FilterBuilder filterToApply = filterQueryBuilderFactory.buildFilter( query );
 
-        if ( filterBuilder != null )
+        if ( filterToApply != null )
         {
-            facetBuilder.facetFilter( filterBuilder );
+            facetBuilder.facetFilter( filterToApply );
         }
     }
 

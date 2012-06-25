@@ -45,22 +45,21 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 public class FilterQueryBuilderFactory
     extends BaseQueryBuilderFactory
 {
-
-    public void buildFilterQuery( final SearchSourceBuilder builder, final ContentIndexQuery contentIndexQuery )
+    public FilterBuilder buildFilter( final ContentIndexQuery contentIndexQuery )
     {
-        List<FilterBuilder> filtersToApply = getListOfFiltersToApply( contentIndexQuery );
+        final List<FilterBuilder> filtersToApply = getListOfFiltersToApply( contentIndexQuery );
 
-        doAddFilters( builder, filtersToApply );
+        return createFilter( filtersToApply );
     }
 
-    public void buildFilterQuery( final SearchSourceBuilder builder, final IndexValueQuery query )
+    public FilterBuilder buildFilter( final IndexValueQuery query )
     {
-        List<FilterBuilder> filtersToApply = getListOfFiltersToApply( query );
+        final List<FilterBuilder> filtersToApply = getListOfFiltersToApply( query );
 
-        doAddFilters( builder, filtersToApply );
+        return createFilter( filtersToApply );
     }
 
-    public FilterBuilder buildFilterForAggregatedQuery( final AggregatedQuery query )
+    public FilterBuilder buildFilter( final AggregatedQuery query )
     {
         final List<FilterBuilder> listOfFiltersToApply = getListOfFiltersToApply( query );
 

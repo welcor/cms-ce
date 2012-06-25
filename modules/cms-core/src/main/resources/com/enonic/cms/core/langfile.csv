@@ -1204,7 +1204,7 @@
 %calThu%|tor|Thu|Tor|tor
 %calFri%|fre|Fri|Fre|fre
 %calSat%|lør|Sat|Lør|lör
-%txtDescSupportedImgFormats%|Støttede formater: jpeg (rgb ikke cmyk), gif (uten gjennomsiktighet), png (uten gjennomsiktighet)|Supported formats: jpeg (rgb not cmyk), gif (without transparency), png (without transparency)|Understøttede formater: jpeg (RGB ikke CMYK, gif (uden gennemsigtighed), png (uden gennemsigtighed)|Format som stöds: jpeg (rgb ikke cmyk), gif (utan genomskinlighet), png (utan genomskinlighet)
+%txtDescSupportedImgFormats%|Støttede formater: jpeg (rgb ikke cmyk), gif (uten gjennomsiktighet), png (med og uten gjennomsiktighet) og bmp|Supported formats: jpeg (rgb not cmyk), gif (without transparency), png (with or without transparency) and bmp|Understøttede formater: jpeg (RGB ikke CMYK, gif (uden gennemsigtighed), png (med eller uden gennemsigtighed) og bmp|Format som stöds: jpeg (rgb ikke cmyk), gif (utan genomskinlighet), png (med eller utan genomskinlighet) och bmp
 %txtInUseBy%|er i bruk følgende steder|is used in the following places|er i brug følgende steder|används följande platser
 %txtContentIsPlacedOnTheFollowingPages%|Plassert på følgende sider|Placed on the following pages|Placeret på følgende sider|Placerat på följande sidor
 %txtContentIsNotPlacedOnAnyPages%|Innholdet er ikke plassert på noen sider.|The content is not located on any pages.|Indholdet er ikke placeret på nogle sider.|Innehålet är inte placerat på någon sida
@@ -1240,14 +1240,14 @@
 %fldResourcePathToPublicHome%|Sti til offentlige ressurser|Path to public resources|Sti til offentlige ressourcer|Sökväg till offentliga resurser
 %fldResourcePathToHome%|Sti til interne ressurser|Path to internal resources|Sti til interne ressourcer|Sökväg till interna resurser
 %msgTimeCanNotBeSetWithoutDate%|Tid kan ikke spesifiseres uten at en dato er satt.|Time can not be specified without a date.|Tid kan ikke specificeres uden en dato er valgt|Tid kan inte specificeras utan att datum är satt
-%msgNotValidImageFileType%|Ugyldig fil-ekstensjon! Må være jpg, jpeg, png eller gif.|Invalid file extension! Must be jpg, jpeg, png or gif.|Ugyldigt fil-endelse! Skal være jpg, jpeg, png eller gif.|Ogiltig fil-ändelse! Måste vara jpg, jpeg, png eller gif.
+%msgNotValidImageFileType%|Ugyldig fil-forlengelse! Må være jpg, jpeg, png, gif eller bmp.|Invalid file extension! Must be jpg, jpeg, png, gif or bmp.|Ugyldigt fil-endelse! Skal være jpg, jpeg, png, gif eller bmp.|Ogiltig fil-ändelse! Måste vara jpg, jpeg, png, gif eller bmp.
 %fldDefaultUser%|Standard bruker|Default user|Standardbruger|Standard användare
 %fldPersonalized%|Personifisert (Innlogget bruker)|Personalized (Logged in user)|Personliggjort (Indlogget bruger)|Personifierad (Innloggad användare)
 %fldInheritFromPage%|Arv fra side|Inherit from page|Arv fra side|Ärv från sida
 %fldInherit%|Arv|Inherit|Arv|Ärv
 %fldInheritFromPageTemplateSite%|Arv fra sidemal/nettsted|Inherit from page template/site|Arv fra skabelon/hjemmeside|Ärv från sidmall/nätsida
 %txtNoDefaultUserSetOnSite%|Ingen bruker konfigurert. Dette nettstedet er personifisert.|No user configured. This site is personalized.|Ingen bruger konfigureret. Denne hjemmeside er personliggjort.|Ingen användare konfigurerad. Denna nätsida är personifierad.
-%alertImagesIsNotAllowedAsAttachment%|Kan ikke sette inn fil av type bilde (jpg, gif eller png)|Can not insert file of type image (jpg, gif or png)|Kan ikke indsætte fil af type “billede” (jpg, gif, eller png)|Kan inte infoga fil av bildtyp (jpg, gif eller png)
+%alertImagesIsNotAllowedAsAttachment%|Kan ikke sette inn fil av type bilde (jpeg, gif, png eller bmp)|Can not insert file of type image (jpeg, gif, png or bmp)|Kan ikke indsætte fil af type “billede” (jpeg, gif, png eller bmp)|Kan inte infoga fil av bildtyp (jpeg, gif, png eller bmp)
 %cmdMaximizeTable%|Maksimer tabell|Maximize table|Maksimér tabel|Maximera tabell
 %cmdMinimizeTable%|Minimer tabell|Minimize table|Minimér tabel|Minimera tabell
 %blockUser%|Bruker|User|Bruger|Användare

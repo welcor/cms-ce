@@ -18,7 +18,6 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.content.index.ContentIndexConstants;
 import com.enonic.cms.core.content.index.FieldHelper;
-import com.enonic.cms.core.content.index.util.ValueConverter;
 import com.enonic.cms.core.search.ContentIndexedFields;
 
 /**
@@ -84,7 +83,7 @@ public final class ContentIndexFieldSet
     {
 
         fieldName = FieldHelper.translateFieldName( fieldName );
-        addSingleEntity( fieldName, ValueConverter.toString( value ), value );
+        addSingleEntity( fieldName, IndexValueConverter.toString( value ), value );
     }
 
     public void addFieldWithStringValue( String fieldName, String value )
@@ -116,7 +115,7 @@ public final class ContentIndexFieldSet
         else
         {
             fieldName = FieldHelper.translateFieldName( fieldName );
-            addSingleEntity( fieldName, ValueConverter.toString( value ), value );
+            addSingleEntity( fieldName, IndexValueConverter.toString( value ), value );
         }
     }
 
@@ -168,9 +167,9 @@ public final class ContentIndexFieldSet
         }
         else
         {
-            ReadableDateTime dateTime = ValueConverter.toDate( value );
+            ReadableDateTime dateTime = IndexValueConverter.toDate( value );
 
-            Double num = ValueConverter.toDouble( value );
+            Double num = IndexValueConverter.toDouble( value );
 
             if ( dateTime != null )
             {
@@ -201,12 +200,12 @@ public final class ContentIndexFieldSet
 
     private void addSingleEntity( String fieldName, String value, Date orderValue )
     {
-        addSingleEntity( fieldName, value, ValueConverter.toTypedString( orderValue ), null );
+        addSingleEntity( fieldName, value, IndexValueConverter.toTypedString( orderValue ), null );
     }
 
     private void addSingleEntity( String fieldName, String value, float orderValue )
     {
-        addSingleEntity( fieldName, value, ValueConverter.toTypedString( orderValue ), orderValue );
+        addSingleEntity( fieldName, value, IndexValueConverter.toTypedString( orderValue ), orderValue );
     }
 
     private void addSingleEntity( String fieldName, String value, String orderValue, Float numValue )

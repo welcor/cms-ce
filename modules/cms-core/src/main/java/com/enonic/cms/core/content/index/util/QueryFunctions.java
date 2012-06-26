@@ -15,6 +15,7 @@ import com.enonic.cms.core.content.index.queryexpression.ArrayExpr;
 import com.enonic.cms.core.content.index.queryexpression.FunctionExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryParserException;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
+import com.enonic.cms.core.search.query.IndexValueConverter;
 
 /**
  * This class defines the query functions.
@@ -196,6 +197,6 @@ public final class QueryFunctions
      */
     public static ReadableDateTime date( String value )
     {
-        return ValueConverter.toDate( value );
+        return IndexValueConverter.toDate( value );
     }
 }

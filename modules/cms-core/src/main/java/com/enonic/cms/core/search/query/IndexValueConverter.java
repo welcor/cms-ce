@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.content.index.util;
+package com.enonic.cms.core.search.query;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,7 +18,7 @@ import org.joda.time.format.ISODateTimeFormat;
 /**
  * This class implements the index value.
  */
-public final class ValueConverter
+public final class IndexValueConverter
 {
 
     private static final long SIGN_MASK = 0x8000000000000000L;
@@ -46,7 +46,7 @@ public final class ValueConverter
     /**
      * Private constructor.
      */
-    private ValueConverter()
+    private IndexValueConverter()
     {
     }
 

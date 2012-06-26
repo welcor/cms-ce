@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.joda.time.ReadableDateTime;
 
-import com.enonic.cms.core.content.index.util.ValueConverter;
+import com.enonic.cms.core.search.query.IndexValueConverter;
 
 public class ContentIndexDateValueResolver
 {
@@ -15,7 +15,7 @@ public class ContentIndexDateValueResolver
             return null;
         }
 
-        ReadableDateTime date = ValueConverter.toDate( value.toString() );
+        ReadableDateTime date = IndexValueConverter.toDate( value.toString() );
 
         if ( date == null )
         {

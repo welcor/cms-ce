@@ -18,7 +18,6 @@ import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.RangeFilterBuilder;
 import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.index.query.TermsFilterBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
@@ -30,9 +29,8 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.AggregatedQuery;
+import com.enonic.cms.core.content.index.AbstractQuery;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.search.query.QueryFieldAndMultipleValues;
 import com.enonic.cms.core.search.query.QueryFieldAndValue;
 import com.enonic.cms.core.search.query.QueryFieldFactory;
@@ -52,18 +50,11 @@ public class FilterQueryBuilderFactory
         return createFilter( filtersToApply );
     }
 
-    public FilterBuilder buildFilter( final IndexValueQuery query )
+    public FilterBuilder buildFilter( final AbstractQuery query )
     {
         final List<FilterBuilder> filtersToApply = getListOfFiltersToApply( query );
 
         return createFilter( filtersToApply );
-    }
-
-    public FilterBuilder buildFilter( final AggregatedQuery query )
-    {
-        final List<FilterBuilder> listOfFiltersToApply = getListOfFiltersToApply( query );
-
-        return createFilter( listOfFiltersToApply );
     }
 
     private List<FilterBuilder> getListOfFiltersToApply( final ContentIndexQuery query )
@@ -123,7 +114,7 @@ public class FilterQueryBuilderFactory
         return filtersToApply;
     }
 
-    private List<FilterBuilder> getListOfFiltersToApply( final IndexValueQuery query )
+    private List<FilterBuilder> getListOfFiltersToApply( final AbstractQuery query )
     {
         List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
 
@@ -144,42 +135,6 @@ public class FilterQueryBuilderFactory
         }
 
         return filtersToApply;
-    }
-
-    private List<FilterBuilder> getListOfFiltersToApply( final AggregatedQuery query )
-    {
-        List<FilterBuilder> filtersToApply = new ArrayList<FilterBuilder>();
-
-        if ( query.hasCategoryFilter() )
-        {
-            filtersToApply.add( buildCategoryFilter( query.getCategoryFilter() ) );
-        }
-
-        if ( query.hasContentTypeFilter() )
-        {
-            filtersToApply.add( buildContentTypeFilter( query.getContentTypeFilter() ) );
-        }
-
-        if ( query.hasSecurityFilter() )
-        {
-            final FilterBuilder securityFilter = buildSecurityFilter( query.getSecurityFilter() );
-            filtersToApply.add( securityFilter );
-        }
-
-        return filtersToApply;
-    }
-
-
-    private void doAddFilters( final SearchSourceBuilder builder, final List<FilterBuilder> filtersToApply )
-    {
-        final FilterBuilder filter = createFilter( filtersToApply );
-
-        if ( filter == null )
-        {
-            return;
-        }
-
-        builder.filter( filter );
     }
 
     private FilterBuilder createFilter( final List<FilterBuilder> filtersToApply )

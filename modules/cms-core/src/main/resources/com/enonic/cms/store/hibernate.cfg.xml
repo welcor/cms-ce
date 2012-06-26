@@ -20,7 +20,6 @@
     <mapping resource="com/enonic/cms/store/entity/ContentEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/ContentHandlerEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/ContentHomeEntity.hbm.xml"/>
-    <mapping resource="com/enonic/cms/store/entity/ContentIndexEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/PortletEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/ContentTypeEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/ContentVersionEntity.hbm.xml"/>

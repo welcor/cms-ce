@@ -44,7 +44,6 @@
                 <value>classpath:/com/enonic/cms/store/entity/BinaryDataEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/ContentEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/RelatedContentEntity.hbm.xml</value>
-                <value>classpath:/com/enonic/cms/store/entity/ContentIndexEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/ContentAccessEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/ContentHomeEntity.hbm.xml</value>
                 <value>classpath:/com/enonic/cms/store/entity/ContentVersionEntity.hbm.xml</value>

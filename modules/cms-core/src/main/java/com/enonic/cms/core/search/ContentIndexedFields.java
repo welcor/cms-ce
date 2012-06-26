@@ -1,20 +1,16 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.core.content;
+package com.enonic.cms.core.search;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 
-public class ContentIndexEntity
+public class ContentIndexedFields
     implements Serializable
 {
-
     private String key;
 
     private ContentKey contentKey;
@@ -152,7 +148,7 @@ public class ContentIndexEntity
         return contentPublishTo;
     }
 
-    public boolean valueEquals( ContentIndexEntity other )
+    public boolean valueEquals( ContentIndexedFields other )
     {
         if ( this == other )
         {
@@ -268,12 +264,12 @@ public class ContentIndexEntity
         {
             return true;
         }
-        if ( !( o instanceof ContentIndexEntity ) )
+        if ( !( o instanceof ContentIndexedFields ) )
         {
             return false;
         }
 
-        ContentIndexEntity that = (ContentIndexEntity) o;
+        ContentIndexedFields that = (ContentIndexedFields) o;
 
         return key.equals( that.getKey() );
     }

@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.get.GetField;
 import org.joda.time.DateTime;
 
-import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -27,7 +26,7 @@ import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.STATUS_
 public class ElasticSearchIndexedFieldsTranslator
 {
 
-    public List<ContentIndexEntity> generateContentIndexFieldSet( ContentKey contentKey, Map<String, GetField> fields )
+    public List<ContentIndexedFields> generateContentIndexFieldSet( ContentKey contentKey, Map<String, GetField> fields )
     {
         if ( fields.isEmpty() )
         {

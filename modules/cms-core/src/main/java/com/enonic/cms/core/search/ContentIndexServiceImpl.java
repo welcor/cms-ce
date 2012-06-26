@@ -26,7 +26,6 @@ import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
 import com.enonic.cms.core.content.ContentEntityFetcherImpl;
-import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -440,7 +439,7 @@ public class ContentIndexServiceImpl
     }
 
     @Override
-    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
+    public Collection<ContentIndexedFields> getContentIndexedFields( ContentKey contentKey )
     {
         final Map<String, GetField> contentFields = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
         final Map<String, GetField> binaryFields = elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Binaries, contentKey );

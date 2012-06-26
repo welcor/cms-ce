@@ -12,11 +12,11 @@ import java.util.UUID;
 
 import org.joda.time.ReadableDateTime;
 
-import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.util.ValueConverter;
+import com.enonic.cms.core.search.ContentIndexedFields;
 
 /**
  * This class implements the field set.
@@ -43,9 +43,9 @@ public final class ContentIndexFieldSet
 
     private Date publishTo;
 
-    private final ArrayList<ContentIndexEntity> entities = new ArrayList<ContentIndexEntity>();
+    private final ArrayList<ContentIndexedFields> contentIndexedFields = new ArrayList<ContentIndexedFields>();
 
-    private final HashMap<String, List<ContentIndexEntity>> entitiesByPath = new HashMap<String, List<ContentIndexEntity>>();
+    private final HashMap<String, List<ContentIndexedFields>> contentIndexedFieldsByPath = new HashMap<String, List<ContentIndexedFields>>();
 
     public void setKey( ContentKey key )
     {
@@ -186,14 +186,14 @@ public final class ContentIndexFieldSet
         }
     }
 
-    public List<ContentIndexEntity> getEntitites()
+    public List<ContentIndexedFields> getEntitites()
     {
-        return this.entities;
+        return this.contentIndexedFields;
     }
 
-    public HashMap<String, List<ContentIndexEntity>> getEntitiesByPath()
+    public HashMap<String, List<ContentIndexedFields>> getContentIndexedFieldsByPath()
     {
-        return entitiesByPath;
+        return contentIndexedFieldsByPath;
     }
 
     private void addSingleEntity( String fieldName, String value, Date orderValue )
@@ -214,7 +214,7 @@ public final class ContentIndexFieldSet
             throw new IllegalArgumentException( "Given value cannot be null or empty, fieldName was: " + fieldName );
         }
 
-        ContentIndexEntity contentIndex = new ContentIndexEntity();
+        ContentIndexedFields contentIndex = new ContentIndexedFields();
         contentIndex.setKey( generateKey() );
         contentIndex.setContentKey( key );
         contentIndex.setContentStatus( status );
@@ -232,7 +232,7 @@ public final class ContentIndexFieldSet
         }
 
         contentIndex.setOrderValue( orderValue.toLowerCase() );
-        this.entities.add( contentIndex );
+        this.contentIndexedFields.add( contentIndex );
         addEntityByPath( fieldName, contentIndex );
     }
 
@@ -241,14 +241,14 @@ public final class ContentIndexFieldSet
         super();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    private void addEntityByPath( String fieldName, ContentIndexEntity contentIndex )
+    private void addEntityByPath( String fieldName, ContentIndexedFields contentIndex )
     {
-        List<ContentIndexEntity> existing = entitiesByPath.get( fieldName );
+        List<ContentIndexedFields> existing = contentIndexedFieldsByPath.get( fieldName );
         if ( existing == null )
         {
-            List<ContentIndexEntity> newList = new ArrayList<ContentIndexEntity>();
+            List<ContentIndexedFields> newList = new ArrayList<ContentIndexedFields>();
             newList.add( contentIndex );
-            entitiesByPath.put( fieldName, newList );
+            contentIndexedFieldsByPath.put( fieldName, newList );
         }
         else
         {

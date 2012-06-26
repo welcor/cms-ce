@@ -21,6 +21,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.index.ContentIndexConstants;
 import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.search.ContentIndexedFields;
 
 /**
  * This class is used for admin to build xml for extended info such as index values and content data.
@@ -110,8 +111,8 @@ public final class ContentSourceXmlCreator
     private Map<String, List<String>> getIndexValues( ContentKey key )
     {
         final HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-        final Collection<ContentIndexEntity> entities = contentIndexService.getContentIndexedFields( key );
-        for ( ContentIndexEntity entity : entities )
+        final Collection<ContentIndexedFields> entities = contentIndexService.getContentIndexedFields( key );
+        for ( ContentIndexedFields entity : entities )
         {
             String name = translatePath( entity.getPath() );
 

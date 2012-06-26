@@ -7,11 +7,11 @@ package com.enonic.cms.core.content.index;
 import java.util.Collection;
 import java.util.List;
 
-import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.ContentIndexedFields;
 import com.enonic.cms.core.search.IndexType;
 
 /**
@@ -76,7 +76,7 @@ public interface ContentIndexService
 
     public void initializeMapping();
 
-    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey );
+    public Collection<ContentIndexedFields> getContentIndexedFields( ContentKey contentKey );
 }
 
 

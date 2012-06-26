@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.content.ContentIndexEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -17,6 +16,7 @@ import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.IndexValueQuery;
 import com.enonic.cms.core.content.index.IndexValueResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.ContentIndexedFields;
 import com.enonic.cms.core.search.IndexType;
 
 /**
@@ -106,7 +106,7 @@ public class ContentIndexServiceTestWrapper
     }
 
     @Override
-    public Collection<ContentIndexEntity> getContentIndexedFields( ContentKey contentKey )
+    public Collection<ContentIndexedFields> getContentIndexedFields( ContentKey contentKey )
     {
         return contentIndexService.getContentIndexedFields( contentKey );
     }

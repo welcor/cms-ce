@@ -23,7 +23,7 @@ public final class DatabaseAccessor
 
     // NOTE: Must reflect the latest database.xml file
 
-    private final static int latestModelNumber = 202;
+    private final static int latestModelNumber = 203;
 
     private static Map<Integer, Database> cache = new HashMap<Integer, Database>();
 

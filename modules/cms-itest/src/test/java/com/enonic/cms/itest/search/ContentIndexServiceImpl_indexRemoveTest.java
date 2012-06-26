@@ -15,8 +15,8 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.BigText;
-import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.search.IndexType;
+import com.enonic.cms.core.search.query.ContentDocument;
 
 import static org.junit.Assert.*;
 

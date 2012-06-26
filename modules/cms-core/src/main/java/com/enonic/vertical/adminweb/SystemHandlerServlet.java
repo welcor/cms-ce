@@ -29,14 +29,12 @@ import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.config.ConfigProperties;
-import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.product.ProductVersion;
+import com.enonic.cms.core.search.query.ContentIndexService;
+import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
-
-import com.enonic.cms.core.portal.cache.SiteCachesService;
-
-import com.enonic.cms.core.security.user.User;
 
 /**
  *

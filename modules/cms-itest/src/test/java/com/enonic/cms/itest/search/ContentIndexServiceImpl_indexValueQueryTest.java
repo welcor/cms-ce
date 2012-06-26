@@ -9,8 +9,8 @@ import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.IndexValueQuery;
-import com.enonic.cms.core.content.index.IndexValueResultSet;
+import com.enonic.cms.core.search.query.IndexValueQuery;
+import com.enonic.cms.core.search.query.IndexValueResultSet;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;

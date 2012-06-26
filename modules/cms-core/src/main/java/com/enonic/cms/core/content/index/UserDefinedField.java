@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.content.index;
 
+import com.enonic.cms.core.search.query.SimpleText;
+
 public final class UserDefinedField
 {
     private final String name;

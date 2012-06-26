@@ -5,7 +5,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.statistical.StatisticalFacetBuilder;
 
-import com.enonic.cms.core.content.index.AggregatedQuery;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 
 public class AggregatedQueryTranslator

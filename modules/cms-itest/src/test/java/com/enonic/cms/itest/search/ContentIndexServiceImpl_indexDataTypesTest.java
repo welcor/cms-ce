@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.ContentDocument;
+import com.enonic.cms.core.search.query.ContentDocument;
 
 public class ContentIndexServiceImpl_indexDataTypesTest
     extends ContentIndexServiceTestBase

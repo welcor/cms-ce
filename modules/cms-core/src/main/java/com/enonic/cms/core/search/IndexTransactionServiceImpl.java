@@ -13,9 +13,9 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
+import com.enonic.cms.core.search.query.ContentDocument;
 import com.enonic.cms.store.dao.ContentDao;
 
 @Service

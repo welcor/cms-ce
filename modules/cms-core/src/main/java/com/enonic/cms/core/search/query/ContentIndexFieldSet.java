@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.content.index;
+package com.enonic.cms.core.search.query;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +15,9 @@ import org.joda.time.ReadableDateTime;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.BigText;
+import com.enonic.cms.core.content.index.ContentIndexConstants;
+import com.enonic.cms.core.content.index.FieldHelper;
 import com.enonic.cms.core.content.index.util.ValueConverter;
 import com.enonic.cms.core.search.ContentIndexedFields;
 

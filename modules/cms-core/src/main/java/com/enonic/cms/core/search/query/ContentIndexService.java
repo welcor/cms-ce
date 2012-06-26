@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.content.index;
+package com.enonic.cms.core.search.query;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +10,7 @@ import java.util.List;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.ContentIndexedFields;
 import com.enonic.cms.core.search.IndexType;

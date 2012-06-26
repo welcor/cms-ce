@@ -8,8 +8,8 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
+import com.enonic.cms.core.search.query.SimpleText;
 
 /**
  * Created by IntelliJ IDEA.

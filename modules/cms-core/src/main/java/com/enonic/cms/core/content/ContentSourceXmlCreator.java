@@ -20,8 +20,8 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.index.ContentIndexConstants;
-import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.search.ContentIndexedFields;
+import com.enonic.cms.core.search.query.ContentIndexService;
 
 /**
  * This class is used for admin to build xml for extended info such as index values and content data.

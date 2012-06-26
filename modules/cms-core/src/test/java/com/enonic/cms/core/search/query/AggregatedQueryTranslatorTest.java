@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.AggregatedQuery;
 
 public class AggregatedQueryTranslatorTest
     extends QueryTranslatorTestBase

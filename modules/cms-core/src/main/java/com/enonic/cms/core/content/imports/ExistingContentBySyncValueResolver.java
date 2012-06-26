@@ -16,13 +16,13 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.CtyImportConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.content.index.ContentIndexService;
-import com.enonic.cms.core.content.index.IndexValueQuery;
-import com.enonic.cms.core.content.index.IndexValueResult;
-import com.enonic.cms.core.content.index.IndexValueResultSet;
 import com.enonic.cms.core.content.index.config.IndexDefinition;
 import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.query.ContentIndexService;
+import com.enonic.cms.core.search.query.IndexValueQuery;
+import com.enonic.cms.core.search.query.IndexValueResult;
+import com.enonic.cms.core.search.query.IndexValueResultSet;
 
 public class ExistingContentBySyncValueResolver
 {

@@ -6,7 +6,7 @@ package com.enonic.cms.core.content;
 
 import java.util.List;
 
-import com.enonic.cms.core.content.index.ContentDocument;
+import com.enonic.cms.core.search.query.ContentDocument;
 
 /**
  *

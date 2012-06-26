@@ -21,9 +21,9 @@ import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.CtyFormConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
-import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
+import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
 import static org.easymock.EasyMock.createMock;

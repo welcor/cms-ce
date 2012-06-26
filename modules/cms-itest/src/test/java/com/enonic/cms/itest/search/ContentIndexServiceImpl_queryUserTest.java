@@ -2,8 +2,8 @@ package com.enonic.cms.itest.search;
 
 import org.junit.Test;
 
-import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.search.query.ContentDocument;
 
 /**
  * Created by IntelliJ IDEA.

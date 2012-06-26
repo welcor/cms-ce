@@ -8,16 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.AggregatedQuery;
-import com.enonic.cms.core.content.index.AggregatedResult;
-import com.enonic.cms.core.content.index.ContentDocument;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.content.index.ContentIndexService;
-import com.enonic.cms.core.content.index.IndexValueQuery;
-import com.enonic.cms.core.content.index.IndexValueResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.ContentIndexedFields;
 import com.enonic.cms.core.search.IndexType;
+import com.enonic.cms.core.search.query.AggregatedQuery;
+import com.enonic.cms.core.search.query.AggregatedResult;
+import com.enonic.cms.core.search.query.ContentDocument;
+import com.enonic.cms.core.search.query.ContentIndexService;
+import com.enonic.cms.core.search.query.IndexValueQuery;
+import com.enonic.cms.core.search.query.IndexValueResultSet;
 
 /**
  * Created by IntelliJ IDEA.

@@ -15,9 +15,9 @@ import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.index.BigText;
-import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.UserDefinedField;
+import com.enonic.cms.core.search.query.ContentDocument;
+import com.enonic.cms.core.search.query.SimpleText;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 

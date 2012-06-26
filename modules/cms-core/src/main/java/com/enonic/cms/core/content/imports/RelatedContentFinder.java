@@ -30,10 +30,10 @@ import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 import com.enonic.cms.core.content.imports.sourcevalueholders.AbstractSourceValue;
 import com.enonic.cms.core.content.imports.sourcevalueholders.StringArraySourceValue;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.content.index.ContentIndexService;
 import com.enonic.cms.core.content.index.config.IndexDefinition;
 import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
 public class RelatedContentFinder

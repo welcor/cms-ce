@@ -11,7 +11,7 @@ import org.joda.time.DateTime;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.ContentIndexFieldSet;
+import com.enonic.cms.core.search.query.ContentIndexFieldSet;
 
 import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.ALL_USERDATA_FIELDNAME;
 import static com.enonic.cms.core.search.builder.IndexFieldNameConstants.CATEGORY_KEY_FIELDNAME;

@@ -22,7 +22,7 @@ import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.CtyImportConfig;
 import com.enonic.cms.core.content.contenttype.CtyImportPurgeConfig;
-import com.enonic.cms.core.content.index.ContentIndexService;
+import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
 

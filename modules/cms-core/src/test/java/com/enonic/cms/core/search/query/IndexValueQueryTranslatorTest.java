@@ -3,8 +3,6 @@ package com.enonic.cms.core.search.query;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
-import com.enonic.cms.core.content.index.IndexValueQuery;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rmh

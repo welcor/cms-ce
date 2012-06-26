@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.content.index;
+package com.enonic.cms.core.search.query;
 
 /**
  * This class implements the index value query.

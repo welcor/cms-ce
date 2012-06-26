@@ -530,11 +530,6 @@ public class AdminServiceImpl
         return adminEngine.isUserStoreAdmin( user, userStoreKey );
     }
 
-    public void moveCategory( User user, int catKey, int superCatKey )
-    {
-        adminEngine.moveCategory( user, catKey, superCatKey );
-    }
-
     public XMLDocument getMenu( User user, CategoryCriteria criteria )
     {
         return adminEngine.getMenu( user, criteria );

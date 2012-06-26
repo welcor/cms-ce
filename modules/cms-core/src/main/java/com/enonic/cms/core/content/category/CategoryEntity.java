@@ -154,6 +154,16 @@ public class CategoryEntity
         }
     }
 
+    public void setUnitOnDescendants( UnitEntity unit )
+    {
+        setUnit( unit );
+
+        for ( CategoryEntity child : children )
+        {
+            child.setUnitOnDescendants( unit );
+        }
+    }
+
     public ContentTypeEntity getContentType()
     {
         return contentType;
@@ -181,6 +191,11 @@ public class CategoryEntity
             children = new ArrayList<CategoryEntity>();
         }
         children.add( child );
+    }
+
+    public void removeChild( CategoryEntity child )
+    {
+        this.children.remove( child );
     }
 
     public boolean hasChildren()
@@ -275,6 +290,11 @@ public class CategoryEntity
         }
 
         return false;
+    }
+
+    public boolean isSubCategoryOf( CategoryEntity category )
+    {
+        return parent != null && ( parent.getKey().equals( category.getKey() ) || parent.isSubCategoryOf( category ) );
     }
 
     public Set<ContentEntity> getContents()

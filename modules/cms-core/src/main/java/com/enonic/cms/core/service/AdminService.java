@@ -207,8 +207,6 @@ public interface AdminService
 
     public boolean isUserStoreAdmin( User user, UserStoreKey userStoreKey );
 
-    public void moveCategory( User user, int catKey, int superCatKey );
-
     public XMLDocument getMenu( User user, CategoryCriteria criteria );
 
     public XMLDocument getPath( User user, int type, int key );

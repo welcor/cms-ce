@@ -4,25 +4,6 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.security.group.GroupType;
-import com.enonic.cms.core.security.user.QualifiedUsername;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-import com.enonic.cms.framework.util.UUIDGenerator;
-import com.enonic.esl.sql.model.Column;
-import com.enonic.esl.sql.model.Table;
-import com.enonic.esl.util.ArrayUtil;
-import com.enonic.esl.util.StringUtil;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.engine.*;
-import com.enonic.vertical.engine.dbmodel.*;
-import com.google.common.collect.Sets;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,6 +11,42 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import com.google.common.collect.Sets;
+
+import com.enonic.esl.sql.model.Column;
+import com.enonic.esl.sql.model.Table;
+import com.enonic.esl.util.ArrayUtil;
+import com.enonic.esl.util.StringUtil;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.engine.AccessRight;
+import com.enonic.vertical.engine.CategoryAccessRight;
+import com.enonic.vertical.engine.ContentAccessRight;
+import com.enonic.vertical.engine.MenuAccessRight;
+import com.enonic.vertical.engine.MenuItemAccessRight;
+import com.enonic.vertical.engine.VerticalCreateException;
+import com.enonic.vertical.engine.VerticalEngineLogger;
+import com.enonic.vertical.engine.VerticalRemoveException;
+import com.enonic.vertical.engine.XDG;
+import com.enonic.vertical.engine.dbmodel.CatAccessRightView;
+import com.enonic.vertical.engine.dbmodel.ConAccessRightView;
+import com.enonic.vertical.engine.dbmodel.ContentView;
+import com.enonic.vertical.engine.dbmodel.MenuARView;
+import com.enonic.vertical.engine.dbmodel.MenuItemARView;
+import com.enonic.vertical.engine.dbmodel.SectionContentView;
+
+import com.enonic.cms.framework.util.UUIDGenerator;
+
+import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.user.QualifiedUsername;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 final public class SecurityHandler
     extends BaseHandler
@@ -147,10 +164,6 @@ final public class SecurityHandler
     private final static String CAR_WHERE_CLAUSE_CAT = " car_cat_lKey = ?";
 
     private final static String CAR_WHERE_CLAUSE_GROUP_IN = " grp_hKey IN ";
-
-    private final static String CAR_WHERE_CLAUSE_CREATE = " car_bAdministrate = 1";
-
-    private final static String CAR_WHERE_CLAUSE_REMOVE = " car_bAdministrate = 1";
 
     private final static String CAR_WHERE_CLAUSE_UPDATE = " car_bAdministrate = 1";
 
@@ -301,8 +314,9 @@ final public class SecurityHandler
                 }
                 if ( childElement != null )
                 {
-                    appendMenuItemAccessRights( user, doc, XMLTool.filterNodes( childElement.getChildNodes(), Node.ELEMENT_NODE ), con,
-                                                preparedStmt, includeAccessRights, includeUserRights );
+                    appendMenuItemAccessRights( user, doc,
+                                                XMLTool.filterNodes( childElement.getChildNodes(), Node.ELEMENT_NODE ),
+                                                con, preparedStmt, includeAccessRights, includeUserRights );
                 }
             }
         }
@@ -358,7 +372,8 @@ final public class SecurityHandler
                 // append accessrights for this category
                 Document doc = categoryElem.getOwnerDocument();
                 Element accessrightsElement = XMLTool.createElement( doc, categoryElem, "accessrights" );
-                appendCategoryAccessRight( user, accessrightsElement, categoryKey, preparedStmt, includeAccessRights, includeUserRights );
+                appendCategoryAccessRight( user, accessrightsElement, categoryKey, preparedStmt, includeAccessRights,
+                                           includeUserRights );
 
                 // for each category, we must also loop through its children
                 Element categoriesElement = XMLTool.getElement( categoryElem, "categories" );
@@ -838,7 +853,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to create access rights: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         finally
         {
@@ -2477,149 +2492,6 @@ final public class SecurityHandler
         return result;
     }
 
-    public boolean validateCategoryCreate( User user, CategoryKey superCategoryKey )
-    {
-
-        if ( user.isEnterpriseAdmin() )
-        {
-            return true;
-        }
-
-        GroupHandler groupHandler = getGroupHandler();
-        String[] groups = groupHandler.getAllGroupMembershipsForUser( user );
-        Arrays.sort( groups );
-
-        if ( isSiteAdmin( user, groups ) )
-        {
-            return true;
-        }
-
-        if ( superCategoryKey != null )
-        {
-            StringBuffer sql = new StringBuffer( CAR_SELECT );
-            sql.append( " WHERE" );
-            sql.append( CAR_WHERE_CLAUSE_CAT );
-            sql.append( " AND" );
-            sql.append( CAR_WHERE_CLAUSE_CREATE );
-            sql.append( " AND" );
-            sql.append( CAR_WHERE_CLAUSE_GROUP_IN );
-            sql.append( "(" );
-            for ( int i = 0; i < groups.length; ++i )
-            {
-                if ( i > 0 )
-                {
-                    sql.append( "," );
-                }
-                sql.append( "'" );
-                sql.append( groups[i] );
-                sql.append( "'" );
-            }
-            sql.append( ")" );
-
-            Connection con = null;
-            PreparedStatement preparedStmt = null;
-            ResultSet resultSet = null;
-            boolean result = false;
-
-            try
-            {
-                con = getConnection();
-                preparedStmt = con.prepareStatement( sql.toString() );
-                preparedStmt.setInt( 1, superCategoryKey.toInt() );
-                resultSet = preparedStmt.executeQuery();
-
-                if ( resultSet.next() )
-                {
-                    result = true;
-                }
-            }
-            catch ( SQLException sqle )
-            {
-                String message = "Failed to validate category create: %t";
-                VerticalEngineLogger.error(message, sqle );
-            }
-            finally
-            {
-                close( resultSet );
-                close( preparedStmt );
-            }
-
-            return result;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public boolean validateCategoryRemove( User user, CategoryKey superCategoryKey )
-    {
-
-        if ( user.isEnterpriseAdmin() )
-        {
-            return true;
-        }
-
-        GroupHandler groupHandler = getGroupHandler();
-        String[] groups = groupHandler.getAllGroupMembershipsForUser( user );
-        Arrays.sort( groups );
-
-        if ( isSiteAdmin( user, groups ) )
-        {
-            return true;
-        }
-
-        StringBuffer sql = new StringBuffer( CAR_SELECT );
-        sql.append( " WHERE" );
-        sql.append( CAR_WHERE_CLAUSE_CAT );
-        sql.append( " AND" );
-        sql.append( CAR_WHERE_CLAUSE_REMOVE );
-        sql.append( " AND" );
-        sql.append( CAR_WHERE_CLAUSE_GROUP_IN );
-        sql.append( "(" );
-        for ( int i = 0; i < groups.length; ++i )
-        {
-            if ( i > 0 )
-            {
-                sql.append( "," );
-            }
-            sql.append( "'" );
-            sql.append( groups[i] );
-            sql.append( "'" );
-        }
-        sql.append( ")" );
-
-        Connection con = null;
-        PreparedStatement preparedStmt = null;
-        ResultSet resultSet = null;
-        boolean result = false;
-
-        try
-        {
-            con = getConnection();
-            preparedStmt = con.prepareStatement( sql.toString() );
-            preparedStmt.setInt( 1, superCategoryKey.toInt() );
-            resultSet = preparedStmt.executeQuery();
-
-            if ( resultSet.next() )
-            {
-                result = true;
-            }
-        }
-        catch ( SQLException sqle )
-        {
-            String message = "Failed to validate category create: %t";
-            VerticalEngineLogger.error(message, sqle );
-        }
-        finally
-        {
-            close( resultSet );
-            close( preparedStmt );
-        }
-
-        return result;
-    }
-
     public boolean validateCategoryUpdate( User user, CategoryKey categoryKey )
     {
 
@@ -2926,66 +2798,6 @@ final public class SecurityHandler
         catch ( SQLException e )
         {
             VerticalEngineLogger.error("A database error occurred: %t", e );
-        }
-        finally
-        {
-            close( resultSet );
-            close( preparedStmt );
-        }
-    }
-
-    public void inheritCategoryAccessRights( int superCategoryKey, CategoryKey categoryKey )
-    {
-
-        Connection con = null;
-        PreparedStatement preparedStmt = null;
-        ResultSet resultSet = null;
-
-        try
-        {
-            StringBuffer sql = new StringBuffer( CAR_SELECT );
-            sql.append( " WHERE" );
-            sql.append( CAR_WHERE_CLAUSE_CAT );
-
-            con = getConnection();
-            preparedStmt = con.prepareStatement( sql.toString() );
-            preparedStmt.setInt( 1, superCategoryKey );
-            resultSet = preparedStmt.executeQuery();
-
-            ArrayList<ArrayList<Comparable<?>>> rightsList = new ArrayList<ArrayList<Comparable<?>>>();
-            while ( resultSet.next() )
-            {
-                ArrayList<Comparable<?>> rights = new ArrayList<Comparable<?>>();
-                rights.add( resultSet.getString( "grp_hKey" ) );
-                rights.add( resultSet.getInt( "car_bRead" ) );
-                rights.add( resultSet.getInt( "car_bCreate" ) );
-                rights.add( resultSet.getInt( "car_bPublish" ) );
-                rights.add( resultSet.getInt( "car_bAdministrate" ) );
-                rights.add( resultSet.getInt( "car_bAdminRead" ) );
-
-                rightsList.add( rights );
-            }
-            close( resultSet );
-            close( preparedStmt );
-
-            preparedStmt = con.prepareStatement( CAR_INSERT );
-            for ( int i = 0; i < rightsList.size(); ++i )
-            {
-                preparedStmt.setInt( 1, categoryKey.toInt() );
-
-                ArrayList<Comparable<?>> rights = rightsList.get( i );
-                for ( int j = 0; j < rights.size(); ++j )
-                {
-                    preparedStmt.setObject( j + 2, rights.get( j ) );
-                }
-
-                preparedStmt.executeUpdate();
-            }
-        }
-        catch ( SQLException sqle )
-        {
-            String message = "Failed to inherit category access rights: %t";
-            VerticalEngineLogger.error(message, sqle );
         }
         finally
         {

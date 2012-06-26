@@ -35,6 +35,9 @@ public class CategoryServiceImpl
     @Autowired
     private LogService logService;
 
+    @Autowired
+    MoveCategoryCommandProcessorFactory moveCategoryCommandProcessorFactory;
+
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public CategoryKey storeNewCategory( final StoreNewCategoryCommand command )
     {
@@ -80,5 +83,12 @@ public class CategoryServiceImpl
         command.setXmlData( content.getMainVersion().getContentDataAsJDomDocument() );
 
         logService.storeNew( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void moveCategory( MoveCategoryCommand command )
+    {
+        final MoveCategoryCommandProcessor processor = moveCategoryCommandProcessorFactory.create( command );
+        processor.moveCategory();
     }
 }

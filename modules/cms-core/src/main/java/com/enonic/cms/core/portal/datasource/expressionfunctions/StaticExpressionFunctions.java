@@ -132,12 +132,12 @@ public class StaticExpressionFunctions
         return ExpressionFunctionsFactory.get().createExpressionFunctions().getWindowKey();
     }
 
-    public static String pageKey(String path)
+    public static String getPageKeyByPath(String path)
     {
         return ExpressionFunctionsFactory.get().createExpressionFunctions().getPageKeyByPath( path );
     }
 
-    public static String pageKeys(String path, String predicate)
+    public static String getPageKeysByPath(String path, String predicate)
     {
         if ( !"child".equals( predicate ))
         {

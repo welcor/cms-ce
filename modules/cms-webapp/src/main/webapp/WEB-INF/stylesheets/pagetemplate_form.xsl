@@ -1172,6 +1172,7 @@
                     </fieldset>
                 </div>
 
+              <xsl:if test="$create=0">
                 <div class="tab-page" id="tab-page-5">
                     <span class="tab">%blockUsedBy%</span>
 
@@ -1188,6 +1189,7 @@
 
                      </fieldset>
                 </div>
+              </xsl:if>
 
             </div>
 

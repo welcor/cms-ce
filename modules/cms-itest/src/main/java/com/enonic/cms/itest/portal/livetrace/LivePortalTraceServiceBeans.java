@@ -7,7 +7,7 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceServiceImpl;
 
 @Configuration
-public class LivePortalTraceServiceConfiguration
+public class LivePortalTraceServiceBeans
 {
     public
     @Bean

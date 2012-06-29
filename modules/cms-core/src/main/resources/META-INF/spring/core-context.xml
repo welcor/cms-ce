@@ -147,10 +147,6 @@
     <property name="fromMail" value="${cms.admin.email}"/>
   </bean>
 
-  <bean id="loginService" class="com.enonic.cms.core.login.LoginServiceImpl">
-    <property name="autologinTimeoutInDays" value="${com.enonic.vertical.presentation.autologinTimeout}"/>
-  </bean>
-
   <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
     <property name="clientForRemoteInvocations" value="false"/>
     <property name="dataSourceService" ref="dataSourceService"/>
@@ -192,14 +188,6 @@
 
   <bean class="com.enonic.cms.core.client.LocalClientSetter">
     <property name="localClient" ref="localClient"/>
-  </bean>
-
-  <bean id="imageService" class="com.enonic.cms.core.portal.image.ImageServiceImpl">
-    <property name="directory" value="${cms.blobstore.dir}"/>
-  </bean>
-
-  <bean id="blobStore" class="com.enonic.cms.framework.blob.file.FileBlobStore">
-    <property name="directory" value="${cms.blobstore.dir}"/>
   </bean>
 
   <bean id="blobStoreGarbageCollector" class="com.enonic.cms.framework.blob.gc.GarbageCollector">
@@ -266,27 +254,6 @@
         destroy-method="destroy">
     <property name="objectNamePrefix" value="EnonicCMS:type=Configuration,name="/>
   </bean>
-
-  <bean id="portalRequestService" class="com.enonic.cms.core.portal.PortalRequestServiceImpl">
-    <property name="pageRendererFactory" ref="pageRendererFactory"/>
-    <property name="windowRendererFactory" ref="windowRendererFactory"/>
-    <property name="dataSourceService" ref="dataSourceService"/>
-    <property name="languageDao" ref="languageDao"/>
-    <property name="portalAccessService" ref="portalAccessService"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="portletDao" ref="portletDao"/>
-    <property name="siteDao" ref="siteDao"/>
-    <property name="pageRequestProcessorFactory" ref="pageRequestProcessorFactory"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-  </bean>
-
-  <bean id="livePortalTraceService" class="com.enonic.cms.core.portal.livetrace.LivePortalTraceServiceImpl"/>
-
-  <bean id="pageRequestProcessorFactory"
-        class="com.enonic.cms.core.portal.processor.PageRequestProcessorFactory"/>
-
-  <bean id="portalAccessService" class="com.enonic.cms.core.portal.PortalAccessService"/>
 
   <bean id="datasourceInfoResolver" class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
 

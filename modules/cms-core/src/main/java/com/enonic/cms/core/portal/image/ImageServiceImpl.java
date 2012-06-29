@@ -12,6 +12,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
 
@@ -38,6 +40,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 
+@Service
 public final class ImageServiceImpl
     implements ImageService
 {
@@ -266,6 +269,7 @@ public final class ImageServiceImpl
         this.groupDao = groupDao;
     }
 
+    @Value("${cms.blobstore.dir}")
     public void setDirectory( File directory )
     {
         this.directory = directory;

@@ -1,4 +1,4 @@
-package com.enonic.cms.itest;
+package com.enonic.cms.itest.home;
 
 import java.io.File;
 

@@ -5,10 +5,12 @@
 package com.enonic.cms.core.time;
 
 import org.joda.time.DateTime;
+import org.springframework.stereotype.Service;
 
 /**
  * Jun 18, 2009
  */
+@Service("timeService")
 public class SystemTimeService
     implements TimeService
 {

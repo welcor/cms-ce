@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SitePathResolver;
 
-@Component
+@Component("sitePathResolver")
 public final class PortalSitePathResolver
     extends SitePathResolver
 {

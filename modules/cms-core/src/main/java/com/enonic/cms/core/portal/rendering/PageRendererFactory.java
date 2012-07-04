@@ -6,6 +6,7 @@ package com.enonic.cms.core.portal.rendering;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.vertical.VerticalProperties;
@@ -66,6 +67,9 @@ public class PageRendererFactory
     @Autowired
     private PluginManager pluginManager;
 
+    @Value("cms.datasource.defaultResultRootElement")
+    private String defaultDataSourceRootElementName;
+
     public PageRenderer createPageRenderer( PageRendererContext pageRendererContext )
     {
         PageRenderer pageRenderer = new PageRenderer( pageRendererContext, livePortalTraceService );
@@ -82,6 +86,7 @@ public class PageRendererFactory
         pageRenderer.setPostProcessInstructionExecutor( postProcessInstructionExecutor );
         pageRenderer.setDataSourceService( dataSourceService );
         pageRenderer.setPluginManager( pluginManager );
+        pageRenderer.setDefaultDataSourceRootElementName( defaultDataSourceRootElementName );
 
         return pageRenderer;
     }

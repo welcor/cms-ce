@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -26,7 +27,6 @@ import com.enonic.esl.net.Mail;
 import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.util.StringUtil;
-import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.vertical.engine.VerticalSecurityException;
@@ -79,7 +79,6 @@ import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsExcepti
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteContext;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
-import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
@@ -145,7 +144,9 @@ public final class UserServicesProcessor
 
     private static final String FORMITEM_EMAIL = "email";
 
-    private static final String FORMITEM_BIRTHDAY = UserFieldType.BIRTHDAY.getName();
+    private int autoLoginTimeout;
+
+    private String smtpHost;
 
     public UserServicesProcessor()
     {
@@ -968,8 +969,7 @@ public final class UserServicesProcessor
             formItems.put( FORMITEM_USERSTORE, newUser.getUserStore().getName() );
 
             Mail adminMail = new Mail();
-            VerticalProperties vp = VerticalProperties.getVerticalProperties();
-            adminMail.setSMTPHost( vp.getSMTPHost() );
+            adminMail.setSMTPHost( smtpHost );
 
             adminMail.addRecipient( formItems.getString( "admin_name", "" ), formItems.getString( "admin_email" ), Mail.TO_RECIPIENT );
 
@@ -1002,7 +1002,7 @@ public final class UserServicesProcessor
             formItems.put( FORMITEM_USERSTORE, newUser.getUserStore().getName() );
 
             Mail userMail = new Mail();
-            userMail.setSMTPHost( verticalProperties.getSMTPHost() );
+            userMail.setSMTPHost( smtpHost );
 
             userMail.addRecipient( newUser.getDisplayName(), formItems.getString( "email" ), Mail.TO_RECIPIENT );
 
@@ -1223,7 +1223,7 @@ public final class UserServicesProcessor
 
         String guid = loginService.rememberLogin( user.getKey(), siteContext.getSiteKey(), resetGuid );
 
-        long maxAge = 60L * 60 * 24 * verticalProperties.getAutologinTimeout();
+        long maxAge = 60L * 60 * 24 * autoLoginTimeout;
         if ( maxAge > Integer.MAX_VALUE )
         {
             maxAge = Integer.MAX_VALUE;
@@ -1630,5 +1630,17 @@ public final class UserServicesProcessor
     private static String removeTokens( String inText )
     {
         return inText.replaceAll( "%[^%]+%", "" );
+    }
+
+    @Value("${com.enonic.vertical.presentation.autologinTimeout}")
+    public void setAutoLoginTimeout( final int autoLoginTimeout )
+    {
+        this.autoLoginTimeout = autoLoginTimeout;
+    }
+
+    @Value("${cms.mail.smtpHost}")
+    public void setSmtpHost( final String smtpHost )
+    {
+        this.smtpHost = smtpHost;
     }
 }

@@ -6,6 +6,7 @@ package com.enonic.vertical.engine;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import com.enonic.vertical.engine.handlers.CategoryHandler;
@@ -20,6 +21,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.security.user.User;
 
+@Component
 public class UserServicesEngine
     extends BaseEngine
     implements InitializingBean
@@ -106,8 +108,7 @@ public class UserServicesEngine
             user = userHandler.getAnonymousUser();
         }
 
-        Document doc =
-            contentHandler.getContent( user, key, publishedOnly, parentLevel, childrenLevel, parentChildrenLevel);
+        Document doc = contentHandler.getContent( user, key, publishedOnly, parentLevel, childrenLevel, parentChildrenLevel );
 
         return XMLDocumentFactory.create( doc );
     }

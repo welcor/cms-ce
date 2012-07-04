@@ -106,6 +106,8 @@ public class PageRenderer
 
     private PluginManager pluginManager;
 
+    private String defaultDataSourceRootElementName;
+
     protected PageRenderer( PageRendererContext pageRendererContext, LivePortalTraceService livePortalTraceService )
     {
         this.context = pageRendererContext;
@@ -248,7 +250,7 @@ public class PageRenderer
             final Document model;
             if ( dataSourceResult == null || dataSourceResult.getData() == null )
             {
-                model = new Document( new Element( verticalProperties.getDatasourceDefaultResultRootElement() ) );
+                model = new Document( new Element( defaultDataSourceRootElementName ) );
             }
             else
             {
@@ -393,7 +395,7 @@ public class PageRenderer
         datasourceExecutorContext.setCssKeys( cssKeys );
         datasourceExecutorContext.setInvocationCache( invocationCache );
         datasourceExecutorContext.setDatasourcesType( DatasourcesType.PAGETEMPLATE );
-        datasourceExecutorContext.setDefaultResultRootElementName( verticalProperties.getDatasourceDefaultResultRootElement() );
+        datasourceExecutorContext.setDefaultResultRootElementName( defaultDataSourceRootElementName );
         datasourceExecutorContext.setDeviceClass( context.getDeviceClass() );
         datasourceExecutorContext.setHttpRequest( context.getHttpRequest() );
         datasourceExecutorContext.setLanguage( context.getLanguage() );
@@ -584,6 +586,11 @@ public class PageRenderer
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
+    }
+
+    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
+    {
+        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
     }
 }
 

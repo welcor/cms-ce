@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import com.enonic.esl.xml.XMLTool;
@@ -23,6 +24,7 @@ import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.store.dao.UserDao;
 
+@Component
 public final class UserHandler
     extends BaseHandler
 {

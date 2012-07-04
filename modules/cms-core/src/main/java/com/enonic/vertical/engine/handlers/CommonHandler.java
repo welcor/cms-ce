@@ -4,7 +4,20 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.cms.framework.util.TIntArrayList;
+import java.io.ByteArrayInputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.sql.model.ForeignKeyColumn;
@@ -15,15 +28,10 @@ import com.enonic.vertical.engine.Types;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.XDG;
 import com.enonic.vertical.engine.processors.ElementProcessor;
-import org.w3c.dom.Document;
 
-import java.io.ByteArrayInputStream;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import com.enonic.cms.framework.util.TIntArrayList;
 
+@Component
 public class CommonHandler
     extends BaseHandler
 {
@@ -66,7 +74,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to execute sql: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -98,7 +106,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to execute sql: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             result = 0;
         }
         finally
@@ -138,7 +146,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to execute sql: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -181,7 +189,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get date: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -254,7 +262,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get object[][]: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -315,7 +323,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get object[][]: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -371,7 +379,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get int: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             value = -1;
         }
         finally
@@ -418,7 +426,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get int: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             value = -1;
         }
         finally
@@ -458,7 +466,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get int: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             value = false;
         }
         finally
@@ -497,7 +505,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get byte array: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -509,7 +517,7 @@ public class CommonHandler
 
     public int[] getIntArray( String sql, int paramValue )
     {
-        return getIntArray(sql, new int[]{paramValue});
+        return getIntArray( sql, new int[]{paramValue} );
     }
 
     public int[] getIntArray( String sql, int[] paramValues )
@@ -543,7 +551,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get integer array: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -555,7 +563,7 @@ public class CommonHandler
 
     public int[] getIntArray( String sql )
     {
-        return getIntArray(sql, (Object[]) null);
+        return getIntArray( sql, (Object[]) null );
     }
 
     public int[] getIntArray( String sql, Object[] paramValues )
@@ -596,7 +604,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get integer array: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -656,7 +664,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get string: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             string = null;
         }
         finally
@@ -671,12 +679,12 @@ public class CommonHandler
     public Date getTimestamp( Table table, Column selectColumn, Column whereColumn, int paramValue )
     {
         String sql = XDG.generateSelectSQL( table, selectColumn, false, whereColumn ).toString();
-        return getTimestamp(sql, paramValue);
+        return getTimestamp( sql, paramValue );
     }
 
     public String[] getStringArray( String sql, int paramValue )
     {
-        return getStringArray(sql, new int[]{paramValue});
+        return getStringArray( sql, new int[]{paramValue} );
     }
 
     public String[] getStringArray( String sql, int[] paramValues )
@@ -705,7 +713,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get string: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -713,12 +721,12 @@ public class CommonHandler
             close( preparedStmt );
         }
 
-        return strings.toArray(new String[strings.size()]);
+        return strings.toArray( new String[strings.size()] );
     }
 
     public String getString( String sql, int paramValue )
     {
-        return getString(sql, new Object[]{paramValue});
+        return getString( sql, new Object[]{paramValue} );
     }
 
     public Object[] getObjects( String sql, int paramValue )
@@ -763,7 +771,7 @@ public class CommonHandler
                 strings = new String[columnCount];
                 for ( int i = 1; i <= columnCount; i++ )
                 {
-                    strings[i - 1] = resultSet.getString(i);
+                    strings[i - 1] = resultSet.getString( i );
                 }
             }
             else
@@ -774,7 +782,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get string: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             strings = new String[0];
         }
         finally
@@ -822,7 +830,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get string: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             objects = new Object[0];
         }
         finally
@@ -869,7 +877,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to execute sql: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -901,7 +909,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "SQL error: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -931,12 +939,12 @@ public class CommonHandler
             parameters.put( pkColumn.getXPath(), new Integer( -1 ) );
         }
 
-        return getData( type, parameters);
+        return getData( type, parameters );
     }
 
-    private Document getData(int type, MultiValueMap parameters)
+    private Document getData( int type, MultiValueMap parameters )
     {
-        return getData(type, null, parameters, null, -1, -1, null, false );
+        return getData( type, null, parameters, null, -1, -1, null, false );
     }
 
     private ResultSet getResultSet( PreparedStatement preparedStmt, List<DataType> dataTypes, List<String> paramValues, int fromIndex )
@@ -977,9 +985,8 @@ public class CommonHandler
         return resultSet;
     }
 
-    private PreparedStatement getPreparedStatement(List<DataType> dataTypes, List<String> paramValues, Connection con, int type,
-                                                   Column[] selectColumns, MultiValueMap parameters,
-                                                   String orderBy, boolean descending)
+    private PreparedStatement getPreparedStatement( List<DataType> dataTypes, List<String> paramValues, Connection con, int type,
+                                                    Column[] selectColumns, MultiValueMap parameters, String orderBy, boolean descending )
         throws SQLException
     {
         PreparedStatement preparedStmt;
@@ -996,7 +1003,7 @@ public class CommonHandler
 
         if ( parameters != null && parameters.size() > 0 )
         {
-            sql.append(" WHERE ");
+            sql.append( " WHERE " );
 
             Iterator iter = parameters.keySet().iterator();
             for ( int paramCount = 0; iter.hasNext(); paramCount++ )
@@ -1090,8 +1097,8 @@ public class CommonHandler
         return preparedStmt;
     }
 
-    public Document getData(int type, Column[] selectColumns, MultiValueMap parameters,
-                            ElementProcessor[] elementProcessors, int fromIndex, int count, String orderBy, boolean descending)
+    public Document getData( int type, Column[] selectColumns, MultiValueMap parameters, ElementProcessor[] elementProcessors,
+                             int fromIndex, int count, String orderBy, boolean descending )
     {
 
         Connection con;
@@ -1106,21 +1113,20 @@ public class CommonHandler
             con = getConnection();
             List<DataType> dataTypes = new ArrayList<DataType>();
             List<String> paramValues = new ArrayList<String>();
-            preparedStmt = getPreparedStatement( dataTypes, paramValues, con, type, selectColumns, parameters, orderBy,
-                                                 descending );
+            preparedStmt = getPreparedStatement( dataTypes, paramValues, con, type, selectColumns, parameters, orderBy, descending );
 
             resultSet = getResultSet( preparedStmt, dataTypes, paramValues, fromIndex );
             doc = XDG.resultSetToXML( table, resultSet, null, elementProcessors, null, count );
             count = XMLTool.getElements( doc.getDocumentElement() ).length;
 
-            int totalCount = getDataCount(type, parameters);
+            int totalCount = getDataCount( type, parameters );
             doc.getDocumentElement().setAttribute( "totalcount", String.valueOf( totalCount ) );
             doc.getDocumentElement().setAttribute( "count", String.valueOf( count ) );
         }
         catch ( SQLException sqle )
         {
             String message = "SQL error: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -1132,7 +1138,7 @@ public class CommonHandler
     }
 
 
-    private int getDataCount(int type, MultiValueMap parameters)
+    private int getDataCount( int type, MultiValueMap parameters )
     {
 
         Connection con;
@@ -1151,7 +1157,7 @@ public class CommonHandler
 
             if ( parameters != null && parameters.size() > 0 )
             {
-                sql.append(" WHERE ");
+                sql.append( " WHERE " );
                 int paramCount = 0;
                 for ( Object o : parameters.keySet() )
                 {
@@ -1245,14 +1251,14 @@ public class CommonHandler
             else
             {
                 String message = "Failed to count data.";
-                VerticalEngineLogger.error(message );
+                VerticalEngineLogger.error( message );
                 result = 0;
             }
         }
         catch ( SQLException sqle )
         {
             String message = "Failed to count data: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             result = 0;
         }
         finally
@@ -1264,7 +1270,8 @@ public class CommonHandler
         return result;
     }
 
-    public StringBuffer getPathString( Table table, Column keyColumn, Column parentKeyColumn, Column nameColumn, int key, boolean includeSpace )
+    public StringBuffer getPathString( Table table, Column keyColumn, Column parentKeyColumn, Column nameColumn, int key,
+                                       boolean includeSpace )
     {
 
         Column[] selectColumns = new Column[]{parentKeyColumn, nameColumn};
@@ -1327,7 +1334,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get path string: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
             result.setLength( 0 );
         }
         finally
@@ -1388,7 +1395,7 @@ public class CommonHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get data: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {

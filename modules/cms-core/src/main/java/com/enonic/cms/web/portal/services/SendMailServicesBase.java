@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.Mail;
@@ -33,6 +34,8 @@ public abstract class SendMailServicesBase
 
     public final static int ERR_MISSING_SUBJECT_FIELD = 105;
 
+    private String smtpHost;
+
     public SendMailServicesBase( final String handlerName )
     {
         super( handlerName );
@@ -49,7 +52,7 @@ public abstract class SendMailServicesBase
             {
 
                 Mail mail = new Mail();
-                mail.setSMTPHost( verticalProperties.getSMTPHost() );
+                mail.setSMTPHost( smtpHost );
 
                 // from field
                 String fromName = formItems.getString( "from_name", "" );
@@ -68,7 +71,7 @@ public abstract class SendMailServicesBase
                 if ( recipients.length == 0 )
                 {
                     String message = "No \"to\" fields given. At least one is required.";
-                    VerticalUserServicesLogger.warn(message );
+                    VerticalUserServicesLogger.warn( message );
                     redirectToErrorPage( request, response, formItems, ERR_MISSING_TO_FIELD );
                     return;
                 }
@@ -111,7 +114,7 @@ public abstract class SendMailServicesBase
                 if ( subject == null || subject.length() == 0 )
                 {
                     String message = "No \"subject\" field given. A subject field is required.";
-                    VerticalUserServicesLogger.warn(message );
+                    VerticalUserServicesLogger.warn( message );
                     redirectToErrorPage( request, response, formItems, ERR_MISSING_SUBJECT_FIELD );
                     return;
                 }
@@ -191,7 +194,7 @@ public abstract class SendMailServicesBase
             catch ( Exception esle )
             {
                 String message = "Failed to send email: %t";
-                VerticalUserServicesLogger.error(message, esle );
+                VerticalUserServicesLogger.error( message, esle );
                 redirectToErrorPage( request, response, formItems, ERR_EMAIL_SEND_FAILED );
             }
         }
@@ -246,7 +249,7 @@ public abstract class SendMailServicesBase
                         addressType = "Cc";
                         break;
                 }
-                VerticalUserServicesLogger.warn(message, addressType, null );
+                VerticalUserServicesLogger.warn( message, addressType, null );
                 return ERR_RECIPIENT_HAS_NO_EMAIL_ADDRESS;
             }
             else
@@ -268,7 +271,7 @@ public abstract class SendMailServicesBase
                             ojbs[0] = "Cc";
                             break;
                     }
-                    VerticalUserServicesLogger.warn(message, ojbs );
+                    VerticalUserServicesLogger.warn( message, ojbs );
                     return ERR_RECIPIENT_HAS_WRONG_ADDRESS_NO_ALPHA;
                 }
                 else if ( email.indexOf( '.', idx ) < 0 )
@@ -287,7 +290,7 @@ public abstract class SendMailServicesBase
                             ojbs[0] = "Cc";
                             break;
                     }
-                    VerticalUserServicesLogger.warn(message, ojbs );
+                    VerticalUserServicesLogger.warn( message, ojbs );
                     return ERR_RECIPIENT_HAS_WRONG_ADDRESS_MISSING_DOT;
                 }
 
@@ -296,5 +299,11 @@ public abstract class SendMailServicesBase
         }
 
         return -1;
+    }
+
+    @Value("${cms.mail.smtpHost}")
+    public void setSmtpHost( final String smtpHost )
+    {
+        this.smtpHost = smtpHost;
     }
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 import org.w3c.dom.Document;
@@ -48,6 +49,10 @@ public final class FormServicesProcessor
     private final static int ERR_VALIDATION_FAILED = 2;
 
     private final static String ERR_MSG_VALIDATION_FAILED = "Validation failed.";
+
+    private String adminEmail;
+
+    private String smtpHost;
 
     class FormException
         extends VerticalUserServicesException
@@ -569,10 +574,10 @@ public final class FormServicesProcessor
             }
             else
             {
-                formMail.setFrom( "Anonymous", verticalProperties.getAdminEmail() );
+                formMail.setFrom( "Anonymous", adminEmail );
             }
         }
-        formMail.setSMTPHost( verticalProperties.getSMTPHost() );
+        formMail.setSMTPHost( smtpHost );
 
         formMail.setSubject( subject );
         formMail.setMessage( body.toString() );
@@ -681,5 +686,17 @@ public final class FormServicesProcessor
             }
         }
         return body;
+    }
+
+    @Value("${cms.admin.email}")
+    public void setAdminEmail( final String adminEmail )
+    {
+        this.adminEmail = adminEmail;
+    }
+
+    @Value("${cms.mail.smtpHost}")
+    public void setSmtpHost( final String smtpHost )
+    {
+        this.smtpHost = smtpHost;
     }
 }

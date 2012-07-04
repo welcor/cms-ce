@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -65,6 +66,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.ContentHandlerDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
+@Component
 public final class ContentHandler
     extends BaseHandler
 {

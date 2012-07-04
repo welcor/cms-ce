@@ -12,6 +12,10 @@
 
   <import resource="classpath:/com/enonic/cms/itest/base-persist-test-context.xml"/>
 
+  <context:component-scan base-package="com.enonic.cms.framework.cache.standard"/>
+  <context:component-scan base-package="com.enonic.cms.framework.blob"/>
+  <context:component-scan base-package="com.enonic.vertical.engine"/>
+  <context:component-scan base-package="com.enonic.cms.core"/>
   <context:component-scan base-package="com.enonic.cms.core.calendar"/>
   <context:component-scan base-package="com.enonic.cms.core.captcha"/>
   <context:component-scan base-package="com.enonic.cms.core.config"/>
@@ -28,15 +32,19 @@
   <context:component-scan base-package="com.enonic.cms.core.portal.instruction"/>
   <context:component-scan base-package="com.enonic.cms.core.portal.datasource"/>
   <context:component-scan base-package="com.enonic.cms.core.portal.rendering"/>
+  <context:component-scan base-package="com.enonic.cms.core.preference"/>
   <context:component-scan base-package="com.enonic.cms.core.preview"/>
+  <context:component-scan base-package="com.enonic.cms.core.resource"/>
+  <context:component-scan base-package="com.enonic.cms.core.service"/>
   <context:component-scan base-package="com.enonic.cms.core.search"/>
   <context:component-scan base-package="com.enonic.cms.core.security"/>
   <context:component-scan base-package="com.enonic.cms.core.structure.menuitem"/>
+  <context:component-scan base-package="com.enonic.cms.core.time"/>
   <context:component-scan base-package="com.enonic.cms.core.timezone"/>
+  <context:component-scan base-package="com.enonic.cms.store.blob"/>
   <context:component-scan base-package="com.enonic.cms.store.resource"/>
-  <context:component-scan base-package="com.enonic.cms.web.portal.image"/>
-  <context:component-scan base-package="com.enonic.cms.web.portal.attachment"/>
-  <context:component-scan base-package="com.enonic.cms.framework.cache.standard"/>
+  <context:component-scan base-package="com.enonic.cms.web.portal"/>
+
 
   <bean id="tightestCacheSettingsResolver"
         class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
@@ -46,24 +54,8 @@
     <property name="siteCachesService" ref="siteCachesService"/>
   </bean>
 
-  <bean id="internalClientRenderService"
-        class="com.enonic.cms.core.client.InternalClientRenderService"/>
-
-  <bean id="preferenceService" class="com.enonic.cms.core.preference.PreferenceServiceImpl"/>
-
-  <bean id="resourceService" class="com.enonic.cms.core.resource.ResourceServiceImpl"/>
-
   <bean class="com.enonic.cms.core.client.LocalClientSetter">
     <property name="localClient" ref="localClient"/>
-  </bean>
-
-  <bean id="sitePathResolver" class="com.enonic.cms.web.portal.PortalSitePathResolver"/>
-
-  <bean id="urlPathHelperManager" class="com.enonic.cms.core.UrlPathHelperManager">
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-  </bean>
-
-  <bean id="sitePropertiesService" class="com.enonic.cms.core.MockSitePropertiesService">
   </bean>
 
   <bean id="siteService" class="com.enonic.cms.core.structure.SiteServiceImpl">
@@ -78,11 +70,6 @@
 
   <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
     <property name="sitePathPrefix" value="/site"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-  </bean>
-
-  <bean id="dataSourceService" class="com.enonic.cms.core.service.DataSourceServiceImpl">
-    <property name="timeService" ref="timeService"/>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
 
@@ -109,13 +96,7 @@
   <bean id="resolverInputCreator"
         class="com.enonic.cms.core.resolver.ResolverHttpRequestInputCreator"/>
 
-  <bean id="deviceClassXsltScriptResolver"
-        class="com.enonic.cms.core.resolver.deviceclass.DeviceClassXsltScriptResolver"/>
-
-
   <!-- Possibly needs profile -->
-
-
   <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
 
   <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
@@ -138,21 +119,13 @@
 
   <bean id="siteCachesService" class="com.enonic.cms.itest.portal.cache.MockSiteCachesService"/>
 
-  <bean id="timeService" class="com.enonic.cms.core.time.SystemTimeService"/>
-
   <bean id="deviceClassificationService"
         class="com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverServiceImpl">
     <property name="deviceClassScriptResolver" ref="deviceClassXsltScriptResolver"/>
   </bean>
 
-  <bean id="pluginManager" class="com.enonic.cms.itest.plugin.MockPluginManager"/>
-
   <bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">
     <property name="urlDecode" value="true"/>
-  </bean>
-
-  <bean id="siteRedirectAndForwardHelper"
-        class="com.enonic.cms.web.portal.SiteRedirectAndForwardHelper">
   </bean>
 
   <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>

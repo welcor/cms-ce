@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,11 +31,12 @@ import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
 import com.enonic.cms.core.log.Table;
 
+@Component
 public final class LogHandler
     extends BaseHandler
     implements MenuHandlerListener
 {
-    public Document getLogEntries(MultiValueMap adminParams, int fromIdx, int count, boolean complete)
+    public Document getLogEntries( MultiValueMap adminParams, int fromIdx, int count, boolean complete )
     {
 
         Column[] selectColumns;
@@ -61,8 +63,7 @@ public final class LogHandler
 
         CommonHandler commonHandler = getCommonHandler();
         Document doc =
-            commonHandler.getData(Types.LOGENTRY, selectColumns, adminParams, elementProcessors, fromIdx, count, "@timestamp",
-                                   true);
+            commonHandler.getData( Types.LOGENTRY, selectColumns, adminParams, elementProcessors, fromIdx, count, "@timestamp", true );
 
         if ( adminParams.containsKey( "@tablekeyvalue" ) )
         {

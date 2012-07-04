@@ -6,7 +6,6 @@ package com.enonic.cms.core.mail;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -18,10 +17,8 @@ public abstract class AbstractSendMailService
 {
     protected final Logger log;
 
-    @Autowired
     private JavaMailSender mailSender;
 
-    @Autowired
     private UserDao userDao;
 
     private static final String MAIL_ENCODING = "UTF-8";
@@ -156,4 +153,13 @@ public abstract class AbstractSendMailService
                                                        MessageSettings settings )
         throws Exception;
 
+    public void setMailSender( final JavaMailSender mailSender )
+    {
+        this.mailSender = mailSender;
+    }
+
+    public void setUserDao( final UserDao userDao )
+    {
+        this.userDao = userDao;
+    }
 }

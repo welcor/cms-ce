@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -48,6 +49,7 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
+@Component
 final public class SecurityHandler
     extends BaseHandler
 {
@@ -93,7 +95,8 @@ final public class SecurityHandler
         "SELECT " + MENUITEMAR_COLS + " FROM " + MENUITEMAR_TABLE + " WHERE mia_mei_lKey = ? AND " + " mia_grp_hKey IN ";
 
     private final static String MENUITEMAR_GET_ALL = "SELECT mia_mei_lKey, mia_grp_hKey, mia_bRead, mia_bCreate, mia_bPublish, " +
-        "mia_bAdministrate, mia_bUpdate, mia_bDelete, mia_bAdd, grp_hKey, grp_lType, grp_sName, usr_sUID, usr_sFullName, usr_hkey" + " FROM " +
+        "mia_bAdministrate, mia_bUpdate, mia_bDelete, mia_bAdd, grp_hKey, grp_lType, grp_sName, usr_sUID, usr_sFullName, usr_hkey" +
+        " FROM " +
         MENUITEMAR_TABLE + " LEFT JOIN " + GROUP_TABLE + " ON " + GROUP_TABLE + ".grp_hKey = " + MENUITEMAR_TABLE + ".mia_grp_hKey " +
         " LEFT JOIN " + USER_TABLE + " ON " + USER_TABLE + ".usr_grp_hKey = " + GROUP_TABLE + ".grp_hKey " + " WHERE mia_mei_lKey = ?";
 
@@ -217,8 +220,8 @@ final public class SecurityHandler
         }
         else if ( rootElement.getTagName().equals( "menuitems" ) )
         {
-            appendMenuItemAccessRights( user, doc, XMLTool.filterNodes( rootElement.getChildNodes(), Node.ELEMENT_NODE ), null, null,
-                                        true, true );
+            appendMenuItemAccessRights( user, doc, XMLTool.filterNodes( rootElement.getChildNodes(), Node.ELEMENT_NODE ), null, null, true,
+                                        true );
         }
         else if ( rootElement.getTagName().equals( "categories" ) )
         {
@@ -232,8 +235,8 @@ final public class SecurityHandler
         else if ( rootElement.getTagName().equals( "sections" ) )
         //appendSectionAccessRights(user, null, rootElement, includeAccessRights, includeUserRights);
         {
-            appendMenuItemAccessRights( user, doc, XMLTool.filterNodes( rootElement.getChildNodes(), Node.ELEMENT_NODE ), null, null,
-                                        true, true );
+            appendMenuItemAccessRights( user, doc, XMLTool.filterNodes( rootElement.getChildNodes(), Node.ELEMENT_NODE ), null, null, true,
+                                        true );
         }
     }
 
@@ -261,7 +264,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -314,15 +317,14 @@ final public class SecurityHandler
                 }
                 if ( childElement != null )
                 {
-                    appendMenuItemAccessRights( user, doc,
-                                                XMLTool.filterNodes( childElement.getChildNodes(), Node.ELEMENT_NODE ),
-                                                con, preparedStmt, includeAccessRights, includeUserRights );
+                    appendMenuItemAccessRights( user, doc, XMLTool.filterNodes( childElement.getChildNodes(), Node.ELEMENT_NODE ), con,
+                                                preparedStmt, includeAccessRights, includeUserRights );
                 }
             }
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -372,8 +374,7 @@ final public class SecurityHandler
                 // append accessrights for this category
                 Document doc = categoryElem.getOwnerDocument();
                 Element accessrightsElement = XMLTool.createElement( doc, categoryElem, "accessrights" );
-                appendCategoryAccessRight( user, accessrightsElement, categoryKey, preparedStmt, includeAccessRights,
-                                           includeUserRights );
+                appendCategoryAccessRight( user, accessrightsElement, categoryKey, preparedStmt, includeAccessRights, includeUserRights );
 
                 // for each category, we must also loop through its children
                 Element categoriesElement = XMLTool.getElement( categoryElem, "categories" );
@@ -387,7 +388,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get access rights for a category: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -439,7 +440,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get access rights for contents: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -578,7 +579,7 @@ final public class SecurityHandler
 
                 default:
                     String message = "Accessright type not supported: {0}";
-                    VerticalEngineLogger.errorCreate(message, type, null );
+                    VerticalEngineLogger.errorCreate( message, type, null );
                     break;
             }
 
@@ -843,7 +844,7 @@ final public class SecurityHandler
 
                     default:
                         String message = "Accessright type not supported: {0}";
-                        VerticalEngineLogger.errorCreate(message, type, null );
+                        VerticalEngineLogger.errorCreate( message, type, null );
                         break;
                 }
 
@@ -878,7 +879,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.errorRemove("A database error occurred: %t", e );
+            VerticalEngineLogger.errorRemove( "A database error occurred: %t", e );
         }
         finally
         {
@@ -913,7 +914,7 @@ final public class SecurityHandler
                 break;
 
             default:
-                VerticalEngineLogger.error("Accessright type not supported: {0}", new Object[]{type} );
+                VerticalEngineLogger.error( "Accessright type not supported: {0}", new Object[]{type} );
         }
 
         return doc;
@@ -948,7 +949,7 @@ final public class SecurityHandler
                 break;
 
             default:
-                VerticalEngineLogger.error("Accessright type not supported: {0}", new Object[]{type} );
+                VerticalEngineLogger.error( "Accessright type not supported: {0}", new Object[]{type} );
         }
 
         return doc;
@@ -969,7 +970,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -993,7 +994,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -1002,8 +1003,7 @@ final public class SecurityHandler
         }
     }
 
-    private void appendAccessRightsOnCategory(User user, CategoryKey categoryKey, Element accessRights,
-                                              boolean includeUserRights)
+    private void appendAccessRightsOnCategory( User user, CategoryKey categoryKey, Element accessRights, boolean includeUserRights )
     {
 
         Connection con = null;
@@ -1021,7 +1021,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -1048,7 +1048,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -1078,7 +1078,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -1300,7 +1300,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -1636,7 +1636,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get maximum category access right: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -1728,7 +1728,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get maximum menu access right: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -1816,7 +1816,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get maximum menuitem access right: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -1904,7 +1904,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get maximum category access right: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -2481,7 +2481,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -2549,7 +2549,7 @@ final public class SecurityHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to validate category create: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -2615,7 +2615,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -2681,7 +2681,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -2797,7 +2797,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -2818,7 +2818,7 @@ final public class SecurityHandler
 
         if ( !validateAccessRightsUpdate( user, type, key ) )
         {
-            VerticalEngineLogger.errorSecurity("Access denied.", null );
+            VerticalEngineLogger.errorSecurity( "Access denied.", null );
         }
 
         try
@@ -2846,7 +2846,7 @@ final public class SecurityHandler
 
                 default:
                     String message = "Accessright type not supported: {0}";
-                    VerticalEngineLogger.errorUpdate(message, type, null );
+                    VerticalEngineLogger.errorUpdate( message, type, null );
             }
 
             preparedStmt = con.prepareStatement( sql );
@@ -2857,11 +2857,11 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.errorUpdate("A database error occurred: %t", e );
+            VerticalEngineLogger.errorUpdate( "A database error occurred: %t", e );
         }
         catch ( VerticalCreateException e )
         {
-            VerticalEngineLogger.errorUpdate("Error creating accessrights: %t", e );
+            VerticalEngineLogger.errorUpdate( "Error creating accessrights: %t", e );
         }
         finally
         {
@@ -2955,7 +2955,7 @@ final public class SecurityHandler
                 default:
                 {
                     // unknown access rights type, throw runtime exception
-                    VerticalEngineLogger.fatalEngine("Access denied.", null );
+                    VerticalEngineLogger.fatalEngine( "Access denied.", null );
                     result = false;
                 }
             }
@@ -3036,7 +3036,7 @@ final public class SecurityHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -3106,7 +3106,7 @@ final public class SecurityHandler
         StringUtil.replaceString( newSQL, "%filterRights", sqlFilterRights.toString() );
     }
 
-    public void appendSectionSQL(User user, StringBuffer sql)
+    public void appendSectionSQL( User user, StringBuffer sql )
     {
         if ( user != null && user.isEnterpriseAdmin() )
         {
@@ -3228,7 +3228,7 @@ final public class SecurityHandler
 
     public void appendMenuSQL( User user, StringBuffer sql )
     {
-       if ( user != null && user.isEnterpriseAdmin() )
+        if ( user != null && user.isEnterpriseAdmin() )
         {
             return;
         }

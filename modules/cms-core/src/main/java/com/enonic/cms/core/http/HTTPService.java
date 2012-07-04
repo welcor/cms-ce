@@ -11,9 +11,8 @@ import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.enonic.vertical.VerticalProperties;
 
 @Component
 public class HTTPService
@@ -24,6 +23,8 @@ public class HTTPService
     private final static int DEFAULT_CONNECTION_TIMEOUT = 2000;
 
     private final static int DEFAULT_CONNECTION_READ_TIMEOUT = 10000;
+
+    private String userAgent;
 
     public String getURL( String address, String encoding, int timeoutMs )
     {
@@ -102,7 +103,7 @@ public class HTTPService
         URLConnection urlConn = url.openConnection();
         urlConn.setConnectTimeout( timeoutMs > 0 ? timeoutMs : DEFAULT_CONNECTION_TIMEOUT );
         urlConn.setReadTimeout( DEFAULT_CONNECTION_READ_TIMEOUT );
-        urlConn.setRequestProperty( "User-Agent", VerticalProperties.getVerticalProperties().getDataSourceUserAgent() );
+        urlConn.setRequestProperty( "User-Agent", userAgent );
         String userInfo = url.getUserInfo();
         if ( StringUtils.isNotBlank( userInfo ) )
         {
@@ -137,5 +138,11 @@ public class HTTPService
             reader.close();
         }
 
+    }
+
+    @Value("${cms.enonic.vertical.presentation.dataSource.getUrl.userAgent}")
+    public void setUserAgent( final String userAgent )
+    {
+        this.userAgent = userAgent;
     }
 }

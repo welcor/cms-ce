@@ -4,24 +4,33 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.cms.core.jdbc.DatabaseBaseValuesInitializer;
-import com.enonic.cms.framework.blob.gc.GarbageCollector;
-import com.enonic.cms.store.DatabaseAccessor;
-import com.enonic.cms.store.VacuumContentSQL;
-import com.enonic.esl.sql.model.DatabaseSchemaTool;
-import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.sql.*;
-import java.util.List;
+import com.enonic.esl.sql.model.DatabaseSchemaTool;
+import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
+
+import com.enonic.cms.framework.blob.gc.GarbageCollector;
+
+import com.enonic.cms.core.jdbc.DatabaseBaseValuesInitializer;
+import com.enonic.cms.store.DatabaseAccessor;
+import com.enonic.cms.store.VacuumContentSQL;
 
 /**
  * This class implements the system handler that takes care of creating database schema and populating version numbers.
  */
+@Component
 public final class SystemHandler
-        extends BaseHandler
+    extends BaseHandler
 {
     /**
      * Logger.
@@ -72,7 +81,7 @@ public final class SystemHandler
      * Return the model version.
      */
     private int getModelNumber( Connection conn )
-            throws Exception
+        throws Exception
     {
         if ( hasTable( conn, this.db.tModelVersion.getName() ) )
         {
@@ -88,11 +97,11 @@ public final class SystemHandler
      * Select the model version.
      */
     private int selectModelNumber( Connection conn )
-            throws Exception
+        throws Exception
     {
-        PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + this.db.tModelVersion.mve_lVersion.getName() + " FROM " + this.db.tModelVersion.getName() +
-                        " WHERE " + this.db.tModelVersion.mve_sKey.getName() + " = ?" );
+        PreparedStatement stmt =
+            conn.prepareStatement( "SELECT " + this.db.tModelVersion.mve_lVersion.getName() + " FROM " + this.db.tModelVersion.getName() +
+                                       " WHERE " + this.db.tModelVersion.mve_sKey.getName() + " = ?" );
         ResultSet result = null;
 
         try
@@ -119,7 +128,7 @@ public final class SystemHandler
      * Return version number.
      */
     private String getVerticalVersion( Connection conn )
-            throws Exception
+        throws Exception
     {
         PreparedStatement stmt = conn.prepareStatement( "SELECT vve_sVersionName FROM tVerticalVersion" );
         ResultSet result = null;
@@ -146,7 +155,7 @@ public final class SystemHandler
      * Set model version.
      */
     private void setModelNumber( int version )
-            throws Exception
+        throws Exception
     {
         Connection conn = getConnection();
 
@@ -160,11 +169,11 @@ public final class SystemHandler
      * Update model version.
      */
     private boolean updateModelNumber( Connection conn, int version )
-            throws Exception
+        throws Exception
     {
-        PreparedStatement stmt = conn.prepareStatement(
-                "UPDATE " + this.db.tModelVersion.getName() + " SET " + this.db.tModelVersion.mve_lVersion.getName() +
-                        " = ? WHERE " + this.db.tModelVersion.mve_sKey.getName() + " = ?" );
+        PreparedStatement stmt =
+            conn.prepareStatement( "UPDATE " + this.db.tModelVersion.getName() + " SET " + this.db.tModelVersion.mve_lVersion.getName() +
+                                       " = ? WHERE " + this.db.tModelVersion.mve_sKey.getName() + " = ?" );
 
         try
         {
@@ -182,7 +191,7 @@ public final class SystemHandler
      * Insert model version.
      */
     private void insertModelNumber( Connection conn, int version )
-            throws Exception
+        throws Exception
     {
         PreparedStatement stmt = conn.prepareStatement( "INSERT INTO " + this.db.tModelVersion.getName() + " VALUES (?, ?)" );
 
@@ -202,7 +211,7 @@ public final class SystemHandler
      * Initialize the schema.
      */
     public boolean initializeDatabaseSchema()
-            throws Exception
+        throws Exception
     {
         Connection conn = null;
 
@@ -214,7 +223,7 @@ public final class SystemHandler
      * Initialize the database.
      */
     public boolean initializeDatabaseValues()
-            throws Exception
+        throws Exception
     {
         Connection conn = null;
 
@@ -226,7 +235,7 @@ public final class SystemHandler
      * Creating schema if not created.
      */
     private boolean initializeDatabaseSchema( Connection conn )
-            throws Exception
+        throws Exception
     {
         if ( isSchemaCreated( conn ) )
         {
@@ -255,7 +264,7 @@ public final class SystemHandler
      * Execute database schema sqls.
      */
     private void initializeDatabaseSchema( Connection conn, List<?> schema )
-            throws Exception
+        throws Exception
     {
         Statement stmt = null;
         String currentSql = null;
@@ -289,7 +298,7 @@ public final class SystemHandler
      * Initialize the database.
      */
     private boolean initializeDatabaseValues( Connection conn )
-            throws Exception
+        throws Exception
     {
         if ( !isDatabaseValuesInitialized( conn ) )
         {
@@ -297,7 +306,8 @@ public final class SystemHandler
 
             final int modelNumber = VerticalDatabase.getInstance().getVersion();
 
-            DatabaseBaseValuesInitializer databaseBaseValuesInitializer = DatabaseBaseValuesInitializer.getDatabaseBaseValuesInitializer( modelNumber );
+            DatabaseBaseValuesInitializer databaseBaseValuesInitializer =
+                DatabaseBaseValuesInitializer.getDatabaseBaseValuesInitializer( modelNumber );
 
             databaseBaseValuesInitializer.initializeDatabaseValues( conn );
 
@@ -316,7 +326,7 @@ public final class SystemHandler
      * Return true if database values is initialized.
      */
     private boolean isDatabaseValuesInitialized( Connection conn )
-            throws Exception
+        throws Exception
     {
         if ( hasTable( conn, this.db.tModelVersion.getName() ) )
         {
@@ -374,7 +384,7 @@ public final class SystemHandler
      * Vacuum binaries.
      */
     private void vacuumBinaries( Connection conn )
-            throws Exception
+        throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_BINARIES_STATEMENTS );
     }
@@ -383,7 +393,7 @@ public final class SystemHandler
      * Vacuum contents.
      */
     private void vacuumContents( Connection conn )
-            throws Exception
+        throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_CONTENT_STATEMENTS );
     }
@@ -392,7 +402,7 @@ public final class SystemHandler
      * Vacuum categories.
      */
     private void vacuumCategories( Connection conn )
-            throws Exception
+        throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_CATEGORIES_STATEMENTS );
     }
@@ -401,7 +411,7 @@ public final class SystemHandler
      * Vacuum arvhives.
      */
     private void vacuumArchives( Connection conn )
-            throws Exception
+        throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_ARCHIVES_STATEMENTS );
     }
@@ -410,7 +420,7 @@ public final class SystemHandler
      * Vacuum read logs.
      */
     private void vacuumReadLogs( Connection conn )
-            throws Exception
+        throws Exception
     {
         executeStatements( conn, new String[]{VACUUM_READ_LOGS_SQL} );
     }
@@ -419,7 +429,7 @@ public final class SystemHandler
      * Execute a list of statements.
      */
     private void executeStatements( Connection conn, String[] sqlList )
-            throws Exception
+        throws Exception
     {
         for ( String sql : sqlList )
         {
@@ -431,7 +441,7 @@ public final class SystemHandler
      * Execute statement.
      */
     private void executeStatement( Connection conn, String sql )
-            throws Exception
+        throws Exception
     {
         Statement stmt = null;
 

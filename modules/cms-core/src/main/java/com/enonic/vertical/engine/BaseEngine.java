@@ -31,7 +31,7 @@ public abstract class BaseEngine
 {
     private ConnectionFactory connectionFactory;
 
-    @Autowired
+    @Autowired(required = false)
     public void setConnectionFactory( ConnectionFactory connectionFactory )
     {
         this.connectionFactory = connectionFactory;

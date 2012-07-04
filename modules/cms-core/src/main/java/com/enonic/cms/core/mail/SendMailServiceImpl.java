@@ -4,10 +4,7 @@
  */
 package com.enonic.cms.core.mail;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessageHelper;
-
-import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.core.security.user.UserEntity;
 
@@ -15,8 +12,10 @@ public final class SendMailServiceImpl
     extends AbstractSendMailService
     implements SendMailService
 {
-    @Autowired
-    private VerticalProperties properties;
+    private String defaultSubjectForNewPasswordEmail;
+
+    private String defaultBodyForNewPasswordEmail;
+
 
     protected void composeChangePasswordMail( MimeMessageHelper message, UserEntity user, String newPassword, MessageSettings settings )
         throws Exception
@@ -24,13 +23,13 @@ public final class SendMailServiceImpl
         String subject = settings.getSubject();
         if ( subject == null )
         {
-            subject = this.properties.getAdminNewPasswordMailSubject();
+            subject = defaultSubjectForNewPasswordEmail;
         }
 
         String body = settings.getBody();
         if ( body == null )
         {
-            body = this.properties.getAdminNewPasswordMailBody();
+            body = defaultBodyForNewPasswordEmail;
         }
 
         message.addTo( user.getEmail(), user.getDisplayName() );
@@ -42,4 +41,13 @@ public final class SendMailServiceImpl
         message.setText( body );
     }
 
+    public void setDefaultSubjectForNewPasswordEmail( final String defaultSubjectForNewPasswordEmail )
+    {
+        this.defaultSubjectForNewPasswordEmail = defaultSubjectForNewPasswordEmail;
+    }
+
+    public void setDefaultBodyForNewPasswordEmail( final String defaultMailBodyForNewPasswordEmail )
+    {
+        this.defaultBodyForNewPasswordEmail = defaultMailBodyForNewPasswordEmail;
+    }
 }

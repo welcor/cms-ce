@@ -16,7 +16,13 @@ public final class HomeDirFactory
 
     public HomeDir getObject()
     {
-        return new HomeDir( new File( "./src/test/homeDir" ) );
+        File homeDir = new File( "./src/test/homeDir" );
+        if ( !homeDir.exists() )
+        {
+            homeDir = new File( "./modules/cms-itest/src/test/homeDir" );
+        }
+
+        return new HomeDir( homeDir );
     }
 
     public Class<?> getObjectType()

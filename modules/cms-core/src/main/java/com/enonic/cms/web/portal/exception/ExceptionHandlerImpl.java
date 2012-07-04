@@ -86,6 +86,7 @@ public final class ExceptionHandlerImpl
     public void handle( final PortalWebContext context, final Exception outerException )
         throws ServletException, IOException
     {
+        outerException.printStackTrace();
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
 
@@ -268,7 +269,6 @@ public final class ExceptionHandlerImpl
                 ContentNameMismatchClientError contentNameMismatchClientError = (ContentNameMismatchClientError) error;
                 errorPagePath.addParam( "content_key", contentNameMismatchClientError.getContentKey().toString() );
             }
-
             siteRedirectAndForwardHelper.forward( request, response, errorPagePath );
             return true;
         }

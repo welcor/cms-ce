@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
@@ -18,6 +21,8 @@ import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.PluginManager;
 
+@Component
+@Profile("itest")
 public class MockPluginManager
     implements PluginManager
 {

@@ -4,6 +4,13 @@
  */
 package com.enonic.vertical.engine.handlers;
 
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.enonic.cms.framework.blob.BlobRecord;
+
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
@@ -12,15 +19,12 @@ import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
-import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.ContentBinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Set;
-
+@Component
 public final class BinaryDataHandler
 {
     @Autowired
@@ -80,12 +84,13 @@ public final class BinaryDataHandler
 
     public int[] getBinaryDataKeysByVersion( int versionKey )
     {
-        final ContentVersionEntity contentVersion = this.contentVersionDao.findByKey(new ContentVersionKey(versionKey));
+        final ContentVersionEntity contentVersion = this.contentVersionDao.findByKey( new ContentVersionKey( versionKey ) );
         final Set<BinaryDataKey> binaryDataKeys = contentVersion.getContentBinaryDataKeys();
 
         int count = 0;
         final int[] result = new int[binaryDataKeys.size()];
-        for (final BinaryDataKey key : binaryDataKeys) {
+        for ( final BinaryDataKey key : binaryDataKeys )
+        {
             result[count++] = key.toInt();
         }
 

@@ -4,18 +4,28 @@
  */
 package com.enonic.vertical.engine.handlers;
 
-import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.structure.RunAsType;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-import com.enonic.cms.core.structure.page.template.*;
-import com.enonic.cms.core.structure.portlet.PortletEntity;
-import com.enonic.cms.framework.util.TIntArrayList;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.util.StringUtil;
@@ -24,12 +34,26 @@ import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.VerticalRemoveException;
 import com.enonic.vertical.engine.XDG;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.*;
 
-import java.sql.*;
-import java.util.*;
+import com.enonic.cms.framework.util.TIntArrayList;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.CalendarUtil;
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.RunAsType;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateKey;
+import com.enonic.cms.core.structure.page.template.PageTemplatePortletEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateRegionEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateType;
+import com.enonic.cms.core.structure.portlet.PortletEntity;
+
+@Component
 public final class PageTemplateHandler
     extends BaseHandler
 {
@@ -89,7 +113,7 @@ public final class PageTemplateHandler
         if ( keys == null || keys.length == 0 )
         {
             String message = "Failed to create page template. No key returned.";
-            VerticalEngineLogger.errorCreate(message, null );
+            VerticalEngineLogger.errorCreate( message, null );
             return -1;
         }
 
@@ -192,7 +216,7 @@ public final class PageTemplateHandler
                     ptdDoc = XMLTool.createDocument( "pagetemplatedata" );
                 }
                 byte[] ptdBytes = XMLTool.documentToBytes( ptdDoc, "UTF-8" );
-                preparedStmt.setBytes(6, ptdBytes);
+                preparedStmt.setBytes( 6, ptdBytes );
 
                 // element: CSS
                 subelem = subelems.get( "css" );
@@ -222,7 +246,7 @@ public final class PageTemplateHandler
                 if ( result == 0 )
                 {
                     String message = "Failed to create page template. No page template created.";
-                    VerticalEngineLogger.errorCreate(message, null );
+                    VerticalEngineLogger.errorCreate( message, null );
                 }
 
                 // create page template parameters
@@ -283,12 +307,12 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to create page template because of database error: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorCreate(message, nfe );
+            VerticalEngineLogger.errorCreate( message, nfe );
         }
         finally
         {
@@ -309,14 +333,14 @@ public final class PageTemplateHandler
         if ( root == null )
         {
             String message = "Root element does not exist.";
-            VerticalEngineLogger.errorCreate(message, null );
+            VerticalEngineLogger.errorCreate( message, null );
         }
 
         // check: if root element is not contentrating, throw create exception
         if ( !"contentobject".equals( root.getTagName() ) && !"contentobjects".equals( root.getTagName() ) )
         {
             String message = "Root element is not a contentobject or contentobjects element: {0}";
-            VerticalEngineLogger.errorCreate(message, root.getTagName(), null );
+            VerticalEngineLogger.errorCreate( message, root.getTagName(), null );
         }
 
         Node[] node;
@@ -412,12 +436,12 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to link page template to content object because of database error: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorCreate(message, nfe );
+            VerticalEngineLogger.errorCreate( message, nfe );
         }
         finally
         {
@@ -438,14 +462,14 @@ public final class PageTemplateHandler
         if ( root == null )
         {
             String message = "Root element does not exist.";
-            VerticalEngineLogger.errorCreate(message, null );
+            VerticalEngineLogger.errorCreate( message, null );
         }
 
         // check: if root element is not contentrating, throw create exception
         if ( !"pagetemplateparameter".equals( root.getTagName() ) && !"pagetemplateparameters".equals( root.getTagName() ) )
         {
             String message = "Root element is not a pagetemplate or pagetemplates element: {0}";
-            VerticalEngineLogger.errorCreate(message, root.getTagName(), null );
+            VerticalEngineLogger.errorCreate( message, root.getTagName(), null );
         }
 
         Node[] node;
@@ -455,7 +479,7 @@ public final class PageTemplateHandler
             if ( node == null || node.length == 0 )
             {
                 String message = "No page template parameters to create";
-                VerticalEngineLogger.warn(message );
+                VerticalEngineLogger.warn( message );
             }
         }
         else
@@ -502,7 +526,7 @@ public final class PageTemplateHandler
                 // element: name
                 Element subelem = subelems.get( "name" );
                 String name = XMLTool.getElementText( subelem );
-                preparedStmt.setString(3, name);
+                preparedStmt.setString( 3, name );
 
                 // element: separator
                 subelem = subelems.get( "separator" );
@@ -511,7 +535,7 @@ public final class PageTemplateHandler
                 {
                     separator = "";
                 }
-                preparedStmt.setString(5, separator);
+                preparedStmt.setString( 5, separator );
 
                 // element: timestamp (using the database timestamp at creation)
                 /* no code */
@@ -525,12 +549,12 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to create page template parameter because of database error: %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorCreate(message, nfe );
+            VerticalEngineLogger.errorCreate( message, nfe );
         }
         finally
         {
@@ -669,7 +693,7 @@ public final class PageTemplateHandler
         return doc;
     }
 
-    private int[] getPageTemplateKeysByMenu(int menuKey)
+    private int[] getPageTemplateKeysByMenu( int menuKey )
     {
 
         Connection con = null;
@@ -691,7 +715,7 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get page template keys by menu: %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -859,7 +883,7 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove page template because of database error: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -880,7 +904,7 @@ public final class PageTemplateHandler
     public void removePageTemplatesByMenu( int menuKey )
         throws VerticalRemoveException
     {
-        int[] pageTemplateKeys = getPageTemplateKeysByMenu(menuKey );
+        int[] pageTemplateKeys = getPageTemplateKeysByMenu( menuKey );
         if ( pageTemplateKeys != null && pageTemplateKeys.length > 0 )
         {
             removePageTemplates( pageTemplateKeys );
@@ -920,7 +944,7 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove link from page template to content object because of database error: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -956,7 +980,7 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove page template parameters because of database error: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -980,7 +1004,7 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove page template parameters because of database error: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -1150,7 +1174,7 @@ public final class PageTemplateHandler
                 Document ptdDoc = XMLTool.createDocument();
                 ptdDoc.appendChild( ptdDoc.importNode( subelem, true ) );
                 byte[] ptdBytes = XMLTool.documentToBytes( ptdDoc, "UTF-8" );
-                preparedStmt.setBytes(5, ptdBytes);
+                preparedStmt.setBytes( 5, ptdBytes );
 
                 // element: CSS
                 subelem = subelems.get( "css" );
@@ -1168,7 +1192,7 @@ public final class PageTemplateHandler
                 if ( result <= 0 )
                 {
                     String message = "Failed to update page template. No page template updated.";
-                    VerticalEngineLogger.errorUpdate(message, null );
+                    VerticalEngineLogger.errorUpdate( message, null );
                 }
 
                 // If page template is of type "section", we need to create sections for menuitems
@@ -1277,7 +1301,7 @@ public final class PageTemplateHandler
                     catch ( VerticalCreateException vce )
                     {
                         String message = "Failed to create new page template parameters: %t";
-                        VerticalEngineLogger.errorUpdate(message, vce );
+                        VerticalEngineLogger.errorUpdate( message, vce );
                     }
 
                     if ( contentobjects != null )
@@ -1292,7 +1316,7 @@ public final class PageTemplateHandler
                         catch ( VerticalCreateException vce )
                         {
                             String message = "Failed to create new link from page template to content objects: %t";
-                            VerticalEngineLogger.errorUpdate(message, vce );
+                            VerticalEngineLogger.errorUpdate( message, vce );
                         }
                     }
                 }
@@ -1301,17 +1325,17 @@ public final class PageTemplateHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to update page template because of database error: %t";
-            VerticalEngineLogger.errorUpdate(message, sqle );
+            VerticalEngineLogger.errorUpdate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorUpdate(message, nfe );
+            VerticalEngineLogger.errorUpdate( message, nfe );
         }
         catch ( VerticalCreateException vce )
         {
             String message = "Failed to create sections for page template: %t";
-            VerticalEngineLogger.errorUpdate(message, vce );
+            VerticalEngineLogger.errorUpdate( message, vce );
         }
         finally
         {
@@ -1329,14 +1353,14 @@ public final class PageTemplateHandler
         if ( root == null )
         {
             String message = "Root element does not exist";
-            VerticalEngineLogger.errorUpdate(message, null );
+            VerticalEngineLogger.errorUpdate( message, null );
         }
 
         // check: if root element is not contentrating, throw create exception
         if ( !"pagetemplateparameter".equals( root.getTagName() ) && !"pagetemplateparameters".equals( root.getTagName() ) )
         {
             String message = "Root element is not the \"pagetemplateparameter\" or \"pagetemplateparameters\" element: {0}";
-            VerticalEngineLogger.errorUpdate(message, root.getTagName(), null );
+            VerticalEngineLogger.errorUpdate( message, root.getTagName(), null );
         }
 
         Node[] node;
@@ -1388,7 +1412,7 @@ public final class PageTemplateHandler
                 // element: name
                 Element subelem = subelems.get( "name" );
                 String name = XMLTool.getElementText( subelem );
-                preparedStmt.setString(2, name);
+                preparedStmt.setString( 2, name );
 
                 subelem = subelems.get( "separator" );
                 String separator = XMLTool.getElementText( subelem );
@@ -1396,25 +1420,25 @@ public final class PageTemplateHandler
                 {
                     separator = "";
                 }
-                preparedStmt.setString(4, separator);
+                preparedStmt.setString( 4, separator );
 
                 int result = preparedStmt.executeUpdate();
                 if ( result <= 0 )
                 {
                     String message = "Failed to update page template parameters. None updated.";
-                    VerticalEngineLogger.errorUpdate(message, null );
+                    VerticalEngineLogger.errorUpdate( message, null );
                 }
             }
         }
         catch ( SQLException sqle )
         {
             String message = "Failed to update page template parameters because of database error: %t";
-            VerticalEngineLogger.errorUpdate(message, sqle );
+            VerticalEngineLogger.errorUpdate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
             String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorUpdate(message, nfe );
+            VerticalEngineLogger.errorUpdate( message, nfe );
         }
         finally
         {
@@ -1474,7 +1498,7 @@ public final class PageTemplateHandler
         catch ( VerticalCreateException vce )
         {
             String message = "Failed to copy page templates: %t";
-            VerticalEngineLogger.errorCopy(message, vce );
+            VerticalEngineLogger.errorCopy( message, vce );
         }
 
         //VerticalEngineLogger.debug(1, map.toString(), null);
@@ -1524,7 +1548,7 @@ public final class PageTemplateHandler
             catch ( VerticalCreateException vce )
             {
                 String message = "Failed to create copy of framework: %t";
-                VerticalEngineLogger.errorCopy(message, vce );
+                VerticalEngineLogger.errorCopy( message, vce );
             }
         }
         return newPageTemplateKey;

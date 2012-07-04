@@ -13,6 +13,8 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -67,6 +69,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.GroupDao;
 
+@Component
 public final class AdminEngine
     extends BaseEngine
     implements InitializingBean
@@ -1256,6 +1259,7 @@ public final class AdminEngine
     }
 
     @Autowired
+    @Qualifier("enginePageHandler")
     public void setPageHandler( PageHandler pageHandler )
     {
         this.pageHandler = pageHandler;

@@ -1,9 +1,11 @@
 package com.enonic.cms.core.home;
 
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("default")
 public final class HomeDirFactory
     implements FactoryBean<HomeDir>
 {

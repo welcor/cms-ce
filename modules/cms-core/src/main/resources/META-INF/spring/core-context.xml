@@ -7,6 +7,8 @@
   <context:annotation-config/>
   <context:property-placeholder properties-ref="config"/>
 
+  <context:component-scan base-package="com.enonic.cms.framework.blob"/>
+  <context:component-scan base-package="com.enonic.vertical.engine"/>
   <context:component-scan base-package="com.enonic.cms.core"/>
   <context:component-scan base-package="com.enonic.cms.store"/>
   <context:component-scan base-package="com.enonic.cms.business"/>
@@ -74,25 +76,6 @@
     <property name="propertyResolver" ref="upgradePropertyResolver"/>
   </bean>
 
-  <bean id="dataSourceService" class="com.enonic.cms.core.service.DataSourceServiceImpl">
-    <property name="calendarService" ref="calendarService"/>
-    <property name="contentService" ref="contentService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="presentationEngine" ref="presentationEngine"/>
-    <property name="preferenceService" ref="preferenceService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="countryService" ref="countryService"/>
-    <property name="localeService" ref="localeService"/>
-    <property name="timeZoneService" ref="timeZoneService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="userStoreService" ref="userStoreService"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-  </bean>
-
-  <bean id="userServicesEngine" class="com.enonic.vertical.engine.UserServicesEngine"/>
-  <bean id="userServicesService" class="com.enonic.cms.core.service.UserServicesServiceImpl"/>
-
   <bean id="tightestCacheSettingsResolver" class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
 
   <bean id="resolverInputXMLCreator" class="com.enonic.cms.core.resolver.ResolverInputXMLCreator"/>
@@ -122,26 +105,8 @@
   <bean id="localeXsltScriptResolver"
         class="com.enonic.cms.core.resolver.locale.LocaleXsltScriptResolver"/>
 
-  <bean id="adminConsoleTranslationService"
-        class="com.enonic.cms.core.AdminConsoleTranslationService" init-method="init">
-    <property name="defaultLanguageCode" value="${cms.admin.defaultLanguage}"/>
-  </bean>
-
-  <bean id="userServicesRedirectHelper"
-        class="com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver"/>
-
   <bean id="reindexContentToolService"
         class="com.enonic.cms.core.tools.ReindexContentToolServiceImpl"/>
-
-  <bean id="timeService" class="com.enonic.cms.core.time.SystemTimeService"/>
-
-  <bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
-    <property name="host" value="${cms.mail.smtpHost}"/>
-  </bean>
-
-  <bean id="sendMailService" class="com.enonic.cms.core.mail.SendMailServiceImpl">
-    <property name="fromMail" value="${cms.admin.email}"/>
-  </bean>
 
   <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
     <property name="clientForRemoteInvocations" value="false"/>
@@ -184,16 +149,6 @@
 
   <bean class="com.enonic.cms.core.client.LocalClientSetter">
     <property name="localClient" ref="localClient"/>
-  </bean>
-
-  <bean id="blobStoreGarbageCollector" class="com.enonic.cms.framework.blob.gc.GarbageCollector">
-    <property name="finder" ref="usedBlobStoreFinder"/>
-    <property name="store" ref="blobStore"/>
-  </bean>
-
-  <bean id="usedBlobStoreFinder" class="com.enonic.cms.store.blob.DbUsedBlobKeyFinder">
-    <property name="binaryDataDao" ref="binaryDataDao"/>
-    <property name="virtualFileDao" ref="virtualFileDao"/>
   </bean>
 
   <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
@@ -262,11 +217,6 @@
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
 
-  <bean id="adminService" class="com.enonic.cms.core.service.AdminServiceImpl"/>
-
-  <bean id="presentationEngine" class="com.enonic.vertical.engine.PresentationEngine"/>
-  <bean id="adminEngine" class="com.enonic.vertical.engine.AdminEngine"/>
-
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentArticle3XMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.GeneralContentXMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentDocumentXMLBuilder"/>
@@ -275,27 +225,6 @@
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentNewsletterXMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentPollXMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.SimpleContentXMLBuilder"/>
-
-  <bean class="com.enonic.vertical.engine.handlers.BinaryDataHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.ContentHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.CommonHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.CategoryHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.ContentObjectHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.GroupHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.LanguageHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.LogHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.MenuHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.PageHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.PageTemplateHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.SectionHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.SecurityHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.UnitHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.UserHandler"/>
-  <bean class="com.enonic.vertical.engine.handlers.SystemHandler"/>
-
-  <bean id="keyHandler" class="com.enonic.vertical.engine.handlers.KeyHandler">
-    <property name="sessionFactory" ref="sessionFactory"/>
-  </bean>
 
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
     <property name="mimetypesLocation" value="${cms.home}/config/mimetypes.properties"/>

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Sets;
 
@@ -19,6 +20,7 @@ import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.VirtualFileDao;
 import com.enonic.cms.store.vfs.db.VirtualFileEntity;
 
+@Component("usedBlobStoreFinder")
 public final class DbUsedBlobKeyFinder
     implements UsedBlobKeyFinder
 {

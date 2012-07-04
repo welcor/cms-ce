@@ -482,8 +482,7 @@
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:with-param>
-            <xsl:with-param name="disabled"
-                            select="$summary or (not($menuInStepState/menuitem/@key = @key) and (not($section/@filtered = 'true') or not(/wizarddata/contents/content/sectionnames/sectionname[@menuitemkey = $menuitemkey]/@approved = 'false')))"/>
+            <xsl:with-param name="disabled" select="$summary or (not($menuInStepState/menuitem/@key = @key) and (not($section/@filtered = 'true') ))"/>
           </xsl:call-template>
 
           <!--  <xsl:variable name="disabled">

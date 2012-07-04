@@ -20,4 +20,6 @@ public interface IndexTransactionService
     void deleteContent( ContentKey contentKey );
 
     void updateCategory( CategoryKey categoryKey );
+
+    void clearJournal();
 }

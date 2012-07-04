@@ -99,6 +99,19 @@ public class IndexTransactionServiceImpl
         return ( indexTransactionJournal != null );
     }
 
+    @Override
+    public void clearJournal()
+    {
+        // note than indexTransactionJournal is kept between mvn test on one VM
+        IndexTransactionJournal indexTransactionJournal =
+            (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
+
+        if (indexTransactionJournal != null)
+        {
+            indexTransactionJournal.clearJournal();
+        }
+    }
+
     private IndexTransactionJournal newTransactionJournal()
     {
         IndexTransactionJournal indexTransactionJournal =

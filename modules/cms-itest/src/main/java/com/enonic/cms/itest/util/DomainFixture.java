@@ -109,6 +109,7 @@ public class DomainFixture
         VerticalProperties.getVerticalProperties().setProperties( properties );
 
         hibernateTemplate.clear();
+        indexTransactionService.clearJournal();
 
         save( factory.createLanguage( "en" ) );
 

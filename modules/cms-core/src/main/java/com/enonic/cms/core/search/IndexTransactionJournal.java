@@ -144,4 +144,9 @@ public class IndexTransactionJournal
     {
     }
 
+    public void clearJournal()
+    {
+        TransactionSynchronizationManager.unbindResourceIfPossible( IndexTransactionServiceImpl.TRANSACTION_JOURNAL_KEY );
+        changeHistory.clear();
+    }
 }

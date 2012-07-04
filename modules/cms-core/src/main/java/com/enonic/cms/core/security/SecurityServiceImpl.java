@@ -10,11 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
-
-import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -57,8 +56,8 @@ public class SecurityServiceImpl
     @Autowired
     protected AdminConsoleLoginAccessResolver adminConsoleLoginAccessResolver;
 
-    @Autowired
-    private VerticalProperties verticalProperties;
+    @Value("${cms.admin.password}")
+    private String adminUserPassword;
 
     private void initializeSecurityHolder()
     {
@@ -528,7 +527,7 @@ public class SecurityServiceImpl
 
         if ( user.isRoot() )
         {
-            if ( !verifyPassword || verticalProperties.getAdminPassword().equals( password ) )
+            if ( !verifyPassword || adminUserPassword.equals( password ) )
             {
                 return user.getKey();
             }

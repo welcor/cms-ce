@@ -65,10 +65,6 @@
     <property name="upgradeService" ref="upgradeService"/>
   </bean>
 
-  <bean id="keyService" class="com.enonic.cms.core.service.KeyServiceImpl">
-    <property name="keyHandler" ref="keyHandler"/>
-  </bean>
-
   <bean id="upgradePropertyResolver" class="com.enonic.cms.upgrade.service.StandardPropertyResolver"/>
 
   <bean id="upgradeService" class="com.enonic.cms.upgrade.service.UpgradeServiceImpl">

@@ -66,9 +66,6 @@
   <bean id="sitePropertiesService" class="com.enonic.cms.core.MockSitePropertiesService">
   </bean>
 
-  <bean id="keyService" class="com.enonic.cms.itest.util.MockKeyService">
-  </bean>
-
   <bean id="siteService" class="com.enonic.cms.core.structure.SiteServiceImpl">
     <property name="siteCachesService" ref="siteCachesService"/>
     <property name="siteContextManager">

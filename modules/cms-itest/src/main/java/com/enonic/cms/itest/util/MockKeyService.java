@@ -8,11 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
+
 import com.enonic.cms.core.service.KeyService;
 
 /**
  * Extend this mock class with functionality when needed.
  */
+@Service
+@Profile("itest")
 public class MockKeyService
     implements KeyService
 {

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,6 @@ import org.springframework.util.Assert;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-
-import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.CreateGroupAccessException;
@@ -89,8 +88,8 @@ public class UserStoreServiceImpl
     @Autowired
     private GroupDao groupDao;
 
-    @Autowired
-    private VerticalProperties verticalProperties;
+    @Value("${cms.admin.email}")
+    private String adminUserEmail;
 
     @Autowired
     private GroupStorerFactory groupStorerFactory;
@@ -872,7 +871,7 @@ public class UserStoreServiceImpl
             if ( user.isEnterpriseAdmin() )
             {
                 // hente email fra cms.properties
-                user.setEmail( verticalProperties.getAdminEmail() );
+                user.setEmail( adminUserEmail );
             }
             return user;
         }

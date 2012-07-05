@@ -3,7 +3,7 @@ package com.enonic.cms.core.portal.livetrace;
 
 class CacheUsage
 {
-    static final int CONCURRENCY_BLOCK_THRESHOLD = 2;
+    static final int CONCURRENCY_BLOCK_THRESHOLD = 5;
 
     private Boolean cacheable = false;
 

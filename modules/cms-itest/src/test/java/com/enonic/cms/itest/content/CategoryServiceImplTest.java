@@ -15,6 +15,7 @@ import com.enonic.cms.core.content.category.CreateCategoryAccessException;
 import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.category.MoveCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
+import com.enonic.cms.core.content.category.UnitEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserKey;
@@ -71,12 +72,14 @@ public class CategoryServiceImplTest
     public void move_category()
     {
         // setup
-        fixture.save( factory.createUnit( "FirstUnit", "by" ) );
+        final UnitEntity firstUnit = factory.createUnit( "FirstUnit", "by" );
+        fixture.save( firstUnit );
         fixture.save( factory.createCategory( "ParentCategory1", null, null, "FirstUnit", "MyUser", "MyUser" ) );
         fixture.save( factory.createCategoryAccessForUser( "ParentCategory1", "MyUser",
                                                            "administrate, read, create, approve, admin_browse" ) );
 
-        fixture.save( factory.createUnit( "SecondUnit", "by" ) );
+        final UnitEntity secondUnit = factory.createUnit( "SecondUnit", "by" );
+        fixture.save( secondUnit );
         fixture.save( factory.createCategory( "ParentCategory2", null, null, "SecondUnit", "MyUser", "MyUser" ) );
         fixture.save( factory.createCategoryAccessForUser( "ParentCategory2", "MyUser",
                                                            "administrate, read, create, approve, admin_browse" ) );
@@ -128,10 +131,10 @@ public class CategoryServiceImplTest
         CategoryEntity cat = categoryDao.findByKey( subCat3Key );
         CategoryEntity article1 = categoryDao.findByKey( article1Key );
         assertFalse( cat.getChildren().contains( article1 ) );
-        assertEquals( 2, article1.getUnit().getKey().toInt() );
+        assertEquals( secondUnit.getKey().toInt(), article1.getUnit().getKey().toInt() );
         for ( CategoryEntity categoryEntity : article1.getChildren() )
         {
-            assertEquals( 2, categoryEntity.getUnit().getKey().toInt() );
+            assertEquals( secondUnit.getKey().toInt(), categoryEntity.getUnit().getKey().toInt() );
         }
 
         // exercise
@@ -146,10 +149,10 @@ public class CategoryServiceImplTest
         CategoryEntity child = categoryDao.findByKey( article1Key );
 
         assertTrue( result.getChildren().contains( child ) );
-        assertEquals( 1, child.getUnit().getKey().toInt() );
+        assertEquals( firstUnit.getKey().toInt(), child.getUnit().getKey().toInt() );
         for ( CategoryEntity categoryEntity : child.getChildren() )
         {
-            assertEquals( 1, categoryEntity.getUnit().getKey().toInt() );
+            assertEquals( firstUnit.getKey().toInt(), categoryEntity.getUnit().getKey().toInt() );
         }
     }
 

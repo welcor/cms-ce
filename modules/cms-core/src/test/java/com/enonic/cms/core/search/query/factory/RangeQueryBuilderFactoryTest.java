@@ -34,9 +34,9 @@ public class RangeQueryBuilderFactoryTest
             rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "key" ), new QueryValue( "100" ), null, false,
                                                       true );
 
-        System.out.println( query.toString() );
+        // System.out.println( query.toString() );
 
-        assertEquals( expected_result, query.toString() );
+        assertEquals( expected_result.replace( "\r", "" ), query.toString().replace( "\r", "" ) );
     }
 
     @Test
@@ -57,8 +57,9 @@ public class RangeQueryBuilderFactoryTest
             rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "key" ), new QueryValue( 100 ), null, false,
                                                       true );
 
-        System.out.println( query.toString() );
-        assertEquals( expected_result, query.toString() );
+        // System.out.println( query.toString() );
+
+        assertEquals( expected_result.replace( "\r", "" ), query.toString().replace( "\r", "" ) );
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
@@ -83,9 +84,9 @@ public class RangeQueryBuilderFactoryTest
 
         QueryBuilder query = rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "key" ), new QueryValue( 100 ),
                                                                        new QueryValue( 300 ), true, true );
-        System.out.println( query.toString() );
+        // System.out.println( query.toString() );
 
-        assertEquals( expected_result, query.toString() );
+        assertEquals( expected_result.replace( "\r", "" ), query.toString().replace( "\r", "" ) );
     }
 
     @Test
@@ -107,7 +108,7 @@ public class RangeQueryBuilderFactoryTest
             rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
                                                       null, false, true );
 
-        assertEquals( expected_result, query.toString() );
+        assertEquals( expected_result.replace( "\r", "" ), query.toString().replace( "\r", "" ) );
     }
 
     @Test
@@ -129,7 +130,7 @@ public class RangeQueryBuilderFactoryTest
             rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
                                                       null, true, true );
 
-        assertEquals( expected_result, query.toString() );
+        assertEquals( expected_result.replace( "\r", "" ), query.toString().replace( "\r", "" ) );
     }
 
     @Test
@@ -152,6 +153,6 @@ public class RangeQueryBuilderFactoryTest
             rangeQueryBuilderFactory.buildRangeQuery( QueryFieldFactory.resolveQueryField( "my_date_field" ), new QueryValue( initTime ),
                                                       new QueryValue( endTime ), false, true );
 
-        assertEquals( expected_result, query.toString() );
+        assertEquals( expected_result.replace( "\r", "" ), query.toString().replace( "\r", "" ) );
     }
 }

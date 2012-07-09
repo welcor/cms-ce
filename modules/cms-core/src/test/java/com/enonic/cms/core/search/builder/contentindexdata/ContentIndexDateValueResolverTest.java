@@ -35,6 +35,8 @@ public class ContentIndexDateValueResolverTest
         assertNotNull( date );
         assertEquals( new DateTime( 2010, 8, 01, 10, 00 ).toDate(), date );
 
+/*      Three asserts that test that you are in UTC+2 timezone, commented because of senseless.
+
         date = ContentIndexDateValueResolver.resolveDateValue( "2010-08-01T10:00:00+02:00" );
         assertNotNull( date );
         assertEquals( new DateTime( 2010, 8, 01, 10, 00 ).toDate(), date );
@@ -46,6 +48,8 @@ public class ContentIndexDateValueResolverTest
         date = ContentIndexDateValueResolver.resolveDateValue( "2010-08-01T10:00:00z" );
         assertNotNull( date );
         assertEquals( new DateTime( 2010, 8, 01, 12, 00 ).toDate(), date );
+
+*/
     }
 
     @Test

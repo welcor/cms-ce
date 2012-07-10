@@ -162,6 +162,10 @@ import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.service.DataSourceService;
+import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteXmlCreator;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.user.field.UserFields;
@@ -172,6 +176,8 @@ import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.GroupQuery;
+import com.enonic.cms.store.dao.MenuItemDao;
+import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
@@ -217,6 +223,12 @@ public final class InternalClientImpl
     private PreferenceService preferenceService;
 
     private UserDao userDao;
+
+    @Autowired
+    private SiteDao siteDao;
+
+    @Autowired
+    private MenuItemDao menuItemDao;
 
     @Autowired
     private GroupDao groupDao;
@@ -1677,7 +1689,33 @@ public final class InternalClientImpl
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getMenu", livePortalTraceService );
         try
         {
-            return getPresentationInvoker().getMenu( params );
+            assertMinValue( "menuKey", params.menuKey, 0 );
+
+            UserEntity user = securityService.getImpersonatedPortalUser();
+            int siteKey = params.menuKey;
+
+            if ( siteKey < 0 )
+            {
+                XMLDocument xml = SiteXmlCreator.createEmptyMenus();
+                return xml.getAsJDOMDocument();
+            }
+            SiteEntity site = siteDao.findByKey( new SiteKey( siteKey ) );
+
+            if ( site == null )
+            {
+                XMLDocument xml = SiteXmlCreator.createEmptyMenus();
+                return xml.getAsJDOMDocument();
+            }
+
+            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+            siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
+            siteXmlCreator.setUser( user );
+            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( params.tagItem ) );
+            siteXmlCreator.setMenuItemLevels( params.levels );
+            siteXmlCreator.setIncludeHiddenMenuItems( params.includeHidden );
+
+            XMLDocument xml = siteXmlCreator.createLegacyGetMenu( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
+            return xml.getAsJDOMDocument();
         }
         catch ( Exception e )
         {
@@ -1696,7 +1734,37 @@ public final class InternalClientImpl
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getMenuBranch", livePortalTraceService );
         try
         {
-            return getPresentationInvoker().getMenuBranch( params );
+            assertMinValue( "menuItemKey", params.menuItemKey, 0 );
+
+            UserEntity user = securityService.getImpersonatedPortalUser();
+            int menuItemKey = params.menuItemKey;
+
+            if ( menuItemKey < 0 )
+            {
+                XMLDocument xml = SiteXmlCreator.createEmptyMenuBranch();
+                return xml.getAsJDOMDocument();
+            }
+
+            MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+            if ( menuItem == null )
+            {
+                XMLDocument xml = SiteXmlCreator.createEmptyMenuBranch();
+                return xml.getAsJDOMDocument();
+            }
+
+            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+            siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
+
+            siteXmlCreator.setMenuItemInBranch( menuItem );
+            siteXmlCreator.setActiveMenuItem( menuItem );
+            siteXmlCreator.setMenuItemLevels( params.levels );
+            siteXmlCreator.setBranchStartLevel( params.startLevel );
+            siteXmlCreator.setIncludeTopLevel( params.includeTopLevel );
+            siteXmlCreator.setUser( user );
+            siteXmlCreator.setIncludeHiddenMenuItems( params.includeHidden );
+
+            XMLDocument xml = siteXmlCreator.createLegacyGetMenuBranch( menuItem.getSite() );
+            return xml.getAsJDOMDocument();
         }
         catch ( Exception e )
         {
@@ -1753,7 +1821,38 @@ public final class InternalClientImpl
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getSubMenu", livePortalTraceService );
         try
         {
-            return getPresentationInvoker().getSubMenu( params );
+            assertMinValue( "menuItemKey", params.menuItemKey, 0 );
+
+            UserEntity user = securityService.getImpersonatedPortalUser();
+            int menuItemKey = params.menuItemKey;
+
+            if ( menuItemKey < 0 )
+            {
+                XMLDocument xml = SiteXmlCreator.createEmptyMenuItems();
+                return xml.getAsJDOMDocument();
+            }
+
+            MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+            if ( menuItem == null )
+            {
+                XMLDocument xml = SiteXmlCreator.createEmptyMenuItems();
+                return xml.getAsJDOMDocument();
+            }
+
+            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+            siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
+            siteXmlCreator.setUser( user );
+            siteXmlCreator.setMenuItemInBranch( menuItem );
+            siteXmlCreator.setMenuItemLevels( params.levels );
+            siteXmlCreator.setIncludeHiddenMenuItems( params.includeHidden );
+
+            if ( params.tagItem > -1 )
+            {
+                siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( params.tagItem ) );
+            }
+
+            XMLDocument xml = siteXmlCreator.createLegacyGetSubMenu( menuItem.getSite() );
+            return xml.getAsJDOMDocument();
         }
         catch ( Exception e )
         {
@@ -2483,6 +2582,14 @@ public final class InternalClientImpl
         finally
         {
             ClientMethodExecutionTracer.stopTracing( trace, livePortalTraceService );
+        }
+    }
+
+    private void assertMinValue( String name, int value, int minValue )
+    {
+        if ( value < minValue )
+        {
+            throw new IllegalArgumentException( "Parameter [" + name + "] must be >= " + minValue );
         }
     }
 

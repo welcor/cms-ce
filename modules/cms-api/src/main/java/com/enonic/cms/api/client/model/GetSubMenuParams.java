@@ -30,4 +30,10 @@ public final class GetSubMenuParams
      * Default is 0.
      */
     public int levels = 0;
+
+    /**
+     * This parameter specifies the possibility to fetch hidden menu items.
+     * Default is false.
+     */
+    public boolean includeHidden = false;
 }

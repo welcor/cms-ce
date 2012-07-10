@@ -2,7 +2,95 @@
 var useCookies = true;
 var useCookieExpireDate = false;
 
+
+function findTagInTopChildren(node, tagName) {
+    while (node && node.tagName != tagName)
+        node = node.children[0];
+    return node;
+}
+
+// toggle shortcuts - search for all
+function toggleShortcut( currentMenuItem, display, isLast ) {
+    // get menuItem of shortcut IMG
+    while ( currentMenuItem && currentMenuItem.className != 'menuItem' ) {
+        currentMenuItem = currentMenuItem.parentNode;
+    }
+
+    var subMenuLink = findTagInTopChildren( currentMenuItem, 'A' );
+
+    if ( !subMenuLink ) { // must not have subMenu
+        // toggle only upper level ( must have TR parent with id="menutop" )
+        var menuTop = currentMenuItem;
+        while ( menuTop && menuTop.tagName != 'TR' ) {
+            menuTop = menuTop.parentNode;
+        }
+
+        if ( menuTop.id == 'id-menutop' ) {
+            currentMenuItem.style.display = display;
+
+            // fix up the node lines
+            var previousMenuItem = currentMenuItem.previousSibling;
+            if ( previousMenuItem && previousMenuItem.tagName != 'TABLE' ) {
+                previousMenuItem = previousMenuItem.previousSibling;
+            }
+
+            if ( previousMenuItem && previousMenuItem.tagName == 'TABLE' ) {
+                var verticalLine = previousMenuItem.children[0].children[1];
+                if ( verticalLine ) {
+                    verticalLine = verticalLine.children[0];
+                    verticalLine.attributes.background.value = display == '' ? 'javascript/images/I.png' : '';
+                }
+
+                var sign = '';
+                var previousNode = findTagInTopChildren( previousMenuItem, 'IMG' );
+                if ( /plus|minus/.test( previousNode.src ) ) {
+                    sign = /plus/.test( previousNode.src ) ? 'plus' : 'minus';
+                }
+                var icon = display == '' || !isLast && (display == 'none') ? 'T' : 'L';
+                previousNode.src = 'javascript/images/' + icon + sign + '.png';
+            }
+
+            return isLast;
+        }
+    }
+
+    return false;
+}
+
+function searchShortcuts( element, display, isLast ) {
+    var length = element.children.length - 1;
+
+    for ( var i = length; i >= 0; i-- ) {
+        var child = element.children[i];
+
+        // find IMG with shortcut icon
+        if ( child.tagName == 'IMG' && /icon_menuitem_/.test( child.src ) ) {
+            var isShortcutToHide = /_shortcut_lock.gif|_shortcut.gif/.test( child.src );
+            isLast = isShortcutToHide ? toggleShortcut( child, display, isLast ) : false;
+        } else {
+            isLast = searchShortcuts( child, display, isLast );
+        }
+    }
+    return isLast;
+}
+
+function toggleShortcuts( toggle ) {
+    var show = WebFXTabPane.getCookie( 'shortcuts' ) != 'false';
+    show = toggle ? !show : show;
+    WebFXTabPane.setCookie( 'shortcuts', show, 30 );
+
+    var button = document.getElementById( 'shortcut-image' );
+
+    button.style.filter = show ? '' : 'alpha(opacity=30)';
+    button.style.opacity = show ? '' : '.3';
+
+    var menu = document.getElementById( 'id-menus' );
+    searchShortcuts( menu, show ? '' : 'none', true );
+}
+
 function openTree() {
+    toggleShortcuts( false );
+
     for( var key in branchOpen ) {
 
         if ( branchOpen[key] ){

@@ -30,6 +30,7 @@
         <link rel="stylesheet" type="text/css" href="css/menu.css"/>
 
         <script type="text/javascript" src="javascript/admin.js">//</script>
+        <script type="text/javascript" src="javascript/tabpane.js">//</script>
         <script type="text/javascript" src="javascript/menu.js">//</script>
 
         <script type="text/javascript" language="JavaScript">
@@ -116,6 +117,9 @@
               <xsl:call-template name="tree"/>
             </table>
             <div id="mainmenu-refresh-button-container">
+              <a href="javascript:;" onclick="javascript:toggleShortcuts(true);" id="mainmenu-refresh-button">
+                 <img id="shortcut-image" src="images/icon_menuitem_shortcut_lock.gif" alt="%cmdToggleShortcuts%" title="%cmdToggleShortcuts%" width="16" height="16"/>
+              </a>
               <a href="javascript:;" onclick="javascript:refreshMenu();" id="mainmenu-refresh-button">
                  <img src="images/action_refresh_blue.gif" alt="%cmdRefreshMenu%" title="%cmdRefreshMenu%" width="16" height="16"/>
               </a>

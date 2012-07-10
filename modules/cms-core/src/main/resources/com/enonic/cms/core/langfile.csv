@@ -80,6 +80,7 @@
 %cmdSupport%|Support|Support|Support|Support
 %cmdDocumentation%|Dokumentasjon|Documentation|Dokumentation|Dokumentation
 %cmdRefreshMenu%|Oppfriske meny|Refresh menu|Opdater menu|Uppdatera menyn
+%cmdToggleShortcuts%|Vis/gjem skjulte menypunkter av type snarvei (gjelder kun snarveier på rotnivå)|Show/hide hidden menuitems of type shortcut (applies only to shortcuts at root level)|TRANSLATE: Show/hide hidden menuitems of type shortcut (applies only to shortcuts at root level)|Visa/dölj dolda menyval av typen genväg (gäller bara genvägar i översta menynivån)
 %mnuFrameworks%|Sidemaler|Page templates|Sideskabelon|Sidmallar
 %mnuSystem%|System|System|System|System
 %mnuJavaProperties%|Java egenskaper|Java properties|Java egenskaber|Java-egenskaper

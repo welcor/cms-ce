@@ -983,6 +983,7 @@ a#mainmenu-refresh-button {
     display: block;
     padding: 2px;
     border: 1px solid Transparent;
+    float: left;
 }
 
 a#mainmenu-refresh-button:hover {

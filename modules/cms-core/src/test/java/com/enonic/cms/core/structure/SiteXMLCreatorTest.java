@@ -74,6 +74,82 @@ public class SiteXMLCreatorTest
         assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( null ) ) ) );
     }
 
+    public void testGetHiddenMenuItemsAllHidden()
+        throws JDOMException, IOException
+    {
+        String expectedXml = getXml( "/com/enonic/cms/core/structure/SiteXMLCreatorTest-Menu-fixture1-result-all-hidden.xml" );
+
+        site_1 = new SiteEntity();
+        site_1.setKey( 1 );
+        site_1.setLanguage( createLanguage( "1", "no", "Norwegian" ) );
+
+        mi_1 = createMenuItem( "1", "mi 1", null, site_1 );
+        mi_1.setHidden( true );
+
+        mi_2 = createMenuItem( "2", "mi 2", null, site_1 );
+        mi_2.setHidden( true );
+
+        Map<CaseInsensitiveString, MenuItemEntity> topMenuItems = new LinkedHashMap<CaseInsensitiveString, MenuItemEntity>();
+        topMenuItems.put( new CaseInsensitiveString( mi_1.getName() ), mi_1 );
+        topMenuItems.put( new CaseInsensitiveString( mi_2.getName() ), mi_2 );
+        site_1.setTopMenuItems( topMenuItems );
+
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+
+        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( null ) ) ) );
+    }
+
+    public void testGetHiddenMenuItemsOneHidden()
+        throws JDOMException, IOException
+    {
+        String expectedXml = getXml( "/com/enonic/cms/core/structure/SiteXMLCreatorTest-Menu-fixture1-result-one-hidden.xml" );
+
+        site_1 = new SiteEntity();
+        site_1.setKey( 1 );
+        site_1.setLanguage( createLanguage( "1", "no", "Norwegian" ) );
+
+        mi_1 = createMenuItem( "1", "mi 1", null, site_1 );
+        mi_1.setHidden( true );
+
+        mi_2 = createMenuItem( "2", "mi 2", null, site_1 );
+        mi_2.setHidden( false );
+
+        Map<CaseInsensitiveString, MenuItemEntity> topMenuItems = new LinkedHashMap<CaseInsensitiveString, MenuItemEntity>();
+        topMenuItems.put( new CaseInsensitiveString( mi_1.getName() ), mi_1 );
+        topMenuItems.put( new CaseInsensitiveString( mi_2.getName() ), mi_2 );
+        site_1.setTopMenuItems( topMenuItems );
+
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+
+        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( null ) ) ) );
+    }
+
+    public void testGetHiddenMenuItemsIncludeHiddenMenuItems()
+        throws JDOMException, IOException
+    {
+        String expectedXml = getXml( "/com/enonic/cms/core/structure/SiteXMLCreatorTest-Menu-fixture1-result-include-hidden-menu-items.xml" );
+
+        site_1 = new SiteEntity();
+        site_1.setKey( 1 );
+        site_1.setLanguage( createLanguage( "1", "no", "Norwegian" ) );
+
+        mi_1 = createMenuItem( "1", "mi 1", null, site_1 );
+        mi_1.setHidden( true );
+
+        mi_2 = createMenuItem( "2", "mi 2", null, site_1 );
+        mi_2.setHidden( true );
+
+        Map<CaseInsensitiveString, MenuItemEntity> topMenuItems = new LinkedHashMap<CaseInsensitiveString, MenuItemEntity>();
+        topMenuItems.put( new CaseInsensitiveString( mi_1.getName() ), mi_1 );
+        topMenuItems.put( new CaseInsensitiveString( mi_2.getName() ), mi_2 );
+        site_1.setTopMenuItems( topMenuItems );
+
+        siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
+        siteXmlCreator.setIncludeHiddenMenuItems( true );
+
+        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( null ) ) ) );
+    }
+
     public void xtestCreateLegacyGetMenuByMenuItem()
         throws JDOMException, IOException
     {

@@ -7,11 +7,8 @@ package com.enonic.cms.core.client;
 import org.jdom.Document;
 
 import com.enonic.cms.api.client.model.GetCategoriesParams;
-import com.enonic.cms.api.client.model.GetMenuBranchParams;
 import com.enonic.cms.api.client.model.GetMenuDataParams;
 import com.enonic.cms.api.client.model.GetMenuItemParams;
-import com.enonic.cms.api.client.model.GetMenuParams;
-import com.enonic.cms.api.client.model.GetSubMenuParams;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.service.DataSourceService;
@@ -44,26 +41,7 @@ public final class PresentationInvoker
     {
         assertMinValue( "categoryKey", params.categoryKey, 0 );
         return this.dataSourceService.getCategories( createDataSourceContext(), params.categoryKey, params.levels,
-                                                     params.includeTopCategory, true, false,
-                                                     params.includeContentCount ).getAsJDOMDocument();
-    }
-
-    public Document getMenu( GetMenuParams params )
-        throws Exception
-    {
-        assertMinValue( "menuKey", params.menuKey, 0 );
-
-        return this.dataSourceService.getMenu( createDataSourceContext(), params.menuKey, params.tagItem, params.levels,
-                                               false ).getAsJDOMDocument();
-    }
-
-    public Document getMenuBranch( GetMenuBranchParams params )
-        throws Exception
-    {
-        assertMinValue( "menuItemKey", params.menuItemKey, 0 );
-
-        return this.dataSourceService.getMenuBranch( createDataSourceContext(), params.menuItemKey, params.includeTopLevel,
-                                                     params.startLevel, params.levels ).getAsJDOMDocument();
+                                                     params.includeTopCategory, true, false, params.includeContentCount ).getAsJDOMDocument();
     }
 
     public Document getMenuData( GetMenuDataParams params )
@@ -79,16 +57,7 @@ public final class PresentationInvoker
     {
         assertMinValue( "menuItemKey", params.menuItemKey, 0 );
 
-        return this.dataSourceService.getMenuItem( createDataSourceContext(), params.menuItemKey, params.withParents,
-                                                   params.details ).getAsJDOMDocument();
-    }
-
-    public Document getSubMenu( GetSubMenuParams params )
-        throws Exception
-    {
-        assertMinValue( "menuItemKey", params.menuItemKey, 0 );
-        return this.dataSourceService.getSubMenu( createDataSourceContext(), params.menuItemKey, params.tagItem, params.levels,
-                                                  false ).getAsJDOMDocument();
+        return this.dataSourceService.getMenuItem( createDataSourceContext(), params.menuItemKey, params.withParents, params.details ).getAsJDOMDocument();
     }
 
     private void assertMinValue( String name, int value, int minValue )

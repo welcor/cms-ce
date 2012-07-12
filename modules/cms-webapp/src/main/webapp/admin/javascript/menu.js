@@ -35,10 +35,12 @@ function toggleShortcut( currentMenuItem, display, isLast ) {
             }
 
             if ( previousMenuItem && previousMenuItem.tagName == 'TABLE' ) {
-                var verticalLine = previousMenuItem.children[0].children[1];
-                if ( verticalLine ) {
-                    verticalLine = verticalLine.children[0];
-                    verticalLine.attributes.background.value = display == '' ? 'javascript/images/I.png' : '';
+                if ( isLast) {
+                    var verticalLine = previousMenuItem.children[0].children[1];
+                    if ( verticalLine ) {
+                        verticalLine = verticalLine.children[0];
+                        verticalLine.attributes.background.value = display == '' ? 'javascript/images/I.png' : '';
+                    }
                 }
 
                 var sign = '';

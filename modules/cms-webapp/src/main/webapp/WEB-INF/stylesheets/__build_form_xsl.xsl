@@ -19,7 +19,9 @@
                     xmlns:exslt-common="http://exslt.org/common"
                     xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
 
-      <x:output method="html"/>
+      <x:output method="html"
+            doctype-system="http://www.w3.org/TR/html4/loose.dtd"
+            doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN" />
 
       <x:include>
         <xsl:attribute name="href">

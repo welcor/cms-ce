@@ -23,6 +23,30 @@ public class NameGeneratorTest
         assertEquals( "vasilijschukin", simplifyString( "\u0412\u0430\u0441\u0438\u043b\u0438\u0439 \u0429\u0443\u043a\u0438\u043d" ) );
     }
 
+    // for encoding use native2ascii -encoding utf-8 file.txt ,
+    // where file.txt is saved in utf-8 !
+    public void testSimplifyStringGreek()
+        throws Exception
+    {
+        char[] characters = new char[25];
+
+        for ( int i = 0; i < characters.length; i++ )
+        {
+            characters[i] = (char) ( i + 0x391 );   // small alpha
+        }
+
+        // alpha beta ...
+        assertEquals( "abgdezethiclmnxoprstyphchpso", simplifyString(  new String( characters )) );
+
+        for ( int i = 0; i < characters.length; i++ )
+        {
+            characters[i] = (char) ( i + 0x3B1 );   // big alpha
+        }
+
+        // alpha beta ...
+        assertEquals( "abgdezethiclmnxoprstyphchpso", simplifyString(  new String( characters )) );
+    }
+
     public void testSimplifyStringLatinAZ()
         throws Exception
     {

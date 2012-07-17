@@ -174,6 +174,59 @@ public class NameGenerator
         .put( '\u045f', "dj" )   // џ
         .put( '\u045e', "uj" )   // ў
 
+        // greek
+        // big letters
+        .put( '\u03b1', "a" )    // Α
+        .put( '\u03b2', "b" )    // Β
+        .put( '\u03b3', "g" )    // Γ
+        .put( '\u03b4', "d" )    // Δ
+        .put( '\u03b5', "e" )    // Ε
+        .put( '\u03b6', "z" )    // Ζ
+        .put( '\u03b7', "e" )    // Η
+        .put( '\u03b8', "th" )   // Θ
+        .put( '\u03b9', "i" )    // Ι
+        .put( '\u03ba', "c" )    // Κ
+        .put( '\u03bb', "l" )    // Λ
+        .put( '\u03bc', "m" )    // Μ
+        .put( '\u03bd', "n" )    // Ν
+        .put( '\u03be', "x" )    // Ξ
+        .put( '\u03bf', "o" )    // Ο
+        .put( '\u03c0', "p" )    // Π
+        .put( '\u03c1', "r" )    // Ρ
+        .put( '\u03c3', "s" )    // Σ
+        .put( '\u03c4', "t" )    // Τ
+        .put( '\u03c5', "y" )    // Υ
+        .put( '\u03c6', "ph" )   // Φ
+        .put( '\u03c7', "ch" )   // Χ
+        .put( '\u03c8', "ps" )   // Ψ
+        .put( '\u03c9', "o" )    // Ω
+
+        // small letters
+        .put( '\u0391', "a" )    // α
+        .put( '\u0392', "b" )    // β
+        .put( '\u0393', "g" )    // γ
+        .put( '\u0394', "d" )    // δ
+        .put( '\u0395', "e" )    // ε
+        .put( '\u0396', "z" )    // ζ
+        .put( '\u0397', "e" )    // η
+        .put( '\u0398', "th" )   // θ
+        .put( '\u0399', "i" )    // ι
+        .put( '\u039a', "c" )    // κ
+        .put( '\u039b', "l" )    // λ
+        .put( '\u039c', "m" )    // μ
+        .put( '\u039d', "n" )    // ν
+        .put( '\u039e', "x" )    // ξ
+        .put( '\u039f', "o" )    // ο
+        .put( '\u03a0', "p" )    // π
+        .put( '\u03a1', "r" )    // ρ
+        .put( '\u03a3', "s" )    // σ
+        .put( '\u03a4', "t" )    // τ
+        .put( '\u03a5', "y" )    // υ
+        .put( '\u03a6', "ph" )   // φ
+        .put( '\u03a7', "ch" )   // χ
+        .put( '\u03a8', "ps" )   // ψ
+        .put( '\u03a9', "o" )    // ω
+
       .build();
 
 

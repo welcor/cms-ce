@@ -29,7 +29,7 @@ public final class UserHandler
     extends BaseHandler
 {
     @Autowired
-    private UserDao userDao;
+    protected UserDao userDao;
 
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey )
     {
@@ -45,8 +45,8 @@ public final class UserHandler
             return null;
         }
 
-        fName = NameGenerator.simplifyString( fName );
-        sName = NameGenerator.simplifyString( sName );
+        fName = NameGenerator.transcribeName( fName );
+        sName = NameGenerator.transcribeName( sName );
 
         String suffix = "";
         int counter = 0;

@@ -13,13 +13,16 @@ public class NameGenerator
 {
     public static final String DEFAULT_REPLACE = "";
 
+    public static final String NOT_ASCII = "[^\\p{ASCII}]";
+    public static final String DIACRITICAL = "[\\p{InCombiningDiacriticalMarks}\\p{IsLm}\\p{IsSk}]+";
+
     /*
-        special regexp char ranges relevant for simplification -> see http://docstore.mik.ua/orelly/perl/prog3/ch05_04.htm
-        InCombiningDiacriticalMarks: special marks that are part of "normal" \u00e4, \u00f6, \u00ee etc..
-        IsSk: Symbol, Modifier see http://www.fileformat.info/info/unicode/category/Sk/list.htm
-        IsLm: Letter, Modifier see http://www.fileformat.info/info/unicode/category/Lm/list.htm
-     */
-    public static final Pattern DIACRITICS_AND_FRIENDS = Pattern.compile( "[\\p{InCombiningDiacriticalMarks}\\p{IsLm}\\p{IsSk}]+" );
+       special regexp char ranges relevant for simplification -> see http://docstore.mik.ua/orelly/perl/prog3/ch05_04.htm
+       InCombiningDiacriticalMarks: special marks that are part of "normal" \u00e4, \u00f6, \u00ee etc..
+       IsSk: Symbol, Modifier see http://www.fileformat.info/info/unicode/category/Sk/list.htm
+       IsLm: Letter, Modifier see http://www.fileformat.info/info/unicode/category/Lm/list.htm
+    */
+    public static final Pattern DIACRITICS = Pattern.compile( DIACRITICAL );
 
 
     private static final ImmutableMap<Character, String> NON_DIACRITICS = ImmutableMap.<Character, String>builder()
@@ -229,8 +232,20 @@ public class NameGenerator
 
       .build();
 
+    public static String transcribeName( final String string )
+    {
+        final String name = transcribe( string );
 
-    public static String simplifyString( String string )
+        if ( name == null || name.length() == 0 )
+        {
+            final int random = (int) ( Math.random() * 1000 );
+            return String.format( "user%04d", random );
+        }
+
+        return name;
+    }
+
+    private static String transcribe( final String string )
     {
         if ( string == null )
         {
@@ -243,18 +258,19 @@ public class NameGenerator
         final char[] characters = new char[length];
         string.getChars( 0, length, characters, 0 );
 
-        for ( char character : characters )
+        for ( final char character : characters )
         {
-            String replace = NON_DIACRITICS.get( character );
-            String toReplace = replace == null ? String.valueOf( character ) : replace;
+            final String replace = NON_DIACRITICS.get( character );
+            final String toReplace = replace == null ? String.valueOf( character ) : replace;
             stringBuilder.append( toReplace );
         }
 
-        string = Normalizer.normalize( stringBuilder, Normalizer.Form.NFD );
+        final String normalized = Normalizer.normalize( stringBuilder, Normalizer.Form.NFD );
+        final String diacriticsCleaned = DIACRITICS.matcher( normalized ).replaceAll( DEFAULT_REPLACE );
+        final String nonAsciiCleaned = diacriticsCleaned.replaceAll( NOT_ASCII, DEFAULT_REPLACE );
+        final String lowerCase = nonAsciiCleaned.toLowerCase();
 
-        string = DIACRITICS_AND_FRIENDS.matcher( string ).replaceAll( "" );
-
-        return string.replaceAll( "[^\\p{ASCII}]", "" ).toLowerCase();
+        return lowerCase;
     }
 
 }

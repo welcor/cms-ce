@@ -94,7 +94,7 @@ public abstract class AbstractBaseUserStoreConnector
     {
         Assert.isTrue( StringUtils.isNotBlank( suggestedUsername ) );
 
-        suggestedUsername = NameGenerator.simplifyString( suggestedUsername );
+        suggestedUsername = NameGenerator.transcribeName( suggestedUsername );
 
         int i = 0;
 

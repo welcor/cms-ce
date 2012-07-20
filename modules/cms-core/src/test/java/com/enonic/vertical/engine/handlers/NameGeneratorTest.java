@@ -2,30 +2,30 @@ package com.enonic.vertical.engine.handlers;
 
 import junit.framework.TestCase;
 
-import static com.enonic.vertical.engine.handlers.NameGenerator.simplifyString;
+import static com.enonic.vertical.engine.handlers.NameGenerator.transcribeName;
 
 public class NameGeneratorTest
     extends TestCase
 {
 
-    public void testSimplifyStringLatin()
+    public void testCreateLatinUsernameFromDiacritics()
         throws Exception
     {
-        assertEquals( "jorundvierskriubakken", simplifyString( "J\u00f8rund Vier Skriubakken" ) ); // ø
+        assertEquals( "jorundvierskriubakken", transcribeName( "J\u00f8rund Vier Skriubakken" ) ); // ø
     }
 
     // for encoding use native2ascii -encoding utf-8 file.txt ,
     // where file.txt is saved in utf-8 !
-    public void testSimplifyStringCyrillic()
+    public void testCreateLatinUsernameFromCyrillic()
         throws Exception
     {
         // Василий Щукин
-        assertEquals( "vasilijschukin", simplifyString( "\u0412\u0430\u0441\u0438\u043b\u0438\u0439 \u0429\u0443\u043a\u0438\u043d" ) );
+        assertEquals( "vasilijschukin", transcribeName( "\u0412\u0430\u0441\u0438\u043b\u0438\u0439 \u0429\u0443\u043a\u0438\u043d" ) );
     }
 
     // for encoding use native2ascii -encoding utf-8 file.txt ,
     // where file.txt is saved in utf-8 !
-    public void testSimplifyStringGreek()
+    public void testCreateLatinUsernameFromGreek()
         throws Exception
     {
         char[] characters = new char[25];
@@ -36,7 +36,7 @@ public class NameGeneratorTest
         }
 
         // alpha beta ...
-        assertEquals( "abgdezethiclmnxoprstyphchpso", simplifyString(  new String( characters )) );
+        assertEquals( "abgdezethiclmnxoprstyphchpso", transcribeName( new String( characters ) ) );
 
         for ( int i = 0; i < characters.length; i++ )
         {
@@ -44,10 +44,10 @@ public class NameGeneratorTest
         }
 
         // alpha beta ...
-        assertEquals( "abgdezethiclmnxoprstyphchpso", simplifyString(  new String( characters )) );
+        assertEquals( "abgdezethiclmnxoprstyphchpso", transcribeName( new String( characters ) ) );
     }
 
-    public void testSimplifyStringLatinAZ()
+    public void testCreateLatinUsernameFromDiacriticsAZ()
         throws Exception
     {
         byte[] characters = new byte[128];
@@ -58,10 +58,10 @@ public class NameGeneratorTest
         }
 
         assertEquals( "szszycaaaaaaceeeeiiiidnooooouuuuythssaaaaaaaeceeeeiiiidnoooooouuuuythy",
-                      simplifyString( new String( characters, "cp1252" ) ) );
+                      transcribeName( new String( characters, "cp1252" ) ) );
     }
 
-    public void testSimplifyStringCyrillicAZ()
+    public void testCreateLatinUsernameFromCyrillicAZ()
         throws Exception
     {
         byte[] characters = new byte[128];
@@ -73,8 +73,14 @@ public class NameGeneratorTest
 
         assertEquals(
             "gjgjljnjkjdjljnjkjdjujujjjgjjocyeyiiigjjoyejjdzdzyiabvgdezhzijklmnoprstufhcchshschyehjujaabvgdezhzijklmnoprstufhcchshschyehjuja",
-            simplifyString( new String( characters, "cp1251" ) ) );
+            transcribeName( new String( characters, "cp1251" ) ) );
     }
 
+    public void testCreateLatinUsernameFromEmptyString()
+        throws Exception
+    {
+        final String user = transcribeName( "" );
+        assertTrue( user.matches( "user\\d{4}" ) );
+    }
 
 }

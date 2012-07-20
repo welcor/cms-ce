@@ -238,7 +238,7 @@ public class NameGenerator
 
         if ( name == null || name.length() == 0 )
         {
-            final int random = (int) ( Math.random() * 1000 );
+            final int random = (int) ( Math.random() * 10000 );
             return String.format( "user%04d", random );
         }
 

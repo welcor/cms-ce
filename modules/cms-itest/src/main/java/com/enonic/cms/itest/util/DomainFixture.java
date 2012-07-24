@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.itest.util;
 
+import java.sql.Types;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.store.hibernate.type.LazyInitializedJDOMDocumentUserType;
 
 /**
  * Nov 26, 2009
@@ -56,6 +58,12 @@ import com.enonic.cms.store.dao.UserDao;
 @Scope("prototype")
 public class DomainFixture
 {
+    static
+    {
+        // prevent org.h2.jdbc.JdbcSQLException: Value too long for column "MEN_XMLDATA BINARY(255)"
+        LazyInitializedJDOMDocumentUserType.JDOM_DOCUMENT_TYPE = Types.LONGVARBINARY;
+    }
+
     @Autowired
     private HibernateTemplate hibernateTemplate;
 

@@ -126,7 +126,7 @@ public class DataSourceServiceImpl_getContentByQueryTest
         context.setUser( fixture.findUserByName( "content-querier" ) );
 
         String query = "title = 'Test title'";
-        String orderyBy = "";
+        String orderyBy = "@key asc";
         int index = 0;
         int count = 10;
         boolean includeData = true;

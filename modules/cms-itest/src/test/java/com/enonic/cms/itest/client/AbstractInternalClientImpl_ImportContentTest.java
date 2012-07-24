@@ -30,6 +30,7 @@ import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyImageContentData;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
@@ -70,6 +71,8 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
     public void before()
         throws IOException, JDOMException
     {
+        ImportJobFactory.setExecuteInOneTransaction( true );
+
         factory = fixture.getFactory();
 
         fixture.initSystemData();

@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.itest.store.dao;
 
-import java.sql.Types;
 import java.util.Date;
 
 import org.jdom.Document;
@@ -37,7 +36,6 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ResourceUsageDao;
-import com.enonic.cms.store.hibernate.type.LazyInitializedJDOMDocumentUserType;
 
 import static org.junit.Assert.*;
 
@@ -54,12 +52,6 @@ public class ResourceUsageDaoTest
 
     @Autowired
     private ContentService contentService;
-
-    static
-    {
-        // prevent org.h2.jdbc.JdbcSQLException: Value too long for column "MEN_XMLDATA BINARY(255)"
-        LazyInitializedJDOMDocumentUserType.JDOM_DOCUMENT_TYPE = Types.LONGVARBINARY;
-    }
 
     @Before
     public void setUp()

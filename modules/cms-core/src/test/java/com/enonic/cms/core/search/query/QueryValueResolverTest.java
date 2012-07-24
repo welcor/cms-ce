@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search.query;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class QueryValueResolverTest
     @Test
     public void testDateValue()
     {
-        Expression expression = new ValueExpr( new DateTime( 2012, 02, 14, 12, 5, 0 ) );
+        Expression expression = new ValueExpr( new DateTime( 2012, 02, 14, 11, 5, 0, DateTimeZone.UTC ) );
         final QueryValue[] queryValues = QueryValueFactory.resolveQueryValues( expression );
 
         final QueryValue actual = QueryValueFactory.resolveQueryValues( expression )[0];

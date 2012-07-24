@@ -2,6 +2,7 @@ package com.enonic.cms.core.search.query.factory;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.query.QueryFieldAndValue;
@@ -79,7 +80,7 @@ public class TermQueryBuilderFactoryTest
             "}";
 
         final QueryBuilder queryBuilder =
-            termQueryBuilderFactory.buildTermQuery( new QueryFieldAndValue( "data/*", new DateTime( 2010, 8, 1, 10, 0 ) ) );
+            termQueryBuilderFactory.buildTermQuery( new QueryFieldAndValue( "data/*", new DateTime( 2010, 8, 1, 8, 0, DateTimeZone.UTC ) ) );
 
         compareStringsIgnoreFormatting( expected, queryBuilder.toString() );
     }
@@ -109,7 +110,7 @@ public class TermQueryBuilderFactoryTest
             "    \"data_person_birthdate.date\" : \"2010-08-01T08:00:00.000Z\"\n" +
             "  }\n" + "}";
 
-        DateTime dateTime = new DateTime( 2010, 8, 1, 10, 00 );
+        DateTime dateTime = new DateTime( 2010, 8, 1, 8, 00, DateTimeZone.UTC );
 
         final QueryBuilder queryBuilder =
             termQueryBuilderFactory.buildTermQuery( new QueryFieldAndValue( "data_person_birthdate", dateTime ) );

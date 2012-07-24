@@ -1,6 +1,7 @@
 package com.enonic.cms.itest.search;
 
 import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -211,6 +212,7 @@ public class ContentIndexServiceImpl_queryDatesTest
     }
 
     @Test
+    @Ignore // does not have sence - will work or fail in different timezones. test tests that you are in UTC+2 timezone
     public void testQueryDateFieldsInUserData_equals()
     {
         final ContentDocument contentDocument = createContentDocument( 1 );

@@ -155,7 +155,7 @@ public class DataSourceServiceImpl_getRelatedContentTest
         int[] contentKeys = new int[]{father.toInt()};
         int relation = -1;
         String query = "";
-        String orderBy = "";
+        String orderBy = "@title asc";
         int index = 0;
         int count = 100;
         boolean includeData = true;

@@ -455,7 +455,7 @@ public final class DataSourceServiceImpl
                                    int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes )
     {
         boolean includeContentData = true;
-        return doGetContent( context, contentKeys, "", "", 0, contentKeys.length, parentLevel, childrenLevel, parentChildrenLevel,
+        return doGetContent( context, contentKeys, "", "@key asc", 0, contentKeys.length, parentLevel, childrenLevel, parentChildrenLevel,
                              includeContentData, !relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
                              filterByContentTypes );
     }

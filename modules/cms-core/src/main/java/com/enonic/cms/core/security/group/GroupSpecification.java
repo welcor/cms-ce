@@ -13,6 +13,13 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
  */
 public class GroupSpecification
 {
+    public static GroupSpecification usingKey( GroupKey key )
+    {
+        GroupSpecification spec = new GroupSpecification();
+        spec.setKey( key );
+        return spec;
+    }
+
     public enum DeletedState
     {
         NOT_DELETED,

@@ -3,6 +3,7 @@ package com.enonic.cms.itest.content.imports;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -87,7 +88,7 @@ public class Support112124Test
         throws IOException
     {
         ImportResult result = doImport( "Kontakt", "SRKontaktListeImport", "kontakter.xml" );
-
+        fixture.flushIndexTransaction();
         // verify
         assertEquals( 4, result.getInserted().size() );
         assertEquals( 4, fixture.countAllContent() );
@@ -99,25 +100,32 @@ public class Support112124Test
 
         // import 1 pass
         result = doImport( "Statistikk", "SRImport", "statistikk.xml" );
+        fixture.flushIndexTransaction();
         assertEquals( 1, result.getInserted().size() );
         assertEquals( 0, result.getUpdated().size() );
         assertEquals( 5, fixture.countAllContent() );
         assertEquals( 1, fixture.countContentVersionsByTitle( "Veitrafikkulykker" ) );
 
-        ContentEntity content = fixture.findContentByKey( new ContentKey( "5" ) );
+        final List<ContentEntity> all = fixture.findAllContent();
+
+        ContentEntity content = fixture.findContentByName( "veitrafikkulykker" );
         Collection<ContentKey> actualOrder = getRelatedContentKeys( content, "kontakter" );
-        assertOrderedEquals( "0: 2, 1: 4, 2: 3", actualOrder );
+        final String expected = String.format( "0: %d, 1: %d, 2: %d", all.get( 2-1 ).getKey().toInt(), all.get( 4-1 ).getKey().toInt(),
+                                               all.get( 3-1 ).getKey().toInt() );
+
+        assertOrderedEquals( expected, actualOrder );
 
         // reimport the same
         result = doImport( "Statistikk", "SRImport", "statistikk.xml" );
+        fixture.flushIndexTransaction();
         assertEquals( 1, result.getSkipped().size() );
         assertEquals( 5, fixture.countAllContent() );
         assertEquals( 1, fixture.countContentVersionsByTitle( "Veitrafikkulykker" ) );
 
-        content = fixture.findContentByKey( new ContentKey( "5" ) );
+        content =  fixture.findContentByName( "veitrafikkulykker" );
         actualOrder = getRelatedContentKeys( content, "kontakter" );
 
-        assertOrderedEquals( "0: 2, 1: 4, 2: 3", actualOrder );
+        assertOrderedEquals( expected, actualOrder );
 
         // import with new order
         result = doImport( "Statistikk", "SRImport", "statistikk-endret.xml" );

@@ -4,20 +4,15 @@
  */
 package com.enonic.vertical.adminweb;
 
-import java.io.IOException;
+import com.enonic.cms.core.resource.ResourceFile;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.framework.util.HttpServletUtil;
+import com.enonic.esl.util.StringUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.enonic.esl.util.StringUtil;
-
-import com.enonic.cms.framework.util.HttpServletUtil;
-
-import com.enonic.cms.core.service.AdminService;
-
-import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceKey;
+import java.io.IOException;
 
 public class ResourceDataServlet
     extends AbstractAdminwebServlet

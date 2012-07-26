@@ -4,8 +4,7 @@
  */
 package com.enonic.cms.itest.store.dao;
 
-import java.util.Date;
-
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.api.client.model.user.Address;
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -26,6 +24,7 @@ import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
+import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
@@ -90,12 +89,12 @@ public class UserEntityDaoTest
         // Setup of prerequisites
         final UserEntity user = createUser( "uid", "displayName", "email@example.com", "syncValue" );
 
-        final UserInfo userInfo = new UserInfo();
-        userInfo.setBirthday( new Date( 1976, 4, 19 ) );
-        userInfo.setInitials( "JVS" );
-        userInfo.setCountry( "Norway" );
-        userInfo.setNickName( "Skriu" );
-        user.updateUserInfo( userInfo );
+        UserFields userFields = new UserFields();
+        userFields.setBirthday( new DateMidnight( 1976, 4, 19 ).toDate() );
+        userFields.setInitials( "JVS" );
+        userFields.setCountry( "Norway" );
+        userFields.setNickName( "Skriu" );
+        user.setUserFields( userFields );
         userDao.storeNew( user );
 
         final UserKey userKey = user.getKey();
@@ -108,11 +107,11 @@ public class UserEntityDaoTest
 
         // Verify
         assertEquals( user, storedUser );
-        final UserInfo storedUserInfo = storedUser.getUserInfo();
-        assertEquals( "JVS", storedUserInfo.getInitials() );
-        assertEquals( "Norway", storedUserInfo.getCountry() );
-        assertEquals( "Skriu", storedUserInfo.getNickName() );
-        assertEquals( new Date( 1976, 4, 19 ), storedUserInfo.getBirthday() );
+        userFields = storedUser.getUserFields();
+        assertEquals( "JVS", userFields.getInitials() );
+        assertEquals( "Norway", userFields.getCountry() );
+        assertEquals( "Skriu", userFields.getNickName() );
+        assertEquals( new DateMidnight( 1976, 4, 19 ).toDate(), userFields.getBirthday() );
     }
 
     @Test
@@ -121,9 +120,9 @@ public class UserEntityDaoTest
         // Setup of prerequisites
         final UserEntity user = createUser( "uid", "displayName", "email@example.com", "syncValue" );
 
-        final UserInfo userInfo = new UserInfo();
-        userInfo.setInitials( "JVS" );
-        userInfo.setCountry( "Norway" );
+        UserFields userFields = new UserFields();
+        userFields.setInitials( "JVS" );
+        userFields.setCountry( "Norway" );
 
         final Address homeAddress = new Address();
         homeAddress.setLabel( "My Home address" );
@@ -141,9 +140,9 @@ public class UserEntityDaoTest
         workAddress.setRegion( "Work Region" );
         workAddress.setCountry( "MyCountry" );
 
-        userInfo.setAddresses( homeAddress, workAddress );
+        userFields.setAddresses( homeAddress, workAddress );
 
-        user.updateUserInfo( userInfo );
+        user.setUserFields( userFields );
         userDao.storeNew( user );
 
         final UserKey userKey = user.getKey();
@@ -157,11 +156,11 @@ public class UserEntityDaoTest
         // Verify
         assertEquals( user, storedUser );
 
-        final UserInfo storedUserInfo = storedUser.getUserInfo();
-        assertEquals( "JVS", storedUserInfo.getInitials() );
-        assertEquals( "Norway", storedUserInfo.getCountry() );
+        userFields = storedUser.getUserFields();
+        assertEquals( "JVS", userFields.getInitials() );
+        assertEquals( "Norway", userFields.getCountry() );
 
-        final Address storedHomeAddress = storedUserInfo.getAddresses()[0];
+        final Address storedHomeAddress = userFields.getAddresses().get( 0 );
         assertNotNull( storedHomeAddress );
         assertEquals( storedHomeAddress, homeAddress );
         assertEquals( "My Home address", storedHomeAddress.getLabel() );
@@ -171,7 +170,7 @@ public class UserEntityDaoTest
         assertEquals( "MyRegion", storedHomeAddress.getRegion() );
         assertEquals( "MyCountry", storedHomeAddress.getCountry() );
 
-        final Address storedWorkAddress = storedUserInfo.getAddresses()[1];
+        final Address storedWorkAddress = userFields.getAddresses().get( 1 );
         assertNotNull( storedWorkAddress );
         assertEquals( storedWorkAddress, workAddress );
         assertEquals( "My Work address", storedWorkAddress.getLabel() );
@@ -186,48 +185,36 @@ public class UserEntityDaoTest
     public void testUpdateUserInfo()
     {
         // Setup of prerequisites
-        final UserEntity user = createUser( "uid", "displayName", "email@example.com", "syncValue" );
+        final UserEntity newUser = createUser( "uid", "displayName", "email@example.com", "syncValue" );
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setCountry( "Norway" );
-        user.updateUserInfo( userInfo );
-        userDao.storeNew( user );
-
-        final UserKey userKey = user.getKey();
-
+        // Excercise
+        newUser.setUserFields( new UserFields().setCountry( "Norway" ) );
+        userDao.storeNew( newUser );
         userDao.getHibernateTemplate().flush();
         userDao.getHibernateTemplate().clear();
 
-        // Excercise
-        UserEntity storedUser = userDao.findByKey( userKey );
+        final UserKey userKey = newUser.getKey();
 
         // Verify
-        assertEquals( user, storedUser );
+        assertEquals( newUser, userDao.findByKey( userKey ) );
+        assertEquals( "Norway", userDao.findByKey( userKey ).getUserFields().getCountry() );
 
-        UserInfo storedUserInfo = storedUser.getUserInfo();
-        assertEquals( "Norway", storedUserInfo.getCountry() );
-
-        // Update
-        userInfo = new UserInfo();
-        userInfo.setCountry( "South Africa" );
-        storedUser.updateUserInfo( userInfo );
-
+        // Excercise
+        UserEntity updateUser = userDao.findByKey( userKey );
+        updateUser.setUserFields( new UserFields().setCountry( "South Africa" ) );
+        userDao.updateExisting( updateUser );
         userDao.getHibernateTemplate().flush();
         userDao.getHibernateTemplate().clear();
 
-        // Excercise
-        storedUser = userDao.findByKey( userKey );
-
         // Verify
-        assertEquals( user, storedUser );
-
-        storedUserInfo = storedUser.getUserInfo();
-        assertEquals( "South Africa", storedUserInfo.getCountry() );
+        assertEquals( newUser, userDao.findByKey( userKey ) );
+        assertEquals( "South Africa", userDao.findByKey( userKey ).getUserFields().getCountry() );
     }
 
     @Test
     public void testUpdateUserInfo_Address()
     {
+        // TODO: Implement
     }
 
 
@@ -237,10 +224,10 @@ public class UserEntityDaoTest
         // Setup of prerequisites
         final UserEntity user = createUser( "uid", "displayName", "email@example.com", "syncValue" );
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setInitials( "JVS" );
-        userInfo.setCountry( "Norway" );
-        user.updateUserInfo( userInfo );
+        UserFields userFields = new UserFields();
+        userFields.setInitials( "JVS" );
+        userFields.setCountry( "Norway" );
+        user.setUserFields( userFields );
         userDao.storeNew( user );
 
         final UserKey userKey = user.getKey();
@@ -254,15 +241,15 @@ public class UserEntityDaoTest
         // Verify
         assertEquals( user, storedUser );
 
-        UserInfo storedUserInfo = storedUser.getUserInfo();
-        assertEquals( "JVS", storedUserInfo.getInitials() );
-        assertEquals( "Norway", storedUserInfo.getCountry() );
+        UserFields storedUserFields = storedUser.getUserFields();
+        assertEquals( "JVS", storedUserFields.getInitials() );
+        assertEquals( "Norway", storedUserFields.getCountry() );
 
         // Update
-        userInfo = new UserInfo();
-        userInfo.setInitials( null );
-        userInfo.setCountry( "South Africa" );
-        storedUser.updateUserInfo( userInfo );
+        userFields = new UserFields();
+        userFields.setInitials( null );
+        userFields.setCountry( "South Africa" );
+        storedUser.setUserFields( userFields );
 
         userDao.getHibernateTemplate().flush();
         userDao.getHibernateTemplate().clear();
@@ -273,14 +260,56 @@ public class UserEntityDaoTest
         // Verify
         assertEquals( user, storedUser );
 
-        storedUserInfo = storedUser.getUserInfo();
-        Assert.assertNull( storedUserInfo.getInitials() );
-        assertEquals( "South Africa", storedUserInfo.getCountry() );
+        storedUserFields = storedUser.getUserFields();
+        Assert.assertNull( storedUserFields.getInitials() );
+        assertEquals( "South Africa", storedUserFields.getCountry() );
     }
 
     @Test
     public void testDeleteUserInfo_Address()
     {
+
+        // Setup of prerequisites
+        final UserEntity user = createUser( "uid", "displayName", "email@example.com", "syncValue" );
+
+        UserFields userFields = new UserFields();
+        Address address = new Address();
+        address.setLabel( "Home" );
+        address.setStreet( "Street 1" );
+        userFields.setAddresses( address );
+        user.setUserFields( userFields );
+        userDao.storeNew( user );
+
+        final UserKey userKey = user.getKey();
+
+        userDao.getHibernateTemplate().flush();
+        userDao.getHibernateTemplate().clear();
+
+        // Excercise
+        UserEntity storedUser = userDao.findByKey( userKey );
+
+        // Verify
+        assertEquals( user, storedUser );
+
+        UserFields storedUserFields = storedUser.getUserFields();
+        assertEquals( 1, storedUserFields.getAddresses().size() );
+        assertEquals( "Home", storedUserFields.getAddresses().get( 0 ).getLabel() );
+
+        // Update
+        userFields = new UserFields();
+        storedUser.setUserFields( userFields );
+
+        userDao.getHibernateTemplate().flush();
+        userDao.getHibernateTemplate().clear();
+
+        // Excercise
+        storedUser = userDao.findByKey( userKey );
+
+        // Verify
+        assertEquals( user, storedUser );
+
+        storedUserFields = storedUser.getUserFields();
+        assertEquals( 0, storedUserFields.getAddresses().size() );
     }
 
 

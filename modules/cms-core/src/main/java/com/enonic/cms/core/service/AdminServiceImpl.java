@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -34,6 +35,7 @@ import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
@@ -41,26 +43,29 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 
+@Service("adminService")
 public class AdminServiceImpl
     implements AdminService
 {
-
     private static final int TIMEOUT_24HOURS = 86400;
 
     @Autowired
-    public void setAdminEngine( AdminEngine value )
-    {
-        adminEngine = value;
-    }
-
     protected AdminEngine adminEngine;
 
+    @Autowired
     private ResourceService resourceService;
 
     @Autowired
+    private IndexTransactionService indexTransactionService;
+
     public void setResourceService( ResourceService value )
     {
         this.resourceService = value;
+    }
+
+    public void setAdminEngine( AdminEngine value )
+    {
+        adminEngine = value;
     }
 
     public XMLDocument getPageTemplates( PageTemplateType type )
@@ -158,6 +163,13 @@ public class AdminServiceImpl
     public void updateAccessRights( User user, String xmlData )
     {
         adminEngine.updateAccessRights( user, xmlData );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updateIndexCategory( CategoryKey categoryKey )
+    {
+        indexTransactionService.startTransaction();
+        indexTransactionService.updateCategory( categoryKey );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -518,11 +530,6 @@ public class AdminServiceImpl
     public boolean isUserStoreAdmin( User user, UserStoreKey userStoreKey )
     {
         return adminEngine.isUserStoreAdmin( user, userStoreKey );
-    }
-
-    public void moveCategory( User user, int catKey, int superCatKey )
-    {
-        adminEngine.moveCategory( user, catKey, superCatKey );
     }
 
     public XMLDocument getMenu( User user, CategoryCriteria criteria )

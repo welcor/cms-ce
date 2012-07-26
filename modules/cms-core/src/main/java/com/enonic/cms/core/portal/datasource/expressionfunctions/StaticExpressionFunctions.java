@@ -132,9 +132,19 @@ public class StaticExpressionFunctions
         return ExpressionFunctionsFactory.get().createExpressionFunctions().getWindowKey();
     }
 
-    public static String pageKey(String path)
+    public static String getPageKeyByPath(String path)
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().pageKey(path);
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().getPageKeyByPath( path );
+    }
+
+    public static String getPageKeysByPath(String path, String predicate)
+    {
+        if ( !"child".equals( predicate ))
+        {
+            throw new RuntimeException( "Only 'child' predicate is supported." );
+        }
+
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().getPageKeysByPath( path );
     }
 
     public static String urlEncode(String source)

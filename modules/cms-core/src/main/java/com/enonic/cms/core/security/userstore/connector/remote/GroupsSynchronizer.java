@@ -7,18 +7,25 @@ package com.enonic.cms.core.security.userstore.connector.remote;
 import java.util.Collection;
 
 import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupSpecification;
 import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.group.StoreNewGroupCommand;
+import com.enonic.cms.core.security.userstore.GroupStorer;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
-
+import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.user.remote.RemoteGroup;
 
 public class GroupsSynchronizer
     extends AbstractBaseGroupSynchronizer
 {
-    public GroupsSynchronizer( final UserStoreEntity userStore, boolean syncGroup, boolean syncMemberships, boolean syncMembers )
+    private GroupStorer groupStorer;
+
+    public GroupsSynchronizer( final SynchronizeStatus status, final UserStoreEntity userStore, boolean syncGroup, boolean syncMemberships,
+                               boolean syncMembers )
     {
         super( userStore, syncGroup, syncMemberships, syncMembers );
+        setStatusCollector( status );
     }
 
     public void synchronize( final Collection<RemoteGroup> remoteGroupsToSync, final MemberCache memberCache )
@@ -31,30 +38,20 @@ public class GroupsSynchronizer
 
     private void createUpdateOrResurrectLocalGroup( final RemoteGroup remoteGroup, final MemberCache memberCache )
     {
-        final GroupSpecification spec = new GroupSpecification();
-        spec.setUserStoreKey( userStore.getKey() );
-        spec.setName( remoteGroup.getId() );
-        spec.setSyncValue( remoteGroup.getSync() );
-        spec.setType( GroupType.USERSTORE_GROUP );
-
-        GroupEntity localGroup = groupDao.findSingleBySpecification( spec );
+        GroupEntity localGroup = findGroupBySyncValue( remoteGroup.getSync() );
 
         if ( syncGroup )
         {
             if ( localGroup == null )
             {
-                localGroup = createLocalGroup( remoteGroup );
+                localGroup = createGroup( remoteGroup );
                 status.groupCreated();
             }
             else
             {
-                final boolean resurrected = updateAndResurrectLocalGroup( localGroup, remoteGroup );
+                final boolean resurrected = resurrectGroup( localGroup );
                 status.groupUpdated( resurrected );
             }
-        }
-        if ( syncMembers )
-        {
-            syncGroupMembers( localGroup, remoteGroup, memberCache );
         }
         if ( syncMemberships )
         {
@@ -62,27 +59,30 @@ public class GroupsSynchronizer
         }
     }
 
-    private GroupEntity createLocalGroup( final RemoteGroup remoteGroup )
+    private GroupEntity findGroupBySyncValue( String syncValue )
     {
-        final GroupEntity newLocalGroup = new GroupEntity();
-        newLocalGroup.setName( remoteGroup.getId() );
-        newLocalGroup.setRestricted( true );
-        newLocalGroup.setSyncValue( remoteGroup.getSync() );
-        newLocalGroup.setType( GroupType.USERSTORE_GROUP );
-        newLocalGroup.setUserStore( userStore );
-        newLocalGroup.setDeleted( 0 );
+        final GroupSpecification spec = new GroupSpecification();
+        spec.setUserStoreKey( userStore.getKey() );
+        spec.setSyncValue( syncValue );
+        spec.setType( GroupType.USERSTORE_GROUP );
 
-        groupDao.storeNew( newLocalGroup );
-        groupDao.getHibernateTemplate().flush();
-        return newLocalGroup;
+        return groupDao.findSingleBySpecification( spec );
     }
 
-    private boolean updateAndResurrectLocalGroup( final GroupEntity localGroup, final RemoteGroup remoteGroup )
+    private GroupEntity createGroup( final RemoteGroup remoteGroup )
     {
-        final boolean resurrected = localGroup.isDeleted() == true;
-        // force resurrection
-        localGroup.setDeleted( 0 );
+        final StoreNewGroupCommand storeNewGroupCommand = new StoreNewGroupCommand();
+        storeNewGroupCommand.setName( remoteGroup.getId() );
+        storeNewGroupCommand.setSyncValue( remoteGroup.getSync() );
+        storeNewGroupCommand.setRestriced( true );
+        storeNewGroupCommand.setType( GroupType.USERSTORE_GROUP );
+        storeNewGroupCommand.setUserStoreKey( userStore.getKey() );
+        GroupKey groupKey = groupStorer.storeNewGroup( storeNewGroupCommand );
+        return groupDao.findByKey( groupKey );
+    }
 
-        return resurrected;
+    public void setGroupStorer( GroupStorer groupStorer )
+    {
+        this.groupStorer = groupStorer;
     }
 }

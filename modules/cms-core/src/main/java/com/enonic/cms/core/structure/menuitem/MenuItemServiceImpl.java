@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +16,7 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryAccessType;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
@@ -30,7 +31,7 @@ import com.enonic.cms.store.dao.SectionContentDao;
 import com.enonic.cms.store.dao.UserDao;
 
 
-@Component("menuItemService")
+@Service("menuItemService")
 public class MenuItemServiceImpl
     implements MenuItemService
 {
@@ -59,9 +60,13 @@ public class MenuItemServiceImpl
 
     private TimeService timeService;
 
+    @Autowired
+    private IndexTransactionService indexTransactionService;
+
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void execute( final MenuItemServiceCommand... commands )
     {
+        indexTransactionService.startTransaction();
         for ( final MenuItemServiceCommand command : commands )
         {
             if ( command instanceof SetContentHomeCommand )
@@ -88,6 +93,10 @@ public class MenuItemServiceImpl
             {
                 doExecuteUnapproveContentsInSectionCommand( (UnapproveContentsInSectionCommand) command );
             }
+            else if ( command instanceof OrderContentsInSectionCommand )
+            {
+                doExecuteOrderContentsInSectionCommand( (OrderContentsInSectionCommand) command );
+            }
             else
             {
                 throw new UnsupportedOperationException( "Unsupported menu-item service command: " + command.getClass().getName() );
@@ -95,6 +104,17 @@ public class MenuItemServiceImpl
 
             sectionContentDao.getHibernateTemplate().flush();
         }
+    }
+
+    private void doExecuteOrderContentsInSectionCommand( final OrderContentsInSectionCommand command )
+    {
+        Preconditions.checkNotNull( command.getSectionKey(), "section key cannot be null" );
+        Preconditions.checkNotNull( command.getWantedOrder(), "wanted order cannot be null" );
+
+        final MenuItemEntity section = menuItemDao.findByKey( command.getSectionKey() );
+        ContentsInSectionOrderer orderer =
+            new ContentsInSectionOrderer( command.getWantedOrder(), section, ORDER_SPACE );
+        orderer.order();
     }
 
     private void doExecuteSetContentHomeCommand( final SetContentHomeCommand command )
@@ -138,6 +158,8 @@ public class MenuItemServiceImpl
 
             content.addContentHome( newContentHome );
         }
+
+        indexTransactionService.updateContent( command.getContent() );
     }
 
     private void doExecuteAddContentToSectionCommand( final AddContentToSectionCommand command )
@@ -215,6 +237,7 @@ public class MenuItemServiceImpl
             }
         }
 
+        indexTransactionService.updateContent( command.getContent() );
     }
 
     private void doExecuteRemoveContentsFromSectionCommand( final RemoveContentsFromSectionCommand command )
@@ -253,6 +276,7 @@ public class MenuItemServiceImpl
                 MenuItemEntity.class.getName() + ".sectionContents", section.getKey() );
 
             removeContentHomeIfThisSectionIs( content, section );
+            indexTransactionService.updateContent( content );
         }
     }
 
@@ -329,6 +353,11 @@ public class MenuItemServiceImpl
         {
             changedSectionContent.setTimestamp( timeService.getNowAsDateTime().toDate() );
         }
+
+        for ( ContentKey contentKey : command.getContentsToApprove() )
+        {
+            indexTransactionService.updateContent( contentKey );
+        }
     }
 
     private void doExecuteUnapproveContentsInSectionCommand( final UnapproveContentsInSectionCommand command )
@@ -351,6 +380,7 @@ public class MenuItemServiceImpl
                 continue;
             }
             doUnapproveContentInSection( sectionContent );
+            indexTransactionService.updateContent( contentKey );
         }
     }
 
@@ -410,10 +440,14 @@ public class MenuItemServiceImpl
 
     private void removeContentHomeIfThisSectionIs( final ContentEntity content, final MenuItemEntity section )
     {
-        final ContentHomeEntity contentHome =
-            contentHomeDao.findByKey( new ContentHomeKey( section.getSite().getKey(), content.getKey() ) );
+        final ContentHomeEntity contentHome = content.getContentHome( section.getSite().getKey() );
 
-        if ( contentHome != null && section.getKey() == contentHome.getMenuItem().getKey())
+        if ( contentHome != null && contentHome.getMenuItem() == null )
+        {
+            content.removeContentHome( section.getSite().getKey() );
+            contentHomeDao.delete( contentHome );
+        }
+        else if ( contentHome != null && section.getKey() == contentHome.getMenuItem().getKey() )
         {
             content.removeContentHome( section.getSite().getKey() );
             contentHomeDao.delete( contentHome );

@@ -5,6 +5,7 @@
 package com.enonic.cms.core.portal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
@@ -18,6 +19,7 @@ import com.enonic.cms.store.dao.GroupDao;
 /**
  * This is called a Service because it not only checks the access but also throws corresponding exceptions.
  */
+@Service
 public class PortalAccessService
 {
     @Autowired

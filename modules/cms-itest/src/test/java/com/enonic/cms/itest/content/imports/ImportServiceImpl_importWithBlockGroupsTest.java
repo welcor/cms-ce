@@ -128,6 +128,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -160,6 +161,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -231,6 +233,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -272,6 +275,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -345,6 +349,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -382,6 +387,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 1, result.getSkipped().size() );
@@ -413,6 +419,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         updateContentType( "PersonCty", changedContentTypeXml );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         String firstImportSource = "";
         firstImportSource += "<persons>";
@@ -445,6 +452,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -482,6 +490,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -566,6 +575,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -603,6 +613,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -692,6 +703,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -733,6 +745,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -808,6 +821,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
         String secondImportSource = "";
@@ -836,6 +850,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -912,6 +927,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -953,6 +969,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -1029,6 +1046,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -1066,6 +1084,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -1102,6 +1121,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ContentTypeEntity contentType = fixture.findContentTypeByName( contentTypeName );
         contentType.setData( XMLDocumentFactory.create( contentTypeXml ).getAsJDOMDocument() );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     private String resourceToString( Resource resource )

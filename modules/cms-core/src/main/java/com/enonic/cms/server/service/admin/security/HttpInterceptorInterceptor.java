@@ -4,18 +4,19 @@
  */
 package com.enonic.cms.server.service.admin.security;
 
-import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
-import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.server.service.servlet.OriginalPathResolver;
+import java.util.Collection;
+import java.util.Stack;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
-import java.util.Stack;
+import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
+import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 
 public class HttpInterceptorInterceptor extends HandlerInterceptorAdapter
 {

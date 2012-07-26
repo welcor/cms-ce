@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,6 +39,7 @@ import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 
+@Component
 public final class ContentObjectHandler
     extends BaseHandler
 {
@@ -131,7 +133,7 @@ public final class ContentObjectHandler
                 else
                 {
                     String message = "No menu key specified.";
-                    VerticalEngineLogger.errorCreate(message, null );
+                    VerticalEngineLogger.errorCreate( message, null );
                 }
 
                 pos++;
@@ -146,13 +148,13 @@ public final class ContentObjectHandler
                     else
                     {
                         String message = "No object stylesheet key specified.";
-                        VerticalEngineLogger.errorCreate(message, null );
+                        VerticalEngineLogger.errorCreate( message, null );
                     }
                 }
                 else
                 {
                     String message = "No object stylesheet specified.";
-                    VerticalEngineLogger.errorCreate(message, null );
+                    VerticalEngineLogger.errorCreate( message, null );
                 }
 
                 pos++;
@@ -177,13 +179,13 @@ public final class ContentObjectHandler
                     if ( name == null || name.length() == 0 )
                     {
                         String message = "Empty stylesheet name.";
-                        VerticalEngineLogger.errorCreate(message, null );
+                        VerticalEngineLogger.errorCreate( message, null );
                     }
                 }
                 else
                 {
                     String message = "No stylesheet name specified.";
-                    VerticalEngineLogger.errorCreate(message, null );
+                    VerticalEngineLogger.errorCreate( message, null );
                 }
 
                 // element: contentobjectdata (optional)
@@ -233,7 +235,7 @@ public final class ContentObjectHandler
                 if ( result <= 0 )
                 {
                     String message = "Failed to create content object, no content object created.";
-                    VerticalEngineLogger.errorCreate(message, null );
+                    VerticalEngineLogger.errorCreate( message, null );
                 }
             }
 
@@ -243,7 +245,7 @@ public final class ContentObjectHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to create content object(s): %t";
-            VerticalEngineLogger.errorCreate(message, sqle );
+            VerticalEngineLogger.errorCreate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
@@ -266,7 +268,7 @@ public final class ContentObjectHandler
                 default:
                     msgData = new Object[]{"content object key", tmpStr};
             }
-            VerticalEngineLogger.errorCreate(message, msgData, nfe );
+            VerticalEngineLogger.errorCreate( message, msgData, nfe );
         }
         finally
         {
@@ -287,7 +289,7 @@ public final class ContentObjectHandler
         if ( keys == null || keys.length == 0 )
         {
             String message = "Failed to create content object, no key returned";
-            VerticalEngineLogger.errorCreate(message, null );
+            VerticalEngineLogger.errorCreate( message, null );
         }
 
         return keys[0];
@@ -422,7 +424,7 @@ public final class ContentObjectHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to get content object(s): %t";
-            VerticalEngineLogger.error(message, sqle );
+            VerticalEngineLogger.error( message, sqle );
         }
         finally
         {
@@ -459,7 +461,7 @@ public final class ContentObjectHandler
             if ( result <= 0 )
             {
                 String message = "Failed to remove content object becuase it does not exist: {0}";
-                VerticalEngineLogger.errorRemove(message, new Object[]{contentObjectKey}, null );
+                VerticalEngineLogger.errorRemove( message, new Object[]{contentObjectKey}, null );
             }
 
             preparedStmt.close();
@@ -467,7 +469,7 @@ public final class ContentObjectHandler
         }
         catch ( SQLException sqle )
         {
-            VerticalEngineLogger.errorRemove("A database error occurred: {0}", sqle.getMessage(), sqle );
+            VerticalEngineLogger.errorRemove( "A database error occurred: {0}", sqle.getMessage(), sqle );
         }
         finally
         {
@@ -499,7 +501,7 @@ public final class ContentObjectHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to remove contents: %t";
-            VerticalEngineLogger.errorRemove(message, sqle );
+            VerticalEngineLogger.errorRemove( message, sqle );
         }
         finally
         {
@@ -555,7 +557,7 @@ public final class ContentObjectHandler
                 else
                 {
                     String message = "No content object key specified.";
-                    VerticalEngineLogger.errorUpdate(message, null );
+                    VerticalEngineLogger.errorUpdate( message, null );
                 }
 
                 pos++;
@@ -570,7 +572,7 @@ public final class ContentObjectHandler
                 else
                 {
                     String message = "No menu key specified.";
-                    VerticalEngineLogger.errorUpdate(message, null );
+                    VerticalEngineLogger.errorUpdate( message, null );
                 }
 
                 pos++;
@@ -585,13 +587,13 @@ public final class ContentObjectHandler
                     else
                     {
                         String message = "No object stylesheet key specified.";
-                        VerticalEngineLogger.errorUpdate(message, null );
+                        VerticalEngineLogger.errorUpdate( message, null );
                     }
                 }
                 else
                 {
                     String message = "No object stylesheet specified.";
-                    VerticalEngineLogger.errorUpdate(message, null );
+                    VerticalEngineLogger.errorUpdate( message, null );
                 }
 
                 pos++;
@@ -614,13 +616,13 @@ public final class ContentObjectHandler
                     if ( name == null || name.length() == 0 )
                     {
                         String message = "Empty stylesheet name.";
-                        VerticalEngineLogger.errorUpdate(message, null );
+                        VerticalEngineLogger.errorUpdate( message, null );
                     }
                 }
                 else
                 {
                     String message = "No stylesheet name specified.";
-                    VerticalEngineLogger.errorUpdate(message, null );
+                    VerticalEngineLogger.errorUpdate( message, null );
                 }
 
                 // element: contentobjectdata (optional)
@@ -678,7 +680,7 @@ public final class ContentObjectHandler
                 if ( result <= 0 )
                 {
                     String message = "Failed to update content object, no content object updated.";
-                    VerticalEngineLogger.errorUpdate(message, null );
+                    VerticalEngineLogger.errorUpdate( message, null );
                 }
             }
 
@@ -688,7 +690,7 @@ public final class ContentObjectHandler
         catch ( SQLException sqle )
         {
             String message = "Failed to update content object(s): %t";
-            VerticalEngineLogger.errorUpdate(message, sqle );
+            VerticalEngineLogger.errorUpdate( message, sqle );
         }
         catch ( NumberFormatException nfe )
         {
@@ -711,7 +713,7 @@ public final class ContentObjectHandler
                 default:
                     msgData = new Object[]{"content object key", tmpStr};
             }
-            VerticalEngineLogger.errorUpdate(message, msgData, nfe );
+            VerticalEngineLogger.errorUpdate( message, msgData, nfe );
         }
         finally
         {
@@ -763,7 +765,7 @@ public final class ContentObjectHandler
         catch ( VerticalCreateException vce )
         {
             String message = "Failed to copy content objects: %t";
-            VerticalEngineLogger.errorCopy(message, vce );
+            VerticalEngineLogger.errorCopy( message, vce );
         }
     }
 

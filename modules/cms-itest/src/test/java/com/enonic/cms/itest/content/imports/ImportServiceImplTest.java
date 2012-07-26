@@ -44,6 +44,7 @@ import com.enonic.cms.core.content.imports.ImportException;
 import com.enonic.cms.core.content.imports.ImportJob;
 import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.content.imports.ImportResult;
+import com.enonic.cms.core.search.ElasticSearchIndexServiceImpl;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -72,6 +73,9 @@ public class ImportServiceImplTest
     private ContentService contentService;
 
     private String personContentTypeXml;
+
+    @Autowired
+    ElasticSearchIndexServiceImpl elasticSearchIndexService;
 
 
     @Before
@@ -184,6 +188,8 @@ public class ImportServiceImplTest
         createCommand.setContentData( contentData );
         contentService.createContent( createCommand );
 
+        fixture.flushIndexTransaction();
+
         // setup content type with needed import configuration
         String importsConfig = "";
         importsConfig += "<imports>";
@@ -287,6 +293,8 @@ public class ImportServiceImplTest
         createCommand.setContentData( contentData );
         contentService.createContent( createCommand );
 
+        fixture.flushIndexTransaction();
+
         // setup content type with needed import configuration
         String importsConfig = "";
         importsConfig += "<imports>";
@@ -343,6 +351,7 @@ public class ImportServiceImplTest
         fixture.save( factory.createCategoryAccessForUser( "Dates", "testuser", "read, create, approve" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         ContentTypeConfig dateCtyCfg = fixture.findContentTypeByName( "DateCty" ).getContentTypeConfig();
 
@@ -363,6 +372,8 @@ public class ImportServiceImplTest
         contentData.add( new DateDataEntry( dateCtyCfg.getInputConfig( "date" ), new DateMidnight( 2010, 1, 1 ).toDate() ) );
         createCommand.setContentData( contentData );
         ContentKey date2010ContentKey = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // setup content type with needed import configuration
         String importsConfig = "";
@@ -394,11 +405,12 @@ public class ImportServiceImplTest
         assertEquals( 1, result.getInserted().size() );
         assertEquals( 0, result.getUpdated().size() );
 
+        fixture.flushAndClearHibernateSesssion();
+
         // verify: related content keys are in same order as in import source
         CustomContentData grandDaughterCCD = (CustomContentData) fixture.findMainContentVersionByTitle( "Grand daughter" ).getContentData();
-        RelatedContentsDataEntry related_persons = (RelatedContentsDataEntry) grandDaughterCCD.getEntry( "related_dates" );
-        Object[] actualKeys =
-            related_persons.getRelatedContentKeys().toArray( new ContentKey[related_persons.getRelatedContentKeys().size()] );
+        RelatedContentsDataEntry related_dates = (RelatedContentsDataEntry) grandDaughterCCD.getEntry( "related_dates" );
+        Object[] actualKeys = related_dates.getRelatedContentKeys().toArray( new ContentKey[related_dates.getRelatedContentKeys().size()] );
         ContentKey[] expectedKeys = {date2005ContentKey, date2010ContentKey, date2000ContentKey};
         assertArrayEquals( expectedKeys, actualKeys );
     }
@@ -436,6 +448,8 @@ public class ImportServiceImplTest
         contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Grand daughter" ) );
         createCommand.setContentData( contentData );
         contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // setup content type with needed import configuration
         String importsConfig = "";
@@ -528,6 +542,8 @@ public class ImportServiceImplTest
         contentData.add( relatedPersonsDataEntry );
         createCommand.setContentData( contentData );
         contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // verify setup: related content keys must be in inserted order
         CustomContentData grandDaughterCCD = (CustomContentData) fixture.findMainContentVersionByTitle( "Grand daughter" ).getContentData();
@@ -633,6 +649,8 @@ public class ImportServiceImplTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
+        fixture.flushIndexTransaction();
+
         // verify setup: content inserted
         assertEquals( 0, result.getSkipped().size() );
         assertEquals( 4, result.getInserted().size() );
@@ -658,6 +676,8 @@ public class ImportServiceImplTest
         command.inputStream = new ByteArrayInputStream( importData.getBytes( "UTF-8" ) );
         job = importJobFactory.createImportJob( command );
         result = job.start();
+
+        fixture.flushIndexTransaction();
 
         // verify: content skipped
         assertEquals( 4, result.getSkipped().size() );
@@ -869,6 +889,8 @@ public class ImportServiceImplTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
+        fixture.flushIndexTransaction();
+
         // verify setup
         assertEquals( 2, result.getInserted().size() );
         assertEquals( 2, fixture.countAllContent() );
@@ -882,6 +904,8 @@ public class ImportServiceImplTest
         command.inputStream = new ByteArrayInputStream( firstImportSource.getBytes( "UTF-8" ) );
         job = importJobFactory.createImportJob( command );
         result = job.start();
+
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 2, result.getSkipped().size() );
@@ -932,6 +956,7 @@ public class ImportServiceImplTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -955,6 +980,7 @@ public class ImportServiceImplTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -1018,6 +1044,7 @@ public class ImportServiceImplTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 2, result.getInserted().size() );
@@ -1027,6 +1054,7 @@ public class ImportServiceImplTest
         ContentKey contentKeyForJrund = fixture.findFirstContentVersionByTitle( "Jørund Vier Skrivbakken" ).getContent().getKey();
         ContentKey contentKeyForAne = fixture.findFirstContentVersionByTitle( "Ane Skrivbakken" ).getContent().getKey();
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // exercise
 
@@ -1049,6 +1077,7 @@ public class ImportServiceImplTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -1289,6 +1318,8 @@ public class ImportServiceImplTest
         createCommand.setContentData( contentData );
         ContentKey contentKey_archived = contentService.createContent( createCommand );
 
+        fixture.flushIndexTransaction();
+
         // verify setup content
         assertEquals( 3, fixture.countAllContent() );
 
@@ -1371,6 +1402,8 @@ public class ImportServiceImplTest
         createCommand.setContentData( contentData );
         ContentKey contentKey_archived = contentService.createContent( createCommand );
 
+        fixture.flushIndexTransaction();
+
         // verify setup content
         assertEquals( 3, fixture.countAllContent() );
 
@@ -1452,6 +1485,8 @@ public class ImportServiceImplTest
         contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Archived" ) );
         createCommand.setContentData( contentData );
         ContentKey contentKey_archived = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // verify setup content
         assertEquals( 3, fixture.countAllContent() );
@@ -1536,6 +1571,8 @@ public class ImportServiceImplTest
         contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Original draft version" ) );
         updateCommand.setContentData( contentData );
         contentService.updateContent( updateCommand );
+
+        fixture.flushIndexTransaction();
 
         // verify setup content
         assertEquals( 1, fixture.countAllContent() );
@@ -1624,6 +1661,8 @@ public class ImportServiceImplTest
         updateCommand.setContentData( contentData );
         contentService.updateContent( updateCommand );
 
+        fixture.flushIndexTransaction();
+
         // verify setup content
         assertEquals( 1, fixture.countAllContent() );
         assertEquals( 2, fixture.countContentVersionsByContent( contentKey_approved ) );
@@ -1693,6 +1732,8 @@ public class ImportServiceImplTest
         contentData.add( new HtmlAreaDataEntry( contentTypeConfig.getInputConfig( "htmlarea" ), "" ) );
         createCommand.setContentData( contentData );
         ContentKey contentKey_approved = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // verify setup content
         assertEquals( 1, fixture.countAllContent() );
@@ -1770,6 +1811,8 @@ public class ImportServiceImplTest
         contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Archived" ) );
         createCommand.setContentData( contentData );
         ContentKey contentKey_archived = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // verify setup content
         assertEquals( 3, fixture.countAllContent() );
@@ -1856,6 +1899,8 @@ public class ImportServiceImplTest
         updateCommand.setContentData( contentData );
         contentService.updateContent( updateCommand );
 
+        fixture.flushIndexTransaction();
+
         // verify setup content
         assertEquals( 1, fixture.countAllContent() );
         assertEquals( 2, fixture.countContentVersionsByContent( contentKey_approved ) );
@@ -1940,6 +1985,8 @@ public class ImportServiceImplTest
         contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Archived" ) );
         createCommand.setContentData( contentData );
         ContentKey contentKey_archived = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // verify setup content
         assertEquals( 3, fixture.countAllContent() );
@@ -2031,6 +2078,7 @@ public class ImportServiceImplTest
         ImportResult result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify setup
         assertEquals( 1, result.getInserted().size() );
@@ -2057,6 +2105,7 @@ public class ImportServiceImplTest
         result = job.start();
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
 
         // verify
         assertEquals( 0, result.getSkipped().size() );
@@ -2095,6 +2144,8 @@ public class ImportServiceImplTest
         contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Mr One" ) );
         createCommand.setContentData( contentData );
         ContentKey content_2 = contentService.createContent( createCommand );
+
+        fixture.flushIndexTransaction();
 
         // verify setup content
         assertEquals( 2, fixture.countAllContent() );

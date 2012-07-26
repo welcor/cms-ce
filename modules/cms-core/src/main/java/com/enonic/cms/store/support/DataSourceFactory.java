@@ -6,11 +6,12 @@ package com.enonic.cms.store.support;
 
 import javax.sql.DataSource;
 
-import com.enonic.cms.framework.jdbc.DecoratedDataSource;
-import com.enonic.cms.framework.jdbc.DriverFixConnectionDecorator;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+
+import com.enonic.cms.framework.jdbc.DecoratedDataSource;
+import com.enonic.cms.framework.jdbc.DriverFixConnectionDecorator;
 
 public final class DataSourceFactory
     implements FactoryBean<DataSource>, InitializingBean
@@ -27,7 +28,7 @@ public final class DataSourceFactory
     public void afterPropertiesSet()
     {
         final JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-        final DataSource original = lookup.getDataSource(this.jndiName);
+        final DataSource original = lookup.getDataSource( this.jndiName );
 
         // Create decorated datasource to cope with driver defects
         this.dataSource = new DecoratedDataSource( original, new DriverFixConnectionDecorator() );

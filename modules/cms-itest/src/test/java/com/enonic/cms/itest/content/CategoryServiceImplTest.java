@@ -6,14 +6,19 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
+import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.content.category.CategoryAccessRights;
+import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryService;
 import com.enonic.cms.core.content.category.CreateCategoryAccessException;
 import com.enonic.cms.core.content.category.DeleteCategoryCommand;
+import com.enonic.cms.core.content.category.MoveCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
+import com.enonic.cms.core.content.category.UnitEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
@@ -22,7 +27,10 @@ import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class CategoryServiceImplTest
     extends AbstractSpringTest
@@ -54,9 +62,240 @@ public class CategoryServiceImplTest
         fixture.initSystemData();
 
         fixture.createAndStoreUserAndUserGroup( "MyUser", "MyUser fullname", UserType.NORMAL, "testuserstore" );
+        fixture.createAndStoreUserAndUserGroup( "NoRightsUser", "NoRightsUser fullname", UserType.NORMAL, "testuserstore" );
 
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
+    }
+
+    @Test
+    public void move_category()
+    {
+        // setup
+        final UnitEntity firstUnit = factory.createUnit( "FirstUnit", "by" );
+        fixture.save( firstUnit );
+        fixture.save( factory.createCategory( "ParentCategory1", null, null, "FirstUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createCategoryAccessForUser( "ParentCategory1", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+
+        final UnitEntity secondUnit = factory.createUnit( "SecondUnit", "by" );
+        fixture.save( secondUnit );
+        fixture.save( factory.createCategory( "ParentCategory2", null, null, "SecondUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createCategoryAccessForUser( "ParentCategory2", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+        CategoryEntity parent1 = fixture.findCategoryByName( "ParentCategory1" );
+        CategoryEntity parent2 = fixture.findCategoryByName( "ParentCategory2" );
+        User user = fixture.findUserByName( "MyUser" );
+        UserKey userKey = user.getKey();
+
+        // exercise
+        StoreNewCategoryCommand command = new StoreNewCategoryCommand();
+        command.setName( "SubCat1" );
+        command.setCreator( userKey );
+        command.setParentCategory( parent1.getKey() );
+        CategoryKey subCat1Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "SubCat2" );
+        command.setCreator( userKey );
+        command.setParentCategory( subCat1Key );
+        CategoryKey subCat2Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "SubCat3" );
+        command.setCreator( userKey );
+        command.setParentCategory( subCat2Key );
+        CategoryKey subCat3Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article1" );
+        command.setCreator( userKey );
+        command.setParentCategory( parent2.getKey() );
+        CategoryKey article1Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article2" );
+        command.setCreator( userKey );
+        command.setParentCategory( article1Key );
+        CategoryKey article2Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article3" );
+        command.setCreator( userKey );
+        command.setParentCategory( article2Key );
+        CategoryKey article3Key = categoryService.storeNewCategory( command );
+
+        assertEquals( 8, categoryDao.findAll( 0, 100 ).getList().size() );
+
+        // verify state before moving (unit = 2; subCat3 doesn't contain articleX categories)
+        CategoryEntity cat = categoryDao.findByKey( subCat3Key );
+        CategoryEntity article1 = categoryDao.findByKey( article1Key );
+        assertFalse( cat.getChildren().contains( article1 ) );
+        assertEquals( secondUnit.getKey().toInt(), article1.getUnit().getKey().toInt() );
+        for ( CategoryEntity categoryEntity : article1.getChildren() )
+        {
+            assertEquals( secondUnit.getKey().toInt(), categoryEntity.getUnit().getKey().toInt() );
+        }
+
+        // exercise
+        MoveCategoryCommand moveCommand = new MoveCategoryCommand();
+        moveCommand.setUser( fixture.findUserByName( "MyUser" ).getKey() );
+        moveCommand.setCategoryToMove( article1Key );
+        moveCommand.setDestinationCategory( subCat3Key );
+        categoryService.moveCategory( moveCommand );
+
+        // verify state after moving (unit = 1; subCat3 contains articleX categories)
+        CategoryEntity result = categoryDao.findByKey( subCat3Key );
+        CategoryEntity child = categoryDao.findByKey( article1Key );
+
+        assertTrue( result.getChildren().contains( child ) );
+        assertEquals( firstUnit.getKey().toInt(), child.getUnit().getKey().toInt() );
+        for ( CategoryEntity categoryEntity : child.getChildren() )
+        {
+            assertEquals( firstUnit.getKey().toInt(), categoryEntity.getUnit().getKey().toInt() );
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void move_category_to_subcategory()
+    {
+        // setup
+        fixture.save( factory.createUnit( "FirstUnit", "by" ) );
+        fixture.save( factory.createCategory( "ParentCategory1", null, null, "FirstUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createCategoryAccessForUser( "ParentCategory1", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+
+        fixture.save( factory.createUnit( "SecondUnit", "by" ) );
+        fixture.save( factory.createCategory( "ParentCategory2", null, null, "SecondUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createCategoryAccessForUser( "ParentCategory2", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+        CategoryEntity parent1 = fixture.findCategoryByName( "ParentCategory1" );
+        CategoryEntity parent2 = fixture.findCategoryByName( "ParentCategory2" );
+        User user = fixture.findUserByName( "MyUser" );
+        UserKey userKey = user.getKey();
+
+        // exercise
+        StoreNewCategoryCommand command = new StoreNewCategoryCommand();
+        command.setName( "SubCat1" );
+        command.setCreator( userKey );
+        command.setParentCategory( parent1.getKey() );
+        CategoryKey subCat1Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "SubCat2" );
+        command.setCreator( userKey );
+        command.setParentCategory( subCat1Key );
+        CategoryKey subCat2Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "SubCat3" );
+        command.setCreator( userKey );
+        command.setParentCategory( subCat2Key );
+        CategoryKey subCat3Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article1" );
+        command.setCreator( userKey );
+        command.setParentCategory( parent2.getKey() );
+        CategoryKey article1Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article2" );
+        command.setCreator( userKey );
+        command.setParentCategory( article1Key );
+        CategoryKey article2Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article3" );
+        command.setCreator( userKey );
+        command.setParentCategory( article2Key );
+        CategoryKey article3Key = categoryService.storeNewCategory( command );
+
+        assertEquals( 8, categoryDao.findAll( 0, 100 ).getList().size() );
+
+        // verify state before moving (unit = 2; subCat3 doesn't contain articleX categories)
+        CategoryEntity cat = categoryDao.findByKey( subCat3Key );
+        CategoryEntity article1 = categoryDao.findByKey( article1Key );
+        assertFalse( cat.getChildren().contains( article1 ) );
+
+        // exercise
+        MoveCategoryCommand moveCommand = new MoveCategoryCommand();
+        moveCommand.setUser( fixture.findUserByName( "MyUser" ).getKey() );
+        moveCommand.setCategoryToMove( article1Key );
+        moveCommand.setDestinationCategory( article2Key );
+
+        categoryService.moveCategory( moveCommand );
+    }
+
+    @Test(expected = CategoryAccessException.class)
+    public void move_category_no_rights()
+    {
+        // setup
+        fixture.save( factory.createUnit( "FirstUnit", "by" ) );
+        fixture.save( factory.createCategory( "ParentCategory1", null, null, "FirstUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createCategoryAccessForUser( "ParentCategory1", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+
+        fixture.save( factory.createUnit( "SecondUnit", "by" ) );
+        fixture.save( factory.createCategory( "ParentCategory2", null, null, "SecondUnit", "MyUser", "MyUser" ) );
+        fixture.save( factory.createCategoryAccessForUser( "ParentCategory2", "MyUser",
+                                                           "administrate, read, create, approve, admin_browse" ) );
+        CategoryEntity parent1 = fixture.findCategoryByName( "ParentCategory1" );
+        CategoryEntity parent2 = fixture.findCategoryByName( "ParentCategory2" );
+        User user = fixture.findUserByName( "MyUser" );
+        UserKey userKey = user.getKey();
+
+        // exercise
+        StoreNewCategoryCommand command = new StoreNewCategoryCommand();
+        command.setName( "SubCat1" );
+        command.setCreator( userKey );
+        command.setParentCategory( parent1.getKey() );
+        CategoryKey subCat1Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "SubCat2" );
+        command.setCreator( userKey );
+        command.setParentCategory( subCat1Key );
+        CategoryKey subCat2Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "SubCat3" );
+        command.setCreator( userKey );
+        command.setParentCategory( subCat2Key );
+        CategoryKey subCat3Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article1" );
+        command.setCreator( userKey );
+        command.setParentCategory( parent2.getKey() );
+        CategoryKey article1Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article2" );
+        command.setCreator( userKey );
+        command.setParentCategory( article1Key );
+        CategoryKey article2Key = categoryService.storeNewCategory( command );
+
+        command = new StoreNewCategoryCommand();
+        command.setName( "Article3" );
+        command.setCreator( userKey );
+        command.setParentCategory( article2Key );
+        CategoryKey article3Key = categoryService.storeNewCategory( command );
+
+        assertEquals( 8, categoryDao.findAll( 0, 100 ).getList().size() );
+
+        // verify state before moving (unit = 2; subCat3 doesn't contain articleX categories)
+        CategoryEntity cat = categoryDao.findByKey( subCat3Key );
+        CategoryEntity article1 = categoryDao.findByKey( article1Key );
+        assertFalse( cat.getChildren().contains( article1 ) );
+
+        // exercise
+        MoveCategoryCommand moveCommand = new MoveCategoryCommand();
+        moveCommand.setUser( fixture.findUserByName( "NoRightsUser" ).getKey() );
+        moveCommand.setCategoryToMove( article1Key );
+        moveCommand.setDestinationCategory( article2Key );
+
+        categoryService.moveCategory( moveCommand );
     }
 
     @Test

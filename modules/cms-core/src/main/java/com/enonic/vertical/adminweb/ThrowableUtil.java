@@ -4,17 +4,15 @@
  */
 package com.enonic.vertical.adminweb;
 
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-
 import com.enonic.esl.util.VectorWriter;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.VerticalException;
 import com.enonic.vertical.VerticalRuntimeException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.servlet.ServletException;
+import java.io.PrintWriter;
 
 public final class ThrowableUtil
 {

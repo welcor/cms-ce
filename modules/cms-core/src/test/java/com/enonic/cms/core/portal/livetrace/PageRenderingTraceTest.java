@@ -10,16 +10,16 @@ public class PageRenderingTraceTest
     @Test
     public void isConcurrencyBlocked_returns_false_when_concurrency_block_timer_not_stopped()
     {
-        PageRenderingTrace trace = new PageRenderingTrace( null );
-        trace.startConcurrencyBlockTimer();
-        assertFalse( trace.isConcurrencyBlocked() );
+        PageRenderingTrace trace = new PageRenderingTrace();
+        trace.getCacheUsage().startConcurrencyBlockTimer();
+        assertFalse( trace.getCacheUsage().isConcurrencyBlocked() );
     }
 
     @Test
     public void isConcurrencyBlocked_returns_true_when_concurrency_block_was_timed_to_be_larger_than_threshold()
     {
-        PageRenderingTrace trace = new PageRenderingTrace( null );
-        trace.startConcurrencyBlockTimer();
+        PageRenderingTrace trace = new PageRenderingTrace();
+        trace.getCacheUsage().startConcurrencyBlockTimer();
         try
         {
             Thread.sleep( 50 );
@@ -28,23 +28,23 @@ public class PageRenderingTraceTest
         {
             e.printStackTrace();
         }
-        trace.stopConcurrencyBlockTimer();
-        assertTrue( trace.isConcurrencyBlocked() );
+        trace.getCacheUsage().stopConcurrencyBlockTimer();
+        assertTrue( trace.getCacheUsage().isConcurrencyBlocked() );
     }
 
     @Test
     public void getConcurrencyBlockingTime_returns_zero_when_concurrency_block_timer_not_stopped()
     {
-        PageRenderingTrace trace = new PageRenderingTrace( null );
-        trace.startConcurrencyBlockTimer();
-        assertTrue( trace.getConcurrencyBlockingTime() == 0 );
+        PageRenderingTrace trace = new PageRenderingTrace();
+        trace.getCacheUsage().startConcurrencyBlockTimer();
+        assertTrue( trace.getCacheUsage().getConcurrencyBlockingTime() == 0 );
     }
 
     @Test
     public void getConcurrencyBlockingTime_returns_zero_when_concurrency_block_was_timed_to_be_less_than_threshold()
     {
-        PageRenderingTrace trace = new PageRenderingTrace( null );
-        trace.startConcurrencyBlockTimer();
+        PageRenderingTrace trace = new PageRenderingTrace();
+        trace.getCacheUsage().startConcurrencyBlockTimer();
         try
         {
             Thread.sleep( 1 );
@@ -53,15 +53,15 @@ public class PageRenderingTraceTest
         {
             e.printStackTrace();
         }
-        trace.stopConcurrencyBlockTimer();
-        assertTrue( trace.getConcurrencyBlockingTime() == 0 );
+        trace.getCacheUsage().stopConcurrencyBlockTimer();
+        assertEquals( 0, trace.getCacheUsage().getConcurrencyBlockingTime() );
     }
 
     @Test
     public void getConcurrencyBlockingTime_returns_larger_than_zero_when_concurrency_block_was_timed_to_be_larger_than_threshold()
     {
-        PageRenderingTrace trace = new PageRenderingTrace( null );
-        trace.startConcurrencyBlockTimer();
+        PageRenderingTrace trace = new PageRenderingTrace();
+        trace.getCacheUsage().startConcurrencyBlockTimer();
         try
         {
             Thread.sleep( 50 );
@@ -70,7 +70,7 @@ public class PageRenderingTraceTest
         {
             e.printStackTrace();
         }
-        trace.stopConcurrencyBlockTimer();
-        assertTrue( trace.getConcurrencyBlockingTime() >= 50 );
+        trace.getCacheUsage().stopConcurrencyBlockTimer();
+        assertTrue( trace.getCacheUsage().getConcurrencyBlockingTime() >= 50 );
     }
 }

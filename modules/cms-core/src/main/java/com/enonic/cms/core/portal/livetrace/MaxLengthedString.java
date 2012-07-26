@@ -8,6 +8,11 @@ public class MaxLengthedString
 
     private String string;
 
+    public MaxLengthedString()
+    {
+        this( "", DEFAULT_MAX_LENGTH );
+    }
+
     public MaxLengthedString( String s )
     {
         this( s, DEFAULT_MAX_LENGTH );
@@ -29,7 +34,7 @@ public class MaxLengthedString
     {
         int messageStart = maxLength - 10 - MESSAGE.length();
 
-        StringBuffer result = new StringBuffer( maxLength );
+        StringBuilder result = new StringBuilder( maxLength );
         result.append( s.substring( 0, messageStart ) );
         result.append( MESSAGE );
 

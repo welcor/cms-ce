@@ -1,8 +1,8 @@
 var CMSImage = {
 
     /*
-        Method: init
-    */
+     Method: init
+     */
     init: function()
     {
         var selectedNode = ed.selection.getNode();
@@ -72,13 +72,14 @@ var CMSImage = {
     // -------------------------------------------------------------------------------------------------------------------------------------
 
     /*
-        Method: insert
-    */
+     Method: insert
+     */
     insert: function()
     {
         tinyMCEPopup.restoreSelection();
 
         var isIE = window.parent.opener.tinymce.isIE;
+        var isIE8 = window.parent.opener.tinymce.isIE8;
         var isGecko = window.parent.opener.tinymce.isGecko;
         var selectedNode = ed.selection.getNode();
         var dom = ed.dom;
@@ -112,7 +113,7 @@ var CMSImage = {
         var html = '';
 
         var selectedNodeIsEmpty = selectedNode.innerHTML.test(/^(\s|<br\s*\/?>|&nbsp;)*$/);
-        var wrapImageInPElement = selectedNode && !selectedNodeIsEmpty || ed.getContent() === '';
+        var wrapImageInPElement = selectedNode && !selectedNodeIsEmpty;
 
         if ( wrapImageInPElement )
             html += '<p id="__cms" class="editor-p-block">';
@@ -141,13 +142,9 @@ var CMSImage = {
 
         html += '/>';
 
-        var isEditorEmpty = ed.getContent() === '';
-
         if ( wrapImageInPElement )
         {
             html += '</p>';
-            if ( isEditorEmpty )
-                html += '<p>&nbsp;</p>';
         }
 
         var addCmsCssClassToPElement = selectedNode && selectedNode.nodeName === 'P' && selectedNode.innerHTML.test(/^(\s|<br\s*\/?>|&nbsp;)*$/);
@@ -156,14 +153,21 @@ var CMSImage = {
             dom.addClass(selectedNode, 'editor-p-block');
         }
 
-        // Seems like IE's caret position get's lost using mceInsertRawHTML when the image has a link.
         if ( isIE && selectedNode.parentNode.nodeName.toLowerCase() === 'a' )
         {
             ed.selection.select(selectedNode.parentNode);
         }
 
-        tinyMCEPopup.execCommand('mceInsertRawHTML',false, html);
-        tinyMCEPopup.execCommand("mceCleanup");
+        // Fix for IE8/https. mceInsertRawHTML seems to raise a "mixed content" warning popup.
+        if ( isIE8 )
+        {
+            tinyMCEPopup.execCommand('mceInsertContent',false, html);
+        }
+        else
+        {
+            tinyMCEPopup.execCommand('mceInsertRawHTML',false, html);
+            tinyMCEPopup.execCommand("mceCleanup");
+        }
 
         var pElemWrapper = dom.get('__cms');
         dom.setAttrib(pElemWrapper, 'id', null);
@@ -199,8 +203,8 @@ var CMSImage = {
     // -------------------------------------------------------------------------------------------------------------------------------------
 
     /*
-        Method: updateSizeValue
-    */
+     Method: updateSizeValue
+     */
     updateSizeValue: function( sImageSrc )
     {
         if ( sImageSrc === '' ) return;
@@ -292,17 +296,13 @@ var CMSImage = {
 
         var iContentKey = document.getElementById('selectedcontentkey').value;
         var sBinaryName = document.getElementById('selectedbinaryname').value;
-        var sFileExtension = getFileExtension(sBinaryName);
         var oSizeField = document.getElementsByName('size')[0];
         var sSize = oSizeField.options[oSizeField.selectedIndex].value;
         var iCustomWidthValue = document.getElementById('customwidth').value;
 
-        // Gif is not supported, use PNG
-        if ( sFileExtension === 'gif' ) sFileExtension = 'png';
-
         if ( sSize !== '')
         {
-            sImgSrc += '_image/' + iContentKey + '?_size=' + sSize + '&_format=' + sFileExtension;
+            sImgSrc += '_image/' + iContentKey + '?_size=' + sSize;
 
             var sFilter = oInternalLinkPlugin.resolveFilterParam(sImgSrc, iCustomWidthValue);
 
@@ -351,12 +351,6 @@ var CMSImage = {
     }
     // -------------------------------------------------------------------------------------------------------------------------------------
 };
-
-function getFileExtension( sFilename )
-{
-    var oExtension = (/[.]/.exec(sFilename)) ? /[^.]+$/.exec(sFilename) : undefined;
-    return (oExtension) ? oExtension.toString().toLowerCase() : '';
-}
 
 function addValidationOnKeyUpToMarginTextField( el )
 {

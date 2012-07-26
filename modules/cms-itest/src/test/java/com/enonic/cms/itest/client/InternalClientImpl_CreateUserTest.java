@@ -7,6 +7,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.api.client.model.CreateUserParams;
@@ -24,6 +25,7 @@ public class InternalClientImpl_CreateUserTest
     extends AbstractSpringTest
 {
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     @Autowired
@@ -50,7 +52,7 @@ public class InternalClientImpl_CreateUserTest
     public void create_user_in_local_userstore()
         throws Exception
     {
-        clientLogin( "admin", "password" );
+        clientLogin( "admin" );
 
         // exercise:
         CreateUserParams params = new CreateUserParams();
@@ -67,16 +69,14 @@ public class InternalClientImpl_CreateUserTest
         UserEntity actualUser = fixture.findUserByName( "test1" );
         assertEquals( "jvs@enonic.com", actualUser.getEmail() );
         assertEquals( "test1", actualUser.getName() );
-        assertEquals( "Jorund Vier", actualUser.getUserInfo().getFirstName() );
-        assertEquals( "Skriubakken", actualUser.getUserInfo().getLastName() );
+        assertEquals( "Jorund Vier", actualUser.getUserFields().getFirstName() );
+        assertEquals( "Skriubakken", actualUser.getUserFields().getLastName() );
     }
 
-    private void clientLogin( String username, String password )
+    private void clientLogin( String username )
     {
         UserEntity user = fixture.findUserByName( username );
         PortalSecurityHolder.setLoggedInUser( user.getKey() );
         PortalSecurityHolder.setImpersonatedUser( user.getKey() );
-
-        //internalClient.login( username, password );
     }
 }

@@ -6,6 +6,8 @@ package com.enonic.cms.core.content.query;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQuery.SectionFilterStatus;
 import com.enonic.cms.core.security.group.GroupKey;
@@ -41,17 +43,24 @@ public class ContentBySectionQuery
 
     public ContentIndexQuery createAndSetupContentQuery( Collection<MenuItemEntity> sections, Collection<GroupKey> securityFilter )
     {
+        MenuItemKey orderBySection = null;
 
         // Apply default sorting if no order set and the one given section is not ordered
-        if ( this.getOrderBy() == null || this.getOrderBy().length() == 0 )
+        if ( StringUtils.isEmpty( this.getOrderBy() ) )
         {
-            if ( !( sections.size() == 1 && sections.iterator().next().isOrderedSection() ) )
+            final MenuItemEntity section = sections.size() == 1 ? sections.iterator().next() : null;
+            if ( ( section != null ) && section.isOrderedSection() )
+            {
+                orderBySection = section.getKey();
+            }
+            else
             {
                 this.setOrderBy( "@timestamp DESC" );
             }
         }
 
         ContentIndexQuery query = new ContentIndexQuery( this.getQuery(), this.getOrderBy() );
+        query.setOrderBySection( orderBySection );
         if ( this.useContentTypeFilter() )
         {
             query.setContentTypeFilter( this.getContentTypeFilter() );

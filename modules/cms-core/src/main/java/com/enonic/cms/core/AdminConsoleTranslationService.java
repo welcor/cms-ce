@@ -14,13 +14,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
 
+@Service
 public class AdminConsoleTranslationService
+    implements InitializingBean
 {
     /**
      * Language map singleton.
@@ -52,9 +57,17 @@ public class AdminConsoleTranslationService
         languageMap = this;
     }
 
+    @Value("${cms.admin.defaultLanguage}")
     public void setDefaultLanguageCode( String value )
     {
         this.defaultLanguageCode = value;
+    }
+
+    @Override
+    public void afterPropertiesSet()
+        throws Exception
+    {
+        init();
     }
 
     protected void init()
@@ -126,7 +139,7 @@ public class AdminConsoleTranslationService
         catch ( IOException ioe )
         {
             String msg = "Failed to read language file: %t";
-            VerticalAdminLogger.errorAdmin(msg, ioe);
+            VerticalAdminLogger.errorAdmin( msg, ioe );
         }
         finally
         {
@@ -140,7 +153,7 @@ public class AdminConsoleTranslationService
             catch ( IOException ioe )
             {
                 String msg = "Failed to close language file: %t";
-                VerticalAdminLogger.warn(msg, ioe );
+                VerticalAdminLogger.warn( msg, ioe );
             }
         }
     }

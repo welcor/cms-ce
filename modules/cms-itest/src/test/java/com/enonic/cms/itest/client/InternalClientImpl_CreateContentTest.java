@@ -13,6 +13,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -54,6 +55,7 @@ public class InternalClientImpl_CreateContentTest
     private DomainFixture fixture;
 
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     private Document standardConfig;
@@ -68,7 +70,7 @@ public class InternalClientImpl_CreateContentTest
         factory = fixture.getFactory();
         fixture.initSystemData();
 
-        StringBuffer standardConfigXml = new StringBuffer();
+        StringBuilder standardConfigXml = new StringBuilder();
         standardConfigXml.append( "<config name=\"MyContentType\" version=\"1.0\">" );
         standardConfigXml.append( "     <form>" );
 

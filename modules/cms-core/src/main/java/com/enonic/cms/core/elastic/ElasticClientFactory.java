@@ -14,7 +14,7 @@ public final class ElasticClientFactory
     implements FactoryBean<Client>
 {
     private Node node;
-    
+
     private Client client;
 
     @Override

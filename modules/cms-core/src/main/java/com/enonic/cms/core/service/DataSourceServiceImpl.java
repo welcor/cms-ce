@@ -20,9 +20,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,13 +82,13 @@ import com.enonic.cms.core.preference.PreferenceUniqueMatchResolver;
 import com.enonic.cms.core.preference.PreferenceXmlCreator;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.security.UserStoreParser;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
+import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -110,12 +109,11 @@ import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
+@Service("dataSourceService")
 public final class DataSourceServiceImpl
     implements DataSourceService
 {
-    private static final Logger LOG = LoggerFactory.getLogger( DataSourceServiceImpl.class );
-
-    private static String URL_NO_RESULT = "<noresult/>";
+    private final static String URL_NO_RESULT = "<noresult/>";
 
     private CalendarService calendarService;
 
@@ -127,7 +125,6 @@ public final class DataSourceServiceImpl
 
     private SecurityService securityService;
 
-    @Autowired
     private HTTPService httpService;
 
     @Autowired
@@ -1892,71 +1889,85 @@ public final class DataSourceServiceImpl
         return userDao.findByKey( user.getKey() );
     }
 
+    @Autowired
     public void setContentDao( ContentDao contentDao )
     {
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setUserDao( UserDao userDao )
     {
         this.userDao = userDao;
     }
 
+    @Autowired
     public void setPresentationEngine( PresentationEngine presentationEngine )
     {
         this.presentationEngine = presentationEngine;
     }
 
+    @Autowired
     public void setCalendarService( CalendarService service )
     {
         calendarService = service;
     }
 
+    @Autowired
     public void setContentService( ContentService service )
     {
         this.contentService = service;
     }
 
+    @Autowired
     public void setCountryService( CountryService countryService )
     {
         this.countryService = countryService;
     }
 
+    @Autowired
     public void setHTTPService( HTTPService service )
     {
         httpService = service;
     }
 
+    @Autowired
     public void setLocaleService( LocaleService localeService )
     {
         this.localeService = localeService;
     }
 
+    @Autowired
     public void setPreferenceService( PreferenceService preferenceService )
     {
         this.preferenceService = preferenceService;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService securityService )
     {
         this.securityService = securityService;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
     {
         this.sitePropertiesService = sitePropertiesService;
     }
 
+    @Autowired
     public void setTimeService( TimeService timeService )
     {
         this.timeService = timeService;
     }
 
+    @Autowired
     public void setTimeZoneService( TimeZoneService timeZoneService )
     {
         this.timeZoneService = timeZoneService;
     }
 
+    @Autowired
     public void setUserStoreService( UserStoreService userStoreService )
     {
         this.userStoreService = userStoreService;

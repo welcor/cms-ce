@@ -7,12 +7,14 @@ package com.enonic.cms.core.portal.rendering.portalfunctions;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.captcha.CaptchaService;
 import com.enonic.cms.core.localization.LocalizationService;
 import com.enonic.cms.core.portal.image.ImageService;
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -21,6 +23,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.PortletDao;
 
+@Component
 public class PortalFunctionsFactory
 {
 
@@ -59,6 +62,9 @@ public class PortalFunctionsFactory
 
     @Autowired
     private IsWindowEmptyFunction isWindowEmptyFunction;
+
+    @Autowired
+    private LivePortalTraceService livePortalTraceService;
 
     private SitePropertiesService sitePropertiesService;
 
@@ -103,25 +109,27 @@ public class PortalFunctionsFactory
             portalFunctions.setSiteURLResolver( siteURLResolver );
         }
         portalFunctions.setCaptchaService( captchaService );
-        portalFunctions.setLocalizeService( localizeService );
-        portalFunctions.setLocaleResolvingService( localeResolverService );
+        portalFunctions.setContentBinaryDataDao( contentBinaryDataDao );
         portalFunctions.setContentDao( contentDao );
+        portalFunctions.setContext( getContext() );
+        portalFunctions.setCreateAttachmentUrlFunction( createAttachmentUrlFunction );
+        portalFunctions.setEncodeURIs( getContext().isEncodeURIs() );
+        portalFunctions.setImageService( imageService );
+        portalFunctions.setIsWindowEmptyFunction( isWindowEmptyFunction );
+        portalFunctions.setLivePortalTraceService( livePortalTraceService );
+        portalFunctions.setLocaleResolvingService( localeResolverService );
+        portalFunctions.setLocalizeService( localizeService );
         portalFunctions.setMenuItemDao( menuItemDao );
         portalFunctions.setPortletDao( portletDao );
         portalFunctions.setRequest( httpRequest );
-        portalFunctions.setEncodeURIs( getContext().isEncodeURIs() );
-        portalFunctions.setContext( getContext() );
-        portalFunctions.setContentBinaryDataDao( contentBinaryDataDao );
-        portalFunctions.setImageService( imageService );
         portalFunctions.setSecurityService( securityService );
-        portalFunctions.setCreateAttachmentUrlFunction( createAttachmentUrlFunction );
-        portalFunctions.setIsWindowEmptyFunction( isWindowEmptyFunction );
         portalFunctions.setSitePropertiesService( sitePropertiesService );
 
         return portalFunctions;
     }
 
 
+    @Autowired
     public void setSiteURLResolver( SiteURLResolver value )
     {
         this.siteURLResolver = value;
@@ -133,6 +141,7 @@ public class PortalFunctionsFactory
         this.contentDao = contentDao;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
     {
         this.sitePropertiesService = sitePropertiesService;

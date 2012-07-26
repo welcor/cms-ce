@@ -296,4 +296,34 @@ public class MenuItemXmlCreatorTest
         assertEquals( expectedXml, getFormattedXmlString( xmlDoc ) );
     }
 
+    public void testCreateLegacyGetMenuItemIncludeHidden()
+        throws JDOMException, IOException
+    {
+
+        String expectedXml = getXml( "/com/enonic/cms/core/structure/MenuItemXmlCreatorTest-label-hidden-item.xml" );
+
+        MenuItemEntity mi1 = createMenuItem( "1", "1", null, site_1 );
+        MenuItemEntity mi11 = createMenuItem( "2", "1.1", mi1, site_1 );
+        MenuItemEntity mi111 = createMenuItem( "3", "1.1.1", mi11, site_1 );
+
+        mi1.setType( MenuItemType.LABEL );
+        mi11.setType( MenuItemType.LABEL );
+        mi111.setType( MenuItemType.LABEL );
+
+        mi1.setMenuName( "1" );
+        mi11.setMenuName( "1.1" );
+        mi111.setMenuName( "1.1.1" );
+
+        mi1.setDisplayName( "1" );
+        mi11.setDisplayName( "1.1" );
+        mi111.setDisplayName( "1.1.1" );
+        mi111.setHidden( true );
+
+        setting = new MenuItemXMLCreatorSetting();
+        setting.includeParents = true;
+        xmlCreator = new MenuItemXmlCreator( setting, menuItemAccessResolver );
+        XMLDocument xmlDoc = xmlCreator.createLegacyGetMenuItem( mi111 );
+
+        assertEquals( expectedXml, getFormattedXmlString( xmlDoc ) );
+    }
 }

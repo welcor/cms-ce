@@ -17,8 +17,6 @@ public class SimpleDuration
 
     private String durationAsHRFormat;
 
-    private Period durationAsPeriod;
-
 
     public long getAsMilliseconds()
     {
@@ -29,7 +27,6 @@ public class SimpleDuration
     {
         this.durationInMilliseconds = durationInMilliseconds;
         this.durationAsHRFormat = HOURS_MINUTES_MILLIS.print( new Period( durationInMilliseconds ) ).trim();
-        this.durationAsPeriod = new Period( this.durationInMilliseconds );
     }
 
     public String getAsHRFormat()

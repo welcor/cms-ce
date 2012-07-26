@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableList;
  */
 public class CurrentPortalRequests
 {
-    private LinkedList<PortalRequestTrace> currentPortalRequestTraces = new LinkedList<PortalRequestTrace>();
+    private final LinkedList<PortalRequestTrace> currentPortalRequestTraces = new LinkedList<PortalRequestTrace>();
 
     public synchronized void add( PortalRequestTrace trace )
     {

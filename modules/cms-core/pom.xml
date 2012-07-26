@@ -65,7 +65,7 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.0</version>
+      <version>2.1</version>
     </dependency>
     <dependency>
       <groupId>nl.captcha</groupId>
@@ -123,7 +123,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>3.5.6-Final</version>
+      <version>3.6.10.Final</version>
       <exclusions>
         <exclusion>
           <groupId>xml-apis</groupId>
@@ -193,6 +193,11 @@
       <version>2.2.4</version>
     </dependency>
     <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>1.8.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-expression</artifactId>
       <version>${spring.version}</version>
@@ -241,9 +246,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.elasticsearch</groupId>
+      <groupId>com.enonic.lib.repack</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>0.19.0</version>
+      <version>0.19.4</version>
     </dependency>
     <dependency>
       <groupId>org.quartz-scheduler</groupId>

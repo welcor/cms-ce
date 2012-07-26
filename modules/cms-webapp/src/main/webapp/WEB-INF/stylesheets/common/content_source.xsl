@@ -4,9 +4,7 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+        >
 
   <xsl:include href="codearea.xsl"/>
 
@@ -38,7 +36,7 @@
                 <xsl:with-param name="height" select="'300px'"/>
                 <xsl:with-param name="line-numbers" select="true()"/>
                 <xsl:with-param name="read-only" select="true()"/>
-                <xsl:with-param name="selectnode" select="$source/data"/>
+                <xsl:with-param name="selectnode" select="translate($source/data, '&#xD;','')"/>
                 <xsl:with-param name="buttons" select="''"/>
                 <xsl:with-param name="status-bar" select="false()"/>
               </xsl:call-template>

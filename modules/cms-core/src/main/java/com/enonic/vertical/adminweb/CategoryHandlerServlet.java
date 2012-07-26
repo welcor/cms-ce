@@ -38,6 +38,7 @@ import com.enonic.cms.framework.xml.XMLException;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.DeleteCategoryCommand;
+import com.enonic.cms.core.content.category.MoveCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -551,6 +552,8 @@ final public class CategoryHandlerServlet
                                 }
                             }
                         }
+
+                        adminService.updateIndexCategory( new CategoryKey( curCategoryKey ) );
                     }
                 }
             }
@@ -597,6 +600,8 @@ final public class CategoryHandlerServlet
                                 }
                             }
                         }
+
+                        adminService.updateIndexCategory( new CategoryKey( curCategoryKey ) );
                     }
                 }
             }
@@ -743,7 +748,14 @@ final public class CategoryHandlerServlet
 
         if ( "move".equals( operation ) )
         {
-            admin.moveCategory( user, formItems.getInt( "cat" ), formItems.getInt( "newparent" ) );
+            CategoryKey categoryKey = new CategoryKey( formItems.getInt( "cat" ) );
+            CategoryKey toCategoryKey = new CategoryKey( formItems.getInt( "newparent" ) );
+
+            MoveCategoryCommand command = new MoveCategoryCommand();
+            command.setUser( user.getKey() );
+            command.setCategoryToMove( categoryKey );
+            command.setDestinationCategory( toCategoryKey );
+            categoryService.moveCategory( command );
 
             MultiValueMap queryParams = new MultiValueMap();
             queryParams.put( "page", formItems.getString( "oldpage" ) );

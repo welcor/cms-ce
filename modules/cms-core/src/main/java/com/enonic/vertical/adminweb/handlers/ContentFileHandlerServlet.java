@@ -66,7 +66,7 @@ public class ContentFileHandlerServlet
     }
 
     @Autowired
-    public void setContentFileXMLBuilder(final ContentFileXMLBuilder builder)
+    public void setContentFileXMLBuilder( final ContentFileXMLBuilder builder )
     {
         setContentXMLBuilder( builder );
     }

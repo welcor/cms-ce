@@ -4,21 +4,7 @@
  */
 package com.enonic.cms.core.content.imports;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentStatus;
-import com.enonic.cms.core.content.ContentStorer;
-import com.enonic.cms.core.content.ContentVersionEntity;
-import com.enonic.cms.core.content.UpdateContentResult;
+import com.enonic.cms.core.content.*;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.category.CategoryEntity;
@@ -34,8 +20,12 @@ import com.enonic.cms.core.content.contenttype.CtyImportMappingConfig;
 import com.enonic.cms.core.content.contenttype.CtyImportUpdateStrategyConfig;
 import com.enonic.cms.core.content.imports.sourcevalueholders.AbstractSourceValue;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
+import org.joda.time.DateTime;
+
+import java.util.*;
 
 public class ContentImporterImpl
 {
@@ -63,10 +53,14 @@ public class ContentImporterImpl
 
     private final Set<String> usedSyncValues = new HashSet<String>();
 
-    public ContentImporterImpl( ImportJob importJob, ImportDataReader importDataReader )
+    private final IndexTransactionService indexTransactionService;
+
+    public ContentImporterImpl( ImportJob importJob, ImportDataReader importDataReader,
+                                IndexTransactionService indexTransactionService )
     {
         this.importJob = importJob;
         this.importDataReader = importDataReader;
+        this.indexTransactionService = indexTransactionService;
         this.category = importJob.getCategoryToImportTo();
         this.defaultPublishFrom = importJob.getDefaultPublishFrom();
         this.defaultPublishTo = importJob.getDefaultPublishTo();
@@ -155,6 +149,10 @@ public class ContentImporterImpl
         }
 
         importJob.registerImportedContent( newContent.getKey() );
+
+        indexTransactionService.startTransaction();
+        indexTransactionService.updateContent( newContent );
+        indexTransactionService.commit();
     }
 
     private void doAssignContent( ContentEntity newContent )
@@ -171,15 +169,15 @@ public class ContentImporterImpl
         contentStorer.assignContent( assignContentCommand );
 
         importResult.addAssigned( newContent );
+
+        indexTransactionService.startTransaction();
+        indexTransactionService.updateContent( newContent );
+        indexTransactionService.commit();
     }
 
     private void importByChangeExistingContent( final ImportDataEntry importDataEntry, final ContentKey existingContentKey )
     {
         final ContentEntity existingContent = contentDao.findByKey( existingContentKey );
-
-        if ( existingContent == null )
-        {
-        }
 
         // update existing content
         final boolean anyChangesMade = updateExistingContent( existingContent, importDataEntry );
@@ -193,6 +191,10 @@ public class ContentImporterImpl
             importResult.addUnchanged( existingContent );
             importJob.registerImportedContent( existingContent.getKey() );
         }
+
+        indexTransactionService.startTransaction();
+        indexTransactionService.updateContent( existingContent );
+        indexTransactionService.commit();
     }
 
 

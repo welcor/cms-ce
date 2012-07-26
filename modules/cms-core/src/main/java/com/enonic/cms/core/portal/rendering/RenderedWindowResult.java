@@ -97,16 +97,8 @@ public class RenderedWindowResult
             return;
         }
 
-        //content = stripNamespaces( content, "http://www.w3.org/1999/xhtml" );
         content = stripNamespaces( content );
     }
-
-    private String stripNamespaces( String content, String namespace )
-    {
-        String regexp = "\\s+(\\w+:)?xmlns=\"" + namespace + "\"";
-        return content.replaceAll( regexp, "" );
-    }
-
 
     private String stripNamespaces( String content )
     {
@@ -116,7 +108,6 @@ public class RenderedWindowResult
 
         return result;
     }
-
 
     public RenderedWindowResult clone()
     {

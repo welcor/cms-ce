@@ -5,6 +5,7 @@
 package com.enonic.cms.core.content;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,8 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.index.ContentIndexConstants;
-import com.enonic.cms.store.dao.ContentIndexDao;
+import com.enonic.cms.core.search.ContentIndexedFields;
+import com.enonic.cms.core.search.query.ContentIndexService;
 
 /**
  * This class is used for admin to build xml for extended info such as index values and content data.
@@ -30,12 +32,12 @@ public final class ContentSourceXmlCreator
 
     private IllegalCharacterCleaner xmlCleaner = new IllegalCharacterCleaner();
 
-    private final ContentIndexDao contentIndexDao;
+    private final ContentIndexService contentIndexService;
 
 
-    public ContentSourceXmlCreator( ContentIndexDao contentIndexDao )
+    public ContentSourceXmlCreator( ContentIndexService contentIndexService )
     {
-        this.contentIndexDao = contentIndexDao;
+        this.contentIndexService = contentIndexService;
     }
 
     public XMLDocument createSourceDocument( ContentVersionEntity version )
@@ -108,8 +110,9 @@ public final class ContentSourceXmlCreator
 
     private Map<String, List<String>> getIndexValues( ContentKey key )
     {
-        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-        for ( ContentIndexEntity entity : contentIndexDao.findByContentKey( key ) )
+        final HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+        final Collection<ContentIndexedFields> entities = contentIndexService.getContentIndexedFields( key );
+        for ( ContentIndexedFields entity : entities )
         {
             String name = translatePath( entity.getPath() );
 

@@ -72,7 +72,7 @@ public class AttachmentNativeLinkKeyInPathParserTest
     {
         AttachmentNativeLinkKeyWithLabel linkKey =
             (AttachmentNativeLinkKeyWithLabel) AttachmentNativeLinkKeyInPathParser.resolveFromUrlPath(
-                    new Path( "/home/_attachment/123/label/small/" ) );
+                new Path( "/home/_attachment/123/label/small/" ) );
         assertEquals( new ContentKey( 123 ), linkKey.getContentKey() );
         assertNull( linkKey.getExtension() );
         assertEquals( "small", linkKey.getLabel() );

@@ -13,11 +13,12 @@ import org.junit.Before;
 public abstract class BaseImageFilterTest
 {
     private BufferedImage opaque;
+
     private BufferedImage transparent;
 
     @Before
     public final void setUp()
-            throws Exception
+        throws Exception
     {
         this.opaque = ImageIO.read( getClass().getResourceAsStream( "source.jpg" ) );
         this.transparent = ImageIO.read( getClass().getResourceAsStream( "transparent.png" ) );

@@ -204,7 +204,7 @@ public final class SqlOperationHelper
         }
     }
 
-    private boolean hasTable( Connection conn, String tableName )
+    public boolean hasTable( Connection conn, String tableName )
     {
         Statement stmt = null;
 

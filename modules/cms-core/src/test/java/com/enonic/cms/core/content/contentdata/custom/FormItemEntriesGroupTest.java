@@ -18,7 +18,7 @@ public class FormItemEntriesGroupTest
     {
         FormItemsGroup formItemsGroup = new FormItemsGroup( "group", createFormItems() );
 
-        assertEquals( 3, formItemsGroup.getGroupIndexes().size());
+        assertEquals( 3, formItemsGroup.getGroupIndexes().size() );
         assertOrder( formItemsGroup );
     }
 

@@ -1,62 +1,60 @@
 <?xml version="1.0"?>
 <!DOCTYPE xsl:stylesheet [
-  <!ENTITY nbsp   "&#160;">
+    <!ENTITY nbsp   "&#160;">
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+    >
 
-  <xsl:output method="html" />
+  <xsl:output method="html"/>
 
-  <xsl:include href="common/genericheader.xsl" />
-  <xsl:include href="common/categoryheader.xsl" />
-  <xsl:include href="common/textfield.xsl" />
-  <xsl:include href="common/textfielddatetime.xsl" />
-  <xsl:include href="common/readonlydatetime.xsl" />
-  <xsl:include href="common/readonlyvalue.xsl" />
-  <xsl:include href="common/formatdate.xsl" />
-  <xsl:include href="common/tablecolumnheader.xsl" />
-  <xsl:include href="common/tablerowpainter.xsl" />
-  <xsl:include href="common/labelcolumn.xsl" />
-  <xsl:include href="common/displayhelp.xsl" />
-  <xsl:include href="common/displayerror.xsl" />
-  <xsl:include href="common/checkbox_boolean.xsl" />
-  <xsl:include href="common/button.xsl" />
-  <xsl:include href="common/dropdown.xsl" />
-  <xsl:include href="common/publishstatus.xsl" />
-  <xsl:include href="common/string.xsl" />
+  <xsl:include href="common/genericheader.xsl"/>
+  <xsl:include href="common/categoryheader.xsl"/>
+  <xsl:include href="common/textfield.xsl"/>
+  <xsl:include href="common/textfielddatetime.xsl"/>
+  <xsl:include href="common/readonlydatetime.xsl"/>
+  <xsl:include href="common/readonlyvalue.xsl"/>
+  <xsl:include href="common/formatdate.xsl"/>
+  <xsl:include href="common/tablecolumnheader.xsl"/>
+  <xsl:include href="common/tablerowpainter.xsl"/>
+  <xsl:include href="common/labelcolumn.xsl"/>
+  <xsl:include href="common/displayhelp.xsl"/>
+  <xsl:include href="common/displayerror.xsl"/>
+  <xsl:include href="common/checkbox_boolean.xsl"/>
+  <xsl:include href="common/button.xsl"/>
+  <xsl:include href="common/dropdown.xsl"/>
+  <xsl:include href="common/publishstatus.xsl"/>
+  <xsl:include href="common/string.xsl"/>
 
   <!-- parameter for all steps -->
-  <xsl:param name="contenttitle" />
-  <xsl:param name="contenttypekey" />
+  <xsl:param name="contenttitle"/>
+  <xsl:param name="contenttypekey"/>
 
   <!-- parameter for step 1 -->
   <xsl:param name="notify"/>
 
   <!-- parameters for step 2 -->
-  <xsl:param name="sectionnumber" />
-  <xsl:param name="menuitemkey" />
-  <xsl:param name="path" />
+  <xsl:param name="sectionnumber"/>
+  <xsl:param name="menuitemkey"/>
+  <xsl:param name="path"/>
 
-	<xsl:variable name="create" select="'1'"/>
+  <xsl:variable name="create" select="'1'"/>
 
-	<xsl:key name="menuitemkey" match="section" use="@menuitemkey"/>
+  <xsl:key name="menuitemkey" match="section" use="@menuitemkey"/>
 
   <xsl:variable name="status">
     <xsl:choose>
-			<xsl:when test="/wizarddata/wizardstate/stepstate[1]/status">
-				<xsl:value-of select="/wizarddata/wizardstate/stepstate[1]/status"/>
-			</xsl:when>
+      <xsl:when test="/wizarddata/wizardstate/stepstate[1]/status">
+        <xsl:value-of select="/wizarddata/wizardstate/stepstate[1]/status"/>
+      </xsl:when>
       <xsl:otherwise></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
   <xsl:variable name="originalstatus">
-		<xsl:value-of select="/wizarddata/contents/content/@status"/>
-	</xsl:variable>
+    <xsl:value-of select="/wizarddata/contents/content/@status"/>
+  </xsl:variable>
 
   <xsl:variable name="categorypublish" select="/wizarddata/contents/content/accessrights/userright/@categorypublish = 'true'"/>
 
@@ -101,8 +99,8 @@
 
         <fieldset id="publishing">
           <legend>&nbsp;%blockAvailability%&nbsp;</legend>
-          <img src="images/shim.gif" height="4" class="shim" border="0" />
-          <br />
+          <img src="images/shim.gif" height="4" class="shim" border="0"/>
+          <br/>
 
           <input type="hidden" name="status" value="2"/>
 
@@ -152,7 +150,7 @@
 
         <fieldset id="sites">
           <legend>&nbsp;%blockSites%&nbsp;</legend>
-          <img src="images/shim.gif" height="4" class="shim" border="0" />
+          <img src="images/shim.gif" height="4" class="shim" border="0"/>
           <table width="100%" border="0" cellspacing="2" cellpadding="0">
 
             <xsl:choose>
@@ -216,12 +214,12 @@
         <script type="text/javascript" language="JavaScript">
           tabPane1.addTabPage( document.getElementById( "tab-page-step" ) );
           var branchOpen = new Array;
-				</script>
+        </script>
 
         <fieldset>
           <legend>&nbsp;%blockDescription%&nbsp;</legend>
-          <img src="images/shim.gif" height="4" class="shim" border="0" />
-          <br />
+          <img src="images/shim.gif" height="4" class="shim" border="0"/>
+          <br/>
           <xsl:text>%txtHelpPublishing%</xsl:text>
         </fieldset>
 
@@ -235,9 +233,9 @@
               <xsl:value-of select="@name"/>
               <xsl:text>&nbsp;</xsl:text>
             </legend>
-            <img src="images/shim.gif" height="4" class="shim" border="0" />
+            <img src="images/shim.gif" height="4" class="shim" border="0"/>
 
-            <br />
+            <br/>
 
             <xsl:variable name="menukey">
               <xsl:value-of select="@key"/>
@@ -265,7 +263,8 @@
                       </xsl:otherwise>
                     </xsl:choose>
                   </xsl:with-param>
-                  <xsl:with-param name="selectnode" select="/wizarddata/pagetemplates/pagetemplate[@menukey = $menukey and contenttypes/contenttype/@key = /wizarddata/contents/content/@contenttypekey]"/>
+                  <xsl:with-param name="selectnode"
+                                  select="/wizarddata/pagetemplates/pagetemplate[@menukey = $menukey and contenttypes/contenttype/@key = /wizarddata/contents/content/@contenttypekey]"/>
                   <xsl:with-param name="emptyrow" select="'%optNone%'"/>
                   <xsl:with-param name="required" select="'false'"/>
                   <xsl:with-param name="onchangefunction">
@@ -293,7 +292,8 @@
                       <xsl:value-of select="/wizarddata/contents/content/@key"/>
                       <xsl:text>&amp;versionkey=</xsl:text>
                       <xsl:value-of select="/wizarddata/contents/content/@versionkey"/>
-                      <xsl:if test="$stepState1/menu[@key = $menukey]/pagetemplate/@key or /wizarddata/contenthomes/contenthome[@menukey = $menukey]/@pagetemplatekey">
+                      <xsl:if
+                          test="$stepState1/menu[@key = $menukey]/pagetemplate/@key or /wizarddata/contenthomes/contenthome[@menukey = $menukey]/@pagetemplatekey">
                         <xsl:text>&amp;pagetemplatekey=</xsl:text>
                         <xsl:choose>
                           <xsl:when test="$stepState1/menu[@key = $menukey]">
@@ -304,7 +304,8 @@
                           </xsl:otherwise>
                         </xsl:choose>
                       </xsl:if>
-                      <xsl:if test="$stepState1/menu[@key = $menukey]/home/@key or /wizarddata/contenthomes/contenthome[@menukey = $menukey]/@menuitemkey">
+                      <xsl:if
+                          test="$stepState1/menu[@key = $menukey]/home/@key or /wizarddata/contenthomes/contenthome[@menukey = $menukey]/@menuitemkey">
                         <xsl:text>&amp;menuitemkey=</xsl:text>
                         <xsl:choose>
                           <xsl:when test="$stepState1/menu[@key = $menukey]">
@@ -322,7 +323,7 @@
               </tr>
             </table>
 
-            <br />
+            <br/>
 
             <xsl:variable name="errors">
               <xsl:choose>
@@ -374,7 +375,7 @@
     <xsl:param name="summary"/>
 
     <xsl:for-each select="$root/menuitem">
-			<xsl:sort select="path"/>
+      <xsl:sort select="path"/>
 
       <xsl:variable name="menuitemkey">
         <xsl:value-of select="@key"/>
@@ -407,7 +408,6 @@
       <xsl:variable name="menuInStepState" select="$stepState1/menu[@key = $menukey]"/>
 
 
-
       <xsl:if test="boolean($section)">
 
         <xsl:variable name="selectnode">
@@ -431,8 +431,12 @@
           <xsl:if test="$summary">
             <xsl:choose>
               <xsl:when test="$menuitemkey = $selectnode">
-                <xsl:if test="$menuitem/@action = 'add'"><xsl:attribute name="bgcolor">#EEFFEE</xsl:attribute></xsl:if>
-                <xsl:if test="$menuitem/@action = 'remove'"><xsl:attribute name="bgcolor">#FFEEEE</xsl:attribute></xsl:if>
+                <xsl:if test="$menuitem/@action = 'add'">
+                  <xsl:attribute name="bgcolor">#EEFFEE</xsl:attribute>
+                </xsl:if>
+                <xsl:if test="$menuitem/@action = 'remove'">
+                  <xsl:attribute name="bgcolor">#FFEEEE</xsl:attribute>
+                </xsl:if>
               </xsl:when>
               <xsl:otherwise>
               </xsl:otherwise>
@@ -440,13 +444,13 @@
           </xsl:if>
 
           <xsl:variable name="onclick">
-              <xsl:text>selectCheckBoxChanged(this, "menuitem_manually_order_</xsl:text>
-              <xsl:value-of select="$menukey"/>
-              <xsl:text>", "menuitem_home_</xsl:text>
-              <xsl:value-of select="$menukey"/>
-              <xsl:text>", </xsl:text>
-              <xsl:value-of select="$menukey"/>
-              <xsl:text>)</xsl:text>
+            <xsl:text>selectCheckBoxChanged(this, "menuitem_manually_order_</xsl:text>
+            <xsl:value-of select="$menukey"/>
+            <xsl:text>", "menuitem_home_</xsl:text>
+            <xsl:value-of select="$menukey"/>
+            <xsl:text>", </xsl:text>
+            <xsl:value-of select="$menukey"/>
+            <xsl:text>)</xsl:text>
           </xsl:variable>
           <xsl:call-template name="checkbox_nolabel">
             <xsl:with-param name="name" select="concat('menuitem_select_', $menukey)"/>
@@ -454,10 +458,10 @@
             <xsl:with-param name="selectnode">
               <xsl:choose>
                 <xsl:when test="$summary and $menuitem/@action = 'remove'">
-                  <xsl:value-of select="''" />
+                  <xsl:value-of select="''"/>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="$selectnode" />
+                  <xsl:value-of select="$selectnode"/>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:with-param>
@@ -478,10 +482,10 @@
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:with-param>
-            <xsl:with-param name="disabled" select="$summary or (not($menuInStepState/menuitem/@key = @key) and (not($section/@filtered = 'true') or not(/wizarddata/contents/content/sectionnames/sectionname[@menuitemkey = $menuitemkey]/@approved = 'false')))"/>
+            <xsl:with-param name="disabled" select="$summary or (not($menuInStepState/menuitem/@key = @key) and (not($section/@filtered = 'true') ))"/>
           </xsl:call-template>
 
-        <!--  <xsl:variable name="disabled">
+          <!--  <xsl:variable name="disabled">
             <xsl:choose>
               <xsl:when test="$selectedmenuitemkey = $menuitemkey">
                 <xsl:value-of select="false()"/>
@@ -492,7 +496,7 @@
             </xsl:choose>
 
           </xsl:variable>-->
-<!--
+          <!--
           <textarea rows="" cols="">
             <xsl:value-of select="$disabled"/>
           </textarea>-->
@@ -535,15 +539,15 @@
                 </xsl:choose>
                 <xsl:if test="@visible = 'yes'">_show</xsl:if>
                 <xsl:text>.gif</xsl:text>
-							</xsl:attribute>
-						</img>
+              </xsl:attribute>
+            </img>
             <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
             <xsl:call-template name="string-replace-all">
               <xsl:with-param name="text" select="path"/>
               <xsl:with-param name="replace" select="'/'"/>
-              <xsl:with-param name="by" select="' / '" />
+              <xsl:with-param name="by" select="' / '"/>
             </xsl:call-template>
-					</td>
+          </td>
           <xsl:if test="$summary">
             <td width="100px" align="center">
               <xsl:choose>
@@ -556,8 +560,8 @@
               </xsl:choose>
             </td>
           </xsl:if>
-				</tr>
-			</xsl:if>
+        </tr>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -570,7 +574,7 @@
       <div class="tab-page" id="tab-page-step">
         <span class="tab">
           <xsl:text>%headStep% 2-</xsl:text>
-          <xsl:value-of select="$sectionnumber" />
+          <xsl:value-of select="$sectionnumber"/>
           <xsl:text> of 3: %headPositionContenInSection%</xsl:text>
         </span>
 
@@ -631,7 +635,9 @@
                 <td class="{$td-css-class}" title="%msgClickToEdit%">
                   <xsl:choose>
                     <xsl:when test="@key = /wizarddata/wizardstate/stepstate[1]/content/@key">
-                      <b><xsl:value-of select="."/></b>
+                      <b>
+                        <xsl:value-of select="."/>
+                      </b>
                     </xsl:when>
                     <xsl:otherwise>
                       <xsl:value-of select="."/>
@@ -696,18 +702,20 @@
 
   <xsl:template name="step3">
     <div class="tab-pane" id="tab-pane-1">
-      <script type="text/javascript" language="JavaScript">var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true );</script>
+      <script type="text/javascript" language="JavaScript">var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true
+        );
+      </script>
 
       <div class="tab-page" id="tab-page-step">
         <span class="tab">%headStep% 3 %of% 3: %headConfirmPublishing%</span>
 
         <script type="text/javascript" language="JavaScript">
           tabPane1.addTabPage( document.getElementById( "tab-page-step" ) );
-					var branchOpen = new Array;
-				</script>
+          var branchOpen = new Array;
+        </script>
 
         <input type="hidden" name="status" value="2"/>
-        
+
         <fieldset>
           <xsl:if test="not($originalstatus = 2) and not($status = 2)">
             <xsl:attribute name="style">
@@ -716,23 +724,23 @@
           </xsl:if>
 
           <legend>&nbsp;%blockAvailability%&nbsp;</legend>
-          <img src="images/shim.gif" height="4" class="shim" border="0" />
-          <br />
+          <img src="images/shim.gif" height="4" class="shim" border="0"/>
+          <br/>
           <table border="0" cellspacing="2" cellpadding="2">
             <tr>
               <xsl:call-template name="readonlydatetime">
-                <xsl:with-param name="name" select="'publishfrom'" />
-                <xsl:with-param name="label" select="'%fldOnlineFrom%:'" />
-                <xsl:with-param name="selectnode" select="/wizarddata/wizardstate/stepstate[1]/publishing/@from" />
-                <xsl:with-param name="colspan" select="'1'" />
+                <xsl:with-param name="name" select="'publishfrom'"/>
+                <xsl:with-param name="label" select="'%fldOnlineFrom%:'"/>
+                <xsl:with-param name="selectnode" select="/wizarddata/wizardstate/stepstate[1]/publishing/@from"/>
+                <xsl:with-param name="colspan" select="'1'"/>
               </xsl:call-template>
             </tr>
             <tr>
               <xsl:call-template name="readonlydatetime">
-                <xsl:with-param name="name" select="'publishto'" />
-                <xsl:with-param name="label" select="'%fldOnlineTo%:'" />
-                <xsl:with-param name="selectnode" select="/wizarddata/wizardstate/stepstate[1]/publishing/@to" />
-                <xsl:with-param name="colspan" select="'3'" />
+                <xsl:with-param name="name" select="'publishto'"/>
+                <xsl:with-param name="label" select="'%fldOnlineTo%:'"/>
+                <xsl:with-param name="selectnode" select="/wizarddata/wizardstate/stepstate[1]/publishing/@to"/>
+                <xsl:with-param name="colspan" select="'3'"/>
               </xsl:call-template>
             </tr>
           </table>
@@ -741,8 +749,8 @@
         <xsl:if test="($originalstatus = 0 and $status = 1) or ($originalstatus = 1 and $status = 0)">
           <fieldset id="message">
             <legend>&nbsp;%blockMessage%&nbsp;</legend>
-            <img src="images/shim.gif" height="4" class="shim" border="0" />
-            <br />
+            <img src="images/shim.gif" height="4" class="shim" border="0"/>
+            <br/>
 
             <table border="0" cellspacing="2" cellpadding="2">
               <tr>
@@ -758,7 +766,7 @@
                   </td>
                 </tr>
               </xsl:for-each>
-              
+
               <tr>
                 <td colspan="3">%fldMessage%</td>
               </tr>
@@ -767,7 +775,8 @@
                   <textarea rows="12" cols="100" name="body" disabled="disabled">
                     <xsl:value-of select="/wizarddata/wizardstate/stepstate[1]/message" disable-output-escaping="yes"/>
                   </textarea>
-                  <br/><br/>
+                  <br/>
+                  <br/>
                 </td>
               </tr>
             </table>
@@ -783,8 +792,8 @@
               <xsl:value-of select="@name"/>
               <xsl:text>&nbsp;</xsl:text>
             </legend>
-            <img src="images/shim.gif" height="4" class="shim" border="0" />
-            <br />
+            <img src="images/shim.gif" height="4" class="shim" border="0"/>
+            <br/>
 
             <xsl:variable name="menukey">
               <xsl:value-of select="@key"/>
@@ -797,18 +806,18 @@
                     <xsl:text>contentframework_</xsl:text>
                     <xsl:value-of select="$menukey"/>
                   </xsl:with-param>
-                  <xsl:with-param name="label" select="'%fldContentFramework%:'" />
+                  <xsl:with-param name="label" select="'%fldContentFramework%:'"/>
                   <xsl:with-param name="selectnode">
                     <xsl:choose>
                       <xsl:when test="/wizarddata/pagetemplates/pagetemplate[@menukey = $menukey]">
-                        <xsl:value-of select="/wizarddata/pagetemplates/pagetemplate[@menukey = $menukey]/name" />
+                        <xsl:value-of select="/wizarddata/pagetemplates/pagetemplate[@menukey = $menukey]/name"/>
                       </xsl:when>
                       <xsl:otherwise>
                         <xsl:text>%optNone%</xsl:text>
                       </xsl:otherwise>
                     </xsl:choose>
                   </xsl:with-param>
-                  <xsl:with-param name="colspan" select="'1'" />
+                  <xsl:with-param name="colspan" select="'1'"/>
                 </xsl:call-template>
               </tr>
             </table>
@@ -842,77 +851,77 @@
     <xsl:text>%headPublishingWizard% : </xsl:text>
     <xsl:text>%headContentRepositories% </xsl:text>
     <xsl:call-template name="categoryheader">
-      <xsl:with-param name="rootelem" select="/wizarddata" />
-      <xsl:with-param name="nolinks" select="true()" />
+      <xsl:with-param name="rootelem" select="/wizarddata"/>
+      <xsl:with-param name="nolinks" select="true()"/>
     </xsl:call-template>
     <xsl:text> / </xsl:text>
-    <xsl:value-of select="$contenttitle" />
+    <xsl:value-of select="$contenttitle"/>
 
   </xsl:template>
 
   <xsl:template name="checkbox_site">
-    <xsl:param name="label" />
-    <xsl:param name="name" />
+    <xsl:param name="label"/>
+    <xsl:param name="name"/>
     <xsl:param name="href" select="''"/>
     <xsl:param name="value"/>
-    <xsl:param name="selectnode" />
-    <xsl:param name="selectnode-initial" />
-    <xsl:param name="disabled" select="false()" />
+    <xsl:param name="selectnode"/>
+    <xsl:param name="selectnode-initial"/>
+    <xsl:param name="disabled" select="false()"/>
 
     <xsl:if test="$selectnode-initial = $value">
       <input type="hidden">
         <xsl:attribute name="name">
-          <xsl:value-of select="$name" />
+          <xsl:value-of select="$name"/>
         </xsl:attribute>
         <xsl:attribute name="value">
-          <xsl:value-of select="$value" />
+          <xsl:value-of select="$value"/>
         </xsl:attribute>
       </input>
     </xsl:if>
 
     <label>
-    <input type="checkbox">
-      <xsl:if test="$selectnode = $value">
-        <xsl:attribute name="checked">
-          <xsl:value-of select="'checked'" />
+      <input type="checkbox">
+        <xsl:if test="$selectnode = $value">
+          <xsl:attribute name="checked">
+            <xsl:value-of select="'checked'"/>
+          </xsl:attribute>
+        </xsl:if>
+        <xsl:attribute name="value">
+          <xsl:value-of select="$value"/>
         </xsl:attribute>
-      </xsl:if>
-      <xsl:attribute name="value">
-        <xsl:value-of select="$value" />
-      </xsl:attribute>
-      <xsl:attribute name="name">
-        <xsl:value-of select="$name" />
-      </xsl:attribute>
-      <xsl:attribute name="id">
-        <xsl:value-of select="$name" />
-      </xsl:attribute>
-      <!--xsl:attribute name="onchange">
-					<xsl:value-of select="'checkBoxSiteChanged(this)'" />
+        <xsl:attribute name="name">
+          <xsl:value-of select="$name"/>
+        </xsl:attribute>
+        <xsl:attribute name="id">
+          <xsl:value-of select="$name"/>
+        </xsl:attribute>
+        <!--xsl:attribute name="onchange">
+          <xsl:value-of select="'checkBoxSiteChanged(this)'" />
         </xsl:attribute-->
-      <xsl:attribute name="onclick">
-        <xsl:value-of select="'checkBoxSiteChanged(this)'" />
-      </xsl:attribute>
-      <xsl:if test="$disabled or $selectnode-initial = $value">
-        <xsl:attribute name="disabled">
-          <xsl:text>disabled</xsl:text>
+        <xsl:attribute name="onclick">
+          <xsl:value-of select="'checkBoxSiteChanged(this)'"/>
         </xsl:attribute>
-      </xsl:if>
-      <xsl:text>&nbsp;</xsl:text>
-      <xsl:choose>
-        <xsl:when test="$href != ''">
-          <a href="{$href}" target="_blank">
+        <xsl:if test="$disabled or $selectnode-initial = $value">
+          <xsl:attribute name="disabled">
+            <xsl:text>disabled</xsl:text>
+          </xsl:attribute>
+        </xsl:if>
+        <xsl:text>&nbsp;</xsl:text>
+        <xsl:choose>
+          <xsl:when test="$href != ''">
+            <a href="{$href}" target="_blank">
+              <img src="images/icon_site.gif" border="0"/>
+              <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
+              <xsl:value-of select="$label"/>
+            </a>
+          </xsl:when>
+          <xsl:otherwise>
             <img src="images/icon_site.gif" border="0"/>
             <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
-            <xsl:value-of select="$label" />
-          </a>
-        </xsl:when>
-        <xsl:otherwise>
-          <img src="images/icon_site.gif" border="0"/>
-          <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
-          <xsl:value-of select="$label" />
-        </xsl:otherwise>
-      </xsl:choose>
-    </input>
+            <xsl:value-of select="$label"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </input>
     </label>
   </xsl:template>
 
@@ -934,7 +943,7 @@
       <input type="checkbox">
         <xsl:if test="$selectnode = $value">
           <xsl:attribute name="checked">
-            <xsl:value-of select="'checked'" />
+            <xsl:value-of select="'checked'"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="$visible = false()">
@@ -943,27 +952,27 @@
           </xsl:attribute>
         </xsl:if>
         <xsl:attribute name="value">
-          <xsl:value-of select="$value" />
+          <xsl:value-of select="$value"/>
         </xsl:attribute>
         <xsl:attribute name="name">
-          <xsl:value-of select="$name" />
+          <xsl:value-of select="$name"/>
         </xsl:attribute>
         <xsl:attribute name="id">
-          <xsl:value-of select="$name" />
+          <xsl:value-of select="$name"/>
         </xsl:attribute>
         <xsl:if test="$onpropertychange != ''">
           <xsl:attribute name="onpropertychange">
-            <xsl:value-of select="$onpropertychange" />
+            <xsl:value-of select="$onpropertychange"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="$onchange != ''">
           <xsl:attribute name="onchange">
-            <xsl:value-of select="$onchange" />
+            <xsl:value-of select="$onchange"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="$onclick != ''">
           <xsl:attribute name="onclick">
-            <xsl:value-of select="$onclick" />
+            <xsl:value-of select="$onclick"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="$disabled">
@@ -992,31 +1001,31 @@
       <input type="radio">
         <xsl:if test="$selectnode = $value">
           <xsl:attribute name="checked">
-            <xsl:value-of select="'checked'" />
+            <xsl:value-of select="'checked'"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:attribute name="value">
-          <xsl:value-of select="$value" />
+          <xsl:value-of select="$value"/>
         </xsl:attribute>
         <xsl:attribute name="name">
-          <xsl:value-of select="$name" />
+          <xsl:value-of select="$name"/>
         </xsl:attribute>
         <xsl:attribute name="id">
-          <xsl:value-of select="$name" />
+          <xsl:value-of select="$name"/>
         </xsl:attribute>
         <xsl:if test="$onpropertychange != ''">
           <xsl:attribute name="onpropertychange">
-            <xsl:value-of select="$onpropertychange" />
+            <xsl:value-of select="$onpropertychange"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="$onchange != ''">
           <xsl:attribute name="onchange">
-            <xsl:value-of select="$onchange" />
+            <xsl:value-of select="$onchange"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="$onclick != ''">
           <xsl:attribute name="onclick">
-            <xsl:value-of select="$onclick" />
+            <xsl:value-of select="$onclick"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="$disabled">
@@ -1036,7 +1045,7 @@
       <xsl:with-param name="publishto" select="/wizarddata/contents/content/@publishto"/>
     </xsl:call-template>
     <xsl:text>&nbsp;</xsl:text>
-    <xsl:value-of select="$contenttitle" />
+    <xsl:value-of select="$contenttitle"/>
   </xsl:template>
 
 </xsl:stylesheet>

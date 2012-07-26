@@ -11,7 +11,7 @@ import org.jdom.Element;
 
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.field.UserInfoXmlCreator;
+import com.enonic.cms.core.security.user.UserFieldsXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.store.dao.GroupDao;
 
@@ -19,7 +19,7 @@ public class UserContextXmlCreator
 {
     private GroupDao groupDao;
 
-    private final UserInfoXmlCreator userInfoXmlCreator = new UserInfoXmlCreator();
+    private final UserFieldsXmlCreator userFieldsXmlCreator = new UserFieldsXmlCreator();
 
     public UserContextXmlCreator( final GroupDao groupDao )
     {
@@ -55,7 +55,7 @@ public class UserContextXmlCreator
         userEl.addContent( new Element( "display-name" ).setText( user.getDisplayName() ) );
         userEl.addContent( new Element( "email" ).setText( user.getEmail() ) );
 
-        userInfoXmlCreator.addUserInfoToElement( userEl, user.getUserInfo(), false );
+        userFieldsXmlCreator.addUserInfoToElement( userEl, user.getUserFields(), false );
 
         userEl.addContent( createMembershipsElement( user ) );
 

@@ -9,9 +9,9 @@ import java.util.Calendar;
 
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceBase;
 import com.enonic.cms.core.resource.ResourceFolder;
+import com.enonic.cms.core.resource.ResourceKey;
 
 abstract class ResourceBaseImpl
     implements Serializable, ResourceBase

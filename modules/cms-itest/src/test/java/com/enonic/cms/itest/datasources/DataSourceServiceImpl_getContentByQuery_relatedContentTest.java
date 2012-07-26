@@ -6,11 +6,13 @@ package com.enonic.cms.itest.datasources;
 
 import org.jdom.Document;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -62,6 +64,17 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
 
     private static final DateTime DATE_TIME_2010_01_01 = new DateTime( 2010, 1, 1, 0, 0, 0, 0 );
 
+    @After
+    public void shutdown()
+        throws Exception
+    {
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+        System.out.println( "Shutting down everything" );
+
+        Thread.sleep( 1000 );
+    }
 
     @Before
     public void setUp()
@@ -108,6 +121,7 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyOtherCategory", "content-querier", "read, admin_browse" ) );
 
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     @Test
@@ -124,6 +138,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey contentB = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Content B", commonChildContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that 2 content is created
         assertEquals( 3, fixture.countAllContent() );
@@ -145,6 +161,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
+
+        System.out.println( JDOMUtil.prettyPrintDocument( jdomDocResult ) );
 
         AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "2" );
         AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, contentA.toString(), contentB.toString() );
@@ -173,6 +191,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );
@@ -224,6 +244,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );
@@ -277,6 +299,8 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         ContentKey fatherContentKey = contentService.createContent(
             createCreateContentCommand( "MyCategory", createMyRelatedContentData( "Father", sonContentKey, daughterContentKey ),
                                         "content-creator" ) );
+
+        fixture.flushIndexTransaction();
 
         // setup: verify that the content was created
         assertEquals( 4, fixture.countAllContent() );

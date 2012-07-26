@@ -68,6 +68,8 @@ public interface AdminService
 
     public void updateAccessRights( User user, String xmlData );
 
+    public void updateIndexCategory( CategoryKey categoryKey );
+
     public void updateMenuItem( User user, String xmlData );
 
     public void removeMenuItem( User user, int mikey );
@@ -204,8 +206,6 @@ public interface AdminService
     public boolean isAdmin( User user );
 
     public boolean isUserStoreAdmin( User user, UserStoreKey userStoreKey );
-
-    public void moveCategory( User user, int catKey, int superCatKey );
 
     public XMLDocument getMenu( User user, CategoryCriteria criteria );
 

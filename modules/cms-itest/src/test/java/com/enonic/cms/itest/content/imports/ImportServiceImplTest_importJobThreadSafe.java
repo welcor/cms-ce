@@ -27,7 +27,7 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ImportServiceImplTest_importJobThreadSafe
         extends AbstractSpringTest

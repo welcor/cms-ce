@@ -548,4 +548,10 @@ public class GroupEntity
 
     }
 
+    public boolean isInUserStore()
+    {
+        return getType().equals( GroupType.USER ) || getType().equals( GroupType.USERSTORE_GROUP ) ||
+            getType().equals( GroupType.USERSTORE_ADMINS ) ||
+            getType().equals( GroupType.AUTHENTICATED_USERS );
+    }
 }

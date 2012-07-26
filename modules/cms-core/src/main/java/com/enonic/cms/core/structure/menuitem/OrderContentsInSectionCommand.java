@@ -6,10 +6,13 @@ import java.util.List;
 import com.enonic.cms.core.content.ContentKey;
 
 public class OrderContentsInSectionCommand
+    implements MenuItemServiceCommand
 {
     private List<ContentKey> wantedOrder = new ArrayList<ContentKey>();
 
-    OrderContentsInSectionCommand()
+    private MenuItemKey sectionKey;
+
+    public OrderContentsInSectionCommand()
     {
     }
 
@@ -26,5 +29,15 @@ public class OrderContentsInSectionCommand
     public void setWantedOrder( List<ContentKey> wantedOrder )
     {
         this.wantedOrder = wantedOrder;
+    }
+
+    public MenuItemKey getSectionKey()
+    {
+        return sectionKey;
+    }
+
+    public void setSectionKey( final MenuItemKey sectionKey )
+    {
+        this.sectionKey = sectionKey;
     }
 }

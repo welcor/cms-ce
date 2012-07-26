@@ -1,5 +1,6 @@
 package com.enonic.cms.itest.structure.menuitem;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -19,11 +20,19 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.content.ContentService;
+import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.category.CategoryAccessException;
+import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
+import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.TextDataEntryConfig;
 import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.structure.menuitem.AddContentToSectionCommand;
 import com.enonic.cms.core.structure.menuitem.ApproveContentInSectionCommand;
 import com.enonic.cms.core.structure.menuitem.ApproveContentsInSectionCommand;
@@ -59,6 +68,9 @@ public class MenuItemServiceImplTest
 
     private int menuItemOrderCount = 0;
 
+    @Autowired
+    private ContentService contentService;
+
     @Before
     public void setUp()
     {
@@ -91,7 +103,9 @@ public class MenuItemServiceImplTest
 
         // Create a unit and a category in the archive to store the articles in, including access rights on the category.
         fixture.save( factory.createUnit( "Archive" ) );
-        fixture.save( factory.createCategory( "Articles", null, "article", "Archive", "aru", "aru" ) );
+        final CategoryEntity category = factory.createCategory( "Articles", null, "article", "Archive", "aru", "aru" );;
+        category.setContentType( fixture.findContentTypeByName( "MenuItem" ) );
+        fixture.save( category );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "aru", "read, admin_browse, create, delete, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "nru", "read" ) );
 
@@ -101,14 +115,68 @@ public class MenuItemServiceImplTest
         fixture.flushAndClearHibernateSesssion();
     }
 
-    // @Test
+    @Test
+    public void orderContentToSectionTest()
+    {
+        fixture.save( createOrderedSection( "News" ) );
+        fixture.save( createMenuItemAccess( "News", "aru", "read, create, update, delete, add, publish" ) );
+
+        createContent( "c-1", "Articles" );
+        createContent( "c-2", "Articles" );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        AddContentToSectionCommand addContentToSectionCommand1 =
+            createAddContentToSectionCommand( "aru", fixture.findContentByName( "c-1" ), fixture.findMenuItemByName( "News" ), true );
+        menuItemService.execute( addContentToSectionCommand1 );
+
+        AddContentToSectionCommand addContentToSectionCommand2 =
+            createAddContentToSectionCommand( "aru", fixture.findContentByName( "c-2" ), fixture.findMenuItemByName( "News" ), true );
+        menuItemService.execute( addContentToSectionCommand2 );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // verify: content added in section
+        assertEquals( 1, fixture.findContentByName( "c-1" ).getSectionContents().size() );
+        assertEquals( 1, fixture.findContentByName( "c-2" ).getSectionContents().size() );
+        final Set<SectionContentEntity> sectionContents = fixture.findMenuItemByName( "News" ).getSectionContents();
+        assertEquals( 2, sectionContents.size() );
+
+        List<ContentKey> wantedOrder = new ArrayList<ContentKey>( 2 );
+
+        for ( SectionContentEntity sectionContentEntity : sectionContents )
+        {
+            // check that these are not ordered !
+            assertEquals( 0, sectionContentEntity.getOrder() );
+
+            wantedOrder.add( sectionContentEntity.getContent().getKey() );
+        }
+
+        OrderContentsInSectionCommand orderContentsInSectionCommand = new OrderContentsInSectionCommand();
+        orderContentsInSectionCommand.setSectionKey( fixture.findMenuItemByName( "News" ).getKey() );
+        orderContentsInSectionCommand.setWantedOrder( wantedOrder );
+        menuItemService.execute( orderContentsInSectionCommand );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        final Set<SectionContentEntity> sectionContents2 = fixture.findMenuItemByName( "News" ).getSectionContents();
+        assertEquals( 2, sectionContents2.size() );
+
+        for ( SectionContentEntity sectionContentEntity : sectionContents )
+        {
+            // check that these are ordered !
+            assertFalse( 0 == sectionContentEntity.getOrder() );
+        }
+    }
+
+    @Test
     public void removeContentsFromSection_removes_content_from_section()
     {
         fixture.save( createOrderedSection( "News" ) );
         fixture.save( createMenuItemAccess( "News", "aru", "read, create, update, delete, add, publish" ) );
 
-        fixture.save( createContent( "c-1", "Articles" ) );
-        fixture.save( createContent( "c-2", "Articles" ) );
+        createContent( "c-1", "Articles" );
+        createContent( "c-2", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         ContentKey c1Key = fixture.findContentByName( "c-1" ).getKey();
@@ -153,7 +221,7 @@ public class MenuItemServiceImplTest
         fixture.save( createMenuItemAccess( "Culture", "aru", "read, create, update, delete, add, publish" ) );
 
         // setup content
-        fixture.save( createContent( "c-123", "Articles" ) );
+        createContent( "c-123", "Articles" );
 
         // add content to sections
         AddContentToSectionCommand addContentToSectionCommand =
@@ -210,9 +278,9 @@ public class MenuItemServiceImplTest
     public void removeContentsFromSection()
     {
         // setup
-        fixture.save( createContent( "other-content-1", "Articles" ) );
-        fixture.save( createContent( "content-to-remove", "Articles" ) );
-        fixture.save( createContent( "other-content-2", "Articles" ) );
+        createContent( "other-content-1", "Articles" );
+        createContent( "content-to-remove", "Articles" );
+        createContent( "other-content-2", "Articles" );
 
         MenuItemEntity mysection = createSection( "mysection", "The Newspaper", true );
         fixture.save( mysection );
@@ -271,7 +339,7 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
-        fixture.save( createContent( "my-content", "Articles" ) );
+        createContent( "my-content", "Articles" );
 
         // exercise
         AddContentToSectionCommand command = new AddContentToSectionCommand();
@@ -293,7 +361,7 @@ public class MenuItemServiceImplTest
 
         fixture.save( createSection( "My section", "The Newspaper", false ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
-        fixture.save( createContent( "my-unsupported-content", "Articles" ) );
+        createContent( "my-unsupported-content", "Articles" );
 
         fixture.save( factory.createContentType( "just-another-cty", ContentHandlerName.CUSTOM.getHandlerClassShortName(), null ) );
         fixture.save( createPageTemplate( "my-template", PageTemplateType.SECTIONPAGE, "The Newspaper", "just-another-cty" ) );
@@ -323,7 +391,7 @@ public class MenuItemServiceImplTest
         section.addAllowedSectionContentType( fixture.findContentTypeByName( "article" ) );
         fixture.save( section );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
-        fixture.save( createContent( "my-supported-content", "Articles" ) );
+        createContent( "my-supported-content", "Articles" );
 
         fixture.flushAndClearHibernateSesssion();
 
@@ -350,7 +418,7 @@ public class MenuItemServiceImplTest
         section.addAllowedSectionContentType( fixture.findContentTypeByName( "just-another-cty" ) );
         fixture.save( section );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
-        fixture.save( createContent( "my-unsupported-content", "Articles" ) );
+        createContent( "my-unsupported-content", "Articles" );
 
         fixture.flushAndClearHibernateSesssion();
 
@@ -375,7 +443,7 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
-        fixture.save( createContent( "my-content", "Articles" ) );
+        createContent( "my-content", "Articles" );
 
         // exercise
         AddContentToSectionCommand command = new AddContentToSectionCommand();
@@ -402,8 +470,8 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
-        fixture.save( createContent( "second-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
+        createContent( "second-content", "Articles" );
 
         AddContentToSectionCommand command = new AddContentToSectionCommand();
         command.setAddOnTop( false );
@@ -440,7 +508,7 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "my-content", "Articles" ) );
+        createContent( "my-content", "Articles" );
 
         // exercise
         AddContentToSectionCommand command = new AddContentToSectionCommand();
@@ -467,8 +535,8 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
-        fixture.save( createContent( "second-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
+        createContent( "second-content", "Articles" );
 
         AddContentToSectionCommand command = new AddContentToSectionCommand();
         command.setAddOnTop( true );
@@ -502,8 +570,8 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
-        fixture.save( createContent( "second-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
+        createContent( "second-content", "Articles" );
 
         AddContentToSectionCommand command = new AddContentToSectionCommand();
         command.setAddOnTop( true );
@@ -545,8 +613,8 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
-        fixture.save( createContent( "second-content", "Articles" ) );
+        createContent( "first-content", "Articles" ) ;
+        createContent( "second-content", "Articles" );
 
         AddContentToSectionCommand command = new AddContentToSectionCommand();
         command.setAddOnTop( true );
@@ -592,7 +660,7 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "my-content", "Articles" ) );
+        createContent( "my-content", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         // exercise
@@ -623,7 +691,7 @@ public class MenuItemServiceImplTest
     public void add_one_content_to_a_unorderedSsection_with_no_content_as_unapproved()
     {
         // setup
-        fixture.save( createContent( "c-1", "Articles" ) );
+        createContent( "c-1", "Articles" );
         fixture.save( createUnorderedSection( "mysection" ) );
         fixture.save( createMenuItemAccess( "mysection", "aru", "add publish" ) );
 
@@ -649,8 +717,8 @@ public class MenuItemServiceImplTest
         String siteName = "The Newspaper";
         String categoryName = "Articles";
 
-        ContentEntity content = factory.createContent( categoryName, "en", "aru", "0", new Date() );
-        fixture.save( content );
+        final ContentKey contentKey = createContent( "a-content", categoryName );
+        final ContentEntity content = fixture.findContentByKey( contentKey );
 
         boolean isOrderedSection = false;
         MenuItemEntity section1 =
@@ -702,8 +770,8 @@ public class MenuItemServiceImplTest
         String siteName = "The Newspaper";
         String categoryName = "Articles";
 
-        ContentEntity content = factory.createContent( categoryName, "en", "aru", "0", new Date() );
-        fixture.save( content );
+        final ContentKey contentKey = createContent( "a-content", categoryName );
+        final ContentEntity content = fixture.findContentByKey( contentKey );
 
         boolean isOrderedSection = false;
         MenuItemEntity section =
@@ -737,9 +805,9 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
-        fixture.save( createContent( "second-content", "Articles" ) );
-        fixture.save( createContent( "third-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
+        createContent( "second-content", "Articles" );
+        createContent( "third-content", "Articles" );
 
         fixture.flushAndClearHibernateSesssion();
 
@@ -811,7 +879,7 @@ public class MenuItemServiceImplTest
         // setup: content
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         // setup: add content to section without approving it
@@ -848,11 +916,11 @@ public class MenuItemServiceImplTest
         // setup: content
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "c-1", "Articles" ) );
-        fixture.save( createContent( "c-2", "Articles" ) );
-        fixture.save( createContent( "c-3", "Articles" ) );
-        fixture.save( createContent( "c-4", "Articles" ) );
-        fixture.save( createContent( "c-5", "Articles" ) );
+        createContent( "c-1", "Articles" );
+        createContent( "c-2", "Articles" );
+        createContent( "c-3", "Articles" );
+        createContent( "c-4", "Articles" );
+        createContent( "c-5", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         // setup: add content to section without approving it
@@ -921,8 +989,8 @@ public class MenuItemServiceImplTest
         // setup: content
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
-        fixture.save( createContent( "second-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
+        createContent( "second-content", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         // setup: add content to section without approving it
@@ -970,7 +1038,7 @@ public class MenuItemServiceImplTest
         fixture.createAndStoreNormalUserWithUserGroup( "add-only-user", "Add only rights user", "testuserstore" );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
         fixture.save( createMenuItemAccess( "My section", "add-only-user", "add" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         // setup: add content to section without approving it
@@ -999,7 +1067,7 @@ public class MenuItemServiceImplTest
         // setup: content
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         // setup: add content to section without approving it
@@ -1035,8 +1103,8 @@ public class MenuItemServiceImplTest
         // setup: content
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        fixture.save( createContent( "first-content", "Articles" ) );
-        fixture.save( createContent( "second-content", "Articles" ) );
+        createContent( "first-content", "Articles" );
+        createContent( "second-content", "Articles" );
         fixture.flushAndClearHibernateSesssion();
 
         // setup: add content to section without approving it
@@ -1076,7 +1144,7 @@ public class MenuItemServiceImplTest
         fixture.save( createSection( "News", "The Newspaper", true ) );
         fixture.save( factory.createMenuItemAccess( fixture.findMenuItemByName( "News" ), fixture.findUserByName( "aru" ),
                                                     "read, create, update, delete, add, publish" ) );
-        fixture.save( factory.createContent( "c-1", "Articles", "en", "aru", "123", new Date() ) );
+        createContent( "c-1", "Articles" );
 
         fixture.flushAndClearHibernateSesssion();
 
@@ -1113,7 +1181,7 @@ public class MenuItemServiceImplTest
         fixture.save( createSection( "News", "The Newspaper", true ) );
         fixture.save( factory.createMenuItemAccess( fixture.findMenuItemByName( "News" ), fixture.findUserByName( "aru" ),
                                                     "read, create, update, delete, add, publish" ) );
-        fixture.save( factory.createContent( "c-1", "Articles", "en", "aru", "123", new Date() ) );
+        createContent( "c-1", "Articles" );
         fixture.save(
             factory.createPageTemplate( "my-page-template", PageTemplateType.CONTENT, "The Newspaper", new ResourceKey( "ABC" ) ) );
 
@@ -1157,7 +1225,7 @@ public class MenuItemServiceImplTest
         fixture.save( factory.createMenuItemAccess( fixture.findMenuItemByName( "Tabloid" ), fixture.findUserByName( "aru" ),
                                                     "read, create, update, delete, add, publish" ) );
 
-        fixture.save( createContent( "c-1", "Articles" ) );
+        createContent( "c-1", "Articles" );
 
         fixture.save( factory.createContentHome( fixture.findContentByName( "c-1" ), fixture.findMenuItemByName( "News" ), null ) );
 
@@ -1203,7 +1271,7 @@ public class MenuItemServiceImplTest
         fixture.save( factory.createMenuItemAccess( fixture.findMenuItemByName( "News" ), fixture.findUserByName( "aru" ),
                                                     "read, create, update, delete, add, publish" ) );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "permission-test-user", "read, create" ) );
-        fixture.save( createContent( "c-1", "Articles" ) );
+        createContent( "c-1", "Articles" );
 
         // exercise
         SetContentHomeCommand command = new SetContentHomeCommand();
@@ -1337,14 +1405,13 @@ public class MenuItemServiceImplTest
         fixture.save( createMenuItemAccess( "Opinion", "permission-test-user", permissions ) );
         fixture.save( createMenuItemAccess( "Opinion", "aru", "add publish" ) );
 
-        ContentEntity content = factory.createContent( "c-1", "Articles", "en", "aru", "0", new Date() );
-        fixture.save( content );
+        final ContentKey contentKey = createContent( "c-1", "Articles" );
 
         fixture.flushAndClearHibernateSesssion();
 
         AddContentToSectionCommand addContentToSectionCommand = new AddContentToSectionCommand();
         addContentToSectionCommand.setContributor( fixture.findUserByName( "aru" ).getKey() );
-        addContentToSectionCommand.setContent( content.getKey() );
+        addContentToSectionCommand.setContent( contentKey );
         addContentToSectionCommand.setSection( fixture.findMenuItemByName( "Opinion" ).getKey() );
         addContentToSectionCommand.setApproveInSection( approveContent );
         if ( approveContent )
@@ -1388,8 +1455,8 @@ public class MenuItemServiceImplTest
 
     private MenuItemEntity createSection( String name, String siteName, boolean isOrdered )
     {
-        return factory.createSectionMenuItem( name, ++menuItemOrderCount, null, name, siteName, "aru", "aru", "en", null, null, isOrdered,
-                                              null, false, null );
+        return factory.createSectionMenuItem( name, ++menuItemOrderCount, null, name, siteName, "aru", "aru", "en",
+                                              null, null, isOrdered, null, false, null );
     }
 
     private MenuItemAccessEntity createMenuItemAccess( String menuItemName, String userName, String accesses )
@@ -1423,12 +1490,36 @@ public class MenuItemServiceImplTest
 
     private MenuItemEntity createOrderedSection( String name )
     {
-        return factory.createSectionMenuItem( name, 0, null, name, null, "admin", "admin", "en", null, null, false, null, false, null );
+        return factory.createSectionMenuItem( name, 0, null, name, null, "admin", "admin", "en", null, null, false,
+                                              null, false, null );
     }
 
-    private ContentEntity createContent( String contentName, String categoryName )
+    private ContentKey createContent( String contentName, String categoryName )
     {
-        return factory.createContent( contentName, categoryName, "en", "aru", "0", new Date() );
+        final UserKey user = fixture.findUserByName( "aru" ).getKey();
+        CreateContentCommand createCommand =
+                createCreateContentCommand( contentName, categoryName, ContentStatus.APPROVED, user );
+        return contentService.createContent( createCommand );
+    }
+
+    private CreateContentCommand createCreateContentCommand( String contentName, String categoryName,
+                                                             ContentStatus status, UserKey creator )
+    {
+        ContentTypeEntity contentType = fixture.findContentTypeByName( "MenuItem" );
+        CustomContentData contentData = new CustomContentData( contentType.getContentTypeConfig() );
+        TextDataEntryConfig headingConfig = new TextDataEntryConfig( "heading", true, "Tittel", "contentdata/intro/heading" );
+        contentData.add( new TextDataEntry( headingConfig, "test title" ) );
+
+        CreateContentCommand createContentCommand = new CreateContentCommand();
+        createContentCommand.setCreator( creator );
+        createContentCommand.setLanguage( fixture.findLanguageByCode( "en" ) );
+        createContentCommand.setCategory( fixture.findCategoryByName( categoryName ) );
+        createContentCommand.setPriority( 0 );
+        createContentCommand.setStatus( status );
+        createContentCommand.setContentData( contentData );
+        createContentCommand.setContentName( contentName );
+
+        return createContentCommand;
     }
 
     private PageTemplateEntity createPageTemplate( String name, PageTemplateType type, String siteName, String... contentTypeNames )

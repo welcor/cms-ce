@@ -13,10 +13,7 @@ import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class ContentQueryExprParserTest
@@ -25,7 +22,7 @@ public class ContentQueryExprParserTest
     @Test
     public void testImplicitDateFunctionComparedWithPublishFromField()
     {
-        checkDateFunction( "publishfrom = '2008-12-01'", 2008, 12, 1 );
+        checkDateFunction( "publishFrom = '2008-12-01'", 2008, 12, 1 );
     }
 
     @Test

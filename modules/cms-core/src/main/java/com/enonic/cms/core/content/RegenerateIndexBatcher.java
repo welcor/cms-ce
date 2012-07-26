@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 
-
 public class RegenerateIndexBatcher
 {
 
@@ -53,25 +52,32 @@ public class RegenerateIndexBatcher
 
                 if ( logEntries != null )
                 {
-                    logEntries.add( "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
-                                            " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() +
-                                            "'" );
+                    logEntries.add(
+                        "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
+                            " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
                 }
 
                 LOG.info( "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
-                                  " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
+                              " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
 
                 long start = System.currentTimeMillis();
+
                 indexService.regenerateIndex( nextContentKeys );
+                //indexService.regenerateIndexBatched( nextContentKeys );
+
                 long end = System.currentTimeMillis();
 
                 LOG.info( "Last batch took: " + ( ( end - start ) / 1000 ) + " sec" );
 
                 currentIndex = currentIndex + batchSize;
-
-
             }
         }
+
+    }
+
+    public void optimizeIndex()
+    {
+        indexService.optimizeIndex();
     }
 
     private List<ContentKey> getNextContentKeys( List<ContentKey> allContentKeys, int currentIndex, int batchSize )

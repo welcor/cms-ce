@@ -7,9 +7,9 @@ package com.enonic.cms.store.dao;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
-import org.springframework.stereotype.Repository;
 
 @Repository("contentBinaryDataDao")
 public final class ContentBinaryDataEntityDao

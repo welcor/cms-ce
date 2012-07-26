@@ -94,9 +94,35 @@
       <x:param name="excludekey"/>
 
       <x:param name="isRemote" select="/users/userstore/@remote = 'true'"/>
-      <x:param name="isEmailReadOnly" select="/users/userstore/@isEmailReadOnly = 'true'"/>
+      <x:param name="is-email-editable"/>
 
       <x:param name="generated-display-name"/>
+
+      <x:param name="is-firstname-editable"/>
+      <x:param name="is-lastname-editable"/>
+      <x:param name="is-middlename-editable"/>
+      <x:param name="is-nick-editable"/>
+      <x:param name="is-birthday-editable"/>
+      <x:param name="is-country-editable"/>
+      <x:param name="is-description-editable"/>
+      <x:param name="is-initials-editable"/>
+      <x:param name="is-globalposition-editable"/>
+      <x:param name="is-htmlemail-editable"/>
+      <x:param name="is-locale-editable"/>
+      <x:param name="is-personalid-editable"/>
+      <x:param name="is-memberid-editable"/>
+      <x:param name="is-organization-editable"/>
+      <x:param name="is-phone-editable"/>
+      <x:param name="is-fax-editable"/>
+      <x:param name="is-mobile-editable"/>
+      <x:param name="is-prefix-editable"/>
+      <x:param name="is-suffix-editable"/>
+      <x:param name="is-title-editable"/>
+      <x:param name="is-timezone-editable"/>
+      <x:param name="is-homepage-editable"/>
+      <x:param name="is-address-editable"/>
+      <x:param name="is-photo-editable"/>
+      <x:param name="is-gender-editable"/>
 
       <x:variable name="browsepageURL">
         <x:text>adminpage?page=</x:text>
@@ -645,7 +671,7 @@
             </tr>
             <tr>
               <td>
-                <x:if test="$canUpdateUser != 'false' or $canUpdateGroup != 'false'">
+
                   <x:variable name="savescript">
                     <x:choose>
                       <x:when test="$user/block or $create = 1">
@@ -702,18 +728,9 @@
 
                   <x:text>&nbsp;</x:text>
 
-                </x:if>
-
-                <x:variable name="buttonCaption">
-                  <x:choose>
-                    <x:when test="$canUpdateUser != 'false' or $canUpdateGroup != 'false'">%cmdCancel%</x:when>
-                    <x:otherwise>%cmdClose%</x:otherwise>
-                  </x:choose>
-                </x:variable>
-
                 <x:call-template name="button">
                   <x:with-param name="type" select="'button'"/>
-                  <x:with-param name="caption" select="$buttonCaption"/>
+                  <x:with-param name="caption" select="'%cmdCancel%'"/>
                   <x:with-param name="name" select="'avbryt'"/>
                   <x:with-param name="onclick">
                     <xsl:text>javascript:history.back();</xsl:text>
@@ -1083,7 +1100,7 @@
                 <x:with-param name="name" select="'email'"/>
                 <x:with-param name="label" select="'%fldEmail%:'"/>
                 <x:with-param name="selectnode" select="$user/block/email"/>
-                <x:with-param name="readonly" select="$isEmailReadOnly"/>
+                <x:with-param name="readonly" select="not($is-email-editable)"/>
                 <x:with-param name="required" select="true()"/>
                 <x:with-param name="useIcon" select="$isRemote"/>
                 <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1127,7 +1144,7 @@
                   <x:with-param name="name" select="'prefix'"/>
                   <x:with-param name="label" select="'%fldPrefix%:'"/>
                   <x:with-param name="selectnode" select="$user/block/prefix"/>
-                  <x:with-param name="readonly" select="$configuration/prefix/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-prefix-editable)"/>
                   <x:with-param name="required" select="$configuration/prefix/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/prefix/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1157,7 +1174,7 @@
                   <x:with-param name="name" select="'first_name'"/>
                   <x:with-param name="label" select="'%fldFirstName%:'"/>
                   <x:with-param name="selectnode" select="$user/block/first-name"/>
-                  <x:with-param name="readonly" select="$configuration/first-name/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-firstname-editable)"/>
                   <x:with-param name="required" select="$configuration/first-name/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/first-name/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1187,7 +1204,7 @@
                   <x:with-param name="name" select="'middle_name'"/>
                   <x:with-param name="label" select="'%fldMiddleName%:'"/>
                   <x:with-param name="selectnode" select="$user/block/middle-name"/>
-                  <x:with-param name="readonly" select="$configuration/middle-name/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-middlename-editable)"/>
                   <x:with-param name="required" select="$configuration/middle-name/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/middle-name/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1217,7 +1234,7 @@
                   <x:with-param name="name" select="'last_name'"/>
                   <x:with-param name="label" select="'%fldLastName%:'"/>
                   <x:with-param name="selectnode" select="$user/block/last-name"/>
-                  <x:with-param name="readonly" select="$configuration/last-name/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-lastname-editable)"/>
                   <x:with-param name="required" select="$configuration/last-name/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/last-name/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1247,7 +1264,7 @@
                   <x:with-param name="name" select="'suffix'"/>
                   <x:with-param name="label" select="'%fldSuffix%:'"/>
                   <x:with-param name="selectnode" select="$user/block/suffix"/>
-                  <x:with-param name="readonly" select="$configuration/suffix/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-suffix-editable)"/>
                   <x:with-param name="required" select="$configuration/suffix/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/suffix/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1277,7 +1294,7 @@
                   <x:with-param name="name" select="'initials'"/>
                   <x:with-param name="label" select="'%fldInitials%:'"/>
                   <x:with-param name="selectnode" select="$user/block/initials"/>
-                  <x:with-param name="readonly" select="$configuration/initials/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-initials-editable)"/>
                   <x:with-param name="required" select="$configuration/initials/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/initials/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1307,7 +1324,7 @@
                   <x:with-param name="name" select="'nick_name'"/>
                   <x:with-param name="label" select="'%fldNickname%:'"/>
                   <x:with-param name="selectnode" select="$user/block/nick-name"/>
-                  <x:with-param name="readonly" select="$configuration/nick-name/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-nick-editable)"/>
                   <x:with-param name="required" select="$configuration/nick-name/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/nick-name/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1421,7 +1438,7 @@
                     </div>
                   </x:if>
                   <p>
-                  <x:if test="$canUpdateUser != 'false' and not($configuration/photo/@readonly = 'true')">
+                    <x:if test="$is-photo-editable">
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td valign="top">
@@ -1468,7 +1485,7 @@
                   <x:with-param name="name" select="'personal_id'"/>
                   <x:with-param name="label" select="'%fldPersonalId%:'"/>
                   <x:with-param name="selectnode" select="$user/block/personal-id"/>
-                  <x:with-param name="readonly" select="$configuration/personal-id/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-personalid-editable)"/>
                   <x:with-param name="required" select="$configuration/personal-id/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/personal-id/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1490,7 +1507,7 @@
                   <x:with-param name="name" select="'member_id'"/>
                   <x:with-param name="label" select="'%fldMemberId%:'"/>
                   <x:with-param name="selectnode" select="$user/block/member-id"/>
-                  <x:with-param name="readonly" select="$configuration/member-id/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-memberid-editable)"/>
                   <x:with-param name="required" select="$configuration/member-id/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/member-id/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1513,7 +1530,7 @@
                   <x:with-param name="name" select="'organization'"/>
                   <x:with-param name="label" select="'%fldOrganization%:'"/>
                   <x:with-param name="selectnode" select="$user/block/organization"/>
-                  <x:with-param name="readonly" select="$configuration/organization/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-organization-editable)"/>
                   <x:with-param name="required" select="$configuration/organization/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/organization/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1537,7 +1554,7 @@
                   <x:with-param name="label" select="'%fldBirthday%:'"/>
                   <x:with-param name="size" select="'100'"/>
                   <x:with-param name="selectnode" select="$user/block/birthday"/>
-                  <x:with-param name="readonly" select="$configuration/birthday/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-birthday-editable)"/>
                   <x:with-param name="required" select="$configuration/birthday/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/birthday/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1583,7 +1600,7 @@
                         <x:text>true</x:text>
                       </x:attribute>
                     </x:if>
-                    <x:if test="$configuration/gender/@readonly = 'true'">
+                    <x:if test="not($is-gender-editable)">
                       <x:attribute name="disabled">
                         <x:text>true</x:text>
                       </x:attribute>
@@ -1598,7 +1615,7 @@
                         <x:text>true</x:text>
                       </x:attribute>
                     </x:if>
-                    <x:if test="$configuration/gender/@readonly = 'true'">
+                    <x:if test="not($is-gender-editable)">
                       <x:attribute name="disabled">
                         <x:text>true</x:text>
                       </x:attribute>
@@ -1625,7 +1642,7 @@
                   <x:with-param name="name" select="'title'"/>
                   <x:with-param name="label" select="'%fldTitle%:'"/>
                   <x:with-param name="selectnode" select="$user/block/title"/>
-                  <x:with-param name="readonly" select="$configuration/title/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-title-editable)"/>
                   <x:with-param name="required" select="$configuration/title/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/title/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1649,7 +1666,7 @@
                   <x:with-param name="selectnode" select="$user/block/description"/>
                   <x:with-param name="cols" select="'60'"/>
                   <x:with-param name="rows" select="'5'"/>
-                  <x:with-param name="readonly" select="$configuration/description/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-description-editable)"/>
                   <x:with-param name="required" select="$configuration/description/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/title/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1674,7 +1691,7 @@
                   <x:with-param name="useIcon" select="$configuration/html-email/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
                   <x:with-param name="iconText" select="'%hlpIsRemote%'"/>
-                  <x:with-param name="disabled" select="$configuration/html-email/@readonly = 'true'"/>
+                  <x:with-param name="disabled" select="not($is-htmlemail-editable)"/>
                   <!-- We want to disable the checkbox when readonly = true -->
                 </x:call-template>
               </tr>
@@ -1686,7 +1703,7 @@
                   <x:with-param name="name" select="'home_page'"/>
                   <x:with-param name="label" select="'%fldHomePage%:'"/>
                   <x:with-param name="selectnode" select="$user/block/home-page"/>
-                  <x:with-param name="readonly" select="$configuration/home-page/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-homepage-editable)"/>
                   <x:with-param name="required" select="$configuration/home-page/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/home-page/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1726,7 +1743,7 @@
                       <x:with-param name="selectnode" select="$user/block/time-zone"/>
                       <x:with-param name="required" select="$configuration/time-zone/@required = 'true'"/>
                       <x:with-param name="remoteIcon" select="$configuration/time-zone/@remote = 'true'"/>
-                      <x:with-param name="readonly" select="$configuration/time-zone/@readonly = 'true'"/>
+                      <x:with-param name="readonly" select="not($is-timezone-editable)"/>
                     </x:call-template>
                   </x:when>
                   <x:otherwise>
@@ -1761,7 +1778,7 @@
                       <x:with-param name="selectnode" select="$user/block/locale"/>
                       <x:with-param name="required" select="$configuration/locale/@required = 'true'"/>
                       <x:with-param name="remoteIcon" select="$configuration/locale/@remote = 'true'"/>
-                      <x:with-param name="readonly" select="$configuration/locale/@readonly = 'true'"/>
+                      <x:with-param name="readonly" select="not($is-locale-editable)"/>
                     </x:call-template>
                   </x:when>
                   <x:otherwise>
@@ -1789,10 +1806,6 @@
 
             <x:if test="boolean($configuration/country)">
               <tr>
-                <x:variable name="countryIsReadOnly">
-                  <x:value-of select="$configuration/country/@readonly = 'true'"/>
-                </x:variable>
-
                 <x:choose>
                   <x:when test="not($configuration/country/@iso) or $configuration/country/@iso = 'true'">
                     <x:call-template name="country-combo">
@@ -1800,7 +1813,7 @@
                       <x:with-param name="label" select="'%fldCountry%:'"/>
                       <x:with-param name="selectnode" select="$user/block/country"/>
                       <x:with-param name="required" select="$configuration/country/@required = 'true'"/>
-                      <x:with-param name="readonly" select="$configuration/country/@readonly = 'true'"/>
+                      <x:with-param name="readonly" select="not($is-country-editable)"/>
                       <x:with-param name="remoteIcon" select="$configuration/country/@remote = 'true'"/>
                     </x:call-template>
                   </x:when>
@@ -1809,7 +1822,7 @@
                       <x:with-param name="name" select="'country'"/>
                       <x:with-param name="label" select="'%fldCountry%:'"/>
                       <x:with-param name="selectnode" select="$user/block/country"/>
-                      <x:with-param name="readonly" select="$configuration/country/@readonly = 'true'"/>
+                      <x:with-param name="readonly" select="not($is-country-editable)"/>
                       <x:with-param name="required" select="$configuration/country/@required = 'true'"/>
                       <x:with-param name="useIcon" select="$configuration/remote/@remote = 'true'"/>
                       <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1833,7 +1846,7 @@
                   <x:with-param name="name" select="'global_position'"/>
                   <x:with-param name="label" select="'%fldGlobalPosition%:'"/>
                   <x:with-param name="selectnode" select="$user/block/global-position"/>
-                  <x:with-param name="readonly" select="$configuration/global-position/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-globalposition-editable)"/>
                   <x:with-param name="required" select="$configuration/global-position/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/global-position/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1869,7 +1882,7 @@
                   <x:with-param name="name" select="'phone'"/>
                   <x:with-param name="label" select="'%fldPhone%:'"/>
                   <x:with-param name="selectnode" select="$user/block/phone"/>
-                  <x:with-param name="readonly" select="$configuration/phone/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-phone-editable)"/>
                   <x:with-param name="required" select="$configuration/phone/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/phone/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1894,7 +1907,7 @@
                   <x:with-param name="name" select="'mobile'"/>
                   <x:with-param name="label" select="'%fldMobile%:'"/>
                   <x:with-param name="selectnode" select="$user/block/mobile"/>
-                  <x:with-param name="readonly" select="$configuration/mobile/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-mobile-editable)"/>
                   <x:with-param name="required" select="$configuration/mobile/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/mobile/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1919,7 +1932,7 @@
                   <x:with-param name="name" select="'fax'"/>
                   <x:with-param name="label" select="'%fldFax%:'"/>
                   <x:with-param name="selectnode" select="$user/block/fax"/>
-                  <x:with-param name="readonly" select="$configuration/fax/@readonly = 'true'"/>
+                  <x:with-param name="readonly" select="not($is-fax-editable)"/>
                   <x:with-param name="required" select="$configuration/fax/@required = 'true'"/>
                   <x:with-param name="useIcon" select="$configuration/fax/@remote = 'true'"/>
                   <x:with-param name="iconClass" select="'icon-remote'"/>
@@ -1989,7 +2002,7 @@
       </x:template>
 
         <x:template name="fieldset-address">
-            <x:variable name="show-new-address-tab-link" select="$canUpdateUser = 'true' and boolean($configuration/address/@readonly) = false()"/>
+        <x:variable name="show-new-address-tab-link" select="$is-address-editable"/>
             <fieldset>
                 <legend>%blockAddress%</legend>
                 <x:if test="$show-new-address-tab-link">
@@ -2041,7 +2054,7 @@
                                 </x:variable>
 
                                 <x:call-template name="address-tab-panel-template">
-                                    <x:with-param name="readonly" select="$configuration/address/@readonly = 'true'"/>
+                                    <x:with-param name="readonly" select="not($is-address-editable)"/>
                                     <x:with-param name="id" select="concat('address-tab-', position())"/>
                                     <x:with-param name="addressName" select="label"/>
                                     <x:with-param name="street" select="street"/>
@@ -2098,7 +2111,7 @@
                                 </x:call-template>
                             </ul>
                             <x:call-template name="address-tab-panel-template">
-                                <x:with-param name="readonly" select="$configuration/address/@readonly = 'true'"/>
+                                <x:with-param name="readonly" select="not($is-address-editable)"/>
                                 <x:with-param name="id" select="'address-tab-1'"/>
                                 <x:with-param name="addressName" select="$user/block/addresses/address/label"/>
                                 <x:with-param name="street" select="$user/block/addresses/address/street"/>
@@ -2183,14 +2196,14 @@
             <span>
               <x:attribute name="class">
                 <x:text>ui-tabs-address-remove-icon</x:text>
-                <x:if test="$canUpdateUser = 'false'">
+                <x:if test="not($is-address-editable)">
                   <x:text> cursor-move</x:text>
                 </x:if>
               </x:attribute>
               <x:if test="$displayCloseIcon">
                 <img src="images/icon_close.gif">
                   <x:choose>
-                    <x:when test="$canUpdateUser = 'true'">
+                    <x:when test="$is-address-editable">
                       <x:attribute name="onclick">
                         <x:text>closeAddressTab(this);</x:text>
                       </x:attribute>
@@ -2316,7 +2329,7 @@
                                 <td nowrap="true">
                                     <x:choose>
                                         <x:when test="$readonly">
-                                            <input name="address[].region" readonly="true">
+                                            <input name="address[].iso_region" readonly="true">
                                                 <x:attribute name="value">
                                                     <x:value-of select="$region"/>
                                                 </x:attribute>

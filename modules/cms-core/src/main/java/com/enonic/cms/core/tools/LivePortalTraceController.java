@@ -4,29 +4,28 @@
  */
 package com.enonic.cms.core.tools;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
-import java.lang.management.ThreadMXBean;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.SessionFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.adminweb.AdminHelper;
 
-import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
 
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
+import com.enonic.cms.core.portal.livetrace.PortalRequestTraceRow;
+import com.enonic.cms.core.portal.livetrace.systeminfo.SystemInfo;
+import com.enonic.cms.core.portal.livetrace.systeminfo.SystemInfoFactory;
 
 /**
  * This class implements the connection info controller.
@@ -34,10 +33,18 @@ import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 public final class LivePortalTraceController
     extends AbstractToolController
 {
+    private SystemInfoFactory systemInfoFactory = new SystemInfoFactory();
 
     private LivePortalTraceService livePortalTraceService;
 
     private CacheManager cacheManager;
+
+    private ObjectMapper jacksonObjectMapper;
+
+    public LivePortalTraceController()
+    {
+        jacksonObjectMapper = new ObjectMapper().configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+    }
 
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
@@ -71,99 +78,107 @@ public final class LivePortalTraceController
 
             if ( StringUtils.isNotBlank( systemInfo ) )
             {
-                appendSystemInfoToModel( model );
-                process( req, res, model, "livePortalTrace_system_info" );
-                res.setHeader( "Content-Type", "application/json; charset=UTF-8" );
+                final SystemInfo systemInfoObject =
+                    systemInfoFactory.createSystemInfo( livePortalTraceService.getNumberOfPortalRequestTracesInProgress(), cacheManager );
+                final String jsonString = objectsToJson( systemInfoObject );
+                returnJson( jsonString, res );
             }
             else if ( "current".equals( window ) )
             {
-                List<PortalRequestTrace> currentPortalRequestTraces = livePortalTraceService.getCurrentPortalRequestTraces();
-                model.put( "currentTraces", currentPortalRequestTraces );
-                process( req, res, model, "livePortalTraceWindow_current" );
-                res.setHeader( "Content-Type", "text/html; charset=UTF-8" );
+                final List<PortalRequestTrace> traces = livePortalTraceService.getCurrentPortalRequestTraces();
+                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
+                returnJson( jsonString, res );
             }
             else if ( "longestpagerequests".equals( window ) )
             {
-                List<PortalRequestTrace> longestTimePortalRequestTraces = livePortalTraceService.getLongestTimePortalPageRequestTraces();
-                model.put( "longestTraces", longestTimePortalRequestTraces );
-                process( req, res, model, "livePortalTraceWindow_longest" );
-                res.setHeader( "Content-Type", "text/html; charset=UTF-8" );
+                final List<PortalRequestTrace> traces = livePortalTraceService.getLongestTimePortalPageRequestTraces();
+                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
+                returnJson( jsonString, res );
             }
             else if ( "longestattachmentrequests".equals( window ) )
             {
-                List<PortalRequestTrace> longestTimePortalRequestTraces =
-                    livePortalTraceService.getLongestTimePortalAttachmentRequestTraces();
-                model.put( "longestTraces", longestTimePortalRequestTraces );
-                process( req, res, model, "livePortalTraceWindow_longest" );
-                res.setHeader( "Content-Type", "text/html; charset=UTF-8" );
+                final List<PortalRequestTrace> traces = livePortalTraceService.getLongestTimePortalAttachmentRequestTraces();
+                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
+                returnJson( jsonString, res );
             }
             else if ( "longestimagerequests".equals( window ) )
             {
-                List<PortalRequestTrace> longestTimePortalRequestTraces = livePortalTraceService.getLongestTimePortalImageRequestTraces();
-                model.put( "longestTraces", longestTimePortalRequestTraces );
-                process( req, res, model, "livePortalTraceWindow_longest" );
-                res.setHeader( "Content-Type", "text/html; charset=UTF-8" );
+                final List<PortalRequestTrace> traces = livePortalTraceService.getLongestTimePortalImageRequestTraces();
+                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
+                returnJson( jsonString, res );
             }
             else if ( history != null )
             {
-                String completedSinceNumberStr = req.getParameter( "completed-since-number" );
-                Long completedSinceNumber = Long.valueOf( completedSinceNumberStr );
+                final String completedAfterStr = req.getParameter( "completed-after" );
+                final String countStr = req.getParameter( "count" );
+                final String completedBeforeStr = req.getParameter( "completed-before" );
 
-                List<PortalRequestTrace> portalRequestTraces = livePortalTraceService.getHistorySince( completedSinceNumber );
-                model.put( "completedPortalRequestTraces", portalRequestTraces );
-
-                Long lastCompletedNumber = completedSinceNumber;
-                if ( portalRequestTraces.size() > 0 )
+                Long completedAfter = null;
+                if ( !StringUtils.isEmpty( completedAfterStr ) )
                 {
-                    lastCompletedNumber = portalRequestTraces.get( 0 ).getCompletedNumber();
+                    completedAfter = Long.valueOf( completedAfterStr );
                 }
-                model.put( "lastCompletedNumber", lastCompletedNumber );
+                Integer count = null;
+                if ( !StringUtils.isEmpty( countStr ) )
+                {
+                    count = Integer.valueOf( countStr );
+                }
+                Long completedBefore = null;
+                if ( !StringUtils.isEmpty( completedBeforeStr ) )
+                {
+                    completedBefore = Long.valueOf( completedBeforeStr );
+                }
 
-                res.setHeader( "Content-Type", "application/json; charset=UTF-8" );
-                process( req, res, model, "livePortalTrace_history_trace" );
+                List<PortalRequestTrace> traces;
+                if ( completedBefore != null )
+                {
+                    traces = livePortalTraceService.getCompletedBefore( completedBefore );
+                }
+                else
+                {
+                    traces = livePortalTraceService.getCompletedAfter( completedAfter );
+                }
+
+                if ( count != null )
+                {
+                    traces = traces.subList( 0, Math.min( count, traces.size() ) );
+                }
+
+                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
+                returnJson( jsonString, res );
             }
             else
             {
                 model.put( "livePortalTraceEnabled", isLivePortalTraceEnabled() ? 1 : 0 );
-                process( req, res, model, "livePortalTracePage" );
                 res.setHeader( "Content-Type", "text/html; charset=UTF-8" );
+                process( req, res, model, "livePortalTracePage" );
             }
         }
     }
 
-    private Map<String, Object> appendSystemInfoToModel( final Map<String, Object> model )
+    protected void returnJson( String json, HttpServletResponse res )
     {
-        model.put( "portalRequestTracesInProgress", livePortalTraceService.getNumberOfPortalRequestTracesInProgress() );
-        final CacheFacade entityCache = cacheManager.getCache( "entity" );
-        model.put( "entityCacheCount", entityCache != null ? entityCache.getCount() : 0 );
-        model.put( "entityCacheHitCount", entityCache != null ? entityCache.getHitCount() : 0 );
-        model.put( "entityCacheMissCount", entityCache != null ? entityCache.getMissCount() : 0 );
-        model.put( "entityCacheCapacityCount", entityCache != null ? entityCache.getMemoryCapacity() : 0 );
+        try
+        {
+            res.setHeader( "Content-Type", "application/json; charset=UTF-8" );
+            res.getWriter().println( json );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Failed to write response: " + e.getMessage(), e );
+        }
+    }
 
-        final CacheFacade pageCache = cacheManager.getCache( "page" );
-
-        model.put( "pageCacheCount", pageCache != null ? pageCache.getCount() : 0 );
-        model.put( "pageCacheHitCount", pageCache != null ? pageCache.getHitCount() : 0 );
-        model.put( "pageCacheMissCount", pageCache != null ? pageCache.getMissCount() : 0 );
-        model.put( "pageCacheCapacityCount", pageCache != null ? pageCache.getMemoryCapacity() : 0 );
-
-        final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-        final MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();
-        model.put( "javaHeapMemoryUsageInit", heapMemoryUsage.getInit() );
-        model.put( "javaHeapMemoryUsageUsed", heapMemoryUsage.getUsed() );
-        model.put( "javaHeapMemoryUsageCommitted", heapMemoryUsage.getCommitted() );
-        model.put( "javaHeapMemoryUsageMax", heapMemoryUsage.getMax() );
-        final MemoryUsage nonHeapMemoryUsage = memoryMXBean.getNonHeapMemoryUsage();
-        model.put( "javaNonHeapMemoryUsageInit", nonHeapMemoryUsage.getInit() );
-        model.put( "javaNonHeapMemoryUsageUsed", nonHeapMemoryUsage.getUsed() );
-        model.put( "javaNonHeapMemoryUsageCommitted", nonHeapMemoryUsage.getCommitted() );
-        model.put( "javaNonHeapMemoryUsageMax", nonHeapMemoryUsage.getMax() );
-
-        final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-        model.put( "javaThreadCount", threadMXBean.getThreadCount() );
-        model.put( "javaThreadPeakCount", threadMXBean.getPeakThreadCount() );
-
-        return model;
+    private String objectsToJson( Object object )
+    {
+        try
+        {
+            return jacksonObjectMapper.writeValueAsString( object );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Failed to transform objects to JSON: " + e.getMessage(), e );
+        }
     }
 
     private boolean isLivePortalTraceEnabled()

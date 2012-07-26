@@ -10,7 +10,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.core.AbstractPagedXmlCreator;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigXmlCreator;
 import com.enonic.cms.core.security.userstore.connector.config.GroupPolicyConfig;
 import com.enonic.cms.core.security.userstore.connector.config.InvalidUserStoreConnectorConfigException;
@@ -42,11 +41,6 @@ public class UserStoreXmlCreator
         return new Document( userStoresEl );
     }
 
-    public Document createUserStoreDocument( final UserStoreEntity userStore )
-    {
-        return new Document( doCreateUserStoreElement( userStore ) );
-    }
-
     public Element createUserStoreElement( final UserStoreEntity userStore )
     {
         return doCreateUserStoreElement( userStore );
@@ -65,21 +59,11 @@ public class UserStoreXmlCreator
         userStoreElem.setAttribute( "name", userStore.getName() );
         userStoreElem.setAttribute( "default", String.valueOf( userStore.isDefaultUserStore() ) );
         userStoreElem.setAttribute( "remote", String.valueOf( userStore.isRemote() ) );
-
         if ( userStore.isRemote() )
         {
             userStoreElem.addContent( doCreateConnectorElement( userStore ) );
-
-            UserStoreConnectorConfig connectorConfig = getUserStoreConnectorConfig( userStore.getConnectorName() );
-            userStoreElem.addContent( doCreateConfigElementRemoted( userStore, connectorConfig ) );
-
-            boolean isEmailReadOnly = !connectorConfig.canUpdateUser();
-            userStoreElem.setAttribute( "isEmailReadOnly", String.valueOf( isEmailReadOnly ) );
-
-            return userStoreElem;
         }
 
-        userStoreElem.setAttribute( "isEmailReadOnly", "false" );
         userStoreElem.addContent( doCreateConfigElement( userStore ) );
 
         return userStoreElem;
@@ -122,21 +106,6 @@ public class UserStoreXmlCreator
         if ( configAsXmlDocument != null )
         {
             return (Element) configAsXmlDocument.getRootElement().detach();
-        }
-        else
-        {
-            return UserStoreConfigXmlCreator.createEmptyConfigElement();
-        }
-    }
-
-    private Element doCreateConfigElementRemoted( final UserStoreEntity userStore, UserStoreConnectorConfig connectorConfig )
-    {
-        final Document configAsXmlDocument = userStore.getConfigAsXMLDocument();
-        if ( configAsXmlDocument != null )
-        {
-            Element configEl = (Element) configAsXmlDocument.getRootElement().detach();
-
-            return UserStoreConfigParser.parseRemote( configEl, connectorConfig.canUpdateUser() );
         }
         else
         {

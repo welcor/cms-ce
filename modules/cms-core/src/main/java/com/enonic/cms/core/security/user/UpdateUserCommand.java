@@ -4,12 +4,8 @@
  */
 package com.enonic.cms.core.security.user;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.AbstractMembershipsCommand;
-import com.enonic.cms.core.user.field.UserField;
-import com.enonic.cms.core.user.field.UserFieldMap;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
-import com.enonic.cms.core.user.remote.RemoteUser;
+import com.enonic.cms.core.user.field.UserFields;
 
 
 public class UpdateUserCommand
@@ -18,8 +14,6 @@ public class UpdateUserCommand
     private UserKey updater;
 
     private UserSpecification specification;
-
-    private String password;
 
     private String displayName;
 
@@ -37,7 +31,7 @@ public class UpdateUserCommand
 
     private UpdateStrategy updateStrategy = UpdateStrategy.REPLACE_ALL;
 
-    private UserInfo userInfo = new UserInfo();
+    private UserFields userFields = new UserFields();
 
     private boolean removePhoto = false;
 
@@ -58,45 +52,6 @@ public class UpdateUserCommand
         this.specification = specification;
     }
 
-    public UserFieldMap getUserFields()
-    {
-        return new UserInfoTransformer().toUserFields( getUserInfo() );
-    }
-
-    /**
-     * Picks out and returns all the fields in the command that are different from the fields of a remote user.
-     *
-     * @param remoteUser The object of the remote user whose fields will be compared.
-     * @return A set of all fields that are different from or does not exist in the <code>currentUserFields</code>.
-     */
-    public UserFieldMap getChangedFields( RemoteUser remoteUser )
-    {
-        final UserFieldMap commandUserFields = getUserFields();
-        UserFieldMap remoteUserFields = remoteUser.getUserFields();
-
-        final UserFieldMap changedCommandFields = new UserFieldMap( true );
-
-        for ( UserField commandField : commandUserFields )
-        {
-            UserField remoteField = remoteUserFields.getField( commandField.getType() );
-            if (commandField.compareTo( remoteField ) != 0) {
-                changedCommandFields.add( commandField );
-            }
-        }
-        if ( isUpdateStrategy() )
-        {
-            for ( UserField remoteField : remoteUserFields )
-            {
-                UserField commandFieldMatchingRemote = commandUserFields.getField( remoteField.getType() );
-                if ( commandFieldMatchingRemote == null )
-                {
-                    changedCommandFields.add( new UserField( remoteField.getType(), null ) );
-                }
-            }
-        }
-        return changedCommandFields;
-    }
-
     public UserSpecification getSpecification()
     {
         return specification;
@@ -115,16 +70,6 @@ public class UpdateUserCommand
     public void setDisplayName( final String value )
     {
         displayName = value;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword( String password )
-    {
-        this.password = password;
     }
 
     public UserType getType()
@@ -197,14 +142,14 @@ public class UpdateUserCommand
         this.updateOpenGroupsOnly = updateOpenGroupsOnly;
     }
 
-    public UserInfo getUserInfo()
+    public UserFields getUserFields()
     {
-        return userInfo;
+        return userFields;
     }
 
-    public void setUserInfo( final UserInfo value )
+    public void setUserFields( UserFields userFields )
     {
-        userInfo = value;
+        this.userFields = userFields;
     }
 
     public boolean removePhoto()

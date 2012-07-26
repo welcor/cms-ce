@@ -4,9 +4,10 @@
  */
 package com.enonic.cms.itest.store.dao;
 
-import java.util.Calendar;
-import java.util.List;
-
+import com.enonic.cms.core.resource.ResourceFile;
+import com.enonic.cms.core.resource.ResourceFolder;
+import com.enonic.cms.itest.AbstractSpringTest;
+import com.enonic.cms.store.dao.ResourceDao;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +16,11 @@ import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DataRetrievalFailureException;
 
-import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceFolder;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.store.dao.ResourceDao;
+import java.util.Calendar;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ResourceDaoTest
     extends AbstractSpringTest

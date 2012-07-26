@@ -7,6 +7,7 @@ package com.enonic.cms.core.content.contenttype.dataentryconfig;
 public class TextDataEntryConfig
     extends AbstractBaseDataEntryConfig
 {
+    private String defaultValue;
 
     private Integer maxLength;
 
@@ -26,4 +27,14 @@ public class TextDataEntryConfig
         return maxLength;
     }
 
+    public String getDefaultValue()
+    {
+        return defaultValue;
+    }
+
+    public TextDataEntryConfig setDefaultValue( final String defaultValue )
+    {
+        this.defaultValue = defaultValue;
+        return this;
+    }
 }

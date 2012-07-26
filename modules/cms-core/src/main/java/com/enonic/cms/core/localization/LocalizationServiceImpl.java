@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.enonic.cms.core.localization.resource.LocalizationResourceBundleService;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -15,6 +16,7 @@ import com.enonic.cms.core.structure.SiteEntity;
 /**
  * Created by rmy - Date: Apr 22, 2009
  */
+@Service
 public class LocalizationServiceImpl
     implements LocalizationService
 {

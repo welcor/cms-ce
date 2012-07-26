@@ -13,6 +13,8 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -67,6 +69,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.GroupDao;
 
+@Component
 public final class AdminEngine
     extends BaseEngine
     implements InitializingBean
@@ -783,26 +786,6 @@ public final class AdminEngine
         return memberOfResolver.hasDeveloperPowers( user.getKey() );
     }
 
-    public void moveCategory( User user, int catKey, int newSuperCategoryKey )
-    {
-
-        CategoryKey oldSuperCategoryKey = categoryHandler.getParentCategoryKey( CategoryKey.parse( catKey ) );
-        if ( !securityHandler.validateCategoryRemove( user, oldSuperCategoryKey ) ||
-            !securityHandler.validateCategoryCreate( user, CategoryKey.parse( newSuperCategoryKey ) ) )
-        {
-            String message = "User does not have access rights to move the category.";
-            VerticalEngineLogger.errorSecurity( message, null );
-        }
-
-        if ( categoryHandler.isSubCategory( CategoryKey.parse( catKey ), CategoryKey.parse( newSuperCategoryKey ) ) )
-        {
-            String message = "Cannot move a category to a subcategory";
-            VerticalEngineLogger.errorUpdate( message, null );
-        }
-
-        categoryHandler.moveCategory( user, CategoryKey.parse( catKey ), CategoryKey.parse( newSuperCategoryKey ) );
-    }
-
     public int[] getContentKeysByCategory( User user, int categoryKey )
     {
         return contentHandler.getContentKeysByCategory( user, CategoryKey.parse( categoryKey ) );
@@ -1276,6 +1259,7 @@ public final class AdminEngine
     }
 
     @Autowired
+    @Qualifier("enginePageHandler")
     public void setPageHandler( PageHandler pageHandler )
     {
         this.pageHandler = pageHandler;

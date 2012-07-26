@@ -10,9 +10,9 @@ import org.jdom.Element;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.content.index.AggregatedResult;
-import com.enonic.cms.core.content.index.IndexValueResult;
-import com.enonic.cms.core.content.index.IndexValueResultSet;
+import com.enonic.cms.core.search.query.AggregatedResult;
+import com.enonic.cms.core.search.query.IndexValueResult;
+import com.enonic.cms.core.search.query.IndexValueResultSet;
 
 /**
  * Includes methods that creates the XML documentes for result sets with index values.

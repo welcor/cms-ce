@@ -20,18 +20,7 @@ public class DatasourceExecutionTracer
             return null;
         }
 
-        if ( DatasourcesType.PAGETEMPLATE == datasourcesType )
-        {
-            return livePortalTraceService.startPageTemplateDatasourceExecutionTracing( datasourceMethodName );
-        }
-        else if ( DatasourcesType.PORTLET == datasourcesType )
-        {
-            return livePortalTraceService.startPortletDatasourceExecutionTracing( datasourceMethodName );
-        }
-        else
-        {
-            return null;
-        }
+        return livePortalTraceService.startDatasourceExecutionTracing( datasourcesType, datasourceMethodName );
     }
 
     public static void stopTracing( DatasourceExecutionTrace trace, LivePortalTraceService livePortalTraceService )
@@ -82,7 +71,7 @@ public class DatasourceExecutionTracer
             return;
         }
 
-        DatasourceExecutionTrace trace = livePortalTraceService.getCurrentDatasourceExecutionTrace();
+        DatasourceExecutionTrace trace = livePortalTraceService.getCurrentTrace().getDatasourceExecutionTrace();
         if ( trace != null )
         {
             trace.setCacheUsed( cacheUsed );

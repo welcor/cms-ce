@@ -6,10 +6,10 @@ package com.enonic.cms.core.portal.rendering;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.enonic.vertical.VerticalProperties;
-
-import com.enonic.cms.core.time.TimeService;
 
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
@@ -20,22 +20,16 @@ import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer;
-import com.enonic.cms.core.preference.PreferenceService;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.service.DataSourceService;
+import com.enonic.cms.core.time.TimeService;
 
+@Component
 public class PageRendererFactory
 {
     @Autowired
     @Qualifier("siteCachesService")
     private SiteCachesService siteCachesService;
-
-    @Autowired
-    private PreferenceService preferenceService;
-
-    @Autowired
-    private SecurityService securityService;
 
     @Autowired
     private DatasourceExecutorFactory datasourceExecutorFactory;
@@ -73,6 +67,9 @@ public class PageRendererFactory
     @Autowired
     private PluginManager pluginManager;
 
+    @Value("cms.datasource.defaultResultRootElement")
+    private String defaultDataSourceRootElementName;
+
     public PageRenderer createPageRenderer( PageRendererContext pageRendererContext )
     {
         PageRenderer pageRenderer = new PageRenderer( pageRendererContext, livePortalTraceService );
@@ -89,6 +86,7 @@ public class PageRendererFactory
         pageRenderer.setPostProcessInstructionExecutor( postProcessInstructionExecutor );
         pageRenderer.setDataSourceService( dataSourceService );
         pageRenderer.setPluginManager( pluginManager );
+        pageRenderer.setDefaultDataSourceRootElementName( defaultDataSourceRootElementName );
 
         return pageRenderer;
     }

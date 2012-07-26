@@ -1,15 +1,19 @@
 package com.enonic.cms.core.plugin.manager;
 
-import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.PluginContext;
-import com.enonic.cms.core.plugin.ExtensionSet;
+import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 
-import java.util.Hashtable;
+import com.enonic.cms.api.plugin.PluginConfig;
+import com.enonic.cms.core.plugin.context.PluginContext;
+import com.enonic.cms.core.plugin.ExtensionSet;
 
 import static org.junit.Assert.*;
 

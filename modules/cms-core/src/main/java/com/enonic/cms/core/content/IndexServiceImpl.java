@@ -6,6 +6,7 @@ package com.enonic.cms.core.content;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +15,7 @@ import org.jdom.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,23 +23,27 @@ import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.api.plugin.ext.TextExtractor;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.BigText;
-import com.enonic.cms.core.content.index.ContentDocument;
-import com.enonic.cms.core.content.index.ContentIndexService;
-import com.enonic.cms.core.content.index.SimpleText;
 import com.enonic.cms.core.content.index.config.IndexDefinition;
 import com.enonic.cms.core.content.index.config.IndexDefinitionBuilder;
 import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.search.query.ContentDocument;
+import com.enonic.cms.core.search.query.ContentIndexService;
+import com.enonic.cms.core.search.query.SimpleText;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
 
-@Component("indexService")
+@Service("indexService")
 public final class IndexServiceImpl
     implements IndexService
 {
@@ -82,8 +87,7 @@ public final class IndexServiceImpl
             }
             else
             {
-//                doIndex( content, true );
-                doIndex( content, false );
+                doIndex( content, true );
             }
         }
 
@@ -91,10 +95,10 @@ public final class IndexServiceImpl
         contentDao.getHibernateTemplate().clear();
     }
 
+
     public void index( ContentEntity content )
     {
-//        doIndex( content, true );
-        doIndex( content, false );
+        doIndex( content, true );
     }
 
     public void index( ContentEntity content, boolean deleteExisting )
@@ -102,16 +106,52 @@ public final class IndexServiceImpl
         doIndex( content, deleteExisting );
     }
 
-    private int doRemoveIndex( ContentEntity content )
+    @Override
+    public ContentDocument createContentDocument( ContentEntity content )
     {
-        return contentIndexService.remove( content.getKey() );
+        ContentDocument indexedDoc = insertStandardValues( content );
+        insertUserDefinedIndexValues( content, indexedDoc );
+        insertOrderedSections( content, indexedDoc );
+
+        insertBinaryIndexValues( content, indexedDoc );
+        return indexedDoc;
+    }
+
+    private void insertOrderedSections( ContentEntity content, ContentDocument indexedDoc )
+    {
+        final Set<SectionContentEntity> sectionContents = content.getSectionContents();
+        for ( SectionContentEntity sectionContent : sectionContents )
+        {
+            final MenuItemEntity menu = sectionContent.getMenuItem();
+            if ( menu.isOrderedSection() )
+            {
+                final MenuItemKey sectionKey = menu.getKey();
+                final int orderPosition = sectionContent.getOrder();
+                indexedDoc.addOrderedSection( sectionKey, orderPosition );
+            }
+        }
+    }
+
+    @Override
+    public void optimizeIndex()
+    {
+        contentIndexService.optimize();
+    }
+
+    @Override
+    public void initializeMapping()
+    {
+        contentIndexService.initializeMapping();
+    }
+
+    private void doRemoveIndex( ContentEntity content )
+    {
+        contentIndexService.remove( content.getKey() );
     }
 
     private void doIndex( ContentEntity content, boolean deleteExisting )
     {
-        ContentDocument indexedDoc = insertStandardValues( content );
-        insertUserDefinedIndexValues( content, indexedDoc );
-        insertBinaryIndexValues( content, indexedDoc );
+        ContentDocument indexedDoc = createContentDocument( content );
         contentIndexService.index( indexedDoc, deleteExisting );
 
         contentDao.getHibernateTemplate().flush();
@@ -142,7 +182,7 @@ public final class IndexServiceImpl
                     indexedDoc.setBinaryExtractedText( extractedText );
                 }
             }
-            catch ( Exception e )
+            catch ( Throwable e )
             {
                 StringBuffer sb = new StringBuffer();
                 sb.append( "Failed to extract full text from binary data" );
@@ -150,7 +190,7 @@ public final class IndexServiceImpl
                     ") from content" );
                 sb.append( "(key: " ).append( content.getKey() ).append( ", type: " ).append( content.getContentType().getName() );
                 sb.append( ", category: " ).append( content.getCategory().getName() ).append( "): " ).append( e.getMessage() );
-                LOG.warn( sb.toString() );
+                LOG.warn( sb.toString(), e );
             }
         }
     }
@@ -227,17 +267,21 @@ public final class IndexServiceImpl
             indexedDoc.setCreated( createdDate );
         }
         indexedDoc.setModifierKey( modifier.getKey().toString() );
+        indexedDoc.setModifierName( modifier.getName() );
         indexedDoc.setModifierQualifiedName( modifier.getQualifiedName().toString() );
         indexedDoc.setOwnerKey( owner.getKey().toString() );
+        indexedDoc.setOwnerName( owner.getName() );
         indexedDoc.setOwnerQualifiedName( owner.getQualifiedName().toString() );
         if ( content.getAssignee() != null )
         {
-            indexedDoc.setAssigneeKey( content.getAssignee().getKey() );
+            indexedDoc.setAssigneeKey( content.getAssignee().getKey().toString() );
+            indexedDoc.setAssigneeName( content.getAssignee().getName() );
             indexedDoc.setAssigneeQualifiedName( content.getAssignee().getQualifiedName().toString() );
         }
         if ( content.getAssigner() != null )
         {
-            indexedDoc.setAssignerKey( content.getAssigner().getKey() );
+            indexedDoc.setAssignerKey( content.getAssigner().getKey().toString() );
+            indexedDoc.setAssignerName( content.getAssigner().getName() );
             indexedDoc.setAssignerQualifiedName( content.getAssigner().getQualifiedName().toString() );
         }
         if ( content.getAssignmentDueDate() != null )
@@ -258,6 +302,16 @@ public final class IndexServiceImpl
         indexedDoc.setTitle( title );
         indexedDoc.setStatus( contentVersion.getStatus().getKey() );
         indexedDoc.setPriority( content.getPriority() );
+
+        ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
+        contentLocationSpecification.setIncludeInactiveLocationsInSection( true );
+        final ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
+
+        indexedDoc.setContentLocations( contentLocations );
+
+        final Collection<ContentAccessEntity> contentAccessRights = content.getContentAccessRights();
+        indexedDoc.addContentAccessRights( contentAccessRights );
+        indexedDoc.setCategory( content.getCategory() );
 
         return indexedDoc;
 

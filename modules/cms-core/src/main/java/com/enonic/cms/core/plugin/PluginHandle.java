@@ -3,7 +3,7 @@ package com.enonic.cms.core.plugin;
 import org.joda.time.DateTime;
 
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.PluginContext;
+import com.enonic.cms.core.plugin.context.PluginContext;
 
 public interface PluginHandle
 {

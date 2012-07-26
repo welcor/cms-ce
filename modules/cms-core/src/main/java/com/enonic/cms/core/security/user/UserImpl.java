@@ -6,10 +6,10 @@ package com.enonic.cms.core.security.user;
 
 import org.joda.time.DateTime;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.core.user.field.UserFields;
 
 /**
  * Jul 11, 2009
@@ -47,7 +47,7 @@ public class UserImpl
 
     private String selectedLanguageCode;
 
-    private UserInfo userInfo;
+    private UserFields userFields;
 
     public String getPassword()
     {
@@ -213,14 +213,14 @@ public class UserImpl
         this.selectedLanguageCode = value;
     }
 
-    public UserInfo getUserInfo()
+    public UserFields getUserFields()
     {
-        return userInfo;
+        return this.userFields;
     }
 
-    public void setUserInfo( final UserInfo value )
+    public void setUserFields( UserFields userFields )
     {
-        userInfo = value;
+        this.userFields = userFields;
     }
 
     @Override
@@ -267,7 +267,7 @@ public class UserImpl
         user.setKey( userEntity.getKey() );
         user.setQualifiedName( userEntity.getQualifiedName() );
         user.setTimestamp( new DateTime( userEntity.getTimestamp() ) );
-        user.setUserInfo( userEntity.getUserInfo() );
+        user.setUserFields( userEntity.getUserFields() );
 
         if ( userEntity.getUserGroup() != null )
         {

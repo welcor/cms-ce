@@ -138,12 +138,16 @@ public class DatasourceServiceImpl_getContentTest
         dataSourceService.setContentService( contentService );
         dataSourceService.setSecurityService( securityService );
         dataSourceService.setTimeService( new MockTimeService( DATE_TIME_2010_07_01_12_00_00_0 ) );
+
+        fixture.flushIndexTransaction();
     }
 
     @Test
     public void getContent()
     {
         ContentKey expectedContentKey = createPersonContent( "Test Dummy" );
+
+        fixture.flushIndexTransaction();
 
         DataSourceContext context = new DataSourceContext();
         context.setUser( fixture.findUserByName( "content-querier" ) );
@@ -430,6 +434,8 @@ public class DatasourceServiceImpl_getContentTest
         ContentKey father = contentService.createContent(
             createCreateContentCommand( "MyRelatedCategory", createMyRelatedContentData( "Father", son, daughter ), "content-creator" ) );
 
+        fixture.flushIndexTransaction();
+
         // setup: verify content is created
         assertEquals( 4, fixture.countAllContent() );
 
@@ -537,6 +543,7 @@ public class DatasourceServiceImpl_getContentTest
         ContentKey expectedContentKey = contentService.createContent(
             createCreateContentCommand( "MyPersonCategory", "content-creator", status, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
                                         "content-creator", contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+        fixture.flushIndexTransaction();
         return expectedContentKey;
     }
 
@@ -559,6 +566,8 @@ public class DatasourceServiceImpl_getContentTest
         ContentKey expectedContentKey = contentService.createContent(
             createCreateContentCommand( "MyPersonCategory", "content-creator", status, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
                                         "content-creator", contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+
+        fixture.flushIndexTransaction();
         return expectedContentKey;
     }
 

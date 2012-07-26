@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,13 +59,14 @@ import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.UserNameXmlCreator;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.security.user.UserNameXmlCreator;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.ContentHandlerDao;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
+@Component
 public final class ContentHandler
     extends BaseHandler
 {

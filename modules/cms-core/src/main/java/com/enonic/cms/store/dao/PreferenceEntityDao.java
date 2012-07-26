@@ -7,10 +7,11 @@ package com.enonic.cms.store.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.enonic.cms.core.preference.PreferenceEntity;
 import com.enonic.cms.core.preference.PreferenceKey;
 import com.enonic.cms.core.preference.PreferenceSpecification;
-import org.springframework.stereotype.Repository;
 
 @Repository("preferenceDao")
 public final class PreferenceEntityDao

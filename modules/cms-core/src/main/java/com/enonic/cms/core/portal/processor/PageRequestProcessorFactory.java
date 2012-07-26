@@ -5,6 +5,7 @@
 package com.enonic.cms.core.portal.processor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalAccessService;
@@ -17,6 +18,7 @@ import com.enonic.cms.store.dao.SectionContentDao;
 /**
  * Sep 29, 2009
  */
+@Component
 public class PageRequestProcessorFactory
 {
     @Autowired

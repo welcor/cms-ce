@@ -4,24 +4,21 @@
  */
 package com.enonic.vertical.adminweb;
 
-import java.io.PrintWriter;
-import java.util.Hashtable;
+import com.enonic.cms.core.xslt.XsltProcessorHelper;
+import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.VerticalProperties;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalProperties;
-
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
+import java.io.PrintWriter;
+import java.util.Hashtable;
 
 public class ErrorPageServlet
     implements Controller

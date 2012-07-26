@@ -16,7 +16,7 @@ public class LongestPortalRequests
 {
     private int maxSize;
 
-    private TreeSet<PortalRequestTrace> list;
+    private final TreeSet<PortalRequestTrace> list;
 
     public LongestPortalRequests( int maxSize )
     {

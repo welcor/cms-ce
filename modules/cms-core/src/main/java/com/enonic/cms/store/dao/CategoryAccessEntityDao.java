@@ -4,9 +4,10 @@
  */
 package com.enonic.cms.store.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.security.group.GroupKey;
-import org.springframework.stereotype.Repository;
 
 @Repository("categoryAccessDao")
 public final class CategoryAccessEntityDao

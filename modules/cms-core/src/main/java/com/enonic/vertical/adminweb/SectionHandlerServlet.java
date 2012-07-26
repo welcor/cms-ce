@@ -28,6 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.base.Objects;
@@ -523,7 +524,32 @@ public class SectionHandlerServlet
                             break;
 
                         case none:
+                            if ( ordered && manuallyOrder )
+                            {
+                                final List<ContentKey> wantedOrder = new ArrayList<ContentKey>();
 
+                                StepState stepState = wizardState.getStepState( "step1" );
+                                int k = -1;
+                                do
+                                {
+                                    stepState = stepState.getNextStepState();
+                                    k++;
+                                }
+                                while ( k < manualOrderIndex );
+                                Document tempStateDoc = stepState.getStateDoc();
+                                Element tempSectionElem = XMLTool.getFirstElement( tempStateDoc.getDocumentElement() );
+                                Element[] tempContentElems = XMLTool.getElements( tempSectionElem );
+                                for ( Element tempContentElem : tempContentElems )
+                                {
+                                    wantedOrder.add( new ContentKey( tempContentElem.getAttribute( "key" ) ) );
+                                }
+                                manualOrderIndex++;
+
+                                final OrderContentsInSectionCommand orderContentsInSectionCommand = new OrderContentsInSectionCommand();
+                                orderContentsInSectionCommand.setSectionKey( sectionKey );
+                                orderContentsInSectionCommand.setWantedOrder( wantedOrder );
+                                menuItemServiceCommands.add( orderContentsInSectionCommand );
+                            }
                             break;
                     }
                 }
@@ -743,7 +769,7 @@ public class SectionHandlerServlet
             {
                 for ( final int menuKey : menuKeys )
                 {
-                    final ContentEntity content = contentDao.findByKey( new ContentKey( contentKey  ) );
+                    final ContentEntity content = contentDao.findByKey( new ContentKey( contentKey ) );
 
                     final SiteKey siteKey = new SiteKey( menuKey );
 
@@ -754,7 +780,7 @@ public class SectionHandlerServlet
 
                     // <contenthome contentkey="3" menuitemkey="6" menukey="0"/>
                     final ContentLocation homeLocation = contentLocations.getHomeLocation( siteKey );
-                    if (homeLocation != null)
+                    if ( homeLocation != null )
                     {
                         final Element contentHomeElem = XMLTool.createElement( doc, contentHomes, "contenthome" );
                         contentHomeElem.setAttribute( "contentkey", "" + homeLocation.getContent().getKey() );
@@ -913,15 +939,25 @@ public class SectionHandlerServlet
 
                     // add content to section contents
                     rootElem = (Element) wizarddataDoc.importNode( doc.getDocumentElement(), true );
-                    Element elem = XMLTool.getFirstElement( rootElem );
-                    if ( elem != null )
+
+                    final Element elem = XMLTool.getFirstElement( rootElem );
+                    final Node newChild = wizarddataDoc.importNode( contenttitleElem, true );
+
+                    final String selector = "//contenttitle[@key = '" + contenttitleElem.getAttribute( "key" ) + "']";
+                    final Element exist = XMLTool.selectElement( doc.getDocumentElement(), selector );
+
+                    if (exist == null)
                     {
-                        rootElem.insertBefore( wizarddataDoc.importNode( contenttitleElem, true ), elem );
+                        if ( elem != null )
+                        {
+                            rootElem.insertBefore( newChild, elem ); // insert before first
+                        }
+                        else
+                        {
+                            rootElem.appendChild( newChild );
+                        }
                     }
-                    else
-                    {
-                        rootElem.appendChild( wizarddataDoc.importNode( contenttitleElem, true ) );
-                    }
+
                 }
                 wizarddataElem.appendChild( rootElem );
             }
@@ -1000,12 +1036,10 @@ public class SectionHandlerServlet
                 final Map<Integer, Boolean> keys = Maps.newLinkedHashMap();
                 final Map<String, Set<String>> siteToMenus = getSitesToMenusMap( this.sectionsDoc, wizardState );
 
-                this.sectionsDoc = null; // free HTTP session. note: Wizard is not java.io.Serializable !
-
                 final TIntArrayList allKeysSet = new TIntArrayList();
-                for (final Set<String> menuItems : siteToMenus.values())
+                for ( final Set<String> menuItems : siteToMenus.values() )
                 {
-                    for (final String menuItem : menuItems )
+                    for ( final String menuItem : menuItems )
                     {
                         allKeysSet.add( Integer.parseInt( menuItem ) );
                     }
@@ -1014,7 +1048,7 @@ public class SectionHandlerServlet
                 allKeysSet.add( menuItemKeys.toArray() );
                 final Set<Integer> currentMenuItemKeysSet = menuItemKeys.toLinkedHashSet();
 
-                for (final int key : allKeysSet.toArray())
+                for ( final int key : allKeysSet.toArray() )
                 {
                     keys.put( key, !previousMenuItemKeysSet.contains( key ) || currentMenuItemKeysSet.contains( key ) );
                 }
@@ -1024,7 +1058,7 @@ public class SectionHandlerServlet
             }
         }
 
-                // Previous sections
+        // Previous sections
         private Document readSectionsWhereContentIsPublished( final AdminService admin, final User user, final int contentKey )
         {
             final SectionCriteria criteria = new SectionCriteria();
@@ -1068,9 +1102,8 @@ public class SectionHandlerServlet
                 else if ( "step1".equals( currentStep.getName() ) )
                 {
                     final int versionKey = formItems.getInt( "versionkey", -1 );
-                    final int contentKey = versionKey < 0 ?
-                        formItems.getInt( "contentkey" ) :
-                        admin.getContentKeyByVersionKey( versionKey );
+                    final int contentKey =
+                        versionKey < 0 ? formItems.getInt( "contentkey" ) : admin.getContentKeyByVersionKey( versionKey );
 
                     this.sectionsDoc = readSectionsWhereContentIsPublished( admin, user, contentKey );
 
@@ -1457,7 +1490,7 @@ public class SectionHandlerServlet
 
                 final org.jdom.Element menuItemElement = creator.createMenuItemElement( menuItem );
                 menuItemElement.setAttribute( "publish", menuItemKeyChecked.toString() );
-                menuItemElement.setAttribute( "none", "" + displayMenuItemKeys.contains( menuItemKey ));
+                menuItemElement.setAttribute( "none", "" + displayMenuItemKeys.contains( menuItemKey ) );
 
                 siteEl.addContent( menuItemElement );
             }
@@ -1582,7 +1615,7 @@ public class SectionHandlerServlet
                 {
                     final int menuItemKey = Integer.parseInt( menuItemEl.getAttribute( "key" ) );
                     final boolean selected = Boolean.parseBoolean( menuItemEl.getAttribute( "selected" ) );
-                    if (selected)
+                    if ( selected )
                     {
                         menuItemKeys.add( menuItemKey );
                     }

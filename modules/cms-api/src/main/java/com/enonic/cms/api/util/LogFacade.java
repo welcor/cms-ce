@@ -7,13 +7,13 @@ import java.util.logging.Logger;
 
 public final class LogFacade
 {
-    private final Logger logger;
-    private final String fcqn;
+    private final static String QUALIFIED_NAME = LogFacade.class.getName();
 
-    private LogFacade( final Class clz, final Class fcqn )
+    private final Logger logger;
+
+    private LogFacade( final Class clz )
     {
         this.logger = Logger.getLogger( clz.getName() );
-        this.fcqn = fcqn != null ? fcqn.getName() : LogFacade.class.getName();
     }
 
     public void debug( final String message, final Object... args )
@@ -21,7 +21,7 @@ public final class LogFacade
         log( Level.FINEST, message, args, null );
     }
 
-    public void debugCause(final String message, final Throwable cause, final Object... args)
+    public void debugCause( final String message, final Throwable cause, final Object... args )
     {
         log( Level.FINEST, message, args, cause );
     }
@@ -31,7 +31,7 @@ public final class LogFacade
         log( Level.INFO, message, args, null );
     }
 
-    public void infoCause(final String message, final Throwable cause, final Object... args)
+    public void infoCause( final String message, final Throwable cause, final Object... args )
     {
         log( Level.INFO, message, args, cause );
     }
@@ -41,7 +41,7 @@ public final class LogFacade
         log( Level.WARNING, message, args, null );
     }
 
-    public void warningCause(final String message, final Throwable cause, final Object... args)
+    public void warningCause( final String message, final Throwable cause, final Object... args )
     {
         log( Level.WARNING, message, args, cause );
     }
@@ -51,7 +51,7 @@ public final class LogFacade
         log( Level.SEVERE, message, args, null );
     }
 
-    public void errorCause(final String message, final Throwable cause, final Object... args)
+    public void errorCause( final String message, final Throwable cause, final Object... args )
     {
         log( Level.SEVERE, message, args, cause );
     }
@@ -98,7 +98,7 @@ public final class LogFacade
         boolean foundFcqn = false;
         for ( final StackTraceElement elem : trace )
         {
-            if ( elem.getClassName().equals( this.fcqn ) )
+            if ( elem.getClassName().equals( QUALIFIED_NAME ) )
             {
                 foundFcqn = true;
             }
@@ -113,11 +113,6 @@ public final class LogFacade
 
     public static LogFacade get( final Class clz )
     {
-        return new LogFacade( clz, null );
-    }
-
-    public static LogFacade get( final Class clz, final Class fcqn )
-    {
-        return new LogFacade( clz, fcqn );
+        return new LogFacade( clz );
     }
 }

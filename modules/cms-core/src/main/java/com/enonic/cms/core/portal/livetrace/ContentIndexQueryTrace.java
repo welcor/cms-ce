@@ -1,19 +1,18 @@
 package com.enonic.cms.core.portal.livetrace;
 
-import org.joda.time.DateTime;
-
 public class ContentIndexQueryTrace
+    extends BaseTrace
     implements Trace
 {
-    private Duration duration = new Duration();
-
     private int index;
 
     private int count;
 
     private int matchCount;
 
-    private MaxLengthedString query;
+    private MaxLengthedString query = new MaxLengthedString();
+
+    private MaxLengthedString translatedQuery = new MaxLengthedString();
 
     private String contentFilter;
 
@@ -31,21 +30,7 @@ public class ContentIndexQueryTrace
     {
     }
 
-    public Duration getDuration()
-    {
-        return duration;
-    }
-
-    void setStartTime( DateTime startTime )
-    {
-        duration.setStartTime( startTime );
-    }
-
-    void setStopTime( DateTime stopTime )
-    {
-        duration.setStopTime( stopTime );
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public int getIndex()
     {
         return index;
@@ -56,6 +41,7 @@ public class ContentIndexQueryTrace
         this.index = index;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public int getCount()
     {
         return count;
@@ -66,6 +52,7 @@ public class ContentIndexQueryTrace
         this.count = count;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getQuery()
     {
         return query != null ? query.toString() : null;
@@ -76,6 +63,18 @@ public class ContentIndexQueryTrace
         this.query = new MaxLengthedString( query, 6000 );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
+    public MaxLengthedString getTranslatedQuery()
+    {
+        return translatedQuery;
+    }
+
+    public void setTranslatedQuery( final String translatedQuery )
+    {
+        this.translatedQuery = new MaxLengthedString( translatedQuery, 6000 );
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
     public String getContentFilter()
     {
         return contentFilter;
@@ -86,6 +85,7 @@ public class ContentIndexQueryTrace
         this.contentFilter = contentFilter;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getSectionFilter()
     {
         return sectionFilter;
@@ -96,6 +96,7 @@ public class ContentIndexQueryTrace
         this.sectionFilter = sectionFilter;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getCategoryFilter()
     {
         return categoryFilter;
@@ -106,6 +107,7 @@ public class ContentIndexQueryTrace
         this.categoryFilter = categoryFilter;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getContentTypeFilter()
     {
         return contentTypeFilter;
@@ -116,6 +118,7 @@ public class ContentIndexQueryTrace
         this.contentTypeFilter = contentTypeFilter;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getSecurityFilter()
     {
         return securityFilter;
@@ -126,6 +129,7 @@ public class ContentIndexQueryTrace
         this.securityFilter = securityFilter;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getCategoryAccessTypeFilter()
     {
         return categoryAccessTypeFilter;
@@ -136,6 +140,7 @@ public class ContentIndexQueryTrace
         this.categoryAccessTypeFilter = categoryAccessTypeFilter;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public int getMatchCount()
     {
         return matchCount;
@@ -145,6 +150,4 @@ public class ContentIndexQueryTrace
     {
         this.matchCount = matchCount;
     }
-
-
 }

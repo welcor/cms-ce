@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.enonic.cms.framework.blob.BlobKey;
 import com.enonic.cms.framework.blob.BlobRecord;
@@ -27,6 +28,7 @@ import com.enonic.cms.store.support.EntityChangeListener;
 import com.enonic.cms.store.support.EntityChangeListenerHub;
 import com.enonic.cms.store.vfs.db.VirtualFileEntity;
 
+@Service("fileResourceService")
 public final class FileResourceServiceImpl
     implements FileResourceService, EntityChangeListener
 {
@@ -43,16 +45,19 @@ public final class FileResourceServiceImpl
         EntityChangeListenerHub.getInstance().addListener( this );
     }
 
+    @Autowired
     public void setBlobStore( BlobStore blobStore )
     {
         this.blobStore = blobStore;
     }
 
+    @Autowired
     public void setSessionFactory( SessionFactory sessionFactory )
     {
         this.sessionFactory = sessionFactory;
     }
 
+    @Autowired
     public void setMimeTypeResolver( final MimeTypeResolver mimeTypeResolver )
     {
         this.mimeTypeResolver = mimeTypeResolver;
@@ -261,9 +266,10 @@ public final class FileResourceServiceImpl
         }
 
         final byte[] bytes = getBlob( entity );
-        if (bytes == null) {
-            throw new IllegalStateException("Blob for resource [" + name.toString() +
-                "] is not found. Please check your blobstore configuration.");
+        if ( bytes == null )
+        {
+            throw new IllegalStateException( "Blob for resource [" + name.toString() +
+                                                 "] is not found. Please check your blobstore configuration." );
         }
 
         final FileResourceData data = new FileResourceData();
@@ -552,7 +558,7 @@ public final class FileResourceServiceImpl
     }
 
     @Autowired(required = false)
-    public void setListeners(final List<FileResourceListener> listeners)
+    public void setListeners( final List<FileResourceListener> listeners )
     {
         this.listeners = listeners;
     }

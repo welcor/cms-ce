@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -25,11 +24,12 @@ public class InternalClientImpl_loginTest
     extends AbstractSpringTest
 {
     @Autowired
-    private HibernateTemplate hibernateTemplate;
-
-    @Autowired
     @Qualifier(value = "localClient")
     private InternalClient localClient;
+
+    @Autowired
+    @Qualifier(value = "remoteClient")
+    private InternalClient remoteClient;
 
     private DomainFactory factory;
 
@@ -255,6 +255,45 @@ public class InternalClientImpl_loginTest
 
         AssertTool.assertSingleXPathValueEquals( "/user/name", localClient.getUserContext(), "testuser" );
         AssertTool.assertSingleXPathValueEquals( "/user/name", localClient.getRunAsUserContext(), "avatar" );
+    }
+
+    @Test
+    public void impersonate_on_remote_client_as_non_admin_user_throws_exception()
+        throws Exception
+    {
+
+        // setup
+        ServletRequestAccessor.setRequest( httpServletRequest );
+        RequestContextHolder.setRequestAttributes( new ServletRequestAttributes( httpServletRequest ) );
+        remoteClient.login( "testuserstore\\testuser", "password" );
+
+        // exercise
+        try
+        {
+            remoteClient.impersonate( "testuserstore\\avatar" );
+        }
+        catch ( Exception e )
+        {
+            assertTrue( e.getMessage().contains( "Impersonate not allowed" ) );
+        }
+
+    }
+
+    @Test
+    public void impersonate_on_remote_client_as_admin_user_is_allowed()
+        throws Exception
+    {
+        // setup
+        ServletRequestAccessor.setRequest( httpServletRequest );
+        RequestContextHolder.setRequestAttributes( new ServletRequestAttributes( httpServletRequest ) );
+
+        remoteClient.login( "admin", "password" );
+
+        // exercise
+        remoteClient.impersonate( "testuserstore\\avatar" );
+
+        // verify
+        assertEquals( "avatar", localClient.getRunAsUserName() );
     }
 
 }

@@ -193,6 +193,12 @@ public class ContentEnhancedImageXMLBuilder
                     }
                 }
 
+                // Check for unsupported image format
+                if ( !isSupportedFormat( type ) )
+                {
+                    VerticalAdminLogger.errorAdmin("I/O error processing file \"" + image.fileName + "\": Unsupported Image Type", (Throwable)null );
+                }
+
                 // Rotate source image?
                 String rotate = formItems.getString( "rotate", "none" );
                 if ( !"none".equals( rotate ) )
@@ -239,6 +245,11 @@ public class ContentEnhancedImageXMLBuilder
         }
     }
 
+    private boolean isSupportedFormat( String extension )
+    {
+        return "jpeg".equals( extension ) || "png".equals( extension ) || "gif".equals( extension ) || "bmp".equals( extension );
+    }
+
     private byte[] rotateImage( String rotate, byte[] image, String encodeType )
         throws IOException
     {
@@ -267,8 +278,6 @@ public class ContentEnhancedImageXMLBuilder
     {
         ArrayList<BinaryData> binaryData = new ArrayList<BinaryData>();
 
-        binaryData.add( getOriginalImage( origImage, encodeType, originalFilenameWithoutExtension ) );
-
         formItems.put( "originalbinarydatakey", "%0" );
 
         final List<BinaryData> newStyleScaledImages =
@@ -276,18 +285,5 @@ public class ContentEnhancedImageXMLBuilder
         binaryData.addAll( newStyleScaledImages );
 
         return binaryData;
-    }
-
-    private BinaryData getOriginalImage( BufferedImage origImage, String encodeType, String originalFilenameWithoutExtension )
-        throws IOException
-    {
-        // Original image:
-        BufferedImage tmpImage = origImage;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageUtil.writeImage( tmpImage, encodeType, baos );
-        final String originalfileFilename =
-            ContentImageUtil.resolveFilenameForScaledImage( originalFilenameWithoutExtension, tmpImage, encodeType );
-
-        return BinaryData.createBinaryDataFromStream( baos, originalfileFilename );
     }
 }

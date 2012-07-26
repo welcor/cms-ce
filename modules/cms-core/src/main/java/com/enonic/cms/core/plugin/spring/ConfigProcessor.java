@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
-import com.enonic.cms.api.plugin.PluginContext;
+import com.enonic.cms.core.plugin.context.PluginContext;
 
 final class ConfigProcessor
     extends PropertyPlaceholderConfigurer

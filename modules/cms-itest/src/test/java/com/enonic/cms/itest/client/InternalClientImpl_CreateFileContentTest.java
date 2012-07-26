@@ -13,6 +13,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
@@ -56,6 +57,7 @@ public class InternalClientImpl_CreateFileContentTest
     private DomainFixture fixture;
 
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
 
     private byte[] dummyBinary = new byte[]{1, 2, 3};
@@ -70,7 +72,7 @@ public class InternalClientImpl_CreateFileContentTest
         factory = fixture.getFactory();
         fixture.initSystemData();
 
-        StringBuffer contentTypeConfigXml = new StringBuffer();
+        StringBuilder contentTypeConfigXml = new StringBuilder();
         contentTypeConfigXml.append( "<moduledata/>" );
         contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
 

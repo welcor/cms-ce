@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -57,15 +58,11 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.CategoryDao;
 
+@Component
 public class CategoryHandler
     extends BaseHandler
 {
     private final static String CAT_TABLE = "tCategory";
-
-    private final static String CAT_INSERT =
-        "INSERT INTO " + CAT_TABLE + " (cat_lKey,cat_uni_lKey,cat_cty_lKey,cat_cat_lSuper,cat_usr_hOwner,cat_dteCreated,cat_bDeleted," +
-            "cat_sName,cat_sDescription,cat_usr_hModifier,cat_dteTimestamp,cat_bautoapprove)" + " VALUES (?,?,?,?,?,@currentTimestamp@" +
-            ",0,?,?,?," + "@currentTimestamp@,?" + ")";
 
     private final static String CAT_UPDATE =
         "UPDATE " + CAT_TABLE + " SET cat_uni_lKey = ?" + ",cat_cty_lKey = ?" + ",cat_cat_lSuper = ?" + ",cat_usr_hOwner = ?" +
@@ -81,11 +78,6 @@ public class CategoryHandler
     private final static String CAT_WHERE_CLAUSE_CTY = " cat_cty_lKey = ?";
 
     private final static String CAT_WHERE_CLAUSE_UNI = " cat_uni_lKey = ?";
-
-    private final static String CAT_SET_UNITKEY = "UPDATE tCategory SET cat_uni_lKey = ? WHERE cat_lKey = ?";
-
-    private final static String CAT_SET_UNITKEY_AND_SUPERKEY =
-        "UPDATE tCategory SET cat_uni_lKey = ?, cat_cat_lSuper = ? WHERE cat_lKey = ?";
 
     // SQL objects:
 
@@ -562,62 +554,6 @@ public class CategoryHandler
     {
         CategoryKey parentKey = getParentCategoryKey( subCategoryKey );
         return parentKey != null && ( parentKey.equals( categoryKey ) || isSubCategory( categoryKey, parentKey ) );
-    }
-
-    public void moveCategory( User olduser, CategoryKey catKey, CategoryKey superCatKey )
-    {
-
-        Connection con = null;
-        PreparedStatement preparedStmt = null;
-
-        try
-        {
-            con = getConnection();
-
-            if ( !getSecurityHandler().validateCategoryUpdate( olduser, categoryDao.findByKey( catKey ).getParent().getKey() ) )
-            {
-                VerticalEngineLogger.errorSecurity( "User is not allowed to move the category.", null );
-            }
-
-            if ( !getSecurityHandler().validateCategoryUpdate( olduser, superCatKey ) )
-            {
-                VerticalEngineLogger.errorSecurity( "User is not allowed to update the new parent category.", null );
-            }
-
-            int[] children = getCategoryKeysBySuperCategory( catKey, true );
-
-            // Get new unit key
-            int unitKey = getUnitKey( superCatKey );
-            preparedStmt = con.prepareStatement( CAT_SET_UNITKEY_AND_SUPERKEY );
-            if ( unitKey == -1 )
-            {
-                preparedStmt.setNull( 1, Types.INTEGER );
-            }
-            else
-            {
-                preparedStmt.setInt( 1, unitKey );
-            }
-            preparedStmt.setInt( 2, superCatKey.toInt() );
-            preparedStmt.setInt( 3, catKey.toInt() );
-            preparedStmt.executeUpdate();
-
-            // Update unit keys for all children
-            for ( int child : children )
-            {
-                preparedStmt = con.prepareStatement( CAT_SET_UNITKEY );
-                preparedStmt.setInt( 1, unitKey );
-                preparedStmt.setInt( 2, child );
-                preparedStmt.executeUpdate();
-            }
-        }
-        catch ( SQLException e )
-        {
-            VerticalEngineLogger.errorUpdate( "A database error occurred: %t", e );
-        }
-        finally
-        {
-            close( preparedStmt );
-        }
     }
 
     public List<CategoryKey> getSubCategories( CategoryKey categoryKey )

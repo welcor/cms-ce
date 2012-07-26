@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.product.LicenseChecker;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.upgrade.UpgradeService;
@@ -92,6 +92,10 @@ public final class WelcomeController
     private String createBaseUrl( final HttpServletRequest req )
     {
         final String url = ServletUriComponentsBuilder.fromRequest( req ).build().toString();
-        return url.substring( 0, url.length() - 1 );
+        if (url.endsWith( "/" )) {
+            return url.substring( 0, url.length() - 1 );
+        } else {
+            return url;
+        }
     }
 }

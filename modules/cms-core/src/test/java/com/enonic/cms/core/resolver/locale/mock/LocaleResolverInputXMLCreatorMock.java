@@ -10,9 +10,8 @@ import com.enonic.cms.framework.xml.XMLBuilder;
 import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.resolver.ResolverContext;
-import com.enonic.cms.core.resolver.ResolverInputXMLCreator;
-
 import com.enonic.cms.core.resolver.ResolverHttpRequestInputXMLCreator;
+import com.enonic.cms.core.resolver.ResolverInputXMLCreator;
 
 /**
  * Created by rmy - Date: Aug 25, 2009

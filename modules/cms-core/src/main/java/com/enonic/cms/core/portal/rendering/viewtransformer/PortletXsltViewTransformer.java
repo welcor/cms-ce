@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -28,14 +29,14 @@ import com.enonic.cms.core.xslt.XsltProcessorException;
 /**
  * Apr 30, 2009
  */
+@Component
 public class PortletXsltViewTransformer
-        extends AbstractXsltViewTransformer
-        implements InitializingBean
+    extends AbstractXsltViewTransformer
+    implements InitializingBean
 {
     private static final Logger LOG = LoggerFactory.getLogger( PortletXsltViewTransformer.class );
 
-    public ViewTransformationResult transform( ResourceFile viewFile, TransformationParams transformationParams,
-                                               XMLDocument xml )
+    public ViewTransformationResult transform( ResourceFile viewFile, TransformationParams transformationParams, XMLDocument xml )
     {
         try
         {
@@ -54,7 +55,7 @@ public class PortletXsltViewTransformer
                 if ( parameter == null || parameter.getValue() == null )
                 {
                     if ( TemplateParameterType.OBJECT.equals( parameterType ) || TemplateParameterType.PAGE.equals( parameterType ) ||
-                            TemplateParameterType.CATEGORY.equals( parameterType ) || TemplateParameterType.CONTENT.equals( parameterType ) )
+                        TemplateParameterType.CATEGORY.equals( parameterType ) || TemplateParameterType.CONTENT.equals( parameterType ) )
                     {
                         processor.setParameter( parameterName, "" );
                     }
@@ -101,7 +102,7 @@ public class PortletXsltViewTransformer
     }
 
     public void afterPropertiesSet()
-            throws Exception
+        throws Exception
     {
         setup();
     }

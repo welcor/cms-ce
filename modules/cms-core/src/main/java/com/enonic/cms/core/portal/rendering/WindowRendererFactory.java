@@ -5,6 +5,8 @@
 package com.enonic.cms.core.portal.rendering;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.enonic.vertical.VerticalProperties;
 
@@ -18,19 +20,16 @@ import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.service.DataSourceService;
 
 /**
  * Apr 20, 2009
  */
+@Component
 public class WindowRendererFactory
 {
     @Autowired
     private SiteCachesService siteCachesService;
-
-    @Autowired
-    private SecurityService securityService;
 
     @Autowired
     private ResourceService resourceService;
@@ -62,6 +61,10 @@ public class WindowRendererFactory
     @Autowired
     private PluginManager pluginManager;
 
+    @Value("${cms.datasource.defaultResultRootElement}")
+    private String defaultDataSourceRootElementName;
+
+
     public WindowRenderer createPortletRenderer( WindowRendererContext windowRendererContext )
     {
         PageCacheService pageCacheService = siteCachesService.getPageCacheService( windowRendererContext.getSite().getKey() );
@@ -79,6 +82,7 @@ public class WindowRendererFactory
         windowRenderer.setLiveTraceService( livePortalTraceService );
         windowRenderer.setDataSourceService( dataSourceService );
         windowRenderer.setPluginManager( pluginManager );
+        windowRenderer.setDefaultDataSourceRootElementName( defaultDataSourceRootElementName );
 
         return windowRenderer;
     }

@@ -15,7 +15,9 @@ import org.joda.time.DateTime;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
+import com.enonic.cms.core.search.query.AbstractQuery;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 /**
  * This class implements the content query.
@@ -23,6 +25,8 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 public final class ContentIndexQuery
     extends AbstractQuery
 {
+
+    protected static final int DEFAULT_COUNT = 200;
 
     public enum SectionFilterStatus
     {
@@ -58,7 +62,7 @@ public final class ContentIndexQuery
 
     private int index = 0;
 
-    private int count = Integer.MAX_VALUE;
+    private int count = DEFAULT_COUNT;
 
     private Integer contentStatusFilter;
 
@@ -66,6 +70,7 @@ public final class ContentIndexQuery
 
     private Collection<CategoryAccessType> categoryAccessTypeFilter;
 
+    private MenuItemKey orderBySection;
 
     /**
      * Construct the query.
@@ -76,7 +81,6 @@ public final class ContentIndexQuery
      */
     public ContentIndexQuery( String queryWithoutOrderBy, String orderBy )
     {
-
         if ( queryWithoutOrderBy == null )
         {
             queryWithoutOrderBy = "";
@@ -162,6 +166,11 @@ public final class ContentIndexQuery
         contentFilter = filter;
     }
 
+    public boolean hasSectionFilter()
+    {
+        return sectionFilter != null && !sectionFilter.isEmpty();
+    }
+
 
     public Collection<MenuItemEntity> getSectionFilter()
     {
@@ -206,6 +215,11 @@ public final class ContentIndexQuery
             return true;
         }
         return false;
+    }
+
+    public boolean hasContentStatusFilter()
+    {
+        return this.contentStatusFilter != null;
     }
 
     public void setContentStatusFilter( Integer contentStatus )
@@ -260,6 +274,7 @@ public final class ContentIndexQuery
         s.append( "categoryFilter", getCategoryFilter() );
         s.append( "contentTypeFilter", getContentTypeFilter() );
         s.append( "securityFilter", getSecurityFilter() );
+        s.append( "orderBySection", orderBySection );
         return s.toString();
     }
 
@@ -267,4 +282,15 @@ public final class ContentIndexQuery
     {
         return categoryAccessTypeFilterPolicy;
     }
+
+    public MenuItemKey getOrderBySection()
+    {
+        return orderBySection;
+    }
+
+    public void setOrderBySection( MenuItemKey orderBySection )
+    {
+        this.orderBySection = orderBySection;
+    }
+
 }

@@ -1,29 +1,14 @@
 package com.enonic.cms.core.portal.livetrace;
 
-import org.joda.time.DateTime;
-
 public class ViewTransformationTrace
+    extends BaseTrace
     implements Trace
 {
-    private Duration duration = new Duration();
-
     private String view;
 
-    void setStartTime( DateTime startTime )
-    {
-        this.duration.setStartTime( startTime );
-    }
+    private Traces<ViewFunctionTrace> viewFunctionTraces = new Traces<ViewFunctionTrace>();
 
-    void setStopTime( DateTime stopTime )
-    {
-        this.duration.setStopTime( stopTime );
-    }
-
-    public Duration getDuration()
-    {
-        return this.duration;
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public String getView()
     {
         return view;
@@ -32,5 +17,16 @@ public class ViewTransformationTrace
     void setView( String view )
     {
         this.view = view;
+    }
+
+    void addViewFunctionTrace( ViewFunctionTrace trace )
+    {
+        viewFunctionTraces.add( trace );
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public Traces<ViewFunctionTrace> getViewFunctionTraces()
+    {
+        return viewFunctionTraces;
     }
 }

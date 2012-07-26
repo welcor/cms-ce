@@ -8,6 +8,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.enonic.esl.servlet.http.CookieUtil;
 
 import com.enonic.cms.core.SiteKey;
@@ -15,6 +18,7 @@ import com.enonic.cms.core.login.LoginService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 
+@Service
 public class AutoLoginService
 {
     private SecurityService securityService;
@@ -100,11 +104,13 @@ public class AutoLoginService
         return securityService.getUserFromDefaultUserStore( remoteUserUID );
     }
 
+    @Autowired
     public void setLoginService( LoginService loginService )
     {
         this.loginService = loginService;
     }
 
+    @Autowired
     public void setSecurityService( SecurityService value )
     {
         this.securityService = value;

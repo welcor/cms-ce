@@ -104,6 +104,8 @@ public class WindowRenderer
 
     private PluginManager pluginManager;
 
+    private String defaultDataSourceRootElementName;
+
     /**
      * The window rendering trace for this window rendering.
      */
@@ -121,7 +123,7 @@ public class WindowRenderer
 
     public RenderedWindowResult renderWindowInline( final WindowKey windowKey, final RequestParameters extraParams )
     {
-        windowRenderingTrace = WindowRenderingTracer.startTracing( liveTraceService );
+        windowRenderingTrace = WindowRenderingTracer.startTracing( windowKey, liveTraceService );
 
         try
         {
@@ -155,7 +157,7 @@ public class WindowRenderer
 
     public RenderedWindowResult renderWindowDirect( final WindowKey windowKey )
     {
-        windowRenderingTrace = WindowRenderingTracer.startTracing( liveTraceService );
+        windowRenderingTrace = WindowRenderingTracer.startTracing( windowKey, liveTraceService );
 
         try
         {
@@ -367,7 +369,7 @@ public class WindowRenderer
             TraceMarkerHelper.wrapResultWithPortletMarker( portletResult, portletTraceInfo );
         }
 
-        portletResult.stripXHTMLNamespaces();
+        //portletResult.stripXHTMLNamespaces();
 
         return portletResult;
     }
@@ -419,7 +421,6 @@ public class WindowRenderer
         finally
         {
             PortalFunctionsFactory.get().removeContext();
-            ViewTransformationTracer.stopTracing( trace, liveTraceService );
         }
     }
 
@@ -487,7 +488,7 @@ public class WindowRenderer
             window.getPortlet().getGetDataDocmentChildElementDocumentAsRootElementInItsOwnDocument() );
         datasourceExecutorContext.setInvocationCache( context.getInvocationCache() );
         datasourceExecutorContext.setDatasourcesType( DatasourcesType.PORTLET );
-        datasourceExecutorContext.setDefaultResultRootElementName( verticalProperties.getDatasourceDefaultResultRootElement() );
+        datasourceExecutorContext.setDefaultResultRootElementName( defaultDataSourceRootElementName );
         datasourceExecutorContext.setDeviceClass( context.getDeviceClass() );
         datasourceExecutorContext.setHttpRequest( context.getHttpRequest() );
         datasourceExecutorContext.setLanguage( context.getLanguage() );
@@ -665,5 +666,10 @@ public class WindowRenderer
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
+    }
+
+    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
+    {
+        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
     }
 }

@@ -18,15 +18,15 @@ import org.joda.time.DateTime;
 
 import com.google.common.collect.Maps;
 
-import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.user.field.UserFieldMap;
+import com.enonic.cms.core.user.field.UserField;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
-import com.enonic.cms.core.user.field.UserInfoTransformer;
+import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.core.user.field.UserFields;
 
 public class UserEntity
     implements User, Serializable
@@ -57,7 +57,7 @@ public class UserEntity
 
     private Map<String, String> fieldMap = new HashMap<String, String>();
 
-    private transient UserInfo userInfo = null;
+    private transient UserFields userFields = null;
 
     private transient QualifiedUsername qualifiedName;
 
@@ -405,9 +405,9 @@ public class UserEntity
         return getUserGroup().getMemberships( false );
     }
 
-    public UserInfo getUserInfo()
+    void setFieldMap( Map<String, String> fieldMap )
     {
-        return doGetUserInfo();
+        this.fieldMap = fieldMap;
     }
 
     public Map<String, String> getFieldMap()
@@ -415,53 +415,66 @@ public class UserEntity
         return fieldMap;
     }
 
-    private UserInfo doGetUserInfo()
+    public UserFields getUserFields()
     {
-        if ( this.userInfo == null )
+        return doGetUserFields();
+    }
+
+    private UserFields doGetUserFields()
+    {
+        if ( this.userFields == null )
         {
             final UserFieldTransformer fieldTransformer = new UserFieldTransformer();
-            final UserFieldMap fieldMap = fieldTransformer.fromStoreableMap( this.fieldMap );
-            fieldTransformer.updatePhoto( fieldMap, this.photo );
-
-            final UserInfoTransformer infoTransformer = new UserInfoTransformer();
-            this.userInfo = infoTransformer.toUserInfo( fieldMap );
+            userFields = fieldTransformer.fromStoreableMap( this.fieldMap );
+            fieldTransformer.updatePhoto( userFields, this.photo );
         }
-        return this.userInfo;
+        return this.userFields;
     }
 
-    public boolean updateUserInfoNewOnly( final UserInfo info )
+    /**
+     * @return true if changes where made.
+     */
+    public boolean overwriteUserFields( final UserFields userFields )
     {
-        return doUpdateUserInfo( info, true );
+        final Map<String, String> newFieldMap = new UserFieldTransformer().toStoreableMap( userFields );
+        removeFieldsWithNullValueWhenFieldDoesNotExist( newFieldMap );
+
+        final Map<String, String> oldFieldMap = Maps.newHashMap( this.fieldMap );
+
+        this.fieldMap.putAll( newFieldMap );
+        final UserField photoField = userFields.getField( UserFieldType.PHOTO );
+        this.photo = photoField != null ? (byte[]) photoField.getValue() : null;
+
+        // invalidate
+        this.userFields = null;
+
+        return !oldFieldMap.equals( fieldMap );
     }
 
-    public boolean updateUserInfo( final UserInfo info )
+    /**
+     * Replaces user fiels with given and returns true if it changed from previous user fields.
+     */
+    public boolean setUserFields( final UserFields userFields )
     {
-        return doUpdateUserInfo( info, false );
-    }
+        final Map<String, String> newFieldMap = new UserFieldTransformer().toStoreableMap( userFields );
+        removeFieldsWithNullValueWhenFieldDoesNotExist( newFieldMap );
 
-    private boolean doUpdateUserInfo( final UserInfo info, final boolean updateExistingOnly )
-    {
-        final UserInfo oldInfo = doGetUserInfo();
+        final Map<String, String> oldFieldMap = Maps.newHashMap( this.fieldMap );
 
-        final UserInfoTransformer infoTransformer = new UserInfoTransformer();
-        final UserFieldMap fieldMap = infoTransformer.toUserFields( info );
-
-        final UserFieldTransformer fieldTransformer = new UserFieldTransformer();
-
-        if ( !updateExistingOnly )
-        {
-            this.fieldMap.clear();
-        }
+        this.fieldMap.clear();
+        fieldMap.putAll( newFieldMap );
+        final UserField photoField = userFields.getField( UserFieldType.PHOTO );
+        this.photo = photoField != null ? (byte[]) photoField.getValue() : null;
 
         // invalidate          
-        this.userInfo = null;
+        this.userFields = null;
 
-        this.fieldMap.putAll( fieldTransformer.toStoreableMap( fieldMap ) );
-        this.photo = info.getPhoto();
+        return !oldFieldMap.equals( fieldMap );
+    }
 
-        final UserInfo newInfo = doGetUserInfo();
-
-        return !oldInfo.equals( newInfo );
+    public boolean isInRemoteUserStore()
+    {
+        return !isBuiltIn() && getUserStore() != null && getUserStore().isRemote();
     }
 
     public byte[] getPhoto()
@@ -477,5 +490,23 @@ public class UserEntity
     public void setPhoto( byte[] photo )
     {
         this.photo = photo;
+    }
+
+    private void removeFieldsWithNullValueWhenFieldDoesNotExist( final Map<String, String> mapToRemoveFrom )
+    {
+        final List<String> fieldsToRemove = new ArrayList<String>();
+        for ( Map.Entry<String, String> entryToPossibleRemoveIfValueIsNull : mapToRemoveFrom.entrySet() )
+        {
+            if ( entryToPossibleRemoveIfValueIsNull.getValue() == null &&
+                !this.fieldMap.containsKey( entryToPossibleRemoveIfValueIsNull.getKey() ) )
+            {
+                fieldsToRemove.add( entryToPossibleRemoveIfValueIsNull.getKey() );
+            }
+        }
+
+        for ( String fieldToRemove : fieldsToRemove )
+        {
+            mapToRemoveFrom.remove( fieldToRemove );
+        }
     }
 }

@@ -4,12 +4,12 @@
  */
 package com.enonic.cms.server.service.admin.ajax;
 
-import java.util.Collection;
-
 import com.enonic.cms.server.service.admin.ajax.dto.PreferenceDto;
 import com.enonic.cms.server.service.admin.ajax.dto.RegionDto;
 import com.enonic.cms.server.service.admin.ajax.dto.SynchronizeStatusDto;
 import com.enonic.cms.server.service.admin.ajax.dto.UserDto;
+
+import java.util.Collection;
 
 public interface AdminAjaxService
 {

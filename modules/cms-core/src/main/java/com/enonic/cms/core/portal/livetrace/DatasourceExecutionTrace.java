@@ -4,18 +4,15 @@ package com.enonic.cms.core.portal.livetrace;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-
 public class DatasourceExecutionTrace
+    extends BaseTrace
     implements ContentIndexQuerier, Trace
 {
     private String methodName;
 
-    private MaxLengthedString runnableCondition;
+    private MaxLengthedString runnableCondition = new MaxLengthedString();
 
     private boolean isExecuted;
-
-    private Duration duration = new Duration();
 
     private boolean isCacheUsed = false;
 
@@ -25,16 +22,18 @@ public class DatasourceExecutionTrace
 
     private Traces<ContentIndexQueryTrace> contentIndexQueryTraces = new Traces<ContentIndexQueryTrace>();
 
-    public DatasourceExecutionTrace( String methodName )
+    DatasourceExecutionTrace( String methodName )
     {
         this.methodName = methodName;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getMethodName()
     {
         return methodName;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isExecuted()
     {
         return isExecuted;
@@ -45,21 +44,7 @@ public class DatasourceExecutionTrace
         isExecuted = executed;
     }
 
-    void setStartTime( DateTime startTime )
-    {
-        duration.setStartTime( startTime );
-    }
-
-    void setStopTime( DateTime stopTime )
-    {
-        duration.setStopTime( stopTime );
-    }
-
-    public Duration getDuration()
-    {
-        return duration;
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public String getRunnableCondition()
     {
         return runnableCondition != null ? runnableCondition.toString() : null;
@@ -70,6 +55,7 @@ public class DatasourceExecutionTrace
         this.runnableCondition = new MaxLengthedString( runnableCondition );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isCacheUsed()
     {
         return isCacheUsed;
@@ -80,63 +66,37 @@ public class DatasourceExecutionTrace
         isCacheUsed = cacheUsed;
     }
 
-    public List<DatasourceMethodArgument> getDatasourceMethodArgumentList()
-    {
-        return datasourceMethodArgumentList;
-    }
-
-    void setDatasourceMethodArgumentList( List<DatasourceMethodArgument> datasourceMethodArgumentList )
-    {
-        this.datasourceMethodArgumentList = datasourceMethodArgumentList;
-    }
-
-    public void addDatasourceMethodArgument( DatasourceMethodArgument datasourceMethodArgument )
+    void addDatasourceMethodArgument( DatasourceMethodArgument datasourceMethodArgument )
     {
         datasourceMethodArgumentList.add( datasourceMethodArgument );
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public List<DatasourceMethodArgument> getDatasourceMethodArguments()
     {
         return datasourceMethodArgumentList;
     }
 
-    public void addClientMethodExecutionTrace( ClientMethodExecutionTrace trace )
+    void addClientMethodExecutionTrace( ClientMethodExecutionTrace trace )
     {
         clientMethodExecutionTraceTraces.add( trace );
     }
 
-    public boolean hasClientMethodExecutionTrace()
+    @SuppressWarnings("UnusedDeclaration")
+    public Traces<ClientMethodExecutionTrace> getClientMethodExecutionTraces()
     {
-        return clientMethodExecutionTraceTraces.hasTraces();
+        return clientMethodExecutionTraceTraces;
     }
 
-    public String getDurationOfClientMethodExecutionTracesInHRFormat()
-    {
-        return clientMethodExecutionTraceTraces.getTotalPeriodInHRFormat();
-    }
-
-    public List<ClientMethodExecutionTrace> getClientMethodExecutionTraces()
-    {
-        return clientMethodExecutionTraceTraces.getList();
-    }
-
+    @Override
     public void addContentIndexQueryTrace( ContentIndexQueryTrace trace )
     {
         contentIndexQueryTraces.add( trace );
     }
 
-    public boolean hasContentIndexQueryTraces()
+    @SuppressWarnings("UnusedDeclaration")
+    public Traces<ContentIndexQueryTrace> getContentIndexQueryTraces()
     {
-        return contentIndexQueryTraces.hasTraces();
-    }
-
-    public String getDurationOfContentIndexQueryTracesInHRFormat()
-    {
-        return contentIndexQueryTraces.getTotalPeriodInHRFormat();
-    }
-
-    public List<ContentIndexQueryTrace> getContentIndexQueryTraces()
-    {
-        return contentIndexQueryTraces.getList();
+        return contentIndexQueryTraces;
     }
 }

@@ -4,77 +4,46 @@
  */
 package com.enonic.cms.core.portal.livetrace;
 
-import org.joda.time.DateTime;
-
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
-
 /**
  * Oct 11, 2010
  */
 public class AttachmentRequestTrace
+    extends BaseTrace
     implements Trace
 {
-    private PortalRequestTrace portalRequestTrace;
+    private MaxLengthedString contentKey = new MaxLengthedString();
 
-    private Duration duration = new Duration();
-
-    private ContentKey contentKey;
-
-    private BinaryDataKey binaryDataKey;
+    private MaxLengthedString binaryDataKey = new MaxLengthedString();
 
     private Long sizeInBytes;
 
-    AttachmentRequestTrace( PortalRequestTrace portalRequestTrace )
+    AttachmentRequestTrace()
     {
-        this.portalRequestTrace = portalRequestTrace;
     }
 
-    void setStartTime( DateTime start )
+    @SuppressWarnings("UnusedDeclaration")
+    public String getContentKey()
     {
-        duration.setStartTime( start );
+        return contentKey.toString();
     }
 
-    void setStopTime( DateTime stop )
+    void setContentKey( String contentKey )
     {
-        duration.setStopTime( stop );
+        this.contentKey = new MaxLengthedString( contentKey );
     }
 
-    public Duration getDuration()
+    @SuppressWarnings("UnusedDeclaration")
+    public String getBinaryDataKey()
     {
-        return duration;
+        return binaryDataKey.toString();
     }
 
-    public PortalRequestTrace getPortalRequestTrace()
+    void setBinaryDataKey( String binaryDataKey )
     {
-        return portalRequestTrace;
+        this.binaryDataKey = new MaxLengthedString( binaryDataKey );
     }
 
-    public void setPortalRequestTrace( PortalRequestTrace portalRequestTrace )
-    {
-        this.portalRequestTrace = portalRequestTrace;
-    }
-
-    public ContentKey getContentKey()
-    {
-        return contentKey;
-    }
-
-    public void setContentKey( ContentKey contentKey )
-    {
-        this.contentKey = contentKey;
-    }
-
-    public BinaryDataKey getBinaryDataKey()
-    {
-        return binaryDataKey;
-    }
-
-    public void setBinaryDataKey( BinaryDataKey binaryDataKey )
-    {
-        this.binaryDataKey = binaryDataKey;
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     public Long getSizeInBytes()
     {
         return sizeInBytes;

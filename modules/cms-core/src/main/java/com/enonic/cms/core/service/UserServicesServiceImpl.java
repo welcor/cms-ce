@@ -5,6 +5,7 @@
 package com.enonic.cms.core.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.core.security.user.User;
 
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+@Service
 public class UserServicesServiceImpl
     implements UserServicesService
 {
@@ -32,7 +34,7 @@ public class UserServicesServiceImpl
      */
     public XMLDocument getContent( User user, int key, boolean publishOnly, int parenLevel, int childrenLevel, int parenChildrenLevel )
     {
-        return userServicesEngine.getContent(user, key, publishOnly, parenLevel, childrenLevel, parenChildrenLevel);
+        return userServicesEngine.getContent( user, key, publishOnly, parenLevel, childrenLevel, parenChildrenLevel );
     }
 
     public XMLDocument getContentTypeByCategory( int cKey )

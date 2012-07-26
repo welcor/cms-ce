@@ -4,9 +4,10 @@
  */
 package com.enonic.cms.store.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
-import org.springframework.stereotype.Repository;
 
 @Repository("menuItemAccessDao")
 public final class MenuItemAccessEntityDao

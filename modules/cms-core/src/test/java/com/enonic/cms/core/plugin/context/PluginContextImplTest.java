@@ -1,24 +1,23 @@
 package com.enonic.cms.core.plugin.context;
 
-import com.enonic.cms.api.client.Client;
-import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.ext.Extension;
-import com.enonic.cms.core.plugin.host.HostServices;
+import java.util.Hashtable;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import com.google.common.collect.Maps;
+
+import com.enonic.cms.api.client.Client;
+import com.enonic.cms.api.plugin.PluginConfig;
+import com.enonic.cms.api.plugin.ext.Extension;
+import com.enonic.cms.core.plugin.host.HostServices;
+
+import static org.junit.Assert.*;
 
 public class PluginContextImplTest
 {
@@ -27,7 +26,7 @@ public class PluginContextImplTest
     private PluginContextImpl pluginContext;
 
     private Map<String, Object> serviceMap;
-    
+
     private PluginConfig pluginConfig;
 
     @Before
@@ -45,10 +44,10 @@ public class PluginContextImplTest
         Mockito.when( bundle.getBundleContext() ).thenReturn( this.bundleContext );
 
         this.pluginContext = new PluginContextImpl( bundle );
-        
+
         this.serviceMap = Maps.newHashMap();
         final HostServices hostServices = Mockito.mock( HostServices.class );
-        Mockito.when( hostServices.getServiceMap() ).thenReturn( this.serviceMap );        
+        Mockito.when( hostServices.getServiceMap() ).thenReturn( this.serviceMap );
         this.pluginContext.setHostServices( hostServices );
 
         this.pluginConfig = Mockito.mock( PluginConfig.class );

@@ -5,6 +5,7 @@
 package com.enonic.vertical.adminweb.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentPollXMLBuilder;
 
 public class ContentPollHandlerServlet
@@ -17,7 +18,7 @@ public class ContentPollHandlerServlet
     }
 
     @Autowired
-    public void setContentPollXMLBuilder(final ContentPollXMLBuilder builder)
+    public void setContentPollXMLBuilder( final ContentPollXMLBuilder builder )
     {
         setContentXMLBuilder( builder );
     }

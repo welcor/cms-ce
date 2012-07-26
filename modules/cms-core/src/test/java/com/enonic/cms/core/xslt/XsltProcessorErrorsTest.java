@@ -1,8 +1,8 @@
 package com.enonic.cms.core.xslt;
 
-import org.junit.Test;
-
 import javax.xml.transform.TransformerException;
+
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -13,8 +13,8 @@ public class XsltProcessorErrorsTest
     {
         final XsltProcessorErrors errors = new XsltProcessorErrors();
 
-        assertEquals(false, errors.hasErrors());
-        assertErrors(errors, 0, 0, 0);
+        assertEquals( false, errors.hasErrors() );
+        assertErrors( errors, 0, 0, 0 );
     }
 
     @Test
@@ -22,11 +22,11 @@ public class XsltProcessorErrorsTest
     {
         final XsltProcessorErrors errors = new XsltProcessorErrors();
 
-        assertEquals(false, errors.hasErrors());
+        assertEquals( false, errors.hasErrors() );
 
-        errors.fatalError(new TransformerException("Some Error"));
-        assertEquals(true, errors.hasErrors());
-        assertErrors(errors, 1, 0, 0);
+        errors.fatalError( new TransformerException( "Some Error" ) );
+        assertEquals( true, errors.hasErrors() );
+        assertErrors( errors, 1, 0, 0 );
     }
 
     @Test
@@ -34,11 +34,11 @@ public class XsltProcessorErrorsTest
     {
         final XsltProcessorErrors errors = new XsltProcessorErrors();
 
-        assertEquals(false, errors.hasErrors());
+        assertEquals( false, errors.hasErrors() );
 
-        errors.error(new TransformerException("Some Error"));
-        assertEquals(true, errors.hasErrors());
-        assertErrors(errors, 0, 1, 0);
+        errors.error( new TransformerException( "Some Error" ) );
+        assertEquals( true, errors.hasErrors() );
+        assertErrors( errors, 0, 1, 0 );
     }
 
     @Test
@@ -46,26 +46,25 @@ public class XsltProcessorErrorsTest
     {
         final XsltProcessorErrors errors = new XsltProcessorErrors();
 
-        assertEquals(false, errors.hasErrors());
+        assertEquals( false, errors.hasErrors() );
 
-        errors.warning(new TransformerException("Some Error"));
-        assertEquals(false, errors.hasErrors());
-        assertErrors(errors, 0, 0, 1);
+        errors.warning( new TransformerException( "Some Error" ) );
+        assertEquals( false, errors.hasErrors() );
+        assertErrors( errors, 0, 0, 1 );
     }
 
-    private void assertErrors(final XsltProcessorErrors errors, final int numFatal,
-                              final int numError, final int numWarning)
+    private void assertErrors( final XsltProcessorErrors errors, final int numFatal, final int numError, final int numWarning )
     {
-        assertNotNull(errors.getAllErrors());
-        assertEquals(numFatal + numError, errors.getAllErrors().size());
+        assertNotNull( errors.getAllErrors() );
+        assertEquals( numFatal + numError, errors.getAllErrors().size() );
 
-        assertNotNull(errors.getFatalErrors());
-        assertEquals(numFatal, errors.getFatalErrors().size());
+        assertNotNull( errors.getFatalErrors() );
+        assertEquals( numFatal, errors.getFatalErrors().size() );
 
-        assertNotNull(errors.getErrors());
-        assertEquals(numError, errors.getErrors().size());
+        assertNotNull( errors.getErrors() );
+        assertEquals( numError, errors.getErrors().size() );
 
-        assertNotNull(errors.getWarnings());
-        assertEquals(numWarning, errors.getWarnings().size());
+        assertNotNull( errors.getWarnings() );
+        assertEquals( numWarning, errors.getWarnings().size() );
     }
 }

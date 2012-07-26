@@ -30,7 +30,7 @@ public abstract class AbstractContentQuery
 
     private int index = 0;
 
-    private int count = Integer.MAX_VALUE;
+    private int count = 200;
 
     private int levels;
 

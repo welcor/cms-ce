@@ -10,7 +10,7 @@
 
     <context:annotation-config/>
 
-    <bean class="com.enonic.cms.core.boot.ConfigProperties"/>
+    <bean class="com.enonic.cms.core.config.ConfigProperties"/>
 
     <bean id="httpService" class="com.enonic.cms.core.http.HTTPService"/>
 

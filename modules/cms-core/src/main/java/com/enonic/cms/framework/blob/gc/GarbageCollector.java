@@ -8,12 +8,15 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.framework.blob.BlobKey;
 import com.enonic.cms.framework.blob.BlobStore;
 
+@Component("blobStoreGarbageCollector")
 public final class GarbageCollector
 {
     private final static Logger LOG = LoggerFactory.getLogger( GarbageCollector.class );
@@ -24,18 +27,20 @@ public final class GarbageCollector
 
     private boolean running;
 
+    @Autowired
     public void setStore( final BlobStore store )
     {
         this.store = store;
     }
 
+    @Autowired
     public void setFinder( final UsedBlobKeyFinder finder )
     {
         this.finder = finder;
     }
 
     private int deleteUnused()
-            throws Exception
+        throws Exception
     {
         final Set<BlobKey> keys = Sets.newHashSet( this.store.getAllKeys() );
         keys.removeAll( this.finder.findKeys() );
@@ -72,7 +77,7 @@ public final class GarbageCollector
     }
 
     private synchronized void doProcess()
-            throws Exception
+        throws Exception
     {
         final long now = System.currentTimeMillis();
         LOG.debug( "Starting blob store garbage collect" );

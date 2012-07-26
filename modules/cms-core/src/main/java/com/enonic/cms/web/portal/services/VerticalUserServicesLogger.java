@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.web.portal.services;
 
-import com.enonic.cms.api.util.LogFacade;
-
 import com.enonic.vertical.VerticalLogger;
+
+import com.enonic.cms.api.util.LogFacade;
 
 public final class VerticalUserServicesLogger
     extends VerticalLogger

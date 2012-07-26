@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.util.PropertiesUtil;
 
-import com.enonic.cms.core.boot.ConfigProperties;
+import com.enonic.cms.core.config.ConfigProperties;
 
 /**
  * This class is deprecated. Use spring injection instead with @Value("${..}").
@@ -69,11 +69,6 @@ public final class VerticalProperties
         return getMailSmtpHost();
     }
 
-    public int getAutologinTimeout()
-    {
-        return Integer.parseInt( getProperty( "com.enonic.vertical.presentation.autologinTimeout", "30" ) );
-    }
-
     /**
      * Get property <code>com.enonic.vertical.adminweb.XSL_PREFIX</code>.
      *
@@ -94,34 +89,14 @@ public final class VerticalProperties
         return !"false".equals( getProperty( "cms.xml.storeXHTML", "true" ) );
     }
 
-    public String getAdminPassword()
-    {
-        return getProperty( "cms.admin.password" );
-    }
-
     public String getAdminEmail()
     {
         return getProperty( "cms.admin.email" );
     }
 
-    public String getAdminNewPasswordMailSubject()
-    {
-        return getProperty( "cms.admin.newPasswordMailSubject" );
-    }
-
-    public String getAdminNewPasswordMailBody()
-    {
-        return getProperty( "cms.admin.newPasswordMailBody" );
-    }
-
     public String getMailSmtpHost()
     {
         return getProperty( "cms.mail.smtpHost" );
-    }
-
-    public String getDataSourceUserAgent()
-    {
-        return getProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent" );
     }
 
     public String getDatasourceDefaultResultRootElement()

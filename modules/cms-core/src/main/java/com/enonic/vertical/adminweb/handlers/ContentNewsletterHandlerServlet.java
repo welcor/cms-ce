@@ -12,7 +12,11 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,12 +28,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
-import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.google.common.collect.Sets;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.Mail;
@@ -46,28 +51,25 @@ import com.enonic.cms.framework.util.URLUtils;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.RequestParameters;
+import com.enonic.cms.core.RequestParametersMerger;
 import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.language.LanguageEntity;
+import com.enonic.cms.core.language.LanguageResolver;
+import com.enonic.cms.core.portal.PageRequestType;
+import com.enonic.cms.core.portal.rendering.PageRenderer;
+import com.enonic.cms.core.portal.rendering.PageRendererContext;
+import com.enonic.cms.core.portal.rendering.RegionsResolver;
+import com.enonic.cms.core.portal.rendering.RenderedPageResult;
+import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-
-import com.enonic.cms.core.SitePropertyNames;
-import com.enonic.cms.core.portal.rendering.PageRenderer;
-import com.enonic.cms.core.portal.rendering.PageRendererContext;
-import com.enonic.cms.core.portal.rendering.RegionsResolver;
-import com.enonic.cms.core.preview.PreviewContext;
-
-import com.enonic.cms.core.language.LanguageResolver;
-import com.enonic.cms.core.RequestParametersMerger;
-
-import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.rendering.RenderedPageResult;
-import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.page.Regions;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
@@ -105,7 +107,7 @@ public class ContentNewsletterHandlerServlet
     }
 
     @Autowired
-    public void setContentNewsletterXMLBuilder(final ContentNewsletterXMLBuilder builder)
+    public void setContentNewsletterXMLBuilder( final ContentNewsletterXMLBuilder builder )
     {
         setContentXMLBuilder( builder );
     }
@@ -161,7 +163,7 @@ public class ContentNewsletterHandlerServlet
             }
             catch ( UnsupportedEncodingException uee )
             {
-                VerticalAdminLogger.errorAdmin("%t", uee);
+                VerticalAdminLogger.errorAdmin( "%t", uee );
             }
         }
         else
@@ -193,7 +195,7 @@ public class ContentNewsletterHandlerServlet
             catch ( IOException ioe )
             {
                 String message = "I/O error: %t";
-                VerticalAdminLogger.errorAdmin(message, ioe );
+                VerticalAdminLogger.errorAdmin( message, ioe );
             }
         }
     }
@@ -267,7 +269,7 @@ public class ContentNewsletterHandlerServlet
                 for ( String paramName : paramMap.keySet() )
                 {
                     String paramValue = paramMap.get( paramName );
-                    mailBody = mailBody.replaceAll("\\%" + paramName + "\\%", paramValue);
+                    mailBody = mailBody.replaceAll( "\\%" + paramName + "\\%", paramValue );
                 }
                 String name = paramMap.get( "recipientName" );
                 mail.clearRecipients();
@@ -296,7 +298,7 @@ public class ContentNewsletterHandlerServlet
             catch ( Exception esle )
             {
                 String msg = "Failed to send email: {0}";
-                VerticalAdminLogger.warn(msg, esle.getMessage(), null );
+                VerticalAdminLogger.warn( msg, esle.getMessage(), null );
                 Element sentElem = XMLTool.createElement( doc, sendhistoryElem, "sent" );
                 sentElem.setAttribute( "timestamp", DateUtil.formatISODateTime( new Date() ) );
                 sentElem.setAttribute( "uid", user.getName() );
@@ -355,12 +357,12 @@ public class ContentNewsletterHandlerServlet
         catch ( TransformerException te )
         {
             String msg = "XSLT transformation error: %t";
-            VerticalAdminLogger.errorAdmin(msg, te );
+            VerticalAdminLogger.errorAdmin( msg, te );
         }
         catch ( IOException ioe )
         {
             String msg = "I/O error: %t";
-            VerticalAdminLogger.errorAdmin(msg, ioe );
+            VerticalAdminLogger.errorAdmin( msg, ioe );
         }
 
     }
@@ -444,7 +446,8 @@ public class ContentNewsletterHandlerServlet
         final Set<UserEntity> members = findUserMembers( admin, formItems );
         final Map<String, Map<String, String>> emailMap = new HashMap<String, Map<String, String>>();
 
-        for (final UserEntity member : members) {
+        for ( final UserEntity member : members )
+        {
             final Map<String, String> paramMap = new HashMap<String, String>();
             final String email = member.getEmail() != null ? member.getEmail() : "";
             paramMap.put( "recipientName", member.getDisplayName() );
@@ -536,12 +539,12 @@ public class ContentNewsletterHandlerServlet
         catch ( TransformerException te )
         {
             String msg = "XSLT transformation error: %t";
-            VerticalAdminLogger.errorAdmin(msg, te );
+            VerticalAdminLogger.errorAdmin( msg, te );
         }
         catch ( IOException ioe )
         {
             String msg = "I/O error: %t";
-            VerticalAdminLogger.errorAdmin(msg, ioe );
+            VerticalAdminLogger.errorAdmin( msg, ioe );
         }
     }
 
@@ -641,7 +644,7 @@ public class ContentNewsletterHandlerServlet
         }
         catch ( UnsupportedEncodingException uee )
         {
-            VerticalAdminLogger.errorAdmin("%t", uee);
+            VerticalAdminLogger.errorAdmin( "%t", uee );
         }
         super.handlerCreate( request, response, session, admin, formItems, user );
     }
@@ -670,7 +673,7 @@ public class ContentNewsletterHandlerServlet
         }
         catch ( UnsupportedEncodingException uee )
         {
-            VerticalAdminLogger.errorAdmin("%t", uee);
+            VerticalAdminLogger.errorAdmin( "%t", uee );
         }
         super.handlerUpdate( request, response, formItems, user );
     }

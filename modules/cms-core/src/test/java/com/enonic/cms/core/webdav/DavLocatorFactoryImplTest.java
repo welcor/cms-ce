@@ -13,6 +13,7 @@ import com.enonic.cms.web.webdav.DavLocatorFactoryImpl;
 public class DavLocatorFactoryImplTest
 {
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
     private DavLocatorFactoryImpl davLocatorFactory = new DavLocatorFactoryImpl();
 
     @Before
@@ -28,7 +29,7 @@ public class DavLocatorFactoryImplTest
 
         final DavResourceLocator resourceLocator = davLocatorFactory.createResourceLocator( "http://localhost:8080", "/dav/config" );
 
-        Assert.assertEquals( "http://localhost:8080/dav", resourceLocator.getPrefix());
+        Assert.assertEquals( "http://localhost:8080/dav", resourceLocator.getPrefix() );
         Assert.assertEquals( "/config", resourceLocator.getResourcePath() );
     }
 
@@ -39,7 +40,7 @@ public class DavLocatorFactoryImplTest
 
         final DavResourceLocator resourceLocator = davLocatorFactory.createResourceLocator( "http://localhost:8080", "/gfdav/config" );
 
-        Assert.assertEquals( "http://localhost:8080/gfdav", resourceLocator.getPrefix());
+        Assert.assertEquals( "http://localhost:8080/gfdav", resourceLocator.getPrefix() );
         // before D-01768 it was "/gfdav/config" . must be  "/config"
         Assert.assertEquals( "/config", resourceLocator.getResourcePath() );
     }
@@ -51,7 +52,7 @@ public class DavLocatorFactoryImplTest
 
         final DavResourceLocator resourceLocator = davLocatorFactory.createResourceLocator( "http://localhost:8080", "/dav/config" );
 
-        Assert.assertEquals( "http://localhost:8080/gfdav", resourceLocator.getPrefix());
+        Assert.assertEquals( "http://localhost:8080/gfdav", resourceLocator.getPrefix() );
         Assert.assertEquals( "/config", resourceLocator.getResourcePath() );
     }
 

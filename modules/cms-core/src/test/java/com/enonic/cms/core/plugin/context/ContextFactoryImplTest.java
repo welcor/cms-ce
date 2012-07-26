@@ -1,14 +1,13 @@
 package com.enonic.cms.core.plugin.context;
 
-import com.enonic.cms.api.plugin.PluginContext;
-import com.enonic.cms.core.plugin.config.ConfigFactory;
-import com.enonic.cms.core.plugin.host.HostServices;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+
+import com.enonic.cms.core.plugin.config.ConfigFactory;
+import com.enonic.cms.core.plugin.host.HostServices;
 
 import static org.junit.Assert.*;
 
@@ -32,19 +31,19 @@ public class ContextFactoryImplTest
     @Test
     public void testGetService()
     {
-        final Bundle bundle = Mockito.mock(Bundle.class);
-        final Object service = this.factory.getService(bundle, null);
+        final Bundle bundle = Mockito.mock( Bundle.class );
+        final Object service = this.factory.getService( bundle, null );
 
         assertNotNull( service );
         assertTrue( service instanceof PluginContext );
-        
+
         Mockito.verify( this.configFactory, Mockito.times( 1 ) ).create( Mockito.any( Bundle.class ) );
     }
 
     @Test
     public void testUnGetService()
     {
-        this.factory.ungetService(null, null, null);
+        this.factory.ungetService( null, null, null );
     }
 
     @Test
@@ -52,7 +51,7 @@ public class ContextFactoryImplTest
     {
         final BundleContext context = Mockito.mock( BundleContext.class );
         this.factory.register( context );
-        
+
         Mockito.verify( context, Mockito.times( 1 ) ).registerService( PluginContext.class.getName(), this.factory, null );
     }
 }

@@ -6,6 +6,8 @@ package com.enonic.cms.core.content;
 
 import java.util.List;
 
+import com.enonic.cms.core.search.query.ContentDocument;
+
 /**
  *
  */
@@ -20,8 +22,13 @@ public interface IndexService
 
     public void regenerateIndex( List<ContentKey> contentKeys );
 
-
     void index( ContentEntity content );
 
     void index( ContentEntity content, boolean deleteExisting );
+
+    ContentDocument createContentDocument( ContentEntity content );
+
+    public void optimizeIndex();
+
+    public void initializeMapping();
 }

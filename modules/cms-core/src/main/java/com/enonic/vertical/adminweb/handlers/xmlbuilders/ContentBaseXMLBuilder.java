@@ -22,9 +22,8 @@ import com.enonic.vertical.adminweb.handlers.ContentBaseHandlerServlet;
 import com.enonic.vertical.engine.AccessRight;
 
 import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.security.user.User;
-
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
+import com.enonic.cms.core.security.user.User;
 
 public abstract class ContentBaseXMLBuilder
     extends AbstractBaseXMLBuilder
@@ -316,7 +315,7 @@ public abstract class ContentBaseXMLBuilder
         }
         catch ( ParseException e )
         {
-            VerticalAdminLogger.errorAdmin("Error parsing dates: %t", e );
+            VerticalAdminLogger.errorAdmin( "Error parsing dates: %t", e );
         }
 
         // created:
@@ -410,7 +409,7 @@ public abstract class ContentBaseXMLBuilder
             }
             catch ( ParseException e )
             {
-                VerticalAdminLogger.errorAdmin("Error parsing dates: %t", e );
+                VerticalAdminLogger.errorAdmin( "Error parsing dates: %t", e );
             }
         }
     }

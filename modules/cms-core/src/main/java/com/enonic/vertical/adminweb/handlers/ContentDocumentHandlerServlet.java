@@ -5,6 +5,7 @@
 package com.enonic.vertical.adminweb.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentDocumentXMLBuilder;
 
 public class ContentDocumentHandlerServlet
@@ -18,7 +19,7 @@ public class ContentDocumentHandlerServlet
     }
 
     @Autowired
-    public void setContentDocumentXMLBuilder(final ContentDocumentXMLBuilder builder)
+    public void setContentDocumentXMLBuilder( final ContentDocumentXMLBuilder builder )
     {
         setContentXMLBuilder( builder );
     }

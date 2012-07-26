@@ -13,9 +13,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.store.dao.GroupDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,13 +24,17 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 import com.enonic.vertical.engine.XDG;
 import com.enonic.vertical.event.VerticalEventListener;
+
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
+import com.enonic.cms.store.dao.GroupDao;
 
+@Component
 public final class GroupHandler
     extends BaseHandler
     implements VerticalEventListener
@@ -68,11 +71,12 @@ public final class GroupHandler
             return null;
         }
 
-        final GroupEntity entity = this.groupDao.findBuiltInAuthenticatedUsers(userStoreKey);
-        if ( entity == null ) {
+        final GroupEntity entity = this.groupDao.findBuiltInAuthenticatedUsers( userStoreKey );
+        if ( entity == null )
+        {
             return null;
         }
-        
+
         return entity.getGroupKey().toString();
     }
 
@@ -88,14 +92,14 @@ public final class GroupHandler
         {
             con = getConnection();
             preparedStmt = con.prepareStatement( GROUP_GET_BY_KEY );
-            preparedStmt.setString(1, groupKey);
+            preparedStmt.setString( 1, groupKey );
             resultSet = preparedStmt.executeQuery();
 
-            groupResultSetToDom( con, doc.getDocumentElement(), resultSet);
+            groupResultSetToDom( con, doc.getDocumentElement(), resultSet );
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {
@@ -106,7 +110,7 @@ public final class GroupHandler
         return doc;
     }
 
-    private void groupResultSetToDom(Connection con, Element rootElement, ResultSet grpResultSet)
+    private void groupResultSetToDom( Connection con, Element rootElement, ResultSet grpResultSet )
         throws SQLException
     {
         final int index = 0;
@@ -289,7 +293,7 @@ public final class GroupHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
 
         return groups;
@@ -369,7 +373,7 @@ public final class GroupHandler
         }
         catch ( SQLException e )
         {
-            VerticalEngineLogger.error("A database error occurred: %t", e );
+            VerticalEngineLogger.error( "A database error occurred: %t", e );
         }
         finally
         {

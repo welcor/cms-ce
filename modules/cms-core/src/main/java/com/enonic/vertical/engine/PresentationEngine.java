@@ -6,8 +6,9 @@ package com.enonic.vertical.engine;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
-import com.enonic.vertical.engine.handlers.BinaryDataHandler;
+
 import com.enonic.vertical.engine.handlers.CategoryHandler;
 import com.enonic.vertical.engine.handlers.CommonHandler;
 import com.enonic.vertical.engine.handlers.ContentHandler;
@@ -25,6 +26,7 @@ import com.enonic.vertical.engine.handlers.UserHandler;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.security.user.User;
 
+@Component("presentationEngine")
 public class PresentationEngine
     extends BaseEngine
     implements InitializingBean

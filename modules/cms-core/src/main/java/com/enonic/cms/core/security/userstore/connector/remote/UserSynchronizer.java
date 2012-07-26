@@ -4,14 +4,12 @@
  */
 package com.enonic.cms.core.security.userstore.connector.remote;
 
-import org.springframework.util.Assert;
-
+import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserSpecification;
+import com.enonic.cms.core.security.user.UserNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.connector.EmailAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.NameAlreadyExistsException;
-
 import com.enonic.cms.core.user.remote.RemoteUser;
 
 public class UserSynchronizer
@@ -19,60 +17,88 @@ public class UserSynchronizer
 {
     protected UserSynchronizer( final UserStoreEntity userStore, final boolean syncMemberships )
     {
-        super( userStore, true, syncMemberships );
+        super( null, userStore, true, syncMemberships, true );
     }
 
-    public void synchronizeUser( final UserEntity localUser, final MemberCache memberCache )
+    public void synchronizeUser( final String uid )
     {
-        Assert.notNull( localUser );
-        Assert.isTrue( localUser.getUserStoreKey().equals( userStore.getKey() ) );
-
-        status.setTotalRemoteUserCount( 1 );
-
-        final RemoteUser remoteUser = remoteUserStorePlugin.getUser( localUser.getName() );
-
-        if ( remoteUser == null )
+        final RemoteUser remoteUser = remoteUserStorePlugin.getUser( uid );
+        final UserEntity localUser;
+        if ( remoteUser != null )
         {
-            deleteUser( localUser );
-        }
-        else if ( !remoteUser.getSync().equals( localUser.getSync() ) )
-        {
-            // No matcing sync value - user no longer in userstore , we delete it
-            deleteUser( localUser );
+            localUser = findUserBySyncValue( remoteUser.getSync() );
         }
         else
         {
-            final String name = getNameToVerify( localUser, remoteUser );
-            if ( nameAlreadyUsedByOtherUser( userStore.getKey(), name, localUser ) )
+            localUser = findUserByName( uid );
+        }
+
+        if ( remoteUser == null )
+        {
+            if ( localUser == null )
             {
-                throw new NameAlreadyExistsException( userStore.getName(), name );
+                throw new UserNotFoundException( new QualifiedUsername( userStore.getName(), uid ) );
             }
-
-            final String email = getEmailToVerify( localUser, remoteUser );
-            if ( emailAlreadyUsedByOtherUser( userStore.getKey(), email, localUser ) )
+            else
             {
-                throw new EmailAlreadyExistsException( userStore.getName(), name, email );
+                deleteUser( localUser );
             }
-
-            final boolean resurrected = updateAndResurrectLocalUser( localUser, remoteUser, memberCache );
-            status.userUpdated( resurrected );
-
-            if ( syncMemberships )
+        }
+        else
+        {
+            if ( localUser == null )
             {
-                syncUserMemberships( localUser, remoteUser, memberCache );
+                final String userName = getNameToVerify( localUser, remoteUser );
+                if ( nameAlreadyUsedByOtherUser( userName, localUser ) )
+                {
+                    throw new NameAlreadyExistsException( userStore.getName(), userName );
+                }
+                final String email = getEmailToVerify( localUser, remoteUser );
+                if ( emailAlreadyUsedByOtherUser( email, localUser ) )
+                {
+                    handleEmailAlreadyUsedByOtherUser( userName, email, localUser );
+                }
+
+                createUser( remoteUser, new MemberCache() );
+            }
+            else
+            {
+                updateUserLocally( remoteUser, localUser );
             }
         }
     }
 
-    private void deleteUser( final UserEntity localUser )
+    private void updateUserLocally( final RemoteUser remoteUser, final UserEntity localUser )
     {
-        if ( !localUser.isDeleted() )
+        final String userName = getNameToVerify( localUser, remoteUser );
+        if ( nameAlreadyUsedByOtherUser( userName, localUser ) )
         {
-            status.setTotalLocalUserCount( 1 );
-            final UserSpecification userToDeleteSpec = new UserSpecification();
-            userToDeleteSpec.setKey( localUser.getKey() );
-            userStorageService.deleteUser( userToDeleteSpec );
-            status.userDeleted();
+            throw new NameAlreadyExistsException( userStore.getName(), userName );
+        }
+
+        final String email = getEmailToVerify( localUser, remoteUser );
+
+        if ( emailAlreadyUsedByOtherUser( email, localUser ) )
+        {
+            handleEmailAlreadyUsedByOtherUser( userName, email, localUser );
+        }
+
+        final MemberCache memberCache = new MemberCache();
+        updateAndResurrectUser( localUser, remoteUser );
+
+        if ( syncMemberships )
+        {
+            syncUserMemberships( localUser, remoteUser, memberCache );
+        }
+    }
+
+    private void handleEmailAlreadyUsedByOtherUser( String userName, String email, UserEntity localUser )
+    {
+        synchronizeOtherUserWithSameEmail( email, localUser );
+
+        if ( emailAlreadyUsedByOtherUser( email, localUser ) )
+        {
+            throw new EmailAlreadyExistsException( userStore.getName(), userName, email );
         }
     }
 }

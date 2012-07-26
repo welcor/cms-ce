@@ -249,7 +249,7 @@ public class PortalFunctionsTest
         context.setOriginalSitePath( originalSitePath );
         context.setMenuItem( createMenuItem( "0", "Frontpage" ) );
 
-        when( menuItemDao.findByKey( 0 ) ).thenReturn( createMenuItem( "0", "/Frontpage", site1 ) );
+        when( menuItemDao.findByKey( new MenuItemKey( 0 ) ) ).thenReturn( createMenuItem( "0", "/Frontpage", site1 ) );
 
         String url = portalFunctions.createPageUrl( null );
         assertEquals( "http://localhost/site/1/Frontpage", url );
@@ -294,7 +294,7 @@ public class PortalFunctionsTest
 
         MenuItemKey menuItemKey = new MenuItemKey( 101 );
 
-        when( menuItemDao.findByKey( 101 ) ).thenReturn( createMenuItem( "101", "Frontpage", site1 ) );
+        when( menuItemDao.findByKey( new MenuItemKey( 101 ) ) ).thenReturn( createMenuItem( "101", "Frontpage", site1 ) );
 
         String url = portalFunctions.createPageUrl( menuItemKey, null );
         assertEquals( "http://localhost/site/1/Frontpage", url );
@@ -345,7 +345,7 @@ public class PortalFunctionsTest
 
         MenuItemKey menuItemKey = new MenuItemKey( 101 );
 
-        when( menuItemDao.findByKey( 101 ) ).thenReturn( createMenuItem( "101", "Frontpage", site2 ) );
+        when( menuItemDao.findByKey( new MenuItemKey( 101 ) ) ).thenReturn( createMenuItem( "101", "Frontpage", site2 ) );
 
         String url = portalFunctions.createPageUrl( menuItemKey, null );
         assertEquals( "http://site2.com/Frontpage", url );
@@ -754,7 +754,7 @@ public class PortalFunctionsTest
         MenuItemEntity menuXsltFunc = createMenuItem( "100", "xslt-functions", menuFeatures, site1 );
         MenuItemEntity menuCreateWindowUrl = createMenuItem( "101", "createwindowurl-test", menuXsltFunc, site1 );
 
-        when( menuItemDao.findByKey( 101 ) ).thenReturn( menuCreateWindowUrl );
+        when( menuItemDao.findByKey( new MenuItemKey( 101 ) ) ).thenReturn( menuCreateWindowUrl );
 
         // site path
         SitePath sitePath = new SitePath( siteKey1, "/en/features/xslt-functions/createwindowurl-test" );
@@ -788,7 +788,7 @@ public class PortalFunctionsTest
         MenuItemEntity menuXsltFunc = createMenuItem( "100", "xslt-functions", menuFeatures, site1 );
         MenuItemEntity menuCreateWindowUrl = createMenuItem( "101", "createwindowurl-test", menuXsltFunc, site1 );
 
-        when( menuItemDao.findByKey( 101 ) ).thenReturn( menuCreateWindowUrl );
+        when( menuItemDao.findByKey( new MenuItemKey( 101 ) ) ).thenReturn( menuCreateWindowUrl );
 
         // site path
         SitePath sitePath = new SitePath( siteKey1, "/en/features/xslt-functions/createwindowurl-test" );

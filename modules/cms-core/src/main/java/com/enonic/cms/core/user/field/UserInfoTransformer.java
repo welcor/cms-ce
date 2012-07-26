@@ -15,14 +15,14 @@ import com.enonic.cms.api.client.model.user.UserInfo;
 
 public final class UserInfoTransformer
 {
-    public UserInfo toUserInfo( UserFieldMap fields )
+    public UserInfo toUserInfo( UserFields fields )
     {
         UserInfo info = new UserInfo();
         updateUserInfo( info, fields );
         return info;
     }
 
-    public void updateUserInfo( UserInfo info, UserFieldMap fields )
+    public void updateUserInfo( UserInfo info, UserFields fields )
     {
         for ( UserField field : fields )
         {
@@ -114,7 +114,7 @@ public final class UserInfoTransformer
         }
     }
 
-    private void updateAddresses( UserInfo info, UserFieldMap fields )
+    private void updateAddresses( UserInfo info, UserFields fields )
     {
         Address[] existing = info.getAddresses();
         Address[] addresses = toAddresses( fields );
@@ -137,7 +137,7 @@ public final class UserInfoTransformer
         }
     }
 
-    private Address[] toAddresses( UserFieldMap fields )
+    private Address[] toAddresses( UserFields fields )
     {
         LinkedList<Address> list = new LinkedList<Address>();
         for ( UserField field : fields.getFields( UserFieldType.ADDRESS ) )
@@ -148,16 +148,16 @@ public final class UserInfoTransformer
         return list.toArray( new Address[list.size()] );
     }
 
-    public UserFieldMap toUserFields( UserInfo info )
+    public UserFields toUserFields( UserInfo info )
     {
-        UserFieldMap fields = new UserFieldMap( true );
+        UserFields fields = new UserFields( true );
 
         for ( Address address : info.getAddresses() )
         {
             addIfNotNull( fields, UserFieldType.ADDRESS, address );
         }
 
-        addNullable( fields, UserFieldType.BIRTHDAY, info.getBirthday() );
+        addIfNotNull( fields, UserFieldType.BIRTHDAY, info.getBirthday() );
         addIfNotNull( fields, UserFieldType.COUNTRY, info.getCountry() );
         addIfNotNull( fields, UserFieldType.DESCRIPTION, info.getDescription() );
         addIfNotNull( fields, UserFieldType.FAX, info.getFax() );
@@ -185,17 +185,11 @@ public final class UserInfoTransformer
         return fields;
     }
 
-    private void addIfNotNull( UserFieldMap fields, UserFieldType type, Object value )
+    private void addIfNotNull( UserFields fields, UserFieldType type, Object value )
     {
         if ( value != null )
         {
             fields.add( new UserField( type, value ) );
         }
     }
-
-    private void addNullable( UserFieldMap fields, UserFieldType type, Object value )
-    {
-        fields.add( new UserField( type, value ) );
-    }
-
 }

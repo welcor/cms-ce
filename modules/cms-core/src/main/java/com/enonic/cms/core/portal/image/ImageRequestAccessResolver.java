@@ -3,7 +3,8 @@ package com.enonic.cms.core.portal.image;
 
 import org.joda.time.DateTime;
 
-import com.enonic.cms.api.util.Preconditions;
+import com.google.common.base.Preconditions;
+
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.access.ContentAccessResolver;

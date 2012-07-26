@@ -1,8 +1,7 @@
 package com.enonic.cms.core.content.category;
 
-import org.junit.Test;
-
 import com.enonic.cms.core.AbstractEqualsTest;
+import org.junit.Test;
 
 
 public class UnitKeyEqualsTest

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.springframework.stereotype.Repository;
 
 import com.enonic.cms.framework.hibernate.support.InClauseBuilder;
 import com.enonic.cms.framework.hibernate.support.SelectBuilder;
@@ -18,8 +19,6 @@ import com.enonic.cms.core.content.ContentVersionSpecification;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.security.group.GroupKey;
-
-import org.springframework.stereotype.Repository;
 
 @Repository("contentVersionDao")
 public final class ContentVersionEntityDao

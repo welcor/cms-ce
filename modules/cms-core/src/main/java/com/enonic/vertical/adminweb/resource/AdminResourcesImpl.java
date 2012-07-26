@@ -1,22 +1,27 @@
 package com.enonic.vertical.adminweb.resource;
 
-import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-import com.enonic.vertical.adminweb.TranslationReader;
-import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import com.google.common.base.Charsets;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Map;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.URIResolver;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Map;
+import com.google.common.base.Charsets;
+
+import com.enonic.vertical.adminweb.TranslationReader;
+import com.enonic.vertical.adminweb.VerticalAdminLogger;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
+import com.enonic.cms.core.AdminConsoleTranslationService;
 
 @Component
 public final class AdminResourcesImpl

@@ -4,10 +4,9 @@
  */
 package com.enonic.cms.core.security;
 
+import com.enonic.cms.core.security.user.UserKey;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-
-import com.enonic.cms.core.security.user.UserKey;
 
 public final class AdminSecurityHolder
 {

@@ -9,12 +9,12 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
-import com.enonic.cms.store.support.EntityPageList;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.security.group.GroupKey;
-import org.springframework.stereotype.Repository;
+import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("categoryDao")
 public final class CategoryEntityDao

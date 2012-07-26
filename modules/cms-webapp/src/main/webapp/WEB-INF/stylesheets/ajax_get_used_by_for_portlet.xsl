@@ -10,6 +10,7 @@
       <xsl:when test="count(//menuitems/menuitem) != 0">
         <table border="0" cellspacing="2" cellpadding="2">
           <xsl:for-each select="//menuitems/menuitem">
+            <xsl:sort select="@path-to-menu"/>
             <tr> <td>
             <xsl:text>&nbsp;&nbsp;</xsl:text>
             <a>

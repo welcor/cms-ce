@@ -5,6 +5,7 @@
 package com.enonic.cms.core.content.category;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import com.enonic.cms.core.security.user.UserKey;
 /**
  * Mar 9, 2010
  */
+@Service
 public class CategoryServiceImpl
     implements CategoryService
 {
@@ -32,6 +34,9 @@ public class CategoryServiceImpl
 
     @Autowired
     private LogService logService;
+
+    @Autowired
+    MoveCategoryCommandProcessorFactory moveCategoryCommandProcessorFactory;
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public CategoryKey storeNewCategory( final StoreNewCategoryCommand command )
@@ -78,5 +83,12 @@ public class CategoryServiceImpl
         command.setXmlData( content.getMainVersion().getContentDataAsJDomDocument() );
 
         logService.storeNew( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void moveCategory( MoveCategoryCommand command )
+    {
+        final MoveCategoryCommandProcessor processor = moveCategoryCommandProcessorFactory.create( command );
+        processor.moveCategory();
     }
 }

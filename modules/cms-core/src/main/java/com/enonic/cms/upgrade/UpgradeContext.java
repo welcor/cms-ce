@@ -111,4 +111,7 @@ public interface UpgradeContext
 
     public void executeStatement( String statement )
         throws Exception;
+
+    public boolean hasTable( final String table )
+        throws Exception;
 }

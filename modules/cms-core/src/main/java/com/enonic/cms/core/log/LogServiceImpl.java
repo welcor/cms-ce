@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -23,7 +23,7 @@ import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.LogEntryDao;
 import com.enonic.cms.store.dao.UserDao;
 
-@Component("logService")
+@Service("logService")
 public class LogServiceImpl
     implements LogService
 {

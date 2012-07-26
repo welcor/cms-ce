@@ -13,6 +13,7 @@ import java.sql.Types;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,6 +29,7 @@ import com.enonic.cms.core.content.category.UnitEntity;
 import com.enonic.cms.core.content.category.UnitKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 
+@Component
 public class UnitHandler
     extends BaseHandler
 {

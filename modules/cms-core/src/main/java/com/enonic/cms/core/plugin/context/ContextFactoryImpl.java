@@ -7,7 +7,6 @@ import org.osgi.framework.ServiceRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.api.plugin.PluginContext;
 import com.enonic.cms.core.plugin.config.ConfigFactory;
 import com.enonic.cms.core.plugin.host.HostServices;
 

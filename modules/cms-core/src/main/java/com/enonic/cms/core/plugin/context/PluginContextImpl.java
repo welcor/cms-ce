@@ -6,7 +6,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.plugin.PluginContext;
 import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.core.plugin.host.HostServices;
 import com.enonic.cms.core.plugin.util.OsgiHelper;

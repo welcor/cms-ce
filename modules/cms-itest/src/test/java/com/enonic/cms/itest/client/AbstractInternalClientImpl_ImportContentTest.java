@@ -30,6 +30,7 @@ import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.legacy.LegacyImageContentData;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.imports.ImportJobFactory;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
@@ -37,7 +38,6 @@ import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.ContentDao;
-import com.enonic.cms.store.dao.GroupDao;
 
 public abstract class AbstractInternalClientImpl_ImportContentTest
     extends AbstractSpringTest
@@ -67,17 +67,17 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
     @Autowired
     protected ContentDao contentDao;
 
-    @Autowired
-    private GroupDao groupDao;
-
     @Before
     public void before()
         throws IOException, JDOMException
     {
+        ImportJobFactory.setExecuteInOneTransaction( true );
+
         factory = fixture.getFactory();
 
         fixture.initSystemData();
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     protected void setupImport( final Document config )
@@ -92,6 +92,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser", "read, browse, create, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser2", "read, browse, create, approve" ) );
         fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
     }
 
     protected void setupImageCategory()
@@ -209,7 +210,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
 
     private Document getConfigImage()
     {
-        final StringBuffer config = new StringBuffer();
+        final StringBuilder config = new StringBuilder();
         config.append( "<contenttype>" );
         config.append( "  <config>" );
         config.append( "    <sizes>" );
@@ -225,7 +226,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
 
     private Document getConfigRelatedContent()
     {
-        final StringBuffer config = new StringBuffer();
+        final StringBuilder config = new StringBuilder();
         config.append( "<contenttype>" );
         config.append( "  <config name=\"MyRelatedContentType\" version=\"1.0\">" );
         config.append( "    <form>" );

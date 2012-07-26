@@ -11,6 +11,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Attribute;
 import org.jdom.Element;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 import com.enonic.cms.core.content.contenttype.dataentryconfig.BinaryDataEntryConfig;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.CheckboxDataEntryConfig;
@@ -128,26 +130,30 @@ public class InputConfigParser
 
     private TextAreaDataEntryConfig parseTextAreaInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
-        return new TextAreaDataEntryConfig( inputName, required, displayName, xpath );
+        String defaultValue = parseDefaultValue( inputEl );
+
+        return new TextAreaDataEntryConfig( inputName, required, displayName, xpath ).setDefaultValue( defaultValue );
     }
 
     private RadioButtonDataEntryConfig parseRadioButtonInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
         LinkedHashMap<String, String> optionValuesWithDescription = parseOptions( inputEl );
 
-        return new RadioButtonDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription );
+        String defaultValue = parseDefaultValue( inputEl );
+
+        return new RadioButtonDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription ).setDefaultValue(defaultValue);
     }
 
     private MultipleChoiceDataEntryConfig parseMultipleChoiceInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -156,7 +162,7 @@ public class InputConfigParser
 
     private KeywordsDataEntryConfig parseKeywordsInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -165,7 +171,7 @@ public class InputConfigParser
 
     private BinaryDataEntryConfig parseBinaryInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -174,7 +180,7 @@ public class InputConfigParser
 
     private ImagesDataEntryConfig parseImagesInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -183,7 +189,7 @@ public class InputConfigParser
 
     private ImageDataEntryConfig parseImageInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -192,7 +198,7 @@ public class InputConfigParser
 
     private FilesDataEntryConfig parseFilesInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -201,7 +207,7 @@ public class InputConfigParser
 
     private FileDataEntryConfig parseFileInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -210,17 +216,19 @@ public class InputConfigParser
 
     private DropdownDataEntryConfig parseDropdownInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
         LinkedHashMap<String, String> optionValuesWithDescription = parseOptions( inputEl );
 
-        return new DropdownDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription );
+        String defaultValue = parseDefaultValue( inputEl );
+
+        return new DropdownDataEntryConfig( inputName, required, displayName, xpath, optionValuesWithDescription ).setDefaultValue(defaultValue);
     }
 
     private DateDataEntryConfig parseDateInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -229,7 +237,7 @@ public class InputConfigParser
 
     private CheckboxDataEntryConfig parseCheckboxInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -238,16 +246,18 @@ public class InputConfigParser
 
     private XmlDataEntryConfig parseXmlInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
-        return new XmlDataEntryConfig( inputName, required, displayName, xpath );
+        String defaultValue = parseDefaultValueAsXML( inputEl );
+
+        return new XmlDataEntryConfig( inputName, required, displayName, xpath ).setDefaultValue(defaultValue);
     }
 
     private RelatedContentDataEntryConfig parseRelatedContentInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -258,6 +268,7 @@ public class InputConfigParser
             multiple = Boolean.parseBoolean( multipleStr );
         }
 
+        @SuppressWarnings( "unchecked" )
         List<Element> contentTypeElements = inputEl.getChildren( "contenttype" );
 
         List<String> contentTypeNames = new ArrayList<String>();
@@ -294,7 +305,7 @@ public class InputConfigParser
 
     private TextDataEntryConfig parseTextInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -309,12 +320,14 @@ public class InputConfigParser
             }
         }
 
-        return new TextDataEntryConfig( inputName, required, displayName, xpath ).setMaxLength( maxLength );
+        String defaultValue = parseDefaultValue( inputEl );
+
+        return new TextDataEntryConfig( inputName, required, displayName, xpath ).setMaxLength( maxLength ).setDefaultValue( defaultValue );
     }
 
     private UrlDataEntryConfig parseUrlInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
@@ -329,16 +342,20 @@ public class InputConfigParser
             }
         }
 
-        return new UrlDataEntryConfig( inputName, required, displayName, xpath, maxLength );
+        String defaultValue = parseDefaultValue( inputEl );
+
+        return new UrlDataEntryConfig( inputName, required, displayName, xpath, maxLength ).setDefaultValue( defaultValue );
     }
 
     private HtmlAreaDataEntryConfig parseHtmlAreaInputConfig( Element inputEl )
     {
-        boolean required = parseInputReqiured( inputEl );
+        boolean required = parseInputRequired( inputEl );
         String displayName = parseInputDisplayName( inputEl );
         String xpath = parseInputXpath( inputEl );
 
-        return new HtmlAreaDataEntryConfig( inputName, required, displayName, xpath );
+        String defaultValue = parseDefaultValueAsXML( inputEl );
+
+        return new HtmlAreaDataEntryConfig( inputName, required, displayName, xpath ).setDefaultValue( defaultValue );
     }
 
     private String parseInputName( Element inputEl )
@@ -388,6 +405,42 @@ public class InputConfigParser
         }
     }
 
+    private String parseDefaultValue( Element inputEl )
+    {
+        Element displayElement = inputEl.getChild( "default" );
+        if ( displayElement != null )
+        {
+            return displayElement.getText();
+        }
+
+        return null;
+    }
+
+    private String parseDefaultValueAsXML( Element inputEl )
+    {
+        final Element aDefault = inputEl.getChild( "default" );
+
+        if (aDefault == null)
+        {
+            return null;
+        }
+
+        final List children = aDefault.getChildren();
+
+        if (!children.isEmpty())
+        {
+            final Element displayElement = (Element) children.get( 0 );
+
+            if ( displayElement != null )
+            {
+                final XMLOutputter outputter = new XMLOutputter( Format.getPrettyFormat() );
+                return outputter.outputString( displayElement );
+            }
+        }
+
+        return null;
+    }
+
     private String parseInputXpath( Element inputEl )
     {
         Element xPathElement = inputEl.getChild( "xpath" );
@@ -424,7 +477,7 @@ public class InputConfigParser
         return options;
     }
 
-    private boolean parseInputReqiured( Element inputEl )
+    private boolean parseInputRequired( Element inputEl )
     {
         return Boolean.valueOf( inputEl.getAttributeValue( "required", "false" ) );
     }

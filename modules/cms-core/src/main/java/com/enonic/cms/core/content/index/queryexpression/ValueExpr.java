@@ -6,7 +6,7 @@ package com.enonic.cms.core.content.index.queryexpression;
 
 import org.joda.time.ReadableDateTime;
 
-import com.enonic.cms.core.content.index.util.ValueConverter;
+import com.enonic.cms.core.search.query.IndexValueConverter;
 
 /**
  * This class implements the value expression.
@@ -97,7 +97,7 @@ public final class ValueExpr
         {
             return false;
         }
-        ReadableDateTime date = ValueConverter.toDate( (String) this.value );
+        ReadableDateTime date = IndexValueConverter.toDate( (String) this.value );
         return date != null;
     }
 

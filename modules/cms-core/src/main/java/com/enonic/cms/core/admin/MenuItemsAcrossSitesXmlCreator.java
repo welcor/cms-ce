@@ -11,8 +11,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
 /**

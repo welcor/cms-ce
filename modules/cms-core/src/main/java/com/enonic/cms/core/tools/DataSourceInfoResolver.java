@@ -13,12 +13,14 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
  * This class makes a diagnostics for a connection.
  */
 @Component
+@Profile("default")
 public final class DataSourceInfoResolver
 {
 
@@ -88,7 +90,7 @@ public final class DataSourceInfoResolver
      * Create info.
      */
     public void collectInfo( DataSource dataSource )
-            throws Exception
+        throws Exception
     {
         Connection conn = null;
 
@@ -110,7 +112,7 @@ public final class DataSourceInfoResolver
      * Create info.
      */
     public void collectInfo( Connection conn )
-            throws Exception
+        throws Exception
     {
         collectInfo( conn.getMetaData() );
         this.info.setProperty( "transactionIsolation", getTransactionIsolationName( conn.getTransactionIsolation() ) );
@@ -120,7 +122,7 @@ public final class DataSourceInfoResolver
      * Create info.
      */
     public void collectInfo( DatabaseMetaData md )
-            throws Exception
+        throws Exception
     {
 
         this.info.setProperty( "driverName", md.getDriverName() );

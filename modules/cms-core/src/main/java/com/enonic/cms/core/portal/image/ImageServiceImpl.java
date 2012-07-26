@@ -12,6 +12,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
 
@@ -24,7 +26,6 @@ import com.enonic.cms.framework.util.ImageHelper;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.binary.AttachmentNotFoundException;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
-import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageResponse;
 import com.enonic.cms.core.image.cache.ImageCache;
@@ -39,6 +40,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 
+@Service
 public final class ImageServiceImpl
     implements ImageService
 {
@@ -87,7 +89,7 @@ public final class ImageServiceImpl
     {
         Preconditions.checkNotNull( imageRequest, "imageRequest cannot be null" );
 
-        final ImageRequestTrace imageRequestTrace = livePortalTraceService.getCurrentImageRequestTrace();
+        final ImageRequestTrace imageRequestTrace = livePortalTraceService.getCurrentTrace().getImageRequestTrace();
 
         String blobKey = getBlobKey( imageRequest );
         if ( blobKey == null )
@@ -121,12 +123,14 @@ public final class ImageServiceImpl
             }
             catch ( AttachmentNotFoundException e )
             {
-                LOG.error( "Cannot read image with key {} from configured BLOB directory ( {} ). Check your CMS configuration.", blobKey, directory.getAbsolutePath() );
+                LOG.error( "Cannot read image with key {} from configured BLOB directory ( {} ). Check your CMS configuration.", blobKey,
+                           directory.getAbsolutePath() );
                 return ImageResponse.notFound();
             }
             catch ( Exception e )
             {
-                throw new ImageProcessorException( "Failed to process image: " + e.getMessage(), e );
+                throw new ImageProcessorException(
+                    "Failed to process image [contentKey=" + imageRequest.getContentKey() + "] : " + e.getMessage(), e );
             }
         }
         finally
@@ -265,6 +269,7 @@ public final class ImageServiceImpl
         this.groupDao = groupDao;
     }
 
+    @Value("${cms.blobstore.dir}")
     public void setDirectory( File directory )
     {
         this.directory = directory;

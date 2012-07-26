@@ -661,6 +661,7 @@
                       <xsl:when test="count(/contentobjects/contentobject/pagetemplates/pagetemplate) !=0">
                         <table border="0" cellspacing="2" cellpadding="2">
                             <xsl:for-each select="/contentobjects/contentobject/pagetemplates/pagetemplate">
+                                <xsl:sort select="name" />
                                 <tr><td>&nbsp;&nbsp;<xsl:value-of select="name"/></td></tr>
                             </xsl:for-each>
                         </table>

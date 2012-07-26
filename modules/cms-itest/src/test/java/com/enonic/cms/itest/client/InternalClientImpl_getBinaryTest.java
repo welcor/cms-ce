@@ -8,6 +8,7 @@ import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -40,27 +41,24 @@ import static org.junit.Assert.*;
 public class InternalClientImpl_getBinaryTest
     extends AbstractSpringTest
 {
-    private DomainFactory factory;
-
     @Autowired
     private DomainFixture fixture;
 
     @Autowired
+    @Qualifier("localClient")
     private InternalClient internalClient;
-
-    private Document contentTypeConfig;
 
     @Before
     public void before()
         throws IOException, JDOMException
     {
 
-        factory = fixture.getFactory();
+        final DomainFactory factory = fixture.getFactory();
         fixture.initSystemData();
 
-        StringBuffer contentTypeConfigXml = new StringBuffer();
+        StringBuilder contentTypeConfigXml = new StringBuilder();
         contentTypeConfigXml.append( "<moduledata/>" );
-        contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
+        final Document contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
 
         fixture.flushAndClearHibernateSesssion();
 

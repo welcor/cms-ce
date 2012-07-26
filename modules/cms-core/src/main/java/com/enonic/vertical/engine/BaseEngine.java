@@ -18,7 +18,6 @@ import com.enonic.vertical.engine.handlers.ContentHandler;
 import com.enonic.vertical.engine.handlers.ContentObjectHandler;
 import com.enonic.vertical.engine.handlers.GroupHandler;
 import com.enonic.vertical.engine.handlers.LanguageHandler;
-import com.enonic.vertical.engine.handlers.LogHandler;
 import com.enonic.vertical.engine.handlers.MenuHandler;
 import com.enonic.vertical.engine.handlers.PageHandler;
 import com.enonic.vertical.engine.handlers.PageTemplateHandler;
@@ -32,7 +31,7 @@ public abstract class BaseEngine
 {
     private ConnectionFactory connectionFactory;
 
-    @Autowired
+    @Autowired(required = false)
     public void setConnectionFactory( ConnectionFactory connectionFactory )
     {
         this.connectionFactory = connectionFactory;

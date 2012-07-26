@@ -1,4 +1,3 @@
-
 package com.enonic.cms.core.content.index.queryexpression;
 
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
 public class ContentTypeEvaluator
-        extends QueryEvaluatorAdapter
+    extends QueryEvaluatorAdapter
 {
     private ContentTypeDao contentTypeDao;
 

@@ -7,20 +7,22 @@ package com.enonic.cms.core.login;
 import java.rmi.server.UID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.enonic.cms.core.time.TimeService;
 
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.RememberedLoginEntity;
 import com.enonic.cms.core.security.RememberedLoginKey;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.RememberedLoginDao;
 
 /**
  * Jul 10, 2009
  */
+@Service
 public class LoginServiceImpl
     implements LoginService
 {
@@ -114,6 +116,7 @@ public class LoginServiceImpl
         this.timeService = value;
     }
 
+    @Value("${com.enonic.vertical.presentation.autologinTimeout}")
     public void setAutologinTimeoutInDays( Integer value )
     {
         this.autologinTimeoutInMilliSeconds = (long) 1000 * 60 * 60 * 24 * value;

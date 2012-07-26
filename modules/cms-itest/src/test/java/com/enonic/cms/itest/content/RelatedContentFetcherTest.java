@@ -164,6 +164,7 @@ public class RelatedContentFetcherTest
         System.out.println( "asdfasdf" );
     }
 
+
     @Test
     public void fetch_children_when_one_content_relates_another()
     {
@@ -193,6 +194,7 @@ public class RelatedContentFetcherTest
 
     }
 
+
     @Test
     public void fetch_parents_when_one_content_relates_another()
     {
@@ -221,6 +223,7 @@ public class RelatedContentFetcherTest
         assertEquals( 1, resultSet.getDinstinctSetOfContent().size() );
 
     }
+
 
     @Test
     public void three_content_relates_each_other_in_a_circle()
@@ -291,6 +294,7 @@ public class RelatedContentFetcherTest
         assertEquals( contentKeyA, contentCrelatedParents.get( 0 ).getContent().getKey() );
     }
 
+
     @Test
     public void common_related_child_between_two_content_is_contained_in_root_related_children_for_both_content()
     {
@@ -336,6 +340,7 @@ public class RelatedContentFetcherTest
         assertEquals( 1, contentBrelatedChildren.size() );
         assertEquals( commonChild, contentBrelatedChildren.get( 0 ).getContent().getKey() );
     }
+
 
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_circular_reference_and_all_other_are_included()
@@ -397,6 +402,7 @@ public class RelatedContentFetcherTest
 
     }
 
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_with_multiple_circular_references()
     {
@@ -449,6 +455,7 @@ public class RelatedContentFetcherTest
 
     }
 
+
     @Test
     public void eternal_loop_is_prevented_for_related_children_of_children()
     {
@@ -498,6 +505,7 @@ public class RelatedContentFetcherTest
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
 
     }
+
 
     @Test
     public void eternal_loop_is_prevented_for_related_parents_with_circular_reference()
@@ -564,6 +572,7 @@ public class RelatedContentFetcherTest
         expectedRelatedContentKeys.add( content_6 );
         assertRelatedContent( expectedRelatedContentKeys, resultSet.getContentKeys() );
     }
+
 
     @Test
     public void eternal_loop_is_prevented_for_related_parent_children_with_circular_reference()

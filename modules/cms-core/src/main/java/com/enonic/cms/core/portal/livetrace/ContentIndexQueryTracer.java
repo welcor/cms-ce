@@ -27,7 +27,7 @@ public class ContentIndexQueryTracer
         }
     }
 
-    public static void traceQuery( ContentIndexQuery query, int index, int count, ContentIndexQueryTrace trace )
+    public static void traceQuery( ContentIndexQuery query, int index, int count, String translatedQuery, ContentIndexQueryTrace trace )
     {
         if ( trace != null )
         {
@@ -35,6 +35,7 @@ public class ContentIndexQueryTracer
             trace.setCount( count );
 
             trace.setQuery( query.getQuery() );
+            trace.setTranslatedQuery( translatedQuery );
             trace.setContentFilter( collectionToString( query.getContentFilter() ) );
             trace.setSectionFilter( collectionToString( query.getSectionFilter() ) );
             trace.setCategoryFilter( collectionToString( query.getCategoryFilter() ) );

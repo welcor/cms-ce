@@ -80,6 +80,7 @@
 %cmdSupport%|Support|Support|Support|Support
 %cmdDocumentation%|Dokumentasjon|Documentation|Dokumentation|Dokumentation
 %cmdRefreshMenu%|Oppfriske meny|Refresh menu|Opdater menu|Uppdatera menyn
+%cmdToggleShortcuts%|Vis/gjem skjulte menypunkter av type snarvei (gjelder kun snarveier på rotnivå)|Show/hide hidden menuitems of type shortcut (applies only to shortcuts at root level)|TRANSLATE: Show/hide hidden menuitems of type shortcut (applies only to shortcuts at root level)|Visa/dölj dolda menyval av typen genväg (gäller bara genvägar i översta menynivån)
 %mnuFrameworks%|Sidemaler|Page templates|Sideskabelon|Sidmallar
 %mnuSystem%|System|System|System|System
 %mnuJavaProperties%|Java egenskaper|Java properties|Java egenskaber|Java-egenskaper
@@ -949,7 +950,7 @@
 %msgConfirmSaveResource%|Vil du lagre ressursen?|Do you want to save the resource?|Vil du gemme ressourcen?|Vill du spara resursen?
 %msgClickToSelectVersion%|Klikk for å velge versjon|Click to select version|Klik for at vælge version|Klicka för att välja version
 %msgClickToSelectSnapshot%|Klikk for å velge øyeblikksbilde|Click to select snapshot|Klik for at vælge snapshot|Klicka för att välja snapshot
-%feedbackContentNothingToSave%|Ingen ting å lagre|Nothing to save|Intet at gemme|Inget att spara
+%feedbackContentNothingToSave%|Ingenting å lagre|Nothing to save|Intet at gemme|Inget att spara
 %feedbackContentSaved%|Innholdet ble lagret|The content was saved|Indholdet blev gemt|Innehållet sparades
 %feedbackContentPublished%|Innholdet ble gjort tilgjengelig|The content was made available|Indholdet blev gjort tilgængeligt|Innehållet blev tillgängligt
 %feedbackContentRejected%|Innholdet ble avvist|The content was rejected|Indholdet blev afvist|Innehållet avvisades
@@ -1070,7 +1071,7 @@
 %cmdMoveBlockDown%|Flytt blokk ned|Move block down|Flyt blok ned|Flytta ned block
 %headChooseAvailabilityAndSites%|Velg tilgjengelighet og nettsteder|Choose availability and sites|Vælg tilgængelighed og netsteder|Välj tillgänglighet og webbplatser
 %headPositionContenInSection%|Plasser innhold i seksjonen|Position content in the section|Placer indhold i sektionen|Placera innehåll i sektionen
-%txtHelpPublishing%|Velg sidemal og seksjoner. Innhold på enkelete seksjoner kan sorteres manuelt. Hjem avgjør hvor på nettstedet det aktuelle innholdet hører hjemme.|Choose page template and sections. Certain sections can be manually sorted. Home determines where the content belongs on the site.|Vælg sideskabelon og sektioner. Visse sektioner kan sorteres manuelt. Hjem angiver, hvor på netstedet det aktuelle indhold hører hjemme.|Välj sidmall och sektioner. Vissa sektioner kan manuellt sorteras. ”Hem” fastställer var på webbplatsen det aktuella innehållet hör hemma.
+%txtHelpPublishing%|Velg sidemal og seksjoner. Innhold på enkelte seksjoner kan sorteres manuelt. Hjem avgjør hvor på nettstedet det aktuelle innholdet hører hjemme.|Choose page template and sections. Certain sections can be manually sorted. Home determines where the content belongs on the site.|Vælg sideskabelon og sektioner. Visse sektioner kan sorteres manuelt. Hjem angiver, hvor på netstedet det aktuelle indhold hører hjemme.|Välj sidmall och sektioner. Vissa sektioner kan manuellt sorteras. ”Hem” fastställer var på webbplatsen det aktuella innehållet hör hemma.
 %fldSelect%|Velg|Select|Vælg|Välj
 %fldSelected%|Valgt|Selected|Valgt|Valt
 %fldHome%|Hjem|Home|Hjem|Hem
@@ -1139,6 +1140,9 @@
 %cmdRemoveDeletedContentFromDatabase%|Fjern slettet innhold fra database|Remove Deleted Content From Database|Fjern slettet indhold fra database|Ta bort raderad innehåll från database
 %alertCleanReadLogs%|Sikker på at du vil slette alle leselogger?|Are you sure you want to remove all read logs?|Er du sikker på at du vil fjerne alle læste log|Är du säker på att du vill radera alla läsloggar?
 %alertCleanUnusedContent%|Sikker på at du vil slette alle ubrukte innhold?|Are you sure you want to remove all unused content?|Er du sikker på, at du vil slette alt ubrugt indhold?|Är du säker på att du vill radera allt oanvänt innehåll?
+%alertOptimizeIndex%|Are you sure you want to optimize the indexes?(TRANSLATION NEEDED!)|Are you sure you want to optimize the indexes?|Are you sure you want to optimize the indexes?(TRANSLATION NEEDED!)|Are you sure you want to optimize the indexes?(TRANSLATION NEEDED!)
+%cmdOptimizeIndex%|Optimize Indexes(TRANSLATION NEEDED!)|Optimize Indexes|Optimize Indexes(TRANSLATION NEEDED!)|Optimize Indexes(TRANSLATION NEEDED!)
+%indexOptimizeCompleted%|The indexes have been optimized.(TRANSLATION NEEDED)|The indexes have been optimized.|The indexes have been optimized.(TRANSLATION NEEDED)|The indexes have been optimized.(TRANSLATION NEEDED)
 %mnuAdmin%|Admin|Admin|Admin|Admin
 %txtEquals%|eksakt dag|exact day|præcis dato|exakt dag
 %txtLessThanOrEqualTo%|før|before|før|före
@@ -1201,7 +1205,7 @@
 %calThu%|tor|Thu|Tor|tor
 %calFri%|fre|Fri|Fre|fre
 %calSat%|lør|Sat|Lør|lör
-%txtDescSupportedImgFormats%|Støttede formater: jpeg (rgb ikke cmyk), gif (uten gjennomsiktighet), png (uten gjennomsiktighet)|Supported formats: jpeg (rgb not cmyk), gif (without transparency), png (without transparency)|Understøttede formater: jpeg (RGB ikke CMYK, gif (uden gennemsigtighed), png (uden gennemsigtighed)|Format som stöds: jpeg (rgb ikke cmyk), gif (utan genomskinlighet), png (utan genomskinlighet)
+%txtDescSupportedImgFormats%|Støttede formater: jpeg (rgb ikke cmyk), gif (uten gjennomsiktighet), png (med og uten gjennomsiktighet) og bmp|Supported formats: jpeg (rgb not cmyk), gif (without transparency), png (with or without transparency) and bmp|Understøttede formater: jpeg (RGB ikke CMYK, gif (uden gennemsigtighed), png (med eller uden gennemsigtighed) og bmp|Format som stöds: jpeg (rgb ikke cmyk), gif (utan genomskinlighet), png (med eller utan genomskinlighet) och bmp
 %txtInUseBy%|er i bruk følgende steder|is used in the following places|er i brug følgende steder|används följande platser
 %txtContentIsPlacedOnTheFollowingPages%|Plassert på følgende sider|Placed on the following pages|Placeret på følgende sider|Placerat på följande sidor
 %txtContentIsNotPlacedOnAnyPages%|Innholdet er ikke plassert på noen sider.|The content is not located on any pages.|Indholdet er ikke placeret på nogle sider.|Innehålet är inte placerat på någon sida
@@ -1237,14 +1241,14 @@
 %fldResourcePathToPublicHome%|Sti til offentlige ressurser|Path to public resources|Sti til offentlige ressourcer|Sökväg till offentliga resurser
 %fldResourcePathToHome%|Sti til interne ressurser|Path to internal resources|Sti til interne ressourcer|Sökväg till interna resurser
 %msgTimeCanNotBeSetWithoutDate%|Tid kan ikke spesifiseres uten at en dato er satt.|Time can not be specified without a date.|Tid kan ikke specificeres uden en dato er valgt|Tid kan inte specificeras utan att datum är satt
-%msgNotValidImageFileType%|Ugyldig fil-ekstensjon! Må være jpg, jpeg, png eller gif.|Invalid file extension! Must be jpg, jpeg, png or gif.|Ugyldigt fil-endelse! Skal være jpg, jpeg, png eller gif.|Ogiltig fil-ändelse! Måste vara jpg, jpeg, png eller gif.
+%msgNotValidImageFileType%|Ugyldig fil-forlengelse! Må være jpg, jpeg, png, gif eller bmp.|Invalid file extension! Must be jpg, jpeg, png, gif or bmp.|Ugyldigt fil-endelse! Skal være jpg, jpeg, png, gif eller bmp.|Ogiltig fil-ändelse! Måste vara jpg, jpeg, png, gif eller bmp.
 %fldDefaultUser%|Standard bruker|Default user|Standardbruger|Standard användare
 %fldPersonalized%|Personifisert (Innlogget bruker)|Personalized (Logged in user)|Personliggjort (Indlogget bruger)|Personifierad (Innloggad användare)
 %fldInheritFromPage%|Arv fra side|Inherit from page|Arv fra side|Ärv från sida
 %fldInherit%|Arv|Inherit|Arv|Ärv
 %fldInheritFromPageTemplateSite%|Arv fra sidemal/nettsted|Inherit from page template/site|Arv fra skabelon/hjemmeside|Ärv från sidmall/nätsida
 %txtNoDefaultUserSetOnSite%|Ingen bruker konfigurert. Dette nettstedet er personifisert.|No user configured. This site is personalized.|Ingen bruger konfigureret. Denne hjemmeside er personliggjort.|Ingen användare konfigurerad. Denna nätsida är personifierad.
-%alertImagesIsNotAllowedAsAttachment%|Kan ikke sette inn fil av type bilde (jpg, gif eller png)|Can not insert file of type image (jpg, gif or png)|Kan ikke indsætte fil af type “billede” (jpg, gif, eller png)|Kan inte infoga fil av bildtyp (jpg, gif eller png)
+%alertImagesIsNotAllowedAsAttachment%|Kan ikke sette inn fil av type bilde (jpeg, gif, png eller bmp)|Can not insert file of type image (jpeg, gif, png or bmp)|Kan ikke indsætte fil af type “billede” (jpeg, gif, png eller bmp)|Kan inte infoga fil av bildtyp (jpeg, gif, png eller bmp)
 %cmdMaximizeTable%|Maksimer tabell|Maximize table|Maksimér tabel|Maximera tabell
 %cmdMinimizeTable%|Minimer tabell|Minimize table|Minimér tabel|Minimera tabell
 %blockUser%|Bruker|User|Bruger|Användare

@@ -298,11 +298,18 @@ public class ExpressionFunctions
         query.append( "\"" );
     }
 
-    public String pageKey( String path )
+    public String getPageKeyByPath( String path )
     {
         MenuItemEntity menuItem = menuItemDao.findByKey( context.getMenuItem().getKey() );
         MenuItemKeysByPathResolver menuItemKeysByPathResolver = new MenuItemKeysByPathResolver( menuItem );
         return menuItemKeysByPathResolver.getPageKeyByPath( path );
+    }
+
+    public String getPageKeysByPath( String path )
+    {
+        MenuItemEntity menuItem = menuItemDao.findByKey( context.getMenuItem().getKey() );
+        MenuItemKeysByPathResolver menuItemKeysByPathResolver = new MenuItemKeysByPathResolver( menuItem );
+        return menuItemKeysByPathResolver.getPageKeysByPath( path );
     }
 
     public void setPreferenceService( PreferenceService preferenceService )

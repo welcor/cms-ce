@@ -69,7 +69,7 @@ public class SitePropertiesServiceTest
         throws Exception
     {
         sitePropertiesService = new SitePropertiesServiceImpl();
-        sitePropertiesService.setHomeDir(folder.newFolder("cms-home"));
+        sitePropertiesService.setHomeDir( folder.newFolder( "cms-home" ) );
         sitePropertiesService.setResourceLoader( resourceLoader );
         sitePropertiesService.setCharacterEncoding( "UTF-8" );
         sitePropertiesService.afterPropertiesSet();

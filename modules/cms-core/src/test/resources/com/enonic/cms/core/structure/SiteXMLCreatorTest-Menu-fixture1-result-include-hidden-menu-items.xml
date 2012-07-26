@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus>
+  <menu key="1" language="Norwegian" languagecode="no" languagekey="1">
+    <name />
+    <firstpage />
+    <loginpage />
+    <errorpage />
+    <defaultpagetemplate />
+    <menudata />
+    <details menukey="1" />
+    <statistics />
+    <menuitems istop="yes">
+      <menuitem key="1" menukey="1" modifier="KEY" order="0" owner="KEY" timestamp="2007-07-25 09:00" type="content" visible="no">
+        <name>mi 1</name>
+        <menu-name />
+        <display-name />
+        <show-in-menu>false</show-in-menu>
+        <description />
+        <keywords />
+        <parameters />
+        <menuitems child-count="0" istop="no" />
+      </menuitem>
+      <menuitem key="2" menukey="1" modifier="KEY" order="0" owner="KEY" timestamp="2007-07-25 09:00" type="content" visible="no">
+        <name>mi 2</name>
+        <menu-name />
+        <display-name />
+        <show-in-menu>false</show-in-menu>
+        <description />
+        <keywords />
+        <parameters />
+        <menuitems child-count="0" istop="no" />
+      </menuitem>
+    </menuitems>
+  </menu>
+</menus>
+

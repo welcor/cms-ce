@@ -4,17 +4,23 @@
  */
 package com.enonic.cms.core.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.enonic.vertical.engine.handlers.KeyHandler;
 
+@Service("keyService")
+@Profile("default")
 @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 public class KeyServiceImpl
     implements KeyService
 {
     private KeyHandler keyHandler;
 
+    @Autowired
     public void setKeyHandler( KeyHandler keyHandler )
     {
         this.keyHandler = keyHandler;
@@ -22,6 +28,6 @@ public class KeyServiceImpl
 
     public int generateNextKeySafe( String tableName )
     {
-        return keyHandler.generateNextKeySafe(tableName);
+        return keyHandler.generateNextKeySafe( tableName );
     }
 }

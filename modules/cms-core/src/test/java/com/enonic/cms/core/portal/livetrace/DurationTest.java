@@ -99,20 +99,23 @@ public class DurationTest
         assertTrue( duration.getAsHRFormat().length() > 0 );
     }
 
-    @Test
+    @Test(timeout = 2000) // increase default timeout value
     public void getAsMilliseconds_returns_something_even_if_stopTime_is_not_set()
     {
-        long currentTime = System.currentTimeMillis();
         try
         {
+            long currentTime = System.currentTimeMillis();
+
             Thread.sleep( 500 );
+
+            Duration duration = new Duration();
+            duration.setStartTime( new DateTime( currentTime ) );
+            final long time = duration.getAsMilliseconds();
+            assertTrue( time >= 500 );
         }
         catch ( InterruptedException e )
         {
-            e.printStackTrace();
+            fail();  // it happens
         }
-        Duration duration = new Duration();
-        duration.setStartTime( new DateTime( currentTime ) );
-        assertTrue( duration.getAsMilliseconds() >= 500 );
     }
 }

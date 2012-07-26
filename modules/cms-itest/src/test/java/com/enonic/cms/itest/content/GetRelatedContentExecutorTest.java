@@ -37,7 +37,6 @@ import com.enonic.cms.store.dao.GroupDao;
 
 import static org.junit.Assert.*;
 
-
 public class GetRelatedContentExecutorTest
     extends AbstractSpringTest
 {
@@ -514,17 +513,21 @@ public class GetRelatedContentExecutorTest
 
     private ContentKey createContent( String contentTitle, ContentStatus status, String categoryName, ContentKey... relatedContents )
     {
-        return contentService.createContent(
+        final ContentKey contentKey = contentService.createContent(
             createCreateContentCommand( categoryName, createMyRelatedContentData( contentTitle, relatedContents ), "content-creator",
                                         status, BEGINNING_OF_2010 ) );
+        fixture.flushIndexTransaction();
+        return contentKey;
     }
 
     private ContentKey createContent( String contentTitle, ContentStatus status, String categoryName, DateTime availableFrom,
                                       ContentKey... relatedContents )
     {
-        return contentService.createContent(
+        final ContentKey contentKey = contentService.createContent(
             createCreateContentCommand( categoryName, createMyRelatedContentData( contentTitle, relatedContents ), "content-creator",
                                         status, availableFrom ) );
+        fixture.flushIndexTransaction();
+        return contentKey;
     }
 
     private ContentData createMyRelatedContentData( String title, ContentKey... relatedContents )

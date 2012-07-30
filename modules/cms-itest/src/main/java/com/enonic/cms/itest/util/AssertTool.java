@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.itest.util;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +60,11 @@ public class AssertTool
 
     public static void assertXPathEquals( String xpathString, Document doc, Object... expectedValues )
     {
+        assertXPathEquals(xpathString, doc, false, expectedValues);
+    }
+
+    public static void assertXPathEquals( String xpathString, Document doc, boolean ignoreOrder, Object... expectedValues )
+    {
         try
         {
             XPathEvaluator xpathEvaluator = new XPathEvaluator();
@@ -91,6 +98,12 @@ public class AssertTool
             for ( int i = 0; i < expectedValues.length; i++ )
             {
                 expectedValuesAsString[i] = String.valueOf( expectedValues[i] );
+            }
+
+            if ( ignoreOrder )
+            {
+                Arrays.sort( actualValues );
+                Arrays.sort( expectedValuesAsString );
             }
 
             org.junit.Assert.assertArrayEquals( expectedValuesAsString, actualValues );

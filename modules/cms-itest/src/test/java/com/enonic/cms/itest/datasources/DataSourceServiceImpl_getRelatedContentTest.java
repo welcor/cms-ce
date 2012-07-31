@@ -190,7 +190,7 @@ public class DataSourceServiceImpl_getRelatedContentTest
 
         assertXPathEquals( "/contents/relatedcontents/content[title = 'Son']/relatedcontentkeys/@count", jdomDocResult, "2" );
         assertXPathEquals( "/contents/relatedcontents/content[title = 'Son']/relatedcontentkeys/relatedcontentkey[@level = 1]/@key",
-                           jdomDocResult, grandDaughter, grandSon );
+                           jdomDocResult, true, grandDaughter, grandSon );
 
         assertXPathEquals( "/contents/relatedcontents/content[title = 'Daughter']/relatedcontentkeys/@count", jdomDocResult, "0" );
         assertXPathNotExist( "/contents/relatedcontents/content[title = 'Daughter']/relatedcontentkeys/relatedcontentkey", jdomDocResult );

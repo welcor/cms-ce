@@ -135,8 +135,8 @@
     <property name="mimetypesLocation" value="config/mimetypes.properties"/>
   </bean>
 
-  <bean id="nodeSettingsBuilder" class="com.enonic.cms.itest.search.NodeTestSettingsBuilderImpl"/>
+  <bean id="nodeSettingsBuilder" class="com.enonic.cms.core.search.NodeSettingsBuilderImpl"/>
 
-  <bean id="indexSettingsBuilder" class="com.enonic.cms.itest.search.IndexTestSettingsBuilderImpl"/>
+  <bean id="indexSettingsBuilder" class="com.enonic.cms.core.search.IndexSettingsBuilderImpl"/>
 
 </beans>

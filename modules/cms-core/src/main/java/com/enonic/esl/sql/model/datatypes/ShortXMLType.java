@@ -40,11 +40,6 @@ public class ShortXMLType
         return type;
     }
 
-    public boolean isBlobType()
-    {
-        return false;
-    }
-
     public void setData( PreparedStatement preparedStmt, int columnIndex, Object obj )
         throws SQLException
     {

@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -43,7 +43,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 
-@Service("adminService")
+@Component
 public class AdminServiceImpl
     implements AdminService
 {
@@ -669,7 +669,7 @@ public class AdminServiceImpl
 
     public XMLDocument getLogEntries( User user, MultiValueMap adminParams, int fromIdx, int count, boolean complete )
     {
-        return adminEngine.getLogEntries( user, adminParams, fromIdx, count, complete );
+        return adminEngine.getLogEntries( adminParams, fromIdx, count, complete );
     }
 
     public XMLDocument getLogEntry( String key )
@@ -806,17 +806,17 @@ public class AdminServiceImpl
      */
     public XMLDocument getAdminMenu( User user, int menuKey )
     {
-        return doGetAdminMenu( user, menuKey < 0 ? new int[0] : new int[]{menuKey}, null, false );
+        return doGetAdminMenu( user, menuKey < 0 ? new int[0] : new int[]{menuKey}, false );
     }
 
     public XMLDocument getAdminMenuIncludeReadOnlyAccessRights( User user, int menuKey )
     {
-        return doGetAdminMenu( user, menuKey < 0 ? new int[0] : new int[]{menuKey}, null, true );
+        return doGetAdminMenu( user, menuKey < 0 ? new int[0] : new int[]{menuKey}, true );
     }
 
-    private XMLDocument doGetAdminMenu( User user, int[] menuKeys, String[] menuItemTypes, boolean includeReadOnlyAccessRight )
+    private XMLDocument doGetAdminMenu( User user, int[] menuKeys, boolean includeReadOnlyAccessRight )
     {
-        Document doc = this.adminEngine.getAdminMenu( user, menuKeys, menuItemTypes, includeReadOnlyAccessRight );
+        Document doc = this.adminEngine.getAdminMenu( user, menuKeys, null, includeReadOnlyAccessRight );
         return XMLDocumentFactory.create( doc );
     }
 

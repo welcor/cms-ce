@@ -57,6 +57,7 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
@@ -151,7 +152,7 @@ public final class ContentHandler
     public boolean contentExists( CategoryKey categoryKey, String contentTitle )
     {
         ContentView contentView = ContentView.getInstance();
-        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey.getCountColumn(), (Column[]) null );
+        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey.getCountColumn(), null );
         XDG.appendWhereSQL( sql, contentView.cat_lKey, XDG.OPERATOR_EQUAL, categoryKey.toInt() );
         XDG.appendWhereSQL( sql, contentView.cov_sTitle, contentTitle );
         CommonHandler commonHandler = getCommonHandler();
@@ -161,7 +162,7 @@ public final class ContentHandler
     public int getContentKey( CategoryKey categoryKey, String contentTitle )
     {
         ContentView contentView = ContentView.getInstance();
-        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey, (Column[]) null );
+        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey, null );
         XDG.appendWhereSQL( sql, contentView.cat_lKey, XDG.OPERATOR_EQUAL, categoryKey.toInt() );
         XDG.appendWhereSQL( sql, contentView.cov_sTitle );
         sql.append( " ?" );
@@ -194,14 +195,12 @@ public final class ContentHandler
 
     public int createContentType( Document doc )
     {
-
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         int key = -1;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( CTY_INSERT );
 
             Element root = doc.getDocumentElement();
@@ -360,8 +359,7 @@ public final class ContentHandler
 
     public int[] getContentTypeKeysByHandler( int contentHandlerKey )
     {
-
-        StringBuffer sql = new StringBuffer( CTY_SELECT_KEY );
+        StringBuilder sql = new StringBuilder( CTY_SELECT_KEY );
         sql.append( " WHERE" );
         sql.append( CTY_WHERE_CLAUSE_HAN );
 
@@ -370,7 +368,7 @@ public final class ContentHandler
 
     public String getContentTypeName( int contentTypeKey )
     {
-        ContentTypeEntity entity = contentTypeDao.findByKey( contentTypeKey );
+        ContentTypeEntity entity = contentTypeDao.findByKey( new ContentTypeKey( contentTypeKey ) );
         return entity != null ? entity.getName() : null;
     }
 
@@ -389,7 +387,7 @@ public final class ContentHandler
 
             for ( int key : contentTypeKeys )
             {
-                ContentTypeEntity entity = contentTypeDao.findByKey( key );
+                ContentTypeEntity entity = contentTypeDao.findByKey( new ContentTypeKey( key ) );
                 if ( entity != null )
                 {
                     list.add( entity );
@@ -429,15 +427,13 @@ public final class ContentHandler
     public void removeContentType( int contentTypeKey )
         throws VerticalRemoveException
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
 
         getCommonHandler().cascadeDelete( db.tContentType, contentTypeKey );
-        //getSiteHandler().removeContentTypeFromSites(contentTypeKey);
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( CTY_DELETE );
             preparedStmt.setInt( 1, contentTypeKey );
             preparedStmt.executeUpdate();
@@ -455,14 +451,11 @@ public final class ContentHandler
 
     public void updateContentType( Document doc )
     {
-
-        Connection con = null;
         PreparedStatement preparedStmt = null;
 
         try
         {
             Element root = doc.getDocumentElement();
-            // Hva skjer her?:
             Map<String, Element> subelems = XMLTool.filterElements( root.getChildNodes() );
 
             int key = Integer.parseInt( root.getAttribute( "key" ) );
@@ -484,7 +477,7 @@ public final class ContentHandler
             moduleDoc.appendChild( moduleDoc.importNode( moduleElem, true ) );
             byte[] mdocBytes = XMLTool.documentToBytes( moduleDoc, "UTF-8" );
 
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( CTY_UPDATE );
             preparedStmt.setInt( 6, key );
             preparedStmt.setString( 1, name );
@@ -537,9 +530,7 @@ public final class ContentHandler
     private Document doGetContents( User user, Set<Integer> referencedKeys, Element contentsElem, String sql, List<Integer> paramValues,
                                     boolean publishedOnly, int parentLevel, int childrenLevel, int parentChildrenLevel )
     {
-        final int fromIdx = 0;
         final int count = Integer.MAX_VALUE;
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         PreparedStatement childPreparedStmt = null;
@@ -571,7 +562,7 @@ public final class ContentHandler
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             childPreparedStmt = con.prepareStatement( CON_IS_CHILD );
             preparedStmt = con.prepareStatement( sql );
             int paramIndex = -1;
@@ -591,21 +582,6 @@ public final class ContentHandler
             TIntArrayList childrenKeys = new TIntArrayList();
             boolean moreResults = resultSet.next();
 
-            int i = fromIdx;
-            // Skip rows:
-            try
-            {
-                if ( fromIdx > 0 )
-                {
-                    resultSet.relative( fromIdx );
-                }
-            }
-            catch ( SQLException e )
-            {
-                System.err.println( e.getErrorCode() );
-                // ResultSet is not scrollable
-                i = 0;
-            }
 
             // related content keys elememt map
             TIntObjectHashMap contentKeyRCKElemMap = new TIntObjectHashMap();
@@ -615,11 +591,12 @@ public final class ContentHandler
             VersionKeyContentMapProcessor versionKeyContentMapProcessor = new VersionKeyContentMapProcessor( this );
 
             SectionHandler sectionHandler = getSectionHandler();
-            while ( ( i < fromIdx + count ) && ( moreResults || ( paramIndex > 0 && paramIndex < paramValues.size() ) ) )
+            int i = 0;
+            while ( ( i < count ) && ( moreResults || ( paramIndex > 0 && paramIndex < paramValues.size() ) ) )
             {
 
                 // if we have a result, get data
-                if ( i >= fromIdx && moreResults )
+                if ( i >= 0 && moreResults )
                 {
                     // pre-fetch content data
                     Document contentdata;
@@ -721,7 +698,7 @@ public final class ContentHandler
                     // increase index
                     i++;
                 }
-                else if ( i < fromIdx )
+                else if ( i < 0 )
                 {
                     i++;
                 }
@@ -1038,15 +1015,13 @@ public final class ContentHandler
 
     private int[] getContentTypeKeys( String sql, int paramValue )
     {
-
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         TIntArrayList contentTypeKeys = new TIntArrayList();
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( sql );
             preparedStmt.setInt( 1, paramValue );
@@ -1112,7 +1087,7 @@ public final class ContentHandler
 
     public String getContentHandlerClassForContentType( int contentTypeKey )
     {
-        final ContentTypeEntity entity = contentTypeDao.findByKey( contentTypeKey );
+        final ContentTypeEntity entity = contentTypeDao.findByKey( new ContentTypeKey( contentTypeKey ) );
         if ( entity == null )
         {
             return null;
@@ -1187,13 +1162,12 @@ public final class ContentHandler
 
     public int createContentHandler( Document doc )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         int key = -1;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( HAN_INSERT );
 
@@ -1269,7 +1243,6 @@ public final class ContentHandler
 
     public void updateContentHandler( Document doc )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
 
         try
@@ -1297,7 +1270,7 @@ public final class ContentHandler
             configDoc.appendChild( configDoc.importNode( configElem, true ) );
             byte[] cdocBytes = XMLTool.documentToBytes( configDoc, "UTF-8" );
 
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( HAN_UPDATE );
             preparedStmt.setInt( 5, key );
             preparedStmt.setString( 1, name );
@@ -1334,14 +1307,13 @@ public final class ContentHandler
     public void removeContentHandler( int contentHandlerKey )
         throws VerticalRemoveException
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
 
         getCommonHandler().cascadeDelete( db.tContentHandler, contentHandlerKey );
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( HAN_DELETE );
             preparedStmt.setInt( 1, contentHandlerKey );
@@ -1421,14 +1393,13 @@ public final class ContentHandler
         ContentVersionView versionView = ContentVersionView.getInstance();
         StringBuffer sql = XDG.generateSelectSQL( versionView, versionView.cov_lKey );
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         Element root = doc.getDocumentElement();
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql.toString() );
             preparedStmt.setInt( 1, versionKey );
             resultSet = preparedStmt.executeQuery();
@@ -1624,7 +1595,7 @@ public final class ContentHandler
         if ( childrenKeys.size() > 0 )
         {
             int[] children = childrenKeys.toArray();
-            sql = XDG.generateSelectWhereInSQL( contentView, (Column[]) null, false, contentView.con_lKey, children.length );
+            sql = XDG.generateSelectWhereInSQL( contentView, null, false, contentView.con_lKey, children.length );
             Document childrenDoc = getCommonHandler().getData( contentView, sql.toString(), children, null );
             XMLTool.mergeDocuments( relatedContentsElem, childrenDoc, false );
         }
@@ -1639,7 +1610,7 @@ public final class ContentHandler
         if ( parentKeys.size() > 0 )
         {
             int[] parents = parentKeys.toArray();
-            sql = XDG.generateSelectWhereInSQL( versionView, (Column[]) null, false, versionView.cov_lKey, parents.length );
+            sql = XDG.generateSelectWhereInSQL( versionView, null, false, versionView.cov_lKey, parents.length );
             Document childrenDoc = getCommonHandler().getData( versionView, sql.toString(), parents, elementProcessors );
             if ( childrenDoc != null )
             { // NSSR somehow got a nullpointerexception on the next line, when undeleting a content (manually in the db)
@@ -1658,7 +1629,7 @@ public final class ContentHandler
     public int[] getContentTypesByHandlerClass( String className )
     {
         // Funker denne?
-        StringBuffer sql = XDG.generateSelectSQL( db.tContentType, db.tContentType.cty_lKey, true, (Column) null );
+        StringBuffer sql = XDG.generateSelectSQL( db.tContentType, db.tContentType.cty_lKey, true, null );
         XDG.appendJoinSQL( sql, db.tContentType.cty_han_lKey );
         XDG.appendWhereSQL( sql, db.tContentHandler.han_sClass, className );
         return getCommonHandler().getIntArray( sql.toString(), (int[]) null );
@@ -1706,7 +1677,7 @@ public final class ContentHandler
 
     public int getContentTypeKeyByName( String name )
     {
-        StringBuffer sql = XDG.generateSelectSQL( db.tContentType, db.tContentType.cty_lKey, false, (Column) null );
+        StringBuffer sql = XDG.generateSelectSQL( db.tContentType, db.tContentType.cty_lKey, false, null );
         XDG.appendWhereSQL( sql, db.tContentType.cty_sName, name );
         return getCommonHandler().getInt( sql.toString(), (Object[]) null );
     }

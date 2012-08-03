@@ -27,7 +27,7 @@ public class HttpServletRequestWrapper
      * <code>HttpServletRequest</code> values are just overwritten or completely ignored, depends on the setting in the <code>inherit</code>
      * value.
      */
-    private Map<String, String[]> queryParams;
+    private final Map<String, String[]> queryParams;
 
     /**
      * Determines if the request parameters are taken into account when looking for a parameter. If this value is <code>true</code>, and no
@@ -53,7 +53,7 @@ public class HttpServletRequestWrapper
         this( request, params, false );
     }
 
-    public HttpServletRequestWrapper( HttpServletRequest request, Map<String, String[]> params, boolean i )
+    private HttpServletRequestWrapper( HttpServletRequest request, Map<String, String[]> params, boolean i )
     {
         super( request );
 

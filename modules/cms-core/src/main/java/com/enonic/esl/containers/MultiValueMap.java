@@ -18,7 +18,7 @@ public class MultiValueMap
     extends HashMap
 {
 
-    private HashMap attributeMap = new HashMap<Object, String>();
+    private final HashMap attributeMap = new HashMap<Object, String>();
 
     private boolean allowNullValues = false;
 
@@ -26,7 +26,7 @@ public class MultiValueMap
         implements List, Serializable
     {
 
-        private List<Object> values;
+        private final List<Object> values;
 
         public ValueList()
         {

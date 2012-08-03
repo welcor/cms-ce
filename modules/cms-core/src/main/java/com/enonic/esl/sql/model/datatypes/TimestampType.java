@@ -25,7 +25,7 @@ public class TimestampType
     /**
      * Format used for storing dates.
      */
-    public static final DateFormat STORE_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+    private static final DateFormat STORE_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
 
     private static final TimestampType type = new TimestampType();
 

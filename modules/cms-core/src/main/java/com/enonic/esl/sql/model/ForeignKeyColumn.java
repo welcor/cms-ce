@@ -14,13 +14,15 @@ import com.enonic.esl.sql.model.datatypes.DataType;
 public class ForeignKeyColumn
     extends Column
 {
-    private String referencedTableName, referencedColumnName;
+    private final String referencedTableName;
+
+    private final String referencedColumnName;
 
     private Table referencedTable;
 
     private Column referencedColumn;
 
-    private boolean isDelete;
+    private final boolean isDelete;
 
     public ForeignKeyColumn( String name, String xpath, boolean required, boolean primaryKey, DataType type, Object defaultValue,
                              String referencedTableName, String referencedColumnName, boolean isDelete, int size )

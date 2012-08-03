@@ -44,13 +44,12 @@ public class CommonHandler
 
     private int executeSQL( String sql, Object[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         int result = 0;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql );
 
             if ( paramValues != null )
@@ -206,14 +205,13 @@ public class CommonHandler
 
     public Object[][] getObjectArray( String sql, Object[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         Object[][] values = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( sql );
 
@@ -274,14 +272,13 @@ public class CommonHandler
 
     public Object[][] getObjectArray( String sql, int[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         Object[][] values = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( sql );
 
@@ -335,14 +332,13 @@ public class CommonHandler
 
     public int getInt( String sql, Object[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         int value;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( sql );
 
@@ -392,14 +388,13 @@ public class CommonHandler
 
     public int getInt( String sql, int[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         int value;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql );
             if ( paramValues != null )
             {
@@ -439,14 +434,13 @@ public class CommonHandler
 
     public boolean getBoolean( String sql )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         boolean value;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql );
             resultSet = preparedStmt.executeQuery();
 
@@ -479,14 +473,13 @@ public class CommonHandler
 
     private byte[] getByteArray( String sql, Object[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         byte[] byteArray = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql );
             if ( paramValues != null )
             {
@@ -522,14 +515,13 @@ public class CommonHandler
 
     public int[] getIntArray( String sql, int[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         TIntArrayList keys = new TIntArrayList();
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( sql );
 
@@ -568,15 +560,13 @@ public class CommonHandler
 
     public int[] getIntArray( String sql, Object[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         TIntArrayList keys = new TIntArrayList();
 
         try
         {
-            con = getConnection();
-
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql );
 
             if ( paramValues != null )
@@ -616,14 +606,13 @@ public class CommonHandler
 
     public String getString( String sql, Object[] paramValues )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         String string;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( sql );
 
@@ -689,7 +678,7 @@ public class CommonHandler
 
     public String[] getStringArray( String sql, int[] paramValues )
     {
-        Connection con = null;
+        Connection con;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         ArrayList<String> strings = new ArrayList<String>();
@@ -1270,8 +1259,7 @@ public class CommonHandler
         return result;
     }
 
-    public StringBuffer getPathString( Table table, Column keyColumn, Column parentKeyColumn, Column nameColumn, int key,
-                                       boolean includeSpace )
+    public StringBuffer getPathString( Table table, Column keyColumn, Column parentKeyColumn, Column nameColumn, int key )
     {
 
         Column[] selectColumns = new Column[]{parentKeyColumn, nameColumn};
@@ -1308,14 +1296,7 @@ public class CommonHandler
 
                     if ( result.length() > 0 )
                     {
-                        if ( includeSpace )
-                        {
-                            result.insert( 0, " / " );
-                        }
-                        else
-                        {
-                            result.insert( 0, "/" );
-                        }
+                        result.insert( 0, " / " );
                         result.insert( 0, name );
                     }
                     else

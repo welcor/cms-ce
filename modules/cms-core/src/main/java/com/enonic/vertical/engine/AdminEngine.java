@@ -52,6 +52,7 @@ import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.category.CategoryAccessResolver;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.query.ContentByCategoryQuery;
 import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
@@ -157,11 +158,6 @@ public final class AdminEngine
     public LanguageHandler getLanguageHandler()
     {
         return languageHandler;
-    }
-
-    public LogHandler getLogHandler()
-    {
-        return logHandler;
     }
 
     public MenuHandler getMenuHandler()
@@ -563,10 +559,7 @@ public final class AdminEngine
 
     public void regenerateIndexForContentType( int contentTypeKey )
     {
-
-        ContentTypeEntity contentType = contentTypeDao.findByKey( contentTypeKey );
-
-//        final int batchSize = 100;
+        ContentTypeEntity contentType = contentTypeDao.findByKey( new ContentTypeKey( contentTypeKey ) );
         final int batchSize = 10;
         RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService );
         batcher.regenerateIndex( contentType, batchSize, null );
@@ -932,8 +925,7 @@ public final class AdminEngine
 
     public String getIndexingParametersXML( int contentTypeKey )
     {
-
-        ContentTypeEntity contentType = contentTypeDao.findByKey( contentTypeKey );
+        ContentTypeEntity contentType = contentTypeDao.findByKey( new ContentTypeKey( contentTypeKey ) );
 
         XMLOutputter printer = new XMLOutputter( Format.getPrettyFormat() );
         org.jdom.Element element = new org.jdom.Element( "indexparameters" );
@@ -1016,7 +1008,7 @@ public final class AdminEngine
         return XMLDocumentFactory.create( doc );
     }
 
-    public XMLDocument getLogEntries( User user, MultiValueMap adminParams, int fromIdx, int count, boolean complete )
+    public XMLDocument getLogEntries( MultiValueMap adminParams, int fromIdx, int count, boolean complete )
     {
         Document doc = logHandler.getLogEntries( adminParams, fromIdx, count, complete );
         return XMLDocumentFactory.create( doc );

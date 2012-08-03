@@ -22,7 +22,7 @@ import com.enonic.cms.framework.blob.BlobStoreException;
 import com.enonic.cms.framework.blob.BlobStoreHelper;
 
 public final class FileBlobStore
-        implements InitializingBean, BlobStore
+    implements InitializingBean, BlobStore
 {
     private final static Logger LOG = LoggerFactory.getLogger( FileBlobStore.class );
 
@@ -41,7 +41,7 @@ public final class FileBlobStore
     }
 
     public BlobRecord getRecord( final BlobKey key )
-            throws BlobStoreException
+        throws BlobStoreException
     {
         final File file = getBlobFile( key );
         if ( !file.exists() )
@@ -53,7 +53,7 @@ public final class FileBlobStore
     }
 
     public BlobRecord addRecord( final InputStream in )
-            throws BlobStoreException
+        throws BlobStoreException
     {
         File tmpFile = null;
 
@@ -74,7 +74,7 @@ public final class FileBlobStore
     }
 
     private synchronized BlobRecord addRecord( final BlobKey key, final File tmpFile )
-            throws BlobStoreException
+        throws BlobStoreException
     {
         final File file = getBlobFile( key );
         if ( !file.exists() )
@@ -90,7 +90,7 @@ public final class FileBlobStore
     }
 
     public Iterable<BlobKey> getAllKeys()
-            throws BlobStoreException
+        throws BlobStoreException
     {
         final ArrayList<File> files = new ArrayList<File>();
         findFiles( files, this.dir );
@@ -109,7 +109,7 @@ public final class FileBlobStore
     }
 
     public boolean deleteRecord( final BlobKey key )
-            throws BlobStoreException
+        throws BlobStoreException
     {
         final File file = getBlobFile( key );
         return delete( file );
@@ -145,7 +145,7 @@ public final class FileBlobStore
     }
 
     private File newTemporaryFile()
-            throws BlobStoreException
+        throws BlobStoreException
     {
         try
         {

@@ -62,7 +62,6 @@
   </bean>
 
   <bean id="databaseInitializer" class="com.enonic.cms.core.jdbc.DatabaseInitializer">
-    <property name="adminService" ref="adminService"/>
     <property name="userStoreService" ref="userStoreService"/>
     <property name="upgradeService" ref="upgradeService"/>
   </bean>

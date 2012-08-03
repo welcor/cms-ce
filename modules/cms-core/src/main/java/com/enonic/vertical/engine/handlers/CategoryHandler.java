@@ -95,20 +95,20 @@ public class CategoryHandler
     public int getCategoryKey( int superCategoryKey, String name )
     {
         CategoryView view = CategoryView.getInstance();
-        StringBuffer sql = XDG.generateSelectSQL( view, view.cat_lKey, (Column[]) null );
+        StringBuffer sql = XDG.generateSelectSQL( view, view.cat_lKey, null );
         XDG.appendWhereSQL( sql, view.cat_cat_lSuper, XDG.OPERATOR_EQUAL, superCategoryKey );
         XDG.appendWhereSQL( sql, view.cat_sName, name );
         CommonHandler commonHandler = getCommonHandler();
         return commonHandler.getInt( sql.toString(), (int[]) null );
     }
 
-    private int[] getCategoryKeysBySuperCategory( CategoryKey superCategoryKey, boolean recursive )
+    private int[] getCategoryKeysBySuperCategory( CategoryKey superCategoryKey )
     {
 
-        return getCategoryKeysBySuperCategories( new int[]{superCategoryKey.toInt()}, recursive );
+        return getCategoryKeysBySuperCategories( new int[]{superCategoryKey.toInt()} );
     }
 
-    public int[] getCategoryKeysBySuperCategories( int[] superCategoryKeys, boolean recursive )
+    public int[] getCategoryKeysBySuperCategories( int[] superCategoryKeys )
     {
 
         if ( superCategoryKeys == null || superCategoryKeys.length == 0 )
@@ -119,7 +119,7 @@ public class CategoryHandler
         TIntArrayList categoryKeys = new TIntArrayList();
         for ( int i = 0; i < superCategoryKeys.length; i++ )
         {
-            categoryKeys.add( getSubCategoriesByParent( new CategoryKey( superCategoryKeys[i] ), recursive ).toArray() );
+            categoryKeys.add( getSubCategoriesByParent( new CategoryKey( superCategoryKeys[i] ), false ).toArray() );
         }
 
         return categoryKeys.toArray();
@@ -363,7 +363,7 @@ public class CategoryHandler
 
             if ( !subCategories )
             {
-                int keys[] = getCategoryKeysBySuperCategory( categoryKey, false );
+                int keys[] = getCategoryKeysBySuperCategory( categoryKey );
                 for ( int i = 0; !subCategories && i < keys.length; i++ )
                 {
                     subCategories = hasSubCategories( olduser, new CategoryKey( keys[i] ), contentTypeKeys, adminRead );
@@ -548,12 +548,6 @@ public class CategoryHandler
     {
 
         return getContentCount( categoryKey, true ) > 0;
-    }
-
-    public boolean isSubCategory( CategoryKey categoryKey, CategoryKey subCategoryKey )
-    {
-        CategoryKey parentKey = getParentCategoryKey( subCategoryKey );
-        return parentKey != null && ( parentKey.equals( categoryKey ) || isSubCategory( categoryKey, parentKey ) );
     }
 
     public List<CategoryKey> getSubCategories( CategoryKey categoryKey )

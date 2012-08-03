@@ -189,7 +189,7 @@ public final class UUID
     /**
      * Return a new UID.
      */
-    public static UUID generate()
+    private static UUID generate()
     {
         synchronized ( LOCK )
         {

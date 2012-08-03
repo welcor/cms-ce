@@ -154,7 +154,7 @@ public class DataSourceServiceImpl_relatedContentTest
         context.setUser( fixture.findUserByName( "content-querier" ) );
 
         String query = "title STARTS WITH 'Content '";
-        String orderyBy = "";
+        String orderBy = "@title asc";
         int index = 0;
         int count = 10;
         boolean includeData = true;
@@ -162,7 +162,7 @@ public class DataSourceServiceImpl_relatedContentTest
         int parentLevel = 0;
 
         XMLDocument xmlDocResult =
-            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel );
+            dataSourceService.getContentByQuery( context, query, orderBy, index, count, includeData, childrenLevel, parentLevel );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();

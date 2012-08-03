@@ -215,7 +215,7 @@ final public class SecurityHandler
             for ( Node menu : menus )
             {
                 Element menuElement = (Element) menu;
-                appendDefaultMenuItemAccessRights( user, doc, menuElement, true, true );
+                appendDefaultMenuItemAccessRights( user, doc, menuElement );
             }
         }
         else if ( rootElement.getTagName().equals( "menuitems" ) )
@@ -230,7 +230,7 @@ final public class SecurityHandler
         }
         else if ( rootElement.getTagName().equals( "contents" ) )
         {
-            appendContentAccessRights( user, rootElement, true, true );
+            appendContentAccessRights( user, rootElement );
         }
         else if ( rootElement.getTagName().equals( "sections" ) )
         //appendSectionAccessRights(user, null, rootElement, includeAccessRights, includeUserRights);
@@ -240,26 +240,22 @@ final public class SecurityHandler
         }
     }
 
-    private void appendDefaultMenuItemAccessRights( User user, Document doc, Element menuElement, boolean includeAccessRights,
-                                                    boolean includeUserRights )
+    private void appendDefaultMenuItemAccessRights( User user, Document doc, Element menuElement )
     {
-
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( DEFAULTMENUAR_GET_ALL );
 
             appendDefaultMenuItemAccessRight( user, Integer.parseInt( menuElement.getAttribute( "key" ) ),
-                                              XMLTool.createElement( doc, menuElement, "accessrights" ), preparedStmt, includeAccessRights,
-                                              includeUserRights );
+                                              XMLTool.createElement( doc, menuElement, "accessrights" ), preparedStmt, true );
 
             Element menuItemsElement = XMLTool.getElement( menuElement, "menuitems" );
             if ( menuItemsElement != null )
             {
                 appendMenuItemAccessRights( user, doc, XMLTool.filterNodes( menuItemsElement.getChildNodes(), Node.ELEMENT_NODE ), con,
-                                            null, includeAccessRights, includeUserRights );
+                                            null, true, true );
             }
         }
         catch ( SQLException e )
@@ -399,7 +395,7 @@ final public class SecurityHandler
         }
     }
 
-    private void appendContentAccessRights( User user, Element contentsElem, boolean includeAccessRights, boolean includeUserRights )
+    private void appendContentAccessRights( User user, Element contentsElem )
     {
 
         Connection con = null;
@@ -423,7 +419,7 @@ final public class SecurityHandler
                 // append accessrights for this category
                 Document doc = contentElem1.getOwnerDocument();
                 Element accessrightsElement = XMLTool.createElement( doc, contentElem1, "accessrights" );
-                appendContentAccessRight( user, accessrightsElement, contentKey, preparedStmt, includeAccessRights, includeUserRights );
+                appendContentAccessRight( user, accessrightsElement, contentKey, preparedStmt, true );
             }
             Element relatedcontentsElem = XMLTool.getElement( contentsElem, "relatedcontents" );
             contentElems = XMLTool.getElements( relatedcontentsElem );
@@ -434,7 +430,7 @@ final public class SecurityHandler
                 // append accessrights for this category
                 Document doc = contentElem.getOwnerDocument();
                 Element accessrightsElement = XMLTool.createElement( doc, contentElem, "accessrights" );
-                appendContentAccessRight( user, accessrightsElement, contentKey, preparedStmt, includeAccessRights, includeUserRights );
+                appendContentAccessRight( user, accessrightsElement, contentKey, preparedStmt, true );
             }
         }
         catch ( SQLException sqle )
@@ -966,7 +962,7 @@ final public class SecurityHandler
         {
             con = getConnection();
             preparedStmt = con.prepareStatement( DEFAULTMENUAR_GET_ALL );
-            appendDefaultMenuItemAccessRight( user, key, accessRights, preparedStmt, true, includeUserRights );
+            appendDefaultMenuItemAccessRight( user, key, accessRights, preparedStmt, includeUserRights );
         }
         catch ( SQLException e )
         {
@@ -1044,7 +1040,7 @@ final public class SecurityHandler
             sql.append( COA_WHERE_CLAUSE_CON );
             con = getConnection();
             preparedStmt = con.prepareStatement( sql.toString() );
-            appendContentAccessRight( user, rootElement, key, preparedStmt, true, includeUserRights );
+            appendContentAccessRight( user, rootElement, key, preparedStmt, includeUserRights );
         }
         catch ( SQLException e )
         {
@@ -1087,8 +1083,7 @@ final public class SecurityHandler
         }
     }
 
-    private void appendDefaultMenuItemAccessRight( User user, int key, Element rootElement, PreparedStatement preparedStmt,
-                                                   boolean includeAccessRights, boolean includeUserRights )
+    private void appendDefaultMenuItemAccessRight( User user, int key, Element rootElement, PreparedStatement preparedStmt, boolean includeUserRights )
         throws SQLException
     {
         Document doc = rootElement.getOwnerDocument();
@@ -1097,67 +1092,64 @@ final public class SecurityHandler
 
         try
         {
-            if ( includeAccessRights )
+            preparedStmt.setInt( 1, key );
+            resultSet = preparedStmt.executeQuery();
+            while ( resultSet.next() )
             {
-                preparedStmt.setInt( 1, key );
-                resultSet = preparedStmt.executeQuery();
-                while ( resultSet.next() )
+                Element accessRight = XMLTool.createElement( doc, rootElement, "accessright" );
+                accessRight.setAttribute( "groupkey", resultSet.getString( "grp_hKey" ) );
+
+                GroupType groupType = GroupType.get( resultSet.getInt( "grp_lType" ) );
+                accessRight.setAttribute( "grouptype", groupType.toInteger().toString() );
+
+                if ( groupType == GroupType.USER )
                 {
-                    Element accessRight = XMLTool.createElement( doc, rootElement, "accessright" );
-                    accessRight.setAttribute( "groupkey", resultSet.getString( "grp_hKey" ) );
-
-                    GroupType groupType = GroupType.get( resultSet.getInt( "grp_lType" ) );
-                    accessRight.setAttribute( "grouptype", groupType.toInteger().toString() );
-
-                    if ( groupType == GroupType.USER )
-                    {
-                        addUserMenuItemAccessRightsForUser( resultSet, accessRight );
-                    }
-                    else if ( ( groupType == GroupType.GLOBAL_GROUP ) || ( groupType == GroupType.USERSTORE_GROUP ) )
-                    {
-                        accessRight.setAttribute( "groupname", resultSet.getString( "grp_sName" ) );
-                    }
-                    else
-                    {
-                        accessRight.setAttribute( "groupname", groupType.getName() );
-                    }
-
-                    if ( resultSet.getBoolean( "dma_bRead" ) )
-                    {
-                        accessRight.setAttribute( "read", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "dma_bCreate" ) )
-                    {
-                        accessRight.setAttribute( "create", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "dma_bPublish" ) )
-                    {
-                        accessRight.setAttribute( "publish", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "dma_bAdministrate" ) )
-                    {
-                        accessRight.setAttribute( "administrate", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "dma_bUpdate" ) )
-                    {
-                        accessRight.setAttribute( "update", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "dma_bDelete" ) )
-                    {
-                        accessRight.setAttribute( "delete", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "dma_bAdd" ) )
-                    {
-                        accessRight.setAttribute( "add", "true" );
-                    }
-
+                    addUserMenuItemAccessRightsForUser( resultSet, accessRight );
                 }
+                else if ( ( groupType == GroupType.GLOBAL_GROUP ) || ( groupType == GroupType.USERSTORE_GROUP ) )
+                {
+                    accessRight.setAttribute( "groupname", resultSet.getString( "grp_sName" ) );
+                }
+                else
+                {
+                    accessRight.setAttribute( "groupname", groupType.getName() );
+                }
+
+                if ( resultSet.getBoolean( "dma_bRead" ) )
+                {
+                    accessRight.setAttribute( "read", "true" );
+                }
+
+                if ( resultSet.getBoolean( "dma_bCreate" ) )
+                {
+                    accessRight.setAttribute( "create", "true" );
+                }
+
+                if ( resultSet.getBoolean( "dma_bPublish" ) )
+                {
+                    accessRight.setAttribute( "publish", "true" );
+                }
+
+                if ( resultSet.getBoolean( "dma_bAdministrate" ) )
+                {
+                    accessRight.setAttribute( "administrate", "true" );
+                }
+
+                if ( resultSet.getBoolean( "dma_bUpdate" ) )
+                {
+                    accessRight.setAttribute( "update", "true" );
+                }
+
+                if ( resultSet.getBoolean( "dma_bDelete" ) )
+                {
+                    accessRight.setAttribute( "delete", "true" );
+                }
+
+                if ( resultSet.getBoolean( "dma_bAdd" ) )
+                {
+                    accessRight.setAttribute( "add", "true" );
+                }
+
             }
 
             if ( includeUserRights )
@@ -1404,8 +1396,7 @@ final public class SecurityHandler
         accessrightElem.setAttribute( "administrate", "true" );
     }
 
-    private void appendContentAccessRight( User user, Element rootElement, int key, PreparedStatement preparedStmt,
-                                           boolean includeAccessRights, boolean includeUserRights )
+    private void appendContentAccessRight( User user, Element rootElement, int key, PreparedStatement preparedStmt, boolean includeUserRights )
         throws SQLException
     {
 
@@ -1415,46 +1406,43 @@ final public class SecurityHandler
 
         try
         {
-            if ( includeAccessRights )
+            preparedStmt.setInt( 1, key );
+            resultSet = preparedStmt.executeQuery();
+
+            while ( resultSet.next() )
             {
-                preparedStmt.setInt( 1, key );
-                resultSet = preparedStmt.executeQuery();
+                Element accessrightElem = XMLTool.createElement( doc, rootElement, "accessright" );
+                accessrightElem.setAttribute( "groupkey", resultSet.getString( "grp_hKey" ) );
 
-                while ( resultSet.next() )
+                GroupType groupType = GroupType.get( resultSet.getInt( "grp_lType" ) );
+                accessrightElem.setAttribute( "grouptype", groupType.toInteger().toString() );
+
+                if ( groupType == GroupType.USER )
                 {
-                    Element accessrightElem = XMLTool.createElement( doc, rootElement, "accessright" );
-                    accessrightElem.setAttribute( "groupkey", resultSet.getString( "grp_hKey" ) );
+                    addUserMenuItemAccessRightsForUser( resultSet, accessrightElem );
+                }
+                else if ( ( groupType == GroupType.GLOBAL_GROUP ) || ( groupType == GroupType.USERSTORE_GROUP ) )
+                {
+                    accessrightElem.setAttribute( "groupname", resultSet.getString( "grp_sName" ) );
+                }
+                else
+                {
+                    accessrightElem.setAttribute( "groupname", groupType.getName() );
+                }
 
-                    GroupType groupType = GroupType.get( resultSet.getInt( "grp_lType" ) );
-                    accessrightElem.setAttribute( "grouptype", groupType.toInteger().toString() );
+                if ( resultSet.getBoolean( "coa_bRead" ) )
+                {
+                    accessrightElem.setAttribute( "read", "true" );
+                }
 
-                    if ( groupType == GroupType.USER )
-                    {
-                        addUserMenuItemAccessRightsForUser( resultSet, accessrightElem );
-                    }
-                    else if ( ( groupType == GroupType.GLOBAL_GROUP ) || ( groupType == GroupType.USERSTORE_GROUP ) )
-                    {
-                        accessrightElem.setAttribute( "groupname", resultSet.getString( "grp_sName" ) );
-                    }
-                    else
-                    {
-                        accessrightElem.setAttribute( "groupname", groupType.getName() );
-                    }
+                if ( resultSet.getBoolean( "coa_bUpdate" ) )
+                {
+                    accessrightElem.setAttribute( "update", "true" );
+                }
 
-                    if ( resultSet.getBoolean( "coa_bRead" ) )
-                    {
-                        accessrightElem.setAttribute( "read", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "coa_bUpdate" ) )
-                    {
-                        accessrightElem.setAttribute( "update", "true" );
-                    }
-
-                    if ( resultSet.getBoolean( "coa_bDelete" ) )
-                    {
-                        accessrightElem.setAttribute( "delete", "true" );
-                    }
+                if ( resultSet.getBoolean( "coa_bDelete" ) )
+                {
+                    accessrightElem.setAttribute( "delete", "true" );
                 }
             }
 

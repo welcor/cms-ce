@@ -9,27 +9,34 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.framework.blob.BlobKey;
-import com.enonic.cms.framework.blob.BlobStore;
-import com.enonic.cms.framework.blob.memory.MemoryBlobStore;
+import com.enonic.cms.framework.blob.file.FileBlobStore;
 
 public class GarbageCollectorTest
 {
-    private BlobStore store;
+    @Rule
+    public final TemporaryFolder folder = new TemporaryFolder();
+
+    private FileBlobStore store;
     private BlobKey key1;
     private BlobKey key2;
     private BlobKey key3;
 
     @Before
     public void setUp()
+        throws Exception
     {
-        this.store = new MemoryBlobStore();
+        this.store = new FileBlobStore();
+        this.store.setDirectory( this.folder.newFolder() );
+
         this.key1 = this.store.addRecord( new ByteArrayInputStream("test1".getBytes()) ).getKey();
         this.key2 = this.store.addRecord( new ByteArrayInputStream("test2".getBytes()) ).getKey();
         this.key3 = this.store.addRecord( new ByteArrayInputStream("test3".getBytes()) ).getKey();

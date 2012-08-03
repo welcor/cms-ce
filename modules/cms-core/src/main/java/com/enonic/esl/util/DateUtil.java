@@ -12,15 +12,15 @@ import java.util.Date;
 public class DateUtil
 {
 
-    private static DateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
+    private final static DateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
 
-    private static DateFormat dateFormatWithTime = new SimpleDateFormat( "dd.MM.yyyy HH:mm" );
+    private final static DateFormat dateFormatWithTime = new SimpleDateFormat( "dd.MM.yyyy HH:mm" );
 
-    private static DateFormat dateFormatWithTimeSeconds = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
+    private final static DateFormat dateFormatWithTimeSeconds = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
 
-    private static DateFormat isoDateFormatNoTime = new SimpleDateFormat( "yyyy-MM-dd" );
+    private final static DateFormat isoDateFormatNoTime = new SimpleDateFormat( "yyyy-MM-dd" );
 
-    private static DateFormat isoDateFormatWithTime = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+    private final static DateFormat isoDateFormatWithTime = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
 
     public static Date parseDate( String date )
         throws ParseException

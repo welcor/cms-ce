@@ -187,24 +187,6 @@ public final class ArrayUtil
         return false;
     }
 
-    public static boolean contains( String[] array, String value )
-    {
-        if ( array == null )
-        {
-            return false;
-        }
-
-        for ( int i = 0; i < array.length; i++ )
-        {
-            if ( array[i].equals( value ) )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static String[] filter( String[] sourceValues, String[] excludeValues )
     {
         if ( sourceValues == null || sourceValues.length == 0 )

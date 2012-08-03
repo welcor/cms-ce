@@ -83,11 +83,6 @@ public class CopyContext
         }
     }
 
-    public void putCategoryKey( int oldCategoryKey, int newCategoryKey )
-    {
-        categoryKeyMap.put( oldCategoryKey, newCategoryKey );
-    }
-
     public int getCategoryKey( int oldCategoryKey )
     {
         if ( categoryKeyMap.containsKey( oldCategoryKey ) )

@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 public class Index
 {
-    private String name;
+    private final String name;
 
-    private ArrayList<Column> columns = new ArrayList<Column>();
+    private final ArrayList<Column> columns = new ArrayList<Column>();
 
     public Index( String name )
     {

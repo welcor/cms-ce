@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineLogger;
@@ -84,13 +83,12 @@ public final class GroupHandler
     {
         Document doc = XMLTool.createDocument( "groups" );
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( GROUP_GET_BY_KEY );
             preparedStmt.setString( 1, groupKey );
             resultSet = preparedStmt.executeQuery();
@@ -113,23 +111,15 @@ public final class GroupHandler
     private void groupResultSetToDom( Connection con, Element rootElement, ResultSet grpResultSet )
         throws SQLException
     {
-        final int index = 0;
-        final int count = Integer.MAX_VALUE;
         Document doc = rootElement.getOwnerDocument();
-
         PreparedStatement preparedStmt = con.prepareStatement( GRPGRPMEM_GET_MEMBERSHIPS );
 
         try
         {
-            int i = 0;
-            boolean moreResults = false;
-            for (; ( i < index + count ) && ( moreResults = grpResultSet.next() ); i++ )
-            {
-                if ( i < index )
-                {
-                    continue;
-                }
+            int num = 0;
+            while (grpResultSet.next()) {
 
+                num++;
                 Element groupElement = XMLTool.createElement( doc, rootElement, "group" );
 
                 // attribute: group key
@@ -183,15 +173,7 @@ public final class GroupHandler
                 buildGroupMembersDOM( preparedStmt, groupElement, gKey );
             }
 
-            if ( moreResults )
-            {
-                while ( grpResultSet.next() )
-                {
-                    ++i;
-                }
-            }
-
-            rootElement.setAttribute( "totalcount", String.valueOf( i ) );
+            rootElement.setAttribute( "totalcount", String.valueOf( num ) );
         }
         finally
         {
@@ -249,8 +231,6 @@ public final class GroupHandler
 
     private String[] getAllGroupMembershipsForUser( String userKey, UserType userType, GroupKey userGroupKey, UserStoreKey userStoreKey )
     {
-
-        Connection con = null;
         String[] groups;
         if ( userKey != null )
         {
@@ -274,7 +254,7 @@ public final class GroupHandler
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             String[] addGroups = null;
             while ( addGroups == null || addGroups.length > 0 )
             {
@@ -307,7 +287,7 @@ public final class GroupHandler
             return new String[0];
         }
 
-        StringBuffer sql = XDG.generateSelectSQL( db.tGrpGrpMembership, db.tGroup.grp_hKey, true, (Column) null );
+        StringBuffer sql = XDG.generateSelectSQL( db.tGrpGrpMembership, db.tGroup.grp_hKey, true, null );
         XDG.appendJoinSQL( sql, db.tGrpGrpMembership.ggm_mbr_grp_hKey );
         XDG.appendWhereInSQL( sql, db.tGrpGrpMembership.ggm_grp_hKey, groups );
         String[] groupMembers = getCommonHandler().getStringArray( sql.toString(), null );

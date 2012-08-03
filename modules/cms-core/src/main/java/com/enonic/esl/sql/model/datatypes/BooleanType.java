@@ -59,7 +59,7 @@ public class BooleanType
         }
         else
         {
-            return ( (Boolean) obj ).toString();
+            return obj.toString();
         }
     }
 

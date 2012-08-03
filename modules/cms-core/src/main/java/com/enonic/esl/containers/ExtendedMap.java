@@ -58,7 +58,7 @@ public class ExtendedMap
         this( multi, false );
     }
 
-    public ExtendedMap( MultiValueMap multi, boolean allowNullValues )
+    private ExtendedMap( MultiValueMap multi, boolean allowNullValues )
     {
         super();
         this.allowNullValues = allowNullValues;

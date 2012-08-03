@@ -55,11 +55,11 @@ public class Mail
 
     private String htmlMessage;
 
-    ArrayList<String[]> bcc = new ArrayList<String[]>();
+    private final ArrayList<String[]> bcc = new ArrayList<String[]>();
 
-    ArrayList<String[]> cc = new ArrayList<String[]>();
+    private final ArrayList<String[]> cc = new ArrayList<String[]>();
 
-    ArrayList<String[]> to = new ArrayList<String[]>();
+    private final ArrayList<String[]> to = new ArrayList<String[]>();
 
     private final static String DEFAULT_SMTPHOST = "localhost";
 
@@ -67,7 +67,7 @@ public class Mail
 
     private final static String ENCODING = "UTF-8";
 
-    private ArrayList<FileItem> attachments = new ArrayList<FileItem>();
+    private final ArrayList<FileItem> attachments = new ArrayList<FileItem>();
 
     /**
      * <p/> Send the mail. The SMTP host is contacted and the mail is sent according to the parameters set. </p> <p/> If it fails, it is
@@ -339,7 +339,7 @@ public class Mail
     {
         private byte[] data; // data
 
-        private String type; // content-type
+        private final String type; // content-type
 
         /* Create a DataSource from a String */
         public ByteArrayDataSource( String data, String type, String encoding )

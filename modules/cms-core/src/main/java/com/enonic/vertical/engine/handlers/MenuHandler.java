@@ -1618,7 +1618,7 @@ public final class MenuHandler
         }
     }
 
-    private Document getMenu( User user, int menuKey, int levels, int tagItem, boolean complete, boolean includePageConfig )
+    private Document getMenu( User user, int menuKey, int levels, int tagItem, boolean complete )
     {
 
         Document doc = XMLTool.createDocument( "menus" );
@@ -1651,7 +1651,7 @@ public final class MenuHandler
             }
 
             // Build menu items
-            buildMenuItemsXML( user, result, doc, menuItemsElement, levels, tagItem, complete, includePageConfig, true, true, true );
+            buildMenuItemsXML( user, result, doc, menuItemsElement, levels, tagItem, complete, true, true, true, true );
         }
         catch ( SQLException sqle )
         {
@@ -1669,7 +1669,7 @@ public final class MenuHandler
 
     public Document getMenu( User user, int menuKey, boolean complete )
     {
-        return getMenu( user, menuKey, -1, -1, complete, true );
+        return getMenu( user, menuKey, -1, -1, complete );
     }
 
     private String getMenuName( int menuKey )
@@ -3839,8 +3839,7 @@ public final class MenuHandler
     {
         CommonHandler commonHandler = getCommonHandler();
         StringBuffer path =
-            commonHandler.getPathString( db.tMenuItem, db.tMenuItem.mei_lKey, db.tMenuItem.mei_lParent, db.tMenuItem.mei_sName, menuItemKey,
-                                         true );
+            commonHandler.getPathString( db.tMenuItem, db.tMenuItem.mei_lKey, db.tMenuItem.mei_lParent, db.tMenuItem.mei_sName, menuItemKey );
         path.insert( 0, " / " );
         path.insert( 0, getMenuName( getMenuKeyByMenuItem( menuItemKey ) ) );
         return path;

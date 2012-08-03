@@ -87,7 +87,6 @@ public final class ContentObjectHandler
             contentobjectElems = XMLTool.getElements( doc.getDocumentElement() );
         }
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         int pos = 0;
         String tmpStr = null;
@@ -95,7 +94,7 @@ public final class ContentObjectHandler
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( COB_CREATE );
 
             for ( Element root : contentobjectElems )
@@ -343,14 +342,13 @@ public final class ContentObjectHandler
 
     private Document getContentObject( String sql, int[] paramValue )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         Document doc = XMLTool.createDocument( "contentobjects" );
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql );
             int length = ( paramValue != null ? paramValue.length : 0 );
             for ( int i = 0; i < length; i++ )
@@ -448,12 +446,11 @@ public final class ContentObjectHandler
     public void removeContentObject( int contentObjectKey )
         throws VerticalRemoveException
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( COB_REMOVE );
             preparedStmt.setInt( 1, contentObjectKey );
             int result = preparedStmt.executeUpdate();
@@ -477,23 +474,13 @@ public final class ContentObjectHandler
         }
     }
 
-    public void removeContentObjectsByMenu( Connection _con, int menuKey )
+    public void removeContentObjectsByMenu( Connection con, int menuKey )
         throws VerticalRemoveException
     {
-
-        Connection con = null;
         PreparedStatement preparedStmt = null;
 
         try
         {
-            if ( _con == null )
-            {
-                con = getConnection();
-            }
-            else
-            {
-                con = _con;
-            }
             preparedStmt = con.prepareStatement( COB_REMOVE_BY_MENU );
             preparedStmt.setInt( 1, menuKey );
             preparedStmt.executeUpdate();
@@ -506,9 +493,6 @@ public final class ContentObjectHandler
         finally
         {
             close( preparedStmt );
-            if ( _con == null )
-            {
-            }
         }
     }
 
@@ -531,14 +515,13 @@ public final class ContentObjectHandler
             contentobjectElems = XMLTool.getElements( doc.getDocumentElement() );
         }
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         int pos = 0;
         String tmpStr = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( COB_UPDATE );
 
             for ( Element root : contentobjectElems )

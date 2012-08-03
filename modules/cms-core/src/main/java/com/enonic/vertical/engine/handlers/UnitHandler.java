@@ -67,7 +67,6 @@ public class UnitHandler
     {
         sql += " ORDER BY uni_sName ASC";
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         Document doc = null;
@@ -77,7 +76,7 @@ public class UnitHandler
             doc = XMLTool.createDocument( "units" );
             Element root = doc.getDocumentElement();
 
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( sql );
             int length = ( paramValue != null ? paramValue.length : 0 );
             for ( int i = 0; i < length; i++ )

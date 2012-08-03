@@ -120,6 +120,7 @@ public final class SystemHandler
         }
         finally
         {
+            close( result );
             close( stmt );
         }
     }
@@ -147,6 +148,7 @@ public final class SystemHandler
         }
         finally
         {
+            close( result );
             close( stmt );
         }
     }
@@ -213,9 +215,7 @@ public final class SystemHandler
     public boolean initializeDatabaseSchema()
         throws Exception
     {
-        Connection conn = null;
-
-        conn = getConnection();
+        Connection conn = getConnection();
         return initializeDatabaseSchema( conn );
     }
 
@@ -225,9 +225,7 @@ public final class SystemHandler
     public boolean initializeDatabaseValues()
         throws Exception
     {
-        Connection conn = null;
-
-        conn = getConnection();
+        Connection conn = getConnection();
         return initializeDatabaseValues( conn );
     }
 

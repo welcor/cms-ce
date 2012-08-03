@@ -19,7 +19,7 @@ import com.enonic.esl.util.StringUtil;
 public class Column
     implements Serializable
 {
-    private String name;
+    private final String name;
 
     private String xpath;
 

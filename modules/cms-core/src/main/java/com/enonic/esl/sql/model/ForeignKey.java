@@ -8,15 +8,17 @@ import java.util.ArrayList;
 
 public class ForeignKey
 {
-    private String name;
+    private final String name;
 
-    private Table remoteTable;
+    private final Table remoteTable;
 
-    private ArrayList<Reference> references = new ArrayList<Reference>();
+    private final ArrayList<Reference> references = new ArrayList<Reference>();
 
     public class Reference
     {
-        public Column localColumn, remoteColumn;
+        public final Column localColumn;
+
+        public final Column remoteColumn;
 
         public Reference( Column localColumn, Column remoteColumn )
         {

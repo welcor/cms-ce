@@ -5,8 +5,7 @@
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
   <xsl:namespace-alias stylesheet-prefix="x" result-prefix="xsl"/>
   <xsl:output method="xml"/>
@@ -16,8 +15,7 @@
 
       <x:stylesheet version="1.0" exclude-result-prefixes="#all"
                     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                    xmlns:exslt-common="http://exslt.org/common"
-                    xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                    xmlns:admin="http://www.enonic.com/cms/admin">
 
       <x:output method="html"
             doctype-system="http://www.w3.org/TR/html4/loose.dtd"
@@ -1490,7 +1488,7 @@
                   </xsl:call-template>
                 </xsl:variable>
                 <xsl:call-template name="displayinput">
-                  <xsl:with-param name="input" select="exslt-common:node-set($temp_input)/input"/>
+                  <xsl:with-param name="input" select="admin:node-set($temp_input)/input"/>
                 </xsl:call-template>
               </xsl:for-each>
             </xsl:otherwise>
@@ -3088,7 +3086,7 @@
 
             <x:variable name="alternatives_xpath">
               <xsl:attribute name="select">
-                <xsl:value-of select="exslt-common:node-set($temp)"/>
+                <xsl:value-of select="admin:node-set($temp)"/>
               </xsl:attribute>
             </x:variable>
 

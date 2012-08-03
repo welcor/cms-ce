@@ -4,8 +4,7 @@
         ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:saxon="http://saxon.sf.net/"
-        >
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
     <xsl:template match="image" mode="display">
         <xsl:param name="contentxpath"/>
@@ -22,8 +21,8 @@
         </xsl:variable>
 
         <div class="content-list-image-container">
-            <xsl:variable name="imageKey" select="saxon:evaluate(concat($contentxpath, @xpath))"/>
-            <xsl:variable name="imageText" select="saxon:evaluate(concat($contentxpath, @textxpath))"/>
+            <xsl:variable name="imageKey" select="admin:evaluate(concat($contentxpath, @xpath))"/>
+            <xsl:variable name="imageText" select="admin:evaluate(concat($contentxpath, @textxpath))"/>
             <xsl:if test="$imageKey != ''">
                 <img src="_image/{$imageKey}/label/source?_filter=scalemax({$width})">
                     <xsl:if test="$imageText != ''">

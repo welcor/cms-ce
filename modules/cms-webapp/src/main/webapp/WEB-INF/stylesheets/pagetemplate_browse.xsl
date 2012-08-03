@@ -3,11 +3,8 @@
 	<!ENTITY nbsp "&#160;">
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
     <xsl:output method="html"/>
 
@@ -146,7 +143,7 @@
                   </xsl:variable>
 
                   <xsl:if test="$sortby = '@type'">
-                    <xsl:if test="@type != exslt-common:node-set($temp)/types/type[$prevPosition]">
+                    <xsl:if test="@type != admin:node-set($temp)/types/type[$prevPosition]">
                       <tr>
                         <td colspan="4" style="font-weight:bold;padding:6px 4px">
                           <xsl:choose>

@@ -73,7 +73,7 @@
                     </xsl:choose>
                     window.top.close()
                   }
-                  <xsl:if test="$move = true()">
+                  <xsl:if test="$move = 'true'">
                     var refactor = {
                       <xsl:text>url : 'adminpage?page=800&amp;op=menu&amp;fieldname=</xsl:text>
                       <xsl:if test="$fieldname !=''">
@@ -196,7 +196,7 @@
                     <xsl:text>&nbsp;</xsl:text>
 
                     <!-- Move resource button -->
-                    <xsl:if test="$developer = 'true' and $move = true()">
+                    <xsl:if test="$developer = 'true' and $move = 'true'">
 
                       <xsl:if test="not($path = '/') and not($path = '/_public')">
                         <xsl:call-template name="button">
@@ -286,7 +286,7 @@
                     </xsl:call-template>
 
                     <!-- operation column -->
-                    <xsl:if test="$developer = 'true' and $move = true()">
+                    <xsl:if test="$developer = 'true' and $move = 'true'">
                       <xsl:call-template name="tablecolumnheader">
                         <xsl:with-param name="width" select="'40'"/>
                         <xsl:with-param name="caption" select="''"/>
@@ -336,7 +336,7 @@
     		<xsl:choose>
     			<xsl:when test="$filtered = 'true'">%resourceCannotBeSelected%</xsl:when>
     			<xsl:otherwise>
-            <xsl:if test="$move = false() and $search != 'true'">
+            <xsl:if test="$move = 'false' and $search != 'true'">
               <xsl:text>%cmdAdd%&nbsp;</xsl:text>
             </xsl:if>
             <xsl:value-of select="@fullPath"/>
@@ -346,7 +346,7 @@
 
     	<xsl:variable name="action">
     		<xsl:choose>
-    			<xsl:when test="$filtered = 'true' or $move = true() or $search = 'true' and $fieldname = ''">
+    			<xsl:when test="$filtered = 'true' or $move = 'true' or $search = 'true' and $fieldname = ''">
             <xsl:text>void(0);</xsl:text>
           </xsl:when>
     			<xsl:otherwise>
@@ -362,7 +362,7 @@
     		<xsl:if test="$filtered = 'true'">
     			<xsl:text>disabled</xsl:text>
     		</xsl:if>
-        <xsl:if test="$filtered = 'true' or $move = true() or $search = 'true' and $fieldname = ''">
+        <xsl:if test="$filtered = 'true' or $move = 'true' or $search = 'true' and $fieldname = ''">
     			<xsl:text> no-action</xsl:text>
     		</xsl:if>
         <xsl:if test="position() = last() and $is-last-resource">
@@ -413,7 +413,7 @@
     		<xsl:value-of select="@mimeType"/>
     	</td>
       <!-- operation column -->
-      <xsl:if test="$developer = 'true' and $move = true()">
+      <xsl:if test="$developer = 'true' and $move = 'true'">
         <td align="center" class="{$class}">
            <a href="javascript:;" onclick="javascript:refactor.openResourceWindow('{@fullPath}', 'moveFile');">
              <img src="images/icon_resource_move.gif" alt="%cmdMove%" title="%cmdMove%" style="border:0"/>

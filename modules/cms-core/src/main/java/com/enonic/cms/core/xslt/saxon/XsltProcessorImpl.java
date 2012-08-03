@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
@@ -44,10 +45,13 @@ final class XsltProcessorImpl
 
     private final Map<String, XdmAtomicValue> parameters;
 
-    public XsltProcessorImpl( final XsltExecutable executable )
+    private final URIResolver uriResolver;
+
+    public XsltProcessorImpl( final XsltExecutable executable, final URIResolver uriResolver )
     {
         this.executable = executable;
         this.parameters = Maps.newHashMap();
+        this.uriResolver = uriResolver;
     }
 
     private String getOutputProperty( final String name )
@@ -196,6 +200,7 @@ final class XsltProcessorImpl
             transformer.setSource( xml );
             transformer.setDestination( destination );
             transformer.setErrorListener( errors );
+            transformer.setURIResolver( this.uriResolver );
             applyParameters( transformer );
 
             transformer.transform();

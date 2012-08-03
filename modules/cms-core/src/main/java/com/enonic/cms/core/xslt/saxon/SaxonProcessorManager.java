@@ -5,6 +5,7 @@
 package com.enonic.cms.core.xslt.saxon;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public final class SaxonProcessorManager
     public XsltProcessor createProcessor( final Source xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
-        return new XsltProcessorImpl( compileXslt( xsl, resolver ) );
+        return new XsltProcessorImpl( compileXslt( xsl, resolver ), resolver );
     }
 
     public XsltProcessor createProcessor( final XsltResource xsl, final URIResolver resolver )
@@ -84,7 +85,7 @@ public final class SaxonProcessorManager
             this.cache.put( xsl, templates );
         }
 
-        return new XsltProcessorImpl( templates );
+        return new XsltProcessorImpl( templates, resolver );
     }
 
     private XsltExecutable compileXslt( final Source xsl, final URIResolver resolver )

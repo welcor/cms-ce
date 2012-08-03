@@ -67,7 +67,7 @@ public class PageRendererFactory
     @Autowired
     private PluginManager pluginManager;
 
-    @Value("cms.datasource.defaultResultRootElement")
+    @Value("${cms.datasource.defaultResultRootElement}")
     private String defaultDataSourceRootElementName;
 
     public PageRenderer createPageRenderer( PageRendererContext pageRendererContext )

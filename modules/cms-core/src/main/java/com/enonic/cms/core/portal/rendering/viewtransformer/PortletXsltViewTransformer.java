@@ -10,8 +10,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.transform.JDOMSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,8 +32,6 @@ public class PortletXsltViewTransformer
     extends AbstractXsltViewTransformer
     implements InitializingBean
 {
-    private static final Logger LOG = LoggerFactory.getLogger( PortletXsltViewTransformer.class );
-
     public ViewTransformationResult transform( ResourceFile viewFile, TransformationParams transformationParams, XMLDocument xml )
     {
         try
@@ -78,7 +74,6 @@ public class PortletXsltViewTransformer
         }
         catch ( XsltProcessorException e )
         {
-            logXsltProcessorErrors( e.getErrors(), LOG );
             throw new PortletXsltViewTransformationException( "Failed to transform portlet template view", e );
         }
 

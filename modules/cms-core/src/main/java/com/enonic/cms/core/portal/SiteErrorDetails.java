@@ -190,7 +190,7 @@ public final class SiteErrorDetails
     {
         if ( ( error != null ) && !list.contains( error ) )
         {
-            if ( error instanceof XsltProcessorException )
+            /*if ( error instanceof XsltProcessorException )
             {
                 XsltProcessorErrors errors = ( (XsltProcessorException) error ).getErrors();
                 if ( errors != null )
@@ -206,9 +206,9 @@ public final class SiteErrorDetails
                 }
             }
             else
-            {
-                list.add( error );
-            }
+            {*/
+            list.add( error );
+            //}
 
             findAllExceptions( list, error.getCause() );
         }

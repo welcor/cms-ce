@@ -86,7 +86,6 @@ public final class ExceptionHandlerImpl
     public void handle( final PortalWebContext context, final Exception outerException )
         throws ServletException, IOException
     {
-        outerException.printStackTrace();
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
 

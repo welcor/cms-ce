@@ -4,18 +4,12 @@
  */
 package com.enonic.cms.core.portal.rendering.viewtransformer;
 
-import javax.xml.transform.TransformerException;
-
-import org.slf4j.Logger;
-
 import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.portal.rendering.StyleSheetURIResolver;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.xslt.XsltProcessor;
-import com.enonic.cms.core.xslt.XsltProcessorError;
-import com.enonic.cms.core.xslt.XsltProcessorErrors;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 import com.enonic.cms.core.xslt.XsltProcessorManager;
 import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
@@ -32,18 +26,6 @@ public abstract class AbstractXsltViewTransformer
     protected StyleSheetURIResolver styleSheetURIResolver;
 
     protected ResourceService resourceService;
-
-    protected void logXsltProcessorErrors( XsltProcessorErrors errors, Logger logger )
-    {
-        if ( errors == null )
-        {
-            return;
-        }
-        /*for ( XsltProcessorError error : errors.getErrors() )
-        {
-            logger.error( error.getMessageAndLocation() );
-        }*/
-    }
 
     protected XsltProcessor createProcessor( ResourceKey styleSheetKey, XMLDocument xslt )
         throws XsltProcessorException

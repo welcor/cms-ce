@@ -4,9 +4,6 @@
  */
 package com.enonic.cms.core.portal.rendering;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -19,6 +16,7 @@ import com.enonic.cms.framework.xml.StringSource;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
+import com.enonic.cms.core.xslt.XsltResourceHelper;
 
 /**
  * This class resolves the stylesheets and also other resources. It should be renamed to reflect that it also resolves other files that
@@ -49,7 +47,7 @@ public final class StyleSheetURIResolver
     public Source resolve( String href, String base )
             throws TransformerException
     {
-        final ResourceKey resourceKey = new ResourceKey( getResourcePath( href, base ) );
+        final ResourceKey resourceKey = new ResourceKey( XsltResourceHelper.resolveRelativePath( href, base ) );
         final ResourceFile resource = this.resourceService.getResourceFile( resourceKey );
 
         if ( resource == null )
@@ -71,33 +69,5 @@ public final class StyleSheetURIResolver
         }
 
         return new StringSource( resourceData, resourceKey.toString() );
-    }
-
-    private String getResourcePath( String href, String base )
-    {
-        if ( href.startsWith( "/" ) )
-        {
-            return href;
-        }
-        return resolveBase( base ) + href;
-    }
-
-    private String resolveBase( String base )
-    {
-        try
-        {
-            base = URLDecoder.decode( base, "UTF-8" );
-
-            final String parentSepStart = "dummy:/";
-            final String parentSepEnd = "/";
-
-            return base.substring( base.indexOf( parentSepStart ) + parentSepStart.length(),
-                                   base.lastIndexOf( parentSepEnd ) + parentSepEnd.length() );
-
-        }
-        catch ( UnsupportedEncodingException e )
-        {
-            throw new RuntimeException( e );
-        }
     }
 }

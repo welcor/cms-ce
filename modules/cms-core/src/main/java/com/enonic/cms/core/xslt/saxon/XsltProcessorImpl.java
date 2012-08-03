@@ -42,7 +42,7 @@ final class XsltProcessorImpl
 
     private boolean omitXmlDecl;
 
-    private final Map<String, String> parameters;
+    private final Map<String, XdmAtomicValue> parameters;
 
     public XsltProcessorImpl( final XsltExecutable executable )
     {
@@ -211,9 +211,9 @@ final class XsltProcessorImpl
 
     private void applyParameters( final XsltTransformer transformer )
     {
-        for ( final Map.Entry<String, String> entry : this.parameters.entrySet() )
+        for ( final Map.Entry<String, XdmAtomicValue> entry : this.parameters.entrySet() )
         {
-            transformer.setParameter( new QName( entry.getKey() ), new XdmAtomicValue( entry.getValue() ) );
+            transformer.setParameter( new QName( entry.getKey() ), entry.getValue() );
         }
     }
 
@@ -224,7 +224,56 @@ final class XsltProcessorImpl
 
     public void setParameter( final String name, final Object value )
     {
-        this.parameters.put( name, value.toString() );
+        if ( value == null )
+        {
+            return;
+        }
+
+        if ( value instanceof Boolean )
+        {
+            setBooleanParameter( name, (Boolean) value );
+        }
+        else if ( value instanceof Float )
+        {
+            setFloatParameter( name, (Float) value );
+        }
+        else if ( value instanceof Double )
+        {
+            setDoubleParameter( name, (Double) value );
+        }
+        else if ( value instanceof Number )
+        {
+            setLongParameter( name, ( (Number) value ).longValue() );
+        }
+        else
+        {
+            setStringParameter( name, value.toString() );
+        }
+    }
+
+    private void setBooleanParameter( final String name, final boolean value )
+    {
+        this.parameters.put( name, new XdmAtomicValue( value ) );
+    }
+
+    private void setFloatParameter( final String name, final float value )
+    {
+        this.parameters.put( name, new XdmAtomicValue( value ) );
+    }
+
+    private void setDoubleParameter( final String name, final double value )
+    {
+        this.parameters.put( name, new XdmAtomicValue( value ) );
+    }
+
+    private void setLongParameter( final String name, final long value )
+    {
+        this.parameters.put( name, new XdmAtomicValue( value ) );
+    }
+
+    private void setStringParameter( final String name, final String value )
+    {
+        this.parameters.put( name, new XdmAtomicValue( value ) );
     }
 
     public void clearParameters()

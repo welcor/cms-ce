@@ -561,7 +561,7 @@ public class PortalFunctionsTest
         context.setOriginalSitePath( originalSitePath );
         context.setPortalInstanceKey( PortalInstanceKey.createPage( new MenuItemKey( 123 ) ) );
 
-        String url = portalFunctions.createServicesUrl( "user", "login", null );
+        String url = portalFunctions.createServicesUrl( "user", "login", null, null );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=PAGE%3A123&_ticket=##ticket##", url );
     }
 
@@ -574,7 +574,7 @@ public class PortalFunctionsTest
         context.setOriginalSitePath( originalSitePath );
         context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ) ) );
 
-        String url = portalFunctions.createServicesUrl( "user", "login", null );
+        String url = portalFunctions.createServicesUrl( "user", "login", null, null );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=WINDOW%3A123%3A101&_ticket=##ticket##", url );
     }
 
@@ -587,7 +587,7 @@ public class PortalFunctionsTest
         context.setOriginalSitePath( originalSitePath );
         context.setPortalInstanceKey( PortalInstanceKey.createWindow( new MenuItemKey( 123 ), new PortletKey( 101 ) ) );
 
-        String url = portalFunctions.createServicesUrl( "user", "login", new String[]{"_redirect", "www.vg.no"} );
+        String url = portalFunctions.createServicesUrl( "user", "login", null, new String[]{"_redirect", "www.vg.no"} );
         assertEquals( "http://localhost/site/1/_services/user/login?_instanceKey=WINDOW%3A123%3A101&_redirect=www.vg.no&_ticket=##ticket##",
                       url );
     }
@@ -767,7 +767,7 @@ public class PortalFunctionsTest
         context.setPortalInstanceKey( portalInstanceKey );
 
         WindowKey windowKey = new WindowKey( menuItemKeyWindow, portletKey );
-        String windowUrl = portalFunctions.createWindowUrl( windowKey, new String[]{} );
+        String windowUrl = portalFunctions.createWindowUrl( windowKey, new String[]{}, null );
 
         assertEquals( "http://localhost/site/1/en/features/xslt-functions/createwindowurl-test/_window/createwindowurlportlet", windowUrl );
     }
@@ -803,7 +803,7 @@ public class PortalFunctionsTest
         context.setPortalInstanceKey( portalInstanceKey );
 
         WindowKey windowKey = new WindowKey( menuItemKeyWindow, portletKey );
-        String windowUrl = portalFunctions.createWindowUrl( windowKey, new String[]{} );
+        String windowUrl = portalFunctions.createWindowUrl( windowKey, new String[]{}, null );
 
         assertEquals( "http://localhost/site/1/en/features/xslt-functions/createwindowurl-test/article1/_window/createwindowurlportlet",
                       windowUrl );

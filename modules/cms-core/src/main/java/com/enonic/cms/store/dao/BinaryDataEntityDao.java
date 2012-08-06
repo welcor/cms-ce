@@ -7,7 +7,6 @@ package com.enonic.cms.store.dao;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.enonic.cms.framework.blob.BlobKey;
@@ -23,7 +22,6 @@ public final class BinaryDataEntityDao
     implements BinaryDataDao
 {
     @Autowired
-    @Qualifier("blobStore")
     private BlobStore blobStore;
 
     public BinaryDataEntity findByKey( BinaryDataKey key )

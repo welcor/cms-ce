@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.springframework.stereotype.Component;
 
 import com.google.common.base.Predicate;
 
@@ -14,7 +15,8 @@ import com.google.common.base.Predicate;
  * Date: 11/24/11
  * Time: 2:38 PM
  */
-final class NodeSettingsBuilderImpl
+@Component
+public final class NodeSettingsBuilderImpl
     extends AbstractElasticsearchSettingsBuilder
     implements NodeSettingsBuilder
 {

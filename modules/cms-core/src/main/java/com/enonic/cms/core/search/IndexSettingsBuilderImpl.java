@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.springframework.stereotype.Component;
 
 import com.google.common.base.Predicate;
 
@@ -17,6 +18,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  * Date: 1/16/12
  * Time: 10:06 AM
  */
+@Component
 public class IndexSettingsBuilderImpl
     extends AbstractElasticsearchSettingsBuilder
     implements IndexSettingBuilder

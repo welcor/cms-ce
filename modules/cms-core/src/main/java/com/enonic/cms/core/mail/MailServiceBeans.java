@@ -12,10 +12,10 @@ import com.enonic.cms.store.dao.UserDao;
 @Configuration
 public class MailServiceBeans
 {
-    @Value("cms.admin.newPasswordMailSubject")
+    @Value("${cms.admin.newPasswordMailSubject}")
     private String defaultSubjectForNewPasswordEmail;
 
-    @Value("cms.admin.newPasswordMailBody")
+    @Value("${cms.admin.newPasswordMailBody}")
     private String defaultBodyForNewPasswordEmail;
 
     @Value("${cms.admin.email}")

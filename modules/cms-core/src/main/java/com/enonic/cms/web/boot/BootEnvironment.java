@@ -52,6 +52,8 @@ final class BootEnvironment
     private void resolveHomeDir()
     {
         final HomeResolver resolver = new HomeResolver();
+        resolver.addSystemProperties( System.getenv() );
+        resolver.addSystemProperties( System.getProperties() );
         resolver.resolve();
     }
 

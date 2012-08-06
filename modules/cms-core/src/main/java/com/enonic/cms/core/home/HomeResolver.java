@@ -18,8 +18,6 @@ public final class HomeResolver
     public HomeResolver()
     {
         this.systemProperties = new Properties();
-        addSystemProperties( System.getenv() );
-        addSystemProperties( System.getProperties() );
     }
 
     public void addSystemProperties( final Properties props )

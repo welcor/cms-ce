@@ -193,7 +193,7 @@ public final class DatabaseSchemaTool
     /**
      * Generate create tables.
      */
-    private static List<String> generateCreateTables( Database db )
+    public static List<String> generateCreateTables( Database db )
     {
         ArrayList<String> list = new ArrayList<String>();
         Table[] tables = db.getTables();

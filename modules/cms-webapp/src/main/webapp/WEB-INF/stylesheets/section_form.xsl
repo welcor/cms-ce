@@ -3,11 +3,8 @@
 	<!ENTITY nbsp "&#160;">
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
     <xsl:output method="html"/>
     
@@ -48,13 +45,13 @@
                 %headCreate%:
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:text> </xsl:text><span id="titlename"><xsl:value-of select="exslt-common:node-set($section)/section/@name"/></span>
+        <xsl:text> </xsl:text><span id="titlename"><xsl:value-of select="admin:node-set($section)/section/@name"/></span>
     </xsl:template>
 
     <xsl:template name="step0">
         <script language="Javascript" type="text/javascript">
             function checkAccessRightPropagation() {
-            <xsl:if test="exslt-common:node-set($section)/section/@key and exslt-common:node-set($section)/section/@childcount and exslt-common:node-set($section)/section/@childcount &gt; 0">
+            <xsl:if test="admin:node-set($section)/section/@key and admin:node-set($section)/section/@childcount and admin:node-set($section)/section/@childcount &gt; 0">
                 <xsl:if test="count(/wizarddata/wizardstate/stepstate) = 1">
                     if( isAccessRightsChanged() ) {
                 </xsl:if>
@@ -102,18 +99,18 @@
 
                             <input type="hidden" name="propagate" value="false"/>
 
-                            <xsl:if test="/wizarddata/sections/section and exslt-common:node-set($section)/section/@supersectionkey">
-                                <input type="hidden" name="supersectionkey" value="{exslt-common:node-set($section)/section/@supersectionkey}"/>
+                            <xsl:if test="/wizarddata/sections/section and admin:node-set($section)/section/@supersectionkey">
+                                <input type="hidden" name="supersectionkey" value="{admin:node-set($section)/section/@supersectionkey}"/>
                             </xsl:if>
 
-                            <xsl:if test="exslt-common:node-set($section)/section/@childcount">
-                                <input type="hidden" name="childcount" value="{exslt-common:node-set($section)/section/@childcount}"/>
+                            <xsl:if test="admin:node-set($section)/section/@childcount">
+                                <input type="hidden" name="childcount" value="{admin:node-set($section)/section/@childcount}"/>
                             </xsl:if>
                                 
                             <xsl:call-template name="textfield">
                                 <xsl:with-param name="name" select="'stepstate_section_name'"/>
                                 <xsl:with-param name="label" select="'%fldName%:'"/>
-                                <xsl:with-param name="selectnode" select="exslt-common:node-set($section)/section/@name"/>
+                                <xsl:with-param name="selectnode" select="admin:node-set($section)/section/@name"/>
                                 <xsl:with-param name="size" select="'40'"/>
                                 <xsl:with-param name="maxlength" select="'255'"/>
                                 <xsl:with-param name="colspan" select="'1'"/>
@@ -126,7 +123,7 @@
                             <xsl:call-template name="textarea">
                                 <xsl:with-param name="name" select="'stepstate_section_description'"/>
                                 <xsl:with-param name="label" select="'%fldDescription%:'"/>
-                                <xsl:with-param name="selectnode" select="exslt-common:node-set($section)/section/description"/>
+                                <xsl:with-param name="selectnode" select="admin:node-set($section)/section/description"/>
                                 <xsl:with-param name="rows" select="'10'"/>
                                 <xsl:with-param name="cols" select="'60'"/>
                                 <xsl:with-param name="colspan" select="'1'"/>
@@ -160,7 +157,7 @@
                                             <xsl:copy-of select="/wizarddata/parentcontenttypes/contenttypes"/>
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            <xsl:copy-of select="exslt-common:node-set($section)/section/contenttypes"/>
+                                            <xsl:copy-of select="admin:node-set($section)/section/contenttypes"/>
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:variable>
@@ -180,7 +177,7 @@
                                                         <xsl:value-of select="@key"/>
                                                     </xsl:variable>
                                                     
-                                                    <xsl:if test="not(exslt-common:node-set($selected_ctys)/contenttypes/contenttype[@key = $varkey])">
+                                                    <xsl:if test="not(admin:node-set($selected_ctys)/contenttypes/contenttype[@key = $varkey])">
                                                         <option value="{@key}" ondblclick="moveOptions('availablect', 'contenttypekey');"><xsl:value-of select="name"/></option>
                                                     </xsl:if>
                                                     
@@ -212,7 +209,7 @@
                                             </div>
                                             
                                             <select multiple="multiple" style="width: 13em; height: 10em;" name="contenttypekey" id="contenttypekey">
-                                                <xsl:for-each select="exslt-common:node-set($selected_ctys)/contenttypes/contenttype">
+                                                <xsl:for-each select="admin:node-set($selected_ctys)/contenttypes/contenttype">
                                                     <xsl:sort select="name"/>
                                                     
                                                     <xsl:variable name="varkey">
@@ -242,7 +239,7 @@
                          -->
                     <xsl:variable name="ordered">
                         <xsl:choose>
-                            <xsl:when test="exslt-common:node-set($section)/section/@ordered = 'true' or (not(exslt-common:node-set($section)/section) and /wizarddata/parentcontenttypes/@ordered = 'true')">true</xsl:when>
+                            <xsl:when test="admin:node-set($section)/section/@ordered = 'true' or (not(admin:node-set($section)/section) and /wizarddata/parentcontenttypes/@ordered = 'true')">true</xsl:when>
                             <xsl:otherwise>false</xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
@@ -286,8 +283,8 @@
 
                     <xsl:variable name="ar">
                         <xsl:choose>
-                            <xsl:when test="exslt-common:node-set($section)/section/accessrights">
-                                <xsl:copy-of select="exslt-common:node-set($section)/section/accessrights"/>
+                            <xsl:when test="admin:node-set($section)/section/accessrights">
+                                <xsl:copy-of select="admin:node-set($section)/section/accessrights"/>
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:copy-of select="/wizarddata/accessrights"/>
@@ -303,7 +300,7 @@
                         <xsl:with-param name="right_publish_available" select="false()"/>
                         <xsl:with-param name="right_add_available" select="true()"/>
                         <xsl:with-param name="right_approve_available" select="true()"/>
-                        <xsl:with-param name="dataxpath" select="exslt-common:node-set($ar)"/>
+                        <xsl:with-param name="dataxpath" select="admin:node-set($ar)"/>
                     </xsl:call-template>
 
                 </fieldset>
@@ -333,7 +330,7 @@
                 <fieldset>
                     <legend>&nbsp;%blockSections%&nbsp;</legend>
 
-                    <xsl:for-each select="exslt-common:node-set($section)/section/accessrights/accessright">
+                    <xsl:for-each select="admin:node-set($section)/section/accessrights/accessright">
                         <input type="hidden" id="accessright[key={@groupkey}]" name="accessright[key={@groupkey}]" value="[read={@read='true'};approve={@approve='true'};publish={@publish='true'};administrate={@administrate='true'}]"/>
                     </xsl:for-each>
                     
@@ -341,7 +338,7 @@
 
                     <table width="100%" cellspacing="0" cellpadding="0" class="browsetable">
                         <xsl:call-template name="display_section">
-                            <xsl:with-param name="xpathSection" select="exslt-common:node-set($section)/section"/>
+                            <xsl:with-param name="xpathSection" select="admin:node-set($section)/section"/>
                         </xsl:call-template>
                     </table>
                 </fieldset>
@@ -470,7 +467,7 @@
                             </td>
                             <td></td>
                         </tr>
-                        <xsl:for-each select="exslt-common:node-set($section)/section/accessrights/accessright">
+                        <xsl:for-each select="admin:node-set($section)/section/accessrights/accessright">
                             <xsl:sort select="@groupname"/>
 
                             <tr>
@@ -613,7 +610,7 @@
 
         <xsl:choose>
             <xsl:when test="$xpath/@supersectionkey = $key">
-                <xsl:value-of select="exslt-common:node-set($section)/section/@name"/>
+                <xsl:value-of select="admin:node-set($section)/section/@name"/>
                 <xsl:text>&nbsp;/&nbsp;</xsl:text>
             </xsl:when>
 

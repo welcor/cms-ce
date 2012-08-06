@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<output>
+  <value>createWindowUrl,null,(),null</value>
+  <value>createWindowUrl,null,(),null</value>
+  <value>createWindowUrl,null,(a,3),null</value>
+  <value>createWindowUrl,window-key,(),null</value>
+  <value>createWindowUrl,window-key,(a,3),null</value>
+  <value>createWindowUrl,window-key,(),xml</value>
+  <value>createWindowUrl,window-key,(a,3),xml</value>
+</output>

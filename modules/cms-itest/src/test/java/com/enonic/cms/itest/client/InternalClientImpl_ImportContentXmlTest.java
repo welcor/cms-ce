@@ -1075,10 +1075,10 @@ public class InternalClientImpl_ImportContentXmlTest
         config.append( "    <imports>" );
         config.append( "      <import mode=\"xml\" name=\"MyImport\" purge=\"archive\"" );
         config.append( "              base=\"/fisk/torsk/entry\" status=\"2\" sync=\"name\"" );
-        config.append( "              xmlns:math=\"java:java.lang.Math\">" );
+        config.append( "              xmlns:dummy=\"http://www.dummy.com\">" );
         config.append( "        <mapping dest=\"name\" src=\"@name\"/>" );
-        config.append( "        <mapping dest=\"max\" src=\"math:max(123, 789)\"/>" );
-        config.append( "        <mapping dest=\"min\" src=\"math:min(123, 789)\"/>" );
+        config.append( "        <mapping dest=\"max\" src=\"789\"/>" );
+        config.append( "        <mapping dest=\"min\" src=\"123\"/>" );
         config.append( "        <mapping dest=\"timestamp\" src=\"current-dateTime()\"/>" );
         config.append( "        <mapping dest=\"year\" src=\"year-from-date(current-date())\"/>" );
         config.append( "      </import>" );

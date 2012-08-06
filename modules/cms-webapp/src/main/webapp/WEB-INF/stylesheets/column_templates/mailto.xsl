@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
 	<xsl:template match="mailto" mode="display">
 		<xsl:param name="contentxpath"/>
 		<a>
 			<xsl:attribute name="href">
 				<xsl:text>mailto:</xsl:text>
-				<xsl:value-of select="saxon:evaluate(concat($contentxpath, @emailxpath))"/>
+				<xsl:value-of select="admin:evaluate(concat($contentxpath, @emailxpath))"/>
 			</xsl:attribute>
-			<xsl:value-of select="saxon:evaluate(concat($contentxpath, @namexpath))"/>
+			<xsl:value-of select="admin:evaluate(concat($contentxpath, @namexpath))"/>
 		</a> 
 
 	</xsl:template>

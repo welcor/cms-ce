@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE xsl:stylesheet [<!ENTITY nbsp "&#160;">]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
   <xsl:template match="attribute::handler[self::node() = 'com.enonic.vertical.adminweb.handlers.ContentFileHandlerServlet']" mode="icon">
     <xsl:text>filefolder</xsl:text>

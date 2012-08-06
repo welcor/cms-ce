@@ -10,8 +10,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.transform.JDOMSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,8 +32,6 @@ public class PageTemplateXsltViewTransformer
     extends AbstractXsltViewTransformer
     implements InitializingBean
 {
-    private static final Logger LOG = LoggerFactory.getLogger( PageTemplateXsltViewTransformer.class );
-
     public ViewTransformationResult transform( ResourceFile xsltTemplateFile, Document xml, TransformationParams transformationParams )
     {
         try
@@ -75,7 +71,6 @@ public class PageTemplateXsltViewTransformer
         }
         catch ( XsltProcessorException e )
         {
-            logXsltProcessorErrors( e.getErrors(), LOG );
             throw new PortalRenderingException( "Failed to transform page template view", e );
         }
     }

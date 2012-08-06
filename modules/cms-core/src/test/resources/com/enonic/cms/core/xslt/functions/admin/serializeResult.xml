@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<output>
+  <value>
+    <item>1</item>
+    <item>2</item>
+  </value>
+  <value>
+    <source>
+      <item>1</item>
+      <item>2</item>
+    </source>
+  </value>
+</output>

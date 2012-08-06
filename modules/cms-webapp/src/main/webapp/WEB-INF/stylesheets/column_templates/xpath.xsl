@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
 	<xsl:template match="xpath" mode="display">
 		<xsl:param name="contentxpath"/>
@@ -13,7 +11,7 @@
 			<xsl:value-of select="."/>
 		</xsl:variable>
 
-		<xsl:value-of select="saxon:evaluate($xpath)"/>
+		<xsl:value-of select="admin:evaluate($xpath)"/>
 	</xsl:template>
 
 	<xsl:template match="xpath" mode="orderby">
@@ -34,7 +32,7 @@
 			<xsl:text>']</xsl:text>
 		</xsl:variable>
 
-		<xsl:if test="saxon:evaluate($fullxpath)">
+		<xsl:if test="admin:evaluate($fullxpath)">
 			<xsl:value-of select="."/>
 		</xsl:if>
 

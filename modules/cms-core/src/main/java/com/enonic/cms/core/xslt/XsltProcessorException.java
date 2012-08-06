@@ -7,6 +7,7 @@ package com.enonic.cms.core.xslt;
 import java.util.Collection;
 import java.util.Formatter;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 /**
@@ -24,6 +25,15 @@ public final class XsltProcessorException
      * Error list.
      */
     private final XsltProcessorErrors errors;
+
+    /**
+     * Construct the errors.
+     */
+    public XsltProcessorException( final String message )
+    {
+        super(message);
+        this.errors = new XsltProcessorErrors();
+    }
 
     /**
      * Construct the errors.
@@ -61,6 +71,12 @@ public final class XsltProcessorException
     }
 
     @Override
+    public Throwable getCause()
+    {
+        return null;
+    }
+
+    @Override
     public String getMessage()
     {
         return formatMessage(super.getMessage(), this.errors.getAllErrors());
@@ -76,9 +92,21 @@ public final class XsltProcessorException
 
         int index = 1;
         for (final TransformerException error : errors) {
-            fmt.format("%s) %s%n", index++, error.getMessageAndLocation());
+            fmt.format("%s) %s (%s)%n", index++, error.getMessage(), getLocation( error.getLocator() ));
         }
 
         return fmt.toString();
+    }
+
+    private static String getLocation(final SourceLocator locator)
+    {
+        final StringBuilder str = new StringBuilder();
+        str.append( XsltResourceHelper.resolvePath( locator.getSystemId() ) );
+
+        if (locator.getLineNumber() >= 0) {
+            str.append( " #" ).append( locator.getLineNumber() );
+        }
+
+        return str.toString();
     }
 }

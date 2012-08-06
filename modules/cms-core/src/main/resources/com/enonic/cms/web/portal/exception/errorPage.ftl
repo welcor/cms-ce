@@ -157,7 +157,7 @@
             </div>
             <div id="tab2box" class="detailBox" style="display:none;">
                 <#list 1..details.numExceptions as i>
-                    <b>${details.getExceptionMessage(i - 1)?html}</b><br/>
+                    <strong style="white-space: pre;">${details.getExceptionMessage(i - 1)?html}</strong><br/>
                     <pre class="detailPart">${details.getExceptionStackTrace(i - 1)?html}</pre>
                 </#list>
             </div>

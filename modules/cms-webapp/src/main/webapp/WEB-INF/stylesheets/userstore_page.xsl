@@ -3,11 +3,8 @@
     <!ENTITY nbsp "&#160;">
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:x="mailto:vro@enonic.com?subject=foobar"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt-common="http://exslt.org/common"
-                xmlns:saxon="http://saxon.sf.net/"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
   <xsl:output method="html"/>
 
@@ -89,7 +86,7 @@
 
         <xsl:if test="/userstores/userstore/connector/config/errors/error != ''">
           <xsl:call-template name="displayerror">
-            <xsl:with-param name="error" select="exslt-common:node-set($error)"/>
+            <xsl:with-param name="error" select="admin:node-set($error)"/>
           </xsl:call-template>
         </xsl:if>
 

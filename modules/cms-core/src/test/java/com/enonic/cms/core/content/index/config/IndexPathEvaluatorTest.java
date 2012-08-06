@@ -56,12 +56,6 @@ public class IndexPathEvaluatorTest
         assertEquals( this.evaluator.evaluate( "xs:string(count(//favouriteColor))", this.inputDoc ), "3" );
     }
 
-    @Test
-    public void testSaxonNamespace()
-    {
-        assertEquals( this.evaluator.evaluate( "saxon:sort(//favouriteColor)", this.inputDoc ), "blue", "green", "red" );
-    }
-
     private void assertEquals( List<String> real, String... expected )
     {
         Assert.assertArrayEquals( expected, real.toArray( new String[real.size()] ) );

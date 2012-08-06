@@ -16,6 +16,8 @@ import com.enonic.cms.framework.xml.StringSource;
  */
 public class XsltResource
 {
+    private static final String DUMMY_PREFIX = "dummy:/";
+
     /**
      * Name of template.
      */
@@ -76,7 +78,7 @@ public class XsltResource
 
         try
         {
-            return "dummy:/" + URLEncoder.encode( this.name, "UTF-8" );
+            return DUMMY_PREFIX + URLEncoder.encode( this.name, "UTF-8" );
         }
         catch ( final UnsupportedEncodingException e )
         {

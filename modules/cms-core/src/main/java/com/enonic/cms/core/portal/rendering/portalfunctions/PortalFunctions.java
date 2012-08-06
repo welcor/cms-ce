@@ -66,7 +66,7 @@ import com.enonic.cms.store.dao.PortletDao;
 
 public class PortalFunctions
 {
-    Pattern IMAGE_KEY_FORMAT = Pattern.compile( "(\\d+(/\\w+){0,2}?)|(^user/.+$)" );
+    private static final Pattern IMAGE_KEY_FORMAT = Pattern.compile( "(\\d+(/\\w+){0,2}?)|(^user/.+$)" );
 
     private static final String CAPTCHA_RELATIVE_URL = "_captcha";
 
@@ -154,29 +154,6 @@ public class PortalFunctions
         SitePath sitePath = new SitePath( context.getSite().getKey(), new Path( local != null ? local : "" ) );
         addParamsToSitePath( params, sitePath );
         return siteURLResolver.createUrl( request, sitePath, true );
-    }
-
-    public String createWindowUrl()
-    {
-        if ( !context.getPortalInstanceKey().isWindow() )
-        {
-            throw new PortalFunctionException( "Not in a context of a window" );
-        }
-        return createWindowUrl( context.getPortalInstanceKey().getWindowKey(), null, null );
-    }
-
-    public String createWindowUrl( String[] params )
-    {
-        if ( !context.getPortalInstanceKey().isWindow() )
-        {
-            throw new PortalFunctionException( "Not in a context of a window" );
-        }
-        return createWindowUrl( context.getPortalInstanceKey().getWindowKey(), params, null );
-    }
-
-    public String createWindowUrl( WindowKey windowKey, String[] params )
-    {
-        return createWindowUrl( windowKey, params, null );
     }
 
     public String createWindowUrl( WindowKey windowKey, String[] params, String outputFormat )
@@ -312,11 +289,6 @@ public class PortalFunctions
         return siteURLResolver.createUrlWithBasePathOverride( request, pageSitePath, true, siteUrl );
     }
 
-    public String createContentUrl( ContentKey contentKey )
-    {
-        return createContentUrl( contentKey, null );
-    }
-
     public String createContentUrl( ContentKey contentKey, String[] params )
     {
         if ( encodeURIs )
@@ -341,11 +313,6 @@ public class PortalFunctions
         instruction.setParams( params );
 
         return serializePostProcessInstruction( instruction );
-    }
-
-    public String createPermalink( ContentKey contentKey )
-    {
-        return createPermalink( contentKey, null );
     }
 
     public String createPermalink( ContentKey contentKey, String[] params )
@@ -375,17 +342,6 @@ public class PortalFunctions
         return serializePostProcessInstruction( instruction );
     }
 
-
-    public String createServicesUrlWithoutParams( String handler, String operation )
-    {
-        return createServicesUrl( handler, operation, null, null );
-    }
-
-    public String createServicesUrl( String handler, String operation, String[] params )
-    {
-        return createServicesUrl( handler, operation, null, params );
-    }
-
     public String createServicesUrl( String handler, String operation, String redirect, String[] params )
     {
         if ( context.getPortalInstanceKey().getMenuItemKey() == null )
@@ -410,12 +366,6 @@ public class PortalFunctions
         sitePath.addParam( Ticket.getParameterName(), Ticket.getPlaceholder() );
         addParamsToSitePath( params, sitePath );
         return siteURLResolver.createUrl( request, sitePath, true );
-    }
-
-
-    public String createBinaryUrl( BinaryDataKey binaryDataKey )
-    {
-        return createBinaryUrl( binaryDataKey, null );
     }
 
     public String createBinaryUrl( final BinaryDataKey binaryDataKey, final String[] params )

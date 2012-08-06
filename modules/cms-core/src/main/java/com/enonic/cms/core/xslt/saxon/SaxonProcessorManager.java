@@ -5,17 +5,16 @@
 package com.enonic.cms.core.xslt.saxon;
 
 import javax.xml.transform.Source;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.sf.saxon.Configuration;
-import net.sf.saxon.TransformerFactoryImpl;
-import net.sf.saxon.functions.FunctionLibraryList;
-import net.sf.saxon.functions.JavaExtensionLibrary;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
 
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
@@ -24,7 +23,10 @@ import com.enonic.cms.core.xslt.XsltProcessorManager;
 import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
 import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.core.xslt.cache.TemplatesXsltCache;
-import com.enonic.cms.core.xslt.lib.PortalFunctions;
+import com.enonic.cms.core.xslt.functions.admin.AdminXsltFunctionLibrary;
+import com.enonic.cms.core.xslt.functions.portal.PortalXsltFunctionLibrary;
+import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
+import com.enonic.cms.core.xslt.localizer.LocalizerFactoryImpl;
 
 /**
  * This class implements the standard xslt processor manager.
@@ -33,37 +35,32 @@ import com.enonic.cms.core.xslt.lib.PortalFunctions;
 public final class SaxonProcessorManager
     implements XsltProcessorManager
 {
-    private final TransformerFactoryImpl transformerFactory;
+    private final Processor processor;
+
+    private final Configuration configuration;
 
     private TemplatesXsltCache cache;
 
     public SaxonProcessorManager()
     {
         XsltProcessorManagerAccessor.setProcessorManager( this );
-        this.transformerFactory = new TransformerFactoryImpl();
 
-        final Configuration configuration = this.transformerFactory.getConfiguration();
-        final FunctionLibraryList libraryList = new FunctionLibraryList();
-        final JavaExtensionLibrary extensionLibrary = new JavaExtensionLibrary( configuration );
-        libraryList.addFunctionLibrary( extensionLibrary );
-        registerExtensions( extensionLibrary );
+        this.configuration = new Configuration();
+        this.configuration.setLineNumbering( true );
+        this.configuration.setHostLanguage( Configuration.XSLT );
+        this.configuration.setVersionWarning( false );
+        this.configuration.setLocalizerFactory( new LocalizerFactoryImpl() );
+        this.configuration.setCompileWithTracing( true );
+        this.configuration.setValidationWarnings( true );
 
-        configuration.setExtensionBinder( "java", libraryList );
-        configuration.setLineNumbering( true );
-        configuration.setHostLanguage( Configuration.XSLT );
-        configuration.setVersionWarning( false );
-    }
-
-    private void registerExtensions( final JavaExtensionLibrary library )
-    {
-        library.declareJavaClass( PortalFunctions.NAMESPACE_URI, PortalFunctions.class );
-        library.declareJavaClass( PortalFunctions.OLD_NAMESPACE_URI, PortalFunctions.class );
+        this.processor = new Processor( this.configuration );
+        new AdminXsltFunctionLibrary().registerAll( this.configuration );
     }
 
     public XsltProcessor createProcessor( final Source xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
-        return new XsltProcessorImpl( createTransformer( xsl, resolver ) );
+        return new XsltProcessorImpl( compileXslt( xsl, resolver ), resolver );
     }
 
     public XsltProcessor createProcessor( final XsltResource xsl, final URIResolver resolver )
@@ -72,23 +69,36 @@ public final class SaxonProcessorManager
         return createProcessor( xsl.getAsSource(), resolver );
     }
 
-    private Transformer createTransformer( final Source xsl, final URIResolver resolver )
+    @Override
+    public XsltProcessor createCachedProcessor( final XsltResource xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
-        final Templates templates = createTemplates(xsl, resolver);
-        return createTransformer( templates, resolver );
+        if ( this.cache == null )
+        {
+            return createProcessor( xsl, resolver );
+        }
+
+        XsltExecutable templates = this.cache.get( xsl );
+        if ( templates == null )
+        {
+            templates = compileXslt( xsl.getAsSource(), resolver );
+            this.cache.put( xsl, templates );
+        }
+
+        return new XsltProcessorImpl( templates, resolver );
     }
 
-    private Templates createTemplates( final Source xsl, final URIResolver resolver )
+    private XsltExecutable compileXslt( final Source xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
         final XsltProcessorErrors errors = new XsltProcessorErrors();
-        this.transformerFactory.setErrorListener( errors );
-        this.transformerFactory.setURIResolver( resolver );
 
         try
         {
-            return this.transformerFactory.newTemplates( xsl );
+            final XsltCompiler compiler = this.processor.newXsltCompiler();
+            compiler.setErrorListener( errors );
+            compiler.setURIResolver( resolver );
+            return compiler.compile( xsl );
         }
         catch ( final Exception e )
         {
@@ -96,41 +106,15 @@ public final class SaxonProcessorManager
         }
     }
 
-    private Transformer createTransformer( final Templates templates, final URIResolver resolver )
-        throws XsltProcessorException
-    {
-        try
-        {
-            final Transformer transformer = templates.newTransformer();
-            transformer.setURIResolver( resolver );
-            return transformer;
-        }
-        catch ( final Exception e )
-        {
-            throw new XsltProcessorException( e );
-        }
-    }
-
-    @Override
-    public XsltProcessor createCachedProcessor( final XsltResource xsl, final URIResolver resolver )
-        throws XsltProcessorException
-    {
-        if (this.cache == null) {
-            return createProcessor(xsl, resolver );
-        }
-
-        Templates templates = this.cache.get( xsl );
-        if (templates == null) {
-            templates = createTemplates( xsl.getAsSource(), resolver );
-            this.cache.put( xsl, templates );
-        }
-
-        return new XsltProcessorImpl( createTransformer( templates, resolver ) );
-    }
-
     @Autowired
     public void setTemplatesXsltCache( final TemplatesXsltCache cache )
     {
         this.cache = cache;
+    }
+
+    @Autowired
+    public void setPortalFunctions( final PortalFunctionsMediator portalFunctions )
+    {
+        new PortalXsltFunctionLibrary( portalFunctions ).registerAll( this.configuration );
     }
 }

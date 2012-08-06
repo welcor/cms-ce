@@ -7,7 +7,7 @@
   <artifactId>cms-ce</artifactId>
   <packaging>pom</packaging>
   <name>Enonic CMS</name>
-  <version>4.6.1-SNAPSHOT</version>
+  <version>4.7.0-SNAPSHOT</version>
 
   <licenses>
     <license>

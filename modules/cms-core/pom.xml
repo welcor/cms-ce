@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.enonic.cms</groupId>
     <artifactId>cms-ce</artifactId>
-    <version>4.6.1-SNAPSHOT</version>
+    <version>4.7.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -72,21 +72,6 @@
       <artifactId>simplecaptcha</artifactId>
       <version>1.2.1</version>
     </dependency>
-    <!--dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>9.1.0.8</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>saxon-dom</artifactId>
-      <version>9.1.0.8</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>saxon-jdom</artifactId>
-      <version>9.1.0.8</version>
-    </dependency-->
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon-he</artifactId>

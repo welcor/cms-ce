@@ -4,6 +4,7 @@ import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.SequenceIterator;
+import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.SequenceType;
 
@@ -28,6 +29,7 @@ final class NodeSetFunction
         super( "node-set" );
         setArgumentTypes( SequenceType.NODE_SEQUENCE );
         setResultType( SequenceType.NODE_SEQUENCE );
+        registerAlias( new StructuredQName( "", "http://exslt.org/common", "node-set" ) );
     }
 
     @Override

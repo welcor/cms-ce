@@ -39,7 +39,7 @@ public class BatchedList<T>
 
     public List<T> getNextBatch()
     {
-        if ( lastPosition > totalSize )
+        if ( !hasMoreBatches() )
         {
             return null;
         }
@@ -54,6 +54,6 @@ public class BatchedList<T>
 
     public boolean hasMoreBatches()
     {
-        return !( lastPosition > totalSize );
+        return !( lastPosition >= totalSize );
     }
 }

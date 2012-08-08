@@ -63,4 +63,17 @@ public final class PortalWebContext
     {
         return request.getHeader( "referer" );
     }
+
+    public boolean isProcessingException()
+    {
+        final Object isProcessingExceptionFlag = request.getAttribute( Attribute.IS_PROCESSING_EXCEPTION );
+
+        return isProcessingExceptionFlag != null;
+    }
+
+    public void setIsProcessingException()
+    {
+        request.setAttribute( Attribute.IS_PROCESSING_EXCEPTION, "true" );
+    }
+
 }

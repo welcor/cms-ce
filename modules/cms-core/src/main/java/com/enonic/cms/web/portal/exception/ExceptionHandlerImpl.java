@@ -229,8 +229,16 @@ public final class ExceptionHandlerImpl
             return;
         }
 
+        if ( context.isProcessingException() )
+        {
+            serveExceptionPage( context, error );
+            return;
+        }
+
         try
         {
+            context.setIsProcessingException();
+
             if ( serveErrorPage( context, error ) )
             {
                 return;

@@ -58,8 +58,6 @@ public class UpdateContentCommand
 
     private Set<String> blockGroupsToPurgeByName = new HashSet<String>();
 
-    private UserKey assignerKey;
-
     public void populateContentValuesFromContent( ContentEntity content )
     {
         setContentName( content.getName() );

@@ -130,12 +130,6 @@ public class AdminServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void updateCategory( User user, String xmlData )
-    {
-        adminEngine.updateCategory( user, xmlData );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int createContentObject( User user, String xmlData )
     {
         return adminEngine.createContentObject( xmlData );
@@ -250,11 +244,6 @@ public class AdminServiceImpl
     public MenuAccessRight getMenuAccessRight( User user, int menuKey )
     {
         return adminEngine.getMenuAccessRight( user, menuKey );
-    }
-
-    public int[] getContentKeysByCategory( User user, int categoryKey )
-    {
-        return adminEngine.getContentKeysByCategory( user, categoryKey );
     }
 
     public XMLDocument getContentObject( int coc_lKey )
@@ -487,12 +476,6 @@ public class AdminServiceImpl
     public void updatePageTemplate( User user, String xmlData )
     {
         adminEngine.updatePageTemplate( xmlData );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void updateUnit( String xmlData )
-    {
-        adminEngine.updateUnit( xmlData );
     }
 
     public XMLDocument getGroup( String gKey )

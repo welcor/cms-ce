@@ -148,21 +148,4 @@ public class ContentBinaryDataEntity
         return null;
     }
 
-    public static boolean isAnyContentBinaryDataInMainVersion( final Collection<ContentBinaryDataEntity> collection )
-    {
-        for ( ContentBinaryDataEntity cbd : collection )
-        {
-            ContentVersionEntity contentVersion = cbd.getContentVersion();
-            if ( contentVersion != null )
-            {
-                if ( contentVersion.equals( contentVersion.getContent().getMainVersion() ) )
-                {
-                    return true;
-                }
-            }
-
-        }
-        return false;
-    }
-
 }

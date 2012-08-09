@@ -144,13 +144,6 @@ public class BinaryDataAndBinary
         return convertFromNameAndData( binaryInput.getBinaryName(), binaryInput.getBinary() );
     }
 
-    public static BinaryDataAndBinary convertFromImageBinaryInput( final FileBinaryInput binaryInput, String label )
-    {
-        BinaryDataAndBinary binaryDataAndBinary = convertFromNameAndData( binaryInput.getBinaryName(), binaryInput.getBinary() );
-        binaryDataAndBinary.setLabel( label );
-        return binaryDataAndBinary;
-    }
-
     public static BinaryDataAndBinary convertFromFileBinaryInput( final FileBinaryInput binaryInput )
     {
         BinaryDataAndBinary binaryDataAndBinary = convertFromNameAndData( binaryInput.getBinaryName(), binaryInput.getBinary() );

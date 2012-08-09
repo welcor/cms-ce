@@ -17,9 +17,16 @@ class FindContentByKeysQuerier
 {
     private Session hibernateSession;
 
-    FindContentByKeysQuerier( Session hibernateSession )
+    private ContentEagerFetches contentEagerFetches;
+
+    private boolean fetchEntitiesAsReadOnly = true;
+
+    FindContentByKeysQuerier( final Session hibernateSession, final ContentEagerFetches contentEagerFetches,
+                              final boolean fetchEntitiesAsReadOnly )
     {
         this.hibernateSession = hibernateSession;
+        this.contentEagerFetches = contentEagerFetches;
+        this.fetchEntitiesAsReadOnly = fetchEntitiesAsReadOnly;
     }
 
     List<ContentEntity> queryContent( final Collection<ContentKey> contentKeys )
@@ -27,10 +34,26 @@ class FindContentByKeysQuerier
         final SelectBuilder hqlQuery = new SelectBuilder( 0 );
         hqlQuery.addSelect( "c" );
         hqlQuery.addFromTable( ContentEntity.class.getName(), "c", SelectBuilder.NO_JOIN, null );
-        hqlQuery.addFromTable( "c.mainVersion", null, SelectBuilder.LEFT_JOIN_FETCH, null );
-        hqlQuery.addFromTable( "c.sectionContents", null, SelectBuilder.LEFT_JOIN_FETCH, null );
-        hqlQuery.addFromTable( "c.directMenuItemPlacements", null, SelectBuilder.LEFT_JOIN_FETCH, null );
-        hqlQuery.addFromTable( "c.contentHomes", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        if ( contentEagerFetches.hasTable( ContentEagerFetches.Table.ACCESS ) )
+        {
+            hqlQuery.addFromTable( "c.contentAccessRights", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        }
+        if ( contentEagerFetches.hasTable( ContentEagerFetches.Table.MAIN_VERSION ) )
+        {
+            hqlQuery.addFromTable( "c.mainVersion", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        }
+        if ( contentEagerFetches.hasTable( ContentEagerFetches.Table.SECTION_CONTENT ) )
+        {
+            hqlQuery.addFromTable( "c.sectionContents", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        }
+        if ( contentEagerFetches.hasTable( ContentEagerFetches.Table.DIRECT_MENUITEM_PLACEMENT ) )
+        {
+            hqlQuery.addFromTable( "c.directMenuItemPlacements", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        }
+        if ( contentEagerFetches.hasTable( ContentEagerFetches.Table.CONTENT_HOME ) )
+        {
+            hqlQuery.addFromTable( "c.contentHomes", null, SelectBuilder.LEFT_JOIN_FETCH, null );
+        }
         hqlQuery.addFilter( "AND", new InClauseBuilder<ContentKey>( "c.key", contentKeys )
         {
             public void appendValue( StringBuffer sql, ContentKey value )
@@ -39,8 +62,8 @@ class FindContentByKeysQuerier
             }
         }.toString() );
 
-        Query compiled = hibernateSession.createQuery( hqlQuery.toString() );
-        compiled.setReadOnly( true );
+        final Query compiled = hibernateSession.createQuery( hqlQuery.toString() );
+        compiled.setReadOnly( fetchEntitiesAsReadOnly );
         compiled.setCacheable( false );
         //noinspection unchecked
         return compiled.list();

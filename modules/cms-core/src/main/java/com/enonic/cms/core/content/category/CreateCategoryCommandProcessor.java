@@ -3,6 +3,8 @@ package com.enonic.cms.core.content.category;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
@@ -28,6 +30,8 @@ class CreateCategoryCommandProcessor
 
     private ContentTypeEntity contentType;
 
+    private boolean creatingContentArchive;
+
     CreateCategoryCommandProcessor( TimeService timeService, CategoryDao categoryDao, UnitFactory unitFactory,
                                     CategoryAccessStorer categoryAccessStorer, CreateCategoryAccessChecker createCategoryAccessChecker )
     {
@@ -46,6 +50,7 @@ class CreateCategoryCommandProcessor
     void setParentCategory( CategoryEntity parentCategory )
     {
         this.parentCategory = parentCategory;
+        creatingContentArchive = parentCategory == null;
     }
 
     void setContentType( ContentTypeEntity contentType )
@@ -53,9 +58,22 @@ class CreateCategoryCommandProcessor
         this.contentType = contentType;
     }
 
-    CategoryKey createCategory( final StoreNewCategoryCommand command )
+    CategoryKey process( final StoreNewCategoryCommand command )
     {
-        final boolean creatingContentArchive = parentCategory == null;
+        Preconditions.checkNotNull( command.getName(), "name not specified" );
+        Preconditions.checkArgument( StringUtils.isNotBlank( command.getName() ), "name is not valid: %s", command.getName() );
+
+        if ( creatingContentArchive )
+        {
+            Preconditions.checkNotNull( command.getLanguage(), "language not specified" );
+        }
+
+        if ( command.getAllowedContentTypes() != null && command.getAllowedContentTypes().size() > 0 && contentType != null )
+        {
+            Preconditions.checkArgument( command.getAllowedContentTypes().contains( contentType.getContentTypeKey() ),
+                                         "content type must be among the allowed ones: " + contentType.getName() );
+        }
+
         checkCreateCategoryAccess( creatingContentArchive );
 
         final Date now = timeService.getNowAsDateTime().toDate();
@@ -93,13 +111,13 @@ class CreateCategoryCommandProcessor
 
     private void applyAccessRights( StoreNewCategoryCommand command, CategoryEntity category )
     {
-        if ( command.getAccessRights() == null && parentCategory != null )
+        if ( command.getCategoryACL() == null && parentCategory != null )
         {
             categoryAccessStorer.applyAccessRightsFromParent( parentCategory, category );
         }
-        else if ( command.getAccessRights() != null )
+        else if ( command.getCategoryACL() != null )
         {
-            categoryAccessStorer.applyGivenAccessRights( command.getAccessRights(), category );
+            categoryAccessStorer.applyGivenAccessRights( command.getCategoryACL(), category );
         }
         else
         {

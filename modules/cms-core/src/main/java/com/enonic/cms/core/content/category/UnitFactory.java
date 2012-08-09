@@ -25,7 +25,7 @@ public class UnitFactory
     @Autowired
     private ContentTypeDao contentTypeDao;
 
-    UnitEntity createNewUnit( StoreNewCategoryCommand command )
+    UnitEntity createNewUnit( final StoreNewCategoryCommand command )
     {
         Preconditions.checkNotNull( command.getLanguage(), "Expected language to be specified when creating a content archive" );
         final LanguageEntity language = languageDao.findByKey( command.getLanguage() );
@@ -40,8 +40,8 @@ public class UnitFactory
         {
             for ( ContentTypeKey allowedContentTypeKey : command.getAllowedContentTypes() )
             {
-                ContentTypeEntity allowedContentType = contentTypeDao.findByKey( allowedContentTypeKey );
-                Preconditions.checkNotNull( language, "Specified content type to allow for content archive does not exist: " +
+                final ContentTypeEntity allowedContentType = contentTypeDao.findByKey( allowedContentTypeKey );
+                Preconditions.checkNotNull( allowedContentType, "Specified content type to allow for content archive does not exist: " +
                     allowedContentTypeKey );
                 newUnit.addContentType( allowedContentType );
             }

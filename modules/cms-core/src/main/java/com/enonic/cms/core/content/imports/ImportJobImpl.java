@@ -63,6 +63,7 @@ public class ImportJobImpl
     private Date assignmentDueDate;
 
     private String assignmentDescription;
+
     private static GenericConcurrencyLock<CategoryKey> concurrencyLock = GenericConcurrencyLock.create();
 
     public ImportResult start()
@@ -75,8 +76,8 @@ public class ImportJobImpl
 
             LOG.info( "Starting content import job #" + this.getImportJobNumber() );
             LOG.info(
-                    "Import job #" + this.getImportJobNumber() + ": importing to category: key = " + categoryToImportTo.getKey() + ", path = " +
-                            categoryToImportTo.getPathAsString() );
+                "Import job #" + this.getImportJobNumber() + ": importing to category: key = " + categoryToImportTo.getKey() + ", path = " +
+                    categoryToImportTo.getPathAsString() );
 
             importConfig.validateContentTypeImportConfig( categoryToImportTo.getContentType().getContentTypeConfig() );
 
@@ -92,7 +93,7 @@ public class ImportJobImpl
             final BatchedImportDataReader batchedDataReader = new BatchedImportDataReader( importDataReader, batchSize );
 
             LOG.info( "Import job #" + this.getImportJobNumber() + ": Importing content in transactional batches of " + batchSize +
-                              " content per transaction." );
+                          " content per transaction." );
 
             int batchCount = 0;
             long lastBatchStartTime;
@@ -115,7 +116,7 @@ public class ImportJobImpl
                 }
 
                 LOG.info( "Import job #" + this.getImportJobNumber() + ": batch #" + batchCount + " finished in " +
-                                  ( System.currentTimeMillis() - lastBatchStartTime ) + " milliseconds." );
+                              ( System.currentTimeMillis() - lastBatchStartTime ) + " milliseconds." );
 
                 batchedDataReader.startNewBatch();
             }
@@ -145,7 +146,7 @@ public class ImportJobImpl
 
     private void initSyncMode()
     {
-        contentNotAffectedByImport = contentDao.findContentKeysByCategory( categoryToImportTo );
+        contentNotAffectedByImport = contentDao.findContentKeysByCategory( categoryToImportTo.getKey() );
 
         LOG.info( "Import job #" + this.getImportJobNumber() + ": found " + contentNotAffectedByImport.size() +
                       " existing content in category: " + categoryToImportTo.getPathAsString() );

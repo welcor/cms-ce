@@ -1,6 +1,5 @@
 package com.enonic.cms.core.content.category;
 
-import java.util.List;
 import java.util.Map;
 
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -19,13 +18,14 @@ class CategoryAccessStorer
         this.administrator = groupDao.findBuiltInAdministrator();
     }
 
-    void applyAccessRightsFromParent( CategoryEntity parentCategory, CategoryEntity category )
+    void applyAccessRightsFromParent( final CategoryEntity parentCategory, final CategoryEntity category )
     {
         Map<GroupKey, CategoryAccessEntity> accessRights = parentCategory.getAccessRights();
         for ( GroupKey group : accessRights.keySet() )
         {
             CategoryAccessEntity parentAccessRight = accessRights.get( group );
-            CategoryAccessEntity accessRight = new CategoryAccessEntity();
+            CategoryAccessEntity accessRight =
+                CategoryAccessEntity.create( category.getKey(), parentAccessRight.getGroup(), parentAccessRight.toAccessRights() );
             accessRight.setKey( new CategoryAccessKey( category.getKey(), group ) );
             accessRight.setGroup( parentAccessRight.getGroup() );
             accessRight.setAdminAccess( parentAccessRight.isAdminAccess() );
@@ -39,32 +39,26 @@ class CategoryAccessStorer
         ensureAccessRightForAdministratorGroup( category );
     }
 
-    void applyGivenAccessRights( List<CategoryAccessRights> categoryAccessRightsList, CategoryEntity category )
+    void applyGivenAccessRights( final CategoryACL categoryACL, final CategoryEntity category )
     {
-        for ( CategoryAccessRights aRight : categoryAccessRightsList )
+        for ( CategoryAccessControl aRight : categoryACL )
         {
-            CategoryAccessEntity accessRight = new CategoryAccessEntity();
-            accessRight.setKey( new CategoryAccessKey( category.getKey(), aRight.getGroupKey() ) );
-            accessRight.setGroup( groupDao.findByKey( aRight.getGroupKey() ) );
-            accessRight.setAdminAccess( aRight.isAdminAccess() );
-            accessRight.setAdminBrowseAccess( aRight.isAdminBrowseAccess() );
-            accessRight.setCreateAccess( aRight.isCreateAccess() );
-            accessRight.setPublishAccess( aRight.isPublishAccess() );
-            accessRight.setReadAccess( aRight.isReadAccess() );
+            GroupEntity group = groupDao.findByKey( aRight.getGroupKey() );
+            CategoryAccessEntity accessRight = CategoryAccessEntity.create( category.getKey(), group, aRight );
             category.addAccessRight( accessRight );
         }
 
         ensureAccessRightForAdministratorGroup( category );
     }
 
-    void ensureAccessRightForAdministratorGroup( CategoryEntity category )
+    void ensureAccessRightForAdministratorGroup( final CategoryEntity category )
     {
         if ( category.getAccessRights() == null || category.getAccessRights().isEmpty() )
         {
             CategoryAccessEntity accessRight = new CategoryAccessEntity();
             accessRight.setKey( new CategoryAccessKey( category.getKey(), administrator.getGroupKey() ) );
             accessRight.setGroup( administrator );
-            setAllRightsToTrue( accessRight );
+            accessRight.setAll( true );
             category.addAccessRight( accessRight );
         }
         else if ( category.getAccessRights().size() > 0 )
@@ -74,7 +68,7 @@ class CategoryAccessStorer
             {
                 if ( categoryAccess.getKey().getGroupKey().equals( administrator.getGroupKey() ) )
                 {
-                    setAllRightsToTrue( categoryAccess );
+                    categoryAccess.setAll( true );
                     isAdministratorAccessRightsExist = true;
                 }
             }
@@ -83,18 +77,10 @@ class CategoryAccessStorer
                 CategoryAccessEntity accessRight = new CategoryAccessEntity();
                 accessRight.setGroup( administrator );
                 accessRight.setKey( new CategoryAccessKey( category.getKey(), administrator.getGroupKey() ) );
-                setAllRightsToTrue( accessRight );
+                accessRight.setAll( true );
                 category.addAccessRight( accessRight );
             }
         }
     }
 
-    private void setAllRightsToTrue( CategoryAccessEntity accessRight )
-    {
-        accessRight.setAdminAccess( true );
-        accessRight.setAdminBrowseAccess( true );
-        accessRight.setCreateAccess( true );
-        accessRight.setPublishAccess( true );
-        accessRight.setReadAccess( true );
-    }
 }

@@ -397,11 +397,6 @@ public class ContentVersionEntity
         relatedChildren.add( value );
     }
 
-    public void addRelatedChildren( Collection<ContentEntity> values )
-    {
-        relatedChildren.addAll( values );
-    }
-
     public void removeRelatedChild( ContentEntity content )
     {
         relatedChildren.remove( content );

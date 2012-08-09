@@ -3,7 +3,7 @@ package com.enonic.cms.core.content.category;
 
 import com.enonic.cms.core.security.group.GroupKey;
 
-public class CategoryAccessRights
+public class CategoryAccessControl
 {
     private GroupKey groupKey;
 
@@ -75,5 +75,25 @@ public class CategoryAccessRights
     public void setAdminAccess( boolean adminAccess )
     {
         this.adminAccess = adminAccess;
+    }
+
+    public boolean givesApprove()
+    {
+        return isPublishAccess() || isAdminAccess();
+    }
+
+    public boolean givesContentRead()
+    {
+        return isReadAccess() || isAdminBrowseAccess() || givesApprove();
+    }
+
+    public boolean givesContentUpdate()
+    {
+        return givesApprove();
+    }
+
+    public boolean givesContentDelete()
+    {
+        return givesApprove();
     }
 }

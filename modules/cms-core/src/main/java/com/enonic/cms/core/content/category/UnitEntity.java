@@ -5,6 +5,7 @@
 package com.enonic.cms.core.content.category;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -58,11 +59,6 @@ public class UnitEntity
         return deleted != 0;
     }
 
-    public UnitEntity getParent()
-    {
-        return parent;
-    }
-
     public LanguageEntity getLanguage()
     {
         return language;
@@ -108,11 +104,6 @@ public class UnitEntity
         this.deleted = deleted ? 1 : 0;
     }
 
-    public void setParent( UnitEntity parent )
-    {
-        this.parent = parent;
-    }
-
     public void setLanguage( LanguageEntity language )
     {
         this.language = language;
@@ -132,6 +123,14 @@ public class UnitEntity
 
         UnitEntity that = (UnitEntity) o;
         return getKey().equals( that.getKey() );
+    }
+
+    public boolean synchronizeContentTypes( final Collection<ContentTypeEntity> allowedContentTypes )
+    {
+        boolean removed = contentTypes.retainAll( allowedContentTypes );
+        boolean added = contentTypes.addAll( allowedContentTypes );
+        // TODO return
+        return removed || added;
     }
 
     public int hashCode()

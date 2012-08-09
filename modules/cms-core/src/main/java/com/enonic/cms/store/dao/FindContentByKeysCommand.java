@@ -1,73 +1,61 @@
 package com.enonic.cms.store.dao;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-import com.enonic.cms.framework.cache.CacheFacade;
-
-import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.OrderContentKeysByGivenOrderComparator;
 
-class FindContentByKeysCommand
+public class FindContentByKeysCommand
 {
-    private ContentExistInCacheResolver contentExistInCacheResolver;
+    private List<ContentKey> contentKeys;
 
-    private HibernateTemplate hibernateTemplate;
+    private ContentEagerFetches contentEagerFetches;
 
-    private FindContentByKeysQuerier findContentByKeysQuerier;
+    private boolean byPassCache = false;
 
-    FindContentByKeysCommand( CacheFacade entityCache, HibernateTemplate hibernateTemplate,
-                              FindContentByKeysQuerier findContentByKeysQuerier )
+    private boolean fetchEntitiesAsReadOnly = true;
+
+    public FindContentByKeysCommand contentKeys( List<ContentKey> value )
     {
-        this.contentExistInCacheResolver = new ContentExistInCacheResolver( entityCache );
-        this.hibernateTemplate = hibernateTemplate;
-        this.findContentByKeysQuerier = findContentByKeysQuerier;
+        this.contentKeys = value;
+        return this;
     }
 
-    SortedMap<ContentKey, ContentEntity> execute( final List<ContentKey> contentKeys )
+    public FindContentByKeysCommand fetchEntitiesAsReadOnly( boolean value )
     {
-        final SortedMap<ContentKey, ContentEntity> contentMapByKey =
-            new TreeMap<ContentKey, ContentEntity>( new OrderContentKeysByGivenOrderComparator( contentKeys ) );
-        final List<ContentKey> contentsNotFoundInCache = new ArrayList<ContentKey>();
-
-        findContentInCache( contentKeys, contentMapByKey, contentsNotFoundInCache );
-
-        if ( !contentsNotFoundInCache.isEmpty() )
-        {
-            final List<ContentEntity> contentsFromDB = findContentByKeysQuerier.queryContent( contentsNotFoundInCache );
-            for ( ContentEntity c : contentsFromDB )
-            {
-                contentMapByKey.put( c.getKey(), c );
-            }
-        }
-        return contentMapByKey;
+        this.fetchEntitiesAsReadOnly = value;
+        return this;
     }
 
-    private void findContentInCache( Iterable<ContentKey> contentKeys, Map<ContentKey, ContentEntity> contentsFoundInCache,
-                                     List<ContentKey> contentsNotFoundInCache )
+    public FindContentByKeysCommand eagerFetches( ContentEagerFetches value )
     {
-        for ( final ContentKey contentKey : contentKeys )
-        {
-            final boolean contentExistsInCache = contentExistInCacheResolver.contentExistsInCache( contentKey );
-            if ( contentExistsInCache )
-            {
-                final ContentEntity contentFoundInCache = (ContentEntity) hibernateTemplate.get( ContentEntity.class, contentKey );
-                if ( contentFoundInCache != null )
-                {
-                    contentsFoundInCache.put( contentFoundInCache.getKey(), contentFoundInCache );
-                }
-            }
-            else
-            {
-                contentsNotFoundInCache.add( contentKey );
-            }
-        }
+        this.contentEagerFetches = value;
+        return this;
+    }
+
+    public FindContentByKeysCommand byPassCache( boolean value )
+    {
+        this.byPassCache = value;
+        return this;
+    }
+
+    public List<ContentKey> getContentKeys()
+    {
+        return contentKeys;
+    }
+
+    public ContentEagerFetches getContentEagerFetches()
+    {
+        return contentEagerFetches;
+    }
+
+    public boolean isFetchEntitiesAsReadOnly()
+    {
+        return fetchEntitiesAsReadOnly;
+    }
+
+    public boolean isByPassCache()
+    {
+        return byPassCache;
     }
 }

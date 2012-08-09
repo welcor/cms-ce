@@ -8,9 +8,4 @@ public class DeleteCategoryException
     {
         super( "Failed to delete category: " + cause.getMessage(), cause );
     }
-
-    public RuntimeException getRuntimeExceptionCause()
-    {
-        return (RuntimeException) getCause();
-    }
 }

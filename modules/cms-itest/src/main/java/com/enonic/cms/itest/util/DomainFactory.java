@@ -21,6 +21,7 @@ import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataKey;
+import com.enonic.cms.core.content.category.CategoryAccessControl;
 import com.enonic.cms.core.content.category.CategoryAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
@@ -234,7 +235,7 @@ public class DomainFactory
 
     public UnitEntity createUnit( String name )
     {
-        return createUnit( name, null );
+        return createUnit( name, "en" );
     }
 
     public UnitEntity createUnit( String name, String languageCode )
@@ -250,7 +251,7 @@ public class DomainFactory
     public CategoryEntity createCategory( String name, String parentCategoryName, String contentTypeName, String unitName, String ownerUid,
                                           String modifierUid )
     {
-        return createCategory( name, null, contentTypeName, unitName, ownerUid, modifierUid, false );
+        return createCategory( name, parentCategoryName, contentTypeName, unitName, ownerUid, modifierUid, false );
     }
 
     public CategoryEntity createCategory( String name, String parentCategoryName, String contentTypeName, String unitName, String ownerUid,
@@ -319,6 +320,18 @@ public class DomainFactory
         binaryData.setCreatedAt( new Date() );
         binaryData.setSize( size );
         return binaryData;
+    }
+
+    public CategoryAccessControl createCategoryAccessControl( GroupEntity group, String accesses )
+    {
+        CategoryAccessControl access = new CategoryAccessControl();
+        access.setGroupKey( group.getGroupKey() );
+        access.setReadAccess( accesses.contains( CategoryAccessType.READ.toString().toLowerCase() ) );
+        access.setAdminAccess( accesses.contains( CategoryAccessType.ADMINISTRATE.toString().toLowerCase() ) );
+        access.setCreateAccess( accesses.contains( CategoryAccessType.CREATE.toString().toLowerCase() ) );
+        access.setPublishAccess( accesses.contains( CategoryAccessType.APPROVE.toString().toLowerCase() ) );
+        access.setAdminBrowseAccess( accesses.contains( CategoryAccessType.ADMIN_BROWSE.toString().toLowerCase() ) );
+        return access;
     }
 
     public CategoryAccessEntity createCategoryAccess( String categoryName, GroupEntity group, String accesses )

@@ -1,10 +1,11 @@
 package com.enonic.cms.core.content.category;
 
 
-import com.enonic.cms.core.AbstractIntegerBasedKey;
+import java.io.Serializable;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import java.io.Serializable;
+import com.enonic.cms.core.AbstractIntegerBasedKey;
 
 
 public class UnitKey

@@ -56,8 +56,6 @@ public interface AdminService
 
     public XMLDocument getSuperCategoryNames( int categoryKey, boolean withContentCount, boolean includeCategory );
 
-    public void updateCategory( User user, String xmlData );
-
     public int createContentObject( User user, String xmlData );
 
     public int createContentType( User user, String xmlData );
@@ -99,8 +97,6 @@ public interface AdminService
     public ContentAccessRight getContentAccessRight( User user, int categoryKey );
 
     public MenuAccessRight getMenuAccessRight( User user, int menuKey );
-
-    public int[] getContentKeysByCategory( User user, int categoryKey );
 
     public XMLDocument getContentObject( int coc_lKey );
 
@@ -189,8 +185,6 @@ public interface AdminService
     public void updateMenuData( User user, String xmlData );
 
     public void updatePageTemplate( User user, String xmlData );
-
-    public void updateUnit( String xmlData );
 
     public XMLDocument getGroup( String gKey );
 

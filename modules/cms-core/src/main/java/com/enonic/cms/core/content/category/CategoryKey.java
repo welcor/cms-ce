@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.enonic.esl.util.StringUtil;
-
 import com.enonic.cms.core.AbstractIntegerBasedKey;
 import com.enonic.cms.core.InvalidKeyException;
 
@@ -88,15 +86,6 @@ public class CategoryKey
         if ( intKey > -1 )
         {
             return new CategoryKey( intKey );
-        }
-        return null;
-    }
-
-    public static CategoryKey parse( String stringKey )
-    {
-        if ( StringUtil.isIntegerString( stringKey ) )
-        {
-            return parse( Integer.parseInt( stringKey ) );
         }
         return null;
     }

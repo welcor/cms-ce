@@ -120,6 +120,9 @@ public class DomainFixture
         indexTransactionService.clearJournal();
 
         save( factory.createLanguage( "en" ) );
+        save( factory.createLanguage( "no" ) );
+        save( factory.createLanguage( "se" ) );
+        save( factory.createLanguage( "dk" ) );
 
         if ( groupDao != null )
         {

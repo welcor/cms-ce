@@ -259,17 +259,6 @@ public class CategoryXmlCreator
         return doCreateCategoryElement( category, false, elementName );
     }
 
-
-    public Element createCategoryElement( CategoryEntity category )
-    {
-        if ( category == null )
-        {
-            throw new IllegalArgumentException( "Given category cannot be null" );
-        }
-
-        return doCreateCategoryElement( category, false, null );
-    }
-
     private Element doCreateCategoryElement( CategoryEntity category, boolean includeChildren, String name )
     {
         final Element categoryEl = new Element( StringUtils.isBlank( name ) ? "category" : name );

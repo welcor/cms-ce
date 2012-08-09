@@ -24,6 +24,7 @@ import com.enonic.cms.core.content.ContentSpecification;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.RelatedContentEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
@@ -41,12 +42,15 @@ public class ContentEntityDao
         return get( ContentEntity.class, contentKey );
     }
 
-    public SortedMap<ContentKey, ContentEntity> findByKeys( final List<ContentKey> contentKeys )
+    public SortedMap<ContentKey, ContentEntity> findByKeys( final FindContentByKeysCommand command )
     {
-        final FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, getHibernateTemplate(),
-                                                                               new FindContentByKeysQuerier(
-                                                                                   getHibernateTemplate().getSessionFactory().getCurrentSession() ) );
-        return command.execute( contentKeys );
+        final FindContentByKeysQuerier findContentByKeysQuerier =
+            new FindContentByKeysQuerier( getHibernateTemplate().getSessionFactory().getCurrentSession(), command.getContentEagerFetches(),
+                                          command.isFetchEntitiesAsReadOnly() );
+        final FindContentByKeysCommandExecutor commandExecutor =
+            new FindContentByKeysCommandExecutor( entityCache, getHibernateTemplate(), findContentByKeysQuerier );
+
+        return commandExecutor.execute( command.getContentKeys(), command.isByPassCache() );
     }
 
     @SuppressWarnings("unchecked")
@@ -132,10 +136,10 @@ public class ContentEntityDao
                                  new Object[]{contentType.getKey()} );
     }
 
-    public List<ContentKey> findContentKeysByCategory( CategoryEntity category )
+    public List<ContentKey> findContentKeysByCategory( CategoryKey category )
     {
         return findByNamedQuery( ContentKey.class, "ContentEntity.findContentKeysByCategoryKey", new String[]{"categoryKey"},
-                                 new Object[]{category.getKey()} );
+                                 new Object[]{category} );
     }
 
     @Override

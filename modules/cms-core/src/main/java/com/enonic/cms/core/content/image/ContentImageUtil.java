@@ -69,14 +69,6 @@ public class ContentImageUtil
         }
     }
 
-    public static String resolveFilenameForScaledImage( String originalImageName, BufferedImage image, String fileType )
-    {
-        StringBuffer name = new StringBuffer();
-        name.append( originalImageName ).append( "_" ).append( image.getWidth() ).append( "x" ).append( image.getHeight() );
-        name.append( "." ).append( fileType );
-        return name.toString();
-    }
-
     private static String resolveFilenameForFixedWidthImage( String originalImageName, String label, String fileType )
     {
         return originalImageName + ( label != null ? "_" + label : "" ) + "." + fileType;

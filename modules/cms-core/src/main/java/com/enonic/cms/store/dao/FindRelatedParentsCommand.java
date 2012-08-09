@@ -82,9 +82,8 @@ class FindRelatedParentsCommand
         {
             contentKeys.add( (ContentKey) row[2] );
         }
-        final FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, hibernateTemplate, new FindContentByKeysQuerier(
-            hibernateTemplate.getSessionFactory().getCurrentSession() ) );
-        final Map<ContentKey, ContentEntity> contentMapByKey = command.execute( new ArrayList<ContentKey>( contentKeys ) );
+
+        final Map<ContentKey, ContentEntity> contentMapByKey = retrieveContent( contentKeys );
 
         final List<RelatedParentContent> relatedChildContents = new ArrayList<RelatedParentContent>();
         for ( Object[] row : list )
@@ -156,5 +155,16 @@ class FindRelatedParentsCommand
         }
         hqlQuery.addOrderBy( "c.createdAt" );
         return hqlQuery.toString();
+    }
+
+    private Map<ContentKey, ContentEntity> retrieveContent( final Set<ContentKey> contentKeys )
+    {
+        final FindContentByKeysQuerier findContentByKeysQuerier =
+            new FindContentByKeysQuerier( hibernateTemplate.getSessionFactory().getCurrentSession(), ContentEagerFetches.PRESET_FOR_PORTAL,
+                                          true );
+
+        final FindContentByKeysCommandExecutor commandExecutor =
+            new FindContentByKeysCommandExecutor( entityCache, hibernateTemplate, findContentByKeysQuerier );
+        return commandExecutor.execute( new ArrayList<ContentKey>( contentKeys ), false );
     }
 }

@@ -256,7 +256,7 @@ public class ContentTypeEntity
 
         ContentTypeEntity that = (ContentTypeEntity) o;
 
-        return key == that.getKey();
+        return getKey() == that.getKey();
 
     }
 

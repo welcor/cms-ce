@@ -192,7 +192,7 @@ public class CacheInvalidator
     {
         for ( String roleName : rule.getCollectionRoles() )
         {
-            this.sessionFactory.evictCollection( roleName );
+            this.sessionFactory.getCache().evictCollectionRegion( roleName );
         }
     }
 

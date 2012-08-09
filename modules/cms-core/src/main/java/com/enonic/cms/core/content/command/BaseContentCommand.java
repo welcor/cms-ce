@@ -44,14 +44,9 @@ public abstract class BaseContentCommand
 
     private boolean useCommandsBinaryDataToAdd = false;
 
-    public Collection<ContentAccessEntity> getContentAccessRights()
+    public SortedMap<String, ContentAccessEntity> getContentAccessRights()
     {
-        return contentAccessRights.values();
-    }
-
-    public boolean hasContentAccessRight( ContentAccessEntity contentAccess )
-    {
-        return contentAccessRights.containsKey( contentAccess.getGroup().getGroupKey().toString() );
+        return contentAccessRights;
     }
 
     public void addContentAccessRights( Collection<ContentAccessEntity> values, ContentEntity content )

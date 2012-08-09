@@ -23,7 +23,6 @@ import com.google.common.base.Preconditions;
 
 import com.enonic.cms.framework.blob.BlobRecord;
 
-import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.access.ContentAccessException;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.content.access.ContentAccessType;
@@ -149,7 +148,7 @@ public class ContentStorer
         {
             newContent.setSource( contentDao.findByKey( createContentCommand.getSource() ) );
         }
-        newContent.addContentAccessRights( createContentCommand.getContentAccessRights() );
+        newContent.addContentAccessRights( createContentCommand.getContentAccessRights().values() );
 
         ContentVersionEntity newContentVersion = new ContentVersionEntity();
         newContentVersion.setCreatedAt( creationDate );
@@ -170,10 +169,6 @@ public class ContentStorer
 
         final List<ContentBinaryDataEntity> contentBinaryDatasToAdd = ContentBinaryDataEntity.createNewFrom( binariesToAdd );
         doAddContentBinariesToVersion( persistedContent.getMainVersion(), contentBinaryDatasToAdd );
-
-        flushPendingHibernateWork();
-
-//        indexService.index( newContent );
 
         flushPendingHibernateWork();
 
@@ -371,7 +366,8 @@ public class ContentStorer
 
         if ( updateCommand.getSyncAccessRights() )
         {
-            final boolean accessRightsModified = doSynchronizeContentAccessRights( updateCommand );
+            final boolean accessRightsModified =
+                new ContentACLSynchronizer( groupDao ).synchronize( persistedContent, updateCommand.getContentAccessRights() );
             if ( accessRightsModified )
             {
                 result.markAccessRightsAsChanged();
@@ -381,13 +377,6 @@ public class ContentStorer
         if ( result.isAnyChangesMade() )
         {
             persistedContent.setTimestamp( getNow() );
-        }
-
-        flushPendingHibernateWork();
-
-        if ( result.isAnyChangesMade() )
-        {
-//            indexService.index( persistedContent );
         }
 
         flushPendingHibernateWork();
@@ -865,8 +854,6 @@ public class ContentStorer
 
         result.setNewAssignee( assignee );
 
-//        indexService.index( content );
-
         return result;
     }
 
@@ -936,7 +923,6 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-//        indexService.index( content );
     }
 
     public UnassignContentResult unassignContent( UnassignContentCommand command )
@@ -966,8 +952,6 @@ public class ContentStorer
         content.setTimestamp( getNow() );
 
         flushPendingHibernateWork();
-
-//        indexService.index( content );
 
         return result;
     }
@@ -1018,8 +1002,6 @@ public class ContentStorer
         result.setStoredSnapshotContentVersion( storeSnapshotResult.getTargetedVersion() );
 
         flushPendingHibernateWork();
-
-//        indexService.index( parentContent );
 
         return result;
     }
@@ -1105,7 +1087,6 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-//        indexService.index( content );
     }
 
     public ContentKey copyContent( final UserEntity copier, final ContentEntity sourceContent, final CategoryEntity toCategory )
@@ -1191,10 +1172,6 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-//        indexService.index( newContent );
-
-        flushPendingHibernateWork();
-
         return persistedContent.getKey();
     }
 
@@ -1275,55 +1252,6 @@ public class ContentStorer
         binaryDataAndBinary.setBinaryData( binaryData );
     }
 
-    private boolean doSynchronizeContentAccessRights( final UpdateContentCommand updateCommand )
-    {
-        boolean modified = false;
-
-        final ContentEntity persistedContent = contentDao.findByKey( updateCommand.getContentKey() );
-
-        final List<ContentAccessEntity> accessRightsToRemove = new ArrayList<ContentAccessEntity>();
-
-        // remove content access rights that is no longer there
-        final Collection<ContentAccessEntity> existingAccessRights = persistedContent.getContentAccessRights();
-        for ( ContentAccessEntity existingAccessRight : existingAccessRights )
-        {
-            boolean remove = !updateCommand.hasContentAccessRight( existingAccessRight );
-            if ( remove )
-            {
-                accessRightsToRemove.add( existingAccessRight );
-            }
-        }
-        for ( ContentAccessEntity accessRight : accessRightsToRemove )
-        {
-            boolean modifiedByRemove = persistedContent.removeContentAccessRightByGroup( accessRight.getGroup().getGroupKey() );
-            if ( modifiedByRemove )
-            {
-                modified = true;
-            }
-        }
-
-        for ( ContentAccessEntity givenContentAccess : updateCommand.getContentAccessRights() )
-        {
-            final ContentAccessEntity persistedContentAccess =
-                persistedContent.getContentAccessRight( givenContentAccess.getGroup().getGroupKey() );
-            if ( persistedContentAccess != null )
-            {
-                boolean modifiedByUpdate = persistedContentAccess.overwriteRightsFrom( givenContentAccess );
-                if ( modifiedByUpdate )
-                {
-                    modified = true;
-                }
-            }
-            else
-            {
-                persistedContent.addContentAccessRight( givenContentAccess );
-                modified = true;
-            }
-        }
-
-        return modified;
-    }
-
     private void doDeleteContent( final ContentEntity content )
     {
         if ( content.isDeleted() )
@@ -1340,7 +1268,6 @@ public class ContentStorer
         doDeleteContentHome( content );
         doDeleteSectionContent( content );
 
-//        indexService.removeContent( content );
     }
 
     private void doDeleteSectionContent( ContentEntity content )
@@ -1359,14 +1286,6 @@ public class ContentStorer
 
     private void doDeleteRelatedContent( ContentEntity content )
     {
-        // remove related content referencing this content.
-        // Set<ContentVersionEntity> parentContentVersions = content.getRelatedParentContentVersions();
-        // for (ContentVersionEntity parent: parentContentVersions) {
-        // RelatedContentEntity relatedContent = relatedContentDao.findByKey( new RelatedContentKey( parent.getKey(),
-        // content.getKey()) )
-        // relatedContentDao.delete( relatedContent );
-        // }
-
         // remove related contents referenced by this content.
         for ( ContentVersionEntity version : content.getVersions() )
         {

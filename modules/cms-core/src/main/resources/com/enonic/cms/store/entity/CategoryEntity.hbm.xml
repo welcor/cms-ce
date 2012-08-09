@@ -48,7 +48,7 @@
       </key>
       <one-to-many class="com.enonic.cms.core.content.category.CategoryEntity"/>
     </bag>
-    <map name="accessRights" inverse="true" cascade="all" lazy="true" fetch="select" batch-size="500">
+    <map name="accessRights" inverse="true" cascade="all-delete-orphan" lazy="true" fetch="select" batch-size="500">
       <cache usage="nonstrict-read-write"/>
       <key column="CAR_CAT_LKEY"/>
       <map-key type="com.enonic.cms.store.hibernate.type.GroupKeyUserType" column="CAR_GRP_HKEY"/>

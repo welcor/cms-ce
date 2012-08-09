@@ -44,7 +44,8 @@ public class InternalClientImpl_ImportContentCsvTest
         setupImport( getConfigForStringBasedCSVImport() );
         doImport( getStringBasedCSVImportData( count, "Oslo" ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -106,7 +107,8 @@ public class InternalClientImpl_ImportContentCsvTest
 
         hibernateTemplate.clear();
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
 
@@ -130,7 +132,7 @@ public class InternalClientImpl_ImportContentCsvTest
         doImport( getStringBasedCSVImportData( count, null ), "testuser2", "MyImport2" );
         fixture.flushIndexTransaction();
 
-        List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         for ( int i = 0; i < count; i++ )
         {
@@ -142,7 +144,7 @@ public class InternalClientImpl_ImportContentCsvTest
         doImport( getStringBasedCSVImportData( count, "Majorstua" ), "testuser", "MyImport" );
         fixture.flushIndexTransaction();
 
-        contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         for ( int i = 0; i < count; i++ )
         {
@@ -160,7 +162,8 @@ public class InternalClientImpl_ImportContentCsvTest
         setupImport( getConfigForStringBasedCSVImportWithPublishFromAndToFromImportData() );
         doImport( getStringBasedCSVImportDataWithPublishFromAndToFromImportData( count, "2001.01.01 01:01:01", "2020.20.20 20:20:20" ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.01 01:01:00" ), content.getAvailableFrom() );
@@ -187,7 +190,8 @@ public class InternalClientImpl_ImportContentCsvTest
         setupImport( getConfigForStringBasedCSVImport() );
         doImport( getStringBasedCSVImportData( count, "Oslo" ), "testuser", "MyImport", null, null );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertNull( content.getAvailableFrom() );
@@ -234,7 +238,8 @@ public class InternalClientImpl_ImportContentCsvTest
         final ContentKey key2 = setupImage();
         doImport( getContentKeyBasedCSVImportData( count, key1, key1, key1, key2 ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -274,7 +279,8 @@ public class InternalClientImpl_ImportContentCsvTest
         doImport( getRelatedContentCSVImportData( count, "A", "B", "C" ) );
         fixture.flushIndexTransaction();
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -313,7 +319,8 @@ public class InternalClientImpl_ImportContentCsvTest
         doImport( getRelatedContentCSVImportData( count, "A", "B", "C" ) );
         fixture.flushIndexTransaction();
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -345,7 +352,8 @@ public class InternalClientImpl_ImportContentCsvTest
         setupImport( getConfigForMiscCSVImport() );
         doImport( getMiscCSVImportData( count ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );

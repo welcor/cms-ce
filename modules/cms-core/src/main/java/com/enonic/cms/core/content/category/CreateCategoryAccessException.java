@@ -13,7 +13,7 @@ public class CreateCategoryAccessException
 
     private static String buildMessage( String reason, QualifiedUsername user )
     {
-        StringBuffer msg = new StringBuffer();
+        StringBuilder msg = new StringBuilder();
         msg.append( " User " ).append( user ).append( " do not have access to create category: " ).append( reason );
         return msg.toString();
     }

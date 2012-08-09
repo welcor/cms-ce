@@ -52,13 +52,10 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.util.TIntArrayList;
 
 import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.content.category.CategoryAccessRights;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
+import com.enonic.cms.core.content.category.CategoryAccessControl;
 import com.enonic.cms.core.content.category.UnitEntity;
 import com.enonic.cms.core.content.category.UnitKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.group.GroupKey;
@@ -1121,38 +1118,27 @@ public abstract class AdminHandlerBaseServlet
         return element;
     }
 
-    protected StoreNewCategoryCommand createStoreNewCategoryCommand( User user, ExtendedMap formItems )
+    protected CategoryAccessControl parseCategoryAccessControl( ExtendedMap categoryAccessRight )
     {
-        StoreNewCategoryCommand command = new StoreNewCategoryCommand();
-        command.setCreator( user.getKey() );
-        command.setName( formItems.getString( "name" ) );
-        command.setAutoApprove( formItems.getBoolean( "autoApprove" ) );
-
-        if ( formItems.containsKey( "contenttypekey" ) )
-        {
-            command.setContentType( new ContentTypeKey( formItems.getString( "contenttypekey" ) ) );
-        }
-        if ( formItems.containsKey( "supercategorykey" ) )
-        {
-            command.setParentCategory( new CategoryKey( formItems.getString( "supercategorykey" ) ) );
-        }
-        if ( formItems.containsKey( "description" ) )
-        {
-            command.setDescription( formItems.getString( "description" ) );
-        }
-
-        fillAccessRights( command, formItems );
-        return command;
+        CategoryAccessControl categoryAccessControl = new CategoryAccessControl();
+        categoryAccessControl.setReadAccess( categoryAccessRight.getBoolean( "read", false ) );
+        categoryAccessControl.setAdminBrowseAccess( categoryAccessRight.getBoolean( "adminread", false ) );
+        categoryAccessControl.setPublishAccess( categoryAccessRight.getBoolean( "publish", false ) );
+        categoryAccessControl.setCreateAccess( categoryAccessRight.getBoolean( "create", false ) );
+        categoryAccessControl.setAdminAccess( categoryAccessRight.getBoolean( "administrate", false ) );
+        return categoryAccessControl;
     }
 
-    protected void fillAccessRights( StoreNewCategoryCommand command, ExtendedMap formItems )
+    protected List<CategoryAccessControl> parseCategoryAccessRights( ExtendedMap formItems )
     {
+        List<CategoryAccessControl> list = new ArrayList<CategoryAccessControl>();
+
         for ( Object parameterKey : formItems.keySet() )
         {
             String paramName = (String) parameterKey;
             if ( paramName.startsWith( "accessright[key=" ) )
             {
-                CategoryAccessRights accessRight = new CategoryAccessRights();
+                CategoryAccessControl accessRight = new CategoryAccessControl();
 
                 String paramValue = formItems.getString( paramName );
                 ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
@@ -1183,9 +1169,10 @@ public abstract class AdminHandlerBaseServlet
                     accessRight.setReadAccess( paramsInValue.getBoolean( "read" ) );
                 }
 
-                command.addAccessRight( accessRight );
+                list.add( accessRight );
             }
         }
+        return list;
     }
 
     public void addAccessLevelParameters( User user, Map<String, Object> parameters )

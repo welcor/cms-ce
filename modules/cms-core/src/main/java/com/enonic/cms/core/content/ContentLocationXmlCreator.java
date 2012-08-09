@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.content;
 
-import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.core.structure.SiteEntity;
@@ -17,11 +16,6 @@ public class ContentLocationXmlCreator
     private boolean includeSiteNameInfo = false;
 
     private boolean includeUserDefinedSectionHomeInfo = false;
-
-    public Document createLocationDocument( ContentLocations contentLocations, boolean includeSectionActivationInfo )
-    {
-        return new Document( doCreateLocationElement( contentLocations, includeSectionActivationInfo ) );
-    }
 
     public Element createLocationElement( ContentLocations contentLocations, boolean includeSectionActivationInfo )
     {

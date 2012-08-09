@@ -582,7 +582,6 @@ public final class ContentHandler
             TIntArrayList childrenKeys = new TIntArrayList();
             boolean moreResults = resultSet.next();
 
-
             // related content keys elememt map
             TIntObjectHashMap contentKeyRCKElemMap = new TIntObjectHashMap();
             TIntObjectHashMap versionKeyRCKElemMap = new TIntObjectHashMap();
@@ -1044,45 +1043,6 @@ public final class ContentHandler
         }
 
         return contentTypeKeys.toArray();
-    }
-
-    public int[] getContentKeysByCategory( User user, CategoryKey categoryKey )
-    {
-        return getContentKeysByCategory( user, categoryKey, false, false );
-    }
-
-    private int[] getContentKeysByCategory( User user, CategoryKey categoryKey, boolean recursive, boolean excludeArchived )
-    {
-        ContentView contentView = ContentView.getInstance();
-        StringBuffer sql = XDG.generateSelectSQL( contentView, contentView.con_lKey, false, contentView.cat_lKey );
-
-        if ( excludeArchived )
-        {
-            XDG.appendWhereSQL( sql, contentView.cov_lStatus, XDG.OPERATOR_LESS, 3 );
-        }
-
-        String sqlString = sql.toString();
-        if ( user != null )
-        {
-            sqlString = getSecurityHandler().appendContentSQL( user, categoryKey, sqlString );
-        }
-
-        TIntArrayList result = new TIntArrayList();
-        result.add( getCommonHandler().getIntArray( sqlString, categoryKey.toInt() ) );
-
-        if ( !recursive )
-        {
-            return result.toArray();
-        }
-        else
-        {
-            List<CategoryKey> subCategoryKeys = getCategoryHandler().getSubCategories( categoryKey );
-            for ( CategoryKey subCategoryKey : subCategoryKeys )
-            {
-                result.add( getContentKeysByCategory( user, subCategoryKey, recursive, excludeArchived ) );
-            }
-            return result.toArray();
-        }
     }
 
     public String getContentHandlerClassForContentType( int contentTypeKey )

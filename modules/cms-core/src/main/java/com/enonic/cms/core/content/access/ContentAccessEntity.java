@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.enonic.cms.core.content.ContentAccessControl;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.security.group.GroupEntity;
 
@@ -26,6 +27,13 @@ public class ContentAccessEntity
     private GroupEntity group;
 
     private ContentEntity content;
+
+    public ContentAccessEntity()
+    {
+        readAccess = 0;
+        updateAccess = 0;
+        deleteAccess = 0;
+    }
 
     public String getKey()
     {
@@ -113,22 +121,22 @@ public class ContentAccessEntity
         return new HashCodeBuilder( 173, 153 ).append( key ).toHashCode();
     }
 
-    public boolean overwriteRightsFrom( ContentAccessEntity other )
+    public boolean overwriteRightsFrom( ContentAccessControl other )
     {
         boolean modified = false;
-        if ( !readAccess.equals( other.readAccess ) )
+        if ( isReadAccess() != other.isRead() )
         {
-            readAccess = other.readAccess;
+            setReadAccess( other.isRead() );
             modified = true;
         }
-        if ( !updateAccess.equals( other.updateAccess ) )
+        if ( isUpdateAccess() != other.isUpdate() )
         {
-            updateAccess = other.updateAccess;
+            setUpdateAccess( other.isUpdate() );
             modified = true;
         }
-        if ( !deleteAccess.equals( other.deleteAccess ) )
+        if ( isDeleteAccess() != other.isDelete() )
         {
-            deleteAccess = other.deleteAccess;
+            setDeleteAccess( other.isDelete() );
             modified = true;
         }
 

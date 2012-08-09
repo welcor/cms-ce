@@ -28,7 +28,7 @@ public class StoreNewCategoryCommand
 
     private boolean autoApprove = false;
 
-    private List<CategoryAccessRights> accessRights = null;
+    private CategoryACL categoryACL = null;
 
     private String description;
 
@@ -84,18 +84,26 @@ public class StoreNewCategoryCommand
         return autoApprove;
     }
 
-    public void addAccessRight( CategoryAccessRights accessRight )
+    public void addAccessRights( Iterable<CategoryAccessControl> accessRights )
     {
-        if ( accessRights == null )
+        for ( CategoryAccessControl ar : accessRights )
         {
-            accessRights = new ArrayList<CategoryAccessRights>();
+            addAccessRight( ar );
         }
-        accessRights.add( accessRight );
     }
 
-    public List<CategoryAccessRights> getAccessRights()
+    public void addAccessRight( CategoryAccessControl accessRight )
     {
-        return accessRights;
+        if ( categoryACL == null )
+        {
+            categoryACL = new CategoryACL();
+        }
+        categoryACL.add( accessRight );
+    }
+
+    public CategoryACL getCategoryACL()
+    {
+        return categoryACL;
     }
 
     public String getDescription()

@@ -39,17 +39,13 @@ class MoveCategoryCommandProcessor
 
         if ( !accessResolver.hasDeleteCategoryAccess( user, categoryToMove.getParent() ) )
         {
-            throw new CategoryAccessException( "Cannot delete sub-categories in category",
-                                               user.getQualifiedName(),
-                                               CategoryAccessType.ADMINISTRATE,
-                                               categoryToMove.getParent().getKey() );
+            throw new CategoryAccessException( "Cannot delete sub-categories in category", user.getQualifiedName(),
+                                               CategoryAccessType.ADMINISTRATE, categoryToMove.getParent().getKey() );
         }
         if ( !accessResolver.hasAdministrateCategoryAccess( user, destinationCategory ) )
         {
-            throw new CategoryAccessException( "Cannot create sub-categories in category",
-                                               user.getQualifiedName(),
-                                               CategoryAccessType.ADMINISTRATE,
-                                               destinationCategory.getKey() );
+            throw new CategoryAccessException( "Cannot create sub-categories in category", user.getQualifiedName(),
+                                               CategoryAccessType.ADMINISTRATE, destinationCategory.getKey() );
         }
         if ( destinationCategory.isSubCategoryOf( categoryToMove ) )
         {

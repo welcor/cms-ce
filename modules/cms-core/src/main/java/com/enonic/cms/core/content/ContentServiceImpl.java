@@ -40,9 +40,6 @@ import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
-import com.enonic.cms.core.content.resultset.ContentVersionResultSet;
-import com.enonic.cms.core.content.resultset.ContentVersionResultSetLazyFetcher;
-import com.enonic.cms.core.content.resultset.ContentVersionResultSetNonLazy;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.log.LogService;
@@ -606,14 +603,6 @@ public class ContentServiceImpl
         return contentTypeDao.getAll();
     }
 
-    public boolean isContentInUse( ContentKey contentKey )
-    {
-        List<ContentKey> contentKeys = new ArrayList<ContentKey>();
-        contentKeys.add( contentKey );
-
-        return isContentInUse( contentKeys );
-    }
-
     public boolean isContentInUse( List<ContentKey> contentKeys )
     {
         return doIsContentInUse( contentKeys );
@@ -652,34 +641,6 @@ public class ContentServiceImpl
     public void setContentStorer( ContentStorer value )
     {
         this.contentStorer = value;
-    }
-
-    public ContentVersionResultSet getContentVersions( ContentVersionSpecification specification, String orderByCol, int count, int index )
-    {
-
-        if ( specification.getUser() != null )
-        {
-            Collection<GroupKey> securityFilter = contentSecurityFilterResolver.resolveGroupKeys( specification.getUser() );
-            specification.setSecurityFilter( securityFilter );
-        }
-        List<ContentVersionKey> versionKeys = contentVersionDao.findBySpecification( specification, orderByCol, count + index );
-
-        final int totalCount = contentVersionDao.findCountBySpecification( specification );
-
-        final int queryResultTotalSize = versionKeys.size();
-
-        if ( index > queryResultTotalSize )
-        {
-            return (ContentVersionResultSet) new ContentVersionResultSetNonLazy( index ).addError(
-                "Index greater than result count: " + index + " greater than " + queryResultTotalSize );
-        }
-
-        int fromIndex = Math.max( index, 0 );
-        int toIndex = Math.min( queryResultTotalSize, fromIndex + count );
-        final List<ContentVersionKey> actualKeysWanted = versionKeys.subList( fromIndex, toIndex );
-
-        return new ContentVersionResultSetLazyFetcher( new ContentVersionEntityFetcherImpl( contentVersionDao ), actualKeysWanted, index,
-                                                       totalCount );
     }
 
     private void logEvent( UserKey actor, ContentEntity content, LogType type )

@@ -9,8 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -41,10 +39,6 @@ public class UnitHandler
         "SELECT uni_lKey, uni_sName, cat_sName, cat_lKey, lan_lKey, lan_sDescription, lan_sCode" + " FROM tUnit" +
             " JOIN tLanguage ON tLanguage.lan_lKey = tUnit.uni_lan_lKey" + " JOIN tCategory ON tCategory.cat_uni_lKey = tUnit.uni_lKey" +
             " WHERE (uni_bDeleted=0) AND cat_cat_lSuper IS NULL ";
-
-    private final static String UNI_UPDATE =
-        "UPDATE tUnit" + " SET uni_lan_lKey=?" + ",uni_sName=?" + ",uni_sDescription=?" + ",uni_lSuperKey=?" + ",uni_dteTimestamp=" +
-            "@currentTimestamp@" + " WHERE uni_lKey=?";
 
     private final static String UNI_WHERE_CLAUSE = " uni_lKey=?";
 
@@ -201,135 +195,8 @@ public class UnitHandler
 
     public XMLDocument getUnits()
     {
-        StringBuffer sql = new StringBuffer( UNI_SELECT );
-        return XMLDocumentFactory.create( getUnit( sql.toString(), null ) );
-    }
-
-    public void updateUnit( String xmlData )
-    {
-
-        Document doc = XMLTool.domparse( xmlData, "unit" );
-        updateUnit( doc );
-    }
-
-    private void updateUnit( Document unitDoc )
-    {
-
-        // XML DOM
-        Element root = unitDoc.getDocumentElement();
-
-        // get the unit's sub-elements
-        Map subelems = XMLTool.filterElements( root.getChildNodes() );
-
-        // connection variables
-        Connection con = null;
-        PreparedStatement preparedStmt = null;
-
-        try
-        {
-            // get the keys
-            int unitkey = Integer.parseInt( root.getAttribute( "key" ) );
-            // int sitekey = Integer.parseInt(root.getAttribute("sitekey"));
-            int superkey = -1;
-            String key = root.getAttribute( "superkey" );
-            if ( key.length() > 0 )
-            {
-                superkey = Integer.parseInt( key );
-            }
-            int languageKey = Integer.parseInt( root.getAttribute( "languagekey" ) );
-
-            con = getConnection();
-            preparedStmt = con.prepareStatement( UNI_UPDATE );
-
-            // attribute: key
-            preparedStmt.setInt( 5, unitkey );
-
-            // attribute: superkey
-            if ( superkey >= 0 )
-            {
-                preparedStmt.setInt( 4, superkey );
-            }
-            else
-            {
-                preparedStmt.setNull( 4, Types.INTEGER );
-            }
-
-            // attribute: languagekey
-            preparedStmt.setInt( 1, languageKey );
-
-            // element: name
-            Element subelem = (Element) subelems.get( "name" );
-            String name = XMLTool.getElementText( subelem );
-            preparedStmt.setString( 2, name );
-
-            // element: description
-            subelem = (Element) subelems.get( "description" );
-            if ( subelem != null )
-            {
-                String description = XMLTool.getElementText( subelem );
-                if ( description == null )
-                {
-                    preparedStmt.setNull( 3, Types.VARCHAR );
-                }
-                else
-                {
-                    preparedStmt.setString( 3, description );
-                }
-            }
-            else
-            {
-                preparedStmt.setNull( 3, Types.VARCHAR );
-            }
-
-            // element: timestamp (using the database timestamp at update)
-            /* no code */
-
-            // update the unit
-            preparedStmt.executeUpdate();
-
-            // Set content types
-            Element[] contentTypeElems = XMLTool.getElements( XMLTool.getElement( root, "contenttypes" ) );
-            int[] contentTypeKeys = new int[contentTypeElems.length];
-            for ( int i = 0; i < contentTypeElems.length; i++ )
-            {
-                contentTypeKeys[i] = Integer.parseInt( contentTypeElems[i].getAttribute( "key" ) );
-            }
-            setUnitContentTypes( unitkey, contentTypeKeys );
-        }
-        catch ( SQLException sqle )
-        {
-            String message = "Failed to update unit: %t";
-            VerticalEngineLogger.errorUpdate( message, sqle );
-        }
-        catch ( NumberFormatException nfe )
-        {
-            String message = "Failed to parse a unit key: %t";
-            VerticalEngineLogger.errorUpdate( message, nfe );
-        }
-        finally
-        {
-            close( preparedStmt );
-        }
-    }
-
-    private void setUnitContentTypes( int unitKey, int[] contentTypeKeys )
-    {
-        final UnitEntity entity = this.unitDao.findByKey( new UnitKey( unitKey ) );
-        if ( entity == null )
-        {
-            return;
-        }
-
-        entity.getContentTypes().clear();
-
-        for ( final int contentTypeKey : contentTypeKeys )
-        {
-            final ContentTypeEntity contentType = this.contentTypeDao.findByKey( contentTypeKey );
-            if ( contentType != null )
-            {
-                entity.getContentTypes().add( contentType );
-            }
-        }
+        String sql = UNI_SELECT;
+        return XMLDocumentFactory.create( getUnit( sql, null ) );
     }
 
     private int[] getUnitContentTypes( int unitKey )

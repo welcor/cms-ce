@@ -21,6 +21,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 import org.springframework.util.Assert;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -93,6 +94,8 @@ public class ContentEntity
 
     private SortedSet<MenuItemEntity> directMenuItemPlacements = new TreeSet<MenuItemEntity>( new MenuItemComparatorByHierarchy() );
 
+    private SortedMap<GroupKey, ContentAccessEntity> contentAccessRights =
+        new TreeMap<GroupKey, ContentAccessEntity>( new GroupKeyComparator() );
 
     public ContentEntity()
     {
@@ -132,12 +135,6 @@ public class ContentEntity
         this.directMenuItemPlacements =
             source.getDirectMenuItemPlacements() != null ? new TreeSet<MenuItemEntity>( source.getDirectMenuItemPlacements() ) : null;
     }
-
-    /**
-     * Key is groupKey
-     */
-    private SortedMap<GroupKey, ContentAccessEntity> contentAccessRights =
-        new TreeMap<GroupKey, ContentAccessEntity>( new GroupKeyComparator() );
 
     public ContentKey getKey()
     {
@@ -304,26 +301,6 @@ public class ContentEntity
         return relatedParents;
     }
 
-    public List<ContentEntity> getRelatedParents( boolean includeDeleted )
-    {
-        List<ContentEntity> parents = new ArrayList<ContentEntity>();
-
-        final Set<ContentKey> usedKeys = new HashSet<ContentKey>();
-        for ( final ContentVersionEntity relContentVersion : getRelatedParentContentVersions() )
-        {
-            final ContentEntity relatedParentContent = relContentVersion.getContent();
-            final ContentKey relatedKey = relatedParentContent.getKey();
-
-            if ( !usedKeys.contains( relatedKey ) && ( includeDeleted || !relatedParentContent.isDeleted() ) )
-            {
-                usedKeys.add( relatedKey );
-                parents.add( relatedParentContent );
-            }
-        }
-
-        return parents;
-    }
-
     public SortedSet<MenuItemEntity> getDirectMenuItemPlacements()
     {
         return directMenuItemPlacements;
@@ -479,11 +456,6 @@ public class ContentEntity
         contentHomes.put( siteKey.toInt(), contentHome );
     }
 
-    public void addRelatedParent( ContentVersionEntity relatedParent )
-    {
-        this.relatedParents.add( relatedParent );
-    }
-
     public void addSectionContent( SectionContentEntity sectionContent )
     {
         sectionContent.setContent( this );
@@ -621,14 +593,11 @@ public class ContentEntity
         return contentHomes.get( siteKey.toInt() );
     }
 
-    public boolean hasAccessRightSet( final GroupEntity group, final ContentAccessType type )
+    public boolean hasAccessRightSet( final GroupKey group, final ContentAccessType type )
     {
-        if ( group == null )
-        {
-            throw new IllegalArgumentException( "Given group cannot be null" );
-        }
+        Preconditions.checkNotNull( group, "Given group cannot be null" );
 
-        ContentAccessEntity access = contentAccessRights.get( group.getGroupKey() );
+        ContentAccessEntity access = contentAccessRights.get( group );
         if ( access == null )
         {
             return false;
@@ -645,7 +614,12 @@ public class ContentEntity
             default:
                 return false;
         }
+    }
 
+    public boolean hasAccessRightSet( final GroupEntity group, final ContentAccessType type )
+    {
+        Preconditions.checkNotNull( group, "Given group cannot be null" );
+        return hasAccessRightSet( group.getGroupKey(), type );
     }
 
     public void accumulateAccess( ContentAccessRightsAccumulated accumulated, GroupEntity group )

@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -218,9 +219,46 @@ public class CategoryEntity
         return childrenKeys;
     }
 
+    public boolean isTopCategory()
+    {
+        return parent == null;
+    }
+
+    public void setAccessRights( Map<GroupKey, CategoryAccessEntity> accessRights )
+    {
+        this.accessRights = accessRights;
+    }
+
+    public void addAccessRight( CategoryAccessEntity accessRight )
+    {
+        if ( accessRights == null )
+        {
+            accessRights = new LinkedHashMap<GroupKey, CategoryAccessEntity>();
+        }
+        accessRights.put( accessRight.getKey().getGroupKey(), accessRight );
+    }
+
+    public void removeAcessRights( Iterable<GroupKey> accesesToRemove )
+    {
+        for ( GroupKey group : accesesToRemove )
+        {
+            accessRights.remove( group );
+        }
+    }
+
+    public boolean hasAccessForGroup( GroupKey groupKey )
+    {
+        return accessRights.containsKey( groupKey );
+    }
+
     public Map<GroupKey, CategoryAccessEntity> getAccessRights()
     {
         return accessRights;
+    }
+
+    public CategoryAccessEntity getCategoryAccess( GroupKey group )
+    {
+        return accessRights.get( group );
     }
 
     public void accumulateAccess( CategoryAccessRightsAccumulated accumulated, GroupEntity group )
@@ -262,14 +300,11 @@ public class CategoryEntity
         return false;
     }
 
-    public boolean hasAccessRightSet( final GroupEntity group, final CategoryAccessType type )
+    public boolean hasAccessRightSet( final GroupKey group, final CategoryAccessType type )
     {
-        if ( group == null )
-        {
-            throw new IllegalArgumentException( "Given group cannot be null" );
-        }
+        Preconditions.checkNotNull( group, "Given group cannot be null" );
 
-        CategoryAccessEntity access = accessRights.get( group.getGroupKey() );
+        CategoryAccessEntity access = accessRights.get( group );
         if ( access == null )
         {
             return false;
@@ -356,25 +391,6 @@ public class CategoryEntity
     {
         this.parent = parent;
         this.parent.addChild( this );
-    }
-
-    public void setAccessRights( Map<GroupKey, CategoryAccessEntity> accessRights )
-    {
-        this.accessRights = accessRights;
-    }
-
-    public void addAccessRight( CategoryAccessEntity accessRight )
-    {
-        if ( accessRights == null )
-        {
-            accessRights = new LinkedHashMap<GroupKey, CategoryAccessEntity>();
-        }
-        accessRights.put( accessRight.getKey().getGroupKey(), accessRight );
-    }
-
-    public void setContents( Set<ContentEntity> contents )
-    {
-        this.contents = contents;
     }
 
     public void setAutoMakeAvailable( boolean value )

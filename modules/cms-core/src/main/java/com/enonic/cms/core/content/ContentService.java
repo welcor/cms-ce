@@ -27,7 +27,6 @@ import com.enonic.cms.core.content.query.OpenContentQuery;
 import com.enonic.cms.core.content.query.RelatedChildrenContentQuery;
 import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.content.resultset.ContentVersionResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.security.user.UserEntity;
 
@@ -86,8 +85,6 @@ public interface ContentService
      */
     RelatedContentResultSet getRelatedContentRequiresAll( UserEntity user, int relation, ContentResultSet content );
 
-    boolean isContentInUse( ContentKey contentKey );
-
     boolean isContentInUse( List<ContentKey> contentKeys );
 
     ContentResultSet queryContent( OpenContentQuery query );
@@ -105,8 +102,6 @@ public interface ContentService
     RelatedContentResultSet queryRelatedContent( RelatedChildrenContentQuery spec );
 
     ContentResultSet getContent( ContentSpecification specification, String orderByCol, int count, int index );
-
-    ContentVersionResultSet getContentVersions( ContentVersionSpecification specification, String orderBy, int count, int index );
 
     /**
      * Collect all index values and create an aggregated set of all.

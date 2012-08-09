@@ -5,8 +5,7 @@
 package com.enonic.vertical.adminweb;
 
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,6 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
@@ -35,13 +33,19 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLException;
 
+import com.enonic.cms.core.content.category.CategoryAccessControl;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.DeleteCategoryCommand;
+import com.enonic.cms.core.content.category.ModifyCategoryACLCommand;
 import com.enonic.cms.core.content.category.MoveCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
+import com.enonic.cms.core.content.category.SynchronizeCategoryACLCommand;
+import com.enonic.cms.core.content.category.UpdateCategoryCommand;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
@@ -51,53 +55,6 @@ import com.enonic.cms.core.xslt.XsltProcessorHelper;
 final public class CategoryHandlerServlet
     extends AdminHandlerBaseServlet
 {
-
-    private String buildCategoryXML( User user, ExtendedMap formItems, boolean createCategory )
-    {
-        Document doc = XMLTool.createDocument( "category" );
-        Element categoryElem = doc.getDocumentElement();
-
-        if ( !createCategory )
-        {
-            categoryElem.setAttribute( "key", formItems.getString( "key" ) );
-        }
-
-        if ( formItems.containsKey( "selectedunitkey" ) )
-        {
-            categoryElem.setAttribute( "unitkey", formItems.getString( "selectedunitkey" ) );
-        }
-        if ( formItems.containsKey( "contenttypekey" ) )
-        {
-            categoryElem.setAttribute( "contenttypekey", formItems.getString( "contenttypekey" ) );
-        }
-        if ( formItems.containsKey( "supercategorykey" ) )
-        {
-            categoryElem.setAttribute( "supercategorykey", formItems.getString( "supercategorykey" ) );
-        }
-        categoryElem.setAttribute( "name", formItems.getString( "name" ) );
-        categoryElem.setAttribute( "autoApprove", formItems.getString( "autoApprove" ) );
-
-        if ( !createCategory )
-        {
-            categoryElem.setAttribute( "created", formItems.getString( "created" ) );
-            Element ownerElem = XMLTool.createElement( doc, categoryElem, "owner" );
-            ownerElem.setAttribute( "key", formItems.getString( "ownerkey" ) );
-        }
-        else
-        {
-            Element ownerElem = XMLTool.createElement( doc, categoryElem, "owner" );
-            ownerElem.setAttribute( "key", String.valueOf( user.getKey() ) );
-        }
-        if ( formItems.containsKey( "description" ) )
-        {
-            Element descriptionElem = XMLTool.createElement( doc, categoryElem, "description" );
-            XMLTool.createCDATASection( doc, descriptionElem, formItems.getString( "description" ) );
-        }
-        Element modifierElem = XMLTool.createElement( doc, categoryElem, "modifier" );
-        modifierElem.setAttribute( "key", String.valueOf( user.getKey() ) );
-
-        return XMLTool.documentToString( doc );
-    }
 
     public void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems )
@@ -146,6 +103,31 @@ final public class CategoryHandlerServlet
 
             redirectClientToAdminPath( "adminpage", queryParams, request, response );
         }
+    }
+
+    protected StoreNewCategoryCommand createStoreNewCategoryCommand( User user, ExtendedMap formItems )
+    {
+        StoreNewCategoryCommand command = new StoreNewCategoryCommand();
+        command.setCreator( user.getKey() );
+        command.setName( formItems.getString( "name" ) );
+        command.setAutoApprove( formItems.getBoolean( "autoApprove" ) );
+
+        if ( formItems.containsKey( "contenttypekey" ) )
+        {
+            command.setContentType( new ContentTypeKey( formItems.getString( "contenttypekey" ) ) );
+        }
+        if ( formItems.containsKey( "supercategorykey" ) )
+        {
+            command.setParentCategory( new CategoryKey( formItems.getString( "supercategorykey" ) ) );
+        }
+        if ( formItems.containsKey( "description" ) )
+        {
+            command.setDescription( formItems.getString( "description" ) );
+        }
+
+        List<CategoryAccessControl> accessRights = parseCategoryAccessRights( formItems );
+        command.addAccessRights( accessRights );
+        return command;
     }
 
     public void handlerForm( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
@@ -321,21 +303,36 @@ final public class CategoryHandlerServlet
         throws VerticalAdminException, VerticalEngineException
     {
 
-        User user = securityService.getLoggedInAdminConsoleUser();
-        String xmlData = buildCategoryXML( user, formItems, false );
-        int categoryKey = formItems.getInt( "key" );
+        final User user = securityService.getLoggedInAdminConsoleUser();
+        final CategoryKey categoryKey = new CategoryKey( formItems.getInt( "key" ) );
+        final String contentTypeKeyAsString = formItems.getString( "contenttypekey", null );
+        final String autoApproveAsString = formItems.getString( "autoApprove", null );
+        final String name = formItems.getString( "name", null );
+        final String description = formItems.getString( "description", null );
+
+        final UpdateCategoryCommand updateCategoryCommand = new UpdateCategoryCommand();
+        updateCategoryCommand.setUpdater( user.getKey() );
+        updateCategoryCommand.setCategory( categoryKey );
+        if ( StringUtils.isNotEmpty( contentTypeKeyAsString ) )
+        {
+            updateCategoryCommand.setContentType( new ContentTypeKey( contentTypeKeyAsString ) );
+        }
+        updateCategoryCommand.setName( name );
+        updateCategoryCommand.setDescription( description );
+        if ( StringUtils.isNotEmpty( autoApproveAsString ) )
+        {
+            updateCategoryCommand.setAutoApprove( Boolean.valueOf( autoApproveAsString ) );
+        }
+        categoryService.updateCategory( updateCategoryCommand );
 
         // Oppdaterer kategorien med rettigheter bare hvis brukeren ikke har valgt å propagere
         if ( formItems.containsKey( "updateaccessrights" ) && !formItems.getString( "propagate", "" ).equals( "true" ) )
         {
-            String accessRightsXML = buildAccessRightsXML( String.valueOf( categoryKey ), formItems, AccessRight.CATEGORY );
-            Document doc = XMLTool.domparse( xmlData );
-            XMLTool.mergeDocuments( doc, XMLTool.domparse( accessRightsXML ), true );
-            admin.updateCategory( user, XMLTool.documentToString( doc ) );
-        }
-        else
-        {
-            admin.updateCategory( user, xmlData );
+            SynchronizeCategoryACLCommand synchronizeCategoryACLCommand = new SynchronizeCategoryACLCommand();
+            synchronizeCategoryACLCommand.setUpdater( user.getKey() );
+            synchronizeCategoryACLCommand.setCategory( categoryKey );
+            synchronizeCategoryACLCommand.addAccessControlList( parseCategoryAccessRights( formItems ) );
+            categoryService.synchronizeCategoryACLInNewTX( synchronizeCategoryACLCommand );
         }
 
         // Redirect to propagate page
@@ -443,298 +440,114 @@ final public class CategoryHandlerServlet
                                               AdminService admin, ExtendedMap formItems )
         throws VerticalAdminException, VerticalEngineException
     {
-
-        User user = securityService.getLoggedInAdminConsoleUser();
+        final User user = securityService.getLoggedInAdminConsoleUser();
+        final CategoryKey categoryKey = new CategoryKey( formItems.getInt( "cat" ) );
 
         // Propagate
         String subop = formItems.getString( "subop", "" );
         if ( "propagate".equals( subop ) )
         {
-
-            String includeContents = formItems.getString( "includecontents", "off" );
-            String applyOnlyChanges = formItems.getString( "applyonlychanges", "off" );
+            final String includeContents = formItems.getString( "includecontents", "off" );
+            final String applyOnlyChanges = formItems.getString( "applyonlychanges", "off" );
 
             if ( "on".equals( applyOnlyChanges ) )
             {
-                // ("applying only changes");
-                // Prepare for apply only changes..
-                Hashtable<String, ExtendedMap> removedCategoryAccessRights = new Hashtable<String, ExtendedMap>();
-                Hashtable<String, ExtendedMap> addedCategoryAccessRights = new Hashtable<String, ExtendedMap>();
-                Hashtable<String, ExtendedMap> modifiedCategoryAccessRights = new Hashtable<String, ExtendedMap>();
+                final ModifyCategoryACLCommand modifyCategoryACLCommand = new ModifyCategoryACLCommand();
+                modifyCategoryACLCommand.setUpdater( user.getKey() );
 
-                Hashtable<String, ExtendedMap> removedContentAccessRights = new Hashtable<String, ExtendedMap>();
-                Hashtable<String, ExtendedMap> addedContentAccessRights = new Hashtable<String, ExtendedMap>();
-                Hashtable<String, ExtendedMap> modifiedContentAccessRights = new Hashtable<String, ExtendedMap>();
-
-                for ( Iterator i = formItems.keySet().iterator(); i.hasNext(); )
+                for ( Object o : formItems.keySet() )
                 {
-                    String paramName = (String) i.next();
+                    final String paramName = (String) o;
                     if ( paramName.startsWith( "arc[key=" ) )
                     {
-                        ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
-                        String paramValue = formItems.getString( paramName );
-                        ExtendedMap categoryAccessRight = ParamsInTextParser.parseParamsInText( paramValue, "[", "]", ";" );
-                        String diffinfo = categoryAccessRight.getString( "diffinfo" );
+                        final ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
+                        final String paramValue = formItems.getString( paramName );
+                        final ExtendedMap categoryAccessRight = ParamsInTextParser.parseParamsInText( paramValue, "[", "]", ";" );
+                        final String diffinfo = categoryAccessRight.getString( "diffinfo" );
+
                         if ( "removed".equals( diffinfo ) )
                         {
-                            removedCategoryAccessRights.put( paramsInName.getString( "key" ), categoryAccessRight );
-                            removedContentAccessRights.put( paramsInName.getString( "key" ), categoryAccessRight );
+                            modifyCategoryACLCommand.addToBeRemoved( new GroupKey( paramsInName.getString( "key" ) ) );
                         }
                         else if ( "added".equals( diffinfo ) )
                         {
-                            String groupKey = paramsInName.getString( "key" );
-                            addedCategoryAccessRights.put( groupKey, categoryAccessRight );
-                            // M� konvertere category parametere til content parametere
-                            ExtendedMap contentAccessRight = buildContentARFromCategoryAR( categoryAccessRight );
-                            addedContentAccessRights.put( groupKey, contentAccessRight );
+                            CategoryAccessControl categoryAccessControl = parseCategoryAccessControl( categoryAccessRight );
+                            categoryAccessControl.setGroupKey( new GroupKey( paramsInName.getString( "key" ) ) );
+                            modifyCategoryACLCommand.addToBeAdded( categoryAccessControl );
                         }
                         else if ( "modified".equals( diffinfo ) )
                         {
-                            String groupKey = paramsInName.getString( "key" );
-                            modifiedCategoryAccessRights.put( groupKey, categoryAccessRight );
-                            // M� konvertere category parametere til content parametere
-                            ExtendedMap contentAccessRight = buildContentARFromCategoryAR( categoryAccessRight );
-                            modifiedContentAccessRights.put( groupKey, contentAccessRight );
+                            CategoryAccessControl categoryAccessControl = parseCategoryAccessControl( categoryAccessRight );
+                            categoryAccessControl.setGroupKey( new GroupKey( paramsInName.getString( "key" ) ) );
+                            modifyCategoryACLCommand.addToBeModified( categoryAccessControl );
                         }
                     }
                 }
 
                 // Run through each (selected) category...
-                for ( Iterator it = formItems.keySet().iterator(); it.hasNext(); )
+                for ( Object o : formItems.keySet() )
                 {
-
-                    String paramName = (String) it.next();
+                    final String paramName = (String) o;
                     if ( paramName.startsWith( "chkPropagate[key=" ) )
                     {
+                        final ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
+                        final CategoryKey curCategoryKey = new CategoryKey( paramsInName.getString( "key" ) );
 
-                        ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
-                        int curCategoryKey = Integer.parseInt( paramsInName.getString( "key" ) );
+                        modifyCategoryACLCommand.addCategory( curCategoryKey );
 
-                        // Apply, only changes
-                        if ( "on".equals( applyOnlyChanges ) )
+                        if ( "on".equals( includeContents ) )
                         {
-
-                            // Henter ut eksisterende accessrights
-                            Document docCurrentCategoryAR =
-                                admin.getAccessRights( user, AccessRight.CATEGORY, curCategoryKey, false ).getAsDOMDocument();
-                            // getAccessRights() skal enten: ikke returnere userright? eller s� utvider jeg den med en
-                            // parameter hvor jeg kan velge dette.
-
-                            // Påfører endringer
-                            Document docChangedCategoryAR =
-                                applyChangesInAccessRights( docCurrentCategoryAR, removedCategoryAccessRights, modifiedCategoryAccessRights,
-                                                            addedCategoryAccessRights );
-                            // Lagrer
-                            admin.updateAccessRights( user, XMLTool.documentToString( docChangedCategoryAR ) );
-
-                            // Apply on contents in current category too...
-                            if ( "on".equals( includeContents ) )
-                            {
-
-                                // Loop thru each content in category
-                                int[] contentKeys = admin.getContentKeysByCategory( user, curCategoryKey );
-                                if ( contentKeys != null )
-                                {
-                                    for ( int i = 0; i < contentKeys.length; i++ )
-                                    {
-                                        // Henter ut eksisterende accessrights
-                                        Document docCurrentContentAR =
-                                            admin.getAccessRights( user, AccessRight.CONTENT, contentKeys[i], false ).getAsDOMDocument();
-
-                                        // Påfører endringer
-                                        Document docChangedContentAR =
-                                            applyChangesInAccessRights( docCurrentContentAR, removedContentAccessRights,
-                                                                        modifiedContentAccessRights, addedContentAccessRights );
-
-                                        // Lagrer
-                                        admin.updateAccessRights( user, XMLTool.documentToString( docChangedContentAR ) );
-                                    }
-                                }
-                            }
+                            modifyCategoryACLCommand.includeContent();
                         }
-
-                        adminService.updateIndexCategory( new CategoryKey( curCategoryKey ) );
                     }
                 }
+
+                modifyCategoryACLCommand.executeInBatches( categoryService, contentDao );
             }
             // Apply accessright as whole
             else
             {
                 // ("applying as whole");
-                // Prepare for overwrite accessrights
-                Document docNewCategoryAccessRights = buildAccessRightsXML( null, null, formItems, AccessRight.CATEGORY );
+                final List<CategoryAccessControl> accessRights = parseCategoryAccessRights( formItems );
+                final SynchronizeCategoryACLCommand synchronizeCategoryACLCommand = new SynchronizeCategoryACLCommand();
+                synchronizeCategoryACLCommand.setUpdater( user.getKey() );
+                synchronizeCategoryACLCommand.addAccessControlList( accessRights );
 
                 // Run through each (selected) category...
-                for ( Iterator it = formItems.keySet().iterator(); it.hasNext(); )
+                for ( Object o : formItems.keySet() )
                 {
-
-                    String paramName = (String) it.next();
+                    final String paramName = (String) o;
                     if ( paramName.startsWith( "chkPropagate[key=" ) )
                     {
-
-                        ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
-
-                        int curCategoryKey = Integer.parseInt( paramsInName.getString( "key" ) );
+                        final ExtendedMap paramsInName = ParamsInTextParser.parseParamsInText( paramName, "[", "]", ";" );
+                        final CategoryKey curCategoryKey = new CategoryKey( paramsInName.getString( "key" ) );
 
                         // Apply on current category
-                        Element categoryAccessrighs = docNewCategoryAccessRights.getDocumentElement();
-                        categoryAccessrighs.setAttribute( "key", String.valueOf( curCategoryKey ) );
-
-                        admin.updateAccessRights( user, XMLTool.documentToString( docNewCategoryAccessRights ) );
+                        synchronizeCategoryACLCommand.addCategory( curCategoryKey );
 
                         // Apply on contents in current category too...
                         if ( "on".equals( includeContents ) )
                         {
-                            Document docNewContentAccessRights = buildContentARsFromCategoryARs( docNewCategoryAccessRights );
-                            Element accessRights = docNewContentAccessRights.getDocumentElement();
-
-                            int[] contentKeys = admin.getContentKeysByCategory( user, curCategoryKey );
-                            if ( contentKeys != null )
-                            {
-                                for ( int i = 0; i < contentKeys.length; i++ )
-                                {
-                                    // setter content key i accessrights elementet
-                                    accessRights.setAttribute( "key", String.valueOf( contentKeys[i] ) );
-
-                                    admin.updateAccessRights( user, XMLTool.documentToString( docNewContentAccessRights ) );
-                                }
-                            }
+                            synchronizeCategoryACLCommand.includeContent();
                         }
-
-                        adminService.updateIndexCategory( new CategoryKey( curCategoryKey ) );
                     }
                 }
+                synchronizeCategoryACLCommand.executeInBatches( categoryService, contentDao );
             }
         }
-        // Ikke propager, bare lagre accessrights p� valgte categori
+        // Ikke propager, bare lagre accessrights på valgte categori
         else
         {
-
-            int categoryKey = formItems.getInt( "cat" );
-
-            String accessRightsXML = buildAccessRightsXML( String.valueOf( categoryKey ), formItems, AccessRight.CATEGORY );
-
-            // Oppdaterer i db
-            admin.updateAccessRights( user, accessRightsXML );
+            final List<CategoryAccessControl> accessRights = parseCategoryAccessRights( formItems );
+            final SynchronizeCategoryACLCommand synchronizeCategoryACLCommand = new SynchronizeCategoryACLCommand();
+            synchronizeCategoryACLCommand.setUpdater( user.getKey() );
+            synchronizeCategoryACLCommand.setCategory( categoryKey );
+            synchronizeCategoryACLCommand.addAccessControlList( accessRights );
+            categoryService.synchronizeCategoryACLInNewTX( synchronizeCategoryACLCommand );
         }
 
         // Redirect...
         redirectToBrowse( request, response, formItems );
-
-    }
-
-    private ExtendedMap buildContentARFromCategoryAR( ExtendedMap categoryAccessRight )
-    {
-
-        ExtendedMap contentAccessRights = new ExtendedMap();
-
-        String category_read = categoryAccessRight.getString( "read" );
-        String category_create = categoryAccessRight.getString( "create" );
-        String category_publish = categoryAccessRight.getString( "publish" );
-        String category_administrate = categoryAccessRight.getString( "administrate" );
-
-        String content_read = "false";
-        String content_update = "false";
-        String content_delete = "false";
-
-        if ( "true".equals( category_administrate ) )
-        {
-            content_read = "true";
-            content_update = "true";
-            content_delete = "true";
-        }
-        else if ( "true".equals( category_publish ) )
-        {
-            content_read = "true";
-            content_update = "true";
-            content_delete = "true";
-        }
-        else if ( "true".equals( category_create ) )
-        {
-            content_read = "true";
-            content_update = "false";
-            content_delete = "false";
-        }
-        else if ( "true".equals( category_read ) )
-        {
-            content_read = "true";
-            content_update = "false";
-            content_delete = "false";
-        }
-
-        contentAccessRights.putString( "read", content_read );
-        contentAccessRights.putString( "update", content_update );
-        contentAccessRights.putString( "delete", content_delete );
-
-        return contentAccessRights;
-    }
-
-    private Document buildContentARsFromCategoryARs( Document categoryAccessRights )
-    {
-
-        Document doc = XMLTool.createDocument( "accessrights" );
-        Element accessRights = doc.getDocumentElement();
-        accessRights.setAttribute( "type", String.valueOf( AccessRight.CONTENT ) );
-
-        NodeList categoryAccessRightList = categoryAccessRights.getDocumentElement().getChildNodes();
-        for ( int i = 0; i < categoryAccessRightList.getLength(); i++ )
-        {
-
-            Element categoryAccessRight = (Element) categoryAccessRightList.item( i );
-            Element contentAccessRight = buildContentARFromCategoryAR( categoryAccessRight );
-
-            accessRights.appendChild( doc.importNode( contentAccessRight, true ) );
-        }
-
-        return doc;
-    }
-
-    private Element buildContentARFromCategoryAR( Element categoryAccessRight )
-    {
-
-        Document doc = XMLTool.createDocument( "accessright" );
-        Element accessRight = doc.getDocumentElement();
-        accessRight.setAttribute( "groupkey", categoryAccessRight.getAttribute( "groupkey" ) );
-
-        String category_read = categoryAccessRight.getAttribute( "read" );
-        String category_create = categoryAccessRight.getAttribute( "create" );
-        String category_publish = categoryAccessRight.getAttribute( "publish" );
-        String category_administrate = categoryAccessRight.getAttribute( "administrate" );
-
-        String content_read = "false";
-        String content_update = "false";
-        String content_delete = "false";
-
-        if ( "true".equals( category_administrate ) )
-        {
-            content_read = "true";
-            content_update = "true";
-            content_delete = "true";
-        }
-        else if ( "true".equals( category_publish ) )
-        {
-            content_read = "true";
-            content_update = "true";
-            content_delete = "true";
-        }
-        else if ( "true".equals( category_create ) )
-        {
-            content_read = "true";
-            content_update = "false";
-            content_delete = "false";
-        }
-        else if ( "true".equals( category_read ) )
-        {
-            content_read = "true";
-            content_update = "false";
-            content_delete = "false";
-        }
-
-        accessRight.setAttribute( "read", content_read );
-        accessRight.setAttribute( "update", content_update );
-        accessRight.setAttribute( "delete", content_delete );
-
-        return accessRight;
     }
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,

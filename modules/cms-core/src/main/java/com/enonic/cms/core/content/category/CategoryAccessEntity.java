@@ -4,10 +4,11 @@
  */
 package com.enonic.cms.core.content.category;
 
-import com.enonic.cms.core.security.group.GroupEntity;
+import java.io.Serializable;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import java.io.Serializable;
+import com.enonic.cms.core.security.group.GroupEntity;
 
 public class CategoryAccessEntity
     implements Serializable
@@ -97,6 +98,15 @@ public class CategoryAccessEntity
         this.adminBrowseAccess = adminReadAccess ? 1 : 0;
     }
 
+    public void setAll( boolean value )
+    {
+        this.readAccess = value ? 1 : 0;
+        this.adminBrowseAccess = value ? 1 : 0;
+        this.createAccess = value ? 1 : 0;
+        this.publishAccess = value ? 1 : 0;
+        this.adminAccess = value ? 1 : 0;
+    }
+
     public boolean equals( Object o )
     {
         if ( this == o )
@@ -157,5 +167,39 @@ public class CategoryAccessEntity
     public boolean givesContentDeleteAccess()
     {
         return givesApprove();
+    }
+
+    public void setAccess( CategoryAccessControl bluePrint )
+    {
+        this.readAccess = bluePrint.isReadAccess() ? 1 : 0;
+        this.adminBrowseAccess = bluePrint.isAdminBrowseAccess() ? 1 : 0;
+        this.publishAccess = bluePrint.isPublishAccess() ? 1 : 0;
+        this.createAccess = bluePrint.isCreateAccess() ? 1 : 0;
+        this.adminAccess = bluePrint.isAdminAccess() ? 1 : 0;
+    }
+
+    public static CategoryAccessEntity create( CategoryKey category, GroupEntity group, CategoryAccessControl car )
+    {
+        final CategoryAccessEntity ca = new CategoryAccessEntity();
+        ca.setKey( new CategoryAccessKey( category, group.getGroupKey() ) );
+        ca.setGroup( group );
+        ca.setReadAccess( car.isReadAccess() );
+        ca.setAdminBrowseAccess( car.isAdminBrowseAccess() );
+        ca.setPublishAccess( car.isPublishAccess() );
+        ca.setCreateAccess( car.isCreateAccess() );
+        ca.setAdminAccess( car.isAdminAccess() );
+        return ca;
+    }
+
+    public CategoryAccessControl toAccessRights()
+    {
+        CategoryAccessControl car = new CategoryAccessControl();
+        car.setGroupKey( this.group.getGroupKey() );
+        car.setReadAccess( this.isReadAccess() );
+        car.setAdminBrowseAccess( this.isAdminBrowseAccess() );
+        car.setPublishAccess( this.isPublishAccess() );
+        car.setCreateAccess( this.isCreateAccess() );
+        car.setAdminAccess( this.isAdminAccess() );
+        return car;
     }
 }

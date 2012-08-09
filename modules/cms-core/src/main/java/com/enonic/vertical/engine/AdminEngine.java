@@ -613,24 +613,6 @@ public final class AdminEngine
         pageTemplateHandler.removePageTemplate( pageTemplateKey );
     }
 
-    public void updateCategory( User user, String xmlData )
-    {
-
-        Document doc = XMLTool.domparse( xmlData, "category" );
-        Element categoryElem = doc.getDocumentElement();
-        if ( !isEnterpriseAdmin( user ) )
-        {
-            CategoryKey categoryKey = CategoryKey.parse( categoryElem.getAttribute( "key" ) );
-
-            if ( !securityHandler.validateCategoryUpdate( user, categoryKey ) )
-            {
-                String message = "User does not have access rights to update the category.";
-                VerticalEngineLogger.errorSecurity( message, null );
-            }
-        }
-        categoryHandler.updateCategory( user, doc );
-    }
-
     public void updateContentObject( String xmlData )
     {
         contentObjectHandler.updateContentObject( xmlData );
@@ -669,11 +651,6 @@ public final class AdminEngine
     public void updatePageTemplate( String xmlData )
     {
         pageTemplateHandler.updatePageTemplate( xmlData );
-    }
-
-    public void updateUnit( String xmlData )
-    {
-        unitHandler.updateUnit( xmlData );
     }
 
     public XMLDocument getMenuItemsByContentObject( User user, int cobKey )
@@ -777,11 +754,6 @@ public final class AdminEngine
     public boolean isDeveloper( User user )
     {
         return memberOfResolver.hasDeveloperPowers( user.getKey() );
-    }
-
-    public int[] getContentKeysByCategory( User user, int categoryKey )
-    {
-        return contentHandler.getContentKeysByCategory( user, CategoryKey.parse( categoryKey ) );
     }
 
     public XMLDocument getMenu( User user, CategoryCriteria criteria )

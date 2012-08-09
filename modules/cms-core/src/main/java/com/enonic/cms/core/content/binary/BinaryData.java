@@ -11,7 +11,6 @@ import java.util.Date;
 import com.enonic.esl.util.StringUtil;
 
 import com.enonic.cms.api.client.model.content.image.ImageContentDataInput;
-import com.enonic.cms.core.content.ContentVersionEntity;
 
 /**
  * This class is deprecated
@@ -62,44 +61,6 @@ public class BinaryData
         {
             this.fileName = "noname.bin";
         }
-    }
-
-    public ContentBinaryDataEntity createContentBinaryDataEntity( ContentVersionEntity contentVersion, BinaryDataEntity binaryData )
-    {
-        ContentBinaryDataEntity entity = new ContentBinaryDataEntity();
-        entity.setBinaryData( binaryData );
-        entity.setContentVersion( contentVersion );
-        entity.setLabel( label );
-        return entity;
-    }
-
-    public BinaryDataEntity createBinaryDataEntity( Date creationDateTime )
-    {
-        BinaryDataEntity entity = new BinaryDataEntity();
-        if ( key > -1 )
-        {
-            entity.setKey( key );
-        }
-        entity.setName( getSafeFileName() );
-        if ( data != null )
-        {
-            entity.setSize( data.length );
-        }
-        if ( timestamp == null )
-        {
-            entity.setCreatedAt( creationDateTime );
-        }
-        else
-        {
-            entity.setCreatedAt( timestamp );
-        }
-
-        return entity;
-    }
-
-    public static BinaryData createBinaryDataFromStream( final ByteArrayOutputStream stream, final String fileName )
-    {
-        return createBinaryDataFromStream( stream, fileName, null, null );
     }
 
     public static BinaryData createBinaryDataFromStream( final ByteArrayOutputStream stream, final String fileName, final String label,

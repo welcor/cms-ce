@@ -27,22 +27,69 @@ public class CategoryServiceImpl
     private static final int TIMEOUT_24HOURS = 86400;
 
     @Autowired
-    DeleteCategoryCommandProcessorFactory deleteCategoryCommandProcessorFactory;
-
-    @Autowired
-    CreateCategoryCommandProcessorFactory createCategoryCommandProcessorFactory;
+    private CategoryCommandProcessorFactory processorFactory;
 
     @Autowired
     private LogService logService;
 
-    @Autowired
-    MoveCategoryCommandProcessorFactory moveCategoryCommandProcessorFactory;
-
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public CategoryKey storeNewCategory( final StoreNewCategoryCommand command )
     {
-        final CreateCategoryCommandProcessor processor = createCategoryCommandProcessorFactory.create( command );
-        return processor.createCategory( command );
+        return processorFactory.createStoreNewCategoryCommandProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updateCategory( UpdateCategoryCommand command )
+    {
+        processorFactory.createUpdateCategoryCommandProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void synchronizeCategoryACL( SynchronizeCategoryACLCommand command )
+    {
+        processorFactory.createSynchronizeCategoryACLProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    public void synchronizeCategoryACLInNewTX( SynchronizeCategoryACLCommand command )
+    {
+        processorFactory.createSynchronizeCategoryACLProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void syncronizeContentACL( SynchronizeContentACLCommand command )
+    {
+        processorFactory.createSynchronizeContentACLCommandProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    public void syncronizeContentACLInNewTx( SynchronizeContentACLCommand command )
+    {
+        processorFactory.createSynchronizeContentACLCommandProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void modifyCategoryACL( ModifyCategoryACLCommand command )
+    {
+        processorFactory.createModifyCategoryACLCommand( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    public void modifyCategoryACLInNewTX( ModifyCategoryACLCommand command )
+    {
+        processorFactory.createModifyCategoryACLCommand( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void modifyContentACL( ModifyContentACLCommand command )
+    {
+        processorFactory.createModifyContentACLCommandProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    public void modifyContentACLInNewTX( ModifyContentACLCommand command )
+    {
+        processorFactory.createModifyContentACLCommandProcessor( command ).process( command );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = TIMEOUT_24HOURS)
@@ -50,7 +97,7 @@ public class CategoryServiceImpl
     {
         try
         {
-            final DeleteCategoryCommandProcessor processor = deleteCategoryCommandProcessorFactory.create( command );
+            final DeleteCategoryCommandProcessor processor = processorFactory.createDeleteCategoryCommandProcessor( command );
             processor.deleteCategory();
 
             for ( ContentEntity deletedContent : processor.getDeletedContent() )
@@ -88,7 +135,7 @@ public class CategoryServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void moveCategory( MoveCategoryCommand command )
     {
-        final MoveCategoryCommandProcessor processor = moveCategoryCommandProcessorFactory.create( command );
+        final MoveCategoryCommandProcessor processor = processorFactory.createMoveCategoryCommandProcessor( command );
         processor.moveCategory();
     }
 }

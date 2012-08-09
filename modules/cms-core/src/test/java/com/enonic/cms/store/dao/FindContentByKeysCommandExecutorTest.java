@@ -19,7 +19,7 @@ import com.enonic.cms.core.content.OrderContentKeysByGivenOrderComparator;
 
 import static org.junit.Assert.*;
 
-public class FindContentByKeysCommandTest
+public class FindContentByKeysCommandExecutorTest
 {
     private static ContentKey CONTENT_KEY_1 = new ContentKey( 1 );
 
@@ -53,8 +53,10 @@ public class FindContentByKeysCommandTest
         Mockito.when( hibernateTemplate.get( ContentEntity.class, CONTENT_KEY_3 ) ).thenReturn( createContent( CONTENT_KEY_3 ) );
 
         // exercise
-        FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, hibernateTemplate, findContentByKeysQuerier );
-        SortedMap<ContentKey, ContentEntity> result = command.execute( Lists.newArrayList( CONTENT_KEY_1, CONTENT_KEY_2, CONTENT_KEY_3 ) );
+        FindContentByKeysCommandExecutor commandExecutor =
+            new FindContentByKeysCommandExecutor( entityCache, hibernateTemplate, findContentByKeysQuerier );
+        SortedMap<ContentKey, ContentEntity> result =
+            commandExecutor.execute( Lists.newArrayList( CONTENT_KEY_1, CONTENT_KEY_2, CONTENT_KEY_3 ), false );
 
         // verify
         SortedMap<ContentKey, ContentEntity> expected = createSortedMap( CONTENT_KEY_1, CONTENT_KEY_2, CONTENT_KEY_3 );
@@ -77,9 +79,10 @@ public class FindContentByKeysCommandTest
             Lists.newArrayList( createContent( CONTENT_KEY_2 ), createContent( CONTENT_KEY_4 ) ) );
 
         // exercise
-        FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, hibernateTemplate, findContentByKeysQuerier );
+        FindContentByKeysCommandExecutor commandExecutor =
+            new FindContentByKeysCommandExecutor( entityCache, hibernateTemplate, findContentByKeysQuerier );
         SortedMap<ContentKey, ContentEntity> result =
-            command.execute( Lists.newArrayList( CONTENT_KEY_1, CONTENT_KEY_2, CONTENT_KEY_3, CONTENT_KEY_4 ) );
+            commandExecutor.execute( Lists.newArrayList( CONTENT_KEY_1, CONTENT_KEY_2, CONTENT_KEY_3, CONTENT_KEY_4 ), false );
 
         // verify
         SortedMap<ContentKey, ContentEntity> expected = createSortedMap( CONTENT_KEY_1, CONTENT_KEY_2, CONTENT_KEY_3, CONTENT_KEY_4 );
@@ -95,8 +98,10 @@ public class FindContentByKeysCommandTest
             Lists.newArrayList( createContent( CONTENT_KEY_1 ), createContent( CONTENT_KEY_2 ), createContent( CONTENT_KEY_3 ) ) );
 
         // exercise
-        FindContentByKeysCommand command = new FindContentByKeysCommand( entityCache, hibernateTemplate, findContentByKeysQuerier );
-        SortedMap<ContentKey, ContentEntity> result = command.execute( Lists.newArrayList( CONTENT_KEY_3, CONTENT_KEY_1, CONTENT_KEY_2 ) );
+        FindContentByKeysCommandExecutor commandExecutor =
+            new FindContentByKeysCommandExecutor( entityCache, hibernateTemplate, findContentByKeysQuerier );
+        SortedMap<ContentKey, ContentEntity> result =
+            commandExecutor.execute( Lists.newArrayList( CONTENT_KEY_3, CONTENT_KEY_1, CONTENT_KEY_2 ), false );
 
         // verify
         SortedMap<ContentKey, ContentEntity> expected = createSortedMap( CONTENT_KEY_3, CONTENT_KEY_1, CONTENT_KEY_2 );
@@ -121,4 +126,5 @@ public class FindContentByKeysCommandTest
         content.setKey( key );
         return content;
     }
+
 }

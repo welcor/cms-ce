@@ -154,11 +154,6 @@ public abstract class BaseHandler
         securityService = service;
     }
 
-    protected final CategoryHandler getCategoryHandler()
-    {
-        return baseEngine.getCategoryHandler();
-    }
-
     protected final ContentHandler getContentHandler()
     {
         return baseEngine.getContentHandler();

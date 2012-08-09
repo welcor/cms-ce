@@ -42,7 +42,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImport() );
         doImport( getStringBasedXmlImportData( count, "Oslo" ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -87,7 +88,7 @@ public class InternalClientImpl_ImportContentXmlTest
         doImport( getStringBasedXmlImportData( count, "Oslo" ), "testuser", "MyImport" );
         doImport( getStringBasedXmlImportData( count, null ), "testuser2", "MyImport2" );
 
-        List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         for ( int i = 0; i < count; i++ )
         {
@@ -98,7 +99,7 @@ public class InternalClientImpl_ImportContentXmlTest
 
         doImport( getStringBasedXmlImportData( count, "Majorstua" ), "testuser", "MyImport" );
 
-        contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         for ( int i = 0; i < count; i++ )
         {
@@ -116,7 +117,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImportWithBlocks() );
         doImport( getStringBasedXmlImportDataWithBlocks( count ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -143,7 +145,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImportWithBlocksToBlocks() );
         doImport( getStringBasedXmlImportDataWithBlocksToBlocks( count, "value", false ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -175,7 +178,8 @@ public class InternalClientImpl_ImportContentXmlTest
         /* Import I */
         doImport( getStringBasedXmlImportDataWithBlocksToBlocks( count, "value", false ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
 
@@ -197,7 +201,8 @@ public class InternalClientImpl_ImportContentXmlTest
         /* Import II - changes in block groups */
         doImport( getStringBasedXmlImportDataWithBlocksToBlocks( count, "newValue", true ) );
 
-        final List<ContentKey> contentKeys2 = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys2 =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys2.size() );
         final ContentEntity content2 = contentDao.findByKey( contentKeys2.get( 0 ) );
 
@@ -221,7 +226,8 @@ public class InternalClientImpl_ImportContentXmlTest
         /* Import III - no changes */
         doImport( getStringBasedXmlImportDataWithBlocksToBlocks( count, "newValue", true ) );
 
-        final List<ContentKey> contentKeys3 = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys3 =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys3.size() );
         final ContentEntity content3 = contentDao.findByKey( contentKeys3.get( 0 ) );
 
@@ -237,7 +243,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImportWithNamespaces() );
         doImport( getStringBasedXmlImportDataWithNamespaces( count ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -265,7 +272,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImport_Simple() );
         doImport( getStringBasedXmlImportData_Simple( count, "JAM", "Oslo" ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
 
@@ -281,7 +289,8 @@ public class InternalClientImpl_ImportContentXmlTest
         /* Import II - Blank address */
         doImport( getStringBasedXmlImportData_Simple( count, "JAM", "" ) );
 
-        final List<ContentKey> contentKeys2 = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys2 =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys2.size() );
         final ContentEntity content2 = contentDao.findByKey( contentKeys2.get( 0 ) );
 
@@ -307,7 +316,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImport_Simple() );
         doImport( getStringBasedXmlImportData_Simple( count, "JAM", "Oslo" ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
 
@@ -323,7 +333,8 @@ public class InternalClientImpl_ImportContentXmlTest
         /* Import II - Null address */
         doImport( getStringBasedXmlImportData_Simple( count, "JAM", null ) );
 
-        final List<ContentKey> contentKeys2 = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys2 =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys2.size() );
         final ContentEntity content2 = contentDao.findByKey( contentKeys2.get( 0 ) );
 
@@ -348,7 +359,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImportWithPublishFromAndToFromImportData() );
         doImport( getStringBasedXmlImportDataWithPublishFromAndToFromImportData( count, "2001.01.01 01:01:01", "2020.20.20 20:20:20" ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.01 01:01:00" ), content.getAvailableFrom() );
@@ -375,7 +387,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForStringBasedXmlImport() );
         doImport( getStringBasedXmlImportData( count, "Oslo" ), "testuser", "MyImport", null, null );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertNull( content.getAvailableFrom() );
@@ -422,7 +435,8 @@ public class InternalClientImpl_ImportContentXmlTest
         final ContentKey key2 = setupImage();
         doImport( getContentKeyBasedXmlImportData( count, key1, key1, key1, key2 ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -462,7 +476,8 @@ public class InternalClientImpl_ImportContentXmlTest
 
         fixture.flushIndexTransaction();
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -502,7 +517,8 @@ public class InternalClientImpl_ImportContentXmlTest
 
         fixture.flushIndexTransaction();
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );
@@ -534,7 +550,8 @@ public class InternalClientImpl_ImportContentXmlTest
         setupImport( getConfigForMiscXmlImport() );
         doImport( getMiscXmlImportData( count ) );
 
-        final List<ContentKey> contentKeys = contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ) );
+        final List<ContentKey> contentKeys =
+            contentDao.findContentKeysByCategory( fixture.findCategoryByName( "MyImportCategory" ).getKey() );
         assertEquals( count, contentKeys.size() );
         final ContentEntity content = contentDao.findByKey( contentKeys.get( 0 ) );
         assertEquals( new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss" ).parse( "2001.01.02 03:04:00" ), content.getAvailableFrom() );

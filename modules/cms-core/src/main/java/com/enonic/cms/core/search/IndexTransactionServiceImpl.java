@@ -11,7 +11,6 @@ import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
-import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
@@ -75,9 +74,7 @@ public class IndexTransactionServiceImpl
     @Override
     public void updateCategory( CategoryKey categoryKey )
     {
-        final CategoryEntity category = new CategoryEntity();
-        category.setKey( categoryKey );
-        final List<ContentKey> contentList = contentDao.findContentKeysByCategory( category );
+        final List<ContentKey> contentList = contentDao.findContentKeysByCategory( categoryKey );
         for ( ContentKey contentKey : contentList )
         {
             updateContent( contentKey );
@@ -106,7 +103,7 @@ public class IndexTransactionServiceImpl
         IndexTransactionJournal indexTransactionJournal =
             (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
 
-        if (indexTransactionJournal != null)
+        if ( indexTransactionJournal != null )
         {
             indexTransactionJournal.clearJournal();
         }

@@ -156,10 +156,6 @@ final public class SecurityHandler
         "SELECT dma_men_lKey, grp_hKey, grp_sName, grp_lType, usr_hKey, usr_sUID, usr_sFullName, dma_bRead, dma_bCreate," +
             " dma_bPublish, dma_bAdministrate, dma_bUpdate, dma_bDelete FROM " + MenuARView.getInstance().getReplacementSql();
 
-    private final static String CAR_INSERT = "INSERT INTO " + CAR_TABLE + " VALUES (?,?,?,?,?,?,?)";
-
-    private final static String CAR_DELETE_ALL = "DELETE FROM " + CAR_TABLE + " WHERE car_cat_lKey = ?";
-
     private final static String CAR_SELECT =
         "SELECT car_cat_lKey, grp_hKey, grp_sName, grp_lType, usr_hKey, usr_sUID, usr_sFullName, car_bRead, car_bCreate," +
             " car_bPublish, car_bAdministrate, car_bAdminRead FROM " + CatAccessRightView.getInstance().getReplacementSql();
@@ -167,8 +163,6 @@ final public class SecurityHandler
     private final static String CAR_WHERE_CLAUSE_CAT = " car_cat_lKey = ?";
 
     private final static String CAR_WHERE_CLAUSE_GROUP_IN = " grp_hKey IN ";
-
-    private final static String CAR_WHERE_CLAUSE_UPDATE = " car_bAdministrate = 1";
 
     private final static String CAR_WHERE_CLAUSE_ADMINREAD = " car_bAdminRead = 1";
 
@@ -184,11 +178,6 @@ final public class SecurityHandler
 
     private final static String CAR_SECURITY_FILTER_ADMIN =
         "SELECT car_grp_hKey FROM " + CAR_TABLE + " WHERE car_cat_lKey = ? AND car_bAdministrate = 1 " + " AND car_grp_hKey IN (%0)";
-
-    private final static String COA_INSERT =
-        "INSERT INTO " + COA_TABLE + " (coa_con_lkey, coa_grp_hKey, coa_bRead, coa_bUpdate, coa_bDelete, coa_sKey) VALUES (?,?,?,?,?,?)";
-
-    private final static String COA_DELETE_ALL = "DELETE FROM " + COA_TABLE + " WHERE coa_con_lKey = ?";
 
     private final static String COA_SELECT =
         "SELECT coa_con_lKey, grp_hKey, grp_sName, grp_lType, usr_hKey, usr_sUID, usr_sFullName, coa_bRead," +
@@ -479,11 +468,6 @@ final public class SecurityHandler
         sql.append( "))" );
     }
 
-    public String appendContentSQL( User user, CategoryKey categoryKey, String sql )
-    {
-        return appendContentSQL( user, new int[]{categoryKey.toInt()}, sql );
-    }
-
     public String appendContentSQL( User user, int[] categoryKeys, String sql )
     {
 
@@ -563,14 +547,6 @@ final public class SecurityHandler
 
                 case AccessRight.MENUITEM_DEFAULT:
                     preparedStmt = con.prepareStatement( DEFAULTMENUAR_INSERT );
-                    break;
-
-                case AccessRight.CATEGORY:
-                    preparedStmt = con.prepareStatement( CAR_INSERT );
-                    break;
-
-                case AccessRight.CONTENT:
-                    preparedStmt = con.prepareStatement( COA_INSERT );
                     break;
 
                 default:
@@ -1083,7 +1059,8 @@ final public class SecurityHandler
         }
     }
 
-    private void appendDefaultMenuItemAccessRight( User user, int key, Element rootElement, PreparedStatement preparedStmt, boolean includeUserRights )
+    private void appendDefaultMenuItemAccessRight( User user, int key, Element rootElement, PreparedStatement preparedStmt,
+                                                   boolean includeUserRights )
         throws SQLException
     {
         Document doc = rootElement.getOwnerDocument();
@@ -1396,7 +1373,8 @@ final public class SecurityHandler
         accessrightElem.setAttribute( "administrate", "true" );
     }
 
-    private void appendContentAccessRight( User user, Element rootElement, int key, PreparedStatement preparedStmt, boolean includeUserRights )
+    private void appendContentAccessRight( User user, Element rootElement, int key, PreparedStatement preparedStmt,
+                                           boolean includeUserRights )
         throws SQLException
     {
 
@@ -2480,74 +2458,6 @@ final public class SecurityHandler
         return result;
     }
 
-    public boolean validateCategoryUpdate( User user, CategoryKey categoryKey )
-    {
-
-        if ( user.isEnterpriseAdmin() )
-        {
-            return true;
-        }
-
-        GroupHandler groupHandler = getGroupHandler();
-        String[] groups = groupHandler.getAllGroupMembershipsForUser( user );
-        Arrays.sort( groups );
-
-        if ( isSiteAdmin( user, groups ) )
-        {
-            return true;
-        }
-
-        StringBuffer sql = new StringBuffer( CAR_SELECT );
-        sql.append( " WHERE" );
-        sql.append( CAR_WHERE_CLAUSE_CAT );
-        sql.append( " AND" );
-        sql.append( CAR_WHERE_CLAUSE_UPDATE );
-        sql.append( " AND" );
-        sql.append( CAR_WHERE_CLAUSE_GROUP_IN );
-        sql.append( "(" );
-        for ( int i = 0; i < groups.length; ++i )
-        {
-            if ( i > 0 )
-            {
-                sql.append( "," );
-            }
-            sql.append( "'" );
-            sql.append( groups[i] );
-            sql.append( "'" );
-        }
-        sql.append( ")" );
-
-        Connection con = null;
-        PreparedStatement preparedStmt = null;
-        ResultSet resultSet = null;
-        boolean result = false;
-
-        try
-        {
-            con = getConnection();
-            preparedStmt = con.prepareStatement( sql.toString() );
-            preparedStmt.setInt( 1, categoryKey.toInt() );
-            resultSet = preparedStmt.executeQuery();
-
-            if ( resultSet.next() )
-            {
-                result = true;
-            }
-        }
-        catch ( SQLException sqle )
-        {
-            String message = "Failed to validate category create: %t";
-            VerticalEngineLogger.error( message, sqle );
-        }
-        finally
-        {
-            close( resultSet );
-            close( preparedStmt );
-        }
-
-        return result;
-    }
-
     public boolean validateMenuItemUpdate( User user, int menuItemKey )
     {
 
@@ -2822,14 +2732,6 @@ final public class SecurityHandler
 
                 case AccessRight.MENUITEM_DEFAULT:
                     sql = DEFAULTMENUAR_REMOVE_ALL;
-                    break;
-
-                case AccessRight.CATEGORY:
-                    sql = CAR_DELETE_ALL;
-                    break;
-
-                case AccessRight.CONTENT:
-                    sql = COA_DELETE_ALL;
                     break;
 
                 default:
@@ -3131,7 +3033,6 @@ final public class SecurityHandler
             sql.append( " AND" );
         }
 
-        StringBuffer sqlFilterRights = new StringBuffer();
         sql.append( " EXISTS (SELECT " );
         sql.append( colAccessRightGroup );
         sql.append( " FROM " );
@@ -3158,7 +3059,7 @@ final public class SecurityHandler
             sb_groups.append( "'" );
         }
         StringUtil.replaceString( sql, "%groups", sb_groups.toString() );
-        StringUtil.replaceString( sql, "%filterRights", sqlFilterRights.toString() );
+        StringUtil.replaceString( sql, "%filterRights", "" );
     }
 
     public String appendMenuItemSQL( User user, String sql )

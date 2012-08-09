@@ -44,7 +44,7 @@ class CreateCategoryAccessChecker
 
         if ( noAdministrateAccessByRights )
         {
-            if ( !memberOfResolver.isMemberOfAdministratorsGroup( creator ) )
+            if ( !memberOfResolver.hasAdministratorPowers( creator ) )
             {
                 throw new CreateCategoryAccessException(
                     "To create a category the user needs to have the administrate access on the parent category or be an administrator",

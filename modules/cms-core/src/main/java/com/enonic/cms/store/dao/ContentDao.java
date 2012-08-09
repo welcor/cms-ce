@@ -12,6 +12,7 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentSpecification;
 import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
@@ -22,7 +23,7 @@ public interface ContentDao
 {
     ContentEntity findByKey( ContentKey contentKey );
 
-    SortedMap<ContentKey, ContentEntity> findByKeys( List<ContentKey> contentKeys );
+    SortedMap<ContentKey, ContentEntity> findByKeys( FindContentByKeysCommand command );
 
     List<ContentKey> findBySpecification( ContentSpecification specification, String orderBy, int count );
 
@@ -32,7 +33,7 @@ public interface ContentDao
 
     List<ContentKey> findContentKeysByContentType( ContentTypeEntity contentType );
 
-    List<ContentKey> findContentKeysByCategory( CategoryEntity category );
+    List<ContentKey> findContentKeysByCategory( CategoryKey category );
 
     int getNumberOfRelatedParentsByKey( List<ContentKey> contentKeys );
 

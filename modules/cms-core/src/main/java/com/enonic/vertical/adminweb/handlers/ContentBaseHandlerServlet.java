@@ -29,7 +29,6 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateMidnight;
 import org.joda.time.format.DateTimeFormat;
@@ -115,6 +114,7 @@ import com.enonic.cms.core.content.command.UnassignContentCommand;
 import com.enonic.cms.core.content.command.UpdateAssignmentCommand;
 import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.mail.AssignmentMailSender;
 import com.enonic.cms.core.content.mail.ImportedContentAssignmentMailTemplate;
 import com.enonic.cms.core.content.query.RelatedChildrenContentQuery;
@@ -2711,7 +2711,7 @@ public class ContentBaseHandlerServlet
                                   categoryKey != null ? categoryKey.toString() : "-1", COOKIE_TIMEOUT, deploymentPath );
         }
 
-        int contentTypeKey = -1;
+        ContentTypeKey contentTypeKey = null;
         boolean hasAdminReadOnCategory = true;
         boolean hasCategoryRead = false;
         boolean hasCategoryCreate = false;
@@ -2731,7 +2731,7 @@ public class ContentBaseHandlerServlet
             ContentTypeEntity contentType = category.getContentType();
             if ( contentType != null )
             {
-                contentTypeKey = contentType.getKey();
+                contentTypeKey = contentType.getContentTypeKey();
             }
         }
 
@@ -2866,16 +2866,16 @@ public class ContentBaseHandlerServlet
 
             // Find all content types and categories in this list
             Element[] contentElems = XMLTool.getElements( contentDoc.getDocumentElement(), "content" );
-            Set<Integer> contentTypeKeys = new HashSet<Integer>();
+            Set<ContentTypeKey> contentTypeKeys = new HashSet<ContentTypeKey>();
             Set<Integer> categoryKeys = new HashSet<Integer>();
             for ( Element contentElem : contentElems )
             {
-                contentTypeKeys.add( Integer.parseInt( contentElem.getAttribute( "contenttypekey" ) ) );
+                contentTypeKeys.add( new ContentTypeKey( contentElem.getAttribute( "contenttypekey" ) ) );
                 Element categoryElem = XMLTool.getElement( contentElem, "categoryname" );
                 categoryKeys.add( Integer.parseInt( categoryElem.getAttribute( "key" ) ) );
             }
 
-            if ( contentTypeKeys.size() == 0 && searchType == null )
+            if ( contentTypeKeys.size() == 0 && searchType == null && contentTypeKey != null )
             {
                 // This is a normal listing of an empty category
                 contentTypeKeys.add( contentTypeKey );
@@ -2883,9 +2883,7 @@ public class ContentBaseHandlerServlet
 
             if ( contentTypeKeys.size() > 0 )
             {
-                Integer[] keyArray = new Integer[contentTypeKeys.size()];
-                int[] primitiveArray = ArrayUtils.toPrimitive( contentTypeKeys.toArray( keyArray ) );
-                XMLDocument ctyDoc = admin.getContentTypes( primitiveArray, true );
+                XMLDocument ctyDoc = admin.getContentTypes( ContentTypeKey.convertToIntArray( contentTypeKeys ), true );
                 XMLTool.mergeDocuments( verticalDoc, ctyDoc.getAsDOMDocument(), true );
             }
 
@@ -2944,7 +2942,7 @@ public class ContentBaseHandlerServlet
             XMLTool.mergeDocuments( verticalDoc, indexingDoc, true );
 
             parameters.put( "cat", categoryKey.toString() );
-            parameters.put( "contenttypekey", Integer.toString( contentTypeKey ) );
+            parameters.put( "contenttypekey", Integer.toString( contentTypeKey != null ? contentTypeKey.toInt() : -1 ) );
             parameters.put( "selectedunitkey", Integer.toString( admin.getUnitKey( categoryKey.toInt() ) ) );
         }
         else

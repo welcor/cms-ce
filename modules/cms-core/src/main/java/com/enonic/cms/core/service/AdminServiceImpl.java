@@ -30,6 +30,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -586,7 +587,7 @@ public class AdminServiceImpl
         return adminEngine.getContentTypes( includeContentCount );
     }
 
-    public String getIndexingParametersXML( int contentTypeKey )
+    public String getIndexingParametersXML( ContentTypeKey contentTypeKey )
     {
         return adminEngine.getIndexingParametersXML( contentTypeKey );
     }

@@ -6,6 +6,7 @@ package com.enonic.cms.core.content.contenttype;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,5 +88,16 @@ public class ContentTypeKey
             set.add( new ContentTypeKey( value ) );
         }
         return set;
+    }
+
+    public static int[] convertToIntArray( Collection<ContentTypeKey> keys )
+    {
+        int[] array = new int[keys.size()];
+        int index = 0;
+        for ( ContentTypeKey key : keys )
+        {
+            array[index++] = key.toInt();
+        }
+        return array;
     }
 }

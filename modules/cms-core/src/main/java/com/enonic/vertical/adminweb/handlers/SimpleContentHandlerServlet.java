@@ -40,6 +40,7 @@ import com.enonic.cms.core.content.AssignmentDataParser;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.command.ImportContentCommand;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.imports.ImportJob;
 import com.enonic.cms.core.content.imports.ImportResult;
 import com.enonic.cms.core.content.imports.ImportResultXmlCreator;
@@ -291,7 +292,8 @@ final public class SimpleContentHandlerServlet
             Document sourceDoc = admin.getContentTypeModuleData( contentTypeKey ).getAsDOMDocument();
 
             // Set whether fields are indexed or not
-            Document indexDoc = XMLTool.domparse( admin.getIndexingParametersXML( contentTypeKey ) );
+            Document indexDoc =
+                XMLTool.domparse( admin.getIndexingParametersXML( contentTypeKey > -1 ? new ContentTypeKey( contentTypeKey ) : null ) );
             Element[] indexingParams = XMLTool.getElements( indexDoc.getDocumentElement(), "index" );
 
             Element browseElem = XMLTool.getElement( sourceDoc.getDocumentElement(), "browse" );

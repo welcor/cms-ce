@@ -21,6 +21,7 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
@@ -228,7 +229,7 @@ public interface AdminService
 
     public XMLDocument getContentTypes( boolean includeContentCount );
 
-    public String getIndexingParametersXML( int contentTypeKey );
+    public String getIndexingParametersXML( ContentTypeKey contentTypeKey );
 
     public long getSectionContentTimestamp( MenuItemKey sectionKey );
 

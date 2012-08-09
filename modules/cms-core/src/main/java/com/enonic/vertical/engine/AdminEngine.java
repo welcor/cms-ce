@@ -895,16 +895,20 @@ public final class AdminEngine
         return XMLDocumentFactory.create( doc );
     }
 
-    public String getIndexingParametersXML( int contentTypeKey )
+    public String getIndexingParametersXML( ContentTypeKey contentTypeKey )
     {
-        ContentTypeEntity contentType = contentTypeDao.findByKey( new ContentTypeKey( contentTypeKey ) );
-
         XMLOutputter printer = new XMLOutputter( Format.getPrettyFormat() );
         org.jdom.Element element = new org.jdom.Element( "indexparameters" );
+
+        if ( contentTypeKey == null )
+        {
+            return printer.outputString( element );
+        }
+
+        ContentTypeEntity contentType = contentTypeDao.findByKey( contentTypeKey );
         if ( contentType != null )
         {
             element = contentType.getIndexingParametersXML();
-
         }
         return printer.outputString( element );
     }

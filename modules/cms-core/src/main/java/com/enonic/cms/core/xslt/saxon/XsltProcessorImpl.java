@@ -23,8 +23,10 @@ import com.google.common.io.Closeables;
 
 import net.sf.saxon.s9api.DOMDestination;
 import net.sf.saxon.s9api.Destination;
+import net.sf.saxon.s9api.ItemType;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SAXDestination;
+import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XsltExecutable;
@@ -278,7 +280,14 @@ final class XsltProcessorImpl
 
     private void setStringParameter( final String name, final String value )
     {
-        this.parameters.put( name, new XdmAtomicValue( value ) );
+        try
+        {
+            this.parameters.put( name, new XdmAtomicValue( value, ItemType.UNTYPED_ATOMIC ) );
+        }
+        catch ( SaxonApiException e )
+        {
+            this.parameters.put( name, new XdmAtomicValue( value ) );
+        }
     }
 
     public void clearParameters()

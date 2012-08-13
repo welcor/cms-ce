@@ -1,7 +1,5 @@
 package com.enonic.cms.core.xslt.functions.portal;
 
-import net.sf.saxon.Configuration;
-
 import com.enonic.cms.core.xslt.functions.XsltFunctionLibrary;
 import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
 
@@ -42,6 +40,7 @@ public final class PortalXsltFunctionLibrary
         doRegister( new LocalizeFunction() );
         doRegister( new Md5DigestFunction() );
         doRegister( new ShaDigestFunction() );
+        doRegister( new ParseDocumentFunction() );
     }
 
     private void doRegister( final AbstractPortalFunction function )

@@ -149,6 +149,11 @@ public final class PortalFunctionsMediatorImpl
     {
         try
         {
+            if ( menuItemKey == null )
+            {
+                return createPortalFunctions().createPageUrl( params );
+            }
+
             return createPortalFunctions().createPageUrl( new MenuItemKey( menuItemKey ), params );
         }
         catch ( final Exception e )

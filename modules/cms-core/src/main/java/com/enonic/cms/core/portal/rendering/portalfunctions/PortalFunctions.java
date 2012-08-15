@@ -74,9 +74,11 @@ public class PortalFunctions
 
     private boolean encodeURIs;
 
+    private HttpServletRequest request;
+
     private SiteURLResolver siteURLResolver;
 
-    private HttpServletRequest request;
+    private PortalFunctionsContext context;
 
     private CaptchaService captchaService;
 
@@ -91,8 +93,6 @@ public class PortalFunctions
     private PortletDao portletDao;
 
     private ContentBinaryDataDao contentBinaryDataDao;
-
-    private PortalFunctionsContext context;
 
     private ImageService imageService;
 
@@ -144,11 +144,6 @@ public class PortalFunctions
         }
     }
 
-    public String createUrl( String local )
-    {
-        return createUrl( local, null );
-    }
-
     public String createUrl( String local, String[] params )
     {
         SitePath sitePath = new SitePath( context.getSite().getKey(), new Path( local != null ? local : "" ) );
@@ -191,11 +186,6 @@ public class PortalFunctions
         addParamsToSitePath( params, sitePath );
 
         return siteURLResolver.createUrl( request, sitePath, true );
-    }
-
-    public String createPageUrl()
-    {
-        return createPageUrl( null );
     }
 
     public String createPageUrl( String[] params )
@@ -392,11 +382,6 @@ public class PortalFunctions
         return siteURLResolver.createUrl( request, sitePath, true );
     }
 
-    public String createAttachmentUrl( String nativeLinkKey )
-    {
-        return createAttachmentUrl( nativeLinkKey, null );
-    }
-
     public String createAttachmentUrl( String nativeLinkKey, String[] params )
     {
         if ( encodeURIs )
@@ -422,26 +407,6 @@ public class PortalFunctions
             menuItemKey = currentMenuItem.getKey();
         }
         return menuItemKey;
-    }
-
-    public String createImageUrl( final String key )
-    {
-        return doCreateImageUrl( key, null, null, null, null );
-    }
-
-    public String createImageUrl( final String key, final String filter )
-    {
-        return doCreateImageUrl( key, filter, null, null, null );
-    }
-
-    public String createImageUrl( String key, String filter, String background )
-    {
-        return doCreateImageUrl( key, filter, background, null, null );
-    }
-
-    public String createImageUrl( String key, String filter, String background, String format )
-    {
-        return doCreateImageUrl( key, filter, background, format, null );
     }
 
     public String createImageUrl( final String key, final String filter, final String background, final String format,
@@ -485,11 +450,6 @@ public class PortalFunctions
         {
             throw new PortalFunctionException( "Invalid imagekey: " + imageKey );
         }
-    }
-
-    public String createResourceUrl( String pathAsString )
-    {
-        return createResourceUrl( pathAsString, null );
     }
 
     public String createResourceUrl( String pathAsString, String[] params )

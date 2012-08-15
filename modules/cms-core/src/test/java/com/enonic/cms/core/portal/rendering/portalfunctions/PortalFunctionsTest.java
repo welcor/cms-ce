@@ -332,7 +332,7 @@ public class PortalFunctionsTest
         context.setOriginalSitePath( originalSitePath );
         context.setMenuItem( createMenuItem( "1", "Frontpage", site1 ) );
 
-        assertEquals( "http://localhost/site/1/Frontpage", portalFunctions.createPageUrl() );
+        assertEquals( "http://localhost/site/1/Frontpage", portalFunctions.createPageUrl( null ) );
         assertEquals( "http://localhost/site/1/Frontpage?param1=value1",
                       portalFunctions.createPageUrl( new String[]{"param1", "value1"} ) );
     }
@@ -363,7 +363,7 @@ public class PortalFunctionsTest
 
         String path = "/_public/shared/scripts/test.js";
         String[] params = null;
-        String url = portalFunctions.createResourceUrl( resolvePath( path ) );
+        String url = portalFunctions.createResourceUrl( resolvePath( path ), null );
         CreateResourceUrlInstruction instruction = createCreateResourceUrlInstruction( path, params );
         assertEquals( url, PostProcessInstructionSerializer.serialize( instruction ) );
 
@@ -387,7 +387,7 @@ public class PortalFunctionsTest
 
         try
         {
-            portalFunctions.createResourceUrl( "/illegal_path/image/test.gif" );
+            portalFunctions.createResourceUrl( "/illegal_path/image/test.gif", null );
             fail();
         }
         catch ( Exception e )
@@ -413,7 +413,7 @@ public class PortalFunctionsTest
     {
         try
         {
-            portalFunctions.createAttachmentUrl( "" );
+            portalFunctions.createAttachmentUrl( "", null );
             fail();
         }
         catch ( Exception e )
@@ -441,7 +441,7 @@ public class PortalFunctionsTest
 
         injectContentToContentDao( new ContentKey( 1 ), contentEntity );
 
-        String url = portalFunctions.createAttachmentUrl( "1" );
+        String url = portalFunctions.createAttachmentUrl( "1", null );
 
         CreateAttachmentUrlInstruction expectedInstruction = new CreateAttachmentUrlInstruction();
         expectedInstruction.setNativeLinkKey( "1" );
@@ -470,7 +470,7 @@ public class PortalFunctionsTest
 
         injectContentToContentDao( new ContentKey( 1 ), contentEntity );
 
-        String url = portalFunctions.createAttachmentUrl( "1/label/large" );
+        String url = portalFunctions.createAttachmentUrl( "1/label/large", null );
 
         CreateAttachmentUrlInstruction expectedInstruction = new CreateAttachmentUrlInstruction();
         expectedInstruction.setNativeLinkKey( "1/label/large" );
@@ -509,7 +509,7 @@ public class PortalFunctionsTest
 
         try
         {
-            portalFunctions.createResourceUrl( "~/images/test.gif" );
+            portalFunctions.createResourceUrl( "~/images/test.gif", null );
             fail();
         }
         catch ( Exception e )
@@ -664,18 +664,20 @@ public class PortalFunctionsTest
         CreateImageUrlInstruction instruction = new CreateImageUrlInstruction();
 
         instruction.setKey( "123" );
-        assertEquals( PostProcessInstructionSerializer.serialize( instruction ), portalFunctions.createImageUrl( "123" ) );
+        assertEquals( PostProcessInstructionSerializer.serialize( instruction ),
+                      portalFunctions.createImageUrl( "123", null, null, null, null ) );
 
         instruction.setFilter( "scalemax(100)" );
-        assertEquals( PostProcessInstructionSerializer.serialize( instruction ), portalFunctions.createImageUrl( "123", "scalemax(100)" ) );
+        assertEquals( PostProcessInstructionSerializer.serialize( instruction ),
+                      portalFunctions.createImageUrl( "123", "scalemax(100)", null, null, null ) );
 
         instruction.setBackground( "0xFFFFFF" );
         assertEquals( PostProcessInstructionSerializer.serialize( instruction ),
-                      portalFunctions.createImageUrl( "123", "scalemax(100)", "0xFFFFFF" ) );
+                      portalFunctions.createImageUrl( "123", "scalemax(100)", "0xFFFFFF", null, null ) );
 
         instruction.setFormat( "jpg" );
         assertEquals( PostProcessInstructionSerializer.serialize( instruction ),
-                      portalFunctions.createImageUrl( "123", "scalemax(100)", "0xFFFFFF", "jpg" ) );
+                      portalFunctions.createImageUrl( "123", "scalemax(100)", "0xFFFFFF", "jpg", null ) );
 
         instruction.setQuality( "99" );
         assertEquals( PostProcessInstructionSerializer.serialize( instruction ),
@@ -688,7 +690,7 @@ public class PortalFunctionsTest
     {
         context.setEncodeImageUrlParams( false );
 
-        portalFunctions.createImageUrl( null );
+        portalFunctions.createImageUrl( null, null, null, null, null );
     }
 
 
@@ -698,7 +700,7 @@ public class PortalFunctionsTest
     {
         context.setEncodeImageUrlParams( false );
 
-        portalFunctions.createImageUrl( "ost" );
+        portalFunctions.createImageUrl( "ost", null, null, null, null );
     }
 
     @Test
@@ -707,7 +709,7 @@ public class PortalFunctionsTest
     {
         context.setEncodeImageUrlParams( false );
 
-        portalFunctions.createImageUrl( "user/THISISAUSERTYPEKEY1234" );
+        portalFunctions.createImageUrl( "user/THISISAUSERTYPEKEY1234", null, null, null, null );
     }
 
 

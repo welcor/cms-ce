@@ -1,10 +1,8 @@
-package com.enonic.cms.core.xslt.functions.portal;
+package com.enonic.cms.core.xslt.lib;
 
 import com.google.common.base.Joiner;
 
-import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
-
-public class MockPortalFunctions
+public class MockPortalFunctionsMediator
     implements PortalFunctionsMediator
 {
     @Override

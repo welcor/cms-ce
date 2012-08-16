@@ -24,7 +24,7 @@ final class BootEnvironment
         }
         catch ( final Exception e )
         {
-            LOG.error( "Error occurred starting system", e );
+            LOG.errorCause( "Error occurred starting system", e );
 
             if ( e instanceof RuntimeException )
             {

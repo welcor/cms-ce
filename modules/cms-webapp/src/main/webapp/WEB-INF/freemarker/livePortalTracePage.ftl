@@ -11,10 +11,9 @@
 <html>
 <head>
     <title>Admin / Live Portal Trace </title>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery-1.6.2.min.js"></script>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery-ui-1.8.14.min.js"></script>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery.sparkline.min-1.6.js"></script>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery.treeTable.min-2.3.0.js"></script>
+    <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="javascript/lib/jquery/jquery.sparkline.min-2.0.js"></script>
+    <script type="text/javascript" src="javascript/lib/jquery/jquery.treeTable.js"></script>
     <script type="text/javascript" src="liveportaltrace/Utility.js"></script>
     <script type="text/javascript" src="liveportaltrace/view/PortalRequestTraceDetailHtmlBuilder.js"></script>
     <script type="text/javascript" src="liveportaltrace/view/PortalRequestTraceRowView.js"></script>
@@ -28,7 +27,7 @@
     <script type="text/javascript" src="liveportaltrace/ctrl/PageCacheCapacityGraphController.js"></script>
     <script type="text/javascript" src="liveportaltrace/ctrl/EntityCacheCapacityGraphController.js"></script>
     <script type="text/javascript" src="javascript/tabpane.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/tools/jquery-ui-1.8.14.css"/>
+    <link rel="stylesheet" type="text/css" href="css/tools/jquery-ui-1.8.21.css"/>
     <link rel="stylesheet" type="text/css" href="liveportaltrace/jquery.treeTable.css"/>
     <link rel="stylesheet" type="text/css" href="liveportaltrace/live-portal-trace.css"/>
     <link type="text/css" rel="stylesheet" href="css/admin.css"/>

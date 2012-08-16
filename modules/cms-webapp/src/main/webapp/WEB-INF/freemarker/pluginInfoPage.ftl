@@ -4,7 +4,7 @@
 <head>
     <title>Plugin info</title>
       <link type="text/css" rel="stylesheet" href="css/admin.css"/>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript">
 
         var lastKey = 0;

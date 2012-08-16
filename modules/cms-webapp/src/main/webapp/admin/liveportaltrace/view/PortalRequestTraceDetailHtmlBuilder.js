@@ -5,7 +5,7 @@ if ( !lpt )
 
 lpt.PortalRequestTraceDetailHtmlBuilder = function ()
 {
-    function generateHtmlForImageRequestTrace( imageRequestTrace, id )
+    function buildImageRequestTrace( imageRequestTrace, id )
     {
         var html = "";
 
@@ -14,7 +14,7 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
         html += "</tr>";
 
         html += "<tr id='node-" + id + "-1' class='child-of-node-" + id + "'>";
-        html += "<td>Cache</td><td>" + buildCacheUsage( true, imageRequestTrace.cacheUsage, true ) + "</td>";
+        html += "<td>Cache</td><td>" + buildCacheUsage( imageRequestTrace.cacheUsage, true ) + "</td>";
         html += "</tr>";
         html += "<tr id='node-" + id + "-2' class='child-of-node-" + id + "'>";
         html += "<td>Size</td><td>" + imageRequestTrace.sizeInBytes + "</td>";
@@ -520,7 +520,14 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
             var html = "";
             html += "<table id='trace-details-tree-table'>";
             html += "<tr id='node-1'>";
+            if( portalRequestTrace.completedNumber === 0 )
+            {
+                html += "<td width='50%'>Request #</td><td>" + portalRequestTrace.requestNumber + "</td>";
+            }
+            else
+            {
             html += "<td width='50%'>Completed #</td><td>" + portalRequestTrace.completedNumber + "</td>";
+            }
             html += "</tr>";
             html += "<tr id='node-2'>";
             html += "<td>Started</td><td>" + buildDateTime( portalRequestTrace.duration.startTime ) + "</td>";
@@ -570,7 +577,7 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
             }
             else if ( portalRequestTrace.imageRequestTrace != null )
             {
-                html += generateHtmlForImageRequestTrace( portalRequestTrace.imageRequestTrace, "10" );
+                html += buildImageRequestTrace( portalRequestTrace.imageRequestTrace, "10" );
             }
             else if ( portalRequestTrace.attachmentRequestTrace != null )
             {

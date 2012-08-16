@@ -25,13 +25,13 @@ import org.apache.commons.collections.map.MultiValueMap;
 import org.springframework.web.filter.GenericFilterBean;
 
 public final class ASCIICharactersFilter
-        extends GenericFilterBean
+    extends GenericFilterBean
 {
 
     private final static Logger LOG = Logger.getLogger( ASCIICharactersFilter.class.getName() );
 
     public void doFilter( ServletRequest req, ServletResponse res, FilterChain chain )
-            throws IOException, ServletException
+        throws IOException, ServletException
     {
 
         try
@@ -54,13 +54,13 @@ public final class ASCIICharactersFilter
     }
 
     private void doFilter( HttpServletRequest req, HttpServletResponse res, FilterChain chain )
-            throws Exception
+        throws Exception
     {
         chain.doFilter( new FilteredRequest( req ), res );
     }
 
     static class FilteredRequest
-            extends HttpServletRequestWrapper
+        extends HttpServletRequestWrapper
     {
         public FilteredRequest( ServletRequest request )
         {
@@ -78,6 +78,10 @@ public final class ASCIICharactersFilter
         public String[] getParameterValues( String paramName )
         {
             String values[] = super.getParameterValues( paramName );
+            if ( values == null )
+            {
+                return null;
+            }
 
             for ( int index = 0; index < values.length; index++ )
             {
@@ -106,9 +110,9 @@ public final class ASCIICharactersFilter
         private String sanitize( String input )
         {
             char[] chars = input.toCharArray();
-            StringBuilder stringBuilder =  new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
 
-            for (char c : chars)
+            for ( char c : chars )
             {
                 if ( c < ' ' )
                 {
@@ -191,7 +195,7 @@ public final class ASCIICharactersFilter
 
         private String doComposeURL( MultiValueMap queryParams, String baseURL )
         {
-            StringBuilder url = new StringBuilder( baseURL  );
+            StringBuilder url = new StringBuilder( baseURL );
             Iterator keyIterator = queryParams.keySet().iterator();
             boolean firstParam = true;
 

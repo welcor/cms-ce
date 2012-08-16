@@ -17,6 +17,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.api.client.model.GetContentParams;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.client.InternalClientImpl;
+import com.enonic.cms.core.client.InternalLocalClient;
 import com.enonic.cms.core.content.ContentAndVersion;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -142,7 +143,7 @@ public class InternalClientImpl_getContentTest
 
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "content-querier" ).getKey() );
 
-        internalClient = new InternalClientImpl();
+        internalClient = new InternalLocalClient();
         internalClient.setSecurityService( securityService );
         internalClient.setContentService( contentService );
         internalClient.setPreviewService( previewService );

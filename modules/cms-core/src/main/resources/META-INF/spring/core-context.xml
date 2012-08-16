@@ -107,49 +107,6 @@
   <bean id="reindexContentToolService"
         class="com.enonic.cms.core.tools.ReindexContentToolServiceImpl"/>
 
-  <bean id="localClient" class="com.enonic.cms.core.client.InternalClientImpl">
-    <property name="clientForRemoteInvocations" value="false"/>
-    <property name="dataSourceService" ref="dataSourceService"/>
-    <property name="internalClientRenderService" ref="internalClientRenderService"/>
-    <property name="internalClientContentService" ref="internalClientContentService"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="resourceService" ref="resourceService"/>
-    <property name="preferenceService" ref="preferenceService"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="contentService" ref="contentService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="previewService" ref="previewService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-  </bean>
-
-  <bean id="remoteClient" class="com.enonic.cms.core.client.InternalClientImpl">
-    <property name="clientForRemoteInvocations" value="true"/>
-    <property name="dataSourceService" ref="dataSourceService"/>
-    <property name="internalClientRenderService" ref="internalClientRenderService"/>
-    <property name="internalClientContentService" ref="internalClientContentService"/>
-    <property name="userDao" ref="userDao"/>
-    <property name="resourceService" ref="resourceService"/>
-    <property name="preferenceService" ref="preferenceService"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="contentService" ref="contentService"/>
-    <property name="contentDao" ref="contentDao"/>
-    <property name="previewService" ref="previewService"/>
-    <property name="timeService" ref="timeService"/>
-    <property name="livePortalTraceService" ref="livePortalTraceService"/>
-  </bean>
-
-  <bean id="internalClientContentService"
-        class="com.enonic.cms.core.client.InternalClientContentService">
-    <property name="siteCachesService" ref="siteCachesService"/>
-  </bean>
-
-  <bean class="com.enonic.cms.core.client.LocalClientSetter">
-    <property name="localClient" ref="localClient"/>
-  </bean>
-
   <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
     <property name="sitePathPrefix" value="/site"/>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>

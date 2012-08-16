@@ -184,25 +184,21 @@ import com.enonic.cms.store.dao.UserStoreDao;
 /**
  * This class implements the local client.
  */
-public final class InternalClientImpl
+public abstract class InternalClientImpl
     implements InternalClient
 {
-
     private static final Logger LOG = LoggerFactory.getLogger( InternalClientImpl.class );
 
-    protected static final int DEFAULT_COUNT = 200;
+    private static final int DEFAULT_CONTENT_QUERY_COUNT = 200;
 
+    @Autowired
     private InternalClientContentService internalClientContentService;
 
+    @Autowired
     private InternalClientRenderService internalClientRenderService;
 
+    @Autowired
     private DataSourceService dataSourceService;
-
-    private PresentationInvoker invoker;
-
-    private SecurityService securityService;
-
-    private TimeService timeService;
 
     @Autowired
     private UserStoreService userStoreService;
@@ -210,19 +206,17 @@ public final class InternalClientImpl
     @Autowired
     private MemberOfResolver memberOfResolver;
 
-    private ContentService contentService;
-
     @Autowired
     private CategoryService categoryService;
 
     @Autowired
     private ImportJobFactory importJobFactory;
 
+    @Autowired
     private ResourceService resourceService;
 
+    @Autowired
     private PreferenceService preferenceService;
-
-    private UserDao userDao;
 
     @Autowired
     private SiteDao siteDao;
@@ -239,47 +233,42 @@ public final class InternalClientImpl
     @Autowired
     private CategoryDao categoryDao;
 
-    private ContentDao contentDao;
-
     @Autowired
     private ContentVersionDao contentVersionDao;
 
     @Autowired
     private ContentTypeDao contentTypeDao;
 
-    private LivePortalTraceService livePortalTraceService;
-
-    private boolean clientForRemoteInvocations;
-
     @Autowired(required = false)
     private SiteCachesService siteCachesService;
 
-    /**
-     * Vertical properties.
-     */
-    private Properties cmsProperties;
+    @Autowired
+    private ConfigProperties cmsProperties;
 
-    /**
-     * Site properties service.
-     */
+    @Autowired
     private SitePropertiesService sitePropertiesService;
+
+    private LivePortalTraceService livePortalTraceService;
 
     private PreviewService previewService;
 
-    public void setContentTypeDao( ContentTypeDao contentTypeDao )
-    {
-        this.contentTypeDao = contentTypeDao;
-    }
+    private PresentationInvoker invoker;
 
-    public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
-    {
-        this.sitePropertiesService = sitePropertiesService;
-    }
+    private SecurityService securityService;
 
-    @Autowired
-    public void setCmsProperties( ConfigProperties cmsProperties )
+    private ContentService contentService;
+
+    private TimeService timeService;
+
+    private UserDao userDao;
+
+    private ContentDao contentDao;
+
+    private final boolean clientForRemoteInvocations;
+
+    InternalClientImpl( final boolean clientForRemoteInvocations )
     {
-        this.cmsProperties = cmsProperties;
+        this.clientForRemoteInvocations = clientForRemoteInvocations;
     }
 
     /**
@@ -1458,7 +1447,7 @@ public final class InternalClientImpl
 
             contentByCategoryQuery.setUser( user );
             contentByCategoryQuery.setIndex( 0 );
-            contentByCategoryQuery.setCount( DEFAULT_COUNT );
+            contentByCategoryQuery.setCount( DEFAULT_CONTENT_QUERY_COUNT );
             contentByCategoryQuery.setQuery( params.query );
             if ( params.includeOfflineContent )
             {
@@ -2442,66 +2431,6 @@ public final class InternalClientImpl
         return list;
     }
 
-    public void setResourceService( ResourceService value )
-    {
-        this.resourceService = value;
-    }
-
-    public void setPreferenceService( PreferenceService value )
-    {
-        this.preferenceService = value;
-    }
-
-    public void setDataSourceService( DataSourceService value )
-    {
-        this.dataSourceService = value;
-    }
-
-    public void setInternalClientRenderService( InternalClientRenderService value )
-    {
-        this.internalClientRenderService = value;
-    }
-
-    public void setSecurityService( SecurityService value )
-    {
-        this.securityService = value;
-    }
-
-    public void setContentService( ContentService contentService )
-    {
-        this.contentService = contentService;
-    }
-
-    public void setInternalClientContentService( InternalClientContentService internalClientContentService )
-    {
-        this.internalClientContentService = internalClientContentService;
-    }
-
-    public void setPreviewService( PreviewService previewService )
-    {
-        this.previewService = previewService;
-    }
-
-    public void setContentDao( ContentDao contentDao )
-    {
-        this.contentDao = contentDao;
-    }
-
-    public void setTimeService( TimeService timeService )
-    {
-        this.timeService = timeService;
-    }
-
-    public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
-    {
-        this.livePortalTraceService = livePortalTraceService;
-    }
-
-    public void setUserDao( UserDao userDao )
-    {
-        this.userDao = userDao;
-    }
-
     /**
      * Return the global configuration.
      */
@@ -2593,8 +2522,45 @@ public final class InternalClientImpl
         }
     }
 
-    public void setClientForRemoteInvocations( boolean value )
+    @Autowired
+    public void setSecurityService( SecurityService value )
     {
-        this.clientForRemoteInvocations = value;
+        this.securityService = value;
+    }
+
+    @Autowired
+    public void setContentService( ContentService contentService )
+    {
+        this.contentService = contentService;
+    }
+
+    @Autowired
+    public void setPreviewService( PreviewService previewService )
+    {
+        this.previewService = previewService;
+    }
+
+    @Autowired
+    public void setContentDao( ContentDao contentDao )
+    {
+        this.contentDao = contentDao;
+    }
+
+    @Autowired
+    public void setTimeService( TimeService timeService )
+    {
+        this.timeService = timeService;
+    }
+
+    @Autowired
+    public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
+    {
+        this.livePortalTraceService = livePortalTraceService;
+    }
+
+    @Autowired
+    public void setUserDao( UserDao userDao )
+    {
+        this.userDao = userDao;
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.esl.util.Base64Util;
 
@@ -92,6 +93,7 @@ import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
 
+@Component
 public class InternalClientContentService
 {
     @Autowired
@@ -136,6 +138,7 @@ public class InternalClientContentService
     @Autowired
     private TimeService timeService;
 
+    @Autowired
     private SiteCachesService siteCachesService;
 
     private FileContentdataResolver fileContentResolver = new FileContentdataResolver();
@@ -885,8 +888,4 @@ public class InternalClientContentService
         return new Document( binaryElem );
     }
 
-    public void setSiteCachesService( SiteCachesService value )
-    {
-        this.siteCachesService = value;
-    }
 }

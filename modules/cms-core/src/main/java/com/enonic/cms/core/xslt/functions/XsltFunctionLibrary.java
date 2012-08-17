@@ -67,6 +67,7 @@ public class XsltFunctionLibrary
             return (FunctionLibraryList)library;
         } else {
             final FunctionLibraryList list = new FunctionLibraryList();
+            list.addFunctionLibrary( library );
             config.setExtensionBinder( "java", list );
             return list;
         }

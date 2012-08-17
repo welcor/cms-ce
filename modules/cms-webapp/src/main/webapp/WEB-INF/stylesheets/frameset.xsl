@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="java:com.enonic.cms.core.xslt.lib.AdminFunctions">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
   <xsl:output method="html" doctype-public="-//W3C//DTD HTML 4.01 Frameset//EN"
               doctype-system="http://www.w3.org/TR/html4/frameset.dtd"/>

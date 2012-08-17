@@ -207,9 +207,6 @@ final class XsltProcessorImpl
             applyParameters( transformer );
 
             transformer.transform();
-
-            // transformer.close();
-            // destination.close();
         }
         catch ( final Exception e )
         {

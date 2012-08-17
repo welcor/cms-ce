@@ -4,7 +4,8 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:exslt-common="http://exslt.org/common"
+    >
 
   <xsl:output method="html"/>
 
@@ -56,7 +57,7 @@
     </xsl:choose>
     <xsl:text> </xsl:text>
     <span id="titlename">
-      <xsl:value-of select="admin:node-set($userstore)/userstore/@name"/>
+      <xsl:value-of select="exslt-common:node-set($userstore)/userstore/@name"/>
     </span>
   </xsl:template>
 
@@ -70,7 +71,7 @@
 
   <xsl:template name="step0">
 
-    <xsl:variable name="remote" select="admin:node-set($userstore)/userstore/@remote"/>
+    <xsl:variable name="remote" select="exslt-common:node-set($userstore)/userstore/@remote"/>
 
     <xsl:variable name="error">
       <part>
@@ -80,7 +81,7 @@
 
     <xsl:if test="/wizarddata/wizardstate/errors/error != ''">
       <xsl:call-template name="displayerror">
-        <xsl:with-param name="error" select="admin:node-set($error)"/>
+        <xsl:with-param name="error" select="exslt-common:node-set($error)"/>
       </xsl:call-template>
     </xsl:if>
 
@@ -114,7 +115,7 @@
               <xsl:call-template name="textfield">
                 <xsl:with-param name="label" select="'%fldName%:'"/>
                 <xsl:with-param name="name" select="'name'"/>
-                <xsl:with-param name="selectnode" select="admin:node-set($userstore)/userstore/@name"/>
+                <xsl:with-param name="selectnode" select="exslt-common:node-set($userstore)/userstore/@name"/>
                 <xsl:with-param name="required" select="'true'"/>
                 <xsl:with-param name="onkeyup">javascript: updateBreadCrumbHeader('titlename', this);</xsl:with-param>
               </xsl:call-template>
@@ -128,7 +129,7 @@
                   </xsl:when>
                   <xsl:otherwise>
                     <input type="checkbox" name="defaultuserstore" id="defaultuserstore" value="true">
-                      <xsl:if test="admin:node-set($userstore)/userstore/@default = 'true'">
+                      <xsl:if test="exslt-common:node-set($userstore)/userstore/@default = 'true'">
                         <xsl:attribute name="checked">checked</xsl:attribute>
                       </xsl:if>
                     </input>
@@ -184,7 +185,7 @@
                 <div id="userstore-error-message">
                   <xsl:if test="/wizarddata/userstores/userstore/connector/config/errors/error != ''">
                     <xsl:call-template name="displayerror">
-                      <xsl:with-param name="error" select="admin:node-set($storedConnectorError)"/>
+                      <xsl:with-param name="error" select="exslt-common:node-set($storedConnectorError)"/>
                     </xsl:call-template>
                   </xsl:if>
                 </div>
@@ -246,11 +247,11 @@
 
               <xsl:variable name="selectnode">
                 <xsl:if test="/wizarddata/wizardstate/stepstate/@errorstate">
-                  <xsl:value-of select="admin:node-set($userstore)/userstore/configRaw"/>
+                  <xsl:value-of select="exslt-common:node-set($userstore)/userstore/configRaw"/>
                 </xsl:if>
                 <xsl:if test="not(/wizarddata/wizardstate/stepstate/@errorstate)">
                   <xsl:call-template name="serialize">
-                    <xsl:with-param name="xpath" select="admin:node-set($userstore)/userstore/config"/>
+                    <xsl:with-param name="xpath" select="exslt-common:node-set($userstore)/userstore/config"/>
                     <xsl:with-param name="include-self" select="true()"/>
                   </xsl:call-template>
                 </xsl:if>

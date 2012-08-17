@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:saxon="http://saxon.sf.net/"
+    >
 
 	<xsl:template match="date" mode="display">
 		<xsl:param name="contentxpath"/>
@@ -9,17 +10,17 @@
 		<xsl:choose>
 			<xsl:when test="@dateonly = 'true'">
 				<xsl:call-template name="formatdate">
-					<xsl:with-param name="date" select="admin:evaluate(concat($contentxpath, @xpath))"/>
+					<xsl:with-param name="date" select="saxon:evaluate(concat($contentxpath, @xpath))"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@timeonly = 'true'">
 				<xsl:call-template name="formattime">
-					<xsl:with-param name="date" select="admin:evaluate(concat($contentxpath, @xpath))"/>
+					<xsl:with-param name="date" select="saxon:evaluate(concat($contentxpath, @xpath))"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="formatdatetime">
-					<xsl:with-param name="date" select="admin:evaluate(concat($contentxpath, @xpath))"/>
+					<xsl:with-param name="date" select="saxon:evaluate(concat($contentxpath, @xpath))"/>
 				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>

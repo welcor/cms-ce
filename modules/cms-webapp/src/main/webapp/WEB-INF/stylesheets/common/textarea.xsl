@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:exslt-common="http://exslt.org/common"
+        >
 
   <xsl:output method="html"/>
 
@@ -72,10 +73,10 @@
         </xsl:call-template>
       </xsl:if>
                 
-      <xsl:if test="admin:node-set($errors)/errors/error[@name = $name]">
+      <xsl:if test="exslt-common:node-set($errors)/errors/error[@name = $name]">
         <xsl:call-template name="displayerror">
-          <xsl:with-param name="code" select="admin:node-set($errors)/errors/error[@name = $name]/@code"/>
-          <xsl:with-param name="error" select="admin:node-set($errors)/errors/error[@name = $name]"/>
+          <xsl:with-param name="code" select="exslt-common:node-set($errors)/errors/error[@name = $name]/@code"/>
+          <xsl:with-param name="error" select="exslt-common:node-set($errors)/errors/error[@name = $name]"/>
         </xsl:call-template>
       </xsl:if>
 

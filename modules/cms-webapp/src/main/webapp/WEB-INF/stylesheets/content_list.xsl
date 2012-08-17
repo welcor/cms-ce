@@ -5,7 +5,8 @@
 
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:saxon="http://saxon.sf.net/"
+    >
 
     <xsl:output method="html"/>
 
@@ -1495,7 +1496,7 @@
                         <xsl:with-param name="align" select="'center'"/>
                       </xsl:call-template>
 
-                      <xsl:for-each select="admin:evaluate($fieldsxpath)">
+                      <xsl:for-each select="saxon:evaluate($fieldsxpath)">
                         <!-- Column title -->
                         <xsl:variable name="title">
                           <xsl:choose>
@@ -1719,7 +1720,7 @@
                          </xsl:call-template>
                         </td>
 
-                        <xsl:for-each select="admin:evaluate($fieldsxpath)">
+                        <xsl:for-each select="saxon:evaluate($fieldsxpath)">
                           <!-- Column align -->
                           <xsl:variable name="columnalign">
                             <xsl:choose>
@@ -1819,7 +1820,7 @@
                                           select="/data/contenttypes/contenttype[@key = $ctykey]/moduledata/browse/column[@maincolumn='true']/*"
                                           mode="display">
                                         <xsl:with-param name="contentxpath" select="concat($contentxpath,'/')"/>
-                                        <xsl:with-param name="contentelem" select="admin:evaluate($contentxpath)"/>
+                                        <xsl:with-param name="contentelem" select="saxon:evaluate($contentxpath)"/>
                                         <xsl:with-param name="contenttypeelem"
                                                         select="/data/contenttypes/contenttype[@key = $ctykey]"/>
                                       </xsl:apply-templates>
@@ -1827,7 +1828,7 @@
                                     <xsl:otherwise>
                                       <xsl:apply-templates select="*" mode="display">
                                         <xsl:with-param name="contentxpath" select="concat($contentxpath,'/')"/>
-                                        <xsl:with-param name="contentelem" select="admin:evaluate($contentxpath)"/>
+                                        <xsl:with-param name="contentelem" select="saxon:evaluate($contentxpath)"/>
                                         <xsl:with-param name="contenttypeelem"
                                                         select="/data/contenttypes/contenttype[@key = $ctykey]"/>
                                       </xsl:apply-templates>
@@ -1838,7 +1839,7 @@
                               <xsl:otherwise>
                                 <xsl:apply-templates select="*" mode="display">
                                   <xsl:with-param name="contentxpath" select="concat($contentxpath,'/')"/>
-                                  <xsl:with-param name="contentelem" select="admin:evaluate($contentxpath)"/>
+                                  <xsl:with-param name="contentelem" select="saxon:evaluate($contentxpath)"/>
                                   <xsl:with-param name="contenttypeelem"
                                                   select="/data/contenttypes/contenttype[@key = $ctykey]"/>
                                 </xsl:apply-templates>

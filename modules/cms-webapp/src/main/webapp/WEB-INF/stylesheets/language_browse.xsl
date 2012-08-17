@@ -4,7 +4,8 @@
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:saxon="http://saxon.sf.net/"
+    >
 
     <xsl:output method="html"/>
 
@@ -137,7 +138,7 @@
 
                                 <xsl:for-each select="/languages/language">
                                     <xsl:sort data-type="{$sortby-data-type}" order="{$sortby-direction}"
-                                        select="admin:evaluate($sortby)"/>
+                                        select="saxon:evaluate($sortby)"/>
 
                                   <xsl:variable name="css-class">
                                     <xsl:text>browsetablecell</xsl:text>

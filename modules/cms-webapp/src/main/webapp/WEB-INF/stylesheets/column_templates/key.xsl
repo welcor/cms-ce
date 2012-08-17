@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:saxon="http://saxon.sf.net/"
+    >
 
 	<xsl:template match="key" mode="display">
 		<xsl:param name="contentxpath"/>
 
-		<xsl:value-of select="admin:evaluate(concat($contentxpath, '@key'))"/>
+		<xsl:value-of select="saxon:evaluate(concat($contentxpath, '@key'))"/>
 	</xsl:template>
 	
 	<xsl:template match="key" mode="title">

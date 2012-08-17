@@ -4,7 +4,8 @@
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:exslt-common="http://exslt.org/common"
+    >
 
     <xsl:output method="html"/>
 
@@ -143,7 +144,7 @@
                   </xsl:variable>
 
                   <xsl:if test="$sortby = '@type'">
-                    <xsl:if test="@type != admin:node-set($temp)/types/type[$prevPosition]">
+                    <xsl:if test="@type != exslt-common:node-set($temp)/types/type[$prevPosition]">
                       <tr>
                         <td colspan="4" style="font-weight:bold;padding:6px 4px">
                           <xsl:choose>

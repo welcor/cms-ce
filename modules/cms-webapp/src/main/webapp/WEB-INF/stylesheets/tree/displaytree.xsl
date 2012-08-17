@@ -4,7 +4,8 @@
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:saxon="http://saxon.sf.net/"
+        >
 
     <xsl:include href="configs/default.xsl"/>
     <xsl:include href="../common/string.xsl"/>
@@ -308,7 +309,7 @@
                             <xsl:choose>
                                 <xsl:when test="$sortchildren != ''">
                                     <xsl:apply-templates select="*" mode="displaytree">
-                                        <xsl:sort select="admin:evaluate($sortchildren)" data-type="{$sortchildrentype}"/>
+                                        <xsl:sort select="saxon:evaluate($sortchildren)" data-type="{$sortchildrentype}"/>
                                         <xsl:with-param name="url" select="$url"/>
                                         <xsl:with-param name="callback" select="$callback"/>
                                         <xsl:with-param name="onclick" select="$onclick"/>

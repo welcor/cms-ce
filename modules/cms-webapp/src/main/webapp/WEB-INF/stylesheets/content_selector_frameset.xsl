@@ -3,7 +3,8 @@
         <!ENTITY nbsp "&#160;">
         ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    >
 
  <xsl:output method="html" indent="yes" doctype-system="http://www.w3.org/TR/html4/loose.dtd" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
   <xsl:param name="returnkey"/>

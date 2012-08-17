@@ -2,7 +2,7 @@
 <!DOCTYPE xsl:stylesheet [
 	<!ENTITY nbsp "&#160;">
 ]>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:admin="http://www.enonic.com/cms/admin" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exslt-common="http://exslt.org/common" version="2.0">
     
     <xsl:output method="html"/>
     
@@ -22,27 +22,27 @@
     <xsl:variable name="runtype">
       <xsl:choose>
         <!-- run once -->
-        <xsl:when test="not(admin:node-set($workentry)/workentry) or admin:node-set($workentry)/workentry/trigger/@type = 'simple' and admin:node-set($workentry)/workentry/trigger/repeat/@count = 0">
+        <xsl:when test="not(exslt-common:node-set($workentry)/workentry) or exslt-common:node-set($workentry)/workentry/trigger/@type = 'simple' and exslt-common:node-set($workentry)/workentry/trigger/repeat/@count = 0">
           <xsl:text>once</xsl:text>
         </xsl:when>
 
         <!-- run infinite -->
-        <xsl:when test="admin:node-set($workentry)/workentry/trigger/@type = 'simple' and admin:node-set($workentry)/workentry/trigger/repeat/@count = -1">
+        <xsl:when test="exslt-common:node-set($workentry)/workentry/trigger/@type = 'simple' and exslt-common:node-set($workentry)/workentry/trigger/repeat/@count = -1">
           <xsl:text>infinite</xsl:text>
         </xsl:when>
         
         <!-- run repeatedly -->
-        <xsl:when test="admin:node-set($workentry)/workentry/trigger/@type = 'simple'">
+        <xsl:when test="exslt-common:node-set($workentry)/workentry/trigger/@type = 'simple'">
           <xsl:text>repeatedly</xsl:text>
         </xsl:when>
         
         <!-- run hourly -->
-        <xsl:when test="admin:node-set($workentry)/workentry/trigger/@type = 'cron' and admin:node-set($workentry)/workentry/trigger/hourly">
+        <xsl:when test="exslt-common:node-set($workentry)/workentry/trigger/@type = 'cron' and exslt-common:node-set($workentry)/workentry/trigger/hourly">
           <xsl:text>hourly</xsl:text>
         </xsl:when>
         
         <!-- run daily -->
-        <xsl:when test="admin:node-set($workentry)/workentry/trigger/@type = 'cron' and admin:node-set($workentry)/workentry/trigger/daily">
+        <xsl:when test="exslt-common:node-set($workentry)/workentry/trigger/@type = 'cron' and exslt-common:node-set($workentry)/workentry/trigger/daily">
           <xsl:text>daily</xsl:text>
         </xsl:when>
         
@@ -62,7 +62,7 @@
                 <xsl:text>%headCreate%:</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:text> </xsl:text><span id="titlename"><xsl:value-of select="admin:node-set($workentry)/workentry/name"/></span>
+        <xsl:text> </xsl:text><span id="titlename"><xsl:value-of select="exslt-common:node-set($workentry)/workentry/name"/></span>
     </xsl:template-->
 
     <xsl:template name="workentryheader">
@@ -71,8 +71,8 @@
         </xsl:call-template>
         <xsl:text>&nbsp;</xsl:text>
         <span id="titlename">
-          <xsl:if test="admin:node-set($workentry)/workentry/name != ''">
-            <xsl:value-of select="concat(' /', admin:node-set($workentry)/workentry/name)"/>
+          <xsl:if test="exslt-common:node-set($workentry)/workentry/name != ''">
+            <xsl:value-of select="concat(' /', exslt-common:node-set($workentry)/workentry/name)"/>
           </xsl:if>
         </span>
     </xsl:template>
@@ -102,7 +102,7 @@
                                 <xsl:with-param name="name" select="'stepstate_workentry_name'"/>
                                 <xsl:with-param name="size" select="'70'"/>
                                 <xsl:with-param name="maxlength" select="'220'"/>
-                                <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/name"/>
+                                <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/name"/>
                                 <xsl:with-param name="required" select="'true'"/>
                                 <xsl:with-param name="onkeyup">javascript: updateBreadCrumbHeader('titlename', this);</xsl:with-param>
                             </xsl:call-template>
@@ -124,7 +124,7 @@
                 </fieldset>
 
                 <xsl:call-template name="properties">
-                  <xsl:with-param name="workentry" select="admin:node-set($workentry)/workentry"/>
+                  <xsl:with-param name="workentry" select="exslt-common:node-set($workentry)/workentry"/>
                 </xsl:call-template>
                 
                 <fieldset>
@@ -145,7 +145,7 @@
                         <xsl:call-template name="textfielddatetime">
                           <xsl:with-param name="name" select="'start'"/>
                           <xsl:with-param name="label" select="'%fldStart%:'"/>
-                          <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/trigger/time/@start"/>
+                          <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/trigger/time/@start"/>
                           <xsl:with-param name="colspan" select="'1'"/>
                           <xsl:with-param name="includeseconds" select="true()"/>
                           <xsl:with-param name="onbluroverridefunction">
@@ -157,7 +157,7 @@
                         <xsl:call-template name="textfielddatetime">
                           <xsl:with-param name="name" select="'end'"/>
                           <xsl:with-param name="label" select="'%fldEnd%:'"/>
-                          <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/trigger/time/@end"/>
+                          <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/trigger/time/@end"/>
                           <xsl:with-param name="colspan" select="'1'"/>
                           <xsl:with-param name="includeseconds" select="true()"/>
                           <xsl:with-param name="onbluroverridefunction">
@@ -182,7 +182,7 @@
                           <xsl:with-param name="label" select="'%fldRepeatInterval%:'"/>
                           <xsl:with-param name="size" select="'10'"/>
                           <xsl:with-param name="maxlength" select="'10'"/>
-                          <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/trigger/repeat/@interval"/>
+                          <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/trigger/repeat/@interval"/>
                           <xsl:with-param name="colspan" select="'1'"/>
                           <xsl:with-param name="required" select="'true'"/>
                           <xsl:with-param name="postfield" select="' s'"/>
@@ -202,7 +202,7 @@
                           <xsl:with-param name="label" select="'%fldCount%:'"/>
                           <xsl:with-param name="size" select="'10'"/>
                           <xsl:with-param name="maxlength" select="'10'"/>
-                          <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/trigger/repeat/@count"/>
+                          <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/trigger/repeat/@count"/>
                           <xsl:with-param name="required" select="'true'"/>
                           <xsl:with-param name="colspan" select="'1'"/>
                           <xsl:with-param name="helpelement">
@@ -221,7 +221,7 @@
                         <xsl:call-template name="textfield">
                           <xsl:with-param name="name" select="'stepstate_workentry_trigger_hourly_@minutes'"/>
                           <xsl:with-param name="label" select="'%fldMinutes%:'"/>
-                          <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/trigger/hourly/@minutes"/>
+                          <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/trigger/hourly/@minutes"/>
                           <xsl:with-param name="colspan" select="'1'"/>
                           <xsl:with-param name="size" select="'3'"/>
                           <xsl:with-param name="maxlength" select="'2'"/>
@@ -237,7 +237,7 @@
                         <xsl:call-template name="textfield">
                           <xsl:with-param name="name" select="'stepstate_workentry_trigger_daily_@time'"/>
                           <xsl:with-param name="label" select="'%fldTime%:'"/>
-                          <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/trigger/daily/@time"/>
+                          <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/trigger/daily/@time"/>
                           <xsl:with-param name="colspan" select="'1'"/>
                           <xsl:with-param name="size" select="'6'"/>
                           <xsl:with-param name="maxlength" select="'5'"/>
@@ -255,7 +255,7 @@
                         <xsl:call-template name="textfield">
                           <xsl:with-param name="name" select="'stepstate_workentry_trigger_cron'"/>
                           <xsl:with-param name="label" select="'%fldCronExpression%:'"/>
-                          <xsl:with-param name="selectnode" select="admin:node-set($workentry)/workentry/trigger/cron"/>
+                          <xsl:with-param name="selectnode" select="exslt-common:node-set($workentry)/workentry/trigger/cron"/>
                           <xsl:with-param name="colspan" select="'1'"/>
                           <xsl:with-param name="size" select="'70'"/>
                           <xsl:with-param name="maxlength" select="'220'"/>
@@ -359,7 +359,7 @@
           <xsl:text>%fldRun%:</xsl:text>
         </td>
         <td nowrap="nowrap">
-            <input type="hidden" name="stepstate_workentry_trigger_@type" id="idtype" value="{admin:node-set($workentry)/workentry/trigger/@type}"/>
+            <input type="hidden" name="stepstate_workentry_trigger_@type" id="idtype" value="{exslt-common:node-set($workentry)/workentry/trigger/@type}"/>
 
             <select name="__type" onchange="typeChange(this)">
 

@@ -3,7 +3,8 @@
 	<!ENTITY nbsp "&#160;">
 ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    >
 
   <xsl:output method="html"/>
 

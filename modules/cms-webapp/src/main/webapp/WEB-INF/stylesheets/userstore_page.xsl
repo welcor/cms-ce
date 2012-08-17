@@ -4,7 +4,8 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:admin="http://www.enonic.com/cms/admin">
+                xmlns:exslt-common="http://exslt.org/common"
+    >
 
   <xsl:output method="html"/>
 
@@ -86,7 +87,7 @@
 
         <xsl:if test="/userstores/userstore/connector/config/errors/error != ''">
           <xsl:call-template name="displayerror">
-            <xsl:with-param name="error" select="admin:node-set($error)"/>
+            <xsl:with-param name="error" select="exslt-common:node-set($error)"/>
           </xsl:call-template>
         </xsl:if>
 

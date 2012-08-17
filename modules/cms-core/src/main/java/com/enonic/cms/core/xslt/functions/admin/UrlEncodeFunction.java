@@ -3,7 +3,6 @@ package com.enonic.cms.core.xslt.functions.admin;
 import java.net.URLEncoder;
 
 import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.trans.XPathException;
@@ -18,15 +17,18 @@ final class UrlEncodeFunction
         extends AbstractXsltFunctionCall
     {
         @Override
-        public SequenceIterator<? extends Item> call( final SequenceIterator<? extends Item>[] args, final XPathContext context )
+        protected Item call( final XPathContext context, final SequenceIterator[] args )
             throws XPathException
         {
             final String uri = toSingleString( args[0] );
 
-            try {
+            try
+            {
                 final String encoded = URLEncoder.encode( uri, "UTF-8" );
                 return createValue( encoded );
-            } catch (Exception e) {
+            }
+            catch ( Exception e )
+            {
                 throw new XPathException( e );
             }
         }
@@ -41,7 +43,7 @@ final class UrlEncodeFunction
     }
 
     @Override
-    public ExtensionFunctionCall makeCallExpression()
+    protected AbstractXsltFunctionCall createCall()
     {
         return new Call();
     }

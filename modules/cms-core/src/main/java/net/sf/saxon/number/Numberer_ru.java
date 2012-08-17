@@ -1,11 +1,9 @@
-package com.enonic.cms.core.xslt.localizer;
-
-import net.sf.saxon.expr.number.AbstractNumberer;
+package net.sf.saxon.number;
 
 /**
  * Numberer class for the Russian language
  */
-final class Numberer_ru
+public final class Numberer_ru
     extends AbstractNumberer
 {
 

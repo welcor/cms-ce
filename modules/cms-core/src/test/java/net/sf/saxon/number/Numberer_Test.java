@@ -1,5 +1,4 @@
-package com.enonic.cms.core.xslt.localizer;
-
+package net.sf.saxon.number;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -67,7 +66,6 @@ public class Numberer_Test
         final StreamSource xmlStreamSource = new StreamSource( new StringReader( "<xml/>" ) );
 
         final TransformerFactoryImpl tFactory = new TransformerFactoryImpl();
-        tFactory.getConfiguration().setLocalizerFactory( new LocalizerFactoryImpl() );
         final Transformer transformer = tFactory.newTransformer( xslStreamSource );
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

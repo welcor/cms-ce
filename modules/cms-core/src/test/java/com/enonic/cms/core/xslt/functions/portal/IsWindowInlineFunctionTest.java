@@ -9,20 +9,19 @@ public class IsWindowInlineFunctionTest
     extends AbstractPortalFunctionTest
 {
     @Override
-    protected AbstractPortalFunction newFunction()
+    protected PortalFunctionsMediator newMediator()
     {
-        return new IsWindowInlineFunction();
+        return Mockito.mock( PortalFunctionsMediator.class );
     }
 
     @Test
     public void testFunction()
         throws Exception
     {
-        final PortalFunctionsMediator functions = Mockito.mock( PortalFunctionsMediator.class );
-        Mockito.when( functions.isWindowInline() ).thenReturn( true );
+        Mockito.when( this.mediator.isWindowInline() ).thenReturn( true );
 
-        processTemplate( functions, "isWindowInline" );
+        processTemplate( "isWindowInline" );
 
-        Mockito.verify( functions, Mockito.times( 1 ) ).isWindowInline();
+        Mockito.verify( this.mediator, Mockito.times( 1 ) ).isWindowInline();
     }
 }

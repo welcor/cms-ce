@@ -9,20 +9,19 @@ public class IsCaptchaEnabledFunctionTest
     extends AbstractPortalFunctionTest
 {
     @Override
-    protected AbstractPortalFunction newFunction()
+    protected PortalFunctionsMediator newMediator()
     {
-        return new IsCaptchaEnabledFunction();
+        return Mockito.mock( PortalFunctionsMediator.class );
     }
 
     @Test
     public void testFunction()
         throws Exception
     {
-        final PortalFunctionsMediator functions = Mockito.mock( PortalFunctionsMediator.class );
-        Mockito.when( functions.isCaptchaEnabled( Mockito.anyString(), Mockito.anyString() ) ).thenReturn( true );
+        Mockito.when( this.mediator.isCaptchaEnabled( Mockito.anyString(), Mockito.anyString() ) ).thenReturn( true );
 
-        processTemplate( functions, "isCaptchaEnabled" );
+        processTemplate( "isCaptchaEnabled" );
 
-        Mockito.verify( functions, Mockito.times( 1 ) ).isCaptchaEnabled( "handler", "operation" );
+        Mockito.verify( this.mediator, Mockito.times( 1 ) ).isCaptchaEnabled( "handler", "operation" );
     }
 }

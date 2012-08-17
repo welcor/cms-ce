@@ -8,17 +8,10 @@ import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
 public class CreateServicesUrlFunctionTest
     extends AbstractPortalFunctionTest
 {
-    @Override
-    protected AbstractPortalFunction newFunction()
-    {
-        return new CreateServicesUrlFunction();
-    }
-
     @Test
     public void testFunction()
         throws Exception
     {
-        final PortalFunctionsMediator functions = new MockPortalFunctionsMediator();
-        processTemplate( functions, "createServicesUrl" );
+        processTemplate( "createServicesUrl" );
     }
 }

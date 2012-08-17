@@ -9,20 +9,19 @@ public class ImageExistsFunctionTest
     extends AbstractPortalFunctionTest
 {
     @Override
-    protected AbstractPortalFunction newFunction()
+    protected PortalFunctionsMediator newMediator()
     {
-        return new ImageExistsFunction();
+        return Mockito.mock( PortalFunctionsMediator.class );
     }
 
     @Test
     public void testFunction()
         throws Exception
     {
-        final PortalFunctionsMediator functions = Mockito.mock( PortalFunctionsMediator.class );
-        Mockito.when( functions.imageExists( Mockito.anyString() ) ).thenReturn( true );
+        Mockito.when( this.mediator.imageExists( Mockito.anyString() ) ).thenReturn( true );
 
-        processTemplate( functions, "imageExists" );
+        processTemplate( "imageExists" );
 
-        Mockito.verify( functions, Mockito.times( 1 ) ).imageExists( "image-key" );
+        Mockito.verify( this.mediator, Mockito.times( 1 ) ).imageExists( "image-key" );
     }
 }

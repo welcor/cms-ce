@@ -5,7 +5,6 @@
 package com.enonic.cms.core.xslt.saxon;
 
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ import com.enonic.cms.core.xslt.cache.TemplatesXsltCache;
 import com.enonic.cms.core.xslt.functions.admin.AdminXsltFunctionLibrary;
 import com.enonic.cms.core.xslt.functions.portal.PortalXsltFunctionLibrary;
 import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
-import com.enonic.cms.core.xslt.localizer.LocalizerFactoryImpl;
 
 /**
  * This class implements the standard xslt processor manager.
@@ -45,16 +43,17 @@ public final class SaxonProcessorManager
     {
         XsltProcessorManagerAccessor.setProcessorManager( this );
 
-        this.configuration = new Configuration();
+        this.processor = new Processor( false );
+
+        this.configuration = this.processor.getUnderlyingConfiguration();
         this.configuration.setLineNumbering( true );
         this.configuration.setHostLanguage( Configuration.XSLT );
         this.configuration.setVersionWarning( false );
-        this.configuration.setLocalizerFactory( new LocalizerFactoryImpl() );
+        // this.configuration.setLocalizerFactory( new LocalizerFactoryImpl() );
         this.configuration.setCompileWithTracing( true );
         this.configuration.setValidationWarnings( true );
 
-        this.processor = new Processor( this.configuration );
-        new AdminXsltFunctionLibrary().registerAll( this.configuration );
+        new AdminXsltFunctionLibrary().register( this.configuration );
     }
 
     public XsltProcessor createProcessor( final Source xsl, final URIResolver resolver )
@@ -115,6 +114,6 @@ public final class SaxonProcessorManager
     @Autowired
     public void setPortalFunctions( final PortalFunctionsMediator portalFunctions )
     {
-        new PortalXsltFunctionLibrary( portalFunctions ).registerAll( this.configuration );
+        new PortalXsltFunctionLibrary( portalFunctions ).register( this.configuration );
     }
 }

@@ -1,13 +1,10 @@
-package com.enonic.cms.core.xslt.localizer;
+package net.sf.saxon.number;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import net.sf.saxon.expr.number.AbstractNumberer;
-
-import com.enonic.cms.core.xslt.localizer.Numberer_ru;
 
 public class Numberer_ruTest
         extends TestCase

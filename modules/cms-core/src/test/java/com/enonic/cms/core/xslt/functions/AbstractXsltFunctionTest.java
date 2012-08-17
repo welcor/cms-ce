@@ -19,11 +19,11 @@ import com.google.common.io.CharStreams;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.TransformerFactoryImpl;
 
-public abstract class AbstractXsltFunctionTest<T extends AbstractXsltFunction>
+public abstract class AbstractXsltFunctionTest<T extends XsltFunctionLibrary>
 {
     private TransformerFactoryImpl transformerFactory;
 
-    protected T function;
+    protected T functionLibrary;
 
     @Before
     public void setUp()
@@ -35,11 +35,11 @@ public abstract class AbstractXsltFunctionTest<T extends AbstractXsltFunction>
         this.transformerFactory = new TransformerFactoryImpl();
         final Configuration config = this.transformerFactory.getConfiguration();
 
-        this.function = newFunction();
-        config.registerExtensionFunction( this.function );
+        this.functionLibrary = newFunctionLibrary();
+        this.functionLibrary.register( config );
     }
 
-    protected abstract T newFunction();
+    protected abstract T newFunctionLibrary();
 
     protected final void processTemplate( final String baseName )
         throws Exception

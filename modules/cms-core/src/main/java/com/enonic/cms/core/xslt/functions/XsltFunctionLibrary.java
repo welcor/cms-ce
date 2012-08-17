@@ -1,39 +1,79 @@
 package com.enonic.cms.core.xslt.functions;
 
-import java.util.List;
+import java.util.Map;
 
-import com.google.common.collect.Lists;
+import org.elasticsearch.common.collect.Maps;
 
 import net.sf.saxon.Configuration;
-import net.sf.saxon.lib.ExtensionFunctionDefinition;
+import net.sf.saxon.expr.Expression;
+import net.sf.saxon.expr.StaticContext;
+import net.sf.saxon.functions.FunctionLibrary;
+import net.sf.saxon.functions.FunctionLibraryList;
+import net.sf.saxon.om.StructuredQName;
+import net.sf.saxon.trans.XPathException;
 
-public abstract class XsltFunctionLibrary
+public class XsltFunctionLibrary
+    implements FunctionLibrary
 {
-    private final List<AbstractXsltFunction> list;
+    private final Map<StructuredQName, AbstractXsltFunction> map;
 
     public XsltFunctionLibrary()
     {
-        this.list = Lists.newArrayList();
+        this.map = Maps.newHashMap();
     }
 
     protected final void add( final AbstractXsltFunction function )
     {
-        this.list.add( function );
-    }
-
-    public final void registerAll( final Configuration config )
-    {
-        for (final AbstractXsltFunction function : this.list) {
-            register( config, function );
+        this.map.put( function.getName(), function );
+        for ( final StructuredQName alias : function.getAliases() )
+        {
+            this.map.put( alias, function );
         }
     }
 
-    private void register( final Configuration config, final AbstractXsltFunction function )
+    @Override
+    public boolean isAvailable( final StructuredQName name, final int arity )
     {
-        config.registerExtensionFunction( function );
+        final AbstractXsltFunction function = this.map.get( name );
+        return function != null && function.checkArgCount( arity );
+    }
 
-        for (final ExtensionFunctionDefinition alias : function.getAliases() ) {
-            config.registerExtensionFunction( alias );
+    @Override
+    public Expression bind( final StructuredQName name, final Expression[] args, final StaticContext env )
+        throws XPathException
+    {
+        final AbstractXsltFunction function = this.map.get( name );
+        if ( function == null )
+        {
+            return null;
         }
+
+        return function.createCall( args );
+    }
+
+    @Override
+    public final FunctionLibrary copy()
+    {
+        final XsltFunctionLibrary lib = new XsltFunctionLibrary();
+        lib.map.putAll( this.map );
+        return lib;
+    }
+
+    private FunctionLibraryList getLibraryList( final Configuration config )
+    {
+        final FunctionLibrary library = config.getExtensionBinder( "java" );
+
+        if (library instanceof FunctionLibraryList) {
+            return (FunctionLibraryList)library;
+        } else {
+            final FunctionLibraryList list = new FunctionLibraryList();
+            config.setExtensionBinder( "java", list );
+            return list;
+        }
+    }
+
+    public void register( final Configuration config )
+    {
+        getLibraryList(config).addFunctionLibrary( this );
     }
 }

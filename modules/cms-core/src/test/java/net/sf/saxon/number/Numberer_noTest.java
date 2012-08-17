@@ -2,15 +2,13 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.xslt.localizer;
+package net.sf.saxon.number;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
-import com.enonic.cms.core.xslt.localizer.Numberer_no;
 
 public class Numberer_noTest
     extends TestCase

@@ -4,13 +4,102 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.sf.saxon.lib.ExtensionFunctionDefinition;
+import net.sf.saxon.expr.Expression;
+import net.sf.saxon.expr.StaticProperty;
 import net.sf.saxon.om.StructuredQName;
+import net.sf.saxon.trans.XPathException;
+import net.sf.saxon.type.AnyItemType;
+import net.sf.saxon.type.ItemType;
 import net.sf.saxon.value.SequenceType;
 
 public abstract class AbstractXsltFunction
-    extends ExtensionFunctionDefinition
 {
+    private final StructuredQName name;
+
+    private final List<StructuredQName> aliases;
+
+    private int minArguments = 0;
+
+    private int maxArguments = 0;
+
+    private ItemType resultType = AnyItemType.getInstance();
+
+    private int resultCardinality = StaticProperty.ALLOWS_ZERO_OR_MORE;
+
+    private SequenceType[] argumentTypes;
+
+    public AbstractXsltFunction( final String namespacePrefix, final String namespaceUri, final String localName )
+    {
+        this.name = new StructuredQName( namespacePrefix, namespaceUri, localName );
+        this.aliases = Lists.newArrayList();
+    }
+
+    public final StructuredQName getName()
+    {
+        return this.name;
+    }
+
+    public final List<StructuredQName> getAliases()
+    {
+        return this.aliases;
+    }
+
+    public final boolean checkArgCount( final int numArgs )
+    {
+        return ( numArgs == -1 ) || ( numArgs >= this.minArguments && numArgs <= this.maxArguments );
+    }
+
+    protected final void registerAlias( final StructuredQName name )
+    {
+        this.aliases.add( name );
+    }
+
+    public final AbstractXsltFunctionCall createCall( final Expression[] args )
+        throws XPathException
+    {
+        final AbstractXsltFunctionCall call = createCall();
+        call.setFunctionName( this.name );
+        call.setArguments( args );
+        call.minArguments = this.minArguments;
+        call.maxArguments = this.maxArguments;
+        call.resultType = this.resultType;
+        call.resultCardinality = this.resultCardinality;
+        call.argumentTypes = this.argumentTypes;
+        return call;
+    }
+
+    protected final void setResultType( final SequenceType type )
+    {
+        this.resultType = type.getPrimaryType();
+        this.resultCardinality = type.getCardinality();
+    }
+
+    protected final void setArgumentTypes( final SequenceType... types )
+    {
+        this.argumentTypes = types;
+        this.maxArguments = types.length;
+    }
+
+    protected final void setMinimumNumberOfArguments( final int num )
+    {
+        this.minArguments = num;
+    }
+
+    protected final void setMaximumNumberOfArguments( final int args )
+    {
+        final SequenceType[] types = new SequenceType[args];
+        for ( int i = 0; i < types.length; i++ )
+        {
+            types[i] = SequenceType.ANY_SEQUENCE;
+        }
+
+        setArgumentTypes( types );
+    }
+
+    protected abstract AbstractXsltFunctionCall createCall();
+
+    /*
+
     private final StructuredQName qName;
 
     private int minArgs = 0;
@@ -28,7 +117,7 @@ public abstract class AbstractXsltFunction
     }
 
     @Override
-    public final StructuredQName getFunctionQName()
+    public final StructuredQName getName()
     {
         return this.qName;
     }
@@ -81,4 +170,7 @@ public abstract class AbstractXsltFunction
     {
         return this.aliases.toArray( new ExtensionFunctionDefinition[this.aliases.size()] );
     }
+
+    public abstract AbstractXsltFunctionCall makeFunctionCall();
+    */
 }

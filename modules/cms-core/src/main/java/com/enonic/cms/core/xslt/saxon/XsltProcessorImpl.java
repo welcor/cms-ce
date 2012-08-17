@@ -185,7 +185,8 @@ final class XsltProcessorImpl
     public void process( final Source xml, final Writer writer )
         throws XsltProcessorException
     {
-        final Serializer serializer = new Serializer( writer );
+        final Serializer serializer = new Serializer();
+        serializer.setOutputWriter( writer );
         serializer.setOutputProperty( Serializer.Property.OMIT_XML_DECLARATION, this.omitXmlDecl ? "yes" : "no" );
 
         doProcess( xml, serializer );
@@ -195,20 +196,20 @@ final class XsltProcessorImpl
         throws XsltProcessorException
     {
         final XsltProcessorErrors errors = new XsltProcessorErrors();
-        final XsltTransformer transformer = executable.load();
+        final XsltTransformer transformer = this.executable.load();
 
         try
         {
             transformer.setSource( xml );
             transformer.setDestination( destination );
-            transformer.setErrorListener( errors );
-            transformer.setURIResolver( this.uriResolver );
+            transformer.getUnderlyingController().setErrorListener( errors );
+            transformer.getUnderlyingController().setURIResolver( this.uriResolver );
             applyParameters( transformer );
 
             transformer.transform();
 
-            transformer.close();
-            destination.close();
+            // transformer.close();
+            // destination.close();
         }
         catch ( final Exception e )
         {
@@ -282,7 +283,7 @@ final class XsltProcessorImpl
     {
         try
         {
-            this.parameters.put( name, new XdmAtomicValue( value, ItemType.UNTYPED_ATOMIC ) );
+            this.parameters.put( name, new XdmAtomicValue( value, ItemType.ANY_ATOMIC_VALUE ) );
         }
         catch ( SaxonApiException e )
         {

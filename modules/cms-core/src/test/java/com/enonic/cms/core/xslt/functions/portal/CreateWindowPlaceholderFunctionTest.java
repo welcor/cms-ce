@@ -8,17 +8,10 @@ import com.enonic.cms.core.xslt.lib.PortalFunctionsMediator;
 public class CreateWindowPlaceholderFunctionTest
     extends AbstractPortalFunctionTest
 {
-    @Override
-    protected AbstractPortalFunction newFunction()
-    {
-        return new CreateWindowPlaceholderFunction();
-    }
-
     @Test
     public void testFunction()
         throws Exception
     {
-        final PortalFunctionsMediator functions = new MockPortalFunctionsMediator();
-        processTemplate( functions, "createWindowPlaceholder" );
+        processTemplate( "createWindowPlaceholder" );
     }
 }

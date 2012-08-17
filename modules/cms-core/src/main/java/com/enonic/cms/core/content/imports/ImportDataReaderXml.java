@@ -389,7 +389,7 @@ public class ImportDataReaderXml
             }
             final Receiver serializer =
                 config.getSerializerFactory().getReceiver( new StreamResult( sw ), config.makePipelineConfiguration(), props );
-            nodeInfo.copy( serializer, NodeInfo.ALL_NAMESPACES, 0 );
+            nodeInfo.copy( serializer, NodeInfo.ALL_NAMESPACES, false, 0 );
             return sw.toString();
         }
         return null;

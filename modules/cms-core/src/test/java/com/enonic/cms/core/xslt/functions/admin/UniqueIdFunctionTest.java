@@ -1,22 +1,17 @@
 package com.enonic.cms.core.xslt.functions.admin;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.mockito.Mockito;
 
 public class UniqueIdFunctionTest
     extends AbstractAdminFunctionTest
 {
     @Override
-    protected AbstractAdminFunction newFunction()
+    protected AdminXsltFunctionLibrary newFunctionLibrary()
     {
-        return new UniqueIdFunction()
-        {
-            @Override
-            protected String generateId()
-            {
-                return "123";
-            }
-        };
+        final UniqueIdGenerator generator = Mockito.mock( UniqueIdGenerator.class );
+        Mockito.when( generator.generateUniqueId() ).thenReturn( "123" );
+        return new AdminXsltFunctionLibrary( generator );
     }
 
     @Test
@@ -24,17 +19,5 @@ public class UniqueIdFunctionTest
         throws Exception
     {
         processTemplate( "uniqueId" );
-    }
-
-    @Test
-    public void testUniqueness()
-    {
-        final UniqueIdFunction function = new UniqueIdFunction();
-        final String id1 = function.generateId();
-        final String id2 = function.generateId();
-
-        assertNotNull(id1);
-        assertNotNull(id2);
-        assertFalse(id1.equals( id2 ));
     }
 }

@@ -1,7 +1,6 @@
 package com.enonic.cms.core.xslt.functions.portal;
 
 import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.trans.XPathException;
@@ -15,7 +14,7 @@ final class GetInstanceKeyFunction
         extends AbstractXsltFunctionCall
     {
         @Override
-        public SequenceIterator<? extends Item> call( final SequenceIterator<? extends Item>[] args, final XPathContext context )
+        protected Item call( final XPathContext context, final SequenceIterator[] args )
             throws XPathException
         {
             return createValue( getPortalFunctions().getInstanceKey() );
@@ -29,7 +28,7 @@ final class GetInstanceKeyFunction
     }
 
     @Override
-    public ExtensionFunctionCall makeCallExpression()
+    protected AbstractXsltFunctionCall createCall()
     {
         return new Call();
     }

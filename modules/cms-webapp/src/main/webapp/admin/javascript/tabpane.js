@@ -139,14 +139,18 @@ WebFXTabPane.prototype.addTabPage = function ( oElement ) {
 	tp.tabPane = this;
 
 	// move the tab out of the box
-	this.tabRow.appendChild( tp.tab );
+    if (tp.tab)
+    {
+	    this.tabRow.appendChild( tp.tab );
 
-	if ( n == this.selectedIndex )
-		tp.show();
-	else
-		tp.hide();
+    	if ( n == this.selectedIndex )
+	    	tp.show();
+	    else
+		    tp.hide();
 
-	return tp;
+    }
+
+    return tp;
 };
 
 WebFXTabPane.prototype.dispose = function () {
@@ -235,7 +239,8 @@ function WebFXTabPage( el, tabPane, nIndex ) {
 
 	// insert a tag around content to support keyboard navigation
 
-
+    if ( this.tab )
+    {
 	var a = document.createElement( "A" );
 	this.aElement = a;
 	a.href = "javascript:void 0;";
@@ -249,6 +254,7 @@ function WebFXTabPage( el, tabPane, nIndex ) {
 	this.tab.onclick = function () { oThis.select(); };
 	//this.tab.onmouseover = function () { WebFXTabPage.tabOver( oThis ); };
 	//this.tab.onmouseout = function () { WebFXTabPage.tabOut( oThis ); };
+    }
 }
 
 WebFXTabPage.prototype.show = function () {

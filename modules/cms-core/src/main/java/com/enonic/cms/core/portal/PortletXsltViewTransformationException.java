@@ -13,16 +13,8 @@ import com.enonic.cms.core.xslt.XsltProcessorException;
 public class PortletXsltViewTransformationException
     extends RuntimeException
 {
-    private XsltProcessorException xsltProcessorException;
-
     public PortletXsltViewTransformationException( String message, XsltProcessorException exception )
     {
         super( message, exception );
-        this.xsltProcessorException = exception;
-    }
-
-    public XsltProcessorErrors getErrors()
-    {
-        return xsltProcessorException.getErrors();
     }
 }

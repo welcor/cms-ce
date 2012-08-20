@@ -8,6 +8,7 @@
 
   <xsl:template name="filefield">
     <xsl:param name="label"/>
+    <xsl:param name="title"/>
     <xsl:param name="size"/>
     <xsl:param name="name"/>
     <xsl:param name="id" select="$name"/>
@@ -25,6 +26,7 @@
       <xsl:call-template name="labelcolumn">
         <xsl:with-param name="width" select="$lefttdwidth"/>
         <xsl:with-param name="label" select="$label"/>
+        <xsl:with-param name="title" select="$title"/>
         <xsl:with-param name="required" select="$required"/>
         <xsl:with-param name="fieldname" select="$name"/>
         <xsl:with-param name="helpelement" select="$helpelement"/>

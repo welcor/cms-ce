@@ -10,6 +10,7 @@
 
     <xsl:template name="searchfield">
         <xsl:param name="label" select="''"/>
+        <xsl:param name="title" select="''"/>
         <xsl:param name="size"/>
         <xsl:param name="name"/>
         <xsl:param name="id"/>
@@ -45,6 +46,7 @@
               <xsl:call-template name="labelcolumn">
                 <xsl:with-param name="width" select="$lefttdwidth"/>
                 <xsl:with-param name="label" select="$label"/>
+                <xsl:with-param name="title" select="$title"/>
                 <xsl:with-param name="required" select="$required"/>
                 <xsl:with-param name="fieldname" select="$name"/>
                 <xsl:with-param name="helpelement" select="$helpelement"/>

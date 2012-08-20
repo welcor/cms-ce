@@ -8,6 +8,7 @@
   <xsl:template name="enhancedmultipleimageselector">
     <xsl:param name="scalemax" select="230"/>
     <xsl:param name="label"/>
+    <xsl:param name="title"/>
     <xsl:param name="name"/>
     <xsl:param name="selected"/>
     <xsl:param name="colspan"/>
@@ -122,6 +123,7 @@
     <xsl:if test="$label != ''">
       <xsl:call-template name="labelcolumn">
         <xsl:with-param name="label" select="$label"/>
+        <xsl:with-param name="title" select="$title"/>
         <xsl:with-param name="required" select="$required"/>
         <xsl:with-param name="fieldname" select="$name"/>
         <xsl:with-param name="helpelement" select="$helpelement"/>

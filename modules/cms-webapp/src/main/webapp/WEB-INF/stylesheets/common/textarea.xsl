@@ -8,6 +8,7 @@
 
   <xsl:template name="textarea">
     <xsl:param name="label"/>
+    <xsl:param name="title"/>
     <xsl:param name="name"/>
     <xsl:param name="id"/>
     <xsl:param name="class"/>
@@ -38,6 +39,7 @@
       <xsl:call-template name="labelcolumn">
         <xsl:with-param name="width" select="$lefttdwidth"/>
         <xsl:with-param name="label" select="$label"/>
+        <xsl:with-param name="title" select="$title"/>
         <xsl:with-param name="required" select="$required"/>
         <xsl:with-param name="fieldname" select="$name"/>
         <xsl:with-param name="helpelement" select="$helpelement"/>

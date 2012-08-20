@@ -1254,6 +1254,7 @@
     <xsl:for-each select="/config/form/block">
       <xsl:variable name="groupname" select="concat('group', position())"/>
       <xsl:variable name="grouphelpelem" select="help"/>
+      <xsl:variable name="grpname" select="@group"/>
 
       <fieldset>
         <legend>
@@ -1300,6 +1301,7 @@
                       <xsl:for-each select="input">
                         <xsl:call-template name="displayinput">
                           <xsl:with-param name="input" select="."/>
+                          <xsl:with-param name="grpname" select="$grpname"/>
                         </xsl:call-template>
                       </xsl:for-each>
                       <tr>
@@ -1389,6 +1391,7 @@
                     <xsl:for-each select="input">
                       <xsl:call-template name="displayinput">
                         <xsl:with-param name="input" select="."/>
+                        <xsl:with-param name="grpname" select="$grpname"/>
                       </xsl:call-template>
                     </xsl:for-each>
                     <tr>
@@ -1491,6 +1494,7 @@
                 </xsl:variable>
                 <xsl:call-template name="displayinput">
                   <xsl:with-param name="input" select="exslt-common:node-set($temp_input)/input"/>
+                  <xsl:with-param name="grpname" select="$grpname"/>
                 </xsl:call-template>
               </xsl:for-each>
             </xsl:otherwise>
@@ -1502,23 +1506,40 @@
 
   <xsl:template name="displayinput">
     <xsl:param name="input"/>
+    <xsl:param name="grpname"/>
+
+    <xsl:variable name="title">
+      <xsl:choose>
+        <xsl:when test="$grpname">
+          <xsl:variable name="title1" select="substring-after($grpname, 'contentdata/')"/>
+          <xsl:variable name="title2" select="concat($title1, '/')"/>
+          <xsl:value-of select="concat($title2, $input/xpath)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$input/xpath"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
 
     <xsl:choose>
       <xsl:when test="$input/@readonly = 'true' and ($input/@type = 'text' or $input/@type = 'date' or $input/@type = 'url' or $input/@type = 'xml' or $input/@type = 'textarea')">
         <xsl:call-template name="displayreadonly">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'text'">
         <xsl:call-template name="displaytext">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'textarea'">
         <xsl:call-template name="displaytextarea">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1526,6 +1547,7 @@
         <xsl:call-template name="displaytextarea">
           <xsl:with-param name="input" select="$input"/>
           <xsl:with-param name="xml" select="'true'"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1538,36 +1560,42 @@
       <xsl:when test="$input/@type = 'htmlarea'">
         <xsl:call-template name="displayhtmlarea">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'images'">
         <xsl:call-template name="displayimages">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'uploadfile'">
         <xsl:call-template name="uploadfile">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'image'">
         <xsl:call-template name="displayimage">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'files'">
         <xsl:call-template name="displayfiles">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'file'">
         <xsl:call-template name="displayfile">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1577,11 +1605,13 @@
           <xsl:when test="$is-multiple">
             <xsl:call-template name="relatedcontent">
               <xsl:with-param name="input" select="$input"/>
+              <xsl:with-param name="title" select="$title"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="relatedcontent_multiple_false">
               <xsl:with-param name="input" select="$input"/>
+              <xsl:with-param name="title" select="$title"/>
             </xsl:call-template>
           </xsl:otherwise>
         </xsl:choose>
@@ -1590,36 +1620,42 @@
       <xsl:when test="$input/@type = 'checkbox'">
         <xsl:call-template name="checkbox">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'dropdown'">
         <xsl:call-template name="dropdown">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'date'">
         <xsl:call-template name="displaydatefield">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'url'">
         <xsl:call-template name="displaytext">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'radiobutton'">
         <xsl:call-template name="displayradiobutton">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'multiplechoice'">
         <xsl:call-template name="displaymultiplechoice">
           <xsl:with-param name="input" select="$input"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1628,11 +1664,15 @@
 
   <xsl:template name="checkbox">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr>
       <x:call-template name="labelcolumn">
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="fieldname">
           <xsl:value-of select="$input/@name"/>
@@ -1691,11 +1731,15 @@
 
   <xsl:template name="dropdown">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr>
       <x:call-template name="labelcolumn">
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -1767,6 +1811,7 @@
 
   <xsl:template name="relatedcontent_multiple_false">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
 
     <xsl:variable name="min-occurrence" select="0" />
     <xsl:variable name="max-occurrence" select="1" />
@@ -1822,6 +1867,9 @@
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -1949,6 +1997,7 @@
 
   <xsl:template name="relatedcontent">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
 
     <xsl:variable name="min-occurrence" select="0" />
     <xsl:variable name="max-occurrence" select="-1" />
@@ -2004,6 +2053,9 @@
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -2164,6 +2216,7 @@
 
   <xsl:template name="displayfiles">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
 
     <x:if test="not($readonly)">
       <script type="text/javascript" language="JavaScript">
@@ -2179,6 +2232,9 @@
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -2499,12 +2555,16 @@
 
   <xsl:template name="displayfile">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr>
 
       <x:call-template name="labelcolumn">
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -2684,6 +2744,7 @@
 
   <xsl:template name="displayimages">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr name="imagerow">
       <x:call-template name="enhancedmultipleimageselector">
         <x:with-param name="disabled" select="$readonly"/>
@@ -2696,6 +2757,9 @@
             <xsl:value-of select="$input/display"/>
             <xsl:text>:'</xsl:text>
           </xsl:attribute>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="name">
           <xsl:attribute name="select">
@@ -2753,6 +2817,7 @@
 
   <xsl:template name="displayimage">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr name="imagerow">
       <x:call-template name="enhancedimageselector">
         <x:with-param name="disabled" select="$readonly"/>
@@ -2773,6 +2838,9 @@
             <xsl:text>'</xsl:text>
           </xsl:attribute>
         </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
+        </x:with-param>
         <x:with-param name="selectedkey">
           <xsl:attribute name="select">
             <xsl:value-of select="concat($input/xpath, '/@key')"/>
@@ -2791,6 +2859,7 @@
 
   <xsl:template name="displayradiobutton">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
 
     <xsl:variable name="xpath">
       <xsl:value-of select="$input/xpath"/>
@@ -2803,6 +2872,9 @@
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -2886,6 +2958,7 @@
 
   <xsl:template name="displaymultiplechoice">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
 
     <xsl:variable name="xpath">
       <xsl:value-of select="$input/xpath"/>
@@ -2994,6 +3067,9 @@
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -3151,6 +3227,7 @@
 
   <xsl:template name="displaytext">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr>
       <x:call-template name="textfield">
         <x:with-param name="disabled" select="$readonly"/>
@@ -3170,6 +3247,9 @@
             <xsl:value-of select="$input/display"/>
             <xsl:text>:'</xsl:text>
           </xsl:attribute>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="selectnode">
           <x:choose>
@@ -3234,7 +3314,7 @@
   <xsl:template name="displaytextarea">
     <xsl:param name="input"/>
     <xsl:param name="xml" select="'false'"/>
-
+    <xsl:param name="title"/>
     <tr>
       <x:call-template name="textarea">
         <x:with-param name="xml">
@@ -3257,6 +3337,9 @@
             <xsl:value-of select="$input/display"/>
             <xsl:text>:'</xsl:text>
           </xsl:attribute>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
 
         <x:with-param name="selectnode">
@@ -3313,6 +3396,7 @@
 
   <xsl:template name="displaydatefield">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr>
       <x:call-template name="textfielddate">
         <x:with-param name="disabled" select="$readonly"/>
@@ -3333,6 +3417,9 @@
             <xsl:value-of select="$input/display"/>
             <xsl:text>:'</xsl:text>
           </xsl:attribute>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="selectnode">
           <x:choose>
@@ -3400,11 +3487,15 @@
 
   <xsl:template name="displayreadonly">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr>
       <x:call-template name="labelcolumn">
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -3608,11 +3699,15 @@
 
   <xsl:template name="displayhtmlarea">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
     <tr>
       <x:call-template name="labelcolumn">
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>
@@ -3726,6 +3821,7 @@
 
   <xsl:template name="uploadfile">
     <xsl:param name="input"/>
+    <xsl:param name="title"/>
 
     <x:variable name="binarykey">
       <x:value-of select="{concat($input/xpath, '/binarydata/@key')}"/>
@@ -3738,6 +3834,9 @@
         <x:with-param name="label">
           <xsl:value-of select="$input/display"/>
           <xsl:text>:</xsl:text>
+        </x:with-param>
+        <x:with-param name="title">
+          <xsl:value-of select="$title"/>
         </x:with-param>
         <x:with-param name="required">
           <xsl:value-of select="($input/@required = 'true')"/>

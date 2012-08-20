@@ -49,6 +49,7 @@ public class DeviceClassXsltScriptResolverTest
 
     @Test
     public void testScriptResolvedDeviceClassIphone()
+        throws Exception
     {
         setupResourceAndXsltManager();
 
@@ -64,6 +65,7 @@ public class DeviceClassXsltScriptResolverTest
 
     @Test
     public void testScriptResolvedDeviceClassAndroid()
+        throws Exception
     {
         setupResourceAndXsltManager();
 
@@ -79,6 +81,7 @@ public class DeviceClassXsltScriptResolverTest
 
     @Test
     public void testScriptResolvedDeviceClassScreen()
+        throws Exception
     {
         setupResourceAndXsltManager();
 
@@ -93,6 +96,7 @@ public class DeviceClassXsltScriptResolverTest
     }
 
     private void setupResourceAndXsltManager()
+        throws Exception
     {
         expect( resourceFile.getDataAsXml() ).andReturn( createXMLDocument() ).anyTimes();
         replay( resourceFile );

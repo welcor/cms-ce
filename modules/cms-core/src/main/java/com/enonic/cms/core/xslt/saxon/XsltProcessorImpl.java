@@ -49,11 +49,14 @@ final class XsltProcessorImpl
 
     private final URIResolver uriResolver;
 
-    public XsltProcessorImpl( final XsltExecutable executable, final URIResolver uriResolver )
+    private final ItemType untypedAtomicType;
+
+    public XsltProcessorImpl( final XsltExecutable executable, final URIResolver uriResolver, final ItemType untypedAtomicType )
     {
         this.executable = executable;
         this.parameters = Maps.newHashMap();
         this.uriResolver = uriResolver;
+        this.untypedAtomicType = untypedAtomicType;
     }
 
     private String getOutputProperty( final String name )
@@ -280,7 +283,7 @@ final class XsltProcessorImpl
     {
         try
         {
-            this.parameters.put( name, new XdmAtomicValue( value, ItemType.ANY_ATOMIC_VALUE ) );
+            this.parameters.put( name, new XdmAtomicValue( value, this.untypedAtomicType ) );
         }
         catch ( SaxonApiException e )
         {

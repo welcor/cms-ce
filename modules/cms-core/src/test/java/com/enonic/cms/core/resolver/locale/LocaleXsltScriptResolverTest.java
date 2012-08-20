@@ -53,6 +53,7 @@ public class LocaleXsltScriptResolverTest
 
     @Test
     public void testScriptResolvedLocale()
+        throws Exception
     {
         setupResourceAndXsltManager();
 
@@ -82,6 +83,7 @@ public class LocaleXsltScriptResolverTest
     }
 
     private void setupResourceAndXsltManager()
+        throws Exception
     {
         expect( resourceFile.getDataAsXml() ).andReturn( createXMLDocument() ).anyTimes();
         expect( resourceFile.getPath() ).andReturn( "scriptpath" ).anyTimes();

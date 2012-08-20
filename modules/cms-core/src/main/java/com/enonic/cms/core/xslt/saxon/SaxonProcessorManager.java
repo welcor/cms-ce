@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.sf.saxon.Configuration;
+import net.sf.saxon.s9api.ItemType;
+import net.sf.saxon.s9api.ItemTypeFactory;
 import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 
@@ -39,17 +42,20 @@ public final class SaxonProcessorManager
 
     private TemplatesXsltCache cache;
 
+    private final ItemType untypedAtomicType;
+
     public SaxonProcessorManager()
+        throws Exception
     {
         XsltProcessorManagerAccessor.setProcessorManager( this );
 
         this.processor = new Processor( false );
 
+        this.untypedAtomicType = new ItemTypeFactory( this.processor ).getAtomicType( QName.XS_UNTYPED_ATOMIC );
         this.configuration = this.processor.getUnderlyingConfiguration();
         this.configuration.setLineNumbering( true );
         this.configuration.setHostLanguage( Configuration.XSLT );
         this.configuration.setVersionWarning( false );
-        // this.configuration.setLocalizerFactory( new LocalizerFactoryImpl() );
         this.configuration.setCompileWithTracing( true );
         this.configuration.setValidationWarnings( true );
 
@@ -59,7 +65,7 @@ public final class SaxonProcessorManager
     public XsltProcessor createProcessor( final Source xsl, final URIResolver resolver )
         throws XsltProcessorException
     {
-        return new XsltProcessorImpl( compileXslt( xsl, resolver ), resolver );
+        return new XsltProcessorImpl( compileXslt( xsl, resolver ), resolver, this.untypedAtomicType );
     }
 
     public XsltProcessor createProcessor( final XsltResource xsl, final URIResolver resolver )
@@ -84,7 +90,7 @@ public final class SaxonProcessorManager
             this.cache.put( xsl, templates );
         }
 
-        return new XsltProcessorImpl( templates, resolver );
+        return new XsltProcessorImpl( templates, resolver, this.untypedAtomicType );
     }
 
     private XsltExecutable compileXslt( final Source xsl, final URIResolver resolver )

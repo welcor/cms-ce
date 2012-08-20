@@ -68,10 +68,6 @@ public final class RenderTrace
 
         LinkedList<RenderTraceInfo> history = getHistory();
         history.addFirst( info );
-        if ( history.size() > HISTORY_SIZE_PER_USER )
-        {
-            history.removeLast();
-        }
     }
 
     private static LinkedList<RenderTraceInfo> getHistory()
@@ -117,6 +113,22 @@ public final class RenderTrace
     {
         RenderTraceInfo info = getCurrentRenderTraceInfo();
         getCurrentRequest().removeAttribute( CONTEXT_KEY );
+
+        RenderTraceInfo renderTraceInfo = getRenderTraceInfo( info.getKey() );
+
+        LinkedList<RenderTraceInfo> history = getHistory();
+
+        if ( renderTraceInfo.getPageInfo() == null )
+        {
+            getHistory().remove( renderTraceInfo );
+            history.remove( renderTraceInfo );
+        }
+
+        while ( history.size() > HISTORY_SIZE_PER_USER )
+        {
+            history.removeLast();
+        }
+
         return info;
     }
 
@@ -256,15 +268,6 @@ public final class RenderTrace
     /**
      * Return the current render trace info.
      */
-    public static PageTraceInfo getCurrentPageTraceInfo()
-    {
-        TraceContext context = getCurrentTraceContext();
-        return context != null ? context.getPageTraceInfo() : null;
-    }
-
-    /**
-     * Return the current render trace info.
-     */
     public static PagePortletTraceInfo getCurrentPageObjectTraceInfo()
     {
         TraceContext context = getCurrentTraceContext();
@@ -278,15 +281,6 @@ public final class RenderTrace
     {
         TraceContext context = getCurrentTraceContext();
         return context != null ? context.getCurrentDataTraceInfo() : null;
-    }
-
-    /**
-     * Return the current render trace info.
-     */
-    public static FunctionTraceInfo getCurrentFunctionTraceInfo()
-    {
-        TraceContext context = getCurrentTraceContext();
-        return context != null ? context.getCurrentFunctionTraceInfo() : null;
     }
 
     /**

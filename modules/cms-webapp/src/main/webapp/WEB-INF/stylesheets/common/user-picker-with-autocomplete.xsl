@@ -30,6 +30,7 @@
   <xsl:template name="user-picker-with-autocomplete">
     <xsl:param name="name"/>
     <xsl:param name="label" select="''" />
+    <xsl:param name="title" select="''" />
     <xsl:param name="required" select="false()"/>
     <xsl:param name="id" select="$name"/>
     <xsl:param name="selected-user-key" select="''"/>
@@ -48,6 +49,7 @@
     <xsl:if test="$label != ''">
       <xsl:call-template name="labelcolumn">
         <xsl:with-param name="label" select="$label"/>
+        <xsl:with-param name="title" select="$title"/>
         <xsl:with-param name="required" select="$required"/>
         <xsl:with-param name="fieldname" select="$name"/>
         <xsl:with-param name="helpelement" select="$help-element"/>

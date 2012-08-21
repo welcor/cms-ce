@@ -6,6 +6,7 @@
 
     <xsl:template name="textfield2">
       <xsl:param name="label" select="''"/>
+      <xsl:param name="title" select="''"/>
       <xsl:param name="prefix"/>
       <xsl:param name="size1"/>
       <xsl:param name="maxlength1"/>
@@ -33,6 +34,7 @@
               <xsl:call-template name="labelcolumn">
                 <xsl:with-param name="width" select="$lefttdwidth"/>
                 <xsl:with-param name="label" select="$label"/>
+                <xsl:with-param name="title" select="$title"/>
                 <xsl:with-param name="required" select="$required"/>
                 <xsl:with-param name="fieldname" select="$name1"/>
                 <xsl:with-param name="helpelement" select="$helpelement"/>

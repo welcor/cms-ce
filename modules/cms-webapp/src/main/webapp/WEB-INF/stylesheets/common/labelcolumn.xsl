@@ -6,6 +6,7 @@
     <xsl:template name="labelcolumn">
         <xsl:param name="width"/>
         <xsl:param name="label"/>
+        <xsl:param name="title"/>
         <xsl:param name="required"/>
         <xsl:param name="hide-required" select="false()"/>
         <xsl:param name="fieldname"/>
@@ -15,6 +16,12 @@
         <xsl:param name="iconClass" select="''"/>
         <xsl:param name="iconText" select="''"/>
         <xsl:param name="valign" select="''"/>
+
+        <xsl:variable name="tooltip">
+            <xsl:call-template name="trimprefix">
+                <xsl:with-param name="source" select="$title"/>
+            </xsl:call-template>
+        </xsl:variable>
 
         <td class="form_labelcolumn">
             <xsl:attribute name="valign">
@@ -36,7 +43,7 @@
                 </xsl:attribute>
             </xsl:if>
             <div class="labelcolumn_inner"> <!-- Holly Hack for IE -->
-                <div style="float:left">
+                <div style="float:left" title="{$tooltip}">
                     <xsl:choose>
                         <xsl:when test="$helpelement and not($helpelement/@alwayson = 'true')">
                             <table width="100%" cellspacing="0" cellpadding="0">
@@ -93,4 +100,25 @@
             </div>
         </td>
     </xsl:template>
+
+    <xsl:template name="trimprefix">
+        <xsl:param name="source"/>
+
+        <xsl:variable name="prefix" select="'contents/content/contentdata/'"/>
+
+        <xsl:choose>
+
+            <xsl:when test="contains($source,$prefix)">
+                <xsl:variable name="contentdata" select="substring-after($source, $prefix)"/>
+                <xsl:value-of select="$contentdata"/>
+            </xsl:when>
+
+            <xsl:otherwise>
+                <xsl:value-of select="$source"/>
+            </xsl:otherwise>
+
+        </xsl:choose>
+
+    </xsl:template>
+
 </xsl:stylesheet>

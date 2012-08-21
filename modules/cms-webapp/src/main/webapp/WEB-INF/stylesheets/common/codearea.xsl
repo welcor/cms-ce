@@ -24,6 +24,7 @@
   <xsl:template name="codearea">
     <xsl:param name="name" select="''"/>
     <xsl:param name="label" select="''"/>
+    <xsl:param name="title" select="''"/>
     <xsl:param name="required" select="''"/>
     <xsl:param name="selectnode"/>
     <xsl:param name="width" select="'600px'"/>
@@ -37,6 +38,7 @@
     <xsl:if test="string-length($label) &gt; 0">
       <xsl:call-template name="labelcolumn">
         <xsl:with-param name="label" select="$label"/>
+        <xsl:with-param name="title" select="$title"/>
         <xsl:with-param name="required" select="$required"/>
         <xsl:with-param name="fieldname" select="$name"/>
       </xsl:call-template>

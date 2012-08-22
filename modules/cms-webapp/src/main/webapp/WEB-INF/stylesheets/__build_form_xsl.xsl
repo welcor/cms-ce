@@ -2903,7 +2903,7 @@
         </xsl:if>
 
         <x:variable name="uniqueId">
-          <xsl:value-of select="admin:randomId()"/>
+          <xsl:value-of select="admin:uniqueId()"/>
         </x:variable>
 
         <div class="radiobutton-group">

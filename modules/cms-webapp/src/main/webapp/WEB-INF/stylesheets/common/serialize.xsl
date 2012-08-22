@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:saxon="http://saxon.sf.net/">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
     <xsl:template name="serialize">
         <xsl:param name="xpath"/>
@@ -9,7 +9,7 @@
 
         <xsl:if test="$xpath">
             <xsl:variable name="serialized">
-                <xsl:value-of select="saxon:serialize($xpath, $include-self)"/>
+                <xsl:value-of select="admin:serialize($xpath, $include-self)"/>
             </xsl:variable>
 
             <xsl:choose>

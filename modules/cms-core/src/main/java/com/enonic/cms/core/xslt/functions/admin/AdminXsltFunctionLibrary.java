@@ -7,11 +7,12 @@ public final class AdminXsltFunctionLibrary
 {
     public AdminXsltFunctionLibrary()
     {
-        this(new UniqueIdGeneratorImpl());
+        this( new UniqueIdGeneratorImpl() );
     }
 
     public AdminXsltFunctionLibrary( final UniqueIdGenerator generator )
     {
+        add( new SerializeFunction() );
         add( new UniqueIdFunction( generator ) );
         add( new UrlEncodeFunction() );
     }

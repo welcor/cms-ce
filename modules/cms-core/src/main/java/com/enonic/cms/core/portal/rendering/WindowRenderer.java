@@ -369,7 +369,7 @@ public class WindowRenderer
             TraceMarkerHelper.wrapResultWithPortletMarker( portletResult, portletTraceInfo );
         }
 
-        //portletResult.stripXHTMLNamespaces();
+        portletResult.stripXHTMLNamespaces();
 
         return portletResult;
     }

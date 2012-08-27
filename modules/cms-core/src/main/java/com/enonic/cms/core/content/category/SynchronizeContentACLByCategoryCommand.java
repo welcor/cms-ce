@@ -40,11 +40,11 @@ class SynchronizeContentACLByCategoryCommand
             command.contentAccessControl( contentACL );
             if ( executeInOneTransaction )
             {
-                categoryService.syncronizeContentACL( command );
+                categoryService.synchronizeContentACL_withoutRequiresNewPropagation_for_test_only( command );
             }
             else
             {
-                categoryService.syncronizeContentACLInNewTx( command );
+                categoryService.synchronizeContent( command );
             }
         }
     }

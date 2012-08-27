@@ -87,11 +87,11 @@ public class SynchronizeCategoryACLCommand
             command.categoriesToUpdate = batchedList.getNextBatch();
             if ( executeInOneTransaction )
             {
-                categoryService.synchronizeCategoryACL( command );
+                categoryService.synchronizeCategoryACL_withoutRequiresNewPropagation_for_test_only( command );
             }
             else
             {
-                categoryService.synchronizeCategoryACLInNewTX( command );
+                categoryService.synchronizeCategoryACL( command );
             }
 
             if ( isIncludeContent() )

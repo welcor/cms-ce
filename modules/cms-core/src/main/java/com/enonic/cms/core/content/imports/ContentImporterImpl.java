@@ -4,7 +4,21 @@
  */
 package com.enonic.cms.core.content.imports;
 
-import com.enonic.cms.core.content.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.joda.time.DateTime;
+
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.ContentStorer;
+import com.enonic.cms.core.content.ContentVersionEntity;
+import com.enonic.cms.core.content.UpdateContentResult;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.category.CategoryEntity;
@@ -23,9 +37,6 @@ import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
-import org.joda.time.DateTime;
-
-import java.util.*;
 
 public class ContentImporterImpl
 {
@@ -55,8 +66,7 @@ public class ContentImporterImpl
 
     private final IndexTransactionService indexTransactionService;
 
-    public ContentImporterImpl( ImportJob importJob, ImportDataReader importDataReader,
-                                IndexTransactionService indexTransactionService )
+    public ContentImporterImpl( ImportJob importJob, ImportDataReader importDataReader, IndexTransactionService indexTransactionService )
     {
         this.importJob = importJob;
         this.importDataReader = importDataReader;
@@ -150,9 +160,7 @@ public class ContentImporterImpl
 
         importJob.registerImportedContent( newContent.getKey() );
 
-        indexTransactionService.startTransaction();
         indexTransactionService.updateContent( newContent );
-        indexTransactionService.commit();
     }
 
     private void doAssignContent( ContentEntity newContent )
@@ -170,9 +178,7 @@ public class ContentImporterImpl
 
         importResult.addAssigned( newContent );
 
-        indexTransactionService.startTransaction();
         indexTransactionService.updateContent( newContent );
-        indexTransactionService.commit();
     }
 
     private void importByChangeExistingContent( final ImportDataEntry importDataEntry, final ContentKey existingContentKey )
@@ -192,9 +198,7 @@ public class ContentImporterImpl
             importJob.registerImportedContent( existingContent.getKey() );
         }
 
-        indexTransactionService.startTransaction();
         indexTransactionService.updateContent( existingContent );
-        indexTransactionService.commit();
     }
 
 

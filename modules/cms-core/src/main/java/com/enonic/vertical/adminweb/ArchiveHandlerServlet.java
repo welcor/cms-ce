@@ -246,7 +246,7 @@ public class ArchiveHandlerServlet
             synchronizeCategoryACLCommand.setUpdater( user.getKey() );
             synchronizeCategoryACLCommand.setCategory( categoryKey );
             synchronizeCategoryACLCommand.addAccessControlList( parseCategoryAccessRights( formItems ) );
-            categoryService.synchronizeCategoryACLInNewTX( synchronizeCategoryACLCommand );
+            categoryService.synchronizeCategoryACL( synchronizeCategoryACLCommand );
         }
 
         // Redirect to propagate page
@@ -390,7 +390,7 @@ public class ArchiveHandlerServlet
             synchronizeCategoryACLCommand.setUpdater( user.getKey() );
             synchronizeCategoryACLCommand.setCategory( categoryKey );
             synchronizeCategoryACLCommand.addAccessControlList( accessRights );
-            categoryService.synchronizeCategoryACLInNewTX( synchronizeCategoryACLCommand );
+            categoryService.synchronizeCategoryACL( synchronizeCategoryACLCommand );
         }
 
         // Redirect

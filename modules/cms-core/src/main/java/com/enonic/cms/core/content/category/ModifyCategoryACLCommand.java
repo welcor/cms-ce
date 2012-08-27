@@ -107,11 +107,11 @@ public class ModifyCategoryACLCommand
             command.categoriesToUpdate = nextBatch;
             if ( executeInOneTransaction )
             {
-                categoryService.modifyCategoryACL( command );
+                categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( command );
             }
             else
             {
-                categoryService.modifyCategoryACLInNewTX( command );
+                categoryService.modifyCategoryACL( command );
             }
 
             if ( isIncludeContent() )

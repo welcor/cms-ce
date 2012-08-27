@@ -60,11 +60,11 @@ class ModifyContentACLByCategoryCommand
 
             if ( executeInOneTransaction )
             {
-                categoryService.modifyContentACL( command );
+                categoryService.modifyContentACL_withoutRequiresNewPropagation_for_test_only( command );
             }
             else
             {
-                categoryService.modifyContentACLInNewTX( command );
+                categoryService.modifyContentACL( command );
             }
         }
     }

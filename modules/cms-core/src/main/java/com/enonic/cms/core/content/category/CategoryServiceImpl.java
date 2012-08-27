@@ -45,49 +45,49 @@ public class CategoryServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void synchronizeCategoryACL_withoutRequiresNewPropagation_for_test_only( SynchronizeCategoryACLCommand command )
+    {
+        processorFactory.createSynchronizeCategoryACLProcessor( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void synchronizeCategoryACL( SynchronizeCategoryACLCommand command )
     {
         processorFactory.createSynchronizeCategoryACLProcessor( command ).process( command );
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-    public void synchronizeCategoryACLInNewTX( SynchronizeCategoryACLCommand command )
-    {
-        processorFactory.createSynchronizeCategoryACLProcessor( command ).process( command );
-    }
-
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void syncronizeContentACL( SynchronizeContentACLCommand command )
+    public void synchronizeContentACL_withoutRequiresNewPropagation_for_test_only( SynchronizeContentACLCommand command )
     {
         processorFactory.createSynchronizeContentACLCommandProcessor( command ).process( command );
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-    public void syncronizeContentACLInNewTx( SynchronizeContentACLCommand command )
+    public void synchronizeContent( SynchronizeContentACLCommand command )
     {
         processorFactory.createSynchronizeContentACLCommandProcessor( command ).process( command );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( ModifyCategoryACLCommand command )
+    {
+        processorFactory.createModifyCategoryACLCommand( command ).process( command );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void modifyCategoryACL( ModifyCategoryACLCommand command )
     {
         processorFactory.createModifyCategoryACLCommand( command ).process( command );
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-    public void modifyCategoryACLInNewTX( ModifyCategoryACLCommand command )
-    {
-        processorFactory.createModifyCategoryACLCommand( command ).process( command );
-    }
-
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void modifyContentACL( ModifyContentACLCommand command )
+    public void modifyContentACL_withoutRequiresNewPropagation_for_test_only( ModifyContentACLCommand command )
     {
         processorFactory.createModifyContentACLCommandProcessor( command ).process( command );
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-    public void modifyContentACLInNewTX( ModifyContentACLCommand command )
+    public void modifyContentACL( ModifyContentACLCommand command )
     {
         processorFactory.createModifyContentACLCommandProcessor( command ).process( command );
     }

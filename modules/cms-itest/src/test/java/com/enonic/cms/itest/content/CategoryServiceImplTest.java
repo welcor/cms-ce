@@ -732,7 +732,7 @@ public class CategoryServiceImplTest
         command.setUpdater( fixture.findUserByName( "MyUser" ).getKey() );
         command.addCategory( fixture.findCategoryByName( "MyTopCategory" ).getKey() );
         command.addAccessControlList( accessControlList );
-        categoryService.synchronizeCategoryACL( command );
+        categoryService.synchronizeCategoryACL_withoutRequiresNewPropagation_for_test_only( command );
 
         fixture.flushAndClearHibernateSesssion();
 

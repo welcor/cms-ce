@@ -44,13 +44,17 @@ public class ImportServiceImpl
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     public boolean importData( ImportDataReader importDataReader, ImportJob importJob )
     {
+        indexTransactionService.startTransaction();
         return doImportData( importDataReader, importJob );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
-    public boolean importDataWithoutRequiresNewPropagation( ImportDataReader importDataReader, ImportJob importJob )
+    public boolean importData_withoutRequiresNewPropagation_for_test_only( ImportDataReader importDataReader, ImportJob importJob )
     {
-        return doImportData( importDataReader, importJob );
+        indexTransactionService.startTransaction();
+        boolean result = doImportData( importDataReader, importJob );
+        indexTransactionService.commit();
+        return result;
     }
 
     private boolean doImportData( ImportDataReader importDataReader, ImportJob importJob )
@@ -88,13 +92,17 @@ public class ImportServiceImpl
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     public void archiveContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
     {
+        indexTransactionService.startTransaction();
         doArchiveContent( importer, contentKeys, importResult );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
-    public void archiveContentWithoutRequiresNewPropagation( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
+    public void archiveContent_withoutRequiresNewPropagation_for_test_only( UserEntity importer, List<ContentKey> contentKeys,
+                                                                            ImportResult importResult )
     {
+        indexTransactionService.startTransaction();
         doArchiveContent( importer, contentKeys, importResult );
+        indexTransactionService.commit();
     }
 
     private void doArchiveContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
@@ -117,6 +125,8 @@ public class ImportServiceImpl
                 unassignContentCommand.setContentKey( content.getKey() );
                 unassignContentCommand.setUnassigner( importer.getKey() );
                 contentStorer.unassignContent( unassignContentCommand );
+
+                indexTransactionService.updateContent( content.getKey() );
             }
             else
             {
@@ -129,13 +139,17 @@ public class ImportServiceImpl
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     public void deleteContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
     {
+        indexTransactionService.startTransaction();
         doDeleteContent( importer, contentKeys, importResult );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
-    public void deleteContentWithoutRequiresNewPropagation( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
+    public void deleteContent_withoutRequiresNewPropagation_for_test_only( UserEntity importer, List<ContentKey> contentKeys,
+                                                                           ImportResult importResult )
     {
+        indexTransactionService.startTransaction();
         doDeleteContent( importer, contentKeys, importResult );
+        indexTransactionService.commit();
     }
 
     private void doDeleteContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
@@ -151,6 +165,7 @@ public class ImportServiceImpl
             else
             {
                 contentStorer.deleteContent( importer, content );
+                indexTransactionService.deleteContent( content.getKey() );
                 importResult.addDeleted( content );
             }
         }

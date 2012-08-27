@@ -89,7 +89,7 @@ public class ImportJobImpl
             importResult = new ImportResult();
             importResult.startTimer();
 
-            final long batchSize = 20L;
+            final long batchSize = 1L;
             final BatchedImportDataReader batchedDataReader = new BatchedImportDataReader( importDataReader, batchSize );
 
             LOG.info( "Import job #" + this.getImportJobNumber() + ": Importing content in transactional batches of " + batchSize +
@@ -107,7 +107,7 @@ public class ImportJobImpl
                 {
                     if ( executeInOneTransaction )
                     {
-                        importService.importDataWithoutRequiresNewPropagation( batchedDataReader, this );
+                        importService.importData_withoutRequiresNewPropagation_for_test_only( batchedDataReader, this );
                     }
                     else
                     {
@@ -167,7 +167,7 @@ public class ImportJobImpl
             return;
         }
 
-        BatchedList<ContentKey> batchedContentKeyList = new BatchedList<ContentKey>( contentNotAffectedByImport, 20 );
+        BatchedList<ContentKey> batchedContentKeyList = new BatchedList<ContentKey>( contentNotAffectedByImport, 1 );
 
         while ( batchedContentKeyList.hasMoreBatches() )
         {
@@ -185,7 +185,7 @@ public class ImportJobImpl
         {
             if ( executeInOneTransaction )
             {
-                importService.archiveContentWithoutRequiresNewPropagation( importer, contentKeys, importResult );
+                importService.archiveContent_withoutRequiresNewPropagation_for_test_only( importer, contentKeys, importResult );
             }
             else
             {
@@ -197,7 +197,7 @@ public class ImportJobImpl
         {
             if ( executeInOneTransaction )
             {
-                importService.deleteContentWithoutRequiresNewPropagation( importer, contentKeys, importResult );
+                importService.deleteContent_withoutRequiresNewPropagation_for_test_only( importer, contentKeys, importResult );
             }
             else
             {

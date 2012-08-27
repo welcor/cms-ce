@@ -5,7 +5,6 @@
 package com.enonic.cms.core.content.imports;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,24 +67,12 @@ public class ImportServiceImpl
             RelatedContentFinder relatedContentFinder = new RelatedContentFinder( contentTypeDao, contentIndexService );
             contentImporter.setRelatedContentFinder( relatedContentFinder );
 
-            final boolean result = contentImporter.importData();
-            updateIndexWithDeletedContent( importJob.getImportResult() );
-            return result;
+            return contentImporter.importData();
         }
         finally
         {
             /* Clear all instances in first level cache since the transaction boundary doesn't (single session) */
             contentDao.getHibernateTemplate().clear();
-        }
-    }
-
-    private void updateIndexWithDeletedContent( ImportResult importResult )
-    {
-        indexTransactionService.startTransaction();
-        final Map<ContentKey, String> deleted = importResult.getDeleted();
-        for ( ContentKey contentKey : deleted.keySet() )
-        {
-            indexTransactionService.deleteContent( contentKey );
         }
     }
 

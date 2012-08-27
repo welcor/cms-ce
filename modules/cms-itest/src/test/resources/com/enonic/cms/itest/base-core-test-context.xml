@@ -97,6 +97,7 @@
   <context:component-scan base-package="com.enonic.cms.core.portal.rendering"/>
   <context:component-scan base-package="com.enonic.cms.core.preference"/>
   <context:component-scan base-package="com.enonic.cms.core.preview"/>
+  <context:component-scan base-package="com.enonic.cms.core.resolver"/>
   <context:component-scan base-package="com.enonic.cms.core.resource"/>
   <context:component-scan base-package="com.enonic.cms.core.service"/>
   <context:component-scan base-package="com.enonic.cms.core.search"/>
@@ -127,40 +128,12 @@
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
 
-  <bean id="localeResolverService"
-        class="com.enonic.cms.core.resolver.locale.LocaleResolverServiceImpl">
-    <property name="localeScriptResolver" ref="localeXsltScriptResolver"/>
-  </bean>
-
-  <bean id="localeXsltScriptResolver"
-        class="com.enonic.cms.core.resolver.locale.LocaleXsltScriptResolver"/>
-
-  <bean id="cookieOrSessionForcedResolverValueService"
-        class="com.enonic.cms.core.resolver.ForceResolverValueServiceImpl"/>
-
-  <bean id="sessionCachedResolverValueService"
-        class="com.enonic.cms.core.resolver.CacheResolverValueServiceImpl"/>
-
-  <bean id="resolverInputXMLCreator"
-        class="com.enonic.cms.core.resolver.ResolverInputXMLCreator"/>
-
-  <bean id="resolverXMLCreator"
-        class="com.enonic.cms.core.resolver.ResolverHttpRequestInputXMLCreator"/>
-
-  <bean id="resolverInputCreator"
-        class="com.enonic.cms.core.resolver.ResolverHttpRequestInputCreator"/>
-
   <!-- Possibly needs profile -->
   <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
 
   <bean id="contentIndexService" class="com.enonic.cms.itest.search.ContentIndexServiceTestWrapper"/>
 
   <bean id="siteCachesService" class="com.enonic.cms.itest.portal.cache.MockSiteCachesService"/>
-
-  <bean id="deviceClassificationService"
-        class="com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverServiceImpl">
-    <property name="deviceClassScriptResolver" ref="deviceClassXsltScriptResolver"/>
-  </bean>
 
   <bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">
     <property name="urlDecode" value="true"/>

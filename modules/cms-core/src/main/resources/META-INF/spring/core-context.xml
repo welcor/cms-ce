@@ -77,33 +77,6 @@
 
   <bean id="tightestCacheSettingsResolver" class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
 
-  <bean id="resolverInputXMLCreator" class="com.enonic.cms.core.resolver.ResolverInputXMLCreator"/>
-
-  <bean id="resolverXMLCreator" class="com.enonic.cms.core.resolver.ResolverHttpRequestInputXMLCreator"/>
-
-  <bean id="resolverInputCreator" class="com.enonic.cms.core.resolver.ResolverHttpRequestInputCreator"/>
-
-  <bean id="cookieOrSessionForcedResolverValueService"
-        class="com.enonic.cms.core.resolver.ForceResolverValueServiceImpl"/>
-
-  <bean id="sessionCachedResolverValueService" class="com.enonic.cms.core.resolver.CacheResolverValueServiceImpl"/>
-
-  <bean id="deviceClassificationService"
-        class="com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverServiceImpl">
-    <property name="deviceClassScriptResolver" ref="deviceClassXsltScriptResolver"/>
-    <property name="forceResolverValueService" ref="cookieOrSessionForcedResolverValueService"/>
-    <property name="cacheResolverValueService" ref="sessionCachedResolverValueService"/>
-  </bean>
-
-  <bean id="localeResolverService"
-        class="com.enonic.cms.core.resolver.locale.LocaleResolverServiceImpl">
-    <property name="localeScriptResolver" ref="localeXsltScriptResolver"/>
-    <property name="forceResolverValueService" ref="cookieOrSessionForcedResolverValueService"/>
-  </bean>
-
-  <bean id="localeXsltScriptResolver"
-        class="com.enonic.cms.core.resolver.locale.LocaleXsltScriptResolver"/>
-
   <bean id="reindexContentToolService"
         class="com.enonic.cms.core.tools.ReindexContentToolServiceImpl"/>
 

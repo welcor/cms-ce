@@ -7,12 +7,12 @@ package com.enonic.cms.core.resolver;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.stereotype.Component;
+
 import com.enonic.cms.framework.xml.XMLBuilder;
 import com.enonic.cms.framework.xml.XMLDocument;
 
-/**
- * Created by rmy - Date: Apr 7, 2009
- */
+@Component
 public class ResolverHttpRequestInputXMLCreator
 {
     public final static String REQUEST_ROOT_ELEMENT_NAME = "request";

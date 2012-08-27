@@ -7,6 +7,7 @@ package com.enonic.cms.core.resolver;
 import org.jdom.Content;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.xml.XMLBuilder;
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -14,9 +15,7 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserXmlCreator;
 
-/**
- * Created by rmy - Date: Aug 24, 2009
- */
+@Component
 public class ResolverInputXMLCreator
 {
     protected ResolverHttpRequestInputCreator resolverHttpRequestInputCreator;

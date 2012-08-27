@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.resolver.CacheResolverValueService;
 import com.enonic.cms.core.resolver.ForceResolverValueService;
@@ -22,16 +24,12 @@ import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 
-/**
- * Created by rmy - Date: Mar 31, 2009
- */
+@Component
 public class DeviceClassResolverServiceImpl
     implements DeviceClassResolverService
 {
 
     private ResourceService resourceService;
-
-    public static final String BYPASS_CACHED_DEVICE_CLASS = "bypassCachedDeviceClass";
 
     public final static String DEVICE_CLASS_FORCED_BASE_NAME = "ForceDeviceClass";
 
@@ -172,21 +170,25 @@ public class DeviceClassResolverServiceImpl
         return DEVICE_CLASS_CACHE_BASE_NAME + site.getKey().toInt();
     }
 
-    public void setDeviceClassScriptResolver( ScriptResolverService deviceClassScriptResolver )
-    {
-        this.deviceClassScriptResolver = deviceClassScriptResolver;
-    }
-
     protected String createForcedValueKey( SiteEntity site )
     {
         return DEVICE_CLASS_FORCED_BASE_NAME + site.getKey();
     }
 
+    @Autowired
+    @Qualifier("deviceClassXsltScriptResolver")
+    public void setDeviceClassScriptResolver( ScriptResolverService deviceClassScriptResolver )
+    {
+        this.deviceClassScriptResolver = deviceClassScriptResolver;
+    }
+
+    @Autowired
     public void setForceResolverValueService( ForceResolverValueService forceResolverValueService )
     {
         this.forceResolverValueService = forceResolverValueService;
     }
 
+    @Autowired
     public void setCacheResolverValueService( CacheResolverValueService cacheResolverValueService )
     {
         this.cacheResolverValueService = cacheResolverValueService;

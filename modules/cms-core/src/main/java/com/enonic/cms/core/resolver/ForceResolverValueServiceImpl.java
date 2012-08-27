@@ -11,15 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 import com.enonic.esl.net.URLUtil;
 import com.enonic.esl.servlet.http.CookieUtil;
 
 import com.enonic.cms.core.DeploymentPathResolver;
 
-/**
- * Created by rmy - Date: May 5, 2009
- */
+@Component
 public class ForceResolverValueServiceImpl
     implements ForceResolverValueService
 {

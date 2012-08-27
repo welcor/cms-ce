@@ -9,15 +9,14 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.resolver.AbstractXsltScriptResolver;
 import com.enonic.cms.core.resolver.ScriptResolverResult;
 
-/**
- * Created by rmy - Date: Apr 29, 2009
- */
+@Component
 public class LocaleXsltScriptResolver
-        extends AbstractXsltScriptResolver
+    extends AbstractXsltScriptResolver
 {
     private static final Logger LOG = LoggerFactory.getLogger( LocaleXsltScriptResolver.class );
 

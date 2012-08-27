@@ -8,9 +8,9 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by rmy - Date: May 5, 2009
- */
+import org.springframework.stereotype.Component;
+
+@Component
 public class CacheResolverValueServiceImpl
     implements CacheResolverValueService
 {

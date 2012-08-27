@@ -161,13 +161,6 @@ public class AdminServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void updateIndexCategory( CategoryKey categoryKey )
-    {
-        indexTransactionService.startTransaction();
-        indexTransactionService.updateCategory( categoryKey );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void updateMenuItem( User user, String xmlData )
     {
         adminEngine.updateMenuItem( user, xmlData );

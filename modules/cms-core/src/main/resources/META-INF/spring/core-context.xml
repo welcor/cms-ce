@@ -85,15 +85,6 @@
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
 
-  <bean id="siteService" class="com.enonic.cms.core.structure.SiteServiceImpl">
-    <property name="siteCachesService" ref="siteCachesService"/>
-    <property name="siteContextManager">
-      <bean class="com.enonic.cms.core.structure.SiteContextManager"/>
-    </property>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="siteDao" ref="siteDao"/>
-    <property name="userDao" ref="userDao"/>
-  </bean>
 
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
 

@@ -102,7 +102,7 @@
   <context:component-scan base-package="com.enonic.cms.core.service"/>
   <context:component-scan base-package="com.enonic.cms.core.search"/>
   <context:component-scan base-package="com.enonic.cms.core.security"/>
-  <context:component-scan base-package="com.enonic.cms.core.structure.menuitem"/>
+  <context:component-scan base-package="com.enonic.cms.core.structure"/>
   <context:component-scan base-package="com.enonic.cms.core.time"/>
   <context:component-scan base-package="com.enonic.cms.core.timezone"/>
   <context:component-scan base-package="com.enonic.cms.store.blob"/>
@@ -112,16 +112,6 @@
 
   <bean id="tightestCacheSettingsResolver"
         class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
-
-  <bean id="siteService" class="com.enonic.cms.core.structure.SiteServiceImpl">
-    <property name="siteCachesService" ref="siteCachesService"/>
-    <property name="siteContextManager">
-      <bean class="com.enonic.cms.core.structure.SiteContextManager"/>
-    </property>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="siteDao" ref="siteDao"/>
-    <property name="userDao" ref="userDao"/>
-  </bean>
 
   <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
     <property name="sitePathPrefix" value="/site"/>

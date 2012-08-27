@@ -325,8 +325,6 @@ public class ContentServiceImpl
         indexTransactionService.startTransaction();
         contentStorer.moveContent( mover, content, toCategory );
         indexTransactionService.updateContent( content );
-        indexTransactionService.updateCategory( toCategory.getKey() );
-        indexTransactionService.updateCategory( content.getCategory().getKey() );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -335,8 +333,6 @@ public class ContentServiceImpl
         indexTransactionService.startTransaction();
         final ContentKey contentKey = contentStorer.copyContent( copier, content, toCategory );
         indexTransactionService.updateContent( contentKey );
-        indexTransactionService.updateCategory( toCategory.getKey() );
-        indexTransactionService.updateCategory( content.getCategory().getKey() );
         return contentKey;
     }
 

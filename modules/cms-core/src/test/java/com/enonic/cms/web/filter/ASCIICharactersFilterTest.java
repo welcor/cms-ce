@@ -47,6 +47,9 @@ public class ASCIICharactersFilterTest
       request.setParameter( "param22", "Bl\u00e5b\u00e6r" );  // Blueberry in Norwegian
       request.setParameter( "param23", "\u0447\u0435\u0440\u043D\u0438\u043A\u0431" ); // Blueberry in Russian
 
+      request.setParameter( "param24", "x&gt;10" );     // CMS-156 case
+      request.setParameter( "param25", "x&gt;=10" );    // CMS-156 case
+
       ASCIICharactersFilter filter = new ASCIICharactersFilter();
 
       filter.doFilter( request, response, chain );
@@ -58,9 +61,9 @@ public class ASCIICharactersFilterTest
       assertEquals( "ABCd", result.getParameter( "param2" ) );
       assertEquals( "%00", result.getParameter( "param3" ) );
       assertEquals( "?key1=%00", result.getParameter( "param4" ) );
-      assertEquals( "?key2=555&key1=%00", result.getParameter( "param5" ) );
-      assertEquals( "loadmainstartpage=true&op=browse&selectedmenukey=&page=2&selecteddomainkey=", result.getParameter( "param6" ) );
-      assertEquals( "adminpage?loadmainstartpage=true&op=browse&selectedmenukey=&page=2&selecteddomainkey=%0p", result.getParameter( "param7" ) );
+      assertEquals( "?key1=%00&key2=555", result.getParameter( "param5" ) );
+      assertEquals( "page=2&op=browse&selecteddomainkey=&selectedmenukey=&loadmainstartpage=true", result.getParameter( "param6" ) );
+      assertEquals( "adminpage?page=2&op=browse&selecteddomainkey=%0p&selectedmenukey=&loadmainstartpage=true", result.getParameter( "param7" ) );
       assertEquals( "adminpage?page=2&page=%00&page=ABc", result.getParameter( "param8" ) );
       assertEquals( "a?key1=%00", result.getParameter( "param9" ) );
       assertEquals( "", result.getParameter( "param10" ) );
@@ -76,5 +79,8 @@ public class ASCIICharactersFilterTest
       assertEquals( "\r", result.getParameter( "param20" ) );
       assertEquals( "Bl\u00e5b\u00e6r", result.getParameter( "param22" ) );
       assertEquals( "\u0447\u0435\u0440\u043D\u0438\u043A\u0431", result.getParameter( "param23" ) );
+
+      assertEquals( "x&gt;10", result.getParameter( "param24" ) );
+      assertEquals( "x&gt;=10", result.getParameter( "param25" ) );
   }
 }

@@ -70,14 +70,14 @@ public final class ASCIICharactersFilter
         @Override
         public String getParameter( String paramName )
         {
-            String value = super.getParameter( paramName );
-            return doParse( value );
+            final String value = super.getParameter( paramName );
+            return sanitize( value );
         }
 
         @Override
         public String[] getParameterValues( String paramName )
         {
-            String values[] = super.getParameterValues( paramName );
+            final String values[] = super.getParameterValues( paramName );
             if ( values == null )
             {
                 return null;
@@ -85,7 +85,7 @@ public final class ASCIICharactersFilter
 
             for ( int index = 0; index < values.length; index++ )
             {
-                values[index] = doParse( values[index] );
+                values[index] = sanitize( values[index] );
             }
 
             return values;
@@ -94,25 +94,35 @@ public final class ASCIICharactersFilter
         @Override
         public Map<String, String[]> getParameterMap()
         {
-            Map<String, String[]> map = new HashMap<String, String[]>();
-            Enumeration<String> enumer = getParameterNames();
+            final Map<String, String[]> map = new HashMap<String, String[]>();
+            final Enumeration<String> parameterNames = getParameterNames();
 
             // No need to check the inherit parameter, since the getParameterNames() and getParameterValues() methods do it.
-            while ( enumer.hasMoreElements() )
+            while ( parameterNames.hasMoreElements() )
             {
-                String s = enumer.nextElement();
-                map.put( s, getParameterValues( s ) );
+                final String parameterName = parameterNames.nextElement();
+                map.put( parameterName, getParameterValues( parameterName ) );
             }
 
             return map;
         }
 
-        private String sanitize( String input )
+        /**
+         * removes non-ascii characters except \r \t
+         * @param string to process
+         * @return cleaned string
+         */
+        private String sanitize( String string )
         {
-            char[] chars = input.toCharArray();
-            StringBuilder stringBuilder = new StringBuilder();
+            if (string == null)
+            {
+                return string;
+            }
 
-            for ( char c : chars )
+            final char[] chars = string.toCharArray();
+            final StringBuilder stringBuilder = new StringBuilder();
+
+            for ( final char c : chars )
             {
                 if ( c < ' ' )
                 {
@@ -131,102 +141,6 @@ public final class ASCIICharactersFilter
             }
 
             return stringBuilder.toString();
-        }
-
-        private String doParse( String source )
-        {
-            return null == source ? source : doParseQueryString( source );
-        }
-
-        private MultiValueMap parseQueryString( String queryString )
-        {
-            MultiValueMap queryParams = new MultiValueMap();
-            int index = queryString.indexOf( '?' );
-            String noBaseQuery = queryString;
-            index = ( index == 0 ) ? 1 : index + 1;
-
-            if ( index != -1 )
-            {
-                noBaseQuery = queryString.substring( index );
-            }
-
-            StringTokenizer tokenizer = new StringTokenizer( noBaseQuery, "&" );
-
-            while ( tokenizer.hasMoreTokens() )
-            {
-                String token = tokenizer.nextToken();
-                String name;
-                String value;
-                int equalIdx = token.indexOf( '=' );
-
-                if ( equalIdx == -1 )
-                {
-                    name = "";
-                    value = token;
-                }
-                else
-                {
-                    name = token.substring( 0, equalIdx );
-                    value = token.substring( equalIdx + 1 );
-                }
-
-                if ( value != null )
-                {
-                    String healthyValue = sanitize( value );
-                    queryParams.put( name, healthyValue );
-                }
-            }
-            return queryParams;
-        }
-
-        private String doParseQueryString( String queryString )
-        {
-            MultiValueMap queryParams = parseQueryString( queryString );
-            String baseURL = composeBaseURL( queryString );
-
-            return doComposeURL( queryParams, baseURL );
-        }
-
-        private String composeBaseURL( String queryString )
-        {
-            int index = queryString.indexOf( '?' );
-            return index != -1 ? queryString.substring( 0, index + 1 ) : "";
-        }
-
-        private String doComposeURL( MultiValueMap queryParams, String baseURL )
-        {
-            StringBuilder url = new StringBuilder( baseURL );
-            Iterator keyIterator = queryParams.keySet().iterator();
-            boolean firstParam = true;
-
-            while ( keyIterator.hasNext() )
-            {
-                String key = (String) keyIterator.next();
-
-                if ( "".equals( key ) && !keyIterator.hasNext() )
-                {
-                    return (String) queryParams.values().iterator().next();
-                }
-
-                Iterator iter = queryParams.iterator( key );
-                while ( iter.hasNext() )
-                {
-                    Object value = iter.next();
-                    if ( firstParam )
-                    {
-                        firstParam = false;
-                    }
-                    else
-                    {
-                        url.append( '&' );
-                    }
-                    url.append( key );
-                    url.append( '=' );
-                    url.append( value );
-                }
-            }
-
-            return url.toString();
         }
     }
 }

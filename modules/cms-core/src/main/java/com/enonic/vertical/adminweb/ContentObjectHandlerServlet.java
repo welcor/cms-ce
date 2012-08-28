@@ -220,9 +220,10 @@ public final class ContentObjectHandlerServlet
         }
 
         Document datasourcesDoc = null;
+        String datasources = "";
         try
         {
-            String datasources = formItems.getString( "datasources", null );
+            datasources = formItems.getString( "datasources", null );
             // Do NOT replace this with formItems.getString("datasources", "</datasources">) since
             // the editor could send blankspaces
             if ( StringUtils.isBlank( datasources ) )
@@ -234,7 +235,8 @@ public final class ContentObjectHandlerServlet
         }
         catch ( Exception e )
         {
-            String message = "Failed to parse datasource document: %t";
+            String message = "Failed to parse datasource XML document: "
+                +  ( e.getCause() != null ? e.getCause().getMessage() : e.getMessage() );
             VerticalAdminLogger.errorAdmin(message, e );
         }
         contentObjectData.appendChild( doc.importNode( datasourcesDoc.getDocumentElement(), true ) );

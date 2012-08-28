@@ -21,7 +21,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
 
-@Component
+@Component("siteService")
 public class SiteServiceImpl
     implements SiteService
 {

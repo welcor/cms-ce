@@ -123,9 +123,9 @@
 
   <bean id="contentIndexService" class="com.enonic.cms.itest.search.ContentIndexServiceTestWrapper"/>
 
-  <bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">
+  <!--bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">
     <property name="urlDecode" value="true"/>
-  </bean>
+  </bean-->
 
   <!-- TODO -->
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">

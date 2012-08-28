@@ -4,25 +4,30 @@
  */
 package com.enonic.vertical.adminweb;
 
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
-import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalProperties;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.PrintWriter;
+import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import java.io.PrintWriter;
-import java.util.Hashtable;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.enonic.esl.xml.XMLTool;
+
+import com.enonic.cms.core.xslt.XsltProcessorHelper;
 
 public class ErrorPageServlet
     implements Controller
 {
+
+    private String adminEmail;
 
     public static interface Error
     {
@@ -118,7 +123,7 @@ public class ErrorPageServlet
         }
     }
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
+    public ModelAndView handleRequest( HttpServletRequest request, HttpServletResponse response )
         throws Exception
     {
         performTask( request, response );
@@ -184,10 +189,9 @@ public class ErrorPageServlet
             parameters.put( "show_details", "false" );
         }
 
-        String admin_email = VerticalProperties.getVerticalProperties().getAdminEmail();
-        if ( admin_email != null )
+        if ( adminEmail != null )
         {
-            parameters.put( "admin_email", admin_email );
+            parameters.put( "admin_email", adminEmail );
         }
 
         try
@@ -200,16 +204,18 @@ public class ErrorPageServlet
         catch ( Exception e )
         {
             String message = "Failed to transform & print output";
-            VerticalAdminLogger.errorAdmin(message, e);
+            VerticalAdminLogger.errorAdmin( message, e );
         }
     }
 
     public String transformXML( Source xmlSource, Source xslSource, Hashtable parameters )
     {
-        return new XsltProcessorHelper()
-                .stylesheet( xslSource, null )
-                .input( xmlSource )
-                .params( parameters )
-                .process();
+        return new XsltProcessorHelper().stylesheet( xslSource, null ).input( xmlSource ).params( parameters ).process();
+    }
+
+    @Value("${cms.admin.email}")
+    public void setAdminEmail( final String adminEmail )
+    {
+        this.adminEmail = adminEmail;
     }
 }

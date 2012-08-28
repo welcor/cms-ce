@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
@@ -47,9 +45,6 @@ public class PageRendererFactory
     private SiteURLResolver siteURLResolver;
 
     @Autowired
-    private VerticalProperties verticalProperties;
-
-    @Autowired
     private TightestCacheSettingsResolver tightestCacheSettingsResolver;
 
     @Autowired
@@ -78,7 +73,6 @@ public class PageRendererFactory
         pageRenderer.setPageTemplateXsltViewTransformer( pageTemplateXsltViewTransformer );
         pageRenderer.setResourceService( resourceService );
         pageRenderer.setPageCacheService( siteCachesService.getPageCacheService( pageRendererContext.getSite().getKey() ) );
-        pageRenderer.setVerticalProperties( verticalProperties );
         pageRenderer.setSiteURLResolver( siteURLResolver );
         pageRenderer.setSitePropertiesService( sitePropertiesService );
         pageRenderer.setTightestCacheSettingsResolver( tightestCacheSettingsResolver );

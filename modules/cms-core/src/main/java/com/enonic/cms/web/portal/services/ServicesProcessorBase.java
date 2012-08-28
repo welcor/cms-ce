@@ -28,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
 import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineException;
@@ -97,8 +96,6 @@ public abstract class ServicesProcessorBase
     private SiteService siteService;
 
     private PortalSitePathResolver sitePathResolver;
-
-    protected VerticalProperties verticalProperties;
 
     private SiteRedirectHelper siteRedirectHelper;
 
@@ -195,12 +192,6 @@ public abstract class ServicesProcessorBase
     public void setSiteRedirectHelper( SiteRedirectHelper value )
     {
         this.siteRedirectHelper = value;
-    }
-
-    @Autowired
-    public void setVerticalProperties( VerticalProperties value )
-    {
-        this.verticalProperties = value;
     }
 
     @Autowired

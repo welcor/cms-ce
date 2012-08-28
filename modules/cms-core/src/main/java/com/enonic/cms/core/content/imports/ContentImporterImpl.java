@@ -58,7 +58,7 @@ public class ContentImporterImpl
 
     private final ImportJob importJob;
 
-    private final ImportDataReader importDataReader;
+    private final ImportDataEntry importDataEntry;
 
     private final ImportResult importResult;
 
@@ -66,10 +66,10 @@ public class ContentImporterImpl
 
     private final IndexTransactionService indexTransactionService;
 
-    public ContentImporterImpl( ImportJob importJob, ImportDataReader importDataReader, IndexTransactionService indexTransactionService )
+    public ContentImporterImpl( ImportJob importJob, ImportDataEntry importDataEntry, IndexTransactionService indexTransactionService )
     {
         this.importJob = importJob;
-        this.importDataReader = importDataReader;
+        this.importDataEntry = importDataEntry;
         this.indexTransactionService = indexTransactionService;
         this.category = importJob.getCategoryToImportTo();
         this.defaultPublishFrom = importJob.getDefaultPublishFrom();
@@ -81,26 +81,14 @@ public class ContentImporterImpl
 
     public boolean importData()
     {
-        if ( !importDataReader.hasMoreEntries() )
+        if ( importConfig.isSyncEnabled() )
         {
-            throw new IllegalStateException( "Missing import entries" );
+            checkSyncValueExist( importDataEntry );
+            checkSyncValueUnused( importDataEntry );
+            usedSyncValues.add( importDataEntry.getSyncValue() );
         }
 
-        do
-        {
-            final ImportDataEntry nextDataEntryToImport = importDataReader.getNextEntry();
-
-            if ( importConfig.isSyncEnabled() )
-            {
-                checkSyncValueExist( nextDataEntryToImport );
-                checkSyncValueUnused( nextDataEntryToImport );
-                usedSyncValues.add( nextDataEntryToImport.getSyncValue() );
-            }
-
-            importDataEntry( nextDataEntryToImport );
-
-        }
-        while ( importDataReader.hasMoreEntries() );
+        importDataEntry( importDataEntry );
 
         return true;
     }

@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.core.content.imports;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -41,26 +39,26 @@ public class ImportServiceImpl
     private IndexTransactionService indexTransactionService;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
-    public boolean importData( ImportDataReader importDataReader, ImportJob importJob )
+    public boolean importData( ImportDataEntry importDataEntry, ImportJob importJob )
     {
         indexTransactionService.startTransaction();
-        return doImportData( importDataReader, importJob );
+        return doImportData( importDataEntry, importJob );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
-    public boolean importData_withoutRequiresNewPropagation_for_test_only( ImportDataReader importDataReader, ImportJob importJob )
+    public boolean importData_withoutRequiresNewPropagation_for_test_only( ImportDataEntry importDataEntry, ImportJob importJob )
     {
         indexTransactionService.startTransaction();
-        boolean result = doImportData( importDataReader, importJob );
+        boolean result = doImportData( importDataEntry, importJob );
         indexTransactionService.commit();
         return result;
     }
 
-    private boolean doImportData( ImportDataReader importDataReader, ImportJob importJob )
+    private boolean doImportData( ImportDataEntry importDataEntry, ImportJob importJob )
     {
         try
         {
-            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataReader, indexTransactionService );
+            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataEntry, indexTransactionService );
             contentImporter.setContentStorer( contentStorer );
             contentImporter.setContentDao( contentDao );
 
@@ -77,84 +75,81 @@ public class ImportServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
-    public void archiveContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
+    public void archiveContent( UserEntity importer, ContentKey contentKey, ImportResult importResult )
     {
         indexTransactionService.startTransaction();
-        doArchiveContent( importer, contentKeys, importResult );
+        doArchiveContent( importer, contentKey, importResult );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
-    public void archiveContent_withoutRequiresNewPropagation_for_test_only( UserEntity importer, List<ContentKey> contentKeys,
+    public void archiveContent_withoutRequiresNewPropagation_for_test_only( UserEntity importer, ContentKey contentKey,
                                                                             ImportResult importResult )
     {
         indexTransactionService.startTransaction();
-        doArchiveContent( importer, contentKeys, importResult );
+        doArchiveContent( importer, contentKey, importResult );
         indexTransactionService.commit();
     }
 
-    private void doArchiveContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
+    private void doArchiveContent( UserEntity importer, ContentKey contentKey, ImportResult importResult )
     {
-        for ( ContentKey contentKey : contentKeys )
+
+        final ContentEntity content = contentDao.findByKey( contentKey );
+
+        if ( content == null )
         {
-            final ContentEntity content = contentDao.findByKey( contentKey );
-
-            if ( content == null )
-            {
-                return;
-            }
-
-            boolean contentArchived = contentStorer.archiveMainVersion( importer, content );
-            if ( contentArchived )
-            {
-                importResult.addArchived( content );
-
-                UnassignContentCommand unassignContentCommand = new UnassignContentCommand();
-                unassignContentCommand.setContentKey( content.getKey() );
-                unassignContentCommand.setUnassigner( importer.getKey() );
-                contentStorer.unassignContent( unassignContentCommand );
-
-                indexTransactionService.updateContent( content.getKey() );
-            }
-            else
-            {
-                importResult.addAlreadyArchived( content );
-            }
-
+            return;
         }
+
+        boolean contentArchived = contentStorer.archiveMainVersion( importer, content );
+        if ( contentArchived )
+        {
+            importResult.addArchived( content );
+
+            UnassignContentCommand unassignContentCommand = new UnassignContentCommand();
+            unassignContentCommand.setContentKey( content.getKey() );
+            unassignContentCommand.setUnassigner( importer.getKey() );
+            contentStorer.unassignContent( unassignContentCommand );
+
+            indexTransactionService.updateContent( content.getKey() );
+        }
+        else
+        {
+            importResult.addAlreadyArchived( content );
+        }
+
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
-    public void deleteContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
+    public void deleteContent( UserEntity importer, ContentKey contentKey, ImportResult importResult )
     {
         indexTransactionService.startTransaction();
-        doDeleteContent( importer, contentKeys, importResult );
+        doDeleteContent( importer, contentKey, importResult );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
-    public void deleteContent_withoutRequiresNewPropagation_for_test_only( UserEntity importer, List<ContentKey> contentKeys,
+    public void deleteContent_withoutRequiresNewPropagation_for_test_only( UserEntity importer, ContentKey contentKey,
                                                                            ImportResult importResult )
     {
         indexTransactionService.startTransaction();
-        doDeleteContent( importer, contentKeys, importResult );
+        doDeleteContent( importer, contentKey, importResult );
         indexTransactionService.commit();
     }
 
-    private void doDeleteContent( UserEntity importer, List<ContentKey> contentKeys, ImportResult importResult )
+    private void doDeleteContent( UserEntity importer, ContentKey contentKey, ImportResult importResult )
     {
-        for ( ContentKey contentKey : contentKeys )
-        {
-            final ContentEntity content = contentDao.findByKey( contentKey );
+        final ContentEntity content = contentDao.findByKey( contentKey );
 
-            if ( content == null )
-            {
-                // content must have been removed by another process during the import
-            }
-            else
-            {
-                contentStorer.deleteContent( importer, content );
-                indexTransactionService.deleteContent( content.getKey() );
-                importResult.addDeleted( content );
-            }
+        if ( content == null )
+        {
+            // content must have been removed by another process during the import
+        }
+        else
+        {
+            contentStorer.deleteContent( importer, content );
+            indexTransactionService.deleteContent( content.getKey() );
+            importResult.addDeleted( content );
         }
     }
+
 }

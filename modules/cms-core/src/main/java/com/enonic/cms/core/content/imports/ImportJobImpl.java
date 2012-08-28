@@ -13,7 +13,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.enonic.cms.framework.util.BatchedList;
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
 
 import com.enonic.cms.core.content.ContentEntity;
@@ -89,36 +88,27 @@ public class ImportJobImpl
             importResult = new ImportResult();
             importResult.startTimer();
 
-            final long batchSize = 1L;
-            final BatchedImportDataReader batchedDataReader = new BatchedImportDataReader( importDataReader, batchSize );
+            int count = 0;
 
-            LOG.info( "Import job #" + this.getImportJobNumber() + ": Importing content in transactional batches of " + batchSize +
-                          " content per transaction." );
-
-            int batchCount = 0;
-            long lastBatchStartTime;
-            while ( batchedDataReader.hasMoreEntries() )
+            while ( importDataReader.hasMoreEntries() )
             {
-                batchCount++;
-                LOG.info( "Import job #" + this.getImportJobNumber() + ": batch #" + batchCount + " starting..." );
-                lastBatchStartTime = System.currentTimeMillis();
+                count++;
 
-                while ( batchedDataReader.hasMoreEntries() )
+                final ImportDataEntry nextEntry = importDataReader.getNextEntry();
+
+                long lastEntryImportTime = System.currentTimeMillis();
+
+                if ( executeInOneTransaction )
                 {
-                    if ( executeInOneTransaction )
-                    {
-                        importService.importData_withoutRequiresNewPropagation_for_test_only( batchedDataReader, this );
-                    }
-                    else
-                    {
-                        importService.importData( batchedDataReader, this );
-                    }
+                    importService.importData_withoutRequiresNewPropagation_for_test_only( nextEntry, this );
+                }
+                else
+                {
+                    importService.importData( nextEntry, this );
                 }
 
-                LOG.info( "Import job #" + this.getImportJobNumber() + ": batch #" + batchCount + " finished in " +
-                              ( System.currentTimeMillis() - lastBatchStartTime ) + " milliseconds." );
-
-                batchedDataReader.startNewBatch();
+                LOG.info( "Import job #" + this.getImportJobNumber() + "entry #" + count + " finished in " +
+                              ( System.currentTimeMillis() - lastEntryImportTime ) + " milliseconds." );
             }
 
             if ( importConfig.isSyncEnabled() )
@@ -167,29 +157,23 @@ public class ImportJobImpl
             return;
         }
 
-        BatchedList<ContentKey> batchedContentKeyList = new BatchedList<ContentKey>( contentNotAffectedByImport, 1 );
-
-        while ( batchedContentKeyList.hasMoreBatches() )
+        for ( ContentKey contentKey : contentNotAffectedByImport )
         {
-            List<ContentKey> batchOfContentKeys = batchedContentKeyList.getNextBatch();
-            if ( !batchOfContentKeys.isEmpty() )
-            {
-                handleUnaffectedContent( batchOfContentKeys );
-            }
+            handleUnaffectedContent( contentKey );
         }
     }
 
-    private void handleUnaffectedContent( List<ContentKey> contentKeys )
+    private void handleUnaffectedContent( ContentKey contentKey )
     {
         if ( CtyImportPurgeConfig.ARCHIVE == importConfig.getPurge() )
         {
             if ( executeInOneTransaction )
             {
-                importService.archiveContent_withoutRequiresNewPropagation_for_test_only( importer, contentKeys, importResult );
+                importService.archiveContent_withoutRequiresNewPropagation_for_test_only( importer, contentKey, importResult );
             }
             else
             {
-                importService.archiveContent( importer, contentKeys, importResult );
+                importService.archiveContent( importer, contentKey, importResult );
             }
 
         }
@@ -197,20 +181,18 @@ public class ImportJobImpl
         {
             if ( executeInOneTransaction )
             {
-                importService.deleteContent_withoutRequiresNewPropagation_for_test_only( importer, contentKeys, importResult );
+                importService.deleteContent_withoutRequiresNewPropagation_for_test_only( importer, contentKey, importResult );
             }
             else
             {
-                importService.deleteContent( importer, contentKeys, importResult );
+                importService.deleteContent( importer, contentKey, importResult );
             }
         }
         else if ( CtyImportPurgeConfig.NONE == importConfig.getPurge() )
         {
-            for ( ContentKey contentKey : contentKeys )
-            {
-                final ContentEntity content = contentDao.findByKey( contentKey );
-                importResult.addRemaining( content );
-            }
+
+            final ContentEntity content = contentDao.findByKey( contentKey );
+            importResult.addRemaining( content );
         }
     }
 

@@ -9,12 +9,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.content.RegenerateIndexBatcher;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 
+@Component
 public class ReindexContentToolServiceImpl
     implements ReindexContentToolService
 {

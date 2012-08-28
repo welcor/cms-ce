@@ -77,14 +77,10 @@
 
   <bean id="tightestCacheSettingsResolver" class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
 
-  <bean id="reindexContentToolService"
-        class="com.enonic.cms.core.tools.ReindexContentToolServiceImpl"/>
-
   <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
     <property name="sitePathPrefix" value="/site"/>
     <property name="sitePropertiesService" ref="sitePropertiesService"/>
   </bean>
-
 
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
 

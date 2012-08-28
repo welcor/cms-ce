@@ -94,11 +94,6 @@ public class ContentIndexServiceTestWrapper
         contentIndexService.flush();
     }
 
-    public void setContentIndexService( ContentIndexService contentIndexService )
-    {
-        this.contentIndexService = contentIndexService;
-    }
-
     @Override
     public void initializeMapping()
     {

@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -64,6 +65,7 @@ public class AttachmentControllerTest
     private InternalClientContentService internalClientContentService;
 
     @Autowired
+    @Qualifier("adminAttachmentController")
     private AttachmentController attachmentController;
 
     @Autowired

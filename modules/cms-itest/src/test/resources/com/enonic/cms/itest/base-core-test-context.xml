@@ -108,6 +108,7 @@
   <context:component-scan base-package="com.enonic.cms.store.blob"/>
   <context:component-scan base-package="com.enonic.cms.store.resource"/>
   <context:component-scan base-package="com.enonic.cms.web.portal"/>
+  <context:component-scan base-package="com.enonic.cms.server.service.admin.mvc.controller"/>
 
 
   <bean id="tightestCacheSettingsResolver"
@@ -128,8 +129,6 @@
   <bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">
     <property name="urlDecode" value="true"/>
   </bean>
-
-  <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
 
   <!-- TODO -->
   <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">

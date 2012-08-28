@@ -9,10 +9,15 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 
+@Component
 public class SiteURLResolver
 {
     public static final String DEFAULT_SITEPATH_PREFIX = "/site";
@@ -281,11 +286,13 @@ public class SiteURLResolver
         this.htmlEscapeParameterAmps = htmlEscapeParameterAmps;
     }
 
+    @Value("/site")
     public void setSitePathPrefix( String value )
     {
         this.sitePathPrefix = value;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService value )
     {
         this.sitePropertiesService = value;

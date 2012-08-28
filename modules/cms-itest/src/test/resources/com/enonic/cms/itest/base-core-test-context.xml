@@ -113,11 +113,6 @@
   <bean id="tightestCacheSettingsResolver"
         class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
 
-  <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
-    <property name="sitePathPrefix" value="/site"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-  </bean>
-
   <!-- Possibly needs profile -->
   <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
 

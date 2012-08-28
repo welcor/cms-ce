@@ -124,15 +124,6 @@
 
   <bean id="datasourceInfoResolver" class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
 
-  <bean id="siteCachesService" class="com.enonic.cms.core.portal.cache.SiteCachesServiceImpl">
-    <property name="pageCacheServiceFactory">
-      <bean class="com.enonic.cms.core.portal.cache.PageCacheServiceFactory">
-        <property name="sitePropertiesService" ref="sitePropertiesService"/>
-      </bean>
-    </property>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-  </bean>
-
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentArticle3XMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.GeneralContentXMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentDocumentXMLBuilder"/>

@@ -5,6 +5,7 @@
 package com.enonic.cms.core.portal.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
@@ -13,9 +14,9 @@ import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SitePropertyNames;
 
+@Component
 public class PageCacheServiceFactory
 {
-
     private CacheManager cacheManager;
 
     private SitePropertiesService sitePropertiesService;
@@ -26,6 +27,7 @@ public class PageCacheServiceFactory
         this.cacheManager = value;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService value )
     {
         this.sitePropertiesService = value;

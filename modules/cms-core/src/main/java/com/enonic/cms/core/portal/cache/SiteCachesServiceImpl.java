@@ -4,12 +4,13 @@
  */
 package com.enonic.cms.core.portal.cache;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.enonic.cms.framework.cache.CacheFacade;
@@ -19,12 +20,13 @@ import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SitePropertyNames;
 
+@Component("siteCachesService")
 public class SiteCachesServiceImpl
     implements SiteCachesService
 {
     private static final Logger LOG = LoggerFactory.getLogger( SiteCachesServiceImpl.class );
 
-    private Map pageCacheServices = new HashMap();
+    private Map<SiteKey, PageCacheService> pageCacheServices = new LinkedHashMap<SiteKey, PageCacheService>();
 
     private PageCacheServiceFactory pageCacheServiceFactory;
 
@@ -33,11 +35,13 @@ public class SiteCachesServiceImpl
     private CacheManager cacheManager;
 
 
+    @Autowired
     public void setPageCacheServiceFactory( PageCacheServiceFactory value )
     {
         this.pageCacheServiceFactory = value;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService value )
     {
         this.sitePropertiesService = value;

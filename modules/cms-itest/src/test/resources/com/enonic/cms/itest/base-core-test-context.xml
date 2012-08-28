@@ -153,8 +153,6 @@
   <!-- Possibly needs profile -->
   <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
 
-  <bean id="contentIndexService" class="com.enonic.cms.itest.search.ContentIndexServiceTestWrapper"/>
-
   <bean id="siteCachesService" class="com.enonic.cms.itest.portal.cache.MockSiteCachesService"/>
 
   <bean id="deviceClassificationService"

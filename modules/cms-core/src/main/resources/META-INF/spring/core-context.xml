@@ -5,14 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
   <context:annotation-config/>
+
   <context:property-placeholder properties-ref="config"/>
 
-  <context:component-scan base-package="com.enonic.cms.framework.blob"/>
-  <context:component-scan base-package="com.enonic.vertical.engine"/>
-  <context:component-scan base-package="com.enonic.cms.core"/>
-  <context:component-scan base-package="com.enonic.cms.store"/>
-  <context:component-scan base-package="com.enonic.cms.business"/>
   <context:component-scan base-package="com.enonic.cms.framework"/>
+  <context:component-scan base-package="com.enonic.cms.core"/>
+  <context:component-scan base-package="com.enonic.vertical.engine"/>
+  <context:component-scan base-package="com.enonic.cms.store"/>
 
   <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
 
@@ -75,8 +74,6 @@
     <property name="propertyResolver" ref="upgradePropertyResolver"/>
   </bean>
 
-  <bean id="tightestCacheSettingsResolver" class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
-
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
 
   <bean id="davConfiguration" class="com.enonic.cms.web.webdav.DavConfiguration">
@@ -127,10 +124,6 @@
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentNewsletterXMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentPollXMLBuilder"/>
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.SimpleContentXMLBuilder"/>
-
-  <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
-    <property name="mimetypesLocation" value="${cms.home}/config/mimetypes.properties"/>
-  </bean>
 
   <bean id="schedulerManager" class="com.enonic.vertical.work.quartz.QuartzSchedulerManager">
     <property name="enabled" value="${cms.scheduler.enabled}"/>

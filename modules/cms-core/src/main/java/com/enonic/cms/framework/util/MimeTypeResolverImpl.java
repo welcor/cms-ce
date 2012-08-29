@@ -19,7 +19,7 @@ import org.springframework.web.context.ServletContextAware;
 /**
  * This class implements the mime type resolver.
  */
-@Component
+@Component("mimeTypeResolver")
 public final class MimeTypeResolverImpl
     implements MimeTypeResolver, InitializingBean, ServletContextAware
 {

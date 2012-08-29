@@ -282,4 +282,21 @@ public class PathTest
         assertEquals( new Path( "/home/news/politics#myfragment" ), pathWithRemovedTrailingSlash );
         assertEquals( "/home/news/politics#myfragment", pathWithRemovedTrailingSlash.toString() );
     }
+
+    @Test
+    public void containsSubPath()
+    {
+        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).contains( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/en/_xtrace/resources/" ).contains( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/_xtrace/resources/my.gif" ).contains( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/_xtrace/resources" ).contains( "_xtrace", "resources" ) );
+        assertFalse( new Path( "/_xtrace/" ).contains( "_xtrace", "resources" ) );
+        assertFalse( new Path( "/" ).contains( "_xtrace", "resources" ) );
+
+        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).contains( "_xtrace" ) );
+        assertTrue( new Path( "/_xtrace/resources/my.gif" ).contains( "_xtrace" ) );
+        assertTrue( new Path( "/_xtrace/resources" ).contains( "_xtrace" ) );
+        assertTrue( new Path( "/_xtrace/" ).contains( "_xtrace" ) );
+        assertFalse( new Path( "/" ).contains( "_xtrace" ) );
+    }
 }

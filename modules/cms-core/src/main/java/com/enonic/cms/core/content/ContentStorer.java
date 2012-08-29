@@ -306,6 +306,18 @@ public class ContentStorer
 
     public UpdateContentResult updateContent( final UpdateContentCommand updateCommand )
     {
+        final UpdateContentResult updateContentResult = doUpdateContent( updateCommand );
+
+        if ( updateContentResult.isAnyChangesMade() )
+        {
+            indexTransactionService.updateContent( updateContentResult.getTargetedVersion().getContent(), false );
+        }
+
+        return updateContentResult;
+    }
+
+    private UpdateContentResult doUpdateContent( final UpdateContentCommand updateCommand )
+    {
         Preconditions.checkNotNull( updateCommand.getContentKey(), "contentKey cannot be null" );
         Preconditions.checkNotNull( updateCommand.getModifier(), "modifier cannot be null" );
 
@@ -386,11 +398,6 @@ public class ContentStorer
         }
 
         flushPendingHibernateWork();
-
-        if ( result.isAnyChangesMade() )
-        {
-            indexTransactionService.updateContent( result.getTargetedVersion().getContent(), false );
-        }
 
         return result;
     }
@@ -807,6 +814,8 @@ public class ContentStorer
         }
 
         doDeleteContent( content );
+
+        indexTransactionService.deleteContent( content.getKey() );
     }
 
     public void deleteVersion( UserEntity deleter, ContentVersionEntity version )
@@ -820,6 +829,8 @@ public class ContentStorer
         }
 
         doDeleteVersion( version );
+
+        indexTransactionService.updateContent( version.getContent().getKey(), false );
     }
 
     public AssignContentResult assignContent( AssignContentCommand command )
@@ -1006,7 +1017,7 @@ public class ContentStorer
             updateContentCommand.setChangeComment( snapshotCommand.getSnapshotComment() );
         }
 
-        UpdateContentResult storeSnapshotResult = updateContent( updateContentCommand );
+        UpdateContentResult storeSnapshotResult = doUpdateContent( updateContentCommand );
 
         contentVersion.addSnapshot( storeSnapshotResult.getTargetedVersion() );
 
@@ -1049,7 +1060,14 @@ public class ContentStorer
             }
         }
 
-        return doChangeMainVersionStatus( archiver, content, ContentStatus.ARCHIVED );
+        final boolean anyChangesMade = doChangeMainVersionStatus( archiver, content, ContentStatus.ARCHIVED );
+
+        if ( anyChangesMade )
+        {
+            indexTransactionService.updateContent( content, true );
+        }
+
+        return anyChangesMade;
     }
 
     public boolean approveMainVersion( final UserEntity approver, final ContentEntity content )
@@ -1060,7 +1078,14 @@ public class ContentStorer
                                                content.getCategory().getKey() );
         }
 
-        return doChangeMainVersionStatus( approver, content, ContentStatus.APPROVED );
+        final boolean anyChangesMade = doChangeMainVersionStatus( approver, content, ContentStatus.APPROVED );
+
+        if ( anyChangesMade )
+        {
+            indexTransactionService.updateContent( content, true );
+        }
+
+        return anyChangesMade;
     }
 
     private boolean doChangeMainVersionStatus( final UserEntity changer, final ContentEntity content, ContentStatus status )
@@ -1087,7 +1112,9 @@ public class ContentStorer
 
         updateContentCommand.setUpdateAsMainVersion( false );
 
-        return updateContent( updateContentCommand ).isAnyChangesMade();
+        final UpdateContentResult updateContentResult = doUpdateContent( updateContentCommand );
+
+        return updateContentResult.isAnyChangesMade();
     }
 
     public void moveContent( final UserEntity mover, final ContentEntity content, final CategoryEntity toCategory )
@@ -1222,6 +1249,9 @@ public class ContentStorer
             if ( !content.isDeleted() && !content.hasDirectMenuItemPlacements() )
             {
                 doDeleteContent( content );
+
+                indexTransactionService.deleteContent( content.getKey() );
+
                 deletedContent.add( content );
             }
         }
@@ -1290,8 +1320,6 @@ public class ContentStorer
         doDeleteRelatedContent( content );
         doDeleteContentHome( content );
         doDeleteSectionContent( content );
-
-        indexTransactionService.deleteContent( content.getKey() );
     }
 
     private void doDeleteSectionContent( ContentEntity content )

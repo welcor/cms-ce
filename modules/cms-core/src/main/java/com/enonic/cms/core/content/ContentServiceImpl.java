@@ -116,7 +116,6 @@ public class ContentServiceImpl
         {
             indexTransactionService.startTransaction();
             final AssignContentResult result = contentStorer.assignContent( command );
-            indexTransactionService.updateContent( result.getAssignedContentKey(), true );
             return result;
         }
         catch ( RuntimeException e )
@@ -133,7 +132,6 @@ public class ContentServiceImpl
         {
             indexTransactionService.startTransaction();
             contentStorer.updateAssignment( command );
-            indexTransactionService.updateContent( command.getContentKey(), true );
         }
         catch ( RuntimeException e )
         {
@@ -149,7 +147,6 @@ public class ContentServiceImpl
         {
             indexTransactionService.startTransaction();
             final UnassignContentResult result = contentStorer.unassignContent( command );
-            indexTransactionService.updateContent( result.getUnassignedContent(), true );
             return result;
         }
         catch ( RuntimeException e )
@@ -166,7 +163,6 @@ public class ContentServiceImpl
             indexTransactionService.startTransaction();
             final ContentEntity content = contentStorer.createContent( command );
             logEvent( command.getCreator(), content, LogType.ENTITY_CREATED );
-            indexTransactionService.updateContent( content );
             return content.getKey();
         }
         catch ( RuntimeException e )
@@ -187,12 +183,9 @@ public class ContentServiceImpl
             if ( updateContentResult.isAnyChangesMade() )
             {
                 logEvent( command.getModifier(), updateContentResult.getTargetedVersion().getContent(), LogType.ENTITY_UPDATED );
-
-                indexTransactionService.updateContent( updateContentResult.getTargetedVersion().getContent() );
             }
 
             return updateContentResult;
-
         }
         catch ( RuntimeException e )
         {
@@ -219,8 +212,6 @@ public class ContentServiceImpl
 
         contentStorer.deleteContent( deleter, content );
         logEvent( deleter.getKey(), content, LogType.ENTITY_REMOVED );
-
-        indexTransactionService.deleteContent( content.getKey() );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -264,6 +255,8 @@ public class ContentServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean archiveContent( final UserEntity archiver, final ContentEntity content )
     {
+        indexTransactionService.startTransaction();
+
         if ( content == null )
         {
             throw new IllegalArgumentException( "Given content cannot be null" );
@@ -273,20 +266,18 @@ public class ContentServiceImpl
             throw new IllegalArgumentException( "Given archiver cannot be null" );
         }
 
-        indexTransactionService.startTransaction();
         boolean updated = contentStorer.archiveMainVersion( archiver, content );
         if ( updated )
         {
             logEvent( archiver.getKey(), content, LogType.ENTITY_UPDATED );
         }
-        indexTransactionService.updateContent( content, true );
-
         return updated;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean approveContent( final UserEntity approver, final ContentEntity content )
     {
+        indexTransactionService.startTransaction();
 
         if ( content == null )
         {
@@ -298,11 +289,10 @@ public class ContentServiceImpl
         }
 
         boolean updated = contentStorer.approveMainVersion( approver, content );
+
         if ( updated )
         {
             logEvent( approver.getKey(), content, LogType.ENTITY_UPDATED );
-            indexTransactionService.startTransaction();
-            indexTransactionService.updateContent( content, true );
         }
 
         return updated;
@@ -324,7 +314,6 @@ public class ContentServiceImpl
     {
         indexTransactionService.startTransaction();
         contentStorer.moveContent( mover, content, toCategory );
-        indexTransactionService.updateContent( content, true );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -332,7 +321,6 @@ public class ContentServiceImpl
     {
         indexTransactionService.startTransaction();
         final ContentKey contentKey = contentStorer.copyContent( copier, content, toCategory );
-        indexTransactionService.updateContent( contentKey );
         return contentKey;
     }
 

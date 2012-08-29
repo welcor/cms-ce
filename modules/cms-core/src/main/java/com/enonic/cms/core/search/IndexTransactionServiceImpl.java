@@ -1,7 +1,5 @@
 package com.enonic.cms.core.search;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,6 @@ import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
-import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
 import com.enonic.cms.core.search.query.ContentDocument;
@@ -51,27 +48,18 @@ public class IndexTransactionServiceImpl
     }
 
     @Override
-    public void updateContent( ContentKey contentKey )
-    {
-        updateContent( contentDao.findByKey( contentKey ) );
-    }
-
-    @Override
     public void updateContent( final ContentKey contentKey, final boolean skipAttachments )
     {
         updateContent( contentDao.findByKey( contentKey ), skipAttachments );
     }
 
     @Override
-    public void updateContent( ContentEntity contentEntity )
+    public void updateContent( final ContentEntity contentEntity, boolean skipAttachments )
     {
-        IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
-        ContentIndexData contentIndexData = createContentIndexData( contentEntity, false );
-        indexTransactionJournal.addContent( contentIndexData );
+        doUpdateContent( contentEntity, skipAttachments );
     }
 
-    @Override
-    public void updateContent( ContentEntity contentEntity, boolean skipAttachments )
+    private void doUpdateContent( final ContentEntity contentEntity, final boolean skipAttachments )
     {
         IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
         ContentIndexData contentIndexData = createContentIndexData( contentEntity, skipAttachments );
@@ -79,20 +67,10 @@ public class IndexTransactionServiceImpl
     }
 
     @Override
-    public void deleteContent( ContentKey contentKey )
+    public void deleteContent( final ContentKey contentKey )
     {
         IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
         indexTransactionJournal.removeContent( contentKey );
-    }
-
-    @Override
-    public void updateCategory( CategoryKey categoryKey )
-    {
-        final List<ContentKey> contentList = contentDao.findContentKeysByCategory( categoryKey );
-        for ( ContentKey contentKey : contentList )
-        {
-            updateContent( contentKey, true );
-        }
     }
 
     @Override

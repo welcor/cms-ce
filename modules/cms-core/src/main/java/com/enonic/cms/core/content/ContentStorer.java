@@ -50,6 +50,7 @@ import com.enonic.cms.core.content.contentdata.custom.CustomContentDataModifier;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.ContentNotFoundException;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserNotFoundException;
@@ -106,6 +107,9 @@ public class ContentStorer
 
     @Autowired
     private ContentDao contentEntityDao;
+
+    @Autowired
+    private IndexTransactionService indexTransactionService;
 
     public ContentEntity createContent( final CreateContentCommand createContentCommand )
     {
@@ -171,6 +175,8 @@ public class ContentStorer
         doAddContentBinariesToVersion( persistedContent.getMainVersion(), contentBinaryDatasToAdd );
 
         flushPendingHibernateWork();
+
+        indexTransactionService.updateContent( persistedContent, false );
 
         return persistedContent;
     }
@@ -380,6 +386,11 @@ public class ContentStorer
         }
 
         flushPendingHibernateWork();
+
+        if ( result.isAnyChangesMade() )
+        {
+            indexTransactionService.updateContent( result.getTargetedVersion().getContent(), false );
+        }
 
         return result;
     }
@@ -854,6 +865,8 @@ public class ContentStorer
 
         result.setNewAssignee( assignee );
 
+        indexTransactionService.updateContent( content.getKey(), true );
+
         return result;
     }
 
@@ -902,12 +915,14 @@ public class ContentStorer
         return user;
     }
 
-    public void updateAssignment( UpdateAssignmentCommand command )
+    public void updateAssignment( final UpdateAssignmentCommand command )
     {
-        Preconditions.checkNotNull( command.getContentKey(), "contentKey cannot be null" );
+        final ContentKey contentKey = command.getContentKey();
+
+        Preconditions.checkNotNull( contentKey, "contentKey cannot be null" );
         Preconditions.checkNotNull( command.getUpdater(), "updaterKey cannot be null" );
 
-        ContentEntity content = getAndVerifyContent( command.getContentKey() );
+        ContentEntity content = getAndVerifyContent( contentKey );
 
         UserEntity updater = getAndVerifyUser( command.getUpdater() );
 
@@ -923,16 +938,19 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
+        indexTransactionService.updateContent( contentKey, true );
     }
 
-    public UnassignContentResult unassignContent( UnassignContentCommand command )
+    public UnassignContentResult unassignContent( final UnassignContentCommand command )
     {
-        Preconditions.checkNotNull( command.getContentKey(), "contentKey cannot be null" );
+        final ContentKey contentKey = command.getContentKey();
+
+        Preconditions.checkNotNull( contentKey, "contentKey cannot be null" );
         Preconditions.checkNotNull( command.getUnassigner(), "unassignerKey cannot be null" );
 
         UnassignContentResult result = new UnassignContentResult();
 
-        ContentEntity content = getAndVerifyContent( command.getContentKey() );
+        ContentEntity content = getAndVerifyContent( contentKey );
 
         result.setOriginalAssigner( content.getAssigner() != null ? content.getAssigner().getKey() : null );
         result.setUnassignedContent( content.getKey() );
@@ -952,6 +970,8 @@ public class ContentStorer
         content.setTimestamp( getNow() );
 
         flushPendingHibernateWork();
+
+        indexTransactionService.updateContent( contentKey, true );
 
         return result;
     }
@@ -1087,6 +1107,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
+        indexTransactionService.updateContent( content, true );
     }
 
     public ContentKey copyContent( final UserEntity copier, final ContentEntity sourceContent, final CategoryEntity toCategory )
@@ -1171,6 +1192,8 @@ public class ContentStorer
         doAddContentBinariesToVersion( newVersion, ContentBinaryDataEntity.createNewFrom( binaryDatas ) );
 
         flushPendingHibernateWork();
+
+        indexTransactionService.updateContent( persistedContent.getKey(), false );
 
         return persistedContent.getKey();
     }
@@ -1268,6 +1291,7 @@ public class ContentStorer
         doDeleteContentHome( content );
         doDeleteSectionContent( content );
 
+        indexTransactionService.deleteContent( content.getKey() );
     }
 
     private void doDeleteSectionContent( ContentEntity content )

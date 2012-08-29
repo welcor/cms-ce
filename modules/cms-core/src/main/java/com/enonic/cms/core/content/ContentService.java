@@ -32,7 +32,6 @@ import com.enonic.cms.core.security.user.UserEntity;
 
 public interface ContentService
 {
-
     SnapshotContentResult snapshotContent( SnapshotContentCommand command );
 
     AssignContentResult assignContent( AssignContentCommand command );

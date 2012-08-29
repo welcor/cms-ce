@@ -92,7 +92,6 @@ public class ImportServiceImpl
 
     private void doArchiveContent( UserEntity importer, ContentKey contentKey, ImportResult importResult )
     {
-
         final ContentEntity content = contentDao.findByKey( contentKey );
 
         if ( content == null )
@@ -109,8 +108,6 @@ public class ImportServiceImpl
             unassignContentCommand.setContentKey( content.getKey() );
             unassignContentCommand.setUnassigner( importer.getKey() );
             contentStorer.unassignContent( unassignContentCommand );
-
-            indexTransactionService.updateContent( content.getKey(), true );
         }
         else
         {
@@ -147,7 +144,6 @@ public class ImportServiceImpl
         else
         {
             contentStorer.deleteContent( importer, content );
-            indexTransactionService.deleteContent( content.getKey() );
             importResult.addDeleted( content );
         }
     }

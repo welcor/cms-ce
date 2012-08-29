@@ -5,7 +5,6 @@
 package com.enonic.cms.core.search.query;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -48,8 +47,6 @@ public interface ContentIndexService
     public void index( ContentDocument doc, boolean deleteExisting );
 
     public void index( ContentDocument doc );
-
-    public void indexBulk( List<ContentDocument> docs );
 
     /**
      * Return true if content is indexed.

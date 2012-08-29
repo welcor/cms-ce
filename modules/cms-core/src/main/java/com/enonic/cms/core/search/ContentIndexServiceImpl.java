@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
 import com.enonic.cms.core.content.ContentEntityFetcherImpl;
@@ -183,22 +180,6 @@ public class ContentIndexServiceImpl
 
         elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }
-
-    public void indexBulk( List<ContentDocument> docs )
-    {
-
-        Set<ContentIndexData> contentIndexDatas = Sets.newHashSet();
-
-        for ( ContentDocument doc : docs )
-        {
-            ContentIndexData contentIndexData = contentIndexDataFactory.create( doc );
-
-            contentIndexDatas.add( contentIndexData );
-        }
-
-        elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexDatas );
-    }
-
 
     public boolean isIndexed( ContentKey contentKey, final IndexType indexType )
     {

@@ -147,8 +147,6 @@ public class ContentImporterImpl
         }
 
         importJob.registerImportedContent( newContent.getKey() );
-
-        indexTransactionService.updateContent( newContent );
     }
 
     private void doAssignContent( ContentEntity newContent )
@@ -165,8 +163,6 @@ public class ContentImporterImpl
         contentStorer.assignContent( assignContentCommand );
 
         importResult.addAssigned( newContent );
-
-        indexTransactionService.updateContent( newContent, true );
     }
 
     private void importByChangeExistingContent( final ImportDataEntry importDataEntry, final ContentKey existingContentKey )
@@ -185,8 +181,6 @@ public class ContentImporterImpl
             importResult.addUnchanged( existingContent );
             importJob.registerImportedContent( existingContent.getKey() );
         }
-
-        indexTransactionService.updateContent( existingContent );
     }
 
 

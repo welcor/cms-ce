@@ -110,7 +110,7 @@ public class ImportServiceImpl
             unassignContentCommand.setUnassigner( importer.getKey() );
             contentStorer.unassignContent( unassignContentCommand );
 
-            indexTransactionService.updateContent( content.getKey() );
+            indexTransactionService.updateContent( content.getKey(), true );
         }
         else
         {

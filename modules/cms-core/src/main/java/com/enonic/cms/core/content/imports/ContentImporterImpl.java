@@ -166,7 +166,7 @@ public class ContentImporterImpl
 
         importResult.addAssigned( newContent );
 
-        indexTransactionService.updateContent( newContent );
+        indexTransactionService.updateContent( newContent, true );
     }
 
     private void importByChangeExistingContent( final ImportDataEntry importDataEntry, final ContentKey existingContentKey )

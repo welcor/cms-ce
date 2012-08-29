@@ -43,11 +43,20 @@ public class IndexTransactionJournal
 
     public void addContent( ContentIndexData contentIndexData )
     {
+        doAddContent( contentIndexData );
+    }
+
+    private void doAddContent( final ContentIndexData contentIndexData )
+    {
         if ( TransactionSynchronizationManager.isCurrentTransactionReadOnly() )
         {
             return;
         }
-        changeHistory.add( new IndexTransactionJournalEntry( IndexTransactionJournalEntry.JournalOperation.UPDATE, contentIndexData ) );
+
+        final IndexTransactionJournalEntry indexTransactionJournalEntry =
+            new IndexTransactionJournalEntry( IndexTransactionJournalEntry.JournalOperation.UPDATE, contentIndexData );
+
+        changeHistory.add( indexTransactionJournalEntry );
     }
 
     public void removeContent( ContentKey contentKey )

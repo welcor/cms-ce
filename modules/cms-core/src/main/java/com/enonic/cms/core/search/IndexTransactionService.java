@@ -15,7 +15,11 @@ public interface IndexTransactionService
 
     void updateContent( ContentKey contentKey );
 
+    void updateContent( ContentKey contentKey, boolean skipAttachments );
+
     void updateContent( ContentEntity contentEntity );
+
+    void updateContent( ContentEntity contentEntity, boolean skipAttachments );
 
     void deleteContent( ContentKey contentKey );
 

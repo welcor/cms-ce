@@ -112,8 +112,7 @@ public class MenuItemServiceImpl
         Preconditions.checkNotNull( command.getWantedOrder(), "wanted order cannot be null" );
 
         final MenuItemEntity section = menuItemDao.findByKey( command.getSectionKey() );
-        ContentsInSectionOrderer orderer =
-            new ContentsInSectionOrderer( command.getWantedOrder(), section, ORDER_SPACE );
+        ContentsInSectionOrderer orderer = new ContentsInSectionOrderer( command.getWantedOrder(), section, ORDER_SPACE );
         orderer.order();
     }
 
@@ -159,7 +158,7 @@ public class MenuItemServiceImpl
             content.addContentHome( newContentHome );
         }
 
-        indexTransactionService.updateContent( command.getContent() );
+        indexTransactionService.updateContent( command.getContent(), true );
     }
 
     private void doExecuteAddContentToSectionCommand( final AddContentToSectionCommand command )
@@ -237,7 +236,7 @@ public class MenuItemServiceImpl
             }
         }
 
-        indexTransactionService.updateContent( command.getContent() );
+        indexTransactionService.updateContent( command.getContent(), true );
     }
 
     private void doExecuteRemoveContentsFromSectionCommand( final RemoveContentsFromSectionCommand command )
@@ -276,7 +275,7 @@ public class MenuItemServiceImpl
                 MenuItemEntity.class.getName() + ".sectionContents", section.getKey() );
 
             removeContentHomeIfThisSectionIs( content, section );
-            indexTransactionService.updateContent( content );
+            indexTransactionService.updateContent( content, true );
         }
     }
 
@@ -356,7 +355,7 @@ public class MenuItemServiceImpl
 
         for ( ContentKey contentKey : command.getContentsToApprove() )
         {
-            indexTransactionService.updateContent( contentKey );
+            indexTransactionService.updateContent( contentKey, true );
         }
     }
 
@@ -380,7 +379,7 @@ public class MenuItemServiceImpl
                 continue;
             }
             doUnapproveContentInSection( sectionContent );
-            indexTransactionService.updateContent( contentKey );
+            indexTransactionService.updateContent( contentKey, true );
         }
     }
 

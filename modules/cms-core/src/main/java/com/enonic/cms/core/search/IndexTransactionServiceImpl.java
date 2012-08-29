@@ -57,10 +57,24 @@ public class IndexTransactionServiceImpl
     }
 
     @Override
+    public void updateContent( final ContentKey contentKey, final boolean skipAttachments )
+    {
+        updateContent( contentDao.findByKey( contentKey ), skipAttachments );
+    }
+
+    @Override
     public void updateContent( ContentEntity contentEntity )
     {
         IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
-        ContentIndexData contentIndexData = createContentIndexData( contentEntity );
+        ContentIndexData contentIndexData = createContentIndexData( contentEntity, false );
+        indexTransactionJournal.addContent( contentIndexData );
+    }
+
+    @Override
+    public void updateContent( ContentEntity contentEntity, boolean skipAttachments )
+    {
+        IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
+        ContentIndexData contentIndexData = createContentIndexData( contentEntity, skipAttachments );
         indexTransactionJournal.addContent( contentIndexData );
     }
 
@@ -77,7 +91,7 @@ public class IndexTransactionServiceImpl
         final List<ContentKey> contentList = contentDao.findContentKeysByCategory( categoryKey );
         for ( ContentKey contentKey : contentList )
         {
-            updateContent( contentKey );
+            updateContent( contentKey, true );
         }
     }
 
@@ -136,9 +150,9 @@ public class IndexTransactionServiceImpl
         return indexTransactionJournal;
     }
 
-    private ContentIndexData createContentIndexData( ContentEntity content )
+    private ContentIndexData createContentIndexData( final ContentEntity content, final boolean skipAttachments )
     {
         ContentDocument doc = indexService.createContentDocument( content );
-        return contentIndexDataFactory.create( doc );
+        return contentIndexDataFactory.create( doc, skipAttachments );
     }
 }

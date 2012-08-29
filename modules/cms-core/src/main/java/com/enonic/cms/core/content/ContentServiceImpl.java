@@ -116,7 +116,7 @@ public class ContentServiceImpl
         {
             indexTransactionService.startTransaction();
             final AssignContentResult result = contentStorer.assignContent( command );
-            indexTransactionService.updateContent( result.getAssignedContentKey() );
+            indexTransactionService.updateContent( result.getAssignedContentKey(), true );
             return result;
         }
         catch ( RuntimeException e )
@@ -133,7 +133,7 @@ public class ContentServiceImpl
         {
             indexTransactionService.startTransaction();
             contentStorer.updateAssignment( command );
-            indexTransactionService.updateContent( command.getContentKey() );
+            indexTransactionService.updateContent( command.getContentKey(), true );
         }
         catch ( RuntimeException e )
         {
@@ -149,7 +149,7 @@ public class ContentServiceImpl
         {
             indexTransactionService.startTransaction();
             final UnassignContentResult result = contentStorer.unassignContent( command );
-            indexTransactionService.updateContent( result.getUnassignedContent() );
+            indexTransactionService.updateContent( result.getUnassignedContent(), true );
             return result;
         }
         catch ( RuntimeException e )
@@ -279,7 +279,7 @@ public class ContentServiceImpl
         {
             logEvent( archiver.getKey(), content, LogType.ENTITY_UPDATED );
         }
-        indexTransactionService.updateContent( content );
+        indexTransactionService.updateContent( content, true );
 
         return updated;
     }
@@ -302,7 +302,7 @@ public class ContentServiceImpl
         {
             logEvent( approver.getKey(), content, LogType.ENTITY_UPDATED );
             indexTransactionService.startTransaction();
-            indexTransactionService.updateContent( content );
+            indexTransactionService.updateContent( content, true );
         }
 
         return updated;
@@ -324,7 +324,7 @@ public class ContentServiceImpl
     {
         indexTransactionService.startTransaction();
         contentStorer.moveContent( mover, content, toCategory );
-        indexTransactionService.updateContent( content );
+        indexTransactionService.updateContent( content, true );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

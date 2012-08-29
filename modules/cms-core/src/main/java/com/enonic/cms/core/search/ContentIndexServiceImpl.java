@@ -96,16 +96,6 @@ public class ContentIndexServiceImpl
             elasticSearchIndexService.createIndex( CONTENT_INDEX_NAME );
             addMapping();
         }
-        else
-        {
-            verifyMapping();
-        }
-    }
-
-    // TODO: Implement
-    private void verifyMapping()
-    {
-
     }
 
     private void addMapping()
@@ -300,7 +290,6 @@ public class ContentIndexServiceImpl
 
             if ( actualNumberOfHits < query.getCount() )
             {
-                // TODO: Could be optimized to not execute query again
                 query.setCount( actualNumberOfHits == 0 ? 1 : actualNumberOfHits );
             }
         }
@@ -364,7 +353,6 @@ public class ContentIndexServiceImpl
 
         return new IndexValueResultImpl( contentKey, fieldValue.get( 0 ) );
     }
-
 
     private SearchHits doExecuteSearchRequest( SearchSourceBuilder searchSourceBuilder )
     {

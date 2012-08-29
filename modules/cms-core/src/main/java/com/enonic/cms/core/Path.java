@@ -263,6 +263,38 @@ public class Path
         return this.pathAsStringWithoutFragment.contains( substring );
     }
 
+    public boolean contains( String... subPathElements )
+    {
+        int i = 0;
+        while ( i < pathElements.size() )
+        {
+            if ( pathElements.get( i ).equals( subPathElements[0] ) )
+            {
+                boolean allEqualsSuccessively = true;
+                for ( int j = 1; j < subPathElements.length; j++ )
+                {
+                    if ( pathElements.size() <= i + j )
+                    {
+                        allEqualsSuccessively = false;
+                        break;
+                    }
+
+                    if ( !pathElements.get( i + j ).equals( subPathElements[j] ) )
+                    {
+                        allEqualsSuccessively = false;
+                        break;
+                    }
+                }
+                if ( allEqualsSuccessively )
+                {
+                    return true;
+                }
+            }
+            i++;
+        }
+        return false;
+    }
+
     public Path substractLastPathElement()
     {
         final List<String> source = this.getPathElements();

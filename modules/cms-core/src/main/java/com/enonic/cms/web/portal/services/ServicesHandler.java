@@ -8,6 +8,7 @@ import org.elasticsearch.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.InvalidParameterValueException;
@@ -28,9 +29,9 @@ public final class ServicesHandler
     }
 
     @Override
-    protected boolean canHandle( final String localPath )
+    protected boolean canHandle( final Path localPath )
     {
-        return localPath.contains( "/_services/" );
+        return localPath.containsSubPath( "_services" );
     }
 
     @Override

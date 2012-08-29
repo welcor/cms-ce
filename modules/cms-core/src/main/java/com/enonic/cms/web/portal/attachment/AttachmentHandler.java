@@ -59,9 +59,9 @@ public final class AttachmentHandler
     }
 
     @Override
-    protected boolean canHandle( final String localPath )
+    protected boolean canHandle( final Path localPath )
     {
-        return localPath.contains( "/_attachment/" ) || localPath.endsWith( "/_attachment" );
+        return localPath.containsSubPath( "_attachment" );
     }
 
     @Override

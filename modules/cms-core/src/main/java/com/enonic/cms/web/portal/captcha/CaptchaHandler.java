@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.Path;
 import com.enonic.cms.core.captcha.CaptchaRepository;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
@@ -22,9 +23,9 @@ public final class CaptchaHandler
     private CaptchaRepository captchaRepository;
 
     @Override
-    protected boolean canHandle( final String localPath )
+    protected boolean canHandle( final Path localPath )
     {
-        return localPath.endsWith( "/_captcha" );
+        return localPath.containsSubPath( "_captcha" );
     }
 
     @Override

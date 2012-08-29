@@ -76,6 +76,8 @@ public class Path
             i++;
         }
 
+        this.pathAsStringWithoutFragment = s.toString();
+
         if ( fragment != null )
         {
             this.pathAsString = s.toString() + "#" + fragment;
@@ -84,7 +86,6 @@ public class Path
         {
             this.pathAsString = s.toString();
         }
-        this.pathAsStringWithoutFragment = pathAsString;
         this.fragment = fragment;
     }
 
@@ -263,7 +264,7 @@ public class Path
         return this.pathAsStringWithoutFragment.contains( substring );
     }
 
-    public boolean contains( String... subPathElements )
+    public boolean containsSubPath( String... subPathElements )
     {
         int i = 0;
         while ( i < pathElements.size() )

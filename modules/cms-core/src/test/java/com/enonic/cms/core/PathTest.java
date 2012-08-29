@@ -9,6 +9,8 @@ import java.net.URLDecoder;
 
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 import static org.junit.Assert.*;
 
 public class PathTest
@@ -95,9 +97,16 @@ public class PathTest
     @Test
     public void testCointains()
     {
-
         assertTrue( new Path( "/innenriks/oslo/images/image.gif" ).contains( "/innenriks/oslo/" ) );
         assertFalse( new Path( "/innenriks/oslo/images/image.gif" ).contains( "/innenriks/bergen/" ) );
+        assertFalse( new Path( "/innenriks/oslo/images/image.gif#bottom" ).contains( "bottom" ) );
+        assertFalse( new Path( Lists.newArrayList( "image.gif" ), true, "#bottom" ).contains( "bottom" ) );
+    }
+
+    @Test
+    public void testEndsWitth()
+    {
+        assertFalse( new Path( "/mypage#/page" ).endsWith( "/page" ) );
     }
 
     @Test
@@ -286,17 +295,17 @@ public class PathTest
     @Test
     public void containsSubPath()
     {
-        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).contains( "_xtrace", "resources" ) );
-        assertTrue( new Path( "/en/_xtrace/resources/" ).contains( "_xtrace", "resources" ) );
-        assertTrue( new Path( "/_xtrace/resources/my.gif" ).contains( "_xtrace", "resources" ) );
-        assertTrue( new Path( "/_xtrace/resources" ).contains( "_xtrace", "resources" ) );
-        assertFalse( new Path( "/_xtrace/" ).contains( "_xtrace", "resources" ) );
-        assertFalse( new Path( "/" ).contains( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/en/_xtrace/resources/" ).containsSubPath( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/_xtrace/resources" ).containsSubPath( "_xtrace", "resources" ) );
+        assertFalse( new Path( "/_xtrace/" ).containsSubPath( "_xtrace", "resources" ) );
+        assertFalse( new Path( "/" ).containsSubPath( "_xtrace", "resources" ) );
 
-        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).contains( "_xtrace" ) );
-        assertTrue( new Path( "/_xtrace/resources/my.gif" ).contains( "_xtrace" ) );
-        assertTrue( new Path( "/_xtrace/resources" ).contains( "_xtrace" ) );
-        assertTrue( new Path( "/_xtrace/" ).contains( "_xtrace" ) );
-        assertFalse( new Path( "/" ).contains( "_xtrace" ) );
+        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace" ) );
+        assertTrue( new Path( "/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace" ) );
+        assertTrue( new Path( "/_xtrace/resources" ).containsSubPath( "_xtrace" ) );
+        assertTrue( new Path( "/_xtrace/" ).containsSubPath( "_xtrace" ) );
+        assertFalse( new Path( "/" ).containsSubPath( "_xtrace" ) );
     }
 }

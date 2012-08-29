@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.HttpServletUtil;
 
+import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
@@ -25,9 +26,9 @@ public final class ResourceHandler
     private ResourceService resourceService;
 
     @Override
-    protected boolean canHandle( final String localPath )
+    protected boolean canHandle( final Path localPath )
     {
-        return localPath.contains( "/_public/" ) || localPath.contains( "/~/" );
+        return localPath.containsSubPath( "_public" ) || localPath.containsSubPath( "~" );
     }
 
     @Autowired

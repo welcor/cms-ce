@@ -30,7 +30,7 @@ public final class PageRedirectHandler
     private MenuItemDao menuItemDao;
 
     @Override
-    protected boolean canHandle( final String localPath )
+    protected boolean canHandle( final Path localPath )
     {
         return localPath.endsWith( "/page" );
     }

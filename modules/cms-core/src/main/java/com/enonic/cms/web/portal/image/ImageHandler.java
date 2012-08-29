@@ -46,9 +46,9 @@ public final class ImageHandler
     private final ImageRequestParser requestParser = new ImageRequestParser();
 
     @Override
-    protected boolean canHandle( final String localPath )
+    protected boolean canHandle( final Path localPath )
     {
-        return localPath.contains( "/_image/" );
+        return localPath.containsSubPath( "_image" );
     }
 
     @Override

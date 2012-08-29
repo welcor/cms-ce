@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.enonic.cms.framework.util.HttpCacheControlSettings;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
+import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -51,11 +52,10 @@ public abstract class WebHandlerBase
     @Override
     public final boolean canHandle( final PortalWebContext context )
     {
-        final String path = context.getSitePath().getLocalPath().toString();
-        return canHandle( path );
+        return canHandle( context.getSitePath().getLocalPath() );
     }
 
-    protected abstract boolean canHandle( final String localPath );
+    protected abstract boolean canHandle( final Path localPath );
 
     @Override
     public final void handle( final PortalWebContext context )

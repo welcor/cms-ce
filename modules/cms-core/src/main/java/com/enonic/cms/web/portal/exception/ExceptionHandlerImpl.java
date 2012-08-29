@@ -42,6 +42,7 @@ import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.attachment.AttachmentRequestException;
 import com.enonic.cms.web.portal.image.ImageRequestException;
 import com.enonic.cms.web.portal.page.DefaultRequestException;
+import com.enonic.cms.web.portal.template.TemplateProcessor;
 
 @Component
 public final class ExceptionHandlerImpl

@@ -1,4 +1,4 @@
-package com.enonic.cms.web.portal.exception;
+package com.enonic.cms.web.portal.template;
 
 import java.io.IOException;
 import java.io.StringWriter;

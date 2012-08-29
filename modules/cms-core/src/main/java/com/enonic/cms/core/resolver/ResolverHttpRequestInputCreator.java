@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.esl.util.StringUtil;
 
@@ -19,9 +20,7 @@ import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SiteURLResolver;
 
-/**
- * Created by rmy - Date: Apr 7, 2009
- */
+@Component
 public class ResolverHttpRequestInputCreator
 {
     public static final String USER_AGENT_HEADER_NAME = "user-agent";
@@ -29,8 +28,6 @@ public class ResolverHttpRequestInputCreator
     public static final String ACCEPT_LANGUAGE_HEADER_NAME = "accept-language";
 
     public static final String REFERER_HEADER_NAME = "referer";
-
-    public static final String URI_REQUEST_ATTRIBUTE_NAME = "uri";
 
     private SiteURLResolver siteUrlResolver;
 

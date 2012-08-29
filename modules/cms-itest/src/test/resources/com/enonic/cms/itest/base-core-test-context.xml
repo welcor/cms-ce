@@ -2,16 +2,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
-
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
   <context:annotation-config/>
+
   <context:property-placeholder properties-ref="config"/>
 
+  <context:component-scan base-package="com.enonic.cms.framework"/>
+  <context:component-scan base-package="com.enonic.cms.core"/>
+  <context:component-scan base-package="com.enonic.vertical.engine"/>
+  <context:component-scan base-package="com.enonic.cms.store"/>
+  <context:component-scan base-package="com.enonic.cms.web.portal"/>
+  <context:component-scan base-package="com.enonic.cms.server.service.admin.mvc.controller"/>
   <context:component-scan base-package="com.enonic.cms.itest"/>
-
-  <context:component-scan base-package="com.enonic.cms.store.dao"/>
-  <context:component-scan base-package="com.enonic.cms.core.search"/>
 
   <!-- Setup transaction by annotations. -->
   <tx:annotation-driven transaction-manager="transactionManager"/>
@@ -74,101 +78,6 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <context:component-scan base-package="com.enonic.cms.framework.cache.standard"/>
-  <context:component-scan base-package="com.enonic.cms.framework.blob"/>
-  <context:component-scan base-package="com.enonic.vertical.engine"/>
-  <context:component-scan base-package="com.enonic.cms.core"/>
-  <context:component-scan base-package="com.enonic.cms.core.calendar"/>
-  <context:component-scan base-package="com.enonic.cms.core.captcha"/>
-  <context:component-scan base-package="com.enonic.cms.core.client"/>
-  <context:component-scan base-package="com.enonic.cms.core.config"/>
-  <context:component-scan base-package="com.enonic.cms.core.content"/>
-  <context:component-scan base-package="com.enonic.cms.core.country"/>
-  <context:component-scan base-package="com.enonic.cms.core.elastic"/>
-  <context:component-scan base-package="com.enonic.cms.core.http"/>
-  <context:component-scan base-package="com.enonic.cms.core.image.cache"/>
-  <context:component-scan base-package="com.enonic.cms.core.log"/>
-  <context:component-scan base-package="com.enonic.cms.core.login"/>
-  <context:component-scan base-package="com.enonic.cms.core.locale"/>
-  <context:component-scan base-package="com.enonic.cms.core.localization"/>
-  <context:component-scan base-package="com.enonic.cms.core.portal"/>
-  <context:component-scan base-package="com.enonic.cms.core.portal.instruction"/>
-  <context:component-scan base-package="com.enonic.cms.core.portal.datasource"/>
-  <context:component-scan base-package="com.enonic.cms.core.portal.rendering"/>
-  <context:component-scan base-package="com.enonic.cms.core.preference"/>
-  <context:component-scan base-package="com.enonic.cms.core.preview"/>
-  <context:component-scan base-package="com.enonic.cms.core.resource"/>
-  <context:component-scan base-package="com.enonic.cms.core.service"/>
-  <context:component-scan base-package="com.enonic.cms.core.search"/>
-  <context:component-scan base-package="com.enonic.cms.core.security"/>
-  <context:component-scan base-package="com.enonic.cms.core.structure.menuitem"/>
-  <context:component-scan base-package="com.enonic.cms.core.time"/>
-  <context:component-scan base-package="com.enonic.cms.core.timezone"/>
-  <context:component-scan base-package="com.enonic.cms.store.blob"/>
-  <context:component-scan base-package="com.enonic.cms.store.resource"/>
-  <context:component-scan base-package="com.enonic.cms.web.portal"/>
-
-
-  <bean id="tightestCacheSettingsResolver"
-        class="com.enonic.cms.core.TightestCacheSettingsResolver"/>
-
-  <bean id="siteService" class="com.enonic.cms.core.structure.SiteServiceImpl">
-    <property name="siteCachesService" ref="siteCachesService"/>
-    <property name="siteContextManager">
-      <bean class="com.enonic.cms.core.structure.SiteContextManager"/>
-    </property>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-    <property name="siteDao" ref="siteDao"/>
-    <property name="userDao" ref="userDao"/>
-  </bean>
-
-  <bean id="siteURLResolver" class="com.enonic.cms.core.SiteURLResolver">
-    <property name="sitePathPrefix" value="/site"/>
-    <property name="sitePropertiesService" ref="sitePropertiesService"/>
-  </bean>
-
-  <bean id="localeResolverService"
-        class="com.enonic.cms.core.resolver.locale.LocaleResolverServiceImpl">
-    <property name="localeScriptResolver" ref="localeXsltScriptResolver"/>
-  </bean>
-
-  <bean id="localeXsltScriptResolver"
-        class="com.enonic.cms.core.resolver.locale.LocaleXsltScriptResolver"/>
-
-  <bean id="cookieOrSessionForcedResolverValueService"
-        class="com.enonic.cms.core.resolver.ForceResolverValueServiceImpl"/>
-
-  <bean id="sessionCachedResolverValueService"
-        class="com.enonic.cms.core.resolver.CacheResolverValueServiceImpl"/>
-
-  <bean id="resolverInputXMLCreator"
-        class="com.enonic.cms.core.resolver.ResolverInputXMLCreator"/>
-
-  <bean id="resolverXMLCreator"
-        class="com.enonic.cms.core.resolver.ResolverHttpRequestInputXMLCreator"/>
-
-  <bean id="resolverInputCreator"
-        class="com.enonic.cms.core.resolver.ResolverHttpRequestInputCreator"/>
-
-  <!-- Possibly needs profile -->
   <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
-
-  <bean id="siteCachesService" class="com.enonic.cms.itest.portal.cache.MockSiteCachesService"/>
-
-  <bean id="deviceClassificationService"
-        class="com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverServiceImpl">
-    <property name="deviceClassScriptResolver" ref="deviceClassXsltScriptResolver"/>
-  </bean>
-
-  <bean id="urlDecodingUrlPathHelper" class="org.springframework.web.util.UrlPathHelper">
-    <property name="urlDecode" value="true"/>
-  </bean>
-
-  <bean id="attachmentControllerForAdmin" class="com.enonic.cms.server.service.admin.mvc.controller.AttachmentController"/>
-
-  <!-- TODO -->
-  <bean id="mimeTypeResolver" class="com.enonic.cms.framework.util.MimeTypeResolverImpl">
-    <property name="mimetypesLocation" value="config/mimetypes.properties"/>
-  </bean>
 
 </beans>

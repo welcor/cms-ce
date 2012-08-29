@@ -9,8 +9,6 @@ import java.util.concurrent.locks.Lock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -85,8 +83,6 @@ public class WindowRenderer
     private PortletXsltViewTransformer portletXsltViewTransformer;
 
     private ResourceService resourceService;
-
-    private VerticalProperties verticalProperties;
 
     private SitePropertiesService sitePropertiesService;
 
@@ -631,11 +627,6 @@ public class WindowRenderer
     public void setResourceService( ResourceService resourceService )
     {
         this.resourceService = resourceService;
-    }
-
-    public void setVerticalProperties( final VerticalProperties value )
-    {
-        verticalProperties = value;
     }
 
     public void setSiteURLResolver( SiteURLResolver siteURLResolver )

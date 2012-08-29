@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
@@ -19,6 +21,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
 
+@Component("siteService")
 public class SiteServiceImpl
     implements SiteService
 {
@@ -188,26 +191,31 @@ public class SiteServiceImpl
         return siteDao.findByPublishPossible( contentTypeKey, user );
     }
 
+    @Autowired
     public void setSiteCachesService( SiteCachesService value )
     {
         this.siteCachesService = value;
     }
 
+    @Autowired
     public void setSiteContextManager( SiteContextManager value )
     {
         this.siteContextManager = value;
     }
 
+    @Autowired
     public void setSitePropertiesService( SitePropertiesService value )
     {
         this.sitePropertiesService = value;
     }
 
+    @Autowired
     public void setSiteDao( SiteDao value )
     {
         this.siteDao = value;
     }
 
+    @Autowired
     public void setUserDao( UserDao value )
     {
         this.userDao = value;

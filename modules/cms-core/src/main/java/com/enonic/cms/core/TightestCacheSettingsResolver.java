@@ -8,12 +8,14 @@ package com.enonic.cms.core;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.Regions;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 
+@Component
 public class TightestCacheSettingsResolver
 {
     @Autowired

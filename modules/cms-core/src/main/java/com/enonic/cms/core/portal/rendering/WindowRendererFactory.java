@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.plugin.PluginManager;
@@ -39,9 +37,6 @@ public class WindowRendererFactory
 
     @Autowired
     private PortletXsltViewTransformer portletXsltViewTransformer;
-
-    @Autowired
-    private VerticalProperties verticalProperties;
 
     @Autowired
     private SitePropertiesService sitePropertiesService;
@@ -77,7 +72,6 @@ public class WindowRendererFactory
         windowRenderer.setResourceService( resourceService );
         windowRenderer.setSiteURLResolver( siteURLResolver );
         windowRenderer.setSitePropertiesService( sitePropertiesService );
-        windowRenderer.setVerticalProperties( verticalProperties );
         windowRenderer.setPostProcessInstructionExecutor( postProcessInstructionExecutor );
         windowRenderer.setLiveTraceService( livePortalTraceService );
         windowRenderer.setDataSourceService( dataSourceService );

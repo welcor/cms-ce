@@ -10,8 +10,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.joda.time.DateTime;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
 
 import com.enonic.cms.core.CacheObjectSettings;
@@ -87,8 +85,6 @@ public class PageRenderer
     private PageCacheService pageCacheService;
 
     private CacheSettings resolvedMenuItemCacheSettings = null;
-
-    private VerticalProperties verticalProperties;
 
     private SiteURLResolver siteURLResolver;
 
@@ -546,11 +542,6 @@ public class PageRenderer
     public void setPageCacheService( PageCacheService value )
     {
         this.pageCacheService = value;
-    }
-
-    public void setVerticalProperties( final VerticalProperties value )
-    {
-        verticalProperties = value;
     }
 
     public void setSitePropertiesService( final SitePropertiesService value )

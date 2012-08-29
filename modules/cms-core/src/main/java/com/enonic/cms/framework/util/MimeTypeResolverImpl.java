@@ -12,11 +12,14 @@ import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
 /**
  * This class implements the mime type resolver.
  */
+@Component
 public final class MimeTypeResolverImpl
     implements MimeTypeResolver, InitializingBean, ServletContextAware
 {
@@ -76,23 +79,24 @@ public final class MimeTypeResolverImpl
 
         final String localProperty = this.mimeTypes.getProperty( key );
 
-        if (localProperty != null)
+        if ( localProperty != null )
         {
             return localProperty;
         }
 
-        if (servletContext != null)
+        if ( servletContext != null )
         {
             final String containerProperty = servletContext.getMimeType( key );
 
-            if (containerProperty != null)
+            if ( containerProperty != null )
             {
                 return containerProperty;
             }
-        } else {
+        }
+        else
+        {
             return DEFAULT_MIME_TYPE;
         }
-
 
         return DEFAULT_MIME_TYPE;
     }
@@ -110,7 +114,7 @@ public final class MimeTypeResolverImpl
             return ext;
         }
 
-        for (final Map.Entry entry : mimeTypes.entrySet())
+        for ( final Map.Entry entry : mimeTypes.entrySet() )
         {
             final String key = (String) entry.getKey();
             final String value = (String) entry.getValue();
@@ -135,10 +139,11 @@ public final class MimeTypeResolverImpl
 
     /**
      * Load mime types. User can override default mimetypes by own in CMS_HOME directory.
+     *
      * @param mimetypesLocation location of .properties file
      * @return map of mime types
      */
-    private Properties loadMimeTypes(final String mimetypesLocation)
+    private Properties loadMimeTypes( final String mimetypesLocation )
     {
         final Properties userProps = new Properties();
         final Properties systemProps = new Properties();
@@ -146,12 +151,12 @@ public final class MimeTypeResolverImpl
         try
         {
             // load user defined mime types from mimetypesLocation ( e.g. CMS_HOME )
-            final File file = new File(mimetypesLocation);
+            final File file = new File( mimetypesLocation );
             if ( file.exists() )
             {
                 userProps.load( new FileInputStream( file ) );
 
-                LOG.info( "loaded {} user-defined mimetypes from file {}", userProps.size(), mimetypesLocation  );
+                LOG.info( "loaded {} user-defined mimetypes from file {}", userProps.size(), mimetypesLocation );
             }
         }
         catch ( Exception e )
@@ -181,6 +186,7 @@ public final class MimeTypeResolverImpl
         return systemProps;
     }
 
+    @Value("${cms.home}/config/mimetypes.properties")
     public void setMimetypesLocation( String mimetypesLocation )
     {
         this.mimetypesLocation = mimetypesLocation;

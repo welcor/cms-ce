@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.localization.LocaleParsingException;
@@ -25,9 +27,7 @@ import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
-/**
- * Created by rmy - Date: Apr 22, 2009
- */
+@Component
 public class LocaleResolverServiceImpl
     implements LocaleResolverService
 {
@@ -156,11 +156,14 @@ public class LocaleResolverServiceImpl
         forceResolverValueService.clearForcedValue( context, response, createForcedValueKey( context.getSite() ) );
     }
 
+    @Autowired
     public void setForceResolverValueService( ForceResolverValueService forceResolverValueService )
     {
         this.forceResolverValueService = forceResolverValueService;
     }
 
+    @Autowired
+    @Qualifier("localeXsltScriptResolver")
     public void setLocaleScriptResolver( ScriptResolverService localeScriptResolver )
     {
         this.localeScriptResolver = localeScriptResolver;

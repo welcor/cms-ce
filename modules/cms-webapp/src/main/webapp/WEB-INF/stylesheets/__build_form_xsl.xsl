@@ -11,6 +11,7 @@
   <xsl:namespace-alias stylesheet-prefix="x" result-prefix="xsl"/>
   <xsl:output method="xml"/>
   <xsl:param name="xsl_prefix"/>
+  <xsl:param name="developer"/>
 
   <xsl:template match="/">
 
@@ -1509,6 +1510,7 @@
     <xsl:param name="grpname"/>
 
     <xsl:variable name="title">
+      <xsl:if test="$developer = 'true'">
       <xsl:choose>
         <xsl:when test="$grpname">
           <xsl:variable name="title1" select="substring-after($grpname, 'contentdata/')"/>
@@ -1519,6 +1521,7 @@
           <xsl:value-of select="$input/xpath"/>
         </xsl:otherwise>
       </xsl:choose>
+      </xsl:if>
     </xsl:variable>
 
     <xsl:choose>
@@ -1567,7 +1570,7 @@
       <xsl:when test="$input/@type = 'images'">
         <xsl:call-template name="displayimages">
           <xsl:with-param name="input" select="$input"/>
-          <xsl:with-param name="title" select="$title"/>
+          <xsl:with-param name="title" select="concat($title, '/image')"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1588,14 +1591,14 @@
       <xsl:when test="$input/@type = 'files'">
         <xsl:call-template name="displayfiles">
           <xsl:with-param name="input" select="$input"/>
-          <xsl:with-param name="title" select="$title"/>
+          <xsl:with-param name="title" select="concat($title, '/file')"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'file'">
         <xsl:call-template name="displayfile">
           <xsl:with-param name="input" select="$input"/>
-          <xsl:with-param name="title" select="$title"/>
+          <xsl:with-param name="title" select="concat($title, '/file')"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1605,7 +1608,7 @@
           <xsl:when test="$is-multiple">
             <xsl:call-template name="relatedcontent">
               <xsl:with-param name="input" select="$input"/>
-              <xsl:with-param name="title" select="$title"/>
+              <xsl:with-param name="title" select="concat($title, '/content')"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>

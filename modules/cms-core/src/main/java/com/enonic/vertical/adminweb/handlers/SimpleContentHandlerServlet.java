@@ -282,7 +282,7 @@ final public class SimpleContentHandlerServlet
 
     private final static String FORM_TEMPLATE = "__build_form_xsl.xsl";
 
-    protected DOMSource buildXSL( HttpSession session, AdminService admin, int contentTypeKey )
+    protected DOMSource buildXSL( HttpSession session, AdminService admin, int contentTypeKey, final ExtendedMap parameters )
         throws VerticalAdminException
     {
 
@@ -339,12 +339,15 @@ final public class SimpleContentHandlerServlet
 
             StringWriter swriter = new StringWriter();
             Map<String, Object> xslParams = new HashMap<String, Object>();
+            xslParams.putAll( parameters );
 
             xslParams.put( "xsl_prefix", "" );
 
             xslParams.put( "enablepreview", String.valueOf( enablePreview ) );
             Source xslFile = AdminStore.getStylesheet( session, FORM_TEMPLATE );
             transformXML( session, swriter, new DOMSource( sourceDoc ), xslFile, xslParams );
+
+            xslParams.putAll( parameters );
 
             result = new DOMSource( XMLTool.domparse( swriter.toString() ) );
             result.setSystemId( xslFile.getSystemId() );

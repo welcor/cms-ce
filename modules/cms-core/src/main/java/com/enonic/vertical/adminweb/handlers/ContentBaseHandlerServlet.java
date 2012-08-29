@@ -1452,7 +1452,7 @@ public class ContentBaseHandlerServlet
 
         addAccessLevelParameters( oldUser, parameters );
 
-        DOMSource xslSource = buildXSL( session, admin, contentTypeKey );
+        DOMSource xslSource = buildXSL( session, admin, contentTypeKey, parameters );
 
         if ( xslSource != null )
         {
@@ -3503,7 +3503,7 @@ public class ContentBaseHandlerServlet
         return formItems.getInt( "key", defaultKey );
     }
 
-    protected DOMSource buildXSL( HttpSession session, AdminService admin, int contentTypeKey )
+    protected DOMSource buildXSL( HttpSession session, AdminService admin, int contentTypeKey, final ExtendedMap parameters )
         throws VerticalAdminException
     {
         return null;

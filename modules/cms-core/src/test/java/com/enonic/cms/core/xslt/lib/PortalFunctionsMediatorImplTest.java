@@ -4,8 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctions;
+import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsContext;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionsFactory;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.structure.page.WindowKey;
 
 import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.mock;
@@ -26,8 +28,10 @@ public class PortalFunctionsMediatorImplTest
     {
         portalFunctionsFactory = mock( PortalFunctionsFactory.class );
         portalFunctions = mock( PortalFunctions.class );
+        PortalFunctionsContext context = mock( PortalFunctionsContext.class );
 
         when( portalFunctionsFactory.createPortalFunctions() ).thenReturn( portalFunctions );
+        when( portalFunctionsFactory.getContext() ).thenReturn( context );
 
         portalFunctionsMediator.setPortalFunctionsFactory( portalFunctionsFactory );
     }
@@ -42,6 +46,20 @@ public class PortalFunctionsMediatorImplTest
         verify( portalFunctions, times( 1 ) ).createPageUrl( null );
         verify( portalFunctions, times( 1 ) ).createPageUrl( isA( String[].class ) );
         verify( portalFunctions, times( 1 ) ).createPageUrl( isA( MenuItemKey.class ), isA( String[].class ) );
+    }
+
+    @Test
+    public void createWindowUrlTest()
+    {
+        portalFunctionsMediator.createWindowUrl( null, null, null );
+        portalFunctionsMediator.createWindowUrl( null, new String[]{"test", "test1"}, null );
+        portalFunctionsMediator.createWindowUrl( "123:11", new String[]{"test", "test1"}, null );
+        portalFunctionsMediator.createWindowUrl( "123:11", new String[]{"test", "test1"}, "format" );
+
+        verify( portalFunctions, times( 1 ) ).createWindowUrl();
+        verify( portalFunctions, times( 1 ) ).createWindowUrl( isA( String[].class ) );
+        verify( portalFunctions, times( 1 ) ).createWindowUrl( isA( WindowKey.class ), isA( String[].class ) );
+        verify( portalFunctions, times( 1 ) ).createWindowUrl( isA( WindowKey.class ), isA( String[].class ), isA( String.class ) );
     }
 
 

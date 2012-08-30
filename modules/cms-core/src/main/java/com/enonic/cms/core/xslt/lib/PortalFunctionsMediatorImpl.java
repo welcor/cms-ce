@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Strings;
+
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionException;
@@ -134,10 +136,37 @@ public final class PortalFunctionsMediatorImpl
     @Override
     public String createWindowUrl( final String windowKey, final String[] params, final String outputFormat )
     {
+        final boolean windowKeyGiven = !Strings.isNullOrEmpty( windowKey );
+        final boolean paramsGiven = params != null && params.length > 0;
+        final boolean outputFormatGiven = !Strings.isNullOrEmpty( outputFormat );
+
         try
         {
-            return createPortalFunctions().createWindowUrl( new WindowKey( windowKey ), params, outputFormat );
+            if ( !windowKeyGiven )
+            {
+                if ( !paramsGiven )
+                {
+                    return createPortalFunctions().createWindowUrl();
+                }
+                else
+                {
+                    return createPortalFunctions().createWindowUrl( params );
+                }
+            }
+            else
+            {
+                if ( outputFormatGiven )
+                {
+                    return createPortalFunctions().createWindowUrl( new WindowKey( windowKey ), params, outputFormat );
+                }
+                else
+                {
+                    return createPortalFunctions().createWindowUrl( new WindowKey( windowKey ), params );
+                }
+
+            }
         }
+
         catch ( final Exception e )
         {
             return handleException( "createWindowUrl", e );

@@ -151,6 +151,29 @@ public class PortalFunctions
         return siteURLResolver.createUrl( request, sitePath, true );
     }
 
+    public String createWindowUrl()
+    {
+        if ( !context.getPortalInstanceKey().isWindow() )
+        {
+            throw new PortalFunctionException( "Not in a context of a window" );
+        }
+        return createWindowUrl( context.getPortalInstanceKey().getWindowKey(), null, null );
+    }
+
+    public String createWindowUrl( String[] params )
+    {
+        if ( !context.getPortalInstanceKey().isWindow() )
+        {
+            throw new PortalFunctionException( "Not in a context of a window" );
+        }
+        return createWindowUrl( context.getPortalInstanceKey().getWindowKey(), params, null );
+    }
+
+    public String createWindowUrl( WindowKey windowKey, String[] params )
+    {
+        return createWindowUrl( windowKey, params, null );
+    }
+
     public String createWindowUrl( WindowKey windowKey, String[] params, String outputFormat )
     {
         MenuItemKey menuItemKey = windowKey.getMenuItemKey();

@@ -1972,6 +1972,23 @@
                   </x:with-param>
                 </x:call-template>
 
+                <!-- edit -->
+                <x:call-template name="button">
+                  <x:with-param name="name">
+                    <xsl:value-of select="$input/@name"/>
+                    <xsl:text>editbutton</xsl:text>
+                  </x:with-param>
+                  <x:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                  <x:with-param name="type" select="'button'"/>
+                  <x:with-param name="disabled" select="$input-readonly = 'true'"/>
+                  <x:with-param name="tooltip" select="'%cmdEdit%'"/>
+                  <x:with-param name="onclick">
+                    <xsl:text>javascript: editContent( this, '</xsl:text>
+                    <xsl:value-of select="$input/@name"/>
+                    <xsl:text>');</xsl:text>
+                  </x:with-param>
+                </x:call-template>
+
                 <x:call-template name="button">
                   <x:with-param name="name">
                     <xsl:value-of select="$input/@name"/>
@@ -2128,7 +2145,7 @@
                       <x:value-of select="@key"/>
                     </x:variable>
 
-                    <span>
+                    <span class="relatedcontentsclass">
                       <x:if test="$input-readonly = 'true'">
                         <x:attribute name="class">
                           <x:text>disabled-element</x:text>
@@ -2143,6 +2160,22 @@
 
                   </td>
                   <td align="right">
+                    <!-- edit -->
+                    <x:call-template name="button">
+                      <x:with-param name="name">
+                        <xsl:value-of select="$input/@name"/>
+                        <xsl:text>editbutton</xsl:text>
+                      </x:with-param>
+                      <x:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                      <x:with-param name="type" select="'button'"/>
+                      <x:with-param name="disabled" select="$input-readonly = 'true'"/>
+                      <x:with-param name="tooltip" select="'%cmdEdit%'"/>
+                      <x:with-param name="onclick">
+                        <xsl:text>javascript: editContent( this, '</xsl:text>
+                        <xsl:value-of select="$input/@name"/>
+                        <xsl:text>');</xsl:text>
+                      </x:with-param>
+                    </x:call-template>
 
                     <x:call-template name="button">
                       <x:with-param name="name">
@@ -2309,6 +2342,23 @@
                       </x:with-param>
                     </x:call-template>
 
+                    <!-- edit -->
+                    <x:call-template name="button">
+                      <x:with-param name="name">
+                        <xsl:value-of select="$input/@name"/>
+                        <xsl:text>editbutton</xsl:text>
+                      </x:with-param>
+                      <x:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                      <x:with-param name="type" select="'button'"/>
+                      <x:with-param name="disabled" select="$readonly"/>
+                      <x:with-param name="tooltip" select="'%cmdEdit%'"/>
+                      <x:with-param name="onclick">
+                        <xsl:text>javascript: editContent( this, '</xsl:text>
+                        <xsl:value-of select="$input/@name"/>
+                        <xsl:text>');</xsl:text>
+                      </x:with-param>
+                    </x:call-template>
+
                     <x:call-template name="button">
                       <x:with-param name="name" select="'moverupper_{$input/@name}'"/>
                       <x:with-param name="image" select="'images/icon_move_up.gif'"/>
@@ -2405,6 +2455,23 @@
                             </x:with-param>
                           </x:call-template>
 
+                          <!-- edit -->
+                          <x:call-template name="button">
+                            <x:with-param name="name">
+                              <xsl:value-of select="$input/@name"/>
+                              <xsl:text>editbutton</xsl:text>
+                            </x:with-param>
+                            <x:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                            <x:with-param name="type" select="'button'"/>
+                            <x:with-param name="disabled" select="$readonly"/>
+                            <x:with-param name="tooltip" select="'%cmdEdit%'"/>
+                            <x:with-param name="onclick">
+                              <xsl:text>javascript: editContent( this, '</xsl:text>
+                              <xsl:value-of select="$input/@name"/>
+                              <xsl:text>');</xsl:text>
+                            </x:with-param>
+                          </x:call-template>
+
                           <x:call-template name="button">
                             <x:with-param name="name" select="'moverupper_{$input/@name}'"/>
                             <x:with-param name="image" select="'images/icon_move_up.gif'"/>
@@ -2482,6 +2549,23 @@
                               <xsl:text>', '</xsl:text>
                               <xsl:value-of select="$input/@name"/>
                               <xsl:text>', this, 'relatedfiles');</xsl:text>
+                            </x:with-param>
+                          </x:call-template>
+
+                          <!-- edit -->
+                          <x:call-template name="button">
+                            <x:with-param name="name">
+                              <xsl:value-of select="$input/@name"/>
+                              <xsl:text>editbutton</xsl:text>
+                            </x:with-param>
+                            <x:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                            <x:with-param name="type" select="'button'"/>
+                            <x:with-param name="disabled" select="$readonly"/>
+                            <x:with-param name="tooltip" select="'%cmdEdit%'"/>
+                            <x:with-param name="onclick">
+                              <xsl:text>javascript: editContent( this, '</xsl:text>
+                              <xsl:value-of select="$input/@name"/>
+                              <xsl:text>');</xsl:text>
                             </x:with-param>
                           </x:call-template>
 
@@ -2652,6 +2736,23 @@
                       </x:with-param>
                     </x:call-template>
 
+                    <!-- edit -->
+                    <x:call-template name="button">
+                      <x:with-param name="name">
+                        <xsl:value-of select="$input/@name"/>
+                        <xsl:text>editbutton</xsl:text>
+                      </x:with-param>
+                      <x:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                      <x:with-param name="type" select="'button'"/>
+                      <x:with-param name="disabled" select="$readonly"/>
+                      <x:with-param name="tooltip" select="'%cmdEdit%'"/>
+                      <x:with-param name="onclick">
+                        <xsl:text>javascript: editContent( this, '</xsl:text>
+                        <xsl:value-of select="$input/@name"/>
+                        <xsl:text>');</xsl:text>
+                      </x:with-param>
+                    </x:call-template>
+
                     <x:call-template name="button">
                       <x:with-param name="type" select="'button'"/>
                       <x:with-param name="name" select="'removefilerow{$input/@name}'"/>
@@ -2714,6 +2815,23 @@
                             <xsl:text>', '</xsl:text>
                             <xsl:value-of select="$input/@name"/>
                             <xsl:text>', this, 'relatedfiles');</xsl:text>
+                          </x:with-param>
+                        </x:call-template>
+
+                        <!-- edit -->
+                        <x:call-template name="button">
+                          <x:with-param name="name">
+                            <xsl:value-of select="$input/@name"/>
+                            <xsl:text>editbutton</xsl:text>
+                          </x:with-param>
+                          <x:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                          <x:with-param name="type" select="'button'"/>
+                          <x:with-param name="disabled" select="$readonly"/>
+                          <x:with-param name="tooltip" select="'%cmdEdit%'"/>
+                          <x:with-param name="onclick">
+                            <xsl:text>javascript: editContent( this, '</xsl:text>
+                            <xsl:value-of select="$input/@name"/>
+                            <xsl:text>');</xsl:text>
                           </x:with-param>
                         </x:call-template>
 

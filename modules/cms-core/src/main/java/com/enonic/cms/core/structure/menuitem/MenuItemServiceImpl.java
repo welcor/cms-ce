@@ -138,7 +138,11 @@ public class MenuItemServiceImpl
         {
             pageTemplate = pageTemplateDao.findByKey( command.getPageTemplate().toInt() );
         }
+        doSetContentHome( content, section, pageTemplate );
+    }
 
+    private void doSetContentHome( final ContentEntity content, final MenuItemEntity section, final PageTemplateEntity pageTemplate )
+    {
         final ContentHomeEntity existingHome = content.getContentHome( section.getSite().getKey() );
         if ( existingHome != null )
         {
@@ -158,7 +162,7 @@ public class MenuItemServiceImpl
             content.addContentHome( newContentHome );
         }
 
-        indexTransactionService.updateContent( command.getContent(), true );
+        indexTransactionService.updateContent( content, true );
     }
 
     private void doExecuteAddContentToSectionCommand( final AddContentToSectionCommand command )
@@ -176,8 +180,8 @@ public class MenuItemServiceImpl
         Preconditions.checkNotNull( content, "content does not exist: " + command.getContent() );
         Preconditions.checkArgument( !content.isDeleted(), "content is deleted: " + command.getContent() );
 
-        final MenuItemEntity menuItem = doResolveSection( command.getSection() );
-        if ( !menuItem.isOrderedSection() )
+        final MenuItemEntity section = doResolveSection( command.getSection() );
+        if ( !section.isOrderedSection() )
         {
             Preconditions.checkArgument( command.getOrderContentsInSectionCommand() == null,
                                          "section is not ordered, did not expect to get order specified in command" );
@@ -185,53 +189,55 @@ public class MenuItemServiceImpl
 
         final UserEntity contributor = doResolveUser( command.getContributor(), "contributor" );
         final MenuItemAccessResolver menuItemAccessResolver = new MenuItemAccessResolver( groupDao );
-        menuItemAccessResolver.checkAccessToAddContentToSection( contributor, menuItem, "Cannot add content in section." );
+        menuItemAccessResolver.checkAccessToAddContentToSection( contributor, section, "Cannot add content in section." );
         if ( command.isApproveInSection() )
         {
-            menuItemAccessResolver.checkAccessToApproveContentInSection( contributor, menuItem, "Cannot approve content in section." );
+            menuItemAccessResolver.checkAccessToApproveContentInSection( contributor, section, "Cannot approve content in section." );
         }
 
-        if ( menuItem.getType() == MenuItemType.SECTION && menuItem.hasSectionContentTypeFilter() )
+        if ( section.getType() == MenuItemType.SECTION && section.hasSectionContentTypeFilter() )
         {
-            if ( !menuItem.supportsSectionContentType( content.getCategory().getContentType() ) )
+            if ( !section.supportsSectionContentType( content.getCategory().getContentType() ) )
             {
-                throw new ContentTypeNotSupportedException( content.getCategory().getContentType(), menuItem );
+                throw new ContentTypeNotSupportedException( content.getCategory().getContentType(), section );
             }
         }
-        else if ( menuItem.getType() == MenuItemType.PAGE && menuItem.getPage().getTemplate().getContentTypes().size() > 0 )
+        else if ( section.getType() == MenuItemType.PAGE && section.getPage().getTemplate().getContentTypes().size() > 0 )
         {
-            if ( !menuItem.getPage().getTemplate().supportsContentType( content.getCategory().getContentType() ) )
+            if ( !section.getPage().getTemplate().supportsContentType( content.getCategory().getContentType() ) )
             {
-                throw new ContentTypeNotSupportedException( content.getCategory().getContentType(), menuItem );
+                throw new ContentTypeNotSupportedException( content.getCategory().getContentType(), section );
             }
         }
 
         final SectionContentEntity sectionContent = new SectionContentEntity();
         sectionContent.setOrder( 0 );
         sectionContent.setContent( content );
-        sectionContent.setMenuItem( menuItem );
+        sectionContent.setMenuItem( section );
         sectionContent.setApproved( command.isApproveInSection() );
         sectionContent.setTimestamp( timeService.getNowAsDateTime().toDate() );
-        if ( command.isAddOnTop() && menuItem.isOrderedSection() )
+        if ( command.isAddOnTop() && section.isOrderedSection() )
         {
-            sectionContent.setOrder( resolveOrderValueForInsertOnTopOfApprovedContentInSection( menuItem ) );
+            sectionContent.setOrder( resolveOrderValueForInsertOnTopOfApprovedContentInSection( section ) );
         }
 
         content.addSectionContent( sectionContent );
         sectionContentDao.getHibernateTemplate().flush();
 
         sectionContentDao.getHibernateTemplate().getSessionFactory().evictCollection( MenuItemEntity.class.getName() + ".sectionContents",
-                                                                                      menuItem.getKey() );
+                                                                                      section.getKey() );
 
-        if ( menuItem.isOrderedSection() )
+        doSetContentHome( content, section, null );
+
+        if ( section.isOrderedSection() )
         {
             if ( command.getOrderContentsInSectionCommand() != null )
             {
                 // ensure section will have it's newly added content
-                sectionContentDao.getHibernateTemplate().refresh( menuItem );
+                sectionContentDao.getHibernateTemplate().refresh( section );
 
                 List<ContentKey> wantedOrder = command.getOrderContentsInSectionCommand().getWantedOrder();
-                ContentsInSectionOrderer orderer = new ContentsInSectionOrderer( wantedOrder, menuItem, ORDER_SPACE );
+                ContentsInSectionOrderer orderer = new ContentsInSectionOrderer( wantedOrder, section, ORDER_SPACE );
                 orderer.order();
             }
         }

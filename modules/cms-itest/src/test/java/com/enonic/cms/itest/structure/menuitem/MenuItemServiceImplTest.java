@@ -92,6 +92,7 @@ public class MenuItemServiceImplTest
         ctyconf.endBlock();
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "MenuItem", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
+        fixture.save( factory.createContentType( "article", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
         fixture.flushAndClearHibernateSesssion();
 
@@ -167,6 +168,40 @@ public class MenuItemServiceImplTest
             // check that these are ordered !
             assertFalse( 0 == sectionContentEntity.getOrder() );
         }
+    }
+
+    @Test
+    public void addContentToSection_explicit_content_home_when_adding_content_to_section()
+    {
+        // setup: content
+        fixture.save( createSection( "My section", "The Newspaper", false ) );
+        fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
+        createContent( "first-content", "Articles" );
+        fixture.flushAndClearHibernateSesssion();
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // exercise
+        AddContentToSectionCommand command = new AddContentToSectionCommand();
+        command.setAddOnTop( false );
+        command.setApproveInSection( false );
+        command.setContributor( fixture.findUserByName( "aru" ).getKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
+        command.setContent( fixture.findContentByName( "first-content" ).getKey() );
+        menuItemService.execute( command );
+
+        // verify: content added in section
+        assertEquals( 1, fixture.findContentByName( "first-content" ).getSectionContents().size() );
+        assertEquals( 1, fixture.findMenuItemByName( "My section" ).getSectionContents().size() );
+
+        // verify content home is stored
+        ContentHomeEntity actualContentHome = fixture.findContentHomeByKey(
+            new ContentHomeKey( fixture.findSiteByName( "The Newspaper" ).getKey(), fixture.findContentByPriority( 0 ).getKey() ) );
+        assertNotNull( actualContentHome );
+        assertEquals( fixture.findContentByName( "first-content" ), actualContentHome.getContent() );
+        assertEquals( fixture.findMenuItemByName( "My section" ), actualContentHome.getMenuItem() );
+        assertEquals( fixture.findSiteByName( "The Newspaper" ), actualContentHome.getSite() );
+        assertEquals( null, actualContentHome.getPageTemplate() );
     }
 
     @Test

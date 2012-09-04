@@ -4,6 +4,8 @@
  */
 package com.enonic.vertical;
 
+import com.enonic.esl.util.StringUtil;
+
 /**
  * Root exception for all Vertical exceptions.
  */
@@ -17,6 +19,6 @@ public class VerticalException
 
     public VerticalException( String message, Throwable cause )
     {
-        super( message, cause );
+        super( StringUtil.expandString( message, null, cause ), cause );
     }
 }

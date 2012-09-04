@@ -41,7 +41,8 @@ cms.ui.SplitButton = function( dataSoruceElementId )
     function _createSplitButton()
     {
         leftButton = _createButtonElement(dataSource.title, dataSource.id + 'leftButton', cssLeftButton);
-        rightButton = _createButtonElement(' ', dataSource.id + 'rightButton', cssRightButton);
+        var downText = cms.browser.isIE ? '       .' : ' ';
+        rightButton = _createButtonElement(downText, dataSource.id + 'rightButton', cssRightButton);
 
         dataSource.parentNode.insertBefore(rightButton, dataSource);
         dataSource.parentNode.insertBefore(leftButton, rightButton);

@@ -66,6 +66,7 @@
         <script type="text/javascript" src="javascript/properties.js">//</script>
         <script type="text/javascript" src="javascript/browserDetect.js">//</script>
         <script type="text/javascript" src="javascript/content_form.js">//</script>
+        <script type="text/javascript" src="javascript/relatedcontent.js">//</script>
 
         <script type="text/javascript" src="javascript/cms/core.js">//</script>
         <script type="text/javascript" src="javascript/cms/utils/Event.js">//</script>
@@ -324,6 +325,15 @@
             document.formAdmin[keyname].value = "";
             document.formAdmin[viewname].value = "";
             return;
+          }
+          // -------------------------------------------------------------------------------------------------------------------------------
+
+          function edit_file_onclick( tableName, object, viewname, keyname  )
+          {
+            var content_key = document.formAdmin[keyname].value;
+            if ( content_key ) {
+              OpenEditContentPopup( content_key, -1, 'relatedfilename_enhancedimage_form', 0, 'callback_update_content_name' );
+            }
           }
         </script>
       </head>
@@ -681,6 +691,17 @@
                                                 <xsl:text>javascript:insert_file_onclick('relatedfile', 'relatedfile', this, 'relatedfile');</xsl:text>
                                             </xsl:with-param>
                                         </xsl:call-template>
+
+                                        <xsl:call-template name="button">
+                                            <xsl:with-param name="name" select="'editfilerelatedfile'"/>
+                                            <xsl:with-param name="type" select="'button'"/>
+                                            <xsl:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                                            <xsl:with-param name="disabled" select="$readonly"/>
+                                            <xsl:with-param name="onclick">
+                                                <xsl:text>javascript:edit_file_onclick('relatedfile', 'relatedfile', this, 'relatedfile');</xsl:text>
+                                            </xsl:with-param>
+                                        </xsl:call-template>
+
                                         <xsl:call-template name="button">
                                             <xsl:with-param name="name" select="'removefilerowrelatedfile'"/>
                                             <xsl:with-param name="type" select="'button'"/>

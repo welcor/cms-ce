@@ -1,3 +1,71 @@
+var scalemax = 0;
+
+function callback_update_image( fieldName, fieldRow, contentKey, title, current )
+{
+    var divTag = document.getElementsByName( 'div' + fieldName )[fieldRow];
+    divTag.children[0].src = "_image/" + contentKey
+        + "/label/source?_filter=scalemax(" + scalemax
+        + ")&timestamp=" + new Date().getTime();
+}
+
+function editImageE( obj, fieldName )
+{
+    var fieldRow = getObjectIndex( obj );
+    var content_key = window.document.getElementsByName( fieldName )[fieldRow].value;
+    if (content_key) {
+        OpenEditContentPopup( content_key, -1, fieldName, fieldRow, 'callback_update_image' );
+    }
+}
+
+function callback_update_content_name( fieldName, fieldRow, contentKey, title, current )
+{
+    // file and files
+    var filenamePlaceholder = document.getElementsByName( 'filename' + fieldName );
+    if ( filenamePlaceholder.length > 0 ) {
+        filenamePlaceholder[fieldRow].value = title;
+        return;
+    }
+
+    // file in image form
+    var filenamePlaceholder = document.getElementsByName( 'relatedfilename');
+    if ( filenamePlaceholder.length > 0 && fieldName == 'relatedfilename_enhancedimage_form') {
+        filenamePlaceholder[fieldRow].value = title;
+        return;
+    }
+
+    // related content
+    var titlePlaceholder = document.getElementsByName( fieldName + '_title_placeholder' );
+    if ( titlePlaceholder.length > 0 ) {
+        titlePlaceholder[fieldRow].value = title;
+        return;
+    }
+
+    // related contents table
+    var hiddenKeyInput = document.getElementsByName( fieldName );
+    if ( hiddenKeyInput.length > 0 ) {
+        var next = hiddenKeyInput[fieldRow].nextSibling;
+        if (next && next.className == 'relatedcontentsclass') {
+            hiddenKeyInput[fieldRow].parentNode.removeChild( hiddenKeyInput[fieldRow].nextSibling );
+
+            var titleSpan = document.createElement("span");
+            titleSpan.className="relatedcontentsclass";
+            titleSpan.appendChild( document.createTextNode( title ) );
+
+            hiddenKeyInput[fieldRow].parentNode.appendChild( titleSpan );
+        }
+    }
+}
+
+function editContent( that, fieldName )
+{
+    var index = getObjectIndex( that );
+    var field = document.getElementsByName(fieldName);
+    var content_key = field[index].value;
+    if ( content_key ) {
+        OpenEditContentPopup( content_key, -1, fieldName, index, 'callback_update_content_name' );
+    }
+}
+
 function removeRelatedContent( targetElement, fieldName )
 {
     var tBody = findTbody( targetElement, fieldName );
@@ -194,10 +262,16 @@ function addRelatedContent(fieldName, fieldRow, content_key, content_title, minO
     contentKeyInput.type = 'hidden';
     contentKeyInput.value = content_key;
 
-    titleCell.appendChild(contentKeyInput);
-    titleCell.appendChild(document.createTextNode(content_title));
+    var titleSpan = document.createElement( "span" );
+    titleSpan.className = "relatedcontentsclass";
+    titleSpan.appendChild( document.createTextNode( content_title ) );
+    titleCell.appendChild( contentKeyInput );
+    titleCell.appendChild( titleSpan );
 
     var operationButtonsCell = document.createElement('td');
+
+    var objEditButton = createIconButton( "button", fieldName+"editbutton", "images/icon_edit_small.gif", "javaScript: editContent( this, '"+fieldName+"');" );
+    operationButtonsCell.appendChild(objEditButton);
 
     if ( maxOccurrence != 1 )
     {

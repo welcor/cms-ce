@@ -27,6 +27,12 @@
       <xsl:text>&apos;, 990, 620 )</xsl:text>
     </xsl:variable>
 
+    <xsl:variable name="editfunction">
+      <xsl:text>javascript: editImageE( this, &apos;</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>&apos;);</xsl:text>
+    </xsl:variable>
+
     <xsl:variable name="deletefunction">
       <xsl:text>javascript: removeImageE( this, '</xsl:text>
       <xsl:value-of select="$name"/>
@@ -35,7 +41,8 @@
 
       
     <xsl:if test="not($disabled)">
-			<script type="text/javascript" language="JavaScript">
+      <script type="text/javascript">
+        window.scalemax = '<xsl:value-of select="$scalemax"/>';
 				
 				function addRelatedImage(fieldName, fieldRow, content_key, binary_key) {
           var divTag = document.getElementsByName('div'+fieldName)[fieldRow];
@@ -107,6 +114,18 @@
               </xsl:with-param>
               <xsl:with-param name="onclick">
                 <xsl:value-of select="$choosefunction"/>
+              </xsl:with-param>
+              <xsl:with-param name="disabled" select="$disabled"/>
+            </xsl:call-template>
+            <br/>
+            <xsl:call-template name="button">
+              <xsl:with-param name="type" select="'button'"/>
+              <xsl:with-param name="caption" select="'%cmdEditImage%'"/>
+              <xsl:with-param name="name">
+                <xsl:text>btnedit</xsl:text><xsl:value-of select="$name"/>
+              </xsl:with-param>
+              <xsl:with-param name="onclick">
+                <xsl:value-of select="$editfunction"/>
               </xsl:with-param>
               <xsl:with-param name="disabled" select="$disabled"/>
             </xsl:call-template>

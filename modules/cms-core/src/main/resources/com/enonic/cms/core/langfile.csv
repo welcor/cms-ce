@@ -421,6 +421,7 @@
 %fldPage%|Menypunkt|Menu item|Menupunkt|Menypunkt
 %altEdit%|Endre|Edit|Rediger|Redigera
 %cmdSelectImage%|Velg bilde|Select image|Vælg billede|Välj bild
+%cmdEditImage%|Edit image|Edit image|Edit image|Edit image
 %alertDeleteSite%|Vil du virkelig slette dette nettstedet?\n\nMeny, objekter, sidemaler, og øvrig konfigurasjon vil bli slettet!\nDet vil ikke være mulig å gjøre om denne handlingen!|Do you really want to delete this site?\n\nThe menu, objects, page templates, and other configuration will be lost.\nThis operation can not be undone!|Vil du virkelig slette denne hjemmeside?\n\nMenu, objekter, skabeloner og øvrig konfiguration vil blive slettet!\nDet er ikke muligt at fortryde denne handling!|Vill du verkligen ta bort denna nätsidan?\n\nMeny, objekt, sidmallar, och övrig konfiguration kommer tas bort!\nDet kommer inte vara möjligt att ångra denna handling!
 %fldOrganization%|Organisasjon|Organization|Organisation|Organisation
 %cmdRemoveImage%|Fjern bilde|Remove image|Fjern billede|Ta bort bild

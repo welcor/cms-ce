@@ -18,21 +18,23 @@
 				<script type="text/javascript" language="JavaScript">
 					
 					function callback() {
-						<xsl:text>window.top.opener.</xsl:text>
-						<xsl:value-of select="$callback"/>
-						<xsl:text>('</xsl:text>
-						<xsl:value-of select="$fieldname"/>
-						<xsl:text>',</xsl:text>
-						<xsl:value-of select="$fieldrow"/>
-						<xsl:text>,</xsl:text>
-						<xsl:value-of select="$key"/>
-						<xsl:text>, '</xsl:text>
-						<xsl:call-template name="escapequotes">
-							<xsl:with-param name="string" select="$title"/>
-						</xsl:call-template>
-						<xsl:text>',</xsl:text>
-						<xsl:value-of select="$current"/>
-						<xsl:text>);</xsl:text>
+            if ( window.top.opener.<xsl:value-of select="$callback"/> ) {
+              <xsl:text>window.top.opener.</xsl:text>
+              <xsl:value-of select="$callback"/>
+              <xsl:text>('</xsl:text>
+              <xsl:value-of select="$fieldname"/>
+              <xsl:text>',</xsl:text>
+              <xsl:value-of select="$fieldrow"/>
+              <xsl:text>,</xsl:text>
+              <xsl:value-of select="$key"/>
+              <xsl:text>, '</xsl:text>
+              <xsl:call-template name="escapequotes">
+                <xsl:with-param name="string" select="$title"/>
+              </xsl:call-template>
+              <xsl:text>',</xsl:text>
+              <xsl:value-of select="$current"/>
+              <xsl:text>);</xsl:text>
+            }
 						window.close();
 					}
 					

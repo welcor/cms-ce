@@ -26,6 +26,12 @@
       <xsl:text>&apos;, 990, 620, this )</xsl:text>
     </xsl:variable>
 
+    <xsl:variable name="editfunction">
+      <xsl:text>javascript: editImageE( this, &apos;</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>&apos;);</xsl:text>
+    </xsl:variable>
+
     <xsl:variable name="deletefunction">
       <xsl:text>javascript: removeImageEM( '</xsl:text>
       <xsl:value-of select="$name"/>
@@ -61,7 +67,9 @@
 					var idx = getObjectIndex(object);
 					OpenContentPopupByHandler(-1, -1, 'relatedimages', keyname, idx, "com.enonic.vertical.adminweb.handlers.ContentEnhancedImageHandlerServlet");
 				}
-	
+
+        window.scalemax = '<xsl:value-of select="$scalemax"/>';
+
         /*
           Method: removeImageEM
         */
@@ -168,6 +176,19 @@
                 <xsl:with-param name="disabled" select="$disabled"/>
                 <xsl:with-param name="tooltip" select="'%cmdSelectImage%'"/>
               </xsl:call-template>
+
+              <xsl:call-template name="button">
+                <xsl:with-param name="type" select="'button'"/>
+                <xsl:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                <xsl:with-param name="name">
+                  <xsl:text>btnedit</xsl:text><xsl:value-of select="$name"/>
+                </xsl:with-param>
+                <xsl:with-param name="onclick">
+                  <xsl:value-of select="$editfunction"/>
+                </xsl:with-param>
+                <xsl:with-param name="disabled" select="$disabled"/>
+              </xsl:call-template>
+
               <xsl:call-template name="button">
                 <xsl:with-param name="name" select="concat('moverupper_', $name)"/>
                 <xsl:with-param name="image" select="'images/icon_move_up.gif'"/>
@@ -256,6 +277,19 @@
                         <xsl:with-param name="disabled" select="$disabled"/>
                         <xsl:with-param name="tooltip" select="'%cmdSelectImage%'"/>
                       </xsl:call-template>
+
+                      <xsl:call-template name="button">
+                        <xsl:with-param name="type" select="'button'"/>
+                        <xsl:with-param name="image" select="'images/icon_edit_small.gif'"/>
+                        <xsl:with-param name="name">
+                          <xsl:text>btnedit</xsl:text><xsl:value-of select="$name"/>
+                        </xsl:with-param>
+                        <xsl:with-param name="onclick">
+                          <xsl:value-of select="$editfunction"/>
+                        </xsl:with-param>
+                        <xsl:with-param name="disabled" select="$disabled"/>
+                      </xsl:call-template>
+
                       <xsl:call-template name="button">
                         <xsl:with-param name="name" select="concat('moverupper_', $name)"/>
                         <xsl:with-param name="image" select="'images/icon_move_up.gif'"/>

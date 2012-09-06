@@ -173,7 +173,7 @@
   <distributionManagement>
     <repository>
       <id>enonic.internal</id>
-      <url>repo.enonic.net/artifactory/public</url>
+      <url>http://repo.enonic.net/artifactory/public</url>
     </repository>
   </distributionManagement>
 

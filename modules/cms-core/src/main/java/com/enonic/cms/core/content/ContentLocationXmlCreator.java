@@ -33,8 +33,6 @@ public class ContentLocationXmlCreator
     {
         final Element locationsEl = new Element( "location" );
 
-        boolean includeCheckOfDireMenuItemPlacements = true;
-
         for ( SiteEntity site : contentLocations.getSites() )
         {
             final Element siteEl = new Element( "site" );
@@ -54,6 +52,7 @@ public class ContentLocationXmlCreator
                 contentlocationEl.setAttribute( "menuitemkey", contentLocation.getMenuItemKey().toString() );
                 contentlocationEl.setAttribute( "menuitemname", contentLocation.getMenuItemName() );
                 contentlocationEl.setAttribute( "menuitempath", contentLocation.getMenuItemPathAsString() );
+                contentlocationEl.setAttribute( "menuitem-display-name", contentLocation.getMenuItem().getDisplayName() );
 
                 boolean isHome = contentLocations.isHomeLocation( contentLocation );
                 contentlocationEl.setAttribute( "home", isHome ? "true" : "false" );

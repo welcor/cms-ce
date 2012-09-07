@@ -16,10 +16,6 @@
             font-family: 'Courier New';
         }
 
-        .buttonbar {
-            float: right;
-        }
-
         .messages {
             overflow : auto;
             height: 600px;
@@ -78,11 +74,11 @@
     [#if reindexInProgress == true]
         Reindexing in progress. Please wait for it to finish.    
     [#else]
-        <span class="buttonbar">
-            <input type="button" class="button_text" name="startReindex" value="Start" onclick="startReindex()"/>
-        </span>
         <p>
             <strong>Reindexing of all content might take a long time, possibly affecting your live sites.</strong>
+        </p>
+        <p>
+            <input type="button" class="button_text" name="startReindex" value="Start" onclick="startReindex()"/>
         </p>
     [/#if]
     </div>

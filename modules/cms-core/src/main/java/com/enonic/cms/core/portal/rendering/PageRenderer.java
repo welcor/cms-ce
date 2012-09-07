@@ -225,6 +225,7 @@ public class PageRenderer
         portalFunctionsContext.setMenuItem( context.getMenuItem() );
         portalFunctionsContext.setEncodeURIs( context.isEncodeURIs() );
         portalFunctionsContext.setLocale( context.getLocale() );
+        portalFunctionsContext.setPageTemplate( pageTemplate );
         portalFunctionsContext.setPortalInstanceKey( resolvePortalInstanceKey() );
         portalFunctionsContext.setRenderedInline( false );
         portalFunctionsContext.setEncodeImageUrlParams( RenderTrace.isTraceOff() );

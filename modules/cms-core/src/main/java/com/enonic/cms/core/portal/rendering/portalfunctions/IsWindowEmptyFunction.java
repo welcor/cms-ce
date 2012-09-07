@@ -33,24 +33,26 @@ public class IsWindowEmptyFunction
     public Boolean isWindowEmpty( final WindowKey windowKey, final String[] params )
     {
         // save current PortalFunctionsContext
-        PortalFunctionsContext previousPortalFunctionContext = PortalFunctionsFactory.get().getContext();
+        final PortalFunctionsContext previousPortalFunctionContext = PortalFunctionsFactory.get().getContext();
         try
         {
-            PageRendererContext pageRendererContext = PortalFunctionsFactory.get().getContext().getPageRendererContext();
-            WindowRendererContext windowRenderContext = new WindowRendererContext();
+            final PortalFunctionsContext portalFunctionsContext = PortalFunctionsFactory.get().getContext();
+            final PageRendererContext pageRendererContext = portalFunctionsContext.getPageRendererContext();
+
+            final WindowRendererContext windowRenderContext = new WindowRendererContext();
             windowRenderContext.setContentFromRequest( pageRendererContext.getContentFromRequest() );
             windowRenderContext.setOverridingSitePropertyCreateUrlAsPath( pageRendererContext.getOverridingSitePropertyCreateUrlAsPath() );
             windowRenderContext.setDeviceClass( pageRendererContext.getDeviceClass() );
-            windowRenderContext.setEncodeURIs( pageRendererContext.isEncodeURIs() );
+            windowRenderContext.setEncodeURIs( portalFunctionsContext.isEncodeURIs() );
             windowRenderContext.setForceNoCacheUsage( pageRendererContext.forceNoCacheUsage() );
             windowRenderContext.setHttpRequest( pageRendererContext.getHttpRequest() );
             windowRenderContext.setInvocationCache( previousPortalFunctionContext.getInvocationCache() );
             windowRenderContext.setLanguage( pageRendererContext.getLanguage() );
-            windowRenderContext.setLocale( pageRendererContext.getLocale() );
-            windowRenderContext.setMenuItem( pageRendererContext.getMenuItem() );
-            windowRenderContext.setOriginalSitePath( pageRendererContext.getOriginalSitePath() );
+            windowRenderContext.setLocale( portalFunctionsContext.getLocale() );
+            windowRenderContext.setMenuItem( portalFunctionsContext.getMenuItem() );
+            windowRenderContext.setOriginalSitePath( portalFunctionsContext.getOriginalSitePath() );
             windowRenderContext.setPageRequestType( pageRendererContext.getPageRequestType() );
-            windowRenderContext.setPageTemplate( pageRendererContext.getMenuItem().getPage().getTemplate() );
+            windowRenderContext.setPageTemplate( portalFunctionsContext.getPageTemplate() );
             windowRenderContext.setPreviewContext( pageRendererContext.getPreviewContext() );
             windowRenderContext.setProcessors( pageRendererContext.getProcessors() );
             windowRenderContext.setProfile( pageRendererContext.getProfile() );
@@ -59,11 +61,11 @@ public class IsWindowEmptyFunction
             windowRenderContext.setRenderer( pageRendererContext.getRenderer() );
             windowRenderContext.setTicketId( pageRendererContext.getTicketId() );
             windowRenderContext.setSite( pageRendererContext.getSite() );
-            windowRenderContext.setSitePath( pageRendererContext.getSitePath() );
+            windowRenderContext.setSitePath( portalFunctionsContext.getSitePath() );
             windowRenderContext.setVerticalSession( pageRendererContext.getVerticalSession() );
             windowRenderContext.setOriginalUrl( pageRendererContext.getOriginalUrl() );
 
-            String windowContent = renderWindow( windowKey, params, windowRenderContext );
+            final String windowContent = renderWindow( windowKey, params, windowRenderContext );
 
             return StringUtils.isBlank( windowContent );
         }

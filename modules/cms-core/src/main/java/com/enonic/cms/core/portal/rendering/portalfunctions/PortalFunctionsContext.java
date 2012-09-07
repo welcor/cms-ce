@@ -13,6 +13,7 @@ import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
 /**
  * May 7, 2009
@@ -30,6 +31,8 @@ public class PortalFunctionsContext
     private SiteEntity site;
 
     private MenuItemEntity menuItem;
+
+    private PageTemplateEntity pageTemplate;
 
     private PortalInstanceKey portalInstanceKey;
 
@@ -71,6 +74,16 @@ public class PortalFunctionsContext
     public void setMenuItem( MenuItemEntity menuItem )
     {
         this.menuItem = menuItem;
+    }
+
+    public PageTemplateEntity getPageTemplate()
+    {
+        return pageTemplate;
+    }
+
+    public void setPageTemplate( PageTemplateEntity pageTemplate )
+    {
+        this.pageTemplate = pageTemplate;
     }
 
     public boolean isEncodeURIs()

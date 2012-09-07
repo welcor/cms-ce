@@ -415,7 +415,7 @@ public final class PortalFunctionsMediatorImpl
         final String failureReason = resolveFailureReason( e );
         final String failureMessage = buildFailureMessage( functionName, failureReason );
 
-        LOG.warn( failureMessage );
+        LOG.warn( failureMessage, e );
         return UNDEFINED + ": " + failureReason;
     }
 

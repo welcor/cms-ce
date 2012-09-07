@@ -116,6 +116,8 @@ public class ContentTypeHandlerServlet
         throws VerticalAdminException
     {
 
+        User loggedInUser = securityService.getLoggedInAdminConsoleUser();
+
         List<ContentTypeEntity> allContentTypes = contentTypeDao.getAll();
         ContentTypeXmlCreator xmlCreator = new ContentTypeXmlCreator();
 
@@ -125,8 +127,10 @@ public class ContentTypeHandlerServlet
 
         // Parameters
         ExtendedMap parameters = new ExtendedMap();
-        parameters.put( "page", String.valueOf( request.getParameter( "page" ).toString() ) );
+        parameters.put( "page", String.valueOf( request.getParameter( "page" ) ) );
         addSortParamteres( "name", "ascending", formItems, session, parameters );
+
+        addAccessLevelParameters(loggedInUser, parameters);
 
         transformXML( request, response, doc, "contenttype_browse.xsl", parameters );
     }

@@ -28,7 +28,6 @@ import org.w3c.dom.Text;
 
 import com.enonic.esl.sql.model.Column;
 import com.enonic.esl.util.ArrayUtil;
-import com.enonic.esl.util.StringUtil;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineLogger;
@@ -421,7 +420,7 @@ public final class PageTemplateHandler
 
             if ( removeSQLPart.length() > 0 )
             {
-                String sql = StringUtil.expandString( PTC_REMOVE_NOT_COB_MANY, removeSQLPart );
+                String sql = expandSQLStatement( PTC_REMOVE_NOT_COB_MANY, removeSQLPart );
                 updateStmt = con.prepareStatement( sql );
                 updateStmt.setInt( 1, pageTemplateKey );
                 updateStmt.executeUpdate();

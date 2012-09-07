@@ -158,4 +158,15 @@ public class LogFacadeTest
             assertNull(this.logRecord.getThrown());
         }
     }
+
+    @Test
+    public void testFormatThrowable()
+    {
+        assertEquals("Exception : null", LogFacade.formatThrowable( "Exception : %t", new RuntimeException( ) ));
+        assertEquals("Exception : something", LogFacade.formatThrowable( "Exception : %t", new RuntimeException( "something" ) ));
+        assertEquals("Exception : null", LogFacade.formatThrowable( "Exception : %t", new RuntimeException( null, null ) ));
+
+        assertEquals("Exception : something %t", LogFacade.formatThrowable( "Exception : %t %t", new RuntimeException( "something" ) ));
+    }
+
 }

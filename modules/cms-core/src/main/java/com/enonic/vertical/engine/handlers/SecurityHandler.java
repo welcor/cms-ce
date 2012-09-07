@@ -517,7 +517,7 @@ final public class SecurityHandler
         }
         newSQL.append( ")" );
 
-        return StringUtil.expandString( newSQL.toString(), temp );
+        return expandSQLStatement( newSQL.toString(), temp );
     }
 
     private void createAccessRights( Connection _con, Element accessrightsElement )
@@ -2909,7 +2909,7 @@ final public class SecurityHandler
                     }
                     if ( !result )
                     {
-                        sql1 = StringUtil.expandString( sql1, temp );
+                        sql1 = expandSQLStatement( sql1, temp );
 
                         //con = getConnection();
                         preparedStmt = con.prepareStatement( sql1 );

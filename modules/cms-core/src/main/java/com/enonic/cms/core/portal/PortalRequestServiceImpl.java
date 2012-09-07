@@ -11,7 +11,6 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.processor.PageRequestProcessorFactory;
 import com.enonic.cms.core.portal.rendering.PageRendererFactory;
 import com.enonic.cms.core.portal.rendering.WindowRendererFactory;
-import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.LanguageDao;
 import com.enonic.cms.store.dao.PortletDao;
@@ -36,8 +35,6 @@ public final class PortalRequestServiceImpl
 
     private WindowRendererFactory windowRendererFactory;
 
-    private DataSourceService dataSourceService;
-
     private PortalAccessService portalAccessService;
 
     private PageRequestProcessorFactory pageRequestProcessorFactory;
@@ -48,7 +45,6 @@ public final class PortalRequestServiceImpl
     {
         PortalRequestProcessor portalRequestProcessor = new PortalRequestProcessor( request );
         portalRequestProcessor.setContentDao( contentDao );
-        portalRequestProcessor.setDataSourceService( dataSourceService );
         portalRequestProcessor.setLanguageDao( languageDao );
         portalRequestProcessor.setLiveTraceService( liveTraceService );
         portalRequestProcessor.setPageRendererFactory( pageRendererFactory );
@@ -72,12 +68,6 @@ public final class PortalRequestServiceImpl
     public void setWindowRendererFactory( WindowRendererFactory windowRendererFactory )
     {
         this.windowRendererFactory = windowRendererFactory;
-    }
-
-    @Autowired
-    public void setDataSourceService( DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
     }
 
     @Autowired

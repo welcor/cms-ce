@@ -32,7 +32,6 @@ import com.enonic.cms.core.portal.rendering.WindowRenderer;
 import com.enonic.cms.core.portal.rendering.WindowRendererContext;
 import com.enonic.cms.core.portal.rendering.WindowRendererFactory;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -71,8 +70,6 @@ public class PortalRequestProcessor
     private PageRendererFactory pageRendererFactory;
 
     private WindowRendererFactory windowRendererFactory;
-
-    private DataSourceService dataSourceService;
 
     private PortalAccessService portalAccessService;
 
@@ -425,11 +422,6 @@ public class PortalRequestProcessor
     public void setWindowRendererFactory( WindowRendererFactory windowRendererFactory )
     {
         this.windowRendererFactory = windowRendererFactory;
-    }
-
-    public void setDataSourceService( DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
     }
 
     public void setPortalAccessService( PortalAccessService portalAccessService )

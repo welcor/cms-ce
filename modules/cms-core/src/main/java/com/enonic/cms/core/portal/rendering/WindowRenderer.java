@@ -389,6 +389,7 @@ public class WindowRenderer
         portalFunctionsContext.setMenuItem( context.getMenuItem() );
         portalFunctionsContext.setEncodeURIs( context.isEncodeURIs() );
         portalFunctionsContext.setLocale( context.getLocale() );
+        portalFunctionsContext.setPageTemplate( context.getPageTemplate() );
         portalFunctionsContext.setPortalInstanceKey( resolvePortalInstanceKey( window ) );
         portalFunctionsContext.setRenderedInline( context.isRenderedInline() );
         portalFunctionsContext.setEncodeImageUrlParams( RenderTrace.isTraceOff() );
@@ -448,6 +449,7 @@ public class WindowRenderer
         portalFunctionsContext.setMenuItem( context.getMenuItem() );
         portalFunctionsContext.setSitePath( context.getSitePath() );
         portalFunctionsContext.setOriginalSitePath( context.getOriginalSitePath() );
+        portalFunctionsContext.setPageTemplate( context.getPageTemplate() );
         portalFunctionsContext.setPortalInstanceKey( portalInstanceKey );
         portalFunctionsContext.setRenderedInline( context.isRenderedInline() );
         portalFunctionsContext.setEncodeImageUrlParams( RenderTrace.isTraceOff() );

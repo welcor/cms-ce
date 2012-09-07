@@ -4,8 +4,17 @@
  */
 package com.enonic.vertical.adminweb.handlers.xmlbuilders;
 
-import com.enonic.cms.core.content.binary.BinaryData;
-import com.enonic.cms.core.security.user.User;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.regex.Pattern;
+
+import org.apache.commons.fileupload.FileItem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.util.DateUtil;
 import com.enonic.esl.util.StringUtil;
@@ -13,16 +22,9 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
 import com.enonic.vertical.adminweb.VerticalAdminException;
 import com.enonic.vertical.adminweb.VerticalAdminLogger;
-import org.apache.commons.fileupload.FileItem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.regex.Pattern;
+import com.enonic.cms.core.content.binary.BinaryData;
+import com.enonic.cms.core.security.user.User;
 
 public class SimpleContentXMLBuilder
     extends ContentBaseXMLBuilder
@@ -99,7 +101,7 @@ public class SimpleContentXMLBuilder
         }
         catch ( ParseException e )
         {
-            VerticalAdminLogger.errorAdmin("Failed to parse a date: %t", e );
+            VerticalAdminLogger.errorAdmin( "Failed to parse a date: %t", e );
         }
 
 
@@ -135,7 +137,7 @@ public class SimpleContentXMLBuilder
 
                 if ( tmpElem == null )
                 {
-                    VerticalAdminLogger.errorAdmin("Incorrect xpath specification : " + xpath );
+                    VerticalAdminLogger.errorAdmin( "Incorrect xpath specification : " + xpath );
                 }
 
                 // Then store the data.
@@ -355,7 +357,7 @@ public class SimpleContentXMLBuilder
                 // radiobutton
                 else if ( type.equals( "radiobutton" ) )
                 {
-                    String[] radiobuttonName = getFormItemsByRegexp( "rb:[0-9].*:" + name, formItems );
+                    String[] radiobuttonName = getFormItemsByRegexp( "^rb:[a-zA-Z0-9]+:" + name, formItems );
                     if ( radiobuttonName.length == 1 )
                     {
                         if ( formItems.getString( radiobuttonName[0] ) != null &&
@@ -367,7 +369,16 @@ public class SimpleContentXMLBuilder
                     }
                     else
                     {
-                        throw new IllegalArgumentException( "Ambigous input for radiobutton " + name );
+                        StringBuilder names = new StringBuilder();
+                        for ( int k = 0; k < radiobuttonName.length; k++ )
+                        {
+                            names.append( radiobuttonName[k] );
+                            if ( k < radiobuttonName.length - 1 )
+                            {
+                                names.append( ", " );
+                            }
+                        }
+                        throw new IllegalArgumentException( "Ambigous input for radiobutton " + name + ", got: " + names );
                     }
 
                 }

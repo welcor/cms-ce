@@ -361,10 +361,19 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
     {
         var html = "";
 
-        var windowRenderingTrace = viewFunctionTrace.traces.list[0];
+        var windowRenderingTrace = null;
+        if ( viewFunctionTrace.traces.list.length > 0 )
+        {
+            windowRenderingTrace = viewFunctionTrace.traces.list[0];
+        }
+        var windowRenderingTracePortletName = "?";
+        if ( windowRenderingTrace != null )
+        {
+            windowRenderingTracePortletName = windowRenderingTrace.portletName;
+        }
 
         html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
-        html += "<td>" + viewFunctionTrace.name + "( '" + windowRenderingTrace.portletName + "' )</td><td>" +
+        html += "<td>" + viewFunctionTrace.name + "( '" + windowRenderingTracePortletName + "' )</td><td>" +
             viewFunctionTrace.duration.asHRFormat + "</td>";
         html += "</tr>";
 
@@ -377,7 +386,10 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
             html += buildViewFunctionArgument( argument, id + "-1-" + (i + 1) );
         } );
 
-        html += buildWindowRenderingTrace( windowRenderingTrace, id + "-2" );
+        if ( windowRenderingTrace != null )
+        {
+            html += buildWindowRenderingTrace( windowRenderingTrace, id + "-2" );
+        }
 
         return html;
     }
@@ -520,13 +532,13 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
             var html = "";
             html += "<table id='trace-details-tree-table'>";
             html += "<tr id='node-1'>";
-            if( portalRequestTrace.completedNumber === 0 )
+            if ( portalRequestTrace.completedNumber === 0 )
             {
                 html += "<td width='50%'>Request #</td><td>" + portalRequestTrace.requestNumber + "</td>";
             }
             else
             {
-            html += "<td width='50%'>Completed #</td><td>" + portalRequestTrace.completedNumber + "</td>";
+                html += "<td width='50%'>Completed #</td><td>" + portalRequestTrace.completedNumber + "</td>";
             }
             html += "</tr>";
             html += "<tr id='node-2'>";

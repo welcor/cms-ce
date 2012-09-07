@@ -38,24 +38,18 @@ lpt.ReloadableTableController = function ( tableId, automaticReloadTimeInMillis 
 
     this.init = function ()
     {
-        $(table).on('click', 'tr', function(event) {
+        $( table ).on( 'click', 'tr', function ( event )
+        {
 
             var tableRow = this;
 
             if ( tableRow != null )
-        {
-                var portalRequestsTraceRow = null;
-                if( tableRow.livePortalTraceCompletedNumber > 0 )
             {
-                    portalRequestsTraceRow = portalRequestsTraceRows[tableRow.livePortalTraceCompletedNumber];
-            }
-                else
-            {
-                    portalRequestsTraceRow = portalRequestsTraceRows[tableRow.livePortalTraceRequestNumber];
-            }
+
+                var portalRequestsTraceRow = portalRequestsTraceRows[tableRow.livePortalTraceRequestNumber];
                 portalRequestTraceDetailController.showPortalRequestTraceDetail( portalRequestsTraceRow.portalRequestTrace );
             }
-        });
+        } );
 
     };
 
@@ -63,7 +57,7 @@ lpt.ReloadableTableController = function ( tableId, automaticReloadTimeInMillis 
     {
         $.getJSON( reloadUrl, function ( traces )
         {
-            appendTraces( traces );
+            reloadTraces( traces );
         } );
     };
 
@@ -96,7 +90,7 @@ lpt.ReloadableTableController = function ( tableId, automaticReloadTimeInMillis 
                      } );
     };
 
-    function appendTraces( traces )
+    function reloadTraces( traces )
     {
         portalRequestsTraceRows = {};
         var newTableBody = document.createElement( 'tbody' );

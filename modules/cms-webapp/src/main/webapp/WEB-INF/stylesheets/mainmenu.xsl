@@ -327,7 +327,7 @@
                       <a href="adminpage?page=914&amp;op=indexmonitor" target="mainFrame">
                           <img src="images/utilities-system-monitor.png" border="0"/>
                           <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
-                          <xsl:text>indexMonitor</xsl:text>
+                          <xsl:text>%mnuIndexMonitor%</xsl:text>
                       </a>
                   </td>
               </tr>

@@ -236,4 +236,16 @@ public abstract class BaseHandler
     {
         return keyService.generateNextKeySafe( table.getName() );
     }
+
+    public String expandSQLStatement( String statement, StringBuffer object )
+    {
+        final StringBuffer string = new StringBuffer( statement );
+        final int index = statement.indexOf( "%0" );
+        if ( index >= 0 )
+        {
+            string.replace( index, index + 2, object.toString() );
+        }
+        return string.toString();
+    }
+
 }

@@ -2161,7 +2161,7 @@ public final class MenuHandler
         SecurityHandler securityHandler = getSecurityHandler();
         if ( !securityHandler.validateMenuItemRemove( user, menuItemKey ) )
         {
-            VerticalEngineLogger.errorSecurity( "Not allowed to remove menuitem: %0", new Object[]{menuItemKey}, null );
+            VerticalEngineLogger.errorSecurity( "Not allowed to remove menuitem: {0}", new Object[]{menuItemKey}, null );
         }
 
         getCommonHandler().cascadeDelete( db.tMenuItem, menuItemKey );

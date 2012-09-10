@@ -91,7 +91,7 @@ public class SchedulerServlet
                 WorkEntry workEntry = workService.getEntry( key );
                 if ( workEntry == null )
                 {
-                    WizardLogger.errorWizard( "Unknown work entry %0", key );
+                    WizardLogger.errorWizard( "Unknown work entry {0}", key );
                 }
                 org.jdom.Document doc = new org.jdom.Document( new org.jdom.Element( "workentries" ) );
                 org.jdom.Element workentryElem = WorkHelper.convertToElement( workEntry );

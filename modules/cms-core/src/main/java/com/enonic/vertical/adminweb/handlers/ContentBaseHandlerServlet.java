@@ -73,6 +73,7 @@ import com.enonic.vertical.engine.criteria.CategoryCriteria;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.AssignContentResult;
@@ -414,7 +415,7 @@ public class ContentBaseHandlerServlet
                 {
                     String message = "Failed to inflate zip file: %t";
                     WizardLogger.error( message, ioe );
-                    wizardState.addError( "12", "zipfile", StringUtil.expandString( message, ioe ) );
+                    wizardState.addError( "12", "zipfile", LogFacade.formatThrowable( message, ioe ) );
                 }
             }
             // update zip structure from first state

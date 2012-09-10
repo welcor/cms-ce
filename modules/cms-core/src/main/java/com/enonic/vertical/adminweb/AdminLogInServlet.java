@@ -5,6 +5,7 @@
 package com.enonic.vertical.adminweb;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -408,7 +409,7 @@ public final class AdminLogInServlet
             String message = "Failed to authenticate user (domain key: {0}): {1}";
             Object[] msgData = {userStoreKey, uid};
             VerticalAdminLogger.warn( message, msgData );
-            message = StringUtil.expandString( message, msgData, vse );
+            message = MessageFormat.format( message, userStoreKey, uid, vse );
             session.setAttribute( "loginerrorcode", EC_401_USER_PASSWD_WRONG );
             session.setAttribute( "loginerror", message );
             session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );

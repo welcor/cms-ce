@@ -90,58 +90,6 @@ public final class StringUtil
         return true;
     }
 
-    public static String expandString( String baseString, Object[] objects, Throwable throwable )
-    {
-
-        StringBuffer string = new StringBuffer( baseString );
-        if ( objects != null )
-        {
-            for ( int i = objects.length - 1; i >= 0; i-- )
-            {
-                String indexStr = "%" + String.valueOf( i );
-                int index = baseString.indexOf( indexStr );
-
-                // skip loop if the index string was not found in the base string:
-                if ( index == -1 )
-                {
-                    continue;
-                }
-
-                // replace the index string with the object:
-                Object obj = objects[i];
-                if ( obj != null )
-                {
-                    string.replace( index, index + 1 + String.valueOf( i ).length(), obj.toString() );
-                }
-                else
-                {
-                    string.replace( index, index + 1 + String.valueOf( i ).length(), "null" );
-                }
-
-            }
-        }
-
-        // replace "%t" with the throwable's message
-        if ( throwable != null )
-        {
-            int index = string.toString().indexOf( "%t" );
-            if ( index >= 0 )
-            {
-                String msg = throwable.getMessage();
-                if ( msg != null )
-                {
-                    string.replace( index, index + 2, msg );
-                }
-                else
-                {
-                    string.replace( index, index + 2, "null" );
-                }
-            }
-        }
-
-        return string.toString();
-    }
-
     /**
      * Simple format of XML files. Removes unecesserary white space and indents (optional).
      * <p/>
@@ -267,50 +215,6 @@ public final class StringUtil
             // If xml formatting fails (for instance with comments), return it unformatted
             return xml;
         }
-    }
-
-    public static String expandString( String baseString, Object object )
-    {
-
-        return expandString( baseString, object, null );
-    }
-
-    public static String expandString( String baseString, Object object, Throwable throwable )
-    {
-
-        StringBuffer string = new StringBuffer( baseString );
-        int index = baseString.indexOf( "%0" );
-        if ( index >= 0 )
-        {
-            if ( object != null )
-            {
-                string.replace( index, index + 2, object.toString() );
-            }
-            else
-            {
-                string.replace( index, index + 2, "null" );
-            }
-        }
-
-        // replace "%t" with the throwable's message
-        if ( throwable != null )
-        {
-            index = string.toString().indexOf( "%t" );
-            if ( index >= 0 )
-            {
-                String msg = throwable.getMessage();
-                if ( msg != null )
-                {
-                    string.replace( index, index + 2, msg );
-                }
-                else
-                {
-                    string.replace( index, index + 2, "null" );
-                }
-            }
-        }
-
-        return string.toString();
     }
 
     static public String mergeInts( int[] values, String delimiter )

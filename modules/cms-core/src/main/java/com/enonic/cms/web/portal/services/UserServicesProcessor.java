@@ -1191,7 +1191,7 @@ public final class UserServicesProcessor
                 username = formItems.getString( FORMITEM_EMAIL, null );
             }
             logLoginFailed( siteContext, username, request.getRemoteAddr() );
-            String message = "User name and/or password is wrong: %0";
+            String message = "User name and/or password is wrong: {0}";
             VerticalUserServicesLogger.warn( message, username, null );
             redirectToErrorPage( request, response, formItems, ERR_USER_PASSWD_WRONG );
         }

@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.MessageFormat;
 
 public class ResourceDataServlet
     extends AbstractAdminwebServlet
@@ -37,7 +38,7 @@ public class ResourceDataServlet
             {
                 String msg = "Resource not found: {0}";
                 VerticalAdminLogger.warn(msg, keyStr, null );
-                response.sendError( HttpServletResponse.SC_NOT_FOUND, StringUtil.expandString( msg, keyStr, null ) );
+                response.sendError( HttpServletResponse.SC_NOT_FOUND, MessageFormat.format( msg, keyStr ) );
             }
         }
         else

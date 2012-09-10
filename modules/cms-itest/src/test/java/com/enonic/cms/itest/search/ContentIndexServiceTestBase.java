@@ -134,7 +134,7 @@ public abstract class ContentIndexServiceTestBase
         String termQuery = "{\n" +
             "  \"from\" : 0,\n" +
             "  \"size\" : 100,\n" +
-            "\"fields\" : [\"*\"],\n" +
+            "\"fields\" : [\"_source\"],\n" +
             "  \"query\" : {\n" +
             "    \"match_all\" : {\n" +
             "    }\n" +

@@ -21,8 +21,7 @@ public class ContentIndexDataAccessRightsFactory
     public void create( final ContentIndexData contentIndexData, final Collection<ContentAccessEntity> contentAccessRights,
                         Map<GroupKey, CategoryAccessEntity> categoryAccessRights )
     {
-
-        if ( contentAccessRights == null || contentAccessRights.isEmpty() )
+        if ( contentAccessRights == null && contentAccessRights.isEmpty() )
         {
             return;
         }
@@ -71,12 +70,12 @@ public class ContentIndexDataAccessRightsFactory
             }
         }
 
-        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_READ_FIELDNAME, readAccess );
-        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess );
-        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess );
-        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess );
-        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess );
-        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess );
+        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_READ_FIELDNAME, readAccess, false );
+        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_UPDATE_FIELDNAME, updateAccess, false );
+        contentIndexData.addContentIndexDataElement( CONTENT_ACCESS_DELETE_FIELDNAME, deleteAccess, false );
+        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_BROWSE_FIELDNAME, browseAccess, false );
+        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_APPROVE_FIELDNAME, approveAccess, false );
+        contentIndexData.addContentIndexDataElement( CONTENT_CATEGORY_ACCESS_ADMINISTRATE_FIELDNAME, administrateAccess, false );
     }
 }
 

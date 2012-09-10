@@ -31,7 +31,7 @@ public class QueryTranslator_filterCategoryAccessFilterTest
             "        }\n" +
             "      },\n" +
             "      \"must\" : {\n" +
-            "        \"term\" : {\n" +
+            "        \"terms\" : {\n" +
             "          \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
             "      }\n" +
@@ -73,12 +73,12 @@ public class QueryTranslator_filterCategoryAccessFilterTest
             "      \"must\" : {\n" +
             "        \"bool\" : {\n" +
             "          \"must\" : {\n" +
-            "            \"term\" : {\n" +
+            "            \"terms\" : {\n" +
             "              \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
             "          },\n" +
             "          \"must\" : {\n" +
-            "            \"term\" : {\n" +
+            "            \"terms\" : {\n" +
             "              \"access_category_approve\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
             "          }\n" +
@@ -122,12 +122,12 @@ public class QueryTranslator_filterCategoryAccessFilterTest
             "      \"must\" : {\n" +
             "        \"bool\" : {\n" +
             "          \"should\" : {\n" +
-            "            \"term\" : {\n" +
+            "            \"terms\" : {\n" +
             "              \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
             "          },\n" +
             "          \"should\" : {\n" +
-            "            \"term\" : {\n" +
+            "            \"terms\" : {\n" +
             "              \"access_category_approve\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
             "          }\n" +

@@ -144,7 +144,7 @@ public final class ContentIndexDataFactory
             category == null ? Collections.<GroupKey, CategoryAccessEntity>emptyMap() : category.getAccessRights();
 
         final Collection<ContentAccessEntity> accessRights = contentDocument.getContentAccessRights();
-        if ( !accessRights.isEmpty() )
+        if ( !( accessRights.isEmpty() && categoryAccessRights.isEmpty() ) )
         {
             accessRightsFactory.create( contentIndexData, accessRights, categoryAccessRights );
         }

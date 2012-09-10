@@ -240,7 +240,7 @@ public class FilterQueryBuilderFactory
         if ( categoryAccessTypeFilter.size() == 1 )
         {
             CategoryAccessType type = categoryAccessTypeFilter.iterator().next();
-            return new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName( type ), groups );
+            return new TermsFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName( type ), groups );
         }
 
         final boolean must = policy.equals( ContentIndexQuery.CategoryAccessTypeFilterPolicy.AND );
@@ -249,8 +249,7 @@ public class FilterQueryBuilderFactory
 
         for ( CategoryAccessType type : categoryAccessTypeFilter )
         {
-
-            final TermFilterBuilder term = new TermFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName( type ), groups );
+            final TermsFilterBuilder term = new TermsFilterBuilder( QueryFieldNameResolver.getCategoryAccessTypeFieldName( type ), groups );
 
             if ( must )
             {

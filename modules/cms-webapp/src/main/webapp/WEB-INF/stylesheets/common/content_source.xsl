@@ -10,10 +10,6 @@
 
   <xsl:template name="content_source">
 
-    <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
-    <script type="text/javascript" src="javascript/codearea.js">//</script>
-    <link rel="stylesheet" type="text/css" href="css/codearea.css"/>
-
     <xsl:if test="/contents/source">
 
       <xsl:variable name="source" select="/contents/source"/>
@@ -27,21 +23,9 @@
 
         <fieldset>
           <legend>&nbsp;%blockContentXml%&nbsp;</legend>
-
-          <table border="0" cellspacing="2" cellpadding="2" width="100%">
-            <tr>
-              <xsl:call-template name="codearea">
-                <xsl:with-param name="name" select="'_source_xml_data'"/>
-                <xsl:with-param name="width" select="'100%'"/>
-                <xsl:with-param name="height" select="'300px'"/>
-                <xsl:with-param name="line-numbers" select="true()"/>
-                <xsl:with-param name="read-only" select="true()"/>
-                <xsl:with-param name="selectnode" select="translate($source/data, '&#xD;','')"/>
-                <xsl:with-param name="buttons" select="''"/>
-                <xsl:with-param name="status-bar" select="false()"/>
-              </xsl:call-template>
-            </tr>
-          </table>
+          <pre class="content-source">
+            <xsl:value-of select="$source/data"/>
+          </pre>
         </fieldset>
 
         <xsl:if test="count($source/related-children/content) != 0">

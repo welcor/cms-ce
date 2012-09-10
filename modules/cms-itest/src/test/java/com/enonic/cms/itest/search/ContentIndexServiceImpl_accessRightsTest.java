@@ -1,8 +1,5 @@
 package com.enonic.cms.itest.search;
 
-import java.util.List;
-import java.util.Set;
-
 import org.jdom.Document;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,6 +80,8 @@ public class ContentIndexServiceImpl_accessRightsTest
     public void setUp()
     {
         factory = fixture.getFactory();
+
+        // Dummy
 
         customContentHandlerController = new ContentServicesProcessor();
         customContentHandlerController.setContentService( contentService );

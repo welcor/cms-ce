@@ -8,8 +8,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import com.enonic.cms.framework.blob.BlobKey;
+import com.enonic.cms.framework.blob.BlobKeyCreator;
 import com.enonic.cms.framework.blob.BlobRecord;
-import com.enonic.cms.framework.blob.BlobStoreHelper;
 
 final public class MemoryBlobRecord
     extends BlobRecord
@@ -22,10 +22,10 @@ final public class MemoryBlobRecord
         this.data = data;
     }
 
-    public MemoryBlobRecord (final byte[] data){
-        this(new BlobKey( BlobStoreHelper.createKey( data ).toString() ), data);
+    public MemoryBlobRecord( final byte[] data )
+    {
+        this( new BlobKey( BlobKeyCreator.createKey( data ).toString() ), data );
     }
-
 
 
     public long getLength()

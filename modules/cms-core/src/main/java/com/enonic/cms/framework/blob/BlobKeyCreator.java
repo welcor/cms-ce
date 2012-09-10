@@ -14,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 
 import com.google.common.io.ByteStreams;
 
-public final class BlobStoreHelper
+public final class BlobKeyCreator
 {
     private static final String DIGEST = "SHA-1";
 

@@ -18,10 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.blob.BlobKey;
+import com.enonic.cms.framework.blob.BlobKeyCreator;
 import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.blob.BlobStore;
 import com.enonic.cms.framework.blob.BlobStoreException;
-import com.enonic.cms.framework.blob.BlobStoreHelper;
 
 @Component
 public final class FileBlobStore
@@ -64,7 +64,7 @@ public final class FileBlobStore
         try
         {
             tmpFile = newTemporaryFile();
-            final BlobKey key = BlobStoreHelper.createKey( in, new FileOutputStream( tmpFile ) );
+            final BlobKey key = BlobKeyCreator.createKey( in, new FileOutputStream( tmpFile ) );
             return addRecord( key, tmpFile );
         }
         catch ( IOException e )

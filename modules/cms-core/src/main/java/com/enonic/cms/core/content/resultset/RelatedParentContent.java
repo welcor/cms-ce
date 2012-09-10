@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.content.resultset;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -22,7 +22,7 @@ public class RelatedParentContent
 
     private ContentVersionKey parentMainVersionKey;
 
-    private Set<RelatedContent> relatedParents = new HashSet<RelatedContent>();
+    private Set<RelatedContent> relatedParents = new LinkedHashSet<RelatedContent>();
 
     public RelatedParentContent( ContentKey childContentKey, ContentEntity parent, ContentVersionKey parentMainVersionKey )
     {

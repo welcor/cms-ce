@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.content.resultset;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.enonic.cms.core.content.ContentEntity;
@@ -14,7 +14,7 @@ public abstract class AbstractRelatedContent
 {
     private ContentEntity content;
 
-    private Set<RelatedContent> relatedChildren = new HashSet<RelatedContent>();
+    private Set<RelatedContent> relatedChildren = new LinkedHashSet<RelatedContent>();
 
     public AbstractRelatedContent( ContentEntity content )
     {

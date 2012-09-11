@@ -63,7 +63,17 @@ public final class LogFacade
             return;
         }
 
-        final LogRecord record = new LogRecord( level, MessageFormat.format( formatThrowable( message, cause ), args ) );
+        String logMessage;
+        if ( args == null || args.length == 0 )
+        {
+            logMessage = formatThrowable( message, cause );
+        }
+        else
+        {
+            logMessage = MessageFormat.format( formatThrowable( message, cause ), args );
+        }
+
+        final LogRecord record = new LogRecord( level, logMessage );
         record.setThrown( cause );
 
         final StackTraceElement source = findStackTraceElement();
@@ -120,7 +130,7 @@ public final class LogFacade
      * replaces "%t" with the throwable message
      *
      * @param message - message test with or without %t
-     * @param cause - exception
+     * @param cause   - exception
      * @return formatted string
      */
     public static String formatThrowable( final String message, final Throwable cause )

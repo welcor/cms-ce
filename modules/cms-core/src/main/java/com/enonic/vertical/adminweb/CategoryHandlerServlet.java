@@ -34,7 +34,6 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLException;
 
 import com.enonic.cms.core.content.category.CategoryAccessControl;
-import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.category.ModifyCategoryACLCommand;
@@ -47,7 +46,6 @@ import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 import com.enonic.cms.core.xslt.XsltProcessorHelper;
@@ -193,23 +191,6 @@ final public class CategoryHandlerServlet
         addSelectorParameters( formItems, admin, formItems );
 
         transformXML( request, response, doc, "category_form.xsl", formItems );
-    }
-
-    public void handlerEmptyCategory( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
-                                      ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
-    {
-
-        User oldUser = securityService.getLoggedInAdminConsoleUser();
-        UserEntity user = securityService.getUser( oldUser );
-        CategoryKey categoryKey = new CategoryKey( formItems.getInt( "cat" ) );
-        CategoryEntity category = categoryDao.findByKey( categoryKey );
-        contentService.deleteByCategory( user, category );
-        String referer = request.getHeader( "referer" );
-        URL url = new URL( referer );
-        url.setParameter( "feedback", 8 );
-        url.setParameter( "index", 0 );
-        redirectClientToURL( url, response );
     }
 
     public void handlerRemove( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
@@ -582,10 +563,6 @@ final public class CategoryHandlerServlet
         else if ( "propagateaccessrights".equals( operation ) )
         {
             handlerPropagateAccessRights( request, response, session, admin, formItems );
-        }
-        else if ( "emptycategory".equals( operation ) )
-        {
-            handlerEmptyCategory( request, response, session, admin, formItems );
         }
     }
 

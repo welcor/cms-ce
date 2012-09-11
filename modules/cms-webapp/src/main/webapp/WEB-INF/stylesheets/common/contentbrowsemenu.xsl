@@ -32,22 +32,6 @@
     <xsl:variable name="category" select="/data/category"/>
     <xsl:variable name="parentcategoryadministrate" select="$parentcategoryadministrate = 'true'"/>
 
-    <script type="text/javascript">
-      function emptyCategory()
-      {
-        var prompt = confirm('%alertEmptyCategory%\n\n%alertEmptyCategoryMsg%');
-        if ( prompt )
-        {
-          waitsplash();
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-    </script>
-
     <table border="0" cellpadding="0" cellspacing="0" class="contentbrowsemenu">
       <tr>
         <!-- New button if user has create right -->

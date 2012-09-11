@@ -1160,9 +1160,6 @@
 %alertChangeDefaultUserStore%|Er du sikker på at du vil endre standard brukerlager?|Are you sure you want to change the default userstore?|Er du sikker på, at du ønsker at ændre standardbrugerlageret?|Är du säker på att du vill ändra förinställd användarbas?
 %txtEditorPreInit%|Initialiserer|Initializing|Initialiserer|Initialiserar
 %fldQualifiedName%|Qualified Name|Qualified Name|Qualified Name|Qualified Name
-%feedbackCategoryEmptied%|Kategorien ble tømt|The category was emptied|Kategorien er blevet tømt|Kategorin tömdes
-%alertEmptyCategory%|Er du sikker på at du vil slette alt innhold kategorien?|Are you sure you want to delete all the content in the category?|Er du sikker på, at du ønsker at slette alt indhold i kategorien?|Är du säker på att du vill radera allt innehåll i kategorin?
-%alertEmptyCategoryMsg%|Innhold som er knyttet til menypunkter vil ikke bli slettet.|Content that exists in menu items will not be deleted.|Indhold, der findes i menupunkter, vil ikke blive slettet.|Innehåll som finns på menypunkter vill inte bli raderad.
 %headMyLastVisited%|Sist brukte|Recent|Sidst brugt|Senast används
 %fldCC%|CC (separert med ;)|CC (separated by ;)|CC (adskilt af ;)|CC (separerat med ;)
 %alertUserGroupCannotBeAdded%|Denne bruker/gruppe kan ikke legges til|This user/group cannot be added|Denne bruger/gruppe kan ikke tilføjes|Denna användare/grupp kan inte läggas till

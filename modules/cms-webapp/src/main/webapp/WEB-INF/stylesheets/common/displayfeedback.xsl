@@ -35,7 +35,6 @@
 			<xsl:when test="$code = '5'">%feedbackContentNewVersion%</xsl:when>
 			<xsl:when test="$code = '6'">%feedbackResourceSaved%</xsl:when>
 			<xsl:when test="$code = '7'">%feedbackVersionDeleted%</xsl:when>
-			<xsl:when test="$code = '8'">%feedbackCategoryEmptied%</xsl:when>
 			<xsl:when test="$code = '9'">%feedbackContentAlreadyDeleted%</xsl:when>
 			<xsl:when test="$code = '10'">%feedbackNoReadAccess%</xsl:when>
 		</xsl:choose>

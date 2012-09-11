@@ -16,7 +16,6 @@ import org.w3c.dom.Element;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.net.URL;
 import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.util.ParamsInTextParser;
 import com.enonic.esl.util.StringUtil;
@@ -479,10 +478,6 @@ public class ArchiveHandlerServlet
         {
             handlerPopup( request, response, admin, formItems );
         }
-        else if ( "emptycategory".equals( operation ) )
-        {
-            handlerEmptyCategory( request, response, session, formItems );
-        }
         else
         {
             super.handlerCustom( request, response, session, admin, formItems, operation );
@@ -560,21 +555,5 @@ public class ArchiveHandlerServlet
 
         transformXML( request, response, docDummy, "content_selector_frameset.xsl", xslParams );
         return true;
-    }
-
-    public void handlerEmptyCategory( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems )
-        throws VerticalAdminException, VerticalEngineException
-    {
-
-        User oldUser = securityService.getLoggedInAdminConsoleUser();
-        UserEntity user = securityService.getUser( oldUser );
-        CategoryKey categoryKey = new CategoryKey( formItems.getInt( "cat" ) );
-        CategoryEntity category = categoryDao.findByKey( categoryKey );
-        contentService.deleteByCategory( user, category );
-        String referer = request.getHeader( "referer" );
-        URL url = new URL( referer );
-        url.setParameter( "feedback", 8 );
-        url.setParameter( "index", 0 );
-        redirectClientToURL( url, response );
     }
 }

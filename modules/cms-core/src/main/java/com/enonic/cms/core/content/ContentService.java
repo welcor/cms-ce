@@ -62,8 +62,6 @@ public interface ContentService
 
     void deleteVersion( UserEntity deleter, ContentVersionKey contentVersionKey );
 
-    void deleteByCategory( UserEntity deleter, CategoryEntity category );
-
     void moveContent( UserEntity mover, ContentEntity content, CategoryEntity toCategory );
 
     ContentKey copyContent( UserEntity copier, ContentEntity content, CategoryEntity toCategory );

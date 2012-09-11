@@ -58,7 +58,7 @@ public class ImportServiceImpl
     {
         try
         {
-            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataEntry, indexTransactionService );
+            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataEntry );
             contentImporter.setContentStorer( contentStorer );
             contentImporter.setContentDao( contentDao );
 

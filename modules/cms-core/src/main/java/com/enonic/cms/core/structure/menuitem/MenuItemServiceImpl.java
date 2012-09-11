@@ -162,7 +162,7 @@ public class MenuItemServiceImpl
             content.addContentHome( newContentHome );
         }
 
-        indexTransactionService.updateContent( content, true );
+        indexTransactionService.registerUpdate( content.getKey(), true );
     }
 
     private void doExecuteAddContentToSectionCommand( final AddContentToSectionCommand command )
@@ -242,7 +242,7 @@ public class MenuItemServiceImpl
             }
         }
 
-        indexTransactionService.updateContent( command.getContent(), true );
+        indexTransactionService.registerUpdate( command.getContent(), true );
     }
 
     private void doExecuteRemoveContentsFromSectionCommand( final RemoveContentsFromSectionCommand command )
@@ -281,7 +281,7 @@ public class MenuItemServiceImpl
                 MenuItemEntity.class.getName() + ".sectionContents", section.getKey() );
 
             removeContentHomeIfThisSectionIs( content, section );
-            indexTransactionService.updateContent( content, true );
+            indexTransactionService.registerUpdate( content.getKey(), true );
         }
     }
 
@@ -361,7 +361,7 @@ public class MenuItemServiceImpl
 
         for ( ContentKey contentKey : command.getContentsToApprove() )
         {
-            indexTransactionService.updateContent( contentKey, true );
+            indexTransactionService.registerUpdate( contentKey, true );
         }
     }
 
@@ -385,7 +385,7 @@ public class MenuItemServiceImpl
                 continue;
             }
             doUnapproveContentInSection( sectionContent );
-            indexTransactionService.updateContent( contentKey, true );
+            indexTransactionService.registerUpdate( contentKey, true );
         }
     }
 

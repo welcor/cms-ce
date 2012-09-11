@@ -15,6 +15,7 @@ import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
 import com.enonic.cms.core.log.Table;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserKey;
 
 /**
@@ -28,6 +29,9 @@ public class CategoryServiceImpl
 
     @Autowired
     private CategoryCommandProcessorFactory processorFactory;
+
+    @Autowired
+    private IndexTransactionService indexTransactionService;
 
     @Autowired
     private LogService logService;
@@ -95,6 +99,7 @@ public class CategoryServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = TIMEOUT_24HOURS)
     public void deleteCategory( final DeleteCategoryCommand command )
     {
+        indexTransactionService.startTransaction();
         try
         {
             final DeleteCategoryCommandProcessor processor = processorFactory.createDeleteCategoryCommandProcessor( command );

@@ -7,23 +7,41 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.enonic.cms.api.util.LogFacade;
+import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.search.builder.ContentIndexData;
+import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
+import com.enonic.cms.core.search.query.ContentDocument;
+import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.ContentEagerFetches;
+import com.enonic.cms.store.dao.FindContentByKeysCommand;
 
 import static com.enonic.cms.core.search.ContentIndexServiceImpl.CONTENT_INDEX_NAME;
+import static com.enonic.cms.core.search.IndexTransactionJournalEntry.JournalOperation.UPDATE;
 
 public class IndexTransactionJournal
     implements TransactionSynchronization
 {
     private final static LogFacade LOG = LogFacade.get( IndexTransactionJournal.class );
 
-    private final ElasticSearchIndexService indexService;
+    private final ContentDao contentDao;
+
+    private final IndexService indexService;
+
+    private final ContentIndexDataFactory contentIndexDataFactory;
+
+    private final ElasticSearchIndexService elasticSearchIndexService;
 
     private final List<IndexTransactionJournalEntry> changeHistory;
 
-    public IndexTransactionJournal( ElasticSearchIndexService indexService )
+    public IndexTransactionJournal( ElasticSearchIndexService elasticSearchIndexService, IndexService indexService,
+                                    ContentIndexDataFactory contentIndexDataFactory, ContentDao contentDao )
     {
+        this.elasticSearchIndexService = elasticSearchIndexService;
         this.indexService = indexService;
+        this.contentIndexDataFactory = contentIndexDataFactory;
+        this.contentDao = contentDao;
         this.changeHistory = new ArrayList<IndexTransactionJournalEntry>();
     }
 
@@ -41,12 +59,7 @@ public class IndexTransactionJournal
         }
     }
 
-    public void addContent( ContentIndexData contentIndexData )
-    {
-        doAddContent( contentIndexData );
-    }
-
-    private void doAddContent( final ContentIndexData contentIndexData )
+    public void registerUpdate( ContentKey contentKey, boolean skipAttachments )
     {
         if ( TransactionSynchronizationManager.isCurrentTransactionReadOnly() )
         {
@@ -54,12 +67,12 @@ public class IndexTransactionJournal
         }
 
         final IndexTransactionJournalEntry indexTransactionJournalEntry =
-            new IndexTransactionJournalEntry( IndexTransactionJournalEntry.JournalOperation.UPDATE, contentIndexData );
+            new IndexTransactionJournalEntry( UPDATE, contentKey, skipAttachments );
 
         changeHistory.add( indexTransactionJournalEntry );
     }
 
-    public void removeContent( ContentKey contentKey )
+    public void registerRemove( ContentKey contentKey )
     {
         changeHistory.add( new IndexTransactionJournalEntry( IndexTransactionJournalEntry.JournalOperation.DELETE, contentKey ) );
     }
@@ -78,21 +91,19 @@ public class IndexTransactionJournal
             return;
         }
 
+        preloadContent();
+
         LOG.info( "Flushing index changes from transaction journal" );
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
         {
             switch ( journalEntry.getOperation() )
             {
                 case UPDATE:
-                    final ContentIndexData contentIndexData = journalEntry.getContentIndexData();
-                    LOG.info( "Updating index for content: " + contentIndexData.getKey().toString() );
-                    indexContent( contentIndexData );
+                    handleFlushUpdateOperation( journalEntry );
                     break;
 
                 case DELETE:
-                    final ContentKey contentKey = journalEntry.getContentKey();
-                    LOG.info( "Deleting index for content: " + contentKey.toString() );
-                    deleteContent( contentKey );
+                    handleFlushDeleteOperation( journalEntry );
                     break;
             }
         }
@@ -101,19 +112,64 @@ public class IndexTransactionJournal
         flushIndex();
     }
 
-    private void indexContent( ContentIndexData contentIndexData )
+    private void preloadContent()
     {
-        indexService.index( CONTENT_INDEX_NAME, contentIndexData );
+        List<ContentKey> contentToLoad = new ArrayList<ContentKey>();
+        for ( IndexTransactionJournalEntry journalEntry : changeHistory )
+        {
+            if ( journalEntry.getOperation() == UPDATE )
+            {
+                contentToLoad.add( journalEntry.getContentKey() );
+            }
+        }
+
+        FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentToLoad ).eagerFetches(
+            ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( false );
+        contentDao.findByKeys( command );
+    }
+
+    private void handleFlushUpdateOperation( final IndexTransactionJournalEntry journalEntry )
+    {
+        final ContentEntity content = contentDao.findByKey( journalEntry.getContentKey() );
+        if ( content == null )
+        {
+            LOG.warning(
+                "Content to update index for did not exist (removing index for content instead): " + journalEntry.getContentKey() );
+            deleteContent( journalEntry.getContentKey() );
+        }
+        else if ( content.isDeleted() )
+        {
+            deleteContent( content.getKey() );
+        }
+        else
+        {
+            updateContent( content, journalEntry.isSkipAttachments() );
+        }
+    }
+
+    private void handleFlushDeleteOperation( final IndexTransactionJournalEntry journalEntry )
+    {
+        deleteContent( journalEntry.getContentKey() );
+    }
+
+    private void updateContent( final ContentEntity content, final boolean skipAttachments )
+    {
+        final ContentDocument doc = indexService.createContentDocument( content );
+        final ContentIndexData contentIndexData = contentIndexDataFactory.create( doc, skipAttachments );
+
+        LOG.info( "Updating index for content: " + contentIndexData.getKey().toString() );
+        elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }
 
     private void deleteContent( ContentKey contentKey )
     {
-        indexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+        LOG.info( "Deleting index for content: " + contentKey.toString() );
+        elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
     }
 
     private void flushIndex()
     {
-        indexService.flush( CONTENT_INDEX_NAME );
+        elasticSearchIndexService.flush( CONTENT_INDEX_NAME );
     }
 
     @Override

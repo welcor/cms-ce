@@ -6,12 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.enonic.cms.api.util.LogFacade;
-import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
-import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
-import com.enonic.cms.core.search.query.ContentDocument;
 import com.enonic.cms.store.dao.ContentDao;
 
 @Service
@@ -48,29 +45,17 @@ public class IndexTransactionServiceImpl
     }
 
     @Override
-    public void updateContent( final ContentKey contentKey, final boolean skipAttachments )
-    {
-        updateContent( contentDao.findByKey( contentKey ), skipAttachments );
-    }
-
-    @Override
-    public void updateContent( final ContentEntity contentEntity, boolean skipAttachments )
-    {
-        doUpdateContent( contentEntity, skipAttachments );
-    }
-
-    private void doUpdateContent( final ContentEntity contentEntity, final boolean skipAttachments )
+    public void registerUpdate( final ContentKey contentKey, final boolean skipAttachments )
     {
         IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
-        ContentIndexData contentIndexData = createContentIndexData( contentEntity, skipAttachments );
-        indexTransactionJournal.addContent( contentIndexData );
+        indexTransactionJournal.registerUpdate( contentKey, skipAttachments );
     }
 
     @Override
     public void deleteContent( final ContentKey contentKey )
     {
         IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
-        indexTransactionJournal.removeContent( contentKey );
+        indexTransactionJournal.registerRemove( contentKey );
     }
 
     @Override
@@ -107,12 +92,11 @@ public class IndexTransactionServiceImpl
             (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
         if ( indexTransactionJournal != null )
         {
-//            TransactionSynchronizationManager.unbindResource( TRANSACTION_JOURNAL_KEY );
             LOG.error( "Index transaction already started" );
             return indexTransactionJournal;
-            //throw new IllegalStateException("Index transaction already started");
         }
-        indexTransactionJournal = new IndexTransactionJournal( elasticSearchIndexService );
+        indexTransactionJournal =
+            new IndexTransactionJournal( elasticSearchIndexService, indexService, contentIndexDataFactory, contentDao );
         TransactionSynchronizationManager.bindResource( TRANSACTION_JOURNAL_KEY, indexTransactionJournal );
         return indexTransactionJournal;
     }
@@ -128,9 +112,4 @@ public class IndexTransactionServiceImpl
         return indexTransactionJournal;
     }
 
-    private ContentIndexData createContentIndexData( final ContentEntity content, final boolean skipAttachments )
-    {
-        ContentDocument doc = indexService.createContentDocument( content );
-        return contentIndexDataFactory.create( doc, skipAttachments );
-    }
 }

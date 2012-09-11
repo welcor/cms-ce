@@ -176,7 +176,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexTransactionService.updateContent( persistedContent, false );
+        indexTransactionService.registerUpdate( persistedContent.getKey(), false );
 
         return persistedContent;
     }
@@ -310,7 +310,7 @@ public class ContentStorer
 
         if ( updateContentResult.isAnyChangesMade() )
         {
-            indexTransactionService.updateContent( updateContentResult.getTargetedVersion().getContent(), false );
+            indexTransactionService.registerUpdate( updateContentResult.getTargetedVersion().getContent().getKey(), false );
         }
 
         return updateContentResult;
@@ -828,9 +828,9 @@ public class ContentStorer
             }
         }
 
-        doDeleteVersion( version );
+        indexTransactionService.registerUpdate( version.getContent().getKey(), false );
 
-        indexTransactionService.updateContent( version.getContent().getKey(), false );
+        doDeleteVersion( version );
     }
 
     public AssignContentResult assignContent( AssignContentCommand command )
@@ -876,7 +876,7 @@ public class ContentStorer
 
         result.setNewAssignee( assignee );
 
-        indexTransactionService.updateContent( content.getKey(), true );
+        indexTransactionService.registerUpdate( content.getKey(), true );
 
         return result;
     }
@@ -949,7 +949,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexTransactionService.updateContent( contentKey, true );
+        indexTransactionService.registerUpdate( contentKey, true );
     }
 
     public UnassignContentResult unassignContent( final UnassignContentCommand command )
@@ -982,7 +982,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexTransactionService.updateContent( contentKey, true );
+        indexTransactionService.registerUpdate( contentKey, true );
 
         return result;
     }
@@ -1064,7 +1064,7 @@ public class ContentStorer
 
         if ( anyChangesMade )
         {
-            indexTransactionService.updateContent( content, true );
+            indexTransactionService.registerUpdate( content.getKey(), true );
         }
 
         return anyChangesMade;
@@ -1082,7 +1082,7 @@ public class ContentStorer
 
         if ( anyChangesMade )
         {
-            indexTransactionService.updateContent( content, true );
+            indexTransactionService.registerUpdate( content.getKey(), true );
         }
 
         return anyChangesMade;
@@ -1134,7 +1134,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexTransactionService.updateContent( content, true );
+        indexTransactionService.registerUpdate( content.getKey(), true );
     }
 
     public ContentKey copyContent( final UserEntity copier, final ContentEntity sourceContent, final CategoryEntity toCategory )
@@ -1220,7 +1220,7 @@ public class ContentStorer
 
         flushPendingHibernateWork();
 
-        indexTransactionService.updateContent( persistedContent.getKey(), false );
+        indexTransactionService.registerUpdate( persistedContent.getKey(), false );
 
         return persistedContent.getKey();
     }

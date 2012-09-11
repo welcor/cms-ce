@@ -217,6 +217,8 @@ public class ContentServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void deleteVersion( UserEntity deleter, final ContentVersionKey contentVersionKey )
     {
+        indexTransactionService.startTransaction();
+
         if ( deleter == null )
         {
             throw new IllegalArgumentException( "Given deleter cannot be null" );
@@ -301,6 +303,8 @@ public class ContentServiceImpl
     @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = TIMEOUT_24HOURS)
     public void deleteByCategory( UserEntity deleter, CategoryEntity category )
     {
+        indexTransactionService.startTransaction();
+
         List<ContentEntity> deletedContents = contentStorer.deleteByCategory( deleter, category );
 
         for ( ContentEntity deletedContent : deletedContents )

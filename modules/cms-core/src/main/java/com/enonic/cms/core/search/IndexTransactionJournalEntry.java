@@ -1,7 +1,6 @@
 package com.enonic.cms.core.search;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.search.builder.ContentIndexData;
 
 class IndexTransactionJournalEntry
 {
@@ -12,21 +11,20 @@ class IndexTransactionJournalEntry
 
     private final JournalOperation operation;
 
-    private final ContentIndexData contentIndexData;
-
     private final ContentKey contentKey;
 
-    public IndexTransactionJournalEntry( JournalOperation operation, ContentIndexData contentIndexData )
+    private boolean skipAttachments = true;
+
+    public IndexTransactionJournalEntry( JournalOperation operation, ContentKey contentKey, boolean skipAttachments )
     {
         this.operation = operation;
-        this.contentIndexData = contentIndexData;
-        this.contentKey = contentIndexData.getKey();
+        this.contentKey = contentKey;
+        this.skipAttachments = skipAttachments;
     }
 
     public IndexTransactionJournalEntry( JournalOperation operation, ContentKey contentKey )
     {
         this.operation = operation;
-        this.contentIndexData = null;
         this.contentKey = contentKey;
     }
 
@@ -35,9 +33,9 @@ class IndexTransactionJournalEntry
         return operation;
     }
 
-    public ContentIndexData getContentIndexData()
+    public boolean isSkipAttachments()
     {
-        return contentIndexData;
+        return skipAttachments;
     }
 
     public ContentKey getContentKey()

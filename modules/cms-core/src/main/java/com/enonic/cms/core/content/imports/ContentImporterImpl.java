@@ -34,7 +34,6 @@ import com.enonic.cms.core.content.contenttype.CtyImportMappingConfig;
 import com.enonic.cms.core.content.contenttype.CtyImportUpdateStrategyConfig;
 import com.enonic.cms.core.content.imports.sourcevalueholders.AbstractSourceValue;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
-import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.ContentDao;
 
@@ -64,13 +63,10 @@ public class ContentImporterImpl
 
     private final Set<String> usedSyncValues = new HashSet<String>();
 
-    private final IndexTransactionService indexTransactionService;
-
-    public ContentImporterImpl( ImportJob importJob, ImportDataEntry importDataEntry, IndexTransactionService indexTransactionService )
+    public ContentImporterImpl( ImportJob importJob, ImportDataEntry importDataEntry )
     {
         this.importJob = importJob;
         this.importDataEntry = importDataEntry;
-        this.indexTransactionService = indexTransactionService;
         this.category = importJob.getCategoryToImportTo();
         this.defaultPublishFrom = importJob.getDefaultPublishFrom();
         this.defaultPublishTo = importJob.getDefaultPublishTo();

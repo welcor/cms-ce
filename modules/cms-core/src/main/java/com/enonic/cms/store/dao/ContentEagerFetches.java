@@ -33,4 +33,7 @@ public class ContentEagerFetches
             Table.DIRECT_MENUITEM_PLACEMENT ).add( Table.CONTENT_HOME );
 
     public final static ContentEagerFetches PRESET_FOR_APPLYING_CONTENT_ACCESS = new ContentEagerFetches().add( Table.ACCESS );
+
+    public final static ContentEagerFetches PRESET_FOR_INDEXING =
+        new ContentEagerFetches().add( Table.ACCESS ).add( Table.MAIN_VERSION ).add( Table.SECTION_CONTENT ).add( Table.CONTENT_HOME );
 }

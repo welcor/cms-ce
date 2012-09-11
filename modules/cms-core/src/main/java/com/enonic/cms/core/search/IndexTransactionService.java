@@ -1,6 +1,5 @@
 package com.enonic.cms.core.search;
 
-import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 
 public interface IndexTransactionService
@@ -12,9 +11,7 @@ public interface IndexTransactionService
 
     boolean isActive();
 
-    void updateContent( ContentKey contentKey, boolean skipAttachments );
-
-    void updateContent( ContentEntity contentEntity, boolean skipAttachments );
+    void registerUpdate( ContentKey contentKey, boolean skipAttachments );
 
     void deleteContent( ContentKey contentKey );
 

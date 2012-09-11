@@ -64,6 +64,11 @@ public class DomainFixture
         LazyInitializedJDOMDocumentUserType.JDOM_DOCUMENT_TYPE = Types.LONGVARBINARY;
     }
 
+    public IndexTransactionService getIndexTransactionService()
+    {
+        return indexTransactionService;
+    }
+
     @Autowired
     private HibernateTemplate hibernateTemplate;
 

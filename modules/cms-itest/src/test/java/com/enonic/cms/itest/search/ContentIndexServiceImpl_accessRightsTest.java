@@ -5,8 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 
@@ -18,10 +16,7 @@ import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.command.CreateContentCommand;
-import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
-import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
-import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.query.OpenContentQuery;
@@ -31,10 +26,6 @@ import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserType;
-import com.enonic.cms.itest.util.DomainFactory;
-import com.enonic.cms.itest.util.DomainFixture;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
@@ -45,10 +36,8 @@ import com.enonic.cms.web.portal.services.UserServicesRedirectUrlResolver;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.junit.Assert.*;
 
-@TransactionConfiguration(defaultRollback = true)
-@Transactional
 public class ContentIndexServiceImpl_accessRightsTest
-    extends ContentIndexServiceTestBase
+    extends ContentIndexServiceTestHibernatedBase
 {
     @Autowired
     private SecurityService securityService;
@@ -70,11 +59,6 @@ public class ContentIndexServiceImpl_accessRightsTest
     private ContentServicesProcessor customContentHandlerController;
 
     private UserServicesRedirectUrlResolver userServicesRedirectUrlResolver;
-
-    private DomainFactory factory;
-
-    @Autowired
-    private DomainFixture fixture;
 
     @Before
     public void setUp()
@@ -136,17 +120,11 @@ public class ContentIndexServiceImpl_accessRightsTest
         ContentAccessEntity adminAccess = createContentAccess( "europe_user" );
         createContentCommand.addContentAccessRights( Lists.newArrayList( rmyAccess, adminAccess ), null );
 
-
         ContentKey contentKey = contentService.createContent( createContentCommand );
         assertNotNull( contentDao.findByKey( contentKey ) );
 
-        createAndSaveContentAccess(contentKey, "norway_user", "read");
-        createAndSaveContentAccess(contentKey, "europe_user", "read");
-
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
-
-        printAllIndexContent();
 
         OpenContentQuery query = new OpenContentQuery();
         query.setUser( fixture.findUserByName( "norway_user" ) );
@@ -196,8 +174,6 @@ public class ContentIndexServiceImpl_accessRightsTest
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
-
-        printAllIndexContent();
 
         OpenContentQuery query = new OpenContentQuery();
         query.setUser( fixture.findUserByName( "rmy" ) );
@@ -257,8 +233,6 @@ public class ContentIndexServiceImpl_accessRightsTest
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
 
-        printAllIndexContent();
-
         OpenContentQuery query = new OpenContentQuery();
         query.setUser( fixture.findUserByName( "norway_user" ) );
         query.setContentKeyFilter( Lists.newArrayList( contentKey ) );
@@ -314,8 +288,6 @@ public class ContentIndexServiceImpl_accessRightsTest
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
-
-        printAllIndexContent();
 
         OpenContentQuery query = new OpenContentQuery();
         query.setUser( fixture.findUserByName( "rmy" ) );
@@ -377,8 +349,6 @@ public class ContentIndexServiceImpl_accessRightsTest
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
 
-        printAllIndexContent();
-
         OpenContentQuery query = new OpenContentQuery();
         query.setUser( fixture.findUserByName( "norway_user" ) );
         query.setContentKeyFilter( Lists.newArrayList( contentKey ) );
@@ -412,93 +382,5 @@ public class ContentIndexServiceImpl_accessRightsTest
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
-
-    private ContentAccessEntity createContentAccess( final String userName )
-    {
-        return createContentAccess( fixture.findUserByName( userName ).getUserGroup() );
-    }
-
-    private ContentAccessEntity createContentAccess( GroupEntity group )
-    {
-        ContentAccessEntity contentAccess = new ContentAccessEntity();
-        contentAccess.setGroup( group );
-        contentAccess.setReadAccess( true );
-        return contentAccess;
-    }
-
-    private CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus )
-    {
-        CreateContentCommand createContentCommand = new CreateContentCommand();
-        createContentCommand.setCategory( fixture.findCategoryByName( categoryName ) );
-        createContentCommand.setCreator( fixture.findUserByName( creatorUid ).getKey() );
-        createContentCommand.setLanguage( fixture.findLanguageByCode( "en" ) );
-        createContentCommand.setStatus( contentStatus );
-        createContentCommand.setPriority( 0 );
-        createContentCommand.setContentName( "name_" + categoryName + "_" + contentStatus );
-
-        ContentTypeConfig contentTypeConfig = fixture.findContentTypeByName( "Person" ).getContentTypeConfig();
-        CustomContentData contentData = new CustomContentData( contentTypeConfig );
-        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Initial" ) );
-        createContentCommand.setContentData( contentData );
-        return createContentCommand;
-    }
-
-
-    private GroupEntity createAndSaveGroup( String groupId, String userstoreName, GroupType groupType )
-    {
-        GroupEntity group = factory.createGroupInUserstore( groupId, groupType, userstoreName );
-
-        fixture.save( group );
-
-        return group;
-    }
-
-    private void createAndSaveNormalUser( String uid, String userstoreName )
-    {
-        GroupEntity userGroup = factory.createGroupInUserstore( uid + "_group", GroupType.USERSTORE_GROUP, userstoreName );
-
-        fixture.save( userGroup );
-
-        UserEntity user = factory.createUser( uid, uid, UserType.NORMAL, userstoreName, userGroup );
-
-        fixture.save( user );
-
-        fixture.flushAndClearHibernateSesssion();
-    }
-
-    private void createAndStoreCategory( String categoryName )
-    {
-        createAndStoreCategory( categoryName, false );
-    }
-
-    private void createAndStoreCategory( String categoryName, boolean autoApprove )
-    {
-        fixture.save(
-            factory.createCategory( categoryName, null, "Person", "UnitForPerson", User.ANONYMOUS_UID, User.ANONYMOUS_UID, autoApprove ) );
-
-        fixture.flushAndClearHibernateSesssion();
-    }
-
-
-    private void createAndSaveContentAccess( ContentKey contentKey, String userUid, String accesses )
-    {
-        final UserEntity user = fixture.findUserByName( userUid );
-        fixture.save( factory.createContentAccess( contentKey, user, accesses ) );
-        fixture.flushAndClearHibernateSesssion();
-    }
-
-    private void createAndSaveCategoryAccess( String categoryName, String userUid, String accesses )
-    {
-        final UserEntity user = fixture.findUserByName( userUid );
-        fixture.save( factory.createCategoryAccess( categoryName, user, accesses ) );
-        fixture.flushAndClearHibernateSesssion();
-    }
-
-    private void createAndSaveCategoryAccessForGroup( String categoryName, String groupName, String accesses )
-    {
-        final GroupEntity group = fixture.findGroupByName( groupName );
-        fixture.save( factory.createCategoryAccess( categoryName, group, accesses ) );
-        fixture.flushAndClearHibernateSesssion();
-    }
 
 }

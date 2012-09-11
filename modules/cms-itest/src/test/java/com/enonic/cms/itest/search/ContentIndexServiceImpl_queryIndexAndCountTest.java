@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
  * Time: 3:11 PM
  */
 public class ContentIndexServiceImpl_queryIndexAndCountTest
-    extends ContentIndexServiceTestDBBase
+    extends ContentIndexServiceTestHibernatedBase
 {
 
     private static final DateTime DATE_TIME_2010_01_01 = new DateTime( 2010, 1, 1, 0, 0, 0, 0 );

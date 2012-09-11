@@ -70,11 +70,6 @@ public final class IndexServiceImpl
 
     private final IndexDefinitionBuilder indexDefBuilder = new IndexDefinitionBuilder();
 
-    public void removeContent( ContentEntity content )
-    {
-        doRemoveIndex( content );
-    }
-
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     /* timeout: 12 timer (60 sec * 5 min = 300 sec) */
     /* OLD: timeout: 12 timer (3600 * 12 = 43200) */
@@ -103,16 +98,6 @@ public final class IndexServiceImpl
         contentDao.getHibernateTemplate().clear();
     }
 
-
-    public void index( ContentEntity content )
-    {
-        doIndex( content, true );
-    }
-
-    public void index( ContentEntity content, boolean deleteExisting )
-    {
-        doIndex( content, deleteExisting );
-    }
 
     @Override
     public ContentDocument createContentDocument( ContentEntity content )

@@ -13,18 +13,7 @@ import com.enonic.cms.core.search.query.ContentDocument;
  */
 public interface IndexService
 {
-    /**
-     * Removes the specified content from the search index.
-     *
-     * @param content The content to be removed.
-     */
-    void removeContent( ContentEntity content );
-
     public void regenerateIndex( List<ContentKey> contentKeys );
-
-    void index( ContentEntity content );
-
-    void index( ContentEntity content, boolean deleteExisting );
 
     ContentDocument createContentDocument( ContentEntity content );
 

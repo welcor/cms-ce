@@ -2,6 +2,7 @@ package com.enonic.cms.core.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -91,7 +92,7 @@ public class IndexTransactionJournal
             return;
         }
 
-        preloadContent();
+        final SortedMap<ContentKey, ContentEntity> contentMapByKey = preloadContent();
 
         LOG.info( "Flushing index changes from transaction journal" );
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
@@ -99,7 +100,7 @@ public class IndexTransactionJournal
             switch ( journalEntry.getOperation() )
             {
                 case UPDATE:
-                    handleFlushUpdateOperation( journalEntry );
+                    handleFlushUpdateOperation( journalEntry, contentMapByKey );
                     break;
 
                 case DELETE:
@@ -112,7 +113,7 @@ public class IndexTransactionJournal
         flushIndex();
     }
 
-    private void preloadContent()
+    private SortedMap<ContentKey, ContentEntity> preloadContent()
     {
         List<ContentKey> contentToLoad = new ArrayList<ContentKey>();
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
@@ -125,12 +126,13 @@ public class IndexTransactionJournal
 
         FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentToLoad ).eagerFetches(
             ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( false );
-        contentDao.findByKeys( command );
+        return contentDao.findByKeys( command );
     }
 
-    private void handleFlushUpdateOperation( final IndexTransactionJournalEntry journalEntry )
+    private void handleFlushUpdateOperation( final IndexTransactionJournalEntry journalEntry,
+                                             final SortedMap<ContentKey, ContentEntity> contentMapByKey )
     {
-        final ContentEntity content = contentDao.findByKey( journalEntry.getContentKey() );
+        final ContentEntity content = contentMapByKey.get( journalEntry.getContentKey() );
         if ( content == null )
         {
             LOG.warning(

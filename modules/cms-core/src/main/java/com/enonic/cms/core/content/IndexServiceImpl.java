@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
 
 import org.jdom.Document;
 import org.slf4j.Logger;
@@ -42,6 +43,8 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
+import com.enonic.cms.store.dao.ContentEagerFetches;
+import com.enonic.cms.store.dao.FindContentByKeysCommand;
 
 @Service("indexService")
 public final class IndexServiceImpl
@@ -75,11 +78,16 @@ public final class IndexServiceImpl
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     /* timeout: 12 timer (60 sec * 5 min = 300 sec) */
     /* OLD: timeout: 12 timer (3600 * 12 = 43200) */
-    public void regenerateIndex( List<ContentKey> contentKeys )
+    public void regenerateIndex( final List<ContentKey> contentKeys )
     {
+        final FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentKeys ).eagerFetches(
+            ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( true );
+
+        final SortedMap<ContentKey, ContentEntity> contentMapByKey = contentDao.findByKeys( command );
+
         for ( ContentKey contentKey : contentKeys )
         {
-            ContentEntity content = contentDao.findByKey( contentKey );
+            final ContentEntity content = contentMapByKey.get( contentKey );
 
             if ( content.isDeleted() )
             {

@@ -80,7 +80,7 @@ final class ExtensionSetImpl
     {
         for ( final TaskHandler plugin : getAllTaskPlugins() )
         {
-            if ( name.equals( plugin.getName() ) )
+            if ( name.equals( plugin.getClass().getName() ) )
             {
                 return plugin;
             }

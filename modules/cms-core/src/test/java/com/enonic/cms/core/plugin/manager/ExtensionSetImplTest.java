@@ -167,13 +167,23 @@ public class ExtensionSetImplTest
             }
         };
 
-        final List<Extension> list = Lists.newArrayList( (Extension) ext );
+        final TaskHandler ext2 = new TaskHandler()
+        {
+            @Override
+            public void execute( final Properties props )
+                throws Exception
+            {
+
+            }
+        };
+
+        final List<Extension> list = Lists.newArrayList( (Extension) ext2, (Extension) ext );
         final ExtensionSetImpl set = new ExtensionSetImpl( list );
 
         TaskHandler result = set.findTaskPlugin( "other" );
         assertNull( result );
 
-        result = set.findTaskPlugin( ext.getName() );
+        result = set.findTaskPlugin( ext.getClass().getName() );
         assertSame( ext, result );
     }
 

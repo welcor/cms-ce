@@ -7,21 +7,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.collect.Lists;
+
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
+import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessControl;
-import com.enonic.cms.core.content.category.CategoryEntity;
+import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryService;
 import com.enonic.cms.core.content.category.ModifyCategoryACLCommand;
-import com.enonic.cms.core.content.category.MoveCategoryCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
 import com.enonic.cms.core.content.category.SynchronizeCategoryACLCommand;
-import com.enonic.cms.core.content.category.UnitEntity;
-import com.enonic.cms.core.content.category.UpdateCategoryCommand;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -29,8 +29,9 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.content.query.OpenContentQuery;
+import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.itest.search.ContentIndexServiceTestHibernatedBase;
 import com.enonic.cms.store.dao.CategoryDao;
@@ -67,6 +68,8 @@ public class CategoryServiceImpl_indexUpdateTest
     @Autowired
     private ContentDao contentDao;
 
+    public static final String CONTENT_TYPE_NAME = "aContentType";
+
     @Before
     public void setUp()
     {
@@ -78,9 +81,6 @@ public class CategoryServiceImpl_indexUpdateTest
         // setup needed common data for each test
         fixture.initSystemData();
 
-        fixture.createAndStoreUserAndUserGroup( "MyUser", "MyUser fullname", UserType.NORMAL, "testuserstore" );
-        fixture.createAndStoreUserAndUserGroup( "NoRightsUser", "NoRightsUser fullname", UserType.NORMAL, "testuserstore" );
-
         // setting up a simple content type config
         ContentTypeConfigBuilder contentTypeConfigBuilder = new ContentTypeConfigBuilder( "Person", "name" );
         contentTypeConfigBuilder.startBlock( "Person" );
@@ -89,54 +89,112 @@ public class CategoryServiceImpl_indexUpdateTest
         personCtyConfigAsDocument = XMLDocumentFactory.create( contentTypeConfigBuilder.toString() ).getAsJDOMDocument();
 
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
-        fixture.save(
-            factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), personCtyConfigAsDocument ) );
+        fixture.save( factory.createContentType( CONTENT_TYPE_NAME, ContentHandlerName.CUSTOM.getHandlerClassShortName(),
+                                                 personCtyConfigAsDocument ) );
     }
 
-
     @Test
-    public void test_index_updated_for_content_in_category_when_acl_changed()
+    public void index_updated_for_content_in_category_when_acl_changed()
     {
         // setup
-        fixture.save(
-            factory.createContentType( "personContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), personCtyConfigAsDocument ) );
+        final String categoryName = "Category";
+        final String adminUser = "admin";
+        final String aNormalUserUid = "aUser";
 
-        StoreNewCategoryCommand storeNewCategoryCommand = createStoreNewCategoryCommand( "Category", "personContentType", null );
-        final CategoryKey categoryKey = categoryService.storeNewCategory( storeNewCategoryCommand );
+        createUser( aNormalUserUid, UserType.NORMAL );
+
+        final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
         assertNotNull( categoryDao.findByKey( categoryKey ) );
 
-        CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "personContentType" ).getContentTypeConfig() );
-        contentData.add( new TextDataEntry( contentData.getInputConfig( "name" ), "person" ) );
-        CreateContentCommand createContentCommand = createCreateContentCommand( "MyUser", "Category", contentData );
-        final ContentKey contentKey = contentService.createContent( createContentCommand );
-
+        ContentAccessEntity normalUserAccess = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey = createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ) );
         assertNotNull( contentDao.findByKey( contentKey ) );
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
 
-        printAllIndexContent();
-
         // exercise
 
+        // Verify that user does not have access
+        OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, contentKey );
+        ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+
+        // Add admin browse for user to category
         CategoryAccessControl acl = new CategoryAccessControl();
-        acl.setGroupKey( fixture.findGroupByName( "MyUser" ).getGroupKey() );
+        acl.setGroupKey( fixture.findGroupByName( aNormalUserUid ).getGroupKey() );
         acl.setAdminBrowseAccess( true );
-
-        ModifyCategoryACLCommand modifyCategoryACLCommand = new ModifyCategoryACLCommand();
-        modifyCategoryACLCommand.addToBeAdded( acl );
-        modifyCategoryACLCommand.includeContent();
-        modifyCategoryACLCommand.setUpdater( fixture.findUserByName( "MyUser" ).getKey() );
-
-        categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
+        addAclForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
 
-        printAllIndexContent();
+        // Verify that user now get content from query
+        contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        /*
+        fixture.getIndexTransactionService().startTransaction();
+        fixture.getIndexTransactionService().registerUpdate( contentKey, true );
+
+        fixture.flushIndexTransaction();
+
+        query = new OpenContentQuery();
+        query.setUser( fixture.findUserByName( aNormalUserUid ) );
+        query.setContentKeyFilter( Lists.newArrayList( contentKey ) );
+        contentResultSet = contentService.queryContent( query );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+        */
 
     }
 
+    private OpenContentQuery createQueryAssertingCategoryBrowse( final String aNormalUserUid, final ContentKey contentKey )
+    {
+        OpenContentQuery query = new OpenContentQuery();
+        query.setUser( fixture.findUserByName( aNormalUserUid ) );
+        query.setContentKeyFilter( Lists.newArrayList( contentKey ) );
+        query.setCategoryAccessTypeFilter( Lists.newArrayList( CategoryAccessType.ADMIN_BROWSE, CategoryAccessType.READ ),
+                                           ContentIndexQuery.CategoryAccessTypeFilterPolicy.AND );
+        return query;
+    }
+
+    private void addAclForCategory( final String categoryName, final String updaterUid, final CategoryAccessControl acl )
+    {
+        ModifyCategoryACLCommand modifyCategoryACLCommand = new ModifyCategoryACLCommand();
+        modifyCategoryACLCommand.addToBeAdded( acl );
+        modifyCategoryACLCommand.includeContent();
+        modifyCategoryACLCommand.setUpdater( fixture.findUserByName( updaterUid ).getKey() );
+        modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
+
+        categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
+    }
+
+    private void createUser( final String aNormalUserUid, final UserType userType )
+    {
+        fixture.createAndStoreUserAndUserGroup( aNormalUserUid, aNormalUserUid + "fullname", userType, "testuserstore" );
+    }
+
+    private ContentKey createContent( final String contentTypeName, final String categoryName, final String creatorUid,
+                                      List<ContentAccessEntity> contentAccesses )
+    {
+        CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( contentTypeName ).getContentTypeConfig() );
+        contentData.add( new TextDataEntry( contentData.getInputConfig( "name" ), "person" ) );
+        CreateContentCommand createContentCommand = createCreateContentCommand( "aContent", categoryName, contentData, creatorUid );
+        createContentCommand.addContentAccessRights( contentAccesses, null );
+        return contentService.createContent( createContentCommand );
+    }
+
+    private CategoryKey storeCategory( final String contentTypeName, final String categoryName )
+    {
+        StoreNewCategoryCommand storeNewCategoryCommand = createStoreNewCategoryCommand( categoryName, contentTypeName, null );
+        return categoryService.storeNewCategory( storeNewCategoryCommand );
+    }
+
+    private void createContentType( final String contentTypeName )
+    {
+        fixture.save(
+            factory.createContentType( contentTypeName, ContentHandlerName.CUSTOM.getHandlerClassShortName(), personCtyConfigAsDocument ) );
+    }
 
     protected CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus )
     {
@@ -155,14 +213,14 @@ public class CategoryServiceImpl_indexUpdateTest
         return createContentCommand;
     }
 
-    private CreateContentCommand createCreateContentCommand( String contentName, String categoryName, ContentData contentData )
+    private CreateContentCommand createCreateContentCommand( String contentName, String categoryName, ContentData contentData,
+                                                             final String creatorUid )
     {
         CreateContentCommand command = new CreateContentCommand();
-        command.setCreator( fixture.findUserByName( "admin" ).getKey() );
+        command.setCreator( fixture.findUserByName( creatorUid ).getKey() );
         command.setStatus( ContentStatus.APPROVED );
         command.setContentName( contentName );
         command.setCategory( fixture.findCategoryByName( categoryName ).getKey() );
-        command.setAccessRightsStrategy( CreateContentCommand.AccessRightsStrategy.INHERIT_FROM_CATEGORY );
         command.setContentData( contentData );
         command.setLanguage( fixture.findLanguageByCode( "en" ).getKey() );
         command.setPriority( 0 );
@@ -181,7 +239,6 @@ public class CategoryServiceImpl_indexUpdateTest
         command.setAutoApprove( true );
         return command;
     }
-
 
     private void addCategoryAC( String userName, String accesses, StoreNewCategoryCommand command )
     {

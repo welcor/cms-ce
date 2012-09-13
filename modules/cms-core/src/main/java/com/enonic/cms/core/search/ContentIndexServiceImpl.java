@@ -160,16 +160,16 @@ public class ContentIndexServiceImpl
 
     public void index( ContentDocument doc )
     {
-        doDeleteExisting( doc, true );
+        doIndex( doc, true );
     }
 
 
     public void index( ContentDocument doc, boolean deleteExisting )
     {
-        doDeleteExisting( doc, deleteExisting );
+        doIndex( doc, deleteExisting );
     }
 
-    private void doDeleteExisting( final ContentDocument doc, final boolean deleteExisting )
+    private void doIndex( final ContentDocument doc, final boolean deleteExisting )
     {
         ContentIndexData contentIndexData = contentIndexDataFactory.create( doc );
 

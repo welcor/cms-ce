@@ -116,8 +116,8 @@ public class ContentIndexServiceImpl_accessRightsTest
 
         final CreateContentCommand createContentCommand = createCreateContentCommand( categoryName, "norway_user", ContentStatus.DRAFT );
 
-        ContentAccessEntity rmyAccess = createContentAccess( "norway_user" );
-        ContentAccessEntity adminAccess = createContentAccess( "europe_user" );
+        ContentAccessEntity rmyAccess = createContentAccess( "norway_user", true, false );
+        ContentAccessEntity adminAccess = createContentAccess( "europe_user", true, false );
         createContentCommand.addContentAccessRights( Lists.newArrayList( rmyAccess, adminAccess ), null );
 
         ContentKey contentKey = contentService.createContent( createContentCommand );
@@ -166,7 +166,7 @@ public class ContentIndexServiceImpl_accessRightsTest
 
         final CreateContentCommand createContentCommand = createCreateContentCommand( categoryName, "rmy", ContentStatus.DRAFT );
 
-        ContentAccessEntity groupAccess = createContentAccess( groupWithAccess );
+        ContentAccessEntity groupAccess = createContentAccess( groupWithAccess, true, false );
         createContentCommand.addContentAccessRights( Lists.newArrayList( groupAccess ), null );
 
         ContentKey contentKey = contentService.createContent( createContentCommand );
@@ -224,7 +224,7 @@ public class ContentIndexServiceImpl_accessRightsTest
         final CreateContentCommand createContentCommand = createCreateContentCommand( categoryName, "norway_user", ContentStatus.DRAFT );
 
         // Add access rights to all in world - group
-        ContentAccessEntity groupAccess = createContentAccess( groupWorld );
+        ContentAccessEntity groupAccess = createContentAccess( groupWorld, true, false);
         createContentCommand.addContentAccessRights( Lists.newArrayList( groupAccess ), null );
 
         ContentKey contentKey = contentService.createContent( createContentCommand );
@@ -280,7 +280,7 @@ public class ContentIndexServiceImpl_accessRightsTest
 
         final CreateContentCommand createContentCommand = createCreateContentCommand( categoryName, "rmy", ContentStatus.DRAFT );
 
-        ContentAccessEntity groupAccess = createContentAccess( groupWithAccess );
+        ContentAccessEntity groupAccess = createContentAccess( groupWithAccess, true, false );
         createContentCommand.addContentAccessRights( Lists.newArrayList( groupAccess ), null );
 
         ContentKey contentKey = contentService.createContent( createContentCommand );
@@ -352,7 +352,7 @@ public class ContentIndexServiceImpl_accessRightsTest
         OpenContentQuery query = new OpenContentQuery();
         query.setUser( fixture.findUserByName( "norway_user" ) );
         query.setContentKeyFilter( Lists.newArrayList( contentKey ) );
-        query.setCategoryAccessTypeFilter( Lists.newArrayList( CategoryAccessType.ADMIN_BROWSE, CategoryAccessType.READ  ),
+        query.setCategoryAccessTypeFilter( Lists.newArrayList( CategoryAccessType.ADMIN_BROWSE, CategoryAccessType.READ ),
                                            ContentIndexQuery.CategoryAccessTypeFilterPolicy.AND );
         ContentResultSet contentResultSet = contentService.queryContent( query );
         assertEquals( "norway_user should have access", 1, contentResultSet.getKeys().size() );

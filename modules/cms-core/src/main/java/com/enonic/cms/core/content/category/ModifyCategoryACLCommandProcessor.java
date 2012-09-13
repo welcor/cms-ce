@@ -3,6 +3,10 @@ package com.enonic.cms.core.content.category;
 
 import java.util.SortedMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.store.dao.GroupDao;
 
@@ -14,10 +18,15 @@ class ModifyCategoryACLCommandProcessor
 
     private SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate;
 
-    ModifyCategoryACLCommandProcessor( final GroupDao groupDao, final UpdateCategoryAccessChecker updateCategoryAccessChecker )
+    private final IndexTransactionService indexTransactionService;
+
+
+    ModifyCategoryACLCommandProcessor( final GroupDao groupDao, final UpdateCategoryAccessChecker updateCategoryAccessChecker,
+                                       final IndexTransactionService indexTransactionService )
     {
         this.groupDao = groupDao;
         this.updateCategoryAccessChecker = updateCategoryAccessChecker;
+        this.indexTransactionService = indexTransactionService;
     }
 
     void setCategoriesToUpdate( SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate )
@@ -33,11 +42,18 @@ class ModifyCategoryACLCommandProcessor
 
     private void modify( final ModifyCategoryACLCommand command )
     {
+        indexTransactionService.startTransaction();
+
         for ( CategoryEntity category : categoriesToUpdate.values() )
         {
             category.removeAcessRights( command.getToBeRemoved() );
             add( command, category );
             modify( command, category );
+
+            for ( ContentEntity content : category.getContents() )
+            {
+                indexTransactionService.registerUpdate( content.getKey(), true );
+            }
         }
     }
 

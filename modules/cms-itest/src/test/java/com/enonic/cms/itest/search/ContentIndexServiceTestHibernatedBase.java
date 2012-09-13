@@ -46,16 +46,17 @@ public class ContentIndexServiceTestHibernatedBase
 
     }
 
-    protected ContentAccessEntity createContentAccess( final String userName )
+    protected ContentAccessEntity createContentAccess( final String userName, boolean read, boolean update )
     {
-        return createContentAccess( fixture.findUserByName( userName ).getUserGroup() );
+        return createContentAccess( fixture.findUserByName( userName ).getUserGroup(), read, update );
     }
 
-    protected ContentAccessEntity createContentAccess( GroupEntity group )
+    protected ContentAccessEntity createContentAccess( GroupEntity group, boolean read, boolean update )
     {
         ContentAccessEntity contentAccess = new ContentAccessEntity();
         contentAccess.setGroup( group );
-        contentAccess.setReadAccess( true );
+        contentAccess.setReadAccess( read );
+        contentAccess.setUpdateAccess( update );
         return contentAccess;
     }
 

@@ -19,6 +19,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
@@ -65,6 +66,8 @@ public class CategoryCommandProcessorFactory
     @Autowired
     private TimeService timeService;
 
+    @Autowired
+    private IndexTransactionService indexTransactionService;
 
     CreateCategoryCommandProcessor createStoreNewCategoryCommandProcessor( final StoreNewCategoryCommand command )
     {
@@ -191,7 +194,8 @@ public class CategoryCommandProcessorFactory
             new UpdateCategoryAccessChecker( memberOfResolver, categoryAccessResolver ).updater( updater );
         final SortedMap<CategoryKey, CategoryEntity> categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
 
-        final ModifyCategoryACLCommandProcessor processor = new ModifyCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker );
+        final ModifyCategoryACLCommandProcessor processor =
+            new ModifyCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService );
 
         processor.setCategoriesToUpdate( categoryMapBykey );
 

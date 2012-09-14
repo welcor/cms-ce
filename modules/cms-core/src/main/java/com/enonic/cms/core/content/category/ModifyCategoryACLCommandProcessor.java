@@ -28,20 +28,16 @@ class ModifyCategoryACLCommandProcessor
     void process( final ModifyCategoryACLCommand command )
     {
         checkUpdateCategoriesAccess();
-        modify( command );
-    }
 
-    private void modify( final ModifyCategoryACLCommand command )
-    {
         for ( CategoryEntity category : categoriesToUpdate.values() )
         {
             category.removeAcessRights( command.getToBeRemoved() );
-            add( command, category );
-            modify( command, category );
+            processThoseToBeAdded( command, category );
+            processThoseToModified( command, category );
         }
     }
 
-    private void modify( final ModifyCategoryACLCommand command, final CategoryEntity category )
+    private void processThoseToModified( final ModifyCategoryACLCommand command, final CategoryEntity category )
     {
         // modify (and add if not already existing)
         for ( CategoryAccessControl categoryAccessControl : command.getToBeModified() )
@@ -59,7 +55,7 @@ class ModifyCategoryACLCommandProcessor
         }
     }
 
-    private void add( final ModifyCategoryACLCommand command, final CategoryEntity category )
+    private void processThoseToBeAdded( final ModifyCategoryACLCommand command, final CategoryEntity category )
     {
         // add (and modify if already existing)
         for ( CategoryAccessControl categoryAccessControl : command.getToBeAdded() )

@@ -32,33 +32,16 @@ class ModifyCategoryACLCommandProcessor
         for ( CategoryEntity category : categoriesToUpdate.values() )
         {
             category.removeAcessRights( command.getToBeRemoved() );
-            processThoseToBeAdded( command, category );
-            processThoseToModified( command, category );
+            processThoseToBeAddedOrModified( command.getToBeAdded(), category );
+            processThoseToBeAddedOrModified( command.getToBeModified(), category );
         }
     }
 
-    private void processThoseToModified( final ModifyCategoryACLCommand command, final CategoryEntity category )
-    {
-        // modify (and add if not already existing)
-        for ( CategoryAccessControl categoryAccessControl : command.getToBeModified() )
-        {
-            GroupEntity group = groupDao.findByKey( categoryAccessControl.getGroupKey() );
-            if ( category.hasAccessForGroup( categoryAccessControl.getGroupKey() ) )
-            {
-                CategoryAccessEntity access = category.getCategoryAccess( categoryAccessControl.getGroupKey() );
-                access.setAccess( categoryAccessControl );
-            }
-            else
-            {
-                category.addAccessRight( CategoryAccessEntity.create( category.getKey(), group, categoryAccessControl ) );
-            }
-        }
-    }
-
-    private void processThoseToBeAdded( final ModifyCategoryACLCommand command, final CategoryEntity category )
+    private void processThoseToBeAddedOrModified( final Iterable<CategoryAccessControl> categoryAccessControls,
+                                                  final CategoryEntity category )
     {
         // add (and modify if already existing)
-        for ( CategoryAccessControl categoryAccessControl : command.getToBeAdded() )
+        for ( CategoryAccessControl categoryAccessControl : categoryAccessControls )
         {
             GroupEntity group = groupDao.findByKey( categoryAccessControl.getGroupKey() );
             if ( !category.hasAccessForGroup( categoryAccessControl.getGroupKey() ) )

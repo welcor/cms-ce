@@ -16,7 +16,10 @@ import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
+import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.query.OpenContentQuery;
@@ -26,6 +29,8 @@ import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
@@ -65,8 +70,6 @@ public class ContentIndexServiceImpl_accessRightsTest
     {
         factory = fixture.getFactory();
 
-        // Dummy
-
         customContentHandlerController = new ContentServicesProcessor();
         customContentHandlerController.setContentService( contentService );
         customContentHandlerController.setSecurityService( securityService );
@@ -104,9 +107,10 @@ public class ContentIndexServiceImpl_accessRightsTest
     }
 
     @Test
-    public void testContentAccessible_user_access_test()
+    public void user_access()
         throws Exception
     {
+        // Setup
         String categoryName = "category";
         createAndStoreCategory( categoryName );
         createAndSaveNormalUser( "norway_user", "testuserstore" );
@@ -125,6 +129,8 @@ public class ContentIndexServiceImpl_accessRightsTest
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
+
+        // Exercise
 
         OpenContentQuery query = new OpenContentQuery();
         query.setUser( fixture.findUserByName( "norway_user" ) );
@@ -147,9 +153,11 @@ public class ContentIndexServiceImpl_accessRightsTest
     }
 
     @Test
-    public void testContentAccessible_group_direct_access_test()
+    public void group_acess()
         throws Exception
     {
+        // Setup
+
         String categoryName = "category";
         createAndStoreCategory( categoryName );
         createAndSaveNormalUser( "rmy", "testuserstore" );
@@ -196,7 +204,7 @@ public class ContentIndexServiceImpl_accessRightsTest
 
 
     @Test
-    public void testContentAccessible_group_transitive_access_test()
+    public void group_transitive_access()
         throws Exception
     {
         String categoryName = "category";
@@ -259,7 +267,7 @@ public class ContentIndexServiceImpl_accessRightsTest
     }
 
     @Test
-    public void testContentAccessible_child_not_parent_no_access_test()
+    public void child_not_parent_no_access()
         throws Exception
     {
         String categoryName = "category";
@@ -310,7 +318,7 @@ public class ContentIndexServiceImpl_accessRightsTest
 
 
     @Test
-    public void testContentAccessible_category_access_test()
+    public void category_access()
         throws Exception
     {
         String categoryName = "category";
@@ -380,6 +388,93 @@ public class ContentIndexServiceImpl_accessRightsTest
                                            ContentIndexQuery.CategoryAccessTypeFilterPolicy.AND );
         contentResultSet = contentService.queryContent( query );
         assertEquals( 0, contentResultSet.getKeys().size() );
+    }
+
+    protected CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus )
+    {
+        CreateContentCommand createContentCommand = new CreateContentCommand();
+        createContentCommand.setCategory( fixture.findCategoryByName( categoryName ) );
+        createContentCommand.setCreator( fixture.findUserByName( creatorUid ).getKey() );
+        createContentCommand.setLanguage( fixture.findLanguageByCode( "en" ) );
+        createContentCommand.setStatus( contentStatus );
+        createContentCommand.setPriority( 0 );
+        createContentCommand.setContentName( "name_" + categoryName + "_" + contentStatus );
+
+        ContentTypeConfig contentTypeConfig = fixture.findContentTypeByName( "Person" ).getContentTypeConfig();
+        CustomContentData contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Initial" ) );
+        createContentCommand.setContentData( contentData );
+        return createContentCommand;
+    }
+
+
+    protected GroupEntity createAndSaveGroup( String groupId, String userstoreName, GroupType groupType )
+    {
+        GroupEntity group = factory.createGroupInUserstore( groupId, groupType, userstoreName );
+
+        fixture.save( group );
+
+        return group;
+    }
+
+    protected void createAndSaveNormalUser( String uid, String userstoreName )
+    {
+        GroupEntity userGroup = factory.createGroupInUserstore( uid + "_group", GroupType.USERSTORE_GROUP, userstoreName );
+
+        fixture.save( userGroup );
+
+        UserEntity user = factory.createUser( uid, uid, UserType.NORMAL, userstoreName, userGroup );
+
+        fixture.save( user );
+
+        fixture.flushAndClearHibernateSesssion();
+    }
+
+    protected void createAndStoreCategory( String categoryName )
+    {
+        createAndStoreCategory( categoryName, false );
+    }
+
+    protected void createAndStoreCategory( String categoryName, boolean autoApprove )
+    {
+        fixture.save(
+            factory.createCategory( categoryName, null, "Person", "UnitForPerson", User.ANONYMOUS_UID, User.ANONYMOUS_UID, autoApprove ) );
+
+        fixture.flushAndClearHibernateSesssion();
+    }
+
+    protected void createAndSaveContentAccess( ContentKey contentKey, String userUid, String accesses )
+    {
+        final UserEntity user = fixture.findUserByName( userUid );
+        fixture.save( factory.createContentAccess( contentKey, user, accesses ) );
+        fixture.flushAndClearHibernateSesssion();
+    }
+
+    protected void createAndSaveCategoryAccess( String categoryName, String userUid, String accesses )
+    {
+        final UserEntity user = fixture.findUserByName( userUid );
+
+        //final CategoryEntity category = fixture.findCategoryByName( categoryName );
+        //category.addAccessRight( factory.createCategoryAccess( categoryName, user, accesses ) );
+
+        fixture.save( factory.createCategoryAccess( categoryName, user, accesses ) );
+        fixture.flushAndClearHibernateSesssion();
+    }
+
+    protected void createAndSaveCategoryAccessForGroup( String categoryName, String groupName, String accesses )
+    {
+        final GroupEntity group = fixture.findGroupByName( groupName );
+        fixture.save( factory.createCategoryAccess( categoryName, group, accesses ) );
+        fixture.flushAndClearHibernateSesssion();
+    }
+
+    protected ContentAccessEntity createContentAccess( GroupEntity group, boolean read, boolean update )
+    {
+        ContentAccessEntity contentAccess = new ContentAccessEntity();
+        contentAccess.setGroup( group );
+        contentAccess.setReadAccess( read );
+        contentAccess.setUpdateAccess( update );
+        return contentAccess;
     }
 
 

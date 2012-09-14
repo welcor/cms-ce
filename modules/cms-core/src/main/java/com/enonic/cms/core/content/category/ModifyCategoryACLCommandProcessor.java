@@ -3,8 +3,6 @@ package com.enonic.cms.core.content.category;
 
 import java.util.SortedMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -16,10 +14,9 @@ class ModifyCategoryACLCommandProcessor
 
     private GroupDao groupDao;
 
-    private SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate;
-
     private final IndexTransactionService indexTransactionService;
 
+    private SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate;
 
     ModifyCategoryACLCommandProcessor( final GroupDao groupDao, final UpdateCategoryAccessChecker updateCategoryAccessChecker,
                                        final IndexTransactionService indexTransactionService )
@@ -36,19 +33,15 @@ class ModifyCategoryACLCommandProcessor
 
     void process( final ModifyCategoryACLCommand command )
     {
-        checkUpdateCategoriesAccess();
-        modify( command );
-    }
-
-    private void modify( final ModifyCategoryACLCommand command )
-    {
         indexTransactionService.startTransaction();
+
+        checkUpdateCategoriesAccess();
 
         for ( CategoryEntity category : categoriesToUpdate.values() )
         {
             category.removeAcessRights( command.getToBeRemoved() );
-            add( command, category );
-            modify( command, category );
+            processThoseToBeAddedOrModified( command.getToBeAdded(), category );
+            processThoseToBeAddedOrModified( command.getToBeModified(), category );
 
             for ( ContentEntity content : category.getContents() )
             {
@@ -57,28 +50,11 @@ class ModifyCategoryACLCommandProcessor
         }
     }
 
-    private void modify( final ModifyCategoryACLCommand command, final CategoryEntity category )
-    {
-        // modify (and add if not already existing)
-        for ( CategoryAccessControl categoryAccessControl : command.getToBeModified() )
-        {
-            GroupEntity group = groupDao.findByKey( categoryAccessControl.getGroupKey() );
-            if ( category.hasAccessForGroup( categoryAccessControl.getGroupKey() ) )
-            {
-                CategoryAccessEntity access = category.getCategoryAccess( categoryAccessControl.getGroupKey() );
-                access.setAccess( categoryAccessControl );
-            }
-            else
-            {
-                category.addAccessRight( CategoryAccessEntity.create( category.getKey(), group, categoryAccessControl ) );
-            }
-        }
-    }
-
-    private void add( final ModifyCategoryACLCommand command, final CategoryEntity category )
+    private void processThoseToBeAddedOrModified( final Iterable<CategoryAccessControl> categoryAccessControls,
+                                                  final CategoryEntity category )
     {
         // add (and modify if already existing)
-        for ( CategoryAccessControl categoryAccessControl : command.getToBeAdded() )
+        for ( CategoryAccessControl categoryAccessControl : categoryAccessControls )
         {
             GroupEntity group = groupDao.findByKey( categoryAccessControl.getGroupKey() );
             if ( !category.hasAccessForGroup( categoryAccessControl.getGroupKey() ) )

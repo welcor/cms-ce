@@ -180,7 +180,6 @@ public class CategoryServiceImpl_updateIndexTest
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
-
     @Test
     public void index_updated_for_multiple_content_in_category_when_acl_modified()
     {
@@ -230,7 +229,6 @@ public class CategoryServiceImpl_updateIndexTest
         assertEquals( 2, contentResultSet.getKeys().size() );
     }
 
-
     @Test
     public void index_updated_for_multiple_content_in_category_when_acl_syncronized()
     {
@@ -279,7 +277,6 @@ public class CategoryServiceImpl_updateIndexTest
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
         assertEquals( 2, contentResultSet.getKeys().size() );
     }
-
 
     @Test
     public void index_updated_for_content_in_category_when_acl_modified_removed()
@@ -382,7 +379,6 @@ public class CategoryServiceImpl_updateIndexTest
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
-
     @Test
     public void index_updated_for_content_in_category_when_acl_modified_changed()
     {
@@ -422,7 +418,6 @@ public class CategoryServiceImpl_updateIndexTest
         // exercise
 
         // Change ACL to admin browse false for user on category
-
         acl = new CategoryAccessControl();
         acl.setGroupKey( aNormalUserGroupKey );
         acl.setAdminBrowseAccess( false );
@@ -440,7 +435,6 @@ public class CategoryServiceImpl_updateIndexTest
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
-
 
     @Test
     public void index_updated_for_content_in_category_when_acl_syncronized_changed()
@@ -491,7 +485,6 @@ public class CategoryServiceImpl_updateIndexTest
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
-
 
     @Test
     public void index_updated_for_content_in_category_category_deleted_including_content()
@@ -648,5 +641,4 @@ public class CategoryServiceImpl_updateIndexTest
         command.setAutoApprove( true );
         return command;
     }
-
 }

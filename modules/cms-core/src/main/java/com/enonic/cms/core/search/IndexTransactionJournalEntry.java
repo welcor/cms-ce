@@ -42,4 +42,43 @@ class IndexTransactionJournalEntry
     {
         return contentKey;
     }
+
+    @Override
+    public boolean equals( final Object o )
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        final IndexTransactionJournalEntry that = (IndexTransactionJournalEntry) o;
+
+        if ( skipAttachments != that.skipAttachments )
+        {
+            return false;
+        }
+        if ( contentKey != null ? !contentKey.equals( that.contentKey ) : that.contentKey != null )
+        {
+            return false;
+        }
+        if ( operation != that.operation )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = operation != null ? operation.hashCode() : 0;
+        result = 31 * result + ( contentKey != null ? contentKey.hashCode() : 0 );
+        result = 31 * result + ( skipAttachments ? 1 : 0 );
+        return result;
+    }
 }

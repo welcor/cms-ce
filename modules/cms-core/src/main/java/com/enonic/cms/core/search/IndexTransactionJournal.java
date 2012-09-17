@@ -2,6 +2,7 @@ package com.enonic.cms.core.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -36,7 +37,7 @@ public class IndexTransactionJournal
 
     private final ElasticSearchIndexService elasticSearchIndexService;
 
-    private final List<IndexTransactionJournalEntry> changeHistory;
+    private final Set<IndexTransactionJournalEntry> changeHistory;
 
     public IndexTransactionJournal( ElasticSearchIndexService elasticSearchIndexService, IndexService indexService,
                                     ContentIndexDataFactory contentIndexDataFactory, ContentDao contentDao )
@@ -45,7 +46,7 @@ public class IndexTransactionJournal
         this.indexService = indexService;
         this.contentIndexDataFactory = contentIndexDataFactory;
         this.contentDao = contentDao;
-        this.changeHistory = new ArrayList<IndexTransactionJournalEntry>();
+        this.changeHistory = new HashSet<IndexTransactionJournalEntry>();
     }
 
     public void startTransaction()
@@ -145,6 +146,7 @@ public class IndexTransactionJournal
 
         FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentToLoad ).eagerFetches(
             ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( false );
+
         return contentDao.findByKeys( command );
     }
 
@@ -228,7 +230,7 @@ public class IndexTransactionJournal
     @Override
     public void afterCompletion( int i )
     {
-   //     System.out.println( "Completion status: " + i );
+        //     System.out.println( "Completion status: " + i );
     }
 
     public void clearJournal()

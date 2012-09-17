@@ -21,7 +21,7 @@ import com.enonic.cms.core.search.query.SimpleText;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
-public final class ContentIndexDataFactory
+public class ContentIndexDataFactory
     extends IndexFieldNameConstants
 {
     private final ContentIndexDataCustomDataFactory customDataFactory = new ContentIndexDataCustomDataFactory();

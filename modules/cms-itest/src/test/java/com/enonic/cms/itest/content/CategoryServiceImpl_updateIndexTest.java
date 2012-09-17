@@ -20,6 +20,7 @@ import com.enonic.cms.core.content.category.CategoryAccessControl;
 import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.category.CategoryService;
+import com.enonic.cms.core.content.category.DeleteCategoryCommand;
 import com.enonic.cms.core.content.category.ModifyCategoryACLCommand;
 import com.enonic.cms.core.content.category.StoreNewCategoryCommand;
 import com.enonic.cms.core.content.category.SynchronizeCategoryACLCommand;
@@ -326,7 +327,6 @@ public class CategoryServiceImpl_updateIndexTest
         modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
         categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
 
-        // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
 
         // Verify that user now get content from query
@@ -375,7 +375,6 @@ public class CategoryServiceImpl_updateIndexTest
         // Remove ACL for user on category
         syncronizeACLForCategory( categoryName, adminUser, null );
 
-        // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
 
         // Verify that user now get content from query
@@ -435,7 +434,6 @@ public class CategoryServiceImpl_updateIndexTest
         modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
         categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
 
-        // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
 
         // Verify that user now get content from query
@@ -487,11 +485,63 @@ public class CategoryServiceImpl_updateIndexTest
         acl.setAdminBrowseAccess( false );
 
         syncronizeACLForCategory( categoryName, adminUser, acl );
-
-        // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
 
         // Verify that user now get content from query
+        contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+    }
+
+
+    @Test
+    public void index_updated_for_content_in_category_category_deleted_including_content()
+    {
+        // setup
+        final String categoryName = "Category";
+        final String adminUser = "admin";
+        final String aNormalUserUid = "aUser";
+
+        createUser( aNormalUserUid, UserType.NORMAL );
+
+        final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
+        assertNotNull( categoryDao.findByKey( categoryKey ) );
+
+        // Create content with read access
+        ContentAccessEntity normalUserAccess = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey =
+            createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
+        assertNotNull( contentDao.findByKey( contentKey ) );
+
+        final GroupKey aNormalUserGroupKey = fixture.findGroupByName( aNormalUserUid ).getGroupKey();
+
+        // Add admin browse for user on category
+        CategoryAccessControl acl = new CategoryAccessControl();
+        acl.setGroupKey( aNormalUserGroupKey );
+        acl.setAdminBrowseAccess( true );
+
+        modifyACLForCategory( categoryName, adminUser, acl );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // Assert content exists and accessable
+        OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
+        ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        // exercise
+
+        // Delete category including content
+        DeleteCategoryCommand deleteCategoryCommand = new DeleteCategoryCommand();
+        deleteCategoryCommand.setIncludeContent( true );
+        deleteCategoryCommand.setCategoryKey( categoryKey );
+        deleteCategoryCommand.setDeleter( fixture.findUserByName( adminUser ).getKey() );
+        deleteCategoryCommand.setRecursive( false );
+        categoryService.deleteCategory( deleteCategoryCommand );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Verify that content is now also deleted from index
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }

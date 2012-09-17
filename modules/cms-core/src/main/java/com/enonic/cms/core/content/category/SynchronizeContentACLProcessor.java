@@ -6,6 +6,7 @@ import java.util.SortedMap;
 import com.enonic.cms.core.content.ContentACLSynchronizer;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.search.IndexTransactionService;
 
 class SynchronizeContentACLProcessor
 {
@@ -13,9 +14,13 @@ class SynchronizeContentACLProcessor
 
     private SortedMap<ContentKey, ContentEntity> contentToSynchronize;
 
-    SynchronizeContentACLProcessor( ContentACLSynchronizer contentACLSynchronizer )
+    private final IndexTransactionService indexTransactionService;
+
+    SynchronizeContentACLProcessor( final ContentACLSynchronizer contentACLSynchronizer,
+                                    final IndexTransactionService indexTransactionService )
     {
         this.contentACLSynchronizer = contentACLSynchronizer;
+        this.indexTransactionService = indexTransactionService;
     }
 
     void setContentToSynchronize( SortedMap<ContentKey, ContentEntity> contentToSynchronize )
@@ -28,6 +33,7 @@ class SynchronizeContentACLProcessor
         for ( ContentEntity content : contentToSynchronize.values() )
         {
             contentACLSynchronizer.synchronize( content, command.getContentACL() );
+            indexTransactionService.registerUpdate( content.getKey(), true );
         }
     }
 }

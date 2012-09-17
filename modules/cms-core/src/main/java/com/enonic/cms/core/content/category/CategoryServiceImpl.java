@@ -66,12 +66,15 @@ public class CategoryServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void synchronizeContentACL_withoutRequiresNewPropagation_for_test_only( SynchronizeContentACLCommand command )
     {
+        indexTransactionService.startTransaction();
         processorFactory.createSynchronizeContentACLCommandProcessor( command ).process( command );
+        indexTransactionService.commit();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void synchronizeContentACL( SynchronizeContentACLCommand command )
     {
+        indexTransactionService.startTransaction();
         processorFactory.createSynchronizeContentACLCommandProcessor( command ).process( command );
     }
 
@@ -93,12 +96,15 @@ public class CategoryServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void modifyContentACL_withoutRequiresNewPropagation_for_test_only( ModifyContentACLCommand command )
     {
+        indexTransactionService.startTransaction();
         processorFactory.createModifyContentACLCommandProcessor( command ).process( command );
+        indexTransactionService.commit();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void modifyContentACL( ModifyContentACLCommand command )
     {
+        indexTransactionService.startTransaction();
         processorFactory.createModifyContentACLCommandProcessor( command ).process( command );
     }
 

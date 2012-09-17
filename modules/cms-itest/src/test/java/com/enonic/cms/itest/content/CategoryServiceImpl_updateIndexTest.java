@@ -47,7 +47,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class CategoryServiceImpl_indexUpdateTest
+public class CategoryServiceImpl_updateIndexTest
     extends ContentIndexServiceTestHibernatedBase
 {
 
@@ -116,7 +116,6 @@ public class CategoryServiceImpl_indexUpdateTest
         assertNotNull( contentDao.findByKey( contentKey ) );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // exercise
 
@@ -132,7 +131,6 @@ public class CategoryServiceImpl_indexUpdateTest
         modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -160,7 +158,6 @@ public class CategoryServiceImpl_indexUpdateTest
         assertNotNull( contentDao.findByKey( contentKey ) );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // exercise
 
@@ -176,7 +173,6 @@ public class CategoryServiceImpl_indexUpdateTest
         syncronizeACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -207,7 +203,6 @@ public class CategoryServiceImpl_indexUpdateTest
             createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( content2Access ), "content2" );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         assertNotNull( contentDao.findByKey( contentKey1 ) );
         assertNotNull( contentDao.findByKey( contentKey2 ) );
@@ -226,7 +221,6 @@ public class CategoryServiceImpl_indexUpdateTest
         modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         printAllIndexContent();
 
@@ -259,7 +253,6 @@ public class CategoryServiceImpl_indexUpdateTest
             createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( content2Access ), "content2" );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         assertNotNull( contentDao.findByKey( contentKey1 ) );
         assertNotNull( contentDao.findByKey( contentKey2 ) );
@@ -278,7 +271,6 @@ public class CategoryServiceImpl_indexUpdateTest
         syncronizeACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         printAllIndexContent();
 
@@ -318,7 +310,6 @@ public class CategoryServiceImpl_indexUpdateTest
         modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -337,7 +328,6 @@ public class CategoryServiceImpl_indexUpdateTest
 
         // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -374,7 +364,6 @@ public class CategoryServiceImpl_indexUpdateTest
         modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -388,7 +377,6 @@ public class CategoryServiceImpl_indexUpdateTest
 
         // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -426,7 +414,6 @@ public class CategoryServiceImpl_indexUpdateTest
         modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -450,7 +437,6 @@ public class CategoryServiceImpl_indexUpdateTest
 
         // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -487,7 +473,6 @@ public class CategoryServiceImpl_indexUpdateTest
         modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -505,13 +490,11 @@ public class CategoryServiceImpl_indexUpdateTest
 
         // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
-        fixture.flushIndexTransaction();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
-
 
     private OpenContentQuery createQueryAssertingCategoryBrowse( final String aNormalUserUid, final CategoryKey categoryKey )
     {

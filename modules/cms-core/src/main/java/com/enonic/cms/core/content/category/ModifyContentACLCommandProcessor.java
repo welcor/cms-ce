@@ -7,6 +7,7 @@ import com.enonic.cms.core.content.ContentAccessControl;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
+import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.store.dao.GroupDao;
@@ -17,9 +18,13 @@ class ModifyContentACLCommandProcessor
 
     private SortedMap<ContentKey, ContentEntity> contentToSynchronize;
 
-    ModifyContentACLCommandProcessor( final GroupDao groupDao )
+    private IndexTransactionService indexTransactionService;
+
+
+    ModifyContentACLCommandProcessor( final GroupDao groupDao, final IndexTransactionService indexTransactionService )
     {
         this.groupDao = groupDao;
+        this.indexTransactionService = indexTransactionService;
     }
 
     void setContentToSynchronize( final SortedMap<ContentKey, ContentEntity> contentToSynchronize )
@@ -34,6 +39,8 @@ class ModifyContentACLCommandProcessor
             remove( command.getToBeRemoved(), content );
             modify( command.getToBeModified(), content );
             add( command.getToBeAdded(), content );
+
+            indexTransactionService.registerUpdate( content.getKey(), true );
         }
     }
 

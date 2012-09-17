@@ -165,7 +165,7 @@ public class CategoryCommandProcessorFactory
         final SortedMap<CategoryKey, CategoryEntity> categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
 
         final SynchronizeCategoryACLCommandProcessor processor =
-            new SynchronizeCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao);
+            new SynchronizeCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao );
 
         processor.setCategoriesToUpdate( categoryMapBykey );
 
@@ -178,7 +178,8 @@ public class CategoryCommandProcessorFactory
             new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 
-        final SynchronizeContentACLProcessor processor = new SynchronizeContentACLProcessor( new ContentACLSynchronizer( groupDao ) );
+        final SynchronizeContentACLProcessor processor =
+            new SynchronizeContentACLProcessor( new ContentACLSynchronizer( groupDao ), indexTransactionService );
         processor.setContentToSynchronize( contentToSynchronize );
 
         return processor;
@@ -195,7 +196,7 @@ public class CategoryCommandProcessorFactory
         final SortedMap<CategoryKey, CategoryEntity> categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
 
         final ModifyCategoryACLCommandProcessor processor =
-            new ModifyCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao);
+            new ModifyCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao );
 
         processor.setCategoriesToUpdate( categoryMapBykey );
 
@@ -208,7 +209,7 @@ public class CategoryCommandProcessorFactory
             new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 
-        final ModifyContentACLCommandProcessor prosessor = new ModifyContentACLCommandProcessor( groupDao );
+        final ModifyContentACLCommandProcessor prosessor = new ModifyContentACLCommandProcessor( groupDao, indexTransactionService );
         prosessor.setContentToSynchronize( contentToSynchronize );
         return prosessor;
     }

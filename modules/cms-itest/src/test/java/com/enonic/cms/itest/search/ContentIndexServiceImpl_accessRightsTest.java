@@ -347,10 +347,6 @@ public class ContentIndexServiceImpl_accessRightsTest
         final CreateContentCommand createContentCommand = createCreateContentCommand( categoryName, "norway_user", ContentStatus.DRAFT );
         createContentCommand.setAccessRightsStrategy( CreateContentCommand.AccessRightsStrategy.INHERIT_FROM_CATEGORY );
 
-        // Add access rights to all in world - group
-        //ContentAccessEntity groupAccess = createContentAccess( groupWorld );
-        //createContentCommand.addContentAccessRights( Lists.newArrayList( groupAccess ), null );
-
         ContentKey contentKey = contentService.createContent( createContentCommand );
         assertNotNull( contentDao.findByKey( contentKey ) );
 

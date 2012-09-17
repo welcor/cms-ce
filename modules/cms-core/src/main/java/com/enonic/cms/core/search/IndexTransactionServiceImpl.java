@@ -1,5 +1,8 @@
 package com.enonic.cms.core.search;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
+import com.enonic.cms.core.structure.menuitem.SetContentHomeCommand;
 import com.enonic.cms.store.dao.ContentDao;
 
 @Service
@@ -42,6 +46,13 @@ public class IndexTransactionServiceImpl
     {
         IndexTransactionJournal indexTransactionJournal = newTransactionJournal();
         indexTransactionJournal.startTransaction();
+    }
+
+    @Override
+    public void registerUpdate( final Collection<ContentKey> contentKeys, final boolean skipAttachments )
+    {
+        IndexTransactionJournal indexTransactionJournal = getCurrentTransactionJournal();
+        indexTransactionJournal.registerUpdate( contentKeys, skipAttachments );
     }
 
     @Override

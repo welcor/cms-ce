@@ -65,6 +65,7 @@ class ModifyContentACLByCategoryCommand
             else
             {
                 categoryService.modifyContentACL( command );
+                categoryService.modifyContentACL( command );
             }
         }
     }

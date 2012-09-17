@@ -44,7 +44,7 @@ class SynchronizeContentACLByCategoryCommand
             }
             else
             {
-                categoryService.synchronizeContent( command );
+                categoryService.synchronizeContentACL( command );
             }
         }
     }

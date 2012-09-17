@@ -1,5 +1,6 @@
 package com.enonic.cms.itest.content;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom.Document;
@@ -32,6 +33,8 @@ import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.query.OpenContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.security.group.GroupKey;
+import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.itest.search.ContentIndexServiceTestHibernatedBase;
 import com.enonic.cms.store.dao.CategoryDao;
@@ -94,7 +97,7 @@ public class CategoryServiceImpl_indexUpdateTest
     }
 
     @Test
-    public void index_updated_for_content_in_category_when_acl_added()
+    public void index_updated_for_content_in_category_when_acl_modified()
     {
         // setup
         final String categoryName = "Category";
@@ -126,7 +129,7 @@ public class CategoryServiceImpl_indexUpdateTest
         CategoryAccessControl acl = new CategoryAccessControl();
         acl.setGroupKey( fixture.findGroupByName( aNormalUserUid ).getGroupKey() );
         acl.setAdminBrowseAccess( true );
-        addAclForCategory( categoryName, adminUser, acl );
+        modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
@@ -136,8 +139,9 @@ public class CategoryServiceImpl_indexUpdateTest
         assertEquals( 1, contentResultSet.getKeys().size() );
     }
 
+
     @Test
-    public void index_updated_for_multiple_content_in_category_when_acl_added()
+    public void index_updated_for_content_in_category_when_acl_syncronized()
     {
         // setup
         final String categoryName = "Category";
@@ -149,6 +153,49 @@ public class CategoryServiceImpl_indexUpdateTest
         final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
         assertNotNull( categoryDao.findByKey( categoryKey ) );
 
+        // Create content with read access
+        ContentAccessEntity normalUserAccess = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey =
+            createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
+        assertNotNull( contentDao.findByKey( contentKey ) );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // exercise
+
+        // Verify that user does not have access, since admin_browse is needed
+        OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
+        ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+
+        // Add admin browse for user on category
+        CategoryAccessControl acl = new CategoryAccessControl();
+        acl.setGroupKey( fixture.findGroupByName( aNormalUserUid ).getGroupKey() );
+        acl.setAdminBrowseAccess( true );
+        syncronizeACLForCategory( categoryName, adminUser, acl );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Verify that user now get content from query
+        contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+    }
+
+
+    @Test
+    public void index_updated_for_multiple_content_in_category_when_acl_modified()
+    {
+        // setup
+        final String categoryName = "Category";
+        final String adminUser = "admin";
+        final String aNormalUserUid = "aUser";
+
+        createUser( aNormalUserUid, UserType.NORMAL );
+
+        final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
+        assertNotNull( categoryDao.findByKey( categoryKey ) );
 
         // Create content with read access
         ContentAccessEntity content1Access = createContentAccess( aNormalUserUid, true, false );
@@ -176,7 +223,7 @@ public class CategoryServiceImpl_indexUpdateTest
         CategoryAccessControl acl = new CategoryAccessControl();
         acl.setGroupKey( fixture.findGroupByName( aNormalUserUid ).getGroupKey() );
         acl.setAdminBrowseAccess( true );
-        addAclForCategory( categoryName, adminUser, acl );
+        modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
@@ -190,7 +237,59 @@ public class CategoryServiceImpl_indexUpdateTest
 
 
     @Test
-    public void index_updated_for_content_in_category_when_acl_removed()
+    public void index_updated_for_multiple_content_in_category_when_acl_syncronized()
+    {
+        // setup
+        final String categoryName = "Category";
+        final String adminUser = "admin";
+        final String aNormalUserUid = "aUser";
+
+        createUser( aNormalUserUid, UserType.NORMAL );
+
+        final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
+        assertNotNull( categoryDao.findByKey( categoryKey ) );
+
+        // Create content with read access
+        ContentAccessEntity content1Access = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey1 =
+            createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( content1Access ), "content1" );
+
+        ContentAccessEntity content2Access = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey2 =
+            createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( content2Access ), "content2" );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        assertNotNull( contentDao.findByKey( contentKey1 ) );
+        assertNotNull( contentDao.findByKey( contentKey2 ) );
+
+        // exercise
+
+        // Verify that user does not have access, since admin_browse is needed
+        OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
+        ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+
+        // Add admin browse for user on category
+        CategoryAccessControl acl = new CategoryAccessControl();
+        acl.setGroupKey( fixture.findGroupByName( aNormalUserUid ).getGroupKey() );
+        acl.setAdminBrowseAccess( true );
+        syncronizeACLForCategory( categoryName, adminUser, acl );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        printAllIndexContent();
+
+        // Verify that user now get all content from category
+        contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 2, contentResultSet.getKeys().size() );
+    }
+
+
+    @Test
+    public void index_updated_for_content_in_category_when_acl_modified_removed()
     {
         // setup
         final String categoryName = "Category";
@@ -208,28 +307,35 @@ public class CategoryServiceImpl_indexUpdateTest
             createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
         assertNotNull( contentDao.findByKey( contentKey ) );
 
+        final GroupKey aNormalUserGroupKey = fixture.findGroupByName( aNormalUserUid ).getGroupKey();
+        final UserKey adminUserKey = fixture.findUserByName( adminUser ).getKey();
+
         // Add admin browse for user on category
         CategoryAccessControl acl = new CategoryAccessControl();
-        acl.setGroupKey( fixture.findGroupByName( aNormalUserUid ).getGroupKey() );
+        acl.setGroupKey( aNormalUserGroupKey );
         acl.setAdminBrowseAccess( true );
-        addAclForCategory( categoryName, adminUser, acl );
+
+        modifyACLForCategory( categoryName, adminUser, acl );
 
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
 
-        // exercise
-
-        // Verify that user does not have access, since admin_browse is needed
+        // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
         ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
         assertEquals( 1, contentResultSet.getKeys().size() );
 
-        // Add admin browse for user on category
-        acl = new CategoryAccessControl();
-        acl.setGroupKey( fixture.findGroupByName( aNormalUserUid ).getGroupKey() );
-        acl.setAdminBrowseAccess( false );
-        addAclForCategory( categoryName, adminUser, acl );
+        // exercise
 
+        // Remove ACL for user on category
+        ModifyCategoryACLCommand modifyCategoryACLCommand = new ModifyCategoryACLCommand();
+        modifyCategoryACLCommand.addToBeRemoved( aNormalUserGroupKey );
+        modifyCategoryACLCommand.includeContent();
+        modifyCategoryACLCommand.setUpdater( adminUserKey );
+        modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
+        categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
+
+        // Verify that user does not have access, since admin_browse is needed
         fixture.flushAndClearHibernateSesssion();
         fixture.flushIndexTransaction();
 
@@ -238,6 +344,173 @@ public class CategoryServiceImpl_indexUpdateTest
         assertEquals( 0, contentResultSet.getKeys().size() );
     }
 
+    @Test
+    public void index_updated_for_content_in_category_when_acl_syncronized_removed()
+    {
+        // setup
+        final String categoryName = "Category";
+        final String adminUser = "admin";
+        final String aNormalUserUid = "aUser";
+
+        createUser( aNormalUserUid, UserType.NORMAL );
+
+        final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
+        assertNotNull( categoryDao.findByKey( categoryKey ) );
+
+        // Create content with read access
+        ContentAccessEntity normalUserAccess = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey =
+            createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
+        assertNotNull( contentDao.findByKey( contentKey ) );
+
+        final GroupKey aNormalUserGroupKey = fixture.findGroupByName( aNormalUserUid ).getGroupKey();
+        final UserKey adminUserKey = fixture.findUserByName( adminUser ).getKey();
+
+        // Add admin browse for user on category
+        CategoryAccessControl acl = new CategoryAccessControl();
+        acl.setGroupKey( aNormalUserGroupKey );
+        acl.setAdminBrowseAccess( true );
+
+        modifyACLForCategory( categoryName, adminUser, acl );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Assert user access
+        OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
+        ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        // exercise
+
+        // Remove ACL for user on category
+        syncronizeACLForCategory( categoryName, adminUser, null );
+
+        // Verify that user does not have access, since admin_browse is needed
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Verify that user now get content from query
+        contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+    }
+
+
+    @Test
+    public void index_updated_for_content_in_category_when_acl_modified_changed()
+    {
+        // setup
+        final String categoryName = "Category";
+        final String adminUser = "admin";
+        final String aNormalUserUid = "aUser";
+
+        createUser( aNormalUserUid, UserType.NORMAL );
+
+        final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
+        assertNotNull( categoryDao.findByKey( categoryKey ) );
+
+        // Create content with read access
+        ContentAccessEntity normalUserAccess = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey =
+            createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
+        assertNotNull( contentDao.findByKey( contentKey ) );
+
+        final GroupKey aNormalUserGroupKey = fixture.findGroupByName( aNormalUserUid ).getGroupKey();
+        final UserKey adminUserKey = fixture.findUserByName( adminUser ).getKey();
+
+        // Add admin browse for user on category
+        CategoryAccessControl acl = new CategoryAccessControl();
+        acl.setGroupKey( aNormalUserGroupKey );
+        acl.setAdminBrowseAccess( true );
+
+        modifyACLForCategory( categoryName, adminUser, acl );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Assert user access
+        OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
+        ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        // exercise
+
+        // Change ACL to admin browse false for user on category
+
+        acl = new CategoryAccessControl();
+        acl.setGroupKey( aNormalUserGroupKey );
+        acl.setAdminBrowseAccess( false );
+
+        ModifyCategoryACLCommand modifyCategoryACLCommand = new ModifyCategoryACLCommand();
+        modifyCategoryACLCommand.addToBeModified( acl );
+        modifyCategoryACLCommand.includeContent();
+        modifyCategoryACLCommand.setUpdater( adminUserKey );
+        modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
+        categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
+
+        // Verify that user does not have access, since admin_browse is needed
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Verify that user now get content from query
+        contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+    }
+
+
+    @Test
+    public void index_updated_for_content_in_category_when_acl_syncronized_changed()
+    {
+        // setup
+        final String categoryName = "Category";
+        final String adminUser = "admin";
+        final String aNormalUserUid = "aUser";
+
+        createUser( aNormalUserUid, UserType.NORMAL );
+
+        final CategoryKey categoryKey = storeCategory( CONTENT_TYPE_NAME, categoryName );
+        assertNotNull( categoryDao.findByKey( categoryKey ) );
+
+        // Create content with read access
+        ContentAccessEntity normalUserAccess = createContentAccess( aNormalUserUid, true, false );
+        final ContentKey contentKey =
+            createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
+        assertNotNull( contentDao.findByKey( contentKey ) );
+
+        final GroupKey aNormalUserGroupKey = fixture.findGroupByName( aNormalUserUid ).getGroupKey();
+
+        // Add admin browse for user on category
+        CategoryAccessControl acl = new CategoryAccessControl();
+        acl.setGroupKey( aNormalUserGroupKey );
+        acl.setAdminBrowseAccess( true );
+
+        modifyACLForCategory( categoryName, adminUser, acl );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Assert user access
+        OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
+        ContentResultSet contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 1, contentResultSet.getKeys().size() );
+
+        // exercise
+
+        // Change ACL to admin browse false for user on category
+        acl = new CategoryAccessControl();
+        acl.setGroupKey( aNormalUserGroupKey );
+        acl.setAdminBrowseAccess( false );
+
+        syncronizeACLForCategory( categoryName, adminUser, acl );
+
+        // Verify that user does not have access, since admin_browse is needed
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // Verify that user now get content from query
+        contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
+        assertEquals( 0, contentResultSet.getKeys().size() );
+    }
 
 
     private OpenContentQuery createQueryAssertingCategoryBrowse( final String aNormalUserUid, final CategoryKey categoryKey )
@@ -250,7 +523,7 @@ public class CategoryServiceImpl_indexUpdateTest
         return query;
     }
 
-    private void addAclForCategory( final String categoryName, final String updaterUid, final CategoryAccessControl acl )
+    private void modifyACLForCategory( final String categoryName, final String updaterUid, final CategoryAccessControl acl )
     {
         ModifyCategoryACLCommand modifyCategoryACLCommand = new ModifyCategoryACLCommand();
         modifyCategoryACLCommand.addToBeAdded( acl );
@@ -259,6 +532,19 @@ public class CategoryServiceImpl_indexUpdateTest
         modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
 
         categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
+    }
+
+    private void syncronizeACLForCategory( final String categoryName, final String updaterUid, final CategoryAccessControl acl )
+    {
+        SynchronizeCategoryACLCommand synchronizeCategoryACLCommand = new SynchronizeCategoryACLCommand();
+        synchronizeCategoryACLCommand.includeContent();
+        synchronizeCategoryACLCommand.setUpdater( fixture.findUserByName( updaterUid ).getKey() );
+        synchronizeCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
+
+        synchronizeCategoryACLCommand.addAccessControlList(
+            acl != null ? Lists.newArrayList( acl ) : new ArrayList<CategoryAccessControl>() );
+
+        categoryService.synchronizeCategoryACL_withoutRequiresNewPropagation_for_test_only( synchronizeCategoryACLCommand );
     }
 
     private void createUser( final String aNormalUserUid, final UserType userType )

@@ -1,7 +1,9 @@
 package com.enonic.cms.core.search;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedMap;
 
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -59,6 +61,23 @@ public class IndexTransactionJournal
             TransactionSynchronizationManager.registerSynchronization( this );
         }
     }
+
+    public void registerUpdate( Collection<ContentKey> contentKeys, boolean skipAttachments )
+    {
+        if ( TransactionSynchronizationManager.isCurrentTransactionReadOnly() )
+        {
+            return;
+        }
+
+        for ( ContentKey contentKey : contentKeys )
+        {
+            final IndexTransactionJournalEntry indexTransactionJournalEntry =
+                new IndexTransactionJournalEntry( UPDATE, contentKey, skipAttachments );
+
+            changeHistory.add( indexTransactionJournalEntry );
+        }
+    }
+
 
     public void registerUpdate( ContentKey contentKey, boolean skipAttachments )
     {
@@ -209,6 +228,7 @@ public class IndexTransactionJournal
     @Override
     public void afterCompletion( int i )
     {
+   //     System.out.println( "Completion status: " + i );
     }
 
     public void clearJournal()

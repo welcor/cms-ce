@@ -6,6 +6,7 @@ import java.util.SortedMap;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.group.GroupEntity;
+import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
 
 class ModifyCategoryACLCommandProcessor
@@ -18,12 +19,15 @@ class ModifyCategoryACLCommandProcessor
 
     private SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate;
 
+    private final ContentDao contentDao;
+
     ModifyCategoryACLCommandProcessor( final GroupDao groupDao, final UpdateCategoryAccessChecker updateCategoryAccessChecker,
-                                       final IndexTransactionService indexTransactionService )
+                                       final IndexTransactionService indexTransactionService, final ContentDao contentDao )
     {
         this.groupDao = groupDao;
         this.updateCategoryAccessChecker = updateCategoryAccessChecker;
         this.indexTransactionService = indexTransactionService;
+        this.contentDao = contentDao;
     }
 
     void setCategoriesToUpdate( SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate )
@@ -33,8 +37,6 @@ class ModifyCategoryACLCommandProcessor
 
     void process( final ModifyCategoryACLCommand command )
     {
-        indexTransactionService.startTransaction();
-
         checkUpdateCategoriesAccess();
 
         for ( CategoryEntity category : categoriesToUpdate.values() )
@@ -43,10 +45,7 @@ class ModifyCategoryACLCommandProcessor
             processThoseToBeAddedOrModified( command.getToBeAdded(), category );
             processThoseToBeAddedOrModified( command.getToBeModified(), category );
 
-            for ( ContentEntity content : category.getContents() )
-            {
-                indexTransactionService.registerUpdate( content.getKey(), true );
-            }
+            indexTransactionService.registerUpdate( contentDao.findContentKeysByCategory( category.getKey() ), true );
         }
     }
 

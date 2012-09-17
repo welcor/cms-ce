@@ -17,7 +17,7 @@ public interface CategoryService
 
     void synchronizeContentACL_withoutRequiresNewPropagation_for_test_only( SynchronizeContentACLCommand command );
 
-    void synchronizeContent( SynchronizeContentACLCommand command );
+    void synchronizeContentACL( SynchronizeContentACLCommand command );
 
     void modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( ModifyCategoryACLCommand command );
 

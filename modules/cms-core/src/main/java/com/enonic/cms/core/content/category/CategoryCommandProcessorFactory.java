@@ -165,7 +165,7 @@ public class CategoryCommandProcessorFactory
         final SortedMap<CategoryKey, CategoryEntity> categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
 
         final SynchronizeCategoryACLCommandProcessor processor =
-            new SynchronizeCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker );
+            new SynchronizeCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao);
 
         processor.setCategoriesToUpdate( categoryMapBykey );
 
@@ -195,7 +195,7 @@ public class CategoryCommandProcessorFactory
         final SortedMap<CategoryKey, CategoryEntity> categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
 
         final ModifyCategoryACLCommandProcessor processor =
-            new ModifyCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService );
+            new ModifyCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao);
 
         processor.setCategoriesToUpdate( categoryMapBykey );
 

@@ -104,7 +104,7 @@ public class MenuItemServiceImplTest
 
         // Create a unit and a category in the archive to store the articles in, including access rights on the category.
         fixture.save( factory.createUnit( "Archive" ) );
-        final CategoryEntity category = factory.createCategory( "Articles", null, "article", "Archive", "aru", "aru" );;
+        final CategoryEntity category = factory.createCategory( "Articles", null, "article", "Archive", "aru", "aru" );
         category.setContentType( fixture.findContentTypeByName( "MenuItem" ) );
         fixture.save( category );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "aru", "read, admin_browse, create, delete, approve" ) );
@@ -202,6 +202,52 @@ public class MenuItemServiceImplTest
         assertEquals( fixture.findMenuItemByName( "My section" ), actualContentHome.getMenuItem() );
         assertEquals( fixture.findSiteByName( "The Newspaper" ), actualContentHome.getSite() );
         assertEquals( null, actualContentHome.getPageTemplate() );
+    }
+
+    @Test
+    public void addContentToSection_content_home_does_not_change_when_adding_content_to_another_section()
+    {
+        // setup: content
+        fixture.save( createSection( "My section", "The Newspaper", false ) );
+        fixture.save( createSection( "My section2", "The Newspaper", false ) );
+        fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
+        fixture.save( createMenuItemAccess( "My section2", "aru", "add publish" ) );
+        createContent( "first-content", "Articles" );
+        fixture.flushAndClearHibernateSesssion();
+
+        fixture.flushAndClearHibernateSesssion();
+
+        AddContentToSectionCommand command = new AddContentToSectionCommand();
+        command.setAddOnTop( false );
+        command.setApproveInSection( false );
+        command.setContributor( fixture.findUserByName( "aru" ).getKey() );
+        command.setSection( fixture.findMenuItemByName( "My section" ).getKey() );
+        command.setContent( fixture.findContentByName( "first-content" ).getKey() );
+        menuItemService.execute( command );
+
+        // setup: verify content added in section
+        assertEquals( 1, fixture.findContentByName( "first-content" ).getSectionContents().size() );
+        assertEquals( 1, fixture.findMenuItemByName( "My section" ).getSectionContents().size() );
+
+        // exercise
+        command = new AddContentToSectionCommand();
+        command.setAddOnTop( false );
+        command.setApproveInSection( false );
+        command.setContributor( fixture.findUserByName( "aru" ).getKey() );
+        command.setSection( fixture.findMenuItemByName( "My section2" ).getKey() );
+        command.setContent( fixture.findContentByName( "first-content" ).getKey() );
+        menuItemService.execute( command );
+
+        // verify: content added in section
+        assertEquals( 2, fixture.findContentByName( "first-content" ).getSectionContents().size() );
+        assertEquals( 1, fixture.findMenuItemByName( "My section" ).getSectionContents().size() );
+        assertEquals( 1, fixture.findMenuItemByName( "My section2" ).getSectionContents().size() );
+
+        // verify content home is stored
+        ContentHomeEntity actualContentHome =
+            fixture.findContentByName( "first-content" ).getContentHome( fixture.findSiteByName( "The Newspaper" ).getKey() );
+        assertNotNull( actualContentHome );
+        assertEquals( fixture.findMenuItemByName( "My section" ), actualContentHome.getMenuItem() );
     }
 
     @Test
@@ -648,7 +694,7 @@ public class MenuItemServiceImplTest
         // setup
         fixture.save( createSection( "My section", "The Newspaper", true ) );
         fixture.save( createMenuItemAccess( "My section", "aru", "add publish" ) );
-        createContent( "first-content", "Articles" ) ;
+        createContent( "first-content", "Articles" );
         createContent( "second-content", "Articles" );
 
         AddContentToSectionCommand command = new AddContentToSectionCommand();
@@ -1490,8 +1536,8 @@ public class MenuItemServiceImplTest
 
     private MenuItemEntity createSection( String name, String siteName, boolean isOrdered )
     {
-        return factory.createSectionMenuItem( name, ++menuItemOrderCount, null, name, siteName, "aru", "aru", "en",
-                                              null, null, isOrdered, null, false, null );
+        return factory.createSectionMenuItem( name, ++menuItemOrderCount, null, name, siteName, "aru", "aru", "en", null, null, isOrdered,
+                                              null, false, null );
     }
 
     private MenuItemAccessEntity createMenuItemAccess( String menuItemName, String userName, String accesses )
@@ -1525,20 +1571,18 @@ public class MenuItemServiceImplTest
 
     private MenuItemEntity createOrderedSection( String name )
     {
-        return factory.createSectionMenuItem( name, 0, null, name, null, "admin", "admin", "en", null, null, false,
-                                              null, false, null );
+        return factory.createSectionMenuItem( name, 0, null, name, null, "admin", "admin", "en", null, null, false, null, false, null );
     }
 
     private ContentKey createContent( String contentName, String categoryName )
     {
         final UserKey user = fixture.findUserByName( "aru" ).getKey();
-        CreateContentCommand createCommand =
-                createCreateContentCommand( contentName, categoryName, ContentStatus.APPROVED, user );
+        CreateContentCommand createCommand = createCreateContentCommand( contentName, categoryName, ContentStatus.APPROVED, user );
         return contentService.createContent( createCommand );
     }
 
-    private CreateContentCommand createCreateContentCommand( String contentName, String categoryName,
-                                                             ContentStatus status, UserKey creator )
+    private CreateContentCommand createCreateContentCommand( String contentName, String categoryName, ContentStatus status,
+                                                             UserKey creator )
     {
         ContentTypeEntity contentType = fixture.findContentTypeByName( "MenuItem" );
         CustomContentData contentData = new CustomContentData( contentType.getContentTypeConfig() );

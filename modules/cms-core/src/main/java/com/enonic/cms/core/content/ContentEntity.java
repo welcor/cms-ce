@@ -588,6 +588,11 @@ public class ContentEntity
         return true;
     }
 
+    public boolean hasHome( SiteKey siteKey )
+    {
+        return getContentHome( siteKey ) != null;
+    }
+
     public ContentHomeEntity getContentHome( SiteKey siteKey )
     {
         return contentHomes.get( siteKey.toInt() );

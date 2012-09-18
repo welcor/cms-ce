@@ -226,8 +226,10 @@ public class MenuItemServiceImpl
 
         sectionContentDao.getHibernateTemplate().getSessionFactory().evictCollection( MenuItemEntity.class.getName() + ".sectionContents",
                                                                                       section.getKey() );
-
-        doSetContentHome( content, section, null );
+        if ( !content.hasHome( section.getSite().getKey() ) )
+        {
+            doSetContentHome( content, section, null );
+        }
 
         if ( section.isOrderedSection() )
         {

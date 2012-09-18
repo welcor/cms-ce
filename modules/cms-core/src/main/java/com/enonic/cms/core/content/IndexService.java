@@ -15,7 +15,7 @@ public interface IndexService
 {
     public void regenerateIndex( List<ContentKey> contentKeys );
 
-    ContentDocument createContentDocument( ContentEntity content );
+    ContentDocument createContentDocument( ContentEntity content, final boolean skipAttachments );
 
     public void optimizeIndex();
 

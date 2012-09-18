@@ -2,14 +2,10 @@ package com.enonic.cms.core.search;
 
 import java.util.ArrayList;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.elasticsearch.common.collect.Maps;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-
-import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -64,7 +60,8 @@ public class IndexTransactionJournalTest
         contentKeyObjectTreeMap.put( contentKey, new ContentEntity() );
 
         when( contentDao.findByKeys( isA( FindContentByKeysCommand.class ) ) ).thenReturn( contentKeyObjectTreeMap );
-        when( indexService.createContentDocument( isA( ContentEntity.class ) ) ).thenReturn( createContentIndexData() );
+        when( indexService.createContentDocument( isA( ContentEntity.class ), isA( Boolean.class ) ) ).thenReturn(
+            createContentIndexData() );
         when( contentIndexDataFactory.create( isA( ContentDocument.class ), isA( Boolean.class ) ) ).thenReturn(
             new ContentIndexData( contentKey ) );
 

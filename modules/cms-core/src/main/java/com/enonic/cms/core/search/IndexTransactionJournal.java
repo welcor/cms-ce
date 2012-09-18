@@ -177,7 +177,7 @@ public class IndexTransactionJournal
 
     private void updateContent( final ContentEntity content, final boolean skipAttachments )
     {
-        final ContentDocument doc = indexService.createContentDocument( content );
+        final ContentDocument doc = indexService.createContentDocument( content, skipAttachments );
         final ContentIndexData contentIndexData = contentIndexDataFactory.create( doc, skipAttachments );
 
         LOG.info( "Updating index for content: " + contentIndexData.getKey().toString() );

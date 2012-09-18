@@ -103,8 +103,6 @@ public class QueryTranslator
             builder.filter( filtersToApply );
         }
 
-        System.out.println( builder.toString() );
-
         return builder;
     }
 

@@ -106,6 +106,8 @@
 
         <xsl:variable name="prefix" select="'contents/content/contentdata/'"/>
 
+        <xsl:text>xpath: </xsl:text>
+
         <xsl:choose>
 
             <xsl:when test="contains($source,$prefix)">

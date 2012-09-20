@@ -139,6 +139,7 @@ public class ContentDocumentFactory
         indexedDoc.setTitle( title );
         indexedDoc.setStatus( contentVersion.getStatus().getKey() );
         indexedDoc.setPriority( content.getPriority() );
+        indexedDoc.setLanguageCode( content.getLanguage().getCode() );
 
         ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
         contentLocationSpecification.setIncludeInactiveLocationsInSection( true );

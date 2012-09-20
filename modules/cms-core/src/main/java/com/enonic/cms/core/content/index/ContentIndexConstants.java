@@ -40,6 +40,8 @@ public interface ContentIndexConstants
 
     public static final String F_PRIORITY = "priority";
 
+    public static final String F_LANGUAGE = "language";
+
     /**
      * Meta fields.
      */
@@ -61,7 +63,7 @@ public interface ContentIndexConstants
     public static final String[] ALL_FIELDS =
         {M_KEY, F_CREATED, F_CONTENT_TYPE_NAME, F_TIMESTAMP, F_MODIFIED, M_PUBLISH_TO, M_PUBLISH_FROM, F_OWNER_KEY, F_OWNER_QUALIFIEDNAME,
             F_MODIFIER_KEY, F_MODIFIER_QUALIFIEDNAME, F_ASSIGNEE_QUALIFIEDNAME, F_ASSIGNER_QUALIFIEDNAME, F_ASSIGNMENT_DUE_DATE, F_TITLE,
-            F_FULLTEXT, M_STATUS, F_PRIORITY, M_CONTENT_TYPE_KEY, M_CATEGORY_KEY};
+            F_FULLTEXT, M_STATUS, F_PRIORITY, F_LANGUAGE, M_CONTENT_TYPE_KEY, M_CATEGORY_KEY};
 
     public static final String[] DATE_FIELDS = {M_PUBLISH_FROM, M_PUBLISH_TO, F_TIMESTAMP, F_CREATED};
 

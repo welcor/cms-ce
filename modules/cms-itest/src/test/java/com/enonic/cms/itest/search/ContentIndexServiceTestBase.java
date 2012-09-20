@@ -239,6 +239,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc1.setStatus( 2 );
         doc1.setPriority( 0 );
+        doc1.setLanguageCode( "en" );
         contentIndexService.index( doc1 );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
@@ -258,6 +259,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc2.setStatus( 2 );
         doc2.setPriority( 0 );
+        doc2.setLanguageCode( "fr" );
         contentIndexService.index( doc2 );
 
         date.add( Calendar.DAY_OF_MONTH, 1 );
@@ -277,6 +279,7 @@ public abstract class ContentIndexServiceTestBase
         date.add( Calendar.MONTH, -1 );
         doc3.setStatus( 2 );
         doc3.setPriority( 0 );
+        doc3.setLanguageCode( "en" );
         contentIndexService.index( doc3 );
 
         ContentDocument doc4 = new ContentDocument( new ContentKey( 1324 ) );
@@ -294,6 +297,7 @@ public abstract class ContentIndexServiceTestBase
         doc4.setPublishTo( date.getTime() );
         doc4.setStatus( 2 );
         doc4.setPriority( 0 );
+        doc4.setLanguageCode( "en" );
         contentIndexService.index( doc4 );
 
         flushIndex();

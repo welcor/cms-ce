@@ -75,11 +75,13 @@ public final class ContentDocument
 
     private Date publishFrom;
 
+    private Date publishTo;
+
     private Integer status;
 
     private Integer priority;
 
-    private Date publishTo;
+    private String languageCode;
 
     /**
      * The date time when the content as whole was last modifed.
@@ -373,6 +375,16 @@ public final class ContentDocument
     public void setPriority( Integer value )
     {
         this.priority = value;
+    }
+
+    public String getLanguageCode()
+    {
+        return languageCode;
+    }
+
+    public void setLanguageCode( String languageCode )
+    {
+        this.languageCode = languageCode;
     }
 
     public SimpleText getOwnerName()

@@ -77,6 +77,7 @@ public class ContentIndexDataFactory
         contentIndexData.addContentIndexDataElement( TIMESTAMP_FIELDNAME, content.getTimestamp() );
         contentIndexData.addContentIndexDataElement( STATUS_FIELDNAME, content.getStatus() );
         contentIndexData.addContentIndexDataElement( PRIORITY_FIELDNAME, content.getPriority() );
+        contentIndexData.addContentIndexDataElement( LANGUAGE_FIELDNAME, content.getLanguageCode() );
         contentIndexData.addContentIndexDataElement( ASSIGNMENT_DUE_DATE_FIELDNAME, content.getAssignmentDueDate() );
         contentIndexData.addContentIndexDataElement( CONTENT_CREATED, content.getCreated() );
         contentIndexData.addContentIndexDataElement( CONTENT_MODIFIED, content.getModified() );

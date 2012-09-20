@@ -207,6 +207,20 @@ public class ContentIndexServiceImpl_queryContentQueriesTest
         assertEquals( 3, res2.getLength() );
     }
 
+    @Test
+    public void testQueriesWithLanguageCode()
+    {
+        setUpStandardTestValues();
+
+        ContentIndexQuery query1 = new ContentIndexQuery( "language = 'en'" );
+        ContentResultSet res1 = contentIndexService.query( query1 );
+        assertEquals( 3, res1.getLength() );
+
+        ContentIndexQuery query2 = new ContentIndexQuery( "language = 'fr'" );
+        ContentResultSet res2 = contentIndexService.query( query2 );
+        assertEquals( 1, res2.getLength() );
+    }
+
     private List<CategoryKey> createCategoryKeyList( Integer... array )
     {
         List<CategoryKey> keys = new ArrayList<CategoryKey>();

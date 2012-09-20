@@ -38,6 +38,8 @@ public class IndexFieldNameConstants
 
     public static final String PRIORITY_FIELDNAME = "priority";
 
+    public static final String LANGUAGE_FIELDNAME = "language";
+
     public static final String ASSIGNMENT_DUE_DATE_FIELDNAME = "assignmentduedate";
 
     public static final String OWNER_FIELDNAME = "owner";

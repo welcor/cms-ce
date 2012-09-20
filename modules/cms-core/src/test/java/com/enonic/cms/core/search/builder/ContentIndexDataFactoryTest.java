@@ -55,7 +55,7 @@ public class ContentIndexDataFactoryTest
 
         final String[] expectedFields =
             new String[]{"key", "key.number", "categorykey", "categorykey.number", "title", "contenttypekey", "priority", "publishfrom",
-                "status", "title"};
+                "status", "title", "language"};
 
         for ( String field : expectedFields )
         {
@@ -242,6 +242,7 @@ public class ContentIndexDataFactoryTest
         content.setTitle( "MyTitle" );
         content.setStatus( 2 );
         content.setPriority( 1 );
+        content.setLanguageCode( "en" );
 
         content.setModifierKey( "10" );
         content.setModifierName( "ModifierName" );

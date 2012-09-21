@@ -134,7 +134,7 @@ public class ContentTypeEvaluatorTest
         assertEquals( "contenttypekey", ( (FieldExpr) compareExpr.getLeft() ).getPath() );
 
         assertTrue( ( (ValueExpr) compareExpr.getRight() ).isNumber() );
-        assertEquals( 99.0f, ( (ValueExpr) compareExpr.getRight() ).getValue() );
+        assertEquals( 99, ( (ValueExpr) compareExpr.getRight() ).getValue() );
 
         assertEquals( CompareExpr.EQ, compareExpr.getOperator() );
 
@@ -159,7 +159,7 @@ public class ContentTypeEvaluatorTest
         assertEquals( "contenttypekey", ( (FieldExpr) compareExpr.getLeft() ).getPath() );
 
         assertTrue( ( (ValueExpr) compareExpr.getRight() ).isNumber() );
-        assertEquals( 99.0f, ( (ValueExpr) compareExpr.getRight() ).getValue() );
+        assertEquals( 99, ( (ValueExpr) compareExpr.getRight() ).getValue() );
 
         assertEquals( CompareExpr.NEQ, compareExpr.getOperator() );
 

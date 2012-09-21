@@ -52,7 +52,8 @@ public class ContentTypeEvaluator
 
                 if ( type != null )
                 {
-                    return new CompareExpr( expr.getOperator(), new FieldExpr( "contenttypekey" ), new ValueExpr( type.getKey() ) );
+                    return new CompareExpr( expr.getOperator(), new FieldExpr( "contenttypekey" ),
+                                            new ValueExpr( new Integer( type.getKey() ) ) );
                 }
             }
         }

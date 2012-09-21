@@ -14,7 +14,7 @@ import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.store.support.EntityPageList;
 
 @Repository("contentTypeDao")
-public final class ContentTypeEntityDao
+public class ContentTypeEntityDao
     extends AbstractBaseEntityDao<ContentTypeEntity>
     implements ContentTypeDao
 {

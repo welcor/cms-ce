@@ -7,11 +7,14 @@ package com.enonic.cms.core.content.index;
 import org.joda.time.ReadableDateTime;
 import org.junit.Test;
 
+import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.index.queryexpression.CompareExpr;
 import com.enonic.cms.core.content.index.queryexpression.FieldExpr;
 import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 import com.enonic.cms.core.content.index.queryexpression.ValueExpr;
+import com.enonic.cms.store.dao.ContentTypeDao;
+import com.enonic.cms.store.dao.ContentTypeEntityDao;
 
 import static org.junit.Assert.*;
 
@@ -65,6 +68,49 @@ public class ContentQueryExprParserTest
         assertTrue( rightExpr.isString() );
         assertFalse( rightExpr.isValidDateString() );
     }
+
+    @Test
+    public void testContentTypeNameToContentTypeKeyWithLargeContentTypeKeyConversion()
+    {
+        final ContentTypeEntity type = new ContentTypeEntity()
+        {
+            @Override
+            public int getKey()
+            {
+                return 2111000999;
+            }
+        };
+
+        final ContentTypeDao contentTypeDao = new ContentTypeEntityDao()
+        {
+            @Override
+            public ContentTypeEntity findByName( String name )
+            {
+                return type;
+            }
+
+        };
+
+        String query = "contenttype = 'article'";
+
+        ContentIndexQuery contentQuery = new ContentIndexQuery( query );
+        QueryExpr queryExpr = ContentIndexQueryExprParser.parse( contentQuery, contentTypeDao );
+
+        // contenttype
+        assertTrue( queryExpr.getExpr() instanceof CompareExpr );
+        CompareExpr compExpr = (CompareExpr) queryExpr.getExpr();
+
+        assertTrue( compExpr.getLeft() instanceof FieldExpr );
+        FieldExpr fieldExpr = (FieldExpr) compExpr.getLeft();
+        assertEquals( "contenttypekey", fieldExpr.getPath() );
+
+        assertTrue( compExpr.getRight() instanceof ValueExpr );
+        ValueExpr valueExpr = (ValueExpr) compExpr.getRight();
+        assertEquals( 2111000999, valueExpr.getValue() );
+
+        assertEquals( "contenttypekey = 2111000999", compExpr.toString() );
+    }
+
 
     @Test
     public void testDateLikeOperation()

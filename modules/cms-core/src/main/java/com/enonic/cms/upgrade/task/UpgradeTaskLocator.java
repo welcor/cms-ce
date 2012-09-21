@@ -6,7 +6,22 @@ package com.enonic.cms.upgrade.task;
 
 import java.util.List;
 
-public interface UpgradeTaskLocator
+import com.google.common.collect.Lists;
+
+public final class UpgradeTaskLocator
 {
-    public List<UpgradeTask> getTasks();
+    private final List<UpgradeTask> tasks;
+
+    public UpgradeTaskLocator()
+    {
+        this.tasks = Lists.newArrayList();
+        this.tasks.add( new UpgradeModel0201() );
+        this.tasks.add( new UpgradeModel0202() );
+        this.tasks.add( new UpgradeModel0203() );
+    }
+
+    public List<UpgradeTask> getTasks()
+    {
+        return this.tasks;
+    }
 }

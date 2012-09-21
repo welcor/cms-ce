@@ -7,9 +7,8 @@ package com.enonic.cms.upgrade.task;
 import java.util.List;
 
 import com.enonic.cms.upgrade.UpgradeContext;
-import com.enonic.cms.upgrade.task.helper.StaticUpgradeState;
 
-public class UpgradeModel0202
+public final class UpgradeModel0202
     extends AbstractUpgradeTask
 {
     public UpgradeModel0202()
@@ -17,14 +16,9 @@ public class UpgradeModel0202
         super( 202 );
     }
 
-    public void upgrade( UpgradeContext context )
+    public void upgrade( final UpgradeContext context )
         throws Exception
     {
-        if (StaticUpgradeState.getInstance().isQuartzTablesAvailable()) {
-            context.logInfo( "Quartz table are available. Skipping." );
-            return;
-        }
-
         if (context.hasTable( "QRTZ_JOB_DETAILS" )) {
             context.logInfo( "Quartz table are available. Skipping." );
             return;

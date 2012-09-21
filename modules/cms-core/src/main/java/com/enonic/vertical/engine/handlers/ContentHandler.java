@@ -53,6 +53,7 @@ import com.enonic.cms.core.CalendarUtil;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentTitleXmlCreator;
+import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerKey;

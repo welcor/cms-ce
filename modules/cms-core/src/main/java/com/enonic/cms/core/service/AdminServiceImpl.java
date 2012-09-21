@@ -80,31 +80,37 @@ public class AdminServiceImpl
         adminEngine.copyMenu( user, menuKey, includeContent );
     }
 
+    // Used in zip import
     public boolean contentExists( int categoryKey, String contentTitle )
     {
         return adminEngine.contentExists( categoryKey, contentTitle );
     }
 
+    // Used in zip import
     public int getContentKey( int categoryKey, String contentTitle )
     {
         return adminEngine.getContentKey( categoryKey, contentTitle );
     }
 
+    // Used in zip import
     public String getContentCreatedTimestamp( int contentKey )
     {
         return adminEngine.getContentCreatedTimestamp( contentKey );
     }
 
+    // Used in zip import
     public Date getContentPublishFromTimestamp( int contentKey )
     {
         return adminEngine.getContentPublishFromTimestamp( contentKey );
     }
 
+    // Used in zip import
     public Date getContentPublishToTimestamp( int contentKey )
     {
         return adminEngine.getContentPublishToTimestamp( contentKey );
     }
 
+    // Used in zip import
     public int getCategoryKey( int superCategoryKey, String name )
     {
         return adminEngine.getCategoryKey( superCategoryKey, name );

@@ -24,6 +24,4 @@ public interface ResourceBase
     boolean isHidden();
 
     public ResourceKey moveTo( ResourceFolder destinationFolder );
-
-    public String getETag();
 }

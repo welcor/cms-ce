@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.store.hibernate.cache.invalidation;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
 import org.hibernate.cfg.Configuration;
@@ -30,30 +29,12 @@ public final class InvalidationRulesBuilder
     private final Configuration configuration;
 
     /**
-     * Manual map of table names to cache names.
-     */
-    private final HashMap<String, String[]> tableToCache;
-
-    /**
      * Construct the builder.
      */
     public InvalidationRulesBuilder( Configuration configuration )
     {
         this.rules = new InvalidationRules();
         this.configuration = configuration;
-        this.tableToCache = new HashMap<String, String[]>();
-
-        // Add manual cache name assosications
-        // addTableToCacheNames("tmenuitem", "page");
-        // addTableToCacheNames("tcontentobject", "page");
-    }
-
-    /**
-     * Add manual cache name association.
-     */
-    private void addTableToCacheNames( String tableName, String... cacheNames )
-    {
-        this.tableToCache.put( tableName.toLowerCase(), cacheNames );
     }
 
     /**
@@ -155,16 +136,6 @@ public final class InvalidationRulesBuilder
         Class entityClass = className != null ? findClass( className ) : null;
         TableInvalidation rule = new TableInvalidation( tableName, entityClass );
         this.rules.addTableRule( rule );
-
-        String[] cacheNames = this.tableToCache.get( rule.getTableName() );
-        if ( cacheNames != null )
-        {
-            for ( String cacheName : cacheNames )
-            {
-                rule.addCacheName( cacheName );
-            }
-        }
-
         return rule;
     }
 

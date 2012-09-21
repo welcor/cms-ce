@@ -21,7 +21,6 @@ import com.enonic.cms.upgrade.UpgradeService;
 import com.enonic.cms.upgrade.log.UpgradeLog;
 import com.enonic.cms.upgrade.runner.UpgradeTaskRunner;
 import com.enonic.cms.upgrade.runner.UpgradeTaskRunnerImpl;
-import com.enonic.cms.upgrade.task.ReflectionUpgradeTaskLocator;
 import com.enonic.cms.upgrade.task.UpgradeTask;
 import com.enonic.cms.upgrade.task.UpgradeTaskLocator;
 
@@ -34,8 +33,6 @@ public final class UpgradeServiceImpl
     private int currentModelNumber = -1;
 
     private int targetModelNumber = -1;
-
-    private UpgradeTaskLocator upgradeTaskLocator;
 
     private Dialect dialect;
 
@@ -72,14 +69,9 @@ public final class UpgradeServiceImpl
     public void afterPropertiesSet()
         throws Exception
     {
-        if ( this.upgradeTaskLocator == null )
-        {
-            this.upgradeTaskLocator = new ReflectionUpgradeTaskLocator();
-        }
-
         this.upgradeTaskRunner = new UpgradeTaskRunnerImpl( this.transactionTemplate );
         this.sqlHelper = new SqlOperationHelper( this.dialect, this.connectionFactory, this.transactionTemplate );
-        this.upgradeTasks = this.upgradeTaskLocator.getTasks();
+        this.upgradeTasks = new UpgradeTaskLocator().getTasks();
         Collections.sort( this.upgradeTasks );
     }
 

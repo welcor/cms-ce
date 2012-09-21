@@ -34,7 +34,6 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.core.InvalidKeyException;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
-import com.enonic.cms.core.calendar.CalendarService;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentVersionEntity;
@@ -115,7 +114,7 @@ public final class DataSourceServiceImpl
 {
     private final static String URL_NO_RESULT = "<noresult/>";
 
-    private CalendarService calendarService;
+    private final CalendarService calendarService;
 
     private ContentService contentService;
 
@@ -157,6 +156,11 @@ public final class DataSourceServiceImpl
     private TimeService timeService;
 
     private UserStoreService userStoreService;
+
+    public DataSourceServiceImpl()
+    {
+        this.calendarService = new CalendarService();
+    }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentByQuery( DataSourceContext context, String query, String orderBy, int index, int count,
@@ -1905,12 +1909,6 @@ public final class DataSourceServiceImpl
     public void setPresentationEngine( PresentationEngine presentationEngine )
     {
         this.presentationEngine = presentationEngine;
-    }
-
-    @Autowired
-    public void setCalendarService( CalendarService service )
-    {
-        calendarService = service;
     }
 
     @Autowired

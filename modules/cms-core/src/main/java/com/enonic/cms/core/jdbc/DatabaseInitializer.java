@@ -48,7 +48,6 @@ public final class DatabaseInitializer
     {
         this.adminService.initializeDatabaseSchema();
 
-
        // databaseInitializerService.
         this.adminService.initializeDatabaseValues();
 

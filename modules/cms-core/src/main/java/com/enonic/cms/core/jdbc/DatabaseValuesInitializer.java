@@ -8,10 +8,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
-import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.esl.util.ArrayUtil;
+import com.enonic.esl.util.Base64Util;
+import com.enonic.esl.util.DigestUtil;
+import com.enonic.esl.util.UUID;
 
-public class DatabaseBaseValuesInitializer001
-    extends DatabaseBaseValuesInitializer
+import com.enonic.cms.core.security.group.GroupType;
+import com.enonic.cms.core.security.userstore.UserStoreKey;
+
+public final class DatabaseValuesInitializer
 {
     public final static String ANONYMOUS_UID = "anonymous";
 
@@ -36,12 +41,6 @@ public class DatabaseBaseValuesInitializer001
     private static final String INSERT_CONTENTHANDLER_SQL =
         "Insert into tContentHandler " + "(han_lkey, han_sname, han_sclass, han_sdescription, han_xmlconfig, han_dtetimestamp) " +
             "values (?, ?, ?, ?, ?, @currentTimestamp@)";
-
-
-    protected DatabaseBaseValuesInitializer001()
-    {
-        super();
-    }
 
     public void initializeDatabaseValues( Connection conn )
         throws Exception
@@ -68,7 +67,7 @@ public class DatabaseBaseValuesInitializer001
         stmt.close();
     }
 
-    public String createGroup( Connection conn, GroupType groupType, String userKey )
+    private String createGroup( Connection conn, GroupType groupType, String userKey )
         throws Exception
     {
         return insertGroup( conn, groupType.getName(), groupType.toInteger(), userKey );
@@ -84,7 +83,6 @@ public class DatabaseBaseValuesInitializer001
         insertLanguage( conn, 4, "fi", "Finnish" );
         insertLanguage( conn, 5, "hu", "Hungarian" );
     }
-
 
     private void insertContentHandlers( Connection conn )
         throws Exception
@@ -136,7 +134,7 @@ public class DatabaseBaseValuesInitializer001
         insertContentHandler( conn, key, name, clazz, description, xmlConfig );
     }
 
-    protected String insertUser( Connection conn, String uid, String fullName, int userType )
+    private String insertUser( Connection conn, String uid, String fullName, int userType )
         throws Exception
     {
         String syncValue = generateUserSyncValue( uid.getBytes() );
@@ -156,7 +154,7 @@ public class DatabaseBaseValuesInitializer001
         return key;
     }
 
-    protected String insertGroup( Connection conn, String groupName, int groupType, String userKey )
+    private String insertGroup( Connection conn, String groupName, int groupType, String userKey )
         throws Exception
     {
         String groupSyncValue = generateGroupSyncValue();
@@ -176,7 +174,7 @@ public class DatabaseBaseValuesInitializer001
         return groupKey;
     }
 
-    protected void insertLanguage( Connection conn, int key, String code, String descr )
+    private void insertLanguage( Connection conn, int key, String code, String descr )
         throws Exception
     {
         PreparedStatement preparedStatement = conn.prepareStatement( INSERT_LANGUAGES_SQL );
@@ -187,8 +185,7 @@ public class DatabaseBaseValuesInitializer001
         preparedStatement.execute();
     }
 
-
-    protected void insertContentHandler( Connection conn, int key, String name, String clazz, String description, String xmlConfig )
+    private void insertContentHandler( Connection conn, int key, String name, String clazz, String description, String xmlConfig )
         throws Exception
     {
         PreparedStatement preparedStatement = conn.prepareStatement( INSERT_CONTENTHANDLER_SQL );
@@ -202,4 +199,59 @@ public class DatabaseBaseValuesInitializer001
         preparedStatement.execute();
     }
 
+    private String generateUserKey( UserStoreKey userStoreKey, String syncValue )
+    {
+        byte[] newSyncByteArray;
+        if ( userStoreKey != null )
+        {
+            newSyncByteArray = ArrayUtil.concat( String.valueOf( userStoreKey.toInt() ).getBytes(), syncValue.getBytes() );
+        }
+        else
+        {
+            newSyncByteArray = syncValue.getBytes();
+        }
+
+        return DigestUtil.generateSHA( newSyncByteArray );
+    }
+
+    private String generateUserSyncValue( byte[] syncValue )
+    {
+        return Base64Util.encode( syncValue );
+    }
+
+    private String generateGroupKey( UserStoreKey userStoreKey, String syncValue )
+    {
+        byte[] newSyncByteArray;
+        if ( userStoreKey != null )
+        {
+            newSyncByteArray = ArrayUtil.concat( String.valueOf( userStoreKey.toInt() ).getBytes(), syncValue.getBytes() );
+        }
+        else
+        {
+            newSyncByteArray = syncValue.getBytes();
+        }
+
+        return DigestUtil.generateSHA( newSyncByteArray );
+    }
+
+    private String generateGroupSyncValue()
+    {
+        return UUID.generateValue();
+    }
+
+    private void updateKeyTable( Connection conn, String tableName, int lastKey )
+        throws Exception
+    {
+
+        Statement stmt = conn.createStatement();
+
+        int rowcount = stmt.executeUpdate( "UPDATE tKEY SET key_llastKey = " + lastKey + " WHERE key_stablename = '" + tableName + "'" );
+
+        if ( rowcount == 0 )
+        {
+            stmt.execute( "INSERT INTO tKey (key_stablename, key_llastkey) VALUES ('" + tableName + "'," + lastKey + ")" );
+        }
+
+        stmt.close();
+    }
 }

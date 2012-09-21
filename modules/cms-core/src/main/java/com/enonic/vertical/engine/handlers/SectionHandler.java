@@ -280,14 +280,14 @@ public class SectionHandler
 
     public MenuItemKey getSectionKeyByMenuItem( MenuItemKey menuItemKey )
     {
-        StringBuffer sql =
-            XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_lKey, new Column[]{db.tMenuItem.mei_lKey, db.tMenuItem.mei_bSection} );
-        if ( getCommonHandler().hasRows( sql.toString(), new int[]{menuItemKey.toInt(), 1} ) )
-        {
-            return menuItemKey;
+        final MenuItemEntity entity = this.menuItemDao.findByKey( menuItemKey );
+        if (entity == null) {
+            return null;
         }
-        else
-        {
+
+        if (entity.isSection()) {
+            return menuItemKey;
+        } else {
             return null;
         }
     }

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.calendar;
+package com.enonic.cms.core.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,8 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 
-@Component
-public final class CalendarService
+final class CalendarService
 {
     /**
      * Get todays date with the standard Norwegian format.

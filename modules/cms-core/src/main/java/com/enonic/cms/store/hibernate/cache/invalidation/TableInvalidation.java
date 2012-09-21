@@ -29,11 +29,6 @@ public final class TableInvalidation
     private final HashSet<String> collectionRoles;
 
     /**
-     * Caches to invalidate.
-     */
-    private final HashSet<String> cacheNames;
-
-    /**
      * Construct the invalidation rules.
      */
     public TableInvalidation( String tableName, Class<?> entityClass )
@@ -41,7 +36,6 @@ public final class TableInvalidation
         this.tableName = tableName.toLowerCase();
         this.entityClass = entityClass;
         this.collectionRoles = new HashSet<String>();
-        this.cacheNames = new HashSet<String>();
     }
 
     /**
@@ -77,32 +71,15 @@ public final class TableInvalidation
     }
 
     /**
-     * Return all caches to invalidate.
-     */
-    public Collection<String> getCacheNames()
-    {
-        return this.cacheNames;
-    }
-
-    /**
-     * Add a cache name.
-     */
-    public void addCacheName( String cacheName )
-    {
-        this.cacheNames.add( cacheName );
-    }
-
-    /**
      * Return a string description.
      */
     public String toString()
     {
-        StringBuffer str = new StringBuffer();
+        final StringBuilder str = new StringBuilder();
         str.append( "TableInvalidation[" );
         str.append( "tableName = " ).append( this.tableName ).append( ", " );
         str.append( "entityClass = " ).append( this.entityClass != null ? this.entityClass.getName() : "null" ).append( ", " );
-        str.append( "collectionRoles = " ).append( this.collectionRoles.toString() ).append( ", " );
-        str.append( "cacheNames = " ).append( this.cacheNames.toString() ).append( "]" );
+        str.append( "collectionRoles = " ).append( this.collectionRoles.toString() ).append( "]" );
         return str.toString();
     }
 }

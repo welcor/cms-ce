@@ -21,7 +21,7 @@ import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
 
 import com.enonic.cms.framework.blob.gc.GarbageCollector;
 
-import com.enonic.cms.core.jdbc.DatabaseBaseValuesInitializer;
+import com.enonic.cms.core.jdbc.DatabaseValuesInitializer;
 import com.enonic.cms.store.DatabaseAccessor;
 import com.enonic.cms.store.VacuumContentSQL;
 
@@ -303,11 +303,7 @@ public final class SystemHandler
             LOG.info( "Populating database with initial values..." );
 
             final int modelNumber = VerticalDatabase.getInstance().getVersion();
-
-            DatabaseBaseValuesInitializer databaseBaseValuesInitializer =
-                DatabaseBaseValuesInitializer.getDatabaseBaseValuesInitializer( modelNumber );
-
-            databaseBaseValuesInitializer.initializeDatabaseValues( conn );
+            new DatabaseValuesInitializer().initializeDatabaseValues( conn );
 
             setModelNumber( modelNumber );
 

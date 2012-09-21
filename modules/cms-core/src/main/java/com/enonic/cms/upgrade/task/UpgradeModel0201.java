@@ -5,9 +5,8 @@
 package com.enonic.cms.upgrade.task;
 
 import com.enonic.cms.upgrade.UpgradeContext;
-import com.enonic.cms.upgrade.task.helper.StaticUpgradeState;
 
-public class UpgradeModel0201
+public final class UpgradeModel0201
     extends AbstractUpgradeTask
 {
     public UpgradeModel0201()
@@ -15,10 +14,9 @@ public class UpgradeModel0201
         super( 201 );
     }
 
-    public void upgrade( UpgradeContext context )
+    public void upgrade( final UpgradeContext context )
         throws Exception
     {
         // Do not remove quartz tables anymore
-        StaticUpgradeState.getInstance().setQuartzTablesAvailable( true );
     }
 }

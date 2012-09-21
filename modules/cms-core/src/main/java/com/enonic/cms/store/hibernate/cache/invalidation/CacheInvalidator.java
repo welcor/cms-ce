@@ -145,7 +145,6 @@ public class CacheInvalidator
     {
         invalidateNamedQueries();
         invalidateCollectionCaches( rule );
-        invalidateOtherCaches( rule );
 
         if ( !insertType )
         {
@@ -193,21 +192,6 @@ public class CacheInvalidator
         for ( String roleName : rule.getCollectionRoles() )
         {
             this.sessionFactory.getCache().evictCollectionRegion( roleName );
-        }
-    }
-
-    /**
-     * Invalidate other cache.
-     */
-    private void invalidateOtherCaches( TableInvalidation rule )
-    {
-        for ( String cacheName : rule.getCacheNames() )
-        {
-            CacheFacade cache = this.cacheMananger.getCache( cacheName );
-            if ( cache != null )
-            {
-                cache.removeAll();
-            }
         }
     }
 }

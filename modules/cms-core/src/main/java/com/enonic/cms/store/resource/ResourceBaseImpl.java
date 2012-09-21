@@ -101,9 +101,4 @@ abstract class ResourceBaseImpl
         this.service.moveResource( this.name, destName );
         return new ResourceKey( ( (ResourceBaseImpl) destinationFolder ).name.getPath() );
     }
-
-    public String getETag()
-    {
-        return ensureResource().getBlobKey();
-    }
 }

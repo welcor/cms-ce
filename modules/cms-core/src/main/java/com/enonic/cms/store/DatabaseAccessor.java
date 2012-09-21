@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.enonic.esl.sql.model.Database;
 import com.enonic.esl.sql.model.DatabaseXMLFactory;
+import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
 
 /**
  * This class accesses the database meta data and stores it.
@@ -23,7 +24,7 @@ public final class DatabaseAccessor
 
     // NOTE: Must reflect the latest database.xml file
 
-    private final static int latestModelNumber = 203;
+    private final static int latestModelNumber = VerticalDatabase.getInstance().getVersion();
 
     private static Map<Integer, Database> cache = new HashMap<Integer, Database>();
 

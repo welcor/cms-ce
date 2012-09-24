@@ -15,12 +15,8 @@
             <xsl:text>&nbsp;&nbsp;</xsl:text>
             <a>
               <xsl:attribute name="href">
-                <xsl:text>adminpage?page=850&amp;op=form&amp;type=content&amp;browsemode=menuitem</xsl:text>
-                <xsl:text>&amp;menukey=</xsl:text>
-                <xsl:value-of select="@menukey"/>
-                <xsl:text>&amp;key=</xsl:text>
-                <xsl:value-of select="@key"/>
-                <xsl:text>&amp;insertbelow=</xsl:text>
+                <xsl:text>adminpage?page=850&amp;op=browse&amp;mainmenu=true</xsl:text>
+                <xsl:text>&amp;parentmi=</xsl:text>
                 <xsl:value-of select="@key"/>
               </xsl:attribute>
               <xsl:value-of select="@path-to-menu"/>

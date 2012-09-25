@@ -13,10 +13,10 @@ public class NodeSettingsBuilderTest
     public void testCreateSettings()
         throws Exception
     {
-        NodeSettingsBuilderImpl builderImpl = new NodeSettingsBuilderImpl();
+        NodeSettingsBuilder builderImpl = new NodeSettingsBuilder();
 
         ConfigProperties configProperties = new ConfigProperties();
-        configProperties.setProperty( "cms.elasticsearch.path.logs", "logpath" );
+        configProperties.setProperty( "cms.elasticsearch.node.path.logs", "logpath" );
         configProperties.setProperty( "cms.elasticsearch.index.indexname", "indexname" );
         builderImpl.setConfigProperties( configProperties );
 

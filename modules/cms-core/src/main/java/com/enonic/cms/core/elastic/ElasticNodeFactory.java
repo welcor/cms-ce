@@ -45,7 +45,7 @@ public final class ElasticNodeFactory
 
         final Settings settings = nodeSettingsBuilder.buildNodeSettings();
 
-        this.node = NodeBuilder.nodeBuilder().settings( settings ).build();
+        this.node = NodeBuilder.nodeBuilder().client( false ).local( true ).data( true ).settings( settings ).build();
         this.node.start();
     }
 

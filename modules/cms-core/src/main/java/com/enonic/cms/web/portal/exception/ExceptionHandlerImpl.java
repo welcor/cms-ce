@@ -325,6 +325,9 @@ public final class ExceptionHandlerImpl
         model.put( "details", new SiteErrorDetails( context.getRequest(), e.getCause(), e.getStatusCode() ) );
 
         final String result = this.templateProcessor.process( templateName, model );
+
+        context.getResponse().setContentType( "text/html" );
+        context.getResponse().setCharacterEncoding( "UTF-8" );
         context.getResponse().getWriter().println( result );
     }
 

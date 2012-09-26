@@ -105,14 +105,8 @@ public final class ExceptionHandlerImpl
         logException( outerException, causingExeption, request );
         AbstractBaseError error = getError( causingExeption );
 
-        try
-        {
-            handleExceptions( context, causingExeption, error );
-        }
-        finally
-        {
-            response.setStatus( error.getStatusCode() );
-        }
+        response.setStatus( error.getStatusCode() );
+        handleExceptions( context, causingExeption, error );
     }
 
     private void logException( Throwable outerException, Throwable causingException, HttpServletRequest request )

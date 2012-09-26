@@ -13,7 +13,7 @@ import com.enonic.cms.core.structure.SiteEntity;
 /**
  * Oct 6, 2010
  */
-public class PortalRequestTrace
+public final class PortalRequestTrace
     extends BaseTrace
     implements Trace
 {
@@ -49,7 +49,7 @@ public class PortalRequestTrace
 
     private CacheUsages cacheUsages = new CacheUsages();
 
-    PortalRequestTrace( long requestNumber, String url )
+    public PortalRequestTrace( long requestNumber, String url )
     {
         this.requestNumber = requestNumber;
         this.url = new MaxLengthedString( url );

@@ -82,6 +82,8 @@ public interface SecurityService
 
     void loginDavUser( QualifiedUsername qualifiedUsername, String password );
 
+    void loginInstantTraceUser( QualifiedUsername qualifiedUsername, String password );
+
     UserEntity impersonatePortalUser( ImpersonateCommand command );
 
     void removePortalImpersonation();

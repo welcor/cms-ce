@@ -14,7 +14,7 @@ public class InstructionPostProcessingTrace
         this.startTime = startTime;
     }
 
-    DateTime getStartTime()
+    public DateTime getStartTime()
     {
         return startTime;
     }

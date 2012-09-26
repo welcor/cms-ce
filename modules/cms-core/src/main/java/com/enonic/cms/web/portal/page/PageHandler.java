@@ -20,6 +20,7 @@ import com.enonic.cms.core.portal.PortalRequestService;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.RedirectInstruction;
 import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.portal.instanttrace.CurrentTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
 import com.enonic.cms.core.security.user.User;
@@ -33,7 +34,7 @@ public final class PageHandler
 {
     private PortalRequestService portalRequestService;
 
-    private PortalRenderResponseServer portalRenderResultServer;
+    private PortalRenderResponseService portalRenderResponseService;
 
     @Override
     protected boolean canHandle( final Path localPath )
@@ -114,11 +115,12 @@ public final class PageHandler
 
             PortalResponse response = portalRequestService.processRequest( request );
 
-            portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
+            portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
         }
         finally
         {
             PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
+            CurrentTrace.setCurrentTrace( portalRequestTrace );
         }
     }
 
@@ -135,7 +137,7 @@ public final class PageHandler
         redirectInstruction.setPermanentRedirect( true );
 
         PortalResponse response = PortalResponse.createRedirect( redirectInstruction );
-        portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
+        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
     }
 
     private HashMap<String, Object> getRequestParameters( HttpServletRequest request )
@@ -181,8 +183,8 @@ public final class PageHandler
     }
 
     @Autowired
-    public void setPortalRenderResultServer( final PortalRenderResponseServer portalRenderResultServer )
+    public void setPortalRenderResponseService( final PortalRenderResponseService portalRenderResponseService )
     {
-        this.portalRenderResultServer = portalRenderResultServer;
+        this.portalRenderResponseService = portalRenderResponseService;
     }
 }

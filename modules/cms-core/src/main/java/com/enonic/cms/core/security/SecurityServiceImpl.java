@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.security;
 
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.GroupQuery;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
+import com.enonic.cms.web.portal.instanttrace.InstantTraceSessionInspector;
 
 @Service("securityService")
 public class SecurityServiceImpl
@@ -345,6 +347,11 @@ public class SecurityServiceImpl
         doLoginPortalUser( qualifiedUsername, password, true );
     }
 
+    public void loginInstantTraceUser( final QualifiedUsername qualifiedUsername, final String password )
+    {
+        doLoginInstantTraceUser( qualifiedUsername, password );
+    }
+
     private void doLoginPortalUser( final QualifiedUsername qualifiedUsername, final String password, final boolean verifyPassword )
     {
         final String uid = qualifiedUsername.getUsername();
@@ -385,6 +392,46 @@ public class SecurityServiceImpl
             userSpec.setName( uid );
             UserEntity user = userDao.findSingleBySpecification( userSpec );
             PortalSecurityHolder.setLoggedInUser( user.getKey() );
+        }
+    }
+
+    private void doLoginInstantTraceUser( final QualifiedUsername qualifiedUsername, final String password )
+    {
+        final String uid = qualifiedUsername.getUsername();
+
+        if ( UserEntity.isBuiltInUser( uid ) )
+        {
+            UserKey userKey = authenticateBuiltInUser( uid, password, true );
+            InstantTraceSecurityHolder.setUser( userKey );
+        }
+        else
+        {
+
+            UserStoreEntity userStore;
+            if ( qualifiedUsername.hasUserStoreSet() )
+            {
+                userStore = doResolveUserStore( qualifiedUsername );
+            }
+            else
+            {
+                userStore = doGetDefaultUserStore();
+            }
+
+            if ( userStore == null )
+            {
+                throw new InvalidCredentialsException( qualifiedUsername );
+            }
+
+            userStoreService.authenticateUser( userStore.getKey(), uid, password );
+
+            userStoreService.synchronizeUser( userStore.getKey(), uid );
+
+            UserSpecification userSpec = new UserSpecification();
+            userSpec.setDeletedStateNotDeleted();
+            userSpec.setUserStoreKey( userStore.getKey() );
+            userSpec.setName( uid );
+            UserEntity user = userDao.findSingleBySpecification( userSpec );
+            InstantTraceSecurityHolder.setUser( user.getKey() );
         }
     }
 
@@ -482,9 +529,23 @@ public class SecurityServiceImpl
     {
         HttpServletRequest request = ServletRequestAccessor.getRequest();
         HttpSession session = request.getSession( false );
+
         if ( null != session )
         {
-            session.invalidate();
+            clearSession( session );
+        }
+    }
+
+    private void clearSession( HttpSession session )
+    {
+        Enumeration attributeNames = session.getAttributeNames();
+        while ( attributeNames.hasMoreElements() )
+        {
+            String attributeName = (String) attributeNames.nextElement();
+            if ( !attributeName.equals( InstantTraceSessionInspector.AUTHENTICATION_ATTRIBUTE_NAME ) )
+            {
+                session.removeAttribute( attributeName );
+            }
         }
     }
 

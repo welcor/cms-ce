@@ -17,9 +17,12 @@ public final class RequestInterceptorChainImpl
 
     private HttpInterceptorInterceptor httpInterceptorInterceptor;
 
+    private InstantTraceInterceptor instantTraceInterceptor;
+
     private Iterable<RequestInterceptor> getChain()
     {
-        return Lists.newArrayList( this.autoLoginInterceptor, this.basicAuthInterceptor, this.httpInterceptorInterceptor );
+        return Lists.newArrayList( this.autoLoginInterceptor, this.basicAuthInterceptor, this.httpInterceptorInterceptor,
+                                   this.instantTraceInterceptor );
     }
 
     @Override
@@ -63,5 +66,11 @@ public final class RequestInterceptorChainImpl
     public void setHttpInterceptorInterceptor( final HttpInterceptorInterceptor interceptor )
     {
         this.httpInterceptorInterceptor = interceptor;
+    }
+
+    @Autowired
+    public void setInstantTraceInterceptor( final InstantTraceInterceptor instantTraceInterceptor )
+    {
+        this.instantTraceInterceptor = instantTraceInterceptor;
     }
 }

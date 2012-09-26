@@ -26,7 +26,7 @@ public final class NodeSettingsBuilder
 
         final Map<String, String> nodePropertyMap = getNodePropertyMap();
 
-        populateSettings( settings, nodePropertyMap, NODE_PROPERTIES_PREFIX );
+        populateSettings( settings, nodePropertyMap, ELASTICSEARCH_PROPERTIES_PREFIX );
 
         return settings.build();
     }
@@ -38,7 +38,8 @@ public final class NodeSettingsBuilder
             @Override
             public boolean apply( final String input )
             {
-                return StringUtils.startsWith( input, NODE_PROPERTIES_PREFIX );
+                return StringUtils.startsWith( input, ELASTICSEARCH_PROPERTIES_PREFIX ) &&
+                    !StringUtils.startsWith( input, INDEX_PROPERTIES_PREFIX );
             }
         } );
     }

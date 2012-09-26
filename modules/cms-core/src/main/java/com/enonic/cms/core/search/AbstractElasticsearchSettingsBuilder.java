@@ -15,8 +15,6 @@ public abstract class AbstractElasticsearchSettingsBuilder
 
     final static String INDEX_PROPERTIES_PREFIX = ELASTICSEARCH_PROPERTIES_PREFIX + ".index";
 
-    final static String NODE_PROPERTIES_PREFIX = ELASTICSEARCH_PROPERTIES_PREFIX + ".node";
-
     ConfigProperties configProperties;
 
     private final Logger LOG = Logger.getLogger( AbstractElasticsearchSettingsBuilder.class.getName() );

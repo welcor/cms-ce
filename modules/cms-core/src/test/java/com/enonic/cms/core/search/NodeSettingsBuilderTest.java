@@ -16,14 +16,16 @@ public class NodeSettingsBuilderTest
         NodeSettingsBuilder builderImpl = new NodeSettingsBuilder();
 
         ConfigProperties configProperties = new ConfigProperties();
-        configProperties.setProperty( "cms.elasticsearch.node.path.logs", "logpath" );
+        configProperties.setProperty( "cms.elasticsearch.node.client", "false" );
+        configProperties.setProperty( "cms.elasticsearch.path.logs", "logpath" );
         configProperties.setProperty( "cms.elasticsearch.index.indexname", "indexname" );
         builderImpl.setConfigProperties( configProperties );
 
         final Settings settings = builderImpl.buildNodeSettings();
 
         assertEquals( "logpath", settings.get( "path.logs" ) );
-        assertEquals( 1, settings.getAsMap().keySet().size() );
+        assertEquals( "false", settings.get( "node.client" ) );
+        assertEquals( 2, settings.getAsMap().keySet().size() );
 
 
     }

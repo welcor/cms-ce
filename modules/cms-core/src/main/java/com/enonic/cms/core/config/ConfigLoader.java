@@ -60,6 +60,7 @@ final class ConfigLoader
 
         final ConfigProperties config = new ConfigProperties();
         config.putAll( PropertiesUtil.interpolate( props, this.systemProperties ) );
+
         return config;
     }
 

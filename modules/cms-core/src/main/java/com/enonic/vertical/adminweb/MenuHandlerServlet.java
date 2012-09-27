@@ -194,7 +194,7 @@ public class MenuHandlerServlet
         // Create content element
         Element documentElem = XMLTool.createElement( doc, menuItemElem, "document" );
 
-        if ( verticalProperties.isStoreXHTMLOn() )
+        if ( isStoreXHTMLOn() )
         {
             XMLTool.createXHTMLNodes( doc, documentElem, formItems.getString( "contentdata_body", "" ), true );
         }

@@ -34,6 +34,8 @@ import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -81,9 +83,20 @@ public abstract class AdminHandlerBaseServlet
 
     private FileUpload fileUpload;
 
-    // SMTP server to use when sending mail:
+    private String defaultDataSourceRootElementName;
 
-    protected String SMTP_HOST;
+    // SMTP server to use when sending mail:
+    private String smtpHost;
+
+    private long multiPartRequestMaxSize;
+
+    private String storeXHTML;
+
+    protected boolean isStoreXHTMLOn()
+    {
+        String ts = StringUtils.trimToNull( storeXHTML );
+        return !"false".equalsIgnoreCase(ts);
+    }
 
     @PostConstruct
     public void initialize()
@@ -93,14 +106,10 @@ public abstract class AdminHandlerBaseServlet
 
         fileUpload = new FileUpload( diskFileItemFactory );
         fileUpload.setHeaderEncoding( "UTF-8" );
-        fileUpload.setSizeMax( verticalProperties.getMultiPartRequestMaxSize() );
+        fileUpload.setSizeMax( multiPartRequestMaxSize );
 
         // Parameters for the mail sent to users when generating a new password:
-        SMTP_HOST = verticalProperties.getMailSmtpHost();
-        if ( SMTP_HOST == null )
-        {
-            SMTP_HOST = "mail.enonic.com";
-        }
+        smtpHost = ( smtpHost != null ) ? smtpHost : "mail.enonic.com";
     }
 
     public void addError( int errorCode, String fieldName, String fieldValue )
@@ -1525,6 +1534,40 @@ public abstract class AdminHandlerBaseServlet
             }
         }
         return doc;
+    }
+
+    protected String getDefaultDataSourceRootElementName()
+    {
+        return defaultDataSourceRootElementName;
+    }
+
+    protected String getSmtpHost()
+    {
+        return smtpHost;
+    }
+
+    @Value("${cms.mail.smtpHost}")
+    public void setSmtpHost( final String smtpHost )
+    {
+        this.smtpHost = smtpHost;
+    }
+
+    @Value("${cms.admin.binaryUploadMaxSize}")
+    public void setMultiPartRequestMaxSize( final long value )
+    {
+        this.multiPartRequestMaxSize = value;
+    }
+
+    @Value("${cms.datasource.defaultResultRootElement}")
+    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
+    {
+        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
+    }
+
+    @Value("${cms.xml.storeXHTML}")
+    public void setStoreXHTML( final String storeXHTML )
+    {
+        this.storeXHTML = storeXHTML;
     }
 
     private static class ErrorCode

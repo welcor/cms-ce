@@ -6,6 +6,7 @@ package com.enonic.cms.itest.util;
 
 import java.sql.Types;
 import java.util.List;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -14,10 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentVersionEntity;
@@ -83,6 +81,9 @@ public class DomainFixture
     @Autowired
     private IndexTransactionService indexTransactionService;
 
+    @Autowired
+    private Properties systemProperties;
+
     public DomainFixture()
     {
         factory = new DomainFactory( this );
@@ -117,9 +118,7 @@ public class DomainFixture
 
     public void initSystemData()
     {
-        ConfigProperties properties = new ConfigProperties();
-        properties.setProperty( "cms.admin.password", "password" );
-        VerticalProperties.getVerticalProperties().setProperties( properties );
+        systemProperties.setProperty( "cms.admin.password", "password" );
 
         hibernateTemplate.clear();
         indexTransactionService.clearJournal();

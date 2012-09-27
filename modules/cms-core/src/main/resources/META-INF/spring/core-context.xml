@@ -13,8 +13,6 @@
   <context:component-scan base-package="com.enonic.vertical.engine"/>
   <context:component-scan base-package="com.enonic.cms.store"/>
 
-  <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
-
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
   <bean id="dataSource" class="com.enonic.cms.store.support.DataSourceFactory">

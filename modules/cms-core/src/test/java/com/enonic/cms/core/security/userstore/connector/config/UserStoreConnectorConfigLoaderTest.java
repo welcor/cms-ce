@@ -5,8 +5,6 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.security.userstore.config.InvalidUserStoreConfigException;
 
@@ -17,13 +15,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void user_policy_all()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "all" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( true, config.canCreateUser() );
         assertEquals( true, config.canUpdateUser() );
@@ -34,13 +30,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void user_policy_blank()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( false, config.canCreateUser() );
         assertEquals( false, config.canUpdateUser() );
@@ -51,13 +45,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void user_policy_create()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "create" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( true, config.canCreateUser() );
         assertEquals( false, config.canUpdateUser() );
@@ -68,13 +60,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void user_policy_update()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "update" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( false, config.canCreateUser() );
         assertEquals( true, config.canUpdateUser() );
@@ -85,13 +75,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void user_policy_delete()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "delete" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( false, config.canCreateUser() );
         assertEquals( false, config.canUpdateUser() );
@@ -102,13 +90,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void user_policy_all_explicit()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "create,update,delete,updatePassword" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( true, config.canCreateUser() );
         assertEquals( true, config.canUpdateUser() );
@@ -119,13 +105,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void group_policy_none()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.groupPolicy", "none" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( false, config.canReadGroup() );
         assertEquals( false, config.canCreateGroup() );
@@ -137,13 +121,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void group_policy_local()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.groupPolicy", "local" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( false, config.canReadGroup() );
         assertEquals( true, config.canCreateGroup() );
@@ -155,13 +137,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void group_policy_all_explicit()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.groupPolicy", "read,create,update,delete" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( true, config.canReadGroup() );
         assertEquals( true, config.canCreateGroup() );
@@ -172,13 +152,11 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void group_policy_all()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.groupPolicy", "all" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( true, config.canReadGroup() );
         assertEquals( true, config.canCreateGroup() );
@@ -189,15 +167,13 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void resurrect_deleted_users()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "all" );
         properties.setProperty( "cms.userstore.connector.myConnector.groupPolicy", "local" );
         properties.setProperty( "cms.userstore.connector.myConnector.resurrectDeletedUsers", "true" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( "myConnector", config.getName() );
         assertEquals( true, config.resurrectDeletedUsers() );
@@ -206,15 +182,13 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void plugin_type()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "all" );
         properties.setProperty( "cms.userstore.connector.myConnector.groupPolicy", "local" );
         properties.setProperty( "cms.userstore.connector.myConnector.plugin", "generic" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( "myConnector", config.getName() );
         assertEquals( "generic", config.getPluginType() );
@@ -223,9 +197,7 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void plugin_properties()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "all" );
         properties.setProperty( "cms.userstore.connector.myConnector.groupPolicy", "local" );
         properties.setProperty( "cms.userstore.connector.myConnector.plugin", "generic" );
@@ -236,7 +208,7 @@ public class UserStoreConnectorConfigLoaderTest
         properties.setProperty( "cms.userstore.connector.myConnector.plugin.userBaseDn", "dc=example,dc=com" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         UserStoreConnectorConfig config = loader.getUserStoreConnectorConfig( "myConnector" );
         assertEquals( "myConnector", config.getName() );
         Properties pluginProperties = config.getPluginProperties();
@@ -250,14 +222,12 @@ public class UserStoreConnectorConfigLoaderTest
     @Test
     public void getAllUserStoreConnectorConfigs()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "all" );
         properties.setProperty( "cms.userstore.connector.myOtherConnector.userPolicy", "all" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         Map<String, UserStoreConnectorConfig> configMap = loader.getAllUserStoreConnectorConfigs();
         assertEquals( 2, configMap.size() );
     }
@@ -265,14 +235,12 @@ public class UserStoreConnectorConfigLoaderTest
     @Test(expected = InvalidUserStoreConfigException.class)
     public void getUserStoreConnectorConfig_throws_exception_when_connector_does_not_exist()
     {
-        VerticalProperties vp = new VerticalProperties();
         ConfigProperties properties = new ConfigProperties();
-        vp.setProperties( properties );
         properties.setProperty( "cms.userstore.connector.myConnector.userPolicy", "all" );
         properties.setProperty( "cms.userstore.connector.myOtherConnector.userPolicy", "all" );
 
         UserStoreConnectorConfigLoader loader = new UserStoreConnectorConfigLoader();
-        loader.setVerticalProperties( vp );
+        loader.setProperties( properties );
         loader.getUserStoreConnectorConfig( "noEntry" );
     }
 }

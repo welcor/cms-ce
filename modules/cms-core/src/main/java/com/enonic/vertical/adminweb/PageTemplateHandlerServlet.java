@@ -306,7 +306,7 @@ public class PageTemplateHandlerServlet
 
         // default document
         Element documentElem = XMLTool.createElement( doc, ptdElem, "document" );
-        if ( verticalProperties.isStoreXHTMLOn() )
+        if ( isStoreXHTMLOn() )
         {
             documentElem.setAttribute( "mode", "xhtml" );
             XMLTool.createXHTMLNodes( doc, documentElem, formItems.getString( "contentdata_body", "" ), true );

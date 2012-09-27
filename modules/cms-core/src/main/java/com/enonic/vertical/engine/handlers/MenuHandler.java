@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.w3c.dom.Document;
@@ -223,12 +224,20 @@ public final class MenuHandler
 
     static private Hashtable<String, Integer> menuItemTypes;
 
+    private String storeXHTML;
+
+    private boolean isStoreXHTMLOn()
+    {
+        String ts = StringUtils.trimToNull( storeXHTML );
+        return Boolean.valueOf( ts );
+    }
+
     private void buildDocumentTypeXML( Element menuitemElem, Element documentElem )
     {
 
         if ( documentElem != null )
         {
-            if ( verticalProperties.isStoreXHTMLOn() )
+            if ( isStoreXHTMLOn() )
             {
                 Node n = documentElem.getFirstChild();
                 if ( n != null && n.getNodeType() == Node.CDATA_SECTION_NODE )
@@ -4561,5 +4570,11 @@ public final class MenuHandler
                 }
             }
         }
+    }
+
+    @Value("${cms.xml.storeXHTML}")
+    public void setStoreXHTML( final String storeXHTML )
+    {
+        this.storeXHTML = storeXHTML;
     }
 }

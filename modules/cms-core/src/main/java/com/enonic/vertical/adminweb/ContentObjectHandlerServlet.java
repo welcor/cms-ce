@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.core.plugin.PluginManager;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
@@ -38,31 +36,30 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.framework.xml.XMLException;
 
+import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.service.DataSourceFailedXmlCreator;
-import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.core.service.DataSourceService;
-
+import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.InvocationCache;
+import com.enonic.cms.core.portal.PageRequestType;
+import com.enonic.cms.core.portal.datasource.DataSourceResult;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.Datasources;
+import com.enonic.cms.core.portal.datasource.DatasourcesType;
 import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
 import com.enonic.cms.core.portal.datasource.processor.NonDoingDataSourceProcessor;
 import com.enonic.cms.core.preview.PreviewContext;
-
-import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.datasource.DataSourceResult;
-import com.enonic.cms.core.portal.datasource.Datasources;
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.resource.ResourceFile;
+import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.service.AdminService;
+import com.enonic.cms.core.service.DataSourceFailedXmlCreator;
+import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.structure.SiteEntity;
-
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 
 /**
@@ -210,7 +207,7 @@ public final class ContentObjectHandlerServlet
         // document
         Element document = XMLTool.createElement( doc, contentObjectData, "document" );
 
-        if ( verticalProperties.isStoreXHTMLOn() )
+        if ( isStoreXHTMLOn() )
         {
             XMLTool.createXHTMLNodes( doc, document, formItems.getString( "contentdata_body", "" ), true );
         }
@@ -540,7 +537,7 @@ public final class ContentObjectHandlerServlet
                 Document doc;
                 Document documentAsW3cDocument = XMLTool.createDocument( "document" );
                 Element rootElem = documentAsW3cDocument.getDocumentElement();
-                if ( verticalProperties.isStoreXHTMLOn() )
+                if ( isStoreXHTMLOn() )
                 {
                     XMLTool.createXHTMLNodes( documentAsW3cDocument, rootElem, formItems.getString( "document", "" ), true );
                 }
@@ -567,9 +564,8 @@ public final class ContentObjectHandlerServlet
                 }
                 catch ( final Exception e )
                 {
-                    final String resultRootName = verticalProperties.getDatasourceDefaultResultRootElement();
                     final XMLDocument failedDatasourceDoc =
-                        XMLDocumentFactory.create( DataSourceFailedXmlCreator.buildExceptionDocument( resultRootName, e ) );
+                        XMLDocumentFactory.create( DataSourceFailedXmlCreator.buildExceptionDocument( getDefaultDataSourceRootElementName(), e ) );
                     xmlData = failedDatasourceDoc.getAsString();
                 }
 
@@ -700,7 +696,7 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDefaultResultRootElementName( verticalProperties.getDatasourceDefaultResultRootElement() );
+        datasourceExecutorContext.setDefaultResultRootElementName( getDefaultDataSourceRootElementName() );
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
@@ -744,7 +740,7 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDefaultResultRootElementName( verticalProperties.getDatasourceDefaultResultRootElement() );
+        datasourceExecutorContext.setDefaultResultRootElementName( getDefaultDataSourceRootElementName() );
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 

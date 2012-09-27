@@ -78,6 +78,4 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="verticalProperties" class="com.enonic.vertical.VerticalProperties"/>
-
 </beans>

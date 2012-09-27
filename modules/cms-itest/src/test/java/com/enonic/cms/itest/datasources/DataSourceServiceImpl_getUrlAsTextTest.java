@@ -7,6 +7,7 @@ package com.enonic.cms.itest.datasources;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.Properties;
 import java.util.Random;
 
 import org.jdom.Document;
@@ -16,11 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.http.HTTPService;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.security.SecurityService;
@@ -46,6 +44,9 @@ public class DataSourceServiceImpl_getUrlAsTextTest
     @Autowired
     private HTTPService httpService;
 
+    @Autowired
+    private Properties systemProperties;
+
     private MockHTTPServer httpServer;
 
     static private String SAMPLE_TEXT_RESPONSE =
@@ -56,7 +57,6 @@ public class DataSourceServiceImpl_getUrlAsTextTest
     private int serverPort;
 
     @Before
-    
     public void setUp()
         throws IOException
     {
@@ -69,10 +69,8 @@ public class DataSourceServiceImpl_getUrlAsTextTest
         dataSourceService.setUserDao( userDao );
         dataSourceService.setHTTPService( httpService );
 
-        ConfigProperties props = new ConfigProperties();
-        props.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
-                           "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
-        VerticalProperties.getVerticalProperties().setProperties( props );
+        systemProperties.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
+                                      "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
     }
 
     @After

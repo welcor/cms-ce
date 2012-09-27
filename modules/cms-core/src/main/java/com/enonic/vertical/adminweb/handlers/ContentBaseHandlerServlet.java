@@ -36,6 +36,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,7 +52,6 @@ import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.util.DateUtil;
 import com.enonic.esl.util.StringUtil;
 import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
 import com.enonic.vertical.adminweb.AdminHelper;
 import com.enonic.vertical.adminweb.AdminStore;
@@ -287,6 +287,14 @@ public class ContentBaseHandlerServlet
 
         private int[] fileContentTypes;
 
+        private String zipExcludePattern;
+
+        @Value("${cms.admin.zipimport.excludePattern}")
+        public void setZipExcludePattern( final String zipExcludePattern )
+        {
+            this.zipExcludePattern = zipExcludePattern;
+        }
+
         protected void initialize( AdminService admin, Document wizardconfigDoc )
             throws WizardException
         {
@@ -392,8 +400,7 @@ public class ContentBaseHandlerServlet
                     }
 
                     File dir = Files.createTempDir();
-                    FileUtil.inflateZipFile( zipFileItem.getInputStream(), dir, VerticalProperties.getVerticalProperties().getProperty(
-                        "cms.admin.zipimport.excludePattern" ) );
+                    FileUtil.inflateZipFile( zipFileItem.getInputStream(), dir, zipExcludePattern );
                     File[] files = dir.listFiles();
                     Element zipElem = XMLTool.createElement( stateDoc, stepstateElem, "zip" );
                     zipElem.setAttribute( "dir", dir.getAbsolutePath() );
@@ -1202,8 +1209,7 @@ public class ContentBaseHandlerServlet
                 }
                 Document reportDoc = XMLTool.domparse( reportXML );
                 Element contentsElem = reportDoc.getDocumentElement();
-                String datasourcesDefaultResultElementName = verticalProperties.getDatasourceDefaultResultRootElement();
-                Element verticaldataElem = XMLTool.createElement( reportDoc, datasourcesDefaultResultElementName );
+                Element verticaldataElem = XMLTool.createElement( reportDoc, getDefaultDataSourceRootElementName() );
                 reportDoc.replaceChild( verticaldataElem, contentsElem );
                 verticaldataElem.appendChild( contentsElem );
                 DOMSource reportSource = new DOMSource( reportDoc );

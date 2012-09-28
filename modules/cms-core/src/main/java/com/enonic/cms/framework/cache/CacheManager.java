@@ -25,4 +25,6 @@ public interface CacheManager
      * Return xml details.
      */
     public XMLDocument getInfoAsXml();
+
+    public void setCacheListener( final CacheListener listener );
 }

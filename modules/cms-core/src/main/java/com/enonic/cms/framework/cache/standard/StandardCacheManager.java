@@ -99,7 +99,6 @@ public final class StandardCacheManager
         return XMLDocumentFactory.create( new Document( root ) );
     }
 
-    @Autowired(required = false)
     public void setCacheListener( final CacheListener cacheListener )
     {
         this.cacheListener = cacheListener;

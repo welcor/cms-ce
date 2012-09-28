@@ -29,7 +29,7 @@ public class InstantTraceInfoHandler
         throws Exception
     {
         final HttpServletRequest httpRequest = context.getRequest();
-        final String instantTraceIdHeader = httpRequest.getHeader( "Instant-Trace-Id" );
+        final String instantTraceIdHeader = httpRequest.getHeader( "X-Instant-Trace-Id" );
         if ( StringUtils.isBlank( instantTraceIdHeader ) )
         {
             return;

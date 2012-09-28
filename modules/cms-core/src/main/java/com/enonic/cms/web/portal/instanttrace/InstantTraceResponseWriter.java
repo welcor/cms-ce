@@ -7,9 +7,9 @@ public final class InstantTraceResponseWriter
 {
     private static final Integer charsPrHeader = 1000;
 
-    private static final String HEADER_NAME = "Instant-Trace-Id";
+    private static final String HEADER_NAME = "X-Instant-Trace-Id";
 
-    private static final String HEADER_NAME2 = "Instant-Trace-Info-";
+    private static final String HEADER_NAME2 = "X-Instant-Trace-Info-";
 
     public static void applyTraceInfo( final HttpServletResponse response, final InstantTraceId instantTraceId )
     {

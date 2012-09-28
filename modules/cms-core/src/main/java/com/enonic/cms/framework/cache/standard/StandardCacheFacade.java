@@ -5,15 +5,17 @@
 package com.enonic.cms.framework.cache.standard;
 
 import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.CacheListener;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import org.jdom.Document;
 import org.jdom.Element;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 final class StandardCacheFacade
-    implements CacheFacade 
+    implements CacheFacade
 {
     /**
      * Name of cache.
@@ -40,13 +42,16 @@ final class StandardCacheFacade
      */
     private final AtomicInteger missCount;
 
-    public StandardCacheFacade( final String name, final StandardCache peer, final CacheConfig config )
+    private final CacheListener cacheListener;
+
+    public StandardCacheFacade( final String name, final StandardCache peer, final CacheConfig config, final CacheListener cacheListener )
     {
         this.name = name;
         this.peer = peer;
         this.config = config;
         this.hitCount = new AtomicInteger( 0 );
         this.missCount = new AtomicInteger( 0 );
+        this.cacheListener = cacheListener;
     }
 
     public String getName()
@@ -111,15 +116,13 @@ final class StandardCacheFacade
         else
         {
             final int realTimeToLive = timeToLive < 0 ? this.config.getTimeToLive() : timeToLive;
-            final String compositeKey = createCompositeKey( group, key );
-            doPut( compositeKey, value, realTimeToLive );
+            doPut( group, key, value, realTimeToLive );
         }
     }
 
     public void remove( final String group, final String key )
     {
-        final String compositeKey = createCompositeKey( group, key );
-        this.peer.remove( compositeKey );
+        doRemove( group, key, true );
     }
 
     public void removeGroup( final String group )
@@ -163,10 +166,13 @@ final class StandardCacheFacade
         return entry.getValue();
     }
 
-    private void doPut( final String compositeKey, final Object value, final int timeToLive )
+    private void doPut( final String group, final String key, final Object value, final int timeToLive )
     {
+        final String compositeKey = createCompositeKey( group, key );
         final CacheEntry entry = new CacheEntry( compositeKey, value, timeToLive > 0 ? timeToLive * 1000L : 0 );
         this.peer.put( entry );
+
+        this.cacheListener.removeEntry( this, group, key );
     }
 
     public int getCount()
@@ -202,5 +208,84 @@ final class StandardCacheFacade
 
         root.addContent( statsElem );
         return XMLDocumentFactory.create( new Document( root ) );
+    }
+
+    private void doRemove( final String group, final String key, final boolean notify )
+    {
+        final String compositeKey = createCompositeKey( group, key );
+        this.peer.remove( compositeKey );
+
+        if ( notify )
+        {
+            this.cacheListener.removeEntry( this, group, key );
+        }
+    }
+
+    private void doRemoveGroup( final String group, final boolean notify )
+    {
+        if ( group != null )
+        {
+            this.peer.removeGroup( group );
+        }
+        else
+        {
+            this.peer.removeAll();
+        }
+
+        if ( notify )
+        {
+            this.cacheListener.removeGroup( this, group );
+        }
+    }
+
+    private void doRemoveGroupByPrefix( final String prefix, final boolean notify )
+    {
+        if ( prefix != null )
+        {
+            this.peer.removeGroupByPrefix( prefix );
+        }
+        else
+        {
+            this.peer.removeAll();
+        }
+
+        if ( notify )
+        {
+            this.cacheListener.removeGroupByPrefix( this, prefix );
+        }
+    }
+
+    private void doRemoveAll( final boolean notify )
+    {
+        this.peer.removeAll();
+
+        if ( notify )
+        {
+            this.cacheListener.removeAll( this );
+        }
+    }
+
+    @Override
+    public void silentRemove( final String group, final String key )
+    {
+        doRemove( group, key, false );
+    }
+
+    @Override
+    public void silentRemoveGroup( final String group )
+    {
+        doRemoveGroup( group, false );
+    }
+
+    @Override
+    public void silentRemoveGroupByPrefix( final String prefix )
+    {
+        doRemoveGroupByPrefix( prefix, false );
+    }
+
+    @Override
+    public void silentRemoveAll()
+    {
+        doRemoveAll( false );
     }
 }

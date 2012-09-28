@@ -15,7 +15,7 @@ public interface CacheFacade
      * Name of cache.
      */
     public String getName();
-    
+
     /**
      * Return the memory capacity.
      */
@@ -87,4 +87,12 @@ public interface CacheFacade
      * Return xml details.
      */
     public XMLDocument getInfoAsXml();
+
+    public void silentRemove( String group, String key );
+
+    public void silentRemoveGroup( String group );
+
+    public void silentRemoveGroupByPrefix( String prefix );
+
+    public void silentRemoveAll();
 }

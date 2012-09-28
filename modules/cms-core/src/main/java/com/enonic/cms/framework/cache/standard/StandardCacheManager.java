@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.CacheListener;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -36,9 +37,14 @@ public final class StandardCacheManager
      */
     private CacheManagerConfig config;
 
+    private CacheListener cacheListener;
+
+    private final NopCacheListener nopCacheListener;
+
     public StandardCacheManager()
     {
         this.cacheMap = new HashMap<String, StandardCacheFacade>();
+        this.nopCacheListener = new NopCacheListener();
     }
 
     @Autowired
@@ -77,8 +83,9 @@ public final class StandardCacheManager
 
     private StandardCacheFacade doCreateCache( final String name, final CacheConfig config )
     {
-        StandardCache cache = new StandardCache( config.getMemoryCapacity() );
-        return new StandardCacheFacade( name, cache, config );
+        final StandardCache cache = new StandardCache( config.getMemoryCapacity() );
+        final CacheListener listener = this.cacheListener != null ? this.cacheListener : this.nopCacheListener;
+        return new StandardCacheFacade( name, cache, config, listener );
     }
 
     public XMLDocument getInfoAsXml()
@@ -90,5 +97,11 @@ public final class StandardCacheManager
         }
 
         return XMLDocumentFactory.create( new Document( root ) );
+    }
+
+    @Autowired(required = false)
+    public void setCacheListener( final CacheListener cacheListener )
+    {
+        this.cacheListener = cacheListener;
     }
 }

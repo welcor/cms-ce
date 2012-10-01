@@ -129,11 +129,13 @@ public class FileResourceServiceImplTest
         list = this.fileService.getChildren( new FileResourceName( "/" ) );
         Assert.assertNotNull( list );
         Assert.assertEquals( 1, list.size() );
-        Assert.assertTrue( list.get( 0 ).toString().endsWith( "/a" ) );
+        Assert.assertEquals( list.get( 0 ).toString(), "/a" );
 
         list = this.fileService.getChildren( new FileResourceName( "/a/b/c" ) );
         Assert.assertNotNull( list );
         Assert.assertEquals( 2, list.size() );
+        Assert.assertTrue( list.contains( new FileResourceName( "/a/b/c/other.txt" ) ) );
+        Assert.assertTrue( list.contains( new FileResourceName( "/a/b/c/sample.txt" ) ) );
 
         list = this.fileService.getChildren( new FileResourceName( "/a/b/c/sample.txt" ) );
         Assert.assertNotNull( list );

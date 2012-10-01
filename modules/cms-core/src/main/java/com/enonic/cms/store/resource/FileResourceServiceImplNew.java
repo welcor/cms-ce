@@ -34,19 +34,7 @@ public class FileResourceServiceImplNew
     @Override
     public FileResource getResource( final FileResourceName name )
     {
-
         final File entity = getFile( name );
-
-        // Skip this for now
-        //   if ( !entity.exists() )
-        //   {
-        //       // name = "/"
-        //       if ( name.isRoot() )
-        //       {
-        //           doCreateFolder(  name );
-        //           //entity = findEntity( session, key );
-        //       }
-        //   }
 
         if ( !entity.exists() && name.isRoot() )
         {
@@ -178,7 +166,7 @@ public class FileResourceServiceImplNew
         {
             for ( File f : file.listFiles() )
             {
-                list.add( new FileResourceName( f.getAbsolutePath() ) );
+                list.add( new FileResourceName( name, f.getName() ) );
             }
         }
 
@@ -339,19 +327,6 @@ public class FileResourceServiceImplNew
         }
 
         return false;
-    }
-
-
-    @Override
-    public void listAllResources()
-    {
-        File root = getFile( new FileResourceName( "/" ) );
-
-        final Collection<File> files = FileUtils.listFiles( root, null, true );
-        for ( File f : files )
-        {
-            System.out.println( f.getAbsolutePath() );
-        }
     }
 
     @Override

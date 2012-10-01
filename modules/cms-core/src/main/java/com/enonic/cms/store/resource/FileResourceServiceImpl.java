@@ -13,7 +13,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.enonic.vertical.adminweb.handlers.fieldtypes.File;
 
 import com.enonic.cms.framework.blob.BlobKey;
 import com.enonic.cms.framework.blob.BlobRecord;
@@ -28,10 +31,10 @@ import com.enonic.cms.store.support.EntityChangeListener;
 import com.enonic.cms.store.support.EntityChangeListenerHub;
 import com.enonic.cms.store.vfs.db.VirtualFileEntity;
 
-@Service("fileResourceService")
 public final class FileResourceServiceImpl
     implements FileResourceService, EntityChangeListener
 {
+
     private BlobStore blobStore;
 
     private SessionFactory sessionFactory;
@@ -122,7 +125,7 @@ public final class FileResourceServiceImpl
             return false;
         }
 
-        newVirtualFile = createVirtualFileEntity( key, name, true );
+        newVirtualFile =    createVirtualFileEntity( key, name, true );
 
         String parentKey = createKey( name.getParent() );
         if ( parentKey != null )
@@ -562,4 +565,5 @@ public final class FileResourceServiceImpl
     {
         this.listeners = listeners;
     }
+
 }

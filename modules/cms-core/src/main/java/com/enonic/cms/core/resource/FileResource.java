@@ -75,13 +75,4 @@ public final class FileResource
         return this.name.isHidden();
     }
 
-    public String getBlobKey()
-    {
-        return blobKey;
-    }
-
-    public void setBlobKey( String blobKey )
-    {
-        this.blobKey = blobKey;
-    }
 }

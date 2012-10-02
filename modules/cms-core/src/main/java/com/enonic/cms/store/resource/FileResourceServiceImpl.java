@@ -70,7 +70,6 @@ public class FileResourceServiceImpl
         FileResource res = new FileResource( name );
         res.setFolder( file.isDirectory() );
         res.setSize( file.length() );
-        res.setBlobKey( null );
         res.setMimeType( mimeTypeResolver.getMimeType( name.getName() ) );
         res.setLastModified( new DateTime( file.lastModified() ) );
         return res;
@@ -151,11 +150,11 @@ public class FileResourceServiceImpl
     {
         ArrayList<FileResourceName> list = new ArrayList<FileResourceName>();
 
-        final File file = getFile( name );
+        final File parent = getFile( name );
 
-        if ( file != null && file.isDirectory() )
+        if ( parent.exists() && parent.isDirectory() )
         {
-            for ( File f : file.listFiles() )
+            for ( File f : parent.listFiles() )
             {
                 list.add( new FileResourceName( name, f.getName() ) );
             }

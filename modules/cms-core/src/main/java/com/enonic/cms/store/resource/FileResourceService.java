@@ -17,25 +17,19 @@ public interface FileResourceService
 {
     FileResource getResource( FileResourceName name );
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     boolean createFolder( FileResourceName name );
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     boolean createFile( FileResourceName name, FileResourceData data );
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     boolean deleteResource( FileResourceName name );
 
     List<FileResourceName> getChildren( FileResourceName name );
 
     FileResourceData getResourceData( FileResourceName name );
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     boolean setResourceData( FileResourceName name, FileResourceData data );
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     boolean moveResource( FileResourceName from, FileResourceName to );
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     boolean copyResource( FileResourceName from, FileResourceName to );
 }

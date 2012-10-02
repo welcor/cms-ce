@@ -1,4 +1,4 @@
-package com.enonic.cms.framework.cache.standard;
+package com.enonic.cms.framework.cache.base;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.framework.cache.standard;
+package com.enonic.cms.framework.cache.base;
 
 import java.util.Properties;
 

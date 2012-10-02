@@ -87,12 +87,4 @@ public interface CacheFacade
      * Return xml details.
      */
     public XMLDocument getInfoAsXml();
-
-    public void silentRemove( String group, String key );
-
-    public void silentRemoveGroup( String group );
-
-    public void silentRemoveGroupByPrefix( String prefix );
-
-    public void silentRemoveAll();
 }

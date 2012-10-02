@@ -190,26 +190,7 @@ public class FileResourceServiceImplTest
     public void copyResourceFolder_copy_self_to_sub()
     {
         createSampleData();
-        /*
-        /a/sample.txt
-        /a/b/sample.txt
-        /a/b/c/sample.txt
-        /a/b/c/other.txt
-        */
-
-        //TODO: SRS - Why should this not be allowed?
-        //Assert.assertFalse( this.fileService.copyResource( new FileResourceName( "/a" ), new FileResourceName( "/a/b/c" ) ));
         Assert.assertTrue( this.fileService.copyResource( new FileResourceName( "/a" ), new FileResourceName( "/a/b/c" ) ) );
-
-        /*
-        /a/sample.txt
-        /a/b/sample.txt
-        /a/b/c/sample.txt
-        /a/b/c/other.txt
-        /a/b/c/b/sample.txt
-        /a/b/c/b/c/sample.txt
-        /a/b/c/b/c/other.txt
-        */
 
         final FileResourceData resourceData = this.fileService.getResourceData( new FileResourceName( "/a/b/c/b/c/other.txt" ) );
         Assert.assertNotNull( resourceData );
@@ -220,24 +201,7 @@ public class FileResourceServiceImplTest
     public void copyResourceFolder_copy_sub_to_root()
     {
         createSampleData();
-        /*
-        /a/sample.txt
-        /a/b/sample.txt
-        /a/b/c/sample.txt
-        /a/b/c/other.txt
-        */
-
         Assert.assertTrue( this.fileService.copyResource( new FileResourceName( "/a/b" ), new FileResourceName( "/z" ) ) );
-
-        /*
-        /a/sample.txt
-        /a/b/sample.txt
-        /a/b/c/sample.txt
-        /a/b/c/other.txt
-        /z/sample.txt
-        /z/c/sample.txt
-        /z/c/other.txt
-        */
 
         Assert.assertEquals( "Should have 'a' and 'z' as children on root after copy", 2,
                              this.fileService.getChildren( new FileResourceName( "/" ) ).size() );

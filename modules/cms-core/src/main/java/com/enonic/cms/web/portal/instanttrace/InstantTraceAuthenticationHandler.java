@@ -28,7 +28,7 @@ import com.enonic.cms.web.portal.handler.WebHandlerBase;
 import com.enonic.cms.web.portal.template.TemplateProcessor;
 
 @Component
-public class InstantTraceHandler
+public class InstantTraceAuthenticationHandler
     extends WebHandlerBase
 {
     @Autowired

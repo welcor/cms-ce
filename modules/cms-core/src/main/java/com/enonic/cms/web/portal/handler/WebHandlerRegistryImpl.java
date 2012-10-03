@@ -12,6 +12,7 @@ import com.enonic.cms.web.portal.attachment.AttachmentHandler;
 import com.enonic.cms.web.portal.captcha.CaptchaHandler;
 import com.enonic.cms.web.portal.image.ImageHandler;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceHandler;
+import com.enonic.cms.web.portal.instanttrace.InstantTraceInfoHandler;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceResourceHandler;
 import com.enonic.cms.web.portal.page.PageHandler;
 import com.enonic.cms.web.portal.page.PageRedirectHandler;
@@ -95,6 +96,12 @@ public final class WebHandlerRegistryImpl
 
     @Autowired
     public void setInstantTraceResourceHandler( final InstantTraceResourceHandler handler )
+    {
+        this.list.add( handler );
+    }
+
+    @Autowired
+    public void setInstantTraceInfoHandler( final InstantTraceInfoHandler handler )
     {
         this.list.add( handler );
     }

@@ -73,7 +73,7 @@ public class InstantTraceAuthenticationHandler
                 HttpSession httpSession = context.getRequest().getSession( true );
                 InstantTraceSessionInspector.markAuthenticated( httpSession ); // TODO: why?
 
-                String localPathToRedirectTo = context.getRequest().getParameter( "_itrace_original_url" );
+                String localPathToRedirectTo = InstantTraceRequestInspector.getParameterOriginalUrl( context.getRequest() );
                 String urlToRedirectTo =
                     siteURLResolver.createFullPathForRedirect( context.getRequest(), context.getSitePath().getSiteKey(),
                                                                localPathToRedirectTo );
@@ -87,11 +87,7 @@ public class InstantTraceAuthenticationHandler
         }
 
         model.put( "userStores", createUserStoreMap() );
-        String originalURL = (String) context.getRequest().getAttribute( "itrace.originalUrl" );
-        if ( StringUtils.isBlank( originalURL ) )
-        {
-            originalURL = context.getRequest().getParameter( "_itrace_original_url" );
-        }
+        final String originalURL = InstantTraceRequestInspector.getOriginalUrl( context.getRequest() );
 
         if ( StringUtils.isBlank( originalURL ) )
         {
@@ -110,8 +106,8 @@ public class InstantTraceAuthenticationHandler
     private void authenticateUser( HttpServletRequest request )
         throws InvalidCredentialsException
     {
-        final String userName = request.getParameter( "_itrace_username" );
-        final String password = request.getParameter( "_itrace_password" );
+        final String userName = InstantTraceRequestInspector.getParameterUsername( request );
+        final String password = InstantTraceRequestInspector.getParameterPassword( request );
         final UserStoreKey userStoreKey;
 
         final QualifiedUsername qualifiedUsername;
@@ -121,7 +117,7 @@ public class InstantTraceAuthenticationHandler
         }
         else
         {
-            userStoreKey = new UserStoreKey( request.getParameter( "_itrace_userstore" ) );
+            userStoreKey = new UserStoreKey( InstantTraceRequestInspector.getParameterUserstore( request ) );
             qualifiedUsername = new QualifiedUsername( userStoreKey, userName );
         }
 
@@ -146,7 +142,6 @@ public class InstantTraceAuthenticationHandler
         final List<UserStoreEntity> userStoreList = userStoreDao.findAll();
         for ( UserStoreEntity userStore : userStoreList )
         {
-            // TODO: Is this the way to get  userStore key? -> userStore.getKey().toString()
             userStoreMap.put( userStore.getKey().toString(), userStore.getName() );
         }
 

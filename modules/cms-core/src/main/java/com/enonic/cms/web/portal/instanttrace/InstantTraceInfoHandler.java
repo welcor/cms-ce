@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Path;
@@ -29,13 +28,7 @@ public class InstantTraceInfoHandler
         throws Exception
     {
         final HttpServletRequest httpRequest = context.getRequest();
-        final String instantTraceIdHeader = httpRequest.getHeader( "X-Instant-Trace-Id" );
-        if ( StringUtils.isBlank( instantTraceIdHeader ) )
-        {
-            return;
-        }
-
-        final InstantTraceId instantTraceId = new InstantTraceId( instantTraceIdHeader );
+        final InstantTraceId instantTraceId = InstantTraceRequestInspector.getInstantTraceId( httpRequest );
         final HttpSession httpSession = httpRequest.getSession( false );
         if ( httpSession == null )
         {

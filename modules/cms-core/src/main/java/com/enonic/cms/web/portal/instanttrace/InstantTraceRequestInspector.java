@@ -30,11 +30,6 @@ public final class InstantTraceRequestInspector
         return false;
     }
 
-    public static boolean isAuthenticationPageRequested( final Path localPath )
-    {
-        return localPath.containsSubPath( "_itrace", "authenticate" );
-    }
-
     public static void setAttributeOriginalUrl( final Path localPath, final HttpServletRequest request )
     {
         request.setAttribute( "instantTrace.originalUrl", localPath.toString() );

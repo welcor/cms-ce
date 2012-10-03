@@ -55,7 +55,7 @@ public class InstantTraceAuthenticationHandler
     @Override
     protected boolean canHandle( final Path localPath )
     {
-        return localPath.containsSubPath( "_itrace", "authenticate" );
+        return InstantTracePathInspector.isAuthenticationPagePath( localPath );
     }
 
     @Override

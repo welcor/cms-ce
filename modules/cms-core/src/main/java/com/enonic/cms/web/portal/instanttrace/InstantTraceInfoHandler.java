@@ -20,7 +20,7 @@ public class InstantTraceInfoHandler
     @Override
     protected boolean canHandle( final Path localPath )
     {
-        return localPath.containsSubPath( "_itrace", "info" );
+        return InstantTracePathInspector.isTraceInfoPath( localPath );
     }
 
     @Override

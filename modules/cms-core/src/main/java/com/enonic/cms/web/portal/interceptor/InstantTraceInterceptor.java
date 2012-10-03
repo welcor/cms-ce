@@ -11,6 +11,7 @@ import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.security.InstantTraceSecurityHolder;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
+import com.enonic.cms.web.portal.instanttrace.InstantTracePathInspector;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceRequestInspector;
 
 @Component
@@ -63,7 +64,7 @@ public class InstantTraceInterceptor
         {
             return true;
         }
-        else if ( localPath.containsSubPath( "_itrace", "resources" ) )
+        else if ( InstantTracePathInspector.isResourcePath( localPath ) )
         {
             return true;
         }
@@ -75,7 +76,7 @@ public class InstantTraceInterceptor
         {
             return true;
         }
-        else if ( InstantTraceRequestInspector.isAuthenticationPageRequested( context.getSitePath().getLocalPath() ) )
+        else if ( InstantTracePathInspector.isAuthenticationPagePath( context.getSitePath().getLocalPath() ) )
         {
             return true;
         }

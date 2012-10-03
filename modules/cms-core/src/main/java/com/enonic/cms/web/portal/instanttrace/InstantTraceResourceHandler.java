@@ -44,7 +44,7 @@ public class InstantTraceResourceHandler
     @Override
     protected boolean canHandle( final Path localPath )
     {
-        return localPath.containsSubPath( "_itrace", "resources" );
+        return InstantTracePathInspector.isResourcePath( localPath );
     }
 
     @Override

@@ -134,27 +134,19 @@ public class PortalResponseProcessor
             }
         }
 
-        if ( InstantTraceRequestInspector.traceInfoRequested( httpRequest ) )
+        if ( InstantTraceRequestInspector.isClientEnabled( httpRequest ) )
         {
             final PortalRequestTrace portalRequestTrace = CurrentTrace.popLastPortalRequestTrace();
             if ( portalRequestTrace == null )
             {
                 return;
             }
-            InstantTraceSessionObject instantTraceSessionObject = (InstantTraceSessionObject) httpSession.getAttribute( "Instant-Trace" );
-            if ( instantTraceSessionObject == null )
-            {
-                instantTraceSessionObject = new InstantTraceSessionObject();
-                httpSession.setAttribute( InstantTraceSessionInspector.SESSION_OBJECT_ATTRIBUTE_NAME, instantTraceSessionObject );
-            }
+            final InstantTraceSessionObject instantTraceSessionObject =
+                InstantTraceSessionInspector.getInstantTraceSessionObject( httpSession );
             final InstantTraceId instantTraceId =
                 new InstantTraceId( InstantTraceSecurityHolder.getUser(), portalRequestTrace.getCompletedNumber() );
-
             instantTraceSessionObject.addTrace( instantTraceId, portalRequestTrace );
-            //final String traceInfo = new JsonSerializer( portalRequestTrace ).serialize();
-            //final String traceInfoEncoded = new String( Base64.encodeBase64( traceInfo.getBytes() ) );
-
-            InstantTraceResponseWriter.applyTraceInfo( httpResponse, instantTraceId );
+            InstantTraceResponseWriter.applyInstantTraceId( httpResponse, instantTraceId );
         }
 
         httpResponse.setContentType( response.getHttpContentType() );

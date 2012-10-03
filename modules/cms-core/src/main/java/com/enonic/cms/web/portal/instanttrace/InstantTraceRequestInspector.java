@@ -7,12 +7,7 @@ import com.enonic.cms.core.Path;
 
 public final class InstantTraceRequestInspector
 {
-    public static boolean traceInfoRequested( final HttpServletRequest request )
-    {
-        return clientIsEnabled( request );
-    }
-
-    public static boolean clientIsEnabled( final HttpServletRequest request )
+    public static boolean isClientEnabled( final HttpServletRequest request )
     {
         return "true".equals( request.getHeader( "X-Instant-Trace-Client-Enabled" ) );
     }

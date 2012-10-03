@@ -71,7 +71,7 @@ public class InstantTraceHandler
             {
                 authenticateUser( context.getRequest() );
                 HttpSession httpSession = context.getRequest().getSession( true );
-                InstantTraceSessionInspector.markAuthenticated( httpSession );
+                InstantTraceSessionInspector.markAuthenticated( httpSession ); // TODO: why?
 
                 String localPathToRedirectTo = context.getRequest().getParameter( "_itrace_original_url" );
                 String urlToRedirectTo =

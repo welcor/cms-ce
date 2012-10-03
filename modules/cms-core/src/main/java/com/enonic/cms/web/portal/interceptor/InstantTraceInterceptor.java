@@ -52,7 +52,7 @@ public class InstantTraceInterceptor
 
     private boolean noPreHandle( final PortalWebContext context )
     {
-        if ( !InstantTraceRequestInspector.clientIsEnabled( context.getRequest() ) )
+        if ( !InstantTraceRequestInspector.isClientEnabled( context.getRequest() ) )
         {
             return true;
         }

@@ -43,12 +43,7 @@ public class InstantTraceInfoHandler
         }
 
         final InstantTraceSessionObject instantTraceSessionObject =
-            (InstantTraceSessionObject) httpSession.getAttribute( InstantTraceSessionInspector.SESSION_OBJECT_ATTRIBUTE_NAME );
-        if ( instantTraceSessionObject == null )
-        {
-            return;
-        }
-
+            InstantTraceSessionInspector.getInstantTraceSessionObject( httpSession );
         final PortalRequestTrace trace = instantTraceSessionObject.getTrace( instantTraceId );
 
         final String traceInfo = new JsonSerializer( trace ).serialize();

@@ -92,19 +92,7 @@
       <groupId>net.sourceforge.saxon</groupId>
       <artifactId>saxon</artifactId>
       <version>9.1.0.8</version>
-      <classifier>s9api</classifier>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>9.1.0.8</version>
       <classifier>jdom</classifier>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>9.1.0.8</version>
-      <classifier>xpath</classifier>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jparsec</groupId>

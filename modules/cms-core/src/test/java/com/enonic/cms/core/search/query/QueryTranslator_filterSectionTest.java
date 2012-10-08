@@ -28,8 +28,7 @@ public class QueryTranslator_filterSectionTest
             "  \"from\" : 0,\n" +
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +
@@ -73,8 +72,7 @@ public class QueryTranslator_filterSectionTest
             "  \"from\" : 0,\n" +
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +
@@ -111,8 +109,7 @@ public class QueryTranslator_filterSectionTest
             "  \"from\" : 0,\n" +
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"terms\" : {\n" +

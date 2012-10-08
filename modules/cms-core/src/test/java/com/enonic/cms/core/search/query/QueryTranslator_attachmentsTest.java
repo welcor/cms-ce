@@ -23,7 +23,7 @@ public class QueryTranslator_attachmentsTest
             "          \"attachment\" : \"test\"\n" +
             "        }\n" +
             "      },\n" +
-            "      \"type\" : \"binaries\"\n" +
+            "      \"child_type\" : \"binaries\"\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -50,7 +50,7 @@ public class QueryTranslator_attachmentsTest
             "          \"attachment\" : \"test\"\n" +
             "        }\n" +
             "      },\n" +
-            "      \"type\" : \"binaries\"\n" +
+            "      \"child_type\" : \"binaries\"\n" +
             "    }\n" +
             "  }\n" +
             "}";

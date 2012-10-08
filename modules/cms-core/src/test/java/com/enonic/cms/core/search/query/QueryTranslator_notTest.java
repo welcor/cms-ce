@@ -18,8 +18,7 @@ public class QueryTranslator_notTest
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
-            "        \"match_all\" : {\n" +
-            "        }\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"bool\" : {\n" +

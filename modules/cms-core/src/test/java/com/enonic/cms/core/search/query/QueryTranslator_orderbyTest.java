@@ -22,8 +22,7 @@ public class QueryTranslator_orderbyTest
             "  \"from\" : 0,\n" +
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
             "    \"key.orderby\" : {\n" +
@@ -48,8 +47,7 @@ public class QueryTranslator_orderbyTest
             "  \"from\" : 0,\n" +
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
             "    \"key.orderby\" : {\n" +

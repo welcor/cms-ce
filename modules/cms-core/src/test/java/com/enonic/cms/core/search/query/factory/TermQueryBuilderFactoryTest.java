@@ -144,7 +144,7 @@ public class TermQueryBuilderFactoryTest
             "        \"_all_userdata.number\" : 123.0\n" +
             "      }\n" +
             "    },\n" +
-            "    \"type\" : \"binaries\"\n" +
+            "    \"child_type\" : \"binaries\"\n" +
             "  }\n" +
             "}";
 

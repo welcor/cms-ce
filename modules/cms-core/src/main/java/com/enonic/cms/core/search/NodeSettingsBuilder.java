@@ -38,8 +38,8 @@ public final class NodeSettingsBuilder
 
     private void checkClusterSettings( final ImmutableSettings.Builder settings )
     {
-        final Boolean local = getAsBoolean( settings.get( "node.local" ) );
-        final Boolean clusterEnabled = getAsBoolean( configProperties.getProperty( "cms.cluster.enabled" ) );
+        final Boolean local = getAsBoolean( settings.get( "node.local" ), null );
+        final Boolean clusterEnabled = getAsBoolean( configProperties.getProperty( "cms.cluster.enabled" ), false );
 
         if ( local == null )
         {
@@ -55,11 +55,11 @@ public final class NodeSettingsBuilder
         }
     }
 
-    private Boolean getAsBoolean( String value )
+    private Boolean getAsBoolean( String value, Boolean defaultValue )
     {
         if ( Strings.isNullOrEmpty( value ) )
         {
-            return null;
+            return defaultValue;
         }
 
         return Boolean.valueOf( StringUtils.trimToNull( value ) );

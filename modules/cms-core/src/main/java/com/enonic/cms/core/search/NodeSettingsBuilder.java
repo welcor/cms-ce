@@ -1,6 +1,7 @@
 package com.enonic.cms.core.search;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -8,6 +9,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +21,7 @@ import com.google.common.base.Predicate;
 public final class NodeSettingsBuilder
     extends AbstractElasticsearchSettingsBuilder
 {
+    private final Logger LOG = Logger.getLogger( NodeSettingsBuilder.class.getName() );
 
     public Settings buildNodeSettings()
     {
@@ -28,7 +31,38 @@ public final class NodeSettingsBuilder
 
         populateSettings( settings, nodePropertyMap, ELASTICSEARCH_PROPERTIES_PREFIX );
 
+        checkClusterSettings( settings );
+
         return settings.build();
+    }
+
+    private void checkClusterSettings( final ImmutableSettings.Builder settings )
+    {
+        final Boolean local = getAsBoolean( settings.get( "node.local" ) );
+        final Boolean clusterEnabled = getAsBoolean( configProperties.getProperty( "cms.cluster.enabled" ) );
+
+        if ( local == null )
+        {
+            settings.put( "node.local", !clusterEnabled );
+        }
+        else
+        {
+            if ( local != ( !clusterEnabled ) )
+            {
+                LOG.warning( "Elasticsearch cluster enabled setting: '" + !local + "' differ from cms.cluster.enabled - property: '" +
+                                 clusterEnabled + "' which may cause unexpected behaviour" );
+            }
+        }
+    }
+
+    private Boolean getAsBoolean( String value )
+    {
+        if ( Strings.isNullOrEmpty( value ) )
+        {
+            return null;
+        }
+
+        return Boolean.valueOf( StringUtils.trimToNull( value ) );
     }
 
     private Map<String, String> getNodePropertyMap()

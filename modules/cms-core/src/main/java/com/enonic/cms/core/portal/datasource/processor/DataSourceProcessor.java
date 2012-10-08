@@ -13,7 +13,5 @@ import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
  */
 public interface DataSourceProcessor
 {
-    public void preProcess( MethodCall methodCall );
-
     public void postProcess( Document resultDoc, MethodCall methodCall );
 }

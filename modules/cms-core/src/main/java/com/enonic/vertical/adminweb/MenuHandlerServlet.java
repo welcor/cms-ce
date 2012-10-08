@@ -55,14 +55,12 @@ import com.enonic.cms.core.admin.MenuItemsAcrossSitesModel;
 import com.enonic.cms.core.admin.MenuItemsAcrossSitesXmlCreator;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.language.LanguageResolver;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.processor.ContentProcessor;
 import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
 import com.enonic.cms.core.portal.datasource.processor.MenuItemProcessor;
 import com.enonic.cms.core.portal.rendering.PageRenderer;
@@ -1917,29 +1915,13 @@ public class MenuHandlerServlet
 
             Element menusElem = JDOMUtil.toW3CDocument( menusDoc ).getDocumentElement();
 
-            ContentProcessor contentProcessor = null;
-            // content
-            if ( modifiedMenuItem.getContent() != null )
-            {
-                ContentXMLCreator contentXMLCreator = new ContentXMLCreator();
-                XMLDocument contentDoc =
-                    contentXMLCreator.createContentsDocument( requester, modifiedMenuItem.getContent().getMainVersion(), null );
-                contentProcessor = new ContentProcessor( contentDoc.getAsDOMDocument() );
-            }
-
-            int indexCount = contentProcessor == null ? 1 : 2;
-
             MenuItemPreviewContext menuItemPreviewContext = new MenuItemPreviewContext( modifiedMenuItem );
             PreviewContext previewContext = new PreviewContext( menuItemPreviewContext );
             previewService.setPreviewContext( previewContext );
 
             // prepare data source result processors
-            DataSourceProcessor[] dsrProcessors = new DataSourceProcessor[indexCount];
+            DataSourceProcessor[] dsrProcessors = new DataSourceProcessor[1];
             dsrProcessors[0] = new MenuItemProcessor( menusElem, newMenuItemElem );
-            if ( contentProcessor != null )
-            {
-                dsrProcessors[1] = contentProcessor;
-            }
 
             SitePath sitePath = new SitePath( site.getKey(), modifiedMenuItem.getPath() );
             sitePath.addParam( "id", menuItemKey.toString() );

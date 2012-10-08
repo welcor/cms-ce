@@ -149,6 +149,7 @@
         <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController"
                value-ref="reindexContentToolController"/>
         <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.IndexMonitorController" value-ref="indexMonitorController"/>
+        <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ClusterMonitorController" value-ref="clusterMonitorController"/>
         <entry key="/admin/servlet/com.enonic.vertical.adminweb.SchedulerServlet" value-ref="schedulerServletWrapper"/>
       </map>
     </property>
@@ -169,6 +170,7 @@
   <bean id="livePortalTraceController" class="com.enonic.cms.core.tools.LivePortalTraceController"/>
   <bean id="reindexContentToolController" class="com.enonic.cms.core.tools.ReindexContentToolController"/>
   <bean id="indexMonitorController" class="com.enonic.cms.core.tools.IndexMonitorController"/>
+  <bean id="clusterMonitorController" class="com.enonic.cms.core.tools.ClusterMonitorController"/>
   <bean id="resourceController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceController"/>
 
   <bean id="debugViewController" class="com.enonic.cms.server.service.admin.mvc.controller.SiteDebugViewController"/>

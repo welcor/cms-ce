@@ -1211,6 +1211,46 @@ public abstract class AdminHandlerBaseServlet
         return domainKey;
     }
 
+    protected void browseRedirectWithSorting( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems )
+    {
+        MultiValueMap queryParams = new MultiValueMap();
+
+        String page = formItems.getString( "page" );
+        queryParams.put( "page", page );
+        queryParams.put( "op", "browse" );
+        queryParams.put( "menukey", formItems.get( "menukey" ) );
+
+        String sortby = getSortBy( page, "browse" );
+        queryParams.put( "sortby", session.getAttribute( sortby ) );
+
+        String direction = getSortByDirection( page, "browse" );
+        queryParams.put( "sortby-direction", session.getAttribute( direction ) );
+
+        redirectClientToAdminPath( "adminpage", queryParams, request, response );
+    }
+
+    protected static String getSortBy( String page, String op )
+    {
+        StringBuilder sb_sortByKey = new StringBuilder( "s[page=" );
+        sb_sortByKey.append( page );
+        sb_sortByKey.append( ",op=" );
+        sb_sortByKey.append( op );
+        sb_sortByKey.append( ",s]" );
+
+        return sb_sortByKey.toString();
+    }
+
+    protected static String getSortByDirection( String page, String op )
+    {
+        StringBuilder sb_sortByDirectionKey = new StringBuilder( "s[page=" );
+        sb_sortByDirectionKey.append( page );
+        sb_sortByDirectionKey.append( ",op=" );
+        sb_sortByDirectionKey.append( op );
+        sb_sortByDirectionKey.append( ",sd]" );
+
+        return  sb_sortByDirectionKey.toString();
+    }
+
     protected void addSortParamteres( String defaultSortBy, String defaultSortByDirection, ExtendedMap inParams, HttpSession session,
                                       HashMap<String, Object> outParams )
     {
@@ -1223,19 +1263,9 @@ public abstract class AdminHandlerBaseServlet
         String op = inParams.getString( "op" );
 
         // s[page="+page+",op=browse,s]
-        StringBuffer sb_sortByKey = new StringBuffer( "s[page=" );
-        sb_sortByKey.append( page );
-        sb_sortByKey.append( ",op=" );
-        sb_sortByKey.append( op );
-        sb_sortByKey.append( ",s]" );
-        String sortByKey = sb_sortByKey.toString();
+        String sortByKey = getSortBy( page, op );
         // s[page="+page+",op=browse,sd]
-        StringBuffer sb_sortByDirectionKey = new StringBuffer( "s[page=" );
-        sb_sortByDirectionKey.append( page );
-        sb_sortByDirectionKey.append( ",op=" );
-        sb_sortByDirectionKey.append( op );
-        sb_sortByDirectionKey.append( ",sd]" );
-        String sortByDirectionKey = sb_sortByDirectionKey.toString();
+        String sortByDirectionKey = getSortByDirection( page, op );
 
         //("sortByKey = " + sortByKey);
         //("sortByDirectionKey = " + sortByDirectionKey);

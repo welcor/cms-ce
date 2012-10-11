@@ -8,13 +8,13 @@ import com.enonic.cms.core.portal.datasource2.handler.AbstractDataSourceHandlerT
 import com.enonic.cms.core.http.HTTPService;
 
 public class GetUrlAsXmlHandlerTest
-    extends AbstractDataSourceHandlerTest<GetUrlAsTextHandler>
+    extends AbstractDataSourceHandlerTest<GetUrlAsXmlHandler>
 {
     private HTTPService httpService;
 
     public GetUrlAsXmlHandlerTest()
     {
-        super( GetUrlAsTextHandler.class );
+        super( GetUrlAsXmlHandler.class );
     }
 
     @Override
@@ -22,7 +22,7 @@ public class GetUrlAsXmlHandlerTest
         throws Exception
     {
         this.httpService = Mockito.mock( HTTPService.class );
-        Mockito.when( this.httpService.getURL( Mockito.anyString(), Mockito.anyString(), Mockito.anyInt() ) ).thenReturn( "Hello World" );
+        Mockito.when( this.httpService.getURLAsBytes( Mockito.anyString(), Mockito.anyInt() ) ).thenReturn( "<dummy/>".getBytes() );
         this.handler.setHttpService( this.httpService );
     }
 
@@ -38,8 +38,8 @@ public class GetUrlAsXmlHandlerTest
         throws Exception
     {
         this.request.addParam( "url", "http://www.enonic.com" );
-        testHandle( "getUrlAsText_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "ISO-8859-1", 5000 );
+        testHandle( "getUrlAsXml_result" );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000 );
     }
 
     @Test
@@ -47,10 +47,9 @@ public class GetUrlAsXmlHandlerTest
         throws Exception
     {
         this.request.addParam( "url", "http://www.enonic.com" );
-        this.request.addParam( "encoding", "UTF-8" );
         this.request.addParam( "timeout", "1000" );
-        testHandle( "getUrlAsText_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "UTF-8", 1000 );
+        testHandle( "getUrlAsXml_result" );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 1000 );
     }
 
     @Test(expected = DataSourceException.class)
@@ -58,7 +57,6 @@ public class GetUrlAsXmlHandlerTest
         throws Exception
     {
         this.request.addParam( "url", "http://www.enonic.com" );
-        this.request.addParam( "encoding", "UTF-8" );
         this.request.addParam( "timeout", "abc" );
         this.handler.handle( this.request );
     }

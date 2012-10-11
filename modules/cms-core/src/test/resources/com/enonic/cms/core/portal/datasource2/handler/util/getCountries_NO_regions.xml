@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<countries>
+  <country code="NO">
+    <english-name>NORWAY</english-name>
+    <local-name>NORGE</local-name>
+    <calling-code>47</calling-code>
+    <regions>
+      <english-name>County</english-name>
+      <local-name>Fylke</local-name>
+      <region code="02">
+        <english-name>Akershus</english-name>
+        <local-name>Akershus</local-name>
+      </region>
+    </regions>
+  </country>
+</countries>

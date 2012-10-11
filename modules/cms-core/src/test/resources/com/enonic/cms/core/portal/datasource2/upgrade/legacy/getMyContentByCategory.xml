@@ -1,0 +1,21 @@
+<datasources>
+  <datasource>
+    <methodname>getMyContentByCategory</methodname>
+    <parameters>
+      <parameter name="query" type="string">query</parameter>
+      <parameter name="categories" type="int[]">1,2</parameter>
+      <parameter name="recursive" type="boolean">true</parameter>
+      <parameter name="orderBy" type="string">@publishfrom DESC</parameter>
+      <parameter name="index" type="int">0</parameter>
+      <parameter name="count" type="int">10</parameter>
+      <parameter name="titlesOnly" type="boolean">true</parameter>
+      <parameter name="childrenLevel" type="int">0</parameter>
+      <parameter name="parentLevel" type="int">0</parameter>
+      <parameter name="parentChildrenLevel" type="int">0</parameter>
+      <parameter name="relatedTitlesOnly" type="boolean">true</parameter>
+      <parameter name="includeTotalCount" type="boolean">false</parameter>
+      <parameter name="includeUserRights" type="boolean">false</parameter>
+      <parameter name="contentTypes" type="int[]">2</parameter>
+    </parameters>
+  </datasource>
+</datasources>

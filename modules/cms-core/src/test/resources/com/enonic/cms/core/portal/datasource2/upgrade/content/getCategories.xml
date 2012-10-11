@@ -1,0 +1,11 @@
+<datasources>
+  <datasource>
+    <methodname>getCategories</methodname>
+    <parameters>
+      <parameter name="categoryKey" type="int">0</parameter>
+      <parameter name="levels" type="int">0</parameter>
+      <parameter name="contentCount" type="boolean">false</parameter>
+      <parameter name="includeCurrent" type="boolean">true</parameter>
+    </parameters>
+  </datasource>
+</datasources>

@@ -1,0 +1,10 @@
+<data-sources>
+  <data-source name="dummy">
+    <parameter name="param1">one</parameter>
+    <parameter name="param2">
+      <custom>
+        <xml/>
+      </custom>
+    </parameter>
+  </data-source>
+</data-sources>

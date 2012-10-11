@@ -1,0 +1,26 @@
+package com.enonic.cms.core.portal.datasource2.upgrade;
+
+import org.jdom.Element;
+import org.jdom.filter.Filter;
+
+final class ElementNameFilter
+    implements Filter
+{
+    private final String name;
+
+    public ElementNameFilter(final String name)
+    {
+        this.name = name;
+    }
+
+    @Override
+    public boolean matches( final Object o )
+    {
+        return (o instanceof Element ) && matches( (Element)o );
+    }
+
+    private boolean matches( final Element o )
+    {
+        return o.getName().equalsIgnoreCase( this.name );
+    }
+}

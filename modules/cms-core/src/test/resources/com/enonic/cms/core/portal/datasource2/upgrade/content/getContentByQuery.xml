@@ -1,0 +1,14 @@
+<datasources>
+  <datasource>
+    <methodname>getContentByQuery</methodname>
+    <parameters>
+      <parameter name="query" type="string">title CONTAINS "Enonic"</parameter>
+      <parameter name="orderBy" type="string">order</parameter>
+      <parameter name="index" type="int">0</parameter>
+      <parameter name="count" type="int">10</parameter>
+      <parameter name="includeData" type="boolean">true</parameter>
+      <parameter name="childrenLevel" type="int">1</parameter>
+      <parameter name="parentLevel" type="int">0</parameter>
+    </parameters>
+  </datasource>
+</datasources>

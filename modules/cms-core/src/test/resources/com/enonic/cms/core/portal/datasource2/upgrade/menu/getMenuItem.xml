@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<dataSources>
+  <dataSource>
+    <methodname>getMenuItem</methodname>
+    <parameters>
+      <parameter name="menuItemKey" type="int">2</parameter>
+      <parameter name="withParents" type="boolean">false</parameter>
+      <parameter name="details" type="boolean">false</parameter>
+    </parameters>
+  </dataSource>
+</dataSources>

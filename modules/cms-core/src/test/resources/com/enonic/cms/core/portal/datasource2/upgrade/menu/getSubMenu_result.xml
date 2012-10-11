@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<data-sources>
+  <data-source name="getSubMenu">
+    <parameter name="menuItemKey">0</parameter>
+    <parameter name="tagItem">1</parameter>
+    <parameter name="levels">0</parameter>
+  </data-source>
+</data-sources>

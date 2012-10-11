@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<dataSources>
+  <dataSource>
+    <methodname>getCountries</methodname>
+    <parameters>
+      <parameter name="countryCodes" type="string[]">NO,ZA</parameter>
+      <parameter name="includeRegions" type="boolean">true</parameter>
+    </parameters>
+  </dataSource>
+</dataSources>

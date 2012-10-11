@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+  <locale>
+    <name>en_US</name>
+    <country>US</country>
+    <display-country>United States</display-country>
+    <display-language>English</display-language>
+    <display-name>English (United States)</display-name>
+    <display-variant/>
+    <iso3country>USA</iso3country>
+    <iso3language>eng</iso3language>
+    <language>en</language>
+    <variant/>
+  </locale>
+  <locale>
+    <name>en_CA</name>
+    <country>CA</country>
+    <display-country>Canada</display-country>
+    <display-language>English</display-language>
+    <display-name>English (Canada)</display-name>
+    <display-variant/>
+    <iso3country>CAN</iso3country>
+    <iso3language>eng</iso3language>
+    <language>en</language>
+    <variant/>
+  </locale>
+</locales>

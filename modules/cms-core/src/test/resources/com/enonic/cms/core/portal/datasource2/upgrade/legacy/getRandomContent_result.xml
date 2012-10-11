@@ -1,0 +1,11 @@
+<data-sources>
+  <data-source name="getRandomContent">
+    <parameter name="count">10</parameter>
+    <parameter name="categories">0,234,34,34,34</parameter>
+    <parameter name="recursive">true</parameter>
+    <parameter name="minPriority">0</parameter>
+    <parameter name="childrenLevel">0</parameter>
+    <parameter name="parentLevel">0</parameter>
+    <parameter name="parentChildrenLevel">0</parameter>
+  </data-source>
+</data-sources>

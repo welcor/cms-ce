@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<dataSources>
+  <dataSource>
+    <methodname>getUserstore</methodname>
+    <parameters>
+      <parameter name="userstore" type="string">Employees</parameter>
+    </parameters>
+  </dataSource>
+</dataSources>

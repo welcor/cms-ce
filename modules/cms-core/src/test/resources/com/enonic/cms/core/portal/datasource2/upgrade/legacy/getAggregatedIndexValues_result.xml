@@ -1,0 +1,8 @@
+<data-sources>
+  <data-source name="getAggregatedIndexValues">
+    <parameter name="path">data/price</parameter>
+    <parameter name="categories">2</parameter>
+    <parameter name="recursive">true</parameter>
+    <parameter name="contentTypes">1224</parameter>
+  </data-source>
+</data-sources>

@@ -7,12 +7,12 @@ import com.enonic.cms.core.portal.datasource2.DataSourceException;
 import com.enonic.cms.core.portal.datasource2.handler.AbstractDataSourceHandlerTest;
 import com.enonic.cms.core.time.TimeService;
 
-public class GetFormattedDateHandlerTest
-    extends AbstractDataSourceHandlerTest<GetFormattedDateHandler>
+public class GetCalendarHandlerTest
+    extends AbstractDataSourceHandlerTest<GetCalendarHandler>
 {
-    public GetFormattedDateHandlerTest()
+    public GetCalendarHandlerTest()
     {
-        super( GetFormattedDateHandler.class );
+        super( GetCalendarHandler.class );
     }
 
     @Override
@@ -35,19 +35,25 @@ public class GetFormattedDateHandlerTest
     public void testHandler_defaultParams()
         throws Exception
     {
+        this.request.addParam( "year", "1970" );
+        this.request.addParam( "month", "1" );
+        this.request.addParam( "count", "2" );
         this.request.addParam( "language", "en" );
         this.request.addParam( "country", "uk" );
-        testHandle( "getFormattedDate_default" );
+        testHandle( "getCalendar_default" );
     }
 
     @Test
     public void testHandler_params()
         throws Exception
     {
-        this.request.addParam( "offset", "1" );
-        this.request.addParam( "dateFormat", "yyyy" );
+        this.request.addParam( "year", "1970" );
+        this.request.addParam( "month", "1" );
+        this.request.addParam( "count", "2" );
         this.request.addParam( "language", "en" );
         this.request.addParam( "country", "uk" );
-        testHandle( "getFormattedDate_params" );
+        this.request.addParam( "includeWeeks", "true" );
+        this.request.addParam( "includeDays", "true" );
+        testHandle( "getCalendar_params" );
     }
 }

@@ -7,43 +7,32 @@ package com.enonic.cms.core.service;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 
 public final class CalendarService
 {
     /**
-     * Get todays date with the standard Norwegian format.
-     *
-     * @return A JDom XML Document with information about today.
-     */
-    public Document getFormattedDate()
-    {
-        return getFormattedDate( 0, "dd.MM.yyyy HH:mm:ss", "no", "NO" );
-    }
-
-    /**
      * Generates an XML for a given day, relative to today.
      *
+     * @param now
      * @param offset     The number of days to add to today, to set the date the XML should be generated for.
-     * @param dateformat The format in the field <code>datetimestring</code>.
+     * @param dateFormat The format in the field <code>datetimestring</code>.
      * @param language   The language of the locale used in the dateformat.
      * @param country    The country of the locale used in the dateformat.
      * @return A JDom xml <code>Document</code> with information about the specified date.
      */
-    public Document getFormattedDate( int offset, String dateformat, String language, String country )
+    public Document getFormattedDate( final long now, final int offset, final String dateFormat, final String language,
+                                      final String country )
     {
         Locale loc = new Locale( language, country );
-        SimpleDateFormat sdf = new SimpleDateFormat( dateformat, loc );
-        return getFormattedDate( offset, sdf );
+        SimpleDateFormat sdf = new SimpleDateFormat( dateFormat, loc );
+        return getFormattedDate( now, offset, sdf );
     }
-
 
     /**
      * Generates an XML for a given day, relative to today.
@@ -52,9 +41,11 @@ public final class CalendarService
      * @param sdf    A format for the presentation of the date in the <code>datetimestring</code> field.
      * @return A JDom xml <code>Document</code> with information about the specified date.
      */
-    private Document getFormattedDate( int offset, SimpleDateFormat sdf )
+    private Document getFormattedDate( final long now, final int offset, final SimpleDateFormat sdf )
     {
-        Calendar today = new GregorianCalendar();
+        final Calendar today = Calendar.getInstance();
+        today.setTimeInMillis( now );
+
         if ( offset != 0 )
         {
             today.add( Calendar.DATE, offset );
@@ -76,7 +67,7 @@ public final class CalendarService
         return doc;
     }
 
-    public Document getCalendar( boolean relative, int year, int month, int count, boolean includeWeeks, boolean includeDays,
+    public Document getCalendar( final long now, boolean relative, int year, int month, int count, boolean includeWeeks, boolean includeDays,
                                  String language, String country )
     {
         Preconditions.checkArgument( count >= 0, "Parameter 'count' must be 0 or a positive integer." );
@@ -98,6 +89,7 @@ public final class CalendarService
 
         // return calendar data relative to the current date
         Calendar calendar = Calendar.getInstance( locale );
+        calendar.setTimeInMillis( now );
 
         // Setting the DAY_OF_MONTH to 1 is necessary to avoid month problems on the 31st of a month.  For instance:
         // The month is changed to November, on October 31st.  There is no November 31st, so the internal date will be December 1st.

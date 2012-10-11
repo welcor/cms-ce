@@ -371,7 +371,7 @@ public final class DataSourceServiceImpl
                                     boolean includeDays, String language, String country )
     {
         return XMLDocumentFactory.create(
-            calendarService.getCalendar( relative, year, month, count, includeWeeks, includeDays, language, country ) );
+            calendarService.getCalendar( System.currentTimeMillis(), relative, year, month, count, includeWeeks, includeDays, language, country ) );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -501,7 +501,7 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getFormattedDate( DataSourceContext context, int offset, String dateformat, String language, String country )
     {
-        return XMLDocumentFactory.create( calendarService.getFormattedDate( offset, dateformat, language, country ) );
+        return XMLDocumentFactory.create( calendarService.getFormattedDate( System.currentTimeMillis(), offset, dateformat, language, country ) );
     }
 
     /**

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <formatteddate>
-  <datetimestring>torsdag 1. januar 1970</datetimestring>
+  <datetimestring>Thursday 1. January 1970</datetimestring>
   <day>1</day>
   <month>0</month>
   <monthofyear>1</monthofyear>
@@ -8,5 +8,5 @@
   <hour>1</hour>
   <minute>0</minute>
   <second>0</second>
-  <weekday>torsdag</weekday>
+  <weekday>Thursday</weekday>
 </formatteddate>

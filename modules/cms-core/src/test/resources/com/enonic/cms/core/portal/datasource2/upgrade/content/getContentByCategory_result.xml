@@ -1,6 +1,6 @@
 <data-sources>
   <data-source name="getContentByCategory">
-    <parameter name="category">2</parameter>
+    <parameter name="categoryKeys">2</parameter>
     <parameter name="levels">1</parameter>
     <parameter name="query">query</parameter>
     <parameter name="orderBy">order</parameter>

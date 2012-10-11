@@ -19,4 +19,8 @@ public interface DataSourceParam
     public String[] asStringArray();
 
     public String[] asStringArray( String... defValues );
+
+    public Integer[] asIntegerArray();
+
+    public Integer[] asIntegerArray( Integer... defValues );
 }

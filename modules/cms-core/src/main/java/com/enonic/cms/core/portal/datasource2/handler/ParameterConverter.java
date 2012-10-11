@@ -32,6 +32,12 @@ final class ParameterConverter
         return this.service.convert( value, String[].class );
     }
 
+    public Integer[] toIntegerArray( final String value )
+        throws ConversionFailedException
+    {
+        return this.service.convert( value, Integer[].class );
+    }
+
     public static ParameterConverter getInstance()
     {
         return INSTANCE;

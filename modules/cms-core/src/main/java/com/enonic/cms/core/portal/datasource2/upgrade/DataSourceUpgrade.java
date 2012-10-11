@@ -30,9 +30,9 @@ public final class DataSourceUpgrade
         addSimple( "getSubMenu", "menuItemKey", "tagItem", "levels" );
         addSimple( "getMenuItem", "menuItemKey", "withParents", "details" );
 
-        addSimple( "getCategories", "categoryKey", "levels", "includeContentCount", "includeCurrent" );
+        addSimple( "getCategories", "categoryKey", "levels", "includeContentCount", "includeTopCategory" );
         addSimple( "getContent", "key", "query", "orderBy", "index", "count", "includeData", "childrenLevel", "parentLevel" );
-        addSimple( "getContentByCategory", "category", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
+        addSimple( "getContentByCategory", "categoryKeys", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
                    "parentLevel" );
         addSimple( "getContentByQuery", "query", "orderBy", "index", "count", "includeData", "childrenLevel", "parentLevel" );
         addSimple( "getContentBySection", "key", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",

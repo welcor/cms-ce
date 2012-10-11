@@ -117,6 +117,30 @@ final class DataSourceParamImpl
         return optional( asStringArray(), defValues );
     }
 
+    @Override
+    public Integer[] asIntegerArray()
+    {
+        if ( this.value == null )
+        {
+            return new Integer[0];
+        }
+
+        try
+        {
+            return ParameterConverter.getInstance().toIntegerArray( this.value );
+        }
+        catch ( final ConversionFailedException e )
+        {
+            throw newException( e );
+        }
+    }
+
+    @Override
+    public Integer[] asIntegerArray( final Integer... defValues )
+    {
+        return optional( asIntegerArray(), defValues );
+    }
+
     private <T> T optional( final T value, final T defValue )
     {
         if ( value == null )

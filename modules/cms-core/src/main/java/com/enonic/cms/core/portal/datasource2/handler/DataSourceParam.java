@@ -6,13 +6,17 @@ public interface DataSourceParam
 
     public String asString();
 
-    public String asString( final String defValue );
+    public String asString( String defValue );
 
     public Integer asInteger();
 
-    public Integer asInteger( final Integer defValue );
+    public Integer asInteger( Integer defValue );
 
     public Boolean asBoolean();
 
-    public Boolean asBoolean( final Boolean defValue );
+    public Boolean asBoolean( Boolean defValue );
+
+    public String[] asStringArray();
+
+    public String[] asStringArray( String... defValues );
 }

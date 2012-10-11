@@ -93,6 +93,30 @@ final class DataSourceParamImpl
         return optional( asBoolean(), defValue );
     }
 
+    @Override
+    public String[] asStringArray()
+    {
+        if ( this.value == null )
+        {
+            return new String[0];
+        }
+
+        try
+        {
+            return ParameterConverter.getInstance().toStringArray( this.value );
+        }
+        catch ( final ConversionFailedException e )
+        {
+            throw newException( e );
+        }
+    }
+
+    @Override
+    public String[] asStringArray( final String... defValues )
+    {
+        return optional( asStringArray(), defValues );
+    }
+
     private <T> T optional( final T value, final T defValue )
     {
         if ( value == null )
@@ -103,7 +127,6 @@ final class DataSourceParamImpl
         return value;
     }
 
-    /*
     private <T> T[] optional( final T[] array, final T... defValues )
     {
         if ( array == null )
@@ -112,7 +135,7 @@ final class DataSourceParamImpl
         }
 
         return array;
-    }*/
+    }
 
     private DataSourceException newException( final String message, final Throwable cause )
     {

@@ -26,6 +26,12 @@ final class ParameterConverter
         return this.service.convert( value, Boolean.class );
     }
 
+    public String[] toStringArray( final String value )
+        throws ConversionFailedException
+    {
+        return this.service.convert( value, String[].class );
+    }
+
     public static ParameterConverter getInstance()
     {
         return INSTANCE;

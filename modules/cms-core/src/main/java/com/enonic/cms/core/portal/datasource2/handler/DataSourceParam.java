@@ -11,4 +11,8 @@ public interface DataSourceParam
     public Integer asInteger();
 
     public Integer asInteger( final Integer defValue );
+
+    public Boolean asBoolean();
+
+    public Boolean asBoolean( final Boolean defValue );
 }

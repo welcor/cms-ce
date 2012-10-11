@@ -69,6 +69,30 @@ final class DataSourceParamImpl
         return optional( asInteger(), defValue );
     }
 
+    @Override
+    public Boolean asBoolean()
+    {
+        if ( this.value == null )
+        {
+            return null;
+        }
+
+        try
+        {
+            return ParameterConverter.getInstance().toBoolean( this.value );
+        }
+        catch ( final ConversionFailedException e )
+        {
+            throw newException( e );
+        }
+    }
+
+    @Override
+    public Boolean asBoolean( final Boolean defValue )
+    {
+        return optional( asBoolean(), defValue );
+    }
+
     private <T> T optional( final T value, final T defValue )
     {
         if ( value == null )

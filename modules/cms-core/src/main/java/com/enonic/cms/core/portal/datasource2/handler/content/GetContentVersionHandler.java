@@ -17,6 +17,9 @@ public final class GetContentVersionHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
+        final Integer[] versionKeys = req.param( "versionKeys" ).required().asIntegerArray();
+        final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
+
         // TODO: Implement based on DataSourceServiceImpl.getContentVersion(..)
         return null;
     }

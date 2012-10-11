@@ -31,16 +31,16 @@ public final class DataSourceUpgrade
         addSimple( "getMenuItem", "menuItemKey", "withParents", "details" );
 
         addSimple( "getCategories", "categoryKey", "levels", "includeContentCount", "includeTopCategory" );
-        addSimple( "getContent", "key", "query", "orderBy", "index", "count", "includeData", "childrenLevel", "parentLevel" );
+        addSimple( "getContent", "contentKeys", "query", "orderBy", "index", "count", "includeData", "childrenLevel", "parentLevel" );
         addSimple( "getContentByCategory", "categoryKeys", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
                    "parentLevel" );
         addSimple( "getContentByQuery", "query", "orderBy", "index", "count", "includeData", "childrenLevel", "parentLevel" );
-        addSimple( "getContentBySection", "key", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
+        addSimple( "getContentBySection", "menuItemKeys", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
                    "parentLevel" );
         addSimple( "getContentVersion", "versionKeys", "childrenLevel" );
-        addSimple( "getRandomContentByCategory", "category", "levels", "query", "count", "includeData", "childrenLevel", "parentLevel" );
-        addSimple( "getRandomContentBySection", "key", "levels", "query", "count", "includeData", "childrenLevel", "parentLevel" );
-        addSimple( "getRelatedContent", "key", "relation", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
+        addSimple( "getRandomContentByCategory", "categoryKeys", "levels", "query", "count", "includeData", "childrenLevel", "parentLevel" );
+        addSimple( "getRandomContentBySection", "menuItemKeys", "levels", "query", "count", "includeData", "childrenLevel", "parentLevel" );
+        addSimple( "getRelatedContent", "contentKeys", "relation", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
                    "parentLevel" );
 
         addSimple( "findContentByCategory", "search", "operator", "categories", "recursive", "orderBy", "index", "count", "titlesOnly",

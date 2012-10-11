@@ -32,10 +32,13 @@ public final class ImageUtil
     public static BufferedImage scaleImage( final BufferedImage image, final int newWidth, final int newHeight,
                                             final int bufferedImageType )
     {
-        final BufferedImage destImage = new BufferedImage( newWidth, newHeight, bufferedImageType );
-        final Image scaleImage = image.getScaledInstance( newWidth, newHeight, Image.SCALE_SMOOTH );
+        int width = Math.max( 1, newWidth );
+        int height = Math.max( 1, newHeight );
+
+        final BufferedImage destImage = new BufferedImage( width, height, bufferedImageType );
+        final Image scaleImage = image.getScaledInstance( width, height, Image.SCALE_SMOOTH );
         final Graphics2D g = destImage.createGraphics();
-        g.drawImage( scaleImage, 0, 0, newWidth, newHeight, null );
+        g.drawImage( scaleImage, 0, 0, width, height, null );
         g.dispose();
         return destImage;
     }

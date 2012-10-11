@@ -104,8 +104,11 @@ public final class ImageHelper
 
     public static BufferedImage getScaledInstance( BufferedImage img, int targetWidth, int targetHeight )
     {
-        Image scaledImage = img.getScaledInstance( targetWidth, targetHeight, Image.SCALE_SMOOTH );
-        BufferedImage targetImage = createImage( targetWidth, targetHeight, true );
+        int width = Math.max( 1, targetWidth );
+        int height = Math.max( 1, targetHeight );
+
+        Image scaledImage = img.getScaledInstance( width, height, Image.SCALE_SMOOTH );
+        BufferedImage targetImage = createImage( width, height, true );
         Graphics g = targetImage.createGraphics();
         g.drawImage( scaledImage, 0, 0, null );
         g.dispose();

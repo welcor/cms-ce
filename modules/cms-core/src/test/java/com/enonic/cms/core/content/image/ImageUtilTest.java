@@ -11,11 +11,11 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 /**
@@ -28,12 +28,15 @@ public class ImageUtilTest
 {
     private BufferedImage originalImage;
 
+    private BufferedImage extremeImage;
+
     @Before
     public void setUp()
     {
         try
         {
             originalImage = ImageIO.read( loadImage( "Arn.jpg" ) );
+            extremeImage = ImageIO.read( loadImage( "transparentLine.png" ) );
         }
         catch ( IOException e )
         {
@@ -46,14 +49,42 @@ public class ImageUtilTest
     {
         BufferedImage scaledImage = ImageUtil.scaleImage( originalImage, 200, 200, ContentImageUtil.getBufferedImageType( "jpg" ) );
 
-        assertEquals( 200, scaledImage.getHeight() );
-        assertEquals( 200, scaledImage.getWidth() );
+        Assert.assertEquals( 200, scaledImage.getHeight() );
+        Assert.assertEquals( 200, scaledImage.getWidth() );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testScaleImageIllegalValues()
     {
-        ImageUtil.scaleImage( originalImage, -200, -200, ContentImageUtil.getBufferedImageType( "jpg" ) );
+        BufferedImage scaledImage = ImageUtil.scaleImage( originalImage, -200, -200, ContentImageUtil.getBufferedImageType( "jpg" ) );
+
+        Assert.assertEquals( 1, scaledImage.getHeight() );
+        Assert.assertEquals( 1, scaledImage.getWidth() );
+    }
+
+    @Test
+    public void testScaleImageExtremeValues()
+    {
+        BufferedImage scaledImage = ImageUtil.scaleImage( extremeImage, 400, 0, ContentImageUtil.getBufferedImageType( "png" ) );
+
+        Assert.assertEquals( 1, scaledImage.getHeight() );
+        Assert.assertEquals( 400, scaledImage.getWidth() );
+    }
+
+    @Test
+    public void testTransparencyIsKeptInScaling()
+    {
+        BufferedImage scaledImage = ImageUtil.scaleImage( extremeImage, 400, 3, ContentImageUtil.getBufferedImageType( "png" ) );
+
+        double[] alphaPixel = {100.0};
+        scaledImage.getAlphaRaster().getPixel( 200, 1, alphaPixel );
+        Assert.assertEquals( 0.0, alphaPixel[0], 0.0 );
+        alphaPixel[0] = 100.0;
+        scaledImage.getAlphaRaster().getPixel( 0, 0, alphaPixel );
+        Assert.assertEquals( 0.0, alphaPixel[0], 0.0 );
+        alphaPixel[0] = 100.0;
+        scaledImage.getAlphaRaster().getPixel( 399, 2, alphaPixel );
+        Assert.assertEquals( 0.0, alphaPixel[0], 0.0 );
     }
 
 

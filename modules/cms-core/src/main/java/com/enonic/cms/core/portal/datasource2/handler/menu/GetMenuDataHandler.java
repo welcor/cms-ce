@@ -17,6 +17,8 @@ public final class GetMenuDataHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
+        final int menuKey = req.param( "menuKey" ).required().asInteger();
+
         // TODO: Implement based on DataSourceServiceImpl.getMenuData(..)
         return null;
     }

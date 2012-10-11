@@ -17,6 +17,11 @@ public final class GetMenuBranchHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
+        final int menuItemKey = req.param( "menuItemKey" ).required().asInteger();
+        final boolean includeTopLevel = req.param( "includeTopLevel" ).asBoolean( false );
+        final int startLevel = req.param( "startLevel" ).asInteger( 0 );
+        final int levels = req.param( "levels" ).asInteger( 0 );
+
         // TODO: Implement based on DataSourceServiceImpl.getMenuBranch(..)
         return null;
     }

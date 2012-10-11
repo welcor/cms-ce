@@ -17,6 +17,10 @@ public final class GetSubMenuHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
+        final int menuItemKey = req.param( "menuItemKey" ).required().asInteger();
+        final int tagItem = req.param( "tagItem" ).asInteger( -1 );
+        final int levels = req.param( "levels" ).asInteger( 0 );
+
         // TODO: Implement based on DataSourceServiceImpl.getSubMenu(..)
         return null;
     }

@@ -17,6 +17,10 @@ public final class GetMenuItemHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
+        final int menuItemKey = req.param( "menuItemKey" ).required().asInteger();
+        final boolean tagItem = req.param( "withParents" ).asBoolean( false );
+        final boolean details = req.param( "details" ).asBoolean( false );
+
         // TODO: Implement based on DataSourceServiceImpl.getMenuItem(..)
         return null;
     }

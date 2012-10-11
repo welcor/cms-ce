@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 
-final class CalendarService
+public final class CalendarService
 {
     /**
      * Get todays date with the standard Norwegian format.
@@ -52,7 +52,7 @@ final class CalendarService
      * @param sdf    A format for the presentation of the date in the <code>datetimestring</code> field.
      * @return A JDom xml <code>Document</code> with information about the specified date.
      */
-    public Document getFormattedDate( int offset, SimpleDateFormat sdf )
+    private Document getFormattedDate( int offset, SimpleDateFormat sdf )
     {
         Calendar today = new GregorianCalendar();
         if ( offset != 0 )

@@ -19,7 +19,7 @@ public abstract class AbstractDataSourceHandlerTest<T extends DataSourceHandler>
 
     protected DataSourceRequest request;
 
-    public AbstractDataSourceHandlerTest(final Class<T> type)
+    public AbstractDataSourceHandlerTest( final Class<T> type )
     {
         this.type = type;
     }

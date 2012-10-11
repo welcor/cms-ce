@@ -43,16 +43,16 @@ public final class DataSourceUpgrade
         addSimple( "getRelatedContent", "contentKeys", "relation", "query", "orderBy", "index", "count", "includeData", "childrenLevel",
                    "parentLevel" );
 
-        addSimple( "findContentByCategory", "search", "operator", "categories", "recursive", "orderBy", "index", "count", "titlesOnly",
+        addSimple( "findContentByCategory", "search", "operator", "categoryKeys", "recursive", "orderBy", "index", "count", "titlesOnly",
                    "childrenLevel", "parentLevel", "parentChildrenLevel", "relatedTitlesOnly", "includeTotalCount", "includeUserRights",
-                   "contentTypes" );
-        addSimple( "getAggregatedIndexValues", "path", "categories", "recursive", "contentTypes" );
-        addSimple( "getIndexValues", "path", "categories", "recursive", "contentTypes", "index", "count", "distinct", "order" );
-        addSimple( "getMyContentByCategory", "query", "categories", "recursive", "orderBy", "index", "count", "titlesOnly", "childrenLevel",
-                   "parentLevel", "parentChildrenLevel", "relatedTitlesOnly", "includeTotalCount", "includeUserRights", "contentTypes" );
-        addSimple( "getRandomContent", "count", "categories", "recursive", "minPriority", "childrenLevel", "parentLevel",
+                   "contentTypeKeys" );
+        addSimple( "getAggregatedIndexValues", "path", "categoryKeys", "recursive", "contentTypeKeys" );
+        addSimple( "getIndexValues", "path", "categoryKeys", "recursive", "contentTypeKeys", "index", "count", "distinct", "order" );
+        addSimple( "getMyContentByCategory", "query", "categoryKeys", "recursive", "orderBy", "index", "count", "titlesOnly", "childrenLevel",
+                   "parentLevel", "parentChildrenLevel", "relatedTitlesOnly", "includeTotalCount", "includeUserRights", "contentTypeKeys" );
+        addSimple( "getRandomContent", "count", "categoryKeys", "recursive", "minPriority", "childrenLevel", "parentLevel",
                    "parentChildrenLevel" );
-        addSimple( "getSuperCategoryNames", "category", "includeContentCount", "includeCurrent" );
+        addSimple( "getSuperCategoryNames", "categoryKey", "includeContentCount", "includeCurrent" );
 
         this.converters.add( new ExtensionMethodConverter() );
     }

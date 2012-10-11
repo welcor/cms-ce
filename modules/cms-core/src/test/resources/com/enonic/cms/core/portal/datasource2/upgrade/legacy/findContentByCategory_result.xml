@@ -2,7 +2,7 @@
   <data-source name="findContentByCategory">
     <parameter name="search">mysearch</parameter>
     <parameter name="operator">AND</parameter>
-    <parameter name="categories">1,2</parameter>
+    <parameter name="categoryKeys">1,2</parameter>
     <parameter name="recursive">true</parameter>
     <parameter name="orderBy">title DESC</parameter>
     <parameter name="index">0</parameter>
@@ -14,6 +14,6 @@
     <parameter name="relatedTitlesOnly">true</parameter>
     <parameter name="includeTotalCount">false</parameter>
     <parameter name="includeUserRights">false</parameter>
-    <parameter name="contentTypes">1</parameter>
+    <parameter name="contentTypeKeys">1</parameter>
   </data-source>
 </data-sources>

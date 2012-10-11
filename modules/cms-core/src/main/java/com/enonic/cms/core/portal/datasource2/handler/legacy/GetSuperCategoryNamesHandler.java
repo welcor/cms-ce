@@ -17,6 +17,10 @@ public final class GetSuperCategoryNamesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
+        final int categoryKey = req.param( "categoryKey" ).required().asInteger();
+        final boolean includeContentCount = req.param( "includeContentCount" ).asBoolean( false );
+        final boolean includeCurrent = req.param( "includeCurrent" ).asBoolean( false );
+
         // TODO: Implement based on DataSourceServiceImpl.getSuperCategoryNames(..)
         return null;
     }

@@ -1,6 +1,6 @@
 <data-sources>
   <data-source name="getSuperCategoryNames">
-    <parameter name="category">0</parameter>
+    <parameter name="categoryKey">0</parameter>
     <parameter name="includeContentCount">false</parameter>
     <parameter name="includeCurrent">true</parameter>
   </data-source>

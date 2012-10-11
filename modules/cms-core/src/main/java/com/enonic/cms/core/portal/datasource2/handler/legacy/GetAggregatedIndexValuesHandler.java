@@ -17,6 +17,11 @@ public final class GetAggregatedIndexValuesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
+        final String path = req.param( "path" ).required().asString();
+        final Integer[] categoryKeys = req.param( "categoryKeys" ).asIntegerArray();
+        final boolean recursive = req.param( "recursive" ).asBoolean( false );
+        final Integer[] contentTypeKeys = req.param( "contentTypeKeys" ).asIntegerArray();
+
         // TODO: Implement based on DataSourceServiceImpl.getAggregatedIndexValues(..)
         return null;
     }

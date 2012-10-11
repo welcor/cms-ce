@@ -23,8 +23,7 @@ public class IndexValueQueryTranslatorTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
             "    \"title.orderby\" : {\n" +
@@ -49,8 +48,7 @@ public class IndexValueQueryTranslatorTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
             "    \"data_test.orderby\" : {\n" +

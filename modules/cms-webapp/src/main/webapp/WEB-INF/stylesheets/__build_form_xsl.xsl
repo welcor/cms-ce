@@ -1511,16 +1511,22 @@
 
     <xsl:variable name="title">
       <xsl:if test="$developer = 'true'">
-      <xsl:choose>
-        <xsl:when test="$grpname">
-          <xsl:variable name="title1" select="substring-after($grpname, 'contentdata/')"/>
-          <xsl:variable name="title2" select="concat($title1, '/')"/>
-          <xsl:value-of select="concat($title2, $input/xpath)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$input/xpath"/>
-        </xsl:otherwise>
-      </xsl:choose>
+        <xsl:choose>
+          <xsl:when test="$grpname">
+            <xsl:variable name="title1" select="substring-after($grpname, 'contentdata/')"/>
+            <xsl:variable name="title2" select="concat($title1, '/')"/>
+            <xsl:value-of select="concat($title2, $input/xpath)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$input/xpath"/>
+          </xsl:otherwise>
+        </xsl:choose>
+        <!-- Hardcoded nodes -->
+        <xsl:choose>
+          <xsl:when test="$input/@type = 'images'">/image</xsl:when>
+          <xsl:when test="$input/@type = 'files'">/file</xsl:when>
+          <xsl:when test="$input/@type = 'relatedcontent' and ($input/@multiple = 'true' or not($input/@multiple))">/content</xsl:when>
+        </xsl:choose>
       </xsl:if>
     </xsl:variable>
 
@@ -1570,7 +1576,7 @@
       <xsl:when test="$input/@type = 'images'">
         <xsl:call-template name="displayimages">
           <xsl:with-param name="input" select="$input"/>
-          <xsl:with-param name="title" select="concat($title, '/image')"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1591,14 +1597,14 @@
       <xsl:when test="$input/@type = 'files'">
         <xsl:call-template name="displayfiles">
           <xsl:with-param name="input" select="$input"/>
-          <xsl:with-param name="title" select="concat($title, '/file')"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
       <xsl:when test="$input/@type = 'file'">
         <xsl:call-template name="displayfile">
           <xsl:with-param name="input" select="$input"/>
-          <xsl:with-param name="title" select="concat($title, '/file')"/>
+          <xsl:with-param name="title" select="$title"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -1608,7 +1614,7 @@
           <xsl:when test="$is-multiple">
             <xsl:call-template name="relatedcontent">
               <xsl:with-param name="input" select="$input"/>
-              <xsl:with-param name="title" select="concat($title, '/content')"/>
+              <xsl:with-param name="title" select="$title"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>

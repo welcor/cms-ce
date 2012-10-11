@@ -49,8 +49,6 @@ import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
 import com.enonic.cms.core.portal.datasource.Datasources;
 import com.enonic.cms.core.portal.datasource.DatasourcesType;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
-import com.enonic.cms.core.portal.datasource.processor.NonDoingDataSourceProcessor;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -499,7 +497,7 @@ public final class ContentObjectHandlerServlet
 
         key = admin.createContentObject( user, XMLTool.documentToString( doc ) );
 
-        redirectClientToReferer( request, response );
+        browseRedirectWithSorting( request, response, session, formItems );
     }
 
     public void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
@@ -564,8 +562,9 @@ public final class ContentObjectHandlerServlet
                 }
                 catch ( final Exception e )
                 {
+                    final String resultRootName = getDefaultDataSourceRootElementName();
                     final XMLDocument failedDatasourceDoc =
-                        XMLDocumentFactory.create( DataSourceFailedXmlCreator.buildExceptionDocument( getDefaultDataSourceRootElementName(), e ) );
+                        XMLDocumentFactory.create( DataSourceFailedXmlCreator.buildExceptionDocument( resultRootName, e ) );
                     xmlData = failedDatasourceDoc.getAsString();
                 }
 
@@ -676,7 +675,6 @@ public final class ContentObjectHandlerServlet
 
         ResourceKey[] cssKeys = null;
 
-        DataSourceProcessor[] dsProcessors = new DataSourceProcessor[]{new NonDoingDataSourceProcessor()};
         SitePath sitePath = new SitePath( siteKey, "" );
         RequestParameters requestParameters = new RequestParameters();
         SiteEntity site = siteDao.findByKey( siteKey );
@@ -691,7 +689,6 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setOriginalSitePath( sitePath );
         datasourceExecutorContext.setPageRequestType( PageRequestType.MENUITEM );
         datasourceExecutorContext.setPreviewContext( PreviewContext.NO_PREVIEW );
-        datasourceExecutorContext.setProcessors( dsProcessors );
         datasourceExecutorContext.setSite( site );
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
@@ -712,8 +709,6 @@ public final class ContentObjectHandlerServlet
     private String doGetPortletDatasourceResult( final User oldUser, final SiteKey siteKey, final XMLDocument dataSourcesXML,
                                                  final XMLDocument portletDocumentXmlDocument )
     {
-
-        DataSourceProcessor[] dsProcessors = new DataSourceProcessor[]{new NonDoingDataSourceProcessor()};
         SitePath sitePath = new SitePath( siteKey, "" );
         RequestParameters requestParameters = new RequestParameters();
 
@@ -734,7 +729,6 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setLanguage( site.getLanguage() );
         datasourceExecutorContext.setOriginalSitePath( sitePath );
         datasourceExecutorContext.setPageRequestType( PageRequestType.MENUITEM );
-        datasourceExecutorContext.setProcessors( dsProcessors );
         datasourceExecutorContext.setPreviewContext( PreviewContext.NO_PREVIEW );
         datasourceExecutorContext.setSite( site );
         datasourceExecutorContext.setRequestParameters( requestParameters );

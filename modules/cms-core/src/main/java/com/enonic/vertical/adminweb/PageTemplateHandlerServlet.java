@@ -849,7 +849,7 @@ public class PageTemplateHandlerServlet
     {
 
         admin.copyPageTemplate( user, key );
-        redirectClientToReferer( request, response );
+        browseRedirectWithSorting( request, response, session, formItems );
     }
 
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<data-sources>
+  <data-source name="getCalendar">
+    <parameter name="relative">false</parameter>
+    <parameter name="year">2003</parameter>
+    <parameter name="month">1</parameter>
+    <parameter name="count">1</parameter>
+    <parameter name="includeWeeks">false</parameter>
+    <parameter name="includeDays">false</parameter>
+    <parameter name="language">en</parameter>
+    <parameter name="country">norway</parameter>
+  </data-source>
+</data-sources>

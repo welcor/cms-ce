@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<data-sources>
+  <data-source name="getFormattedDate">
+    <parameter name="offset">0</parameter>
+    <parameter name="format">EEEE d. MMMM yyyy</parameter>
+    <parameter name="language">no</parameter>
+    <parameter name="country">NO</parameter>
+  </data-source>
+</data-sources>

@@ -59,6 +59,7 @@ public class GroupStorerFactory
         groupStorer.setDefaultSiteAccessDao( defaultSiteAccessDao );
         groupStorer.setTimeService( timeService );
         groupStorer.setResurrectDeletedGroups( false );
+        groupStorer.setGroupsStoredLocally( true );
 
         return groupStorer;
     }
@@ -83,10 +84,12 @@ public class GroupStorerFactory
         {
             UserStoreConnectorConfig userStoreConnectorConfig = userStoreConnectorManager.getUserStoreConnectorConfig( userStoreKey );
             groupStorer.setResurrectDeletedGroups( userStoreConnectorConfig.resurrectDeletedGroups() );
+            groupStorer.setGroupsStoredLocally( userStoreConnectorConfig.groupsStoredLocal() );
         }
         else
         {
             groupStorer.setResurrectDeletedGroups( false );
+            groupStorer.setGroupsStoredLocally( true );
         }
 
         return groupStorer;

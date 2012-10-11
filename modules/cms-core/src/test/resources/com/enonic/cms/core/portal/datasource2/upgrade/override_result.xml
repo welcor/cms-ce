@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<data-sources>
+  <data-source name="getMenuBranch">
+    <parameter name="menuItemKey">2</parameter>
+    <parameter name="includeTopLevel">${select(param.b, 'false')}</parameter>
+    <parameter name="startLevel">${select(session.c, '1')}</parameter>
+    <parameter name="levels">2</parameter>
+  </data-source>
+</data-sources>

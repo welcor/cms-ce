@@ -563,8 +563,4 @@ public class MenuItemProcessor
             }
         }
     }
-
-    public void preProcess( MethodCall methodCall )
-    {
-    }
 }

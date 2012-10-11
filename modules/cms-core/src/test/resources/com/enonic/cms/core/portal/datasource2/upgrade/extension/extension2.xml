@@ -1,0 +1,8 @@
+<datasources>
+  <datasource>
+    <methodname>dummy.getResult</methodname>
+    <parameters>
+      <parameter>10</parameter>
+    </parameters>
+  </datasource>
+</datasources>

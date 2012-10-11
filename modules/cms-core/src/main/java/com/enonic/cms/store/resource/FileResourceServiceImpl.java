@@ -1,104 +1,46 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.store.resource;
 
-import java.io.UnsupportedEncodingException;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.enonic.cms.framework.blob.BlobKey;
-import com.enonic.cms.framework.blob.BlobRecord;
-import com.enonic.cms.framework.blob.BlobStore;
-import com.enonic.cms.framework.blob.memory.MemoryBlobRecord;
+import com.google.common.io.Files;
+
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceData;
 import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.store.support.EntityChangeListener;
-import com.enonic.cms.store.support.EntityChangeListenerHub;
-import com.enonic.cms.store.vfs.db.VirtualFileEntity;
 
 @Service("fileResourceService")
-public final class FileResourceServiceImpl
-    implements FileResourceService, EntityChangeListener
+public class FileResourceServiceImpl
+    implements FileResourceService
 {
-    private BlobStore blobStore;
-
-    private SessionFactory sessionFactory;
+    private File resourceRoot;
 
     private MimeTypeResolver mimeTypeResolver;
 
-    private List<FileResourceListener> listeners;
-
-    public FileResourceServiceImpl()
+    @Override
+    public FileResource getResource( final FileResourceName name )
     {
-        EntityChangeListenerHub.getInstance().addListener( this );
-    }
+        final File entity = getFile( name );
 
-    @Autowired
-    public void setBlobStore( BlobStore blobStore )
-    {
-        this.blobStore = blobStore;
-    }
-
-    @Autowired
-    public void setSessionFactory( SessionFactory sessionFactory )
-    {
-        this.sessionFactory = sessionFactory;
-    }
-
-    @Autowired
-    public void setMimeTypeResolver( final MimeTypeResolver mimeTypeResolver )
-    {
-        this.mimeTypeResolver = mimeTypeResolver;
-    }
-
-    private Session openSession()
-    {
-        return this.sessionFactory.getCurrentSession();
-    }
-
-    private FileResource newResource( FileResourceName name, VirtualFileEntity entity )
-    {
-        FileResource res = new FileResource( name );
-        res.setFolder( entity.isFolder() );
-        res.setSize( entity.getLength() );
-        res.setBlobKey( entity.getBlobKey() );
-        res.setMimeType( mimeTypeResolver.getMimeType( name.getName() ) );
-        res.setLastModified( new DateTime( entity.getLastModified() ) );
-        return res;
-    }
-
-    public FileResource getResource( FileResourceName name )
-    {
-        Session session = openSession();
-        return doGetResource( session, name );
-    }
-
-    private FileResource doGetResource( Session session, FileResourceName name )
-    {
-        String key = createKey( name );
-        VirtualFileEntity entity = findEntity( session, key );
-        if ( entity == null )
+        if ( !entity.exists() && name.isRoot() )
         {
-            if ( name.isRoot() )
-            {
-                doCreateFolder( session, name );
-                entity = findEntity( session, key );
-            }
+            createFolder( name );
+
+            return newResource( name, resourceRoot );
         }
 
-        if ( entity != null )
+        if ( entity.exists() )
         {
             return newResource( name, entity );
         }
@@ -106,460 +48,343 @@ public final class FileResourceServiceImpl
         return null;
     }
 
-    private boolean doCreateFolder( Session session, FileResourceName name )
+    private boolean doCreateFolder( FileResourceName name )
     {
         if ( name == null )
         {
             return false;
         }
 
-        doCreateFolder( session, name.getParent() );
+        File newFolder = getFile( name );
 
-        String key = createKey( name );
-        VirtualFileEntity newVirtualFile = findEntity( session, key );
-        if ( newVirtualFile != null )
+        if ( newFolder.exists() )
         {
             return false;
         }
 
-        newVirtualFile = createVirtualFileEntity( key, name, true );
-
-        String parentKey = createKey( name.getParent() );
-        if ( parentKey != null )
-        {
-            VirtualFileEntity parent = findEntity( session, parentKey );
-            parent.addChild( newVirtualFile );
-            session.update( parent );
-        }
-
-        session.save( newVirtualFile );
-
-        return true;
+        return newFolder.mkdirs();
     }
 
-    public boolean createFolder( FileResourceName name )
+    private FileResource newResource( FileResourceName name, File file )
     {
-        Session session = openSession();
-        return doCreateFolder( session, name );
+        FileResource res = new FileResource( name );
+        res.setFolder( file.isDirectory() );
+        res.setSize( file.length() );
+        res.setMimeType( mimeTypeResolver.getMimeType( name.getName() ) );
+        res.setLastModified( new DateTime( file.lastModified() ) );
+        return res;
     }
 
+    @Override
+    public boolean createFolder( final FileResourceName name )
+    {
+        return doCreateFolder( name );
+    }
+
+    @Override
     public boolean createFile( FileResourceName name, FileResourceData data )
     {
-        Session session = openSession();
-        return !name.isRoot() && doCreateFile( session, name, data );
+        return !name.isRoot() && doCreateFile( name, data );
     }
 
-    private boolean doCreateFile( Session session, FileResourceName name, FileResourceData data )
+    private boolean doCreateFile( FileResourceName name, FileResourceData data )
     {
-        String key = createKey( name );
-        if ( findEntity( session, key ) != null )
+        final File newFile = getFile( name );
+
+        if ( newFile.exists() )
         {
             return false;
         }
 
-        doCreateFolder( session, name.getParent() );
-
-        VirtualFileEntity newVirtualFile = createVirtualFileEntity( key, name, false );
-        setBlob( session, newVirtualFile, data != null ? data.getAsBytes() : new byte[0] );
-
-        String parentKey = createKey( name.getParent() );
-        if ( parentKey != null )
+        try
         {
-            VirtualFileEntity parent = findEntity( session, parentKey );
-            parent.addChild( newVirtualFile );
-            session.saveOrUpdate( parent );
-        }
+            Files.createParentDirs( newFile );
 
-        session.saveOrUpdate( newVirtualFile );
+            if ( data != null )
+            {
+                Files.write( data.getAsBytes(), newFile );
+            }
+            else
+            {
+                Files.touch( newFile );
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Not able to create file " + newFile.getAbsolutePath(), e );
+        }
 
         return true;
     }
 
-    private VirtualFileEntity createVirtualFileEntity( String key, FileResourceName name, boolean isFolder )
+    @Override
+    public boolean deleteResource( final FileResourceName name )
     {
-        VirtualFileEntity virtualFile = new VirtualFileEntity();
-        virtualFile.setKey( key );
-        virtualFile.setBlobKey( null );
-        virtualFile.setLength( isFolder ? -1 : 0 );
-        virtualFile.setName( name.getName() );
-        virtualFile.setLastModified( System.currentTimeMillis() );
+        File fileToDelete = getFile( name );
 
-        return virtualFile;
-    }
-
-    public boolean deleteResource( FileResourceName name )
-    {
-        Session session = openSession();
-        return doDeleteResource( session, name );
-    }
-
-    private boolean doDeleteResource( Session session, FileResourceName name )
-    {
-        String key = createKey( name );
-        VirtualFileEntity entity = findEntity( session, key );
-        return doDeleteResource( session, entity );
-    }
-
-    private boolean doDeleteResource( Session session, VirtualFileEntity entity )
-    {
-        if ( entity == null )
+        if ( fileToDelete.exists() )
         {
-            return false;
+            if ( fileToDelete.isDirectory() )
+            {
+                try
+                {
+                    FileUtils.deleteDirectory( fileToDelete );
+                    return true;
+                }
+                catch ( IOException e )
+                {
+                    throw new RuntimeException( "Not able to delete folder: " + fileToDelete.getAbsolutePath(), e );
+                }
+            }
+            else
+            {
+                return fileToDelete.delete();
+            }
         }
 
-        VirtualFileEntity parent = entity.getParent();
-        if ( parent != null )
-        {
-            parent.removeChild( entity );
-            session.update( parent );
-        }
-
-        entity.setParent( null );
-        session.delete( entity );
-
-        return true;
+        return false;
     }
 
-    public List<FileResourceName> getChildren( FileResourceName name )
-    {
-        Session session = openSession();
-        return doGetChildren( session, name );
-    }
-
-    private List<FileResourceName> doGetChildren( Session session, FileResourceName name )
+    @Override
+    public List<FileResourceName> getChildren( final FileResourceName name )
     {
         ArrayList<FileResourceName> list = new ArrayList<FileResourceName>();
 
-        String key = createKey( name );
-        VirtualFileEntity entity = findEntity( session, key );
+        final File parent = getFile( name );
 
-        if ( entity != null )
+        if ( parent.exists() && parent.isDirectory() )
         {
-            for ( VirtualFileEntity child : entity.getChildren() )
+            for ( File f : parent.listFiles() )
             {
-                list.add( new FileResourceName( name, child.getName() ) );
+                list.add( new FileResourceName( name, f.getName() ) );
             }
         }
 
         return list;
     }
 
-    public FileResourceData getResourceData( FileResourceName name )
+    @Override
+    public FileResourceData getResourceData( final FileResourceName name )
     {
-        Session session = openSession();
-        return doGetResourceData( session, name );
-    }
+        File file = getFile( name );
 
-    private FileResourceData doGetResourceData( Session session, FileResourceName name )
-    {
-        String key = createKey( name );
-        VirtualFileEntity entity = findEntity( session, key );
-
-        if ( entity == null )
+        if ( !file.exists() )
         {
             return null;
         }
 
-        if ( entity.isFolder() )
-        {
-            return null;
-        }
-
-        final byte[] bytes = getBlob( entity );
-        if ( bytes == null )
-        {
-            throw new IllegalStateException( "Blob for resource [" + name.toString() +
-                                                 "] is not found. Please check your blobstore configuration." );
-        }
-
-        final FileResourceData data = new FileResourceData();
-        data.setAsBytes( bytes );
-        return data;
-    }
-
-    public boolean setResourceData( FileResourceName name, FileResourceData data )
-    {
-        Session session = openSession();
-        return doSetResourceData( session, name, data );
-    }
-
-    private boolean doSetResourceData( Session session, FileResourceName name, FileResourceData data )
-    {
-        String key = createKey( name );
-        VirtualFileEntity entity = findEntity( session, key );
-
-        if ( entity == null )
-        {
-            return false;
-        }
-
-        if ( entity.isFolder() )
-        {
-            return false;
-        }
-
-        setBlob( session, entity, data.getAsBytes() );
-
-        return true;
-    }
-
-    private void setBlob( Session session, VirtualFileEntity entity, byte[] data )
-    {
-        BlobRecord blob = new MemoryBlobRecord( data );
-        this.blobStore.addRecord( blob.getStream() );
-        entity.setBlobKey( blob.getKey().toString() );
-        entity.setLength( blob.getLength() );
-        entity.setLastModified( System.currentTimeMillis() );
-
-        VirtualFileEntity parent = getRoot( entity );
-        session.saveOrUpdate( parent );
-    }
-
-    private VirtualFileEntity getRoot( VirtualFileEntity entity )
-    {
-        VirtualFileEntity parent = entity;
-
-        while ( parent.getParent() != null )
-        {
-            parent = parent.getParent();
-        }
-
-        return parent;
-    }
-
-    private byte[] getBlob( VirtualFileEntity entity )
-    {
-        String key = entity.getBlobKey();
-        if ( key == null )
-        {
-            return null;
-        }
-
-        BlobRecord blob = this.blobStore.getRecord( new BlobKey( key ) );
-        return blob != null ? blob.getAsBytes() : null;
-    }
-
-    private String createKey( FileResourceName name )
-    {
-        if ( name == null )
+        if ( file.isDirectory() )
         {
             return null;
         }
 
         try
         {
-            return DigestUtils.shaHex( name.getPath().getBytes( "UTF-8" ) );
+            final byte[] bytes = Files.toByteArray( file );
+            final FileResourceData data = new FileResourceData();
+            data.setAsBytes( bytes );
+            return data;
         }
-        catch ( UnsupportedEncodingException e )
+        catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            throw new RuntimeException( "Not able to read file: " + file.getAbsolutePath(), e );
         }
     }
 
-    private VirtualFileEntity findEntity( Session session, String key )
+    private File getFile( final FileResourceName name )
     {
-        return (VirtualFileEntity) session.get( VirtualFileEntity.class, key );
-    }
-
-    public boolean moveResource( FileResourceName from, FileResourceName to )
-    {
-        Session session = openSession();
-        return doMoveResource( session, from, to );
-    }
-
-    private boolean doMoveResource( Session session, FileResourceName from, FileResourceName to )
-    {
-        if ( doCopyResource( session, from, to ) )
+        if ( name.isRoot() )
         {
-            doDeleteResource( session, from );
+            return resourceRoot;
+        }
+
+        return new File( resourceRoot, name.getPath() );
+    }
+
+    @Override
+    public boolean setResourceData( final FileResourceName name, final FileResourceData data )
+    {
+        File file = getFile( name );
+
+        if ( !file.exists() )
+        {
+            return false;
+        }
+
+        if ( file.isDirectory() )
+        {
+            return false;
+        }
+
+        try
+        {
+            Files.write( data.getAsBytes(), file );
             return true;
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Not able to write to file " + file.getAbsolutePath(), e );
+        }
+    }
+
+    @Override
+    public boolean moveResource( final FileResourceName from, final FileResourceName to )
+    {
+        File fromFile = getFile( from );
+
+        if ( !fromFile.exists() )
+        {
+            return false;
+        }
+
+        File toFile = getFile( to );
+
+        if ( toFile.exists() )
+        {
+            return false;
+        }
+
+        if ( fromFile.isDirectory() )
+        {
+            return doMoveDirectory( fromFile, toFile );
+        }
+
+        if ( fromFile.isFile() )
+        {
+            return doMoveFile( fromFile, toFile );
+
         }
 
         return false;
     }
 
-    public boolean copyResource( FileResourceName from, FileResourceName to )
+    private boolean doMoveFile( final File fromFile, final File toFile )
     {
-        Session session = openSession();
-        return doCopyResource( session, from, to );
-    }
+        final File parent = toFile.getParentFile();
 
-    private boolean doCopyResource( Session session, FileResourceName from, FileResourceName to )
-    {
-        String fromKey = createKey( from );
-        VirtualFileEntity fromEntity = findEntity( session, fromKey );
-        return doCopyResource( session, fromEntity, to );
-    }
-
-    private boolean doCopyResource( Session session, VirtualFileEntity from, FileResourceName to )
-    {
-        if ( from == null )
+        if ( !parent.exists() )
         {
             return false;
         }
 
-        if ( from.isFile() )
+        try
         {
-            return doCopyResourceFile( session, from, to );
-        }
-        else
-        {
-            return doCopyResourceFolder( session, from, to );
-        }
-    }
-
-    private boolean doCopyResourceFile( Session session, VirtualFileEntity from, FileResourceName to )
-    {
-        String toKey = createKey( to );
-        VirtualFileEntity toEntity = findEntity( session, toKey );
-
-        if ( toEntity != null )
-        {
-            return false;
-        }
-
-        doCreateFolder( session, to.getParent() );
-        toEntity = createNewEntity( session, from, to );
-        session.saveOrUpdate( toEntity );
-        return true;
-    }
-
-    private boolean doCopyResourceFolder( Session session, VirtualFileEntity from, FileResourceName to )
-    {
-        if ( moveToSubfolderOfSelf( from, to ) )
-        {
-            return false;
-        }
-
-        String toKey = createKey( to );
-        VirtualFileEntity toEntity = findEntity( session, toKey );
-
-        if ( toEntity != null )
-        {
-            return false;
-        }
-
-        doCreateFolder( session, to );
-
-        String fromKey = from.getKey();
-        VirtualFileEntity parent = findEntity( session, fromKey );
-
-        for ( VirtualFileEntity child : parent.getChildren() )
-        {
-            doCopyResource( session, child, new FileResourceName( to, child.getName() ) );
-        }
-
-        return true;
-    }
-
-    private boolean moveToSubfolderOfSelf( VirtualFileEntity parent, FileResourceName potentialChild )
-    {
-        FileResourceName parentFileResource = new FileResourceName( parent.getName() );
-
-        if ( getAllParents( potentialChild ).contains( parentFileResource ) )
-        {
+            Files.move( fromFile, toFile );
             return true;
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Not able to move file " + fromFile.getAbsolutePath() + " to " + toFile.getAbsolutePath(), e );
+        }
+    }
+
+    private boolean doMoveDirectory( final File fromFile, final File toFile )
+    {
+        if ( isSubFolderOf( fromFile, toFile ) )
+        {
+            return false;
+        }
+
+        try
+        {
+            FileUtils.moveDirectory( fromFile, toFile );
+            return true;
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Not able to move folder " + fromFile.getAbsolutePath() + " to " + toFile.getAbsolutePath(), e );
+        }
+    }
+
+    private boolean isSubFolderOf( final File fromFile, final File toFile )
+    {
+        File parent = toFile.getParentFile();
+
+        while ( parent != null )
+        {
+            if ( parent.equals( resourceRoot ) )
+            {
+                return false;
+            }
+
+            if ( parent.equals( fromFile ) )
+            {
+                return true;
+            }
+
+            parent = parent.getParentFile();
         }
 
         return false;
     }
 
-    private List<FileResourceName> getAllParents( FileResourceName fileResourceName )
+    @Override
+    public boolean copyResource( final FileResourceName from, final FileResourceName to )
     {
-        List<FileResourceName> allParents = new ArrayList<FileResourceName>();
+        File fromFile = getFile( from );
 
-        FileResourceName currParent = fileResourceName.getParent();
-
-        while ( currParent != null )
+        if ( !fromFile.exists() )
         {
-            allParents.add( currParent );
-            currParent = currParent.getParent();
+            return false;
         }
 
-        return allParents;
+        if ( fromFile.isFile() )
+        {
+            return doCopyResourceFile( fromFile, to );
+        }
+
+        if ( fromFile.isDirectory() )
+        {
+            return doCopyResourceFolder( to, fromFile );
+        }
+
+        return false;
     }
 
-    private VirtualFileEntity createNewEntity( Session session, VirtualFileEntity oldEntity, FileResourceName newName )
+    private boolean doCopyResourceFolder( final FileResourceName to, final File fromFile )
     {
-        VirtualFileEntity newVirtualFile = new VirtualFileEntity();
-        newVirtualFile.setKey( createKey( newName ) );
-        newVirtualFile.setLastModified( System.currentTimeMillis() );
-        newVirtualFile.setLength( oldEntity.getLength() );
-        newVirtualFile.setBlobKey( oldEntity.getBlobKey() );
-        newVirtualFile.setName( newName.getName() );
+        File toFile = getFile( to );
 
-        String parentKey = createKey( newName.getParent() );
-
-        if ( parentKey != null )
+        try
         {
-            VirtualFileEntity parent = findEntity( session, parentKey );
-            parent.addChild( newVirtualFile );
+            FileUtils.copyDirectory( fromFile, toFile );
+            return true;
         }
-
-        return newVirtualFile;
-    }
-
-    private FileResourceName createNameFromEntity( VirtualFileEntity entity )
-    {
-        if ( entity.getParent() == null )
+        catch ( IOException e )
         {
-            return new FileResourceName( "/" );
-        }
-
-        final VirtualFileEntity parent = entity.getParent();
-        if ( parent == null )
-        {
-            return new FileResourceName( entity.getName() );
-        }
-        else
-        {
-            return new FileResourceName( createNameFromEntity( parent ), entity.getName() );
+            throw new RuntimeException( "Not able to copy directory " + fromFile + " to " + toFile, e );
         }
     }
 
-    private void publishResourceEvent( VirtualFileEntity entity, FileResourceEvent.Type type )
+    private boolean doCopyResourceFile( File fromFile, FileResourceName to )
     {
-        if ( this.listeners.isEmpty() )
+        File toFile = getFile( to );
+
+        if ( toFile.exists() )
         {
-            return;
+            return false;
         }
 
-        final FileResourceName name = createNameFromEntity( entity );
-        final FileResourceEvent event = new FileResourceEvent( type, name );
-
-        for ( FileResourceListener listener : this.listeners )
+        try
         {
-            listener.resourceChanged( event );
+            Files.copy( fromFile, toFile );
+            return true;
         }
-    }
-
-    public void entityInserted( Session session, Object entity )
-    {
-        if ( entity instanceof VirtualFileEntity )
+        catch ( IOException e )
         {
-            publishResourceEvent( (VirtualFileEntity) entity, FileResourceEvent.Type.ADDED );
+            throw new RuntimeException( "Not able to copy from file " + fromFile.getAbsolutePath() + " to " + toFile.getAbsolutePath(), e );
         }
     }
 
-    public void entityUpdated( Session session, Object entity )
+    @Value("${cms.resource.path}")
+    public void setResourceRoot( final File resourceRoot )
     {
-        if ( entity instanceof VirtualFileEntity )
-        {
-            publishResourceEvent( (VirtualFileEntity) entity, FileResourceEvent.Type.UPDATED );
-        }
+        this.resourceRoot = resourceRoot;
     }
 
-    public void entityDeleted( Session session, Object entity )
+    @Autowired
+    public void setMimeTypeResolver( final MimeTypeResolver mimeTypeResolver )
     {
-        if ( entity instanceof VirtualFileEntity )
-        {
-            publishResourceEvent( (VirtualFileEntity) entity, FileResourceEvent.Type.DELETED );
-        }
-    }
-
-    @Autowired(required = false)
-    public void setListeners( final List<FileResourceListener> listeners )
-    {
-        this.listeners = listeners;
+        this.mimeTypeResolver = mimeTypeResolver;
     }
 }

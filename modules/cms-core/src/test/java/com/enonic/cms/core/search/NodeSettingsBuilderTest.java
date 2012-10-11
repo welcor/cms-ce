@@ -13,9 +13,10 @@ public class NodeSettingsBuilderTest
     public void testCreateSettings()
         throws Exception
     {
-        NodeSettingsBuilderImpl builderImpl = new NodeSettingsBuilderImpl();
+        NodeSettingsBuilder builderImpl = new NodeSettingsBuilder();
 
         ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setProperty( "cms.elasticsearch.node.client", "false" );
         configProperties.setProperty( "cms.elasticsearch.path.logs", "logpath" );
         configProperties.setProperty( "cms.elasticsearch.index.indexname", "indexname" );
         builderImpl.setConfigProperties( configProperties );
@@ -23,8 +24,25 @@ public class NodeSettingsBuilderTest
         final Settings settings = builderImpl.buildNodeSettings();
 
         assertEquals( "logpath", settings.get( "path.logs" ) );
-        assertEquals( 1, settings.getAsMap().keySet().size() );
+        assertEquals( "false", settings.get( "node.client" ) );
+        assertEquals( "true", settings.get( "node.local" ) );
+        assertEquals( 3, settings.getAsMap().keySet().size() );
 
 
     }
+
+    @Test
+    public void use_cluster_enabled_for_client_as_default()
+    {
+        NodeSettingsBuilder builderImpl = new NodeSettingsBuilder();
+
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.put( "cms.cluster.enabled", "true" );
+        builderImpl.setConfigProperties( configProperties );
+
+        final Settings settings = builderImpl.buildNodeSettings();
+
+        assertEquals( "false", settings.get( "node.local" ) );
+    }
+
 }

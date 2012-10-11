@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.elasticsearch.ElasticSearchException;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingRequest;
@@ -19,8 +22,6 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest;
-import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
-import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -38,6 +39,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -332,19 +334,21 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public boolean indexExists( String indexName )
     {
-        try
+        final ClusterHealthRequest clusterHealthRequest =
+            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( 60 ) ).waitForYellowStatus();
+        final ClusterHealthResponse clusterHealth = client.admin().cluster().health( clusterHealthRequest ).actionGet();
+        if ( clusterHealth.timedOut() )
         {
-            final IndicesStatusRequest indicesStatusRequest = new IndicesStatusRequest( indexName );
-            final IndicesStatusResponse indicesStatusResponse = this.client.admin().indices().status( indicesStatusRequest ).actionGet();
-
-            LOG.fine( "Index " + indexName + " status ok with " + indicesStatusResponse.getSuccessfulShards() + " shards" );
-
-            return true;
+            LOG.warning( "ElasticSearch cluster health timed out" );
         }
-        catch ( ElasticSearchException e )
+        else
         {
-            return false;
+            LOG.info( "ElasticSearch cluster health: Status " + clusterHealth.status().name() + "; " +
+                          clusterHealth.getNumberOfNodes() + " nodes; " + clusterHealth.getActiveShards() + " active shards." );
         }
+
+        final IndicesExistsResponse exists = this.client.admin().indices().exists( new IndicesExistsRequest( indexName ) ).actionGet();
+        return exists.exists();
     }
 
     @Autowired

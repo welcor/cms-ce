@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<dataSources>
+  <dataSource>
+    <methodname>getLocales</methodname>
+    <parameters/>
+  </dataSource>
+</dataSources>

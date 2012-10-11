@@ -44,6 +44,8 @@ public class GroupStorer
 
     private boolean resurrectDeletedGroups;
 
+    private boolean groupsStoredLocally;
+
     private UserStoreEntity userStore;
 
     public GroupKey storeNewGroup( StoreNewGroupCommand command )
@@ -69,7 +71,7 @@ public class GroupStorer
             {
                 return resurrectDeletedGroup( command );
             }
-            else if ( userStore != null && userStore.isRemote() )
+            else if ( !groupsStoredLocally )
             {
                 makeExistingDeletedGroupsHaveNonRepeatableSyncValues( command );
             }
@@ -220,7 +222,7 @@ public class GroupStorer
         if ( userStore != null )
         {
             spec.setUserStoreKey( userStore.getKey() );
-            if ( userStore.isLocal() )
+            if ( groupsStoredLocally )
             {
                 spec.setName( command.getName() );
             }
@@ -241,7 +243,7 @@ public class GroupStorer
 
     private GroupKey resurrectDeletedGroup( final StoreNewGroupCommand command )
     {
-        Preconditions.checkArgument( userStore.isRemote(), "Only resurrection of groups in remote userStores is expected" );
+        Preconditions.checkArgument( !groupsStoredLocally, "Only resurrection of groups in remote userStores is expected" );
 
         final GroupSpecification existingGroupToResurrectSpec = new GroupSpecification();
         existingGroupToResurrectSpec.setUserStoreKey( userStore.getKey() );
@@ -264,7 +266,7 @@ public class GroupStorer
 
     private void makeExistingDeletedGroupsHaveNonRepeatableSyncValues( final StoreNewGroupCommand command )
     {
-        Preconditions.checkArgument( userStore.isRemote(),
+        Preconditions.checkArgument( !groupsStoredLocally,
                                      "No use in making sync values for groups stored in local userStores non-repeatable." );
 
         final GroupSpecification specification = new GroupSpecification();
@@ -293,7 +295,7 @@ public class GroupStorer
         else
         {
             groupSpec.setUserStoreKey( command.getUserStoreKey() );
-            if ( userStore.isLocal() )
+            if ( groupsStoredLocally )
             {
                 groupSpec.setName( command.getName() );
             }
@@ -365,5 +367,10 @@ public class GroupStorer
     public void setResurrectDeletedGroups( boolean resurrectDeletedGroups )
     {
         this.resurrectDeletedGroups = resurrectDeletedGroups;
+    }
+
+    public void setGroupsStoredLocally( boolean groupsStoredLocally )
+    {
+        this.groupsStoredLocally = groupsStoredLocally;
     }
 }

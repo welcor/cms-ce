@@ -14,14 +14,13 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.core.plugin.ExtensionListener;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.plugin.container.OsgiContainer;
 import com.enonic.cms.core.plugin.context.ContextFactory;
 import com.enonic.cms.core.plugin.util.OsgiHelper;
 
 @Component("pluginManager")
 public final class PluginManagerImpl
-    extends OsgiContainer implements PluginManager
+    extends OsgiContainer
 {
     private final ExtensionHolder holder;
 

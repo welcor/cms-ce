@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<dataSources>
+  <dataSource>
+    <methodname>getSubMenu</methodname>
+    <parameters>
+      <parameter name="menuItemKey" type="int">0</parameter>
+      <parameter name="tagItem" type="int">1</parameter>
+      <parameter name="levels" type="int">0</parameter>
+    </parameters>
+  </dataSource>
+</dataSources>

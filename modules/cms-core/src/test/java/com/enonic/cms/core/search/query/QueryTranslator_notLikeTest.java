@@ -18,8 +18,7 @@ public class QueryTranslator_notLikeTest
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
-            "        \"match_all\" : {\n" +
-            "        }\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"wildcard\" : {\n" +
@@ -47,8 +46,7 @@ public class QueryTranslator_notLikeTest
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
-            "        \"match_all\" : {\n" +
-            "        }\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"wildcard\" : {\n" +
@@ -76,8 +74,7 @@ public class QueryTranslator_notLikeTest
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
-            "        \"match_all\" : {\n" +
-            "        }\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"wildcard\" : {\n" +

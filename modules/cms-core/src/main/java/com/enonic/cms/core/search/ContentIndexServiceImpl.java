@@ -90,7 +90,14 @@ public class ContentIndexServiceImpl
 
         if ( !indexExists )
         {
-            elasticSearchIndexService.createIndex( CONTENT_INDEX_NAME );
+            try
+            {
+                elasticSearchIndexService.createIndex( CONTENT_INDEX_NAME );
+            }
+            catch ( org.elasticsearch.indices.IndexAlreadyExistsException e )
+            {
+                LOG.warning( "Index already exists, skipping index creation" );
+            }
             addMapping();
         }
     }

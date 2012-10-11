@@ -202,26 +202,29 @@ public class CategoryXmlCreator
     {
         Element element = new Element( "categoryname" );
 
-        element.setText( category.getName() );
-
-        element.setAttribute( "categorykey", category.getKey().toString() );
-
-        if ( category.getContentType() != null )
+        if ( category != null )
         {
-            element.setAttribute( "contenttypekey", Integer.toString( category.getContentType().getKey() ) );
-        }
+            element.setText( category.getName() );
 
-        if ( category.getParent() != null )
-        {
-            element.setAttribute( "supercategorykey", category.getParent().getKey().toString() );
-        }
+            element.setAttribute( "categorykey", category.getKey().toString() );
 
-        if ( category.getUnitExcludeDeleted() != null )
-        {
-            element.setAttribute( "unitkey", Integer.toString( category.getUnitExcludeDeleted().getKey().toInt() ) );
-        }
+            if ( category.getContentType() != null )
+            {
+                element.setAttribute( "contenttypekey", Integer.toString( category.getContentType().getKey() ) );
+            }
 
-        element.setAttribute( "subcategories", category.hasChildren() ? "true" : "false" );
+            if ( category.getParent() != null )
+            {
+                element.setAttribute( "supercategorykey", category.getParent().getKey().toString() );
+            }
+
+            if ( category.getUnitExcludeDeleted() != null )
+            {
+                element.setAttribute( "unitkey", Integer.toString( category.getUnitExcludeDeleted().getKey().toInt() ) );
+            }
+
+            element.setAttribute( "subcategories", category.hasChildren() ? "true" : "false" );
+        }
 
         if ( contentCount != null )
         {

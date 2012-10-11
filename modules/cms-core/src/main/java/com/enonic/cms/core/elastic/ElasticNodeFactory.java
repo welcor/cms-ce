@@ -3,6 +3,7 @@ package com.enonic.cms.core.elastic;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.elasticsearch.common.collect.ImmutableMap;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.common.logging.slf4j.Slf4jESLoggerFactory;
 import org.elasticsearch.common.settings.Settings;
@@ -45,7 +46,8 @@ public final class ElasticNodeFactory
 
         final Settings settings = nodeSettingsBuilder.buildNodeSettings();
 
-        this.node = NodeBuilder.nodeBuilder().client( false ).local( true ).data( true ).settings( settings ).build();
+        this.node = NodeBuilder.nodeBuilder().settings( settings ).build();
+
         this.node.start();
     }
 

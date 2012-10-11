@@ -21,8 +21,7 @@ public class QueryTranslator_filterCombinationsTest
             "  \"from\" : 0,\n" +
             "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +

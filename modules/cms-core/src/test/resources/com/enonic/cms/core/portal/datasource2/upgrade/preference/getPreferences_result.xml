@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<data-sources>
+  <data-source name="getPreferences">
+    <parameter name="keyPattern">music*</parameter>
+  </data-source>
+  <data-source name="getPreferences">
+    <parameter name="scope">WINDOW</parameter>
+    <parameter name="keyPattern">music*</parameter>
+  </data-source>
+  <data-source name="getPreferences">
+    <parameter name="keyPattern">music*</parameter>
+    <parameter name="uniqueMatch">true</parameter>
+  </data-source>
+  <data-source name="getPreferences">
+    <parameter name="scope">WINDOW</parameter>
+    <parameter name="keyPattern">music*</parameter>
+    <parameter name="uniqueMatch">true</parameter>
+  </data-source>
+</data-sources>

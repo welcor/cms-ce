@@ -1,0 +1,9 @@
+<data-sources>
+  <data-source name="getCategories">
+    <parameter name="categoryKey">0</parameter>
+    <parameter name="levels">0</parameter>
+    <parameter name="includeContentCount">false</parameter>
+    <parameter name="includeTopCategory">true</parameter>
+  </data-source>
+</data-sources>
+    

@@ -1,0 +1,5 @@
+<data-sources>
+  <data-source name="invokeExtension">
+    <parameter name="name">dummy.getResult</parameter>
+  </data-source>
+</data-sources>

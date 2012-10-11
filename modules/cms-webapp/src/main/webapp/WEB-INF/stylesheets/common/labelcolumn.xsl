@@ -18,12 +18,14 @@
         <xsl:param name="valign" select="''"/>
 
         <xsl:variable name="tooltip">
+          <xsl:if test="$title != ''">
             <xsl:call-template name="trimprefix">
-                <xsl:with-param name="source" select="$title"/>
+              <xsl:with-param name="source" select="$title"/>
             </xsl:call-template>
+          </xsl:if>
         </xsl:variable>
 
-        <td class="form_labelcolumn">
+      <td class="form_labelcolumn">
             <xsl:attribute name="valign">
                 <xsl:choose>
                     <xsl:when test="$valign != ''">

@@ -15,7 +15,7 @@ public interface CacheFacade
      * Name of cache.
      */
     public String getName();
-    
+
     /**
      * Return the memory capacity.
      */

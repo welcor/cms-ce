@@ -19,8 +19,7 @@ public class QueryTranslator_not_equalsTest
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : {\n" +
-            "        \"match_all\" : {\n" +
-            "        }\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
             "      \"must_not\" : {\n" +
             "        \"ids\" : {\n" +
@@ -56,8 +55,7 @@ public class QueryTranslator_not_equalsTest
             "      }, {\n" +
             "        \"bool\" : {\n" +
             "          \"must\" : {\n" +
-            "            \"match_all\" : {\n" +
-            "            }\n" +
+            "            \"match_all\" : { }\n" +
             "          },\n" +
             "          \"must_not\" : {\n" +
             "            \"ids\" : {\n" +

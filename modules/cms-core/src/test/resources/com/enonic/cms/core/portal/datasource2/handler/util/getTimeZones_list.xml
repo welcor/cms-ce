@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<time-zones>
+  <time-zone ID="UTC">
+    <display-name>UTC</display-name>
+    <hours-from-utc-as-human-readable>+00:00</hours-from-utc-as-human-readable>
+  </time-zone>
+  <time-zone ID="CET">
+    <display-name>CET</display-name>
+    <hours-from-utc-as-human-readable>+01:00</hours-from-utc-as-human-readable>
+  </time-zone>
+</time-zones>

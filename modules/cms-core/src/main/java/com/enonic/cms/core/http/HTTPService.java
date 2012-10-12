@@ -44,7 +44,7 @@ public class HTTPService
             return sb.toString();
 
         }
-        catch ( IOException e )
+        catch ( Exception e )
         {
             String message = "Failed to get URL: \"" + address + "\": " + e.getMessage();
             LOG.warning( message );
@@ -75,7 +75,7 @@ public class HTTPService
             InputStream responseStream = urlConn.getInputStream();
             return IOUtils.toByteArray( responseStream );
         }
-        catch ( IOException e )
+        catch ( Exception e )
         {
             String message = "Failed to get URL: \"" + address + "\": " + e.getMessage();
             LOG.warning( message );
@@ -121,7 +121,7 @@ public class HTTPService
         BufferedReader reader;
         if ( encoding == null )
         {
-            reader = new BufferedReader( new InputStreamReader( in ) );
+            reader = new BufferedReader( new InputStreamReader( in, "utf8" ) );
         }
         else
         {

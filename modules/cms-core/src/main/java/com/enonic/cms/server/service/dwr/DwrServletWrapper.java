@@ -19,7 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.directwebremoting.servlet.DwrServlet;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 import com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl;
@@ -110,8 +113,11 @@ public final class DwrServletWrapper
     public void init( final ServletConfig config )
         throws ServletException
     {
+        final ConfigProperties configProperties = getConfigProperties( config.getServletContext() );
+
         final Map<String, String> params = new HashMap<String, String>();
-        params.put( "debug", "false" );
+        params.put( "debug", configProperties.getProperty( "cms.admin.dwr.debug", "false" ) );
+        params.put( "crossDomainSessionSecurity", configProperties.getProperty( "cms.admin.dwr.crossDomainSessionSecurity", "true" ) );
         params.put( "classes", this.classes.toString() );
 
         final ServletConfig wrapper = new ServletConfig()
@@ -138,5 +144,11 @@ public final class DwrServletWrapper
         };
 
         super.init( wrapper );
+    }
+
+    private ConfigProperties getConfigProperties( final ServletContext servletContext )
+    {
+        final WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext( servletContext );
+        return context.getBean( ConfigProperties.class );
     }
 }

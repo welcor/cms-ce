@@ -79,7 +79,7 @@ public final class CalendarService
 
         // set current date
         SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd", locale );
-        root.setAttribute( "currentdate", dateFormat.format( new Date() ) );
+        root.setAttribute( "currentdate", dateFormat.format( new Date( now ) ) );
 
         SimpleDateFormat dayName = new SimpleDateFormat( "EEEE", locale );
         SimpleDateFormat shortDayName = new SimpleDateFormat( "EE", locale );

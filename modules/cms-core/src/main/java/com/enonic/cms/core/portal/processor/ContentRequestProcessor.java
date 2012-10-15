@@ -13,8 +13,12 @@ import com.google.common.base.Preconditions;
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
 import com.enonic.cms.core.Path;
+import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.content.ContentEntity;
+import com.enonic.cms.core.content.ContentLocationSpecification;
+import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageResolver;
 import com.enonic.cms.core.portal.ContentNameMismatchException;
@@ -77,6 +81,18 @@ public class ContentRequestProcessor
 
         if ( contentPath.isPermaLink() )
         {
+            SiteKey siteKey = sitePath.getSiteKey();
+            if( !sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.ENABLE_UNPUBLISHED_CONTENT_PERMALINKS, siteKey ) )
+            {
+                ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
+                contentLocationSpecification.setSiteKey( siteKey );
+                ContentLocations contentLocations = contentFromRequest.getLocations( contentLocationSpecification );
+                if( !contentLocations.hasLocations() )
+                {
+                    throw new ContentNotFoundException( contentFromRequest.getKey(), contentFromRequest.getMainVersion().getTitle() );
+                }
+            }
+
             SitePath redirectSitePath = getRedirectSitePathForPermaLink( sitePath, contentFromRequest );
 
             if ( redirectSitePath != null )

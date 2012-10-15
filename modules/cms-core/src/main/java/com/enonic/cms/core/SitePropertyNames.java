@@ -41,5 +41,7 @@ public class SitePropertyNames
 
     public static final String AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED = "cms.site.login.autologin.rememberMeCookieEnabled";
 
+    public static final String ENABLE_UNPUBLISHED_CONTENT_PERMALINKS = "cms.site.page.enableUnpublishedContentPermalinks";
+
     public static final String SITE_URL = "cms.site.url";
 }

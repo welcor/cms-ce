@@ -4,9 +4,13 @@
  */
 package com.enonic.cms.core.search.query;
 
+import org.elasticsearch.index.query.ConstantScoreQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.nodep.lucene.search.ConstantScoreQuery;
+import org.elasticsearch.nodep.lucene.search.FilteredQuery;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -93,15 +97,18 @@ public class QueryTranslator
             throw new ContentIndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
         }
 
-        builder.query( builtQuery );
+        //builder.query( builtQuery );
 
         applySorting( builder, contentIndexQuery, queryExpr.getOrderBy() );
         final FilterBuilder filtersToApply = filterQueryBuilderFactory.buildFilter( contentIndexQuery );
 
-        if ( filtersToApply != null )
-        {
-            builder.filter( filtersToApply );
-        }
+        // if ( filtersToApply != null )
+        //  {
+        //      builder.filter( filtersToApply );
+        //  }
+
+        FilteredQueryBuilder filterQueryBuilder = new FilteredQueryBuilder( builtQuery, filtersToApply );
+        builder.query( filterQueryBuilder );
 
         return builder;
     }

@@ -1,23 +1,20 @@
 package com.enonic.cms.core.search;
 
-import java.util.ArrayList;
-import java.util.SortedMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.elasticsearch.common.collect.Maps;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
-import com.enonic.cms.core.content.OrderContentKeysByGivenOrderComparator;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
 import com.enonic.cms.core.search.query.ContentDocument;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.FindContentByKeysCommand;
 
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -55,8 +52,7 @@ public class IndexTransactionJournalTest
     {
         final ContentKey contentKey = new ContentKey( 1 );
 
-        final SortedMap<ContentKey, ContentEntity> contentKeyObjectTreeMap =
-            Maps.newTreeMap( new OrderContentKeysByGivenOrderComparator( new ArrayList<ContentKey>() ) );
+        final Map<ContentKey, ContentEntity> contentKeyObjectTreeMap = new LinkedHashMap<ContentKey, ContentEntity>();
         contentKeyObjectTreeMap.put( contentKey, new ContentEntity() );
 
         when( contentDao.findByKeys( isA( FindContentByKeysCommand.class ) ) ).thenReturn( contentKeyObjectTreeMap );

@@ -1,7 +1,7 @@
 package com.enonic.cms.core.content.category;
 
 
-import java.util.SortedMap;
+import java.util.Map;
 
 import com.enonic.cms.core.content.ContentACLSynchronizer;
 import com.enonic.cms.core.content.ContentEntity;
@@ -12,7 +12,7 @@ class SynchronizeContentACLProcessor
 {
     private ContentACLSynchronizer contentACLSynchronizer;
 
-    private SortedMap<ContentKey, ContentEntity> contentToSynchronize;
+    private Map<ContentKey, ContentEntity> contentToSynchronize;
 
     private final IndexTransactionService indexTransactionService;
 
@@ -23,7 +23,7 @@ class SynchronizeContentACLProcessor
         this.indexTransactionService = indexTransactionService;
     }
 
-    void setContentToSynchronize( SortedMap<ContentKey, ContentEntity> contentToSynchronize )
+    void setContentToSynchronize( Map<ContentKey, ContentEntity> contentToSynchronize )
     {
         this.contentToSynchronize = contentToSynchronize;
     }

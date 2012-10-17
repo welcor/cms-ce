@@ -1,7 +1,7 @@
 package com.enonic.cms.core.content.category;
 
 
-import java.util.SortedMap;
+import java.util.Map;
 
 import com.enonic.cms.core.content.ContentAccessControl;
 import com.enonic.cms.core.content.ContentEntity;
@@ -16,7 +16,7 @@ class ModifyContentACLCommandProcessor
 {
     private GroupDao groupDao;
 
-    private SortedMap<ContentKey, ContentEntity> contentToSynchronize;
+    private Map<ContentKey, ContentEntity> contentToSynchronize;
 
     private IndexTransactionService indexTransactionService;
 
@@ -27,7 +27,7 @@ class ModifyContentACLCommandProcessor
         this.indexTransactionService = indexTransactionService;
     }
 
-    void setContentToSynchronize( final SortedMap<ContentKey, ContentEntity> contentToSynchronize )
+    void setContentToSynchronize( final Map<ContentKey, ContentEntity> contentToSynchronize )
     {
         this.contentToSynchronize = contentToSynchronize;
     }

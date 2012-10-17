@@ -7,7 +7,7 @@ package com.enonic.cms.store.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedMap;
+import java.util.Map;
 
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class ContentEntityDao
         return get( ContentEntity.class, contentKey );
     }
 
-    public SortedMap<ContentKey, ContentEntity> findByKeys( final FindContentByKeysCommand command )
+    public Map<ContentKey, ContentEntity> findByKeys( final FindContentByKeysCommand command )
     {
         final FindContentByKeysQuerier findContentByKeysQuerier =
             new FindContentByKeysQuerier( getHibernateTemplate().getSessionFactory().getCurrentSession(), command.getContentEagerFetches(),

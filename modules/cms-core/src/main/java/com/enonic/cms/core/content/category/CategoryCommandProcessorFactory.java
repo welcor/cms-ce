@@ -3,6 +3,7 @@ package com.enonic.cms.core.content.category;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -174,7 +175,7 @@ public class CategoryCommandProcessorFactory
 
     SynchronizeContentACLProcessor createSynchronizeContentACLCommandProcessor( final SynchronizeContentACLCommand command )
     {
-        final SortedMap<ContentKey, ContentEntity> contentToSynchronize = contentDao.findByKeys(
+        final Map<ContentKey, ContentEntity> contentToSynchronize = contentDao.findByKeys(
             new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 
@@ -205,7 +206,7 @@ public class CategoryCommandProcessorFactory
 
     ModifyContentACLCommandProcessor createModifyContentACLCommandProcessor( final ModifyContentACLCommand command )
     {
-        final SortedMap<ContentKey, ContentEntity> contentToSynchronize = contentDao.findByKeys(
+        final Map<ContentKey, ContentEntity> contentToSynchronize = contentDao.findByKeys(
             new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 

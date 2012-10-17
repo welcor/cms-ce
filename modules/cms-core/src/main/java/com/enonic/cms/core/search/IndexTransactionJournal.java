@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.logging.Logger;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
@@ -113,7 +112,7 @@ public class IndexTransactionJournal
             return;
         }
 
-        final SortedMap<ContentKey, ContentEntity> contentMapByKey = preloadContent();
+        final Map<ContentKey, ContentEntity> contentMapByKey = preloadContent();
 
         LOG.info( "Flushing index changes from transaction journal" );
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
@@ -134,7 +133,7 @@ public class IndexTransactionJournal
         flushIndex();
     }
 
-    private SortedMap<ContentKey, ContentEntity> preloadContent()
+    private Map<ContentKey, ContentEntity> preloadContent()
     {
         List<ContentKey> contentToLoad = new ArrayList<ContentKey>();
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
@@ -152,7 +151,7 @@ public class IndexTransactionJournal
     }
 
     private void handleFlushUpdateOperation( final IndexTransactionJournalEntry journalEntry,
-                                             final SortedMap<ContentKey, ContentEntity> contentMapByKey )
+                                             final Map<ContentKey, ContentEntity> contentMapByKey )
     {
         final ContentEntity content = contentMapByKey.get( journalEntry.getContentKey() );
         if ( content == null )

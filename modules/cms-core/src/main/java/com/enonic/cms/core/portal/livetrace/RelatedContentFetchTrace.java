@@ -54,7 +54,7 @@ public class RelatedContentFetchTrace
         {
             count++;
             s.append( fetch.getCount() );
-            if ( count < childrenFetches.size() - 1 )
+            if ( count < childrenFetches.size() )
             {
                 s.append( " -> " );
             }
@@ -70,7 +70,7 @@ public class RelatedContentFetchTrace
         {
             count++;
             s.append( fetch.getCount() );
-            if ( count < parentFetches.size() - 1 )
+            if ( count < parentFetches.size() )
             {
                 s.append( " -> " );
             }

@@ -45,7 +45,10 @@ public class RelatedContentFetchTracer
 
     public static void traceDefinition( final RelatedContentFetcher fetcher, final RelatedContentFetchTrace trace )
     {
-        trace.setMaxParentLevel( fetcher.getMaxParentLevel() );
-        trace.setMaxChildrenLevel( fetcher.getMaxChildrenLevel() );
+        if ( trace != null )
+        {
+            trace.setMaxParentLevel( fetcher.getMaxParentLevel() );
+            trace.setMaxChildrenLevel( fetcher.getMaxChildrenLevel() );
+        }
     }
 }

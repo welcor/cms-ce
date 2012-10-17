@@ -16,8 +16,12 @@ public class QueryTranslator_likeTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"wildcard\" : {\n" +
-            "      \"title\" : \"boat*\"\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"wildcard\" : {\n" +
+            "          \"title\" : \"boat*\"\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -37,8 +41,12 @@ public class QueryTranslator_likeTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"wildcard\" : {\n" +
-            "      \"title\" : \"*$&*\"\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"wildcard\" : {\n" +
+            "          \"title\" : \"*$&*\"\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -58,8 +66,12 @@ public class QueryTranslator_likeTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"wildcard\" : {\n" +
-            "      \"title\" : \"*\\\\*\"\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"wildcard\" : {\n" +
+            "          \"title\" : \"*\\\\*\"\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

@@ -17,18 +17,22 @@ public class QueryTranslator_logicalTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"should\" : [ {\n" +
-            "        \"ids\" : {\n" +
-            "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"100\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"should\" : [ {\n" +
+            "            \"ids\" : {\n" +
+            "              \"type\" : \"content\",\n" +
+            "              \"values\" : [ \"100\" ]\n" +
+            "            }\n" +
+            "          }, {\n" +
+            "            \"ids\" : {\n" +
+            "              \"type\" : \"content\",\n" +
+            "              \"values\" : [ \"200\" ]\n" +
+            "            }\n" +
+            "          } ]\n" +
             "        }\n" +
-            "      }, {\n" +
-            "        \"ids\" : {\n" +
-            "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"200\" ]\n" +
-            "        }\n" +
-            "      } ]\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -48,17 +52,21 @@ public class QueryTranslator_logicalTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : [ {\n" +
-            "        \"ids\" : {\n" +
-            "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"100\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : [ {\n" +
+            "            \"ids\" : {\n" +
+            "              \"type\" : \"content\",\n" +
+            "              \"values\" : [ \"100\" ]\n" +
+            "            }\n" +
+            "          }, {\n" +
+            "            \"term\" : {\n" +
+            "              \"title\" : \"test\"\n" +
+            "            }\n" +
+            "          } ]\n" +
             "        }\n" +
-            "      }, {\n" +
-            "        \"term\" : {\n" +
-            "          \"title\" : \"test\"\n" +
-            "        }\n" +
-            "      } ]\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

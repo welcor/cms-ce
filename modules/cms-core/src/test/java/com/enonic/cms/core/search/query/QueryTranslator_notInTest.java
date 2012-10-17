@@ -14,27 +14,31 @@ public class QueryTranslator_notInTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"match_all\" : { }\n" +
-            "      },\n" +
-            "      \"must_not\" : {\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"should\" : [ {\n" +
-            "            \"term\" : {\n" +
-            "              \"title\" : \"hello\"\n" +
+            "          \"must\" : {\n" +
+            "            \"match_all\" : { }\n" +
+            "          },\n" +
+            "          \"must_not\" : {\n" +
+            "            \"bool\" : {\n" +
+            "              \"should\" : [ {\n" +
+            "                \"term\" : {\n" +
+            "                  \"title\" : \"hello\"\n" +
+            "                }\n" +
+            "              }, {\n" +
+            "                \"term\" : {\n" +
+            "                  \"title\" : \"test 2\"\n" +
+            "                }\n" +
+            "              }, {\n" +
+            "                \"term\" : {\n" +
+            "                  \"title\" : \"my testcontent\"\n" +
+            "                }\n" +
+            "              } ]\n" +
             "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"title\" : \"test 2\"\n" +
-            "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"title\" : \"my testcontent\"\n" +
-            "            }\n" +
-            "          } ]\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -54,27 +58,31 @@ public class QueryTranslator_notInTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"match_all\" : { }\n" +
-            "      },\n" +
-            "      \"must_not\" : {\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"should\" : [ {\n" +
-            "            \"term\" : {\n" +
-            "              \"myintfield.number\" : 1.0\n" +
+            "          \"must\" : {\n" +
+            "            \"match_all\" : { }\n" +
+            "          },\n" +
+            "          \"must_not\" : {\n" +
+            "            \"bool\" : {\n" +
+            "              \"should\" : [ {\n" +
+            "                \"term\" : {\n" +
+            "                  \"myintfield.number\" : 1.0\n" +
+            "                }\n" +
+            "              }, {\n" +
+            "                \"term\" : {\n" +
+            "                  \"myintfield.number\" : 2.0\n" +
+            "                }\n" +
+            "              }, {\n" +
+            "                \"term\" : {\n" +
+            "                  \"myintfield.number\" : 3.0\n" +
+            "                }\n" +
+            "              } ]\n" +
             "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"myintfield.number\" : 2.0\n" +
-            "            }\n" +
-            "          }, {\n" +
-            "            \"term\" : {\n" +
-            "              \"myintfield.number\" : 3.0\n" +
-            "            }\n" +
-            "          } ]\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

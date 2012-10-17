@@ -16,9 +16,13 @@ public class QueryTranslator_contentKeyQueriesTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"ids\" : {\n" +
-            "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"ids\" : {\n" +
+            "          \"type\" : \"content\",\n" +
+            "          \"values\" : [ \"100\" ]\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -38,9 +42,13 @@ public class QueryTranslator_contentKeyQueriesTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"ids\" : {\n" +
-            "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"ids\" : {\n" +
+            "          \"type\" : \"content\",\n" +
+            "          \"values\" : [ \"100\" ]\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -60,9 +68,13 @@ public class QueryTranslator_contentKeyQueriesTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"ids\" : {\n" +
-            "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"ids\" : {\n" +
+            "          \"type\" : \"content\",\n" +
+            "          \"values\" : [ \"100\" ]\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

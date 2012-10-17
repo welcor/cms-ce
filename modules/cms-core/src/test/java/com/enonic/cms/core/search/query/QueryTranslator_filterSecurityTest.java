@@ -24,25 +24,29 @@ public class QueryTranslator_filterSecurityTest
     {
         final String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : { }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ \"42\" ]\n" +
-            "        }\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"access_read\" : [ \"group1\" ]\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"categorykey\" : [ \"42\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"access_read\" : [ \"group1\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -72,25 +76,29 @@ public class QueryTranslator_filterSecurityTest
     {
         final String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : { }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ \"42\" ]\n" +
-            "        }\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"access_read\" : [ \"group1\", \"group2\" ]\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"categorykey\" : [ \"42\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"access_read\" : [ \"group1\", \"group2\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -121,20 +129,24 @@ public class QueryTranslator_filterSecurityTest
     {
         final String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : { }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ \"42\" ]\n" +
-            "        }\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"categorykey\" : [ \"42\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contenttypekey\" : [ \"1234\", \"1235\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

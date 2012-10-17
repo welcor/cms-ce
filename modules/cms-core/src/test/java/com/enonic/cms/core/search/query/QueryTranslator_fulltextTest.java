@@ -14,10 +14,14 @@ public class QueryTranslator_fulltextTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + +QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"term\" : {\n" +
-            "      \"title._tokenized\" : \"world\"\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"term\" : {\n" +
+            "          \"title._tokenized\" : \"world\"\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

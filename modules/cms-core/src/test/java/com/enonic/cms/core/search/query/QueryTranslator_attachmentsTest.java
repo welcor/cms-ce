@@ -17,13 +17,17 @@ public class QueryTranslator_attachmentsTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"has_child\" : {\n" +
+            "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
-            "        \"term\" : {\n" +
-            "          \"attachment\" : \"test\"\n" +
+            "        \"has_child\" : {\n" +
+            "          \"query\" : {\n" +
+            "            \"term\" : {\n" +
+            "              \"attachment\" : \"test\"\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"child_type\" : \"binaries\"\n" +
             "        }\n" +
-            "      },\n" +
-            "      \"child_type\" : \"binaries\"\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -44,13 +48,17 @@ public class QueryTranslator_attachmentsTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"has_child\" : {\n" +
+            "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
-            "        \"term\" : {\n" +
-            "          \"attachment\" : \"test\"\n" +
+            "        \"has_child\" : {\n" +
+            "          \"query\" : {\n" +
+            "            \"term\" : {\n" +
+            "              \"attachment\" : \"test\"\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"child_type\" : \"binaries\"\n" +
             "        }\n" +
-            "      },\n" +
-            "      \"child_type\" : \"binaries\"\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

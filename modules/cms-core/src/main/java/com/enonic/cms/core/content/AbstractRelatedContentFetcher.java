@@ -19,6 +19,8 @@ import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedContent;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTrace;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTracer;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.RelatedChildContentQuery;
@@ -26,7 +28,7 @@ import com.enonic.cms.store.dao.RelatedChildContentQuery;
 
 public abstract class AbstractRelatedContentFetcher
 {
-    protected ContentDao contentDao;
+    protected final ContentDao contentDao;
 
     protected Integer maxChildrenLevel;
 
@@ -46,9 +48,12 @@ public abstract class AbstractRelatedContentFetcher
 
     protected Set<ContentKey> visitedChildRelatedContent = new HashSet<ContentKey>();
 
-    protected AbstractRelatedContentFetcher( ContentDao contentDao )
+    protected final RelatedContentFetchTrace trace;
+
+    protected AbstractRelatedContentFetcher( ContentDao contentDao, final RelatedContentFetchTrace trace )
     {
         this.contentDao = contentDao;
+        this.trace = trace;
     }
 
     public void setMaxChildrenLevel( Integer value )
@@ -74,6 +79,11 @@ public abstract class AbstractRelatedContentFetcher
     public boolean includeOfflineContent()
     {
         return includeOfflineContent;
+    }
+
+    public Integer getMaxChildrenLevel()
+    {
+        return maxChildrenLevel;
     }
 
     protected Collection<RelatedChildContent> doFindRelatedChildren( Collection<ContentVersionEntity> versions )
@@ -148,6 +158,7 @@ public abstract class AbstractRelatedContentFetcher
         {
             final Collection<RelatedChildContent> nextLevelChildren =
                 doFindRelatedChildren( gatherMainVersionsFromContent( addedContent ) );
+            RelatedContentFetchTracer.traceChildrenFetch( level, nextLevelChildren.size(), trace );
             if ( nextLevelChildren.size() > 0 )
             {
                 doAddAndFetchChildren( nextLevelChildren, nextLevel, includeVisited );

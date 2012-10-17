@@ -46,6 +46,9 @@ import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
 import com.enonic.cms.core.log.Table;
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTrace;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTracer;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.search.query.AggregatedQuery;
 import com.enonic.cms.core.search.query.ContentIndexService;
@@ -65,8 +68,6 @@ import com.enonic.cms.store.dao.MenuItemDao;
 public class ContentServiceImpl
     implements ContentService
 {
-    private static final int TIMEOUT_24HOURS = 86400;
-
     @Autowired
     private ContentIndexService contentIndexService;
 
@@ -95,6 +96,9 @@ public class ContentServiceImpl
 
     @Autowired
     private IndexTransactionService indexTransactionService;
+
+    @Autowired
+    private LivePortalTraceService livePortalTraceService;
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public SnapshotContentResult snapshotContent( SnapshotContentCommand command )
@@ -397,16 +401,25 @@ public class ContentServiceImpl
 
     public RelatedContentResultSet queryRelatedContent( RelatedContentQuery spec )
     {
-        RelatedContentFetcher fetcher = new RelatedContentFetcher( contentDao );
-        fetcher.setSecurityFilter( spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null );
-        fetcher.setMaxChildrenLevel( spec.getChildrenLevel() );
-        fetcher.setMaxParentLevel( spec.getParentLevel() );
-        fetcher.setMaxParentChildrenLevel( spec.getParentChildrenLevel() );
-        fetcher.setIncludeOnlyMainVersions( spec.includeOnlyMainVersions() );
-        fetcher.setAvailableCheckDate( spec.getOnlineCheckDate() );
-        fetcher.setIncludeOfflineContent( !spec.isFilterContentOnline() );
+        final RelatedContentFetchTrace trace = RelatedContentFetchTracer.startTracing( livePortalTraceService );
+        try
+        {
+            RelatedContentFetcher fetcher = new RelatedContentFetcher( contentDao, trace );
+            fetcher.setSecurityFilter( spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null );
+            fetcher.setMaxChildrenLevel( spec.getChildrenLevel() );
+            fetcher.setMaxParentLevel( spec.getParentLevel() );
+            fetcher.setMaxParentChildrenLevel( spec.getParentChildrenLevel() );
+            fetcher.setIncludeOnlyMainVersions( spec.includeOnlyMainVersions() );
+            fetcher.setAvailableCheckDate( spec.getOnlineCheckDate() );
+            fetcher.setIncludeOfflineContent( !spec.isFilterContentOnline() );
 
-        return fetcher.fetch( spec.getContentResultSet() );
+            RelatedContentFetchTracer.traceDefinition( fetcher, trace );
+            return fetcher.fetch( spec.getContentResultSet() );
+        }
+        finally
+        {
+            RelatedContentFetchTracer.stopTracing( trace, livePortalTraceService );
+        }
     }
 
     public RelatedContentResultSet queryRelatedContent( RelatedChildrenContentQuery spec )
@@ -425,7 +438,7 @@ public class ContentServiceImpl
         int parentLevel = relation > 0 ? 0 : 1;
         int childrenLevel = relation > 0 ? 1 : 0;
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
+        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, null );
         relatedContentFetcher.setSecurityFilter( user != null ? contentSecurityFilterResolver.resolveGroupKeys( user ) : null );
         relatedContentFetcher.setAvailableCheckDate( new Date() );
         relatedContentFetcher.setMaxChildrenLevel( childrenLevel );

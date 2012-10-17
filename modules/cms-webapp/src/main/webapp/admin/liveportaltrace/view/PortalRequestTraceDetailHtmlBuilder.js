@@ -208,6 +208,11 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
                 html += buildContentIndexQueryTraces( datasourceExecutionTrace.contentIndexQueryTraces, id + "-" + (++counter) );
             }
 
+            if ( datasourceExecutionTrace.relatedContentFetchTraces.list.length > 0 )
+            {
+                html += buildRelatedContentFetchTraces( datasourceExecutionTrace.relatedContentFetchTraces, id + "-" + (++counter) );
+            }
+
             // Client Method Execution traces
             if ( datasourceExecutionTrace.clientMethodExecutionTraces.list.length > 0 )
             {
@@ -267,9 +272,15 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
             html += "<td>" + clientMethodExecutionTrace.methodName + "</td><td>" + clientMethodExecutionTrace.duration.asHRFormat + "</td>";
             html += "</tr>";
 
+            var counter = 0;
+
             if ( clientMethodExecutionTrace.contentIndexQueryTraces.list.length > 0 )
             {
-                html += buildContentIndexQueryTraces( clientMethodExecutionTrace.contentIndexQueryTraces, id + "-1" );
+                html += buildContentIndexQueryTraces( clientMethodExecutionTrace.contentIndexQueryTraces, id + "-" + (++counter) );
+            }
+            if ( clientMethodExecutionTrace.relatedContentFetchTraces.list.length > 0 )
+            {
+                html += buildRelatedContentFetchTraces( clientMethodExecutionTrace.relatedContentFetchTraces, id + "-" + (++counter) );
             }
 
         } );
@@ -333,6 +344,49 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
         html += "</tr>";
         html += "<tr id='node-" + id + "-11' class='child-of-node-" + id + "'>";
         html += "<td>Translated query</td><td>" + contentIndexQueryTrace.translatedQuery + "</td>";
+        html += "</tr>";
+
+        return html;
+    }
+
+    function buildRelatedContentFetchTraces( relatedContentFetchTraces, id )
+    {
+        var html = "";
+
+        html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
+        html += "<td>Related content fetches(" + relatedContentFetchTraces.list.length + ")</td><td>" +
+            relatedContentFetchTraces.totalPeriodInHRFormat + "</td>";
+        html += "</tr>";
+
+        jQuery.each( relatedContentFetchTraces.list, function ( i, relatedContentFetchTrace )
+        {
+            html += buildRelatedContentFetchTrace( relatedContentFetchTrace, id + "-" + (i + 1), (i + 1) );
+
+        } );
+        return html;
+    }
+
+    function buildRelatedContentFetchTrace( relatedContentFetchTrace, id, fetchNumber )
+    {
+        var html = "";
+
+        html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
+        html += "<td>Fetch #" + fetchNumber + "</td><td>" + relatedContentFetchTrace.duration.asHRFormat + "</td>";
+        html += "</tr>";
+
+        html += "<tr id='node-" + id + "-2' class='child-of-node-" + id + "'>";
+        html += "<td>Max parent level</td><td>" + relatedContentFetchTrace.maxParentLevel + "</td>";
+        html += "</tr>";
+
+        html += "<tr id='node-" + id + "-3' class='child-of-node-" + id + "'>";
+        html += "<td>Max children level</td><td>" + relatedContentFetchTrace.maxChildrenLevel + "</td>";
+        html += "</tr>";
+
+        html += "<tr id='node-" + id + "-4' class='child-of-node-" + id + "'>";
+        html += "<td>Parent fetches</td><td>" + relatedContentFetchTrace.parentFetches + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-5' class='child-of-node-" + id + "'>";
+        html += "<td>Children fetches</td><td>" + relatedContentFetchTrace.childrenFetches + "</td>";
         html += "</tr>";
 
         return html;

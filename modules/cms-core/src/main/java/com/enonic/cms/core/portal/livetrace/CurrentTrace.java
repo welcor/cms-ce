@@ -136,4 +136,12 @@ public class CurrentTrace
         return datasourceExecutionTrace;
     }
 
+    public RelatedContentFetcher getCurrentRelatedContentFetcher()
+    {
+        if ( clientMethodExecutionTrace != null )
+        {
+            return clientMethodExecutionTrace;
+        }
+        return datasourceExecutionTrace;
+    }
 }

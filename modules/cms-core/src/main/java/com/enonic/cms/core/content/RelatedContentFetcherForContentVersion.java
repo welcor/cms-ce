@@ -23,7 +23,7 @@ public class RelatedContentFetcherForContentVersion
 
     public RelatedContentFetcherForContentVersion( ContentDao contentDao )
     {
-        super( contentDao );
+        super( contentDao, null );
     }
 
     public RelatedContentResultSet fetch( final Collection<ContentVersionEntity> versions )

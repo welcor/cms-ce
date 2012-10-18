@@ -1,13 +1,13 @@
 package com.enonic.cms.core.search;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
@@ -44,36 +44,38 @@ public class IndexTransactionJournalTest
         contentDao = mock( ContentDao.class );
 
         journal = new IndexTransactionJournal( elasticSearchIndexService, indexService, contentIndexDataFactory, contentDao );
-
     }
 
     @Test
     public void assert_equal_journal_entries_committed_once_only()
     {
-        final ContentKey contentKey = new ContentKey( 1 );
+        final ContentKey contentKey_1 = new ContentKey( 1 );
+        final ContentMap contentMap = new ContentMap( Lists.newArrayList( contentKey_1 ) );
+        ContentEntity content_1 = createContent( contentKey_1 );
+        contentMap.add( content_1 );
 
-        final Map<ContentKey, ContentEntity> contentKeyObjectTreeMap = new LinkedHashMap<ContentKey, ContentEntity>();
-        contentKeyObjectTreeMap.put( contentKey, new ContentEntity() );
-
-        when( contentDao.findByKeys( isA( FindContentByKeysCommand.class ) ) ).thenReturn( contentKeyObjectTreeMap );
+        when( contentDao.findByKeys( isA( FindContentByKeysCommand.class ) ) ).thenReturn( contentMap );
         when( indexService.createContentDocument( isA( ContentEntity.class ), isA( Boolean.class ) ) ).thenReturn(
             createContentIndexData() );
         when( contentIndexDataFactory.create( isA( ContentDocument.class ), isA( Boolean.class ) ) ).thenReturn(
-            new ContentIndexData( contentKey ) );
+            new ContentIndexData( contentKey_1 ) );
 
-        journal.registerUpdate( contentKey, false );
+        journal.registerUpdate( contentKey_1, false );
         journal.registerUpdate( new ContentKey( 1 ), false );
         journal.afterCommit();
 
         verify( elasticSearchIndexService, times( 1 ) ).index( isA( String.class ), isA( ContentIndexData.class ) );
+    }
 
+    private ContentEntity createContent( ContentKey contentKey )
+    {
+        ContentEntity c = new ContentEntity();
+        c.setKey( contentKey );
+        return c;
     }
 
     private ContentDocument createContentIndexData()
     {
-        final ContentDocument contentDocument = new ContentDocument( new ContentKey( 1 ) );
-        return contentDocument;
+        return new ContentDocument( new ContentKey( 1 ) );
     }
-
-
 }

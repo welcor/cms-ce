@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -16,6 +15,7 @@ import com.enonic.cms.core.AbstractResultSet;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentEntityFetcher;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 
 
 public final class ContentResultSetLazyFetcher
@@ -35,7 +35,7 @@ public final class ContentResultSetLazyFetcher
      */
     private Set<ContentKey> keySet = null;
 
-    private Map<ContentKey, ContentEntity> contents;
+    private ContentMap contents;
 
     public ContentResultSetLazyFetcher( ContentEntityFetcher fetcher, List<ContentKey> keys, int fromIndex, int totalCount )
     {
@@ -119,7 +119,7 @@ public final class ContentResultSetLazyFetcher
     {
         ensureEntities();
 
-        return this.contents.values();
+        return this.contents.collection();
     }
 
     public ContentResultSet createRandomizedResult( int newTotalCount )

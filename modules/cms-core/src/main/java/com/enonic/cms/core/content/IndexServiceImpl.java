@@ -5,7 +5,6 @@
 package com.enonic.cms.core.content;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,11 +38,11 @@ public final class IndexServiceImpl
         final FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentKeys ).eagerFetches(
             ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( true );
 
-        final Map<ContentKey, ContentEntity> contentMapByKey = contentDao.findByKeys( command );
+        final ContentMap contentMap = contentDao.findByKeys( command );
 
         for ( ContentKey contentKey : contentKeys )
         {
-            final ContentEntity content = contentMapByKey.get( contentKey );
+            final ContentEntity content = contentMap.get( contentKey );
 
             if ( content.isDeleted() )
             {

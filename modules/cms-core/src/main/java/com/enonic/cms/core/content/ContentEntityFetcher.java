@@ -5,14 +5,11 @@
 package com.enonic.cms.core.content;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This interface defines the content entity fetcher.
  */
 public interface ContentEntityFetcher
 {
-
-    Map<ContentKey, ContentEntity> fetch( List<ContentKey> keys );
-
+    ContentMap fetch( List<ContentKey> keys );
 }

@@ -1,11 +1,9 @@
 package com.enonic.cms.core.content.category;
 
 
-import java.util.Map;
-
 import com.enonic.cms.core.content.ContentAccessControl;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -16,7 +14,7 @@ class ModifyContentACLCommandProcessor
 {
     private GroupDao groupDao;
 
-    private Map<ContentKey, ContentEntity> contentToSynchronize;
+    private ContentMap contentToSynchronize;
 
     private IndexTransactionService indexTransactionService;
 
@@ -27,14 +25,14 @@ class ModifyContentACLCommandProcessor
         this.indexTransactionService = indexTransactionService;
     }
 
-    void setContentToSynchronize( final Map<ContentKey, ContentEntity> contentToSynchronize )
+    void setContentToSynchronize( final ContentMap contentToSynchronize )
     {
         this.contentToSynchronize = contentToSynchronize;
     }
 
     void process( final ModifyContentACLCommand command )
     {
-        for ( final ContentEntity content : contentToSynchronize.values() )
+        for ( final ContentEntity content : contentToSynchronize )
         {
             remove( command.getToBeRemoved(), content );
             modify( command.getToBeModified(), content );

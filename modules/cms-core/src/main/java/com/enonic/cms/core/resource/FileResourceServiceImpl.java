@@ -1,4 +1,4 @@
-package com.enonic.cms.store.resource;
+package com.enonic.cms.core.resource;
 
 
 import java.io.File;
@@ -15,10 +15,6 @@ import org.springframework.stereotype.Service;
 import com.google.common.io.Files;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
-
-import com.enonic.cms.core.resource.FileResource;
-import com.enonic.cms.core.resource.FileResourceData;
-import com.enonic.cms.core.resource.FileResourceName;
 
 @Service("fileResourceService")
 public class FileResourceServiceImpl

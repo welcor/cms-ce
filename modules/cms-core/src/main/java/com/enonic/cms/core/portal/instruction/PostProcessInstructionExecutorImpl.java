@@ -45,7 +45,7 @@ import com.enonic.cms.core.structure.page.WindowKey;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SectionContentDao;
-import com.enonic.cms.store.resource.FileResourceService;
+import com.enonic.cms.core.resource.FileResourceService;
 
 @Component
 public class PostProcessInstructionExecutorImpl

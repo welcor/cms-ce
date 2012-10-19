@@ -2,16 +2,10 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.store.resource;
+package com.enonic.cms.core.resource;
 
 import java.io.Serializable;
 import java.util.Calendar;
-
-import com.enonic.cms.core.resource.FileResource;
-import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.core.resource.ResourceBase;
-import com.enonic.cms.core.resource.ResourceFolder;
-import com.enonic.cms.core.resource.ResourceKey;
 
 abstract class ResourceBaseImpl
     implements Serializable, ResourceBase

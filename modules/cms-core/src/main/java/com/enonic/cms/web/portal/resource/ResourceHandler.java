@@ -14,7 +14,6 @@ import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.resource.ResourceKeyResolverForSiteLocalResources;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
@@ -52,8 +51,8 @@ public final class ResourceHandler
             sitePublicHome = publicPath.toString();
         }
 
-        final ResourceKeyResolverForSiteLocalResources resourceKeyResolverForSiteLocalResources =
-            new ResourceKeyResolverForSiteLocalResources( sitePublicHome );
+        final ResourceKeyResolver resourceKeyResolverForSiteLocalResources =
+            new ResourceKeyResolver( sitePublicHome );
 
         final ResourceKey resourceKey = resourceKeyResolverForSiteLocalResources.resolveResourceKey( sitePath );
         final ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );

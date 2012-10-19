@@ -2,16 +2,17 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.resource;
+package com.enonic.cms.web.portal.resource;
 
 import com.enonic.cms.core.PathAndParams;
 import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.resource.ResourceKey;
 
-public class ResourceKeyResolverForSiteLocalResources
+final class ResourceKeyResolver
 {
-    private String pathToPublicHome;
+    private final String pathToPublicHome;
 
-    public ResourceKeyResolverForSiteLocalResources( String pathToPublicHome )
+    public ResourceKeyResolver( final String pathToPublicHome )
     {
         this.pathToPublicHome = pathToPublicHome;
 
@@ -21,7 +22,7 @@ public class ResourceKeyResolverForSiteLocalResources
         }
     }
 
-    private void validatePathToPublicHome( String value )
+    private void validatePathToPublicHome( final String value )
     {
         if ( !value.startsWith( "/" ) )
         {
@@ -29,9 +30,9 @@ public class ResourceKeyResolverForSiteLocalResources
         }
     }
 
-    public ResourceKey resolveResourceKey( SitePath sitePath )
+    public ResourceKey resolveResourceKey( final SitePath sitePath )
     {
-        PathAndParams localPathAndParams = new PathAndParams( sitePath.getLocalPath(), sitePath.getRequestParameters() );
+        final PathAndParams localPathAndParams = new PathAndParams( sitePath.getLocalPath(), sitePath.getRequestParameters() );
         return resolveResourceKeyFromPath( localPathAndParams.getPath().toString() );
     }
 
@@ -39,7 +40,7 @@ public class ResourceKeyResolverForSiteLocalResources
     {
         if ( localPath.contains( "/~/" ) )
         {
-            String resolvedPathToHome = pathToPublicHome + "/";
+            final String resolvedPathToHome = pathToPublicHome + "/";
             localPath = localPath.substring( localPath.indexOf( "/~/" ) );
             localPath = localPath.replace( "/~/", resolvedPathToHome );
         }

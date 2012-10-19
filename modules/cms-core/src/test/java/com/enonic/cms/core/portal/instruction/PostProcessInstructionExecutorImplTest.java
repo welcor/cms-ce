@@ -43,7 +43,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
-import com.enonic.cms.store.resource.FileResourceService;
+import com.enonic.cms.core.resource.FileResourceService;
 
 import static org.junit.Assert.*;
 

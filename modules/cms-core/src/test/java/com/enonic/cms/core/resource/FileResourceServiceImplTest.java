@@ -2,31 +2,36 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.itest.store.resource;
-
-import com.enonic.cms.core.resource.FileResource;
-import com.enonic.cms.core.resource.FileResourceData;
-import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.itest.AbstractSpringTest;
-import com.enonic.cms.store.resource.FileResourceService;
+package com.enonic.cms.core.resource;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
 
 import java.util.List;
 
+import com.enonic.cms.framework.util.MimeTypeResolver;
+
 public class FileResourceServiceImplTest
-    extends AbstractSpringTest
 {
-    @Autowired
-    private FileResourceService fileService;
+    @Rule
+    public TemporaryFolder tmpFolder = new TemporaryFolder();
+
+    private FileResourceServiceImpl fileService;
 
     @Before
     public void setUp()
+        throws Exception
     {
-        fileService.deleteResource( new FileResourceName( "/" ) );
+        final MimeTypeResolver mimeTypeResolver = Mockito.mock( MimeTypeResolver.class );
+        Mockito.when( mimeTypeResolver.getMimeType( "c.txt" ) ).thenReturn( "text/plain" );
+
+        this.fileService = new FileResourceServiceImpl();
+        this.fileService.setMimeTypeResolver( mimeTypeResolver );
+        this.fileService.setResourceRoot( this.tmpFolder.newFolder() );
     }
 
     @Test

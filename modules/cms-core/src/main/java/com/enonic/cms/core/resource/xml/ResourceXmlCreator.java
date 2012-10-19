@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.resource;
+package com.enonic.cms.core.resource.xml;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +20,12 @@ import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.CmsDateAndTimeFormats;
 import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.resource.ResourceBase;
+import com.enonic.cms.core.resource.ResourceFile;
+import com.enonic.cms.core.resource.ResourceFolder;
+import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.resource.ResourceReferencer;
+import com.enonic.cms.core.resource.ResourceReferencerType;
 
 public class ResourceXmlCreator
 {

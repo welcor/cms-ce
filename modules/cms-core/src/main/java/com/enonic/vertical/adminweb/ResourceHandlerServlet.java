@@ -37,7 +37,7 @@ import com.enonic.cms.core.resource.ResourceBase;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.resource.xml.ResourceXmlCreator;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
 

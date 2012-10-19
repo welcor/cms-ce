@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.store.resource;
+package com.enonic.cms.core.resource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,10 +16,6 @@ import com.enonic.cms.framework.io.UnicodeInputStream;
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
-import com.enonic.cms.core.resource.FileResourceData;
-import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.core.resource.ResourceFile;
 
 final class ResourceFileImpl
     extends ResourceBaseImpl

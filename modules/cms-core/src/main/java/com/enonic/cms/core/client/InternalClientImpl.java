@@ -132,7 +132,7 @@ import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.resource.xml.ResourceXmlCreator;
 import com.enonic.cms.core.security.ImpersonateCommand;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;

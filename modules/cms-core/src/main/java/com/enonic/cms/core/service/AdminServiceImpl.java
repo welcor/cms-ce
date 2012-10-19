@@ -35,7 +35,7 @@ import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.resource.xml.ResourceXmlCreator;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;

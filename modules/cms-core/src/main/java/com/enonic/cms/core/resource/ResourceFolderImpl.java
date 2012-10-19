@@ -2,15 +2,10 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.store.resource;
+package com.enonic.cms.core.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.enonic.cms.core.resource.FileResource;
-import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceFolder;
 
 public final class ResourceFolderImpl
     extends ResourceBaseImpl

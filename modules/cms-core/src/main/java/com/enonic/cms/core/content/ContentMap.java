@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 public class ContentMap
     implements Iterable<ContentEntity>
@@ -47,6 +49,22 @@ public class ContentMap
             throw new IllegalStateException( "Trying to add content that does not exist in order mask" );
         }
         insertionOrderedMapByKey.put( content.getKey(), content );
+    }
+
+    public void removeEntriesWithNullValues()
+    {
+        final List<ContentKey> keysToRemove = Lists.newArrayList();
+        for ( Map.Entry<ContentKey, ContentEntity> entry : insertionOrderedMapByKey.entrySet() )
+        {
+            if ( entry.getValue() == null )
+            {
+                keysToRemove.add( entry.getKey() );
+            }
+        }
+        for ( ContentKey keyToRemove : keysToRemove )
+        {
+            insertionOrderedMapByKey.remove( keyToRemove );
+        }
     }
 
 

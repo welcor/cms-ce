@@ -73,6 +73,26 @@ public class ContentMapTest
     }
 
     @Test
+    public void removeEntriesWithNullValues()
+    {
+        // setup
+        List<ContentKey> orderMask = Lists.newArrayList( CONTENT_KEY_3, CONTENT_KEY_2, CONTENT_KEY_1 );
+        ContentMap contentMap = new ContentMap( orderMask );
+        contentMap.add( createContent( CONTENT_KEY_3 ) );
+        contentMap.add( createContent( CONTENT_KEY_1 ) );
+
+        // exercise
+        contentMap.removeEntriesWithNullValues();
+
+        Iterator<ContentEntity> it = contentMap.iterator();
+
+        // verify
+        assertEquals( createContent( CONTENT_KEY_3 ), it.next() );
+        assertEquals( createContent( CONTENT_KEY_1 ), it.next() );
+        assertFalse( it.hasNext() );
+    }
+
+    @Test
     public void add_performance()
     {
         // setup
@@ -99,7 +119,9 @@ public class ContentMapTest
             contentMap.add( createContent( randomOrder.get( i ) ) );
         }
         stopWatch.stop();
-
+        stopWatch.start( "removeEntriesWithNullValues" );
+        contentMap.removeEntriesWithNullValues();
+        stopWatch.stop();
         // verify
         System.out.println( stopWatch.prettyPrint() );
         assertTrue( "Expected performance when adding " + PERFORMANCE_SIZE + " content to a ContentMap is breached. " +

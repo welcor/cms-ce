@@ -56,7 +56,7 @@ class FindContentByKeysCommandExecutor
         }
         finally
         {
-            //contentMap.removeNullValues();
+            contentMap.removeEntriesWithNullValues();
         }
     }
 

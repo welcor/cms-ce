@@ -40,10 +40,8 @@ public final class IndexServiceImpl
 
         final ContentMap contentMap = contentDao.findByKeys( command );
 
-        for ( ContentKey contentKey : contentKeys )
+        for ( ContentEntity content : contentMap )
         {
-            final ContentEntity content = contentMap.get( contentKey );
-
             if ( content.isDeleted() )
             {
                 doRemoveIndex( content );

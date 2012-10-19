@@ -395,7 +395,7 @@ public class PostProcessInstructionExecutorImplTest
 
         SiteEntity site = new SiteEntity();
         site.setKey( 1 );
-        site.setPathToPublicResources( new ResourceKey( HOME_DIR ) );
+        site.setPathToPublicResources( ResourceKey.parse( HOME_DIR ) );
         context.setSite( site );
         windowRendererContext.setSite( site );
 

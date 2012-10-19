@@ -1168,7 +1168,7 @@ public class ContentBaseHandlerServlet
             }
             else if ( "create".equals( subOp ) )
             {
-                ResourceKey stylesheetKey = new ResourceKey( formItems.getString( "stylesheetkey" ) );
+                ResourceKey stylesheetKey = ResourceKey.parse( formItems.getString( "stylesheetkey" ) );
                 ResourceFile res = resourceService.getResourceFile( stylesheetKey );
                 if ( res == null )
                 {

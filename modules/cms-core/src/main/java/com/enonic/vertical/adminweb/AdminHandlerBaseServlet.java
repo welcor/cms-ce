@@ -1024,7 +1024,7 @@ public abstract class AdminHandlerBaseServlet
                 throws TransformerException
             {
                 Source source = null;
-                ResourceKey key = new ResourceKey( href );
+                ResourceKey key = ResourceKey.parse( href );
                 ResourceFile res = resourceService.getResourceFile( key );
                 if ( res != null )
                 {

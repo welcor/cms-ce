@@ -21,21 +21,21 @@ public class ResourceKeyEqualsTest
 
     public Object getObjectX()
     {
-        return new ResourceKey( "ABC" );
+        return ResourceKey.parse( "ABC" );
     }
 
     public Object[] getObjectsThatNotEqualsX()
     {
-        return new Object[]{new ResourceKey( "CBA" )};
+        return new Object[]{ResourceKey.parse( "CBA" )};
     }
 
     public Object getObjectThatEqualsXButNotTheSame()
     {
-        return new ResourceKey( "ABC" );
+        return ResourceKey.parse( "ABC" );
     }
 
     public Object getObjectThatEqualsXButNotTheSame2()
     {
-        return new ResourceKey( "ABC" );
+        return ResourceKey.parse( "ABC" );
     }
 }

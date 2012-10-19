@@ -823,7 +823,7 @@ public final class ContentObjectHandlerServlet
             contentobject.appendChild( doc.importNode( pageTemplatesDoc.getDocumentElement(), true ) );
 
             Element objectstylesheetElem = XMLTool.getElement( contentobject, "objectstylesheet" );
-            ResourceKey objectStyleSheetKey = new ResourceKey( objectstylesheetElem.getAttribute( "key" ) );
+            ResourceKey objectStyleSheetKey = ResourceKey.parse( objectstylesheetElem.getAttribute( "key" ) );
 
             ResourceFile res = resourceService.getResourceFile( objectStyleSheetKey );
             objectstylesheetElem.setAttribute( "exist", res == null ? "false" : "true" );

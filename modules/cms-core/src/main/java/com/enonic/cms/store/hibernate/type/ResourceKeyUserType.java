@@ -6,7 +6,6 @@ package com.enonic.cms.store.hibernate.type;
 
 import com.enonic.cms.core.resource.ResourceKey;
 
-
 public class ResourceKeyUserType
     extends AbstractStringBasedUserType<ResourceKey>
 {
@@ -25,10 +24,8 @@ public class ResourceKeyUserType
         return ResourceKey.parse( value );
     }
 
-
     public String getStringValue( final ResourceKey value )
     {
         return value.toString();
     }
-
 }

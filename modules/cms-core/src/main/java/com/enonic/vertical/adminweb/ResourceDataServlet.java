@@ -26,7 +26,7 @@ public class ResourceDataServlet
         String keyStr = request.getParameter( "id" );
         if ( keyStr != null && keyStr.length() > 0 )
         {
-            ResourceKey key = new ResourceKey( keyStr );
+            ResourceKey key = ResourceKey.parse( keyStr );
 
             ResourceFile res = resourceService.getResourceFile( key );
 

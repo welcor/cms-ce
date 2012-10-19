@@ -842,7 +842,7 @@ public final class MenuHandler
                 String deviceClassResolverUrl = tmpElement.getAttribute( "key" );
                 if ( StringUtils.isNotEmpty( deviceClassResolverUrl ) )
                 {
-                    siteData.setDeviceClassResolver( new ResourceKey( deviceClassResolverUrl ) );
+                    siteData.setDeviceClassResolver( ResourceKey.parse( deviceClassResolverUrl ) );
                 }
             }
 
@@ -853,7 +853,7 @@ public final class MenuHandler
                 String defaultLocalizationResource = tmpElement.getAttribute( "key" );
                 if ( StringUtils.isNotEmpty( defaultLocalizationResource ) )
                 {
-                    siteData.setDefaultLocalizationResource( new ResourceKey( defaultLocalizationResource ) );
+                    siteData.setDefaultLocalizationResource( ResourceKey.parse( defaultLocalizationResource ) );
                 }
             }
 
@@ -864,7 +864,7 @@ public final class MenuHandler
                 String localeResolver = tmpElement.getAttribute( "key" );
                 if ( StringUtils.isNotEmpty( localeResolver ) )
                 {
-                    siteData.setLocaleResolver( new ResourceKey( localeResolver ) );
+                    siteData.setLocaleResolver( ResourceKey.parse( localeResolver ) );
                 }
             }
 
@@ -872,14 +872,14 @@ public final class MenuHandler
             String pathToPublicHome = rootElement.getAttribute( "path-to-public-home-resources" );
             if ( StringUtils.isNotEmpty( pathToPublicHome ) )
             {
-                siteData.setPathToPublicResources( new ResourceKey( pathToPublicHome ) );
+                siteData.setPathToPublicResources( ResourceKey.parse( pathToPublicHome ) );
             }
 
             // Path to home:
             String pathToHome = rootElement.getAttribute( "path-to-home-resources" );
             if ( StringUtils.isNotEmpty( pathToHome ) )
             {
-                siteData.setPathToResources( new ResourceKey( pathToHome ) );
+                siteData.setPathToResources( ResourceKey.parse( pathToHome ) );
             }
 
             tmpElement = XMLTool.getElement( rootElement, "menudata" );
@@ -2411,7 +2411,7 @@ public final class MenuHandler
                 String deviceClassResolverUrl = tmpElement.getAttribute( "key" );
                 if ( StringUtils.isNotEmpty( deviceClassResolverUrl ) )
                 {
-                    siteData.setDeviceClassResolver( new ResourceKey( deviceClassResolverUrl ) );
+                    siteData.setDeviceClassResolver( ResourceKey.parse( deviceClassResolverUrl ) );
                 }
             }
 
@@ -2422,7 +2422,7 @@ public final class MenuHandler
                 String defaultLocalizationResource = tmpElement.getAttribute( "key" );
                 if ( StringUtils.isNotEmpty( defaultLocalizationResource ) )
                 {
-                    siteData.setDefaultLocalizationResource( new ResourceKey( defaultLocalizationResource ) );
+                    siteData.setDefaultLocalizationResource( ResourceKey.parse( defaultLocalizationResource ) );
                 }
             }
 
@@ -2433,7 +2433,7 @@ public final class MenuHandler
                 String localeResolver = tmpElement.getAttribute( "key" );
                 if ( StringUtils.isNotEmpty( localeResolver ) )
                 {
-                    siteData.setLocaleResolver( new ResourceKey( localeResolver ) );
+                    siteData.setLocaleResolver( ResourceKey.parse( localeResolver ) );
                 }
             }
 
@@ -2441,14 +2441,14 @@ public final class MenuHandler
             String pathToPublicHome = root_elem.getAttribute( "pathtopublichome" );
             if ( StringUtils.isNotEmpty( pathToPublicHome ) )
             {
-                siteData.setPathToPublicResources( new ResourceKey( pathToPublicHome ) );
+                siteData.setPathToPublicResources( ResourceKey.parse( pathToPublicHome ) );
             }
 
             // Path to home:
             String pathToHome = root_elem.getAttribute( "pathtohome" );
             if ( StringUtils.isNotEmpty( pathToHome ) )
             {
-                siteData.setPathToResources( new ResourceKey( pathToHome ) );
+                siteData.setPathToResources( ResourceKey.parse( pathToHome ) );
             }
 
             tmpElement = XMLTool.getElement( root_elem, "menudata" );
@@ -2572,7 +2572,7 @@ public final class MenuHandler
 
             if ( StringUtils.isNotEmpty( defaultCssKey ) )
             {
-                siteData.setDefaultCssKey( new ResourceKey( defaultCssKey ) );
+                siteData.setDefaultCssKey( ResourceKey.parse( defaultCssKey ) );
             }
         }
 
@@ -2583,7 +2583,7 @@ public final class MenuHandler
             String deviceClassResolverUrl = tmpElement.getChildNodes().item( 0 ).getTextContent();
             if ( StringUtils.isNotEmpty( deviceClassResolverUrl ) )
             {
-                siteData.setDeviceClassResolver( new ResourceKey( deviceClassResolverUrl ) );
+                siteData.setDeviceClassResolver( ResourceKey.parse( deviceClassResolverUrl ) );
             }
         }
 
@@ -2594,7 +2594,7 @@ public final class MenuHandler
             String defaultLocalizationResource = tmpElement.getChildNodes().item( 0 ).getTextContent();
             if ( StringUtils.isNotEmpty( defaultLocalizationResource ) )
             {
-                siteData.setDefaultLocalizationResource( new ResourceKey( defaultLocalizationResource ) );
+                siteData.setDefaultLocalizationResource( ResourceKey.parse( defaultLocalizationResource ) );
             }
         }
 
@@ -2605,7 +2605,7 @@ public final class MenuHandler
             String localeResolver = tmpElement.getChildNodes().item( 0 ).getTextContent();
             if ( StringUtils.isNotEmpty( localeResolver ) )
             {
-                siteData.setLocaleResolver( new ResourceKey( localeResolver ) );
+                siteData.setLocaleResolver( ResourceKey.parse( localeResolver ) );
             }
         }
 
@@ -2616,7 +2616,7 @@ public final class MenuHandler
             String pathToPublicHome = tmpElement.getChildNodes().item( 0 ).getTextContent();
             if ( StringUtils.isNotEmpty( pathToPublicHome ) )
             {
-                siteData.setPathToPublicResources( new ResourceKey( pathToPublicHome ) );
+                siteData.setPathToPublicResources( ResourceKey.parse( pathToPublicHome ) );
             }
         }
 
@@ -2627,7 +2627,7 @@ public final class MenuHandler
             String pathToHome = tmpElement.getChildNodes().item( 0 ).getTextContent();
             if ( StringUtils.isNotEmpty( pathToHome ) )
             {
-                siteData.setPathToResources( new ResourceKey( pathToHome ) );
+                siteData.setPathToResources( ResourceKey.parse( pathToHome ) );
             }
         }
     }
@@ -2713,7 +2713,7 @@ public final class MenuHandler
                 String deviceClassResolverUrl = tmpElement.getAttribute( "key" );
                 if ( deviceClassResolverUrl != null )
                 {
-                    siteData.setDeviceClassResolver( new ResourceKey( deviceClassResolverUrl ) );
+                    siteData.setDeviceClassResolver( ResourceKey.parse( deviceClassResolverUrl ) );
                 }
             }
 
@@ -2724,7 +2724,7 @@ public final class MenuHandler
                 String defaultLocalizationResourceUrl = tmpElement.getAttribute( "key" );
                 if ( defaultLocalizationResourceUrl != null )
                 {
-                    siteData.setDefaultLocalizationResource( new ResourceKey( defaultLocalizationResourceUrl ) );
+                    siteData.setDefaultLocalizationResource( ResourceKey.parse( defaultLocalizationResourceUrl ) );
                 }
             }
 
@@ -2735,7 +2735,7 @@ public final class MenuHandler
                 String localeResolver = tmpElement.getAttribute( "key" );
                 if ( localeResolver != null )
                 {
-                    siteData.setLocaleResolver( new ResourceKey( localeResolver ) );
+                    siteData.setLocaleResolver( ResourceKey.parse( localeResolver ) );
                 }
             }
 
@@ -2743,14 +2743,14 @@ public final class MenuHandler
             String pathToPublicHome = root_elem.getAttribute( "pathtopublichome" );
             if ( pathToPublicHome != null && pathToPublicHome.length() > 0 )
             {
-                siteData.setPathToPublicResources( new ResourceKey( pathToPublicHome ) );
+                siteData.setPathToPublicResources( ResourceKey.parse( pathToPublicHome ) );
             }
 
             // Path to home:
             String pathToHome = root_elem.getAttribute( "pathtohome" );
             if ( StringUtils.isNotEmpty( pathToHome ) )
             {
-                siteData.setPathToResources( new ResourceKey( pathToHome ) );
+                siteData.setPathToResources( ResourceKey.parse( pathToHome ) );
             }
 
             // menu data:
@@ -3873,7 +3873,7 @@ public final class MenuHandler
         {
             return null;
         }
-        return new ResourceKey( keyStr );
+        return ResourceKey.parse( keyStr );
     }
 
     private void setMenuItemOrder( int menuItemKey, int order )
@@ -4180,7 +4180,7 @@ public final class MenuHandler
                         String defaultCssKey = defaultCSSElem.getAttribute( "key" );
                         if ( StringUtils.isNotEmpty( defaultCssKey ) )
                         {
-                            ResourceKey resourceKey = new ResourceKey( defaultCSSElem.getAttribute( "key" ) );
+                            ResourceKey resourceKey = ResourceKey.parse( defaultCSSElem.getAttribute( "key" ) );
                             elem.setAttribute( "defaultcss", resourceKey.toString() );
                             elem.setAttribute( "defaultcssexists", resourceDao.getResourceFile( resourceKey ) != null ? "true" : "false" );
                         }

@@ -62,7 +62,7 @@ public class LocalizationResourceBundleServiceImpl
 
         bundleResourceKey = bundleResourceKey + bundleExtension + ".properties";
 
-        return getOrCreateProperties( new ResourceKey( bundleResourceKey ) );
+        return getOrCreateProperties( ResourceKey.parse( bundleResourceKey ) );
     }
 
     private Properties getOrCreateProperties( ResourceKey resourceKey )

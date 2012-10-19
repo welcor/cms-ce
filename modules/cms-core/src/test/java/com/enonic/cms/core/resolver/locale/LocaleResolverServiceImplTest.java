@@ -156,7 +156,7 @@ public class LocaleResolverServiceImplTest
 
         if ( hasDefaultResource )
         {
-            site.setDefaultLocalizationResource( new ResourceKey( "test" ) );
+            site.setDefaultLocalizationResource( ResourceKey.parse( "test" ) );
         }
 
         return site;

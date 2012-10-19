@@ -37,7 +37,7 @@ abstract class ResourceBaseImpl
 
     public ResourceKey getResourceKey()
     {
-        return new ResourceKey( getPath() );
+        return ResourceKey.parse( getPath() );
     }
 
     public ResourceFolder getParentFolder()
@@ -93,6 +93,6 @@ abstract class ResourceBaseImpl
         FileResourceName destName = new FileResourceName( ( (ResourceBaseImpl) destinationFolder ).name, this.name.getName() );
 //        (destName);
         this.service.moveResource( this.name, destName );
-        return new ResourceKey( ( (ResourceBaseImpl) destinationFolder ).name.getPath() );
+        return ResourceKey.parse( ( (ResourceBaseImpl) destinationFolder ).name.getPath() );
     }
 }

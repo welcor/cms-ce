@@ -1264,7 +1264,7 @@ public class MenuItemServiceImplTest
                                                     "read, create, update, delete, add, publish" ) );
         createContent( "c-1", "Articles" );
         fixture.save(
-            factory.createPageTemplate( "my-page-template", PageTemplateType.CONTENT, "The Newspaper", new ResourceKey( "ABC" ) ) );
+            factory.createPageTemplate( "my-page-template", PageTemplateType.CONTENT, "The Newspaper", ResourceKey.parse( "ABC" ) ) );
 
         fixture.flushAndClearHibernateSesssion();
 
@@ -1603,7 +1603,7 @@ public class MenuItemServiceImplTest
 
     private PageTemplateEntity createPageTemplate( String name, PageTemplateType type, String siteName, String... contentTypeNames )
     {
-        PageTemplateEntity pageTemplate = factory.createPageTemplate( name, type, siteName, new ResourceKey( "DUMMYKEY" ) );
+        PageTemplateEntity pageTemplate = factory.createPageTemplate( name, type, siteName, ResourceKey.parse( "DUMMYKEY" ) );
         Set<ContentTypeEntity> supportedContentTypes = new HashSet<ContentTypeEntity>();
         for ( String contentTypeName : contentTypeNames )
         {

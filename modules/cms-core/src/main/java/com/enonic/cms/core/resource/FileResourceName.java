@@ -24,7 +24,6 @@ public final class FileResourceName
         this( split( path ) );
     }
 
-
     private String[] normalize( String[] parts )
     {
 
@@ -34,12 +33,12 @@ public final class FileResourceName
         {
             String currentPart = parts[i];
 
-            if ( currentPart.equals( "." ) )
+            if ( currentPart.equals( THIS_DIRECTORY ) )
             {
                 continue;
             }
 
-            if ( currentPart.equals( ".." ) )
+            if ( currentPart.equals( PARENT_DIRECTORY ) )
             {
                 if ( !normalizedParts.isEmpty() )
                 {

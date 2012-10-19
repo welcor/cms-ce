@@ -72,7 +72,7 @@ public class ContentTypeEntityDao
         {
             String key = entity.getDefaultCssKey().toString();
             key = key.replace( oldPrefix, newPrefix );
-            entity.setDefaultCssKey( new ResourceKey( key ) );
+            entity.setDefaultCssKey( ResourceKey.parse( key ) );
         }
     }
 

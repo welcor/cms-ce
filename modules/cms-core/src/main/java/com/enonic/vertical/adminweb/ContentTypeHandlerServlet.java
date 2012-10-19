@@ -254,7 +254,7 @@ public class ContentTypeHandlerServlet
             String cssString = contentTypeElem.getAttribute( "csskey" );
             if ( cssString.length() > 0 )
             {
-                ResourceKey cssKey = new ResourceKey( cssString );
+                ResourceKey cssKey = ResourceKey.parse( cssString );
                 parameters.put( "cssname", cssKey.toString() );
 
                 ResourceFile contentTypeStylesheet = this.resourceService.getResourceFile( cssKey );

@@ -374,7 +374,7 @@ public final class ContentObjectHandler
                 boolean styleExist = false;
                 if ( style != null && style.length() > 0 )
                 {
-                    styleExist = null != resourceDao.getResourceFile( new ResourceKey( style ) );
+                    styleExist = null != resourceDao.getResourceFile( ResourceKey.parse( style ) );
                 }
                 subelem.setAttribute( "exists", styleExist ? "true" : "false" );
                 resultSet.getInt( "cob_men_lKey" );
@@ -391,7 +391,7 @@ public final class ContentObjectHandler
                     boolean borderExist = false;
                     if ( border != null && border.length() > 0 )
                     {
-                        borderExist = null != resourceDao.getResourceFile( new ResourceKey( border ) );
+                        borderExist = null != resourceDao.getResourceFile( ResourceKey.parse( border ) );
                     }
                     subelem.setAttribute( "exists", borderExist ? "true" : "false" );
                     resultSet.getInt( "cob_men_lKey" );
@@ -565,7 +565,7 @@ public final class ContentObjectHandler
                     tmpStr = subelem.getAttribute( "key" );
                     if ( tmpStr != null && tmpStr.length() > 0 )
                     {
-                        styleSheetKey = new ResourceKey( tmpStr );
+                        styleSheetKey = ResourceKey.parse( tmpStr );
                     }
                     else
                     {
@@ -586,7 +586,7 @@ public final class ContentObjectHandler
                     tmpStr = subelem.getAttribute( "key" );
                     if ( tmpStr != null && tmpStr.length() > 0 )
                     {
-                        borderStyleSheetKey = new ResourceKey( tmpStr );
+                        borderStyleSheetKey = ResourceKey.parse( tmpStr );
                     }
                 }
 

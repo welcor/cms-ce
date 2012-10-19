@@ -8,14 +8,12 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-
-public class ResourceKey
+public final class ResourceKey
     implements Serializable
 {
+    private final String key;
 
-    private String key;
-
-    public ResourceKey( String key )
+    private ResourceKey( String key )
     {
         if ( key == null )
         {

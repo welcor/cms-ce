@@ -201,7 +201,7 @@ public class ResourceHandlerServlet
             throws VerticalAdminException
     {
 
-        ResourceKey resourceKey = new ResourceKey( formItems.getString( "resourcekey" ) );
+        ResourceKey resourceKey = ResourceKey.parse( formItems.getString( "resourcekey" ) );
         ResourceXmlCreator xmlCreator = new ResourceXmlCreator();
         ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );
         Document doc = null;
@@ -217,14 +217,14 @@ public class ResourceHandlerServlet
                              ExtendedMap formItems, ExtendedMap parameters, User user, Document verticalDoc, boolean moveFolder )
     {
 
-        ResourceKey sourceKey = new ResourceKey( formItems.getString( "sourceKey" ) );
+        ResourceKey sourceKey = ResourceKey.parse( formItems.getString( "sourceKey" ) );
         ResourceBase source = resourceService.getResource( sourceKey );
         if ( source == null )
         {
             throw new IllegalArgumentException( "Source (" + sourceKey + ") not found" );
         }
 
-        ResourceKey destinationKey = new ResourceKey( formItems.getString( "destinationKey" ) );
+        ResourceKey destinationKey = ResourceKey.parse( formItems.getString( "destinationKey" ) );
         ResourceFolder destination = resourceService.getResourceFolder( destinationKey );
         if ( destination == null )
         {

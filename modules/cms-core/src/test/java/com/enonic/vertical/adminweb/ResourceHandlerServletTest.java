@@ -27,8 +27,8 @@ public class ResourceHandlerServletTest
     public void testResolvePathForNewFolderComputePath()
     {
 
-        ResourceKey sourceFolderPath = new ResourceKey( "/libraries/resolvers" );
-        ResourceKey destinationFolderPath = new ResourceKey( "/sites/stuff" );
+        ResourceKey sourceFolderPath = ResourceKey.parse( "/libraries/resolvers" );
+        ResourceKey destinationFolderPath = ResourceKey.parse( "/sites/stuff" );
 
         String newPath = servlet.resolvePathForNewFolder( sourceFolderPath, destinationFolderPath );
         assertEquals( "/sites/stuff/resolvers", newPath );
@@ -44,8 +44,8 @@ public class ResourceHandlerServletTest
     public void testResolvePathForNewFolderRootFolder()
     {
 
-        ResourceKey sourceFolderPath = new ResourceKey( "/libraries/resolvers" );
-        ResourceKey destinationFolderPath = new ResourceKey( "/" );
+        ResourceKey sourceFolderPath = ResourceKey.parse( "/libraries/resolvers" );
+        ResourceKey destinationFolderPath = ResourceKey.parse( "/" );
 
         String newPath = servlet.resolvePathForNewFolder( sourceFolderPath, destinationFolderPath );
         assertEquals( "/resolvers", newPath );
@@ -61,8 +61,8 @@ public class ResourceHandlerServletTest
     public void testResolvePathForNewFolder()
     {
 
-        ResourceKey sourceFolderPath = new ResourceKey( "resolvers" );
-        ResourceKey destinationFolderPath = new ResourceKey( "/sites/stuff" );
+        ResourceKey sourceFolderPath = ResourceKey.parse( "resolvers" );
+        ResourceKey destinationFolderPath = ResourceKey.parse( "/sites/stuff" );
 
         String newPath = servlet.resolvePathForNewFolder( sourceFolderPath, destinationFolderPath );
         assertEquals( "/sites/stuff", newPath );

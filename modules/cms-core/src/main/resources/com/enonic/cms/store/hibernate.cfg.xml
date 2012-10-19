@@ -48,6 +48,5 @@
     <mapping resource="com/enonic/cms/store/entity/UnitEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/UserEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/UserStoreEntity.hbm.xml"/>
-    <mapping resource="com/enonic/cms/store/entity/VirtualFileEntity.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

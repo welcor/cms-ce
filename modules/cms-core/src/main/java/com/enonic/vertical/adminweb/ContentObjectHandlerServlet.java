@@ -144,14 +144,14 @@ public final class ContentObjectHandlerServlet
         }
         */
 
-        ResourceKey stylesheetKey = ResourceKey.parse( formItems.getString( "stylesheet", null ) );
+        ResourceKey stylesheetKey = ResourceKey.from( formItems.getString( "stylesheet", null ) );
         if ( stylesheetKey != null )
         {
             tempElement = XMLTool.createElement( doc, contentObject, "objectstylesheet" );
             tempElement.setAttribute( "key", String.valueOf( stylesheetKey ) );
         }
 
-        ResourceKey borderStylesheetKey = ResourceKey.parse( formItems.getString( "borderstylesheet", null ) );
+        ResourceKey borderStylesheetKey = ResourceKey.from( formItems.getString( "borderstylesheet", null ) );
         if ( borderStylesheetKey != null )
         {
             tempElement = XMLTool.createElement( doc, contentObject, "borderstylesheet" );
@@ -591,13 +591,13 @@ public final class ContentObjectHandlerServlet
             NodeList coNodes = coDoc.getElementsByTagName( "contentobject" );
             Element contentobject = (Element) coNodes.item( 0 );
 
-            ResourceKey borderStyleSheetKey = ResourceKey.parse( formItems.getString( "borderstylesheet", null ) );
+            ResourceKey borderStyleSheetKey = ResourceKey.from( formItems.getString( "borderstylesheet", null ) );
             if ( borderStyleSheetKey != null )
             {
                 addStyleSheet( contentobject, "borderstylesheet_xsl", borderStyleSheetKey );
             }
 
-            ResourceKey objectStyleSheetKey = ResourceKey.parse( formItems.getString( "stylesheet", null ) );
+            ResourceKey objectStyleSheetKey = ResourceKey.from( formItems.getString( "stylesheet", null ) );
             if ( objectStyleSheetKey != null )
             {
                 addStyleSheet( contentobject, "objectstylesheet_xsl", objectStyleSheetKey );
@@ -823,7 +823,7 @@ public final class ContentObjectHandlerServlet
             contentobject.appendChild( doc.importNode( pageTemplatesDoc.getDocumentElement(), true ) );
 
             Element objectstylesheetElem = XMLTool.getElement( contentobject, "objectstylesheet" );
-            ResourceKey objectStyleSheetKey = ResourceKey.parse( objectstylesheetElem.getAttribute( "key" ) );
+            ResourceKey objectStyleSheetKey = ResourceKey.from( objectstylesheetElem.getAttribute( "key" ) );
 
             ResourceFile res = resourceService.getResourceFile( objectStyleSheetKey );
             objectstylesheetElem.setAttribute( "exist", res == null ? "false" : "true" );
@@ -851,7 +851,7 @@ public final class ContentObjectHandlerServlet
             Element borderstylesheetElem = XMLTool.getElement( contentobject, "borderstylesheet" );
             if ( borderstylesheetElem != null )
             {
-                ResourceKey borderStyleSheetKey = ResourceKey.parse( borderstylesheetElem.getAttribute( "key" ) );
+                ResourceKey borderStyleSheetKey = ResourceKey.from( borderstylesheetElem.getAttribute( "key" ) );
                 if ( borderStyleSheetKey != null )
                 {
                     res = resourceService.getResourceFile( borderStyleSheetKey );

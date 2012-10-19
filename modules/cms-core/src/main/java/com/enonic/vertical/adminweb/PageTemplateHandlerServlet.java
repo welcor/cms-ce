@@ -409,11 +409,11 @@ public class PageTemplateHandlerServlet
             String cssKeyParam = request.getParameter( "selectedcsskey" );
             if ( cssKeyParam != null && !"".equals( cssKeyParam ) )
             {
-                cssKey = ResourceKey.parse( cssKeyParam );
+                cssKey = ResourceKey.from( cssKeyParam );
             }
             if ( request.getParameter( "selstylesheetkey" ) != null && request.getParameter( "selstylesheetkey" ).length() > 0 )
             {
-                stylesheetKey = ResourceKey.parse( request.getParameter( "selstylesheetkey" ) );
+                stylesheetKey = ResourceKey.from( request.getParameter( "selstylesheetkey" ) );
                 formItems.putString( "stylesheetkey", stylesheetKey.toString() );
             }
 
@@ -442,7 +442,7 @@ public class PageTemplateHandlerServlet
                     doc = XMLTool.domparse( xmlData );
                     Element pagetemplateElem = XMLTool.getElement( doc.getDocumentElement(), "pagetemplate" );
                     Element stylesheetElem = XMLTool.getElement( pagetemplateElem, "stylesheet" );
-                    stylesheetKey = ResourceKey.parse( stylesheetElem.getAttribute( "stylesheetkey" ) );
+                    stylesheetKey = ResourceKey.from( stylesheetElem.getAttribute( "stylesheetkey" ) );
                 }
                 else
                 {
@@ -468,7 +468,7 @@ public class PageTemplateHandlerServlet
                         String styleSheetKeyStr = elem.getAttribute( "stylesheetkey" );
                         if ( styleSheetKeyStr.length() > 0 )
                         {
-                            stylesheetKey = ResourceKey.parse( styleSheetKeyStr );
+                            stylesheetKey = ResourceKey.from( styleSheetKeyStr );
                         }
                     }
                 }
@@ -690,7 +690,7 @@ public class PageTemplateHandlerServlet
             {
                 parameters.put( "cssStylesheetKey", cssStylesheetKey );
                 parameters.put( "cssStylesheetExist",
-                                resourceService.getResourceFile( ResourceKey.parse( cssStylesheetKey ) ) == null ? "false" : "true" );
+                                resourceService.getResourceFile( ResourceKey.from( cssStylesheetKey ) ) == null ? "false" : "true" );
             }
 
             ResourceKey defaultCSSKey = admin.getDefaultCSSByMenu( menuKey );

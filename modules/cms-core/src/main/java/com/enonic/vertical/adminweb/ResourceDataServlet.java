@@ -7,7 +7,6 @@ package com.enonic.vertical.adminweb;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.framework.util.HttpServletUtil;
-import com.enonic.esl.util.StringUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +25,7 @@ public class ResourceDataServlet
         String keyStr = request.getParameter( "id" );
         if ( keyStr != null && keyStr.length() > 0 )
         {
-            ResourceKey key = ResourceKey.parse( keyStr );
+            ResourceKey key = ResourceKey.from( keyStr );
 
             ResourceFile res = resourceService.getResourceFile( key );
 

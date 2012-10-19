@@ -127,7 +127,7 @@ public final class SiteEntityDao
         {
             String key = entity.getDefaultCssKey().toString();
             key = key.replace( oldPrefix, newPrefix );
-            entity.setDefaultCssKey( ResourceKey.parse( key ) );
+            entity.setDefaultCssKey( ResourceKey.from( key ) );
         }
     }
 

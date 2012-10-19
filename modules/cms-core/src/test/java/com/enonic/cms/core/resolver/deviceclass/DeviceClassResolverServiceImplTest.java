@@ -135,7 +135,7 @@ public class DeviceClassResolverServiceImplTest
 
         if ( hasDeviceClassResolverScript )
         {
-            site.setDeviceClassResolver( ResourceKey.parse( "deviceClassResolverScript" ) );
+            site.setDeviceClassResolver( ResourceKey.from( "deviceClassResolverScript" ) );
         }
 
         return site;

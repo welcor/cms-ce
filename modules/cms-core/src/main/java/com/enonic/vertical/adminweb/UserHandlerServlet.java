@@ -1244,7 +1244,7 @@ public class UserHandlerServlet
             if ( subop.equals( "create" ) )
             {
 
-                ResourceKey stylesheetKey = ResourceKey.parse( formItems.getString( "stylesheetkey" ) );
+                ResourceKey stylesheetKey = ResourceKey.from( formItems.getString( "stylesheetkey" ) );
                 ResourceFile res = resourceService.getResourceFile( stylesheetKey );
                 if ( res == null )
                 {

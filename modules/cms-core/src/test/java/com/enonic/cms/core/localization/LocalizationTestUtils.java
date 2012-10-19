@@ -89,7 +89,7 @@ public class LocalizationTestUtils
     {
         SiteEntity site = new SiteEntity();
         site.setKey( 0 );
-        site.setDefaultLocalizationResource( ResourceKey.parse( defaultLocalizationResource ) );
+        site.setDefaultLocalizationResource( ResourceKey.from( defaultLocalizationResource ) );
 
         return site;
     }

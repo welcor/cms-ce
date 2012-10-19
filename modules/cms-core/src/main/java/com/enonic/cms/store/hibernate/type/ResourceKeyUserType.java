@@ -21,7 +21,7 @@ public class ResourceKeyUserType
 
     public ResourceKey get( final String value )
     {
-        return ResourceKey.parse( value );
+        return ResourceKey.from( value );
     }
 
     public String getStringValue( final ResourceKey value )

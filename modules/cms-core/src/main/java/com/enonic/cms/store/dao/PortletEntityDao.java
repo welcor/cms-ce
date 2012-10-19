@@ -92,7 +92,7 @@ public final class PortletEntityDao
         {
             String key = entity.getStyleKey().toString();
             key = key.replace( oldPrefix, newPrefix );
-            entity.setStyleKey( ResourceKey.parse( key ) );
+            entity.setStyleKey( ResourceKey.from( key ) );
         }
     }
 
@@ -104,7 +104,7 @@ public final class PortletEntityDao
         {
             String key = entity.getBorderKey().toString();
             key = key.replace( oldPrefix, newPrefix );
-            entity.setBorderKey( ResourceKey.parse( key ) );
+            entity.setBorderKey( ResourceKey.from( key ) );
         }
     }
 

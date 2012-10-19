@@ -75,7 +75,7 @@ public class ResourceUsageDaoTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         final ContentTypeEntity contentTypeEntity =
             factory.createContentType( "MenuItem", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes );
-        contentTypeEntity.setDefaultCssKey( ResourceKey.parse( "CONTENT_TYPE_CSS" ) );
+        contentTypeEntity.setDefaultCssKey( ResourceKey.from( "CONTENT_TYPE_CSS" ) );
         fixture.save( contentTypeEntity );
 
         fixture.flushAndClearHibernateSesssion();
@@ -105,53 +105,53 @@ public class ResourceUsageDaoTest
 
         createSite( 1 );
         assertEquals( 9, resourceUsageDao.getUsageCountMap().size() );
-        assertEquals( 1, resourceUsageDao.getUsageCountMap().get( ResourceKey.parse( "CONTENT_OBJECT_STYLE" ) ).intValue() );
+        assertEquals( 1, resourceUsageDao.getUsageCountMap().get( ResourceKey.from( "CONTENT_OBJECT_STYLE" ) ).intValue() );
 
         createSite( 2 );
         assertEquals( 9, resourceUsageDao.getUsageCountMap().size() );
-        assertEquals( 2, resourceUsageDao.getUsageCountMap().get( ResourceKey.parse( "CONTENT_OBJECT_STYLE" ) ).intValue() );
+        assertEquals( 2, resourceUsageDao.getUsageCountMap().get( ResourceKey.from( "CONTENT_OBJECT_STYLE" ) ).intValue() );
     }
 
     @Test
     public void testGetUsedBy()
         throws Exception
     {
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_OBJECT_STYLE" ) ).size() );
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_OBJECT_BORDER" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_TYPE_CSS" ) ).size() );
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "PAGE_TEMPLATE_STYLE" ) ).size() );
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "PAGE_TEMPLATE_CSS" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_OBJECT_STYLE" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_OBJECT_BORDER" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_TYPE_CSS" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "PAGE_TEMPLATE_STYLE" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "PAGE_TEMPLATE_CSS" ) ).size() );
 
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEFAULT_CSS" ) ).size() );
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEFAULT_LOCALIZATION_RESOURCE" ) ).size() );
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEVICE_CLASS_RESOLVER" ) ).size() );
-        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.parse( "LOCALE_RESOLVER" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "DEFAULT_CSS" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "DEFAULT_LOCALIZATION_RESOURCE" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "DEVICE_CLASS_RESOLVER" ) ).size() );
+        assertEquals( 0, resourceUsageDao.getUsedBy( ResourceKey.from( "LOCALE_RESOLVER" ) ).size() );
 
         createSite( 1 );
 
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_OBJECT_STYLE" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_OBJECT_BORDER" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_TYPE_CSS" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "PAGE_TEMPLATE_STYLE" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "PAGE_TEMPLATE_CSS" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_OBJECT_STYLE" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_OBJECT_BORDER" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_TYPE_CSS" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "PAGE_TEMPLATE_STYLE" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "PAGE_TEMPLATE_CSS" ) ).size() );
 
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEFAULT_CSS" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEFAULT_LOCALIZATION_RESOURCE" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEVICE_CLASS_RESOLVER" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "LOCALE_RESOLVER" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "DEFAULT_CSS" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "DEFAULT_LOCALIZATION_RESOURCE" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "DEVICE_CLASS_RESOLVER" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "LOCALE_RESOLVER" ) ).size() );
 
         createSite( 2 );
 
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_OBJECT_STYLE" ) ).size() );
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_OBJECT_BORDER" ) ).size() );
-        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.parse( "CONTENT_TYPE_CSS" ) ).size() );
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "PAGE_TEMPLATE_STYLE" ) ).size() );
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "PAGE_TEMPLATE_CSS" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_OBJECT_STYLE" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_OBJECT_BORDER" ) ).size() );
+        assertEquals( 1, resourceUsageDao.getUsedBy( ResourceKey.from( "CONTENT_TYPE_CSS" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "PAGE_TEMPLATE_STYLE" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "PAGE_TEMPLATE_CSS" ) ).size() );
 
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEFAULT_CSS" ) ).size() );
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEFAULT_LOCALIZATION_RESOURCE" ) ).size() );
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "DEVICE_CLASS_RESOLVER" ) ).size() );
-        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.parse( "LOCALE_RESOLVER" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "DEFAULT_CSS" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "DEFAULT_LOCALIZATION_RESOURCE" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "DEVICE_CLASS_RESOLVER" ) ).size() );
+        assertEquals( 2, resourceUsageDao.getUsedBy( ResourceKey.from( "LOCALE_RESOLVER" ) ).size() );
     }
 
     private void createSite( int n )
@@ -177,16 +177,16 @@ public class ResourceUsageDaoTest
         createContent( "c-1", "Articles" );
         final PageTemplateEntity pageTemplateEntity =
             factory.createPageTemplate( "my-page-template", PageTemplateType.CONTENT, "The Newspaper " + n,
-                                        ResourceKey.parse( "PAGE_TEMPLATE_CSS" ) );
-        pageTemplateEntity.setCssKey( ResourceKey.parse( "PAGE_TEMPLATE_STYLE" ) );
+                                        ResourceKey.from( "PAGE_TEMPLATE_CSS" ) );
+        pageTemplateEntity.setCssKey( ResourceKey.from( "PAGE_TEMPLATE_STYLE" ) );
         fixture.save( pageTemplateEntity );
 
         fixture.flushAndClearHibernateSesssion();
 
         final PortletEntity portlet = createPortlet( n, "name " + n );
         portlet.setSite( site );
-        portlet.setStyleKey( ResourceKey.parse( "CONTENT_OBJECT_STYLE" ) );
-        portlet.setBorderKey( ResourceKey.parse( "CONTENT_OBJECT_BORDER" ) );
+        portlet.setStyleKey( ResourceKey.from( "CONTENT_OBJECT_STYLE" ) );
+        portlet.setBorderKey( ResourceKey.from( "CONTENT_OBJECT_BORDER" ) );
         fixture.save( portlet );
 
         fixture.flushAndClearHibernateSesssion();

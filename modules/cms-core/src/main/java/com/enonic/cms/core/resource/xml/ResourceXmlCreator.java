@@ -163,7 +163,7 @@ public class ResourceXmlCreator
         }
         if ( usedByMap != null )
         {
-            addUsedBy( builder, ResourceKey.parse( f.getPath() ) );
+            addUsedBy( builder, ResourceKey.from( f.getPath() ) );
         }
         builder.endElement();
     }
@@ -200,7 +200,7 @@ public class ResourceXmlCreator
 
         if ( usageCountMap != null )
         {
-            ResourceKey resourceKey = ResourceKey.parse( f.getPath() );
+            ResourceKey resourceKey = ResourceKey.from( f.getPath() );
             Long count = usageCountMap.containsKey( resourceKey ) ? usageCountMap.get( resourceKey ) : 0;
             builder.setAttribute( "usageCount", count );
         }

@@ -108,11 +108,11 @@ public class PortalFunctionsTest
 
         site1 = new SiteEntity();
         site1.setKey( siteKey1.toInt() );
-        site1.setPathToPublicResources( ResourceKey.parse( HOME_DIR ) );
+        site1.setPathToPublicResources( ResourceKey.from( HOME_DIR ) );
 
         site2 = new SiteEntity();
         site2.setKey( siteKey2.toInt() );
-        site2.setPathToPublicResources( ResourceKey.parse( HOME_DIR ) );
+        site2.setPathToPublicResources( ResourceKey.from( HOME_DIR ) );
 
         context = new PortalFunctionsContext();
         context.setSite( site1 );

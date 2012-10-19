@@ -72,7 +72,7 @@ public class ResourceServiceImpl
 
         if ( source instanceof ResourceFile )
         {
-            ResourceKey newResourceKey = ResourceKey.parse( destination.getResourceKey() + "/" + source.getName() );
+            ResourceKey newResourceKey = ResourceKey.from( destination.getResourceKey() + "/" + source.getName() );
             resourceUsageDao.updateResourceReference(source.getResourceKey(), newResourceKey);
         }
         else if ( source instanceof ResourceFolder )

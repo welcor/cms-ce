@@ -1986,7 +1986,7 @@ public abstract class InternalClientImpl
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getResource", livePortalTraceService );
         try
         {
-            ResourceKey resourceKey = ResourceKey.parse( params.resourcePath );
+            ResourceKey resourceKey = ResourceKey.from( params.resourcePath );
             ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );
             if ( resourceFile == null )
             {

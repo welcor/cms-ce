@@ -94,7 +94,7 @@ public class LocalizationServiceImplTest
     {
         SiteEntity site = new SiteEntity();
         site.setKey( siteKey.toInt() );
-        site.setDefaultLocalizationResource( ResourceKey.parse( SITE_LOCALIZATION_RESOURCE_KEY ) );
+        site.setDefaultLocalizationResource( ResourceKey.from( SITE_LOCALIZATION_RESOURCE_KEY ) );
 
         return site;
     }

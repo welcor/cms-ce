@@ -49,6 +49,6 @@ final class ResourceKeyResolver
             localPath = localPath.substring( "/".length() );
         }
 
-        return ResourceKey.parse( localPath );
+        return ResourceKey.from( localPath );
     }
 }

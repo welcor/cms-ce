@@ -20,7 +20,7 @@ public class ContentMapTest
 {
     private static final int PERFORMANCE_SIZE = 10000;
 
-    private static final int PERFORMANCE_MAX_EXPECTED_MILLIS = 100;
+    private static final int PERFORMANCE_MAX_EXPECTED_MILLIS = 300;
 
     private static final Random RANDOM_WHEEL = new SecureRandom();
 

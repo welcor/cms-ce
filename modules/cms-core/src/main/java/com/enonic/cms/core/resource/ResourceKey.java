@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.resource;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import com.google.common.base.Joiner;
@@ -13,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 public final class ResourceKey
+    implements Serializable
 {
     private final String[] parts;
 

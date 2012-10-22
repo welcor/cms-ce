@@ -86,9 +86,10 @@ public final class DataSourceUpgrade
     {
         final Element result = new Element( "data-sources" );
         copyAttributeIfExists( elem, result, "result-element" );
-        copyAttributeIfExists( elem, result, "httpcontext", "http-context" );
-        copyAttributeIfExists( elem, result, "sessioncontext", "session-context" );
-        copyAttributeIfExists( elem, result, "cookiecontext", "cookie-context" );
+
+        createContextIfExists( elem, result, "cookiecontext", "getCookieContext");
+        createContextIfExists( elem, result, "httpcontext", "getHttpContext" );
+        createContextIfExists( elem, result, "sessioncontext", "getSessionContext" );
 
         for ( final Element child : JDOMDocumentHelper.findElements( elem, "dataSource" ) )
         {
@@ -118,15 +119,21 @@ public final class DataSourceUpgrade
 
     private void copyAttributeIfExists( final Element source, final Element target, final String name )
     {
-        copyAttributeIfExists( source, target, name, name );
-    }
-
-    private void copyAttributeIfExists( final Element source, final Element target, final String name, final String newName )
-    {
         final String value = source.getAttributeValue( name );
         if ( value != null )
         {
-            target.setAttribute( newName, value );
+            target.setAttribute( name, value );
+        }
+    }
+
+    private void createContextIfExists( final Element source, final Element target, final String contextName, final String dsName )
+    {
+        final String value = source.getAttributeValue( contextName );
+        if ( "true".equals( value ) )
+        {
+            final Element dsElem = new Element( "data-source" );
+            dsElem.setAttribute( "name", dsName );
+            target.addContent( dsElem );
         }
     }
 

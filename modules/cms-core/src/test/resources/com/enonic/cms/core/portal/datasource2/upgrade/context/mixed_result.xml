@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<data-sources>
+  <data-source name="getCookieContext"/>
+  <data-source name="getHttpContext"/>
+  <data-source name="getSessionContext"/>
+  <data-source name="dummy"/>
+</data-sources>

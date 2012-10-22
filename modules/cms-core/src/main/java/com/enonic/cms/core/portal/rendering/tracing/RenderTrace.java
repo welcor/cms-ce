@@ -109,7 +109,7 @@ public final class RenderTrace
     /**
      * Stop render trace.
      */
-    public static RenderTraceInfo exit()
+    public synchronized static RenderTraceInfo exit()
     {
         RenderTraceInfo info = getCurrentRenderTraceInfo();
         getCurrentRequest().removeAttribute( CONTEXT_KEY );

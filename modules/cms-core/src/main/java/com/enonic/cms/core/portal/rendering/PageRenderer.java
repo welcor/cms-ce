@@ -19,7 +19,7 @@ import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.portal.InvocationCache;
+import com.enonic.cms.core.portal.datasource.InvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.cache.PageCacheService;

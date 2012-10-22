@@ -21,7 +21,6 @@ import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.datasource.Datasources;
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.RunAsType;
@@ -255,11 +254,11 @@ public class PageTemplateEntity
             Element datasourcesEl = rootEl.getChild( "datasources" );
             if ( datasourcesEl != null )
             {
-                datasources = new Datasources( DatasourcesType.PAGETEMPLATE, datasourcesEl );
+                datasources = new Datasources( datasourcesEl );
             }
             else
             {
-                datasources = new Datasources( DatasourcesType.PAGETEMPLATE );
+                datasources = new Datasources();
             }
         }
 

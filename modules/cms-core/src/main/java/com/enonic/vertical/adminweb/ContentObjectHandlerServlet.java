@@ -41,7 +41,7 @@ import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.portal.InvocationCache;
+import com.enonic.cms.core.portal.datasource.InvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.datasource.DataSourceResult;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
@@ -699,7 +699,7 @@ public final class ContentObjectHandlerServlet
 
         DatasourceExecutor datasourceExecutor = datasourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
 
-        Datasources datasources = new Datasources( DatasourcesType.PAGETEMPLATE, dataSourcesXML.getAsJDOMDocument().getRootElement() );
+        Datasources datasources = new Datasources( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
         DataSourceResult dsr2 = datasourceExecutor.getDataSourceResult( datasources );
 
@@ -742,7 +742,7 @@ public final class ContentObjectHandlerServlet
 
         DatasourcesType datasourcesType = DatasourcesType.PORTLET;
 
-        Datasources datasources = new Datasources( datasourcesType, dataSourcesXML.getAsJDOMDocument().getRootElement() );
+        Datasources datasources = new Datasources( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
         DataSourceResult dsr2 = datasourceExecutor.getDataSourceResult( datasources );
 

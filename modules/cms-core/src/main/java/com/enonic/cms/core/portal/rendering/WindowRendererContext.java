@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.portal.InvocationCache;
+import com.enonic.cms.core.portal.datasource.InvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;

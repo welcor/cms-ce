@@ -15,7 +15,6 @@ import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.portal.InvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.VerticalSession;

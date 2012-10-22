@@ -13,6 +13,7 @@ import com.enonic.cms.core.RequestParametersMerger;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
+import com.enonic.cms.core.portal.datasource.InvocationCache;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;

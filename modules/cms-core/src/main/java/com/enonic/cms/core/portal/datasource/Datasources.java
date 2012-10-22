@@ -18,13 +18,10 @@ public class Datasources
 {
     private Element datasourcesEl;
 
-    private DatasourcesType type;
-
     private String resultRootName;
 
-    public Datasources( DatasourcesType type )
+    public Datasources()
     {
-        this.type = type;
         Element rootElement = new Element( "pagetemplatedata" );
         new Document( rootElement );
         datasourcesEl = new Element( "datasources" );
@@ -32,21 +29,14 @@ public class Datasources
         resultRootName = datasourcesEl.getAttributeValue( "result-element" );
     }
 
-    public Datasources( DatasourcesType type, Element datasourcesEl )
+    public Datasources( Element datasourcesEl )
     {
-        Preconditions.checkNotNull( type );
         Preconditions.checkNotNull( datasourcesEl );
         Preconditions.checkArgument( "datasources".equals( datasourcesEl.getName() ),
                                      "Expected datasources to be the root element, but was: " + datasourcesEl.getName() );
 
-        this.type = type;
         this.datasourcesEl = datasourcesEl;
         resultRootName = datasourcesEl.getAttributeValue( "result-element" );
-    }
-
-    public boolean isOfType( DatasourcesType x )
-    {
-        return this.type.equals( x );
     }
 
     public boolean hasSessionContext()

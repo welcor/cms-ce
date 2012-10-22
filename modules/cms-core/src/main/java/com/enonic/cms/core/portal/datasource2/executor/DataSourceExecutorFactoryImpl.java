@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.enonic.cms.core.portal.datasource2.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource2.DataSourceExecutorFactory;
-import com.enonic.cms.core.portal.datasource2.cache.InvocationCacheImpl;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceInvoker;
 
 public final class DataSourceExecutorFactoryImpl
@@ -20,7 +19,6 @@ public final class DataSourceExecutorFactoryImpl
     {
         final DataSourceExecutorImpl executor = new DataSourceExecutorImpl();
         executor.setDefaultResultRoot( this.defaultResultRoot );
-        executor.setInvocationCache( new InvocationCacheImpl() );
         executor.setInvoker( this.dataSourceInvoker );
 
         return executor;

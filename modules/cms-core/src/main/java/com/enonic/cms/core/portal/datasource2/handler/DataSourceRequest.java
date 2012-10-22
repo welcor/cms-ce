@@ -3,6 +3,8 @@ package com.enonic.cms.core.portal.datasource2.handler;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.PortalInstanceKey;
@@ -87,5 +89,21 @@ public final class DataSourceRequest
     public void setPreviewContext( final PreviewContext previewContext )
     {
         this.previewContext = previewContext;
+    }
+
+    public String getCacheKey()
+    {
+        final Hasher hasher = Hashing.md5().newHasher();
+        buildCacheKey( hasher );
+        return hasher.hash().toString();
+    }
+
+    public void buildCacheKey( final Hasher hasher )
+    {
+        hasher.putString( this.name );
+        for ( final Map.Entry<String, String> param : this.paramMap.entrySet() )
+        {
+            hasher.putString( "-" ).putString( param.getKey() ).putString( "-" ).putString( param.getValue() );
+        }
     }
 }

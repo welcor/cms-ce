@@ -9,7 +9,6 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.portal.datasource2.DataSourceException;
 import com.enonic.cms.core.portal.datasource2.DataSourceExecutor;
-import com.enonic.cms.core.portal.datasource2.cache.InvocationCache;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceInvoker;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource2.xml.DataSourceElement;
@@ -30,8 +29,6 @@ final class DataSourceExecutorImpl
 
     private DataSourceInvoker invoker;
 
-    private InvocationCache invocationCache;
-
     @Override
     public DataSourceExecutor input( final Document value )
     {
@@ -47,11 +44,6 @@ final class DataSourceExecutorImpl
     public void setInvoker( final DataSourceInvoker invoker )
     {
         this.invoker = invoker;
-    }
-
-    public void setInvocationCache( final InvocationCache invocationCache )
-    {
-        this.invocationCache = invocationCache;
     }
 
     private String resolveResultRootElementName()
@@ -125,23 +117,8 @@ final class DataSourceExecutorImpl
     {
         Document result = null;
 
-        if ( elem.isCache() )
-        {
-            result = this.invocationCache.get( elem );
-        }
-
-        if ( result != null )
-        {
-            return result;
-        }
-
         final DataSourceRequest req = createRequest( elem );
         result = this.invoker.execute( req );
-
-        if ( elem.isCache() )
-        {
-            this.invocationCache.put( elem, result );
-        }
 
         return result;
     }

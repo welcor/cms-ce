@@ -4,6 +4,7 @@ import org.jdom.Document;
 
 public interface DataSourceExecutor
 {
-    public Document execute( final Document input )
-        throws DataSourceException;
+    public DataSourceExecutor input( Document value );
+
+    public Document execute();
 }

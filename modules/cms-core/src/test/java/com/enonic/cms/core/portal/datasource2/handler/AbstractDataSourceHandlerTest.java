@@ -8,8 +8,11 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.junit.Before;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.security.user.UserKey;
+
+import static org.junit.Assert.*;
 
 public abstract class AbstractDataSourceHandlerTest<T extends DataSourceHandler>
 {
@@ -31,6 +34,11 @@ public abstract class AbstractDataSourceHandlerTest<T extends DataSourceHandler>
         this.handler = this.type.newInstance();
         this.request = new DataSourceRequest();
         this.request.setName( this.handler.getName() );
+        final UserEntity user = new UserEntity();
+        user.setKey( new UserKey( User.ANONYMOUS_UID ) );
+        user.setName( User.ANONYMOUS_UID );
+        user.setDisplayName( User.ANONYMOUS_UID );
+        this.request.setCurrentUser( user );
         initTest();
     }
 

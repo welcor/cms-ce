@@ -176,8 +176,7 @@ public class DatasourcesContextXmlCreator
         if ( context.hasCssKeys() )
         {
             Element frameworkEl = getOrCreateElement( contextElem, "framework" );
-            boolean styleContextOn = datasources.hasStyleContext();
-            Element stylesEl = stylesContextXmlCreator.createStylesElement( context.getCssKeys(), styleContextOn );
+            Element stylesEl = stylesContextXmlCreator.createStylesElement( context.getCssKeys() );
             frameworkEl.addContent( stylesEl );
         }
 

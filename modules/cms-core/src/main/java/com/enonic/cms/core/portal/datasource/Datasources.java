@@ -54,11 +54,6 @@ public class Datasources
         return hasAttributeValue( "true", "cookiecontext", datasourcesEl );
     }
 
-    public boolean hasStyleContext()
-    {
-        return hasAttributeValue( "true", "stylecontext", datasourcesEl );
-    }
-
     public List<Datasource> getDatasourceElements()
     {
         ArrayList<Datasource> datasources = new ArrayList<Datasource>();

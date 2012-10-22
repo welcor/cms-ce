@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<dataSources cookiecontext="true" httpcontext="true" sessioncontext="true">
-  <dataSource>
-    <methodname>dummy</methodname>
-    <parameters/>
-  </dataSource>
-</dataSources>

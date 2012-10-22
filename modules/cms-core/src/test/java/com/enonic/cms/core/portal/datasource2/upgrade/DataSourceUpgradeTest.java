@@ -90,17 +90,6 @@ public class DataSourceUpgradeTest
         testUpgrade( "extension/extension3" );
     }
 
-    @Test
-    public void testUpgrade_context()
-        throws Exception
-    {
-        testUpgrade( "context/all" );
-        testUpgrade( "context/cookie" );
-        testUpgrade( "context/http" );
-        testUpgrade( "context/session" );
-        testUpgrade( "context/mixed" );
-    }
-
     private void testUpgrade( final String name )
         throws Exception
     {

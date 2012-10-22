@@ -3,20 +3,18 @@ package com.enonic.cms.core.portal.datasource2.handler.util;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
+
 import com.enonic.cms.core.portal.datasource2.handler.AbstractDataSourceHandlerTest;
-import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.store.dao.UserStoreDao;
+import com.enonic.cms.core.service.DataSourceService;
 
 public class GetUserStoreHandlerTest
     extends AbstractDataSourceHandlerTest<GetUserStoreHandler>
 {
-    private UserStoreDao userStoreDao;
+    private DataSourceService dataSourceService;
 
-    private UserStoreService userStoreService;
+    private XMLDocument dummyDoc;
 
     public GetUserStoreHandlerTest()
     {
@@ -27,46 +25,37 @@ public class GetUserStoreHandlerTest
     protected void initTest()
         throws Exception
     {
-        this.userStoreDao = Mockito.mock( UserStoreDao.class );
-        this.userStoreService = Mockito.mock( UserStoreService.class );
-        this.handler.setUserStoreDao( this.userStoreDao );
-        this.handler.setUserStoreService( this.userStoreService );
+        this.dummyDoc = XMLDocumentFactory.create( "<dummy/>" );
+        this.dataSourceService = Mockito.mock( DataSourceService.class );
+        this.handler.setDataSourceService( this.dataSourceService );
     }
 
     @Test
-    public void testDefault()
+    public void testNullName()
         throws Exception
     {
-        final UserStoreEntity entity = new UserStoreEntity();
-        entity.setKey( new UserStoreKey( 0 ) );
-        entity.setName( "default" );
-        entity.setConnectorName( null );
-        entity.setDefaultStore( true );
-        Mockito.when( this.userStoreService.getDefaultUserStore() ).thenReturn( entity );
-
-        testHandle( "getUserStore_default" );
+        Mockito.when( this.dataSourceService.getUserstore( this.request, null ) ).thenReturn( this.dummyDoc );
+        this.handler.handle( this.request );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getUserstore( this.request, null );
     }
 
     @Test
-    public void testDummy()
+    public void testEmptyName()
         throws Exception
     {
-        final UserStoreEntity entity = new UserStoreEntity();
-        entity.setKey( new UserStoreKey( 1 ) );
-        entity.setName( "dummy" );
-        entity.setConnectorName( null );
-        entity.setDefaultStore( false );
-        Mockito.when( this.userStoreDao.findByName( "dummy" )).thenReturn( entity );
+        this.request.addParam( "userStore", "" );
+        Mockito.when( this.dataSourceService.getUserstore( this.request, null ) ).thenReturn( this.dummyDoc );
+        this.handler.handle( this.request );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getUserstore( this.request, null );
+    }
 
+    @Test
+    public void testDummyName()
+        throws Exception
+    {
         this.request.addParam( "userStore", "dummy" );
-        testHandle( "getUserStore_dummy" );
-    }
-
-    @Test
-    public void testNotFound()
-        throws Exception
-    {
-        this.request.addParam( "userStore", "other" );
-        testHandle( "getUserStore_notFound" );
+        Mockito.when( this.dataSourceService.getUserstore( this.request, "dummy" ) ).thenReturn( this.dummyDoc );
+        this.handler.handle( this.request );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getUserstore( this.request, "dummy" );
     }
 }

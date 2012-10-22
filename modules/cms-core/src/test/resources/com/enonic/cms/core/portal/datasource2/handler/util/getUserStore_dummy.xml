@@ -1,7 +1,0 @@
-<userstores>
-  <userstore key="1" name="dummy" default="false" remote="false">
-    <config>
-      <user-fields/>
-    </config>
-  </userstore>
-</userstores>

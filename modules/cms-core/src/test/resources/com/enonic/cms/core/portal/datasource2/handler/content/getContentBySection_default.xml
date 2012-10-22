@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contents totalcount="10" searchcount="10" index="0" count="10" resultcount="10">
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="0" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-0</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="1" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-1</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="2" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-2</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="3" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-3</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="4" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-4</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="5" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-5</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="6" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-6</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="7" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-7</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="8" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-8</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <content unitkey="0" approved="true" state="2" status="2" contenttype="ctype" contenttypekey="84" created="2000-01-02 03:04" key="9" languagecode="en" languagekey="0" priority="0" is-assigned="false">
+    <owner key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </owner>
+    <modifier key="admin" deleted="false" qualified-name="admin">
+      <name>admin</name>
+      <display-name>admin</display-name>
+      <email />
+      <photo exists="false" />
+    </modifier>
+    <assignee />
+    <assigner />
+    <assignment-due-date />
+    <assignment-description />
+    <name>content-9</name>
+    <title deprecated="Use display-name instead" />
+    <display-name />
+    <dummy>
+      <mycontent title="test" />
+    </dummy>
+    <categoryname key="42" deprecated="Use category instead">name</categoryname>
+    <category key="42" name="name" />
+    <location />
+    <sectionnames deprecated="Use location instead" count="0" />
+    <binaries count="0" />
+    <relatedcontentkeys count="0" />
+  </content>
+  <relatedcontents count="0" />
+</contents>

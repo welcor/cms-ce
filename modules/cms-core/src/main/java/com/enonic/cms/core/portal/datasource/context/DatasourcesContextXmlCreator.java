@@ -29,7 +29,7 @@ import com.enonic.cms.store.dao.GroupDao;
  * May 15, 2009
  */
 @Component
-public class DatasourcesContextXmlCreator
+public final class DatasourcesContextXmlCreator
     implements InitializingBean
 {
     @Autowired

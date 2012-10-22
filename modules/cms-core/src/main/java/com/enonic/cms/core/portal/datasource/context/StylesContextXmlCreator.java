@@ -13,7 +13,7 @@ import com.enonic.cms.core.resource.ResourceService;
 /**
  * Apr 21, 2009
  */
-public class StylesContextXmlCreator
+final class StylesContextXmlCreator
 {
     private ResourceService resourceService;
 

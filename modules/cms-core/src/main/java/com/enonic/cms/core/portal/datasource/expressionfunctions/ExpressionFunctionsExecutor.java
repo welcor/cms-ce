@@ -67,7 +67,6 @@ public final class ExpressionFunctionsExecutor
     }
 
     public String evaluate( String expression )
-        throws Exception
     {
         ExpressionRootObject rootObject = new ExpressionRootObject();
 

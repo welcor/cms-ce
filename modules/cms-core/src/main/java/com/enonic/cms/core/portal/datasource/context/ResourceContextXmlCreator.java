@@ -15,7 +15,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 /**
  * Jul 28, 2009
  */
-public class ResourceContextXmlCreator
+final class ResourceContextXmlCreator
 {
 
     private PageTemplateEntity pageTemplate;

@@ -13,7 +13,7 @@ import com.enonic.esl.util.StringUtil;
 /**
  * Apr 21, 2009
  */
-public class HttpContextXmlCreator
+final class HttpContextXmlCreator
 {
     public Element createHttpElement( HttpServletRequest request )
     {

@@ -18,11 +18,6 @@ public class Datasource
         xmlElement = element;
     }
 
-    public Element getXmlElement()
-    {
-        return xmlElement;
-    }
-
     public String getMethodName()
     {
         Element methodNameEl = xmlElement.getChild( "methodname" );

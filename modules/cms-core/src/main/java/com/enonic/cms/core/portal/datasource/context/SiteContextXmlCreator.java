@@ -14,7 +14,7 @@ import com.enonic.cms.core.structure.SiteProperties;
 /**
  * Apr 21, 2009
  */
-public class SiteContextXmlCreator
+final class SiteContextXmlCreator
 {
     private UserXmlCreator userXmlCreator;
 

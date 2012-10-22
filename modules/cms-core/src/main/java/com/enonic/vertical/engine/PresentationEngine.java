@@ -23,6 +23,8 @@ import com.enonic.vertical.engine.handlers.SectionHandler;
 import com.enonic.vertical.engine.handlers.SecurityHandler;
 import com.enonic.vertical.engine.handlers.UserHandler;
 
+import com.enonic.cms.framework.xml.XMLDocument;
+
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.security.user.User;
 
@@ -134,7 +136,7 @@ public class PresentationEngine
         return userHandler;
     }
 
-    public Document getSuperCategoryNames( int categoryKey, boolean withContentCount, boolean includeCategory )
+    public XMLDocument getSuperCategoryNames( int categoryKey, boolean withContentCount, boolean includeCategory )
     {
         return categoryHandler.getSuperCategoryNames( CategoryKey.parse( categoryKey ), withContentCount, includeCategory );
     }

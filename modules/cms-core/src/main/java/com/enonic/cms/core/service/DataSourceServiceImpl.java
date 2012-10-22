@@ -754,7 +754,7 @@ public final class DataSourceServiceImpl
     public XMLDocument getSuperCategoryNames( DataSourceContext context, int categoryKey, boolean withContentCount,
                                               boolean includeCategory )
     {
-        return XMLDocumentFactory.create( presentationEngine.getSuperCategoryNames( categoryKey, withContentCount, includeCategory ) );
+        return presentationEngine.getSuperCategoryNames( categoryKey, withContentCount, includeCategory );
     }
 
     /**

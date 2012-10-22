@@ -2,52 +2,72 @@ package com.enonic.cms.core.portal.datasource2.xml;
 
 import java.util.List;
 
-import org.jdom.Element;
-
 import com.google.common.collect.Lists;
 
 public final class DataSourcesElement
 {
-    private final Element root;
+    private boolean httpContext;
+
+    private boolean cookieContext;
+
+    private boolean sessionContext;
+
+    private String resultElement;
 
     private final List<DataSourceElement> list;
 
-    public DataSourcesElement( final Element root )
+    public DataSourcesElement()
     {
-        this.root = root;
-
         this.list = Lists.newArrayList();
-        for ( final Object o : this.root.getChildren( "data-source" ) )
-        {
-            this.list.add( new DataSourceElement( (Element) o ) );
-        }
     }
 
     public boolean isHttpContext()
     {
-        final String value = this.root.getAttributeValue( "http-context" );
-        return value != null && "true".equals( value );
+        return httpContext;
+    }
+
+    public void setHttpContext( final boolean httpContext )
+    {
+        this.httpContext = httpContext;
     }
 
     public boolean isCookieContext()
     {
-        final String value = this.root.getAttributeValue( "cookie-context" );
-        return value != null && "true".equals( value );
+        return cookieContext;
+    }
+
+    public void setCookieContext( final boolean cookieContext )
+    {
+        this.cookieContext = cookieContext;
     }
 
     public boolean isSessionContext()
     {
-        final String value = this.root.getAttributeValue( "session-context" );
-        return value != null && "true".equals( value );
+        return sessionContext;
+    }
+
+    public void setSessionContext( final boolean sessionContext )
+    {
+        this.sessionContext = sessionContext;
     }
 
     public String getResultElement()
     {
-        return this.root.getAttributeValue( "result-element" );
+        return resultElement;
+    }
+
+    public void setResultElement( final String resultElement )
+    {
+        this.resultElement = resultElement;
     }
 
     public List<DataSourceElement> getList()
     {
         return this.list;
+    }
+
+    public void add( final DataSourceElement elem )
+    {
+        this.list.add( elem );
     }
 }

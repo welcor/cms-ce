@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.RequestParameters;
-import com.enonic.cms.core.portal.datasource.ExpressionFunctionsExecutor;
+import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory;
 import com.enonic.cms.core.security.user.UserEntity;

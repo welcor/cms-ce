@@ -23,7 +23,7 @@ import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.Datasource;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.ExpressionFunctionsExecutor;
+import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
 
 /**

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.portal.datasource;
+package com.enonic.cms.core.portal.datasource.expressionfunctions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,6 @@ import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.ParserContext;
 import org.springframework.expression.TypedValue;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -25,8 +24,6 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
-import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -35,14 +32,18 @@ import com.enonic.cms.core.structure.menuitem.MenuItemType;
 
 public final class ExpressionFunctionsExecutor
 {
-    private static final Logger LOG = LoggerFactory.getLogger( "EL" );
+    private static final Logger LOG = LoggerFactory.getLogger( ExpressionFunctionsExecutor.class );
 
     private static final ExpressionParser EXPR_FACTORY = new SpelExpressionParser();
+
     private static final TemplateParserContext TEMPLATE_PARSER_CONTEXT = new TemplateParserContext();
 
     private RequestParameters requestParameters;
+
     private VerticalSession verticalSession;
+
     private HttpServletRequest httpRequest;
+
     private ExpressionContext expressionContext;
 
     public void setRequestParameters( RequestParameters requestParameters )
@@ -76,11 +77,11 @@ public final class ExpressionFunctionsExecutor
         rootObject.setUser( createUserMap() );
         rootObject.setPortal( createPortalMap() );
 
-        StandardEvaluationContext context = new StandardEvaluationContext(rootObject);
+        StandardEvaluationContext context = new StandardEvaluationContext( rootObject );
 
         ExpressionFunctionsFactory.get().setContext( expressionContext );
 
-        context.addPropertyAccessor( new SafeMapAccessor(expression) );
+        context.addPropertyAccessor( new SafeMapAccessor( expression ) );
 
         Expression exp = EXPR_FACTORY.parseExpression( expression, TEMPLATE_PARSER_CONTEXT );
 
@@ -173,7 +174,7 @@ public final class ExpressionFunctionsExecutor
 
     private String createContentKey()
     {
-        if ( expressionContext.getContentFromRequest() != null)
+        if ( expressionContext.getContentFromRequest() != null )
         {
             return expressionContext.getContentFromRequest().getKey().toString();
         }
@@ -187,7 +188,7 @@ public final class ExpressionFunctionsExecutor
 
         ContentEntity content = menuItem.getContent();
 
-        if (content == null)
+        if ( content == null )
         {
             return null;
         }
@@ -281,10 +282,10 @@ public final class ExpressionFunctionsExecutor
     }
 
     /**
-     *  does not throw Exception if map does not contain key
+     * does not throw Exception if map does not contain key
      */
     private static class SafeMapAccessor
-            extends MapAccessor
+        extends MapAccessor
     {
         private String expression;
 
@@ -296,11 +297,12 @@ public final class ExpressionFunctionsExecutor
 
         @Override
         public TypedValue read( EvaluationContext context, Object target, String name )
-                throws AccessException
+            throws AccessException
         {
-            if (target instanceof ExpressionRootObject )
+            if ( target instanceof ExpressionRootObject )
             {
-                LOG.warn( "Accessing map {} as root object as the Map by parameter {}. Expression is {}", name, expression); // must be accessed directly !
+                LOG.warn( "Accessing map {} as root object as the Map by parameter {}. Expression is {}", name,
+                          expression ); // must be accessed directly !
 
                 ExpressionRootObject rootObject = (ExpressionRootObject) target;
 
@@ -327,7 +329,7 @@ public final class ExpressionFunctionsExecutor
 
                 return TypedValue.NULL;
             }
-            else if (target instanceof Map )
+            else if ( target instanceof Map )
             {
                 Map map = (Map) target;
                 Object value = map.get( name );
@@ -347,29 +349,7 @@ public final class ExpressionFunctionsExecutor
 
         @Override
         public boolean canRead( EvaluationContext context, Object target, String name )
-                throws AccessException
-        {
-            return true;
-        }
-    }
-
-    /**
-     *  support for ${} format. SPEL by default uses #{} format
-     */
-    private static class TemplateParserContext
-            implements ParserContext
-    {
-        public String getExpressionPrefix()
-        {
-            return "${";
-        }
-
-        public String getExpressionSuffix()
-        {
-            return "}";
-        }
-
-        public boolean isTemplate()
+            throws AccessException
         {
             return true;
         }

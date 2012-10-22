@@ -1,29 +1,28 @@
 package com.enonic.cms.core.portal.datasource2.xml;
 
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-
 public final class ParameterElement
 {
-    private final Element root;
+    private final String name;
 
-    private final String value;
+    private String value;
 
-    public ParameterElement( final Element root )
+    public ParameterElement( final String name )
     {
-        this.root = root;
-        final XMLOutputter out = new XMLOutputter( Format.getCompactFormat() );
-        this.value = out.outputString( this.root.getContent() );
+        this.name = name;
     }
 
     public String getName()
     {
-        return this.root.getAttributeValue( "name" );
+        return this.name;
     }
 
     public String getValue()
     {
         return this.value;
+    }
+
+    public void setValue( final String value )
+    {
+        this.value = value;
     }
 }

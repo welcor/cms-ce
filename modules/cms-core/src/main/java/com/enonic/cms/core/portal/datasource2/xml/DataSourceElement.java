@@ -2,50 +2,68 @@ package com.enonic.cms.core.portal.datasource2.xml;
 
 import java.util.List;
 
-import org.jdom.Element;
-
 import com.google.common.collect.Lists;
 
 public final class DataSourceElement
 {
-    private final Element root;
+    private final String name;
 
     private final List<ParameterElement> list;
 
-    public DataSourceElement( final Element root )
-    {
-        this.root = root;
+    private boolean cache;
 
+    private String resultElement;
+
+    private String condition;
+
+    public DataSourceElement( final String name )
+    {
+        this.name = name;
         this.list = Lists.newArrayList();
-        for ( final Object o : this.root.getChildren( "parameter" ) )
-        {
-            this.list.add( new ParameterElement( (Element) o ) );
-        }
     }
 
     public String getName()
     {
-        return this.root.getAttributeValue( "name" );
+        return this.name;
     }
 
     public String getResultElement()
     {
-        return this.root.getAttributeValue( "result-element" );
+        return resultElement;
+    }
+
+    public void setResultElement( final String resultElement )
+    {
+        this.resultElement = resultElement;
     }
 
     public boolean isCache()
     {
-        final String value = this.root.getAttributeValue( "cache" );
-        return value != null && "true".equals( value );
+        return cache;
+    }
+
+    public void setCache( final boolean cache )
+    {
+        this.cache = cache;
     }
 
     public String getCondition()
     {
-        return this.root.getAttributeValue( "condition" );
+        return condition;
+    }
+
+    public void setCondition( final String condition )
+    {
+        this.condition = condition;
     }
 
     public List<ParameterElement> getParameters()
     {
         return this.list;
+    }
+
+    public void add( final ParameterElement param )
+    {
+        this.list.add( param );
     }
 }

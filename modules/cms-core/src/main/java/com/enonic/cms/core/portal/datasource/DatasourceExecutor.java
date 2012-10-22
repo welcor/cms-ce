@@ -12,6 +12,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator;
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
+import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCallFactory;
 import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;

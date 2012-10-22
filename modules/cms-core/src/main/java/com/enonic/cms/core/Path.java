@@ -42,7 +42,7 @@ public class Path
 
         if ( enforcePathStartsWithSlash && ( path.length() > 0 && path.charAt( 0 ) != '/' ) )
         {
-            this.pathAsString = "/" + path;
+            path = "/" + path;
         }
 
         resolvePathAndFragment( path );

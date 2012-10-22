@@ -293,6 +293,13 @@ public class PathTest
     }
 
     @Test
+    public void testEnforcePathStartsWithSlash()
+    {
+        Path path = new Path( "en/home", true );
+        assertEquals( "/en/home", path.getPathAsString() );
+    }
+
+    @Test
     public void containsSubPath()
     {
         assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace", "resources" ) );
@@ -308,4 +315,13 @@ public class PathTest
         assertTrue( new Path( "/_xtrace/" ).containsSubPath( "_xtrace" ) );
         assertFalse( new Path( "/" ).containsSubPath( "_xtrace" ) );
     }
+
+    @Test
+    public void getPathWithoutFragmentAsString()
+    {
+        Path path = new Path( Lists.newArrayList( "my", "path" ), true, "fragment" );
+        assertEquals( "/my/path", path.getPathWithoutFragmentAsString() );
+    }
 }
+
+

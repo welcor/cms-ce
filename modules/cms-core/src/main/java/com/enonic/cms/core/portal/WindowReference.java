@@ -17,6 +17,7 @@ public class WindowReference
 
     private Path pathToMenuItem;
 
+    private String extension;
 
     public static WindowReference parse( Path localPath )
     {
@@ -35,24 +36,37 @@ public class WindowReference
         // extension is used for outputFormat . see reference in method's javadoc
         final String portletNameWithoutExtension = portletName.replaceAll( "\\.[^\\.]*?$", "" );
 
+        String extension = null;
+        if ( portletNameWithoutExtension.length() < portletName.length() )
+        {
+            extension = portletName.substring( portletNameWithoutExtension.length() + 1, portletName.length() );
+        }
+
         String pathWithoutWindowReference = localPath.subPath( 0, index );
         if ( localPath.hasFragment() )
         {
             pathWithoutWindowReference = pathWithoutWindowReference + "#" + localPath.getFragment();
         }
         Path pathToMenuItem = new Path( pathWithoutWindowReference, true );
-        return new WindowReference( portletNameWithoutExtension, pathToMenuItem );
+
+        return new WindowReference( portletNameWithoutExtension, pathToMenuItem, extension );
     }
 
-    public WindowReference( String portletName, Path pathToMenuItem )
+    private WindowReference( String portletName, Path pathToMenuItem, String extension )
     {
         this.portletName = portletName;
         this.pathToMenuItem = pathToMenuItem;
+        this.extension = extension;
     }
 
     public String getPortletName()
     {
         return portletName;
+    }
+
+    public String getExtension()
+    {
+        return extension;
     }
 
     public Path getPathToMenuItem()

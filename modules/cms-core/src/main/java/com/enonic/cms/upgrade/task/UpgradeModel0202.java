@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.enonic.cms.upgrade.UpgradeContext;
 
-public final class UpgradeModel0202
+final class UpgradeModel0202
     extends AbstractUpgradeTask
 {
     public UpgradeModel0202()

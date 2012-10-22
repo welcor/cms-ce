@@ -20,7 +20,7 @@ import com.enonic.cms.framework.blob.BlobKey;
 import com.enonic.cms.upgrade.UpgradeContext;
 import com.enonic.cms.upgrade.UpgradeException;
 
-public class UpgradeModel0204
+final class UpgradeModel0204
     extends AbstractUpgradeTask
 {
 

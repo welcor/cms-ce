@@ -1,22 +1,20 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.upgrade.task;
 
 import com.enonic.cms.upgrade.UpgradeContext;
 
-final class UpgradeModel0201
+final class UpgradeModel0205
     extends AbstractUpgradeTask
 {
-    public UpgradeModel0201()
+    public UpgradeModel0205()
     {
-        super( 201 );
+        super( 205 );
     }
 
+    @Override
     public void upgrade( final UpgradeContext context )
         throws Exception
     {
-        // Do not remove quartz tables anymore
+        context.logInfo( "Dropping tVirtualFile table" );
+        context.dropTable( "tVirtualFile" );
     }
 }

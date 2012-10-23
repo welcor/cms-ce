@@ -154,7 +154,6 @@ public class PreviewContentHandler
         pageRendererContext.setOriginalSitePath( sitePath );
         pageRendererContext.setPageRequestType( PageRequestType.CONTENT );
         pageRendererContext.setPreviewContext( previewContext );
-        pageRendererContext.setProcessors( null );
         pageRendererContext.setRegionsInPage( regionsInPage );
         pageRendererContext.setRenderer( previewer );
         pageRendererContext.setRequestTime( new DateTime() );

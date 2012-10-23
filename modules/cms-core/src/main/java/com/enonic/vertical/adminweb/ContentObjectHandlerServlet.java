@@ -41,9 +41,8 @@ import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.portal.datasource.InvocationCache;
+import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.datasource.DataSourceResult;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
@@ -701,9 +700,9 @@ public final class ContentObjectHandlerServlet
 
         Datasources datasources = new Datasources( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
-        DataSourceResult dsr2 = datasourceExecutor.getDataSourceResult( datasources );
+        XMLDocument dsr2 = datasourceExecutor.getDataSourceResult( datasources );
 
-        return dsr2.getData().getAsString();
+        return dsr2.getAsString();
     }
 
     private String doGetPortletDatasourceResult( final User oldUser, final SiteKey siteKey, final XMLDocument dataSourcesXML,
@@ -744,9 +743,9 @@ public final class ContentObjectHandlerServlet
 
         Datasources datasources = new Datasources( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
-        DataSourceResult dsr2 = datasourceExecutor.getDataSourceResult( datasources );
+        XMLDocument dsr2 = datasourceExecutor.getDataSourceResult( datasources );
 
-        return dsr2.getData().getAsString();
+        return dsr2.getAsString();
     }
 
     private void addStyleSheet( Element contentobjectElem, String elemName, ResourceKey styleSheetKey )

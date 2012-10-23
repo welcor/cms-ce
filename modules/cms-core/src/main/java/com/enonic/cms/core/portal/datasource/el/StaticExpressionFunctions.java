@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.portal.datasource.expressionfunctions;
+package com.enonic.cms.core.portal.datasource.el;
 
 /**
  * This class implements the expression functions.

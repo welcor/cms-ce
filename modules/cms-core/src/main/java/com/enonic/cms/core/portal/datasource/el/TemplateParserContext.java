@@ -1,4 +1,4 @@
-package com.enonic.cms.core.portal.datasource.expressionfunctions;
+package com.enonic.cms.core.portal.datasource.el;
 
 import org.springframework.expression.ParserContext;
 

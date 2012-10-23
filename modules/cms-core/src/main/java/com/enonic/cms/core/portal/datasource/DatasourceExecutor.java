@@ -11,8 +11,8 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator;
-import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
-import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsExecutor;
+import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
+import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCallFactory;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTrace;
@@ -37,10 +37,8 @@ public class DatasourceExecutor
         this.context = datasourceExecutorContext;
     }
 
-    public DataSourceResult getDataSourceResult( Datasources datasources )
+    public XMLDocument getDataSourceResult( Datasources datasources )
     {
-        DataSourceResult dataSourceResult = new DataSourceResult();
-
         Document resultDoc = new Document( new Element( resolveResultRootElementName( datasources ) ) );
         Element verticaldataEl = resultDoc.getRootElement();
 
@@ -71,10 +69,8 @@ public class DatasourceExecutor
 
         }
 
-        dataSourceResult.setData( XMLDocumentFactory.create( resultDoc ) );
         setTraceDataSourceResult( resultDoc );
-
-        return dataSourceResult;
+        return XMLDocumentFactory.create( resultDoc );
     }
 
     /**

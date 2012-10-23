@@ -18,6 +18,7 @@ import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;

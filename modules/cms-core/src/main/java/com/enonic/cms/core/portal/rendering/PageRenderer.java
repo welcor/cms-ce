@@ -11,6 +11,7 @@ import org.jdom.Element;
 import org.joda.time.DateTime;
 
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
+import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.CacheObjectSettings;
 import com.enonic.cms.core.CacheSettings;
@@ -19,11 +20,10 @@ import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.portal.datasource.InvocationCache;
+import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.DataSourceResult;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
@@ -216,7 +216,7 @@ public class PageRenderer
 
     private RenderedPageResult renderPageTemplateExcludingPortlets( final PageTemplateEntity pageTemplate )
     {
-        final DataSourceResult dataSourceResult = executeDataSources( pageTemplate );
+        final XMLDocument dataSourceResult = executeDataSources( pageTemplate );
         final PortalFunctionsContext portalFunctionsContext = new PortalFunctionsContext();
         portalFunctionsContext.setInvocationCache( invocationCache );
         portalFunctionsContext.setSitePath( context.getSitePath() );
@@ -245,13 +245,13 @@ public class PageRenderer
             ViewTransformationTracer.traceView( pageTemplateStylesheet.getPath(), trace );
 
             final Document model;
-            if ( dataSourceResult == null || dataSourceResult.getData() == null )
+            if ( dataSourceResult == null )
             {
                 model = new Document( new Element( defaultDataSourceRootElementName ) );
             }
             else
             {
-                model = dataSourceResult.getData().getAsJDOMDocument();
+                model = dataSourceResult.getAsJDOMDocument();
             }
 
             final TransformationParams transformationParams = new TransformationParams();
@@ -369,7 +369,7 @@ public class PageRenderer
         return siteURLResolver;
     }
 
-    private DataSourceResult executeDataSources( PageTemplateEntity pageTemplate )
+    private XMLDocument executeDataSources( PageTemplateEntity pageTemplate )
     {
         // resolve css key
         ResourceKey cssKey = context.getSite().getDefaultCssKey();

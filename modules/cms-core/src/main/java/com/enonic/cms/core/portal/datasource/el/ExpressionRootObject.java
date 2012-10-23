@@ -1,8 +1,6 @@
-package com.enonic.cms.core.portal.datasource.expressionfunctions;
+package com.enonic.cms.core.portal.datasource.el;
 
 import java.util.Map;
-
-import com.enonic.cms.core.portal.datasource.expressionfunctions.StaticExpressionFunctions;
 
 /**
  * root object for Spring EL.

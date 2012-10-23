@@ -13,7 +13,7 @@ import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PortalInstanceKey;
-import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsFactory;
+import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsFactory;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserImpl;

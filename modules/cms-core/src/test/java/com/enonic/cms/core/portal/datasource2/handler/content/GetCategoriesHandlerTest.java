@@ -15,6 +15,7 @@ public class GetCategoriesHandlerTest
 {
 
     private DataSourceService dataSourceService;
+
     private XMLDocument dummyDoc;
 
     public GetCategoriesHandlerTest()

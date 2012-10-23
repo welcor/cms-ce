@@ -28,6 +28,7 @@ public final class GetCategoriesHandler
 
         return this.dataSourceService.getCategories( req, categoryKey, levels, includeContentCount, includeTopCategory ).getAsJDOMDocument();
     }
+
     @Autowired
     public void setDataSourceService( final DataSourceService dataSourceService )
     {

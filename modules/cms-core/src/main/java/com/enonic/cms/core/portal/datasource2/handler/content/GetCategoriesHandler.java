@@ -3,19 +3,14 @@ package com.enonic.cms.core.portal.datasource2.handler.content;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.vertical.engine.PresentationEngine;
-
-import com.enonic.cms.framework.util.JDOMUtil;
-
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.DataSourceServiceCompabilityKeeper;
+import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetCategoriesHandler
     extends DataSourceHandler
 {
-    private PresentationEngine presentationEngine;
+    private DataSourceService dataSourceService;
 
     public GetCategoriesHandler()
     {
@@ -31,19 +26,11 @@ public final class GetCategoriesHandler
         final boolean includeContentCount = req.param( "includeContentCount" ).asBoolean( false );
         final boolean includeTopCategory = req.param( "includeTopCategory" ).asBoolean( true );
 
-        final UserEntity user = req.getCurrentUser();
-        org.w3c.dom.Document doc =
-            presentationEngine.getCategories( user, categoryKey, levels, includeTopCategory, true, true, includeContentCount );
-
-        // TODO check if the compatibility changes are still needed
-        DataSourceServiceCompabilityKeeper.fixCategoriesCompability( doc );
-
-        return JDOMUtil.toDocument( doc );
+        return this.dataSourceService.getCategories( req, categoryKey, levels, includeContentCount, includeTopCategory ).getAsJDOMDocument();
     }
-
     @Autowired
-    public void setPresentationEngine( final PresentationEngine presentationEngine )
+    public void setDataSourceService( final DataSourceService dataSourceService )
     {
-        this.presentationEngine = presentationEngine;
+        this.dataSourceService = dataSourceService;
     }
 }

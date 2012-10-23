@@ -27,7 +27,6 @@ import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.TemplateParameter;
 import com.enonic.cms.core.structure.TemplateParameterType;
-import com.enonic.cms.core.structure.page.Region;
 
 public class PageTemplateEntity
     implements Serializable
@@ -59,8 +58,6 @@ public class PageTemplateEntity
     private Set<ContentTypeEntity> contentTypes;
 
     private transient Datasources datasources;
-
-    private transient Map<String, Region> regions;
 
     public int getKey()
     {
@@ -252,14 +249,7 @@ public class PageTemplateEntity
         {
             Element rootEl = getXmlDataAsJDOMDocument().getRootElement();
             Element datasourcesEl = rootEl.getChild( "datasources" );
-            if ( datasourcesEl != null )
-            {
-                datasources = new Datasources( datasourcesEl );
-            }
-            else
-            {
-                datasources = new Datasources();
-            }
+            datasources = new Datasources( datasourcesEl );
         }
 
         return datasources;

@@ -117,7 +117,7 @@ public class DatasourceExecutor
 
     private String resolveResultRootElementName( Datasources datasources )
     {
-        final String name = datasources.getResultRootName();
+        final String name = datasources.getResultElementName();
 
         if ( name != null && name.length() > 0 )
         {

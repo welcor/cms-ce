@@ -7,57 +7,47 @@ package com.enonic.cms.core.portal.datasource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdom.Document;
 import org.jdom.Element;
 
-import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
 public class Datasources
 {
-    private Element datasourcesEl;
+    private final Element root;
 
-    private String resultRootName;
-
-    public Datasources()
+    public Datasources( final Element root )
     {
-        Element rootElement = new Element( "pagetemplatedata" );
-        new Document( rootElement );
-        datasourcesEl = new Element( "datasources" );
-        rootElement.addContent( datasourcesEl );
-        resultRootName = datasourcesEl.getAttributeValue( "result-element" );
-    }
-
-    public Datasources( Element datasourcesEl )
-    {
-        Preconditions.checkNotNull( datasourcesEl );
-        Preconditions.checkArgument( "datasources".equals( datasourcesEl.getName() ),
-                                     "Expected datasources to be the root element, but was: " + datasourcesEl.getName() );
-
-        this.datasourcesEl = datasourcesEl;
-        resultRootName = datasourcesEl.getAttributeValue( "result-element" );
+        if ( root == null )
+        {
+            this.root = new Element( "datasources" );
+        }
+        else
+        {
+            this.root = root;
+        }
     }
 
     public boolean hasSessionContext()
     {
-        return hasAttributeValue( "true", "sessioncontext", datasourcesEl );
+        return hasAttributeValue( "true", "sessioncontext", this.root );
     }
 
     public boolean hasHttpContext()
     {
-        return hasAttributeValue( "true", "httpcontext", datasourcesEl );
+        return hasAttributeValue( "true", "httpcontext", this.root );
     }
 
     public boolean hasCookieContext()
     {
-        return hasAttributeValue( "true", "cookiecontext", datasourcesEl );
+        return hasAttributeValue( "true", "cookiecontext", this.root );
     }
 
     public List<Datasource> getDatasourceElements()
     {
-        ArrayList<Datasource> datasources = new ArrayList<Datasource>();
-        for ( Element datasourceElement : JDOMUtil.getElements( datasourcesEl ) )
+        final ArrayList<Datasource> datasources = new ArrayList<Datasource>();
+        for ( Element datasourceElement : JDOMUtil.getElements( this.root ) )
         {
             datasources.add( new Datasource( datasourceElement ) );
         }
@@ -77,8 +67,9 @@ public class Datasources
         return expectedValue.equals( el.getAttributeValue( attrName ) );
     }
 
-    public String getResultRootName()
+    public String getResultElementName()
     {
-        return resultRootName;
+        final String value = this.root.getAttributeValue( "result-element" );
+        return Strings.emptyToNull( value );
     }
 }

@@ -6,63 +6,45 @@ package com.enonic.cms.core.portal.datasource;
 
 import java.util.List;
 
-import org.jdom.Attribute;
 import org.jdom.Element;
+
+import com.google.common.base.Strings;
 
 public class Datasource
 {
-    private Element xmlElement;
+    private final Element root;
 
-    public Datasource( Element element )
+    public Datasource( final Element root )
     {
-        xmlElement = element;
+        this.root = root;
     }
 
     public String getMethodName()
     {
-        Element methodNameEl = xmlElement.getChild( "methodname" );
-        if ( methodNameEl == null )
+        final Element elem = this.root.getChild( "methodname" );
+        if ( elem == null )
         {
             return null;
         }
 
-        String methodName = methodNameEl.getText();
-        if ( ( methodName == null ) || ( methodName.length() == 0 ) )
-        {
-            return null;
-        }
-        return methodName;
+        return Strings.emptyToNull( elem.getText() );
     }
 
     public List getParameterElements()
     {
-        Element parametersElem = xmlElement.getChild( "parameters" );
+        final Element parametersElem = this.root.getChild( "parameters" );
         return parametersElem.getChildren();
     }
 
     public String getResultElementName()
     {
-        String value = xmlElement.getAttributeValue( "result-element" );
-        if ( value == null )
-        {
-            return null;
-        }
-        if ( value.trim().length() == 0 )
-        {
-            return null;
-        }
-
-        return value;
+        final String value = this.root.getAttributeValue( "result-element" );
+        return Strings.emptyToNull( value );
     }
 
     public String getCondition()
     {
-        Attribute conditionAttr = xmlElement.getAttribute( "condition" );
-        if ( conditionAttr == null )
-        {
-            return null;
-        }
-        return conditionAttr.getValue().trim();
+        return this.root.getAttributeValue( "condition" );
     }
 
     public boolean isCacheable()
@@ -70,15 +52,15 @@ public class Datasource
         String methodname = getMethodName();
 
         // we cant cache getPreferences calls, cause they depend on objectKey, which change within a request
-        if ( methodname!= null && methodname.startsWith( "getPreferences" ) )
+        if ( methodname != null && methodname.startsWith( "getPreferences" ) )
         {
             return false;
         }
 
-        Attribute cacheableAttr = xmlElement.getAttribute( "cache" );
+        final String cacheableAttr = this.root.getAttributeValue( "cache" );
         if ( cacheableAttr != null )
         {
-            return Boolean.valueOf( cacheableAttr.getValue().trim() );
+            return "true".equals( cacheableAttr );
         }
 
         // default value except plugins

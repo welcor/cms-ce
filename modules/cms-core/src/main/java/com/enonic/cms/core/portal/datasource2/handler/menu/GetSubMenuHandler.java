@@ -1,13 +1,17 @@
 package com.enonic.cms.core.portal.datasource2.handler.menu;
 
 import org.jdom.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetSubMenuHandler
     extends DataSourceHandler
 {
+    private DataSourceService dataSourceService;
+
     public GetSubMenuHandler()
     {
         super( "getSubMenu" );
@@ -21,7 +25,12 @@ public final class GetSubMenuHandler
         final int tagItem = req.param( "tagItem" ).asInteger( -1 );
         final int levels = req.param( "levels" ).asInteger( 0 );
 
-        // TODO: Implement based on DataSourceServiceImpl.getSubMenu(..)
-        return null;
+        return this.dataSourceService.getSubMenu( req, menuItemKey, tagItem, levels ).getAsJDOMDocument();
+    }
+
+    @Autowired
+    public void setDataSourceService( final DataSourceService dataSourceService )
+    {
+        this.dataSourceService = dataSourceService;
     }
 }

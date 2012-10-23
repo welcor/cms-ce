@@ -74,6 +74,17 @@ public class GetMenuBranchHandlerTest
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenuBranch( this.request, 42, true, 1, 3 );
     }
 
+    @Test
+    public void testHandler_default_values()
+        throws Exception
+    {
+        this.request.addParam( "menuItemKey", "42" );
+
+        Mockito.when( this.dataSourceService.getMenuBranch( this.request, 42, false, 0, 0 ) ).thenReturn( this.dummyDoc );
+        this.handler.handle( this.request );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenuBranch( this.request, 42, false, 0, 0 );
+    }
+
     @Test(expected = DataSourceException.class)
     public void testHandler_invalid_parameter_type()
         throws Exception

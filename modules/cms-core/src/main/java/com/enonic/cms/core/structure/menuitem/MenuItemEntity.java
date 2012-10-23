@@ -788,7 +788,7 @@ public class MenuItemEntity
         String cachetypeString = dataEl.getAttributeValue( "cachetype" );
         String mincachetimeString = dataEl.getAttributeValue( "mincachetime", String.valueOf( defaultSecondsToLive ) );
         int secondsToLive = Integer.valueOf( mincachetimeString );
-        boolean cacheMenuItem = !Boolean.valueOf( cachedisabledString ) && pageTemplate.getDatasources().isCacheable();
+        boolean cacheMenuItem = !Boolean.valueOf( cachedisabledString );
         return new CacheSettings( cacheMenuItem, cachetypeString, secondsToLive );
     }
 

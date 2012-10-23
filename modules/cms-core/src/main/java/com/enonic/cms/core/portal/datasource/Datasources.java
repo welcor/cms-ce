@@ -54,14 +54,6 @@ public class Datasources
         return datasources;
     }
 
-    public boolean isCacheable()
-    {
-        boolean cacheable = !hasSessionContext();
-        cacheable &= !hasHttpContext();
-        cacheable &= !hasCookieContext();
-        return cacheable;
-    }
-
     private boolean hasAttributeValue( String expectedValue, String attrName, Element el )
     {
         return expectedValue.equals( el.getAttributeValue( attrName ) );

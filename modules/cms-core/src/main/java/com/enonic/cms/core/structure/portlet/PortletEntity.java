@@ -46,8 +46,6 @@ public class PortletEntity
 
     private transient Datasources datasources;
 
-    private transient PortletData portletData;
-
     public int getKey()
     {
         return key;
@@ -116,7 +114,6 @@ public class PortletEntity
 
         // Invalidate cache
         xmlDataAsJDOMDocument = null;
-        portletData = null;
         datasources = null;
     }
 
@@ -167,10 +164,6 @@ public class PortletEntity
         String mincachetimeString = dataEl.getAttributeValue( "mincachetime", String.valueOf( defaultTimeToLive ) );
         int secondsToLive = Integer.valueOf( mincachetimeString );
         boolean cacheEnabled = !Boolean.valueOf( cachedisabledString );
-        if ( cacheEnabled )
-        {
-            cacheEnabled = getDatasources().isCacheable();
-        }
         return new CacheSettings( cacheEnabled, cachetypeString, secondsToLive );
     }
 
@@ -283,32 +276,4 @@ public class PortletEntity
 
         return datasources;
     }
-
-    private PortletData getPortletData()
-    {
-        if ( portletData == null )
-        {
-            if ( xmlData != null )
-            {
-                portletData = new PortletData( this.getXmlDataAsJDOMDocument() );
-            }
-            else
-            {
-                portletData = new PortletData();
-            }
-        }
-        return portletData;
-    }
-
-    public Boolean getCacheDisabled()
-    {
-        return getPortletData().getCacheDisabled();
-    }
-
-    public String getCacheType()
-    {
-        return getPortletData().getCacheType();
-    }
-
-
 }

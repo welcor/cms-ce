@@ -7,11 +7,16 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.junit.Before;
+import org.mockito.Mockito;
+
+import com.enonic.cms.framework.xml.XMLDocument;
+import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.service.DataSourceService;
 
 import static org.junit.Assert.*;
 
@@ -22,6 +27,10 @@ public abstract class AbstractDataSourceHandlerTest<T extends DataSourceHandler>
     protected T handler;
 
     protected DataSourceRequest request;
+
+    protected DataSourceService dataSourceService;
+
+    protected XMLDocument dummyDoc;
 
     public AbstractDataSourceHandlerTest( final Class<T> type )
     {
@@ -41,6 +50,10 @@ public abstract class AbstractDataSourceHandlerTest<T extends DataSourceHandler>
         user.setDisplayName( User.ANONYMOUS_UID );
         this.request.setCurrentUser( user );
         this.request.setPreviewContext( PreviewContext.NO_PREVIEW );
+
+        this.dummyDoc = XMLDocumentFactory.create( "<dummy/>" );
+        this.dataSourceService = Mockito.mock( DataSourceService.class );
+
         initTest();
     }
 

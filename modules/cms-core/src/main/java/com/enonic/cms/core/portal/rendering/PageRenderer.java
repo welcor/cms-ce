@@ -317,7 +317,6 @@ public class PageRenderer
         windowRenderContext.setPageRequestType( context.getPageRequestType() );
         windowRenderContext.setPageTemplate( pageTemplate );
         windowRenderContext.setPreviewContext( context.getPreviewContext() );
-        windowRenderContext.setProcessors( context.getProcessors() );
         windowRenderContext.setProfile( context.getProfile() );
         windowRenderContext.setRegionsInPage( context.getRegionsInPage() );
         windowRenderContext.setRenderedInline( true );
@@ -403,7 +402,6 @@ public class PageRenderer
         datasourceExecutorContext.setPageTemplate( pageTemplate );
         datasourceExecutorContext.setPortalInstanceKey( portalInstanceKey );
         datasourceExecutorContext.setPreviewContext( context.getPreviewContext() );
-        datasourceExecutorContext.setProcessors( context.getProcessors() );
         datasourceExecutorContext.setProfile( context.getProfile() );
         datasourceExecutorContext.setRegions( context.getRegionsInPage() );
         datasourceExecutorContext.setSite( context.getSite() );

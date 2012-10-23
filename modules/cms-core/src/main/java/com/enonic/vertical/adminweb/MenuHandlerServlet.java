@@ -61,8 +61,6 @@ import com.enonic.cms.core.language.LanguageResolver;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
-import com.enonic.cms.core.portal.datasource.processor.MenuItemProcessor;
 import com.enonic.cms.core.portal.rendering.PageRenderer;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
 import com.enonic.cms.core.portal.rendering.RegionsResolver;
@@ -1919,10 +1917,6 @@ public class MenuHandlerServlet
             PreviewContext previewContext = new PreviewContext( menuItemPreviewContext );
             previewService.setPreviewContext( previewContext );
 
-            // prepare data source result processors
-            DataSourceProcessor[] dsrProcessors = new DataSourceProcessor[1];
-            dsrProcessors[0] = new MenuItemProcessor( menusElem, newMenuItemElem );
-
             SitePath sitePath = new SitePath( site.getKey(), modifiedMenuItem.getPath() );
             sitePath.addParam( "id", menuItemKey.toString() );
             request.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
@@ -1953,7 +1947,6 @@ public class MenuHandlerServlet
             pageRendererContext.setOriginalSitePath( sitePath );
             pageRendererContext.setPageRequestType( PageRequestType.MENUITEM );
             pageRendererContext.setPreviewContext( previewContext );
-            pageRendererContext.setProcessors( dsrProcessors );
             pageRendererContext.setRegionsInPage( regionsInPage );
             pageRendererContext.setRenderer( requester );
             pageRendererContext.setRequestTime( new DateTime() );

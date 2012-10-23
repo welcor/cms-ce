@@ -14,7 +14,6 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.portal.datasource.InvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -46,8 +45,6 @@ public class WindowRendererContext
     private Regions regionsInPage;
 
     private InvocationCache invocationCache;
-
-    private DataSourceProcessor[] processors;
 
     private PreviewContext previewContext;
 
@@ -114,11 +111,6 @@ public class WindowRendererContext
     public InvocationCache getInvocationCache()
     {
         return invocationCache;
-    }
-
-    public DataSourceProcessor[] getProcessors()
-    {
-        return processors;
     }
 
     public PreviewContext getPreviewContext()
@@ -189,11 +181,6 @@ public class WindowRendererContext
     public void setForceNoCacheUsage( boolean forceNoCacheUsage )
     {
         this.forceNoCacheUsage = forceNoCacheUsage;
-    }
-
-    public void setProcessors( DataSourceProcessor[] processors )
-    {
-        this.processors = processors;
     }
 
     public void setOriginalUrl( String originalUrl )

@@ -18,7 +18,6 @@ import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -66,8 +65,6 @@ public class DatasourceExecutorContext
     private Document portletDocument;
 
     private ResourceKey[] cssKeys;
-
-    private DataSourceProcessor[] processors;
 
     private PreviewContext previewContext;
 
@@ -186,16 +183,6 @@ public class DatasourceExecutorContext
         return cssKeys;
     }
 
-    public DataSourceProcessor[] getProcessors()
-    {
-        return processors;
-    }
-
-    public boolean hasProcessors()
-    {
-        return processors != null && processors.length > 0;
-    }
-
     public PreviewContext getPreviewContext()
     {
         return previewContext;
@@ -244,11 +231,6 @@ public class DatasourceExecutorContext
     public void setCssKeys( ResourceKey[] cssKeys )
     {
         this.cssKeys = cssKeys;
-    }
-
-    public void setProcessors( DataSourceProcessor[] processors )
-    {
-        this.processors = processors;
     }
 
     public InvocationCache getInvocationCache()

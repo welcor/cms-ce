@@ -15,7 +15,6 @@ import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionConte
 import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCallFactory;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTrace;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -143,9 +142,6 @@ public class DatasourceExecutor
     private Document executeMethodCall( final Datasource datasource, final MethodCall methodCall )
     {
         XMLDocument xmlDocument = methodCall.invoke();
-
-        xmlDocument = postProcessDocument( xmlDocument, methodCall );
-
         Document jdomDocument = (Document) xmlDocument.getAsJDOMDocument().clone();
 
         if ( datasource.getResultElementName() != null )
@@ -157,23 +153,6 @@ public class DatasourceExecutor
         }
 
         return jdomDocument;
-    }
-
-
-    private XMLDocument postProcessDocument( XMLDocument source, MethodCall methodCall )
-    {
-        if ( !context.hasProcessors() )
-        {
-            return source;
-        }
-
-        org.w3c.dom.Document doc = source.getAsDOMDocument();
-        for ( DataSourceProcessor processor : context.getProcessors() )
-        {
-            processor.postProcess( doc, methodCall );
-        }
-
-        return XMLDocumentFactory.create( doc );
     }
 
     private void setTraceDataSourceResult( Document result )

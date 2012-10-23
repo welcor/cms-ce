@@ -1,13 +1,18 @@
 package com.enonic.cms.core.portal.datasource2.handler.content;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.jdom.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetRelatedContentHandler
     extends DataSourceHandler
 {
+    private DataSourceService dataSourceService;
+
     public GetRelatedContentHandler()
     {
         super( "getRelatedContent" );
@@ -17,7 +22,7 @@ public final class GetRelatedContentHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final Integer[] contentKeys = req.param( "contentKeys" ).required().asIntegerArray();
+        final int[] contentKeys = ArrayUtils.toPrimitive( req.param( "contentKeys" ).required().asIntegerArray() );
         final int relation = req.param( "relation" ).asInteger( 1 );
         final String query = req.param( "query" ).asString( "" );
         final String orderBy = req.param( "orderBy" ).asString( "" );
@@ -27,7 +32,13 @@ public final class GetRelatedContentHandler
         final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
         final int parentLevel = req.param( "parentLevel" ).asInteger( 0 );
 
-        // TODO: Implement based on DataSourceServiceImpl.getRelatedContent(..)
-        return null;
+        return this.dataSourceService.getRelatedContent( req, contentKeys, relation, query, orderBy, index, count, includeData,
+                                                         childrenLevel, parentLevel ).getAsJDOMDocument();
+    }
+
+    @Autowired
+    public void setDataSourceService( final DataSourceService dataSourceService )
+    {
+        this.dataSourceService = dataSourceService;
     }
 }

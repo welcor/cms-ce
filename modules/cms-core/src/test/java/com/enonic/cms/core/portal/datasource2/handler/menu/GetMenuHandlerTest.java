@@ -46,7 +46,7 @@ public class GetMenuHandlerTest
     }
 
     @Test(expected = DataSourceException.class)
-    public void testHandler_wrong_parameter_type()
+    public void testHandler_invalid_parameter_type()
         throws Exception
     {
         this.request.addParam( "menuKey", "3" );

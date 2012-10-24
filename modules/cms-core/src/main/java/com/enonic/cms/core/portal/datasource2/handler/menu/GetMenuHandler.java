@@ -21,11 +21,12 @@ public final class GetMenuHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final int menuKey = req.param( "menuKey" ).required().asInteger();
-        final int menuItemKey = req.param( "menuItemKey" ).asInteger( -1 );
+        final int siteKey = req.param( "siteKey" ).required().asInteger();
+        final int tagItem = req.param( "tagItem" ).asInteger( -1 );
         final int levels = req.param( "levels" ).asInteger( 0 );
+        final boolean details = req.param( "details" ).asBoolean( true );
 
-        return this.dataSourceService.getMenu( req, menuKey, menuItemKey, levels ).getAsJDOMDocument();
+        return this.dataSourceService.getMenu( req, siteKey, tagItem, levels, details ).getAsJDOMDocument();
     }
 
     @Autowired

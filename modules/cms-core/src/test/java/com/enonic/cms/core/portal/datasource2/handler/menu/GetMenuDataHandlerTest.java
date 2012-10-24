@@ -36,7 +36,7 @@ public class GetMenuDataHandlerTest
     public void testHandler_get_menu_data()
         throws Exception
     {
-        this.request.addParam( "menuKey", "42" );
+        this.request.addParam( "siteKey", "42" );
 
         Mockito.when( this.dataSourceService.getMenuData( this.request, 42 ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
@@ -47,7 +47,7 @@ public class GetMenuDataHandlerTest
     public void testHandler_multiple_menu_items_unsupported()
         throws Exception
     {
-        this.request.addParam( "menuKey", "42,43" );
+        this.request.addParam( "siteKey", "42,43" );
 
         this.handler.handle( this.request );
     }
@@ -56,7 +56,7 @@ public class GetMenuDataHandlerTest
     public void testHandler_invalid_parameter_type()
         throws Exception
     {
-        this.request.addParam( "menuKey", "*" );
+        this.request.addParam( "siteKey", "*" );
 
         this.handler.handle( this.request );
     }

@@ -22,9 +22,9 @@ public final class GetMenuDataHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final int menuKey = req.param( "menuKey" ).required().asInteger();
+        final int siteKey = req.param( "siteKey" ).required().asInteger();
 
-        return this.dataSourceService.getMenuData( req, menuKey ).getAsJDOMDocument();
+        return this.dataSourceService.getMenuData( req, siteKey ).getAsJDOMDocument();
     }
 
     @Autowired

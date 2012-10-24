@@ -36,24 +36,24 @@ public class GetMenuHandlerTest
     public void testHandler_get_menu()
         throws Exception
     {
-        this.request.addParam( "menuKey", "3" );
-        this.request.addParam( "menuItemKey", "42" );
+        this.request.addParam( "siteKey", "3" );
+        this.request.addParam( "tagItem", "42" );
         this.request.addParam( "levels", "0" );
+        this.request.addParam( "details", "true" );
 
-        Mockito.when( this.dataSourceService.getMenu( this.request, 3, 42, 0 ) ).thenReturn( this.dummyDoc );
+        Mockito.when( this.dataSourceService.getMenu( this.request, 3, 42, 0, true ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
-        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenu( this.request, 3, 42, 0 );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenu( this.request, 3, 42, 0, true );
     }
 
     @Test(expected = DataSourceException.class)
     public void testHandler_invalid_parameter_type()
         throws Exception
     {
-        this.request.addParam( "menuKey", "3" );
-        this.request.addParam( "menuItemKey", "42" );
+        this.request.addParam( "siteKey", "3" );
+        this.request.addParam( "tagItem", "42" );
         this.request.addParam( "levels", "false" ); // should be a number
 
-        Mockito.when( this.dataSourceService.getMenu( this.request, 3, 42, 0 ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
     }
 
@@ -61,11 +61,6 @@ public class GetMenuHandlerTest
     public void testHandler_missing_required_parameter()
         throws Exception
     {
-        this.request.addParam( "menuItemKey", "42" );
-        this.request.addParam( "levels", "0" );
-
-        Mockito.when( this.dataSourceService.getMenu( this.request, 3, 42, 0 ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
     }
-
 }

@@ -31,7 +31,7 @@ public class GetIndexValuesHandlerTest
         this.dataSourceService = Mockito.mock( DataSourceService.class );
         this.handler.setDataSourceService( this.dataSourceService );
 
-        this.request.addParam( "path", "menus/menu/item/0" );
+        this.request.addParam( "field", "data.age" );
         this.request.addParam( "categoryKeys", "10,20,30" );
         this.request.addParam( "recursive", "true" );
         this.request.addParam( "index", "0" );
@@ -48,7 +48,7 @@ public class GetIndexValuesHandlerTest
         Mockito.when(
             this.dataSourceService.getIndexValues(
                 eq( request ),
-                eq( "menus/menu/item/0" ),
+                eq( "data.age" ),
                 eq( new int[]{10, 20, 30} ),
                 eq( true ),
                 eq( new int[]{100, 200, 300} ),
@@ -62,7 +62,7 @@ public class GetIndexValuesHandlerTest
 
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getIndexValues(
             eq( request ),
-            eq( "menus/menu/item/0" ),
+            eq( "data.age" ),
             eq( new int[]{10, 20, 30} ),
             eq( true ),
             eq( new int[]{100, 200, 300} ),

@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.portal.datasource.context;
 
-import org.jdom.CDATA;
 import org.jdom.Element;
 
 import com.enonic.cms.core.resource.ResourceFile;
@@ -14,7 +13,7 @@ import com.enonic.cms.core.resource.ResourceService;
 /**
  * Apr 21, 2009
  */
-public class StylesContextXmlCreator
+final class StylesContextXmlCreator
 {
     private ResourceService resourceService;
 
@@ -23,7 +22,7 @@ public class StylesContextXmlCreator
         this.resourceService = resourceService;
     }
 
-    public Element createStylesElement( ResourceKey[] cssKeys, boolean stylecontextOn )
+    public Element createStylesElement( ResourceKey[] cssKeys )
     {
         Element stylesEl = new Element( "styles" );
 
@@ -47,11 +46,6 @@ public class StylesContextXmlCreator
             {
                 styleEl.setAttribute( "missing", "true" );
                 continue;
-            }
-
-            if ( stylecontextOn )
-            {
-                styleEl.addContent( new CDATA( css ) );
             }
         }
 

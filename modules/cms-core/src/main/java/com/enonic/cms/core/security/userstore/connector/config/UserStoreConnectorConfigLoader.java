@@ -15,14 +15,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.vertical.VerticalProperties;
+import com.enonic.cms.framework.util.PropertiesUtil;
 
+import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.security.userstore.config.InvalidUserStoreConfigException;
 
 @Component
 public class UserStoreConnectorConfigLoader
 {
-    private VerticalProperties verticalProperties;
+    private Properties properties;
 
     private Set<String> userStoreConnectorNames = null;
 
@@ -123,7 +124,7 @@ public class UserStoreConnectorConfigLoader
         }
         userStoreConnectorNames = new HashSet<String>();
 
-        final Properties allProperties = verticalProperties.getSubSet( "cms.userstore.connector." );
+        final Properties allProperties = getSubSet( "cms.userstore.connector." );
         for ( final Object propertyName : allProperties.keySet() )
         {
             final String configName = ( (String) propertyName ).replaceAll( "^(cms\\.userstore\\.)?(.*?)\\..*$", "$2" );
@@ -134,13 +135,12 @@ public class UserStoreConnectorConfigLoader
 
     private String getPluginType( final String connectorName )
     {
-        return verticalProperties.getProperty( String.format( "cms.userstore.connector.%s.plugin", connectorName ) );
+        return getProperty( String.format( "cms.userstore.connector.%s.plugin", connectorName ) );
     }
 
     private Boolean getResurrectDeletedUsers( final String connectorName )
     {
-        String stringValue =
-            verticalProperties.getProperty( String.format( "cms.userstore.connector.%s.resurrectDeletedUsers", connectorName ) );
+        String stringValue = getProperty( String.format( "cms.userstore.connector.%s.resurrectDeletedUsers", connectorName ) );
         if ( StringUtils.isBlank( stringValue ) )
         {
             return null;
@@ -150,8 +150,7 @@ public class UserStoreConnectorConfigLoader
 
     private Boolean getResurrectDeletedGroups( final String connectorName )
     {
-        String stringValue =
-            verticalProperties.getProperty( String.format( "cms.userstore.connector.%s.resurrectDeletedGroups", connectorName ) );
+        String stringValue = getProperty( String.format( "cms.userstore.connector.%s.resurrectDeletedGroups", connectorName ) );
         if ( StringUtils.isBlank( stringValue ) )
         {
             return null;
@@ -161,25 +160,40 @@ public class UserStoreConnectorConfigLoader
 
     private Properties getPluginProperties( final String connectorName )
     {
-        return verticalProperties.getSubSet( String.format( "cms.userstore.connector.%s.plugin.", connectorName ) );
+        return getSubSet( String.format( "cms.userstore.connector.%s.plugin.", connectorName ) );
     }
 
     private UserPolicyConfig getUserPolicy( final String connectorName )
         throws InvalidUserStoreConnectorConfigException
     {
-        return new UserPolicyConfig( connectorName, verticalProperties.getProperty(
+        return new UserPolicyConfig( connectorName, getProperty(
             String.format( "cms.userstore.connector.%s.userPolicy", connectorName ) ) );
     }
 
     private GroupPolicyConfig getGroupPolicy( final String connectorName )
     {
-        return new GroupPolicyConfig( connectorName, verticalProperties.getProperty(
+        return new GroupPolicyConfig( connectorName, getProperty(
             String.format( "cms.userstore.connector.%s.groupPolicy", connectorName ) ) );
     }
 
-    @Autowired
-    public void setVerticalProperties( VerticalProperties value )
+    private String getProperty( final String key )
     {
-        this.verticalProperties = value;
+        final String systemProperty = StringUtils.trimToNull( System.getProperty( key ) );
+        if ( systemProperty != null )
+        {
+            return systemProperty;
+        }
+        return StringUtils.trimToNull( properties.getProperty( key ) );
+    }
+
+    private Properties getSubSet( final String base )
+    {
+        return PropertiesUtil.getSubSet( properties, base );
+    }
+
+    @Autowired
+    public void setProperties( ConfigProperties properties )
+    {
+        this.properties = properties;
     }
 }

@@ -28,6 +28,8 @@ public interface LivePortalTraceService
 
     ContentIndexQueryTrace startContentIndexQueryTracing();
 
+    RelatedContentFetchTrace startRelatedContentFetchTracing();
+
     ViewTransformationTrace startViewTransformationTracing();
 
     ViewFunctionTrace startViewFunctionTracing( String functionName );
@@ -59,6 +61,8 @@ public interface LivePortalTraceService
     void stopTracing( ViewFunctionTrace trace );
 
     void stopTracing( ContentIndexQueryTrace contentIndexQueryTrace );
+
+    void stopTracing( RelatedContentFetchTrace trace );
 
     void stopTracing( AttachmentRequestTrace attachmentRequestTrace );
 

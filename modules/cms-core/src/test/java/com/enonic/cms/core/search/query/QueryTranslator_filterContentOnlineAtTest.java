@@ -23,57 +23,61 @@ public class QueryTranslator_filterContentOnlineAtTest
     {
         final String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ \"42\" ]\n" +
-            "        }\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ \"1234\" ]\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"and\" : {\n" +
-            "          \"filters\" : [ {\n" +
-            "            \"range\" : {\n" +
-            "              \"publishfrom.date\" : {\n" +
-            "                \"from\" : null,\n" +
-            "                \"to\" : \"2011-11-15T16:23:00.000Z\",\n" +
-            "                \"include_lower\" : true,\n" +
-            "                \"include_upper\" : true\n" +
-            "              }\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"categorykey\" : [ \"42\" ]\n" +
             "            }\n" +
-            "          }, {\n" +
-            "            \"or\" : {\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contenttypekey\" : [ \"1234\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"and\" : {\n" +
             "              \"filters\" : [ {\n" +
-            "                \"missing\" : {\n" +
-            "                  \"field\" : \"publishto.date\"\n" +
-            "                }\n" +
-            "              }, {\n" +
             "                \"range\" : {\n" +
-            "                  \"publishto.date\" : {\n" +
-            "                    \"from\" : \"2011-11-15T16:23:00.000Z\",\n" +
-            "                    \"to\" : null,\n" +
-            "                    \"include_lower\" : false,\n" +
+            "                  \"publishfrom.date\" : {\n" +
+            "                    \"from\" : null,\n" +
+            "                    \"to\" : \"2011-11-15T16:23:00.000Z\",\n" +
+            "                    \"include_lower\" : true,\n" +
             "                    \"include_upper\" : true\n" +
             "                  }\n" +
             "                }\n" +
+            "              }, {\n" +
+            "                \"or\" : {\n" +
+            "                  \"filters\" : [ {\n" +
+            "                    \"missing\" : {\n" +
+            "                      \"field\" : \"publishto.date\"\n" +
+            "                    }\n" +
+            "                  }, {\n" +
+            "                    \"range\" : {\n" +
+            "                      \"publishto.date\" : {\n" +
+            "                        \"from\" : \"2011-11-15T16:23:00.000Z\",\n" +
+            "                        \"to\" : null,\n" +
+            "                        \"include_lower\" : false,\n" +
+            "                        \"include_upper\" : true\n" +
+            "                      }\n" +
+            "                    }\n" +
+            "                  } ]\n" +
+            "                }\n" +
             "              } ]\n" +
             "            }\n" +
-            "          } ]\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
+
         final Set<CategoryKey> categoryFilter = new HashSet<CategoryKey>();
         categoryFilter.add( new CategoryKey( 42 ) );
 

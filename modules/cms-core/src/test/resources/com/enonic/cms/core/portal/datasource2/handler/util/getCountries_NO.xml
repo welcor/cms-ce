@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<countries>
+  <country code="NO">
+    <english-name>NORWAY</english-name>
+    <local-name>NORGE</local-name>
+    <calling-code>47</calling-code>
+  </country>
+</countries>

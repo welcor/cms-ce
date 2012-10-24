@@ -28,7 +28,7 @@
 
   <filter-mapping>
       <filter-name>asciiCharactersFilter</filter-name>
-      <url-pattern>/*</url-pattern>
+      <url-pattern>/admin/adminpage</url-pattern>
       <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
 

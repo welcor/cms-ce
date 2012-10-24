@@ -62,7 +62,7 @@ public class PathToContentResolverTest
 
         Path resolvedContentPath = pathToContentResolver.resolveContentUrlLocalPath( content, siteKey );
 
-        assertEquals( "123/contentName", resolvedContentPath.getPathAsString() );
+        assertEquals( "/123/contentName", resolvedContentPath.getPathAsString() );
     }
 
     @Test
@@ -143,7 +143,7 @@ public class PathToContentResolverTest
 
         Path resolvedContentPath = pathToContentResolver.resolveContentUrlLocalPathForPermalink( content, sitePath );
 
-        assertEquals( "123/contentName", resolvedContentPath.getPathAsString() );
+        assertEquals( "/123/contentName", resolvedContentPath.getPathAsString() );
     }
 
     @Test
@@ -158,7 +158,7 @@ public class PathToContentResolverTest
 
         Path resolvedContentPath = pathToContentResolver.resolveContentUrlLocalPathForPermalink( content, sitePath );
 
-        assertEquals( "123/contentName/_window/features%3A+xslt+functions%3A+createwindowurl+-+content+page",
+        assertEquals( "/123/contentName/_window/features%3A+xslt+functions%3A+createwindowurl+-+content+page",
                       resolvedContentPath.getPathAsString() );
     }
 

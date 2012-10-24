@@ -35,27 +35,15 @@ public class CalendarServiceTest
     public void testTodayFormat()
     {
         Calendar today = new GregorianCalendar();
-        int day = today.get( Calendar.DAY_OF_MONTH );
-        int month = today.get( Calendar.MONTH );
-        int year = today.get( Calendar.YEAR );
-        SimpleDateFormat norwegianDateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
         SimpleDateFormat americanDateFormat = new SimpleDateFormat( "yyyy-MM-dd" );
-        String norwegianTodayString = norwegianDateFormat.format( today.getTime() );
         today.add( Calendar.DAY_OF_MONTH, 8 );
         int offsetDay = today.get( Calendar.DAY_OF_MONTH );
         int offsetMonth = today.get( Calendar.MONTH );
         int offsetYear = today.get( Calendar.YEAR );
         String americanOffsetTodayString = americanDateFormat.format( today.getTime() );
 
-        Document doc = service.getFormattedDate();
-
+        Document doc = service.getFormattedDate( System.currentTimeMillis(), 8, "yyyy-MM-dd hh:mm", "en", "US" );
         String xmlDoc = output.outputString( doc );
-        assertTrue( xmlDoc.contains( "<day>" + day + "</day>" ) );
-        assertTrue( xmlDoc.contains( "<month>" + month + "</month>" ) );
-        assertTrue( xmlDoc.contains( "<year>" + year + "</year>" ) );
-        assertTrue( xmlDoc.contains( norwegianTodayString ) );
-        Document doc3 = service.getFormattedDate( 8, "yyyy-MM-dd hh:mm", "en", "US" );
-        xmlDoc = output.outputString( doc3 );
         assertTrue( xmlDoc.contains( "<day>" + offsetDay + "</day>" ) );
         assertTrue( xmlDoc.contains( "<month>" + offsetMonth + "</month>" ) );
         assertTrue( xmlDoc.contains( "<year>" + offsetYear + "</year>" ) );
@@ -66,17 +54,17 @@ public class CalendarServiceTest
     public void testGetCalendar()
     {
         // The next 3 months, no matter when in the year:
-        Document doc = service.getCalendar( true, 0, 0, 3, true, false, "en", "Norway" );
+        Document doc = service.getCalendar( System.currentTimeMillis(), true, 0, 0, 3, true, false, "en", "Norway" );
         checkNumberOfMonthsInDoc( doc, 3 );
         // December 2008, and January 2009:
-        doc = service.getCalendar( false, 2008, 12, 2, true, false, "en", "no" );
+        doc = service.getCalendar( System.currentTimeMillis(), false, 2008, 12, 2, true, false, "en", "no" );
         checkNumberOfMonthsInDoc( doc, 2 );
         checkMonthNamesInDoc( doc, new String[]{"December", "January"} );
         // The next 3 months, no matter when in the year, including days.
-        doc = service.getCalendar( true, 0, 0, 3, true, true, "en", "Norway" );
+        doc = service.getCalendar( System.currentTimeMillis(), true, 0, 0, 3, true, true, "en", "Norway" );
         checkNumberOfMonthsInDoc( doc, 3 );  // This should be checked a little better.
         // December 2008, and January 2009, including days:
-        doc = service.getCalendar( false, 2008, 11, 5, true, true, "no", "no" );
+        doc = service.getCalendar( System.currentTimeMillis(), false, 2008, 11, 5, true, true, "no", "no" );
         checkNumberOfMonthsInDoc( doc, 5 );  // This should be checked a little better.
         checkMonthNamesInDoc( doc, new String[]{"November", "Desember", "Januar", "Februar", "Mars"} );
     }
@@ -111,6 +99,4 @@ public class CalendarServiceTest
                         names[i].compareToIgnoreCase( monthNames.get( i ) ) == 0 );
         }
     }
-
-
 }

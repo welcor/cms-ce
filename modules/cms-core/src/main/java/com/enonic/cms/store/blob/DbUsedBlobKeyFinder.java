@@ -17,8 +17,6 @@ import com.enonic.cms.framework.blob.gc.UsedBlobKeyFinder;
 
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
-import com.enonic.cms.store.dao.VirtualFileDao;
-import com.enonic.cms.store.vfs.db.VirtualFileEntity;
 
 @Component("usedBlobStoreFinder")
 public final class DbUsedBlobKeyFinder
@@ -26,29 +24,14 @@ public final class DbUsedBlobKeyFinder
 {
     private BinaryDataDao binaryDataDao;
 
-    private VirtualFileDao virtualFileDao;
-
     public Set<BlobKey> findKeys()
         throws Exception
     {
         final HashSet<BlobKey> keys = Sets.newHashSet();
 
-        findFromVirtualFile( keys );
         findFromBinaryData( keys );
 
         return keys;
-    }
-
-    private void findFromVirtualFile( final Set<BlobKey> keys )
-    {
-        for ( final VirtualFileEntity entity : this.virtualFileDao.findAll() )
-        {
-            final String key = entity.getBlobKey();
-            if ( key != null )
-            {
-                keys.add( new BlobKey( key ) );
-            }
-        }
     }
 
     private void findFromBinaryData( final Set<BlobKey> keys )
@@ -67,11 +50,5 @@ public final class DbUsedBlobKeyFinder
     public void setBinaryDataDao( final BinaryDataDao dao )
     {
         this.binaryDataDao = dao;
-    }
-
-    @Autowired
-    public void setVirtualFileDao( final VirtualFileDao dao )
-    {
-        this.virtualFileDao = dao;
     }
 }

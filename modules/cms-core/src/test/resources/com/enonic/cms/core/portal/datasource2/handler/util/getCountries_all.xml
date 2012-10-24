@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<countries>
+  <country code="SE">
+    <english-name>SWEDEN</english-name>
+    <local-name>SVERIGE</local-name>
+    <calling-code>46</calling-code>
+  </country>
+  <country code="NO">
+    <english-name>NORWAY</english-name>
+    <local-name>NORGE</local-name>
+    <calling-code>47</calling-code>
+  </country>
+</countries>

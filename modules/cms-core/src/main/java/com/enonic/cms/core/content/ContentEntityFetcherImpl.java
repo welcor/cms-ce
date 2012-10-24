@@ -6,7 +6,6 @@ package com.enonic.cms.core.content;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentEagerFetches;
@@ -24,7 +23,7 @@ public final class ContentEntityFetcherImpl
         this.contentDao = contentDao;
     }
 
-    public Map<ContentKey, ContentEntity> fetch( List<ContentKey> keys )
+    public ContentMap fetch( List<ContentKey> keys )
     {
         final FindContentByKeysCommand command =
             new FindContentByKeysCommand().contentKeys( new ArrayList<ContentKey>( keys ) ).eagerFetches(

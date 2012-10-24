@@ -318,6 +318,7 @@ public class MenuItemServiceImpl
         if ( changed )
         {
             sectionContent.setTimestamp( timeService.getNowAsDateTime().toDate() );
+            indexTransactionService.registerUpdate( command.getContentToApprove(), true );
         }
     }
 

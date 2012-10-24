@@ -25,7 +25,6 @@ import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.DataSourceResult;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
@@ -257,14 +256,14 @@ public class WindowRenderer
 
         String content = clonedRenderedWindowResult.getContent();
 
-        String resolvedContent = executePostProcessInstructions( content, clonedRenderedWindowResult.getOutputMethod() );
+        String resolvedContent = executePostProcessInstructions( content );
 
         clonedRenderedWindowResult.setContent( resolvedContent );
 
         return clonedRenderedWindowResult;
     }
 
-    private String executePostProcessInstructions( String pageMarkup, String outputMode )
+    private String executePostProcessInstructions( String pageMarkup )
     {
         final InstructionPostProcessingTrace instructionPostProcessingTrace =
             InstructionPostProcessingTracer.startTracingForWindow( liveTraceService );
@@ -313,13 +312,13 @@ public class WindowRenderer
         try
         {
             PageRequestFactory.getPageRequest().setCurrentPortletKey( window.getPortlet().getPortletKey() );
-            DataSourceResult dataSourceResult = getDataSourceResult( window, exectuor );
+            XMLDocument dataSourceResult = getDataSourceResult( window, exectuor );
 
             ViewTransformationResult portletViewTransformation;
             final ViewTransformationTrace trace = ViewTransformationTracer.startTracing( liveTraceService );
             try
             {
-                portletViewTransformation = renderWindowView( window, dataSourceResult.getData(), trace );
+                portletViewTransformation = renderWindowView( window, dataSourceResult, trace );
                 if ( window.getPortlet().getBorderKey() != null )
                 {
                     portletViewTransformation = renderWindowBorderView( window, portletViewTransformation.getContent() );
@@ -474,7 +473,7 @@ public class WindowRenderer
         }
     }
 
-    private DataSourceResult getDataSourceResult( Window window, UserEntity executor )
+    private XMLDocument getDataSourceResult( Window window, UserEntity executor )
     {
         Datasources datasources = window.getPortlet().getDatasources();
 
@@ -498,7 +497,6 @@ public class WindowRenderer
         datasourceExecutorContext.setPortalInstanceKey( portalInstanceKey );
         datasourceExecutorContext.setPortletWindowRenderedInline( context.isRenderedInline() );
         datasourceExecutorContext.setPreviewContext( context.getPreviewContext() );
-        datasourceExecutorContext.setProcessors( context.getProcessors() );
         datasourceExecutorContext.setProfile( context.getProfile() );
         datasourceExecutorContext.setRequestParameters( this.requestParameters );
         datasourceExecutorContext.setSite( context.getSite() );

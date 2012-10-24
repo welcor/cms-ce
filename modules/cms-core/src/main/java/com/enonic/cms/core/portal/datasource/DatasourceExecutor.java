@@ -11,10 +11,10 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator;
-import com.enonic.cms.core.portal.datasource.expressionfunctions.ExpressionContext;
+import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
+import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCallFactory;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTrace;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -37,10 +37,8 @@ public class DatasourceExecutor
         this.context = datasourceExecutorContext;
     }
 
-    public DataSourceResult getDataSourceResult( Datasources datasources )
+    public XMLDocument getDataSourceResult( Datasources datasources )
     {
-        DataSourceResult dataSourceResult = new DataSourceResult();
-
         Document resultDoc = new Document( new Element( resolveResultRootElementName( datasources ) ) );
         Element verticaldataEl = resultDoc.getRootElement();
 
@@ -71,10 +69,8 @@ public class DatasourceExecutor
 
         }
 
-        dataSourceResult.setData( XMLDocumentFactory.create( resultDoc ) );
         setTraceDataSourceResult( resultDoc );
-
-        return dataSourceResult;
+        return XMLDocumentFactory.create( resultDoc );
     }
 
     /**
@@ -121,7 +117,7 @@ public class DatasourceExecutor
 
     private String resolveResultRootElementName( Datasources datasources )
     {
-        final String name = datasources.getResultRootName();
+        final String name = datasources.getResultElementName();
 
         if ( name != null && name.length() > 0 )
         {
@@ -142,9 +138,6 @@ public class DatasourceExecutor
     private Document executeMethodCall( final Datasource datasource, final MethodCall methodCall )
     {
         XMLDocument xmlDocument = methodCall.invoke();
-
-        xmlDocument = postProcessDocument( xmlDocument, methodCall );
-
         Document jdomDocument = (Document) xmlDocument.getAsJDOMDocument().clone();
 
         if ( datasource.getResultElementName() != null )
@@ -156,23 +149,6 @@ public class DatasourceExecutor
         }
 
         return jdomDocument;
-    }
-
-
-    private XMLDocument postProcessDocument( XMLDocument source, MethodCall methodCall )
-    {
-        if ( !context.hasProcessors() )
-        {
-            return source;
-        }
-
-        org.w3c.dom.Document doc = source.getAsDOMDocument();
-        for ( DataSourceProcessor processor : context.getProcessors() )
-        {
-            processor.postProcess( doc, methodCall );
-        }
-
-        return XMLDocumentFactory.create( doc );
     }
 
     private void setTraceDataSourceResult( Document result )

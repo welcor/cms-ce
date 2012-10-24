@@ -19,21 +19,24 @@ public class QueryTranslator_filterCombinationsTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ \"15\" ]\n" +
-            "        }\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ \"1001\", \"1002\" ]\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"categorykey\" : [ \"15\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contenttypekey\" : [ \"1001\", \"1002\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -60,27 +63,31 @@ public class QueryTranslator_filterCombinationsTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"range\" : {\n" +
-            "      \"key.number\" : {\n" +
-            "        \"from\" : 100.0,\n" +
-            "        \"to\" : null,\n" +
-            "        \"include_lower\" : false,\n" +
-            "        \"include_upper\" : true\n" +
-            "      }\n" +
-            "    }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ \"15\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key.number\" : {\n" +
+            "            \"from\" : 100.0,\n" +
+            "            \"to\" : null,\n" +
+            "            \"include_lower\" : false,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
             "        }\n" +
             "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ \"1001\" ]\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"categorykey\" : [ \"15\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contenttypekey\" : [ \"1001\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -108,25 +115,29 @@ public class QueryTranslator_filterCombinationsTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 20,\n" +
             "  \"query\" : {\n" +
-            "    \"range\" : {\n" +
-            "      \"key.number\" : {\n" +
-            "        \"from\" : 100.0,\n" +
-            "        \"to\" : null,\n" +
-            "        \"include_lower\" : false,\n" +
-            "        \"include_upper\" : true\n" +
-            "      }\n" +
-            "    }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"categorykey\" : [ \"15\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key.number\" : {\n" +
+            "            \"from\" : 100.0,\n" +
+            "            \"to\" : null,\n" +
+            "            \"include_lower\" : false,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
             "        }\n" +
             "      },\n" +
-            "      \"must\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contenttypekey\" : [ \"1001\" ]\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"categorykey\" : [ \"15\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"must\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contenttypekey\" : [ \"1001\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<dataSources>
+  <dataSource>
+    <methodname>getPreferences</methodname>
+    <parameters>
+      <parameter name="scope" type="string"/>
+      <parameter name="wildCardkey" type="string">music*</parameter>
+    </parameters>
+  </dataSource>
+  <dataSource>
+    <methodname>getPreferences</methodname>
+    <parameters>
+      <parameter name="scope" type="string">WINDOW</parameter>
+      <parameter name="wildCardkey" type="string">music*</parameter>
+    </parameters>
+  </dataSource>
+  <dataSource>
+    <methodname>getPreferences</methodname>
+    <parameters>
+      <parameter name="scope" type="string"/>
+      <parameter name="wildCardkey" type="string">music*</parameter>
+      <parameter name="uniqueMatch" type="boolean">true</parameter>
+    </parameters>
+  </dataSource>
+  <dataSource>
+    <methodname>getPreferences</methodname>
+    <parameters>
+      <parameter name="scope" type="string">WINDOW</parameter>
+      <parameter name="wildCardkey" type="string">music*</parameter>
+      <parameter name="uniqueMatch" type="boolean">true</parameter>
+    </parameters>
+  </dataSource>
+</dataSources>

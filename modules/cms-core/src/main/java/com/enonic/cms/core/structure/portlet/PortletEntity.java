@@ -1,24 +1,19 @@
 package com.enonic.cms.core.structure.portlet;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.CacheSettings;
 import com.enonic.cms.core.portal.datasource.Datasources;
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -50,8 +45,6 @@ public class PortletEntity
     private transient Document xmlDataAsJDOMDocument;
 
     private transient Datasources datasources;
-
-    private transient PortletData portletData;
 
     public int getKey()
     {
@@ -121,7 +114,6 @@ public class PortletEntity
 
         // Invalidate cache
         xmlDataAsJDOMDocument = null;
-        portletData = null;
         datasources = null;
     }
 
@@ -172,10 +164,6 @@ public class PortletEntity
         String mincachetimeString = dataEl.getAttributeValue( "mincachetime", String.valueOf( defaultTimeToLive ) );
         int secondsToLive = Integer.valueOf( mincachetimeString );
         boolean cacheEnabled = !Boolean.valueOf( cachedisabledString );
-        if ( cacheEnabled )
-        {
-            cacheEnabled = getDatasources().isCacheable();
-        }
         return new CacheSettings( cacheEnabled, cachetypeString, secondsToLive );
     }
 
@@ -282,38 +270,10 @@ public class PortletEntity
             Element datasourcesEl = rootEl.getChild( "datasources" );
             if ( datasourcesEl != null )
             {
-                datasources = new Datasources( DatasourcesType.PORTLET, datasourcesEl );
+                datasources = new Datasources( datasourcesEl );
             }
         }
 
         return datasources;
     }
-
-    private PortletData getPortletData()
-    {
-        if ( portletData == null )
-        {
-            if ( xmlData != null )
-            {
-                portletData = new PortletData( this.getXmlDataAsJDOMDocument() );
-            }
-            else
-            {
-                portletData = new PortletData();
-            }
-        }
-        return portletData;
-    }
-
-    public Boolean getCacheDisabled()
-    {
-        return getPortletData().getCacheDisabled();
-    }
-
-    public String getCacheType()
-    {
-        return getPortletData().getCacheType();
-    }
-
-
 }

@@ -6,10 +6,10 @@ package com.enonic.cms.store.dao;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedMap;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.ContentSpecification;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
@@ -23,7 +23,7 @@ public interface ContentDao
 {
     ContentEntity findByKey( ContentKey contentKey );
 
-    SortedMap<ContentKey, ContentEntity> findByKeys( FindContentByKeysCommand command );
+    ContentMap findByKeys( FindContentByKeysCommand command );
 
     List<ContentKey> findBySpecification( ContentSpecification specification, String orderBy, int count );
 

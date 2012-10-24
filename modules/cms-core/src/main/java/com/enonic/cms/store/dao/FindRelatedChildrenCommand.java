@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Query;
@@ -19,6 +18,7 @@ import com.enonic.cms.framework.hibernate.support.SelectBuilder;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.ContentStatus;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.ContentVersionKey;
@@ -83,14 +83,14 @@ class FindRelatedChildrenCommand
             contentKeys.add( (ContentKey) row[1] );
         }
 
-        final Map<ContentKey, ContentEntity> contentMapByKey = retrieveContent( contentKeys );
+        final ContentMap contentMap = retrieveContent( contentKeys );
 
         final List<RelatedChildContent> relatedChildContrents = new ArrayList<RelatedChildContent>();
         for ( Object[] row : list )
         {
             ContentVersionKey versionKey = (ContentVersionKey) row[0];
             ContentKey contentKey = (ContentKey) row[1];
-            ContentEntity content = contentMapByKey.get( contentKey );
+            ContentEntity content = contentMap.get( contentKey );
             RelatedChildContent relatedChildContent = new RelatedChildContent( versionKey, content );
             relatedChildContrents.add( relatedChildContent );
         }
@@ -142,7 +142,7 @@ class FindRelatedChildrenCommand
         return hqlQuery.toString();
     }
 
-    private Map<ContentKey, ContentEntity> retrieveContent( final Set<ContentKey> contentKeys )
+    private ContentMap retrieveContent( final Set<ContentKey> contentKeys )
     {
         final FindContentByKeysQuerier findContentByKeysQuerier =
             new FindContentByKeysQuerier( hibernateTemplate.getSessionFactory().getCurrentSession(), ContentEagerFetches.PRESET_FOR_PORTAL,

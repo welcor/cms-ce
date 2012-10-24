@@ -143,7 +143,7 @@ public final class PageTemplateEntityDao
         {
             String key = entity.getStyleKey().toString();
             key = key.replace( oldPrefix, newPrefix );
-            entity.setStyleKey( new ResourceKey( key ) );
+            entity.setStyleKey( ResourceKey.from( key ) );
         }
     }
 
@@ -155,7 +155,7 @@ public final class PageTemplateEntityDao
         {
             String key = entity.getCssKey().toString();
             key = key.replace( oldPrefix, newPrefix );
-            entity.setCssKey( new ResourceKey( key ) );
+            entity.setCssKey( ResourceKey.from( key ) );
         }
     }
 

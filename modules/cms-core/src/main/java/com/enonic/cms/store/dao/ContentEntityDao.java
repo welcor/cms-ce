@@ -7,7 +7,6 @@ package com.enonic.cms.store.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedMap;
 
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import com.enonic.cms.framework.hibernate.support.SelectBuilder;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.ContentSpecification;
 import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.RelatedContentEntity;
@@ -42,7 +42,7 @@ public class ContentEntityDao
         return get( ContentEntity.class, contentKey );
     }
 
-    public SortedMap<ContentKey, ContentEntity> findByKeys( final FindContentByKeysCommand command )
+    public ContentMap findByKeys( final FindContentByKeysCommand command )
     {
         final FindContentByKeysQuerier findContentByKeysQuerier =
             new FindContentByKeysQuerier( getHibernateTemplate().getSessionFactory().getCurrentSession(), command.getContentEagerFetches(),

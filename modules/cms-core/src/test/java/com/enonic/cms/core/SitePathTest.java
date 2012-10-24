@@ -236,10 +236,30 @@ public class SitePathTest
         assertEquals( "/en/sample packages/articles", sitePath.resolvePathToMenuItem().toString() );
     }
 
+    public void testGetWindowReference_when_path_to_page_with_window_reference()
+    {
+        SitePath sitePath = new SitePath( siteKey_0, "/en/home/_window/twitranet" );
+        assertNotNull( sitePath.getWindowReference() );
+        assertEquals( new Path( "/en/home" ), sitePath.getWindowReference().getPathToMenuItem() );
+        assertEquals( "twitranet", sitePath.getWindowReference().getPortletName() );
+    }
+
+    public void testHasReferenceToWindow_when_path_to_page_with_window_reference()
+    {
+        SitePath sitePath = new SitePath( siteKey_0, "/en/home/_window/twitranet" );
+        assertEquals( true, sitePath.hasReferenceToWindow() );
+    }
+
+    public void testResolvePathToMenuItem_when_path_to_page_with_window_reference()
+    {
+        SitePath sitePath = new SitePath( siteKey_0, "/en/home/_window/twitranet" );
+        assertEquals( new Path( "/en/home" ), sitePath.resolvePathToMenuItem() );
+    }
+
     public void testResolvePathToWindow_when_path_has_window_reference()
     {
         SitePath sitePath = new SitePath( siteKey_0, "/my path/_window/my portlet" );
-        assertEquals( "my path", sitePath.resolvePathToMenuItem().toString() );
+        assertEquals( "/my path", sitePath.resolvePathToMenuItem().toString() );
     }
 
     public void testResolvePathToWindow_when_path_has_content_reference()

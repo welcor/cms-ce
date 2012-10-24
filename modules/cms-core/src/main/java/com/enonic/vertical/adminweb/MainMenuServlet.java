@@ -30,7 +30,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.resource.ResourceFolder;
-import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.resource.xml.ResourceXmlCreator;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;

@@ -132,7 +132,7 @@ import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.resource.ResourceXmlCreator;
+import com.enonic.cms.core.resource.xml.ResourceXmlCreator;
 import com.enonic.cms.core.security.ImpersonateCommand;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
@@ -1986,7 +1986,7 @@ public abstract class InternalClientImpl
         final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getResource", livePortalTraceService );
         try
         {
-            ResourceKey resourceKey = new ResourceKey( params.resourcePath );
+            ResourceKey resourceKey = ResourceKey.from( params.resourcePath );
             ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );
             if ( resourceFile == null )
             {

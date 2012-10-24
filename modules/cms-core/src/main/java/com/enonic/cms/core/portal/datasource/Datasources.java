@@ -7,84 +7,51 @@ package com.enonic.cms.core.portal.datasource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdom.Document;
 import org.jdom.Element;
 
-import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
 public class Datasources
 {
-    private Element datasourcesEl;
+    private final Element root;
 
-    private DatasourcesType type;
-
-    private String resultRootName;
-
-    public Datasources( DatasourcesType type )
+    public Datasources( final Element root )
     {
-        this.type = type;
-        Element rootElement = new Element( "pagetemplatedata" );
-        new Document( rootElement );
-        datasourcesEl = new Element( "datasources" );
-        rootElement.addContent( datasourcesEl );
-        resultRootName = datasourcesEl.getAttributeValue( "result-element" );
-    }
-
-    public Datasources( DatasourcesType type, Element datasourcesEl )
-    {
-        Preconditions.checkNotNull( type );
-        Preconditions.checkNotNull( datasourcesEl );
-        Preconditions.checkArgument( "datasources".equals( datasourcesEl.getName() ),
-                                     "Expected datasources to be the root element, but was: " + datasourcesEl.getName() );
-
-        this.type = type;
-        this.datasourcesEl = datasourcesEl;
-        resultRootName = datasourcesEl.getAttributeValue( "result-element" );
-    }
-
-    public boolean isOfType( DatasourcesType x )
-    {
-        return this.type.equals( x );
+        if ( root == null )
+        {
+            this.root = new Element( "datasources" );
+        }
+        else
+        {
+            this.root = root;
+        }
     }
 
     public boolean hasSessionContext()
     {
-        return hasAttributeValue( "true", "sessioncontext", datasourcesEl );
+        return hasAttributeValue( "true", "sessioncontext", this.root );
     }
 
     public boolean hasHttpContext()
     {
-        return hasAttributeValue( "true", "httpcontext", datasourcesEl );
+        return hasAttributeValue( "true", "httpcontext", this.root );
     }
 
     public boolean hasCookieContext()
     {
-        return hasAttributeValue( "true", "cookiecontext", datasourcesEl );
-    }
-
-    public boolean hasStyleContext()
-    {
-        return hasAttributeValue( "true", "stylecontext", datasourcesEl );
+        return hasAttributeValue( "true", "cookiecontext", this.root );
     }
 
     public List<Datasource> getDatasourceElements()
     {
-        ArrayList<Datasource> datasources = new ArrayList<Datasource>();
-        for ( Element datasourceElement : JDOMUtil.getElements( datasourcesEl ) )
+        final ArrayList<Datasource> datasources = new ArrayList<Datasource>();
+        for ( Element datasourceElement : JDOMUtil.getElements( this.root ) )
         {
             datasources.add( new Datasource( datasourceElement ) );
         }
         return datasources;
-    }
-
-    public boolean isCacheable()
-    {
-        boolean cacheable = !hasSessionContext();
-        cacheable &= !hasHttpContext();
-        cacheable &= !hasCookieContext();
-        return cacheable;
     }
 
     private boolean hasAttributeValue( String expectedValue, String attrName, Element el )
@@ -92,8 +59,9 @@ public class Datasources
         return expectedValue.equals( el.getAttributeValue( attrName ) );
     }
 
-    public String getResultRootName()
+    public String getResultElementName()
     {
-        return resultRootName;
+        final String value = this.root.getAttributeValue( "result-element" );
+        return Strings.emptyToNull( value );
     }
 }

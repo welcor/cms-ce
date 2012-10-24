@@ -29,7 +29,7 @@ import com.enonic.cms.store.dao.GroupDao;
  * May 15, 2009
  */
 @Component
-public class DatasourcesContextXmlCreator
+public final class DatasourcesContextXmlCreator
     implements InitializingBean
 {
     @Autowired
@@ -176,8 +176,7 @@ public class DatasourcesContextXmlCreator
         if ( context.hasCssKeys() )
         {
             Element frameworkEl = getOrCreateElement( contextElem, "framework" );
-            boolean styleContextOn = datasources.hasStyleContext();
-            Element stylesEl = stylesContextXmlCreator.createStylesElement( context.getCssKeys(), styleContextOn );
+            Element stylesEl = stylesContextXmlCreator.createStylesElement( context.getCssKeys() );
             frameworkEl.addContent( stylesEl );
         }
 

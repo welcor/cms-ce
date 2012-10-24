@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.store.support;
 
-import java.util.HashMap;
 import java.util.Properties;
 
 import org.hibernate.cfg.Configuration;
@@ -84,12 +83,6 @@ public final class HibernateConfigurator
         cacheBootstrap.setCacheName( "entity" );
         cacheBootstrap.setCacheManager( this.cacheManager );
         setHibernateDialect( getHibernateProperties() );
-
-        final HashMap<String, Object> listenerMap = new HashMap<String, Object>();
-        listenerMap.put( "post-delete", EntityChangeListenerHub.getInstance() );
-        listenerMap.put( "post-insert", EntityChangeListenerHub.getInstance() );
-        listenerMap.put( "post-update", EntityChangeListenerHub.getInstance() );
-        setEventListeners( listenerMap );
 
         super.afterPropertiesSet();
     }

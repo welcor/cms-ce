@@ -1,18 +1,20 @@
 package com.enonic.vertical.adminweb;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static junit.framework.Assert.*;
 
 import com.enonic.cms.core.resource.ResourceKey;
 
 public class ResourceHandlerServletTest
-        extends TestCase
 {
 
     private ResourceHandlerServlet servlet;
 
-    @Override
-    protected void setUp()
-            throws Exception
+    @Before
+    public void setUp()
+        throws Exception
     {
         servlet = new ResourceHandlerServlet();
     }
@@ -24,11 +26,12 @@ public class ResourceHandlerServletTest
      *  we move folder "resolvers"
      *      result: "/sites/stuff/resolvers"
      */
+    @Test
     public void testResolvePathForNewFolderComputePath()
     {
 
-        ResourceKey sourceFolderPath = new ResourceKey( "/libraries/resolvers" );
-        ResourceKey destinationFolderPath = new ResourceKey( "/sites/stuff" );
+        ResourceKey sourceFolderPath = ResourceKey.from( "/libraries/resolvers" );
+        ResourceKey destinationFolderPath = ResourceKey.from( "/sites/stuff" );
 
         String newPath = servlet.resolvePathForNewFolder( sourceFolderPath, destinationFolderPath );
         assertEquals( "/sites/stuff/resolvers", newPath );
@@ -41,31 +44,26 @@ public class ResourceHandlerServletTest
      *  we move folder "resolvers"
      *      result: "/resolvers"
      */
+    @Test
     public void testResolvePathForNewFolderRootFolder()
     {
 
-        ResourceKey sourceFolderPath = new ResourceKey( "/libraries/resolvers" );
-        ResourceKey destinationFolderPath = new ResourceKey( "/" );
+        ResourceKey sourceFolderPath = ResourceKey.from( "/libraries/resolvers" );
+        ResourceKey destinationFolderPath = ResourceKey.from( "/" );
 
         String newPath = servlet.resolvePathForNewFolder( sourceFolderPath, destinationFolderPath );
         assertEquals( "/resolvers", newPath );
     }
 
-    /*
-     * Case:
-     *      source:      "resolvers"  - wrong, regexp matcher doesn't match
-     *      destination: "/sites/stuff"
-     *  we move folder "resolvers"
-     *      result: "/sites/stuff"
-     */
+    @Test
     public void testResolvePathForNewFolder()
     {
 
-        ResourceKey sourceFolderPath = new ResourceKey( "resolvers" );
-        ResourceKey destinationFolderPath = new ResourceKey( "/sites/stuff" );
+        ResourceKey sourceFolderPath = ResourceKey.from( "/resolvers" );
+        ResourceKey destinationFolderPath = ResourceKey.from( "/sites/stuff" );
 
         String newPath = servlet.resolvePathForNewFolder( sourceFolderPath, destinationFolderPath );
-        assertEquals( "/sites/stuff", newPath );
+        assertEquals( "/sites/stuff/resolvers", newPath );
     }
 
 }

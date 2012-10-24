@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.content.ContentACLSynchronizer;
-import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.ContentStorer;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
@@ -174,7 +173,7 @@ public class CategoryCommandProcessorFactory
 
     SynchronizeContentACLProcessor createSynchronizeContentACLCommandProcessor( final SynchronizeContentACLCommand command )
     {
-        final SortedMap<ContentKey, ContentEntity> contentToSynchronize = contentDao.findByKeys(
+        final ContentMap contentToSynchronize = contentDao.findByKeys(
             new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 
@@ -205,7 +204,7 @@ public class CategoryCommandProcessorFactory
 
     ModifyContentACLCommandProcessor createModifyContentACLCommandProcessor( final ModifyContentACLCommand command )
     {
-        final SortedMap<ContentKey, ContentEntity> contentToSynchronize = contentDao.findByKeys(
+        final ContentMap contentToSynchronize = contentDao.findByKeys(
             new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 

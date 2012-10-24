@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DatasourceExecutionTrace
     extends BaseTrace
-    implements ContentIndexQuerier, Trace
+    implements ContentIndexQuerier, RelatedContentFetcher, Trace
 {
     private String methodName;
 
@@ -21,6 +21,8 @@ public class DatasourceExecutionTrace
     private Traces<ClientMethodExecutionTrace> clientMethodExecutionTraceTraces = new Traces<ClientMethodExecutionTrace>();
 
     private Traces<ContentIndexQueryTrace> contentIndexQueryTraces = new Traces<ContentIndexQueryTrace>();
+
+    private Traces<RelatedContentFetchTrace> relatedContentFetchTraces = new Traces<RelatedContentFetchTrace>();
 
     DatasourceExecutionTrace( String methodName )
     {
@@ -94,9 +96,21 @@ public class DatasourceExecutionTrace
         contentIndexQueryTraces.add( trace );
     }
 
+    @Override
+    public void addRelatedContentFetchTrace( final RelatedContentFetchTrace trace )
+    {
+        relatedContentFetchTraces.add( trace );
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     public Traces<ContentIndexQueryTrace> getContentIndexQueryTraces()
     {
         return contentIndexQueryTraces;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public Traces<RelatedContentFetchTrace> getRelatedContentFetchTraces()
+    {
+        return relatedContentFetchTraces;
     }
 }

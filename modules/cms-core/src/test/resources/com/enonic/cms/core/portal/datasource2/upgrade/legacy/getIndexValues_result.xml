@@ -1,0 +1,12 @@
+<data-sources>
+  <data-source name="getIndexValues">
+    <parameter name="path">data/title</parameter>
+    <parameter name="categoryKeys">1</parameter>
+    <parameter name="recursive">true</parameter>
+    <parameter name="contentTypeKeys">1224</parameter>
+    <parameter name="index">0</parameter>
+    <parameter name="count">200</parameter>
+    <parameter name="distinct">true</parameter>
+    <parameter name="order">ASC</parameter>
+  </data-source>
+</data-sources>

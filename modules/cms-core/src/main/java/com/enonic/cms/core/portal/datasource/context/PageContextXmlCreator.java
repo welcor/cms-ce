@@ -20,7 +20,7 @@ import com.enonic.cms.core.structure.portlet.PortletEntity;
 /**
  * May 15, 2009
  */
-public class PageContextXmlCreator
+final class PageContextXmlCreator
 {
     public Element createPageElementForMenuItemRequest( final Regions regions, final MenuItemEntity menuItem,
                                                         final PageTemplateEntity pageTemplate )

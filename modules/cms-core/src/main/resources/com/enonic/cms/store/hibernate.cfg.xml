@@ -12,6 +12,10 @@
     <property name="hibernate.cache.use_structured_entries">false</property>
     <property name="hibernate.generate_statistics">false</property>
     <property name="hibernate.jndi.weblogic.jndi.replicateBindings">false</property>
+    <!-- JBoss 5.1.2 classloading isolation is leaking, this is to prevent issues with hibernate annotations -->
+    <property name="hibernate.validator.apply_to_ddl">false</property>
+    <property name="hibernate.validator.autoregister_listeners">false</property>
+    <!-- end of JBoss specific stuff -->
     <mapping resource="com/enonic/cms/store/entity/BinaryDataEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/CategoryAccessEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/CategoryEntity.hbm.xml"/>
@@ -44,6 +48,5 @@
     <mapping resource="com/enonic/cms/store/entity/UnitEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/UserEntity.hbm.xml"/>
     <mapping resource="com/enonic/cms/store/entity/UserStoreEntity.hbm.xml"/>
-    <mapping resource="com/enonic/cms/store/entity/VirtualFileEntity.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

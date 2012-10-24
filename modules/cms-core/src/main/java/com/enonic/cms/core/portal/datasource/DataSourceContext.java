@@ -33,37 +33,42 @@ public class DataSourceContext
         this.previewContext = PreviewContext.NO_PREVIEW;
     }
 
-    public void setSiteKey( final SiteKey value )
+    public final void setSiteKey( final SiteKey value )
     {
         siteKey = value;
     }
 
-    public void setPortalInstanceKey( final PortalInstanceKey value )
+    public final void setPortalInstanceKey( final PortalInstanceKey value )
     {
         portalInstanceKey = value;
     }
 
-    public void setUser( final UserEntity user )
+    public final void setPreviewContext( final PreviewContext previewContext )
+    {
+        this.previewContext = previewContext;
+    }
+
+    public final void setUser( final UserEntity user )
     {
         this.user = user;
     }
 
-    public SiteKey getSiteKey()
+    public final SiteKey getSiteKey()
     {
         return siteKey;
     }
 
-    public PortalInstanceKey getPortalInstanceKey()
+    public final PortalInstanceKey getPortalInstanceKey()
     {
         return portalInstanceKey;
     }
 
-    public UserEntity getUser()
+    public final UserEntity getUser()
     {
         return user;
     }
 
-    public PreviewContext getPreviewContext()
+    public final PreviewContext getPreviewContext()
     {
         return previewContext;
     }

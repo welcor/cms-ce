@@ -21,15 +21,13 @@ import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.store.resource.FileResourceEvent;
-import com.enonic.cms.store.resource.FileResourceListener;
 
 /**
  * Created by rmy - Date: Apr 22, 2009
  */
 @Service
 public class LocalizationResourceBundleServiceImpl
-    implements LocalizationResourceBundleService, FileResourceListener
+    implements LocalizationResourceBundleService
 {
     private ResourceService resourceService;
 
@@ -64,7 +62,7 @@ public class LocalizationResourceBundleServiceImpl
 
         bundleResourceKey = bundleResourceKey + bundleExtension + ".properties";
 
-        return getOrCreateProperties( new ResourceKey( bundleResourceKey ) );
+        return getOrCreateProperties( ResourceKey.from( bundleResourceKey ) );
     }
 
     private Properties getOrCreateProperties( ResourceKey resourceKey )
@@ -168,13 +166,5 @@ public class LocalizationResourceBundleServiceImpl
     public void setCacheManager( final CacheManager cacheManager )
     {
         this.propertiesCache = cacheManager.getOrCreateCache( "localization" );
-    }
-
-    public void resourceChanged( FileResourceEvent event )
-    {
-        if ( event.getName().getName().endsWith( ".properties" ) )
-        {
-            this.propertiesCache.removeAll();
-        }
     }
 }

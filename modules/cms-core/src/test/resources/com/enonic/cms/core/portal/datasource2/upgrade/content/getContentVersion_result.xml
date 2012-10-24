@@ -1,0 +1,6 @@
+<data-sources>
+  <data-source name="getContentVersion">
+    <parameter name="versionKeys">2</parameter>
+    <parameter name="childrenLevel">1</parameter>
+  </data-source>
+</data-sources>

@@ -13,7 +13,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.sql.model.Table;
-import com.enonic.vertical.VerticalProperties;
 import com.enonic.vertical.engine.BaseEngine;
 import com.enonic.vertical.engine.PresentationEngine;
 import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
@@ -48,8 +47,6 @@ public abstract class BaseHandler
     protected BaseEngine baseEngine;
 
     protected AdminConsoleTranslationService languageMap;
-
-    protected VerticalProperties verticalProperties;
 
     // Services:
 
@@ -122,12 +119,6 @@ public abstract class BaseHandler
     public BaseHandler()
     {
 
-    }
-
-    @Autowired
-    public void setVerticalProperties( VerticalProperties value )
-    {
-        this.verticalProperties = value;
     }
 
     @Autowired

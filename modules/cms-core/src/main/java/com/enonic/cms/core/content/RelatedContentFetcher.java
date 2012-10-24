@@ -17,6 +17,8 @@ import com.enonic.cms.core.content.resultset.RelatedContent;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.content.resultset.RelatedParentContent;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTrace;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTracer;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.RelatedParentContentQuery;
 
@@ -36,9 +38,14 @@ public class RelatedContentFetcher
     private ContentResultSet contentResultSet;
 
 
+    public RelatedContentFetcher( ContentDao contentDao, final RelatedContentFetchTrace trace )
+    {
+        super( contentDao, trace );
+    }
+
     public RelatedContentFetcher( ContentDao contentDao )
     {
-        super( contentDao );
+        super( contentDao, null );
     }
 
     public RelatedContentResultSet fetch( final ContentEntity content )
@@ -76,6 +83,8 @@ public class RelatedContentFetcher
         {
             Collection<RelatedChildContent> rootRelatedChildren =
                 doFindRelatedChildren( gatherMainVersionsFromContent( contentResultSet.getContents() ) );
+            RelatedContentFetchTracer.traceChildrenFetch( 1, rootRelatedChildren.size(), trace );
+
             if ( rootRelatedChildren.size() > 0 )
             {
                 doAddAndFetchChildren( rootRelatedChildren, maxChildrenLevel, includeVisited );
@@ -90,6 +99,8 @@ public class RelatedContentFetcher
         if ( fetchParents )
         {
             Collection<RelatedParentContent> rootRelatedParents = doFindRelatedParents( contentResultSet.getKeys() );
+            RelatedContentFetchTracer.traceParentsFetch( 1, rootRelatedParents.size(), trace );
+
             if ( rootRelatedParents.size() > 0 )
             {
                 doAddAndFetchParents( rootRelatedParents, maxParentLevel, includeVisited );
@@ -144,6 +155,7 @@ public class RelatedContentFetcher
         if ( !atLastLevel )
         {
             final Collection<RelatedParentContent> nextLevelParents = doFindRelatedParents( gatherContentKeysFromContent( addedContent ) );
+            RelatedContentFetchTracer.traceParentsFetch( level, nextLevelParents.size(), trace );
             if ( nextLevelParents.size() > 0 )
             {
                 doAddAndFetchParents( nextLevelParents, nextLevel, includeVisited );
@@ -199,5 +211,10 @@ public class RelatedContentFetcher
     public void setIncludeOnlyMainVersions( boolean includeOnlyMainVersions )
     {
         this.includeOnlyMainVersions = includeOnlyMainVersions;
+    }
+
+    public Integer getMaxParentLevel()
+    {
+        return maxParentLevel;
     }
 }

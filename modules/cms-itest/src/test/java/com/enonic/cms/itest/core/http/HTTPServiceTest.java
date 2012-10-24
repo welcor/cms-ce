@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.Properties;
 import java.util.Random;
 
 import org.junit.After;
@@ -16,9 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 
 import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalProperties;
 
-import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.http.HTTPService;
 import com.enonic.cms.itest.util.MockHTTPServer;
 
@@ -41,17 +40,17 @@ public class HTTPServiceTest
 
     private int serverPort;
 
+    @Autowired
+    private Properties properties;
+
     @Before
     public void before()
         throws IOException
     {
         serverPort = random( 8090, 9090 );
         httpServer = new MockHTTPServer( serverPort );
-        ConfigProperties props = new ConfigProperties();
-        props.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
-                           "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
-        VerticalProperties.getVerticalProperties().setProperties( props );
-
+        properties.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
+                                "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
     }
 
     @After

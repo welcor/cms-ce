@@ -1,0 +1,22 @@
+<datasources>
+  <datasource>
+    <methodname>findContentByCategory</methodname>
+    <parameters>
+      <parameter name="search" type="string">mysearch</parameter>
+      <parameter name="operator" type="string">AND</parameter>
+      <parameter name="categories" type="int[]">1,2</parameter>
+      <parameter name="recursive" type="boolean">true</parameter>
+      <parameter name="orderby" type="string">title DESC</parameter>
+      <parameter name="index" type="int">0</parameter>
+      <parameter name="count" type="int">10</parameter>
+      <parameter name="titlesOnly" type="boolean">true</parameter>
+      <parameter name="childrenLevel" type="int">0</parameter>
+      <parameter name="parentLevel" type="int">0</parameter>
+      <parameter name="parentChildrenLevel" type="int">0</parameter>
+      <parameter name="relatedTitlesOnly" type="boolean">true</parameter>
+      <parameter name="includeTotalcount" type="boolean">false</parameter>
+      <parameter name="includeUserRights" type="boolean">false</parameter>
+      <parameter name="contenttypes" type="int[]">1</parameter>
+    </parameters>
+  </datasource>
+</datasources>

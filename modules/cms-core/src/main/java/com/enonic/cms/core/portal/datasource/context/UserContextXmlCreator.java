@@ -15,7 +15,7 @@ import com.enonic.cms.core.security.user.UserFieldsXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.store.dao.GroupDao;
 
-public class UserContextXmlCreator
+public final class UserContextXmlCreator
 {
     private GroupDao groupDao;
 

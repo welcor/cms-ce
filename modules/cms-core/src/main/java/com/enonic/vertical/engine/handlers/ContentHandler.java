@@ -53,7 +53,6 @@ import com.enonic.cms.core.CalendarUtil;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentTitleXmlCreator;
-import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentHandlerEntity;
 import com.enonic.cms.core.content.contenttype.ContentHandlerKey;
@@ -343,7 +342,7 @@ public final class ContentHandler
     {
         StringBuffer sql = XDG.generateSelectSQL( db.tContentType, db.tContentType.cty_sCSS, false, db.tContentType.cty_lKey );
         String resourceKey = getCommonHandler().getString( sql.toString(), contentTypeKey );
-        return ResourceKey.parse( resourceKey );
+        return ResourceKey.from( resourceKey );
     }
 
     public int getContentTypeKey( int contentKey )

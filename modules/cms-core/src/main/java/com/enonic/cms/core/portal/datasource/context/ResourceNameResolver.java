@@ -14,7 +14,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
  * Date: 12/20/10
  * Time: 9:49 AM
  */
-public class ResourceNameResolver
+final class ResourceNameResolver
 {
 
     public static String resolveDisplayName( PageRequestType pageRequestType, ContentEntity contentFromRequest, MenuItemEntity menuItem )

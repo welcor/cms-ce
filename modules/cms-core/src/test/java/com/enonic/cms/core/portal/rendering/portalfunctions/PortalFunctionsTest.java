@@ -108,11 +108,11 @@ public class PortalFunctionsTest
 
         site1 = new SiteEntity();
         site1.setKey( siteKey1.toInt() );
-        site1.setPathToPublicResources( new ResourceKey( HOME_DIR ) );
+        site1.setPathToPublicResources( ResourceKey.from( HOME_DIR ) );
 
         site2 = new SiteEntity();
         site2.setKey( siteKey2.toInt() );
-        site2.setPathToPublicResources( new ResourceKey( HOME_DIR ) );
+        site2.setPathToPublicResources( ResourceKey.from( HOME_DIR ) );
 
         context = new PortalFunctionsContext();
         context.setSite( site1 );
@@ -775,25 +775,23 @@ public class PortalFunctionsTest
     }
 
     @Test
-    public void testCreateWindowUrlFromContentPage()
+    public void createWindowUrl_in_context_of_url_to_content_when_invoked_with_window_key_then_returns_window_url_that_starts_with_path_to_url_in_context()
         throws IOException
     {
         when( portletDao.findByKey( 90 ) ).thenReturn( createPortlet( site1, "createWindowUrlPortlet" ) );
         portalFunctions.setPortletDao( portletDao );
 
         // mock up menu item
-        SitePath originalSitePath = new SitePath( siteKey1, "/en/features/xslt-functions/createwindowurl-test/article1" );
+        SitePath originalSitePath = new SitePath( siteKey1, "/xslt-functions/createwindowurl-test/article1" );
         context.setOriginalSitePath( originalSitePath );
 
-        MenuItemEntity menuEn = createMenuItem( "98", "en", site1 );
-        MenuItemEntity menuFeatures = createMenuItem( "99", "features", menuEn, site1 );
-        MenuItemEntity menuXsltFunc = createMenuItem( "100", "xslt-functions", menuFeatures, site1 );
+        MenuItemEntity menuXsltFunc = createMenuItem( "100", "xslt-functions", site1 );
         MenuItemEntity menuCreateWindowUrl = createMenuItem( "101", "createwindowurl-test", menuXsltFunc, site1 );
 
         when( menuItemDao.findByKey( new MenuItemKey( 101 ) ) ).thenReturn( menuCreateWindowUrl );
 
         // site path
-        SitePath sitePath = new SitePath( siteKey1, "/en/features/xslt-functions/createwindowurl-test" );
+        SitePath sitePath = new SitePath( siteKey1, "/xslt-functions/createwindowurl-test" );
         ContentPath contentPath = new ContentPath( new ContentKey( 1000 ), "article1", menuCreateWindowUrl.getPath() );
         sitePath.setContentPath( contentPath );
         context.setSitePath( sitePath );
@@ -804,11 +802,42 @@ public class PortalFunctionsTest
         PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( menuItemKeyWindow, portletKey );
         context.setPortalInstanceKey( portalInstanceKey );
 
-        WindowKey windowKey = new WindowKey( menuItemKeyWindow, portletKey );
-        String windowUrl = portalFunctions.createWindowUrl( windowKey, new String[]{}, null );
+        String windowUrl = portalFunctions.createWindowUrl( new WindowKey( menuItemKeyWindow, portletKey ), new String[]{} );
 
-        assertEquals( "http://localhost/site/1/en/features/xslt-functions/createwindowurl-test/article1/_window/createwindowurlportlet",
-                      windowUrl );
+        assertEquals( "http://localhost/site/1/xslt-functions/createwindowurl-test/article1/_window/createwindowurlportlet", windowUrl );
+    }
+
+    @Test
+    public void createWindowUrl_in_context_of_url_to_content_when_invoked_with_window_key_which_refers_not_same_page_as_current_then_returns_window_url_that_starts_with_path_to_given_page()
+        throws IOException
+    {
+        when( portletDao.findByKey( 90 ) ).thenReturn( createPortlet( site1, "createWindowUrlPortlet" ) );
+        portalFunctions.setPortletDao( portletDao );
+
+        // mock up menu item
+        SitePath originalSitePath = new SitePath( siteKey1, "/my-menu-item/article1" );
+        context.setOriginalSitePath( originalSitePath );
+
+        MenuItemEntity inContextOfMenuItem = createMenuItem( "101", "in-context-of-menu-item", site1 );
+        when( menuItemDao.findByKey( new MenuItemKey( 101 ) ) ).thenReturn( inContextOfMenuItem );
+
+        MenuItemEntity otherMenuItem = createMenuItem( "102", "other-menu-item", site1 );
+        when( menuItemDao.findByKey( new MenuItemKey( 102 ) ) ).thenReturn( otherMenuItem );
+
+        // site path
+        SitePath sitePath = new SitePath( siteKey1, "/in-context-of-menu-item/article1" );
+        ContentPath contentPath = new ContentPath( new ContentKey( 1000 ), "article1", inContextOfMenuItem.getPath() );
+        sitePath.setContentPath( contentPath );
+        context.setSitePath( sitePath );
+
+        // set current menu item and portlet in context
+        PortletKey portletKey = new PortletKey( 90 );
+        PortalInstanceKey portalInstanceKey = PortalInstanceKey.createWindow( inContextOfMenuItem.getKey(), portletKey );
+        context.setPortalInstanceKey( portalInstanceKey );
+
+        String windowUrl = portalFunctions.createWindowUrl( new WindowKey( otherMenuItem.getKey(), portletKey ), new String[]{} );
+
+        assertEquals( "http://localhost/site/1/other-menu-item/_window/createwindowurlportlet", windowUrl );
     }
 
     private PortletEntity createPortlet( SiteEntity site, String name )

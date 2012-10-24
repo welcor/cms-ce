@@ -19,7 +19,7 @@ import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.store.resource.FileResourceService;
+import com.enonic.cms.core.resource.FileResourceService;
 
 /**
  * This class implemnts the resource factory.

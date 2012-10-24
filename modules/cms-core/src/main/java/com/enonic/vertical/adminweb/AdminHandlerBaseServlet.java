@@ -34,6 +34,8 @@ import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -81,9 +83,20 @@ public abstract class AdminHandlerBaseServlet
 
     private FileUpload fileUpload;
 
-    // SMTP server to use when sending mail:
+    private String defaultDataSourceRootElementName;
 
-    protected String SMTP_HOST;
+    // SMTP server to use when sending mail:
+    private String smtpHost;
+
+    private long multiPartRequestMaxSize;
+
+    private String storeXHTML;
+
+    protected boolean isStoreXHTMLOn()
+    {
+        String ts = StringUtils.trimToNull( storeXHTML );
+        return !"false".equalsIgnoreCase(ts);
+    }
 
     @PostConstruct
     public void initialize()
@@ -93,14 +106,10 @@ public abstract class AdminHandlerBaseServlet
 
         fileUpload = new FileUpload( diskFileItemFactory );
         fileUpload.setHeaderEncoding( "UTF-8" );
-        fileUpload.setSizeMax( verticalProperties.getMultiPartRequestMaxSize() );
+        fileUpload.setSizeMax( multiPartRequestMaxSize );
 
         // Parameters for the mail sent to users when generating a new password:
-        SMTP_HOST = verticalProperties.getMailSmtpHost();
-        if ( SMTP_HOST == null )
-        {
-            SMTP_HOST = "mail.enonic.com";
-        }
+        smtpHost = ( smtpHost != null ) ? smtpHost : "mail.enonic.com";
     }
 
     public void addError( int errorCode, String fieldName, String fieldValue )
@@ -1015,7 +1024,7 @@ public abstract class AdminHandlerBaseServlet
                 throws TransformerException
             {
                 Source source = null;
-                ResourceKey key = new ResourceKey( href );
+                ResourceKey key = ResourceKey.from( href );
                 ResourceFile res = resourceService.getResourceFile( key );
                 if ( res != null )
                 {
@@ -1211,6 +1220,46 @@ public abstract class AdminHandlerBaseServlet
         return domainKey;
     }
 
+    protected void browseRedirectWithSorting( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems )
+    {
+        MultiValueMap queryParams = new MultiValueMap();
+
+        String page = formItems.getString( "page" );
+        queryParams.put( "page", page );
+        queryParams.put( "op", "browse" );
+        queryParams.put( "menukey", formItems.get( "menukey" ) );
+
+        String sortby = getSortBy( page, "browse" );
+        queryParams.put( "sortby", session.getAttribute( sortby ) );
+
+        String direction = getSortByDirection( page, "browse" );
+        queryParams.put( "sortby-direction", session.getAttribute( direction ) );
+
+        redirectClientToAdminPath( "adminpage", queryParams, request, response );
+    }
+
+    protected static String getSortBy( String page, String op )
+    {
+        StringBuilder sb_sortByKey = new StringBuilder( "s[page=" );
+        sb_sortByKey.append( page );
+        sb_sortByKey.append( ",op=" );
+        sb_sortByKey.append( op );
+        sb_sortByKey.append( ",s]" );
+
+        return sb_sortByKey.toString();
+    }
+
+    protected static String getSortByDirection( String page, String op )
+    {
+        StringBuilder sb_sortByDirectionKey = new StringBuilder( "s[page=" );
+        sb_sortByDirectionKey.append( page );
+        sb_sortByDirectionKey.append( ",op=" );
+        sb_sortByDirectionKey.append( op );
+        sb_sortByDirectionKey.append( ",sd]" );
+
+        return  sb_sortByDirectionKey.toString();
+    }
+
     protected void addSortParamteres( String defaultSortBy, String defaultSortByDirection, ExtendedMap inParams, HttpSession session,
                                       HashMap<String, Object> outParams )
     {
@@ -1223,19 +1272,9 @@ public abstract class AdminHandlerBaseServlet
         String op = inParams.getString( "op" );
 
         // s[page="+page+",op=browse,s]
-        StringBuffer sb_sortByKey = new StringBuffer( "s[page=" );
-        sb_sortByKey.append( page );
-        sb_sortByKey.append( ",op=" );
-        sb_sortByKey.append( op );
-        sb_sortByKey.append( ",s]" );
-        String sortByKey = sb_sortByKey.toString();
+        String sortByKey = getSortBy( page, op );
         // s[page="+page+",op=browse,sd]
-        StringBuffer sb_sortByDirectionKey = new StringBuffer( "s[page=" );
-        sb_sortByDirectionKey.append( page );
-        sb_sortByDirectionKey.append( ",op=" );
-        sb_sortByDirectionKey.append( op );
-        sb_sortByDirectionKey.append( ",sd]" );
-        String sortByDirectionKey = sb_sortByDirectionKey.toString();
+        String sortByDirectionKey = getSortByDirection( page, op );
 
         //("sortByKey = " + sortByKey);
         //("sortByDirectionKey = " + sortByDirectionKey);
@@ -1525,6 +1564,40 @@ public abstract class AdminHandlerBaseServlet
             }
         }
         return doc;
+    }
+
+    protected String getDefaultDataSourceRootElementName()
+    {
+        return defaultDataSourceRootElementName;
+    }
+
+    protected String getSmtpHost()
+    {
+        return smtpHost;
+    }
+
+    @Value("${cms.mail.smtpHost}")
+    public void setSmtpHost( final String smtpHost )
+    {
+        this.smtpHost = smtpHost;
+    }
+
+    @Value("${cms.admin.binaryUploadMaxSize}")
+    public void setMultiPartRequestMaxSize( final long value )
+    {
+        this.multiPartRequestMaxSize = value;
+    }
+
+    @Value("${cms.datasource.defaultResultRootElement}")
+    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
+    {
+        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
+    }
+
+    @Value("${cms.xml.storeXHTML}")
+    public void setStoreXHTML( final String storeXHTML )
+    {
+        this.storeXHTML = storeXHTML;
     }
 
     private static class ErrorCode

@@ -54,7 +54,6 @@ public class IsWindowEmptyFunction
             windowRenderContext.setPageRequestType( pageRendererContext.getPageRequestType() );
             windowRenderContext.setPageTemplate( portalFunctionsContext.getPageTemplate() );
             windowRenderContext.setPreviewContext( pageRendererContext.getPreviewContext() );
-            windowRenderContext.setProcessors( pageRendererContext.getProcessors() );
             windowRenderContext.setProfile( pageRendererContext.getProfile() );
             windowRenderContext.setRegionsInPage( pageRendererContext.getRegionsInPage() );
             windowRenderContext.setRenderedInline( true );

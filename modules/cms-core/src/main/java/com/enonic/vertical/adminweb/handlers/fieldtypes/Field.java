@@ -7,17 +7,18 @@ package com.enonic.vertical.adminweb.handlers.fieldtypes;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.xml.XMLTool;
-import com.enonic.vertical.VerticalProperties;
-
 
 public abstract class Field
 {
@@ -29,11 +30,13 @@ public abstract class Field
 
     private static final FileUploadBase fileUpload;
 
+    @Value("${cms.admin.binaryUploadMaxSize}")
+    private static String multiPartRequestMaxSize;
+
     static
     {
         fileUpload = new FileUpload( new DiskFileItemFactory() );
         fileUpload.setHeaderEncoding( "UTF-8" );
-        fileUpload.setSizeMax( VerticalProperties.getVerticalProperties().getMultiPartRequestMaxSize() );
     }
 
     public Field( Element inputElem )
@@ -44,6 +47,12 @@ public abstract class Field
             xPath = xPath.substring( "contentdata/".length() );
         }
         name = inputElem.getAttribute( "name" );
+    }
+
+    @PostConstruct
+    public void init()
+    {
+        fileUpload.setSizeMax( Long.parseLong( multiPartRequestMaxSize ) );
     }
 
     public void XMLToMultiValueMap( String name, Node dataNode, MultiValueMap fields, int groupCounter )

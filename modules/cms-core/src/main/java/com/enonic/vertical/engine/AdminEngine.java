@@ -406,8 +406,7 @@ public final class AdminEngine
 
     public XMLDocument getSuperCategoryNames( int categoryKey, boolean withContentCount, boolean includeCategory )
     {
-        Document doc = categoryHandler.getSuperCategoryNames( CategoryKey.parse( categoryKey ), withContentCount, includeCategory );
-        return XMLDocumentFactory.create( doc );
+        return categoryHandler.getSuperCategoryNames( CategoryKey.parse( categoryKey ), withContentCount, includeCategory );
     }
 
     public int getContentCount( int categoryKey, boolean recursive )

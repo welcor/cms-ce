@@ -14,7 +14,7 @@ import com.enonic.esl.net.URLUtil;
 /**
  * Apr 21, 2009
  */
-public class CookieContextXmlCreator
+final class CookieContextXmlCreator
 {
     public Element createCookieElement( HttpServletRequest request )
     {

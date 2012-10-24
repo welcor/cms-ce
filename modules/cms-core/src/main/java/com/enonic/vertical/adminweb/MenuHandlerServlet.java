@@ -55,16 +55,12 @@ import com.enonic.cms.core.admin.MenuItemsAcrossSitesModel;
 import com.enonic.cms.core.admin.MenuItemsAcrossSitesXmlCreator;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.language.LanguageResolver;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.processor.ContentProcessor;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
-import com.enonic.cms.core.portal.datasource.processor.MenuItemProcessor;
 import com.enonic.cms.core.portal.rendering.PageRenderer;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
 import com.enonic.cms.core.portal.rendering.RegionsResolver;
@@ -194,7 +190,7 @@ public class MenuHandlerServlet
         // Create content element
         Element documentElem = XMLTool.createElement( doc, menuItemElem, "document" );
 
-        if ( verticalProperties.isStoreXHTMLOn() )
+        if ( isStoreXHTMLOn() )
         {
             XMLTool.createXHTMLNodes( doc, documentElem, formItems.getString( "contentdata_body", "" ), true );
         }
@@ -1917,29 +1913,9 @@ public class MenuHandlerServlet
 
             Element menusElem = JDOMUtil.toW3CDocument( menusDoc ).getDocumentElement();
 
-            ContentProcessor contentProcessor = null;
-            // content
-            if ( modifiedMenuItem.getContent() != null )
-            {
-                ContentXMLCreator contentXMLCreator = new ContentXMLCreator();
-                XMLDocument contentDoc =
-                    contentXMLCreator.createContentsDocument( requester, modifiedMenuItem.getContent().getMainVersion(), null );
-                contentProcessor = new ContentProcessor( contentDoc.getAsDOMDocument() );
-            }
-
-            int indexCount = contentProcessor == null ? 1 : 2;
-
             MenuItemPreviewContext menuItemPreviewContext = new MenuItemPreviewContext( modifiedMenuItem );
             PreviewContext previewContext = new PreviewContext( menuItemPreviewContext );
             previewService.setPreviewContext( previewContext );
-
-            // prepare data source result processors
-            DataSourceProcessor[] dsrProcessors = new DataSourceProcessor[indexCount];
-            dsrProcessors[0] = new MenuItemProcessor( menusElem, newMenuItemElem );
-            if ( contentProcessor != null )
-            {
-                dsrProcessors[1] = contentProcessor;
-            }
 
             SitePath sitePath = new SitePath( site.getKey(), modifiedMenuItem.getPath() );
             sitePath.addParam( "id", menuItemKey.toString() );
@@ -1971,7 +1947,6 @@ public class MenuHandlerServlet
             pageRendererContext.setOriginalSitePath( sitePath );
             pageRendererContext.setPageRequestType( PageRequestType.MENUITEM );
             pageRendererContext.setPreviewContext( previewContext );
-            pageRendererContext.setProcessors( dsrProcessors );
             pageRendererContext.setRegionsInPage( regionsInPage );
             pageRendererContext.setRenderer( requester );
             pageRendererContext.setRequestTime( new DateTime() );

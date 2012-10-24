@@ -15,7 +15,7 @@ import com.enonic.cms.core.structure.portlet.PortletEntity;
 /**
  * May 15, 2009
  */
-public class WindowContextXmlCreator
+final class WindowContextXmlCreator
 {
 
     public Element createPortletWindowElement( Window window, boolean isRenderedInline, Element portletDocumentEl )

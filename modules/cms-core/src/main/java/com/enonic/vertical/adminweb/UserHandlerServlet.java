@@ -1244,7 +1244,7 @@ public class UserHandlerServlet
             if ( subop.equals( "create" ) )
             {
 
-                ResourceKey stylesheetKey = new ResourceKey( formItems.getString( "stylesheetkey" ) );
+                ResourceKey stylesheetKey = ResourceKey.from( formItems.getString( "stylesheetkey" ) );
                 ResourceFile res = resourceService.getResourceFile( stylesheetKey );
                 if ( res == null )
                 {
@@ -1309,8 +1309,7 @@ public class UserHandlerServlet
                     reportDoc = XMLDocumentFactory.create( usersDoc ).getAsDOMDocument();
                 }
                 Element usersElem = reportDoc.getDocumentElement();
-                String datasourcesDefaultResultElementName = verticalProperties.getDatasourceDefaultResultRootElement();
-                Element verticaldataElem = XMLTool.createElement( reportDoc, datasourcesDefaultResultElementName );
+                Element verticaldataElem = XMLTool.createElement( reportDoc, getDefaultDataSourceRootElementName() );
                 reportDoc.replaceChild( verticaldataElem, usersElem );
                 verticaldataElem.appendChild( usersElem );
                 DOMSource reportSource = new DOMSource( reportDoc );
@@ -1413,7 +1412,7 @@ public class UserHandlerServlet
         else if ( "sendnotification".equals( operation ) )
         {
             Mail mail = new Mail();
-            mail.setSMTPHost( verticalProperties.getSMTPHost() );
+            mail.setSMTPHost( getSmtpHost() );
             mail.setFrom( formItems.getString( "from_name", "" ), formItems.getString( "from_mail", "" ) );
             mail.addRecipient( formItems.getString( "to_name", "" ), formItems.getString( "to_mail" ), Mail.TO_RECIPIENT );
 

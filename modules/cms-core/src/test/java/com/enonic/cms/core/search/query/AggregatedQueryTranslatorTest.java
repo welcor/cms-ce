@@ -18,8 +18,7 @@ public class AggregatedQueryTranslatorTest
         String expectedResult = "{\n" +
             "  \"size\" : 0,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"facets\" : {\n" +
             "    \"aggregatedQuery\" : {\n" +
@@ -45,8 +44,7 @@ public class AggregatedQueryTranslatorTest
         String expectedResult = "{\n" +
             "  \"size\" : 0,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
+            "    \"match_all\" : { }\n" +
             "  },\n" +
             "  \"facets\" : {\n" +
             "    \"aggregatedQuery\" : {\n" +

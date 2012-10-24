@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.core.plugin.PluginManager;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
@@ -38,31 +36,27 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.framework.xml.XMLException;
 
+import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.service.DataSourceFailedXmlCreator;
-import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.core.service.DataSourceService;
-
-import com.enonic.cms.core.portal.InvocationCache;
+import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
+import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
-import com.enonic.cms.core.portal.datasource.processor.NonDoingDataSourceProcessor;
-import com.enonic.cms.core.preview.PreviewContext;
-
-import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.datasource.DataSourceResult;
 import com.enonic.cms.core.portal.datasource.Datasources;
 import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.preview.PreviewContext;
+import com.enonic.cms.core.resource.ResourceFile;
+import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.service.AdminService;
+import com.enonic.cms.core.service.DataSourceFailedXmlCreator;
+import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.structure.SiteEntity;
-
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 
 /**
@@ -149,14 +143,14 @@ public final class ContentObjectHandlerServlet
         }
         */
 
-        ResourceKey stylesheetKey = ResourceKey.parse( formItems.getString( "stylesheet", null ) );
+        ResourceKey stylesheetKey = ResourceKey.from( formItems.getString( "stylesheet", null ) );
         if ( stylesheetKey != null )
         {
             tempElement = XMLTool.createElement( doc, contentObject, "objectstylesheet" );
             tempElement.setAttribute( "key", String.valueOf( stylesheetKey ) );
         }
 
-        ResourceKey borderStylesheetKey = ResourceKey.parse( formItems.getString( "borderstylesheet", null ) );
+        ResourceKey borderStylesheetKey = ResourceKey.from( formItems.getString( "borderstylesheet", null ) );
         if ( borderStylesheetKey != null )
         {
             tempElement = XMLTool.createElement( doc, contentObject, "borderstylesheet" );
@@ -210,7 +204,7 @@ public final class ContentObjectHandlerServlet
         // document
         Element document = XMLTool.createElement( doc, contentObjectData, "document" );
 
-        if ( verticalProperties.isStoreXHTMLOn() )
+        if ( isStoreXHTMLOn() )
         {
             XMLTool.createXHTMLNodes( doc, document, formItems.getString( "contentdata_body", "" ), true );
         }
@@ -502,7 +496,7 @@ public final class ContentObjectHandlerServlet
 
         key = admin.createContentObject( user, XMLTool.documentToString( doc ) );
 
-        redirectClientToReferer( request, response );
+        browseRedirectWithSorting( request, response, session, formItems );
     }
 
     public void handlerCreate( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
@@ -540,7 +534,7 @@ public final class ContentObjectHandlerServlet
                 Document doc;
                 Document documentAsW3cDocument = XMLTool.createDocument( "document" );
                 Element rootElem = documentAsW3cDocument.getDocumentElement();
-                if ( verticalProperties.isStoreXHTMLOn() )
+                if ( isStoreXHTMLOn() )
                 {
                     XMLTool.createXHTMLNodes( documentAsW3cDocument, rootElem, formItems.getString( "document", "" ), true );
                 }
@@ -567,7 +561,7 @@ public final class ContentObjectHandlerServlet
                 }
                 catch ( final Exception e )
                 {
-                    final String resultRootName = verticalProperties.getDatasourceDefaultResultRootElement();
+                    final String resultRootName = getDefaultDataSourceRootElementName();
                     final XMLDocument failedDatasourceDoc =
                         XMLDocumentFactory.create( DataSourceFailedXmlCreator.buildExceptionDocument( resultRootName, e ) );
                     xmlData = failedDatasourceDoc.getAsString();
@@ -596,13 +590,13 @@ public final class ContentObjectHandlerServlet
             NodeList coNodes = coDoc.getElementsByTagName( "contentobject" );
             Element contentobject = (Element) coNodes.item( 0 );
 
-            ResourceKey borderStyleSheetKey = ResourceKey.parse( formItems.getString( "borderstylesheet", null ) );
+            ResourceKey borderStyleSheetKey = ResourceKey.from( formItems.getString( "borderstylesheet", null ) );
             if ( borderStyleSheetKey != null )
             {
                 addStyleSheet( contentobject, "borderstylesheet_xsl", borderStyleSheetKey );
             }
 
-            ResourceKey objectStyleSheetKey = ResourceKey.parse( formItems.getString( "stylesheet", null ) );
+            ResourceKey objectStyleSheetKey = ResourceKey.from( formItems.getString( "stylesheet", null ) );
             if ( objectStyleSheetKey != null )
             {
                 addStyleSheet( contentobject, "objectstylesheet_xsl", objectStyleSheetKey );
@@ -680,7 +674,6 @@ public final class ContentObjectHandlerServlet
 
         ResourceKey[] cssKeys = null;
 
-        DataSourceProcessor[] dsProcessors = new DataSourceProcessor[]{new NonDoingDataSourceProcessor()};
         SitePath sitePath = new SitePath( siteKey, "" );
         RequestParameters requestParameters = new RequestParameters();
         SiteEntity site = siteDao.findByKey( siteKey );
@@ -695,29 +688,26 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setOriginalSitePath( sitePath );
         datasourceExecutorContext.setPageRequestType( PageRequestType.MENUITEM );
         datasourceExecutorContext.setPreviewContext( PreviewContext.NO_PREVIEW );
-        datasourceExecutorContext.setProcessors( dsProcessors );
         datasourceExecutorContext.setSite( site );
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDefaultResultRootElementName( verticalProperties.getDatasourceDefaultResultRootElement() );
+        datasourceExecutorContext.setDefaultResultRootElementName( getDefaultDataSourceRootElementName() );
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
         DatasourceExecutor datasourceExecutor = datasourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
 
-        Datasources datasources = new Datasources( DatasourcesType.PAGETEMPLATE, dataSourcesXML.getAsJDOMDocument().getRootElement() );
+        Datasources datasources = new Datasources( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
-        DataSourceResult dsr2 = datasourceExecutor.getDataSourceResult( datasources );
+        XMLDocument dsr2 = datasourceExecutor.getDataSourceResult( datasources );
 
-        return dsr2.getData().getAsString();
+        return dsr2.getAsString();
     }
 
     private String doGetPortletDatasourceResult( final User oldUser, final SiteKey siteKey, final XMLDocument dataSourcesXML,
                                                  final XMLDocument portletDocumentXmlDocument )
     {
-
-        DataSourceProcessor[] dsProcessors = new DataSourceProcessor[]{new NonDoingDataSourceProcessor()};
         SitePath sitePath = new SitePath( siteKey, "" );
         RequestParameters requestParameters = new RequestParameters();
 
@@ -738,13 +728,12 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setLanguage( site.getLanguage() );
         datasourceExecutorContext.setOriginalSitePath( sitePath );
         datasourceExecutorContext.setPageRequestType( PageRequestType.MENUITEM );
-        datasourceExecutorContext.setProcessors( dsProcessors );
         datasourceExecutorContext.setPreviewContext( PreviewContext.NO_PREVIEW );
         datasourceExecutorContext.setSite( site );
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDefaultResultRootElementName( verticalProperties.getDatasourceDefaultResultRootElement() );
+        datasourceExecutorContext.setDefaultResultRootElementName( getDefaultDataSourceRootElementName() );
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
@@ -752,11 +741,11 @@ public final class ContentObjectHandlerServlet
 
         DatasourcesType datasourcesType = DatasourcesType.PORTLET;
 
-        Datasources datasources = new Datasources( datasourcesType, dataSourcesXML.getAsJDOMDocument().getRootElement() );
+        Datasources datasources = new Datasources( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
-        DataSourceResult dsr2 = datasourceExecutor.getDataSourceResult( datasources );
+        XMLDocument dsr2 = datasourceExecutor.getDataSourceResult( datasources );
 
-        return dsr2.getData().getAsString();
+        return dsr2.getAsString();
     }
 
     private void addStyleSheet( Element contentobjectElem, String elemName, ResourceKey styleSheetKey )
@@ -833,7 +822,7 @@ public final class ContentObjectHandlerServlet
             contentobject.appendChild( doc.importNode( pageTemplatesDoc.getDocumentElement(), true ) );
 
             Element objectstylesheetElem = XMLTool.getElement( contentobject, "objectstylesheet" );
-            ResourceKey objectStyleSheetKey = new ResourceKey( objectstylesheetElem.getAttribute( "key" ) );
+            ResourceKey objectStyleSheetKey = ResourceKey.from( objectstylesheetElem.getAttribute( "key" ) );
 
             ResourceFile res = resourceService.getResourceFile( objectStyleSheetKey );
             objectstylesheetElem.setAttribute( "exist", res == null ? "false" : "true" );
@@ -861,7 +850,7 @@ public final class ContentObjectHandlerServlet
             Element borderstylesheetElem = XMLTool.getElement( contentobject, "borderstylesheet" );
             if ( borderstylesheetElem != null )
             {
-                ResourceKey borderStyleSheetKey = ResourceKey.parse( borderstylesheetElem.getAttribute( "key" ) );
+                ResourceKey borderStyleSheetKey = ResourceKey.from( borderstylesheetElem.getAttribute( "key" ) );
                 if ( borderStyleSheetKey != null )
                 {
                     res = resourceService.getResourceFile( borderStyleSheetKey );

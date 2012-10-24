@@ -15,7 +15,7 @@ import com.enonic.cms.core.SiteURLResolver;
 /**
  * Apr 21, 2009
  */
-public class QueryStringContextXmlCreator
+final class QueryStringContextXmlCreator
 {
     private SiteURLResolver siteURLResolver;
 

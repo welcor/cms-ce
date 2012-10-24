@@ -8,7 +8,7 @@ import java.util.Locale;
 
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SiteURLResolver;
-import com.enonic.cms.core.portal.InvocationCache;
+import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
 import com.enonic.cms.core.structure.SiteEntity;

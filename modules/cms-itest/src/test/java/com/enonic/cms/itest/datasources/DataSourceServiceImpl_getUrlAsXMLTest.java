@@ -7,6 +7,7 @@ package com.enonic.cms.itest.datasources;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.Properties;
 import java.util.Random;
 
 import org.jdom.Document;
@@ -16,11 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.vertical.VerticalProperties;
-
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.http.HTTPService;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.security.SecurityService;
@@ -46,6 +44,9 @@ public class DataSourceServiceImpl_getUrlAsXMLTest
     @Autowired
     private HTTPService httpService;
 
+    @Autowired
+    private Properties systemProperties;
+
     private MockHTTPServer httpServer;
 
     static private String SAMPLE_XML_RESPONSE =
@@ -68,10 +69,8 @@ public class DataSourceServiceImpl_getUrlAsXMLTest
         dataSourceService.setUserDao( userDao );
         dataSourceService.setHTTPService( httpService );
 
-        ConfigProperties props = new ConfigProperties();
-        props.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
-                           "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
-        VerticalProperties.getVerticalProperties().setProperties( props );
+        systemProperties.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
+                                      "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
     }
 
     @After
@@ -91,7 +90,7 @@ public class DataSourceServiceImpl_getUrlAsXMLTest
         httpServer.setResponseText( header + SAMPLE_XML_RESPONSE );
 
         DataSourceContext context = new DataSourceContext();
-        XMLDocument result = dataSourceService.getURLAsXML( context, buildServerUrl( MockHTTPServer.TEXT_TYPE ) );
+        XMLDocument result = dataSourceService.getURLAsXML( context, buildServerUrl( MockHTTPServer.XML_TYPE ) );
 
         Document resultDoc = result.getAsJDOMDocument();
         String node1 = resultDoc.getRootElement().getChild( "node1" ).getText();
@@ -122,9 +121,47 @@ public class DataSourceServiceImpl_getUrlAsXMLTest
         assertEquals( "Citro\u00ebn est d\u00e9go\u00fbtant", node3 );
     }
 
+    @Test
+    public void test_get_url_as_xml_invalid_url()
+    {
+        test_get_url_as_xml_invalid_url( "" );
+        test_get_url_as_xml_invalid_url( "enonic.com" );
+        test_get_url_as_xml_invalid_url( "http:enonic.com" );
+        test_get_url_as_xml_invalid_url( "http:/enonic.com" );
+        test_get_url_as_xml_invalid_url( "ftp://enonic.com" );
+    }
+
+    private void test_get_url_as_xml_invalid_url( final String malformedUrl )
+    {
+        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+        httpServer.setResponseText( header + SAMPLE_XML_RESPONSE );
+
+        DataSourceContext context = new DataSourceContext();
+        XMLDocument result = dataSourceService.getURLAsXML( context, malformedUrl );
+
+        Document resultDoc = result.getAsJDOMDocument();
+        String rootNode = resultDoc.getRootElement().getName();
+        assertEquals( "Expected result: <noresult/>", "noresult", rootNode );
+        assertEquals( "Expected result: <noresult/>", resultDoc.getRootElement().getChildren().size(), 0 );
+    }
+
+    @Test
+    public void test_get_url_as_xml_non_xml_resource()
+    {
+        httpServer.setResponseText( "This is a non xml content." );
+
+        DataSourceContext context = new DataSourceContext();
+        XMLDocument result = dataSourceService.getURLAsXML( context, buildServerUrl( MockHTTPServer.TEXT_TYPE ) );
+
+        Document resultDoc = result.getAsJDOMDocument();
+        String rootNode = resultDoc.getRootElement().getName();
+        assertEquals( "Expected result: <noresult/>", "noresult", rootNode );
+        assertEquals( "Expected result: <noresult/>", resultDoc.getRootElement().getChildren().size(), 0 );
+    }
+
     private String buildServerUrl( String type )
     {
-        StringBuffer sb = new StringBuffer( "http://localhost:" );
+        StringBuilder sb = new StringBuilder( "http://localhost:" );
         sb.append( serverPort );
         sb.append( "?" );
         sb.append( MockHTTPServer.TYPE_PARAM );

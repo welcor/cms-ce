@@ -1,0 +1,11 @@
+<data-sources>
+  <data-source name="dummy1">
+  </data-source>
+  <data-source name="dummy2">
+    <parameter name="param1">one</parameter>
+  </data-source>
+  <data-source name="dummy3">
+    <parameter name="param1">one</parameter>
+    <parameter name="param2">two</parameter>
+  </data-source>
+</data-sources>

@@ -370,7 +370,7 @@ public class ContentNewsletterHandlerServlet
     private Mail setupMail( String senderName, String senderEmail, String subject )
     {
         Mail mail = new Mail();
-        mail.setSMTPHost( verticalProperties.getSMTPHost() );
+        mail.setSMTPHost( getSmtpHost() );
         mail.setFrom( senderName, senderEmail );
         mail.setSubject( subject );
         return mail;

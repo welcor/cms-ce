@@ -34,7 +34,6 @@ import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageRequestParser;
 import com.enonic.cms.core.localization.LocalizationService;
 import com.enonic.cms.core.localization.resource.LocalizationResourceBundleUtils;
-import com.enonic.cms.core.portal.ContentPath;
 import com.enonic.cms.core.portal.ReservedLocalPaths;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.image.ImageService;
@@ -57,8 +56,6 @@ import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.WindowKey;
-import com.enonic.cms.core.structure.portlet.PortletEntity;
-import com.enonic.cms.core.structure.portlet.PortletKey;
 import com.enonic.cms.store.dao.ContentBinaryDataDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
@@ -157,7 +154,12 @@ public class PortalFunctions
         {
             throw new PortalFunctionException( "Not in a context of a window" );
         }
-        return createWindowUrl( context.getPortalInstanceKey().getWindowKey(), null, null );
+
+        final CreateWindowUrlFunction function = new CreateWindowUrlFunction( menuItemDao, portletDao, context );
+        function.useCurrentLocation();
+
+        final SitePath windowUrl = function.createWindowUrl();
+        return siteURLResolver.createUrl( request, windowUrl, true );
     }
 
     public String createWindowUrl( String[] params )
@@ -166,49 +168,34 @@ public class PortalFunctions
         {
             throw new PortalFunctionException( "Not in a context of a window" );
         }
-        return createWindowUrl( context.getPortalInstanceKey().getWindowKey(), params, null );
+
+        final CreateWindowUrlFunction function = new CreateWindowUrlFunction( menuItemDao, portletDao, context );
+        function.useCurrentLocation();
+
+        final SitePath windowUrl = function.createWindowUrl();
+        addParamsToSitePath( params, windowUrl );
+        return siteURLResolver.createUrl( request, windowUrl, true );
     }
 
     public String createWindowUrl( WindowKey windowKey, String[] params )
     {
-        return createWindowUrl( windowKey, params, null );
+        final CreateWindowUrlFunction function = new CreateWindowUrlFunction( menuItemDao, portletDao, context );
+        function.useWindowKey( windowKey );
+
+        final SitePath windowUrl = function.createWindowUrl();
+        addParamsToSitePath( params, windowUrl );
+        return siteURLResolver.createUrl( request, windowUrl, true );
     }
 
     public String createWindowUrl( WindowKey windowKey, String[] params, String outputFormat )
     {
-        MenuItemKey menuItemKey = windowKey.getMenuItemKey();
+        final CreateWindowUrlFunction function = new CreateWindowUrlFunction( menuItemDao, portletDao, context );
+        function.useWindowKey( windowKey );
+        function.outputFormat( outputFormat );
 
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
-        if ( menuItem == null )
-        {
-            throw new PortalFunctionException( "Menuitem does not exist: " + menuItemKey );
-        }
-        boolean menuItemIsInAnotherSite = !menuItem.getSite().equals( context.getSite() );
-        if ( menuItemIsInAnotherSite )
-        {
-            throw new PortalFunctionException( "Menuitem exist in another site: " + menuItemKey );
-        }
-
-        PortletKey portletKey = windowKey.getPortletKey();
-        PortletEntity portlet = portletDao.findByKey( portletKey.toInt() );
-        if ( portlet == null )
-        {
-            throw new PortalFunctionException( "Portlet does not exist: " + menuItemKey );
-        }
-
-        ContentPath contentPath = context.getSitePath().getContentPath();
-
-        Path localPath = contentPath != null ? context.getOriginalSitePath().getLocalPath() : menuItem.getPath();
-        String portletPathStr = "_window/" + portlet.getName().toLowerCase();
-        if ( outputFormat != null )
-        {
-            portletPathStr = portletPathStr + "." + outputFormat;
-        }
-        localPath = localPath.appendPath( new Path( portletPathStr ) );
-        SitePath sitePath = new SitePath( context.getSite().getKey(), localPath );
-        addParamsToSitePath( params, sitePath );
-
-        return siteURLResolver.createUrl( request, sitePath, true );
+        final SitePath windowUrl = function.createWindowUrl();
+        addParamsToSitePath( params, windowUrl );
+        return siteURLResolver.createUrl( request, windowUrl, true );
     }
 
     public String createPageUrl( String[] params )

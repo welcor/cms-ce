@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -112,9 +113,11 @@ import com.enonic.cms.store.dao.UserStoreDao;
 public final class DataSourceServiceImpl
     implements DataSourceService
 {
-    private final static String URL_NO_RESULT = "<noresult/>";
+    private static final Logger LOG = Logger.getLogger( DataSourceServiceImpl.class.getName() );
 
-    private final CalendarService calendarService;
+    private static String URL_NO_RESULT = "<noresult/>";
+
+    private CalendarService calendarService;
 
     private ContentService contentService;
 
@@ -124,6 +127,7 @@ public final class DataSourceServiceImpl
 
     private SecurityService securityService;
 
+    @Autowired
     private HTTPService httpService;
 
     @Autowired
@@ -371,7 +375,8 @@ public final class DataSourceServiceImpl
                                     boolean includeDays, String language, String country )
     {
         return XMLDocumentFactory.create(
-            calendarService.getCalendar( relative, year, month, count, includeWeeks, includeDays, language, country ) );
+            calendarService.getCalendar( System.currentTimeMillis(), relative, year, month, count, includeWeeks, includeDays, language,
+                                         country ) );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -501,7 +506,8 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getFormattedDate( DataSourceContext context, int offset, String dateformat, String language, String country )
     {
-        return XMLDocumentFactory.create( calendarService.getFormattedDate( offset, dateformat, language, country ) );
+        return XMLDocumentFactory.create(
+            calendarService.getFormattedDate( System.currentTimeMillis(), offset, dateformat, language, country ) );
     }
 
     /**
@@ -748,7 +754,7 @@ public final class DataSourceServiceImpl
     public XMLDocument getSuperCategoryNames( DataSourceContext context, int categoryKey, boolean withContentCount,
                                               boolean includeCategory )
     {
-        return XMLDocumentFactory.create( presentationEngine.getSuperCategoryNames( categoryKey, withContentCount, includeCategory ) );
+        return presentationEngine.getSuperCategoryNames( categoryKey, withContentCount, includeCategory );
     }
 
     /**
@@ -757,7 +763,7 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getURLAsText( DataSourceContext context, String url, String encoding )
     {
-        return getURLAsText( context, url, encoding, -1 );
+        return doGetURLAsText( url, encoding, -1 );
     }
 
     /**
@@ -766,7 +772,12 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getURLAsText( DataSourceContext context, String url, String encoding, int timeout )
     {
-        StringBuffer xmlString = new StringBuffer();
+        return doGetURLAsText( url, encoding, timeout );
+    }
+
+    private XMLDocument doGetURLAsText( String url, String encoding, int timeout )
+    {
+        StringBuilder xmlString = new StringBuilder();
         String urlResult = httpService.getURL( url, encoding, timeout );
         if ( urlResult == null )
         {
@@ -787,7 +798,7 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getURLAsXML( DataSourceContext context, String url )
     {
-        return getURLAsXML( context, url, -1 );
+        return doGetURLAsXML( url, -1 );
     }
 
     /**
@@ -796,11 +807,28 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getURLAsXML( DataSourceContext context, String url, int timeout )
     {
-        byte[] xmlBytes = httpService.getURLAsBytes( url, timeout );
-        ByteArrayInputStream byteStream = new ByteArrayInputStream( xmlBytes );
-        org.w3c.dom.Document resultDoc = XMLTool.domparse( byteStream );
+        return doGetURLAsXML( url, timeout );
+    }
 
-        return XMLDocumentFactory.create( resultDoc );
+    private XMLDocument doGetURLAsXML( String url, int timeout )
+    {
+        byte[] xmlBytes = httpService.getURLAsBytes( url, timeout );
+        if ( xmlBytes == null )
+        {
+            return XMLDocumentFactory.create( URL_NO_RESULT );
+        }
+        ByteArrayInputStream byteStream = new ByteArrayInputStream( xmlBytes );
+        try
+        {
+            org.w3c.dom.Document resultDoc = XMLTool.domparse( byteStream );
+            return XMLDocumentFactory.create( resultDoc );
+        }
+        catch ( Exception e )
+        {
+            String message = "Failed to parse xml response from URL \"" + url + "\" : " + e.getMessage();
+            LOG.warning( message );
+            return XMLDocumentFactory.create( URL_NO_RESULT );
+        }
     }
 
     /**

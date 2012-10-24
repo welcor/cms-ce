@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
+import java.util.logging.Logger;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
@@ -27,7 +27,7 @@ import static com.enonic.cms.core.search.IndexTransactionJournalEntry.JournalOpe
 public class IndexTransactionJournal
     implements TransactionSynchronization
 {
-    private final static LogFacade LOG = LogFacade.get( IndexTransactionJournal.class );
+    private final Logger LOG = Logger.getLogger( IndexTransactionJournal.class.getName() );
 
     private final ContentDao contentDao;
 
@@ -112,7 +112,7 @@ public class IndexTransactionJournal
             return;
         }
 
-        final SortedMap<ContentKey, ContentEntity> contentMapByKey = preloadContent();
+        final ContentMap contentMap = preloadContent();
 
         LOG.info( "Flushing index changes from transaction journal" );
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
@@ -120,7 +120,7 @@ public class IndexTransactionJournal
             switch ( journalEntry.getOperation() )
             {
                 case UPDATE:
-                    handleFlushUpdateOperation( journalEntry, contentMapByKey );
+                    handleFlushUpdateOperation( journalEntry, contentMap );
                     break;
 
                 case DELETE:
@@ -133,7 +133,7 @@ public class IndexTransactionJournal
         flushIndex();
     }
 
-    private SortedMap<ContentKey, ContentEntity> preloadContent()
+    private ContentMap preloadContent()
     {
         List<ContentKey> contentToLoad = new ArrayList<ContentKey>();
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
@@ -150,10 +150,9 @@ public class IndexTransactionJournal
         return contentDao.findByKeys( command );
     }
 
-    private void handleFlushUpdateOperation( final IndexTransactionJournalEntry journalEntry,
-                                             final SortedMap<ContentKey, ContentEntity> contentMapByKey )
+    private void handleFlushUpdateOperation( final IndexTransactionJournalEntry journalEntry, final ContentMap contentMap )
     {
-        final ContentEntity content = contentMapByKey.get( journalEntry.getContentKey() );
+        final ContentEntity content = contentMap.get( journalEntry.getContentKey() );
         if ( content == null )
         {
             LOG.warning(
@@ -180,13 +179,13 @@ public class IndexTransactionJournal
         final ContentDocument doc = indexService.createContentDocument( content, skipAttachments );
         final ContentIndexData contentIndexData = contentIndexDataFactory.create( doc, skipAttachments );
 
-        LOG.info( "Updating index for content: " + contentIndexData.getKey().toString() );
+        LOG.fine( "Updating index for content: " + contentIndexData.getKey().toString() );
         elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }
 
     private void deleteContent( ContentKey contentKey )
     {
-        LOG.info( "Deleting index for content: " + contentKey.toString() );
+        LOG.fine( "Deleting index for content: " + contentKey.toString() );
         elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
     }
 

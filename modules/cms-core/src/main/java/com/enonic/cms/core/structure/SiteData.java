@@ -56,7 +56,7 @@ public class SiteData
         {
             return null;
         }
-        return new ResourceKey( element.getText() );
+        return ResourceKey.from( element.getText() );
     }
 
     public ResourceKey getPathToResources()
@@ -66,7 +66,7 @@ public class SiteData
         {
             return null;
         }
-        return new ResourceKey( element.getText() );
+        return ResourceKey.from( element.getText() );
     }
 
     public ResourceKey getDeviceClassResolver()
@@ -76,7 +76,7 @@ public class SiteData
         {
             return null;
         }
-        return new ResourceKey( element.getText() );
+        return ResourceKey.from( element.getText() );
     }
 
     public ResourceKey getLocaleResolver()
@@ -86,7 +86,7 @@ public class SiteData
         {
             return null;
         }
-        return new ResourceKey( element.getText() );
+        return ResourceKey.from( element.getText() );
     }
 
     public ResourceKey getDefaultLocalizationResource()
@@ -96,7 +96,7 @@ public class SiteData
         {
             return null;
         }
-        return new ResourceKey( element.getText() );
+        return ResourceKey.from( element.getText() );
     }
 
     public void addPageType( String value )
@@ -132,7 +132,7 @@ public class SiteData
 
             if ( elem != null && StringUtils.isNotEmpty( elem.getAttributeValue( "key" ) ) )
             {
-                return new ResourceKey( elem.getAttributeValue( "key" ) );
+                return ResourceKey.from( elem.getAttributeValue( "key" ) );
             }
         }
 

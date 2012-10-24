@@ -13,7 +13,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 /**
  * Jul 28, 2009
  */
-public class PathContextXmlCreator
+final class PathContextXmlCreator
 {
 
     public Element createPathElement( final MenuItemEntity child )

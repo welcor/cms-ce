@@ -23,7 +23,6 @@ import org.springframework.web.servlet.mvc.Controller;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
-import com.enonic.vertical.VerticalProperties;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
@@ -75,11 +74,6 @@ import com.enonic.cms.upgrade.UpgradeService;
 public abstract class AbstractAdminwebServlet
     implements Controller, ServletContextAware, ApplicationContextAware
 {
-    @Autowired
-    protected VerticalProperties verticalProperties;
-
-    // Daos:
-
     @Autowired
     protected CategoryDao categoryDao;
 

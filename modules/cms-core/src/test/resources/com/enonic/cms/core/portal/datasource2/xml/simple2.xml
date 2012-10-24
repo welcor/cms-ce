@@ -1,0 +1,4 @@
+<data-sources>
+  <data-source name="dummy" result-element="result" cache="true" condition="true()">
+  </data-source>
+</data-sources>

@@ -6,7 +6,7 @@ package com.enonic.cms.upgrade.task;
 
 import com.enonic.cms.upgrade.UpgradeContext;
 
-public final class UpgradeModel0201
+final class UpgradeModel0201
     extends AbstractUpgradeTask
 {
     public UpgradeModel0201()

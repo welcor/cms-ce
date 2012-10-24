@@ -26,21 +26,24 @@ public class QueryTranslator_filterSectionTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"should\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contentlocations_approved\" : [ \"3\", \"2\", \"1\" ]\n" +
-            "        }\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
             "      },\n" +
-            "      \"should\" : {\n" +
-            "        \"terms\" : {\n" +
-            "          \"contentlocations_unapproved\" : [ \"3\", \"2\", \"1\" ]\n" +
+            "      \"filter\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"should\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contentlocations_approved\" : [ \"3\", \"2\", \"1\" ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"should\" : {\n" +
+            "            \"terms\" : {\n" +
+            "              \"contentlocations_unapproved\" : [ \"3\", \"2\", \"1\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -71,14 +74,17 @@ public class QueryTranslator_filterSectionTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"terms\" : {\n" +
-            "      \"contentlocations_unapproved\" : [ \"3\", \"2\", \"1\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
+            "      },\n" +
+            "      \"filter\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"contentlocations_unapproved\" : [ \"3\", \"2\", \"1\" ]\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -109,14 +115,17 @@ public class QueryTranslator_filterSectionTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
-            "    }\n" +
-            "  },\n" +
-            "  \"filter\" : {\n" +
-            "    \"terms\" : {\n" +
-            "      \"contentlocations_approved\" : [ \"3\", \"2\", \"1\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
+            "      },\n" +
+            "      \"filter\" : {\n" +
+            "        \"terms\" : {\n" +
+            "          \"contentlocations_approved\" : [ \"3\", \"2\", \"1\" ]\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

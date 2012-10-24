@@ -201,19 +201,29 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
             html += "</tr>";
             html += buildDatasourceMethodArguments( datasourceExecutionTrace.datasourceMethodArguments, id + "-4" );
 
+            var counter = 4;
+
             if ( datasourceExecutionTrace.contentIndexQueryTraces.list.length > 0 )
             {
-                html += buildContentIndexQueryTraces( datasourceExecutionTrace.contentIndexQueryTraces, id + "-5" );
+                html += buildContentIndexQueryTraces( datasourceExecutionTrace.contentIndexQueryTraces, id + "-" + (++counter) );
+            }
+
+            if ( datasourceExecutionTrace.relatedContentFetchTraces.list.length > 0 )
+            {
+                html += buildRelatedContentFetchTraces( datasourceExecutionTrace.relatedContentFetchTraces, id + "-" + (++counter) );
             }
 
             // Client Method Execution traces
             if ( datasourceExecutionTrace.clientMethodExecutionTraces.list.length > 0 )
             {
-                html += "<tr id='node-" + id + "-6' class='child-of-node-" + id + "'>";
+                var clientMethodExecutionTracesId = id + "-" + (++counter);
+
+                html += "<tr id='node-" + clientMethodExecutionTracesId + "' class='child-of-node-" + id + "'>";
                 html += "<td>Client Method Execution traces</td><td>" +
                     datasourceExecutionTrace.clientMethodExecutionTraces.totalPeriodInHRFormat + "</td>";
                 html += "</tr>";
-                html += buildClientMethodExecutionTraces( datasourceExecutionTrace.clientMethodExecutionTraces, id + "-6" );
+                html +=
+                    buildClientMethodExecutionTraces( datasourceExecutionTrace.clientMethodExecutionTraces, clientMethodExecutionTracesId );
             }
 
         } );
@@ -262,62 +272,123 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
             html += "<td>" + clientMethodExecutionTrace.methodName + "</td><td>" + clientMethodExecutionTrace.duration.asHRFormat + "</td>";
             html += "</tr>";
 
+            var counter = 0;
+
             if ( clientMethodExecutionTrace.contentIndexQueryTraces.list.length > 0 )
             {
-                html += buildContentIndexQueryTraces( clientMethodExecutionTrace.contentIndexQueryTraces, id );
+                html += buildContentIndexQueryTraces( clientMethodExecutionTrace.contentIndexQueryTraces, id + "-" + (++counter) );
+            }
+            if ( clientMethodExecutionTrace.relatedContentFetchTraces.list.length > 0 )
+            {
+                html += buildRelatedContentFetchTraces( clientMethodExecutionTrace.relatedContentFetchTraces, id + "-" + (++counter) );
             }
 
         } );
         return html;
     }
 
-    function buildContentIndexQueryTraces( contentIndexQueryTraces, parentId )
+    function buildContentIndexQueryTraces( contentIndexQueryTraces, id )
     {
         var html = "";
+
+        html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
+        html += "<td>Content index queries (" + contentIndexQueryTraces.list.length + ")</td><td>" +
+            contentIndexQueryTraces.totalPeriodInHRFormat + "</td>";
+        html += "</tr>";
+
         jQuery.each( contentIndexQueryTraces.list, function ( i, contentIndexQueryTrace )
         {
-
-            var id = parentId + "-" + (i + 1);
-
-            html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
-            html += "<td>Query #" + ( i + 1 ) + "</td><td>" + contentIndexQueryTrace.duration.asHRFormat + "</td>";
-            html += "</tr>";
-
-            html += "<tr id='node-" + id + "-1' class='child-of-node-" + id + "'>";
-            html += "<td>Index</td><td>" + contentIndexQueryTrace.index + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-2' class='child-of-node-" + id + "'>";
-            html += "<td>Count</td><td>" + contentIndexQueryTrace.count + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-3' class='child-of-node-" + id + "'>";
-            html += "<td>Match count</td><td>" + contentIndexQueryTrace.matchCount + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-4' class='child-of-node-" + id + "'>";
-            html += "<td>Query</td><td>" + contentIndexQueryTrace.query + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-5' class='child-of-node-" + id + "'>";
-            html += "<td>Content filter</td><td>" + contentIndexQueryTrace.contentFilter + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-6' class='child-of-node-" + id + "'>";
-            html += "<td>Section filter</td><td>" + contentIndexQueryTrace.sectionFilter + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-7' class='child-of-node-" + id + "'>";
-            html += "<td>Category filter</td><td>" + contentIndexQueryTrace.categoryFilter + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-8' class='child-of-node-" + id + "'>";
-            html += "<td>Content type filter</td><td>" + contentIndexQueryTrace.contentTypeFilter + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-9' class='child-of-node-" + id + "'>";
-            html += "<td>Category access type filter</td><td>" + contentIndexQueryTrace.categoryAccessTypeFilter + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-10' class='child-of-node-" + id + "'>";
-            html += "<td>Security filter</td><td>" + contentIndexQueryTrace.securityFilter + "</td>";
-            html += "</tr>";
-            html += "<tr id='node-" + id + "-11' class='child-of-node-" + id + "'>";
-            html += "<td>Translated query</td><td>" + contentIndexQueryTrace.translatedQuery + "</td>";
-            html += "</tr>";
+            html += buildContentIndexQueryTrace( contentIndexQueryTrace, id + "-" + (i + 1), (i + 1) );
 
         } );
+        return html;
+    }
+
+    function buildContentIndexQueryTrace( contentIndexQueryTrace, id, queryNumber )
+    {
+        var html = "";
+
+        html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
+        html += "<td>Query #" + queryNumber + "</td><td>" + contentIndexQueryTrace.duration.asHRFormat + "</td>";
+        html += "</tr>";
+
+        html += "<tr id='node-" + id + "-1' class='child-of-node-" + id + "'>";
+        html += "<td>Index</td><td>" + contentIndexQueryTrace.index + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-2' class='child-of-node-" + id + "'>";
+        html += "<td>Count</td><td>" + contentIndexQueryTrace.count + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-3' class='child-of-node-" + id + "'>";
+        html += "<td>Match count</td><td>" + contentIndexQueryTrace.matchCount + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-4' class='child-of-node-" + id + "'>";
+        html += "<td>Query</td><td>" + contentIndexQueryTrace.query + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-5' class='child-of-node-" + id + "'>";
+        html += "<td>Content filter</td><td>" + contentIndexQueryTrace.contentFilter + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-6' class='child-of-node-" + id + "'>";
+        html += "<td>Section filter</td><td>" + contentIndexQueryTrace.sectionFilter + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-7' class='child-of-node-" + id + "'>";
+        html += "<td>Category filter</td><td>" + contentIndexQueryTrace.categoryFilter + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-8' class='child-of-node-" + id + "'>";
+        html += "<td>Content type filter</td><td>" + contentIndexQueryTrace.contentTypeFilter + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-9' class='child-of-node-" + id + "'>";
+        html += "<td>Category access type filter</td><td>" + contentIndexQueryTrace.categoryAccessTypeFilter + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-10' class='child-of-node-" + id + "'>";
+        html += "<td>Security filter</td><td>" + contentIndexQueryTrace.securityFilter + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-11' class='child-of-node-" + id + "'>";
+        html += "<td>Translated query</td><td>" + contentIndexQueryTrace.translatedQuery + "</td>";
+        html += "</tr>";
+
+        return html;
+    }
+
+    function buildRelatedContentFetchTraces( relatedContentFetchTraces, id )
+    {
+        var html = "";
+
+        html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
+        html += "<td>Related content fetches(" + relatedContentFetchTraces.list.length + ")</td><td>" +
+            relatedContentFetchTraces.totalPeriodInHRFormat + "</td>";
+        html += "</tr>";
+
+        jQuery.each( relatedContentFetchTraces.list, function ( i, relatedContentFetchTrace )
+        {
+            html += buildRelatedContentFetchTrace( relatedContentFetchTrace, id + "-" + (i + 1), (i + 1) );
+
+        } );
+        return html;
+    }
+
+    function buildRelatedContentFetchTrace( relatedContentFetchTrace, id, fetchNumber )
+    {
+        var html = "";
+
+        html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
+        html += "<td>Fetch #" + fetchNumber + "</td><td>" + relatedContentFetchTrace.duration.asHRFormat + "</td>";
+        html += "</tr>";
+
+        html += "<tr id='node-" + id + "-2' class='child-of-node-" + id + "'>";
+        html += "<td>Max parent level</td><td>" + relatedContentFetchTrace.maxParentLevel + "</td>";
+        html += "</tr>";
+
+        html += "<tr id='node-" + id + "-3' class='child-of-node-" + id + "'>";
+        html += "<td>Max children level</td><td>" + relatedContentFetchTrace.maxChildrenLevel + "</td>";
+        html += "</tr>";
+
+        html += "<tr id='node-" + id + "-4' class='child-of-node-" + id + "'>";
+        html += "<td>Parent fetches</td><td>" + relatedContentFetchTrace.parentFetches + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-5' class='child-of-node-" + id + "'>";
+        html += "<td>Children fetches</td><td>" + relatedContentFetchTrace.childrenFetches + "</td>";
+        html += "</tr>";
+
         return html;
     }
 

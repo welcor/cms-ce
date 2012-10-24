@@ -20,15 +20,18 @@ public class QueryTranslator_orderbyTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
+            "      }\n" +
             "    }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
             "    \"key.orderby\" : {\n" +
             "      \"order\" : \"desc\",\n" +
-            "      \"ignore_unmapped\" : true\r\n" +
+            "      \"ignore_unmapped\" : true\n" +
             "    }\n" +
             "  } ]\n" +
             "}";
@@ -46,15 +49,18 @@ public class QueryTranslator_orderbyTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"match_all\" : {\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"match_all\" : { }\n" +
+            "      }\n" +
             "    }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
             "    \"key.orderby\" : {\n" +
             "      \"order\" : \"asc\",\n" +
-            "      \"ignore_unmapped\" : true\r\n" +
+            "      \"ignore_unmapped\" : true\n" +
             "    }\n" +
             "  } ]\n" +
             "}";
@@ -74,15 +80,19 @@ public class QueryTranslator_orderbyTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"ids\" : {\n" +
-            "      \"type\" : \"content\",\n" +
-            "      \"values\" : [ \"100\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"ids\" : {\n" +
+            "          \"type\" : \"content\",\n" +
+            "          \"values\" : [ \"100\" ]\n" +
+            "        }\n" +
+            "      }\n" +
             "    }\n" +
             "  },\n" +
             "  \"sort\" : [ {\n" +
             "    \"key.orderby\" : {\n" +
             "      \"order\" : \"asc\",\n" +
-            "      \"ignore_unmapped\" : true\r\n" +
+            "      \"ignore_unmapped\" : true\n" +
             "    }\n" +
             "  } ]\n" +
             "}";

@@ -47,7 +47,7 @@ public final class StyleSheetURIResolver
     public Source resolve( String href, String base )
             throws TransformerException
     {
-        final ResourceKey resourceKey = new ResourceKey( XsltResourceHelper.resolveRelativePath( href, base ) );
+        final ResourceKey resourceKey = ResourceKey.from( XsltResourceHelper.resolveRelativePath( href, base ) );
         final ResourceFile resource = this.resourceService.getResourceFile( resourceKey );
 
         if ( resource == null )

@@ -15,14 +15,18 @@ public class QueryTranslator_rangeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"range\" : {\n" +
-            "      \"key.number\" : {\n" +
-            "        \"from\" : 100.0,\n" +
-            "        \"to\" : null,\n" +
-            "        \"include_lower\" : false,\n" +
-            "        \"include_upper\" : true\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key.number\" : {\n" +
+            "            \"from\" : 100.0,\n" +
+            "            \"to\" : null,\n" +
+            "            \"include_lower\" : false,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
+            "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
@@ -39,11 +43,24 @@ public class QueryTranslator_rangeTest
     public void testGreaterThan_key_double()
         throws Exception
     {
-        String expected_search_result =
-            "{\r\n" + "  \"from\" : 0,\r\n" + "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\r\n" + "  \"query\" : {\r\n" +
-                "    \"range\" : {\r\n" + "      \"key.number\" : {\r\n" + "        \"from\" : 100.0,\r\n" + "        \"to\" : null,\r\n" +
-                "        \"include_lower\" : false,\r\n" + "        \"include_upper\" : true\r\n" + "      }\r\n" + "    }\r\n" +
-                "  }\r\n}";
+        String expected_search_result = "{\n" +
+            "  \"from\" : 0,\n" +
+            "  \"size\" : 200,\n" +
+            "  \"query\" : {\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key.number\" : {\n" +
+            "            \"from\" : 100.0,\n" +
+            "            \"to\" : null,\n" +
+            "            \"include_lower\" : false,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
         ContentIndexQuery query = createContentQuery( "key > 100.0" );
 
@@ -59,14 +76,18 @@ public class QueryTranslator_rangeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
-            "        \"from\" : \"100\",\n" +
-            "        \"to\" : null,\n" +
-            "        \"include_lower\" : false,\n" +
-            "        \"include_upper\" : true\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key\" : {\n" +
+            "            \"from\" : \"100\",\n" +
+            "            \"to\" : null,\n" +
+            "            \"include_lower\" : false,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
+            "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
@@ -85,14 +106,18 @@ public class QueryTranslator_rangeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
-            "        \"from\" : \"100\",\n" +
-            "        \"to\" : null,\n" +
-            "        \"include_lower\" : true,\n" +
-            "        \"include_upper\" : true\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key\" : {\n" +
+            "            \"from\" : \"100\",\n" +
+            "            \"to\" : null,\n" +
+            "            \"include_lower\" : true,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
+            "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
@@ -111,14 +136,18 @@ public class QueryTranslator_rangeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
-            "        \"from\" : null,\n" +
-            "        \"to\" : \"100\",\n" +
-            "        \"include_lower\" : true,\n" +
-            "        \"include_upper\" : false\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key\" : {\n" +
+            "            \"from\" : null,\n" +
+            "            \"to\" : \"100\",\n" +
+            "            \"include_lower\" : true,\n" +
+            "            \"include_upper\" : false\n" +
+            "          }\n" +
+            "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
@@ -137,14 +166,18 @@ public class QueryTranslator_rangeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"range\" : {\n" +
-            "      \"key\" : {\n" +
-            "        \"from\" : null,\n" +
-            "        \"to\" : \"100\",\n" +
-            "        \"include_lower\" : true,\n" +
-            "        \"include_upper\" : true\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"range\" : {\n" +
+            "          \"key\" : {\n" +
+            "            \"from\" : null,\n" +
+            "            \"to\" : \"100\",\n" +
+            "            \"include_lower\" : true,\n" +
+            "            \"include_upper\" : true\n" +
+            "          }\n" +
+            "        }\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +

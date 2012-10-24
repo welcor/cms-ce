@@ -201,6 +201,23 @@ public class LivePortalTraceServiceImpl
         }
     }
 
+    @Override
+    public RelatedContentFetchTrace startRelatedContentFetchTracing()
+    {
+        final RelatedContentFetcher relatedContentFetcher = getCurrentTrace().getCurrentRelatedContentFetcher();
+        if ( relatedContentFetcher != null )
+        {
+            final RelatedContentFetchTrace trace = new RelatedContentFetchTrace();
+            trace.setStartTime( timeService.getNowAsDateTime() );
+            relatedContentFetcher.addRelatedContentFetchTrace( trace );
+            return trace;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public ViewTransformationTrace startViewTransformationTracing()
     {
         final ViewTransformationTrace trace = new ViewTransformationTrace();
@@ -400,6 +417,13 @@ public class LivePortalTraceServiceImpl
     {
         Preconditions.checkNotNull( contentIndexQueryTrace );
         contentIndexQueryTrace.setStopTime( timeService.getNowAsDateTime() );
+    }
+
+    @Override
+    public void stopTracing( final RelatedContentFetchTrace trace )
+    {
+        Preconditions.checkNotNull( trace );
+        trace.setStopTime( timeService.getNowAsDateTime() );
     }
 
     public void stopTracing( final InstructionPostProcessingTrace instructionPostProcessingTrace )

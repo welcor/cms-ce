@@ -17,15 +17,18 @@ public class QueryTranslator_not_equalsTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
-            "        \"match_all\" : {\n" +
-            "        }\n" +
-            "      },\n" +
-            "      \"must_not\" : {\n" +
-            "        \"ids\" : {\n" +
-            "          \"type\" : \"content\",\n" +
-            "          \"values\" : [ \"100\" ]\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
+            "        \"bool\" : {\n" +
+            "          \"must\" : {\n" +
+            "            \"match_all\" : { }\n" +
+            "          },\n" +
+            "          \"must_not\" : {\n" +
+            "            \"ids\" : {\n" +
+            "              \"type\" : \"content\",\n" +
+            "              \"values\" : [ \"100\" ]\n" +
+            "            }\n" +
+            "          }\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -48,25 +51,28 @@ public class QueryTranslator_not_equalsTest
             "  \"from\" : 0,\n" +
             "  \"size\" : 200,\n" +
             "  \"query\" : {\n" +
-            "    \"bool\" : {\n" +
-            "      \"must\" : [ {\n" +
-            "        \"term\" : {\n" +
-            "          \"title\" : \"test\"\n" +
-            "        }\n" +
-            "      }, {\n" +
+            "    \"filtered\" : {\n" +
+            "      \"query\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"must\" : {\n" +
-            "            \"match_all\" : {\n" +
+            "          \"must\" : [ {\n" +
+            "            \"term\" : {\n" +
+            "              \"title\" : \"test\"\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must_not\" : {\n" +
-            "            \"ids\" : {\n" +
-            "              \"type\" : \"content\",\n" +
-            "              \"values\" : [ \"100\" ]\n" +
+            "          }, {\n" +
+            "            \"bool\" : {\n" +
+            "              \"must\" : {\n" +
+            "                \"match_all\" : { }\n" +
+            "              },\n" +
+            "              \"must_not\" : {\n" +
+            "                \"ids\" : {\n" +
+            "                  \"type\" : \"content\",\n" +
+            "                  \"values\" : [ \"100\" ]\n" +
+            "                }\n" +
+            "              }\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
-            "      } ]\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}";

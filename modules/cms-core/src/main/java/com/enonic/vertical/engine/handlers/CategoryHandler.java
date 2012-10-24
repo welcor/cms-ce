@@ -233,7 +233,7 @@ public class CategoryHandler
         return contentTypeKey;
     }
 
-    public Document getSuperCategoryNames( CategoryKey categoryKey, boolean withContentCount, boolean includeCategory )
+    public XMLDocument getSuperCategoryNames( CategoryKey categoryKey, boolean withContentCount, boolean includeCategory )
     {
         Map<CategoryEntity, Integer> contentCountMap = new HashMap<CategoryEntity, Integer>();
         List<CategoryEntity> categories = new ArrayList<CategoryEntity>();
@@ -242,14 +242,14 @@ public class CategoryHandler
 
         if ( categoryKey == null )
         {
-            return xmlCreator.createEmptyCategoryNamesDocument( "No categorykey given" ).getAsDOMDocument();
+            return xmlCreator.createEmptyCategoryNamesDocument( "No categorykey given" );
         }
 
         CategoryEntity category = categoryDao.findByKey( categoryKey );
 
         if ( category == null )
         {
-            return xmlCreator.createEmptyCategoryNamesDocument( "No category found" ).getAsDOMDocument();
+            return xmlCreator.createEmptyCategoryNamesDocument( "No category found" );
         }
 
         CategoryEntity currCategory;
@@ -279,8 +279,7 @@ public class CategoryHandler
         Collections.reverse( categories );
 
         XMLDocument newDoc = xmlCreator.createCategoryNames( categories, contentCountMap );
-
-        return newDoc.getAsDOMDocument();
+        return newDoc;
     }
 
     public int getUnitKey( CategoryKey categoryKey )

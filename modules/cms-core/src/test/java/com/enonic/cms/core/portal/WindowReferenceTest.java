@@ -48,6 +48,15 @@ public class WindowReferenceTest
     }
 
     @Test
+    public void testParse_path_with_extension()
+        throws Exception
+    {
+        reference = WindowReference.parse( new Path( "_window/my-portlet.json" ) );
+        Assert.assertEquals( "my-portlet", reference.getPortletName() );
+        Assert.assertEquals( "json", reference.getExtension() );
+    }
+
+    @Test
     public void testParse_path_with_spaces()
         throws Exception
     {

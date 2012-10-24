@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<calendar currentdate="1970-01-01">
+  <year number="1970" enddate="1970-12-31" startdate="1970-01-01">
+    <month name="January" shortname="Jan" number="1" enddate="1970-01-31" startdate="1970-01-01">
+      <week number="1" startdate="1970-01-01" enddate="1970-01-03">
+        <day number="1" date="1970-01-01" name="Thursday" shortname="Thu" id="4"/>
+        <day number="2" date="1970-01-02" name="Friday" shortname="Fri" id="5"/>
+        <day number="3" date="1970-01-03" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+      <week number="2" startdate="1970-01-04" enddate="1970-01-10">
+        <day number="4" date="1970-01-04" name="Sunday" shortname="Sun" id="7"/>
+        <day number="5" date="1970-01-05" name="Monday" shortname="Mon" id="1"/>
+        <day number="6" date="1970-01-06" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="7" date="1970-01-07" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="8" date="1970-01-08" name="Thursday" shortname="Thu" id="4"/>
+        <day number="9" date="1970-01-09" name="Friday" shortname="Fri" id="5"/>
+        <day number="10" date="1970-01-10" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+      <week number="3" startdate="1970-01-11" enddate="1970-01-17">
+        <day number="11" date="1970-01-11" name="Sunday" shortname="Sun" id="7"/>
+        <day number="12" date="1970-01-12" name="Monday" shortname="Mon" id="1"/>
+        <day number="13" date="1970-01-13" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="14" date="1970-01-14" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="15" date="1970-01-15" name="Thursday" shortname="Thu" id="4"/>
+        <day number="16" date="1970-01-16" name="Friday" shortname="Fri" id="5"/>
+        <day number="17" date="1970-01-17" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+      <week number="4" startdate="1970-01-18" enddate="1970-01-24">
+        <day number="18" date="1970-01-18" name="Sunday" shortname="Sun" id="7"/>
+        <day number="19" date="1970-01-19" name="Monday" shortname="Mon" id="1"/>
+        <day number="20" date="1970-01-20" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="21" date="1970-01-21" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="22" date="1970-01-22" name="Thursday" shortname="Thu" id="4"/>
+        <day number="23" date="1970-01-23" name="Friday" shortname="Fri" id="5"/>
+        <day number="24" date="1970-01-24" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+      <week number="5" startdate="1970-01-25" enddate="1970-01-31">
+        <day number="25" date="1970-01-25" name="Sunday" shortname="Sun" id="7"/>
+        <day number="26" date="1970-01-26" name="Monday" shortname="Mon" id="1"/>
+        <day number="27" date="1970-01-27" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="28" date="1970-01-28" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="29" date="1970-01-29" name="Thursday" shortname="Thu" id="4"/>
+        <day number="30" date="1970-01-30" name="Friday" shortname="Fri" id="5"/>
+        <day number="31" date="1970-01-31" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+    </month>
+    <month name="February" shortname="Feb" number="2" enddate="1970-02-28" startdate="1970-02-01">
+      <week number="6" startdate="1970-02-01" enddate="1970-02-07">
+        <day number="1" date="1970-02-01" name="Sunday" shortname="Sun" id="7"/>
+        <day number="2" date="1970-02-02" name="Monday" shortname="Mon" id="1"/>
+        <day number="3" date="1970-02-03" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="4" date="1970-02-04" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="5" date="1970-02-05" name="Thursday" shortname="Thu" id="4"/>
+        <day number="6" date="1970-02-06" name="Friday" shortname="Fri" id="5"/>
+        <day number="7" date="1970-02-07" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+      <week number="7" startdate="1970-02-08" enddate="1970-02-14">
+        <day number="8" date="1970-02-08" name="Sunday" shortname="Sun" id="7"/>
+        <day number="9" date="1970-02-09" name="Monday" shortname="Mon" id="1"/>
+        <day number="10" date="1970-02-10" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="11" date="1970-02-11" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="12" date="1970-02-12" name="Thursday" shortname="Thu" id="4"/>
+        <day number="13" date="1970-02-13" name="Friday" shortname="Fri" id="5"/>
+        <day number="14" date="1970-02-14" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+      <week number="8" startdate="1970-02-15" enddate="1970-02-21">
+        <day number="15" date="1970-02-15" name="Sunday" shortname="Sun" id="7"/>
+        <day number="16" date="1970-02-16" name="Monday" shortname="Mon" id="1"/>
+        <day number="17" date="1970-02-17" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="18" date="1970-02-18" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="19" date="1970-02-19" name="Thursday" shortname="Thu" id="4"/>
+        <day number="20" date="1970-02-20" name="Friday" shortname="Fri" id="5"/>
+        <day number="21" date="1970-02-21" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+      <week number="9" startdate="1970-02-22" enddate="1970-02-28">
+        <day number="22" date="1970-02-22" name="Sunday" shortname="Sun" id="7"/>
+        <day number="23" date="1970-02-23" name="Monday" shortname="Mon" id="1"/>
+        <day number="24" date="1970-02-24" name="Tuesday" shortname="Tue" id="2"/>
+        <day number="25" date="1970-02-25" name="Wednesday" shortname="Wed" id="3"/>
+        <day number="26" date="1970-02-26" name="Thursday" shortname="Thu" id="4"/>
+        <day number="27" date="1970-02-27" name="Friday" shortname="Fri" id="5"/>
+        <day number="28" date="1970-02-28" name="Saturday" shortname="Sat" id="6"/>
+      </week>
+    </month>
+  </year>
+</calendar>

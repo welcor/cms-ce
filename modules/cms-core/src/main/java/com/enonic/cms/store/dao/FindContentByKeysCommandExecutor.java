@@ -3,17 +3,15 @@ package com.enonic.cms.store.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
+import org.elasticsearch.common.base.Preconditions;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.OrderContentKeysByGivenOrderComparator;
+import com.enonic.cms.core.content.ContentMap;
 
 class FindContentByKeysCommandExecutor
 {
@@ -23,6 +21,8 @@ class FindContentByKeysCommandExecutor
 
     private FindContentByKeysQuerier findContentByKeysQuerier;
 
+    private ContentMap contentMap;
+
     FindContentByKeysCommandExecutor( final CacheFacade entityCache, final HibernateTemplate hibernateTemplate,
                                       final FindContentByKeysQuerier findContentByKeysQuerier )
     {
@@ -31,49 +31,48 @@ class FindContentByKeysCommandExecutor
         this.findContentByKeysQuerier = findContentByKeysQuerier;
     }
 
-    SortedMap<ContentKey, ContentEntity> execute( final List<ContentKey> contentKeys, final boolean byPassCache )
+    ContentMap execute( final List<ContentKey> contentKeys, final boolean byPassCache )
     {
-        final SortedMap<ContentKey, ContentEntity> contentMapByKey =
-            new TreeMap<ContentKey, ContentEntity>( new OrderContentKeysByGivenOrderComparator( contentKeys ) );
+        Preconditions.checkState( contentMap == null, "execute can only be invoked once per instance of this class" );
 
-        if ( byPassCache )
+        contentMap = new ContentMap( contentKeys );
+
+        try
         {
-            final List<ContentEntity> contentsFromDB = findContentByKeysQuerier.queryContent( contentKeys );
-            for ( ContentEntity c : contentsFromDB )
+            if ( byPassCache )
             {
-                contentMapByKey.put( c.getKey(), c );
+                contentMap.addAll( findContentByKeysQuerier.queryContent( contentKeys ) );
+                return contentMap;
             }
-            return contentMapByKey;
-        }
-        else
-        {
-            final List<ContentKey> contentsNotFoundInCache = new ArrayList<ContentKey>();
-            findContentInCache( contentKeys, contentMapByKey, contentsNotFoundInCache );
-
-            if ( !contentsNotFoundInCache.isEmpty() )
+            else
             {
-                final List<ContentEntity> contentsFromDB = findContentByKeysQuerier.queryContent( contentsNotFoundInCache );
-                for ( ContentEntity c : contentsFromDB )
+                final List<ContentKey> contentsNotFoundInCache = findContentInCache( contentKeys );
+                if ( !contentsNotFoundInCache.isEmpty() )
                 {
-                    contentMapByKey.put( c.getKey(), c );
+                    contentMap.addAll( findContentByKeysQuerier.queryContent( contentsNotFoundInCache ) );
                 }
+                return contentMap;
             }
-            return contentMapByKey;
+        }
+        finally
+        {
+            contentMap.removeEntriesWithNullValues();
         }
     }
 
-    private void findContentInCache( Iterable<ContentKey> contentKeys, Map<ContentKey, ContentEntity> contentsFoundInCache,
-                                     List<ContentKey> contentsNotFoundInCache )
+    private List<ContentKey> findContentInCache( final Iterable<ContentKey> contentKeys )
     {
+        final List<ContentKey> contentsNotFoundInCache = new ArrayList<ContentKey>();
+
         for ( final ContentKey contentKey : contentKeys )
         {
             final boolean contentExistsInCache = contentExistInCacheResolver.contentExistsInCache( contentKey );
             if ( contentExistsInCache )
             {
-                final ContentEntity contentFoundInCache = (ContentEntity) hibernateTemplate.get( ContentEntity.class, contentKey );
+                final ContentEntity contentFoundInCache = hibernateTemplate.get( ContentEntity.class, contentKey );
                 if ( contentFoundInCache != null )
                 {
-                    contentsFoundInCache.put( contentFoundInCache.getKey(), contentFoundInCache );
+                    contentMap.add( contentFoundInCache );
                 }
             }
             else
@@ -81,5 +80,7 @@ class FindContentByKeysCommandExecutor
                 contentsNotFoundInCache.add( contentKey );
             }
         }
+
+        return contentsNotFoundInCache;
     }
 }

@@ -15,7 +15,6 @@ import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.datasource.processor.DataSourceProcessor;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -51,8 +50,6 @@ public class PageRendererContext
     private ContentEntity contentFromRequest;
 
     private LanguageEntity language;
-
-    private DataSourceProcessor[] processors;
 
     private PreviewContext previewContext;
 
@@ -139,16 +136,6 @@ public class PageRendererContext
     public boolean isEncodeURIs()
     {
         return encodeURIs;
-    }
-
-    public DataSourceProcessor[] getProcessors()
-    {
-        return processors;
-    }
-
-    public void setProcessors( DataSourceProcessor[] processors )
-    {
-        this.processors = processors;
     }
 
     public PreviewContext getPreviewContext()

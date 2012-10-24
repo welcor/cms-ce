@@ -3,7 +3,7 @@ package com.enonic.cms.core.portal.datasource2.handler.legacy;
 import org.jdom.Document;
 
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 public final class GetRandomContentHandler
     extends DataSourceHandler

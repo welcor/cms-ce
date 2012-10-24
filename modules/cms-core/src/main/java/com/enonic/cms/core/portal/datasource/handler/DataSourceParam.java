@@ -1,4 +1,4 @@
-package com.enonic.cms.core.portal.datasource2.handler;
+package com.enonic.cms.core.portal.datasource.handler;
 
 public interface DataSourceParam
 {

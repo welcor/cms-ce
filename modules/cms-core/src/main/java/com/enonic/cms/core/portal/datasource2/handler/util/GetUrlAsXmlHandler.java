@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.http.HTTPService;
 
 public final class GetUrlAsXmlHandler

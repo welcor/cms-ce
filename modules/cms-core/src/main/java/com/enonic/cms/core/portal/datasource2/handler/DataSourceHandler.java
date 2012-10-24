@@ -3,6 +3,7 @@ package com.enonic.cms.core.portal.datasource2.handler;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.service.DataSourceService;
 
 public abstract class DataSourceHandler

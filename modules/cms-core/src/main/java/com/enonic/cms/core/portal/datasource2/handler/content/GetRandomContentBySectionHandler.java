@@ -6,7 +6,7 @@ import org.jdom.Document;
 import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 public final class GetRandomContentBySectionHandler
     extends DataSourceHandler

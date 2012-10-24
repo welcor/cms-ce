@@ -1,11 +1,10 @@
-package com.enonic.cms.core.portal.datasource2.handler;
+package com.enonic.cms.core.portal.datasource.handler;
 
 import java.util.Map;
 
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
-import com.enonic.cms.core.security.user.UserEntity;
 
 public final class DataSourceRequest
     extends DataSourceContext
@@ -38,15 +37,5 @@ public final class DataSourceRequest
     public void addParam( final String name, final String value )
     {
         this.paramMap.put( name, value );
-    }
-
-    public UserEntity getCurrentUser()
-    {
-        return getUser();
-    }
-
-    public void setCurrentUser( final UserEntity user )
-    {
-        setUser( user );
     }
 }

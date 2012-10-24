@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -48,7 +49,7 @@ public abstract class AbstractDataSourceHandlerTest<T extends DataSourceHandler>
         user.setKey( new UserKey( User.ANONYMOUS_UID ) );
         user.setName( User.ANONYMOUS_UID );
         user.setDisplayName( User.ANONYMOUS_UID );
-        this.request.setCurrentUser( user );
+        this.request.setUser( user );
         this.request.setPreviewContext( PreviewContext.NO_PREVIEW );
 
         this.dummyDoc = XMLDocumentFactory.create( "<dummy/>" );

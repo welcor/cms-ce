@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<datasources>
+  <!--<datasource name="getContentVersion"><parameter>1,2</parameter></datasource>-->
+  <datasource name="getContentVersion">
+    <parameter name="versionKeys">1,2</parameter>
+    <parameter name="childrenLevel">1</parameter>
+  </datasource>
+  <!--<datasource name="getContentVersion"><parameter>1,2</parameter><parameter>1</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getPreferences"/>
+  <datasource name="getPreferences">
+    <parameter name="scope">WINDOW</parameter>
+  </datasource>
+  <datasource name="getPreferences">
+    <parameter name="scope">WINDOW</parameter>
+    <parameter name="keyPattern">prefix*</parameter>
+  </datasource>
+  <datasource name="getPreferences">
+    <parameter name="scope">WINDOW</parameter>
+    <parameter name="keyPattern">prefix*</parameter>
+    <parameter name="uniqueMatch">true</parameter>
+  </datasource>
+  <!--<datasource name="getPreferences"><parameter>WINDOW</parameter><parameter>prefix*</parameter><parameter>true</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

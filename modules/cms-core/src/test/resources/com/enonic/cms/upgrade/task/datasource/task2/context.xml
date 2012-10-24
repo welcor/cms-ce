@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<datasources result-element="result" cookie-context="true" http-context="true" session-context="true">
+  <datasource name="getLocales"/>
+</datasources>

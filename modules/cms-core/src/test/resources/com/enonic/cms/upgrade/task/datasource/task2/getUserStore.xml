@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getUserstore"/>
+  <datasource name="getUserstore">
+    <parameter>dummy</parameter>
+  </datasource>
+  <datasource name="getUserstore">
+    <parameter>dummy</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

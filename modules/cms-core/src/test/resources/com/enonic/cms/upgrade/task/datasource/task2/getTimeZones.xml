@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getTimeZones"/>
+  <datasource name="getTimeZones">
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getLocales"/>
+  <!--<datasource name="getLocales"><parameter>unknown</parameter></datasource>-->
+</datasources>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getURLAsXML"/>
+  <datasource name="getURLAsXML">
+    <parameter>http://www.enonic.com</parameter>
+  </datasource>
+  <datasource name="getURLAsXML">
+    <parameter>http://www.enonic.com</parameter>
+    <parameter>5000</parameter>
+  </datasource>
+  <datasource name="getURLAsXML">
+    <parameter>http://www.enonic.com</parameter>
+    <parameter>5000</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

@@ -40,4 +40,18 @@ final class JDOMDocumentHelper
             return null;
         }
     }
+
+    public static void copyAttributeIfExists( final Element source, final Element target, final String name )
+    {
+        copyAttributeIfExists( source, target, name, name );
+    }
+
+    public static void copyAttributeIfExists( final Element source, final Element target, final String name, final String newName )
+    {
+        final String value = source.getAttributeValue( name );
+        if ( value != null )
+        {
+            target.setAttribute( newName, value );
+        }
+    }
 }

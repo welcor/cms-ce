@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getPreferences"/>
+  <datasource name="getPreferences">
+    <parameter>WINDOW</parameter>
+  </datasource>
+  <datasource name="getPreferences">
+    <parameter>WINDOW</parameter>
+    <parameter>prefix*</parameter>
+  </datasource>
+  <datasource name="getPreferences">
+    <parameter>WINDOW</parameter>
+    <parameter>prefix*</parameter>
+    <parameter>true</parameter>
+  </datasource>
+  <datasource name="getPreferences">
+    <parameter>WINDOW</parameter>
+    <parameter>prefix*</parameter>
+    <parameter>true</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<datasources>
+  <!--<datasource name="getCalendar"><parameter>true</parameter><parameter>2012</parameter><parameter>10</parameter><parameter>6</parameter><parameter>true</parameter><parameter>true</parameter><parameter>NO</parameter></datasource>-->
+  <datasource name="getCalendar">
+    <parameter name="relative">true</parameter>
+    <parameter name="year">2012</parameter>
+    <parameter name="month">10</parameter>
+    <parameter name="count">6</parameter>
+    <parameter name="includeWeeks">true</parameter>
+    <parameter name="includeDays">true</parameter>
+    <parameter name="language">NO</parameter>
+    <parameter name="country">NO</parameter>
+  </datasource>
+  <!--<datasource name="getCalendar"><parameter>true</parameter><parameter>2012</parameter><parameter>10</parameter><parameter>6</parameter><parameter>true</parameter><parameter>true</parameter><parameter>NO</parameter><parameter>NO</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

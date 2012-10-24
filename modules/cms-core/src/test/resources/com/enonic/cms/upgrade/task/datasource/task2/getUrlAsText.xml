@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getURLAsText">
+    <parameter>http://www.enonic.com</parameter>
+  </datasource>
+  <datasource name="getURLAsText">
+    <parameter>http://www.enonic.com</parameter>
+    <parameter>UTF-8</parameter>
+  </datasource>
+  <datasource name="getURLAsText">
+    <parameter>http://www.enonic.com</parameter>
+    <parameter>UTF-8</parameter>
+    <parameter>5000</parameter>
+  </datasource>
+  <datasource name="getURLAsText">
+    <parameter>http://www.enonic.com</parameter>
+    <parameter>UTF-8</parameter>
+    <parameter>5000</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

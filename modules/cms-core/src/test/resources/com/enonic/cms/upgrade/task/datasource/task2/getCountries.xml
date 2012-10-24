@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getCountries">
+    <parameter>NO,SE</parameter>
+  </datasource>
+  <datasource name="getCountries">
+    <parameter>NO,SE</parameter>
+    <parameter>true</parameter>
+  </datasource>
+  <datasource name="getCountries">
+    <parameter>NO,SE</parameter>
+    <parameter>true</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

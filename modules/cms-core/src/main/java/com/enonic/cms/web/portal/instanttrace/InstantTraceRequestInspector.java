@@ -37,7 +37,7 @@ public final class InstantTraceRequestInspector
 
     public static InstantTraceId getInstantTraceId( final Path path )
     {
-        String s = path.getPathElementAfter( "_trace", "info" );
+        String s = path.getPathElementAfter( InstantTracePathInspector.TRACE_INFO_PATH_ELEMENTS );
         if ( StringUtils.isBlank( s ) )
         {
             return null;

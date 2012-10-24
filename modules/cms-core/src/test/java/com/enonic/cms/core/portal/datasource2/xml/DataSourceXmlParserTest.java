@@ -7,7 +7,7 @@ import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 import org.junit.Test;
 
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

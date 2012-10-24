@@ -29,7 +29,8 @@ public final class MethodCall
 
     private final boolean isCacheable;
 
-    public MethodCall( InvocationCache invocationCache, Object target, MethodCallParameter[] parameters, Method method, boolean isCacheable )
+    public MethodCall( InvocationCache invocationCache, Object target, MethodCallParameter[] parameters, Method method,
+                       boolean isCacheable )
     {
         this.invocationCache = invocationCache;
         this.target = target;
@@ -55,8 +56,8 @@ public final class MethodCall
             {
                 numParams--;
             }
-            throw new DataSourceException( "Failed to execute method [" + method.getName() + "] with " + numParams + " parameters",
-                                               iae );
+            throw new DataSourceException( "Failed to execute method [{0}] with {1} parameters", method.getName(), numParams ).withCause(
+                iae );
         }
         finally
         {

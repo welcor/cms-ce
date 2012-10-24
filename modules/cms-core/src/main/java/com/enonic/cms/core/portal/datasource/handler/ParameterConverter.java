@@ -1,4 +1,4 @@
-package com.enonic.cms.core.portal.datasource2.handler;
+package com.enonic.cms.core.portal.datasource.handler;
 
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.support.DefaultConversionService;

@@ -109,7 +109,7 @@ public class DatasourceExecutor
         }
         catch ( Exception e )
         {
-            throw new DataSourceException( "Failed to evaluate expression", e );
+            throw new DataSourceException( "Failed to evaluate expression" ).withCause( e );
         }
 
     }

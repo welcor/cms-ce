@@ -1,13 +1,19 @@
 package com.enonic.cms.core.portal.datasource2.handler.content;
 
 import org.jdom.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.service.DataSourceService;
+
+import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 
 public final class GetContentByCategoryHandler
     extends DataSourceHandler
 {
+    private DataSourceService dataSourceService;
+
     public GetContentByCategoryHandler()
     {
         super( "getContentByCategory" );
@@ -27,7 +33,13 @@ public final class GetContentByCategoryHandler
         final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
         final int parentLevel = req.param( "parentLevel" ).asInteger( 0 );
 
-        // TODO: Implement based on DataSourceServiceImpl.getContentByCategory(..)
-        return null;
+        return dataSourceService.getContentByCategory( req,  toPrimitive( categoryKeys) , levels, query, orderBy,
+                                             index, count, includeData, childrenLevel, parentLevel ).getAsJDOMDocument();
+    }
+
+    @Autowired
+    public void setDataSourceService( final DataSourceService dataSourceService )
+    {
+        this.dataSourceService = dataSourceService;
     }
 }

@@ -12,7 +12,7 @@ import com.enonic.cms.core.country.CountryCode;
 import com.enonic.cms.core.country.CountryService;
 import com.enonic.cms.core.country.CountryXmlCreator;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 public final class GetCountriesHandler
     extends DataSourceHandler

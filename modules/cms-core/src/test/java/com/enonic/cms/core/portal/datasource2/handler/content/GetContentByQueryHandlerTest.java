@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.enonic.cms.core.portal.datasource2.handler.AbstractDataSourceHandlerTest;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource2.handler.StoreMatcher;
 import com.enonic.cms.core.preview.PreviewContext;
 

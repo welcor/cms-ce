@@ -52,10 +52,6 @@ interface DataSourceService
                                             boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
                                             int[] filterByContentTypes );
 
-    public XMLDocument getMenuData( DataSourceContext context, int menuId );
-
-    public XMLDocument getMenuData( DataSourceContext context );
-
     XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel );
 
     XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel, int startLevel, int levels );

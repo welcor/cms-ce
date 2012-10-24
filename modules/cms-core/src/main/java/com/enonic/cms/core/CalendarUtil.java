@@ -4,7 +4,9 @@
  */
 package com.enonic.cms.core;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class CalendarUtil
 {
@@ -54,6 +56,9 @@ public class CalendarUtil
         {
             return CmsDateAndTimeFormats.printAs_STORE_DATE( time );
         }
+    }
 
+    public static Calendar createCalendar( int year, int month, int dayOfMonth, int hourOfDay, int minute, int second ) {
+      return new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute, second);
     }
 }

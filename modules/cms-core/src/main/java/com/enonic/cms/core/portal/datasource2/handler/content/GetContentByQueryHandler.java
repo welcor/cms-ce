@@ -2,6 +2,8 @@ package com.enonic.cms.core.portal.datasource2.handler.content;
 
 import org.jdom.Document;
 
+import com.enonic.cms.framework.xml.XMLDocument;
+
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;
 
@@ -25,7 +27,7 @@ public final class GetContentByQueryHandler
         final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
         final int parentLevel = req.param( "parentLevel" ).asInteger( 0 );
 
-        // TODO: Implement based on DataSourceServiceImpl.getContentByQuery(..)
-        return null;
+        XMLDocument document = dataSourceService.getContentByQuery( req, query, orderBy, index, count, includeData, childrenLevel, parentLevel );
+        return document.getAsJDOMDocument();
     }
 }

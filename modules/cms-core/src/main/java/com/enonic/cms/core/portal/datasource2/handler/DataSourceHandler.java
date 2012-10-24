@@ -4,12 +4,16 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.portal.rendering.tracing.DataTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
+import com.enonic.cms.core.service.DataSourceService;
 
 public abstract class DataSourceHandler
 {
+    protected DataSourceService dataSourceService;
+
     private final String name;
 
     public DataSourceHandler( final String name )
@@ -59,5 +63,11 @@ public abstract class DataSourceHandler
                 }
             }
         }
+    }
+
+    @Autowired
+    public void setDataSourceService( final DataSourceService dataSourceService )
+    {
+        this.dataSourceService = dataSourceService;
     }
 }

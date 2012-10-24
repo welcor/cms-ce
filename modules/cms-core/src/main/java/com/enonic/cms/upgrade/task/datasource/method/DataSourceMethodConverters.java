@@ -21,6 +21,8 @@ public final class DataSourceMethodConverters
         add( new GetUrlAsTextConverter() );
         add( new GetUrlAsXmlConverter() );
         add( new GetFormattedDateConverter() );
+        add( new GetIndexValuesConverter() );
+        add( new GetAggregatedIndexValuesConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

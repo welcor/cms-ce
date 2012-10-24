@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<datasources>
+  <!--<datasource name="getIndexValues"><parameter>data.age</parameter><parameter>1,2</parameter><parameter>true</parameter><parameter>100,101</parameter><parameter>0</parameter><parameter>10</parameter><parameter>true</parameter></datasource>-->
+  <datasource name="getIndexValues">
+    <parameter name="field">data.age</parameter>
+    <parameter name="categoryKeys">1,2</parameter>
+    <parameter name="recursive">true</parameter>
+    <parameter name="contentTypeKeys">100,101</parameter>
+    <parameter name="index">0</parameter>
+    <parameter name="count">10</parameter>
+    <parameter name="distinct">true</parameter>
+    <parameter name="order">ASC</parameter>
+  </datasource>
+  <!--<datasource name="getIndexValues"><parameter>data.age</parameter><parameter>1,2</parameter><parameter>true</parameter><parameter>100,101</parameter><parameter>0</parameter><parameter>10</parameter><parameter>true</parameter><parameter>ASC</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

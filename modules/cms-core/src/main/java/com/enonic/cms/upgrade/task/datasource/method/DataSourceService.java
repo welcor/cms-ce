@@ -105,12 +105,6 @@ interface DataSourceService
                                            int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
                                            int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes );
 
-    public XMLDocument getIndexValues( DataSourceContext context, String path, int[] categories, boolean includeSubCategories,
-                                       int[] contentTypes, int index, int count, boolean distinct, String order );
-
-    public XMLDocument getAggregatedIndexValues( DataSourceContext context, String path, int[] categories, boolean includeSubCategories,
-                                                 int[] contentTypes );
-
     public XMLDocument getContentByCategory( DataSourceContext context, String query, int[] categories, boolean includeSubCategories,
                                              String orderBy, int index, int count, boolean titlesOnly, int childrenLevel, int parentLevel,
                                              int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,

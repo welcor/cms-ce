@@ -24,7 +24,7 @@ public final class GetAggregatedIndexValuesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String path = req.param( "path" ).required().asString();
+        final String field = req.param( "field" ).required().asString();
         Integer[] keys = req.param( "categoryKeys" ).asIntegerArray();
         int[] categoryKeys = ArrayUtils.toPrimitive( keys );
         final boolean recursive = req.param( "recursive" ).asBoolean( false );
@@ -32,7 +32,7 @@ public final class GetAggregatedIndexValuesHandler
         int[] contentTypeKeys = ArrayUtils.toPrimitive( keys );
 
         XMLDocument document =
-            dataSourceService.getAggregatedIndexValues( req, path, categoryKeys, recursive, contentTypeKeys );
+            dataSourceService.getAggregatedIndexValues( req, field, categoryKeys, recursive, contentTypeKeys );
         return document.getAsJDOMDocument();
     }
 

@@ -24,7 +24,7 @@ public final class GetIndexValuesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String path = req.param( "path" ).required().asString();
+        final String field = req.param( "field" ).required().asString();
         Integer[] keys = req.param( "categoryKeys" ).required().asIntegerArray();
         int[] categoryKeys = ArrayUtils.toPrimitive( keys );
         final boolean recursive = req.param( "recursive" ).asBoolean( false );
@@ -36,7 +36,7 @@ public final class GetIndexValuesHandler
         final String order = req.param( "order" ).asString( "ASC" );
 
         XMLDocument document =
-            dataSourceService.getIndexValues( req, path, categoryKeys, recursive, contentTypeKeys, index, count, distinct, order );
+            dataSourceService.getIndexValues( req, field, categoryKeys, recursive, contentTypeKeys, index, count, distinct, order );
         return document.getAsJDOMDocument();
     }
 

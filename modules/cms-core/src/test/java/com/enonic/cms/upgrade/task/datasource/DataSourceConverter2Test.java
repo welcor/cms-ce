@@ -100,5 +100,19 @@ public class DataSourceConverter2Test
     {
         testConvert( "task2/getFormattedDate" );
     }
+
+    @Test
+    public void testConvert_getIndexValues()
+        throws Exception
+    {
+        testConvert( "task2/getIndexValues" );
+    }
+
+    @Test
+    public void testConvert_getAggregatedIndexValues()
+        throws Exception
+    {
+        testConvert( "task2/getAggregatedIndexValues" );
+    }
 }
 

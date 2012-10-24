@@ -1,29 +1,22 @@
 package com.enonic.cms.web.portal.instanttrace;
 
-import com.enonic.cms.core.security.user.UserKey;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class InstantTraceId
 {
-    private UserKey user;
-
     private Long traceCompletedNumber;
 
-    public InstantTraceId( final String instanceTraceId )
+    public InstantTraceId( final String traceCompletedNumber )
     {
-        int separatorPos = instanceTraceId.indexOf( ":" );
-        this.user = new UserKey( instanceTraceId.substring( 0, separatorPos ) );
-        this.traceCompletedNumber = new Long( instanceTraceId.substring( separatorPos + 1, instanceTraceId.length() ) );
+        this.traceCompletedNumber = new Long( traceCompletedNumber );
     }
 
-    public InstantTraceId( final UserKey userKey, final Long traceCompletedNumber )
+    public InstantTraceId( final Long traceCompletedNumber )
     {
-        this.user = userKey;
+        Preconditions.checkNotNull( traceCompletedNumber );
         this.traceCompletedNumber = traceCompletedNumber;
-    }
-
-    public UserKey getUser()
-    {
-        return user;
     }
 
     public Long getTraceCompletedNumber()
@@ -45,29 +38,18 @@ public class InstantTraceId
 
         final InstantTraceId that = (InstantTraceId) o;
 
-        if ( !traceCompletedNumber.equals( that.traceCompletedNumber ) )
-        {
-            return false;
-        }
-        if ( !user.equals( that.user ) )
-        {
-            return false;
-        }
-
-        return true;
+        return Objects.equal( traceCompletedNumber, that.traceCompletedNumber );
     }
 
     @Override
     public int hashCode()
     {
-        int result = user.hashCode();
-        result = 31 * result + traceCompletedNumber.hashCode();
-        return result;
+        return Objects.hashCode( traceCompletedNumber );
     }
 
     @Override
     public String toString()
     {
-        return user.toString() + ":" + traceCompletedNumber;
+        return traceCompletedNumber.toString();
     }
 }

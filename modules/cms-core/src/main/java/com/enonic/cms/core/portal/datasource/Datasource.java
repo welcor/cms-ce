@@ -21,19 +21,12 @@ public class Datasource
 
     public String getMethodName()
     {
-        final Element elem = this.root.getChild( "methodname" );
-        if ( elem == null )
-        {
-            return null;
-        }
-
-        return Strings.emptyToNull( elem.getText() );
+        return this.root.getAttributeValue( "name" );
     }
 
     public List getParameterElements()
     {
-        final Element parametersElem = this.root.getChild( "parameters" );
-        return parametersElem.getChildren();
+        return this.root.getChildren();
     }
 
     public String getResultElementName()
@@ -49,21 +42,12 @@ public class Datasource
 
     public boolean isCacheable()
     {
-        String methodname = getMethodName();
-
-        // we cant cache getPreferences calls, cause they depend on objectKey, which change within a request
-        if ( methodname != null && methodname.startsWith( "getPreferences" ) )
-        {
-            return false;
-        }
-
         final String cacheableAttr = this.root.getAttributeValue( "cache" );
         if ( cacheableAttr != null )
         {
             return "true".equals( cacheableAttr );
         }
 
-        // default value except plugins
         return true;
     }
 }

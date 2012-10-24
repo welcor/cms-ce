@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource>
+    <methodname>dummy</methodname>
+    <parameters/>
+  </datasource>
+</datasources>

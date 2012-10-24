@@ -31,17 +31,17 @@ public class Datasources
 
     public boolean hasSessionContext()
     {
-        return hasAttributeValue( "true", "sessioncontext", this.root );
+        return hasAttributeValue( "true", "session-context", this.root );
     }
 
     public boolean hasHttpContext()
     {
-        return hasAttributeValue( "true", "httpcontext", this.root );
+        return hasAttributeValue( "true", "http-context", this.root );
     }
 
     public boolean hasCookieContext()
     {
-        return hasAttributeValue( "true", "cookiecontext", this.root );
+        return hasAttributeValue( "true", "cookie-context", this.root );
     }
 
     public List<Datasource> getDatasourceElements()

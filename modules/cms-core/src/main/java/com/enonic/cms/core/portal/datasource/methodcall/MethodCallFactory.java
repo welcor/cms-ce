@@ -10,7 +10,6 @@ import java.util.List;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
-import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 
 import com.enonic.esl.util.StringUtil;
@@ -18,7 +17,6 @@ import com.enonic.esl.util.StringUtil;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
-import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.portal.datasource.DataSourceException;
@@ -68,7 +66,6 @@ public class MethodCallFactory
         {
 
             Element paramEl = (Element) parameterEl.get( i );
-            String paramName = paramEl.getAttributeValue( "name" );
             try
             {
                 int paramterIndex = i + paramOffset;
@@ -80,7 +77,7 @@ public class MethodCallFactory
                 StringBuffer msg = new StringBuffer();
                 msg.append( "Method [" ).append( methodName ).append( "]" );
                 msg.append( " has correct number of parameters [" ).append( paramCount ).append( "]" );
-                msg.append( ", but parameter number " ).append( i + 1 ).append( " with name [" ).append( paramName ).append( "]" );
+                msg.append( ", but parameter number " ).append( i + 1 );
                 msg.append( " is possibly wrong. Please check documentation." );
                 throw new IllegalArgumentException( msg.toString(), e );
             }
@@ -93,12 +90,6 @@ public class MethodCallFactory
 
     private static MethodCallParameter createParameter( Element parmeterEl, Class paramType, DatasourceExecutorContext context )
     {
-        String parameterName = parmeterEl.getAttributeValue( "name" );
-
-        String overrideStr = parmeterEl.getAttributeValue( "override" );
-        boolean overrideByRequest = resolveOverridableByRequest( overrideStr );
-        boolean overrideBySession = resolveOverridableBySession( overrideStr );
-
         String defValue = JDOMUtil.getElementText( parmeterEl );
         if ( ( defValue != null ) && defValue.contains( "${" ) )
         {
@@ -107,50 +98,8 @@ public class MethodCallFactory
 
         String value = defValue;
 
-        if ( StringUtils.isNotEmpty( parameterName ) )
-        {
-            String overridedValue = getOverrideValue( overrideByRequest, overrideBySession, parameterName, context );
-
-            if ( StringUtils.isNotEmpty( overridedValue ) )
-            {
-                value = overridedValue;
-            }
-        }
-
         Object argument = convertParameter( paramType, value );
-        return new MethodCallParameter( parameterName, argument, overrideStr, paramType );
-    }
-
-
-    private static String getOverrideValue( boolean overrideByRequest, boolean overrideBySession, String parameterName,
-                                            DatasourceExecutorContext context )
-    {
-        String overridedValue = null;
-
-        RequestParameters requestParameters = context.getRequestParameters();
-        RequestParameters.Param requestParam = requestParameters.getParameter( parameterName );
-
-        if ( overrideByRequest && requestParam != null )
-        {
-            overridedValue = requestParam.getParameterValuesAsCommaSeparatedString();
-        }
-        else if ( context.getVerticalSession() != null && overrideBySession &&
-            context.getVerticalSession().getAttribute( parameterName ) != null )
-        {
-            overridedValue = context.getVerticalSession().getAttribute( parameterName ).toString();
-        }
-
-        return overridedValue;
-    }
-
-    private static boolean resolveOverridableBySession( String override )
-    {
-        return "session".equals( override );
-    }
-
-    private static boolean resolveOverridableByRequest( String override )
-    {
-        return "url".equals( override ) || "true".equals( override );
+        return new MethodCallParameter( "param", argument, null, paramType );
     }
 
     private static DataSourceContext createDataSourceContext( DatasourceExecutorContext context )

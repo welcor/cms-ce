@@ -47,11 +47,6 @@ public class MethodCallParameter
         return argument;
     }
 
-    public boolean isOverride()
-    {
-        return ( this.override != null ) && ( this.override.length() > 0 ) && !"false".equals( this.override );
-    }
-
     public boolean isContext()
     {
         return this.argument instanceof DataSourceContext;

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<datasources>
+  <!--<datasource name="getMenu"><parameter>10</parameter></datasource>-->
+  <datasource name="getMenu">
+    <parameter name="siteKey">${portal.siteKey}</parameter>
+    <parameter name="tagItem">10</parameter>
+    <parameter name="levels">1</parameter>
+  </datasource>
+  <datasource name="getMenu">
+    <parameter name="siteKey">0</parameter>
+    <parameter name="tagItem">10</parameter>
+    <parameter name="levels">1</parameter>
+  </datasource>
+  <datasource name="getMenu">
+    <parameter name="siteKey">0</parameter>
+    <parameter name="tagItem">10</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="details">true</parameter>
+  </datasource>
+  <!--<datasource name="getMenu"><parameter>0</parameter><parameter>10</parameter><parameter>1</parameter><parameter>true</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

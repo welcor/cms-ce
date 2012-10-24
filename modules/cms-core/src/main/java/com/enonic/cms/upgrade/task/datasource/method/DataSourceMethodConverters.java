@@ -23,6 +23,8 @@ public final class DataSourceMethodConverters
         add( new GetFormattedDateConverter() );
         add( new GetIndexValuesConverter() );
         add( new GetAggregatedIndexValuesConverter() );
+        add( new GetMenuConverter() );
+        add( new GetMenuDataConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

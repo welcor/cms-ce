@@ -114,5 +114,18 @@ public class DataSourceConverter2Test
     {
         testConvert( "task2/getAggregatedIndexValues" );
     }
-}
 
+    @Test
+    public void testConvert_getMenu()
+        throws Exception
+    {
+        testConvert( "task2/getMenu" );
+    }
+
+    @Test
+    public void testConvert_getMenuData()
+        throws Exception
+    {
+        testConvert( "task2/getMenuData" );
+    }
+}

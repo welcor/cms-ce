@@ -322,6 +322,18 @@ public class PathTest
         Path path = new Path( Lists.newArrayList( "my", "path" ), true, "fragment" );
         assertEquals( "/my/path", path.getPathWithoutFragmentAsString() );
     }
+
+    @Test
+    public void getPathElementAfter()
+    {
+        assertEquals( "123", new Path( "/en/home/_itrace/info/123/" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( "123", new Path( "/en/home/_itrace/info/123" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/en/home/_itrace/info/" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/en/home/_itrace/info" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/non/matching/path" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "" ).getPathElementAfter( "_itrace", "info" ) );
+    }
 }
 
 

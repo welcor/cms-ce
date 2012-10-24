@@ -35,9 +35,9 @@ public final class InstantTraceRequestInspector
         request.setAttribute( "instantTrace.originalUrl", localPath.toString() );
     }
 
-    public static InstantTraceId getInstantTraceId( final HttpServletRequest request )
+    public static InstantTraceId getInstantTraceId( final Path path )
     {
-        final String s = request.getHeader( "X-Instant-Trace-Id" );
+        String s = path.getPathElementAfter( "_trace", "info" );
         if ( StringUtils.isBlank( s ) )
         {
             return null;

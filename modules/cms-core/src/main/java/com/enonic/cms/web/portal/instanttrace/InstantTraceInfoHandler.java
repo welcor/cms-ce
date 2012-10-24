@@ -31,7 +31,7 @@ public class InstantTraceInfoHandler
         throws Exception
     {
         final HttpServletRequest httpRequest = context.getRequest();
-        final InstantTraceId instantTraceId = InstantTraceRequestInspector.getInstantTraceId( httpRequest );
+        final InstantTraceId instantTraceId = InstantTraceRequestInspector.getInstantTraceId( context.getSitePath().getLocalPath() );
         final HttpSession httpSession = httpRequest.getSession( false );
         if ( httpSession == null )
         {

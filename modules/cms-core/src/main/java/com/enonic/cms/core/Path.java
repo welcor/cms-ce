@@ -158,6 +158,45 @@ public class Path
         return pathElements.get( 0 );
     }
 
+    /**
+     * Returns the path element after the given series of path elements. If series is not found, null is returned.
+     * If not path element after the series, then null is returned.
+     *
+     * @param elements
+     * @return
+     */
+    public String getPathElementAfter( final String... elements )
+    {
+        int i = 0;
+        while ( i < pathElements.size() )
+        {
+            if ( pathElements.get( i ).equals( elements[0] ) )
+            {
+                boolean allEqualsSuccessively = true;
+                for ( int j = 1; j < elements.length; j++ )
+                {
+                    if ( pathElements.size() <= i + j )
+                    {
+                        allEqualsSuccessively = false;
+                        break;
+                    }
+
+                    if ( !pathElements.get( i + j ).equals( elements[j] ) )
+                    {
+                        allEqualsSuccessively = false;
+                        break;
+                    }
+                }
+                if ( allEqualsSuccessively && pathElements.size() > i + elements.length )
+                {
+                    return pathElements.get( i + elements.length );
+                }
+            }
+            i++;
+        }
+        return null;
+    }
+
     public Path appendPathElement( final String pathElement )
     {
         if ( pathElement == null )
@@ -464,4 +503,5 @@ public class Path
         Path newPath = new Path( this.getPathElements(), this.startsWithSlash(), this.getFragment() );
         return newPath;
     }
+
 }

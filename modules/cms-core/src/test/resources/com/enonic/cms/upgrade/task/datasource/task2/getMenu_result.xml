@@ -2,7 +2,6 @@
 <datasources>
   <!--<datasource name="getMenu"><parameter>10</parameter></datasource>-->
   <datasource name="getMenu">
-    <parameter name="siteKey">${portal.siteKey}</parameter>
     <parameter name="tagItem">10</parameter>
     <parameter name="levels">1</parameter>
   </datasource>

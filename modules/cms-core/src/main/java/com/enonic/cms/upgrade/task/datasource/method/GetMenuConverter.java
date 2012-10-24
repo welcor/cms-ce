@@ -20,7 +20,7 @@ final class GetMenuConverter
 
         if ( params.length == 2 )
         {
-            return method().param( "siteKey", "${portal.siteKey}" ).params( params, "tagItem", "levels" ).build();
+            return method().params( params, "tagItem", "levels" ).build();
         }
 
         return method().params( params, "siteKey", "tagItem", "levels", "details" ).build();

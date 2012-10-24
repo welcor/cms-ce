@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="dummy1" result-element="result" cache="true" condition="${true()}">
+  </datasource>
+  <datasource name="dummy2" result-element="result" cache="true">
+  </datasource>
+</datasources>

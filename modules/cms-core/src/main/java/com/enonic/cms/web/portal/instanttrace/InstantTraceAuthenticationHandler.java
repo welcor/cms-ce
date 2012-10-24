@@ -89,7 +89,7 @@ public class InstantTraceAuthenticationHandler
         model.put( "userStores", createUserStoreMap() );
         final String originalURL = InstantTraceRequestInspector.getOriginalUrl( context.getRequest() );
 
-        if ( StringUtils.isBlank( originalURL ) )
+        if ( !StringUtils.isBlank( originalURL ) )
         {
             model.put( "originalURL", originalURL );
         }

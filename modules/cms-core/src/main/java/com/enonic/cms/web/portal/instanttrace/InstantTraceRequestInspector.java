@@ -32,7 +32,7 @@ public final class InstantTraceRequestInspector
 
     public static void setAttributeOriginalUrl( final Path localPath, final HttpServletRequest request )
     {
-        request.setAttribute( "instantTrace.originalUrl", localPath.toString() );
+        request.setAttribute( "itrace.originalUrl", localPath.toString() );
     }
 
     public static InstantTraceId getInstantTraceId( final Path path )
@@ -67,11 +67,11 @@ public final class InstantTraceRequestInspector
 
     public static String getOriginalUrl( final HttpServletRequest request )
     {
-        String attribute = (String) request.getAttribute( "itrace.originalUrl" );
-        if ( StringUtils.isBlank( attribute ) )
+        String originalUrl = (String) request.getAttribute( "itrace.originalUrl" );
+        if ( StringUtils.isBlank( originalUrl ) )
         {
             return getParameterOriginalUrl( request );
         }
-        return null;
+        return originalUrl;
     }
 }

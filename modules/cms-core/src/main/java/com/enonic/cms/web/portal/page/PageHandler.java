@@ -20,7 +20,6 @@ import com.enonic.cms.core.portal.PortalRequestService;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.RedirectInstruction;
 import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.instanttrace.CurrentTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
 import com.enonic.cms.core.security.user.User;
@@ -120,7 +119,6 @@ public final class PageHandler
         finally
         {
             PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
-            CurrentTrace.setCurrentTrace( portalRequestTrace );
         }
     }
 

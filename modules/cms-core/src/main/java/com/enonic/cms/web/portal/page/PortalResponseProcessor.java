@@ -33,11 +33,9 @@ import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.RedirectInstruction;
-import com.enonic.cms.core.portal.instanttrace.CurrentTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceId;
-import com.enonic.cms.web.portal.instanttrace.InstantTraceRequestInspector;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceResponseWriter;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceSessionInspector;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceSessionObject;
@@ -74,6 +72,9 @@ public class PortalResponseProcessor
 
     private boolean localizationEnabled = false;
 
+    private boolean instantTraceEnabled = false;
+
+    private PortalRequestTrace currentPortalRequestTrace;
 
     public void serveResponse()
         throws Exception
@@ -117,7 +118,7 @@ public class PortalResponseProcessor
 
         boolean isHeadRequest = "HEAD".compareToIgnoreCase( httpRequest.getMethod() ) == 0;
         boolean writeContent = !isHeadRequest;
-        boolean handleEtagLogic = cacheHeadersEnabledForSite && !forceNoCacheForSite;
+        boolean handleEtagLogic = cacheHeadersEnabledForSite && !forceNoCacheForSite && !instantTraceEnabled;
 
         if ( handleEtagLogic && !StringUtils.isEmpty( content ) ) // resolveEtag does not like empty strings
         {
@@ -133,17 +134,12 @@ public class PortalResponseProcessor
             }
         }
 
-        if ( InstantTraceRequestInspector.isClientEnabled( httpRequest ) )
+        if ( instantTraceEnabled && currentPortalRequestTrace != null )
         {
-            final PortalRequestTrace portalRequestTrace = CurrentTrace.popLastPortalRequestTrace();
-            if ( portalRequestTrace == null )
-            {
-                return;
-            }
             final InstantTraceSessionObject instantTraceSessionObject =
                 InstantTraceSessionInspector.getInstantTraceSessionObject( httpSession );
-            final InstantTraceId instantTraceId = new InstantTraceId( portalRequestTrace.getCompletedNumber() );
-            instantTraceSessionObject.addTrace( instantTraceId, portalRequestTrace );
+            final InstantTraceId instantTraceId = new InstantTraceId( currentPortalRequestTrace.getCompletedNumber() );
+            instantTraceSessionObject.addTrace( instantTraceId, currentPortalRequestTrace );
             InstantTraceResponseWriter.applyInstantTraceId( httpResponse, instantTraceId );
         }
 
@@ -393,5 +389,15 @@ public class PortalResponseProcessor
     public void setResponseFilters( final List<HttpResponseFilter> responseFilters )
     {
         this.responseFilters = responseFilters;
+    }
+
+    public void setInstantTraceEnabled( final boolean instantTraceEnabled )
+    {
+        this.instantTraceEnabled = instantTraceEnabled;
+    }
+
+    public void setCurrentPortalRequestTrace( final PortalRequestTrace currentPortalRequestTrace )
+    {
+        this.currentPortalRequestTrace = currentPortalRequestTrace;
     }
 }

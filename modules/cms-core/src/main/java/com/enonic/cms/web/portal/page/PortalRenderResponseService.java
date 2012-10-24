@@ -18,11 +18,13 @@ import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalResponse;
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
+import com.enonic.cms.web.portal.instanttrace.InstantTraceRequestInspector;
 
 /**
  * May 26, 2009
@@ -43,6 +45,8 @@ public class PortalRenderResponseService
     private SiteDao siteDao;
 
     private PluginManager pluginManager;
+
+    private LivePortalTraceService livePortalTraceService;
 
     public void serveResponse( final PortalRequest request, final PortalResponse response, final HttpServletResponse httpResponse,
                                final HttpServletRequest httpRequest )
@@ -69,6 +73,8 @@ public class PortalRenderResponseService
         processor.setCacheHeadersEnabledForSite(
             sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED, requestedSiteKey ) );
         processor.setResponseFilters( pluginManager.getExtensions().findMatchingHttpResponseFilters( originalSitePath.asString() ) );
+        processor.setInstantTraceEnabled( InstantTraceRequestInspector.isClientEnabled( httpRequest ) );
+        processor.setCurrentPortalRequestTrace( livePortalTraceService.getCurrentPortalRequestTrace() );
         processor.serveResponse();
     }
 
@@ -100,5 +106,11 @@ public class PortalRenderResponseService
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
+    }
+
+    @Autowired
+    public void setLivePortalTraceService( final LivePortalTraceService livePortalTraceService )
+    {
+        this.livePortalTraceService = livePortalTraceService;
     }
 }

@@ -16,6 +16,11 @@ public abstract class DataSourceMethodConverter
         return this.name;
     }
 
+    protected final boolean checkMinMax( final String[] params, final int min, final int max )
+    {
+        return ( params.length >= min ) && ( params.length <= max );
+    }
+
     protected final MethodElementBuilder method()
     {
         return new MethodElementBuilder( this.name );

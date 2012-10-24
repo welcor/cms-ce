@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<data-sources>
-  <data-source name="getMenuItem">
-    <parameter name="menuItemKey">2</parameter>
-    <parameter name="withParents">false</parameter>
-    <parameter name="details">false</parameter>
-  </data-source>
-</data-sources>

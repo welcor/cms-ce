@@ -13,12 +13,7 @@ final class GetUrlAsTextConverter
     @Override
     public Element convert( final String[] params )
     {
-        if ( params.length < 2 )
-        {
-            return null;
-        }
-
-        if ( params.length > 3 )
+        if ( !checkMinMax( params, 2, 3 ) )
         {
             return null;
         }

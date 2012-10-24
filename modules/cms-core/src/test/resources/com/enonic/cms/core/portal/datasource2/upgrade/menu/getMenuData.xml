@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<dataSources>
-  <dataSource>
-    <methodname>getMenuData</methodname>
-    <parameters>
-      <parameter name="menuKey" type="int">10</parameter>
-    </parameters>
-  </dataSource>
-</dataSources>

@@ -20,6 +20,7 @@ public final class DataSourceMethodConverters
         add( new GetContentVersionConverter() );
         add( new GetUrlAsTextConverter() );
         add( new GetUrlAsXmlConverter() );
+        add( new GetFormattedDateConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

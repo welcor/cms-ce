@@ -103,7 +103,7 @@ final class DataSourceConverter2
         final DataSourceMethodConverter converter = this.converters.get( name );
         if ( converter == null )
         {
-            return null;
+            return createExtension( name, params );
         }
 
         return converter.convert( params );
@@ -112,5 +112,23 @@ final class DataSourceConverter2
     private Comment createComment( final Element elem )
     {
         return new Comment( this.xmlOutputter.outputString( elem ) );
+    }
+
+    private Element createExtension( final String name, final String[] params )
+    {
+        if ( !name.contains( "." ) )
+        {
+            return null;
+        }
+
+        final MethodElementBuilder builder = method( "invokeExtension" );
+        builder.param( "name", name );
+
+        for ( int i = 0; i < params.length; i++ )
+        {
+            builder.param( "param" + ( i + 1 ), params[i] );
+        }
+
+        return builder.build();
     }
 }

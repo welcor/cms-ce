@@ -2,12 +2,12 @@ package com.enonic.cms.upgrade.task.datasource.method;
 
 import org.jdom.Element;
 
-final class GetPreferencesConverter
+final class GetFormattedDateConverter
     extends DataSourceMethodConverter
 {
-    public GetPreferencesConverter()
+    public GetFormattedDateConverter()
     {
-        super( "getPreferences" );
+        super( "getFormattedDate" );
     }
 
     @Override
@@ -15,11 +15,11 @@ final class GetPreferencesConverter
     {
         final MethodElementBuilder builder = method();
 
-        if ( !checkMinMax( params, 0, 3 ) )
+        if ( params.length != 4 )
         {
             return null;
         }
 
-        return builder.params( params, "scope", "keyPattern", "uniqueMatch" ).build();
+        return builder.params( params, "offset", "dateFormat", "language", "country" ).build();
     }
 }

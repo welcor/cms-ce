@@ -25,6 +25,13 @@ public class DataSourceConverter2Test
     }
 
     @Test
+    public void testConvert_extension()
+        throws Exception
+    {
+        testConvert( "task2/extension" );
+    }
+
+    @Test
     public void testConvert_getLocales()
         throws Exception
     {
@@ -85,6 +92,13 @@ public class DataSourceConverter2Test
         throws Exception
     {
         testConvert( "task2/getUrlAsXml" );
+    }
+
+    @Test
+    public void testConvert_getFormattedDate()
+        throws Exception
+    {
+        testConvert( "task2/getFormattedDate" );
     }
 }
 

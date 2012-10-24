@@ -13,12 +13,7 @@ final class GetUrlAsXmlConverter
     @Override
     public Element convert( final String[] params )
     {
-        if ( params.length < 1 )
-        {
-            return null;
-        }
-
-        if ( params.length > 2 )
+        if ( !checkMinMax( params, 1, 2 ) )
         {
             return null;
         }

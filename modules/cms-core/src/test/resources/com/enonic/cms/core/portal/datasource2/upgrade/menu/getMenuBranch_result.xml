@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<data-sources>
-  <data-source name="getMenuBranch">
-    <parameter name="menuItemKey">2</parameter>
-    <parameter name="includeTopLevel">false</parameter>
-    <parameter name="startLevel">0</parameter>
-    <parameter name="levels">0</parameter>
-  </data-source>
-</data-sources>

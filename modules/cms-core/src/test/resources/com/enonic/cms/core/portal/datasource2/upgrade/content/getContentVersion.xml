@@ -1,9 +1,0 @@
-<datasources>
-  <datasource>
-    <methodname>getContentVersion</methodname>
-    <parameters>
-      <parameter name="versionKeys" type="int[]">2</parameter>
-      <parameter name="childrenLevel" type="int">1</parameter>
-    </parameters>
-  </datasource>
-</datasources>

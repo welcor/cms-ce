@@ -13,7 +13,7 @@ final class GetLocalesConverter
     @Override
     public Element convert( final String[] params )
     {
-        if ( params.length > 0 )
+        if ( params.length != 0 )
         {
             return null;
         }

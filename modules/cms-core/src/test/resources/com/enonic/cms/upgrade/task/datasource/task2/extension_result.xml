@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<datasources>
+  <!--<datasource name="customMethod"><parameter>0</parameter></datasource>-->
+  <datasource name="invokeExtension">
+    <parameter name="name">dummy.customMethod</parameter>
+  </datasource>
+  <datasource name="invokeExtension">
+    <parameter name="name">dummy.customMethod</parameter>
+    <parameter name="param1">0</parameter>
+  </datasource>
+  <datasource name="invokeExtension">
+    <parameter name="name">dummy.customMethod</parameter>
+    <parameter name="param1">0</parameter>
+    <parameter name="param2">1</parameter>
+  </datasource>
+</datasources>

@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<dataSources>
-  <dataSource result-element="result" cache="true" condition="${true()}">
-    <methodname>dummy</methodname>
-    <parameters/>
-  </dataSource>
-</dataSources>

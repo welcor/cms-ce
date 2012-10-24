@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<data-sources>
-  <data-source name="getUrlAsXml">
-    <parameter name="url">http://dummy.com</parameter>
-    <parameter name="timeout">5000</parameter>
-  </data-source>
-</data-sources>

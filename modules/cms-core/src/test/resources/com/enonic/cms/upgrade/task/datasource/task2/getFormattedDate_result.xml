@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<datasources>
+  <!--<datasource name="getFormattedDate"><parameter>0</parameter><parameter>yyyy</parameter><parameter>NO</parameter></datasource>-->
+  <datasource name="getFormattedDate">
+    <parameter name="offset">0</parameter>
+    <parameter name="dateFormat">yyyy</parameter>
+    <parameter name="language">NO</parameter>
+    <parameter name="country">NO</parameter>
+  </datasource>
+  <!--<datasource name="getFormattedDate"><parameter>0</parameter><parameter>yyyy</parameter><parameter>NO</parameter><parameter>NO</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

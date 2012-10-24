@@ -1,15 +1,22 @@
 package com.enonic.cms.core.portal.datasource;
 
+import java.text.MessageFormat;
+
 public final class DataSourceException
     extends RuntimeException
 {
-    public DataSourceException(final String message)
+    public DataSourceException( final String message, final Object... args )
     {
-        super(message);
+        super( MessageFormat.format( message, args ) );
     }
 
-    public DataSourceException(final String message, final Throwable cause)
+    public DataSourceException withCause( final Throwable cause )
     {
-        super(message, cause);
+        if ( cause != null )
+        {
+            initCause( cause );
+        }
+
+        return this;
     }
 }

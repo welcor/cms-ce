@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 
@@ -40,7 +41,7 @@ public class MethodCallFactory
             return null;
         }
 
-        String pluginName = resolvePluginName(methodName);
+        String pluginName = resolvePluginName( methodName );
 
         ExtensionSet extensions = context.getPluginManager().getExtensions();
         FunctionLibrary pluginObject = pluginName != null ? getPluginObject( extensions, pluginName ) : null;
@@ -58,8 +59,8 @@ public class MethodCallFactory
 
         if ( useContext )
         {
-        DataSourceContext dataSourceContext = createDataSourceContext( context );
-        parameters[0] = new MethodCallParameter( "__context__", dataSourceContext, "false", DataSourceContext.class );
+            DataSourceContext dataSourceContext = createDataSourceContext( context );
+            parameters[0] = new MethodCallParameter( "__context__", dataSourceContext, "false", DataSourceContext.class );
         }
 
         int paramOffset = useContext ? 1 : 0;
@@ -189,10 +190,10 @@ public class MethodCallFactory
 
     private static FunctionLibrary getPluginObject( ExtensionSet extensions, String pluginName )
     {
-        FunctionLibrary object = extensions.findFunctionLibrary(pluginName);
+        FunctionLibrary object = extensions.findFunctionLibrary( pluginName );
         if ( object == null )
         {
-            throw new DataSourceException( "Plugin [" + pluginName + "] is not registered" );
+            throw new DataSourceException( "Plugin [{0}] is not registered", pluginName );
         }
         else
         {
@@ -211,8 +212,8 @@ public class MethodCallFactory
                 return method;
             }
         }
-        throw new DataSourceException(
-            "Method [" + localMethodName + "] with [" + ( useContext ? numParams - 1 : numParams ) + "] parameters does not exist" );
+        throw new DataSourceException( "Method [{0}] with [{1}] parameters does not exist", localMethodName,
+                                       ( useContext ? numParams - 1 : numParams ) );
     }
 
     private static Object convertParameter( Class type, String value )
@@ -244,7 +245,7 @@ public class MethodCallFactory
                 return null;
             }
 
-            return Iterables.toArray(Splitter.on(',').trimResults().omitEmptyStrings().split(value), String.class);
+            return Iterables.toArray( Splitter.on( ',' ).trimResults().omitEmptyStrings().split( value ), String.class );
         }
         else if ( type == int[].class )
         {
@@ -293,7 +294,7 @@ public class MethodCallFactory
         }
         catch ( Exception e )
         {
-            throw new DataSourceException( "Failed to evaluate expression", e );
+            throw new DataSourceException( "Failed to evaluate expression").withCause( e );
         }
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Maps;
 
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 
 public final class DataSourceInvokerImpl
     implements DataSourceInvoker

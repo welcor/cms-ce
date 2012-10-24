@@ -5,7 +5,7 @@ import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 
 public final class DataSourceXmlParser
 {

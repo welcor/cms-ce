@@ -4,7 +4,7 @@ import org.springframework.core.convert.ConversionFailedException;
 
 import com.google.common.base.Strings;
 
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 
 final class DataSourceParamImpl
     implements DataSourceParam

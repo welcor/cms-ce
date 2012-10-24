@@ -7,7 +7,7 @@ import com.google.common.base.Strings;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource2.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceInvoker;
 import com.enonic.cms.core.portal.datasource2.handler.DataSourceRequest;

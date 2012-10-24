@@ -3,7 +3,7 @@ package com.enonic.cms.core.portal.datasource2.handler.util;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource2.handler.AbstractDataSourceHandlerTest;
 import com.enonic.cms.core.time.TimeService;
 

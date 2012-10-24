@@ -6,7 +6,7 @@ import org.mockito.Mockito;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.portal.datasource2.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource2.handler.AbstractDataSourceHandlerTest;
 import com.enonic.cms.core.service.DataSourceService;
 

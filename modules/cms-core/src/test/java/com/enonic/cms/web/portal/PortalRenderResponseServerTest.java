@@ -27,7 +27,7 @@ import com.enonic.cms.core.portal.RedirectInstruction;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.server.DeploymentAndRequestSetup;
-import com.enonic.cms.web.portal.page.PortalRenderResponseServer;
+import com.enonic.cms.web.portal.page.PortalRenderResponseService;
 
 import static org.junit.Assert.*;
 
@@ -38,7 +38,7 @@ public class PortalRenderResponseServerTest
 {
     private static final Logger LOG = LoggerFactory.getLogger( PortalRenderResponseServerTest.class.getName() );
 
-    private PortalRenderResponseServer portalRenderResponseServer = new PortalRenderResponseServer();
+    private PortalRenderResponseService portalRenderResponseService = new PortalRenderResponseService();
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -58,7 +58,7 @@ public class PortalRenderResponseServerTest
         httpServletRequest.setServerPort( 80 );
 
         ServletRequestAccessor.setRequest( httpServletRequest );
-        portalRenderResponseServer.setSitePropertiesService( sitePropertiesService );
+        portalRenderResponseService.setSitePropertiesService( sitePropertiesService );
     }
 
     /**
@@ -89,7 +89,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( redirectInstruction );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -126,7 +126,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/en/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -158,7 +158,7 @@ public class PortalRenderResponseServerTest
             createRedirectInstruction( new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) ) ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/en/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -185,7 +185,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -212,7 +212,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -241,7 +241,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -270,7 +270,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -299,7 +299,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -328,7 +328,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -357,7 +357,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/site/0/news/Nyheter+til+p%C3%A5ske", httpServletResponse.getHeader( "Location" ) );
@@ -386,7 +386,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/admin/preview/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -415,7 +415,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify
         assertEquals( "/admin/preview/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -446,7 +446,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
         RenderTrace.exit();
 
         // verify
@@ -479,7 +479,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
         RenderTrace.exit();
 
         // verify
@@ -511,7 +511,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
         RenderTrace.exit();
 
         // verify
@@ -543,7 +543,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
         RenderTrace.exit();
 
         // verify
@@ -575,7 +575,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
         RenderTrace.exit();
 
         // verify
@@ -606,7 +606,7 @@ public class PortalRenderResponseServerTest
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
         RenderTrace.exit();
 
         // verify

@@ -33,7 +33,7 @@ public final class PageHandler
 {
     private PortalRequestService portalRequestService;
 
-    private PortalRenderResponseServer portalRenderResultServer;
+    private PortalRenderResponseService portalRenderResponseService;
 
     @Override
     protected boolean canHandle( final Path localPath )
@@ -114,7 +114,7 @@ public final class PageHandler
 
             PortalResponse response = portalRequestService.processRequest( request );
 
-            portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
+            portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
         }
         finally
         {
@@ -135,7 +135,7 @@ public final class PageHandler
         redirectInstruction.setPermanentRedirect( true );
 
         PortalResponse response = PortalResponse.createRedirect( redirectInstruction );
-        portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
+        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
     }
 
     private HashMap<String, Object> getRequestParameters( HttpServletRequest request )
@@ -181,8 +181,8 @@ public final class PageHandler
     }
 
     @Autowired
-    public void setPortalRenderResultServer( final PortalRenderResponseServer portalRenderResultServer )
+    public void setPortalRenderResponseService( final PortalRenderResponseService portalRenderResponseService )
     {
-        this.portalRenderResultServer = portalRenderResultServer;
+        this.portalRenderResponseService = portalRenderResponseService;
     }
 }

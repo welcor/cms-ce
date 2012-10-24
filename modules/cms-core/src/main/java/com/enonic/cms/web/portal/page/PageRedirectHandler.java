@@ -23,7 +23,7 @@ import com.enonic.cms.web.portal.handler.WebHandlerBase;
 public final class PageRedirectHandler
     extends WebHandlerBase
 {
-    private PortalRenderResponseServer portalRenderResultServer;
+    private PortalRenderResponseService portalRenderResponseService;
 
     private SiteRedirectAndForwardHelper siteRedirectAndForwardHelper;
 
@@ -73,13 +73,13 @@ public final class PageRedirectHandler
 
         PortalResponse response = PortalResponse.createRedirect( redirectInstruction );
 
-        portalRenderResultServer.serveResponse( request, response, httpResponse, httpRequest );
+        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
     }
 
     @Autowired
-    public void setPortalRenderResultServer( final PortalRenderResponseServer portalRenderResultServer )
+    public void setPortalRenderResponseService( final PortalRenderResponseService portalRenderResponseService )
     {
-        this.portalRenderResultServer = portalRenderResultServer;
+        this.portalRenderResponseService = portalRenderResponseService;
     }
 
     @Autowired

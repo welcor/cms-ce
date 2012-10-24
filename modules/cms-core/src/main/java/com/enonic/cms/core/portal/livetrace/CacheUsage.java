@@ -1,7 +1,7 @@
 package com.enonic.cms.core.portal.livetrace;
 
 
-class CacheUsage
+public class CacheUsage
 {
     static final int CONCURRENCY_BLOCK_THRESHOLD = 5;
 
@@ -24,7 +24,6 @@ class CacheUsage
         return this;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public boolean isUsedCachedResult()
     {
         return usedCachedResult;

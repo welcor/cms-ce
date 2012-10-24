@@ -1,22 +1,19 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
 package com.enonic.cms.web.portal.page;
+
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 
@@ -27,99 +24,101 @@ import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.api.plugin.ext.http.HttpProcessor;
 import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
-import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteBasePath;
 import com.enonic.cms.core.SiteBasePathAndSitePath;
 import com.enonic.cms.core.SiteBasePathAndSitePathToStringBuilder;
 import com.enonic.cms.core.SiteBasePathResolver;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.SitePropertiesService;
-import com.enonic.cms.core.SitePropertyNames;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.RedirectInstruction;
-import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
-import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.store.dao.SiteDao;
-import com.enonic.cms.store.dao.UserDao;
+import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
+import com.enonic.cms.web.portal.instanttrace.InstantTraceId;
+import com.enonic.cms.web.portal.instanttrace.InstantTraceResponseWriter;
+import com.enonic.cms.web.portal.instanttrace.InstantTraceSessionInspector;
+import com.enonic.cms.web.portal.instanttrace.InstantTraceSessionObject;
 
-/**
- * May 26, 2009
- */
-@Component
-public class PortalRenderResponseServer
+public class PortalResponseProcessor
 {
     private final static String EXECUTED_PLUGINS = "EXECUTED_PLUGINS";
 
     private static final int SECOND_IN_MILLIS = 1000;
 
-    private SitePropertiesService sitePropertiesService;
-
     private SiteRedirectAndForwardHelper siteRedirectAndForwardHelper;
 
-    private UserDao userDao;
+    private List<HttpResponseFilter> responseFilters;
 
-    private SiteDao siteDao;
+    private PortalRequest request;
 
-    private PluginManager pluginManager;
+    private PortalResponse response;
 
-    public void serveResponse( PortalRequest request, PortalResponse response, HttpServletResponse httpResponse,
-                               HttpServletRequest httpRequest )
+    private HttpSession httpSession;
+
+    private HttpServletResponse httpResponse;
+
+    private HttpServletRequest httpRequest;
+
+    private boolean inPreview;
+
+    private boolean renderTraceOn;
+
+    private boolean cacheHeadersEnabledForSite = false;
+
+    private boolean forceNoCacheForSite = false;
+
+    private boolean deviceClassificationEnabled = false;
+
+    private boolean localizationEnabled = false;
+
+    private boolean instantTraceEnabled = false;
+
+    private PortalRequestTrace currentPortalRequestTrace;
+
+    public void serveResponse()
         throws Exception
     {
         if ( response.hasRedirectInstruction() )
         {
-            serveRedirect( response, httpResponse, httpRequest );
+            serveRedirect();
         }
         else if ( response.isForwardToSitePath() )
         {
-            serveForwardToSitePathResponse( response, httpRequest, httpResponse );
+            serveForwardToSitePathResponse();
         }
         else
         {
-            servePageResponse( request, response, httpResponse, httpRequest );
+            servePageResponse();
         }
     }
 
-    private void servePageResponse( PortalRequest request, PortalResponse response, HttpServletResponse httpResponse,
-                                    HttpServletRequest httpRequest )
+    private void servePageResponse()
         throws IOException
     {
         HttpServletUtil.setDateHeader( httpResponse, request.getRequestTime().toDate() );
 
-        final SitePath requestedPath = request.getSitePath();
-        final SiteKey requestedSiteKey = requestedPath.getSiteKey();
-        final UserEntity requester = userDao.findByKey( request.getRequester() );
-        final SiteEntity site = siteDao.findByKey( requestedSiteKey );
-        final boolean cacheHeadersEnabled = resolveCacheHeadersEnabledForSite( requestedSiteKey );
         boolean forceNoCache = false;
 
-        if ( isInPreviewMode( httpRequest ) || RenderTrace.isTraceOn() )
+        if ( inPreview || renderTraceOn )
         {
             forceNoCache = true;
             final DateTime expirationTime = request.getRequestTime();
-            setHttpCacheHeaders( requester, request.getRequestTime(), expirationTime, httpResponse, forceNoCache, site );
+            setHttpCacheHeaders( request.getRequestTime(), expirationTime, forceNoCache );
         }
-        else if ( cacheHeadersEnabled )
+        else if ( cacheHeadersEnabledForSite )
         {
-            forceNoCache = resolveForceNoCacheForSite( requestedSiteKey );
             final DateTime expirationTime = resolveExpirationTime( request.getRequestTime(), response.getExpirationTime() );
-            setHttpCacheHeaders( requester, request.getRequestTime(), expirationTime, httpResponse, forceNoCache, site );
+            setHttpCacheHeaders( request.getRequestTime(), expirationTime, forceNoCache );
         }
 
         // filter response with any response plugins
-        String content = filterResponseWithPlugins( httpRequest, response.getContent(), response.getHttpContentType() );
+        String content = filterResponseWithPlugins( response.getContent(), response.getHttpContentType() );
         response.setContent( content );
 
         boolean isHeadRequest = "HEAD".compareToIgnoreCase( httpRequest.getMethod() ) == 0;
         boolean writeContent = !isHeadRequest;
-        boolean handleEtagLogic = cacheHeadersEnabled && !forceNoCache;
+        boolean handleEtagLogic = cacheHeadersEnabledForSite && !forceNoCacheForSite && !instantTraceEnabled;
 
         if ( handleEtagLogic && !StringUtils.isEmpty( content ) ) // resolveEtag does not like empty strings
         {
@@ -128,11 +127,20 @@ public class PortalRenderResponseServer
 
             HttpServletUtil.setEtag( httpResponse, etagFromContent );
 
-            if ( !isContentModified( httpRequest, etagFromContent ) )
+            if ( !isContentModified( etagFromContent ) )
             {
                 httpResponse.setStatus( HttpServletResponse.SC_NOT_MODIFIED );
                 writeContent = false;
             }
+        }
+
+        if ( instantTraceEnabled && currentPortalRequestTrace != null )
+        {
+            final InstantTraceSessionObject instantTraceSessionObject =
+                InstantTraceSessionInspector.getInstantTraceSessionObject( httpSession );
+            final InstantTraceId instantTraceId = new InstantTraceId( currentPortalRequestTrace.getCompletedNumber() );
+            instantTraceSessionObject.addTrace( instantTraceId, currentPortalRequestTrace );
+            InstantTraceResponseWriter.applyInstantTraceId( httpResponse, instantTraceId );
         }
 
         httpResponse.setContentType( response.getHttpContentType() );
@@ -144,7 +152,7 @@ public class PortalRenderResponseServer
 
         if ( writeContent )
         {
-            writeContent( httpResponse, response.getContentAsBytes() );
+            writeContent( response.getContentAsBytes() );
         }
     }
 
@@ -154,12 +162,12 @@ public class PortalRenderResponseServer
         return "content_" + DigestUtil.generateSHA( content );
     }
 
-    private boolean isContentModified( HttpServletRequest req, String etagFromContent )
+    private boolean isContentModified( String etagFromContent )
     {
-        return HttpServletUtil.isContentModifiedAccordingToIfNoneMatchHeader( req, etagFromContent );
+        return HttpServletUtil.isContentModifiedAccordingToIfNoneMatchHeader( httpRequest, etagFromContent );
     }
 
-    private void writeContent( HttpServletResponse httpResponse, byte[] content )
+    private void writeContent( byte[] content )
         throws IOException
     {
         httpResponse.setContentLength( content.length );
@@ -168,8 +176,7 @@ public class PortalRenderResponseServer
         out.write( content );
     }
 
-    private void setHttpCacheHeaders( final User requester, final DateTime requestTime, final DateTime expirationTime,
-                                      final HttpServletResponse httpResponse, final boolean forceNoCache, final SiteEntity site )
+    private void setHttpCacheHeaders( final DateTime requestTime, final DateTime expirationTime, final boolean forceNoCache )
     {
         final Interval maxAge = new Interval( requestTime, expirationTime );
 
@@ -185,7 +192,7 @@ public class PortalRenderResponseServer
             // To eliminate proxy caching of pages (decided by TSI)
             cacheControlSettings.publicAccess = false;
 
-            boolean setCacheTimeToZero = dynamicResolversEnabled( site );
+            boolean setCacheTimeToZero = dynamicResolversEnabled();
 
             if ( setCacheTimeToZero )
             {
@@ -202,12 +209,12 @@ public class PortalRenderResponseServer
         }
     }
 
-    private boolean dynamicResolversEnabled( SiteEntity site )
+    private boolean dynamicResolversEnabled()
     {
-        return site.isDeviceClassificationEnabled() || site.isLocalizationEnabled();
+        return deviceClassificationEnabled || localizationEnabled;
     }
 
-    private void serveRedirect( PortalResponse response, HttpServletResponse httpResponse, HttpServletRequest httpRequest )
+    private void serveRedirect()
         throws IOException
     {
 
@@ -218,11 +225,11 @@ public class PortalRenderResponseServer
 
         if ( redirectInstruction.hasRedirectSitePath() )
         {
-            serveRedirectToSitePath( redirectInstruction.getRedirectSitePath(), redirectStatus, httpResponse, httpRequest );
+            serveRedirectToSitePath( redirectInstruction.getRedirectSitePath(), redirectStatus );
         }
         else if ( redirectInstruction.hasRedirectUrl() )
         {
-            serveRedirectResponse( httpResponse, redirectInstruction.getRedirectUrl(), redirectStatus );
+            serveRedirectResponse( redirectInstruction.getRedirectUrl(), redirectStatus );
         }
         else
         {
@@ -230,11 +237,9 @@ public class PortalRenderResponseServer
         }
     }
 
-    private void serveRedirectToSitePath( SitePath toSitePath, int redirectStatus, HttpServletResponse httpResponse,
-                                          HttpServletRequest httpRequest )
+    private void serveRedirectToSitePath( final SitePath toSitePath, final int redirectStatus )
         throws IOException
     {
-
         SiteBasePath siteBasePath = SiteBasePathResolver.resolveSiteBasePath( httpRequest, toSitePath.getSiteKey() );
         SiteBasePathAndSitePath siteBasePathAndSitePath = new SiteBasePathAndSitePath( siteBasePath, toSitePath );
 
@@ -246,37 +251,37 @@ public class PortalRenderResponseServer
         siteBasePathAndSitePathToStringBuilder.setUrlEncodePath( true );
         String redirectUrl = siteBasePathAndSitePathToStringBuilder.toString( siteBasePathAndSitePath );
 
-        sendRedirectResponse( httpResponse, redirectUrl, redirectStatus );
+        sendRedirectResponse( redirectUrl, redirectStatus );
     }
 
-    private void sendRedirectResponse( final HttpServletResponse response, final String redirectUrl, final int redirectStatus )
+    private void sendRedirectResponse( final String redirectUrl, final int redirectStatus )
     {
-        String encodedRedirectUrl = response.encodeRedirectURL( redirectUrl );
+        String encodedRedirectUrl = httpResponse.encodeRedirectURL( redirectUrl );
 
         if ( redirectStatus == HttpServletResponse.SC_MOVED_PERMANENTLY )
         {
-            response.setStatus( redirectStatus );
-            response.setHeader( "Location", encodedRedirectUrl );
+            httpResponse.setStatus( redirectStatus );
+            httpResponse.setHeader( "Location", encodedRedirectUrl );
         }
         else
         {
-            response.setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
-            response.setHeader( "Location", encodedRedirectUrl );
+            httpResponse.setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
+            httpResponse.setHeader( "Location", encodedRedirectUrl );
         }
     }
 
-    private void serveForwardToSitePathResponse( PortalResponse response, HttpServletRequest httpRequest, HttpServletResponse httpResponse )
+    private void serveForwardToSitePathResponse()
         throws Exception
     {
         siteRedirectAndForwardHelper.forward( httpRequest, httpResponse, response.getForwardToSitePath() );
     }
 
-    private void serveRedirectResponse( HttpServletResponse response, String redirectUrl, int redirectStatus )
+    private void serveRedirectResponse( final String redirectUrl, final int redirectStatus )
     {
-        sendRedirectResponse( response, redirectUrl, redirectStatus );
+        sendRedirectResponse( redirectUrl, redirectStatus );
     }
 
-    private DateTime resolveExpirationTime( DateTime requestTime, DateTime expirationTime )
+    private DateTime resolveExpirationTime( final DateTime requestTime, final DateTime expirationTime )
     {
         if ( expirationTime == null )
         {
@@ -291,22 +296,19 @@ public class PortalRenderResponseServer
         return expirationTime;
     }
 
-    private String filterResponseWithPlugins( HttpServletRequest httpRequest, String response, String contentType )
+    private String filterResponseWithPlugins( String response, final String contentType )
     {
         try
         {
-            SitePath originalSitePath = (SitePath) httpRequest.getAttribute( Attribute.ORIGINAL_SITEPATH );
-
-            @SuppressWarnings({"unchecked"}) Set<HttpProcessor> executedPlugins =
-                (Set<HttpProcessor>) httpRequest.getAttribute( EXECUTED_PLUGINS );
+            //noinspection unchecked
+            Set<HttpProcessor> executedPlugins = (Set<HttpProcessor>) httpRequest.getAttribute( EXECUTED_PLUGINS );
             if ( executedPlugins == null )
             {
                 executedPlugins = new HashSet<HttpProcessor>();
                 httpRequest.setAttribute( EXECUTED_PLUGINS, executedPlugins );
             }
 
-            for ( HttpResponseFilter plugin : this.pluginManager.getExtensions().findMatchingHttpResponseFilters(
-                originalSitePath.asString() ) )
+            for ( HttpResponseFilter plugin : responseFilters )
             {
                 if ( !executedPlugins.contains( plugin ) )
                 {
@@ -324,49 +326,78 @@ public class PortalRenderResponseServer
         }
     }
 
-    private boolean resolveCacheHeadersEnabledForSite( final SiteKey requestedSiteKey )
-    {
-        return sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED, requestedSiteKey );
-    }
-
-    private boolean resolveForceNoCacheForSite( final SiteKey requestedSiteKey )
-    {
-        return sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_FORCENOCACHE, requestedSiteKey );
-    }
-
-    private boolean isInPreviewMode( HttpServletRequest httpRequest )
-    {
-        String previewEnabled = (String) httpRequest.getAttribute( Attribute.PREVIEW_ENABLED );
-        return "true".equals( previewEnabled );
-    }
-
-    @Autowired
-    public void setSitePropertiesService( SitePropertiesService sitePropertiesService )
-    {
-        this.sitePropertiesService = sitePropertiesService;
-    }
-
-    @Autowired
-    public void setSiteRedirectAndForwardHelper( SiteRedirectAndForwardHelper siteRedirectAndForwardHelper )
+    public void setSiteRedirectAndForwardHelper( final SiteRedirectAndForwardHelper siteRedirectAndForwardHelper )
     {
         this.siteRedirectAndForwardHelper = siteRedirectAndForwardHelper;
     }
 
-    @Autowired
-    public void setUserDao( UserDao userDao )
+    public void setRequest( final PortalRequest request )
     {
-        this.userDao = userDao;
+        this.request = request;
     }
 
-    @Autowired
-    public void setSiteDao( SiteDao siteDao )
+    public void setResponse( final PortalResponse response )
     {
-        this.siteDao = siteDao;
+        this.response = response;
     }
 
-    @Autowired
-    public void setPluginManager( PluginManager pluginManager )
+    public void setHttpSession( final HttpSession httpSession )
     {
-        this.pluginManager = pluginManager;
+        this.httpSession = httpSession;
+    }
+
+    public void setHttpResponse( final HttpServletResponse httpResponse )
+    {
+        this.httpResponse = httpResponse;
+    }
+
+    public void setHttpRequest( final HttpServletRequest httpRequest )
+    {
+        this.httpRequest = httpRequest;
+    }
+
+    public void setInPreview( final boolean inPreview )
+    {
+        this.inPreview = inPreview;
+    }
+
+    public void setRenderTraceOn( final boolean renderTraceOn )
+    {
+        this.renderTraceOn = renderTraceOn;
+    }
+
+    public void setCacheHeadersEnabledForSite( final boolean cacheHeadersEnabledForSite )
+    {
+        this.cacheHeadersEnabledForSite = cacheHeadersEnabledForSite;
+    }
+
+    public void setForceNoCacheForSite( final boolean forceNoCacheForSite )
+    {
+        this.forceNoCacheForSite = forceNoCacheForSite;
+    }
+
+    public void setDeviceClassificationEnabled( final boolean deviceClassificationEnabled )
+    {
+        this.deviceClassificationEnabled = deviceClassificationEnabled;
+    }
+
+    public void setLocalizationEnabled( final boolean localizationEnabled )
+    {
+        this.localizationEnabled = localizationEnabled;
+    }
+
+    public void setResponseFilters( final List<HttpResponseFilter> responseFilters )
+    {
+        this.responseFilters = responseFilters;
+    }
+
+    public void setInstantTraceEnabled( final boolean instantTraceEnabled )
+    {
+        this.instantTraceEnabled = instantTraceEnabled;
+    }
+
+    public void setCurrentPortalRequestTrace( final PortalRequestTrace currentPortalRequestTrace )
+    {
+        this.currentPortalRequestTrace = currentPortalRequestTrace;
     }
 }

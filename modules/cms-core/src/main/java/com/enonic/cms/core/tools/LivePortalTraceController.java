@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.containers.ExtendedMap;
@@ -21,6 +19,7 @@ import com.enonic.vertical.adminweb.AdminHelper;
 
 import com.enonic.cms.framework.cache.CacheManager;
 
+import com.enonic.cms.core.portal.livetrace.LivePortalTraceJsonGenerator;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTraceRow;
@@ -39,12 +38,8 @@ public final class LivePortalTraceController
 
     private CacheManager cacheManager;
 
-    private ObjectMapper jacksonObjectMapper;
-
-    public LivePortalTraceController()
-    {
-        jacksonObjectMapper = new ObjectMapper().configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
-    }
+    @Autowired
+    private LivePortalTraceJsonGenerator livePortalTraceJsonGenerator;
 
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
@@ -80,32 +75,27 @@ public final class LivePortalTraceController
             {
                 final SystemInfo systemInfoObject =
                     systemInfoFactory.createSystemInfo( livePortalTraceService.getNumberOfPortalRequestTracesInProgress(), cacheManager );
-                final String jsonString = objectsToJson( systemInfoObject );
-                returnJson( jsonString, res );
+                returnJson( livePortalTraceJsonGenerator.generate( systemInfoObject ), res );
             }
             else if ( "current".equals( window ) )
             {
                 final List<PortalRequestTrace> traces = livePortalTraceService.getCurrentPortalRequestTraces();
-                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
-                returnJson( jsonString, res );
+                returnJson( livePortalTraceJsonGenerator.generate( PortalRequestTraceRow.createRows( traces ) ), res );
             }
             else if ( "longestpagerequests".equals( window ) )
             {
                 final List<PortalRequestTrace> traces = livePortalTraceService.getLongestTimePortalPageRequestTraces();
-                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
-                returnJson( jsonString, res );
+                returnJson( livePortalTraceJsonGenerator.generate( PortalRequestTraceRow.createRows( traces ) ), res );
             }
             else if ( "longestattachmentrequests".equals( window ) )
             {
                 final List<PortalRequestTrace> traces = livePortalTraceService.getLongestTimePortalAttachmentRequestTraces();
-                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
-                returnJson( jsonString, res );
+                returnJson( livePortalTraceJsonGenerator.generate( PortalRequestTraceRow.createRows( traces ) ), res );
             }
             else if ( "longestimagerequests".equals( window ) )
             {
                 final List<PortalRequestTrace> traces = livePortalTraceService.getLongestTimePortalImageRequestTraces();
-                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
-                returnJson( jsonString, res );
+                returnJson( livePortalTraceJsonGenerator.generate( PortalRequestTraceRow.createRows( traces ) ), res );
             }
             else if ( history != null )
             {
@@ -144,13 +134,13 @@ public final class LivePortalTraceController
                     traces = traces.subList( 0, Math.min( count, traces.size() ) );
                 }
 
-                final String jsonString = objectsToJson( PortalRequestTraceRow.createRows( traces ) );
+                final String jsonString = livePortalTraceJsonGenerator.generate( PortalRequestTraceRow.createRows( traces ) );
                 returnJson( jsonString, res );
             }
             else
             {
                 model.put( "livePortalTraceEnabled", isLivePortalTraceEnabled() ? 1 : 0 );
-                res.setHeader( "Content-Type", "text/html; charset=UTF-8" );
+                res.setHeader( "Content-Type", "text/html; charset=utf-8" );
                 process( req, res, model, "livePortalTracePage" );
             }
         }
@@ -166,18 +156,6 @@ public final class LivePortalTraceController
         catch ( IOException e )
         {
             throw new RuntimeException( "Failed to write response: " + e.getMessage(), e );
-        }
-    }
-
-    private String objectsToJson( Object object )
-    {
-        try
-        {
-            return jacksonObjectMapper.writeValueAsString( object );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( "Failed to transform objects to JSON: " + e.getMessage(), e );
         }
     }
 

@@ -302,18 +302,18 @@ public class PathTest
     @Test
     public void containsSubPath()
     {
-        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace", "resources" ) );
-        assertTrue( new Path( "/en/_xtrace/resources/" ).containsSubPath( "_xtrace", "resources" ) );
-        assertTrue( new Path( "/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace", "resources" ) );
-        assertTrue( new Path( "/_xtrace/resources" ).containsSubPath( "_xtrace", "resources" ) );
-        assertFalse( new Path( "/_xtrace/" ).containsSubPath( "_xtrace", "resources" ) );
-        assertFalse( new Path( "/" ).containsSubPath( "_xtrace", "resources" ) );
+        assertTrue( new Path( "/en/_itrace/resources/my.gif" ).containsSubPath( "_itrace", "resources" ) );
+        assertTrue( new Path( "/en/_itrace/resources/" ).containsSubPath( "_itrace", "resources" ) );
+        assertTrue( new Path( "/_itrace/resources/my.gif" ).containsSubPath( "_itrace", "resources" ) );
+        assertTrue( new Path( "/_itrace/resources" ).containsSubPath( "_itrace", "resources" ) );
+        assertFalse( new Path( "/_itrace/" ).containsSubPath( "_itrace", "resources" ) );
+        assertFalse( new Path( "/" ).containsSubPath( "_itrace", "resources" ) );
 
-        assertTrue( new Path( "/en/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace" ) );
-        assertTrue( new Path( "/_xtrace/resources/my.gif" ).containsSubPath( "_xtrace" ) );
-        assertTrue( new Path( "/_xtrace/resources" ).containsSubPath( "_xtrace" ) );
-        assertTrue( new Path( "/_xtrace/" ).containsSubPath( "_xtrace" ) );
-        assertFalse( new Path( "/" ).containsSubPath( "_xtrace" ) );
+        assertTrue( new Path( "/en/_itrace/resources/my.gif" ).containsSubPath( "_itrace" ) );
+        assertTrue( new Path( "/_itrace/resources/my.gif" ).containsSubPath( "_itrace" ) );
+        assertTrue( new Path( "/_itrace/resources" ).containsSubPath( "_itrace" ) );
+        assertTrue( new Path( "/_itrace/" ).containsSubPath( "_itrace" ) );
+        assertFalse( new Path( "/" ).containsSubPath( "_itrace" ) );
     }
 
     @Test
@@ -321,6 +321,18 @@ public class PathTest
     {
         Path path = new Path( Lists.newArrayList( "my", "path" ), true, "fragment" );
         assertEquals( "/my/path", path.getPathWithoutFragmentAsString() );
+    }
+
+    @Test
+    public void getPathElementAfter()
+    {
+        assertEquals( "123", new Path( "/en/home/_itrace/info/123/" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( "123", new Path( "/en/home/_itrace/info/123" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/en/home/_itrace/info/" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/en/home/_itrace/info" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/non/matching/path" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "/" ).getPathElementAfter( "_itrace", "info" ) );
+        assertEquals( null, new Path( "" ).getPathElementAfter( "_itrace", "info" ) );
     }
 }
 

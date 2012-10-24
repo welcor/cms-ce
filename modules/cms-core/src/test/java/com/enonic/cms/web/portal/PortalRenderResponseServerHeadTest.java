@@ -25,7 +25,7 @@ import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.server.DeploymentAndRequestSetup;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
-import com.enonic.cms.web.portal.page.PortalRenderResponseServer;
+import com.enonic.cms.web.portal.page.PortalRenderResponseService;
 
 import static org.junit.Assert.*;
 
@@ -42,7 +42,7 @@ public class PortalRenderResponseServerHeadTest
 
     public static final String ETAG_HEADER_NAME = "Etag";
 
-    private PortalRenderResponseServer portalRenderResponseServer = new PortalRenderResponseServer();
+    private PortalRenderResponseService portalRenderResponseService = new PortalRenderResponseService();
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -68,26 +68,26 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.setServerPort( 80 );
 
         ServletRequestAccessor.setRequest( httpServletRequest );
-        portalRenderResponseServer.setSitePropertiesService( sitePropertiesService );
+        portalRenderResponseService.setSitePropertiesService( sitePropertiesService );
 
-        portalRenderResponseServer.setUserDao( userDao );
-        portalRenderResponseServer.setSiteDao( siteDao );
+        portalRenderResponseService.setUserDao( userDao );
+        portalRenderResponseService.setSiteDao( siteDao );
 
-        PluginManager pluginManager = Mockito.mock(PluginManager.class);
-        ExtensionSet extensionSet = Mockito.mock(ExtensionSet.class);
-        Mockito.when(pluginManager.getExtensions()).thenReturn(extensionSet);
-        portalRenderResponseServer.setPluginManager(pluginManager);
+        PluginManager pluginManager = Mockito.mock( PluginManager.class );
+        ExtensionSet extensionSet = Mockito.mock( ExtensionSet.class );
+        Mockito.when( pluginManager.getExtensions() ).thenReturn( extensionSet );
+        portalRenderResponseService.setPluginManager( pluginManager );
 
         Mockito.when( siteDao.findByKey( sitePath.getSiteKey() ) ).thenReturn( new SiteEntity() );
 
         new DeploymentAndRequestSetup().
-                appDeployedAtRoot().
-                originalRequest( "localhost", "/admin/site/0/political news shortcut" ).
-                requestedSite( 0, "political news shortcut" ).
-                requestedAdminDebugAt().
-                setupAtDefaultPath().
-                back().
-                setup( httpServletRequest );
+            appDeployedAtRoot().
+            originalRequest( "localhost", "/admin/site/0/political news shortcut" ).
+            requestedSite( 0, "political news shortcut" ).
+            requestedAdminDebugAt().
+            setupAtDefaultPath().
+            back().
+            setup( httpServletRequest );
 
         httpServletRequest.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
 
@@ -102,13 +102,12 @@ public class PortalRenderResponseServerHeadTest
 
     @Test
     public void testServeResponse_check_modified_GET()
-            throws Exception
+        throws Exception
     {
         httpServletRequest.setMethod( "GET" );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse,
-                                                  httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify that length is equal to content and content exists
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );
@@ -121,13 +120,12 @@ public class PortalRenderResponseServerHeadTest
 
     @Test
     public void testServeResponse_check_modified_HEAD()
-            throws Exception
+        throws Exception
     {
         httpServletRequest.setMethod( "HEAD" );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse,
-                                                  httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify that length is equal to content but no content exists
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );
@@ -140,14 +138,13 @@ public class PortalRenderResponseServerHeadTest
 
     @Test
     public void testServeResponse_check_not_modified_HEAD()
-            throws Exception
+        throws Exception
     {
         httpServletRequest.setMethod( "HEAD" );
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse,
-                                                  httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify that length is equal to content but content does not exist
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );  // most important test
@@ -160,14 +157,13 @@ public class PortalRenderResponseServerHeadTest
 
     @Test
     public void testServeResponse_check_not_modified_GET()
-            throws Exception
+        throws Exception
     {
         httpServletRequest.setMethod( "GET" );
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse,
-                                                  httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify that length is zero and no content exists
         assertEquals( 0, httpServletResponse.getContentLength() );
@@ -180,14 +176,13 @@ public class PortalRenderResponseServerHeadTest
 
     @Test
     public void testServeResponse_check_not_modified_HEAD_non_matching_etag()
-            throws Exception
+        throws Exception
     {
         httpServletRequest.setMethod( "HEAD" );
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE_INCORRECT );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse,
-                                                  httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify that length is equal to content but content does not exist
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );  // most important test
@@ -200,14 +195,13 @@ public class PortalRenderResponseServerHeadTest
 
     @Test
     public void testServeResponse_check_not_modified_GET_non_matching_etag()
-            throws Exception
+        throws Exception
     {
         httpServletRequest.setMethod( "GET" );
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE_INCORRECT );
 
         // exercise
-        portalRenderResponseServer.serveResponse( portalRequest, portalResponse, httpServletResponse,
-                                                  httpServletRequest );
+        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
 
         // verify that length is zero and no content exists
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );

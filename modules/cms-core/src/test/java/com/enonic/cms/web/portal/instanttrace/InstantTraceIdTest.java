@@ -10,7 +10,7 @@ public class InstantTraceIdTest
     @Test
     public void constructor_with_string()
     {
-        InstantTraceId instantTraceId = new InstantTraceId( "ABC:1" );
+        InstantTraceId instantTraceId = new InstantTraceId( "1" );
         assertEquals( new Long( 1 ), instantTraceId.getTraceCompletedNumber() );
     }
 
@@ -18,6 +18,6 @@ public class InstantTraceIdTest
     public void tostring()
     {
         InstantTraceId instantTraceId = new InstantTraceId( (long) 1 );
-        assertEquals( "ABC:1", instantTraceId.toString() );
+        assertEquals( "1", instantTraceId.toString() );
     }
 }

@@ -6,9 +6,6 @@ import com.enonic.cms.framework.xml.XMLDocument;
 interface DataSourceService
 {
 
-    public XMLDocument getContentByQuery( String query, String orderBy, int index, int count, boolean includeData, int childrenLevel,
-                                          int parentLevel );
-
     public XMLDocument getRelatedContent( int[] contentKeys, int relation, String query, String orderBy, int index, int count,
                                           boolean includeData, int childrenLevel, int parentLevel );
 
@@ -50,12 +47,15 @@ interface DataSourceService
                                             int parentLevel, int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
                                             boolean includeTotalCount, boolean includeUserRights, int[] filterByContentTypes );
 
+    // Kill?
     public XMLDocument getRandomContentByParent( int count, int contentKey, boolean includeUserRights );
 
+    // Kill?
     public XMLDocument getRandomContentBySections( String query, int[] menuItemKeys, int levels, int count, boolean titlesOnly,
                                                    int parentLevel, int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
                                                    boolean includeUserRights );
 
+    // Convert to getRelatedContent?
     public XMLDocument getRelatedContents( int relation, int[] contentKeys, String orderBy, boolean requireAll, int fromIndex, int count,
                                            int parentLevel, int childrenLevel, int parentChildrenLevel, boolean includeTotalCount,
                                            int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes );
@@ -76,11 +76,13 @@ interface DataSourceService
                                              boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
                                              int[] contentTypes );
 
+    // Do not convert this - replaced by getContentByCategory with extended parameters?
     public XMLDocument getMyContentByCategory( String query, int[] categories, boolean includeSubCategories, String orderBy, int index,
                                                int count, boolean titlesOnly, int childrenLevel, int parentLevel, int parentChildrenLevel,
                                                boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
                                                int[] contentTypes );
 
+    // Try to convert to getContentByCategory
     public XMLDocument findContentByCategory( String search, String operator, int[] categories, boolean includeSubCategories,
                                               String orderBy, int index, int count, boolean titlesOnly, int childrenLevel, int parentLevel,
                                               int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
@@ -90,6 +92,8 @@ interface DataSourceService
 
     public XMLDocument getCategories( int key, int levels, boolean topLevel, boolean details, boolean catCount, boolean contentCount );
 
+
+    // SKIP
     public XMLDocument getUser( String qualifiedUsername, boolean includeMemberships, boolean normalizeGroups,
                                 boolean includeCustomUserFields );
 }

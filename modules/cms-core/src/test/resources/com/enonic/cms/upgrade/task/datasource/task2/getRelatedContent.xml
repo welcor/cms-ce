@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getRelatedContent"/>
+  <datasource name="getRelatedContent">
+    <parameter>1,2</parameter>
+    <parameter>2</parameter>
+    <parameter>myQuery</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>true</parameter>
+    <parameter>8</parameter>
+  </datasource>
+  <datasource name="getRelatedContent">
+    <parameter>1,2</parameter>
+    <parameter>2</parameter>
+    <parameter>myQuery</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>true</parameter>
+    <parameter>8</parameter>
+    <parameter>9</parameter>
+  </datasource>
+  <datasource name="getRelatedContent">
+    <parameter>1,2</parameter>
+    <parameter>2</parameter>
+    <parameter>myQuery</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>true</parameter>
+    <parameter>8</parameter>
+    <parameter>9</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

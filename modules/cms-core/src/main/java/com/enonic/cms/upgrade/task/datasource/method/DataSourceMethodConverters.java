@@ -30,6 +30,7 @@ public final class DataSourceMethodConverters
         add( new GetMenuBranchConverter() );
         add( new GetSuperCategoryNamesConverter() );
         add( new GetContentByQueryConverter() );
+        add( new GetRelatedContentConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

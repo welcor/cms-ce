@@ -164,4 +164,11 @@ public class DataSourceConverter2Test
         testConvert( "task2/getContentByQuery" );
     }
 
+    @Test
+    public void testConvert_getRelatedContent()
+        throws Exception
+    {
+        testConvert( "task2/getRelatedContent" );
+    }
+
 }

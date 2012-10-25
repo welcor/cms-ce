@@ -4,6 +4,6 @@
     <parameter>2</parameter>
     <parameter>${select(param.b, 'false')}</parameter>
     <parameter>${select(session.c, '1')}</parameter>
-    <parameter>2</parameter>
+    <parameter>3</parameter>
   </datasource>
 </datasources>

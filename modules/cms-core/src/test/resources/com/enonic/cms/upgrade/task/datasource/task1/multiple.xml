@@ -2,7 +2,9 @@
 <dataSources>
   <dataSource result-element="result" cache="true" condition="${true()}">
     <methodname>dummy1</methodname>
-    <parameters/>
+    <parameters>
+        <parameter name="test" type="int">11</parameter>
+    </parameters>
   </dataSource>
   <dataSource result-element="result" cache="true">
     <methodname>dummy2</methodname>

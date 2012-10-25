@@ -27,10 +27,16 @@ public final class DataSourceMethodConverters
         add( new GetMenuDataConverter() );
         add( new GetMenuItemConverter() );
         add( new GetSubMenuConverter() );
+        add( new GetMenuBranchConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )
     {
+        if ( this.map.containsKey( converter.getName() ) )
+        {
+            throw new IllegalStateException( "Converter [" + converter.getName() + "] already exists" );
+        }
+
         this.map.put( converter.getName(), converter );
     }
 

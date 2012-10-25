@@ -15,17 +15,19 @@ import com.enonic.cms.upgrade.task.datasource.DataSourceConverterHelper;
 abstract class AbstractDataSourceUpgradeTask
     extends AbstractUpgradeTask
 {
-    private final DataSourceConverterHelper helper;
+    private DataSourceConverterHelper helper;
 
-    public AbstractDataSourceUpgradeTask( final int model, final DataSourceConverter converter )
+    public AbstractDataSourceUpgradeTask( final int model )
     {
         super( model );
-        this.helper = new DataSourceConverterHelper( converter );
     }
+
+    protected abstract DataSourceConverter newConverter( final UpgradeContext context );
 
     protected final void upgradeDataSources( final UpgradeContext context )
         throws Exception
     {
+        this.helper = new DataSourceConverterHelper( newConverter( context ) );
         final Connection conn = context.getConnection();
 
         try

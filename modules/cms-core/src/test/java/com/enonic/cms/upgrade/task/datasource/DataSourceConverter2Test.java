@@ -7,7 +7,7 @@ public class DataSourceConverter2Test
 {
     public DataSourceConverter2Test()
     {
-        super( new DataSourceConverter2() );
+        super( new DataSourceConverter2( 0, null ) );
     }
 
     @Test
@@ -141,5 +141,12 @@ public class DataSourceConverter2Test
         throws Exception
     {
         testConvert( "task2/getSubMenu" );
+    }
+
+    @Test
+    public void testConvert_getMenuBranch()
+        throws Exception
+    {
+        testConvert( "task2/getMenuBranch" );
     }
 }

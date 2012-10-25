@@ -1,6 +1,7 @@
 package com.enonic.cms.upgrade.task;
 
 import com.enonic.cms.upgrade.UpgradeContext;
+import com.enonic.cms.upgrade.task.datasource.DataSourceConverter;
 import com.enonic.cms.upgrade.task.datasource.DataSourceConverter1;
 
 final class UpgradeModel0206
@@ -8,7 +9,13 @@ final class UpgradeModel0206
 {
     public UpgradeModel0206()
     {
-        super( 206, new DataSourceConverter1() );
+        super( 206 );
+    }
+
+    @Override
+    protected DataSourceConverter newConverter( final UpgradeContext context )
+    {
+        return new DataSourceConverter1();
     }
 
     @Override

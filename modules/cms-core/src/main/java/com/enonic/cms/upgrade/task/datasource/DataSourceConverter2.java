@@ -10,6 +10,7 @@ import org.jdom.output.XMLOutputter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+import com.enonic.cms.upgrade.log.UpgradeLog;
 import com.enonic.cms.upgrade.task.datasource.method.DataSourceMethodConverter;
 import com.enonic.cms.upgrade.task.datasource.method.DataSourceMethodConverters;
 import com.enonic.cms.upgrade.task.datasource.method.MethodElementBuilder;
@@ -19,12 +20,18 @@ import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.*;
 final class DataSourceConverter2
     implements DataSourceConverter
 {
+    private final int modelNumber;
+
+    private final UpgradeLog logger;
+
     private final DataSourceMethodConverters converters;
 
     private final XMLOutputter xmlOutputter;
 
-    public DataSourceConverter2()
+    public DataSourceConverter2( final int modelNumber, final UpgradeLog logger )
     {
+        this.modelNumber = modelNumber;
+        this.logger = logger;
         this.converters = new DataSourceMethodConverters();
         this.xmlOutputter = new XMLOutputter( Format.getCompactFormat() );
     }
@@ -88,7 +95,7 @@ final class DataSourceConverter2
 
         if ( target == null )
         {
-            result.addContent( createComment( source ) );
+            result.addContent( createComment( name, params, source ) );
             return;
         }
 
@@ -109,8 +116,14 @@ final class DataSourceConverter2
         return converter.convert( params );
     }
 
-    private Comment createComment( final Element elem )
+    private Comment createComment( final String name, final String[] params, final Element elem )
     {
+        if ( this.logger != null )
+        {
+            this.logger.logWarning( this.modelNumber, "Datasource method name [" + name + "] with [" + params.length +
+                "] parameters not found. Commenting out." );
+        }
+
         return new Comment( this.xmlOutputter.outputString( elem ) );
     }
 

@@ -56,8 +56,6 @@ interface DataSourceService
                                                    int parentLevel, int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
                                                    boolean includeUserRights );
 
-    public XMLDocument getSuperCategoryNames( int categoryKey, boolean withContentCount, boolean includeCategory );
-
     public XMLDocument getRelatedContents( int relation, int[] contentKeys, String orderBy, boolean requireAll, int fromIndex, int count,
                                            int parentLevel, int childrenLevel, int parentChildrenLevel, boolean includeTotalCount,
                                            int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes );

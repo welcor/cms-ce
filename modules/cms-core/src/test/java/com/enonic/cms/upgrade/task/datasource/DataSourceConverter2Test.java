@@ -157,4 +157,11 @@ public class DataSourceConverter2Test
         testConvert( "task2/getSuperCategoryNames" );
     }
 
+    @Test
+    public void testConvert_getContentByQuery()
+        throws Exception
+    {
+        testConvert( "task2/getContentByQuery" );
+    }
+
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!--<datasource name="getContentByQuery" />-->
+  <!--<datasource name="getContentByQuery"><parameter>query</parameter><parameter>publishFrom</parameter><parameter>1</parameter><parameter>1</parameter><parameter>true</parameter><parameter>1</parameter></datasource>-->
+  <datasource name="getContentByQuery">
+    <parameter name="query">query</parameter>
+    <parameter name="orderBy">publishFrom</parameter>
+    <parameter name="index">1</parameter>
+    <parameter name="count">2</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">3</parameter>
+    <parameter name="parentLevel">4</parameter>
+  </datasource>
+  <!--<datasource name="getContentByQuery"><parameter>query</parameter><parameter>publishFrom</parameter><parameter>1</parameter><parameter>2</parameter><parameter>true</parameter><parameter>3</parameter><parameter>4</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

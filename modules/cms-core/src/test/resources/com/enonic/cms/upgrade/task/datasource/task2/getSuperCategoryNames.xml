@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getSuperCategoryNames"/>
+  <datasource name="getSuperCategoryNames">
+    <parameter>0</parameter>
+  </datasource>
+  <datasource name="getSuperCategoryNames">
+    <parameter>0</parameter>
+    <parameter>true</parameter>
+    <parameter>false</parameter>
+  </datasource>
+  <datasource name="getSuperCategoryNames">
+    <parameter>0</parameter>
+    <parameter>true</parameter>
+    <parameter>false</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+
+</datasources>

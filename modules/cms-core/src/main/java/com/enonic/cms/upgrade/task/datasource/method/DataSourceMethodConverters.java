@@ -28,6 +28,7 @@ public final class DataSourceMethodConverters
         add( new GetMenuItemConverter() );
         add( new GetSubMenuConverter() );
         add( new GetMenuBranchConverter() );
+        add( new GetSuperCategoryNamesConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

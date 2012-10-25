@@ -149,4 +149,12 @@ public class DataSourceConverter2Test
     {
         testConvert( "task2/getMenuBranch" );
     }
+
+    @Test
+    public void testConvert_getSuperCategoryNames()
+        throws Exception
+    {
+        testConvert( "task2/getSuperCategoryNames" );
+    }
+
 }

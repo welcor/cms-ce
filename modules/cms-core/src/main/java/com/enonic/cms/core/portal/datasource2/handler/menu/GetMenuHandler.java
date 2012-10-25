@@ -26,6 +26,7 @@ public final class GetMenuHandler
         final int tagItem = req.param( "tagItem" ).asInteger( -1 );
         final int levels = req.param( "levels" ).asInteger( 0 );
         final boolean details = req.param( "details" ).asBoolean( true );
+        // TODO remove "details" parameter, is not used in DataSourceService
 
         return this.dataSourceService.getMenu( req, siteKey, tagItem, levels, details ).getAsJDOMDocument();
     }

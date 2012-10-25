@@ -13,7 +13,7 @@ final class GetSuperCategoryNamesConverter
     @Override
     public Element convert( final String[] params )
     {
-        if ( !checkMinMax( params, 3, 3 ) )
+        if ( params.length != 3 )
         {
             return null;
         }

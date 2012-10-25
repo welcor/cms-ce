@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!--<datasource name="getRandomContentBySection" />-->
+  <!--<datasource name="getRandomContentBySection"><parameter>1,2</parameter><parameter>2</parameter><parameter>3</parameter><parameter>4</parameter><parameter>true</parameter><parameter>6</parameter></datasource>-->
+  <datasource name="getRandomContentBySection">
+    <parameter name="menuItemKeys">1,2</parameter>
+    <parameter name="levels">2</parameter>
+    <parameter name="query">3</parameter>
+    <parameter name="count">4</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">6</parameter>
+    <parameter name="parentLevel">7</parameter>
+  </datasource>
+  <!--<datasource name="getRandomContentBySection"><parameter>1,2</parameter><parameter>2</parameter><parameter>3</parameter><parameter>4</parameter><parameter>true</parameter><parameter>6</parameter><parameter>7</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>

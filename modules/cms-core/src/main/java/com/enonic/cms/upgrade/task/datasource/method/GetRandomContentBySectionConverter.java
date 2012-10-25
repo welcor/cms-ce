@@ -2,12 +2,12 @@ package com.enonic.cms.upgrade.task.datasource.method;
 
 import org.jdom.Element;
 
-final class GetContentByQueryConverter
+final class GetRandomContentBySectionConverter
     extends DataSourceMethodConverter
 {
-    public GetContentByQueryConverter()
+    public GetRandomContentBySectionConverter()
     {
-        super( "getContentByQuery" );
+        super( "getRandomContentBySection" );
     }
 
     @Override
@@ -18,6 +18,6 @@ final class GetContentByQueryConverter
             return null;
         }
 
-        return method().params( params, "query", "orderBy", "index", "count", "includeData", "childrenLevel", "parentLevel" ).build();
+        return method().params( params, "menuItemKeys", "levels", "query", "count", "includeData", "childrenLevel", "parentLevel" ).build();
     }
 }

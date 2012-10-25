@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getRandomContentBySection"/>
+  <datasource name="getRandomContentBySection">
+    <parameter>1,2</parameter>
+    <parameter>2</parameter>
+    <parameter>3</parameter>
+    <parameter>4</parameter>
+    <parameter>true</parameter>
+    <parameter>6</parameter>
+  </datasource>
+  <datasource name="getRandomContentBySection">
+    <parameter>1,2</parameter>
+    <parameter>2</parameter>
+    <parameter>3</parameter>
+    <parameter>4</parameter>
+    <parameter>true</parameter>
+    <parameter>6</parameter>
+    <parameter>7</parameter>
+  </datasource>
+  <datasource name="getRandomContentBySection">
+    <parameter>1,2</parameter>
+    <parameter>2</parameter>
+    <parameter>3</parameter>
+    <parameter>4</parameter>
+    <parameter>true</parameter>
+    <parameter>6</parameter>
+    <parameter>7</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

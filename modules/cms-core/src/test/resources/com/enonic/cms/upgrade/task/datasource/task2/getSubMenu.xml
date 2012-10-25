@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getSubMenu">
+    <parameter>10</parameter>
+  </datasource>
+  <datasource name="getSubMenu">
+    <parameter>10</parameter>
+    <parameter>0</parameter>
+  </datasource>
+  <datasource name="getSubMenu">
+    <parameter>10</parameter>
+    <parameter>0</parameter>
+    <parameter>0</parameter>
+  </datasource>
+  <datasource name="getSubMenu">
+    <parameter>10</parameter>
+    <parameter>0</parameter>
+    <parameter>0</parameter>
+    <parameter>true</parameter>
+  </datasource>
+  <datasource name="getSubMenu">
+    <parameter>10</parameter>
+    <parameter>0</parameter>
+    <parameter>0</parameter>
+    <parameter>true</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

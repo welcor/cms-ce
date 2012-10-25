@@ -58,23 +58,12 @@ interface DataSourceService
 
     XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel, boolean details );
 
-    // Not in use.
-
-    XMLDocument getMenuItem( DataSourceContext context, int key, boolean withParents );
-
-    public XMLDocument getMenuItem( DataSourceContext context, int key, boolean withParents, boolean complete );
 
     public XMLDocument getRandomContentByParent( DataSourceContext context, int count, int contentKey, boolean includeUserRights );
 
     public XMLDocument getRandomContentBySections( DataSourceContext context, String query, int[] menuItemKeys, int levels, int count,
                                                    boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
                                                    boolean relatedTitlesOnly, boolean includeUserRights );
-
-    public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem );
-
-    public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem, int levels );
-
-    public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem, int levels, boolean details );
 
     public XMLDocument getSuperCategoryNames( DataSourceContext context, int categoryKey, boolean withContentCount,
                                               boolean includeCategory );

@@ -25,6 +25,8 @@ public final class DataSourceMethodConverters
         add( new GetAggregatedIndexValuesConverter() );
         add( new GetMenuConverter() );
         add( new GetMenuDataConverter() );
+        add( new GetMenuItemConverter() );
+        add( new GetSubMenuConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

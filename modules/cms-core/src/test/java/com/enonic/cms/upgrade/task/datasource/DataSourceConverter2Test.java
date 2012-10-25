@@ -128,4 +128,18 @@ public class DataSourceConverter2Test
     {
         testConvert( "task2/getMenuData" );
     }
+
+    @Test
+    public void testConvert_getMenuItem()
+        throws Exception
+    {
+        testConvert( "task2/getMenuItem" );
+    }
+
+    @Test
+    public void testConvert_getSubMenu()
+        throws Exception
+    {
+        testConvert( "task2/getSubMenu" );
+    }
 }

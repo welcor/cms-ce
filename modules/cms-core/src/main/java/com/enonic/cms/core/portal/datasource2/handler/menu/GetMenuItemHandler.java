@@ -25,6 +25,7 @@ public final class GetMenuItemHandler
         final int menuItemKey = req.param( "menuItemKey" ).required().asInteger();
         final boolean withParents = req.param( "withParents" ).asBoolean( false );
         final boolean details = req.param( "details" ).asBoolean( false );
+        // TODO remove "details" parameter, is not used in DataSourceService
 
         return this.dataSourceService.getMenuItem( req, menuItemKey, withParents, details).getAsJDOMDocument();
     }

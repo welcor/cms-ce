@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.page;
 
 
 import java.io.UnsupportedEncodingException;
@@ -16,29 +16,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.RedirectInstruction;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.server.DeploymentAndRequestSetup;
-import com.enonic.cms.web.portal.page.PortalRenderResponseService;
 
 import static org.junit.Assert.*;
 
 /**
  * Aug 10, 2010
  */
-public class PortalRenderResponseServerTest
+public class PortalResponseProcessorTest
 {
-    private static final Logger LOG = LoggerFactory.getLogger( PortalRenderResponseServerTest.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( PortalResponseProcessorTest.class.getName() );
 
-    private PortalRenderResponseService portalRenderResponseService = new PortalRenderResponseService();
+    private PortalResponseProcessor portalResponseProcessor = new PortalResponseProcessor();
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -46,19 +43,16 @@ public class PortalRenderResponseServerTest
 
     private PortalRequest portalRequest = new PortalRequest();
 
-    private MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
-
 
     @Before
     public void before()
     {
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
-        sitePropertiesService.setProperty( new SiteKey( 1 ), SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
 
         httpServletRequest.setServerPort( 80 );
 
         ServletRequestAccessor.setRequest( httpServletRequest );
-        portalRenderResponseService.setSitePropertiesService( sitePropertiesService );
+        portalResponseProcessor.setHttpRequest( httpServletRequest );
+        portalResponseProcessor.setHttpResponse( httpServletResponse );
     }
 
     /**
@@ -72,8 +66,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://www.mysite.com/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().addVirtualHost( "www.mysite.com", "/site/0" ).originalRequest( "www.mysite.com",
@@ -87,9 +79,10 @@ public class PortalRenderResponseServerTest
         RedirectInstruction redirectInstruction = createRedirectInstruction( sitePath );
 
         PortalResponse portalResponse = PortalResponse.createRedirect( redirectInstruction );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -113,8 +106,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://www.mysite.com/en/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().addVirtualHost( "www.mysite.com/en", "/site/0" ).originalRequest(
@@ -124,9 +115,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/en/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -143,8 +135,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://www.mysite.com/en/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().addVirtualHost( "www.mysite.com/en", "/site/0" ).originalRequest(
@@ -156,9 +146,10 @@ public class PortalRenderResponseServerTest
 
         PortalResponse portalResponse = PortalResponse.createRedirect(
             createRedirectInstruction( new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) ) ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/en/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -174,8 +165,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://localhost/site/0/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().originalRequest( "localhost", "/site/0/political news shortcut" ).requestedSite(
@@ -183,9 +172,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -201,8 +191,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://localhost/site/0/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().originalRequest( "localhost", "/site/0/political news shortcut" ).requestedSite(
@@ -210,9 +198,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -228,8 +217,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://localhost/cms/site/0/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAt( "/cms" ).originalRequest( "localhost",
@@ -239,9 +226,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -257,8 +245,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://localhost/cms/site/0/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAt( "/cms" ).originalRequest( "localhost",
@@ -268,9 +254,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -286,8 +273,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://www.mysite.com/cms/site/0/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAt( "/cms" ).originalRequest( "www.mysite.com",
@@ -297,9 +282,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -315,8 +301,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://www.mysite.com/cms/site/0/political news shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAt( "/cms" ).originalRequest( "www.mysite.com",
@@ -326,9 +310,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/cms/site/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -344,8 +329,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://localhost/site/0/påskenyheter shortcut" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().originalRequest( "localhost", "/site/0/påskenyheter shortcut" ).requestedSite(
@@ -355,9 +338,10 @@ public class PortalRenderResponseServerTest
         LOG.info( URLEncoder.encode( "/Nyheter til påske", "UTF-8" ) );
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/" + decode( "Nyheter+til+p%C3%A5ske" ) ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/site/0/news/Nyheter+til+p%C3%A5ske", httpServletResponse.getHeader( "Location" ) );
@@ -373,8 +357,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://localhost/admin/preview/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().originalRequest( "localhost",
@@ -384,9 +366,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/admin/preview/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -402,8 +385,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://localhost/admin/preview/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().originalRequest( "localhost",
@@ -413,9 +394,10 @@ public class PortalRenderResponseServerTest
 
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify
         assertEquals( "/admin/preview/0/news/local+politics", httpServletResponse.getHeader( "Location" ) );
@@ -432,8 +414,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://localhost/admin/site/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().originalRequest( "localhost",
@@ -444,9 +424,10 @@ public class PortalRenderResponseServerTest
         RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
         RenderTrace.exit();
 
         // verify
@@ -465,8 +446,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://admin.enonic-cms.com/site/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().addVirtualHost( "admin.enonic-cms.com", "/admin" ).originalRequest(
@@ -477,9 +456,10 @@ public class PortalRenderResponseServerTest
         RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
         RenderTrace.exit();
 
         // verify
@@ -497,8 +477,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
-
         portalRequest.setOriginalUrl( "http://www.mysite.com/admin/site/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().addVirtualHost( "www.mysite.com/admin", "/admin" ).originalRequest(
@@ -509,9 +487,10 @@ public class PortalRenderResponseServerTest
         RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
         RenderTrace.exit();
 
         // verify
@@ -529,8 +508,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://www.mysite.com/admin/site/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().addVirtualHost( "www.mysite.com/admin", "/admin" ).originalRequest(
@@ -541,9 +518,10 @@ public class PortalRenderResponseServerTest
         RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
         RenderTrace.exit();
 
         // verify
@@ -561,8 +539,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://admin.enonic-cms.com/site/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().addVirtualHost( "admin.enonic-cms.com", "/admin" ).originalRequest(
@@ -573,9 +549,10 @@ public class PortalRenderResponseServerTest
         RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
         RenderTrace.exit();
 
         // verify
@@ -592,8 +569,6 @@ public class PortalRenderResponseServerTest
         throws Exception
     {
         // setup
-        sitePropertiesService.setProperty( new SiteKey( 0 ), SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "true" );
-
         portalRequest.setOriginalUrl( "http://localhost/admin/site/0/political news shortcut?" );
 
         new DeploymentAndRequestSetup().appDeployedAtRoot().originalRequest( "localhost",
@@ -604,9 +579,10 @@ public class PortalRenderResponseServerTest
         RenderTrace.enter();
         final SitePath sitePath = new SitePath( new SiteKey( 0 ), new Path( "/news/local politics" ) );
         PortalResponse portalResponse = PortalResponse.createRedirect( createRedirectInstruction( sitePath ) );
+        portalResponseProcessor.setResponse( portalResponse );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
         RenderTrace.exit();
 
         // verify

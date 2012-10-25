@@ -1,4 +1,6 @@
-package com.enonic.cms.web.portal;
+package com.enonic.cms.web.portal.page;
+
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,30 +11,26 @@ import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
-import com.enonic.cms.core.plugin.ExtensionSet;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.server.DeploymentAndRequestSetup;
 import com.enonic.cms.store.dao.SiteDao;
-import com.enonic.cms.store.dao.UserDao;
-import com.enonic.cms.web.portal.page.PortalRenderResponseService;
 
 import static org.junit.Assert.*;
 
 /**
  * unit tests for HEAD functionality
  */
-public class PortalRenderResponseServerHeadTest
+public class PortalResponseProcessor_headTest
 {
     public static final String CONTENT_VALUE = "content text";
 
@@ -42,13 +40,11 @@ public class PortalRenderResponseServerHeadTest
 
     public static final String ETAG_HEADER_NAME = "Etag";
 
-    private PortalRenderResponseService portalRenderResponseService = new PortalRenderResponseService();
+    private PortalResponseProcessor portalResponseProcessor = new PortalResponseProcessor();
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
     private MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
-
-    private UserDao userDao = Mockito.mock( UserDao.class );
 
     private SiteDao siteDao = Mockito.mock( SiteDao.class );
 
@@ -68,17 +64,15 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.setServerPort( 80 );
 
         ServletRequestAccessor.setRequest( httpServletRequest );
-        portalRenderResponseService.setSitePropertiesService( sitePropertiesService );
+        portalResponseProcessor.setHttpRequest( httpServletRequest );
+        portalResponseProcessor.setHttpResponse( httpServletResponse );
+        portalResponseProcessor.setRequest( portalRequest );
+        portalResponseProcessor.setResponse( portalResponse );
 
-        portalRenderResponseService.setUserDao( userDao );
-        portalRenderResponseService.setSiteDao( siteDao );
+        portalResponseProcessor.setCacheHeadersEnabledForSite( true );
 
-        PluginManager pluginManager = Mockito.mock( PluginManager.class );
-        ExtensionSet extensionSet = Mockito.mock( ExtensionSet.class );
-        Mockito.when( pluginManager.getExtensions() ).thenReturn( extensionSet );
-        portalRenderResponseService.setPluginManager( pluginManager );
-
-        Mockito.when( siteDao.findByKey( sitePath.getSiteKey() ) ).thenReturn( new SiteEntity() );
+        portalResponseProcessor.setCurrentPortalRequestTrace( null );
+        portalResponseProcessor.setResponseFilters( new ArrayList<HttpResponseFilter>() );
 
         new DeploymentAndRequestSetup().
             appDeployedAtRoot().
@@ -107,7 +101,7 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.setMethod( "GET" );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify that length is equal to content and content exists
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );
@@ -125,7 +119,7 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.setMethod( "HEAD" );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify that length is equal to content but no content exists
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );
@@ -144,7 +138,7 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify that length is equal to content but content does not exist
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );  // most important test
@@ -163,7 +157,7 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify that length is zero and no content exists
         assertEquals( 0, httpServletResponse.getContentLength() );
@@ -182,7 +176,7 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE_INCORRECT );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify that length is equal to content but content does not exist
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );  // most important test
@@ -201,7 +195,7 @@ public class PortalRenderResponseServerHeadTest
         httpServletRequest.addHeader( "If-None-Match", ETAG_VALUE_INCORRECT );
 
         // exercise
-        portalRenderResponseService.serveResponse( portalRequest, portalResponse, httpServletResponse, httpServletRequest );
+        portalResponseProcessor.serveResponse();
 
         // verify that length is zero and no content exists
         assertEquals( CONTENT_VALUE.length(), httpServletResponse.getContentLength() );

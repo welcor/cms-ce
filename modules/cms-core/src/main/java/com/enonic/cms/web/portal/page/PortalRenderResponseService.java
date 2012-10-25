@@ -22,7 +22,6 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
-import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceRequestInspector;
 
@@ -32,15 +31,9 @@ import com.enonic.cms.web.portal.instanttrace.InstantTraceRequestInspector;
 @Component
 public class PortalRenderResponseService
 {
-    private final static String EXECUTED_PLUGINS = "EXECUTED_PLUGINS";
-
-    private static final int SECOND_IN_MILLIS = 1000;
-
     private SitePropertiesService sitePropertiesService;
 
     private SiteRedirectAndForwardHelper siteRedirectAndForwardHelper;
-
-    private UserDao userDao;
 
     private SiteDao siteDao;
 
@@ -88,12 +81,6 @@ public class PortalRenderResponseService
     public void setSiteRedirectAndForwardHelper( SiteRedirectAndForwardHelper siteRedirectAndForwardHelper )
     {
         this.siteRedirectAndForwardHelper = siteRedirectAndForwardHelper;
-    }
-
-    @Autowired
-    public void setUserDao( UserDao userDao )
-    {
-        this.userDao = userDao;
     }
 
     @Autowired

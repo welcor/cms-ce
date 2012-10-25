@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <datasources>
-  <datasource name="getRandomContentBySection"/>
-  <datasource name="getRandomContentBySection">
+  <datasource name="getRandomContentByCategory"/>
+  <datasource name="getRandomContentByCategory">
     <parameter>1,2</parameter>
     <parameter>2</parameter>
     <parameter>myQuery</parameter>
@@ -9,7 +9,7 @@
     <parameter>true</parameter>
     <parameter>6</parameter>
   </datasource>
-  <datasource name="getRandomContentBySection">
+  <datasource name="getRandomContentByCategory">
     <parameter>1,2</parameter>
     <parameter>2</parameter>
     <parameter>myQuery</parameter>
@@ -18,7 +18,7 @@
     <parameter>6</parameter>
     <parameter>7</parameter>
   </datasource>
-  <datasource name="getRandomContentBySection">
+  <datasource name="getRandomContentByCategory">
     <parameter>1,2</parameter>
     <parameter>2</parameter>
     <parameter>myQuery</parameter>

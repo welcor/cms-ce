@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!--<datasource name="getRandomContentByCategory" />-->
+  <!--<datasource name="getRandomContentByCategory"><parameter>1,2</parameter><parameter>2</parameter><parameter>myQuery</parameter><parameter>4</parameter><parameter>true</parameter><parameter>6</parameter></datasource>-->
+  <datasource name="getRandomContentByCategory">
+    <parameter name="categoryKeys">1,2</parameter>
+    <parameter name="levels">2</parameter>
+    <parameter name="query">myQuery</parameter>
+    <parameter name="count">4</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">6</parameter>
+    <parameter name="parentLevel">7</parameter>
+  </datasource>
+  <!--<datasource name="getRandomContentByCategory"><parameter>1,2</parameter><parameter>2</parameter><parameter>myQuery</parameter><parameter>4</parameter><parameter>true</parameter><parameter>6</parameter><parameter>7</parameter><parameter>unknown</parameter></datasource>-->
+</datasources>
+

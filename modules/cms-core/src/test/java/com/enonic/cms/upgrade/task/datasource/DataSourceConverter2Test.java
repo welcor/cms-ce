@@ -178,4 +178,10 @@ public class DataSourceConverter2Test
         testConvert( "task2/getRandomContentBySection" );
     }
 
+    @Test
+    public void testConvert_getRandomContentByCategory()
+        throws Exception
+    {
+        testConvert( "task2/getRandomContentByCategory" );
+    }
 }

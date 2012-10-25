@@ -18,17 +18,6 @@ interface DataSourceService
                                             int parentLevel, int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
                                             boolean includeTotalCount, boolean includeUserRights, int[] filterByContentTypes );
 
-    public XMLDocument getContentByCategory( String query, int[] categories, boolean includeSubCategories, String orderBy, int index,
-                                             int count, boolean titlesOnly, int childrenLevel, int parentLevel, int parentChildrenLevel,
-                                             boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
-                                             int[] contentTypes );
-
-    public XMLDocument getContentByCategory( int[] categoryKeys, int levels, String query, String orderBy, int index, int count,
-                                             boolean includeData, int childrenLevel, int parentLevel );
-
-    public XMLDocument getRandomContentByCategory( int[] categoryKeys, int levels, String query, int count, boolean includeData,
-                                                   int childrenLevel, int parentLevel );
-
     public XMLDocument getContent( int[] contentKeys, String query, String orderBy, int index, int count, boolean includeData,
                                    int childrenLevel, int parentLevel );
 

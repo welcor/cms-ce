@@ -307,6 +307,21 @@ public final class DataSourceServiceImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public XMLDocument getContentByCategory( DataSourceContext context, String query, int[] categories, boolean includeSubCategories,
+                                             String orderBy, int index, int count, boolean titlesOnly, int childrenLevel, int parentLevel,
+                                             int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
+                                             boolean includeUserRights, int[] contentTypes )
+    {
+        int levels = includeSubCategories ? Integer.MAX_VALUE : 1;
+        return doGetContentByCategory( context, categories, levels, query, orderBy, index, count, childrenLevel, parentLevel,
+                                       parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights,
+                                       contentTypes );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getRandomContentByCategory( DataSourceContext context, int[] categoryKeys, int levels, String query, int count,
                                                    boolean includeData, int childrenLevel, int parentLevel )
     {
@@ -859,21 +874,6 @@ public final class DataSourceServiceImpl
         Collection<ContentTypeKey> contentTypeFilter = ContentTypeKey.convertToList( contentTypes );
 
         return contentService.getAggregatedIndexValues( user, path, categoryFilter, includeSubCategories, contentTypeFilter );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getContentByCategory( DataSourceContext context, String query, int[] categories, boolean includeSubCategories,
-                                             String orderBy, int index, int count, boolean titlesOnly, int childrenLevel, int parentLevel,
-                                             int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                             boolean includeUserRights, int[] contentTypes )
-    {
-        int levels = includeSubCategories ? Integer.MAX_VALUE : 1;
-        return doGetContentByCategory( context, categories, levels, query, orderBy, index, count, childrenLevel, parentLevel,
-                                       parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights,
-                                       contentTypes );
     }
 
     /**

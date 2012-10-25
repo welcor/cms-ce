@@ -33,6 +33,7 @@ public final class DataSourceMethodConverters
         add( new GetRelatedContentConverter() );
         add( new GetRandomContentBySectionConverter() );
         add( new GetRandomContentByCategoryConverter() );
+        add( new GetContentByCategoryConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

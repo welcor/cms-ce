@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getContentByCategory"/>
+  <datasource name="getContentByCategory">
+    <parameter>1,2</parameter>
+    <parameter>2</parameter>
+    <parameter>myQuery</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>false</parameter>
+    <parameter>8</parameter>
+    <parameter>9</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter>myQuery</parameter>
+    <parameter>2,2</parameter>
+    <parameter>false</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>false</parameter>
+    <parameter>8</parameter>
+    <parameter>9</parameter>
+    <parameter>10</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+  </datasource>
+  <!-- Include data should yield false -->
+  <datasource name="getContentByCategory">
+    <parameter>myQuery</parameter>
+    <parameter>2,2</parameter>
+    <parameter>false</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>true</parameter>
+    <parameter>8</parameter>
+    <parameter>9</parameter>
+    <parameter>10</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+    <parameter>14,14</parameter>
+  </datasource>
+  <!-- Include data should yield true -->
+  <datasource name="getContentByCategory">
+    <parameter>myQuery</parameter>
+    <parameter>2,2</parameter>
+    <parameter>false</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>false</parameter>
+    <parameter>8</parameter>
+    <parameter>9</parameter>
+    <parameter>10</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+    <parameter>14,14</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter>myQuery</parameter>
+    <parameter>2,2</parameter>
+    <parameter>false</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>5</parameter>
+    <parameter>6</parameter>
+    <parameter>false</parameter>
+    <parameter>8</parameter>
+    <parameter>9</parameter>
+    <parameter>10</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+    <parameter>true</parameter>
+    <parameter>14,14</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

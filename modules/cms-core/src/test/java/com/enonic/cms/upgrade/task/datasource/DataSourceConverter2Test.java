@@ -184,4 +184,11 @@ public class DataSourceConverter2Test
     {
         testConvert( "task2/getRandomContentByCategory" );
     }
+
+    @Test
+    public void testConvert_getContentByCategory()
+        throws Exception
+    {
+        testConvert( "task2/getContentByCategory" );
+    }
 }

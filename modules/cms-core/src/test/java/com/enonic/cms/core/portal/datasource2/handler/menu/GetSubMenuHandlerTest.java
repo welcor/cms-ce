@@ -39,10 +39,11 @@ public class GetSubMenuHandlerTest
         this.request.addParam( "menuItemKey", "3" );
         this.request.addParam( "tagItem", "42" );
         this.request.addParam( "levels", "1" );
+        this.request.addParam( "details", "true" );
 
-        Mockito.when( this.dataSourceService.getSubMenu( this.request, 3, 42, 1 ) ).thenReturn( this.dummyDoc );
+        Mockito.when( this.dataSourceService.getSubMenu( this.request, 3, 42, 1, true ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
-        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getSubMenu( this.request, 3, 42, 1 );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getSubMenu( this.request, 3, 42, 1, true );
     }
 
     @Test
@@ -51,9 +52,9 @@ public class GetSubMenuHandlerTest
     {
         this.request.addParam( "menuItemKey", "42" );
 
-        Mockito.when( this.dataSourceService.getSubMenu( this.request, 42, -1, 0 ) ).thenReturn( this.dummyDoc );
+        Mockito.when( this.dataSourceService.getSubMenu( this.request, 42, -1, 0, false ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
-        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getSubMenu( this.request, 42, -1, 0 );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getSubMenu( this.request, 42, -1, 0, false );
     }
 
     @Test(expected = DataSourceException.class)
@@ -63,6 +64,7 @@ public class GetSubMenuHandlerTest
         this.request.addParam( "menuItemKey", "3,44" );
         this.request.addParam( "tagItem", "42" );
         this.request.addParam( "levels", "0" );
+        this.request.addParam( "details", "true" );
 
         this.handler.handle( this.request );
     }

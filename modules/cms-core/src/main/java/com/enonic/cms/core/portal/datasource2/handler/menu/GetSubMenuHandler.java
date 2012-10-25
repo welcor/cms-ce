@@ -24,7 +24,7 @@ public final class GetSubMenuHandler
         final int menuItemKey = req.param( "menuItemKey" ).required().asInteger();
         final int tagItem = req.param( "tagItem" ).asInteger( -1 );
         final int levels = req.param( "levels" ).asInteger( 0 );
-        final boolean details = req.param( "details" ).asBoolean();
+        final boolean details = req.param( "details" ).asBoolean( false );
 
         return this.dataSourceService.getSubMenu( req, menuItemKey, tagItem, levels, details ).getAsJDOMDocument();
     }

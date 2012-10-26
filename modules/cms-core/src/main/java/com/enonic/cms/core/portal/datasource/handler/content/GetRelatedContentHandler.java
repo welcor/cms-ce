@@ -5,8 +5,8 @@ import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
 
 @Component("ds.GetRelatedContentHandler")
@@ -33,6 +33,7 @@ public final class GetRelatedContentHandler
         final boolean includeData = param( req, "includeData" ).asBoolean( true );
         final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
         final int parentLevel = param( req, "parentLevel" ).asInteger( 0 );
+        final boolean requireAll = param( req, "requireAll" ).asBoolean( false );
 
         return this.dataSourceService.getRelatedContent( req, contentKeys, relation, query, orderBy, index, count, includeData,
                                                          childrenLevel, parentLevel ).getAsJDOMDocument();

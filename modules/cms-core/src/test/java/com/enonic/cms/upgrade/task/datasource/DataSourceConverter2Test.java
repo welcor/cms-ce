@@ -172,6 +172,13 @@ public class DataSourceConverter2Test
     }
 
     @Test
+    public void testConvert_getRelatedContents()
+        throws Exception
+    {
+        testConvert( "task2/getRelatedContents" );
+    }
+
+    @Test
     public void testConvert_getRandomContentBySection()
         throws Exception
     {

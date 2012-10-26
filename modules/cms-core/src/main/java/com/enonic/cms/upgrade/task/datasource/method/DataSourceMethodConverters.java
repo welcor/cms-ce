@@ -36,6 +36,7 @@ public final class DataSourceMethodConverters
         add( new GetContentByCategoryConverter() );
         add( new GetContentBySectionConverter() );
         add( new GetContentConverter() );
+        add( new GetRelatedContentsConverter() );
     }
 
     private void add( final DataSourceMethodConverter converter )

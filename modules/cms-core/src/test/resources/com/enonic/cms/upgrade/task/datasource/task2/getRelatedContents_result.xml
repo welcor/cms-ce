@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!--<datasource name="getRelatedContents" />-->
+  <datasource name="getRelatedContent">
+    <parameter name="contentKeys">1,2</parameter>
+    <parameter name="relation">0</parameter>
+    <parameter name="query">myQuery</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">0</parameter>
+    <parameter name="count">10</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="requireAll">true</parameter>
+  </datasource>
+  <datasource name="getRelatedContent">
+    <parameter name="contentKeys">1,2</parameter>
+    <parameter name="relation">0</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">0</parameter>
+    <parameter name="count">10</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="requireAll">true</parameter>
+  </datasource>
+  <datasource name="getRelatedContent">
+    <parameter name="contentKeys">1,2</parameter>
+    <parameter name="relation">0</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">0</parameter>
+    <parameter name="count">10</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="requireAll">false</parameter>
+  </datasource>
+  <!--<datasource name="getRelatedContents"><parameter name="relation">0</parameter><parameter name="contentKeys">1,2</parameter><parameter name="query">myQuery</parameter><parameter name="orderBy">myOrderBy</parameter><parameter name="requireAll">true</parameter><parameter name="fromIndex">0</parameter><parameter name="count">10</parameter><parameter name="titlesOnly">false</parameter><parameter name="parentLevel">1</parameter><parameter name="childrenLevel">2</parameter><parameter name="parentChildrenLevel">0</parameter><parameter name="relatedTitlesOnly">true</parameter><parameter name="includeTotalCount">true</parameter><parameter name="filterByCategories">1,2,3</parameter><parameter name="categoriesRecursive">false</parameter><parameter name="filterByContentTypes">2,3,4</parameter><parameter name="unknown">unknown</parameter></datasource>-->
+</datasources>
+

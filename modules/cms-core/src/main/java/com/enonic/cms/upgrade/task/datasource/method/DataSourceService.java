@@ -5,19 +5,6 @@ import com.enonic.cms.framework.xml.XMLDocument;
 // Only used as a placeholder for not yet converted datasources. Delete when empty.
 interface DataSourceService
 {
-
-    public XMLDocument getContentBySection( int[] menuItemKeys, int levels, String query, String orderBy, int index, int count,
-                                            boolean includeData, int childrenLevel, int parentLevel );
-
-    public XMLDocument getContentBySection( String query, int[] menuItemKeys, int levels, String orderBy, int fromIndex, int count,
-                                            boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                            boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
-                                            int[] filterByContentType );
-
-    public XMLDocument getContentBySection( int[] menuItemKeys, int levels, String orderBy, int fromIndex, int count, boolean titlesOnly,
-                                            int parentLevel, int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
-                                            boolean includeTotalCount, boolean includeUserRights, int[] filterByContentTypes );
-
     public XMLDocument getContent( int[] contentKeys, String query, String orderBy, int index, int count, boolean includeData,
                                    int childrenLevel, int parentLevel );
 
@@ -35,31 +22,20 @@ interface DataSourceService
                                    boolean relatedTitlesOnly, boolean includeUserRights, int[] filterByCategories,
                                    boolean categoryRecursive, int[] filterByContentTypes );
 
-    // Kill?
-    public XMLDocument getRandomContentByParent( int count, int contentKey, boolean includeUserRights );
 
-    // Kill?
-    public XMLDocument getRandomContentBySections( String query, int[] menuItemKeys, int levels, int count, boolean titlesOnly,
-                                                   int parentLevel, int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
-                                                   boolean includeUserRights );
-
-    // Convert to getRelatedContent?
     public XMLDocument getRelatedContents( int relation, int[] contentKeys, String orderBy, boolean requireAll, int fromIndex, int count,
                                            int parentLevel, int childrenLevel, int parentChildrenLevel, boolean includeTotalCount,
                                            int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes );
 
-    // Convert to getRelatedContent?
     public XMLDocument getRelatedContents( int relation, int[] contentKeys, String orderBy, boolean requireAll, int fromIndex, int count,
                                            boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
                                            boolean relatedTitlesOnly, boolean includeTotalCount, int[] filterByCategories,
                                            boolean categoryRecursive, int[] filterByContentTypes );
 
-    // Convert to getRelatedContent?
     public XMLDocument getRelatedContents( int relation, int[] contentKeys, String query, String orderBy, boolean requireAll, int fromIndex,
                                            int count, boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
                                            boolean relatedTitlesOnly, boolean includeTotalCount, int[] filterByCategories,
                                            boolean categoryRecursive, int[] filterByContentTypes );
-
 
     // Do not convert this - replaced by getContentByCategory with extended parameters?
     public XMLDocument getMyContentByCategory( String query, int[] categories, boolean includeSubCategories, String orderBy, int index,

@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getContentBySection"/>
+  <datasource name="getContentBySection">
+    <parameter>1,2</parameter>
+  </datasource>
+  <datasource name="getContentBySection">
+    <parameter>menuItemKeys</parameter>
+    <parameter>levels</parameter>
+    <parameter>query</parameter>
+    <parameter>orderBy</parameter>
+    <parameter>index</parameter>
+    <parameter>count</parameter>
+    <parameter>includeData</parameter>
+    <parameter>childrenLevels</parameter>
+    <parameter>parentLevels</parameter>
+  </datasource>
+  <datasource name="getContentBySection">
+    <parameter>menuItemKeys</parameter>
+    <parameter>levels</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>index</parameter>
+    <parameter>count</parameter>
+    <parameter>true</parameter>
+    <parameter>parentLevels</parameter>
+    <parameter>childrenLevels</parameter>
+    <parameter>ParChildLevels</parameter>
+    <parameter>true</parameter>
+    <parameter>false</parameter>
+    <parameter>false</parameter>
+  </datasource>
+  <datasource name="getContentBySection">
+    <parameter>menuItemKeys</parameter>
+    <parameter>levels</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>index</parameter>
+    <parameter>count</parameter>
+    <parameter>true</parameter>
+    <parameter>parentLevels</parameter>
+    <parameter>childrenLevels</parameter>
+    <parameter>ParChildLevels</parameter>
+    <parameter>true</parameter>
+    <parameter>false</parameter>
+    <parameter>false</parameter>
+    <parameter>filterContentTypes</parameter>
+  </datasource>
+  <datasource name="getContentBySection">
+    <parameter>myQuery</parameter>
+    <parameter>menuItemKeys</parameter>
+    <parameter>levels</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>index</parameter>
+    <parameter>count</parameter>
+    <parameter>true</parameter>
+    <parameter>parentLevel</parameter>
+    <parameter>childrenLevel</parameter>
+    <parameter>parchildlevel</parameter>
+    <parameter>false</parameter>
+    <parameter>false</parameter>
+    <parameter>false</parameter>
+    <parameter>14,14</parameter>
+  </datasource>
+  <datasource name="getContentBySection">
+    <parameter>myQuery</parameter>
+    <parameter>menuItemKeys</parameter>
+    <parameter>levels</parameter>
+    <parameter>myOrderBy</parameter>
+    <parameter>index</parameter>
+    <parameter>count</parameter>
+    <parameter>true</parameter>
+    <parameter>parentLevel</parameter>
+    <parameter>childrenLevel</parameter>
+    <parameter>parchildlevel</parameter>
+    <parameter>false</parameter>
+    <parameter>false</parameter>
+    <parameter>false</parameter>
+    <parameter>14,14</parameter>
+    <parameter>unknown</parameter>
+  </datasource>
+</datasources>

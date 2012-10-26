@@ -33,7 +33,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 /**
  * Apr 21, 2009
  */
-public class DatasourceExecutorContext
+public class DataSourceExecutorContext
 {
     private DataSourceType datasourcesType;
 

@@ -14,7 +14,7 @@ import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.cache.SiteCachesService;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer;
@@ -30,7 +30,7 @@ public class PageRendererFactory
     private SiteCachesService siteCachesService;
 
     @Autowired
-    private DatasourceExecutorFactory datasourceExecutorFactory;
+    private DataSourceExecutorFactory datasourceExecutorFactory;
 
     @Autowired
     private ResourceService resourceService;

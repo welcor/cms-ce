@@ -8,7 +8,7 @@ import org.jdom.Element;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
@@ -28,7 +28,7 @@ final class ResourceContextXmlCreator
 
     private PathContextXmlCreator pathContextXmlCreator;
 
-    public ResourceContextXmlCreator( DatasourceExecutorContext datasourceExecutorContext )
+    public ResourceContextXmlCreator( DataSourceExecutorContext datasourceExecutorContext )
     {
         this.menuItem = datasourceExecutorContext.getMenuItem();
         this.contentFromRequest = datasourceExecutorContext.getContentFromRequest();

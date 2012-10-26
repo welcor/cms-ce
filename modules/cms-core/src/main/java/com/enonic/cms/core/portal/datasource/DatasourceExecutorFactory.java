@@ -14,7 +14,7 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
  * Apr 20, 2009
  */
 @Component
-public class DatasourceExecutorFactory
+public class DataSourceExecutorFactory
 {
     @Autowired
     private DatasourcesContextXmlCreator datasourcesContextXmlCreator;
@@ -22,9 +22,9 @@ public class DatasourceExecutorFactory
     @Autowired
     private LivePortalTraceService livePortalTraceService;
 
-    public DatasourceExecutor createDatasourceExecutor( DatasourceExecutorContext datasourceExecutorContext )
+    public DataSourceExecutor createDatasourceExecutor( DataSourceExecutorContext datasourceExecutorContext )
     {
-        DatasourceExecutor dataSourceExecutor = new DatasourceExecutor( datasourceExecutorContext );
+        DataSourceExecutor dataSourceExecutor = new DataSourceExecutor( datasourceExecutorContext );
         dataSourceExecutor.setDatasourcesContextXmlCreator( datasourcesContextXmlCreator );
         dataSourceExecutor.setLivePortalTraceService( livePortalTraceService );
         return dataSourceExecutor;

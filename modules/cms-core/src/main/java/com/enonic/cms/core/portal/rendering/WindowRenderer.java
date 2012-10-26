@@ -25,10 +25,10 @@ import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
 import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutor;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
@@ -75,7 +75,7 @@ public class WindowRenderer
 
     private PageCacheService pageCacheService;
 
-    private DatasourceExecutorFactory dataSourceExecutorFactory;
+    private DataSourceExecutorFactory dataSourceExecutorFactory;
 
     private WindowRendererContext context;
 
@@ -479,7 +479,7 @@ public class WindowRenderer
 
         PortalInstanceKey portalInstanceKey = resolvePortalInstanceKey( window );
 
-        DatasourceExecutorContext datasourceExecutorContext = new DatasourceExecutorContext();
+        DataSourceExecutorContext datasourceExecutorContext = new DataSourceExecutorContext();
         datasourceExecutorContext.setContentFromRequest( context.getContentFromRequest() );
         datasourceExecutorContext.setPortletDocument(
             window.getPortlet().getGetDataDocmentChildElementDocumentAsRootElementInItsOwnDocument() );
@@ -506,7 +506,7 @@ public class WindowRenderer
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
-        DatasourceExecutor dataSourceExecutor = dataSourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
+        DataSourceExecutor dataSourceExecutor = dataSourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
 
         return dataSourceExecutor.getDataSourceResult( datasources );
     }
@@ -609,7 +609,7 @@ public class WindowRenderer
         }
     }
 
-    public void setDataSourceExecutorFactory( DatasourceExecutorFactory value )
+    public void setDataSourceExecutorFactory( DataSourceExecutorFactory value )
     {
         this.dataSourceExecutorFactory = value;
     }

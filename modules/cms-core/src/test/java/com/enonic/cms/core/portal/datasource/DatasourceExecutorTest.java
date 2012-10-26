@@ -4,17 +4,13 @@
  */
 package com.enonic.cms.core.portal.datasource;
 
-import org.jdom.Element;
 import org.junit.Before;
-import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsFactory;
-import com.enonic.cms.core.portal.datasource.xml.DataSourceElement;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserImpl;
@@ -22,18 +18,16 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 
-import static org.junit.Assert.*;
-
 public class DatasourceExecutorTest
 {
 
-    private DatasourceExecutorContext context;
+    private DataSourceExecutorContext context;
 
     @Before
     public void setup()
     {
 
-        context = new DatasourceExecutorContext();
+        context = new DataSourceExecutorContext();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         LanguageEntity languageEntity = new LanguageEntity();

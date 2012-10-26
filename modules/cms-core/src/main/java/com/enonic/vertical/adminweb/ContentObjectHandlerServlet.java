@@ -41,12 +41,12 @@ import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutor;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.datasource.xml.DataSourceXmlFactory;
 import com.enonic.cms.core.preview.PreviewContext;
@@ -70,7 +70,7 @@ public final class ContentObjectHandlerServlet
     private DataSourceService dataSourceService;
 
     @Autowired
-    private DatasourceExecutorFactory datasourceExecutorFactory;
+    private DataSourceExecutorFactory datasourceExecutorFactory;
 
     @Autowired
     private PluginManager pluginManager;
@@ -680,7 +680,7 @@ public final class ContentObjectHandlerServlet
         SiteEntity site = siteDao.findByKey( siteKey );
         UserEntity userEntity = userDao.findByKey( user.getKey() );
 
-        DatasourceExecutorContext datasourceExecutorContext = new DatasourceExecutorContext();
+        DataSourceExecutorContext datasourceExecutorContext = new DataSourceExecutorContext();
         datasourceExecutorContext.setCssKeys( cssKeys );
         datasourceExecutorContext.setDatasourcesType( DataSourceType.PAGETEMPLATE );
         datasourceExecutorContext.setInvocationCache( new InvocationCache() );
@@ -697,7 +697,7 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
-        DatasourceExecutor datasourceExecutor = datasourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
+        DataSourceExecutor datasourceExecutor = datasourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
 
         DataSourcesElement datasources = new DataSourceXmlFactory().create( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
@@ -717,7 +717,7 @@ public final class ContentObjectHandlerServlet
         SiteEntity site = siteDao.findByKey( siteKey.toInt() );
         UserEntity userEntity = userDao.findByKey( oldUser.getKey() );
 
-        DatasourceExecutorContext datasourceExecutorContext = new DatasourceExecutorContext();
+        DataSourceExecutorContext datasourceExecutorContext = new DataSourceExecutorContext();
         if ( portletDocumentXmlDocument != null )
         {
             datasourceExecutorContext.setPortletDocument( portletDocumentXmlDocument.getAsJDOMDocument() );
@@ -738,7 +738,7 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
-        DatasourceExecutor datasourceExecutor = datasourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
+        DataSourceExecutor datasourceExecutor = datasourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
 
         DataSourceType datasourcesType = DataSourceType.PORTLET;
 

@@ -23,10 +23,10 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.tracing.DataTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 
-public class DatasourceExecutor
+public class DataSourceExecutor
 {
 
-    private DatasourceExecutorContext context;
+    private DataSourceExecutorContext context;
 
     private DatasourcesContextXmlCreator datasourcesContextXmlCreator;
 
@@ -34,7 +34,7 @@ public class DatasourceExecutor
 
     private DatasourceExecutionTrace trace;
 
-    public DatasourceExecutor( DatasourceExecutorContext datasourceExecutorContext )
+    public DataSourceExecutor( DataSourceExecutorContext datasourceExecutorContext )
     {
         this.context = datasourceExecutorContext;
     }
@@ -162,7 +162,7 @@ public class DatasourceExecutor
         }
     }
 
-    public void setContext( DatasourceExecutorContext value )
+    public void setContext( DataSourceExecutorContext value )
     {
         this.context = value;
     }

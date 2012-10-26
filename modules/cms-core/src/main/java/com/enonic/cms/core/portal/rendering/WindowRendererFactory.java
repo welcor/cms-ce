@@ -13,7 +13,7 @@ import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.cache.SiteCachesService;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer;
@@ -33,7 +33,7 @@ public class WindowRendererFactory
     private ResourceService resourceService;
 
     @Autowired
-    private DatasourceExecutorFactory datasourceExecutorFactory;
+    private DataSourceExecutorFactory datasourceExecutorFactory;
 
     @Autowired
     private PortletXsltViewTransformer portletXsltViewTransformer;

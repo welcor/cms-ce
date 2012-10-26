@@ -17,8 +17,8 @@ import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -62,7 +62,7 @@ public final class DatasourcesContextXmlCreator
         userContextXmlCreator = new UserContextXmlCreator( groupDao );
     }
 
-    public Element createContextElement( DataSourcesElement datasources, DatasourceExecutorContext context )
+    public Element createContextElement( DataSourcesElement datasources, DataSourceExecutorContext context )
     {
         Element contextElem = new Element( "context" );
 

@@ -20,14 +20,14 @@ import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
 import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutor;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionProcessor;
@@ -70,7 +70,7 @@ public class PageRenderer
 
     private TimeService timeService;
 
-    private DatasourceExecutorFactory dataSourceExecutorFactory;
+    private DataSourceExecutorFactory dataSourceExecutorFactory;
 
     private ResourceService resourceService;
 
@@ -386,7 +386,7 @@ public class PageRenderer
 
         PortalInstanceKey portalInstanceKey = resolvePortalInstanceKey();
 
-        DatasourceExecutorContext datasourceExecutorContext = new DatasourceExecutorContext();
+        DataSourceExecutorContext datasourceExecutorContext = new DataSourceExecutorContext();
         datasourceExecutorContext.setContentFromRequest( context.getContentFromRequest() );
         datasourceExecutorContext.setCssKeys( cssKeys );
         datasourceExecutorContext.setInvocationCache( invocationCache );
@@ -412,7 +412,7 @@ public class PageRenderer
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
-        DatasourceExecutor datasourceExecutor = dataSourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
+        DataSourceExecutor datasourceExecutor = dataSourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
 
         return datasourceExecutor.getDataSourceResult( pageTemplate.getDatasources() );
     }
@@ -523,7 +523,7 @@ public class PageRenderer
         }
     }
 
-    public void setDataSourceExecutorFactory( DatasourceExecutorFactory value )
+    public void setDataSourceExecutorFactory( DataSourceExecutorFactory value )
     {
         this.dataSourceExecutorFactory = value;
     }

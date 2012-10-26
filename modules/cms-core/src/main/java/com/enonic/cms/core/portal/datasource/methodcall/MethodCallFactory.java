@@ -20,8 +20,8 @@ import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.portal.datasource.DataSourceException;
+import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.xml.DataSourceElement;
-import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
 
@@ -31,7 +31,7 @@ import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
 public class MethodCallFactory
 {
 
-    public static MethodCall create( final DatasourceExecutorContext context, final DataSourceElement datasource )
+    public static MethodCall create( final DataSourceExecutorContext context, final DataSourceElement datasource )
     {
         String methodName = datasource.getName();
         if ( methodName == null )
@@ -88,7 +88,7 @@ public class MethodCallFactory
         return new MethodCall( context.getInvocationCache(), targetObject, parameters, method, isCacheable );
     }
 
-    private static MethodCallParameter createParameter( Element parmeterEl, Class paramType, DatasourceExecutorContext context )
+    private static MethodCallParameter createParameter( Element parmeterEl, Class paramType, DataSourceExecutorContext context )
     {
         String defValue = JDOMUtil.getElementText( parmeterEl );
         if ( ( defValue != null ) && defValue.contains( "${" ) )
@@ -102,7 +102,7 @@ public class MethodCallFactory
         return new MethodCallParameter( "param", argument, null, paramType );
     }
 
-    private static DataSourceContext createDataSourceContext( DatasourceExecutorContext context )
+    private static DataSourceContext createDataSourceContext( DataSourceExecutorContext context )
     {
         DataSourceContext dataSourceContext = new DataSourceContext( context.getPreviewContext() );
         dataSourceContext.setPortalInstanceKey( context.getPortalInstanceKey() );
@@ -219,7 +219,7 @@ public class MethodCallFactory
         }
     }
 
-    private static String evaluateExpression( String expression, DatasourceExecutorContext context )
+    private static String evaluateExpression( String expression, DataSourceExecutorContext context )
     {
         try
         {

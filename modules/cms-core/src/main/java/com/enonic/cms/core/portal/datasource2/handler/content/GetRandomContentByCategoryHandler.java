@@ -5,11 +5,11 @@ import org.jdom.Document;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 public final class GetRandomContentByCategoryHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     public GetRandomContentByCategoryHandler()
     {
@@ -20,14 +20,14 @@ public final class GetRandomContentByCategoryHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final Integer[] keys = req.param( "categoryKeys" ).required().asIntegerArray();
+        final Integer[] keys = param( req, "categoryKeys" ).required().asIntegerArray();
         int[] categoryKeys = ArrayUtils.toPrimitive( keys );
-        final int levels = req.param( "levels" ).asInteger( 1 );
-        final String query = req.param( "query" ).asString( "" );
-        final int count = req.param( "count" ).asInteger( 10 );
-        final boolean includeData = req.param( "includeData" ).asBoolean( true );
-        final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
-        final int parentLevel = req.param( "parentLevel" ).asInteger( 0 );
+        final int levels = param( req, "levels" ).asInteger( 1 );
+        final String query = param( req, "query" ).asString( "" );
+        final int count = param( req, "count" ).asInteger( 10 );
+        final boolean includeData = param( req, "includeData" ).asBoolean( true );
+        final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
+        final int parentLevel = param( req, "parentLevel" ).asInteger( 0 );
 
         XMLDocument document =
             dataSourceService.getRandomContentByCategory( req, categoryKeys, levels, query, count, includeData, childrenLevel, parentLevel );

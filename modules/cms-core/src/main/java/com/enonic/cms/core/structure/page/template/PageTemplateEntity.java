@@ -20,7 +20,8 @@ import org.jdom.Element;
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.portal.datasource.Datasources;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
+import com.enonic.cms.core.portal.datasource.xml.DataSourceXmlFactory;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.RunAsType;
@@ -57,7 +58,7 @@ public class PageTemplateEntity
 
     private Set<ContentTypeEntity> contentTypes;
 
-    private transient Datasources datasources;
+    private transient DataSourcesElement datasources;
 
     public int getKey()
     {
@@ -243,13 +244,13 @@ public class PageTemplateEntity
         return params;
     }
 
-    public Datasources getDatasources()
+    public DataSourcesElement getDatasources()
     {
         if ( datasources == null )
         {
             Element rootEl = getXmlDataAsJDOMDocument().getRootElement();
             Element datasourcesEl = rootEl.getChild( "datasources" );
-            datasources = new Datasources( datasourcesEl );
+            datasources = new DataSourceXmlFactory().create( datasourcesEl );
         }
 
         return datasources;

@@ -6,7 +6,7 @@ package com.enonic.cms.core.portal.livetrace;
 
 import java.util.List;
 
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.structure.page.WindowKey;
 
 /**
@@ -22,7 +22,7 @@ public interface LivePortalTraceService
 
     WindowRenderingTrace startWindowRenderTracing( WindowKey windowKey );
 
-    DatasourceExecutionTrace startDatasourceExecutionTracing( DatasourcesType datasourcesType, String datasourceMethodName );
+    DatasourceExecutionTrace startDatasourceExecutionTracing( DataSourceType datasourcesType, String datasourceMethodName );
 
     ClientMethodExecutionTrace startClientMethodExecutionTracing( String methodName );
 

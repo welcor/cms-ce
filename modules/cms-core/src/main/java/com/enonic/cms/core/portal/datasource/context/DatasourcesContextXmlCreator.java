@@ -17,9 +17,9 @@ import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.Datasources;
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteProperties;
@@ -62,7 +62,7 @@ public final class DatasourcesContextXmlCreator
         userContextXmlCreator = new UserContextXmlCreator( groupDao );
     }
 
-    public Element createContextElement( Datasources datasources, DatasourceExecutorContext context )
+    public Element createContextElement( DataSourcesElement datasources, DatasourceExecutorContext context )
     {
         Element contextElem = new Element( "context" );
 
@@ -114,7 +114,7 @@ public final class DatasourcesContextXmlCreator
         }
 
         // Datasource call from a page template
-        if ( DatasourcesType.PAGETEMPLATE.equals( context.getDatasourcesType() ) )
+        if ( DataSourceType.PAGETEMPLATE.equals( context.getDatasourcesType() ) )
         {
             final Element pageEl;
             if ( PageRequestType.CONTENT.equals( context.getPageRequestType() ) )
@@ -130,7 +130,7 @@ public final class DatasourcesContextXmlCreator
             }
         }
         // Datasource call from a portlet
-        else if ( context.getDatasourcesType().equals( DatasourcesType.PORTLET ) && context.getWindow() != null )
+        else if ( context.getDatasourcesType().equals( DataSourceType.PORTLET ) && context.getWindow() != null )
         {
             Element portletDocumentEl = null;
             final Document portletDocument = context.getPortletDocument();
@@ -151,12 +151,14 @@ public final class DatasourcesContextXmlCreator
         }
 
         // Http context
+        /*
         if ( datasources.hasHttpContext() )
         {
             contextElem.addContent( httpContextXmlCreator.createHttpElement( context.getHttpRequest() ) );
-        }
+        }*/
 
         // Session context
+        /*
         if ( datasources.hasSessionContext() )
         {
             VerticalSession verticalSession = context.getVerticalSession();
@@ -164,13 +166,14 @@ public final class DatasourcesContextXmlCreator
             {
                 contextElem.addContent( buildVerticalSessionXml( verticalSession ) );
             }
-        }
+        }*/
 
         // Cookie context
+        /*
         if ( datasources.hasCookieContext() )
         {
             contextElem.addContent( cookieContextXmlCreator.createCookieElement( context.getHttpRequest() ) );
-        }
+        }*/
 
         // Styles context
         if ( context.hasCssKeys() )

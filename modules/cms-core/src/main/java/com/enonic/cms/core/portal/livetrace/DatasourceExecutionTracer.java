@@ -1,13 +1,13 @@
 package com.enonic.cms.core.portal.livetrace;
 
 
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCallParameter;
 
 public class DatasourceExecutionTracer
 {
-    public static DatasourceExecutionTrace startTracing( DatasourcesType datasourcesType, String datasourceMethodName,
+    public static DatasourceExecutionTrace startTracing( DataSourceType datasourcesType, String datasourceMethodName,
                                                          LivePortalTraceService livePortalTraceService )
     {
         if ( !livePortalTraceService.tracingEnabled() )

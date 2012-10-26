@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.user.User;

@@ -8,7 +8,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.junit.Test;
 
-import com.enonic.cms.core.portal.datasource.Datasources;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 
 import static org.junit.Assert.*;
 
@@ -25,10 +25,10 @@ public class PageTemplateEntityTest
         pageTemplate.setXmlData( new Document( new Element( "pagetemplatedata" ) ) );
 
         // exercise
-        Datasources actualDatasources = pageTemplate.getDatasources();
+        DataSourcesElement actualDatasources = pageTemplate.getDatasources();
 
         // verify
         assertNotNull( actualDatasources );
-        assertEquals( 0, actualDatasources.getDatasourceElements().size() );
+        assertEquals( 0, actualDatasources.getList().size() );
     }
 }

@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetIndexValuesHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     private DataSourceService dataSourceService;
 
@@ -24,16 +25,16 @@ public final class GetIndexValuesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String field = req.param( "field" ).required().asString();
-        Integer[] keys = req.param( "categoryKeys" ).required().asIntegerArray();
+        final String field = param( req, "field" ).required().asString();
+        Integer[] keys = param( req, "categoryKeys" ).required().asIntegerArray();
         int[] categoryKeys = ArrayUtils.toPrimitive( keys );
-        final boolean recursive = req.param( "recursive" ).asBoolean( false );
-        keys = req.param( "contentTypeKeys" ).asIntegerArray();
+        final boolean recursive = param( req, "recursive" ).asBoolean( false );
+        keys = param( req, "contentTypeKeys" ).asIntegerArray();
         int[] contentTypeKeys = ArrayUtils.toPrimitive( keys );
-        final int index = req.param( "index" ).asInteger( 0 );
-        final int count = req.param( "count" ).asInteger( 200 );
-        final boolean distinct = req.param( "distinct" ).asBoolean( true );
-        final String order = req.param( "order" ).asString( "ASC" );
+        final int index = param( req, "index" ).asInteger( 0 );
+        final int count = param( req, "count" ).asInteger( 200 );
+        final boolean distinct = param( req, "distinct" ).asBoolean( true );
+        final String order = param( req, "order" ).asString( "ASC" );
 
         XMLDocument document =
             dataSourceService.getIndexValues( req, field, categoryKeys, recursive, contentTypeKeys, index, count, distinct, order );

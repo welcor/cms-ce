@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.structure.page.WindowKey;
 import com.enonic.cms.core.time.MockTimeService;
 
@@ -37,7 +37,7 @@ public class LivePortalTraceServiceImplTest
 
         PageRenderingTrace pageRenderingTrace = PageRenderingTracer.startTracing( service );
 
-        simulateDatasourceExecution( DatasourcesType.PAGETEMPLATE, "myMethod", 10 );
+        simulateDatasourceExecution( DataSourceType.PAGETEMPLATE, "myMethod", 10 );
         // 1970-01-01 00:59:59.995
 
         simulateViewTransformation( 5 );
@@ -74,7 +74,7 @@ public class LivePortalTraceServiceImplTest
         // 1970-01-01 00:59:59.985
         PageRenderingTrace pageRenderingTrace = PageRenderingTracer.startTracing( service );
 
-        simulateDatasourceExecution( DatasourcesType.PAGETEMPLATE, "myMethod", 10 );
+        simulateDatasourceExecution( DataSourceType.PAGETEMPLATE, "myMethod", 10 );
         // 1970-01-01 00:59:59.995
 
         ViewTransformationTrace pageViewTransformationTrace = ViewTransformationTracer.startTracing( service );
@@ -144,7 +144,7 @@ public class LivePortalTraceServiceImplTest
         return trace;
     }
 
-    private DatasourceExecutionTrace simulateDatasourceExecution( DatasourcesType type, String methodName, int timeInMillis )
+    private DatasourceExecutionTrace simulateDatasourceExecution( DataSourceType type, String methodName, int timeInMillis )
     {
         DatasourceExecutionTrace trace = DatasourceExecutionTracer.startTracing( type, methodName, service );
         forwardTime( timeInMillis );

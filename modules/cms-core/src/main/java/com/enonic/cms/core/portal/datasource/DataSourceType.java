@@ -4,10 +4,7 @@
  */
 package com.enonic.cms.core.portal.datasource;
 
-/**
- * May 15, 2009
- */
-public enum DatasourcesType
+public enum DataSourceType
 {
     PAGETEMPLATE,
     PORTLET

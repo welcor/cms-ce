@@ -15,6 +15,8 @@ import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCallFactory;
+import com.enonic.cms.core.portal.datasource.xml.DataSourceElement;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTrace;
 import com.enonic.cms.core.portal.livetrace.DatasourceExecutionTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -37,7 +39,7 @@ public class DatasourceExecutor
         this.context = datasourceExecutorContext;
     }
 
-    public XMLDocument getDataSourceResult( Datasources datasources )
+    public XMLDocument getDataSourceResult( DataSourcesElement datasources )
     {
         Document resultDoc = new Document( new Element( resolveResultRootElementName( datasources ) ) );
         Element verticaldataEl = resultDoc.getRootElement();
@@ -46,10 +48,10 @@ public class DatasourceExecutor
         verticaldataEl.addContent( contextEl );
 
         // execute data sources
-        for ( Datasource datasource : datasources.getDatasourceElements() )
+        for ( DataSourceElement datasource : datasources.getList() )
         {
             trace =
-                DatasourceExecutionTracer.startTracing( context.getDatasourcesType(), datasource.getMethodName(), livePortalTraceService );
+                DatasourceExecutionTracer.startTracing( context.getDatasourcesType(), datasource.getName(), livePortalTraceService );
             try
             {
                 DatasourceExecutionTracer.traceRunnableCondition( trace, datasource.getCondition() );
@@ -77,7 +79,7 @@ public class DatasourceExecutor
      * Checks the condition attribute of the xml element, and evaluates it to decide if the datasource should be run. Returns true if
      * condition does not exists, is empty, contains 'true' or evaluates to true.
      */
-    protected boolean isRunnableByCondition( final Datasource datasource )
+    protected boolean isRunnableByCondition( final DataSourceElement datasource )
     {
         // Note: Made protected to enable testing. Should normally be tested through public methods
 
@@ -115,9 +117,9 @@ public class DatasourceExecutor
     }
 
 
-    private String resolveResultRootElementName( Datasources datasources )
+    private String resolveResultRootElementName( DataSourcesElement datasources )
     {
-        final String name = datasources.getResultElementName();
+        final String name = datasources.getResultElement();
 
         if ( name != null && name.length() > 0 )
         {
@@ -126,7 +128,7 @@ public class DatasourceExecutor
         return context.getDefaultResultRootElementName();
     }
 
-    private Document executeMethodCall( Datasource datasource )
+    private Document executeMethodCall( DataSourceElement datasource )
     {
         MethodCall methodCall = MethodCallFactory.create( context, datasource );
 
@@ -135,15 +137,15 @@ public class DatasourceExecutor
         return executeMethodCall( datasource, methodCall );
     }
 
-    private Document executeMethodCall( final Datasource datasource, final MethodCall methodCall )
+    private Document executeMethodCall( final DataSourceElement datasource, final MethodCall methodCall )
     {
         XMLDocument xmlDocument = methodCall.invoke();
         Document jdomDocument = (Document) xmlDocument.getAsJDOMDocument().clone();
 
-        if ( datasource.getResultElementName() != null )
+        if ( datasource.getResultElement() != null )
         {
             Element originalRootEl = jdomDocument.getRootElement();
-            Element wrappingResultElement = new Element( datasource.getResultElementName() );
+            Element wrappingResultElement = new Element( datasource.getResultElement() );
             wrappingResultElement.addContent( originalRootEl.detach() );
             jdomDocument = new Document( wrappingResultElement );
         }

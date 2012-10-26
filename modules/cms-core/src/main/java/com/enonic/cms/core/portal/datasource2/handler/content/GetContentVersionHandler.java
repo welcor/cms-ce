@@ -5,11 +5,11 @@ import org.jdom.Document;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 public final class GetContentVersionHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     public GetContentVersionHandler()
     {
@@ -20,9 +20,9 @@ public final class GetContentVersionHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final Integer[] keys = req.param( "versionKeys" ).required().asIntegerArray();
+        final Integer[] keys = param( req, "versionKeys" ).required().asIntegerArray();
         int[] versionKeys = ArrayUtils.toPrimitive( keys );
-        final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
+        final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
 
         XMLDocument document = dataSourceService.getContentVersion( req, versionKeys, childrenLevel );
         return document.getAsJDOMDocument();

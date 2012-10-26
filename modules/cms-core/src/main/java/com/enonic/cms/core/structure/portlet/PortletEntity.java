@@ -13,7 +13,8 @@ import org.jdom.Element;
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.CacheSettings;
-import com.enonic.cms.core.portal.datasource.Datasources;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
+import com.enonic.cms.core.portal.datasource.xml.DataSourceXmlFactory;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -44,7 +45,7 @@ public class PortletEntity
      */
     private transient Document xmlDataAsJDOMDocument;
 
-    private transient Datasources datasources;
+    private transient DataSourcesElement datasources;
 
     public int getKey()
     {
@@ -262,7 +263,7 @@ public class PortletEntity
         return params;
     }
 
-    public Datasources getDatasources()
+    public DataSourcesElement getDatasources()
     {
         if ( datasources == null )
         {
@@ -270,7 +271,7 @@ public class PortletEntity
             Element datasourcesEl = rootEl.getChild( "datasources" );
             if ( datasourcesEl != null )
             {
-                datasources = new Datasources( datasourcesEl );
+                datasources = new DataSourceXmlFactory().create( datasourcesEl );
             }
         }
 

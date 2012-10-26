@@ -3,13 +3,13 @@ package com.enonic.cms.core.portal.datasource2.handler.util;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.CalendarService;
 import com.enonic.cms.core.time.TimeService;
 
 public final class GetCalendarHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     private final CalendarService calendarService;
 
@@ -25,14 +25,14 @@ public final class GetCalendarHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final boolean relative = req.param( "relative" ).asBoolean( false );
-        final int year = req.param( "year" ).required().asInteger();
-        final int month = req.param( "month" ).required().asInteger();
-        final int count = req.param( "count" ).required().asInteger();
-        final boolean includeWeeks = req.param( "includeWeeks" ).asBoolean( false );
-        final boolean includeDays = req.param( "includeDays" ).asBoolean( false );
-        final String language = req.param( "language" ).required().asString();
-        final String country = req.param( "country" ).required().asString();
+        final boolean relative = param(req, "relative" ).asBoolean( false );
+        final int year = param(req, "year" ).required().asInteger();
+        final int month = param(req, "month" ).required().asInteger();
+        final int count = param(req, "count" ).required().asInteger();
+        final boolean includeWeeks = param(req, "includeWeeks" ).asBoolean( false );
+        final boolean includeDays = param(req, "includeDays" ).asBoolean( false );
+        final String language = param(req, "language" ).required().asString();
+        final String country = param(req, "country" ).required().asString();
 
         final long now = this.timeService.getNowAsMilliseconds();
         return this.calendarService.getCalendar( now, relative, year, month, count, includeWeeks, includeDays, language, country );

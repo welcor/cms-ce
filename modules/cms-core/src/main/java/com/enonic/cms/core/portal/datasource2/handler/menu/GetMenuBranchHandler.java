@@ -3,14 +3,14 @@ package com.enonic.cms.core.portal.datasource2.handler.menu;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetMenuBranchHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
-
     private DataSourceService dataSourceService;
 
     public GetMenuBranchHandler()
@@ -22,10 +22,10 @@ public final class GetMenuBranchHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final int menuItemKey = req.param( "menuItemKey" ).required().asInteger();
-        final boolean includeTopLevel = req.param( "includeTopLevel" ).asBoolean( false );
-        final int startLevel = req.param( "startLevel" ).asInteger( 0 );
-        final int levels = req.param( "levels" ).asInteger( 0 );
+        final int menuItemKey = param( req, "menuItemKey" ).required().asInteger();
+        final boolean includeTopLevel = param( req, "includeTopLevel" ).asBoolean( false );
+        final int startLevel = param( req, "startLevel" ).asInteger( 0 );
+        final int levels = param( req, "levels" ).asInteger( 0 );
 
         return this.dataSourceService.getMenuBranch( req, menuItemKey, includeTopLevel, startLevel, levels ).getAsJDOMDocument();
     }

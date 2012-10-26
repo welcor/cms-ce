@@ -2,11 +2,11 @@ package com.enonic.cms.core.portal.datasource2.handler.preference;
 
 import org.jdom.Document;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 
 public final class GetPreferencesHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     public GetPreferencesHandler()
     {
@@ -17,9 +17,9 @@ public final class GetPreferencesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String[] scopes = req.param( "scope" ).asStringArray( " WINDOW,PORTLET,PAGE,SITE,GLOBAL" );
-        final String keyPattern = req.param( "keyPattern" ).asString( "*" );
-        final boolean uniqueMatch = req.param( "uniqueMatch" ).asBoolean( true );
+        final String[] scopes = param( req, "scope" ).asStringArray( " WINDOW,PORTLET,PAGE,SITE,GLOBAL" );
+        final String keyPattern = param( req, "keyPattern" ).asString( "*" );
+        final boolean uniqueMatch = param( req, "uniqueMatch" ).asBoolean( true );
 
         // TODO: Implement based on DataSourceServiceImpl.getPreferences(..)
         return null;

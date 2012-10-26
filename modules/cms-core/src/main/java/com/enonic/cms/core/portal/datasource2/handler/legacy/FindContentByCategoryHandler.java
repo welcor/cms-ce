@@ -3,14 +3,15 @@ package com.enonic.cms.core.portal.datasource2.handler.legacy;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
 
 import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 
 public final class FindContentByCategoryHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     private DataSourceService dataSourceService;
 
@@ -23,21 +24,21 @@ public final class FindContentByCategoryHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String search = req.param( "search" ).asString( "" );
-        final String operator = req.param( "operator" ).asString( "AND" );
-        final int[] categories = toPrimitive( req.param( "categories" ).required().asIntegerArray() );
-        final boolean includeSubCategories = req.param( "includeSubCategories" ).asBoolean( false );
-        final String orderBy = req.param( "orderBy" ).asString( "" );
-        final int index = req.param( "index" ).asInteger( 0 );
-        final int count = req.param( "count" ).asInteger( 10 );
-        final boolean titlesOnly = req.param( "titlesOnly" ).asBoolean( false );
-        final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
-        final int parentLevel = req.param( "parentLevel" ).asInteger( 0 );
-        final int parentChildrenLevel = req.param( "parentChildrenLevel" ).asInteger( 0 );
-        final boolean relatedTitlesOnly = req.param( "relatedTitlesOnly" ).asBoolean( false );
-        final boolean includeTotalCount = req.param( "includeTotalCount" ).asBoolean( false );
-        final boolean includeUserRights = req.param( "includeUserRights" ).asBoolean( false );
-        final int[] contentTypes = toPrimitive( req.param( "contentTypes" ).asIntegerArray() );
+        final String search = param( req, "search" ).asString( "" );
+        final String operator = param( req, "operator" ).asString( "AND" );
+        final int[] categories = toPrimitive( param( req, "categories" ).required().asIntegerArray() );
+        final boolean includeSubCategories = param( req, "includeSubCategories" ).asBoolean( false );
+        final String orderBy = param( req, "orderBy" ).asString( "" );
+        final int index = param( req, "index" ).asInteger( 0 );
+        final int count = param( req, "count" ).asInteger( 10 );
+        final boolean titlesOnly = param( req, "titlesOnly" ).asBoolean( false );
+        final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
+        final int parentLevel = param( req, "parentLevel" ).asInteger( 0 );
+        final int parentChildrenLevel = param( req, "parentChildrenLevel" ).asInteger( 0 );
+        final boolean relatedTitlesOnly = param( req, "relatedTitlesOnly" ).asBoolean( false );
+        final boolean includeTotalCount = param( req, "includeTotalCount" ).asBoolean( false );
+        final boolean includeUserRights = param( req, "includeUserRights" ).asBoolean( false );
+        final int[] contentTypes = toPrimitive( param( req, "contentTypes" ).asIntegerArray() );
 
         return dataSourceService.findContentByCategory( req, search, operator, categories, includeSubCategories, orderBy, index, count,
                                                         titlesOnly, childrenLevel, parentLevel, parentChildrenLevel, relatedTitlesOnly,

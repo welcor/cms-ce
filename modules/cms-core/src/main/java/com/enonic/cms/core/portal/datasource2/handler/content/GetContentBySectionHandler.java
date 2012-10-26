@@ -4,12 +4,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetContentBySectionHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
 
     private DataSourceService dataSourceService;
@@ -23,15 +23,15 @@ public final class GetContentBySectionHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final int[] menuItemKeys = ArrayUtils.toPrimitive( req.param( "menuItemKeys" ).required().asIntegerArray() );
-        final int levels = req.param( "levels" ).asInteger( 1 );
-        final String query = req.param( "query" ).asString( "" );
-        final String orderBy = req.param( "orderBy" ).asString( "" );
-        final int index = req.param( "index" ).asInteger( 0 );
-        final int count = req.param( "count" ).asInteger( 10 );
-        final boolean includeData = req.param( "includeData" ).asBoolean( true );
-        final int childrenLevel = req.param( "childrenLevel" ).asInteger( 1 );
-        final int parentLevel = req.param( "parentLevel" ).asInteger( 0 );
+        final int[] menuItemKeys = ArrayUtils.toPrimitive( param( req, "menuItemKeys" ).required().asIntegerArray() );
+        final int levels = param( req, "levels" ).asInteger( 1 );
+        final String query = param( req, "query" ).asString( "" );
+        final String orderBy = param( req, "orderBy" ).asString( "" );
+        final int index = param( req, "index" ).asInteger( 0 );
+        final int count = param( req, "count" ).asInteger( 10 );
+        final boolean includeData = param( req, "includeData" ).asBoolean( true );
+        final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
+        final int parentLevel = param( req, "parentLevel" ).asInteger( 0 );
 
         return this.dataSourceService.getContentBySection( req, menuItemKeys, levels, query, orderBy, index, count, includeData,
                                                            childrenLevel, parentLevel ).getAsJDOMDocument();

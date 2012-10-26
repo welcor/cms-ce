@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.http.HTTPService;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 
 public final class GetUrlAsXmlHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     private HTTPService httpService;
 
@@ -25,8 +25,8 @@ public final class GetUrlAsXmlHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String url = req.param( "url" ).required().asString();
-        final int timeout = req.param( "timeout" ).asInteger( 5000 );
+        final String url = param(req, "url" ).required().asString();
+        final int timeout = param(req, "timeout" ).asInteger( 5000 );
 
         final byte[] data = this.httpService.getURLAsBytes( url, timeout );
         return JDOMUtil.parseDocument( new ByteArrayInputStream( data ) );

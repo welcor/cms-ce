@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
 
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.structure.page.WindowKey;
 import com.enonic.cms.core.time.TimeService;
 
@@ -135,13 +135,13 @@ public class LivePortalTraceServiceImpl
     }
 
     @Override
-    public DatasourceExecutionTrace startDatasourceExecutionTracing( final DatasourcesType datasourcesType,
+    public DatasourceExecutionTrace startDatasourceExecutionTracing( final DataSourceType datasourcesType,
                                                                      final String datasourceMethodName )
     {
         final DatasourceExecutionTrace datasourceExecutionTrace = new DatasourceExecutionTrace( datasourceMethodName );
         datasourceExecutionTrace.setStartTime( timeService.getNowAsDateTime() );
 
-        if ( datasourcesType == DatasourcesType.PAGETEMPLATE )
+        if ( datasourcesType == DataSourceType.PAGETEMPLATE )
         {
             final PageRenderingTrace pageRenderingTrace = getCurrentTrace().getPageRenderingTrace();
             if ( pageRenderingTrace == null )

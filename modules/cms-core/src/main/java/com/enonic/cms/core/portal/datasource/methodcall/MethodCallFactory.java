@@ -20,7 +20,7 @@ import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.portal.datasource.DataSourceException;
-import com.enonic.cms.core.portal.datasource.Datasource;
+import com.enonic.cms.core.portal.datasource.xml.DataSourceElement;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
@@ -31,9 +31,9 @@ import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
 public class MethodCallFactory
 {
 
-    public static MethodCall create( final DatasourceExecutorContext context, final Datasource datasource )
+    public static MethodCall create( final DatasourceExecutorContext context, final DataSourceElement datasource )
     {
-        String methodName = datasource.getMethodName();
+        String methodName = datasource.getName();
         if ( methodName == null )
         {
             return null;
@@ -48,7 +48,7 @@ public class MethodCallFactory
         Class targetClass = targetObject.getClass();
         boolean useContext = pluginObject == null;
 
-        List parameterEl = datasource.getParameterElements();
+        List parameterEl = null; // datasource.getParameterElements();
         int paramCount = parameterEl.size() + ( useContext ? 1 : 0 );
 
         Method method = resolveMethod( targetClass, methodName, paramCount, useContext );
@@ -83,7 +83,7 @@ public class MethodCallFactory
             }
         }
 
-        boolean isCacheable = datasource.isCacheable();
+        boolean isCacheable = datasource.isCache();
 
         return new MethodCall( context.getInvocationCache(), targetObject, parameters, method, isCacheable );
     }

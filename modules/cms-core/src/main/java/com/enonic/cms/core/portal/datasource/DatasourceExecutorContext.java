@@ -35,7 +35,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
  */
 public class DatasourceExecutorContext
 {
-    private DatasourcesType datasourcesType;
+    private DataSourceType datasourcesType;
 
     private HttpServletRequest httpRequest;
 
@@ -89,12 +89,12 @@ public class DatasourceExecutorContext
 
     private PluginManager pluginManager;
 
-    public DatasourcesType getDatasourcesType()
+    public DataSourceType getDatasourcesType()
     {
         return datasourcesType;
     }
 
-    public void setDatasourcesType( DatasourcesType datasourcesType )
+    public void setDatasourcesType( DataSourceType datasourcesType )
     {
         this.datasourcesType = datasourcesType;
     }

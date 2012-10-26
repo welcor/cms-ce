@@ -28,10 +28,9 @@ public final class DataSourceRequest
         this.name = name;
     }
 
-    public DataSourceParam param( final String name )
+    public Map<String, String> getParams()
     {
-        final String value = this.paramMap.get( name );
-        return new DataSourceParamImpl( this.name, name, value );
+        return this.paramMap;
     }
 
     public void addParam( final String name, final String value )

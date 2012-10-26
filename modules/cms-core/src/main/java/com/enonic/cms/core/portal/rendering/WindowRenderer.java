@@ -25,11 +25,11 @@ import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
 import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutor;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DatasourceExecutorFactory;
-import com.enonic.cms.core.portal.datasource.Datasources;
-import com.enonic.cms.core.portal.datasource.DatasourcesType;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionProcessor;
@@ -475,7 +475,7 @@ public class WindowRenderer
 
     private XMLDocument getDataSourceResult( Window window, UserEntity executor )
     {
-        Datasources datasources = window.getPortlet().getDatasources();
+        DataSourcesElement datasources = window.getPortlet().getDatasources();
 
         PortalInstanceKey portalInstanceKey = resolvePortalInstanceKey( window );
 
@@ -484,7 +484,7 @@ public class WindowRenderer
         datasourceExecutorContext.setPortletDocument(
             window.getPortlet().getGetDataDocmentChildElementDocumentAsRootElementInItsOwnDocument() );
         datasourceExecutorContext.setInvocationCache( context.getInvocationCache() );
-        datasourceExecutorContext.setDatasourcesType( DatasourcesType.PORTLET );
+        datasourceExecutorContext.setDatasourcesType( DataSourceType.PORTLET );
         datasourceExecutorContext.setDefaultResultRootElementName( defaultDataSourceRootElementName );
         datasourceExecutorContext.setDeviceClass( context.getDeviceClass() );
         datasourceExecutorContext.setHttpRequest( context.getHttpRequest() );

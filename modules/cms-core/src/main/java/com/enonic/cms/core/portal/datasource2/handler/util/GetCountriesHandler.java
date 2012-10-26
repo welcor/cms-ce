@@ -11,11 +11,11 @@ import com.enonic.cms.core.country.Country;
 import com.enonic.cms.core.country.CountryCode;
 import com.enonic.cms.core.country.CountryService;
 import com.enonic.cms.core.country.CountryXmlCreator;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 
 public final class GetCountriesHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     private CountryService countryService;
 
@@ -28,8 +28,8 @@ public final class GetCountriesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String[] countryCodes = req.param( "countryCodes" ).asStringArray();
-        final boolean includeRegions = req.param( "includeRegions" ).asBoolean( false );
+        final String[] countryCodes = param(req, "countryCodes" ).asStringArray();
+        final boolean includeRegions = param(req, "includeRegions" ).asBoolean( false );
 
         final List<Country> countriesList = Lists.newArrayList();
 

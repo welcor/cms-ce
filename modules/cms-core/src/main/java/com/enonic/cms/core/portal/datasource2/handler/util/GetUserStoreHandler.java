@@ -3,12 +3,12 @@ package com.enonic.cms.core.portal.datasource2.handler.util;
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetUserStoreHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     private DataSourceService dataSourceService;
 
@@ -21,7 +21,7 @@ public final class GetUserStoreHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String userStore = req.param( "userStore" ).asString();
+        final String userStore = param(req, "userStore" ).asString();
         return this.dataSourceService.getUserstore( req, userStore ).getAsJDOMDocument();
     }
 

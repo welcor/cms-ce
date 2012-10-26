@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetAggregatedIndexValuesHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
     private DataSourceService dataSourceService;
 
@@ -24,11 +25,11 @@ public final class GetAggregatedIndexValuesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String field = req.param( "field" ).required().asString();
-        Integer[] keys = req.param( "categoryKeys" ).asIntegerArray();
+        final String field = param( req, "field" ).required().asString();
+        Integer[] keys = param( req, "categoryKeys" ).asIntegerArray();
         int[] categoryKeys = ArrayUtils.toPrimitive( keys );
-        final boolean recursive = req.param( "recursive" ).asBoolean( false );
-        keys = req.param( "contentTypeKeys" ).asIntegerArray();
+        final boolean recursive = param( req, "recursive" ).asBoolean( false );
+        keys = param( req, "contentTypeKeys" ).asIntegerArray();
         int[] contentTypeKeys = ArrayUtils.toPrimitive( keys );
 
         XMLDocument document =

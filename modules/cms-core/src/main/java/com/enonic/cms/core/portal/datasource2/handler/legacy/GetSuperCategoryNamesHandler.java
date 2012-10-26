@@ -4,11 +4,12 @@ import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource2.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
 
 public final class GetSuperCategoryNamesHandler
-    extends DataSourceHandler
+    extends ParamDataSourceHandler
 {
 
     private DataSourceService dataSourceService;
@@ -22,9 +23,9 @@ public final class GetSuperCategoryNamesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final int categoryKey = req.param( "categoryKey" ).required().asInteger();
-        final boolean includeContentCount = req.param( "includeContentCount" ).asBoolean( false );
-        final boolean includeCurrent = req.param( "includeCurrent" ).asBoolean( false );
+        final int categoryKey = param( req, "categoryKey" ).required().asInteger();
+        final boolean includeContentCount = param( req, "includeContentCount" ).asBoolean( false );
+        final boolean includeCurrent = param( req, "includeCurrent" ).asBoolean( false );
 
         return this.dataSourceService.getSuperCategoryNames( req, categoryKey, includeContentCount, includeCurrent ).getAsJDOMDocument();
     }

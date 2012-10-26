@@ -99,8 +99,6 @@ public class WindowRenderer
 
     private PluginManager pluginManager;
 
-    private String defaultDataSourceRootElementName;
-
     /**
      * The window rendering trace for this window rendering.
      */
@@ -485,7 +483,6 @@ public class WindowRenderer
             window.getPortlet().getGetDataDocmentChildElementDocumentAsRootElementInItsOwnDocument() );
         datasourceExecutorContext.setInvocationCache( context.getInvocationCache() );
         datasourceExecutorContext.setDataSourceType( DataSourceType.PORTLET );
-        datasourceExecutorContext.setDefaultResultRootElementName( defaultDataSourceRootElementName );
         datasourceExecutorContext.setDeviceClass( context.getDeviceClass() );
         datasourceExecutorContext.setHttpRequest( context.getHttpRequest() );
         datasourceExecutorContext.setLanguage( context.getLanguage() );
@@ -508,7 +505,7 @@ public class WindowRenderer
 
         DataSourceExecutor dataSourceExecutor = dataSourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
 
-        return dataSourceExecutor.getDataSourceResult( datasources );
+        return dataSourceExecutor.execute( datasources );
     }
 
     private PortalInstanceKey resolvePortalInstanceKey( Window window )
@@ -657,10 +654,5 @@ public class WindowRenderer
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
-    }
-
-    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
-    {
-        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
     }
 }

@@ -24,7 +24,7 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 
-public class DataSourceExecutorTest
+public class DataSourceExecutorImplTest
 {
     private DataSourceExecutorContext context;
 
@@ -69,7 +69,7 @@ public class DataSourceExecutorTest
     @Test
     public void testNullCondition()
     {
-        final DataSourceExecutor executor = new DataSourceExecutor( this.context );
+        final DataSourceExecutorImpl executor = new DataSourceExecutorImpl( this.context );
         final DataSourceElement element = new DataSourceElement( "test" );
         assertTrue( executor.isRunnableByCondition( element ) );
     }
@@ -77,7 +77,7 @@ public class DataSourceExecutorTest
     @Test
     public void testEmptyCondition()
     {
-        final DataSourceExecutor executor = new DataSourceExecutor( this.context );
+        final DataSourceExecutorImpl executor = new DataSourceExecutorImpl( this.context );
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "" );
 
@@ -87,7 +87,7 @@ public class DataSourceExecutorTest
     @Test
     public void testConditionWithoutBraces()
     {
-        final DataSourceExecutor executor = new DataSourceExecutor( this.context );
+        final DataSourceExecutorImpl executor = new DataSourceExecutorImpl( this.context );
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "1==1" );
 
@@ -97,7 +97,7 @@ public class DataSourceExecutorTest
     @Test
     public void testTrueUserUidCondition()
     {
-        final DataSourceExecutor executor = new DataSourceExecutor( this.context );
+        final DataSourceExecutorImpl executor = new DataSourceExecutorImpl( this.context );
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "${user.uid == 'elvis'}" );
 
@@ -107,7 +107,7 @@ public class DataSourceExecutorTest
     @Test
     public void testFalseUserUidCondition()
     {
-        final DataSourceExecutor executor = new DataSourceExecutor( this.context );
+        final DataSourceExecutorImpl executor = new DataSourceExecutorImpl( this.context );
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "${user.uid == 'aron'}" );
 
@@ -123,19 +123,19 @@ public class DataSourceExecutorTest
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "${ isblank( param.myParam ) }" );
 
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "value" );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", " " );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "" );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.removeParameter( "myParam" );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
     }
 
     @Test
@@ -147,19 +147,19 @@ public class DataSourceExecutorTest
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "${ isnotblank( param.myParam ) }" );
 
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "value" );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", " " );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "" );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.removeParameter( "myParam" );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
     }
 
     @Test
@@ -171,19 +171,19 @@ public class DataSourceExecutorTest
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "${ isempty( param.myParam ) }" );
 
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "value" );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", " " );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "" );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.removeParameter( "myParam" );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
     }
 
     @Test
@@ -195,19 +195,19 @@ public class DataSourceExecutorTest
         final DataSourceElement element = new DataSourceElement( "test" );
         element.setCondition( "${ isnotempty( param.myParam ) }" );
 
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "value" );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", " " );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.setParameterValue( "myParam", "" );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         requestParameters.removeParameter( "myParam" );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
     }
 
     @Test
@@ -217,18 +217,18 @@ public class DataSourceExecutorTest
         element.setCondition( "${ portal.isWindowInline == true }" );
 
         context.setPortletWindowRenderedInline( true );
-        assertTrue( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertTrue( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         context.setPortletWindowRenderedInline( false );
-        assertFalse( new DataSourceExecutor( context ).isRunnableByCondition( element ) );
+        assertFalse( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ) );
 
         element.setCondition( "${ portal.isWindowInline }" );
         context.setPortletWindowRenderedInline( true );
-        assertEquals( new DataSourceExecutor( context ).isRunnableByCondition( element ), true );
+        assertEquals( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ), true );
 
         element.setCondition( "${ portal.isWindowInline }" );
         context.setPortletWindowRenderedInline( false );
-        assertEquals( new DataSourceExecutor( context ).isRunnableByCondition( element ), false );
+        assertEquals( new DataSourceExecutorImpl( context ).isRunnableByCondition( element ), false );
 
     }
 }

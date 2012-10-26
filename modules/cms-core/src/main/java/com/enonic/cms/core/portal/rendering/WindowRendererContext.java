@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.preview.PreviewContext;
@@ -44,7 +44,7 @@ public class WindowRendererContext
 
     private Regions regionsInPage;
 
-    private InvocationCache invocationCache;
+    private DataSourceInvocationCache invocationCache;
 
     private PreviewContext previewContext;
 
@@ -108,7 +108,7 @@ public class WindowRendererContext
         return pageTemplate;
     }
 
-    public InvocationCache getInvocationCache()
+    public DataSourceInvocationCache getInvocationCache()
     {
         return invocationCache;
     }
@@ -173,7 +173,7 @@ public class WindowRendererContext
         this.pageTemplate = pageTemplate;
     }
 
-    public void setInvocationCache( InvocationCache invocationCache )
+    public void setInvocationCache( DataSourceInvocationCache invocationCache )
     {
         this.invocationCache = invocationCache;
     }

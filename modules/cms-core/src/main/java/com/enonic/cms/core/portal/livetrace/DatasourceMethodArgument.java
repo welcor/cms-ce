@@ -6,13 +6,10 @@ public class DatasourceMethodArgument
 
     private MaxLengthedString value = new MaxLengthedString();
 
-    private String override;
-
-    DatasourceMethodArgument( String name, String value, String override )
+    DatasourceMethodArgument( String name, String value )
     {
         this.name = new MaxLengthedString( name );
         this.value = new MaxLengthedString( value );
-        this.override = override;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -28,8 +25,9 @@ public class DatasourceMethodArgument
     }
 
     @SuppressWarnings("UnusedDeclaration")
+    // TODO: Remove?
     public String getOverride()
     {
-        return override;
+        return null;
     }
 }

@@ -5,6 +5,7 @@
 package com.enonic.cms.core.portal.datasource.executor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.context.DataSourcesContextXmlCreator;
@@ -17,11 +18,17 @@ public final class DataSourceExecutorFactory
 
     private LivePortalTraceService livePortalTraceService;
 
-    public DataSourceExecutor createDataSourceExecutor( final DataSourceExecutorContext datasourceExecutorContext )
+    private String defaultDataSourceRootElementName;
+
+    private DataSourceInvoker dataSourceInvoker;
+
+    public DataSourceExecutor createDataSourceExecutor( final DataSourceExecutorContext context )
     {
-        DataSourceExecutor dataSourceExecutor = new DataSourceExecutor( datasourceExecutorContext );
+        final DataSourceExecutorImpl dataSourceExecutor = new DataSourceExecutorImpl( context );
         dataSourceExecutor.setDataSourcesContextXmlCreator( dataSourcesContextXmlCreator );
         dataSourceExecutor.setLivePortalTraceService( livePortalTraceService );
+        dataSourceExecutor.setDefaultResultRootElementName( this.defaultDataSourceRootElementName );
+        dataSourceExecutor.setInvoker( this.dataSourceInvoker );
         return dataSourceExecutor;
     }
 
@@ -35,5 +42,17 @@ public final class DataSourceExecutorFactory
     public void setLivePortalTraceService( final LivePortalTraceService livePortalTraceService )
     {
         this.livePortalTraceService = livePortalTraceService;
+    }
+
+    @Autowired
+    public void setDataSourceInvoker( final DataSourceInvoker dataSourceInvoker )
+    {
+        this.dataSourceInvoker = dataSourceInvoker;
+    }
+
+    @Value("${cms.datasource.defaultResultRootElement}")
+    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
+    {
+        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
     }
 }

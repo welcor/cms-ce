@@ -83,8 +83,6 @@ public abstract class AdminHandlerBaseServlet
 
     private FileUpload fileUpload;
 
-    private String defaultDataSourceRootElementName;
-
     // SMTP server to use when sending mail:
     private String smtpHost;
 
@@ -1566,11 +1564,6 @@ public abstract class AdminHandlerBaseServlet
         return doc;
     }
 
-    protected String getDefaultDataSourceRootElementName()
-    {
-        return defaultDataSourceRootElementName;
-    }
-
     protected String getSmtpHost()
     {
         return smtpHost;
@@ -1586,12 +1579,6 @@ public abstract class AdminHandlerBaseServlet
     public void setMultiPartRequestMaxSize( final long value )
     {
         this.multiPartRequestMaxSize = value;
-    }
-
-    @Value("${cms.datasource.defaultResultRootElement}")
-    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
-    {
-        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
     }
 
     @Value("${cms.xml.storeXHTML}")

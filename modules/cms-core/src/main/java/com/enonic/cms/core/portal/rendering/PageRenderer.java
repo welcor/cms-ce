@@ -7,7 +7,6 @@ package com.enonic.cms.core.portal.rendering;
 import java.util.concurrent.locks.Lock;
 
 import org.jdom.Document;
-import org.jdom.Element;
 import org.joda.time.DateTime;
 
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
@@ -23,7 +22,7 @@ import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.cache.PageCacheService;
@@ -76,7 +75,7 @@ public class PageRenderer
 
     private PageTemplateXsltViewTransformer pageTemplateXsltViewTransformer;
 
-    private InvocationCache invocationCache;
+    private DataSourceInvocationCache invocationCache;
 
     private PageRendererContext context;
 
@@ -102,12 +101,10 @@ public class PageRenderer
 
     private PluginManager pluginManager;
 
-    private String defaultDataSourceRootElementName;
-
     protected PageRenderer( PageRendererContext pageRendererContext, LivePortalTraceService livePortalTraceService )
     {
         this.context = pageRendererContext;
-        this.invocationCache = new InvocationCache( livePortalTraceService );
+        this.invocationCache = new DataSourceInvocationCache();
         this.livePortalTraceService = livePortalTraceService;
     }
 
@@ -245,14 +242,7 @@ public class PageRenderer
             ViewTransformationTracer.traceView( pageTemplateStylesheet.getPath(), trace );
 
             final Document model;
-            if ( dataSourceResult == null )
-            {
-                model = new Document( new Element( defaultDataSourceRootElementName ) );
-            }
-            else
-            {
-                model = dataSourceResult.getAsJDOMDocument();
-            }
+            model = dataSourceResult.getAsJDOMDocument();
 
             final TransformationParams transformationParams = new TransformationParams();
             for ( Region region : context.getRegionsInPage().getRegions() )
@@ -391,7 +381,6 @@ public class PageRenderer
         datasourceExecutorContext.setCssKeys( cssKeys );
         datasourceExecutorContext.setInvocationCache( invocationCache );
         datasourceExecutorContext.setDataSourceType( DataSourceType.PAGETEMPLATE );
-        datasourceExecutorContext.setDefaultResultRootElementName( defaultDataSourceRootElementName );
         datasourceExecutorContext.setDeviceClass( context.getDeviceClass() );
         datasourceExecutorContext.setHttpRequest( context.getHttpRequest() );
         datasourceExecutorContext.setLanguage( context.getLanguage() );
@@ -414,7 +403,7 @@ public class PageRenderer
 
         DataSourceExecutor datasourceExecutor = dataSourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
 
-        return datasourceExecutor.getDataSourceResult( pageTemplate.getDatasources() );
+        return datasourceExecutor.execute( pageTemplate.getDatasources() );
     }
 
     private PortalInstanceKey resolvePortalInstanceKey()
@@ -576,11 +565,6 @@ public class PageRenderer
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
-    }
-
-    public void setDefaultDataSourceRootElementName( final String defaultDataSourceRootElementName )
-    {
-        this.defaultDataSourceRootElementName = defaultDataSourceRootElementName;
     }
 }
 

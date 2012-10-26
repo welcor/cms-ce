@@ -44,7 +44,7 @@ import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
@@ -562,9 +562,8 @@ public final class ContentObjectHandlerServlet
                 }
                 catch ( final Exception e )
                 {
-                    final String resultRootName = getDefaultDataSourceRootElementName();
                     final XMLDocument failedDatasourceDoc =
-                        XMLDocumentFactory.create( DataSourceFailedXmlCreator.buildExceptionDocument( resultRootName, e ) );
+                        XMLDocumentFactory.create( DataSourceFailedXmlCreator.buildExceptionDocument( "result", e ) );
                     xmlData = failedDatasourceDoc.getAsString();
                 }
 
@@ -683,7 +682,7 @@ public final class ContentObjectHandlerServlet
         DataSourceExecutorContext datasourceExecutorContext = new DataSourceExecutorContext();
         datasourceExecutorContext.setCssKeys( cssKeys );
         datasourceExecutorContext.setDataSourceType( DataSourceType.PAGETEMPLATE );
-        datasourceExecutorContext.setInvocationCache( new InvocationCache() );
+        datasourceExecutorContext.setInvocationCache( new DataSourceInvocationCache() );
         datasourceExecutorContext.setHttpRequest( null );
         datasourceExecutorContext.setLanguage( site.getLanguage() );
         datasourceExecutorContext.setOriginalSitePath( sitePath );
@@ -693,7 +692,6 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDefaultResultRootElementName( getDefaultDataSourceRootElementName() );
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
@@ -701,7 +699,7 @@ public final class ContentObjectHandlerServlet
 
         DataSourcesElement datasources = new DataSourceXmlFactory().create( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
-        XMLDocument dsr2 = datasourceExecutor.getDataSourceResult( datasources );
+        XMLDocument dsr2 = datasourceExecutor.execute( datasources );
 
         return dsr2.getAsString();
     }
@@ -724,7 +722,7 @@ public final class ContentObjectHandlerServlet
         }
         datasourceExecutorContext.setCssKeys( cssKeys );
         datasourceExecutorContext.setDataSourceType( DataSourceType.PORTLET );
-        datasourceExecutorContext.setInvocationCache( new InvocationCache() );
+        datasourceExecutorContext.setInvocationCache( new DataSourceInvocationCache() );
         datasourceExecutorContext.setHttpRequest( null );
         datasourceExecutorContext.setLanguage( site.getLanguage() );
         datasourceExecutorContext.setOriginalSitePath( sitePath );
@@ -734,17 +732,13 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDefaultResultRootElementName( getDefaultDataSourceRootElementName() );
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
         DataSourceExecutor datasourceExecutor = datasourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
-
-        DataSourceType datasourcesType = DataSourceType.PORTLET;
-
         DataSourcesElement datasources = new DataSourceXmlFactory().create( dataSourcesXML.getAsJDOMDocument().getRootElement() );
 
-        XMLDocument dsr2 = datasourceExecutor.getDataSourceResult( datasources );
+        XMLDocument dsr2 = datasourceExecutor.execute( datasources );
 
         return dsr2.getAsString();
     }

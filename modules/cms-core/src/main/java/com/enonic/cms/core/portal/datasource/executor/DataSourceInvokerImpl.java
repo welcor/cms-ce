@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Maps;
 
@@ -11,6 +12,7 @@ import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
+@Component
 public final class DataSourceInvokerImpl
     implements DataSourceInvoker
 {

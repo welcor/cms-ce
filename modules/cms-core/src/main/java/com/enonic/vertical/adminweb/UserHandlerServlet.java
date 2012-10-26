@@ -1309,7 +1309,7 @@ public class UserHandlerServlet
                     reportDoc = XMLDocumentFactory.create( usersDoc ).getAsDOMDocument();
                 }
                 Element usersElem = reportDoc.getDocumentElement();
-                Element verticaldataElem = XMLTool.createElement( reportDoc, getDefaultDataSourceRootElementName() );
+                Element verticaldataElem = XMLTool.createElement( reportDoc, "result" );
                 reportDoc.replaceChild( verticaldataElem, usersElem );
                 verticaldataElem.appendChild( usersElem );
                 DOMSource reportSource = new DOMSource( reportDoc );

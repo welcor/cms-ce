@@ -11,7 +11,11 @@ public final class DataSourceRequest
 {
     private String name;
 
+    private boolean cache;
+
     private final Map<String, String> paramMap;
+
+    private String resultElement;
 
     public DataSourceRequest()
     {
@@ -36,5 +40,25 @@ public final class DataSourceRequest
     public void addParam( final String name, final String value )
     {
         this.paramMap.put( name, value );
+    }
+
+    public boolean isCache()
+    {
+        return cache;
+    }
+
+    public void setCache( final boolean cache )
+    {
+        this.cache = cache;
+    }
+
+    public String getResultElement()
+    {
+        return this.resultElement;
+    }
+
+    public void setResultElement( final String resultElement )
+    {
+        this.resultElement = resultElement;
     }
 }

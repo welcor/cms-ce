@@ -1,9 +1,10 @@
 package com.enonic.cms.core.portal.livetrace;
 
 
+import java.util.Map;
+
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
-import com.enonic.cms.core.portal.datasource.methodcall.MethodCallParameter;
+import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 public class DatasourceExecutionTracer
 {
@@ -47,19 +48,13 @@ public class DatasourceExecutionTracer
         }
     }
 
-    public static void traceMethodCall( MethodCall methodCall, DatasourceExecutionTrace trace )
+    public static void traceMethodCall( DataSourceRequest request, DatasourceExecutionTrace trace )
     {
-        if ( trace != null && methodCall != null )
+        if ( trace != null && request != null )
         {
-            for ( MethodCallParameter param : methodCall.getParameters() )
+            for ( final Map.Entry<String, String> param : request.getParams().entrySet() )
             {
-                String name = param.getName();
-                if ( !"__context__".equalsIgnoreCase( name ) )
-                {
-                    String value = objectToString( param.getArgument() );
-                    String override = param.getOverride();
-                    trace.addDatasourceMethodArgument( new DatasourceMethodArgument( name, value, override ) );
-                }
+                trace.addDatasourceMethodArgument( new DatasourceMethodArgument( param.getKey(), param.getValue() ) );
             }
         }
     }

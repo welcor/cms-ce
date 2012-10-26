@@ -19,7 +19,6 @@ import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -70,7 +69,7 @@ public class DataSourceExecutorContext
 
     private PreviewContext previewContext;
 
-    private InvocationCache invocationCache;
+    private DataSourceInvocationCache invocationCache;
 
     private String deviceClass;
 
@@ -83,8 +82,6 @@ public class DataSourceExecutorContext
     private UserEntity user;
 
     private Locale locale;
-
-    private String defaultResultRootElementName;
 
     private DataSourceService dataSourceService;
 
@@ -235,12 +232,12 @@ public class DataSourceExecutorContext
         this.cssKeys = cssKeys;
     }
 
-    public InvocationCache getInvocationCache()
+    public DataSourceInvocationCache getInvocationCache()
     {
         return invocationCache;
     }
 
-    public void setInvocationCache( InvocationCache value )
+    public void setInvocationCache( DataSourceInvocationCache value )
     {
         this.invocationCache = value;
     }
@@ -333,16 +330,6 @@ public class DataSourceExecutorContext
     public void setPortletWindowRenderedInline( Boolean value )
     {
         isPortletWindowRenderedInline = value;
-    }
-
-    public String getDefaultResultRootElementName()
-    {
-        return defaultResultRootElementName;
-    }
-
-    public void setDefaultResultRootElementName( final String value )
-    {
-        defaultResultRootElementName = value;
     }
 
     public DataSourceService getDataSourceService()

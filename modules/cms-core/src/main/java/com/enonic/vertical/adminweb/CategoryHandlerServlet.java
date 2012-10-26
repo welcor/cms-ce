@@ -670,7 +670,7 @@ final public class CategoryHandlerServlet
             }
             Document reportDoc = XMLTool.domparse( reportXML );
             Element contentsElem = reportDoc.getDocumentElement();
-            Element verticaldataElem = XMLTool.createElement( reportDoc, getDefaultDataSourceRootElementName() );
+            Element verticaldataElem = XMLTool.createElement( reportDoc, "result" );
             reportDoc.replaceChild( verticaldataElem, contentsElem );
             verticaldataElem.appendChild( contentsElem );
             DOMSource reportSource = new DOMSource( reportDoc );

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<http action="POST">
+  <user-agent>NCSA Mosaic/3.0 (Windows 95)</user-agent>
+  <client-ip>192.168.13.37</client-ip>
+  <referer>http://en.wikipedia.org/wiki/HTTP_referer</referer>
+  <accept>
+    <language>en-US</language>
+    <language q="0.7">no</language>
+    <language q="0.3">ca</language>
+  </accept>
+</http>

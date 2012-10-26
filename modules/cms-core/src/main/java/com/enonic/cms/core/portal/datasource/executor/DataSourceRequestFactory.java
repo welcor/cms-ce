@@ -30,6 +30,8 @@ final class DataSourceRequestFactory
         request.setSiteKey( context.getSite() != null ? context.getSite().getKey() : null );
         request.setUser( context.getUser() );
         request.setCache( element.isCache() );
+        request.setVerticalSession( context.getVerticalSession() );
+        request.setHttpRequest( context.getHttpRequest() );
         evaluateParameters( request, element );
         return request;
     }

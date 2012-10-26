@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cookies>
+  <cookie name="mycookie1">value1</cookie>
+  <cookie name="mycookie2">true</cookie>
+  <cookie name="mycookie3">33</cookie>
+</cookies>

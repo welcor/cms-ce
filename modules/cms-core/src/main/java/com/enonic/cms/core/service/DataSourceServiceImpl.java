@@ -1450,16 +1450,6 @@ public final class DataSourceServiceImpl
         return doc;
     }
 
-    private int getSiteKeyByMenuItemKey( int menuItemKey )
-    {
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
-        if ( menuItem != null )
-        {
-            return menuItem.getSite().getKey().toInt();
-        }
-        return -1;
-    }
-
     /**
      * Adds traceInfo to a content document before it's returned.
      *

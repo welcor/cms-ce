@@ -1,20 +1,15 @@
 package com.enonic.cms.core.portal.datasource.handler.menu;
 
 import org.jdom.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
-import com.enonic.cms.core.service.DataSourceService;
 
 @Component("ds.GetMenuBranchHandler")
 public final class GetMenuBranchHandler
     extends ParamDataSourceHandler
 {
-    private DataSourceService dataSourceService;
-
     public GetMenuBranchHandler()
     {
         super( "getMenuBranch" );
@@ -30,11 +25,5 @@ public final class GetMenuBranchHandler
         final int levels = param( req, "levels" ).asInteger( 0 );
 
         return this.dataSourceService.getMenuBranch( req, menuItemKey, includeTopLevel, startLevel, levels ).getAsJDOMDocument();
-    }
-
-    @Autowired
-    public void setDataSourceService( final DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
     }
 }

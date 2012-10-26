@@ -1,19 +1,15 @@
 package com.enonic.cms.core.portal.datasource.handler.content;
 
 import org.jdom.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.service.DataSourceService;
 
 @Component("ds.GetCategoriesHandler")
 public final class GetCategoriesHandler
     extends ParamDataSourceHandler
 {
-    private DataSourceService dataSourceService;
-
     public GetCategoriesHandler()
     {
         super( "getCategories" );
@@ -29,11 +25,5 @@ public final class GetCategoriesHandler
         final boolean includeTopCategory = param( req, "includeTopCategory" ).asBoolean( true );
 
         return this.dataSourceService.getCategories( req, categoryKey, levels, includeContentCount, includeTopCategory ).getAsJDOMDocument();
-    }
-
-    @Autowired
-    public void setDataSourceService( final DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
     }
 }

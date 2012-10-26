@@ -3,7 +3,6 @@ package com.enonic.cms.core.portal.datasource.handler.legacy;
 import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 

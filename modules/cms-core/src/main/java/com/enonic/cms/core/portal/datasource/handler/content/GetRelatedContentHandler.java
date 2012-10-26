@@ -2,19 +2,15 @@ package com.enonic.cms.core.portal.datasource.handler.content;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.jdom.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
-import com.enonic.cms.core.service.DataSourceService;
 
 @Component("ds.GetRelatedContentHandler")
 public final class GetRelatedContentHandler
     extends ParamDataSourceHandler
 {
-    private DataSourceService dataSourceService;
-
     public GetRelatedContentHandler()
     {
         super( "getRelatedContent" );
@@ -37,11 +33,5 @@ public final class GetRelatedContentHandler
 
         return this.dataSourceService.getRelatedContent( req, contentKeys, relation, query, orderBy, index, count, includeData,
                                                          childrenLevel, parentLevel ).getAsJDOMDocument();
-    }
-
-    @Autowired
-    public void setDataSourceService( final DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
     }
 }

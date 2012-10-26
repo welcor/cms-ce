@@ -1,12 +1,10 @@
 package com.enonic.cms.core.portal.datasource.handler.content;
 
 import org.jdom.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.service.DataSourceService;
 
 import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 
@@ -14,8 +12,6 @@ import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 public final class GetContentByCategoryHandler
     extends ParamDataSourceHandler
 {
-    private DataSourceService dataSourceService;
-
     public GetContentByCategoryHandler()
     {
         super( "getContentByCategory" );
@@ -37,11 +33,5 @@ public final class GetContentByCategoryHandler
 
         return dataSourceService.getContentByCategory( req,  toPrimitive( categoryKeys) , levels, query, orderBy,
                                              index, count, includeData, childrenLevel, parentLevel ).getAsJDOMDocument();
-    }
-
-    @Autowired
-    public void setDataSourceService( final DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
     }
 }

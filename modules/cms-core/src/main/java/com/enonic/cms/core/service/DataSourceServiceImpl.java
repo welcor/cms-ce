@@ -613,7 +613,7 @@ public final class DataSourceServiceImpl
             return SiteXmlCreator.createEmptyMenuItems();
         }
 
-        MenuItemEntity menuItem = menuItemDao.findByKey( key );
+        MenuItemEntity menuItem = menuItemDao.findByKey( new MenuItemKey( key ) );
         if ( menuItem == null )
         {
             return SiteXmlCreator.createEmptyMenuItems();
@@ -659,7 +659,8 @@ public final class DataSourceServiceImpl
         boolean descOrder = order != null && order.equalsIgnoreCase( "desc" );
         Collection<CategoryKey> categoryFilter = CategoryKey.convertToList( categories );
         Collection<ContentTypeKey> contentTypeFilter = ContentTypeKey.convertToList( contentTypes );
-        return contentService.getIndexValues( user, path, categoryFilter, includeSubCategories, contentTypeFilter, index, count, descOrder );
+        return contentService.getIndexValues( user, path, categoryFilter, includeSubCategories, contentTypeFilter, index, count,
+                                              descOrder );
     }
 
     /**

@@ -4,29 +4,23 @@
  */
 package com.enonic.cms.core.service;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.PresentationEngine;
 
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -62,13 +56,7 @@ import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
-import com.enonic.cms.core.country.Country;
-import com.enonic.cms.core.country.CountryCode;
-import com.enonic.cms.core.country.CountryService;
-import com.enonic.cms.core.country.CountryXmlCreator;
 import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.core.locale.LocaleService;
-import com.enonic.cms.core.locale.LocaleXmlCreator;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.portal.rendering.tracing.DataTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
@@ -99,8 +87,6 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemXMLCreatorSetting;
 import com.enonic.cms.core.structure.menuitem.MenuItemXmlCreator;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.core.timezone.TimeZoneService;
-import com.enonic.cms.core.timezone.TimeZoneXmlCreator;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentVersionDao;
 import com.enonic.cms.store.dao.GroupDao;
@@ -113,12 +99,6 @@ import com.enonic.cms.store.dao.UserStoreDao;
 public final class DataSourceServiceImpl
     implements DataSourceService
 {
-    private static final Logger LOG = Logger.getLogger( DataSourceServiceImpl.class.getName() );
-
-    private static String URL_NO_RESULT = "<noresult/>";
-
-    private CalendarService calendarService;
-
     private ContentService contentService;
 
     private PreferenceService preferenceService;
@@ -126,9 +106,6 @@ public final class DataSourceServiceImpl
     private PresentationEngine presentationEngine;
 
     private SecurityService securityService;
-
-    @Autowired
-    private HTTPService httpService;
 
     @Autowired
     private ContentVersionDao contentVersionDao;
@@ -151,20 +128,9 @@ public final class DataSourceServiceImpl
 
     private SitePropertiesService sitePropertiesService;
 
-    private CountryService countryService;
-
-    private LocaleService localeService;
-
-    private TimeZoneService timeZoneService;
-
     private TimeService timeService;
 
     private UserStoreService userStoreService;
-
-    public DataSourceServiceImpl()
-    {
-        this.calendarService = new CalendarService();
-    }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentByQuery( DataSourceContext context, String query, String orderBy, int index, int count,
@@ -386,42 +352,6 @@ public final class DataSourceServiceImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getCalendar( DataSourceContext context, boolean relative, int year, int month, int count, boolean includeWeeks,
-                                    boolean includeDays, String language, String country )
-    {
-        return XMLDocumentFactory.create(
-            calendarService.getCalendar( System.currentTimeMillis(), relative, year, month, count, includeWeeks, includeDays, language,
-                                         country ) );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getCountries( DataSourceContext context, String[] countryCodes, boolean includeRegions )
-    {
-
-        Collection<Country> countries;
-        if ( countryCodes == null || countryCodes.length == 0 )
-        {
-            countries = countryService.getCountries();
-        }
-        else
-        {
-            List<Country> countriesList = new ArrayList<Country>();
-            for ( String countryCodeStr : countryCodes )
-            {
-                countriesList.add( countryService.getCountry( new CountryCode( countryCodeStr ) ) );
-            }
-            countries = countriesList;
-        }
-
-        CountryXmlCreator countryXmlCreator = new CountryXmlCreator();
-        countryXmlCreator.setIncludeRegionsInfo( includeRegions );
-        return XMLDocumentFactory.create( countryXmlCreator.createCountriesDocument( countries ) );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContent( DataSourceContext context, int[] contentKeys, int parentLevel, int childrenLevel,
                                    int parentChildrenLevel, boolean updateStatistics )
     {
@@ -513,16 +443,6 @@ public final class DataSourceServiceImpl
                                       parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights,
                                       filterByContentTypes );
 
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getFormattedDate( DataSourceContext context, int offset, String dateformat, String language, String country )
-    {
-        return XMLDocumentFactory.create(
-            calendarService.getFormattedDate( System.currentTimeMillis(), offset, dateformat, language, country ) );
     }
 
     /**
@@ -770,80 +690,6 @@ public final class DataSourceServiceImpl
                                               boolean includeCategory )
     {
         return presentationEngine.getSuperCategoryNames( categoryKey, withContentCount, includeCategory );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getURLAsText( DataSourceContext context, String url, String encoding )
-    {
-        return doGetURLAsText( url, encoding, -1 );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getURLAsText( DataSourceContext context, String url, String encoding, int timeout )
-    {
-        return doGetURLAsText( url, encoding, timeout );
-    }
-
-    private XMLDocument doGetURLAsText( String url, String encoding, int timeout )
-    {
-        StringBuilder xmlString = new StringBuilder();
-        String urlResult = httpService.getURL( url, encoding, timeout );
-        if ( urlResult == null )
-        {
-            xmlString.append( URL_NO_RESULT );
-        }
-        else
-        {
-            xmlString.append( "<urlresult>" );
-            xmlString.append( StringEscapeUtils.escapeXml( urlResult ) );
-            xmlString.append( "</urlresult>" );
-        }
-        return XMLDocumentFactory.create( xmlString.toString() );
-    }
-
-    /**
-     * Makes a connection to a url that has an xml as result.
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getURLAsXML( DataSourceContext context, String url )
-    {
-        return doGetURLAsXML( url, -1 );
-    }
-
-    /**
-     * Makes a connection to a url that has an xml as result.
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getURLAsXML( DataSourceContext context, String url, int timeout )
-    {
-        return doGetURLAsXML( url, timeout );
-    }
-
-    private XMLDocument doGetURLAsXML( String url, int timeout )
-    {
-        byte[] xmlBytes = httpService.getURLAsBytes( url, timeout );
-        if ( xmlBytes == null )
-        {
-            return XMLDocumentFactory.create( URL_NO_RESULT );
-        }
-        ByteArrayInputStream byteStream = new ByteArrayInputStream( xmlBytes );
-        try
-        {
-            org.w3c.dom.Document resultDoc = XMLTool.domparse( byteStream );
-            return XMLDocumentFactory.create( resultDoc );
-        }
-        catch ( Exception e )
-        {
-            String message = "Failed to parse xml response from URL \"" + url + "\" : " + e.getMessage();
-            LOG.warning( message );
-            return XMLDocumentFactory.create( URL_NO_RESULT );
-        }
     }
 
     /**
@@ -1377,24 +1223,6 @@ public final class DataSourceServiceImpl
         return doGetRelatedContent( context, contentKeys, relation, query, orderBy, requireAll, fromIndex, count, parentLevel,
                                     childrenLevel, parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly,
                                     filterByCategories, categoryRecursive, filterByContentTypes );
-    }
-
-
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getLocales( DataSourceContext context )
-    {
-        Locale[] locales = localeService.getLocales();
-        LocaleXmlCreator localeXmlCreator = new LocaleXmlCreator();
-        return XMLDocumentFactory.create( localeXmlCreator.createLocalesDocument( locales ) );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getTimeZones( DataSourceContext context )
-    {
-        Collection<DateTimeZone> timeZones = timeZoneService.getTimeZones();
-        DateTime now = timeService.getNowAsDateTime();
-        TimeZoneXmlCreator timeZoneXmlCreator = new TimeZoneXmlCreator( now );
-        return XMLDocumentFactory.create( timeZoneXmlCreator.createTimeZonesDocument( timeZones ) );
     }
 
     private XMLDocument doGetRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
@@ -1946,24 +1774,6 @@ public final class DataSourceServiceImpl
     }
 
     @Autowired
-    public void setCountryService( CountryService countryService )
-    {
-        this.countryService = countryService;
-    }
-
-    @Autowired
-    public void setHTTPService( HTTPService service )
-    {
-        httpService = service;
-    }
-
-    @Autowired
-    public void setLocaleService( LocaleService localeService )
-    {
-        this.localeService = localeService;
-    }
-
-    @Autowired
     public void setPreferenceService( PreferenceService preferenceService )
     {
         this.preferenceService = preferenceService;
@@ -1985,12 +1795,6 @@ public final class DataSourceServiceImpl
     public void setTimeService( TimeService timeService )
     {
         this.timeService = timeService;
-    }
-
-    @Autowired
-    public void setTimeZoneService( TimeZoneService timeZoneService )
-    {
-        this.timeZoneService = timeZoneService;
     }
 
     @Autowired

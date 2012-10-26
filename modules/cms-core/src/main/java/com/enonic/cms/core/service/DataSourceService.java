@@ -144,28 +144,6 @@ public interface DataSourceService
                                                    boolean includeData, int childrenLevel, int parentLevel );
 
     /**
-     * Returns a calendar, either by specific date or relative date. If the relative parameter is true, then the year and month parameters
-     * are relative to the current date. A value of zero defines the current year/month. Both positive and negative values are allowed.
-     * Otherwise, when relative is false, the year and month parameters specifies absolute values (i.e.: 2004 and 1 is January 2004).
-     *
-     * @param context      the Vertical Site context
-     * @param relative     specifies if the calendar should be relative to current date.
-     * @param year         a year, relative or absolute
-     * @param month        a month, relative or absolute
-     * @param count        how many months to include in result
-     * @param includeWeeks if true, include weeks
-     * @param includeDays  if true, include days
-     * @param language     according to http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt
-     * @param country      according to http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-     * @return the calendar xml
-     */
-    public XMLDocument getCalendar( DataSourceContext context, boolean relative, int year, int month, int count, boolean includeWeeks,
-                                    boolean includeDays, String language, String country );
-
-    XMLDocument getCountries( DataSourceContext context, String[] countryCodeStr, boolean includeRegions );
-
-
-    /**
      * Get one content.  Full information about related content or user rights are not included.
      *
      * @param context             the Vertical Site context
@@ -299,18 +277,6 @@ public interface DataSourceService
                                             int count, boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
                                             boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
                                             int[] filterByContentTypes );
-
-    /**
-     * Get the current date as xml. The offset attribute is the offset in days from the current date.
-     *
-     * @param context    the Vertical Site context
-     * @param offset     number of days from current date
-     * @param dateformat as specified by http://java.sun.com/products/jdk/1.2/docs/api/java/text/SimpleDateFormat.html
-     * @param language   as specified by http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt
-     * @param country    as specified by http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-     * @return date xml
-     */
-    public XMLDocument getFormattedDate( DataSourceContext context, int offset, String dateformat, String language, String country );
 
     /**
      * Returns a menu tree. If levels is 0, entire menu are return. If levels is non-negative number, that number of tree levels are
@@ -471,46 +437,6 @@ public interface DataSourceService
      */
     public XMLDocument getSuperCategoryNames( DataSourceContext context, int categoryKey, boolean withContentCount,
                                               boolean includeCategory );
-
-    /**
-     * Makes a connection to a url, places it in an xml element with a CDATA block.
-     *
-     * @param context  A reference to the application context, for the method to get information on the user and running environment.
-     * @param url      The URL to convert to text.
-     * @param encoding The Encoding to use when interpreting the response that is expected from connecting to the URL.
-     * @return An XML with the page or ther data retrieved from the URL.
-     */
-    public XMLDocument getURLAsText( DataSourceContext context, String url, String encoding );
-
-    /**
-     * Makes a connection to a url, places it in an xml element with a CDATA block.
-     *
-     * @param context  A reference to the application context, for the method to get information on the user and running environment.
-     * @param url      The URL to convert to text.
-     * @param encoding The Encoding to use when interpreting the response that is expected from connecting to the URL.
-     * @param timeout  The maximum time to wait for the connection to the URL to return a result.
-     * @return An XML with the page or ther data retrieved from the URL.
-     */
-    public XMLDocument getURLAsText( DataSourceContext context, String url, String encoding, int timeout );
-
-    /**
-     * Makes a connection to a url that has an xml as result.
-     *
-     * @param context A reference to the application context, for the method to get information on the user and running environment.
-     * @param url     The URL to look up.
-     * @return The XML document that was retrieved at the URL.
-     */
-    public XMLDocument getURLAsXML( DataSourceContext context, String url );
-
-    /**
-     * Makes a connection to a url that has an xml as result.
-     *
-     * @param context A reference to the application context, for the method to get information on the user and running environment.
-     * @param url     The URL to look up.
-     * @param timeout The maximum time to wait before aborting the look up.
-     * @return The XML document that was retrieved at the URL.
-     */
-    public XMLDocument getURLAsXML( DataSourceContext context, String url, int timeout );
 
     /**
      * Get related contents based on a selection of content keys.
@@ -806,8 +732,4 @@ public interface DataSourceService
     public XMLDocument getPreferences( DataSourceContext context, String scope );
 
     public XMLDocument getPreferences( DataSourceContext context );
-
-    public XMLDocument getLocales( DataSourceContext context );
-
-    public XMLDocument getTimeZones( DataSourceContext context );
 }

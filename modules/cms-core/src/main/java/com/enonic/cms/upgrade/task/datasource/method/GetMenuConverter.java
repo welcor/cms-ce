@@ -23,6 +23,6 @@ final class GetMenuConverter
             return method().params( params, "tagItem", "levels" ).build();
         }
 
-        return method().params( params, "siteKey", "tagItem", "levels", "details" ).build();
+        return method().params( params, "siteKey", "tagItem", "levels" ).build();
     }
 }

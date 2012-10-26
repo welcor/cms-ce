@@ -4,7 +4,6 @@ import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 import com.enonic.cms.core.service.DataSourceService;
@@ -28,10 +27,8 @@ public final class GetMenuHandler
         final int siteKey = param( req, "siteKey" ).required().asInteger();
         final int tagItem = param( req, "tagItem" ).asInteger( -1 );
         final int levels = param( req, "levels" ).asInteger( 0 );
-        final boolean details = param( req, "details" ).asBoolean( true );
-        // TODO remove "details" parameter, is not used in DataSourceService
 
-        return this.dataSourceService.getMenu( req, siteKey, tagItem, levels, details ).getAsJDOMDocument();
+        return this.dataSourceService.getMenu( req, siteKey, tagItem, levels ).getAsJDOMDocument();
     }
 
     @Autowired

@@ -18,6 +18,6 @@ final class GetMenuItemConverter
             return null;
         }
 
-        return method().params( params, "menuItemKey", "withParents", "details" ).build();
+        return method().params( params, "menuItemKey", "withParents" ).build();
     }
 }

@@ -8,7 +8,6 @@
   <datasource name="getMenuItem">
     <parameter name="menuItemKey">10</parameter>
     <parameter name="withParents">true</parameter>
-    <parameter name="details">true</parameter>
   </datasource>
   <!--<datasource name="getMenuItem"><parameter>10</parameter><parameter>true</parameter><parameter>true</parameter><parameter>unknown</parameter></datasource>-->
 </datasources>

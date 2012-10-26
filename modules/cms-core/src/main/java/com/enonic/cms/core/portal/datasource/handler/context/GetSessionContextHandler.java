@@ -33,9 +33,9 @@ public final class GetSessionContextHandler
         return document;
     }
 
-    private Element buildVerticalSessionXml( VerticalSession session )
+    private Element buildVerticalSessionXml( final VerticalSession session )
     {
-        Document doc = XMLDocumentFactory.create( session.toXML() ).getAsJDOMDocument();
+        final Document doc = XMLDocumentFactory.create( session.toXML() ).getAsJDOMDocument();
         return (Element) JDOMUtil.getFirstElement( doc.getRootElement() ).detach();
     }
 }

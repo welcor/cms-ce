@@ -292,29 +292,6 @@ public interface DataSourceService
     public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels );
 
     /**
-     * Returns the menu tree.
-     *
-     * @param context Site context
-     * @param menuKey Menu key
-     * @param tagItem Menu item to tag
-     * @param levels  Number of levels to return
-     * @param details Fetch details if true
-     * @return An XML document, listing all data about the menus requested.
-     */
-    public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels, boolean details );
-
-    /**
-     * Returns the menu tree by menu item key.
-     *
-     * @param context     the Vertical Site context
-     * @param menuItemKey Menu item key
-     * @param levels      Number of levels to return
-     * @return An XML document with all details about the menu tree.
-     */
-    public XMLDocument getMenu( DataSourceContext context, int menuItemKey, int levels );
-
-
-    /**
      * Get the settings defined for a menu.
      *
      * @param context the Vertical Site context
@@ -323,53 +300,9 @@ public interface DataSourceService
      */
     public XMLDocument getMenuData( DataSourceContext context, int menuId );
 
-    /**
-     * Get the settings defined for a menu.
-     *
-     * @param context the Vertical Site context
-     * @return menu data xml
-     */
-    public XMLDocument getMenuData( DataSourceContext context );
-
-    /**
-     * Get a branch of a menu structure. The method will locate the top level menu item of the current menu item, and return the entire tree
-     * beneath it. Only menu items marked 'show in menu' will be included in the result.
-     *
-     * @param context  the Vertical Site context
-     * @param menuItem a menu item key
-     * @param topLevel if true, all menu items at the top level are returned
-     * @return menu tree xml
-     */
-    XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel );
-
     XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel, int startLevel, int levels );
 
-    XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel, boolean details );
-
-    // Not in use.
-
     XMLDocument getMenuItem( DataSourceContext context, int key, boolean withParents );
-
-    /**
-     * Get a menu item.
-     *
-     * @param context     the Vertical Site context
-     * @param key         a menu item key
-     * @param withParents if true, include parents up to top level (i.e.: it's path)
-     * @param complete    include the full menu item
-     * @return menu item xml
-     */
-    public XMLDocument getMenuItem( DataSourceContext context, int key, boolean withParents, boolean complete );
-
-    /**
-     * Returns the sub menu that is shown in the menu
-     *
-     * @param context Site context
-     * @param key     Root menu item key
-     * @param tagItem Menu item key to tag
-     * @return An XML Document with all information about the sub menus.
-     */
-    public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem );
 
     /**
      * Returns the sub menu that is shown in the menu
@@ -381,18 +314,6 @@ public interface DataSourceService
      * @return An XML Document with all information about the sub menus.
      */
     public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem, int levels );
-
-    /**
-     * Returns the sub menu that is shown in the menu
-     *
-     * @param context Site context
-     * @param key     Root menu item key
-     * @param tagItem Menu item key to tag
-     * @param levels  Number of levels to fetch
-     * @param details Fetch details if true
-     * @return An XML Document with all information about the sub menus.
-     */
-    public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem, int levels, boolean details );
 
     /**
      * Get a list of category forming a path to a category.
@@ -648,35 +569,6 @@ public interface DataSourceService
     public XMLDocument getCategories( DataSourceContext context, int key, int levels, boolean topLevel, boolean details, boolean catCount,
                                       boolean contentCount );
 
-    /**
-     * Get page content with the possibility to include relative contents.
-     *
-     * @param context             the Vertical Site context
-     * @param menuItemId          the menu item id
-     * @param parentLevel         the level of parents to include
-     * @param childrenLevel       the level of children to include
-     * @param parentChildrenLevel the level of children for parents to include
-     * @param updateStatistics    update the read statistics for this content
-     * @param includeUserRights   include the user access rights in content
-     * @return A content xml
-     */
-    public XMLDocument getPageContent( DataSourceContext context, int menuItemId, int parentLevel, int childrenLevel,
-                                       int parentChildrenLevel, boolean updateStatistics, boolean includeUserRights );
-
-    /**
-     * Get page content with the possibility to include relative contents.
-     *
-     * @param context             the Vertical Site context
-     * @param menuItemId          the menu item id
-     * @param parentLevel         the level of parents to include
-     * @param childrenLevel       the level of children to include
-     * @param parentChildrenLevel the level of children for parents to include
-     * @param updateStatistics    update the read statistics for this content
-     * @return A content xml
-     */
-    public XMLDocument getPageContent( DataSourceContext context, int menuItemId, int parentLevel, int childrenLevel,
-                                       int parentChildrenLevel, boolean updateStatistics );
-
     public XMLDocument getUserstore( final DataSourceContext context, final String userstore );
 
     /**
@@ -694,10 +586,4 @@ public interface DataSourceService
                                 boolean includeCustomUserFields );
 
     public XMLDocument getPreferences( DataSourceContext context, String scope, String wildCardKey, boolean uniqueMatch );
-
-    public XMLDocument getPreferences( DataSourceContext context, String scope, String wildCardKey );
-
-    public XMLDocument getPreferences( DataSourceContext context, String scope );
-
-    public XMLDocument getPreferences( DataSourceContext context );
 }

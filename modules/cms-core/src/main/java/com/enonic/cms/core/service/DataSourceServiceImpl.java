@@ -449,113 +449,82 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels )
     {
-        return doGetMenu( getUserEntity( context.getUser() ), menuKey, tagItem, levels );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels, boolean details )
-    {
-        // param "details" not in use
-        return doGetMenu( getUserEntity( context.getUser() ), menuKey, tagItem, levels );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenu( DataSourceContext context, int menuItemKey, int levels )
-    {
-        if ( menuItemKey < 0 )
+        if ( menuKey < 0 )
         {
             return SiteXmlCreator.createEmptyMenus();
         }
-        final int siteKey = getSiteKeyByMenuItemKey( menuItemKey );
-        return doGetMenu( getUserEntity( context.getUser() ), siteKey, menuItemKey, levels );
+        SiteEntity site = siteDao.findByKey( new SiteKey( menuKey ) );
+
+        if ( site == null )
+        {
+            return SiteXmlCreator.createEmptyMenus();
+        }
+
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
+        siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
+        siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( tagItem ) );
+        siteXmlCreator.setMenuItemLevels( levels );
+
+        return siteXmlCreator.createLegacyGetMenu( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
     }
 
-    /**
-     * Get the settings defined for a menu.
-     *
-     * @param context the Vertical Site context
-     * @param menuId  a menu key
-     * @return menu data xml
-     */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getMenuData( DataSourceContext context, int menuId )
     {
-        return doGetMenuData( menuId );
-    }
+        if ( menuId < 0 )
+        {
+            return SiteXmlCreator.createEmptyMenus();
+        }
+        SiteEntity site = siteDao.findByKey( menuId );
 
-    /**
-     * Get the settings defined for a menu.
-     *
-     * @param context the Vertical Site context
-     * @return menu data xml
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenuData( DataSourceContext context )
-    {
-        return doGetMenuData( context.getSiteKey().toInt() );
-    }
+        if ( site == null )
+        {
+            return SiteXmlCreator.createEmptyMenus();
+        }
 
-    /**
-     * Get a branch of a menu structure. The method will locate the top level menu item of the current menu item, and return the entire tree
-     * beneath it. Only menu items marked 'show in menu' will be included in the result.
-     *
-     * @param context  the Vertical Site context
-     * @param menuItem a menu item key
-     * @param topLevel if true, all menu items at the top level are returned
-     * @return menu tree xml
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel )
-    {
-        return doGetMenuBranch( getUserEntity( context.getUser() ), menuItem, topLevel, 0, 0 );
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
+        siteXmlCreator.setIncludeDeviceClassResolverInfo( true );
+        return siteXmlCreator.createLegacyGetMenuData( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
     }
-
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel, int startLevel, int levels )
+    public XMLDocument getMenuBranch( DataSourceContext context, int menuItemKey, boolean topLevel, int startLevel, int levels )
     {
-        return doGetMenuBranch( getUserEntity( context.getUser() ), menuItem, topLevel, startLevel, levels );
+        if ( menuItemKey < 0 )
+        {
+            return SiteXmlCreator.createEmptyMenuBranch();
+        }
+
+        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+        if ( menuItem == null )
+        {
+            return SiteXmlCreator.createEmptyMenuBranch();
+        }
+
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
+
+        siteXmlCreator.setMenuItemInBranch( menuItem );
+        siteXmlCreator.setActiveMenuItem( menuItem );
+        siteXmlCreator.setMenuItemLevels( levels );
+        siteXmlCreator.setBranchStartLevel( startLevel );
+        siteXmlCreator.setIncludeTopLevel( topLevel );
+        siteXmlCreator.setUser( context.getUser() );
+
+        return siteXmlCreator.createLegacyGetMenuBranch( menuItem.getSite() );
     }
 
-    /**
-     * Return the menu branch.
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenuBranch( DataSourceContext context, int menuItem, boolean topLevel, boolean details )
-    {
-        // param "details" not in use
-        return doGetMenuBranch( getUserEntity( context.getUser() ), menuItem, topLevel, 0, 0 );
-    }
-
-    /**
-     * Not in use.
-     */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getMenuItem( DataSourceContext context, int key, boolean withParents )
     {
-        return doGetMenuItem( getUserEntity( context.getUser() ), key, withParents );
-    }
-
-    /**
-     * Get a menu item.
-     *
-     * @param context     the Vertical Site context
-     * @param key         a menu item key
-     * @param withParents if true, include parents up to top level (i.e.: it's path)
-     * @param complete    include the full menu item
-     * @return menu item xml
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenuItem( DataSourceContext context, int key, boolean withParents, boolean complete )
-    {
-        // param "complete" not in use
-        return doGetMenuItem( getUserEntity( context.getUser() ), key, withParents );
+        MenuItemXMLCreatorSetting setting = new MenuItemXMLCreatorSetting();
+        setting.user = getUserEntity( context.getUser() );
+        setting.includeParents = withParents;
+        MenuItemXmlCreator creator = new MenuItemXmlCreator( setting, new MenuItemAccessResolver( groupDao ) );
+        MenuItemEntity menuItem = menuItemDao.findByKey( key );
+        return creator.createLegacyGetMenuItem( menuItem );
     }
 
     /**
@@ -634,44 +603,33 @@ public final class DataSourceServiceImpl
      * @param context Site context
      * @param key     Root menu item key
      * @param tagItem Menu item key to tag
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem )
-    {
-        return doGetSubMenu( getUserEntity( context.getUser() ), key, tagItem, 0 );
-        //return presentationEngine.getSubMenu( context.getUser(), key, tagItem, 0 );
-    }
-
-    /**
-     * Returns the sub menu that is shown in the menu
-     *
-     * @param context Site context
-     * @param key     Root menu item key
-     * @param tagItem Menu item key to tag
      * @param levels  Number of levels to fetch
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem, int levels )
     {
-        return doGetSubMenu( getUserEntity( context.getUser() ), key, tagItem, levels );
-        //return presentationEngine.getSubMenu( context.getUser(), key, tagItem, levels );
-    }
+        if ( key < 0 )
+        {
+            return SiteXmlCreator.createEmptyMenuItems();
+        }
 
-    /**
-     * Returns the sub menu that is shown in the menu
-     *
-     * @param context Site context
-     * @param key     Root menu item key
-     * @param tagItem Menu item key to tag
-     * @param levels  Number of levels to fetch
-     * @param details Fetch details if true
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getSubMenu( DataSourceContext context, int key, int tagItem, int levels, boolean details )
-    {
-        // param "details" not in use
-        return doGetSubMenu( getUserEntity( context.getUser() ), key, tagItem, levels );
-        //return presentationEngine.getSubMenu( context.getUser(), key, tagItem, levels );
+        MenuItemEntity menuItem = menuItemDao.findByKey( key );
+        if ( menuItem == null )
+        {
+            return SiteXmlCreator.createEmptyMenuItems();
+        }
+
+        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
+        siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
+        siteXmlCreator.setMenuItemInBranch( menuItem );
+        siteXmlCreator.setMenuItemLevels( levels );
+        if ( tagItem > -1 )
+        {
+            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( tagItem ) );
+        }
+
+        return siteXmlCreator.createLegacyGetSubMenu( menuItem.getSite() );
     }
 
     /**
@@ -701,8 +659,7 @@ public final class DataSourceServiceImpl
         boolean descOrder = order != null && order.equalsIgnoreCase( "desc" );
         Collection<CategoryKey> categoryFilter = CategoryKey.convertToList( categories );
         Collection<ContentTypeKey> contentTypeFilter = ContentTypeKey.convertToList( contentTypes );
-        return contentService.getIndexValues( user, path, categoryFilter, includeSubCategories, contentTypeFilter, index, count,
-                                              descOrder );
+        return contentService.getIndexValues( user, path, categoryFilter, includeSubCategories, contentTypeFilter, index, count, descOrder );
     }
 
     /**
@@ -948,7 +905,6 @@ public final class DataSourceServiceImpl
             presentationEngine.getCategories( context.getUser(), key, levels, topLevel, details, catCount, contentCount ) );
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getUserstore( final DataSourceContext context, final String userstore )
     {
@@ -1024,41 +980,6 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getPreferences( DataSourceContext context, String scope, String wildCardKey, boolean uniqueMatch )
     {
-        return doGetPreferences( context, scope, wildCardKey, uniqueMatch );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getPreferences( DataSourceContext context, String scope, String wildCardKey )
-    {
-
-        return doGetPreferences( context, scope, wildCardKey, true );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getPreferences( DataSourceContext context, String scope )
-    {
-
-        return doGetPreferences( context, scope, null, true );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getPreferences( DataSourceContext context )
-    {
-
-        return doGetPreferences( context, null, null, true );
-    }
-
-    private XMLDocument doGetPreferences( DataSourceContext context, String scope, String wildCardKey, boolean uniqueMatch )
-    {
         final UserEntity user = getUserEntity( context.getUser() );
 
         PreferenceSpecification spec = new PreferenceSpecification( user );
@@ -1114,71 +1035,6 @@ public final class DataSourceServiceImpl
         }
 
         return uniquePreferences;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getPageContent( DataSourceContext context, int menuItemId, int parentLevel, int childrenLevel,
-                                       int parentChildrenLevel, boolean updateStatistics, boolean includeUserRights )
-    {
-        return doGetPageContent( context, menuItemId, parentLevel, childrenLevel, parentChildrenLevel, includeUserRights );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getPageContent( DataSourceContext context, int menuItemId, int parentLevel, int childrenLevel,
-                                       int parentChildrenLevel, boolean updateStatistics )
-    {
-        return doGetPageContent( context, menuItemId, parentLevel, childrenLevel, parentChildrenLevel, false );
-    }
-
-    private XMLDocument doGetPageContent( DataSourceContext context, int menuItemId, int parentLevel, int childrenLevel,
-                                          int parentChildrenLevel, boolean includeUserRights )
-    {
-        PreviewContext previewContext = context.getPreviewContext();
-
-        UserEntity user = getUserEntity( context.getUser() );
-        ContentXMLCreator xmlCreator = new ContentXMLCreator();
-
-        ContentResultSet content = contentService.getPageContent( menuItemId );
-        if ( content.getLength() < 1 )
-        {
-            return xmlCreator.createEmptyDocument( "There were no content for the given menu item key." );
-        }
-        if ( previewContext.isPreviewingContent() )
-        {
-            content = previewContext.getContentPreviewContext().overrideContentResultSet( content );
-        }
-
-        final Date now = new Date();
-        RelatedContentQuery relatedContentQuery = new RelatedContentQuery( now );
-        relatedContentQuery.setUser( user );
-        relatedContentQuery.setContentResultSet( content );
-        relatedContentQuery.setParentLevel( parentLevel );
-        relatedContentQuery.setChildrenLevel( childrenLevel );
-        relatedContentQuery.setParentChildrenLevel( parentChildrenLevel );
-        relatedContentQuery.setIncludeOnlyMainVersions( true );
-
-        RelatedContentResultSet relatedContent = contentService.queryRelatedContent( relatedContentQuery );
-        if ( previewContext.isPreviewingContent() )
-        {
-            relatedContent = previewContext.getContentPreviewContext().overrideRelatedContentResultSet( relatedContent );
-        }
-
-        xmlCreator.setResultIndexing( 0, content.getLength() );
-        xmlCreator.setIncludeUserRightsInfo( includeUserRights, new CategoryAccessResolver( groupDao ),
-                                             new ContentAccessResolver( groupDao ) );
-        xmlCreator.setIncludeVersionsInfoForPortal( false );
-        xmlCreator.setIncludeAssignment( true );
-
-        XMLDocument xml = xmlCreator.createContentsDocument( user, content, relatedContent );
-        addDataTraceInfo( xml.getAsJDOMDocument() );
-
-        return xml;
     }
 
     /**
@@ -1601,109 +1457,6 @@ public final class DataSourceServiceImpl
             return menuItem.getSite().getKey().toInt();
         }
         return -1;
-    }
-
-    private XMLDocument doGetMenu( UserEntity user, int siteKey, int menuItemKey, int levels )
-    {
-        if ( siteKey < 0 )
-        {
-            return SiteXmlCreator.createEmptyMenus();
-        }
-        SiteEntity site = siteDao.findByKey( new SiteKey( siteKey ) );
-
-        if ( site == null )
-        {
-            return SiteXmlCreator.createEmptyMenus();
-        }
-
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
-        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
-        siteXmlCreator.setUser( user );
-        siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( menuItemKey ) );
-        siteXmlCreator.setMenuItemLevels( levels );
-
-        return siteXmlCreator.createLegacyGetMenu( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
-    }
-
-    private XMLDocument doGetMenuData( int siteKey )
-    {
-        if ( siteKey < 0 )
-        {
-            return SiteXmlCreator.createEmptyMenus();
-        }
-        SiteEntity site = siteDao.findByKey( siteKey );
-
-        if ( site == null )
-        {
-            return SiteXmlCreator.createEmptyMenus();
-        }
-
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
-        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
-        siteXmlCreator.setIncludeDeviceClassResolverInfo( true );
-        return siteXmlCreator.createLegacyGetMenuData( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
-    }
-
-    private XMLDocument doGetMenuBranch( UserEntity user, int menuItemKey, boolean topLevel, int startLevel, int levels )
-    {
-        if ( menuItemKey < 0 )
-        {
-            return SiteXmlCreator.createEmptyMenuBranch();
-        }
-
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
-        if ( menuItem == null )
-        {
-            return SiteXmlCreator.createEmptyMenuBranch();
-        }
-
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
-        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
-
-        siteXmlCreator.setMenuItemInBranch( menuItem );
-        siteXmlCreator.setActiveMenuItem( menuItem );
-        siteXmlCreator.setMenuItemLevels( levels );
-        siteXmlCreator.setBranchStartLevel( startLevel );
-        siteXmlCreator.setIncludeTopLevel( topLevel );
-        siteXmlCreator.setUser( user );
-
-        return siteXmlCreator.createLegacyGetMenuBranch( menuItem.getSite() );
-    }
-
-    private XMLDocument doGetMenuItem( UserEntity user, int menuItemKey, boolean includeParents )
-    {
-        MenuItemXMLCreatorSetting setting = new MenuItemXMLCreatorSetting();
-        setting.user = user;
-        setting.includeParents = includeParents;
-        MenuItemXmlCreator creator = new MenuItemXmlCreator( setting, new MenuItemAccessResolver( groupDao ) );
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
-        return creator.createLegacyGetMenuItem( menuItem );
-    }
-
-    private XMLDocument doGetSubMenu( UserEntity user, int menuItemKey, int activeMenuItemKey, int levels )
-    {
-        if ( menuItemKey < 0 )
-        {
-            return SiteXmlCreator.createEmptyMenuItems();
-        }
-
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
-        if ( menuItem == null )
-        {
-            return SiteXmlCreator.createEmptyMenuItems();
-        }
-
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
-        siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
-        siteXmlCreator.setUser( user );
-        siteXmlCreator.setMenuItemInBranch( menuItem );
-        siteXmlCreator.setMenuItemLevels( levels );
-        if ( activeMenuItemKey > -1 )
-        {
-            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( activeMenuItemKey ) );
-        }
-
-        return siteXmlCreator.createLegacyGetSubMenu( menuItem.getSite() );
     }
 
     /**

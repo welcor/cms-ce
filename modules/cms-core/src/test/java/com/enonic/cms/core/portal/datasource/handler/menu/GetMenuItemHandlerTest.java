@@ -38,11 +38,10 @@ public class GetMenuItemHandlerTest
     {
         this.request.addParam( "menuItemKey", "3" );
         this.request.addParam( "withParents", "true" );
-        this.request.addParam( "details", "false" );
 
-        Mockito.when( this.dataSourceService.getMenuItem( this.request, 3, true, false ) ).thenReturn( this.dummyDoc );
+        Mockito.when( this.dataSourceService.getMenuItem( this.request, 3, true ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
-        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenuItem( this.request, 3, true, false );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenuItem( this.request, 3, true );
     }
 
     @Test
@@ -51,18 +50,17 @@ public class GetMenuItemHandlerTest
     {
         this.request.addParam( "menuItemKey", "3" );
 
-        Mockito.when( this.dataSourceService.getMenuItem( this.request, 3, false, false ) ).thenReturn( this.dummyDoc );
+        Mockito.when( this.dataSourceService.getMenuItem( this.request, 3, false ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
-        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenuItem( this.request, 3, false, false );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenuItem( this.request, 3, false );
     }
 
     @Test(expected = DataSourceException.class)
     public void testHandler_invalid_parameter_type()
         throws Exception
     {
-        this.request.addParam( "menuItemKey", "3" );
+        this.request.addParam( "menuItemKey", "abc" );
         this.request.addParam( "withParents", "false" );
-        this.request.addParam( "details", "33" );
 
         this.handler.handle( this.request );
     }
@@ -72,7 +70,6 @@ public class GetMenuItemHandlerTest
         throws Exception
     {
         this.request.addParam( "withParents", "false" );
-        this.request.addParam( "details", "false" );
 
         this.handler.handle( this.request );
     }

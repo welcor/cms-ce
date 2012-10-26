@@ -57,7 +57,7 @@ public final class PresentationInvoker
     {
         assertMinValue( "menuItemKey", params.menuItemKey, 0 );
 
-        return this.dataSourceService.getMenuItem( createDataSourceContext(), params.menuItemKey, params.withParents, params.details ).getAsJDOMDocument();
+        return this.dataSourceService.getMenuItem( createDataSourceContext(), params.menuItemKey, params.withParents ).getAsJDOMDocument();
     }
 
     private void assertMinValue( String name, int value, int minValue )

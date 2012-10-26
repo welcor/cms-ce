@@ -19,11 +19,10 @@ public final class GetPreferencesHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String[] scopes = param( req, "scope" ).asStringArray( " WINDOW,PORTLET,PAGE,SITE,GLOBAL" );
+        final String scope = param( req, "scope" ).asString( "*" );
         final String keyPattern = param( req, "keyPattern" ).asString( "*" );
         final boolean uniqueMatch = param( req, "uniqueMatch" ).asBoolean( true );
 
-        // TODO: Implement based on DataSourceServiceImpl.getPreferences(..)
-        return null;
+        return this.dataSourceService.getPreferences( req, scope, keyPattern, uniqueMatch ).getAsJDOMDocument();
     }
 }

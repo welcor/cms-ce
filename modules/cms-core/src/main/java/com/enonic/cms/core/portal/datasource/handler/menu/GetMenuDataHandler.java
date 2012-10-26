@@ -13,7 +13,6 @@ import com.enonic.cms.core.service.DataSourceService;
 public final class GetMenuDataHandler
     extends ParamDataSourceHandler
 {
-
     private DataSourceService dataSourceService;
 
     public GetMenuDataHandler()

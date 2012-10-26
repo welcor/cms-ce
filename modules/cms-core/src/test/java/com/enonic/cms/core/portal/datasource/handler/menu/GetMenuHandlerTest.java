@@ -39,11 +39,10 @@ public class GetMenuHandlerTest
         this.request.addParam( "siteKey", "3" );
         this.request.addParam( "tagItem", "42" );
         this.request.addParam( "levels", "0" );
-        this.request.addParam( "details", "true" );
 
-        Mockito.when( this.dataSourceService.getMenu( this.request, 3, 42, 0, true ) ).thenReturn( this.dummyDoc );
+        Mockito.when( this.dataSourceService.getMenu( this.request, 3, 42, 0 ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
-        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenu( this.request, 3, 42, 0, true );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getMenu( this.request, 3, 42, 0 );
     }
 
     @Test(expected = DataSourceException.class)

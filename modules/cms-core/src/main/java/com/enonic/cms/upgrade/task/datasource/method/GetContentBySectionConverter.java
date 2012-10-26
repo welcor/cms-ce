@@ -40,10 +40,10 @@ final class GetContentBySectionConverter
             // Translated from !relatedTitlesOnly && !titlesOnly
             boolean includeData = !Boolean.valueOf( params[9] ) || !Boolean.valueOf( params[5] );
 
-            return method().param( "menuItemKeys", params[0] ).param( "levels", params[1] ).param( "query", "" ).param( "orderBy",
-                                                                                                                        params[2] ).param(
-                "index", params[3] ).param( "count", params[4] ).param( "includeData", Boolean.toString( includeData ) ).param(
-                "childrenLevel", params[7] ).param( "parentLevel", params[6] ).build();
+            return method().param( "menuItemKeys", params[0] ).param( "levels", params[1] ).param( "orderBy", params[2] ).param( "index",
+                                                                                                                                 params[3] ).param(
+                "count", params[4] ).param( "includeData", Boolean.toString( includeData ) ).param( "childrenLevel", params[7] ).param(
+                "parentLevel", params[6] ).build();
         }
 
         if ( params.length == 14 )
@@ -69,7 +69,6 @@ final class GetContentBySectionConverter
 
             // Translated from !relatedTitlesOnly && !titlesOnly
             boolean includeData = !Boolean.valueOf( params[10] ) || !Boolean.valueOf( params[6] );
-
             return method().param( "menuItemKeys", params[1] ).param( "levels", params[2] ).param( "query", params[0] ).param( "orderBy",
                                                                                                                                params[3] ).param(
                 "index", params[4] ).param( "count", params[5] ).param( "includeData", Boolean.toString( includeData ) ).param(

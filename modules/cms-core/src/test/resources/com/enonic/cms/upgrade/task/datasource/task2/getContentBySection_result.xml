@@ -17,7 +17,6 @@
   <datasource name="getContentBySection">
     <parameter name="menuItemKeys">menuItemKeys</parameter>
     <parameter name="levels">levels</parameter>
-    <parameter name="query"/>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">index</parameter>
     <parameter name="count">count</parameter>

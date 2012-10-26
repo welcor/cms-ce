@@ -1,4 +1,85 @@
 <?xml version="1.0"?>
 <datasources>
   <datasource name="getContent"/>
+  <datasource name="getContent">
+    <parameter>dummy</parameter>
+  </datasource>
+  <!-- 8 parameters : Documented -->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="query"></parameter>
+    <parameter name="orderby"></parameter>
+    <parameter name="index">0</parameter>
+    <parameter name="count">1</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">1</parameter>
+    <parameter name="parentLevel">0</parameter>
+  </datasource>
+  <!-- 5 parameters -->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentChildrenLevel">0</parameter>
+    <parameter name="updateStatistics">true</parameter>
+  </datasource>
+  <!-- 6 parameters -->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentChildrenLevel">0</parameter>
+    <parameter name="updateStatistics">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+  </datasource>
+  <!-- 7 parameters : FAIL -->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentChildrenLevel">0</parameter>
+    <parameter name="updateStatistics">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="filterByCategories">2,3</parameter>
+  </datasource>
+  <!-- 9 parameters -->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentChildrenLevel">0</parameter>
+    <parameter name="updateStatistics">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="filterByCategories">2,3</parameter>
+    <parameter name="categoryRecursive">true</parameter>
+    <parameter name="filterByCategories">4,5</parameter>
+  </datasource>
+  <!-- 10 parameters -->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentChildrenLevel">0</parameter>
+    <parameter name="updateStatistics">true</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="filterByCategories">2,3</parameter>
+    <parameter name="categoryRecursive">true</parameter>
+    <parameter name="filterByCategories">4,5</parameter>
+  </datasource>
+  <!-- 11 parameters : FAIL-->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="parentLevel">1</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentChildrenLevel">0</parameter>
+    <parameter name="updateStatistics">true</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="filterByCategories">2,3</parameter>
+    <parameter name="categoryRecursive">true</parameter>
+    <parameter name="filterByCategories">4,5</parameter>
+    <parameter name="unknown">pølse</parameter>
+  </datasource>
+
 </datasources>

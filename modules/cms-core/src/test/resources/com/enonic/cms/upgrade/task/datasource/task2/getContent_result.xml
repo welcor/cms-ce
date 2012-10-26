@@ -1,81 +1,42 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <datasources>
-  <datasource name="getContentByCategory"/>
-  <datasource name="getContentByCategory">
-    <parameter>1,2</parameter>
-    <parameter>2</parameter>
-    <parameter>myQuery</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>5</parameter>
-    <parameter>6</parameter>
-    <parameter>false</parameter>
-    <parameter>8</parameter>
-    <parameter>9</parameter>
+  <!--<datasource name="getContent" />-->
+  <!--<datasource name="getContent"><parameter>dummy</parameter></datasource>-->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="query"/>
+    <parameter name="orderBy"/>
+    <parameter name="index">0</parameter>
+    <parameter name="count">1</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">1</parameter>
+    <parameter name="parentLevel">0</parameter>
   </datasource>
-  <datasource name="getContentByCategory">
-    <parameter>myQuery</parameter>
-    <parameter>2,2</parameter>
-    <parameter>false</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>5</parameter>
-    <parameter>6</parameter>
-    <parameter>false</parameter>
-    <parameter>8</parameter>
-    <parameter>9</parameter>
-    <parameter>10</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentLevel">1</parameter>
   </datasource>
-  <!-- Include data should yield false -->
-  <datasource name="getContentByCategory">
-    <parameter>myQuery</parameter>
-    <parameter>2,2</parameter>
-    <parameter>false</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>5</parameter>
-    <parameter>6</parameter>
-    <parameter>true</parameter>
-    <parameter>8</parameter>
-    <parameter>9</parameter>
-    <parameter>10</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
-    <parameter>14,14</parameter>
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentLevel">1</parameter>
   </datasource>
-  <!-- Include data should yield true -->
-  <datasource name="getContentByCategory">
-    <parameter>myQuery</parameter>
-    <parameter>2,2</parameter>
-    <parameter>false</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>5</parameter>
-    <parameter>6</parameter>
-    <parameter>false</parameter>
-    <parameter>8</parameter>
-    <parameter>9</parameter>
-    <parameter>10</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
-    <parameter>14,14</parameter>
+  <!--<datasource name="getContent"><parameter name="contentKeys">13,42</parameter><parameter name="parentLevel">1</parameter><parameter name="childrenLevel">2</parameter><parameter name="parentChildrenLevel">0</parameter><parameter name="updateStatistics">true</parameter><parameter name="includeUserRights">true</parameter><parameter name="filterByCategories">2,3</parameter></datasource>-->
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentLevel">1</parameter>
   </datasource>
-  <datasource name="getContentByCategory">
-    <parameter>myQuery</parameter>
-    <parameter>2,2</parameter>
-    <parameter>false</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>5</parameter>
-    <parameter>6</parameter>
-    <parameter>false</parameter>
-    <parameter>8</parameter>
-    <parameter>9</parameter>
-    <parameter>10</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
-    <parameter>true</parameter>
-    <parameter>14,14</parameter>
-    <parameter>unknown</parameter>
+  <datasource name="getContent">
+    <parameter name="contentKeys">13,42</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">2</parameter>
+    <parameter name="parentLevel">1</parameter>
   </datasource>
+  <!--<datasource name="getContent"><parameter name="contentKeys">13,42</parameter><parameter name="parentLevel">1</parameter><parameter name="childrenLevel">2</parameter><parameter name="parentChildrenLevel">0</parameter><parameter name="updateStatistics">true</parameter><parameter name="relatedTitlesOnly">true</parameter><parameter name="includeUserRights">true</parameter><parameter name="filterByCategories">2,3</parameter><parameter name="categoryRecursive">true</parameter><parameter name="filterByCategories">4,5</parameter><parameter name="unknown">pølse</parameter></datasource>-->
 </datasources>
+

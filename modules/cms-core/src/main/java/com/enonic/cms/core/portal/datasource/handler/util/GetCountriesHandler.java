@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
@@ -14,6 +15,7 @@ import com.enonic.cms.core.country.CountryXmlCreator;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 
+@Component("ds.GetCountriesHandler")
 public final class GetCountriesHandler
     extends ParamDataSourceHandler
 {

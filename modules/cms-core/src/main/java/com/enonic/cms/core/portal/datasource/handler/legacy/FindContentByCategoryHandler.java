@@ -2,6 +2,7 @@ package com.enonic.cms.core.portal.datasource.handler.legacy;
 
 import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
@@ -10,6 +11,7 @@ import com.enonic.cms.core.service.DataSourceService;
 
 import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 
+@Component("ds.FindContentByCategoryHandler")
 public final class FindContentByCategoryHandler
     extends ParamDataSourceHandler
 {

@@ -1,10 +1,12 @@
 package com.enonic.cms.core.portal.datasource.handler.preference;
 
 import org.jdom.Document;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
 
+@Component("ds.GetPreferencesHandler")
 public final class GetPreferencesHandler
     extends ParamDataSourceHandler
 {

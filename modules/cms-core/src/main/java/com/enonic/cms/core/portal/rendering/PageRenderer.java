@@ -97,10 +97,6 @@ public class PageRenderer
 
     private static GenericConcurrencyLock<PageCacheKey> concurrencyLock = GenericConcurrencyLock.create();
 
-    private DataSourceService dataSourceService;
-
-    private PluginManager pluginManager;
-
     protected PageRenderer( PageRendererContext pageRendererContext, LivePortalTraceService livePortalTraceService )
     {
         this.context = pageRendererContext;
@@ -398,8 +394,6 @@ public class PageRenderer
         datasourceExecutorContext.setRequestParameters( context.getSitePath().getRequestParameters() );
         datasourceExecutorContext.setVerticalSession( context.getVerticalSession() );
         datasourceExecutorContext.setUser( context.getRunAsUser() );
-        datasourceExecutorContext.setDataSourceService( this.dataSourceService );
-        datasourceExecutorContext.setPluginManager( this.pluginManager );
 
         DataSourceExecutor datasourceExecutor = dataSourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
 
@@ -555,16 +549,6 @@ public class PageRenderer
     public void setPostProcessInstructionExecutor( PostProcessInstructionExecutor postProcessInstructionExecutor )
     {
         this.postProcessInstructionExecutor = postProcessInstructionExecutor;
-    }
-
-    public void setDataSourceService( DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
-    }
-
-    public void setPluginManager( PluginManager pluginManager )
-    {
-        this.pluginManager = pluginManager;
     }
 }
 

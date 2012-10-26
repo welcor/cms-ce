@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
@@ -17,7 +16,6 @@ import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.service.DataSourceService;
 
 /**
  * Apr 20, 2009
@@ -49,12 +47,6 @@ public class WindowRendererFactory
     @Autowired
     private LivePortalTraceService livePortalTraceService;
 
-    @Autowired
-    private DataSourceService dataSourceService;
-
-    @Autowired
-    private PluginManager pluginManager;
-
     public WindowRenderer createPortletRenderer( WindowRendererContext windowRendererContext )
     {
         PageCacheService pageCacheService = siteCachesService.getPageCacheService( windowRendererContext.getSite().getKey() );
@@ -69,8 +61,6 @@ public class WindowRendererFactory
         windowRenderer.setSitePropertiesService( sitePropertiesService );
         windowRenderer.setPostProcessInstructionExecutor( postProcessInstructionExecutor );
         windowRenderer.setLiveTraceService( livePortalTraceService );
-        windowRenderer.setDataSourceService( dataSourceService );
-        windowRenderer.setPluginManager( pluginManager );
 
         return windowRenderer;
     }

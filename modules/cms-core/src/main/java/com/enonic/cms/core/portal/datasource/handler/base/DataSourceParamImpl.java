@@ -27,7 +27,7 @@ final class DataSourceParamImpl
     {
         if ( this.value == null )
         {
-            throw newException( "Parameter is required", null );
+            throw new DataSourceException( "Parameter [{0}] is required for data source [{1}]", this.name, this.dsName );
         }
 
         return this;
@@ -161,13 +161,9 @@ final class DataSourceParamImpl
         return array;
     }
 
-    private DataSourceException newException( final String message, final Throwable cause )
-    {
-        return new DataSourceException( "[{0}.{1}] {2}", this.dsName, this.name, message ).withCause( cause );
-    }
-
     private DataSourceException newException( final ConversionFailedException cause )
     {
-        return newException( cause.getMessage(), null );
+        return new DataSourceException( "Failed to convert parameter [{0}] on data source [{1}]: {2}", this.dsName, this.name,
+                                        cause.getMessage() ).withCause( cause );
     }
 }

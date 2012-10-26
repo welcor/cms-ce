@@ -40,7 +40,6 @@ import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
@@ -56,7 +55,6 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.service.DataSourceFailedXmlCreator;
-import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 
@@ -67,13 +65,7 @@ public final class ContentObjectHandlerServlet
     extends AdminHandlerBaseServlet
 {
     @Autowired
-    private DataSourceService dataSourceService;
-
-    @Autowired
     private DataSourceExecutorFactory datasourceExecutorFactory;
-
-    @Autowired
-    private PluginManager pluginManager;
 
     private Document buildContentObjectXML( AdminService admin, ExtendedMap formItems, boolean createContentObject,
                                             boolean updateStyleSheets )
@@ -692,8 +684,6 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDataSourceService( this.dataSourceService );
-        datasourceExecutorContext.setPluginManager( this.pluginManager );
 
         DataSourceExecutor datasourceExecutor = datasourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
 
@@ -732,8 +722,6 @@ public final class ContentObjectHandlerServlet
         datasourceExecutorContext.setRequestParameters( requestParameters );
         datasourceExecutorContext.setPortalInstanceKey( null );
         datasourceExecutorContext.setUser( userEntity );
-        datasourceExecutorContext.setDataSourceService( this.dataSourceService );
-        datasourceExecutorContext.setPluginManager( this.pluginManager );
 
         DataSourceExecutor datasourceExecutor = datasourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
         DataSourcesElement datasources = new DataSourceXmlFactory().create( dataSourcesXML.getAsJDOMDocument().getRootElement() );

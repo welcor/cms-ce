@@ -11,14 +11,12 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PageTemplateXsltViewTransformer;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.time.TimeService;
 
 @Component
@@ -55,12 +53,6 @@ public class PageRendererFactory
     @Autowired
     private LivePortalTraceService livePortalTraceService;
 
-    @Autowired
-    private DataSourceService dataSourceService;
-
-    @Autowired
-    private PluginManager pluginManager;
-
     public PageRenderer createPageRenderer( PageRendererContext pageRendererContext )
     {
         PageRenderer pageRenderer = new PageRenderer( pageRendererContext, livePortalTraceService );
@@ -74,8 +66,6 @@ public class PageRendererFactory
         pageRenderer.setTightestCacheSettingsResolver( tightestCacheSettingsResolver );
         pageRenderer.setTimeService( timeService );
         pageRenderer.setPostProcessInstructionExecutor( postProcessInstructionExecutor );
-        pageRenderer.setDataSourceService( dataSourceService );
-        pageRenderer.setPluginManager( pluginManager );
 
         return pageRenderer;
     }

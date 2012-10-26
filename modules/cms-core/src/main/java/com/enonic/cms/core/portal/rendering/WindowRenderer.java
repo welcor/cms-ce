@@ -19,7 +19,6 @@ import com.enonic.cms.core.CachedObject;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
@@ -56,7 +55,6 @@ import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.structure.TemplateParameter;
 import com.enonic.cms.core.structure.TemplateParameterType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -94,10 +92,6 @@ public class WindowRenderer
     private LivePortalTraceService liveTraceService;
 
     private static GenericConcurrencyLock<WindowCacheKey> concurrencyLock = GenericConcurrencyLock.create();
-
-    private DataSourceService dataSourceService;
-
-    private PluginManager pluginManager;
 
     /**
      * The window rendering trace for this window rendering.
@@ -500,8 +494,6 @@ public class WindowRenderer
         datasourceExecutorContext.setUser( executor );
         datasourceExecutorContext.setVerticalSession( context.getVerticalSession() );
         datasourceExecutorContext.setWindow( window );
-        datasourceExecutorContext.setDataSourceService( this.dataSourceService );
-        datasourceExecutorContext.setPluginManager( this.pluginManager );
 
         DataSourceExecutor dataSourceExecutor = dataSourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
 
@@ -644,15 +636,5 @@ public class WindowRenderer
     public void setLiveTraceService( LivePortalTraceService liveTraceService )
     {
         this.liveTraceService = liveTraceService;
-    }
-
-    public void setDataSourceService( DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
-    }
-
-    public void setPluginManager( PluginManager pluginManager )
-    {
-        this.pluginManager = pluginManager;
     }
 }

@@ -14,7 +14,6 @@ import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
-import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.VerticalSession;
@@ -22,7 +21,6 @@ import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.DataSourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -30,10 +28,7 @@ import com.enonic.cms.core.structure.page.Regions;
 import com.enonic.cms.core.structure.page.Window;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
-/**
- * Apr 21, 2009
- */
-public class DataSourceExecutorContext
+public final class DataSourceExecutorContext
 {
     private DataSourceType type;
 
@@ -82,10 +77,6 @@ public class DataSourceExecutorContext
     private UserEntity user;
 
     private Locale locale;
-
-    private DataSourceService dataSourceService;
-
-    private PluginManager pluginManager;
 
     public DataSourceType getDataSourceType()
     {
@@ -330,25 +321,5 @@ public class DataSourceExecutorContext
     public void setPortletWindowRenderedInline( Boolean value )
     {
         isPortletWindowRenderedInline = value;
-    }
-
-    public DataSourceService getDataSourceService()
-    {
-        return dataSourceService;
-    }
-
-    public void setDataSourceService( DataSourceService dataSourceService )
-    {
-        this.dataSourceService = dataSourceService;
-    }
-
-    public PluginManager getPluginManager()
-    {
-        return pluginManager;
-    }
-
-    public void setPluginManager(PluginManager pluginManager)
-    {
-        this.pluginManager = pluginManager;
     }
 }

@@ -23,7 +23,8 @@ public final class MethodElementBuilder
 
     public MethodElementBuilder params( final String[] values, final String... names )
     {
-        for ( int i = 0; i < values.length; i++ )
+        final int min = Math.min( values.length, names.length );
+        for ( int i = 0; i < min; i++ )
         {
             param( names[i], values[i] );
         }

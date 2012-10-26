@@ -18,6 +18,6 @@ final class GetSubMenuConverter
             return null;
         }
 
-        return method().params( params, "menuItemKey", "tagItem", "levels", "details" ).build();
+        return method().params( params, "menuItemKey", "tagItem", "levels" ).build();
     }
 }

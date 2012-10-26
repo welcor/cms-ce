@@ -362,38 +362,6 @@ public interface DataSourceService
     public XMLDocument getMenuItem( DataSourceContext context, int key, boolean withParents, boolean complete );
 
     /**
-     * Get random content by parent content.
-     *
-     * @param context           the Vertical Site context
-     * @param count             number of contents to get
-     * @param contentKey        a parent content key
-     * @param includeUserRights if true, include the user's access rights on the contents
-     * @return contents xml
-     */
-    public XMLDocument getRandomContentByParent( DataSourceContext context, int count, int contentKey, boolean includeUserRights );
-
-    /**
-     * Get random content by section.
-     *
-     * @param context             The Vertical Site context.
-     * @param menuItemKeys        one or more menuitems to get section content from
-     * @param levels              The number of levels below each menu item, to look for content.
-     * @param count               number of random contents to get
-     * @param titlesOnly          get only titles
-     * @param parentLevel         the level of parents to include
-     * @param childrenLevel       the level of children to include
-     * @param parentChildrenLevel the level of children for parents to include
-     * @param relatedTitlesOnly   get only titles for related content
-     * @param includeUserRights   include the user access rights in content
-     * @param query               A specification of which content within the section to search for.  This may be pure text, or a more
-     *                            specific searches where field names are specified.
-     * @return contents xml
-     */
-    public XMLDocument getRandomContentBySections( DataSourceContext context, String query, int[] menuItemKeys, int levels, int count,
-                                                   boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                                   boolean relatedTitlesOnly, boolean includeUserRights );
-
-    /**
      * Returns the sub menu that is shown in the menu
      *
      * @param context Site context

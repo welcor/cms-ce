@@ -1,4 +1,4 @@
-package com.enonic.cms.core.portal.datasource;
+package com.enonic.cms.core.portal.datasource.handler;
 
 import java.net.URL;
 

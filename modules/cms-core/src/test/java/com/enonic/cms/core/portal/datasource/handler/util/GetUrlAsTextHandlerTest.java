@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.enonic.cms.core.portal.datasource.DataSourceException;
-import com.enonic.cms.core.portal.datasource.AbstractDataSourceHandlerTest;
+import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
 import com.enonic.cms.core.http.HTTPService;
 
 public class GetUrlAsTextHandlerTest

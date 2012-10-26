@@ -1,4 +1,4 @@
-package com.enonic.cms.core.portal.datasource.invoker;
+package com.enonic.cms.core.portal.datasource.executor;
 
 import java.util.Map;
 

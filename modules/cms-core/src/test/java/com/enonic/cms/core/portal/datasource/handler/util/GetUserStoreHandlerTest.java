@@ -6,7 +6,7 @@ import org.mockito.Mockito;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.portal.datasource.AbstractDataSourceHandlerTest;
+import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
 import com.enonic.cms.core.service.DataSourceService;
 
 public class GetUserStoreHandlerTest

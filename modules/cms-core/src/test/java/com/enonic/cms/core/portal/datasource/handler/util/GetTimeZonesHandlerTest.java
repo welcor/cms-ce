@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 
 import com.google.common.collect.Lists;
 
-import com.enonic.cms.core.portal.datasource.AbstractDataSourceHandlerTest;
+import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.timezone.TimeZoneService;
 

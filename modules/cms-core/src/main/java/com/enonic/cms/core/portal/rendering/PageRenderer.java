@@ -20,14 +20,14 @@ import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutor;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionProcessor;
@@ -390,7 +390,7 @@ public class PageRenderer
         datasourceExecutorContext.setContentFromRequest( context.getContentFromRequest() );
         datasourceExecutorContext.setCssKeys( cssKeys );
         datasourceExecutorContext.setInvocationCache( invocationCache );
-        datasourceExecutorContext.setDatasourcesType( DataSourceType.PAGETEMPLATE );
+        datasourceExecutorContext.setDataSourceType( DataSourceType.PAGETEMPLATE );
         datasourceExecutorContext.setDefaultResultRootElementName( defaultDataSourceRootElementName );
         datasourceExecutorContext.setDeviceClass( context.getDeviceClass() );
         datasourceExecutorContext.setHttpRequest( context.getHttpRequest() );
@@ -412,7 +412,7 @@ public class PageRenderer
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
-        DataSourceExecutor datasourceExecutor = dataSourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
+        DataSourceExecutor datasourceExecutor = dataSourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
 
         return datasourceExecutor.getDataSourceResult( pageTemplate.getDatasources() );
     }

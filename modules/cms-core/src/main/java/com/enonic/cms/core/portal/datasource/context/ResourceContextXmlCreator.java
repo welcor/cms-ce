@@ -8,7 +8,7 @@ import org.jdom.Element;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 

@@ -1,4 +1,4 @@
-package com.enonic.cms.core.portal.datasource;
+package com.enonic.cms.core.portal.datasource.handler;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.portal.datasource;
+package com.enonic.cms.core.portal.datasource.executor;
 
 import java.util.Locale;
 
@@ -18,6 +18,7 @@ import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.VerticalSession;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.cache.InvocationCache;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -35,7 +36,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
  */
 public class DataSourceExecutorContext
 {
-    private DataSourceType datasourcesType;
+    private DataSourceType type;
 
     private HttpServletRequest httpRequest;
 
@@ -89,14 +90,14 @@ public class DataSourceExecutorContext
 
     private PluginManager pluginManager;
 
-    public DataSourceType getDatasourcesType()
+    public DataSourceType getDataSourceType()
     {
-        return datasourcesType;
+        return type;
     }
 
-    public void setDatasourcesType( DataSourceType datasourcesType )
+    public void setDataSourceType( final DataSourceType type )
     {
-        this.datasourcesType = datasourcesType;
+        this.type = type;
     }
 
     public SitePath getOriginalSitePath()

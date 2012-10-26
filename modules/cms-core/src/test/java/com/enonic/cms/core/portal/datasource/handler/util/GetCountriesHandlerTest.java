@@ -9,7 +9,7 @@ import com.enonic.cms.core.country.Country;
 import com.enonic.cms.core.country.CountryCode;
 import com.enonic.cms.core.country.CountryService;
 import com.enonic.cms.core.country.Region;
-import com.enonic.cms.core.portal.datasource.AbstractDataSourceHandlerTest;
+import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
 
 public class GetCountriesHandlerTest
     extends AbstractDataSourceHandlerTest<GetCountriesHandler>

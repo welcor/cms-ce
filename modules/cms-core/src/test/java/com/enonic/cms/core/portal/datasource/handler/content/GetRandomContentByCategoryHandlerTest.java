@@ -3,9 +3,9 @@ package com.enonic.cms.core.portal.datasource.handler.content;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.enonic.cms.core.portal.datasource.AbstractDataSourceHandlerTest;
+import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.StoreMatcher;
+import com.enonic.cms.core.portal.datasource.handler.StoreMatcher;
 import com.enonic.cms.core.preview.PreviewContext;
 
 import static junit.framework.Assert.assertEquals;

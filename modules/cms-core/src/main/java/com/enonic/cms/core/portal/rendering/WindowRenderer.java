@@ -25,10 +25,10 @@ import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutor;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
@@ -484,7 +484,7 @@ public class WindowRenderer
         datasourceExecutorContext.setPortletDocument(
             window.getPortlet().getGetDataDocmentChildElementDocumentAsRootElementInItsOwnDocument() );
         datasourceExecutorContext.setInvocationCache( context.getInvocationCache() );
-        datasourceExecutorContext.setDatasourcesType( DataSourceType.PORTLET );
+        datasourceExecutorContext.setDataSourceType( DataSourceType.PORTLET );
         datasourceExecutorContext.setDefaultResultRootElementName( defaultDataSourceRootElementName );
         datasourceExecutorContext.setDeviceClass( context.getDeviceClass() );
         datasourceExecutorContext.setHttpRequest( context.getHttpRequest() );
@@ -506,7 +506,7 @@ public class WindowRenderer
         datasourceExecutorContext.setDataSourceService( this.dataSourceService );
         datasourceExecutorContext.setPluginManager( this.pluginManager );
 
-        DataSourceExecutor dataSourceExecutor = dataSourceExecutorFactory.createDatasourceExecutor( datasourceExecutorContext );
+        DataSourceExecutor dataSourceExecutor = dataSourceExecutorFactory.createDataSourceExecutor( datasourceExecutorContext );
 
         return dataSourceExecutor.getDataSourceResult( datasources );
     }

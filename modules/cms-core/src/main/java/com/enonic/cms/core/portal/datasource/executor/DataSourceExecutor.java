@@ -2,15 +2,18 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.portal.datasource;
+package com.enonic.cms.core.portal.datasource.executor;
 
 import org.jdom.Document;
 import org.jdom.Element;
 
+import com.google.common.base.Strings;
+
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.portal.datasource.context.DatasourcesContextXmlCreator;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
+import com.enonic.cms.core.portal.datasource.context.DataSourcesContextXmlCreator;
 import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.methodcall.MethodCall;
@@ -23,12 +26,11 @@ import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.tracing.DataTraceInfo;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 
-public class DataSourceExecutor
+public final class DataSourceExecutor
 {
-
     private DataSourceExecutorContext context;
 
-    private DatasourcesContextXmlCreator datasourcesContextXmlCreator;
+    private DataSourcesContextXmlCreator datasourcesContextXmlCreator;
 
     private LivePortalTraceService livePortalTraceService;
 
@@ -44,14 +46,13 @@ public class DataSourceExecutor
         Document resultDoc = new Document( new Element( resolveResultRootElementName( datasources ) ) );
         Element verticaldataEl = resultDoc.getRootElement();
 
-        Element contextEl = datasourcesContextXmlCreator.createContextElement( datasources, context );
+        Element contextEl = datasourcesContextXmlCreator.createContextElement( context );
         verticaldataEl.addContent( contextEl );
 
         // execute data sources
         for ( DataSourceElement datasource : datasources.getList() )
         {
-            trace =
-                DatasourceExecutionTracer.startTracing( context.getDatasourcesType(), datasource.getName(), livePortalTraceService );
+            trace = DatasourceExecutionTracer.startTracing( context.getDataSourceType(), datasource.getName(), livePortalTraceService );
             try
             {
                 DatasourceExecutionTracer.traceRunnableCondition( trace, datasource.getCondition() );
@@ -60,7 +61,7 @@ public class DataSourceExecutor
                 DatasourceExecutionTracer.traceIsExecuted( trace, runnableByCondition );
                 if ( runnableByCondition )
                 {
-                    Document datasourceResultDocument = executeMethodCall( datasource );
+                    Document datasourceResultDocument = executeDataSource( datasource );
                     verticaldataEl.addContent( datasourceResultDocument.getRootElement().detach() );
                 }
             }
@@ -79,11 +80,11 @@ public class DataSourceExecutor
      * Checks the condition attribute of the xml element, and evaluates it to decide if the datasource should be run. Returns true if
      * condition does not exists, is empty, contains 'true' or evaluates to true.
      */
-    protected boolean isRunnableByCondition( final DataSourceElement datasource )
+    protected boolean isRunnableByCondition( final DataSourceElement dataSource )
     {
         // Note: Made protected to enable testing. Should normally be tested through public methods
 
-        if ( datasource.getCondition() == null || datasource.getCondition().equals( "" ) )
+        if ( dataSource.getCondition() == null || dataSource.getCondition().equals( "" ) )
         {
             return true;
         }
@@ -106,46 +107,44 @@ public class DataSourceExecutor
             expressionExecutor.setRequestParameters( context.getRequestParameters() );
             expressionExecutor.setVerticalSession( context.getVerticalSession() );
 
-            String evaluatedExpression = expressionExecutor.evaluate( datasource.getCondition() );
+            String evaluatedExpression = expressionExecutor.evaluate( dataSource.getCondition() );
             return evaluatedExpression.equals( "true" );
         }
         catch ( Exception e )
         {
-            throw new DataSourceException( "Failed to evaluate expression" ).withCause( e );
+            throw new DataSourceException( "Failed to evaluate expression for [{0}]", dataSource.getName() ).withCause( e );
         }
-
     }
 
-
-    private String resolveResultRootElementName( DataSourcesElement datasources )
+    private String resolveResultRootElementName( final DataSourcesElement dataSources )
     {
-        final String name = datasources.getResultElement();
-
-        if ( name != null && name.length() > 0 )
+        final String name = dataSources.getResultElement();
+        if ( Strings.isNullOrEmpty( name ) )
         {
             return name;
         }
+
         return context.getDefaultResultRootElementName();
     }
 
-    private Document executeMethodCall( DataSourceElement datasource )
+    private Document executeDataSource( final DataSourceElement dataSource )
     {
-        MethodCall methodCall = MethodCallFactory.create( context, datasource );
+        MethodCall methodCall = MethodCallFactory.create( context, dataSource );
 
         DatasourceExecutionTracer.traceMethodCall( methodCall, trace );
 
-        return executeMethodCall( datasource, methodCall );
+        return executeMethodCall( dataSource, methodCall );
     }
 
-    private Document executeMethodCall( final DataSourceElement datasource, final MethodCall methodCall )
+    private Document executeMethodCall( final DataSourceElement dataSource, final MethodCall methodCall )
     {
         XMLDocument xmlDocument = methodCall.invoke();
         Document jdomDocument = (Document) xmlDocument.getAsJDOMDocument().clone();
 
-        if ( datasource.getResultElement() != null )
+        if ( dataSource.getResultElement() != null )
         {
             Element originalRootEl = jdomDocument.getRootElement();
-            Element wrappingResultElement = new Element( datasource.getResultElement() );
+            Element wrappingResultElement = new Element( dataSource.getResultElement() );
             wrappingResultElement.addContent( originalRootEl.detach() );
             jdomDocument = new Document( wrappingResultElement );
         }
@@ -153,7 +152,7 @@ public class DataSourceExecutor
         return jdomDocument;
     }
 
-    private void setTraceDataSourceResult( Document result )
+    private void setTraceDataSourceResult( final Document result )
     {
         DataTraceInfo info = RenderTrace.getCurrentDataTraceInfo();
         if ( info != null )
@@ -162,17 +161,17 @@ public class DataSourceExecutor
         }
     }
 
-    public void setContext( DataSourceExecutorContext value )
+    public void setContext( final DataSourceExecutorContext value )
     {
         this.context = value;
     }
 
-    public void setDatasourcesContextXmlCreator( DatasourcesContextXmlCreator datasourcesContextXmlCreator )
+    public void setDataSourcesContextXmlCreator( final DataSourcesContextXmlCreator datasourcesContextXmlCreator )
     {
         this.datasourcesContextXmlCreator = datasourcesContextXmlCreator;
     }
 
-    public void setLivePortalTraceService( LivePortalTraceService livePortalTraceService )
+    public void setLivePortalTraceService( final LivePortalTraceService livePortalTraceService )
     {
         this.livePortalTraceService = livePortalTraceService;
     }

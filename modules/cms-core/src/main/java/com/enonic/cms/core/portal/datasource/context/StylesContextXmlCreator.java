@@ -45,7 +45,6 @@ final class StylesContextXmlCreator
             if ( css == null )
             {
                 styleEl.setAttribute( "missing", "true" );
-                continue;
             }
         }
 

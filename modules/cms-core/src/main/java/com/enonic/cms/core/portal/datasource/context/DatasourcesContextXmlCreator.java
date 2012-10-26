@@ -10,26 +10,18 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.framework.util.JDOMUtil;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.datasource.DataSourceExecutorContext;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.store.dao.GroupDao;
 
-/**
- * May 15, 2009
- */
 @Component
-public final class DatasourcesContextXmlCreator
+public final class DataSourcesContextXmlCreator
     implements InitializingBean
 {
     @Autowired
@@ -43,26 +35,22 @@ public final class DatasourcesContextXmlCreator
 
     private UserContextXmlCreator userContextXmlCreator;
 
-    private HttpContextXmlCreator httpContextXmlCreator = new HttpContextXmlCreator();
-
-    private CookieContextXmlCreator cookieContextXmlCreator = new CookieContextXmlCreator();
-
     private QueryStringContextXmlCreator queryStringContextXmlCreator;
 
     private StylesContextXmlCreator stylesContextXmlCreator;
 
-    private WindowContextXmlCreator windowContextXmlCreator = new WindowContextXmlCreator();
+    private final WindowContextXmlCreator windowContextXmlCreator = new WindowContextXmlCreator();
 
-    private PageContextXmlCreator pageContextXmlCreator = new PageContextXmlCreator();
+    private final PageContextXmlCreator pageContextXmlCreator = new PageContextXmlCreator();
 
-    private void setup()
+    public void afterPropertiesSet()
     {
         stylesContextXmlCreator = new StylesContextXmlCreator( resourceService );
         queryStringContextXmlCreator = new QueryStringContextXmlCreator( siteURLResolver );
         userContextXmlCreator = new UserContextXmlCreator( groupDao );
     }
 
-    public Element createContextElement( DataSourcesElement datasources, DataSourceExecutorContext context )
+    public Element createContextElement( final DataSourceExecutorContext context )
     {
         Element contextElem = new Element( "context" );
 
@@ -114,7 +102,7 @@ public final class DatasourcesContextXmlCreator
         }
 
         // Datasource call from a page template
-        if ( DataSourceType.PAGETEMPLATE.equals( context.getDatasourcesType() ) )
+        if ( DataSourceType.PAGETEMPLATE.equals( context.getDataSourceType() ) )
         {
             final Element pageEl;
             if ( PageRequestType.CONTENT.equals( context.getPageRequestType() ) )
@@ -130,7 +118,7 @@ public final class DatasourcesContextXmlCreator
             }
         }
         // Datasource call from a portlet
-        else if ( context.getDatasourcesType().equals( DataSourceType.PORTLET ) && context.getWindow() != null )
+        else if ( context.getDataSourceType().equals( DataSourceType.PORTLET ) && context.getWindow() != null )
         {
             Element portletDocumentEl = null;
             final Document portletDocument = context.getPortletDocument();
@@ -149,31 +137,6 @@ public final class DatasourcesContextXmlCreator
         {
             addElement( "profile", context.getProfile(), contextElem );
         }
-
-        // Http context
-        /*
-        if ( datasources.hasHttpContext() )
-        {
-            contextElem.addContent( httpContextXmlCreator.createHttpElement( context.getHttpRequest() ) );
-        }*/
-
-        // Session context
-        /*
-        if ( datasources.hasSessionContext() )
-        {
-            VerticalSession verticalSession = context.getVerticalSession();
-            if ( verticalSession != null )
-            {
-                contextElem.addContent( buildVerticalSessionXml( verticalSession ) );
-            }
-        }*/
-
-        // Cookie context
-        /*
-        if ( datasources.hasCookieContext() )
-        {
-            contextElem.addContent( cookieContextXmlCreator.createCookieElement( context.getHttpRequest() ) );
-        }*/
 
         // Styles context
         if ( context.hasCssKeys() )
@@ -202,18 +165,5 @@ public final class DatasourcesContextXmlCreator
         elem = new Element( name );
         parent.addContent( elem );
         return elem;
-    }
-
-    private Element buildVerticalSessionXml( VerticalSession session )
-    {
-        Document doc = XMLDocumentFactory.create( session.toXML() ).getAsJDOMDocument();
-        return (Element) JDOMUtil.getFirstElement( doc.getRootElement() ).detach();
-    }
-
-
-    public void afterPropertiesSet()
-        throws Exception
-    {
-        setup();
     }
 }

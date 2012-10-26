@@ -1,21 +1,16 @@
-package com.enonic.cms.core.portal.datasource2.xml;
+package com.enonic.cms.core.portal.datasource.xml;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 import org.junit.Test;
 
-import com.enonic.cms.core.portal.datasource.DataSourceException;
+import static org.junit.Assert.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-public class DataSourceXmlParserTest
+public class DataSourceXmlFactoryTest
 {
     @Test
     public void testParse_empty1()
@@ -24,9 +19,6 @@ public class DataSourceXmlParserTest
         final DataSourcesElement result = parse( "empty1" );
         assertNotNull( result );
         assertNull( result.getResultElement() );
-        assertFalse( result.isHttpContext() );
-        assertFalse( result.isCookieContext() );
-        assertFalse( result.isSessionContext() );
         assertTrue( result.getList().isEmpty() );
     }
 
@@ -37,9 +29,6 @@ public class DataSourceXmlParserTest
         final DataSourcesElement result = parse( "empty2" );
         assertNotNull( result );
         assertEquals( "dummy", result.getResultElement() );
-        assertTrue( result.isHttpContext() );
-        assertTrue( result.isCookieContext() );
-        assertTrue( result.isSessionContext() );
         assertTrue( result.getList().isEmpty() );
     }
 
@@ -57,7 +46,7 @@ public class DataSourceXmlParserTest
         final DataSourceElement element = list.get( 0 );
         assertNotNull( element );
         assertEquals( "dummy", element.getName() );
-        assertEquals( false, element.isCache() );
+        assertEquals( true, element.isCache() );
         assertNull( element.getResultElement() );
         assertNull( element.getCondition() );
         assertTrue( element.getParameters().isEmpty() );
@@ -93,14 +82,10 @@ public class DataSourceXmlParserTest
         assertNotNull( element );
         assertEquals( "dummy", element.getName() );
 
-        final List<ParameterElement> params = element.getParameters();
+        final Map<String, String> params = element.getParameters();
         assertNotNull( params );
         assertEquals( 1, params.size() );
-
-        final ParameterElement param1 = params.get( 0 );
-        assertNotNull( param1 );
-        assertEquals( "param1", param1.getName() );
-        assertEquals( "one", param1.getValue() );
+        assertEquals( "one", params.get( "param1" ) );
     }
 
     @Test
@@ -113,19 +98,11 @@ public class DataSourceXmlParserTest
         assertNotNull( element );
         assertEquals( "dummy", element.getName() );
 
-        final List<ParameterElement> params = element.getParameters();
+        final Map<String, String> params = element.getParameters();
         assertNotNull( params );
         assertEquals( 2, params.size() );
-
-        final ParameterElement param1 = params.get( 0 );
-        assertNotNull( param1 );
-        assertEquals( "param1", param1.getName() );
-        assertEquals( "one", param1.getValue() );
-
-        final ParameterElement param2 = params.get( 1 );
-        assertNotNull( param2 );
-        assertEquals( "param2", param2.getName() );
-        assertEquals( "<custom><xml /></custom>", param2.getValue() );
+        assertEquals( "one", params.get( "param1" ) );
+        assertEquals( "<custom><xml /></custom>", params.get( "param2" ) );
     }
 
     @Test
@@ -156,17 +133,10 @@ public class DataSourceXmlParserTest
         assertEquals( 2, element3.getParameters().size() );
     }
 
-    @Test(expected = DataSourceException.class)
-    public void testParse_illegal()
-        throws Exception
-    {
-        parse( "illegal" );
-    }
-
     private DataSourcesElement parse( final String name )
         throws Exception
     {
-        return new DataSourceXmlParser().parse( readDoc( name + ".xml" ) );
+        return new DataSourceXmlFactory().create( readDoc( name + ".xml" ).getRootElement() );
     }
 
     private Document readDoc( final String name )

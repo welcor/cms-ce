@@ -259,14 +259,15 @@ public final class DataSourceServiceImpl
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentByCategory( DataSourceContext context, int[] categoryKeys, int levels, String query, String orderBy,
-                                             int index, int count, boolean includeData, int childrenLevel, int parentLevel )
+                                             int index, int count, boolean includeData, int childrenLevel, int parentLevel,
+                                             final boolean filterOnUser )
     {
         boolean includeOwnerAndModifierData = true;
         boolean includeCategoryData = true;
         boolean includeUserRights = false;
         return doGetContentByCategory( context, categoryKeys, levels, query, orderBy, index, count, childrenLevel, parentLevel, 0,
-                                       includeOwnerAndModifierData, includeData, includeCategoryData, includeData, includeUserRights,
-                                       null );
+                                       includeOwnerAndModifierData, includeData, includeCategoryData, includeData, includeUserRights, null,
+                                       filterOnUser );
     }
 
     /**
@@ -281,7 +282,7 @@ public final class DataSourceServiceImpl
         int levels = includeSubCategories ? Integer.MAX_VALUE : 1;
         return doGetContentByCategory( context, categories, levels, query, orderBy, index, count, childrenLevel, parentLevel,
                                        parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights,
-                                       contentTypes );
+                                       contentTypes, false );
     }
 
     /**
@@ -1254,11 +1255,17 @@ public final class DataSourceServiceImpl
                                                 int index, int count, int childrenLevel, int parentLevel, int parentChildrenLevel,
                                                 boolean includeOwnerAndModifierData, boolean includeContentData,
                                                 boolean includeCategoryData, boolean includeRelatedContentData, boolean includeUserRights,
-                                                int[] contentTypes )
+                                                int[] contentTypes, final boolean filterOnUser )
     {
         final PreviewContext previewContext = context.getPreviewContext();
 
         UserEntity user = getUserEntity( context.getUser() );
+
+        if ( filterOnUser )
+        {
+            query = applyUserFilterToQuery( query, user );
+        }
+
         ContentXMLCreator xmlCreator = new ContentXMLCreator();
         Date now = timeService.getNowAsDateTime().toDate();
         ContentByCategoryQuery contentByCategoryQuery = new ContentByCategoryQuery();
@@ -1313,6 +1320,23 @@ public final class DataSourceServiceImpl
         {
             return xmlCreator.createEmptyDocument( "Invalid key: " + e.getMessage() );
         }
+    }
+
+    private String applyUserFilterToQuery( String query, final UserEntity user )
+    {
+        if ( ( user != null ) && ( !user.isAnonymous() ) )
+        {
+            String ownerQuery = "owner/@key = '" + user.getKey() + "'";
+            if ( Strings.isNullOrEmpty( query ) )
+            {
+                query = ownerQuery;
+            }
+            else
+            {
+                query = "(" + query + ") AND " + ownerQuery;
+            }
+        }
+        return query;
     }
 
     private XMLDocument doGetContentBySection( DataSourceContext context, int[] menuItemKeys, int levels, String query, String orderBy,

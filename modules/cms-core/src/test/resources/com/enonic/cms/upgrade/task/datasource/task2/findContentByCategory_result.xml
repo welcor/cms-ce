@@ -4,7 +4,7 @@
   <datasource name="getContentByCategory">
     <parameter name="categoryKeys">3</parameter>
     <parameter name="levels">2147483647</parameter>
-    <parameter name="query">((title CONTAINS "mySearchString2") OR (data/* CONTAINS "mySearchString2")) AND ((title CONTAINS "mySearchString1") OR (data/* CONTAINS "mySearchString1")) AND contenttypekey IN (14,15,16)</parameter>
+    <parameter name="query">(((title CONTAINS "mySearchString2") OR (data/* CONTAINS "mySearchString2")) AND ((title CONTAINS "mySearchString1") OR (data/* CONTAINS "mySearchString1"))) AND contenttypekey IN (14,15,16)</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">6</parameter>
     <parameter name="count">7</parameter>
@@ -15,7 +15,7 @@
   <datasource name="getContentByCategory">
     <parameter name="categoryKeys">3</parameter>
     <parameter name="levels">2147483647</parameter>
-    <parameter name="query">((title CONTAINS "mySearchString2") OR (data/* CONTAINS "mySearchString2")) AND ((title CONTAINS "mySearchString1") OR (data/* CONTAINS "mySearchString1")) AND contenttypekey IN (${select(param.id,'')})</parameter>
+    <parameter name="query">(((title CONTAINS "mySearchString2") OR (data/* CONTAINS "mySearchString2")) AND ((title CONTAINS "mySearchString1") OR (data/* CONTAINS "mySearchString1"))) AND contenttypekey IN (${select(param.id,'')})</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">6</parameter>
     <parameter name="count">7</parameter>

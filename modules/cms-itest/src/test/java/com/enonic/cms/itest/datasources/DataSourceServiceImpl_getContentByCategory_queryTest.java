@@ -146,12 +146,83 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
 
         XMLDocument xmlDocResult =
             dataSourceService.getContentByCategory( context, categoryKeys, levels, query, orderyBy, index, count, includeData,
-                                                    childrenLevel, parentLevel );
+                                                    childrenLevel, parentLevel, false );
 
         // verify
         AssertTool.assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(),
                                       new String[]{expectedContentKey.toString()} );
     }
+
+
+    @Test
+    public void query_content_with_filterOnUser()
+    {
+        // setup content type
+        ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "Person", "name" );
+        ctyconf.startBlock( "Person" );
+        ctyconf.addInput( "name", "text", "contentdata/name", "Name", true );
+        ctyconf.endBlock();
+        Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
+
+        // setup content type, unit category, users, and rights
+        fixture.save(
+            factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
+        fixture.save( factory.createUnit( "MyUnit", "en" ) );
+        fixture.save(
+            factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+        fixture.createAndStoreNormalUserWithUserGroup( "content-creator", "Creator", "testuserstore" );
+        fixture.createAndStoreNormalUserWithUserGroup( "content-querier", "Creator", "testuserstore" );
+        fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-creator", "read, create, approve, admin_browse" ) );
+        fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, create, approve, admin_browse" ) );
+
+        fixture.flushAndClearHibernateSesssion();
+        fixture.flushIndexTransaction();
+
+        // setup content assigned to content-creator
+        CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyContentType" ).getContentTypeConfig() );
+        contentData.add( new TextDataEntry( contentData.getInputConfig( "name" ), "Test Dummy" ) );
+        contentService.createContent(
+            createCreateContentCommand( "MyCategory", "content-creator", ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
+                                        "content-creator", contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+
+        // setup another content assigned to some one else
+        contentService.createContent(
+            createCreateContentCommand( "MyCategory", User.ROOT_UID, ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
+                                        User.ROOT_UID, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+
+        // Add content with owner = content-querier
+        ContentKey expectedContentKey = contentService.createContent(
+            createCreateContentCommand( "MyCategory", "content-querier", ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
+                                        User.ROOT_UID, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+
+        fixture.flushIndexTransaction();
+
+        // setup: verify that 2 content is created
+        assertEquals( 3, fixture.countAllContent() );
+
+        // exercise
+        DataSourceContext context = new DataSourceContext();
+        context.setUser( fixture.findUserByName( "content-querier" ) );
+        int[] categoryKeys = new int[]{fixture.findCategoryByName( "MyCategory" ).getKey().toInt()};
+        int levels = 1;
+        String query = "status = 2";
+        String orderyBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
+        int childrenLevel = 0;
+        int parentLevel = 0;
+        boolean filterOnUser = true;
+
+        XMLDocument xmlDocResult =
+            dataSourceService.getContentByCategory( context, categoryKeys, levels, query, orderyBy, index, count, includeData,
+                                                    childrenLevel, parentLevel, filterOnUser );
+
+        // verify
+        AssertTool.assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(),
+                                      new String[]{expectedContentKey.toString()} );
+    }
+
 
     private CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus,
                                                              DateTime dueDate, String assigneeUserName, ContentData contentData,

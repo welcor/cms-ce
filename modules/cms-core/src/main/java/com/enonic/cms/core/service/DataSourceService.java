@@ -110,6 +110,7 @@ public interface DataSourceService
     /**
      * Find content in the specified categories.
      *
+     *
      * @param context       The Vertical Site context
      * @param categoryKeys  The keys of the categories to search in.
      * @param levels        Include sub categories below the specified menu item keys, this number of levels down.
@@ -121,10 +122,12 @@ public interface DataSourceService
      *                      parameter.
      * @param childrenLevel The number of levels of children to include.
      * @param parentLevel   The number of levels of parents to include.
+     * @param filterOnUser
      * @return An XML document with the result of the search
      */
     public XMLDocument getContentByCategory( DataSourceContext context, int[] categoryKeys, int levels, String query, String orderBy,
-                                             int index, int count, boolean includeData, int childrenLevel, int parentLevel );
+                                             int index, int count, boolean includeData, int childrenLevel, int parentLevel,
+                                             final boolean filterOnUser );
 
     /**
      * Find content randomly in the specified categories.

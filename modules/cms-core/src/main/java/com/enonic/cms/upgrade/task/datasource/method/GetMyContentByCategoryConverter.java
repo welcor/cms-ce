@@ -74,7 +74,7 @@ final class GetMyContentByCategoryConverter
 
             if ( !Strings.isNullOrEmpty( existingQuery ) )
             {
-                stringBuilder.append( existingQuery );
+                stringBuilder.append( "(" + existingQuery + ")" );
                 stringBuilder.append( " AND " );
             }
 

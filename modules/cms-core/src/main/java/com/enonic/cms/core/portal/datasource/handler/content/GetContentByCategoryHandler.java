@@ -26,6 +26,6 @@ public final class GetContentByCategoryHandler
 
         return dataSourceService.getContentByCategory( req, toPrimitive( params.categoryKeys ), params.levels, params.query, params.orderBy,
                                                        params.index, params.count, params.includeData, params.childrenLevel,
-                                                       params.parentLevel ).getAsJDOMDocument();
+                                                       params.parentLevel, params.filterOnUser ).getAsJDOMDocument();
     }
 }

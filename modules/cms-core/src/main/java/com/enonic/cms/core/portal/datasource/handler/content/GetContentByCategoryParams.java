@@ -22,4 +22,6 @@ public final class GetContentByCategoryParams
     public int childrenLevel = 1;
 
     public int parentLevel = 0;
+
+    public boolean filterOnUser = false;
 }

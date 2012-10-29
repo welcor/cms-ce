@@ -17,7 +17,7 @@
   <datasource name="getContentByCategory">
     <parameter name="categoryKeys">1</parameter>
     <parameter name="levels">2147483647</parameter>
-    <parameter name="query">title = 'pølse' AND contenttypekey IN (14,15,16)</parameter>
+    <parameter name="query">(title = 'pølse') AND contenttypekey IN (14,15,16)</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">4</parameter>
     <parameter name="count">5</parameter>
@@ -29,7 +29,7 @@
   <datasource name="getContentByCategory">
     <parameter name="categoryKeys">1</parameter>
     <parameter name="levels">2147483647</parameter>
-    <parameter name="query">title like '%pølse#%' AND ost = 'fisk' AND contenttypekey IN (${select(param.id, 'løk')})</parameter>
+    <parameter name="query">(title like '%pølse#%' AND ost = 'fisk') AND contenttypekey IN (${select(param.id, 'løk')})</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">4</parameter>
     <parameter name="count">5</parameter>

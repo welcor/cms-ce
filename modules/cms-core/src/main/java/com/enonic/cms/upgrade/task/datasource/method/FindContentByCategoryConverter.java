@@ -85,7 +85,7 @@ final class FindContentByCategoryConverter
 
             if ( !Strings.isNullOrEmpty( existingQuery ) )
             {
-                stringBuilder.append( existingQuery );
+                stringBuilder.append( "(" + existingQuery + ")");
                 stringBuilder.append( " AND " );
             }
 

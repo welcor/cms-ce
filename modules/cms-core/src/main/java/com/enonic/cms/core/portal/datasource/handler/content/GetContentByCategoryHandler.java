@@ -3,8 +3,8 @@ package com.enonic.cms.core.portal.datasource.handler.content;
 import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 
@@ -30,6 +30,8 @@ public final class GetContentByCategoryHandler
         final boolean includeData = param( req, "includeData" ).asBoolean( true );
         final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
         final int parentLevel = param( req, "parentLevel" ).asInteger( 0 );
+        // TODO: To be implemented, see getMyContentByCategory in DatasourceServiceImpl
+        final boolean filterOnUser = param( req, "filterOnUser" ).asBoolean(false);
 
         return dataSourceService.getContentByCategory( req,  toPrimitive( categoryKeys) , levels, query, orderBy,
                                              index, count, includeData, childrenLevel, parentLevel ).getAsJDOMDocument();

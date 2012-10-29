@@ -227,4 +227,11 @@ public class DataSourceConverter2Test
         testConvert( "task2/findContentByCategory" );
     }
 
+    @Test
+    public void testConvert_getMyContentByCategory()
+        throws Exception
+    {
+        testConvert( "task2/getMyContentByCategory" );
+    }
+
 }

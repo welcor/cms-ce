@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!--<datasource name="findContentByCategory" />-->
+  <!--<datasource name="getMyContentByCategory"><parameter name="query" /><parameter name="categories">1</parameter><parameter name="includeSubCategories">false</parameter><parameter name="orderBy">myOrderBy</parameter><parameter name="index">4</parameter><parameter name="count">5</parameter><parameter name="titlesOnly">true</parameter><parameter name="childrenLevel">7</parameter><parameter name="parentLevel">8</parameter><parameter name="parentChildrenLevel">9</parameter><parameter name="relatedTitlesOnly">true</parameter><parameter name="includeTotalCount">true</parameter><parameter name="includeUserRights">true</parameter></datasource>-->
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">1</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="query">contenttypekey IN (14,15,16)</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">4</parameter>
+    <parameter name="count">5</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">7</parameter>
+    <parameter name="parentLevel">8</parameter>
+    <parameter name="filterOnUser">true</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">1</parameter>
+    <parameter name="levels">2147483647</parameter>
+    <parameter name="query">title = 'pølse' AND contenttypekey IN (14,15,16)</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">4</parameter>
+    <parameter name="count">5</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">7</parameter>
+    <parameter name="parentLevel">8</parameter>
+    <parameter name="filterOnUser">true</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">1</parameter>
+    <parameter name="levels">2147483647</parameter>
+    <parameter name="query">title like '%pølse#%' AND ost = 'fisk' AND contenttypekey IN (${select(param.id, 'løk')})</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">4</parameter>
+    <parameter name="count">5</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">7</parameter>
+    <parameter name="parentLevel">8</parameter>
+    <parameter name="filterOnUser">true</parameter>
+  </datasource>
+  <!--<datasource name="getMyContentByCategory"><parameter name="query" /><parameter name="categories">1</parameter><parameter name="includeSubCategories">true</parameter><parameter name="orderBy">myOrderBy</parameter><parameter name="index">4</parameter><parameter name="count">5</parameter><parameter name="titlesOnly">true</parameter><parameter name="childrenLevel">7</parameter><parameter name="parentLevel">8</parameter><parameter name="parentChildrenLevel">9</parameter><parameter name="relatedTitlesOnly">true</parameter><parameter name="includeTotalCount">true</parameter><parameter name="includeUserRights">true</parameter><parameter name="contentTypes">14,15,16</parameter><parameter name="unknown">baaah</parameter></datasource>-->
+</datasources>
+

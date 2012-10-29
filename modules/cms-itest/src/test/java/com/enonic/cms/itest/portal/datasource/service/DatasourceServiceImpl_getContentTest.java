@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.itest.datasources;
+package com.enonic.cms.itest.portal.datasource.service;
 
 import org.jdom.Document;
 import org.joda.time.DateTime;
@@ -32,9 +32,8 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.preview.ContentPreviewContext;
 import com.enonic.cms.core.preview.PreviewContext;
-import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.service.DataSourceServiceImpl;
+import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -59,9 +58,6 @@ public class DatasourceServiceImpl_getContentTest
 
     @Autowired
     private DomainFixture fixture;
-
-    @Autowired
-    private SecurityService securityService;
 
     private DataSourceServiceImpl dataSourceService;
 
@@ -136,7 +132,6 @@ public class DatasourceServiceImpl_getContentTest
         dataSourceService.setUserDao( userDao );
         dataSourceService.setContentDao( contentDao );
         dataSourceService.setContentService( contentService );
-        dataSourceService.setSecurityService( securityService );
         dataSourceService.setTimeService( new MockTimeService( DATE_TIME_2010_07_01_12_00_00_0 ) );
 
         fixture.flushIndexTransaction();

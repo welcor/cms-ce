@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.itest.datasources;
+package com.enonic.cms.itest.portal.datasource.service;
 
 import java.util.Date;
 
@@ -36,10 +36,9 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
-import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.DataSourceServiceImpl;
+import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.menuitem.AddContentToSectionCommand;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
@@ -69,9 +68,6 @@ public class DataSourceServiceImpl_relatedContentTest
     private MenuItemService menuItemService;
 
     @Autowired
-    private SecurityService securityService;
-
-    @Autowired
     private UserDao userDao;
 
     private DataSourceServiceImpl dataSourceService;
@@ -97,7 +93,6 @@ public class DataSourceServiceImpl_relatedContentTest
 
         dataSourceService = new DataSourceServiceImpl();
         dataSourceService.setContentService( contentService );
-        dataSourceService.setSecurityService( securityService );
         dataSourceService.setTimeService( new MockTimeService( new DateTime( 2010, 7, 1, 12, 0, 0, 0 ) ) );
         dataSourceService.setUserDao( userDao );
 

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.service;
+package com.enonic.cms.core.portal.datasource.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,14 +47,12 @@ import com.enonic.cms.core.content.category.CategoryKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery.SectionFilterStatus;
 import com.enonic.cms.core.content.query.ContentByCategoryQuery;
-import com.enonic.cms.core.content.query.ContentByContentQuery;
 import com.enonic.cms.core.content.query.ContentByQueryQuery;
 import com.enonic.cms.core.content.query.ContentBySectionQuery;
 import com.enonic.cms.core.content.query.InvalidContentBySectionQueryException;
 import com.enonic.cms.core.content.query.RelatedChildrenContentQuery;
 import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
@@ -245,7 +243,7 @@ public final class DataSourceServiceImpl
         boolean includeOwnerAndModifierData = true;
         boolean includeCategoryData = true;
         boolean includeUserRights = false;
-        return doGetRandomContentBySection( context, menuItemKeys, levels, query, count, parentLevel, childrenLevel, 0,
+        return doGetRandomContentBySection( context, menuItemKeys, levels, query, count, parentLevel, childrenLevel,
                                             includeOwnerAndModifierData, includeData, includeCategoryData, includeData, includeUserRights );
     }
 
@@ -461,7 +459,7 @@ public final class DataSourceServiceImpl
         SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
         siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
-        siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( tagItem ) );
+        siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( tagItem ) ) );
         siteXmlCreator.setMenuItemLevels( levels );
 
         return siteXmlCreator.createLegacyGetMenu( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
@@ -495,7 +493,7 @@ public final class DataSourceServiceImpl
             return SiteXmlCreator.createEmptyMenuBranch();
         }
 
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+        MenuItemEntity menuItem = menuItemDao.findByKey( new MenuItemKey( menuItemKey ) );
         if ( menuItem == null )
         {
             return SiteXmlCreator.createEmptyMenuBranch();
@@ -521,78 +519,8 @@ public final class DataSourceServiceImpl
         setting.user = getUserEntity( context.getUser() );
         setting.includeParents = withParents;
         MenuItemXmlCreator creator = new MenuItemXmlCreator( setting, new MenuItemAccessResolver( groupDao ) );
-        MenuItemEntity menuItem = menuItemDao.findByKey( key );
+        MenuItemEntity menuItem = menuItemDao.findByKey( new MenuItemKey( key ) );
         return creator.createLegacyGetMenuItem( menuItem );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRandomContentByParent( DataSourceContext context, int count, int contentKey, boolean includeUserRights )
-    {
-        PreviewContext previewContext = context.getPreviewContext();
-
-        UserEntity user = getUserEntity( context.getUser() );
-        ContentXMLCreator xmlCreator = new ContentXMLCreator();
-
-        final Date now = new Date();
-        ContentByContentQuery contentByContentQuery = new ContentByContentQuery();
-        contentByContentQuery.setFilterContentOnlineAt( now );
-        contentByContentQuery.setUser( user );
-        try
-        {
-            contentByContentQuery.setContentKeyFilter( ContentKey.convertToList( contentKey ) );
-        }
-        catch ( InvalidKeyException e )
-        {
-            return xmlCreator.createEmptyDocument( "Invalid content key: " + contentKey );
-        }
-
-        ContentResultSet contents = contentService.queryContent( contentByContentQuery );
-        if ( previewContext.isPreviewingContent() )
-        {
-            contents = previewContext.getContentPreviewContext().overrideContentResultSet( contents );
-        }
-
-        RelatedContentQuery relatedContentQuery = new RelatedContentQuery( now );
-        relatedContentQuery.setUser( user );
-        relatedContentQuery.setContentResultSet( contents );
-        relatedContentQuery.setParentLevel( 0 );
-        relatedContentQuery.setChildrenLevel( 1 );
-        relatedContentQuery.setParentChildrenLevel( 0 );
-        relatedContentQuery.setIncludeOnlyMainVersions( true );
-
-        RelatedContentResultSet relatedContents = contentService.queryRelatedContent( relatedContentQuery );
-        ContentResultSetNonLazy relatedContentsAsContentResultSet =
-            new ContentResultSetNonLazy( relatedContents.getDinstinctSetOfContent(), 0, relatedContents.size() );
-        ContentResultSet randomizedContents = relatedContentsAsContentResultSet.createRandomizedResult( count );
-        if ( previewContext.isPreviewingContent() )
-        {
-            randomizedContents = previewContext.getContentPreviewContext().overrideContentResultSet( randomizedContents );
-        }
-
-        xmlCreator.setIncludeUserRightsInfo( includeUserRights, new CategoryAccessResolver( groupDao ),
-                                             new ContentAccessResolver( groupDao ) );
-        xmlCreator.setResultIndexing( 0, count );
-        xmlCreator.setIncludeVersionsInfoForPortal( false );
-        xmlCreator.setIncludeAssignment( true );
-        XMLDocument doc = xmlCreator.createContentsDocument( user, randomizedContents, new RelatedContentResultSetImpl() );
-
-        addDataTraceInfo( doc.getAsJDOMDocument() );
-        return doc;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRandomContentBySections( DataSourceContext context, String query, int[] menuItemKeys, int levels, int count,
-                                                   boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                                   boolean relatedTitlesOnly, boolean includeUserRights )
-    {
-        return doGetRandomContentBySection( context, menuItemKeys, levels, query, count, parentLevel, childrenLevel, parentChildrenLevel,
-                                            !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights );
     }
 
     /**
@@ -624,7 +552,7 @@ public final class DataSourceServiceImpl
         siteXmlCreator.setMenuItemLevels( levels );
         if ( tagItem > -1 )
         {
-            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( tagItem ) );
+            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( tagItem ) ) );
         }
 
         return siteXmlCreator.createLegacyGetSubMenu( menuItem.getSite() );
@@ -1373,10 +1301,9 @@ public final class DataSourceServiceImpl
     }
 
     private XMLDocument doGetRandomContentBySection( DataSourceContext context, int[] menuItemKeys, int levels, String query, int count,
-                                                     int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                                     boolean includeOwnerAndModifierData, boolean includeContentData,
-                                                     boolean includeCategoryData, boolean includeRelatedContentData,
-                                                     boolean includeUserRights )
+                                                     int parentLevel, int childrenLevel, boolean includeOwnerAndModifierData,
+                                                     boolean includeContentData, boolean includeCategoryData,
+                                                     boolean includeRelatedContentData, boolean includeUserRights )
     {
         PreviewContext previewContext = context.getPreviewContext();
 
@@ -1412,7 +1339,7 @@ public final class DataSourceServiceImpl
         relatedContentQuery.setContentResultSet( randomContent );
         relatedContentQuery.setParentLevel( parentLevel );
         relatedContentQuery.setChildrenLevel( childrenLevel );
-        relatedContentQuery.setParentChildrenLevel( parentChildrenLevel );
+        relatedContentQuery.setParentChildrenLevel( 0 );
         relatedContentQuery.setIncludeOnlyMainVersions( true );
         relatedContentQuery.setFilterContentOnlineAt( now );
 

@@ -8,7 +8,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
-import com.enonic.cms.core.service.DataSourceService;
+import com.enonic.cms.core.portal.datasource.service.DataSourceService;
 
 public class GetMenuBranchHandlerTest
     extends AbstractDataSourceHandlerTest<GetMenuBranchHandler>

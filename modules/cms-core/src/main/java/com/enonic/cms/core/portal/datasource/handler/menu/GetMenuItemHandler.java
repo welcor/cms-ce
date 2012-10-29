@@ -4,24 +4,21 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetMenuItemHandler")
 public final class GetMenuItemHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetMenuItemParams>
 {
     public GetMenuItemHandler()
     {
-        super( "getMenuItem" );
+        super( "getMenuItem", GetMenuItemParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetMenuItemParams params )
         throws Exception
     {
-        final int menuItemKey = param( req, "menuItemKey" ).required().asInteger();
-        final boolean withParents = param( req, "withParents" ).asBoolean( false );
-
-        return this.dataSourceService.getMenuItem( req, menuItemKey, withParents ).getAsJDOMDocument();
+        return this.dataSourceService.getMenuItem( req, params.menuItemKey, params.withParents ).getAsJDOMDocument();
     }
 }

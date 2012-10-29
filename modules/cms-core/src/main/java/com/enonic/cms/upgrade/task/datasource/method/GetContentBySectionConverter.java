@@ -2,6 +2,8 @@ package com.enonic.cms.upgrade.task.datasource.method;
 
 import org.jdom.Element;
 
+import com.google.common.base.Strings;
+
 final class GetContentBySectionConverter
     extends DataSourceMethodConverter
 {
@@ -37,13 +39,29 @@ final class GetContentBySectionConverter
              12 int[] filterByContentTypes )
             */
 
+            String query = params[0];
+
+            String contentTypesString = params[12];
+
+            if ( !Strings.isNullOrEmpty( contentTypesString ) )
+            {
+                query = appendInFilterToQuery( query, contentTypesString, "contenttypekey" );
+            }
+
             // Translated from !relatedTitlesOnly && !titlesOnly
             boolean includeData = !Boolean.valueOf( params[9] ) || !Boolean.valueOf( params[5] );
 
-            return method().param( "menuItemKeys", params[0] ).param( "levels", params[1] ).param( "orderBy", params[2] ).param( "index",
-                                                                                                                                 params[3] ).param(
-                "count", params[4] ).param( "includeData", Boolean.toString( includeData ) ).param( "childrenLevel", params[7] ).param(
-                "parentLevel", params[6] ).build();
+            return method()
+                .param( "menuItemKeys", params[0] )
+                .param( "levels", params[1] )
+                .param( "query", query)
+                .param( "orderBy", params[2] )
+                .param( "index", params[3] )
+                .param( "count", params[4] )
+                .param( "includeData", Boolean.toString( includeData ) )
+                .param( "childrenLevel", params[7] )
+                .param( "parentLevel", params[6] )
+                .build();
         }
 
         if ( params.length == 14 )
@@ -67,12 +85,27 @@ final class GetContentBySectionConverter
                13 int[] filterByContentType );
             */
 
+            String query = params[0];
+
+            String contentTypesString = params[13];
+            if ( !Strings.isNullOrEmpty( contentTypesString ) )
+            {
+                query = appendInFilterToQuery( query, contentTypesString, "contenttypekey" );
+            }
+
             // Translated from !relatedTitlesOnly && !titlesOnly
             boolean includeData = !Boolean.valueOf( params[10] ) || !Boolean.valueOf( params[6] );
-            return method().param( "menuItemKeys", params[1] ).param( "levels", params[2] ).param( "query", params[0] ).param( "orderBy",
-                                                                                                                               params[3] ).param(
-                "index", params[4] ).param( "count", params[5] ).param( "includeData", Boolean.toString( includeData ) ).param(
-                "childrenLevel", params[8] ).param( "parentLevel", params[7] ).build();
+            return method()
+                .param( "menuItemKeys", params[1] )
+                .param( "levels", params[2] )
+                .param( "query", query )
+                .param( "orderBy",params[3] )
+                .param("index", params[4] )
+                .param( "count", params[5] )
+                .param( "includeData", Boolean.toString( includeData ) )
+                .param("childrenLevel", params[8] )
+                .param( "parentLevel", params[7] )
+                .build();
         }
 
         return method().params( params, "menuItemKeys", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",

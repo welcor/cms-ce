@@ -15,66 +15,97 @@
     <parameter>childrenLevels</parameter>
     <parameter>parentLevels</parameter>
   </datasource>
+  <!--
+        0 int[] menuItemKeys,
+        1 int levels,
+        2 String orderBy,
+        3 int fromIndex,
+        4 int count,
+        5 boolean titlesOnly,
+        6 int parentLevel,
+        7 int childrenLevel,
+        8 int parentChildrenLevel,
+        9 boolean relatedTitlesOnly,
+        10 boolean includeTotalCount,
+        11 boolean includeUserRights,
+        12 int[] filterByContentTypes )
+  -->
   <datasource name="getContentBySection">
-    <parameter>menuItemKeys</parameter>
-    <parameter>levels</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>index</parameter>
-    <parameter>count</parameter>
-    <parameter>true</parameter>
-    <parameter>parentLevels</parameter>
-    <parameter>childrenLevels</parameter>
-    <parameter>ParChildLevels</parameter>
-    <parameter>true</parameter>
-    <parameter>false</parameter>
-    <parameter>false</parameter>
+    <parameter name="menuItemKeys">menuItemKeys</parameter>
+    <parameter name="levels">levels</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="fromIndex">index</parameter>
+    <parameter name="count">count</parameter>
+    <parameter name="titlesOnly">true</parameter>
+    <parameter name="parentLevel">parentLevels</parameter>
+    <parameter name="childrenLevel">childrenLevels</parameter>
+    <parameter name="parentChildrenLevel">ParChildLevels</parameter>
+    <parameter name="includeTotalCount">true</parameter>
+    <parameter name="includeUserRights">false</parameter>
+    <parameter name="filterByContentTypes">13,14,15</parameter>
+  </datasource>
+  <!--
+       0 String query,
+       1 int[] menuItemKeys,
+       2 int levels,
+       3 String orderBy,
+       4 int fromIndex,
+       5 int count,
+       6 boolean titlesOnly,
+       7 int parentLevel,
+       8 int childrenLevel,
+       9 int parentChildrenLevel,
+       10 boolean relatedTitlesOnly,
+       11 boolean includeTotalCount,
+       12 boolean includeUserRights,
+       13 int[] filterByContentType );
+  -->
+  <datasource name="getContentBySection">
+    <parameter name="query">fisk LIKE 'ost'</parameter>
+    <parameter name="menuItemKeys">2,3,4,5</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="fromIndex">index</parameter>
+    <parameter name="count">count</parameter>
+    <parameter name="titlesOnly">true</parameter>
+    <parameter name="parentLevel">parentLevels</parameter>
+    <parameter name="childrenLevel">childrenLevels</parameter>
+    <parameter name="parentChildrenLevel">ParChildLevels</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">true</parameter>
+    <parameter name="includeUserRights">false</parameter>
+    <parameter name="filterByContentTypes">13,14,15</parameter>
   </datasource>
   <datasource name="getContentBySection">
-    <parameter>menuItemKeys</parameter>
-    <parameter>levels</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>index</parameter>
-    <parameter>count</parameter>
-    <parameter>true</parameter>
-    <parameter>parentLevels</parameter>
-    <parameter>childrenLevels</parameter>
-    <parameter>ParChildLevels</parameter>
-    <parameter>true</parameter>
-    <parameter>false</parameter>
-    <parameter>false</parameter>
-    <parameter>filterContentTypes</parameter>
+    <parameter name="query"/>
+    <parameter name="menuItemKeys">2,3,4,5</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="fromIndex">index</parameter>
+    <parameter name="count">count</parameter>
+    <parameter name="titlesOnly">false</parameter>
+    <parameter name="parentLevel">parentLevels</parameter>
+    <parameter name="childrenLevel">childrenLevels</parameter>
+    <parameter name="parentChildrenLevel">ParChildLevels</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">false</parameter>
+    <parameter name="includeUserRights">false</parameter>
+    <parameter name="filterByContentTypes">13,14,15</parameter>
   </datasource>
   <datasource name="getContentBySection">
-    <parameter>myQuery</parameter>
-    <parameter>menuItemKeys</parameter>
-    <parameter>levels</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>index</parameter>
-    <parameter>count</parameter>
-    <parameter>true</parameter>
-    <parameter>parentLevel</parameter>
-    <parameter>childrenLevel</parameter>
-    <parameter>parchildlevel</parameter>
-    <parameter>false</parameter>
-    <parameter>false</parameter>
-    <parameter>false</parameter>
-    <parameter>14,14</parameter>
-  </datasource>
-  <datasource name="getContentBySection">
-    <parameter>myQuery</parameter>
-    <parameter>menuItemKeys</parameter>
-    <parameter>levels</parameter>
-    <parameter>myOrderBy</parameter>
-    <parameter>index</parameter>
-    <parameter>count</parameter>
-    <parameter>true</parameter>
-    <parameter>parentLevel</parameter>
-    <parameter>childrenLevel</parameter>
-    <parameter>parchildlevel</parameter>
-    <parameter>false</parameter>
-    <parameter>false</parameter>
-    <parameter>false</parameter>
-    <parameter>14,14</parameter>
-    <parameter>unknown</parameter>
+    <parameter name="query"/>
+    <parameter name="menuItemKeys">2,3,4,5</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="fromIndex">index</parameter>
+    <parameter name="count">count</parameter>
+    <parameter name="titlesOnly">false</parameter>
+    <parameter name="parentLevel">parentLevels</parameter>
+    <parameter name="childrenLevel">childrenLevels</parameter>
+    <parameter name="parentChildrenLevel">ParChildLevels</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">false</parameter>
+    <parameter name="includeUserRights">false</parameter>
+    <parameter name="filterByContentTypes"/>
   </datasource>
 </datasources>

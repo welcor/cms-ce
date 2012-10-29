@@ -13,10 +13,11 @@
     <parameter name="childrenLevel">childrenLevels</parameter>
     <parameter name="parentLevel">parentLevels</parameter>
   </datasource>
-  <!--<datasource name="getContentBySection"><parameter>menuItemKeys</parameter><parameter>levels</parameter><parameter>myOrderBy</parameter><parameter>index</parameter><parameter>count</parameter><parameter>true</parameter><parameter>parentLevels</parameter><parameter>childrenLevels</parameter><parameter>ParChildLevels</parameter><parameter>true</parameter><parameter>false</parameter><parameter>false</parameter></datasource>-->
+  <!--<datasource name="getContentBySection"><parameter name="menuItemKeys">menuItemKeys</parameter><parameter name="levels">levels</parameter><parameter name="orderBy">myOrderBy</parameter><parameter name="fromIndex">index</parameter><parameter name="count">count</parameter><parameter name="titlesOnly">true</parameter><parameter name="parentLevel">parentLevels</parameter><parameter name="childrenLevel">childrenLevels</parameter><parameter name="parentChildrenLevel">ParChildLevels</parameter><parameter name="includeTotalCount">true</parameter><parameter name="includeUserRights">false</parameter><parameter name="filterByContentTypes">13,14,15</parameter></datasource>-->
   <datasource name="getContentBySection">
-    <parameter name="menuItemKeys">menuItemKeys</parameter>
-    <parameter name="levels">levels</parameter>
+    <parameter name="menuItemKeys">2,3,4,5</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="query">(fisk LIKE 'ost') AND contenttypekey IN (13,14,15)</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">index</parameter>
     <parameter name="count">count</parameter>
@@ -25,16 +26,26 @@
     <parameter name="parentLevel">parentLevels</parameter>
   </datasource>
   <datasource name="getContentBySection">
-    <parameter name="menuItemKeys">menuItemKeys</parameter>
-    <parameter name="levels">levels</parameter>
-    <parameter name="query">myQuery</parameter>
+    <parameter name="menuItemKeys">2,3,4,5</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="query">contenttypekey IN (13,14,15)</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">index</parameter>
     <parameter name="count">count</parameter>
     <parameter name="includeData">true</parameter>
-    <parameter name="childrenLevel">childrenLevel</parameter>
-    <parameter name="parentLevel">parentLevel</parameter>
+    <parameter name="childrenLevel">childrenLevels</parameter>
+    <parameter name="parentLevel">parentLevels</parameter>
   </datasource>
-  <!--<datasource name="getContentBySection"><parameter>myQuery</parameter><parameter>menuItemKeys</parameter><parameter>levels</parameter><parameter>myOrderBy</parameter><parameter>index</parameter><parameter>count</parameter><parameter>true</parameter><parameter>parentLevel</parameter><parameter>childrenLevel</parameter><parameter>parchildlevel</parameter><parameter>false</parameter><parameter>false</parameter><parameter>false</parameter><parameter>14,14</parameter><parameter>unknown</parameter></datasource>-->
+  <datasource name="getContentBySection">
+    <parameter name="menuItemKeys">2,3,4,5</parameter>
+    <parameter name="levels">1</parameter>
+    <parameter name="query" />
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">index</parameter>
+    <parameter name="count">count</parameter>
+    <parameter name="includeData">true</parameter>
+    <parameter name="childrenLevel">childrenLevels</parameter>
+    <parameter name="parentLevel">parentLevels</parameter>
+  </datasource>
 </datasources>
 

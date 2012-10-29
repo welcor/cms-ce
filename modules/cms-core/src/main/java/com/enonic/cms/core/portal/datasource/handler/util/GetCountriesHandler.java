@@ -13,35 +13,32 @@ import com.enonic.cms.core.country.CountryCode;
 import com.enonic.cms.core.country.CountryService;
 import com.enonic.cms.core.country.CountryXmlCreator;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetCountriesHandler")
 public final class GetCountriesHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetCountriesParams>
 {
     private CountryService countryService;
 
     public GetCountriesHandler()
     {
-        super( "getCountries" );
+        super( "getCountries", GetCountriesParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetCountriesParams params )
         throws Exception
     {
-        final String[] countryCodes = param(req, "countryCodes" ).asStringArray();
-        final boolean includeRegions = param(req, "includeRegions" ).asBoolean( false );
-
         final List<Country> countriesList = Lists.newArrayList();
 
-        if ( countryCodes.length == 0 )
+        if ( params.countryCodes == null )
         {
             countriesList.addAll( this.countryService.getCountries() );
         }
         else
         {
-            for ( final String countryCodeStr : countryCodes )
+            for ( final String countryCodeStr : params.countryCodes )
             {
                 final Country country = this.countryService.getCountry( new CountryCode( countryCodeStr ) );
                 if ( country != null )
@@ -52,7 +49,7 @@ public final class GetCountriesHandler
         }
 
         final CountryXmlCreator countryXmlCreator = new CountryXmlCreator();
-        countryXmlCreator.setIncludeRegionsInfo( includeRegions );
+        countryXmlCreator.setIncludeRegionsInfo( params.includeRegions );
         return countryXmlCreator.createCountriesDocument( countriesList );
     }
 

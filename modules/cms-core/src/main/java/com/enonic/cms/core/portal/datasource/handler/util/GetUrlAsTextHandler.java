@@ -7,29 +7,25 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetUrlAsTextHandler")
 public final class GetUrlAsTextHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetUrlAsTextParams>
 {
     private HTTPService httpService;
 
     public GetUrlAsTextHandler()
     {
-        super( "getUrlAsText" );
+        super( "getUrlAsText", GetUrlAsTextParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetUrlAsTextParams params )
         throws Exception
     {
-        final String url = param(req, "url" ).required().asString();
-        final String encoding = param(req, "encoding" ).asString( "ISO-8859-1" );
-        final int timeout = param(req, "timeout" ).asInteger( 5000 );
-
         final Element root = new Element( "urlresult" );
-        root.setText( this.httpService.getURL( url, encoding, timeout ) );
+        root.setText( this.httpService.getURL( params.url, params.encoding, params.timeout ) );
         return new Document( root );
     }
 

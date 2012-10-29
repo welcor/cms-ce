@@ -8,15 +8,15 @@ import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.timezone.TimeZoneService;
 import com.enonic.cms.core.timezone.TimeZoneXmlCreator;
 
 @Component("ds.GetTimeZonesHandler")
 public final class GetTimeZonesHandler
-    extends SimpleDataSourceHandler
+    extends DataSourceHandler
 {
     private TimeService timeService;
 

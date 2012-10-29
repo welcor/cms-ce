@@ -6,14 +6,14 @@ import org.jdom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.portal.datasource.handler.DataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.locale.LocaleService;
 import com.enonic.cms.core.locale.LocaleXmlCreator;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 @Component("ds.GetLocalesHandler")
 public final class GetLocalesHandler
-    extends SimpleDataSourceHandler
+    extends DataSourceHandler
 {
     private LocaleService localeService;
 

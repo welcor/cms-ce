@@ -15,8 +15,6 @@ public final class DataSourceRequest
 
     private final Map<String, String> paramMap;
 
-    private String resultElement;
-
     public DataSourceRequest()
     {
         this.paramMap = Maps.newHashMap();
@@ -50,15 +48,5 @@ public final class DataSourceRequest
     public void setCache( final boolean cache )
     {
         this.cache = cache;
-    }
-
-    public String getResultElement()
-    {
-        return this.resultElement;
-    }
-
-    public void setResultElement( final String resultElement )
-    {
-        this.resultElement = resultElement;
     }
 }

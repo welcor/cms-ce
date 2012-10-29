@@ -10,27 +10,24 @@ import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetUrlAsXmlHandler")
 public final class GetUrlAsXmlHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetUrlAsXmlParams>
 {
     private HTTPService httpService;
 
     public GetUrlAsXmlHandler()
     {
-        super( "getUrlAsXml" );
+        super( "getUrlAsXml", GetUrlAsXmlParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetUrlAsXmlParams params )
         throws Exception
     {
-        final String url = param(req, "url" ).required().asString();
-        final int timeout = param(req, "timeout" ).asInteger( 5000 );
-
-        final byte[] data = this.httpService.getURLAsBytes( url, timeout );
+        final byte[] data = this.httpService.getURLAsBytes( params.url, params.timeout );
         return JDOMUtil.parseDocument( new ByteArrayInputStream( data ) );
     }
 

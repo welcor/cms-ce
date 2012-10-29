@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 import com.enonic.cms.core.service.CalendarService;
 import com.enonic.cms.core.time.TimeService;
 
 @Component("ds.GetFormattedDateHandler")
 public final class GetFormattedDateHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetFormattedDateParams>
 {
     private final CalendarService calendarService;
 
@@ -19,18 +19,18 @@ public final class GetFormattedDateHandler
 
     public GetFormattedDateHandler()
     {
-        super( "getFormattedDate" );
+        super( "getFormattedDate", GetFormattedDateParams.class );
         this.calendarService = new CalendarService();
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetFormattedDateParams params )
         throws Exception
     {
-        final int offset = param(req, "offset" ).asInteger( 0 );
-        final String dateFormat = param(req, "dateFormat" ).asString( "EEEE d. MMMM yyyy" );
-        final String language = param(req, "language" ).required().asString();
-        final String country = param(req, "country" ).required().asString();
+        final int offset = params.offset;
+        final String dateFormat = params.dateFormat;
+        final String language = params.language;
+        final String country = params.country;
 
         final long now = this.timeService.getNowAsMilliseconds();
         return this.calendarService.getFormattedDate( now, offset, dateFormat, language, country );

@@ -4,25 +4,21 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetPreferencesHandler")
 public final class GetPreferencesHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetPreferencesParams>
 {
     public GetPreferencesHandler()
     {
-        super( "getPreferences" );
+        super( "getPreferences", GetPreferencesParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetPreferencesParams params )
         throws Exception
     {
-        final String scope = param( req, "scope" ).asString( "*" );
-        final String keyPattern = param( req, "keyPattern" ).asString( "*" );
-        final boolean uniqueMatch = param( req, "uniqueMatch" ).asBoolean( true );
-
-        return this.dataSourceService.getPreferences( req, scope, keyPattern, uniqueMatch ).getAsJDOMDocument();
+        return this.dataSourceService.getPreferences( req, params.scope, params.keyPattern, params.uniqueMatch ).getAsJDOMDocument();
     }
 }

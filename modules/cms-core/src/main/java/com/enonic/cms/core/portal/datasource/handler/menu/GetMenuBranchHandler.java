@@ -4,26 +4,22 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetMenuBranchHandler")
 public final class GetMenuBranchHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetMenuBranchParams>
 {
     public GetMenuBranchHandler()
     {
-        super( "getMenuBranch" );
+        super( "getMenuBranch", GetMenuBranchParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetMenuBranchParams params )
         throws Exception
     {
-        final int menuItemKey = param( req, "menuItemKey" ).required().asInteger();
-        final boolean includeTopLevel = param( req, "includeTopLevel" ).asBoolean( false );
-        final int startLevel = param( req, "startLevel" ).asInteger( 0 );
-        final int levels = param( req, "levels" ).asInteger( 0 );
-
-        return this.dataSourceService.getMenuBranch( req, menuItemKey, includeTopLevel, startLevel, levels ).getAsJDOMDocument();
+        return this.dataSourceService.getMenuBranch( req, params.menuItemKey, params.includeTopLevel, params.startLevel,
+                                                     params.levels ).getAsJDOMDocument();
     }
 }

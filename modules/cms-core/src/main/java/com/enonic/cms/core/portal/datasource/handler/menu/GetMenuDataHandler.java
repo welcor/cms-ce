@@ -4,24 +4,22 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetMenuDataHandler")
 public final class GetMenuDataHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetMenuDataParams>
 {
     public GetMenuDataHandler()
     {
-        super( "getMenuData" );
+        super( "getMenuData", GetMenuDataParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetMenuDataParams params )
         throws Exception
     {
         // TODO: siteKey should be optional (use current siteKey if null)
-        final int siteKey = param( req, "siteKey" ).required().asInteger();
-
-        return this.dataSourceService.getMenuData( req, siteKey ).getAsJDOMDocument();
+        return this.dataSourceService.getMenuData( req, params.siteKey ).getAsJDOMDocument();
     }
 }

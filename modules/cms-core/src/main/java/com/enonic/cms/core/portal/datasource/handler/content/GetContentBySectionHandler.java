@@ -4,12 +4,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 @Component("ds.GetContentBySectionHandler")
 public final class GetContentBySectionHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     public GetContentBySectionHandler()
     {

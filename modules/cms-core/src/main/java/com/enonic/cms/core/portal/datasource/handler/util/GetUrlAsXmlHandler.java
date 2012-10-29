@@ -10,11 +10,11 @@ import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 @Component("ds.GetUrlAsXmlHandler")
 public final class GetUrlAsXmlHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     private HTTPService httpService;
 

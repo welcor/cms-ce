@@ -4,11 +4,11 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 @Component("ds.GetMenuItemHandler")
 public final class GetMenuItemHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     public GetMenuItemHandler()
     {

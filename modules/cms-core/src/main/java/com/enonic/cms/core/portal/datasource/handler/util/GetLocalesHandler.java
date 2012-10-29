@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.locale.LocaleService;
 import com.enonic.cms.core.locale.LocaleXmlCreator;
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 @Component("ds.GetLocalesHandler")
 public final class GetLocalesHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     private LocaleService localeService;
 

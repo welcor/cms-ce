@@ -13,11 +13,11 @@ import com.enonic.cms.core.country.CountryCode;
 import com.enonic.cms.core.country.CountryService;
 import com.enonic.cms.core.country.CountryXmlCreator;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 @Component("ds.GetCountriesHandler")
 public final class GetCountriesHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     private CountryService countryService;
 

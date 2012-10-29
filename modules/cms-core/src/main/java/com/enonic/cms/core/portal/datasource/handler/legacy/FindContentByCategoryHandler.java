@@ -4,13 +4,13 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 
 @Component("ds.FindContentByCategoryHandler")
 public final class FindContentByCategoryHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     public FindContentByCategoryHandler()
     {

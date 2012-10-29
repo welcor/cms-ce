@@ -3,12 +3,12 @@ package com.enonic.cms.core.portal.datasource.handler.content;
 import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 
 @Component("ds.GetCategoriesHandler")
 public final class GetCategoriesHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     public GetCategoriesHandler()
     {

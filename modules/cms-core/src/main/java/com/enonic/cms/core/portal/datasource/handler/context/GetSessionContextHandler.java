@@ -9,11 +9,11 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.ParamDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
 
 @Component("ds.GetSessionContextHandler")
 public final class GetSessionContextHandler
-    extends ParamDataSourceHandler
+    extends SimpleDataSourceHandler
 {
     public GetSessionContextHandler()
     {

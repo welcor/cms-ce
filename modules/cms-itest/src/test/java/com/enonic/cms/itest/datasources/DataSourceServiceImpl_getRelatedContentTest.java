@@ -61,11 +61,9 @@ public class DataSourceServiceImpl_getRelatedContentTest
 
     private static final DateTime DATE_TIME_2010_01_01 = new DateTime( 2010, 1, 1, 0, 0, 0, 0 );
 
-
     @Before
     public void setUp()
     {
-
         factory = fixture.getFactory();
 
         // setup needed common data for each test
@@ -164,7 +162,7 @@ public class DataSourceServiceImpl_getRelatedContentTest
 
         XMLDocument xmlDocResult =
             dataSourceService.getRelatedContent( context, contentKeys, relation, query, orderBy, index, count, includeData, childrenLevel,
-                                                 parentLevel );
+                                                 parentLevel, false );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();

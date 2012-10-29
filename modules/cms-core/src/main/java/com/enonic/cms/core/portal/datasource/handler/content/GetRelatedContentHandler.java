@@ -19,9 +19,8 @@ public final class GetRelatedContentHandler
     protected Document handle( final DataSourceRequest req, final GetRelatedContentParams params )
         throws Exception
     {
-        // TODO: Use requireAll...
         return this.dataSourceService.getRelatedContent( req, params.contentKeys, params.relation, params.query, params.orderBy,
                                                          params.index, params.count, params.includeData, params.childrenLevel,
-                                                         params.parentLevel ).getAsJDOMDocument();
+                                                         params.parentLevel, params.requireAll ).getAsJDOMDocument();
     }
 }

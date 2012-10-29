@@ -215,9 +215,9 @@ public final class DataSourceServiceImpl
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
-                                          int index, int count, boolean includeData, int childrenLevel, int parentLevel )
+                                          int index, int count, boolean includeData, int childrenLevel, int parentLevel,
+                                          final boolean requireAll )
     {
-        boolean requireAll = false;
         boolean includeOwnerAndModifierData = true;
         boolean includeCategoryData = true;
         boolean categoryRecursive = false;
@@ -1045,10 +1045,10 @@ public final class DataSourceServiceImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRelatedContents( DataSourceContext context, int relation, int[] contentKeys, String orderBy, boolean requireAll,
-                                           int fromIndex, int count, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                           boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
-                                           int[] filterByContentTypes )
+    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String orderBy,
+                                               boolean requireAll, int fromIndex, int count, int parentLevel, int childrenLevel,
+                                               int parentChildrenLevel, boolean includeTotalCount, int[] filterByCategories,
+                                               boolean categoryRecursive, int[] filterByContentTypes )
     {
         return doGetRelatedContent( context, contentKeys, relation, null, orderBy, requireAll, fromIndex, count, parentLevel, childrenLevel,
                                     parentChildrenLevel, true, true, true, true, filterByCategories, categoryRecursive,
@@ -1059,10 +1059,11 @@ public final class DataSourceServiceImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRelatedContents( DataSourceContext context, int relation, int[] contentKeys, String orderBy, boolean requireAll,
-                                           int fromIndex, int count, boolean titlesOnly, int parentLevel, int childrenLevel,
-                                           int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                           int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes )
+    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String orderBy,
+                                               boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
+                                               int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
+                                               boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
+                                               int[] filterByContentTypes )
     {
         return doGetRelatedContent( context, contentKeys, relation, null, orderBy, requireAll, fromIndex, count, parentLevel, childrenLevel,
                                     parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, filterByCategories,
@@ -1073,10 +1074,11 @@ public final class DataSourceServiceImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRelatedContents( DataSourceContext context, int relation, int[] contentKeys, String query, String orderBy,
-                                           boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
-                                           int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                           int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes )
+    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String query, String orderBy,
+                                               boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
+                                               int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
+                                               boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
+                                               int[] filterByContentTypes )
     {
         return doGetRelatedContent( context, contentKeys, relation, query, orderBy, requireAll, fromIndex, count, parentLevel,
                                     childrenLevel, parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly,

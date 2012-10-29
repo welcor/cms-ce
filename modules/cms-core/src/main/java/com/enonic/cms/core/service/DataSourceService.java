@@ -55,6 +55,7 @@ public interface DataSourceService
      * method.  Related content, as specified by <code>parentLevel</code> or <code>childrenLevel</code> are the related content of the root
      * set of children or parents, and may include the content that was passed in as content keys to the method.
      *
+     *
      * @param context       the Vertical Site context
      * @param contentKeys   The content keys
      * @param relation      the allowed values are -1 for parents and 1 for children
@@ -66,10 +67,12 @@ public interface DataSourceService
      *                      parameter.
      * @param childrenLevel the level of children to include
      * @param parentLevel   the level of parents to include
+     * @param requireAll
      * @return An XML document with the result of the search
      */
     public XMLDocument getRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
-                                          int index, int count, boolean includeData, int childrenLevel, int parentLevel );
+                                          int index, int count, boolean includeData, int childrenLevel, int parentLevel,
+                                          final boolean requireAll );
 
     /**
      * Find content in a section specified by the given menu item keys.
@@ -360,10 +363,10 @@ public interface DataSourceService
      * @param filterByContentTypes if not empty, only content with these content types are included
      * @return contents xml
      */
-    public XMLDocument getRelatedContents( DataSourceContext context, int relation, int[] contentKeys, String orderBy, boolean requireAll,
-                                           int fromIndex, int count, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                           boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
-                                           int[] filterByContentTypes );
+    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String orderBy,
+                                               boolean requireAll, int fromIndex, int count, int parentLevel, int childrenLevel,
+                                               int parentChildrenLevel, boolean includeTotalCount, int[] filterByCategories,
+                                               boolean categoryRecursive, int[] filterByContentTypes );
 
     /**
      * Get related contents based on a selection of content keys. The integer paramater "relation" decides which relation to use. <ol>
@@ -394,10 +397,11 @@ public interface DataSourceService
      * @param filterByContentTypes if not empty, only content with these content types are included
      * @return contents xml
      */
-    public XMLDocument getRelatedContents( DataSourceContext context, int relation, int[] contentKeys, String orderBy, boolean requireAll,
-                                           int fromIndex, int count, boolean titlesOnly, int parentLevel, int childrenLevel,
-                                           int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                           int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes );
+    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String orderBy,
+                                               boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
+                                               int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
+                                               boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
+                                               int[] filterByContentTypes );
 
     /**
      * Get related contents based on a selection of content keys.
@@ -432,10 +436,11 @@ public interface DataSourceService
      * @param filterByContentTypes if not empty, only content with these content types are included
      * @return contents xml
      */
-    public XMLDocument getRelatedContents( DataSourceContext context, int relation, int[] contentKeys, String query, String orderBy,
-                                           boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
-                                           int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                           int[] filterByCategories, boolean categoryRecursive, int[] filterByContentTypes );
+    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String query, String orderBy,
+                                               boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
+                                               int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
+                                               boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
+                                               int[] filterByContentTypes );
 
     /**
      * Return index values for a specified path.

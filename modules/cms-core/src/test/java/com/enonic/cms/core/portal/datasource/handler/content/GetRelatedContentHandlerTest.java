@@ -46,11 +46,11 @@ public class GetRelatedContentHandlerTest
         this.request.addParam( "childrenLevel", "1" );
         this.request.addParam( "parentLevel", "0" );
 
-        Mockito.when( this.dataSourceService.getRelatedContent( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+        Mockito.when( this.dataSourceService.getRelatedContent( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0, false ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getRelatedContent( this.request, new int[]{11}, 1, "", "", 0, 10, true,
-                                                                                        1, 0 );
+                                                                                        1, 0, false );
     }
 
 
@@ -69,11 +69,11 @@ public class GetRelatedContentHandlerTest
         this.request.addParam( "parentLevel", "0" );
 
         Mockito.when(
-            this.dataSourceService.getRelatedContent( this.request, new int[]{11, 3, 4}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+            this.dataSourceService.getRelatedContent( this.request, new int[]{11, 3, 4}, 1, "", "", 0, 10, true, 1, 0, false ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getRelatedContent( this.request, new int[]{11, 3, 4}, 1, "", "", 0, 10,
-                                                                                        true, 1, 0 );
+                                                                                        true, 1, 0, false );
     }
 
     @Test(expected = DataSourceException.class)
@@ -91,7 +91,7 @@ public class GetRelatedContentHandlerTest
         this.request.addParam( "parentLevel", "0" );
 
         Mockito.when(
-            this.dataSourceService.getRelatedContent( this.request, new int[]{11, 44}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+            this.dataSourceService.getRelatedContent( this.request, new int[]{11, 44}, 1, "", "", 0, 10, true, 1, 0, false ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
     }
@@ -110,7 +110,7 @@ public class GetRelatedContentHandlerTest
         this.request.addParam( "childrenLevel", "1" );
         this.request.addParam( "parentLevel", "0" );
 
-        Mockito.when( this.dataSourceService.getRelatedContent( this.request, new int[]{}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+        Mockito.when( this.dataSourceService.getRelatedContent( this.request, new int[]{}, 1, "", "", 0, 10, true, 1, 0, false ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
     }

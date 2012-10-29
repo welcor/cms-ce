@@ -4,36 +4,28 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 import static org.apache.commons.lang.ArrayUtils.toPrimitive;
 
 @Component("ds.GetContentByCategoryHandler")
 public final class GetContentByCategoryHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetContentByCategoryParams>
 {
     public GetContentByCategoryHandler()
     {
-        super( "getContentByCategory" );
+        super( "getContentByCategory", GetContentByCategoryParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    public Document handle( final DataSourceRequest req, final GetContentByCategoryParams params )
         throws Exception
     {
-        final Integer[] categoryKeys = param( req, "categoryKeys" ).required().asIntegerArray();
-        final int levels = param( req, "levels" ).asInteger( 1 );
-        final String query = param( req, "query" ).asString( "" );
-        final String orderBy = param( req, "orderBy" ).asString( "" );
-        final int index = param( req, "index" ).asInteger( 0 );
-        final int count = param( req, "count" ).asInteger( 10 );
-        final boolean includeData = param( req, "includeData" ).asBoolean( true );
-        final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
-        final int parentLevel = param( req, "parentLevel" ).asInteger( 0 );
         // TODO: To be implemented, see getMyContentByCategory in DatasourceServiceImpl
-        final boolean filterOnUser = param( req, "filterOnUser" ).asBoolean(false);
+        // final boolean filterOnUser = param( req, "filterOnUser" ).asBoolean( false );
 
-        return dataSourceService.getContentByCategory( req,  toPrimitive( categoryKeys) , levels, query, orderBy,
-                                             index, count, includeData, childrenLevel, parentLevel ).getAsJDOMDocument();
+        return dataSourceService.getContentByCategory( req, toPrimitive( params.categoryKeys ), params.levels, params.query, params.orderBy,
+                                                       params.index, params.count, params.includeData, params.childrenLevel,
+                                                       params.parentLevel ).getAsJDOMDocument();
     }
 }

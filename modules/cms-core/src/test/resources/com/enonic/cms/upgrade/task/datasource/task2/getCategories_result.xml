@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="getCategories"/>
+  <datasource name="getCategories">
+    <parameter name="categoryKey">1</parameter>
+    <parameter name="levels">2</parameter>
+    <parameter name="includeContentCount">false</parameter>
+    <parameter name="includeTopCategory">true</parameter>
+  </datasource>
+  <datasource name="getCategories">
+    <parameter name="categoryKey">1</parameter>
+    <parameter name="levels">2</parameter>
+    <parameter name="includeContentCount">false</parameter>
+    <parameter name="includeTopCategory">true</parameter>
+    <parameter name="unknown">true</parameter>
+  </datasource>
+  <datasource name="getCategories">
+    <parameter name="categoryKey">1</parameter>
+    <parameter name="levels">2</parameter>
+    <parameter name="topLevel">true</parameter>
+    <parameter name="details">false</parameter>
+    <parameter name="catCount">false</parameter>
+    <parameter name="contentCount">false</parameter>
+  </datasource>
+</datasources>

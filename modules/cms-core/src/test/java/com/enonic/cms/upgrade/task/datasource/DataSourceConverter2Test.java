@@ -212,4 +212,13 @@ public class DataSourceConverter2Test
     {
         testConvert( "task2/getContent" );
     }
+
+
+    @Test
+    public void testConvert_getCategories()
+        throws Exception
+    {
+        testConvert( "task2/getCategories" );
+    }
+
 }

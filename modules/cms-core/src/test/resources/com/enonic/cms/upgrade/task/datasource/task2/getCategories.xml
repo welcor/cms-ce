@@ -22,4 +22,13 @@
     <parameter name="catCount">false</parameter>
     <parameter name="contentCount">false</parameter>
   </datasource>
+  <datasource name="getCategories">
+    <parameter name="categoryKey">1</parameter>
+    <parameter name="levels">2</parameter>
+    <parameter name="topLevel">true</parameter>
+    <parameter name="details">false</parameter>
+    <parameter name="catCount">false</parameter>
+    <parameter name="contentCount">false</parameter>
+    <parameter name="unknown">false</parameter>
+  </datasource>
 </datasources>

@@ -20,30 +20,6 @@ public final class ParameterConverter
         return this.service.convert( value, targetType );
     }
 
-    public Integer toInteger( final String value )
-        throws ConversionFailedException
-    {
-        return this.service.convert( value, Integer.class );
-    }
-
-    public Boolean toBoolean( final String value )
-        throws ConversionFailedException
-    {
-        return this.service.convert( value, Boolean.class );
-    }
-
-    public String[] toStringArray( final String value )
-        throws ConversionFailedException
-    {
-        return this.service.convert( value, String[].class );
-    }
-
-    public Integer[] toIntegerArray( final String value )
-        throws ConversionFailedException
-    {
-        return this.service.convert( value, Integer[].class );
-    }
-
     public static ParameterConverter getInstance()
     {
         return INSTANCE;

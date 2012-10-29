@@ -24,10 +24,4 @@ public abstract class SimpleDataSourceHandler
 
         return value;
     }
-
-    protected final DataSourceParam param( final DataSourceRequest req, final String name )
-    {
-        final String value = req.getParams().get( name );
-        return new DataSourceParamImpl( getName(), name, value );
-    }
 }

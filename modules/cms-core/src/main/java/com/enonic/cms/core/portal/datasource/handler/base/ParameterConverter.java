@@ -3,7 +3,7 @@ package com.enonic.cms.core.portal.datasource.handler.base;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.support.DefaultConversionService;
 
-final class ParameterConverter
+public final class ParameterConverter
 {
     private final static ParameterConverter INSTANCE = new ParameterConverter();
 
@@ -12,6 +12,12 @@ final class ParameterConverter
     private ParameterConverter()
     {
         this.service = new DefaultConversionService();
+    }
+
+    public Object convert( final String value, final Class<?> targetType )
+        throws ConversionFailedException
+    {
+        return this.service.convert( value, targetType );
     }
 
     public Integer toInteger( final String value )

@@ -133,6 +133,27 @@ public class DataSourceXmlFactoryTest
         assertEquals( 2, element3.getParameters().size() );
     }
 
+
+    @Test
+    public void testParse_encoded()
+        throws Exception
+    {
+        final DataSourcesElement result = parse( "encoded" );
+
+        final List<DataSourceElement> list = result.getList();
+        assertNotNull( list );
+        assertEquals( 1, list.size() );
+
+        final DataSourceElement element = list.get( 0 );
+        assertNotNull( element );
+        assertEquals( "dummy", element.getName() );
+
+        final Map<String, String> params = element.getParameters();
+        assertNotNull( params );
+        assertEquals( 1, params.size() );
+        assertEquals( "age >= 33", params.get( "param1" ) );
+    }
+
     private DataSourcesElement parse( final String name )
         throws Exception
     {

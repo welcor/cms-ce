@@ -60,10 +60,21 @@ public final class DataSourceXmlFactory
         return result;
     }
 
-    private void addParameter( DataSourceElement result, final Element root )
+    private void addParameter( final DataSourceElement result, final Element root )
     {
         final String name = root.getAttributeValue( "name" );
-        final String value = this.xmlOutputter.outputString( root.getContent() );
+        String value = root.getTextNormalize();
+
+        if ( isXmlParameter( root ) )
+        {
+            value = this.xmlOutputter.outputString( root.getContent() );
+        }
+
         result.addParameter( name, value );
+    }
+
+    private boolean isXmlParameter( final Element elem )
+    {
+        return !elem.getChildren().isEmpty();
     }
 }

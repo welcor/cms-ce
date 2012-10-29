@@ -1,0 +1,5 @@
+<data-sources>
+  <data-source name="dummy">
+    <parameter name="param1">age &gt;= 33</parameter>
+  </data-source>
+</data-sources>

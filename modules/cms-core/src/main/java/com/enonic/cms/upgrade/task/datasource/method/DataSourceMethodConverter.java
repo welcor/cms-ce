@@ -2,6 +2,8 @@ package com.enonic.cms.upgrade.task.datasource.method;
 
 import org.jdom.Element;
 
+import com.google.common.base.Strings;
+
 public abstract class DataSourceMethodConverter
 {
     private final String name;
@@ -32,4 +34,26 @@ public abstract class DataSourceMethodConverter
     }
 
     public abstract Element convert( final String[] params );
+
+    protected String appendInFilterToQuery( final String existingQuery, final String indexValueString, final String indexFieldName )
+    {
+        if ( !Strings.isNullOrEmpty( indexValueString ) )
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            if ( !Strings.isNullOrEmpty( existingQuery ) )
+            {
+                stringBuilder.append( "(" + existingQuery + ")" );
+                stringBuilder.append( " AND " );
+            }
+
+            stringBuilder.append( indexFieldName + " IN (" );
+            stringBuilder.append( indexValueString );
+            stringBuilder.append( ")" );
+
+            return stringBuilder.toString();
+        }
+
+        return existingQuery;
+    }
 }

@@ -5,7 +5,7 @@
   <datasource name="getRelatedContents">
     <parameter name="relation">0</parameter>
     <parameter name="contentKeys">1,2</parameter>
-    <parameter name="query">myQuery</parameter>
+    <parameter name="query">title like '%fisk%'</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="requireAll">true</parameter>
     <parameter name="fromIndex">0</parameter>

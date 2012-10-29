@@ -55,7 +55,7 @@ final class FindContentByCategoryConverter
 
         if ( !Strings.isNullOrEmpty( contentTypesString ) )
         {
-            query = appendContentTypeKeysToQuery( query, contentTypesString );
+            query = appendInFilterToQuery( query, contentTypesString, "contenttypekey" );
         }
 
         final Integer levels = Boolean.valueOf( params[3] ) ? Integer.MAX_VALUE : 1;
@@ -74,29 +74,6 @@ final class FindContentByCategoryConverter
             .param( "childrenLevel", params[8] )
             .param( "parentLevel", params[9] )
             .build();
-    }
-
-    private String appendContentTypeKeysToQuery( final String existingQuery, final String contentTypesString )
-    {
-
-        if ( !Strings.isNullOrEmpty( contentTypesString ) )
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            if ( !Strings.isNullOrEmpty( existingQuery ) )
-            {
-                stringBuilder.append( "(" + existingQuery + ")");
-                stringBuilder.append( " AND " );
-            }
-
-            stringBuilder.append( "contenttypekey IN (" );
-            stringBuilder.append( contentTypesString );
-            stringBuilder.append( ")" );
-
-            return stringBuilder.toString();
-        }
-
-        return existingQuery;
     }
 
     private String convertSimpleSearch( String search, boolean opAnd )

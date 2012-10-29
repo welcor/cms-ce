@@ -44,7 +44,7 @@ final class GetMyContentByCategoryConverter
 
         if ( !Strings.isNullOrEmpty( contentTypesString ) )
         {
-            query = appendContentTypeKeysToQuery( query, contentTypesString );
+            query = appendInFilterToQuery( query, contentTypesString, "contenttypekey" );
         }
 
         final Integer levels = Boolean.valueOf( params[2] ) ? Integer.MAX_VALUE : 1;
@@ -65,27 +65,4 @@ final class GetMyContentByCategoryConverter
             .param( "filterOnUser", "true" )
             .build();
     }
-
-    private String appendContentTypeKeysToQuery( final String existingQuery, final String contentTypesString )
-    {
-        if ( !Strings.isNullOrEmpty( contentTypesString ) )
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            if ( !Strings.isNullOrEmpty( existingQuery ) )
-            {
-                stringBuilder.append( "(" + existingQuery + ")" );
-                stringBuilder.append( " AND " );
-            }
-
-            stringBuilder.append( "contenttypekey IN (" );
-            stringBuilder.append( contentTypesString );
-            stringBuilder.append( ")" );
-
-            return stringBuilder.toString();
-        }
-
-        return existingQuery;
-    }
-
 }

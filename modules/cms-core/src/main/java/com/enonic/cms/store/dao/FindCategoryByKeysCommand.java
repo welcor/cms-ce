@@ -3,17 +3,14 @@ package com.enonic.cms.store.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 
-import com.enonic.cms.core.content.OrderCategoryKeysByGivenOrderComparator;
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.CategoryMap;
 
 class FindCategoryByKeysCommand
 {
@@ -31,37 +28,32 @@ class FindCategoryByKeysCommand
         this.findCategoryByKeysQuerier = findCategoryByKeysQuerier;
     }
 
-    SortedMap<CategoryKey, CategoryEntity> execute( final List<CategoryKey> categoryKeys )
+    CategoryMap execute( final List<CategoryKey> categoryKeys )
     {
-        final SortedMap<CategoryKey, CategoryEntity> categoryMapByKey =
-            new TreeMap<CategoryKey, CategoryEntity>( new OrderCategoryKeysByGivenOrderComparator( categoryKeys ) );
-        final List<CategoryKey> categoriesNotFoundInCache = new ArrayList<CategoryKey>();
+        final CategoryMap categoryMap = new CategoryMap( categoryKeys );
 
-        findCategoriesInCache( categoryKeys, categoryMapByKey, categoriesNotFoundInCache );
+        final List<CategoryKey> categoriesNotFoundInCache = findCategoriesInCache( categoryKeys, categoryMap );
 
         if ( !categoriesNotFoundInCache.isEmpty() )
         {
             final List<CategoryEntity> categoriesFromDB = findCategoryByKeysQuerier.queryCategories( categoriesNotFoundInCache );
-            for ( CategoryEntity c : categoriesFromDB )
-            {
-                categoryMapByKey.put( c.getKey(), c );
-            }
+            categoryMap.addAll( categoriesFromDB );
         }
-        return categoryMapByKey;
+        return categoryMap;
     }
 
-    private void findCategoriesInCache( Iterable<CategoryKey> categoryKeys, Map<CategoryKey, CategoryEntity> categoriesFoundInCache,
-                                        List<CategoryKey> categoriesNotFoundInCache )
+    private List<CategoryKey> findCategoriesInCache( Iterable<CategoryKey> categoryKeys, CategoryMap categoriesFoundInCache )
     {
+        final List<CategoryKey> categoriesNotFoundInCache = new ArrayList<CategoryKey>();
         for ( final CategoryKey categoryKey : categoryKeys )
         {
             final boolean categoryExistsInCache = categoryExistInCacheResolver.categoryExistsInCache( categoryKey );
             if ( categoryExistsInCache )
             {
-                final CategoryEntity categoryFoundInCache = (CategoryEntity) hibernateTemplate.get( CategoryEntity.class, categoryKey );
+                final CategoryEntity categoryFoundInCache = hibernateTemplate.get( CategoryEntity.class, categoryKey );
                 if ( categoryFoundInCache != null )
                 {
-                    categoriesFoundInCache.put( categoryFoundInCache.getKey(), categoryFoundInCache );
+                    categoriesFoundInCache.add( categoryFoundInCache );
                 }
             }
             else
@@ -69,5 +61,6 @@ class FindCategoryByKeysCommand
                 categoriesNotFoundInCache.add( categoryKey );
             }
         }
+        return categoriesNotFoundInCache;
     }
 }

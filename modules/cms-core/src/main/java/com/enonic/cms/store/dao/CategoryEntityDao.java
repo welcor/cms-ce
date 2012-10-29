@@ -5,7 +5,6 @@
 package com.enonic.cms.store.dao;
 
 import java.util.List;
-import java.util.SortedMap;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import com.enonic.cms.framework.cache.CacheManager;
 
 import com.enonic.cms.core.content.category.CategoryEntity;
 import com.enonic.cms.core.content.category.CategoryKey;
+import com.enonic.cms.core.content.category.CategoryMap;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.store.support.EntityPageList;
 
@@ -57,7 +57,7 @@ public final class CategoryEntityDao
         return category;
     }
 
-    public SortedMap<CategoryKey, CategoryEntity> findByKeys( final List<CategoryKey> contentKeys )
+    public CategoryMap findByKeys( final List<CategoryKey> contentKeys )
     {
         final FindCategoryByKeysCommand command = new FindCategoryByKeysCommand( entityCache, getHibernateTemplate(),
                                                                                  new FindCategoryByKeysQuerier(

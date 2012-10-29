@@ -1,9 +1,6 @@
 package com.enonic.cms.core.content.category;
 
 
-import java.util.SortedMap;
-
-import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.search.IndexTransactionService;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.store.dao.ContentDao;
@@ -17,7 +14,7 @@ class ModifyCategoryACLCommandProcessor
 
     private final IndexTransactionService indexTransactionService;
 
-    private SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate;
+    private CategoryMap categoriesToUpdate;
 
     private final ContentDao contentDao;
 
@@ -30,7 +27,7 @@ class ModifyCategoryACLCommandProcessor
         this.contentDao = contentDao;
     }
 
-    void setCategoriesToUpdate( SortedMap<CategoryKey, CategoryEntity> categoriesToUpdate )
+    void setCategoriesToUpdate( CategoryMap categoriesToUpdate )
     {
         this.categoriesToUpdate = categoriesToUpdate;
     }
@@ -39,7 +36,7 @@ class ModifyCategoryACLCommandProcessor
     {
         checkUpdateCategoriesAccess();
 
-        for ( CategoryEntity category : categoriesToUpdate.values() )
+        for ( CategoryEntity category : categoriesToUpdate )
         {
             category.removeAcessRights( command.getToBeRemoved() );
             processThoseToBeAddedOrModified( command.getToBeAdded(), category );
@@ -71,7 +68,7 @@ class ModifyCategoryACLCommandProcessor
     private void checkUpdateCategoriesAccess()
         throws CreateCategoryAccessException
     {
-        for ( CategoryEntity categoryToUpdate : categoriesToUpdate.values() )
+        for ( CategoryEntity categoryToUpdate : categoriesToUpdate )
         {
             updateCategoryAccessChecker.checkAccessToUpdateCategory( categoryToUpdate );
         }

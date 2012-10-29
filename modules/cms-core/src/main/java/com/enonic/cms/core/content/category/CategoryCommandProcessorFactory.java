@@ -4,7 +4,6 @@ package com.enonic.cms.core.content.category;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -161,7 +160,7 @@ public class CategoryCommandProcessorFactory
         final CategoryAccessResolver categoryAccessResolver = new CategoryAccessResolver( groupDao );
         final UpdateCategoryAccessChecker updateCategoryAccessChecker =
             new UpdateCategoryAccessChecker( memberOfResolver, categoryAccessResolver ).updater( updater );
-        final SortedMap<CategoryKey, CategoryEntity> categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
+        final CategoryMap categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
 
         final SynchronizeCategoryACLCommandProcessor processor =
             new SynchronizeCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao );
@@ -192,7 +191,7 @@ public class CategoryCommandProcessorFactory
         final CategoryAccessResolver categoryAccessResolver = new CategoryAccessResolver( groupDao );
         final UpdateCategoryAccessChecker updateCategoryAccessChecker =
             new UpdateCategoryAccessChecker( memberOfResolver, categoryAccessResolver ).updater( updater );
-        final SortedMap<CategoryKey, CategoryEntity> categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
+        final CategoryMap categoryMapBykey = resolveCategories( command.getCategoriesToUpdate() );
 
         final ModifyCategoryACLCommandProcessor processor =
             new ModifyCategoryACLCommandProcessor( groupDao, updateCategoryAccessChecker, indexTransactionService, contentDao );
@@ -238,7 +237,7 @@ public class CategoryCommandProcessorFactory
     }
 
 
-    private SortedMap<CategoryKey, CategoryEntity> resolveCategories( final List<CategoryKey> keys )
+    private CategoryMap resolveCategories( final List<CategoryKey> keys )
     {
         return categoryDao.findByKeys( keys );
     }

@@ -69,11 +69,8 @@ import com.enonic.cms.core.preference.PreferenceSpecification;
 import com.enonic.cms.core.preference.PreferenceUniqueMatchResolver;
 import com.enonic.cms.core.preference.PreferenceXmlCreator;
 import com.enonic.cms.core.preview.PreviewContext;
-import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreParser;
@@ -104,8 +101,6 @@ public final class DataSourceServiceImpl
     private PreferenceService preferenceService;
 
     private PresentationEngine presentationEngine;
-
-    private SecurityService securityService;
 
     @Autowired
     private ContentVersionDao contentVersionDao;
@@ -946,42 +941,6 @@ public final class DataSourceServiceImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getUser( DataSourceContext context, String qualifiedUsername, boolean includeMemberships, boolean normalizeGroups,
-                                boolean includeCustomUserFields )
-    {
-        UserEntity userEntity;
-        if ( qualifiedUsername != null && qualifiedUsername.length() > 0 )
-        {
-            QualifiedUsername qUsername = QualifiedUsername.parse( qualifiedUsername );
-            userEntity = securityService.getUser( qUsername );
-        }
-        else
-        {
-            userEntity = getUserEntity( context.getUser() );
-        }
-
-        final UserXmlCreator xmlCreator = new UserXmlCreator();
-        xmlCreator.setIncludeUserFields( includeCustomUserFields );
-        xmlCreator.wrappUserFieldsInBlockElement( false );
-        xmlCreator.setAdminConsoleStyle( false );
-        Document userDoc;
-        if ( userEntity == null )
-        {
-            userDoc = xmlCreator.createEmptyUserDocument();
-
-        }
-        else
-        {
-            userDoc = xmlCreator.createUserDocument( userEntity, includeMemberships, normalizeGroups );
-        }
-
-        return XMLDocumentFactory.create( userDoc );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getPreferences( DataSourceContext context, String scope, String wildCardKey, boolean uniqueMatch )
     {
         final UserEntity user = getUserEntity( context.getUser() );
@@ -1547,12 +1506,6 @@ public final class DataSourceServiceImpl
     public void setPreferenceService( PreferenceService preferenceService )
     {
         this.preferenceService = preferenceService;
-    }
-
-    @Autowired
-    public void setSecurityService( SecurityService securityService )
-    {
-        this.securityService = securityService;
     }
 
     @Autowired

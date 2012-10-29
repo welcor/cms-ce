@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.service;
+package com.enonic.vertical.adminweb;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -17,7 +17,7 @@ import com.enonic.cms.core.xslt.XsltProcessorException;
 /**
  * This class implements the base render functions.
  */
-public final class DataSourceFailedXmlCreator
+final class DataSourceFailedXmlCreator
 {
     /**
      * Build exception document.

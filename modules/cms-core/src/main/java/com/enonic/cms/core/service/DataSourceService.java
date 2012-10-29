@@ -579,19 +579,5 @@ public interface DataSourceService
 
     public XMLDocument getUserstore( final DataSourceContext context, final String userstore );
 
-    /**
-     * Get information about the requested user.
-     *
-     * @param context                 the Vertical Site context
-     * @param qualifiedUsername       Qualified username (userstore:username). If not set, the logged in user is returned, or the anonymous
-     *                                user if no user is logged in.
-     * @param includeMemberships      If set to true, the user's group memberships is also returned
-     * @param normalizeGroups         If set to true, indirect group memberships is also returned
-     * @param includeCustomUserFields Adds extra attributes to the returned XML, if true.
-     * @return An XML document with information about the requested user.
-     */
-    public XMLDocument getUser( DataSourceContext context, String qualifiedUsername, boolean includeMemberships, boolean normalizeGroups,
-                                boolean includeCustomUserFields );
-
     public XMLDocument getPreferences( DataSourceContext context, String scope, String wildCardKey, boolean uniqueMatch );
 }

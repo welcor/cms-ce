@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Strings;
+
 import com.enonic.vertical.engine.PresentationEngine;
 
 import com.enonic.cms.framework.xml.XMLDocument;
@@ -914,7 +916,7 @@ public final class DataSourceServiceImpl
 
         try
         {
-            if ( StringUtils.isBlank( userstore ) )
+            if ( Strings.isNullOrEmpty( userstore ) )
             {
                 userstoreDoc = userStoreXmlCreator.createUserStoresDocument( userStoreService.getDefaultUserStore() );
             }

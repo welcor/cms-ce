@@ -40,7 +40,7 @@ public final class InvokeExtensionHandler
     public Document handle( final DataSourceRequest req )
         throws Exception
     {
-        final String name = param( req, "name" ).required().asString();
+        final String name = requiredParam( req, "name" );
         final String[] nameParts = name.split( "\\." );
         if ( nameParts.length != 2 )
         {

@@ -4,41 +4,25 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
-
-import static org.apache.commons.lang.ArrayUtils.toPrimitive;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.FindContentByCategoryHandler")
 public final class FindContentByCategoryHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<FindContentByCategoryParams>
 {
     public FindContentByCategoryHandler()
     {
-        super( "findContentByCategory" );
+        super( "findContentByCategory", FindContentByCategoryParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final FindContentByCategoryParams params )
         throws Exception
     {
-        final String search = param( req, "search" ).asString( "" );
-        final String operator = param( req, "operator" ).asString( "AND" );
-        final int[] categories = toPrimitive( param( req, "categories" ).required().asIntegerArray() );
-        final boolean includeSubCategories = param( req, "includeSubCategories" ).asBoolean( false );
-        final String orderBy = param( req, "orderBy" ).asString( "" );
-        final int index = param( req, "index" ).asInteger( 0 );
-        final int count = param( req, "count" ).asInteger( 10 );
-        final boolean titlesOnly = param( req, "titlesOnly" ).asBoolean( false );
-        final int childrenLevel = param( req, "childrenLevel" ).asInteger( 1 );
-        final int parentLevel = param( req, "parentLevel" ).asInteger( 0 );
-        final int parentChildrenLevel = param( req, "parentChildrenLevel" ).asInteger( 0 );
-        final boolean relatedTitlesOnly = param( req, "relatedTitlesOnly" ).asBoolean( false );
-        final boolean includeTotalCount = param( req, "includeTotalCount" ).asBoolean( false );
-        final boolean includeUserRights = param( req, "includeUserRights" ).asBoolean( false );
-        final int[] contentTypes = toPrimitive( param( req, "contentTypes" ).asIntegerArray() );
-
-        return dataSourceService.findContentByCategory( req, search, operator, categories, includeSubCategories, orderBy, index, count,
-                                                        titlesOnly, childrenLevel, parentLevel, parentChildrenLevel, relatedTitlesOnly,
-                                                        includeTotalCount, includeUserRights, contentTypes ).getAsJDOMDocument();
+        return dataSourceService.findContentByCategory( req, params.search, params.operator, params.categories, params.includeSubCategories,
+                                                        params.orderBy, params.index, params.count, params.titlesOnly, params.childrenLevel,
+                                                        params.parentLevel, params.parentChildrenLevel, params.relatedTitlesOnly,
+                                                        params.includeTotalCount, params.includeUserRights,
+                                                        params.contentTypes ).getAsJDOMDocument();
     }
 }

@@ -4,22 +4,21 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetUserStoreHandler")
 public final class GetUserStoreHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetUserStoreParams>
 {
     public GetUserStoreHandler()
     {
-        super( "getUserStore" );
+        super( "getUserStore", GetUserStoreParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetUserStoreParams params )
         throws Exception
     {
-        final String userStore = param(req, "userStore" ).asString();
-        return this.dataSourceService.getUserstore( req, userStore ).getAsJDOMDocument();
+        return this.dataSourceService.getUserstore( req, params.userStore ).getAsJDOMDocument();
     }
 }

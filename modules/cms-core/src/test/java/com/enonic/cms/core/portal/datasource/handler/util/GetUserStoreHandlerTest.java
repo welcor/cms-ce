@@ -44,9 +44,9 @@ public class GetUserStoreHandlerTest
         throws Exception
     {
         this.request.addParam( "userStore", "" );
-        Mockito.when( this.dataSourceService.getUserstore( this.request, null ) ).thenReturn( this.dummyDoc );
+        Mockito.when( this.dataSourceService.getUserstore( this.request, "" ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
-        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getUserstore( this.request, null );
+        Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getUserstore( this.request, "" );
     }
 
     @Test

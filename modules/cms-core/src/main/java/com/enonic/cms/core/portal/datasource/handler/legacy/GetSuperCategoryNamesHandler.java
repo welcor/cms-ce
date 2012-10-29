@@ -4,25 +4,22 @@ import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
-import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandler;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetSuperCategoryNamesHandler")
 public final class GetSuperCategoryNamesHandler
-    extends SimpleDataSourceHandler
+    extends ParamsDataSourceHandler<GetSuperCategoryNamesParams>
 {
     public GetSuperCategoryNamesHandler()
     {
-        super( "getSuperCategoryNames" );
+        super( "getSuperCategoryNames", GetSuperCategoryNamesParams.class );
     }
 
     @Override
-    public Document handle( final DataSourceRequest req )
+    protected Document handle( final DataSourceRequest req, final GetSuperCategoryNamesParams params )
         throws Exception
     {
-        final int categoryKey = param( req, "categoryKey" ).required().asInteger();
-        final boolean includeContentCount = param( req, "includeContentCount" ).asBoolean( false );
-        final boolean includeCurrent = param( req, "includeCurrent" ).asBoolean( false );
-
-        return this.dataSourceService.getSuperCategoryNames( req, categoryKey, includeContentCount, includeCurrent ).getAsJDOMDocument();
+        return this.dataSourceService.getSuperCategoryNames( req, params.categoryKey, params.includeContentCount,
+                                                             params.includeCurrent ).getAsJDOMDocument();
     }
 }

@@ -1,5 +1,6 @@
 package com.enonic.cms.core.portal.datasource.handler.util;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -20,7 +21,7 @@ public class GetCalendarHandlerTest
         throws Exception
     {
         final TimeService timeService = Mockito.mock( TimeService.class );
-        Mockito.when( timeService.getNowAsMilliseconds() ).thenReturn( 0L );
+        Mockito.when( timeService.getNowAsDateTime() ).thenReturn( new DateTime(0L) );
         this.handler.setTimeService( timeService );
     }
 
@@ -35,8 +36,6 @@ public class GetCalendarHandlerTest
     public void testHandler_defaultParams()
         throws Exception
     {
-        this.request.addParam( "year", "1970" );
-        this.request.addParam( "month", "1" );
         this.request.addParam( "count", "2" );
         this.request.addParam( "language", "en" );
         this.request.addParam( "country", "uk" );

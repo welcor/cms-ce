@@ -9,5 +9,5 @@ public final class GetUrlAsTextParams
 
     public int timeout = 5000;
 
-    public String encoding = "ISO-8859-1";
+    public String encoding = "UTF-8";
 }

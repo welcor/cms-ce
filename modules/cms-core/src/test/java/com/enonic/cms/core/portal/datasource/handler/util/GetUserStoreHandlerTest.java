@@ -43,7 +43,7 @@ public class GetUserStoreHandlerTest
     public void testEmptyName()
         throws Exception
     {
-        this.request.addParam( "userStore", "" );
+        this.request.addParam( "name", "" );
         Mockito.when( this.dataSourceService.getUserstore( this.request, "" ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getUserstore( this.request, "" );
@@ -53,7 +53,7 @@ public class GetUserStoreHandlerTest
     public void testDummyName()
         throws Exception
     {
-        this.request.addParam( "userStore", "dummy" );
+        this.request.addParam( "name", "dummy" );
         Mockito.when( this.dataSourceService.getUserstore( this.request, "dummy" ) ).thenReturn( this.dummyDoc );
         this.handler.handle( this.request );
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getUserstore( this.request, "dummy" );

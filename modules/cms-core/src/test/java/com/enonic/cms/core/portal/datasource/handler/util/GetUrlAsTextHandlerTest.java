@@ -39,7 +39,7 @@ public class GetUrlAsTextHandlerTest
     {
         this.request.addParam( "url", "http://www.enonic.com" );
         testHandle( "getUrlAsText_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "ISO-8859-1", 5000 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "UTF-8", 5000 );
     }
 
     @Test
@@ -47,10 +47,10 @@ public class GetUrlAsTextHandlerTest
         throws Exception
     {
         this.request.addParam( "url", "http://www.enonic.com" );
-        this.request.addParam( "encoding", "UTF-8" );
+        this.request.addParam( "encoding", "ISO-8859-1" );
         this.request.addParam( "timeout", "1000" );
         testHandle( "getUrlAsText_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "UTF-8", 1000 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "ISO-8859-1", 1000 );
     }
 
     @Test(expected = DataSourceException.class)
@@ -58,7 +58,7 @@ public class GetUrlAsTextHandlerTest
         throws Exception
     {
         this.request.addParam( "url", "http://www.enonic.com" );
-        this.request.addParam( "encoding", "UTF-8" );
+        this.request.addParam( "encoding", "ISO-8859-1" );
         this.request.addParam( "timeout", "abc" );
         this.handler.handle( this.request );
     }

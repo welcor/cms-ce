@@ -1,6 +1,7 @@
 package com.enonic.cms.core.portal.datasource.handler.util;
 
 import org.jdom.Document;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +28,20 @@ public final class GetCalendarHandler
     protected Document handle( final DataSourceRequest req, final GetCalendarParams params )
         throws Exception
     {
-        final long now = this.timeService.getNowAsMilliseconds();
-        return this.calendarService.getCalendar( now, params.relative, params.year, params.month, params.count, params.includeWeeks,
-                                                 params.includeDays, params.language, params.country );
+        final DateTime now = this.timeService.getNowAsDateTime();
+
+        if ( params.year == null )
+        {
+            params.year = now.getYear();
+        }
+
+        if ( params.month == null )
+        {
+            params.month = now.getMonthOfYear();
+        }
+
+        return this.calendarService.getCalendar( now.getMillis(), params.relative, params.year, params.month, params.count,
+                                                 params.includeWeeks, params.includeDays, params.language, params.country );
     }
 
     @Autowired

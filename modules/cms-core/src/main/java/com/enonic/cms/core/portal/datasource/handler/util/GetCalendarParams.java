@@ -6,10 +6,8 @@ public final class GetCalendarParams
 {
     public boolean relative = false;
 
-    @Nonnull
     public Integer year;
 
-    @Nonnull
     public Integer month;
 
     public int count = 12;

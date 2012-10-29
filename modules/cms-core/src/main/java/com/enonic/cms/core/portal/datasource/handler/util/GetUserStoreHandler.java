@@ -19,6 +19,6 @@ public final class GetUserStoreHandler
     protected Document handle( final DataSourceRequest req, final GetUserStoreParams params )
         throws Exception
     {
-        return this.dataSourceService.getUserstore( req, params.userStore ).getAsJDOMDocument();
+        return this.dataSourceService.getUserstore( req, params.name ).getAsJDOMDocument();
     }
 }

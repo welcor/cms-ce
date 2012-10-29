@@ -93,19 +93,14 @@
 
         function startUpgrade(all){
             if (confirm("Are you sure you want to start the upgrade?")) {
-
-                var password = document.getElementById('adminPasswordField').value;
-                var passwordParam = "";
-
-                if (password!=null) {
-                    passwordParam = "&adminPassword=" + password;
-                }
-
-                if (all) {
-                    location.href = "?upgradeAll=true" + passwordParam;
+                if (all)
+                {
+                    document.getElementById('upgrade_all').value = 'true';
                 } else {
-                    location.href = "?upgradeStep=true" + passwordParam;
+                    document.getElementById('upgrade_all').value = 'false';
                 }
+
+                document.upgrade_db.submit();
             }
         }
     //-->
@@ -125,15 +120,18 @@
                 &nbsp;<br>
               </div>
              [#else]
-              <div class="passwordbox">
-                <strong>Enterprise Administrator password:</strong>
-                <input type="password" id="adminPasswordField" name="adminPasswordField"/>
-              </div>
+            <form name="upgrade_db" action="upgrade_db" method="post">
+                <input type='hidden' name='upgrade_all' id='upgrade_all' />
+                <div class="passwordbox">
+                    <strong>Enterprise Administrator password:</strong>
+                    <input type="password" id="adminPassword" name="adminPassword"/>
+                </div>
              [/#if]
-            <div class="buttonbar">
-                <input type="button" name="upgradeStep" value="Upgrade Step" onclick="startUpgrade(false)"/>
-                <input type="button" name="upgradeAll" value="Upgrade All" onclick="startUpgrade(true)"/>
-            </div>
+                <div class="buttonbar">
+                    <input type="button" name="upgradeStep" value="Upgrade Step" onclick="startUpgrade(false)"/>
+                    <input type="button" name="upgradeAll" value="Upgrade All" onclick="startUpgrade(true)"/>
+                </div>
+            </form>
               [#if authenticationFailed == true]
                      <div class="authenticationFailed">Authentication needed, please fill in Enterprise Administrator password</div>
               [/#if]

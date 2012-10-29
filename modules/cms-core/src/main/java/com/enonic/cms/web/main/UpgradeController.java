@@ -7,6 +7,7 @@ package com.enonic.cms.web.main;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,41 +68,52 @@ public final class UpgradeController
     }
 
     /**
-     * Handle the request.
+     * Handle upgrade page view.
      */
     @RequestMapping(value = "/upgrade", method = RequestMethod.GET)
-    public ModelAndView handle( HttpServletRequest req, HttpServletResponse res )
+    public ModelAndView handleView( HttpServletRequest req, HttpServletResponse res )
         throws Exception
     {
         boolean authenticated = doAuthenticate( req );
 
-        final boolean doUpgradeStep = req.getParameter( "upgradeStep" ) != null;
-        final boolean doUpgradeAll = req.getParameter( "upgradeAll" ) != null;
+        Map<String, Object> model = populateViewModel( req, false, authenticated );
+        return new ModelAndView( "upgradePage", model );
+    }
 
-        if ( doUpgradeStep && authenticated )
+    /**
+     * Handle upgrade page mechanism.
+     */
+    @RequestMapping(value = "/upgrade_db", method = RequestMethod.POST)
+    public ModelAndView handleUpgrade( HttpServletRequest req, HttpServletResponse res )
+        throws Exception
+    {
+        boolean authenticated = doAuthenticate( req );
+
+        if ( authenticated )
         {
-            this.upgradeProcessTask.startUpgrade( false );
-            redirectToSelf( req, res );
-            return null;
-        }
-        else if ( doUpgradeAll && authenticated )
-        {
-            this.upgradeProcessTask.startUpgrade( true );
-            redirectToSelf( req, res );
-            return null;
+            if ( Boolean.valueOf( req.getParameter( "upgrade_all" ) ) )
+            {
+                this.upgradeProcessTask.startUpgrade( true );
+                redirectToSelf( req, res );
+                return null;
+            }
+            else
+            {
+                this.upgradeProcessTask.startUpgrade( false );
+                redirectToSelf( req, res );
+                return null;
+            }
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = populateViewModel( req, true, authenticated );
+        return new ModelAndView( "upgradePage", model );
+    }
 
-        if ( !authenticated && ( doUpgradeAll || doUpgradeStep ) )
-        {
-            model.put( AUTHENTICATION_FAILED_KEY, true );
-        }
-        else
-        {
-            model.put( AUTHENTICATION_FAILED_KEY, false );
-        }
+    private Map<String, Object> populateViewModel( HttpServletRequest req, boolean isAuthenticationFailed, boolean authenticated )
+    {
+        Map<String, Object> model = new HashMap<String, Object>();
 
+        model.put( AUTHENTICATION_FAILED_KEY, isAuthenticationFailed );
         model.put( "upgradeNeeded", this.upgradeService.needsUpgrade() );
         model.put( "upgradeInProgress", this.upgradeProcessTask.isInProgress() );
         model.put( "upgradeError", this.upgradeProcessTask.getError() );
@@ -116,7 +128,7 @@ public final class UpgradeController
             this.upgradeProcessTask.getLog().clear();
         }
 
-        return new ModelAndView( "upgradePage", model );
+        return model;
     }
 
     private boolean isAuthenticatedSession( HttpServletRequest req )
@@ -229,7 +241,14 @@ public final class UpgradeController
             url = url.substring( 0, index );
         }
 
-        res.sendRedirect( url );
+        // change '/upgrade_db [GET]' to '/upgrade [POST]'
+        index = url.lastIndexOf( "/" );
+        if ( index > -1 )
+        {
+            url = url.substring( 0, index );
+        }
+
+        res.sendRedirect( url + "/upgrade" );
     }
 
     @Value("${cms.admin.password}")

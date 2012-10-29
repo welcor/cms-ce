@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!--<datasource name="findContentByCategory" />-->
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">3</parameter>
+    <parameter name="levels">2147483647</parameter>
+    <parameter name="query">((title CONTAINS "mySearchString2") OR (data/* CONTAINS "mySearchString2")) AND ((title CONTAINS "mySearchString1") OR (data/* CONTAINS "mySearchString1")) AND contenttypekey IN (14,15,16)</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">3</parameter>
+    <parameter name="levels">2147483647</parameter>
+    <parameter name="query">((title CONTAINS "mySearchString2") OR (data/* CONTAINS "mySearchString2")) AND ((title CONTAINS "mySearchString1") OR (data/* CONTAINS "mySearchString1")) AND contenttypekey IN (${select(param.id,'')})</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">3</parameter>
+    <parameter name="levels">2147483647</parameter>
+    <parameter name="query">((title CONTAINS "mySearchString1") OR (data/* CONTAINS "mySearchString1"))</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">3</parameter>
+    <parameter name="levels">2147483647</parameter>
+    <parameter name="query">contenttypekey IN (15,${select(param.id,'')})</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+  </datasource>
+  <datasource name="getContentByCategory">
+    <parameter name="categoryKeys">3</parameter>
+    <parameter name="levels">2147483647</parameter>
+    <parameter name="query" />
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="includeData">false</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+  </datasource>
+</datasources>
+

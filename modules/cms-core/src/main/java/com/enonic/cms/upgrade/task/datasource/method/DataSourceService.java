@@ -18,11 +18,6 @@ interface DataSourceService
                                               int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
                                               boolean includeUserRights, int[] contentTypes );
 
-    public XMLDocument getCategories( int superCategoryKey, int level, boolean withContentCount, boolean includeCategory );
-
-    public XMLDocument getCategories( int key, int levels, boolean topLevel, boolean details, boolean catCount, boolean contentCount );
-
-
     // SKIP
     public XMLDocument getUser( String qualifiedUsername, boolean includeMemberships, boolean normalizeGroups,
                                 boolean includeCustomUserFields );

@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="findContentByCategory"/>
+  <!--
+       public XMLDocument findContentByCategory(15)
+       0  String search,   QUERY
+       1  String operator, QUERY
+       2  int[] categories, OK
+       3  boolean includeSubCategories, LEVELS
+       4  String orderBy, OK
+       5  int index, OK
+       6  int count, OK
+       7  boolean titlesOnly, INCLUDEDATA
+       8  int childrenLevel, OK
+       9  int parentLevel, OK
+       10 int parentChildrenLevel, SKIP
+       11 boolean relatedTitlesOnly, INCLUDEDATA
+       12 boolean includeTotalCount, SKIP
+       13 boolean includeUserRights, SKIP
+       14 int[] contentTypes ); Manual QUERY (query)
+       -->
+  <datasource name="findContentByCategory">
+    <parameter name="search">mySearchString1 mySearchString2</parameter>
+    <parameter name="operator">AND</parameter>
+    <parameter name="categories">3</parameter>
+    <parameter name="includeSubCategories">true</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="titlesOnly">true</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+    <parameter name="parentChildrenLevel">11</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="contentTypes">14,15,16</parameter>
+  </datasource>
+  <datasource name="findContentByCategory">
+    <parameter name="search">mySearchString1 mySearchString2</parameter>
+    <parameter name="operator">AND</parameter>
+    <parameter name="categories">3</parameter>
+    <parameter name="includeSubCategories">true</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="titlesOnly">true</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+    <parameter name="parentChildrenLevel">11</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="contentTypes">${select(param.id,'')}</parameter>
+  </datasource>
+  <datasource name="findContentByCategory">
+    <parameter name="search">mySearchString1</parameter>
+    <parameter name="operator">AND</parameter>
+    <parameter name="categories">3</parameter>
+    <parameter name="includeSubCategories">true</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="titlesOnly">true</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+    <parameter name="parentChildrenLevel">11</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="contentTypes"></parameter>
+  </datasource>
+  <datasource name="findContentByCategory">
+    <parameter name="search"/>
+    <parameter name="operator">AND</parameter>
+    <parameter name="categories">3</parameter>
+    <parameter name="includeSubCategories">true</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="titlesOnly">true</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+    <parameter name="parentChildrenLevel">11</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="contentTypes">15,${select(param.id,'')}</parameter>
+  </datasource>
+  <datasource name="findContentByCategory">
+    <parameter name="search"/>
+    <parameter name="operator">AND</parameter>
+    <parameter name="categories">3</parameter>
+    <parameter name="includeSubCategories">true</parameter>
+    <parameter name="orderBy">myOrderBy</parameter>
+    <parameter name="index">6</parameter>
+    <parameter name="count">7</parameter>
+    <parameter name="titlesOnly">true</parameter>
+    <parameter name="childrenLevel">9</parameter>
+    <parameter name="parentLevel">10</parameter>
+    <parameter name="parentChildrenLevel">11</parameter>
+    <parameter name="relatedTitlesOnly">true</parameter>
+    <parameter name="includeTotalCount">true</parameter>
+    <parameter name="includeUserRights">true</parameter>
+    <parameter name="contentTypes"/>
+  </datasource>
+</datasources>

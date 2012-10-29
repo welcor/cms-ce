@@ -21,6 +21,7 @@ public final class UpgradeTaskLocator
         this.tasks.add( new UpgradeModel0204() );
         this.tasks.add( new UpgradeModel0205() );
         this.tasks.add( new UpgradeModel0206() );
+        this.tasks.add( new UpgradeModel0207() );
     }
 
     public List<UpgradeTask> getTasks()

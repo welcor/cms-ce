@@ -9,7 +9,7 @@ import com.enonic.esl.sql.model.Database;
 public final class VerticalDatabase
     extends Database
 {
-    private static final VerticalDatabase Vertical = new VerticalDatabase( "Vertical", 206 );
+    private static final VerticalDatabase Vertical = new VerticalDatabase( "Vertical", 207 );
 
     public ModelVersionTable tModelVersion = ModelVersionTable.getInstance();
 

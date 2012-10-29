@@ -30,6 +30,11 @@ public final class GetSessionContextHandler
         {
             document.addContent( buildVerticalSessionXml( verticalSession ) );
         }
+        else
+        {
+            document.setRootElement( new Element( "session" ) );
+        }
+
         return document;
     }
 

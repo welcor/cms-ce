@@ -19,7 +19,6 @@ public final class GetMenuDataHandler
     protected Document handle( final DataSourceRequest req, final GetMenuDataParams params )
         throws Exception
     {
-        // TODO: siteKey should be optional (use current siteKey if null)
         return this.dataSourceService.getMenuData( req, params.siteKey ).getAsJDOMDocument();
     }
 }

@@ -45,7 +45,7 @@ public class InvokeExtensionHandlerTest
             return 3;
         }
 
-        // Return <value>3</value>
+        // Return <value>en</value>
         public Object method5()
         {
             return Locale.ENGLISH;
@@ -61,28 +61,28 @@ public class InvokeExtensionHandlerTest
 
         public String method1( final int param1 )
         {
-            return "method1-" + param1;
+            return "method1: " + param1;
         }
 
         public String method1( final int param1, final String param2 )
         {
-            return "method1-" + param1 + "-" + param2;
+            return "method1: " + param1 + ", " + param2;
         }
 
         // Should never be called
         public String method1( final int param1, final int param2 )
         {
-            return "method1-" + param1 + "-" + param2;
+            return "method1: " + param1 + " - " + param2;
         }
 
         public String method2( final int[] param1 )
         {
-            return "method2-" + Arrays.toString( param1 );
+            return "method2: " + Arrays.toString( param1 );
         }
 
         public String method3( final boolean param1 )
         {
-            return "method2-" + param1;
+            return "method3: " + param1;
         }
     }
 
@@ -115,7 +115,7 @@ public class InvokeExtensionHandlerTest
         this.handler.setPluginManager( manager );
     }
 
-    // @Test(expected = DataSourceException.class)
+    @Test(expected = DataSourceException.class)
     public void testHandler_no_lib()
         throws Exception
     {
@@ -123,11 +123,119 @@ public class InvokeExtensionHandlerTest
         this.handler.handle( this.request );
     }
 
-    // @Test(expected = DataSourceException.class)
+    @Test(expected = DataSourceException.class)
     public void testHandler_no_method()
         throws Exception
     {
         this.request.addParam( "name", "lib1.noSuchMethod" );
         this.handler.handle( this.request );
     }
+
+    @Test
+    public void testHandler_extension_returns_jdom_document()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib1.method1" );
+
+        this.testHandle( "invokeExtension_document_result" );
+    }
+
+    @Test
+    public void testHandler_extension_returns_w3c_document()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib1.method2" );
+
+        this.testHandle( "invokeExtension_document_result" );
+    }
+
+    @Test
+    public void testHandler_extension_returns_string()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib1.method3" );
+
+        this.testHandle( "invokeExtension_string_result" );
+    }
+
+    @Test
+    public void testHandler_extension_returns_int()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib1.method4" );
+
+        this.testHandle( "invokeExtension_int_result" );
+    }
+
+    @Test
+    public void testHandler_extension_returns_object()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib1.method5" );
+
+        this.testHandle( "invokeExtension_object_result" );
+    }
+
+    @Test
+    public void testHandler_extension_no_parameters()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib2.method1" );
+
+        this.testHandle( "invokeExtension_no_parameters" );
+    }
+
+    @Test
+    public void testHandler_extension_one_parameter()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib2.method1" );
+        this.request.addParam( "param1", "33" );
+
+        this.testHandle( "invokeExtension_one_parameter" );
+    }
+
+    @Test
+    public void testHandler_extension_two_parameters()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib2.method1" );
+        this.request.addParam( "param1", "33" );
+        this.request.addParam( "param2", "text" );
+
+        this.testHandle( "invokeExtension_two_parameters" );
+    }
+
+    @Test(expected = DataSourceException.class)
+    public void testHandler_extension_too_many_params()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib2.method1" );
+        this.request.addParam( "param1", "33" );
+        this.request.addParam( "param2", "text" );
+        this.request.addParam( "param3", "one-too-many" );
+
+        this.handler.handle( this.request );
+    }
+
+    @Test
+    public void testHandler_extension_array_parameters()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib2.method2" );
+        this.request.addParam( "param1", "1,2,3,5,8,13,21,34" );
+
+        this.testHandle( "invokeExtension_array_parameter" );
+    }
+
+    @Test
+    public void testHandler_extension_boolean_parameter()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib2.method3" );
+        this.request.addParam( "param1", "true" );
+
+        this.testHandle( "invokeExtension_boolean_parameter" );
+    }
+
 }

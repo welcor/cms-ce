@@ -4,11 +4,23 @@ import org.jdom.Element;
 
 import com.google.common.base.Strings;
 
-import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.*;
+import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.copyAttributeIfExists;
+import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.findElement;
+import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.findElements;
+import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.getTextNode;
 
 public final class DataSourceConverter1
     implements DataSourceConverter
 {
+    private String currentContext = "";
+
+    @Override
+    public void setCurrentContext( final String context )
+    {
+        this.currentContext = context;
+    }
+
+
     public Element convert( final Element elem )
     {
         final Element result = new Element( "datasources" );

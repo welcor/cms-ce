@@ -9,8 +9,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class DataSourceConverterHelperTest
 {
@@ -29,6 +28,12 @@ public class DataSourceConverterHelperTest
                 subElem.setAttribute( "name", "dummy" );
                 elem.addContent( subElem );
                 return elem;
+            }
+
+            @Override
+            public void setCurrentContext( final String context )
+            {
+
             }
         } );
     }
@@ -60,7 +65,11 @@ public class DataSourceConverterHelperTest
     {
         final String sourceDoc = toString( readDoc( source ) );
         final String resultDoc = toString( readDoc( result ) );
-        final String convertedDoc = this.helper.convert( sourceDoc );
+
+        DatasourceInfoHolder datasourceInfoHolder = new DatasourceInfoHolder();
+        datasourceInfoHolder.setXml( sourceDoc );
+
+        final String convertedDoc = this.helper.convert( datasourceInfoHolder );
 
         assertEquals( resultDoc, convertedDoc );
     }

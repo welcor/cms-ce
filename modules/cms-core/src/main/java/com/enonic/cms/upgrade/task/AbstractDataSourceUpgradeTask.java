@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import com.enonic.cms.upgrade.UpgradeContext;
 import com.enonic.cms.upgrade.task.datasource.DataSourceConverter;
 import com.enonic.cms.upgrade.task.datasource.DataSourceConverterHelper;
+import com.enonic.cms.upgrade.task.datasource.DatasourceInfoHolder;
 
 abstract class AbstractDataSourceUpgradeTask
     extends AbstractUpgradeTask
@@ -46,7 +47,7 @@ abstract class AbstractDataSourceUpgradeTask
     private void upgradePageTemplates( final Connection conn )
         throws Exception
     {
-        final Map<Integer, String> map = loadPageTemplates( conn );
+        final Map<Integer, DatasourceInfoHolder> map = loadPageTemplates( conn );
         convertDataSources( map );
         updatePageTemplates( conn, map );
     }
@@ -54,33 +55,40 @@ abstract class AbstractDataSourceUpgradeTask
     private void upgradePortlets( final Connection conn )
         throws Exception
     {
-        final Map<Integer, String> map = loadPortlets( conn );
+        final Map<Integer, DatasourceInfoHolder> map = loadPortlets( conn );
         convertDataSources( map );
         updatePortlets( conn, map );
     }
 
-    private Map<Integer, String> loadPageTemplates( final Connection conn )
+    private Map<Integer, DatasourceInfoHolder> loadPageTemplates( final Connection conn )
         throws Exception
     {
-        return loadXmlMap( conn, "SELECT pat_lkey, pat_xmlData FROM tPageTemplate" );
+        return loadXmlMap( conn,
+                           "SELECT pat_lkey, pat_xmlData, pat_sname, men_sname FROM tPageTemplate, tMenu WHERE pat_men_lkey = men_lkey" );
     }
 
-    private Map<Integer, String> loadPortlets( final Connection conn )
+    private Map<Integer, DatasourceInfoHolder> loadPortlets( final Connection conn )
         throws Exception
     {
-        return loadXmlMap( conn, "SELECT cob_lkey, cob_xmlData FROM tContentObject" );
+        return loadXmlMap( conn,
+                           "SELECT cob_lkey, cob_xmlData, cob_sname, men_sname FROM tContentObject, tMenu WHERE cob_men_lkey = men_lkey" );
     }
 
-    private Map<Integer, String> loadXmlMap( final Connection conn, final String sql )
+    private Map<Integer, DatasourceInfoHolder> loadXmlMap( final Connection conn, final String sql )
         throws Exception
     {
-        final Map<Integer, String> map = Maps.newHashMap();
+        final Map<Integer, DatasourceInfoHolder> map = Maps.newHashMap();
         final PreparedStatement stmt = conn.prepareStatement( sql );
         final ResultSet result = stmt.executeQuery();
 
         while ( result.next() )
         {
-            map.put( result.getInt( 1 ), new String( result.getBytes( 2 ), Charsets.UTF_8 ) );
+            DatasourceInfoHolder datasourceInfoHolder = new DatasourceInfoHolder();
+            datasourceInfoHolder.setXml( new String( result.getBytes( 2 ), Charsets.UTF_8 ) );
+            datasourceInfoHolder.setObjectName( result.getString( 3 ) );
+            datasourceInfoHolder.setSite( result.getString( 4 ) );
+
+            map.put( result.getInt( 1 ), datasourceInfoHolder );
         }
 
         result.close();
@@ -89,40 +97,42 @@ abstract class AbstractDataSourceUpgradeTask
         return map;
     }
 
-    private void convertDataSources( final Map<Integer, String> map )
+    private void convertDataSources( final Map<Integer, DatasourceInfoHolder> map )
         throws Exception
     {
         for ( final Integer key : map.keySet() )
         {
-            final String result = this.helper.convert( map.get( key ) );
-            map.put( key, result );
+            final DatasourceInfoHolder datasourceInfoHolder = map.get( key );
+            final String result = this.helper.convert( datasourceInfoHolder );
+            datasourceInfoHolder.setXml( result );
         }
     }
 
-    private void updatePageTemplates( final Connection conn, final Map<Integer, String> map )
+    private void updatePageTemplates( final Connection conn, final Map<Integer, DatasourceInfoHolder> map )
         throws Exception
     {
         updateXmlMap( conn, "UPDATE tPageTemplate SET pat_xmlData = ? WHERE pat_lkey = ?", map );
     }
 
-    private void updatePortlets( final Connection conn, final Map<Integer, String> map )
+    private void updatePortlets( final Connection conn, final Map<Integer, DatasourceInfoHolder> map )
         throws Exception
     {
         updateXmlMap( conn, "UPDATE tContentObject SET cob_xmlData = ? WHERE cob_lkey = ?", map );
     }
 
-    private void updateXmlMap( final Connection conn, final String sql, final Map<Integer, String> map )
+    private void updateXmlMap( final Connection conn, final String sql, final Map<Integer, DatasourceInfoHolder> map )
         throws Exception
     {
         final PreparedStatement stmt = conn.prepareStatement( sql );
 
-        for ( final Map.Entry<Integer, String> entry : map.entrySet() )
+        for ( final Map.Entry<Integer, DatasourceInfoHolder> entry : map.entrySet() )
         {
-            stmt.setBytes( 1, entry.getValue().getBytes( Charsets.UTF_8 ) );
+            stmt.setBytes( 1, entry.getValue().getXml().getBytes( Charsets.UTF_8 ) );
             stmt.setInt( 2, entry.getKey() );
             stmt.executeUpdate();
         }
 
         stmt.close();
     }
+
 }

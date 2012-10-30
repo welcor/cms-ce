@@ -1,7 +1,5 @@
 package com.enonic.cms.upgrade.task.datasource;
 
-import java.util.List;
-
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -16,15 +14,15 @@ public final class DataSourceConverterHelper
         this.converter = converter;
     }
 
-    public String convert( final String xml )
+    public String convert( final DatasourceInfoHolder dataSource )
         throws Exception
     {
-        final Document sourceDoc = JDOMUtil.parseDocument( xml );
-        convertDoc( sourceDoc );
+        final Document sourceDoc = JDOMUtil.parseDocument( dataSource.getXml() );
+        convertDoc( sourceDoc, dataSource );
         return JDOMUtil.prettyPrintDocument( sourceDoc );
     }
 
-    private void convertDoc( final Document doc )
+    private void convertDoc( final Document doc, DatasourceInfoHolder datasourceInfoHolder )
         throws Exception
     {
         final Element root = doc.getRootElement();
@@ -36,6 +34,8 @@ public final class DataSourceConverterHelper
         }
 
         originalElem = (Element) originalElem.detach();
+
+        this.converter.setCurrentContext( datasourceInfoHolder.getContextString() );
         root.addContent( this.converter.convert( originalElem ) );
     }
 }

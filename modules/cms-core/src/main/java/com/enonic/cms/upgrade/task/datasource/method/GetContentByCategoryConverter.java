@@ -39,13 +39,21 @@ final class GetContentByCategoryConverter
             */
 
             // If includeSubCategories, use all, else 1
-            int levels = Boolean.valueOf( params[2] ) ? Integer.MAX_VALUE : 1;
+            Integer levels = Boolean.valueOf( params[2] ) ? Integer.MAX_VALUE : 1;
             // Translated from !relatedTitlesOnly && !titlesOnly
             boolean includeData = !Boolean.valueOf( params[10] ) || !Boolean.valueOf( params[6] );
 
-            return method().param( "categoryKeys", params[1] ).param( "levels", params[levels] ).param( "query", params[0] ).param(
-                "orderBy", params[3] ).param( "index", params[4] ).param( "count", params[5] ).param( "includeData", Boolean.toString(
-                includeData ) ).param( "childrenLevel", params[7] ).param( "parentLevel", params[8] ).build();
+            return method()
+                .param( "categoryKeys", params[1] )
+                .param( "levels", levels.toString() )
+                .param( "query", params[0] )
+                .param( "orderBy", params[3] )
+                .param( "index", params[4] )
+                .param( "count", params[5] )
+                .param( "includeData", Boolean.toString( includeData ) )
+                .param( "childrenLevel", params[7] )
+                .param( "parentLevel", params[8] )
+                .build();
         }
 
         return method().params( params, "categoryKeys", "levels", "query", "orderBy", "index", "count", "includeData", "childrenLevel",

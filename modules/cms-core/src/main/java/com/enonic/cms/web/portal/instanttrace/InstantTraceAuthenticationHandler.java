@@ -135,14 +135,14 @@ public class InstantTraceAuthenticationHandler
 
     }
 
-    private HashMap<String, String> createUserStoreMap()
+    private HashMap<String, UserStoreEntity> createUserStoreMap()
     {
-        final HashMap<String, String> userStoreMap = new HashMap<String, String>();
+        final HashMap<String, UserStoreEntity> userStoreMap = new HashMap<String, UserStoreEntity>();
 
         final List<UserStoreEntity> userStoreList = userStoreDao.findAll();
         for ( UserStoreEntity userStore : userStoreList )
         {
-            userStoreMap.put( userStore.getKey().toString(), userStore.getName() );
+            userStoreMap.put( userStore.getKey().toString(), userStore );
         }
 
         return userStoreMap;

@@ -32,7 +32,9 @@
                                 <td class="input-container">
                                     <select name="_itrace_userstore" id="userstore">
                                     [#list userStores?keys?sort as key]
-                                        <option value="${key}">${userStores[key]}</option>
+                                        <option value="${userStores[key].key}" [#if userStores[key].defaultStore = 1] selected="selected" [/#if]>
+                                            ${userStores[key].name}
+                                        </option>
                                     [/#list]
                                     </select>
                                 </td>

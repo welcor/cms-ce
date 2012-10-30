@@ -172,10 +172,12 @@ final class DataSourceExecutorImpl
         final DataSourceRequest request = factory.createRequest( element );
         final Document doc = doExecuteDataSource( request );
 
-        final Element result = (Element) doc.getRootElement().clone();
+        Element result = (Element) doc.getRootElement().clone();
         if ( !Strings.isNullOrEmpty( element.getResultElement() ) )
         {
-            result.setName( element.getResultElement() );
+            final Element wrapped = new Element( element.getResultElement() );
+            wrapped.addContent( result );
+            result = wrapped;
         }
 
         return result;

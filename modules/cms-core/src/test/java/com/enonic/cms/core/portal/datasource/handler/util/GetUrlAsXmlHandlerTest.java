@@ -3,9 +3,9 @@ package com.enonic.cms.core.portal.datasource.handler.util;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.enonic.cms.core.http.HTTPService;
 import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
-import com.enonic.cms.core.http.HTTPService;
 
 public class GetUrlAsXmlHandlerTest
     extends AbstractDataSourceHandlerTest<GetUrlAsXmlHandler>
@@ -60,4 +60,18 @@ public class GetUrlAsXmlHandlerTest
         this.request.addParam( "timeout", "abc" );
         this.handler.handle( this.request );
     }
+
+    @Test
+    public void testUrlYieldsNull()
+        throws Exception
+    {
+        Mockito.when( this.httpService.getURLAsBytes( Mockito.anyString(), Mockito.anyInt() ) ).thenReturn( null );
+
+        this.request.addParam( "url", "http://www.enonic.com" );
+        testHandle( "getUrlAsXmlUrlYieldsNull_result" );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000 );
+    }
+
+
+
 }

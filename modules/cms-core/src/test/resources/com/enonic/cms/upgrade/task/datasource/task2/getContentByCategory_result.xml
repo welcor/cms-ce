@@ -15,7 +15,7 @@
   <!--<datasource name="getContentByCategory"><parameter>myQuery</parameter><parameter>2,2</parameter><parameter>false</parameter><parameter>myOrderBy</parameter><parameter>5</parameter><parameter>6</parameter><parameter>false</parameter><parameter>8</parameter><parameter>9</parameter><parameter>10</parameter><parameter>true</parameter><parameter>true</parameter><parameter>true</parameter></datasource>-->
   <datasource name="getContentByCategory">
     <parameter name="categoryKeys">2,2</parameter>
-    <parameter name="levels">2,2</parameter>
+    <parameter name="levels">1</parameter>
     <parameter name="query">myQuery</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">5</parameter>
@@ -26,7 +26,7 @@
   </datasource>
   <datasource name="getContentByCategory">
     <parameter name="categoryKeys">2,2</parameter>
-    <parameter name="levels">2,2</parameter>
+    <parameter name="levels">1</parameter>
     <parameter name="query">myQuery</parameter>
     <parameter name="orderBy">myOrderBy</parameter>
     <parameter name="index">5</parameter>

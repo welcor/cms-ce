@@ -81,21 +81,4 @@ public class SiteRedirectHelperTest
         siteRedirectHelper.sendRedirect( request, response, "https://someurl.com" );
         assertEquals( "https://someurl.com", response.getHeader( "Location" ) );
     }
-
-    public void testSendRedirectWithGopherUrl()
-        throws IOException
-    {
-
-        request.setScheme( "http" );
-        siteRedirectHelper.sendRedirect( request, response, "gopher://someurl.com" );
-        assertEquals( "gopher://someurl.com", response.getHeader( "Location" ) );
-    }
-
-//    public void testSendRedirectWithHttpsUr2() throws IOException {
-//
-//        request.setRequestURI("/site/0/home");
-//
-//        siteRedirectHelper.sendRedirect(request, response, "/site/0/");
-//        assertEquals("https://someurl.com", response.getRedirectedUrl());
-//    }
 }

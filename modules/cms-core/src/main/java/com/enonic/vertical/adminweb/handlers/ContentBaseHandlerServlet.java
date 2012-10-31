@@ -146,9 +146,8 @@ import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorManager;
-import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
 import com.enonic.cms.core.xslt.XsltResource;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessor;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.UserDao;
@@ -1215,8 +1214,7 @@ public class ContentBaseHandlerServlet
                 DOMSource reportSource = new DOMSource( reportDoc );
 
                 XsltResource xslResource = new XsltResource( res.getDataAsXml().getAsString() );
-                XsltProcessorManager procManager = XsltProcessorManagerAccessor.getProcessorManager();
-                XsltProcessor proc = procManager.createProcessor( xslResource, getStylesheetURIResolver( admin ) );
+                AdminXsltProcessor proc = xsltProcessorFactory.createProcessor( xslResource, getStylesheetURIResolver( admin ) );
                 proc.setParameter( "datetoday", DateUtil.formatISODateTime( new Date() ) );
 
                 response.setContentType( proc.getOutputMediaType() + "; charset=UTF-8" );

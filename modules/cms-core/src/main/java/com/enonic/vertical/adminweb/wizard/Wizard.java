@@ -6,7 +6,8 @@ package com.enonic.vertical.adminweb.wizard;
 
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorHelper;
+
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.adminweb.AdminHandlerBaseServlet;
@@ -1061,7 +1062,7 @@ public abstract class Wizard
                 transformParams.putAll( parameters );
                 String languageCode = (String) session.getAttribute( "languageCode" );
 
-                new XsltProcessorHelper()
+                new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() )
                         .stylesheet( xslSource, AdminStore.getURIResolver( languageCode ))
                         .input( xmlSource )
                         .params( transformParams )
@@ -1089,7 +1090,7 @@ public abstract class Wizard
 
             String languageCode = (String) session.getAttribute( "languageCode" );
 
-            dataDoc = new XsltProcessorHelper()
+            dataDoc = new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() )
                     .stylesheet( xslSource, AdminStore.getURIResolver( languageCode ) )
                     .params( formItems )
                     .input( xmlSource )
@@ -1118,7 +1119,7 @@ public abstract class Wizard
         String languageCode = (String) session.getAttribute( "languageCode" );
         StringWriter sw = new StringWriter( 4 * 1024 );
 
-        new XsltProcessorHelper()
+        new AdminXsltProcessorHelper( this.servlet.getXsltProcessorFactory() )
                 .stylesheet( xslSource, AdminStore.getURIResolver( languageCode ))
                 .input( xmlSource )
                 .params( xslParams )

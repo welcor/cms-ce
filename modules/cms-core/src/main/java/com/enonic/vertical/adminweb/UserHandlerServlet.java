@@ -91,11 +91,9 @@ import com.enonic.cms.core.timezone.TimeZoneXmlCreator;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
 import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.core.user.field.UserFields;
-import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorManager;
-import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
 import com.enonic.cms.core.xslt.XsltResource;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessor;
 import com.enonic.cms.store.dao.GroupQuery;
 
 
@@ -103,8 +101,6 @@ public class UserHandlerServlet
     extends AdminHandlerBaseServlet
 {
     private final static String DUMMY_OID = "dummy";
-
-    private final static long serialVersionUID = 1L;
 
     private static final String SESSION_PHOTO_ITEM_KEY = "photo_form_item";
 
@@ -1315,8 +1311,7 @@ public class UserHandlerServlet
                 DOMSource reportSource = new DOMSource( reportDoc );
 
                 XsltResource xslResource = new XsltResource( res.getDataAsXml().getAsString() );
-                XsltProcessorManager procManager = XsltProcessorManagerAccessor.getProcessorManager();
-                XsltProcessor proc = procManager.createProcessor( xslResource, getStylesheetURIResolver( admin ) );
+                AdminXsltProcessor proc = xsltProcessorFactory.createProcessor( xslResource, getStylesheetURIResolver( admin ) );
                 proc.setParameter( "datetoday", DateUtil.formatISODateTime( new Date() ) );
 
                 response.setContentType( proc.getOutputMediaType() + "; charset=UTF-8" );

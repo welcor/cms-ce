@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.core.xslt;
 
-import java.io.Writer;
-
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
@@ -52,23 +50,7 @@ public interface XsltProcessor
         throws XsltProcessorException;
 
     /**
-     * Process the xml with stylesheet.
-     */
-    public void process( Source xml, Writer writer )
-        throws XsltProcessorException;
-
-    /**
-     * Return the parameter.
-     */
-    public Object getParameter( String name );
-
-    /**
      * Set parameter.
      */
     public void setParameter( String name, Object value );
-
-    /**
-     * Clear parameters.
-     */
-    public void clearParameters();
 }

@@ -4,49 +4,46 @@
  */
 package com.enonic.cms.core.portal.rendering.viewtransformer;
 
-import com.enonic.cms.framework.xml.XMLDocument;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.core.portal.rendering.StyleSheetURIResolver;
+import com.enonic.cms.core.resource.FileResourceName;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorManager;
-import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
-import com.enonic.cms.core.xslt.XsltResource;
+import com.enonic.cms.core.xslt.portal.PortalXsltProcessor;
+import com.enonic.cms.core.xslt.portal.PortalXsltProcessorFactory;
 
-/**
- * May 13, 2009
- */
 public abstract class AbstractXsltViewTransformer
-
 {
     protected final static String XSLT_NS = "http://www.w3.org/1999/XSL/Transform";
 
-    protected StyleSheetURIResolver styleSheetURIResolver;
-
     protected ResourceService resourceService;
 
-    protected XsltProcessor createProcessor( ResourceKey styleSheetKey, XMLDocument xslt )
+    private PortalXsltProcessorFactory xsltProcessorFactory;
+
+    protected final PortalXsltProcessor createProcessor( final ResourceKey xsl )
         throws XsltProcessorException
     {
-        XsltResource resource = new XsltResource( styleSheetKey.toString(), xslt.getAsString() );
-        XsltProcessorManager manager = XsltProcessorManagerAccessor.getProcessorManager();
-        return manager.createCachedProcessor( resource, styleSheetURIResolver );
+        return this.xsltProcessorFactory.createProcessor( new FileResourceName( xsl.toString() ) );
     }
 
-    protected XsltProcessor createProcessor( ResourceKey styleSheetKey, XMLDocument xslt, boolean omitXmlDecl )
+    protected final PortalXsltProcessor createProcessor( final ResourceKey xsl, final boolean omitXmlDecl )
         throws XsltProcessorException
     {
-        XsltProcessor processor;
-        processor = createProcessor( styleSheetKey, xslt );
+        final PortalXsltProcessor processor = createProcessor( xsl );
         processor.setOmitXmlDecl( omitXmlDecl );
         return processor;
     }
 
-
-    protected void setup()
+    @Autowired
+    public final void setResourceService( ResourceService resourceService )
     {
-        styleSheetURIResolver = new StyleSheetURIResolver( resourceService );
+        this.resourceService = resourceService;
+    }
+
+    @Autowired
+    public void setXsltProcessorFactory( final PortalXsltProcessorFactory xsltProcessorFactory )
+    {
+        this.xsltProcessorFactory = xsltProcessorFactory;
     }
 }

@@ -21,7 +21,7 @@ import com.enonic.esl.net.URL;
 import com.enonic.esl.net.URLUtil;
 import com.enonic.esl.xml.XMLTool;
 
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorHelper;
 
 public class SplashServlet
     extends AdminHandlerBaseServlet
@@ -76,6 +76,6 @@ public class SplashServlet
         final Source xslSource = AdminStore.getStylesheet( session, "waitsplash.xsl" );
         final Source input = new DOMSource( XMLTool.createDocument( "dummy" ) );
 
-        new XsltProcessorHelper().stylesheet( xslSource, null ).input( input ).param( "redirect", redirect ).process( response );
+        new AdminXsltProcessorHelper( this.xsltProcessorFactory ).stylesheet( xslSource, null ).input( input ).param( "redirect", redirect ).process( response );
     }
 }

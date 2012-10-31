@@ -71,7 +71,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorHelper;
 
 
 public abstract class AdminHandlerBaseServlet
@@ -93,7 +93,7 @@ public abstract class AdminHandlerBaseServlet
     protected boolean isStoreXHTMLOn()
     {
         String ts = StringUtils.trimToNull( storeXHTML );
-        return !"false".equalsIgnoreCase(ts);
+        return !"false".equalsIgnoreCase( ts );
     }
 
     @PostConstruct
@@ -958,7 +958,7 @@ public abstract class AdminHandlerBaseServlet
 
         final URIResolver uriResolver = AdminStore.getURIResolver( languageCode );
 
-        new XsltProcessorHelper().stylesheet( xslSource, uriResolver ).input( doc ).params( parameters ).process( response );
+        new AdminXsltProcessorHelper( this.xsltProcessorFactory ).stylesheet( xslSource, uriResolver ).input( doc ).params( parameters ).process( response );
     }
 
     protected void transformXML( HttpServletRequest request, HttpServletResponse response, org.jdom.Document doc, Source xslSource,
@@ -970,7 +970,8 @@ public abstract class AdminHandlerBaseServlet
 
         final URIResolver uriResolver = AdminStore.getURIResolver( languageCode );
 
-        new XsltProcessorHelper().stylesheet( xslSource, uriResolver ).input( doc ).params( parameters ).process( response );
+        new AdminXsltProcessorHelper( this.xsltProcessorFactory ).stylesheet( xslSource, uriResolver ).input( doc ).params( parameters ).process(
+            response );
     }
 
     protected void transformXML( HttpServletRequest request, HttpServletResponse response, Document doc, String xslPath, Map parameters )
@@ -984,7 +985,7 @@ public abstract class AdminHandlerBaseServlet
             final Source xslDoc = AdminStore.getStylesheet( languageCode, xslPath );
             final URIResolver uriResolver = AdminStore.getURIResolver( languageCode );
 
-            new XsltProcessorHelper().stylesheet( xslDoc, uriResolver ).input( doc ).params( parameters ).process( response );
+            new AdminXsltProcessorHelper( this.xsltProcessorFactory ).stylesheet( xslDoc, uriResolver ).input( doc ).params( parameters ).process( response );
         }
         catch ( XsltProcessorException xpe )
         {
@@ -1010,7 +1011,7 @@ public abstract class AdminHandlerBaseServlet
         final String languageCode = (String) session.getAttribute( "languageCode" );
         final URIResolver uriResolver = AdminStore.getURIResolver( languageCode );
 
-        new XsltProcessorHelper().stylesheet( xslSource, uriResolver ).input( xmlSource ).params( parameters, false ).process( writer );
+        new AdminXsltProcessorHelper( this.xsltProcessorFactory ).stylesheet( xslSource, uriResolver ).input( xmlSource ).params( parameters, false ).process( writer );
     }
 
     protected URIResolver getStylesheetURIResolver( final AdminService adminBean )
@@ -1218,7 +1219,8 @@ public abstract class AdminHandlerBaseServlet
         return domainKey;
     }
 
-    protected void browseRedirectWithSorting( HttpServletRequest request, HttpServletResponse response, HttpSession session, ExtendedMap formItems )
+    protected void browseRedirectWithSorting( HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                              ExtendedMap formItems )
     {
         MultiValueMap queryParams = new MultiValueMap();
 
@@ -1255,7 +1257,7 @@ public abstract class AdminHandlerBaseServlet
         sb_sortByDirectionKey.append( op );
         sb_sortByDirectionKey.append( ",sd]" );
 
-        return  sb_sortByDirectionKey.toString();
+        return sb_sortByDirectionKey.toString();
     }
 
     protected void addSortParamteres( String defaultSortBy, String defaultSortByDirection, ExtendedMap inParams, HttpSession session,

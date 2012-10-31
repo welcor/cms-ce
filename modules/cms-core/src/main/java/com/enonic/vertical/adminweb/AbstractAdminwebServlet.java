@@ -55,6 +55,7 @@ import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.core.structure.menuitem.MenuItemService;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.timezone.TimeZoneService;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorFactory;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentHandlerDao;
@@ -210,6 +211,7 @@ public abstract class AbstractAdminwebServlet
     @Autowired
     protected MimeTypeResolver mimeTypeResolver;
 
+    protected AdminXsltProcessorFactory xsltProcessorFactory;
 
     private ServletContext servletContext;
 
@@ -381,5 +383,16 @@ public abstract class AbstractAdminwebServlet
     public void setMemberOfResolver( MemberOfResolver value )
     {
         this.memberOfResolver = value;
+    }
+
+    public AdminXsltProcessorFactory getXsltProcessorFactory()
+    {
+        return xsltProcessorFactory;
+    }
+
+    @Autowired
+    public void setXsltProcessorFactory( final AdminXsltProcessorFactory xsltProcessorFactory )
+    {
+        this.xsltProcessorFactory = xsltProcessorFactory;
     }
 }

@@ -4,9 +4,6 @@
  */
 package com.enonic.cms.core.structure;
 
-/**
- * May 20, 2009
- */
 public enum TemplateParameterType
 {
     CATEGORY( "category" ),
@@ -57,5 +54,4 @@ public enum TemplateParameterType
     {
         return alias;
     }
-
 }

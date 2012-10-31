@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -21,11 +22,13 @@ import org.w3c.dom.Element;
 
 import com.enonic.esl.xml.XMLTool;
 
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorFactory;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorHelper;
 
 public class ErrorPageServlet
     implements Controller
 {
+    private AdminXsltProcessorFactory xsltProcessorFactory;
 
     private String adminEmail;
 
@@ -210,12 +213,18 @@ public class ErrorPageServlet
 
     public String transformXML( Source xmlSource, Source xslSource, Hashtable parameters )
     {
-        return new XsltProcessorHelper().stylesheet( xslSource, null ).input( xmlSource ).params( parameters ).process();
+        return new AdminXsltProcessorHelper( this.xsltProcessorFactory ).stylesheet( xslSource, null ).input( xmlSource ).params( parameters ).process();
     }
 
     @Value("${cms.admin.email}")
     public void setAdminEmail( final String adminEmail )
     {
         this.adminEmail = adminEmail;
+    }
+
+    @Autowired
+    public void setXsltProcessorFactory( final AdminXsltProcessorFactory xsltProcessorFactory )
+    {
+        this.xsltProcessorFactory = xsltProcessorFactory;
     }
 }

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.xslt;
+package com.enonic.cms.core.xslt.admin;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -21,63 +21,61 @@ import org.jdom.transform.JDOMSource;
 
 import com.google.common.io.Closeables;
 
-public final class XsltProcessorHelper
-{
-    private final XsltProcessorManager manager;
+import com.enonic.cms.core.xslt.XsltProcessor;
+import com.enonic.cms.core.xslt.XsltProcessorException;
 
-    private XsltProcessor processor;
+public final class AdminXsltProcessorHelper
+{
+    private final AdminXsltProcessorFactory factory;
+
+    private AdminXsltProcessor processor;
 
     private Source input;
 
-    public XsltProcessorHelper()
+    public AdminXsltProcessorHelper( final AdminXsltProcessorFactory factory )
     {
-        this( XsltProcessorManagerAccessor.getProcessorManager() );
+        this.factory = factory;
     }
 
-    public XsltProcessorHelper( final XsltProcessorManager manager )
+    public AdminXsltProcessorHelper stylesheet( final Source xsl, final URIResolver resolver )
     {
-        this.manager = manager;
-    }
-
-    public XsltProcessorHelper stylesheet( final Source xsl, final URIResolver resolver )
-    {
-        this.processor = this.manager.createProcessor( xsl, resolver );
+        this.processor = this.factory.createProcessor( xsl, resolver );
         return this;
     }
 
-    public XsltProcessorHelper input( final Source input )
+    public AdminXsltProcessorHelper input( final Source input )
     {
         this.input = input;
         return this;
     }
 
-    public XsltProcessorHelper input( final org.jdom.Document input )
+    public AdminXsltProcessorHelper input( final org.jdom.Document input )
     {
         return input( new JDOMSource( input ) );
     }
 
-    public XsltProcessorHelper input( final org.w3c.dom.Document input )
+    public AdminXsltProcessorHelper input( final org.w3c.dom.Document input )
     {
         return input( new DOMSource( input ) );
     }
 
-    public XsltProcessorHelper param( final String key, final Object value )
+    public AdminXsltProcessorHelper param( final String key, final Object value )
     {
         return param( key, value, false );
     }
 
-    public XsltProcessorHelper param( final String key, final Object value, boolean convertToString )
+    public AdminXsltProcessorHelper param( final String key, final Object value, boolean convertToString )
     {
         this.processor.setParameter( key, convertToString ? value.toString() : value );
         return this;
     }
 
-    public XsltProcessorHelper params( final Map<?, ?> map )
+    public AdminXsltProcessorHelper params( final Map<?, ?> map )
     {
         return params( map, false );
     }
 
-    public XsltProcessorHelper params( final Map<?, ?> map, boolean convertToString )
+    public AdminXsltProcessorHelper params( final Map<?, ?> map, boolean convertToString )
     {
         if ( map != null )
         {
@@ -138,7 +136,7 @@ public final class XsltProcessorHelper
         }
     }
 
-    public XsltProcessor processor()
+    public AdminXsltProcessor processor()
     {
         return this.processor;
     }

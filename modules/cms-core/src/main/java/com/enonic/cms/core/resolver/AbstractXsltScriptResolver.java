@@ -4,31 +4,25 @@
  */
 package com.enonic.cms.core.resolver;
 
-import javax.xml.transform.URIResolver;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.resolver.locale.LocaleResolverException;
+import com.enonic.cms.core.resource.FileResourceName;
 import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorManager;
-import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
-import com.enonic.cms.core.xslt.XsltResource;
+import com.enonic.cms.core.xslt.portal.PortalXsltProcessor;
+import com.enonic.cms.core.xslt.portal.PortalXsltProcessorFactory;
 
-/**
- * Created by rmy - Date: Apr 29, 2009
- */
 public abstract class AbstractXsltScriptResolver
     implements ScriptResolverService
 {
     protected final static String RESOLVING_EXCEPTION_MSG = "Failed to resolve value";
 
-    private static final String XSLT_RESOLVER_PROCESSOR_NAME = "xsltResolverProcessor";
-
     private ResolverInputXMLCreator resolverInputXMLCreator;
+
+    private PortalXsltProcessorFactory xsltProcessorFactory;
 
     public ScriptResolverResult resolveValue( ResolverContext context, ResourceFile localeResolverScript )
     {
@@ -37,7 +31,7 @@ public abstract class AbstractXsltScriptResolver
         String resolvedValue;
         try
         {
-            resolvedValue = resolveWithXsltScript( localeResolverScript.getDataAsXml(), resolverInput );
+            resolvedValue = resolveWithXsltScript( localeResolverScript, resolverInput );
         }
         catch ( XsltProcessorException e )
         {
@@ -49,29 +43,19 @@ public abstract class AbstractXsltScriptResolver
 
     protected abstract ScriptResolverResult populateScriptResolverResult( String resolvedValue );
 
-    protected XsltProcessor createProcessor( String name, XMLDocument xslt, URIResolver uriResolver )
-        throws XsltProcessorException
-    {
-        XsltResource resource = new XsltResource( name, xslt.getAsString() );
-        XsltProcessorManager manager = XsltProcessorManagerAccessor.getProcessorManager();
-        XsltProcessor processor = manager.createCachedProcessor( resource, uriResolver );
-        processor.setOmitXmlDecl( true );
-        return processor;
-    }
-
     protected String cleanWhitespaces( String value )
     {
-        value = value.replaceAll("(\\n)", "");
-        value = value.replaceAll("(\\t)", "");
-        value = value.replaceAll("(\\s)", "");
+        value = value.replaceAll( "(\\n)", "" );
+        value = value.replaceAll( "(\\t)", "" );
+        value = value.replaceAll( "(\\s)", "" );
         return value;
     }
 
-    protected String resolveWithXsltScript( XMLDocument xslt, XMLDocument xml )
+    private String resolveWithXsltScript( ResourceFile xsl, XMLDocument xml )
         throws XsltProcessorException
     {
-        URIResolver uriResolver = null;
-        XsltProcessor processor = createProcessor( XSLT_RESOLVER_PROCESSOR_NAME, xslt, uriResolver );
+        final PortalXsltProcessor processor = this.xsltProcessorFactory.createProcessor( new FileResourceName( xsl.getPath() ) );
+        processor.setOmitXmlDecl( true );
         String result = processor.process( xml.getAsJDOMSource() );
         return cleanWhitespaces( result );
     }
@@ -86,6 +70,10 @@ public abstract class AbstractXsltScriptResolver
     {
         this.resolverInputXMLCreator = resolverInputXMLCreator;
     }
+
+    @Autowired
+    public void setXsltProcessorFactory( final PortalXsltProcessorFactory xsltProcessorFactory )
+    {
+        this.xsltProcessorFactory = xsltProcessorFactory;
+    }
 }
-
-

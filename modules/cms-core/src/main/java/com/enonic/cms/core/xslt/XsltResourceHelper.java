@@ -1,9 +1,13 @@
 package com.enonic.cms.core.xslt;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 
 public class XsltResourceHelper
 {
+    private static final String DUMMY_PREFIX = "dummy:/";
+
     public static String resolvePath( final String path )
     {
         try
@@ -43,5 +47,22 @@ public class XsltResourceHelper
         }
 
         return removeExtraSlashes( resolveBasePath( base ) + "/" + href );
+    }
+
+    public static String createUri( final String path )
+    {
+        if ( path.contains( ":/" ) )
+        {
+            return path;
+        }
+
+        try
+        {
+            return DUMMY_PREFIX + URLEncoder.encode( path, "UTF-8" );
+        }
+        catch ( final UnsupportedEncodingException e )
+        {
+            throw new AssertionError( e );
+        }
     }
 }

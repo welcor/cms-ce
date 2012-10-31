@@ -4,9 +4,6 @@
  */
 package com.enonic.cms.core.xslt;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import javax.xml.transform.Source;
 
 import com.enonic.cms.framework.xml.StringSource;
@@ -16,8 +13,6 @@ import com.enonic.cms.framework.xml.StringSource;
  */
 public class XsltResource
 {
-    private static final String DUMMY_PREFIX = "dummy:/";
-
     /**
      * Name of template.
      */
@@ -66,23 +61,6 @@ public class XsltResource
      */
     public Source getAsSource()
     {
-        return new StringSource( this.content, getUri() );
-    }
-
-    private String getUri()
-    {
-        if ( this.name.contains( ":/" ) )
-        {
-            return this.name;
-        }
-
-        try
-        {
-            return DUMMY_PREFIX + URLEncoder.encode( this.name, "UTF-8" );
-        }
-        catch ( final UnsupportedEncodingException e )
-        {
-            throw new AssertionError( e );
-        }
+        return new StringSource( this.content, XsltResourceHelper.createUri( this.name ) );
     }
 }

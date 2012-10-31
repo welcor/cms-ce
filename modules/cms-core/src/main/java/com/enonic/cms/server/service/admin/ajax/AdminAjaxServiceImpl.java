@@ -61,8 +61,8 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
-import com.enonic.cms.core.xslt.XsltProcessorManager;
-import com.enonic.cms.core.xslt.XsltProcessorManagerAccessor;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessor;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorFactory;
 import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.server.service.admin.ajax.dto.PreferenceDto;
 import com.enonic.cms.server.service.admin.ajax.dto.RegionDto;
@@ -122,6 +122,9 @@ public class AdminAjaxServiceImpl
 
     @Autowired
     private SiteDao siteDao;
+
+    @Autowired
+    private AdminXsltProcessorFactory xsltProcessorFactory;
 
     private SyncUserStoreExecutorManager syncUserStoreExecutorManager;
 
@@ -339,8 +342,7 @@ public class AdminAjaxServiceImpl
         throws XsltProcessorException
     {
         XsltResource resource = new XsltResource( name, xslt.getAsString() );
-        XsltProcessorManager manager = XsltProcessorManagerAccessor.getProcessorManager();
-        XsltProcessor processor = manager.createProcessor( resource, uriResolver );
+        AdminXsltProcessor processor = xsltProcessorFactory.createProcessor( resource, uriResolver );
         processor.setOmitXmlDecl( true );
         return processor;
     }

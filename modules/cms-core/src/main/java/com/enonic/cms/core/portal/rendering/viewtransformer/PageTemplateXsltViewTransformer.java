@@ -10,8 +10,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.transform.JDOMSource;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.JDOMUtil;
@@ -19,25 +17,20 @@ import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.TemplateParameterType;
-import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
+import com.enonic.cms.core.xslt.portal.PortalXsltProcessor;
 
-/**
- * Apr 26, 2009
- */
 @Component
 public class PageTemplateXsltViewTransformer
     extends AbstractXsltViewTransformer
-    implements InitializingBean
 {
     public ViewTransformationResult transform( ResourceFile xsltTemplateFile, Document xml, TransformationParams transformationParams )
     {
         try
         {
             XMLDocument xslt = xsltTemplateFile.getDataAsXml();
-            XsltProcessor processor = createProcessor( xsltTemplateFile.getResourceKey(), xslt );
+            PortalXsltProcessor processor = createProcessor( xsltTemplateFile.getResourceKey() );
 
             // Iterate over the parameters defined in the xslt template
             for ( Element parameterEl : findXsltParamElements( xslt.getAsJDOMDocument() ) )
@@ -90,17 +83,5 @@ public class PageTemplateXsltViewTransformer
     {
         List list = doc.getRootElement().getChildren( "param", Namespace.getNamespace( XSLT_NS ) );
         return (Element[]) list.toArray( new Element[list.size()] );
-    }
-
-    public void afterPropertiesSet()
-        throws Exception
-    {
-        setup();
-    }
-
-    @Autowired
-    public void setResourceService( ResourceService resourceService )
-    {
-        this.resourceService = resourceService;
     }
 }

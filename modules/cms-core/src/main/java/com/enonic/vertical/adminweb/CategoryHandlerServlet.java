@@ -48,7 +48,7 @@ import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.stylesheet.StylesheetNotFoundException;
-import com.enonic.cms.core.xslt.XsltProcessorHelper;
+import com.enonic.cms.core.xslt.admin.AdminXsltProcessorHelper;
 
 final public class CategoryHandlerServlet
     extends AdminHandlerBaseServlet
@@ -675,7 +675,7 @@ final public class CategoryHandlerServlet
             verticaldataElem.appendChild( contentsElem );
             DOMSource reportSource = new DOMSource( reportDoc );
 
-            new XsltProcessorHelper().stylesheet( xslSource, getStylesheetURIResolver( admin ) ).params( parameters ).input(
+            new AdminXsltProcessorHelper( this.xsltProcessorFactory ).stylesheet( xslSource, getStylesheetURIResolver( admin ) ).params( parameters ).input(
                 reportSource ).process( response );
         }
         else

@@ -1,8 +1,4 @@
-/*
- * Copyright 2000-2011 Enonic AS
- * http://www.enonic.com/license
- */
-package com.enonic.cms.core.xslt.saxon;
+package com.enonic.cms.core.xslt.base;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -16,43 +12,46 @@ import javax.xml.transform.stream.StreamResult;
 
 import com.google.common.io.Closeables;
 
-import net.sf.saxon.value.UntypedAtomicValue;
-
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorErrors;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 
-final class XsltProcessorImpl
+public abstract class BaseXsltProcessor
     implements XsltProcessor
 {
     private final Transformer transformer;
 
-    public XsltProcessorImpl( final Transformer transformer )
+    public BaseXsltProcessor( final Transformer transformer )
     {
         this.transformer = transformer;
     }
 
-    public String getOutputMethod()
+    @Override
+    public final String getOutputMethod()
     {
         return this.transformer.getOutputProperty( OutputKeys.METHOD );
     }
 
-    public String getOutputMediaType()
+    @Override
+    public final String getOutputMediaType()
     {
         return this.transformer.getOutputProperty( OutputKeys.MEDIA_TYPE );
     }
 
-    public String getOutputEncoding()
+    @Override
+    public final String getOutputEncoding()
     {
         return this.transformer.getOutputProperty( OutputKeys.ENCODING );
     }
 
-    public void setOmitXmlDecl( boolean omitXmlDecl )
+    @Override
+    public final void setOmitXmlDecl( boolean omitXmlDecl )
     {
         this.transformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, omitXmlDecl ? "yes" : "no" );
     }
 
-    public String getContentType()
+    @Override
+    public final String getContentType()
     {
         StringBuilder contentType = new StringBuilder();
         String outputMediaType = getOutputMediaType();
@@ -83,7 +82,8 @@ final class XsltProcessorImpl
         return contentType.toString();
     }
 
-    public String process( final Source xml )
+    @Override
+    public final String process( final Source xml )
         throws XsltProcessorException
     {
         StringWriter writer = new StringWriter();
@@ -100,7 +100,8 @@ final class XsltProcessorImpl
         return writer.toString();
     }
 
-    public void process( Source xml, Result result )
+    @Override
+    public final void process( final Source xml, final Result result )
         throws XsltProcessorException
     {
         final XsltProcessorErrors errors = new XsltProcessorErrors();
@@ -121,18 +122,14 @@ final class XsltProcessorImpl
         }
     }
 
-    public void process( final Source xml, final Writer writer )
+    private void process( final Source xml, final Writer writer )
         throws XsltProcessorException
     {
         final StreamResult result = new StreamResult( writer );
         process( xml, result );
     }
 
-    public Object getParameter( final String name )
-    {
-        return this.transformer.getParameter( name );
-    }
-
+    @Override
     public void setParameter( final String name, final Object value )
     {
         if ( value == null )
@@ -184,11 +181,8 @@ final class XsltProcessorImpl
 
     private void setStringParameter( final String name, final String value )
     {
-        this.transformer.setParameter( name, new UntypedAtomicValue( value ) );
+        this.transformer.setParameter( name, createUntypedAtomicValue( value ) );
     }
 
-    public void clearParameters()
-    {
-        this.transformer.clearParameters();
-    }
+    protected abstract Object createUntypedAtomicValue( String value );
 }

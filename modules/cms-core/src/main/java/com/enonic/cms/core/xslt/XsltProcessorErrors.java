@@ -27,18 +27,12 @@ public final class XsltProcessorErrors
     private final LinkedList<TransformerException> fatalErrors;
 
     /**
-     * A list of warnings.
-     */
-    private final LinkedList<TransformerException> warnings;
-
-    /**
      * Construct the errors.
      */
     public XsltProcessorErrors()
     {
         this.errors = new LinkedList<TransformerException>();
         this.fatalErrors = new LinkedList<TransformerException>();
-        this.warnings = new LinkedList<TransformerException>();
     }
 
     /**
@@ -47,30 +41,6 @@ public final class XsltProcessorErrors
     public boolean hasErrors()
     {
         return !( this.errors.isEmpty() && this.fatalErrors.isEmpty() );
-    }
-
-    /**
-     * Return the warnings.
-     */
-    public Collection<TransformerException> getWarnings()
-    {
-        return this.warnings;
-    }
-
-    /**
-     * Return the errors.
-     */
-    public Collection<TransformerException> getErrors()
-    {
-        return this.errors;
-    }
-
-    /**
-     * Return all fatal errors.
-     */
-    public Collection<TransformerException> getFatalErrors()
-    {
-        return this.fatalErrors;
     }
 
     /**
@@ -105,6 +75,6 @@ public final class XsltProcessorErrors
      */
     public void warning( TransformerException exception )
     {
-        this.warnings.add( exception );
+        // Do nothing
     }
 }

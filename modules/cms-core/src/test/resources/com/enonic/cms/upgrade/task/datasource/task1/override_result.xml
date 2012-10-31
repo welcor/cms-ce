@@ -1,9 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <datasources>
   <datasource name="getMenuBranch">
     <parameter>2</parameter>
     <parameter>${select(param.b, 'false')}</parameter>
     <parameter>${select(session.c, '1')}</parameter>
     <parameter>3</parameter>
+    <parameter>${select(param.id,'default')}</parameter>
+    <parameter>${select(param.b, select(param.id,'default'))}</parameter>
+    <parameter>${select(session.c, select(param.id,'default'))}</parameter>
+    <parameter>3</parameter>
   </datasource>
 </datasources>
+

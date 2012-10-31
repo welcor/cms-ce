@@ -7,6 +7,10 @@
       <parameter name="b" override="url">false</parameter>
       <parameter name="c" override="session">1</parameter>
       <parameter override="url">3</parameter>
+      <parameter name="a" override="false">${select(param.id,'default')}</parameter>
+      <parameter name="b" override="url">${select(param.id,'default')}</parameter>
+      <parameter name="c" override="session">${select(param.id,'default')}</parameter>
+      <parameter override="url">3</parameter>
     </parameters>
   </datasource>
 </dataSources>

@@ -1,5 +1,6 @@
 package com.enonic.cms.upgrade.task.datasource;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 
 import com.google.common.base.Strings;
@@ -87,8 +88,31 @@ public final class DataSourceConverter1
     {
         final StringBuilder str = new StringBuilder();
         str.append( "${select(" ).append( left ).append( ", " );
-        str.append( "'" ).append( right != null ? right : "" ).append( "')}" );
+
+        if ( isElExpression( right ) )
+        {
+            str.append( getStrippedElExpression( right ) ).append( ")}" );
+        }
+        else
+        {
+            str.append( "'" ).append( right != null ? right : "" ).append( "')}" );
+        }
+
         return str.toString();
     }
+
+
+    private boolean isElExpression( final String right )
+    {
+        return StringUtils.startsWithIgnoreCase( right, "${" ) && StringUtils.endsWith( right, "}" );
+    }
+
+    private String getStrippedElExpression( String expression )
+    {
+        expression = StringUtils.stripStart( expression, "${" );
+        expression = StringUtils.stripEnd( expression, "}" );
+        return expression;
+    }
+
 
 }

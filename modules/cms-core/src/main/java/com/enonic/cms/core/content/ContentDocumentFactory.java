@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Set;
 
 import org.jdom.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.category.CategoryEntity;
@@ -20,11 +22,14 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 
+@Component
 public class ContentDocumentFactory
 {
-    final IndexDefinitionBuilder indexDefBuilder = new IndexDefinitionBuilder();
+    @Autowired
+    IndexDefinitionBuilder indexDefBuilder;
 
-    final BinaryDataExtractor binaryDataExtractor = new BinaryDataExtractor();
+    @Autowired
+    BinaryDataExtractor binaryDataExtractor;
 
     public ContentDocument createContentDocument( final ContentEntity content, final boolean skipAttachment )
     {

@@ -28,7 +28,8 @@ public final class IndexServiceImpl
     @Autowired
     private ContentDao contentDao;
 
-    private final ContentDocumentFactory contentDocumentFactory = new ContentDocumentFactory();
+    @Autowired
+    private ContentDocumentFactory contentDocumentFactory;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     /* timeout: 12 timer (60 sec * 5 min = 300 sec) */

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.util.MimeTypeResolver;
@@ -16,9 +17,9 @@ import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.index.BigText;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.search.query.ContentDocument;
 import com.enonic.cms.store.dao.BinaryDataDao;
 
+@Component
 public class BinaryDataExtractor
 {
     @Autowired

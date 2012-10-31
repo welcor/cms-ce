@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom.Element;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 
 /**
  * This class implements a builder for index definitions.
  */
+@Component
 public final class IndexDefinitionBuilder
 {
     /**

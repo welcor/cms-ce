@@ -246,6 +246,12 @@ public class ContentXMLCreator
         for ( int i = 0; i < contentResultSet.getLength(); i++ )
         {
             final ContentEntity content = contentResultSet.getContent( i );
+
+            if ( content == null )
+            {
+                throw new IllegalArgumentException( "Content with key: " + contentResultSet.getKey( i ) + " not found" );
+            }
+
             final Element contentEl = doCreateContentElement( content, content.getMainVersion(), user, includeContentData, false );
             contentEl.addContent( relatedContentKeysXmlCreator.createForContent( content.getMainVersion() ) );
 

@@ -15,24 +15,34 @@ public class FileDataEntryXmlCreator
 {
     public void createAndAddElement( Element parentEl, FilesDataEntry filesDataEntry, boolean inBlockGroup )
     {
-        Element entryEl = ContentDataXPathCreator.ensurePath( parentEl, stripContentdataWhenNotBlockGroup(
+        final Element entryEl = ContentDataXPathCreator.ensurePath( parentEl, stripContentdataWhenNotBlockGroup(
             filesDataEntry.getConfig().getRelativeXPath(), inBlockGroup ) );
 
-        for ( RelationDataEntry entry : filesDataEntry.getEntries() )
+        for ( final RelationDataEntry fileDataEntry : filesDataEntry.getEntries() )
         {
-            Element fileEl = new Element( "file" );
-            fileEl.setAttribute( "key", entry.getContentKey().toString() );
-            entryEl.addContent( fileEl );
+            addFileElement( entryEl, fileDataEntry );
         }
     }
 
     public void createAndAddElement( Element parentEl, FileDataEntry fileDataEntry, boolean inBlockGroup )
     {
-        Element entryEl = ContentDataXPathCreator.ensurePath( parentEl, stripContentdataWhenNotBlockGroup(
+        final Element entryEl = ContentDataXPathCreator.ensurePath( parentEl, stripContentdataWhenNotBlockGroup(
             fileDataEntry.getConfig().getRelativeXPath(), inBlockGroup ) );
 
-        Element fileEl = new Element( "file" );
-        fileEl.setAttribute( "key", fileDataEntry.getContentKey().toString() );
+        addFileElement( entryEl, fileDataEntry );
+    }
+
+    private void addFileElement( Element entryEl, RelationDataEntry entry )
+    {
+        final Element fileEl = new Element( "file" );
+
+        fileEl.setAttribute( "key", entry.getContentKey().toString() );
+
+        if ( entry.isMarkedAsDeleted() )
+        {
+            fileEl.setAttribute( "deleted", "" + entry.isMarkedAsDeleted() );
+        }
+
         entryEl.addContent( fileEl );
     }
 

@@ -1,0 +1,24 @@
+<contentdata>
+  <heading>Heading</heading>
+  <teaser>
+    <text1><![CDATA[Front page teas]]></text1>
+    <text2><![CDATA[Article teaser:]]></text2>
+    <image key="93" />
+  </teaser>
+  <body>
+    <text><![CDATA[<p>body</p>]]></text>
+    <image key="108">
+      <text>text</text>
+    </image>
+    <image key="81">
+      <text>image2</text>
+    </image>
+  </body>
+  <keywords />
+  <authors />
+  <relatedlinks />
+  <files>
+    <file key="4" />
+    <file key="97" />
+  </files>
+</contentdata>

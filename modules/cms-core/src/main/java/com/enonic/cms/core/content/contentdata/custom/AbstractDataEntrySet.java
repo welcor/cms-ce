@@ -244,6 +244,53 @@ public abstract class AbstractDataEntrySet
         return resolveRelatedContentKeys().contains( contentKey );
     }
 
+    /**
+     * marks references in XML ContentData as deleted.
+     * <p/>
+     * this function will be overridden in CustomContentData and called from ContentData interface
+     * required to be here because also it is required for GroupDataEntry too
+     *
+     * @param key reference to content has to be removed
+     * @return true if something is removed
+     */
+    public boolean markReferencesToContentAsDeleted( ContentKey key )
+    {
+        boolean marked = false;
+
+        for ( final DataEntry entry : this.entries )
+        {
+            // File, Image, RelatedContentDataEntry
+            if ( entry instanceof RelationDataEntry )
+            {
+                final RelationDataEntry relatedContentDataEntry = (RelationDataEntry) entry;
+                if ( key.equals( relatedContentDataEntry.getContentKey() ) )
+                {
+                    if ( !relatedContentDataEntry.isMarkedAsDeleted() )
+                    {
+                        relatedContentDataEntry.markAsDeleted();
+                        marked = true;
+                    }
+                }
+            }
+
+            // Files, Images, RelatedContentsDataEntry
+            else if ( entry instanceof RelationsDataEntry )
+            {
+                final RelationsDataEntry relationsDataEntry = (RelationsDataEntry) entry;
+                marked = relationsDataEntry.markReferencesToContentAsDeleted( key ) || marked;
+            }
+
+            // Group
+            else if ( entry instanceof AbstractDataEntrySet )
+            {
+                final AbstractDataEntrySet dataEntrySet = (AbstractDataEntrySet) entry;
+                marked = dataEntrySet.markReferencesToContentAsDeleted( key ) || marked;
+            }
+        }
+
+        return marked;
+    }
+
     public List<BinaryDataEntry> getBinaryDataEntryList()
     {
 

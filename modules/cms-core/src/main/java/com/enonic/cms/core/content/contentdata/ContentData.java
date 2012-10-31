@@ -22,5 +22,7 @@ public interface ContentData
 
     boolean hasRelatedChild( ContentKey contentKey );
 
+    boolean markReferencesToContentAsDeleted( ContentKey key );
+
     void turnBinaryKeysIntoPlaceHolders( Map<BinaryDataKey, Integer> indexByBinaryDataKey );
 }

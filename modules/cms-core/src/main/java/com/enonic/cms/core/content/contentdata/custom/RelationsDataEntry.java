@@ -10,5 +10,9 @@ import com.enonic.cms.core.content.ContentKey;
 
 public interface RelationsDataEntry
 {
-    public Collection<ContentKey> getRelatedContentKeys();
+    // creates a shallow copy of internal RelatedContent collection
+    Collection<ContentKey> getRelatedContentKeys();
+
+    // marks content from internal RelatedContent collection
+    boolean markReferencesToContentAsDeleted( ContentKey contentKey );
 }

@@ -40,6 +40,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeConfig;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.InvalidContentTypeConfigException;
+import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 import com.enonic.cms.core.content.imports.ImportException;
 import com.enonic.cms.core.content.imports.ImportJob;
 import com.enonic.cms.core.content.imports.ImportJobFactory;
@@ -2241,6 +2242,76 @@ public class ImportServiceImplTest
         }
     }
 
+
+    @Test
+    public void given_content_relating_deleted_content_when_importing_an_update_of_the_content_then_the_relation_is_marked_as_deleted()
+        throws UnsupportedEncodingException
+    {
+        ContentTypeConfig contentTypeConfig = fixture.findCategoryByName( "Persons" ).getContentType().getContentTypeConfig();
+
+        // setup: content to be related and then deleted
+        CreateContentCommand createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.DRAFT );
+        CustomContentData contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "0" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Person to be deleted" ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentToBeDeleted = contentService.createContent( createCommand );
+
+        // setup: content to relate deleted content
+        createCommand = setupDefaultCreateContentCommandForPersons( ContentStatus.DRAFT );
+        contentData = new CustomContentData( contentTypeConfig );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "person-no" ), "0" ) );
+        contentData.add( new TextDataEntry( contentTypeConfig.getInputConfig( "name" ), "Person relating deleted content" ) );
+        DataEntryConfig relatedPersonsConfig = contentTypeConfig.getInputConfig( "related_persons" );
+        contentData.add( new RelatedContentsDataEntry( relatedPersonsConfig ).add(
+            new RelatedContentDataEntry( relatedPersonsConfig, contentToBeDeleted ) ) );
+        createCommand.setContentData( contentData );
+        ContentKey contentRelatingDeletedContent = contentService.createContent( createCommand );
+
+        // setup: delete content to be deleted
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), fixture.findContentByKey( contentToBeDeleted ) );
+        fixture.flushAndClearHibernateSesssion();
+
+        // setup: verify content is deleted
+        assertTrue( fixture.findContentByKey( contentRelatingDeletedContent ).getMainVersion().getContentData().hasRelatedChild(
+            contentToBeDeleted ) );
+        assertTrue( fixture.findContentByKey( contentToBeDeleted ).isDeleted() );
+
+        // setup content type with needed import configuration
+        String importsConfig = "";
+        importsConfig += "<imports>";
+        importsConfig += "<import base='/persons/person' mode='xml' name='xml-import' status='0' sync='person-no'>";
+        importsConfig += "  <mapping src='@id' dest='person-no'/>";
+        importsConfig += "  <mapping src='name' dest='name'/>";
+        importsConfig += "</import>";
+        importsConfig += "</imports>";
+
+        String changedContentTypeXml = personContentTypeXml.replace( "<imports/>", importsConfig );
+        updateContentType( "PersonCty", changedContentTypeXml );
+
+        String impData = "";
+        impData += "<persons>";
+        impData += "<person id='0'><name>Changed name</name></person>";
+        impData += "</persons>";
+
+        // exercise:
+        ImportContentCommand command = new ImportContentCommand();
+        command.importer = fixture.findUserByName( "testuser" );
+        command.categoryToImportTo = fixture.findCategoryByName( "Persons" );
+        command.publishFrom = null;
+        command.publishTo = null;
+        command.importName = "xml-import";
+        command.inputStream = new ByteArrayInputStream( impData.getBytes( "UTF-8" ) );
+        ImportJob job = importJobFactory.createImportJob( command );
+        job.start();
+        fixture.flushAndClearHibernateSesssion();
+
+        // verify: relation to deleted content is marked as deleted in content data
+        ContentEntity content = fixture.findContentByKey( contentRelatingDeletedContent );
+        CustomContentData persistedContentData = (CustomContentData) content.getMainVersion().getContentData();
+        RelatedContentsDataEntry relatedPersonsEntry = (RelatedContentsDataEntry) persistedContentData.getEntry( "related_persons" );
+        assertTrue( "related person entry not marked as deleted", relatedPersonsEntry.getEntries().get( 0 ).isMarkedAsDeleted() );
+    }
 
     private String getTextDataEntryValue( String inputName, ContentData contentData )
     {

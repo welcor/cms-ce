@@ -6,6 +6,7 @@ package com.enonic.cms.core.content.contentdata.legacy;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -77,6 +78,40 @@ public abstract class AbstractBaseLegacyContentData
     public Set<ContentKey> resolveRelatedContentKeys()
     {
         return new HashSet<ContentKey>();
+    }
+
+    /**
+     * mark references in XML to content as deleted.
+     *
+     * @param key key to find and remove
+     * @return true, if something was removed
+     */
+    public boolean markReferencesToContentAsDeleted( final ContentKey key )
+    {
+        return false;
+    }
+
+    /**
+     * mark references in XML to content as deleted.
+     *
+     * @param iterator node iterator
+     * @param contentKey key to find and remove
+     * @return true, if something was removed
+     */
+    protected boolean markReferencesToContentAsDeleted( final Iterator iterator, final ContentKey contentKey )
+    {
+        while ( iterator.hasNext() )
+        {
+            final Element e = Element.class.cast( iterator.next() );
+
+            if ( e.getAttribute( "key" ).getValue().equals( contentKey.toString() ) )
+            {
+                e.setAttribute( "deleted", "true" );
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean hasRelatedChild( ContentKey contentKey )

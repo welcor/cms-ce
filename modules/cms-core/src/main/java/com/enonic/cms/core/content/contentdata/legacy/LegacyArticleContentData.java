@@ -5,12 +5,14 @@
 package com.enonic.cms.core.content.contentdata.legacy;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.filter.ElementFilter;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
@@ -56,5 +58,43 @@ public class LegacyArticleContentData
         contentKeys.addAll( resolveContentKeysByXPath( "/contentdata/teaser/image/@key" ) );
 
         return contentKeys;
+    }
+
+    @Override
+    public boolean markReferencesToContentAsDeleted( final ContentKey contentKey )
+    {
+        Iterator iterator;
+
+        iterator = contentDataEl.getDescendants( new ElementFilter( "files" ) );
+        while ( iterator.hasNext() )
+        {
+            final Element e = Element.class.cast( iterator.next() );
+            if ( markReferencesToContentAsDeleted( e.getDescendants( new ElementFilter( "file" ) ), contentKey ) )
+            {
+                return true;
+            }
+        }
+
+        iterator = contentDataEl.getDescendants( new ElementFilter( "body" ) );
+        while ( iterator.hasNext() )
+        {
+            final Element e = Element.class.cast( iterator.next() );
+            if ( markReferencesToContentAsDeleted( e.getDescendants( new ElementFilter( "image" ) ), contentKey ) )
+            {
+                return true;
+            }
+        }
+
+        iterator = contentDataEl.getDescendants( new ElementFilter( "teaser" ) );
+        while ( iterator.hasNext() )
+        {
+            final Element e = Element.class.cast( iterator.next() );
+            if ( markReferencesToContentAsDeleted( e.getDescendants( new ElementFilter( "image" ) ), contentKey ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

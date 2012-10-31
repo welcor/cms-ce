@@ -16,11 +16,13 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.contentdata.custom.AbstractInputDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.DataEntryType;
 import com.enonic.cms.core.content.contentdata.custom.RelationDataEntry;
+import com.enonic.cms.core.content.contentdata.custom.RelationsDataEntry;
 import com.enonic.cms.core.content.contenttype.dataentryconfig.DataEntryConfig;
 
 
 public abstract class AbstractRelationDataEntryListBasedInputDataEntry<T extends RelationDataEntry>
     extends AbstractInputDataEntry
+    implements RelationsDataEntry
 {
     protected List<T> entries = new ArrayList<T>();
 
@@ -67,6 +69,32 @@ public abstract class AbstractRelationDataEntryListBasedInputDataEntry<T extends
         }
 
         return keys;
+    }
+
+
+    /**
+     * removes related content
+     *
+     * @param contentKey - content key to find and remove
+     * @return true, if contentKey was found and removed
+     */
+    public boolean markReferencesToContentAsDeleted( ContentKey contentKey )
+    {
+        boolean marked = false;
+
+        for ( final T entry : this.entries )
+        {
+            if ( entry.getContentKey() != null && entry.getContentKey().equals( contentKey ) )
+            {
+                if ( !entry.isMarkedAsDeleted() )
+                {
+                    entry.markAsDeleted();
+                    marked = true;
+                }
+            }
+        }
+
+        return marked;
     }
 
     @Override

@@ -9,5 +9,9 @@ import com.enonic.cms.core.content.ContentKey;
 public interface RelationDataEntry
     extends InputDataEntry
 {
-    public ContentKey getContentKey();
+    ContentKey getContentKey();
+
+    void markAsDeleted();
+
+    boolean isMarkedAsDeleted();
 }

@@ -7,10 +7,7 @@ package com.enonic.cms.core.portal.datasource.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
@@ -690,124 +687,6 @@ public final class DataSourceServiceImpl
     }
 
     /**
-     * Find content by category. This methods performs a free-text search in one ore more categories.
-     *
-     * @param context              the Vertical Site context
-     * @param search               the search string
-     * @param operator             the search operator: "AND" or "OR". "AND" is the default.
-     * @param categories           one or more categories to search in
-     * @param includeSubCategories include sub-categories of the categories before
-     * @param orderBy              an order by string (refer to the Administrator Guide for the syntax)
-     * @param index                start from this index
-     * @param count                maximum number of contents to get
-     * @param titlesOnly           if true, return only content titles
-     * @param parentLevel          the level of parents to include
-     * @param childrenLevel        the level of children to include
-     * @param parentChildrenLevel  the level of children for parents to include
-     * @param relatedTitlesOnly    if true, return only related content titles
-     * @param includeTotalCount    if true, include total count of contents returned excluding fromIndex and count
-     * @param includeUserRights    if true, include the current user's access rights to the content
-     * @param contentTypes         filter by zero or more content types
-     * @return contents xml
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument findContentByCategory( DataSourceContext context, String search, String operator, int[] categories,
-                                              boolean includeSubCategories, String orderBy, int index, int count, boolean titlesOnly,
-                                              int childrenLevel, int parentLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
-                                              boolean includeTotalCount, boolean includeUserRights, int[] contentTypes )
-    {
-        PreviewContext previewContext = context.getPreviewContext();
-
-        ContentXMLCreator xmlCreator = new ContentXMLCreator();
-
-        if ( ( search == null ) || ( search.length() == 0 ) )
-        {
-            return xmlCreator.createEmptyDocument( "Need a search string to find content." );
-        }
-
-        UserEntity user = getUserEntity( context.getUser() );
-        Collection<CategoryKey> categoryKeys = CategoryKey.convertToList( categories );
-        Collection<ContentTypeKey> contentTypeKeys = ContentTypeKey.convertToList( contentTypes );
-        boolean opAnd = ( operator != null ) && "AND".equalsIgnoreCase( operator );
-        String query = convertSimpleSearch( search, opAnd );
-        final Date now = new Date();
-
-        ContentByCategoryQuery contentByCategoryQuery = new ContentByCategoryQuery();
-        contentByCategoryQuery.setUser( user );
-        contentByCategoryQuery.setCategoryKeyFilter( categoryKeys, includeSubCategories ? Integer.MAX_VALUE : 1 );
-        contentByCategoryQuery.setQuery( query );
-        contentByCategoryQuery.setOrderBy( orderBy );
-        contentByCategoryQuery.setContentTypeFilter( contentTypeKeys );
-        contentByCategoryQuery.setIndex( index );
-        contentByCategoryQuery.setCount( count );
-        contentByCategoryQuery.setFilterContentOnlineAt( now );
-        contentByCategoryQuery.setFilterAdminBrowseOnly( false );
-
-        ContentResultSet contents = contentService.queryContent( contentByCategoryQuery );
-        if ( previewContext.isPreviewingContent() )
-        {
-            contents = previewContext.getContentPreviewContext().overrideContentResultSet( contents );
-        }
-
-        RelatedContentQuery relatedContentQuery = new RelatedContentQuery( now );
-        relatedContentQuery.setUser( user );
-        relatedContentQuery.setContentResultSet( contents );
-        relatedContentQuery.setParentLevel( parentLevel );
-        relatedContentQuery.setChildrenLevel( childrenLevel );
-        relatedContentQuery.setParentChildrenLevel( parentChildrenLevel );
-        relatedContentQuery.setIncludeOnlyMainVersions( true );
-
-        RelatedContentResultSet relatedContents = contentService.queryRelatedContent( relatedContentQuery );
-        if ( previewContext.isPreviewingContent() )
-        {
-            relatedContents = previewContext.getContentPreviewContext().overrideRelatedContentResultSet( relatedContents );
-        }
-
-        xmlCreator.setResultIndexing( index, count );
-        xmlCreator.setIncludeContentData( !titlesOnly );
-        xmlCreator.setIncludeRelatedContentData( !relatedTitlesOnly );
-        xmlCreator.setIncludeUserRightsInfo( includeUserRights, new CategoryAccessResolver( groupDao ),
-                                             new ContentAccessResolver( groupDao ) );
-        xmlCreator.setIncludeVersionsInfoForPortal( false );
-        xmlCreator.setIncludeAssignment( true );
-        return xmlCreator.createContentsDocument( user, contents, relatedContents );
-    }
-
-    private String convertSimpleSearch( String search, boolean opAnd )
-    {
-        String operator = opAnd ? " AND " : " OR ";
-        final StringBuilder query = new StringBuilder();
-
-        if ( search != null )
-        {
-            HashSet<String> params = new HashSet<String>();
-            StringTokenizer tok = new StringTokenizer( search, " " );
-
-            while ( tok.hasMoreTokens() )
-            {
-                String param = tok.nextToken();
-                if ( param.length() > 0 )
-                {
-                    params.add( param );
-                }
-            }
-
-            for ( Iterator<String> i = params.iterator(); i.hasNext(); )
-            {
-                String param = i.next();
-                query.append( "((title CONTAINS \"" ).append( param ).append( "\") OR " );
-                query.append( "(* CONTAINS \"" ).append( param ).append( "\"))" );
-                if ( i.hasNext() )
-                {
-                    query.append( operator );
-                }
-            }
-        }
-
-        return query.toString();
-    }
-
-    /**
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -926,50 +805,6 @@ public final class DataSourceServiceImpl
         }
 
         return uniquePreferences;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String orderBy,
-                                               boolean requireAll, int fromIndex, int count, int parentLevel, int childrenLevel,
-                                               int parentChildrenLevel, boolean includeTotalCount, int[] filterByCategories,
-                                               boolean categoryRecursive, int[] filterByContentTypes )
-    {
-        return doGetRelatedContent( context, contentKeys, relation, null, orderBy, requireAll, fromIndex, count, parentLevel, childrenLevel,
-                                    parentChildrenLevel, true, true, true, true, filterByCategories, categoryRecursive,
-                                    filterByContentTypes );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String orderBy,
-                                               boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
-                                               int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
-                                               boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
-                                               int[] filterByContentTypes )
-    {
-        return doGetRelatedContent( context, contentKeys, relation, null, orderBy, requireAll, fromIndex, count, parentLevel, childrenLevel,
-                                    parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, filterByCategories,
-                                    categoryRecursive, filterByContentTypes );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getRelatedContents_old( DataSourceContext context, int relation, int[] contentKeys, String query, String orderBy,
-                                               boolean requireAll, int fromIndex, int count, boolean titlesOnly, int parentLevel,
-                                               int childrenLevel, int parentChildrenLevel, boolean relatedTitlesOnly,
-                                               boolean includeTotalCount, int[] filterByCategories, boolean categoryRecursive,
-                                               int[] filterByContentTypes )
-    {
-        return doGetRelatedContent( context, contentKeys, relation, query, orderBy, requireAll, fromIndex, count, parentLevel,
-                                    childrenLevel, parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly,
-                                    filterByCategories, categoryRecursive, filterByContentTypes );
     }
 
     private XMLDocument doGetRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,

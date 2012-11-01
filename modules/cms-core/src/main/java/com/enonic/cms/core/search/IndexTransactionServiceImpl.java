@@ -10,7 +10,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
-import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
+import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.store.dao.ContentDao;
 
 @Service
@@ -18,26 +18,18 @@ import com.enonic.cms.store.dao.ContentDao;
 public class IndexTransactionServiceImpl
     implements IndexTransactionService
 {
-
     private final static LogFacade LOG = LogFacade.get( IndexTransactionServiceImpl.class );
 
     public static final Object TRANSACTION_JOURNAL_KEY = IndexTransactionJournal.class;
-
-    private final ContentIndexDataFactory contentIndexDataFactory;
 
     @Autowired
     private ContentDao contentDao;
 
     @Autowired
-    private ElasticSearchIndexService elasticSearchIndexService;
-
-    @Autowired
     private IndexService indexService;
 
-    public IndexTransactionServiceImpl()
-    {
-        contentIndexDataFactory = new ContentIndexDataFactory();
-    }
+    @Autowired
+    private ContentIndexService contentIndexService;
 
     @Override
     public void startTransaction()
@@ -104,8 +96,7 @@ public class IndexTransactionServiceImpl
             LOG.error( "Index transaction already started" );
             return indexTransactionJournal;
         }
-        indexTransactionJournal =
-            new IndexTransactionJournal( elasticSearchIndexService, indexService, contentIndexDataFactory, contentDao );
+        indexTransactionJournal = new IndexTransactionJournal( contentIndexService, indexService, contentDao );
         TransactionSynchronizationManager.bindResource( TRANSACTION_JOURNAL_KEY, indexTransactionJournal );
         return indexTransactionJournal;
     }

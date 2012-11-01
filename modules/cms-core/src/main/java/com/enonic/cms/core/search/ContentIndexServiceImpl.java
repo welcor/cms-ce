@@ -108,7 +108,7 @@ public class ContentIndexServiceImpl
         doAddMapping( IndexType.Binaries );
     }
 
-    private void doAddMapping( IndexType indexType )
+    private void doAddMapping( final IndexType indexType )
     {
         String mapping = getMapping( indexType );
         elasticSearchIndexService.putMapping( CONTENT_INDEX_NAME, indexType.toString(), mapping );
@@ -119,26 +119,26 @@ public class ContentIndexServiceImpl
         return indexMappingProvider.getMapping( CONTENT_INDEX_NAME, indexType.toString() );
     }
 
-    public void remove( ContentKey contentKey )
+    public void remove( final ContentKey contentKey )
     {
         doRemoveEntryWithId( contentKey );
     }
 
-    public void removeByCategory( CategoryKey categoryKey )
+    public void removeByCategory( final CategoryKey categoryKey )
     {
         ContentIndexQuery contentIndexQuery = new ContentIndexQuery( "" );
         contentIndexQuery.setCategoryFilter( Arrays.asList( categoryKey ) );
         doRemoveByQuery( contentIndexQuery );
     }
 
-    public void removeByContentType( ContentTypeKey contentTypeKey )
+    public void removeByContentType( final ContentTypeKey contentTypeKey )
     {
         ContentIndexQuery contentIndexQuery = new ContentIndexQuery( "" );
         contentIndexQuery.setContentTypeFilter( Arrays.asList( contentTypeKey ) );
         doRemoveByQuery( contentIndexQuery );
     }
 
-    private void doRemoveByQuery( ContentIndexQuery contentIndexQuery )
+    private void doRemoveByQuery( final ContentIndexQuery contentIndexQuery )
     {
         final SearchSourceBuilder build;
 
@@ -165,22 +165,22 @@ public class ContentIndexServiceImpl
         elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
     }
 
-    public void index( ContentDocument doc )
+    public void index( final ContentDocument doc )
     {
-        doIndex( doc, true );
+        doIndex( doc, false );
     }
 
 
-    public void index( ContentDocument doc, boolean deleteExisting )
+    public void index( final ContentDocument doc, final boolean updateMetadataOnly )
     {
-        doIndex( doc, deleteExisting );
+        doIndex( doc, updateMetadataOnly );
     }
 
-    private void doIndex( final ContentDocument doc, final boolean deleteExisting )
+    private void doIndex( final ContentDocument doc, final boolean updateMetadataOnly )
     {
-        ContentIndexData contentIndexData = contentIndexDataFactory.create( doc );
+        ContentIndexData contentIndexData = contentIndexDataFactory.create( doc, updateMetadataOnly );
 
-        if ( deleteExisting )
+        if ( !updateMetadataOnly )
         {
             doRemoveEntryWithId( doc.getContentKey() );
         }
@@ -188,7 +188,7 @@ public class ContentIndexServiceImpl
         elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }
 
-    public boolean isIndexed( ContentKey contentKey, final IndexType indexType )
+    public boolean isIndexed( final ContentKey contentKey, final IndexType indexType )
     {
         return elasticSearchIndexService.get( CONTENT_INDEX_NAME, indexType, contentKey );
     }
@@ -259,7 +259,7 @@ public class ContentIndexServiceImpl
      * @return <code>true</code> if the filter does have openings. <code>false</code> if the filters are set so that no result will be let
      *         through the filter, and running the query is superfluous.
      */
-    private boolean isFilterBlockingAllContent( ContentIndexQuery query )
+    private boolean isFilterBlockingAllContent( final ContentIndexQuery query )
     {
         final boolean isCategoryFilterBlocked = ( ( query.getCategoryFilter() != null ) && ( query.getCategoryFilter().size() == 0 ) );
         final boolean isContentFilterBlocked = ( ( query.getContentFilter() != null ) && ( query.getContentFilter().size() == 0 ) );
@@ -297,7 +297,7 @@ public class ContentIndexServiceImpl
         return Ints.saturatedCast( actualCount );
     }
 
-    public IndexValueResultSet query( IndexValueQuery query )
+    public IndexValueResultSet query( final IndexValueQuery query )
     {
         final SearchSourceBuilder build;
 
@@ -329,7 +329,7 @@ public class ContentIndexServiceImpl
     }
 
 
-    private IndexValueResultImpl createIndexValueResult( SearchHit hit, QueryField queryField )
+    private IndexValueResultImpl createIndexValueResult( final SearchHit hit, final QueryField queryField )
     {
         Assert.notNull( hit.getSource(), "Source is empty from search result" );
 
@@ -342,7 +342,7 @@ public class ContentIndexServiceImpl
         return new IndexValueResultImpl( contentKey, fieldValue.get( 0 ) );
     }
 
-    private SearchHits doExecuteSearchRequest( SearchSourceBuilder searchSourceBuilder )
+    private SearchHits doExecuteSearchRequest( final SearchSourceBuilder searchSourceBuilder )
     {
         final SearchResponse res =
             elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content.toString(), searchSourceBuilder );
@@ -350,7 +350,7 @@ public class ContentIndexServiceImpl
         return res.getHits();
     }
 
-    public SearchResponse query( String query )
+    public SearchResponse query( final String query )
     {
         return elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content.toString(), query );
     }
@@ -360,7 +360,7 @@ public class ContentIndexServiceImpl
         elasticSearchIndexService.flush( CONTENT_INDEX_NAME );
     }
 
-    public AggregatedResult query( AggregatedQuery query )
+    public AggregatedResult query( final AggregatedQuery query )
     {
         final SearchSourceBuilder builder;
 

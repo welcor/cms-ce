@@ -14,14 +14,12 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentMap;
 import com.enonic.cms.core.content.IndexService;
-import com.enonic.cms.core.search.builder.ContentIndexData;
-import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
 import com.enonic.cms.core.search.query.ContentDocument;
+import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.ContentEagerFetches;
 import com.enonic.cms.store.dao.FindContentByKeysCommand;
 
-import static com.enonic.cms.core.search.ContentIndexServiceImpl.CONTENT_INDEX_NAME;
 import static com.enonic.cms.core.search.IndexTransactionJournalEntry.JournalOperation.UPDATE;
 
 public class IndexTransactionJournal
@@ -33,18 +31,14 @@ public class IndexTransactionJournal
 
     private final IndexService indexService;
 
-    private final ContentIndexDataFactory contentIndexDataFactory;
-
-    private final ElasticSearchIndexService elasticSearchIndexService;
+    private final ContentIndexService contentIndexService;
 
     private final Set<IndexTransactionJournalEntry> changeHistory;
 
-    public IndexTransactionJournal( ElasticSearchIndexService elasticSearchIndexService, IndexService indexService,
-                                    ContentIndexDataFactory contentIndexDataFactory, ContentDao contentDao )
+    public IndexTransactionJournal( ContentIndexService contentIndexService, IndexService indexService, ContentDao contentDao )
     {
-        this.elasticSearchIndexService = elasticSearchIndexService;
+        this.contentIndexService = contentIndexService;
         this.indexService = indexService;
-        this.contentIndexDataFactory = contentIndexDataFactory;
         this.contentDao = contentDao;
         this.changeHistory = new HashSet<IndexTransactionJournalEntry>();
     }
@@ -177,22 +171,22 @@ public class IndexTransactionJournal
     private void doUpdateContent( final ContentEntity content, final boolean updateMetadataOnly )
     {
         final ContentDocument doc = indexService.createContentDocument( content, updateMetadataOnly );
-        final ContentIndexData contentIndexData = contentIndexDataFactory.create( doc, updateMetadataOnly );
 
-        LOG.fine( "Updating index for content: " + contentIndexData.getKey().toString() );
+        LOG.fine( "Updating index for content: " + doc.getContentKey().toString() );
 
-        elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
+        contentIndexService.index( doc, updateMetadataOnly );
     }
 
     private void deleteContent( ContentKey contentKey )
     {
         LOG.fine( "Deleting index for content: " + contentKey.toString() );
-        elasticSearchIndexService.delete( CONTENT_INDEX_NAME, IndexType.Content, contentKey );
+
+        contentIndexService.remove( contentKey );
     }
 
     private void flushIndex()
     {
-        elasticSearchIndexService.flush( CONTENT_INDEX_NAME );
+        contentIndexService.flush();
     }
 
     @Override

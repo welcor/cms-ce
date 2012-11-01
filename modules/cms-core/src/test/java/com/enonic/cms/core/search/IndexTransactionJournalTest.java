@@ -12,6 +12,7 @@ import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.search.builder.ContentIndexData;
 import com.enonic.cms.core.search.builder.ContentIndexDataFactory;
 import com.enonic.cms.core.search.query.ContentDocument;
+import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.FindContentByKeysCommand;
 
@@ -29,7 +30,7 @@ public class IndexTransactionJournalTest
 
     IndexService indexService;
 
-    ElasticSearchIndexService elasticSearchIndexService;
+    ContentIndexService contentIndexService;
 
     ContentDao contentDao;
 
@@ -38,12 +39,12 @@ public class IndexTransactionJournalTest
     @Before
     public void setup()
     {
-        elasticSearchIndexService = mock( ElasticSearchIndexService.class );
+        contentIndexService = mock( ContentIndexService.class );
         indexService = mock( IndexService.class );
         contentIndexDataFactory = mock( ContentIndexDataFactory.class );
         contentDao = mock( ContentDao.class );
 
-        journal = new IndexTransactionJournal( elasticSearchIndexService, indexService, contentIndexDataFactory, contentDao );
+        journal = new IndexTransactionJournal( contentIndexService, indexService, contentDao );
     }
 
     @Test
@@ -64,7 +65,7 @@ public class IndexTransactionJournalTest
         journal.registerUpdate( new ContentKey( 1 ), false );
         journal.afterCommit();
 
-        verify( elasticSearchIndexService, times( 1 ) ).index( isA( String.class ), isA( ContentIndexData.class ) );
+        verify( contentIndexService, times( 1 ) ).index( isA( ContentDocument.class ), isA( Boolean.class ) );
     }
 
     private ContentEntity createContent( ContentKey contentKey )

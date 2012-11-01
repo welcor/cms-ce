@@ -311,7 +311,7 @@ public class ElasticSearchIndexServiceImpl
     public boolean indexExists( String indexName )
     {
         final ClusterHealthRequest clusterHealthRequest =
-            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( 1 ) ).waitForYellowStatus();
+            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( 60 ) ).waitForYellowStatus();
         final ClusterHealthResponse clusterHealth = client.admin().cluster().health( clusterHealthRequest ).actionGet();
         if ( clusterHealth.timedOut() )
         {

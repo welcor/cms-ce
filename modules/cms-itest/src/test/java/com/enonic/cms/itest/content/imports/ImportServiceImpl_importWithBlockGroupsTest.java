@@ -127,7 +127,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -160,7 +160,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -232,7 +232,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -274,7 +274,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -348,7 +348,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -386,7 +386,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -418,7 +418,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         String changedContentTypeXml = personContentTypeXml.replace( "<imports/>", importsConfig );
         updateContentType( "PersonCty", changedContentTypeXml );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         String firstImportSource = "";
@@ -451,7 +451,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -489,7 +489,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -574,7 +574,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -612,7 +612,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -702,7 +702,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -744,7 +744,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -820,7 +820,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // exercise
@@ -849,7 +849,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -926,7 +926,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -968,7 +968,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -1045,7 +1045,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -1083,7 +1083,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -1120,7 +1120,7 @@ public class ImportServiceImpl_importWithBlockGroupsTest
     {
         ContentTypeEntity contentType = fixture.findContentTypeByName( contentTypeName );
         contentType.setData( XMLDocumentFactory.create( contentTypeXml ).getAsJDOMDocument() );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
     }
 

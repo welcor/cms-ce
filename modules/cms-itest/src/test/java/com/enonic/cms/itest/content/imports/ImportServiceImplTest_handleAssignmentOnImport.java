@@ -178,7 +178,7 @@ public class ImportServiceImplTest_handleAssignmentOnImport
 
         contentService.assignContent( assignCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity draft = contentDao.findByKey( contentKey_draft );
         assertEquals( testUser, draft.getAssignee() );
@@ -197,7 +197,7 @@ public class ImportServiceImplTest_handleAssignmentOnImport
 
         contentService.assignContent( assignCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity draft2 = contentDao.findByKey( contentKey_draft2 );
         assertEquals( testUser, draft2.getAssignee() );
@@ -260,7 +260,7 @@ public class ImportServiceImplTest_handleAssignmentOnImport
     {
         ContentTypeEntity contentType = fixture.findContentTypeByName( contentTypeName );
         contentType.setData( XMLDocumentFactory.create( contentTypeXml ).getAsJDOMDocument() );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private String resourceToString( Resource resource )

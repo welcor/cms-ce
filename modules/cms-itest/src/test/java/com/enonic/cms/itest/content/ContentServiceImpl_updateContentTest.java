@@ -108,7 +108,7 @@ public class ContentServiceImpl_updateContentTest
 
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private CreateContentCommand createCreateContentCommand( Integer status, UserEntity runningUser )
@@ -165,7 +165,7 @@ public class ContentServiceImpl_updateContentTest
 
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -181,7 +181,7 @@ public class ContentServiceImpl_updateContentTest
 
         assertFalse( "No changes should have been done to content or version", result.isAnyChangesMade() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -195,7 +195,7 @@ public class ContentServiceImpl_updateContentTest
         CreateContentCommand createCommand = createCreateContentCommand( ContentStatus.DRAFT.getKey(), testUser );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -209,7 +209,7 @@ public class ContentServiceImpl_updateContentTest
 
         assertTrue( "Content should have been updated", result.isAnyChangesMade() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -224,7 +224,7 @@ public class ContentServiceImpl_updateContentTest
         CreateContentCommand createCommand = createCreateContentCommand( ContentStatus.DRAFT.getKey(), testUser );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -257,12 +257,12 @@ public class ContentServiceImpl_updateContentTest
 
         CreateContentCommand createCommand = createCreateContentCommand( ContentStatus.DRAFT.getKey(), testUser );
         ContentKey contentKey = contentService.createContent( createCommand );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
         contentService.deleteContent( fixture.findUserByName( "testuser" ), persistedContent );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
         assertTrue( persistedContent.isDeleted() );

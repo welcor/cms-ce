@@ -44,8 +44,7 @@ import com.enonic.cms.itest.util.AssertTool;
 import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class InternalClientImpl_CreateImageContentTest
     extends AbstractSpringTest
@@ -101,7 +100,7 @@ public class InternalClientImpl_CreateImageContentTest
 
         int contentKey = internalClient.createImageContent( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = fixture.findContentByKey( new ContentKey( contentKey ) );
         assertNotNull( persistedContent );
@@ -156,7 +155,7 @@ public class InternalClientImpl_CreateImageContentTest
 
         int contentKey = internalClient.createImageContent( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = fixture.findContentByKey( new ContentKey( contentKey ) );
         assertNotNull( persistedContent );
@@ -219,7 +218,7 @@ public class InternalClientImpl_CreateImageContentTest
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read,create" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private ImageContentDataInput createImageContentData( String fileName )

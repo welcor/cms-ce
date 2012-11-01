@@ -531,7 +531,7 @@ public class InternalClientImpl_UpdateUserTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( type, "" ) );
 
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private UserStoreUserFieldConfig createUserStoreUserFieldConfig( UserFieldType type, String properties )

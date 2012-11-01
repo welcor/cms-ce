@@ -77,7 +77,7 @@ public class ContentServiceImpl_queryContentTest
         fixture.createAndStoreNormalUserWithUserGroup( "content-querier", "Creator", "testuserstore" );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, admin_browse" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // setup content assigned to content-creator

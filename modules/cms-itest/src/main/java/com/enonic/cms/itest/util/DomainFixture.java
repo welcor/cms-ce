@@ -148,7 +148,7 @@ public class DomainFixture
 
         save( factory.createUser( User.ROOT_UID, "Enterprise Admin", UserType.ADMINISTRATOR, null ) );
 
-        flushAndClearHibernateSesssion();
+        flushAndClearHibernateSession();
 
         PortalSecurityHolder.setAnonUser( findUserByName( "anonymous" ).getKey() );
         PortalSecurityHolder.setLoggedInUser( findUserByName( "anonymous" ).getKey() );
@@ -537,7 +537,7 @@ public class DomainFixture
             hibernateTemplate.save( obj );
         }
 
-        flushAndClearHibernateSesssion();
+        flushAndClearHibernateSession();
     }
 
     public void saveOrUpdate( Object... objects )
@@ -547,10 +547,10 @@ public class DomainFixture
             hibernateTemplate.saveOrUpdate( obj );
         }
 
-        flushAndClearHibernateSesssion();
+        flushAndClearHibernateSession();
     }
 
-    public void flushAndClearHibernateSesssion()
+    public void flushAndClearHibernateSession()
     {
         hibernateTemplate.flush();
         hibernateTemplate.clear();

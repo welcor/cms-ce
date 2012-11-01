@@ -60,7 +60,7 @@ public class InternalClientImpl_getBinaryTest
         contentTypeConfigXml.append( "<moduledata/>" );
         final Document contentTypeConfig = XMLDocumentFactory.create( contentTypeConfigXml.toString() ).getAsJDOMDocument();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr( "127.0.0.1" );
@@ -74,7 +74,7 @@ public class InternalClientImpl_getBinaryTest
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "creator", "creator" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "creator", "read,create,approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "getter", "read,create" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -84,7 +84,7 @@ public class InternalClientImpl_getBinaryTest
 
         ContentKey contentKey = createFileContent( "Dummy name", new byte[]{1, 2, 3}, ContentStatus.APPROVED, "MyCategory" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = fixture.findContentByKey( contentKey );
         ContentVersionEntity persistedVersion = persistedContent.getMainVersion();
@@ -110,7 +110,7 @@ public class InternalClientImpl_getBinaryTest
 
         ContentKey contentKey = createFileContent( "Dummy name", new byte[]{1, 2, 3}, ContentStatus.APPROVED, "MyCategory" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = fixture.findContentByKey( contentKey );
         ContentVersionEntity persistedVersion = persistedContent.getMainVersion();
@@ -137,7 +137,7 @@ public class InternalClientImpl_getBinaryTest
 
         ContentKey contentKey = createFileContent( "Dummy name", new byte[]{1, 2, 3}, ContentStatus.APPROVED, "MyCategory" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = fixture.findContentByKey( contentKey );
         ContentVersionEntity persistedVersion = persistedContent.getMainVersion();
@@ -182,7 +182,7 @@ public class InternalClientImpl_getBinaryTest
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "creator" ).getKey() );
         ContentKey contentKey = createFileContent( "Dummy name", new byte[]{1, 2, 3}, ContentStatus.APPROVED, "MyCategory" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "getter" ).getKey() );

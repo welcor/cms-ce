@@ -115,7 +115,7 @@ public class ContentServicesProcessor_operation_CreateTest
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -131,7 +131,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "Person", "PersonCategory", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "PersonCategory", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -143,7 +143,7 @@ public class ContentServicesProcessor_operation_CreateTest
         formItems.putString( "name", "Laverne Veronica Wyatt-Skriubakken" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         ContentEntity content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "MyCategory" ) );
@@ -168,7 +168,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "Person", "PersonCategory", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "PersonCategory", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -186,7 +186,7 @@ public class ContentServicesProcessor_operation_CreateTest
         formItems.putString( "Phone[3].phone_number", "00000000" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         ContentEntity content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "MyCategory" ) );
@@ -261,7 +261,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType2", "MyCategory2", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory2", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -275,7 +275,7 @@ public class ContentServicesProcessor_operation_CreateTest
         formItems.putString( "myCheckbox_true", "true" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify no error by checking that correct redirect was done (enough checking that right method was called)
         verifyRedirectOk();
@@ -302,7 +302,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // execise: create the content
         ExtendedMap formItems = new ExtendedMap( true );
@@ -310,7 +310,7 @@ public class ContentServicesProcessor_operation_CreateTest
         formItems.putString( "title", "Title" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         Mockito.verify( userServicesRedirectUrlResolver ).resolveRedirectUrlToErrorPage( Mockito.any( HttpServletRequest.class ),
@@ -334,7 +334,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -348,7 +348,7 @@ public class ContentServicesProcessor_operation_CreateTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         verifyRedirectOk();
 
@@ -374,7 +374,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -393,7 +393,7 @@ public class ContentServicesProcessor_operation_CreateTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         verifyRedirectOk();
 
@@ -422,7 +422,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -438,7 +438,7 @@ public class ContentServicesProcessor_operation_CreateTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         verifyRedirectOk();
 
@@ -466,7 +466,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -482,7 +482,7 @@ public class ContentServicesProcessor_operation_CreateTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         verifyRedirectOk();
 
@@ -509,7 +509,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -527,7 +527,7 @@ public class ContentServicesProcessor_operation_CreateTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         verifyRedirectOk();
 
@@ -571,7 +571,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType4", "MyCategory4", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory4", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -583,7 +583,7 @@ public class ContentServicesProcessor_operation_CreateTest
         formItems.putString( "title", "Title" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify no error by checking that correct redirect was done (enough checking that right method was called)
         Mockito.verify( userServicesRedirectUrlResolver ).resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ),
@@ -621,7 +621,7 @@ public class ContentServicesProcessor_operation_CreateTest
         createAndSaveContentTypeAndCategory( "MyContentType4", "MyCategory4", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory4", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Mockito.when(
             userServicesRedirectUrlResolver.resolveRedirectUrlToPage( Mockito.any( HttpServletRequest.class ), Mockito.anyString(),
@@ -641,7 +641,7 @@ public class ContentServicesProcessor_operation_CreateTest
         formItems.putString( "myXml_ampenc", "<data>&amp;</data>" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify no error by checking that correct redirect was done (enough checking that right method was called)
         verifyRedirectOk();
@@ -669,7 +669,7 @@ public class ContentServicesProcessor_operation_CreateTest
         fixture.save(
             factory.createContentType( contentTypeName, ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         createAndSaveCategoryOfContentType( categoryName, contentTypeName );
     }
@@ -679,14 +679,14 @@ public class ContentServicesProcessor_operation_CreateTest
         String unitName = "UnitFor_" + categoryName;
         fixture.save( factory.createUnit( unitName, "en" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         final CategoryEntity categoryEntity =
             factory.createCategory( categoryName, null, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
 
         fixture.save( categoryEntity );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
 }

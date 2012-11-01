@@ -76,7 +76,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         factory = fixture.getFactory();
 
         fixture.initSystemData();
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
     }
 
@@ -91,7 +91,7 @@ public abstract class AbstractInternalClientImpl_ImportContentTest
         fixture.save( factory.createCategory( "MyImportCategory", null, "MyCustomContentType", "MyCustomUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser", "read, browse, create, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyImportCategory", "testuser2", "read, browse, create, approve" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
     }
 

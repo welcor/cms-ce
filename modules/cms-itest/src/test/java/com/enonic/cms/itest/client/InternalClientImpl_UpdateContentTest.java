@@ -152,7 +152,7 @@ public class InternalClientImpl_UpdateContentTest
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private void createUpdateContentWithBinary()
@@ -202,7 +202,7 @@ public class InternalClientImpl_UpdateContentTest
 
         contentWithBinaryKey = contentService.createContent( createContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -577,7 +577,7 @@ public class InternalClientImpl_UpdateContentTest
         params.status = ContentStatus.STATUS_DRAFT;
         int contentVersionKey = internalClient.updateContent( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentVersionEntity actualVersion = contentVersionDao.findByKey( new ContentVersionKey( contentVersionKey ) );
         ContentEntity persistedContent = contentDao.findByKey( actualVersion.getContent().getKey() );
@@ -626,7 +626,7 @@ public class InternalClientImpl_UpdateContentTest
 
         updateContentKey = contentService.createContent( createContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
     }
 

@@ -78,7 +78,7 @@ public class RelatedContentFetcherForContentVersionTest
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup content type
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "MyRelatingContent", "title" );
@@ -90,13 +90,13 @@ public class RelatedContentFetcherForContentVersionTest
         fixture.save(
             factory.createContentType( "MyRelatingContent", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsJDOMDocument ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyRelatingContent", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         contentDao = new OverridingContentEntityDao();
         contentDao.setHibernateTemplate( hibernateTemplate );
@@ -235,7 +235,7 @@ public class RelatedContentFetcherForContentVersionTest
         updateCommand = setupDefaultUpdateContentCommandForMyRelatingContent( content_4, "Relating content 4-3" + content_3, content_3 );
         contentService.updateContent( updateCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         contentDao.setMaxExpectedFindRelatedChildrenByKeysAttempts( 4 );
 

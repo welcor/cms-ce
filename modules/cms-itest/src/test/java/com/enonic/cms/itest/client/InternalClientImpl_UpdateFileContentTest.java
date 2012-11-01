@@ -86,7 +86,7 @@ public class InternalClientImpl_UpdateFileContentTest
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
 
@@ -155,12 +155,12 @@ public class InternalClientImpl_UpdateFileContentTest
         params.fileContentData = fileContentData;
         int contentKey = internalClient.createFileContent( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( new ContentKey( contentKey ) );
         assertNotNull( persistedContent );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         return contentKey;
     }

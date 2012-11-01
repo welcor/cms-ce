@@ -76,7 +76,7 @@ public class InternalClientImpl_changeUserPasswordTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
 
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );

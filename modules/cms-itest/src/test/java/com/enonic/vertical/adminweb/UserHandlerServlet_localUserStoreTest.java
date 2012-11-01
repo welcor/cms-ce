@@ -104,7 +104,7 @@ public class UserHandlerServlet_localUserStoreTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.HTML_EMAIL, "" ) );
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.BIRTHDAY, "" ) );
         createLocalUserStore( "myLocalUserStore", true, userStoreConfig );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: create user
         UserFields userFields = new UserFields();
@@ -171,7 +171,7 @@ public class UserHandlerServlet_localUserStoreTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.LAST_NAME, "" ) );
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.HTML_EMAIL, "" ) );
         createLocalUserStore( "myLocalUserStore", true, userStoreConfig );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: create user
         UserFields userFields = new UserFields();
@@ -218,7 +218,7 @@ public class UserHandlerServlet_localUserStoreTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.HTML_EMAIL, "" ) );
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.BIRTHDAY, "" ) );
         createLocalUserStore( "myLocalUserStore", true, userStoreConfig );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: create user
         UserFields userFields = new UserFields();

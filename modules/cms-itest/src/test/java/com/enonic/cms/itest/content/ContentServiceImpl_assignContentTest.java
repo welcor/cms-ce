@@ -105,7 +105,7 @@ public class ContentServiceImpl_assignContentTest
 
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private CreateContentCommand createCreateContentCommand( Integer status, UserEntity creator )
@@ -165,7 +165,7 @@ public class ContentServiceImpl_assignContentTest
         CreateContentCommand createCommand = createCreateContentCommand( ContentStatus.APPROVED.getKey(), testUser );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -183,7 +183,7 @@ public class ContentServiceImpl_assignContentTest
 
         contentService.assignContent( assignCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -212,7 +212,7 @@ public class ContentServiceImpl_assignContentTest
 
         ContentKey contentCopyKey = contentService.copyContent( testUser2, persistedContent, persistedContent.getCategory() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity contentCopy = contentDao.findByKey( contentCopyKey );
 
@@ -236,7 +236,7 @@ public class ContentServiceImpl_assignContentTest
         ContentVersionKey versionKey = persistedContent.getMainVersion().getKey();
 
         // excersise
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -256,7 +256,7 @@ public class ContentServiceImpl_assignContentTest
 
         contentService.assignContent( assignCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -295,7 +295,7 @@ public class ContentServiceImpl_assignContentTest
         assertNotNull( "DueDate should be set", persistedContent.getAssignmentDueDate() );
         assertEquals( testUser, persistedContent.getAssigner() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -305,7 +305,7 @@ public class ContentServiceImpl_assignContentTest
 
         contentService.unassignContent( unassignContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -343,7 +343,7 @@ public class ContentServiceImpl_assignContentTest
         assertNotNull( "DueDate should be set", persistedContent.getAssignmentDueDate() );
         assertEquals( testUser, persistedContent.getAssigner() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -355,7 +355,7 @@ public class ContentServiceImpl_assignContentTest
 
         contentService.updateContent( updateContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -398,7 +398,7 @@ public class ContentServiceImpl_assignContentTest
         assertNotNull( "DueDate should be set", persistedContent.getAssignmentDueDate() );
         assertEquals( testUser, persistedContent.getAssigner() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -408,7 +408,7 @@ public class ContentServiceImpl_assignContentTest
 
         contentService.updateContent( updateContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -490,7 +490,7 @@ public class ContentServiceImpl_assignContentTest
     {
         fixture.createAndStoreNormalUserWithUserGroup( uid, uid, "testuserstore" );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", uid, accessRightsString ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
 

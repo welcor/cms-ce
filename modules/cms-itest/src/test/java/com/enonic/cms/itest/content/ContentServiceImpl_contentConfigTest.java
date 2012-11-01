@@ -74,7 +74,7 @@ public class ContentServiceImpl_contentConfigTest
 
         fixture.createAndStoreUserAndUserGroup( "testuser", "testuser fullname", UserType.NORMAL, "testuserstore" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -89,13 +89,13 @@ public class ContentServiceImpl_contentConfigTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "Person", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
         fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentTypeEntity contentType = fixture.findContentTypeByName( "Person" );
         CustomContentData contentData = new CustomContentData( contentType.getContentTypeConfig() );
@@ -132,13 +132,13 @@ public class ContentServiceImpl_contentConfigTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "Person", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
         fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentTypeEntity contentType = fixture.findContentTypeByName( "Person" );
         try
@@ -163,13 +163,13 @@ public class ContentServiceImpl_contentConfigTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "Person", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
         fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentTypeEntity contentType = fixture.findContentTypeByName( "Person" );
         CustomContentData contentData = new CustomContentData( contentType.getContentTypeConfig() );
@@ -203,13 +203,13 @@ public class ContentServiceImpl_contentConfigTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "Person", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
         fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentTypeEntity contentType = fixture.findContentTypeByName( "Person" );
         CustomContentData contentData = new CustomContentData( contentType.getContentTypeConfig() );
@@ -250,13 +250,13 @@ public class ContentServiceImpl_contentConfigTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "Person", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
         fixture.save( factory.createCategory( "Employees", null, "Person", "UnitForPerson", "testuser", "testuser", false ) );
         fixture.save( factory.createCategoryAccessForUser( "Employees", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentTypeEntity contentType = fixture.findContentTypeByName( "Person" );
         CustomContentData contentData = new CustomContentData( contentType.getContentTypeConfig() );

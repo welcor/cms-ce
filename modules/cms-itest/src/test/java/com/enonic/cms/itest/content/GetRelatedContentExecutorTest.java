@@ -95,7 +95,7 @@ public class GetRelatedContentExecutorTest
                                                            "read, create, approve, admin_browse" ) );
         fixture.save( factory.createCategoryAccessForUser( "cat-default", "content-querier", "read, admin_browse" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test

@@ -30,7 +30,7 @@ import com.enonic.cms.itest.util.DomainFixture;
 import static org.junit.Assert.*;
 
 public class ImportServiceImplTest_importJobThreadSafe
-        extends AbstractSpringTest
+    extends AbstractSpringTest
 {
     @Autowired
     private DomainFixture fixture;
@@ -43,7 +43,7 @@ public class ImportServiceImplTest_importJobThreadSafe
 
     @Before
     public void setUp()
-            throws IOException
+        throws IOException
     {
         personContentTypeXml = resourceToString( new ClassPathResource( "com/enonic/cms/itest/content/imports/personContentType.xml" ) );
 
@@ -73,7 +73,7 @@ public class ImportServiceImplTest_importJobThreadSafe
 
     @Test
     public void check_thread_safe_import_job()
-            throws UnsupportedEncodingException, InterruptedException
+        throws UnsupportedEncodingException, InterruptedException
     {
         // setup content type with needed import configuration
         String importsConfig = "";
@@ -117,24 +117,24 @@ public class ImportServiceImplTest_importJobThreadSafe
         two.join();
         three.join();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private void updateContentType( String contentTypeName, String contentTypeXml )
     {
         ContentTypeEntity contentType = fixture.findContentTypeByName( contentTypeName );
         contentType.setData( XMLDocumentFactory.create( contentTypeXml ).getAsJDOMDocument() );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private String resourceToString( Resource resource )
-            throws IOException
+        throws IOException
     {
         return IOUtils.toString( resource.getInputStream() );
     }
 
     private class ImportSimulator
-            extends Thread
+        extends Thread
     {
 
         private ImportJob job;

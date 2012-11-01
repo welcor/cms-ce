@@ -695,6 +695,6 @@ public class InternalClientImpl_ImportContentTest
     {
         ContentTypeEntity contentType = fixture.findContentTypeByName( contentTypeName );
         contentType.setData( XMLDocumentFactory.create( contentTypeXml ).getAsJDOMDocument() );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 }

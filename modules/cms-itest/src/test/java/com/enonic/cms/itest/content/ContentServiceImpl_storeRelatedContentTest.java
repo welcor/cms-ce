@@ -76,7 +76,7 @@ public class ContentServiceImpl_storeRelatedContentTest
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup content type
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "MyRelatedTypes", "title" );
@@ -91,20 +91,20 @@ public class ContentServiceImpl_storeRelatedContentTest
         fixture.save(
             factory.createContentType( "MyRelatedTypes", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "UnitForMyRelatedTypes", "en" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyRelatedTypes", "UnitForMyRelatedTypes", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup some content to relate to
         related1 = storeContentToRelatedTo( "related-1" );
         related2 = storeContentToRelatedTo( "related-2" );
         related3 = storeContentToRelatedTo( "related-3" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -127,7 +127,7 @@ public class ContentServiceImpl_storeRelatedContentTest
 
         ContentKey createdContentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentVersionEntity firstVersion = fixture.findContentByKey( createdContentKey ).getMainVersion();
         ContentVersionKey firstVersionKey = firstVersion.getKey();
@@ -148,7 +148,7 @@ public class ContentServiceImpl_storeRelatedContentTest
         List<ContentKey> actualRelatedContent = extractContentKeys( fixture.findRelatedContentsByContentVersionKey( firstVersionKey ) );
         assertStoredRelatedContent( expectedRelatedContent, actualRelatedContent );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         UpdateContentCommand updateCommand = UpdateContentCommand.storeNewVersionEvenIfUnchanged( firstVersionKey );
@@ -173,14 +173,13 @@ public class ContentServiceImpl_storeRelatedContentTest
 
         assertEquals( 2, fixture.countContentVersionsByTitle( "Title 1" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify stored related content
         expectedRelatedContent = ContentKey.convertToList( related1, related3 );
         actualRelatedContent = extractContentKeys( fixture.findRelatedContentsByContentVersionKey( targedVersion ) );
         assertStoredRelatedContent( expectedRelatedContent, actualRelatedContent );
     }
-
 
 
     @Test
@@ -203,7 +202,7 @@ public class ContentServiceImpl_storeRelatedContentTest
 
         ContentKey createdContentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentVersionEntity firstVersion = fixture.findContentByKey( createdContentKey ).getMainVersion();
         ContentVersionKey firstVersionKey = firstVersion.getKey();
@@ -224,7 +223,7 @@ public class ContentServiceImpl_storeRelatedContentTest
         List<ContentKey> actualRelatedContent = extractContentKeys( fixture.findRelatedContentsByContentVersionKey( firstVersionKey ) );
         assertStoredRelatedContent( expectedRelatedContent, actualRelatedContent );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         //////////////////////////////////// delete related ////////////////////////////////////
 
@@ -256,7 +255,7 @@ public class ContentServiceImpl_storeRelatedContentTest
 
         assertEquals( 2, fixture.countContentVersionsByTitle( "Title 1" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify stored related content
         expectedRelatedContent = ContentKey.convertToList( related1, related3 );
@@ -305,7 +304,7 @@ public class ContentServiceImpl_storeRelatedContentTest
         List<ContentKey> actualRelatedContent = extractContentKeys( fixture.findRelatedContentsByContentVersionKey( firstVersionKey ) );
         assertStoredRelatedContent( expectedRelatedContent, actualRelatedContent );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         UpdateContentCommand updateCommand = UpdateContentCommand.updateExistingVersion2( firstVersionKey );
@@ -329,7 +328,7 @@ public class ContentServiceImpl_storeRelatedContentTest
 
         assertEquals( 1, fixture.countContentVersionsByTitle( "Title 1" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify stored related content
         expectedRelatedContent = ContentKey.convertToList( related1, related3 );

@@ -123,7 +123,7 @@ public class ImageControllerTest
 
         site1.setFirstPage( firstPage );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createContentHandler( "Image content", ContentHandlerName.IMAGE.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "ImageContentType", ContentHandlerName.IMAGE.getHandlerClassShortName() ) );
@@ -131,7 +131,7 @@ public class ImageControllerTest
         fixture.save( factory.createCategory( "ImageCategory", null, "ImageContentType", "ImageUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "ImageCategory", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -336,7 +336,7 @@ public class ImageControllerTest
         draftVersion.addContentBinaryData( contentBinaryDataForDraftVersion );
         fixture.save( contentBinaryDataForDraftVersion );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise & verify
         String imageRequestPath = "_image/" + contentKey + "/label/source.jpg";
@@ -360,7 +360,7 @@ public class ImageControllerTest
         UserEntity testUser = fixture.findUserByName( "testuser" );
         testUser.setPhoto( bytes );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         String imageRequestPath = "_image/user/" + testUser.getKey() + ".jpg";
         setPathInfoAndRequestURI( httpServletRequest, imageRequestPath );

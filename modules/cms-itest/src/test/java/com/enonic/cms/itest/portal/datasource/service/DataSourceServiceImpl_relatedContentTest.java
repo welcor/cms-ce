@@ -36,9 +36,9 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
+import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.menuitem.AddContentToSectionCommand;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
@@ -120,7 +120,7 @@ public class DataSourceServiceImpl_relatedContentTest
         fixture.save( factory.createCategoryAccessForUser( "MyOtherCategory", "content-creator", "read, create, approve, admin_browse" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyOtherCategory", "content-querier", "read, admin_browse" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
     }
 
@@ -394,7 +394,7 @@ public class DataSourceServiceImpl_relatedContentTest
         fixture.save( factory.createCategoryAccessForUser( "Link_List_Category", "user_a", "read, create, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "Link_List_Category", "user_b", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Add a set of links with only reading rights for user A, and another set of links with only reading rights for user B
         CreateContentCommand.AccessRightsStrategy useGivenRights = CreateContentCommand.AccessRightsStrategy.USE_GIVEN;

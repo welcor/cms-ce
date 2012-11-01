@@ -35,7 +35,6 @@ import com.enonic.cms.itest.util.DomainFactory;
 import com.enonic.cms.itest.util.DomainFixture;
 
 import static com.enonic.cms.itest.util.AssertTool.assertXPathEquals;
-import static com.enonic.cms.itest.util.AssertTool.assertXPathExist;
 import static com.enonic.cms.itest.util.AssertTool.assertXPathNotExist;
 import static org.junit.Assert.*;
 
@@ -95,11 +94,12 @@ public class ContentServiceImpl_deleteContentTest
 
         fixture.save( factory.createUnit( "UnitForMyRelatedTypes" ) );
 
-        fixture.save( factory.createCategory( "MyCategory", null, "MyRelatedTypes", "UnitForMyRelatedTypes", "testuser", "testuser", true ) );
+        fixture.save(
+            factory.createCategory( "MyCategory", null, "MyRelatedTypes", "UnitForMyRelatedTypes", "testuser", "testuser", true ) );
 
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, admin_browse, create, delete, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
     }
 
@@ -114,9 +114,9 @@ public class ContentServiceImpl_deleteContentTest
         createContentWithSingleRelated( "related-3a", related2a, related2b );
         createContentWithSingleRelated( "related-3b", related2a, related2b );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
-        
+
         assertEquals( 6, hibernateTemplate.find( "from ContentEntity" ).size() );
 
         assertEquals( 8, hibernateTemplate.find( "from RelatedContentEntity" ).size() );
@@ -125,7 +125,7 @@ public class ContentServiceImpl_deleteContentTest
             ContentEntity.class.cast( hibernateTemplate.find( "from ContentEntity where name='testcontentrelated-related-2a'" ).get( 0 ) );
 
         assertXPathNotExist( "/contentdata/mySingleRelatedToBeModified/@deleted",
-                                       contentEntity2a.getVersions().get( 0 ).getContentDataAsJDomDocument() );
+                             contentEntity2a.getVersions().get( 0 ).getContentDataAsJDomDocument() );
 
         final List refs = hibernateTemplate.find(
             "select rce from RelatedContentEntity rce, ContentEntity ce " + "where rce.key.childContentKey = ce.key " + "and ce = ? ",
@@ -161,7 +161,7 @@ public class ContentServiceImpl_deleteContentTest
         createContentWithMultipleRelated( "related-3a", related2a, related2b );
         createContentWithMultipleRelated( "related-3b", related2a, related2b );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         assertEquals( 6, hibernateTemplate.find( "from ContentEntity" ).size() );
@@ -178,7 +178,7 @@ public class ContentServiceImpl_deleteContentTest
                            contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument(), "2" );
 
         assertXPathNotExist( "/contentdata/myMultipleRelatedToBeModified/content[1]/@deleted",
-                          contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument() );
+                             contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument() );
 
         contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a );
 
@@ -211,7 +211,7 @@ public class ContentServiceImpl_deleteContentTest
         createContentWithMultipleRelatedInGroup( "related-3a", related2a, related2b );
         createContentWithMultipleRelatedInGroup( "related-3b", related2a, related2b );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         assertEquals( 6, hibernateTemplate.find( "from ContentEntity" ).size() );
@@ -228,7 +228,7 @@ public class ContentServiceImpl_deleteContentTest
                            contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument(), "2" );
 
         assertXPathNotExist( "/contentdata/mygroup/contentdata/myMultipleRelatedToBeModifiedGroup/content[1]/@deleted",
-                          contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument() );
+                             contentEntity3a2.getVersions().get( 0 ).getContentDataAsJDomDocument() );
 
         contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity2a );
 
@@ -258,7 +258,8 @@ public class ContentServiceImpl_deleteContentTest
         createCommand.setPriority( 0 );
         createCommand.setContentName( "testcontentrelated" + "-" + title );
 
-        final CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
+        final CustomContentData contentData =
+            new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
         contentData.add( new TextDataEntry( contentData.getInputConfig( "title" ), title ) );
 
         if ( related1 != null && related2 != null )
@@ -281,7 +282,8 @@ public class ContentServiceImpl_deleteContentTest
         createCommand.setPriority( 0 );
         createCommand.setContentName( "testcontentrelated" + "-" + title );
 
-        final CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
+        final CustomContentData contentData =
+            new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
         contentData.add( new TextDataEntry( contentData.getInputConfig( "title" ), title ) );
 
         if ( related1 != null && related2 != null )
@@ -308,7 +310,8 @@ public class ContentServiceImpl_deleteContentTest
         createCommand.setPriority( 0 );
         createCommand.setContentName( "testcontentrelated" + "-" + title );
 
-        final CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
+        final CustomContentData contentData =
+            new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
         contentData.add( new TextDataEntry( contentData.getInputConfig( "title" ), title ) );
 
         if ( related1 != null && related2 != null )

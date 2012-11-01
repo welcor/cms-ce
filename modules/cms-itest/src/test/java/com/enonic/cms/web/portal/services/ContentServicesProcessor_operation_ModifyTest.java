@@ -106,7 +106,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         PortalSecurityHolder.setImpersonatedUser( fixture.findUserByName( "testuser" ).getKey() );
         PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "testuser" ).getKey() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         fixture.save( categoryEntity );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory1", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: create the content to update
         ExtendedMap formItems = new ExtendedMap( true );
@@ -139,7 +139,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "myCheckbox", "true" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // execise: modify the content
         formItems = new ExtendedMap( true );
@@ -147,7 +147,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "myTitle", "Mandantory" );
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         ContentEntity content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "MyCategory1" ) );
@@ -179,7 +179,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         fixture.save( categoryEntity );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory2", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: create the content to update
         ExtendedMap formItems = new ExtendedMap( true );
@@ -188,7 +188,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "myIncludedCheckbox", "true" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify that content was created as wanted
         ContentEntity content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "MyCategory2" ) );
@@ -202,7 +202,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "_included_checkbox", "myIncludedCheckbox" );
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "MyCategory2" ) );
@@ -236,7 +236,7 @@ public class ContentServicesProcessor_operation_ModifyTest
             factory.createCategory( "MyCategory3", null, "MyContentType3", "MyUnit3", User.ANONYMOUS_UID, User.ANONYMOUS_UID, true ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: create the content to modify
         ExtendedMap formItems = new ExtendedMap( true );
@@ -248,7 +248,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "unchanged", "Unchanged" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // execise: modify the content
         formItems = new ExtendedMap( true );
@@ -259,7 +259,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "toalsochangetoblank", null );
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         ContentEntity content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "MyCategory3" ) );
@@ -300,7 +300,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         fixture.save(
             factory.createContentType( "PersonContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup content repository
         fixture.save( factory.createUnit( "PersonsUnit", "en" ) );
@@ -308,7 +308,7 @@ public class ContentServicesProcessor_operation_ModifyTest
             factory.createCategory( "PersonsCategory", null, "PersonContentType", "PersonsUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID,
                                     true ) );
         fixture.save( factory.createCategoryAccessForUser( "PersonsCategory", "testuser", "read, create" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         //CategoryEntity category = findCategoryByName( "PersonsCategory" );
         //ContentTypeEntity contentType = category.getContentType();
@@ -326,7 +326,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "Phone[3].phone_number", "00000000" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise: modify the content
         formItems = new ExtendedMap( true );
@@ -337,7 +337,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "Phone[4].phone_number", "55555555" );
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         ContentEntity content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "PersonsCategory" ) );
@@ -375,7 +375,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         fixture.save(
             factory.createContentType( "PersonContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup content repository
         fixture.save( factory.createUnit( "PersonsUnit", "en" ) );
@@ -383,7 +383,7 @@ public class ContentServicesProcessor_operation_ModifyTest
             factory.createCategory( "PersonsCategory", null, "PersonContentType", "PersonsUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID,
                                     true ) );
         fixture.save( factory.createCategoryAccessForUser( "PersonsCategory", "testuser", "read, create" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         //CategoryEntity category = findCategoryByName( "PersonsCategory" );
         //ContentTypeEntity contentType = category.getContentType();
@@ -399,7 +399,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "Phone[2].phone_number", "22222222" );
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise: modify the content
         formItems = new ExtendedMap( true );
@@ -411,7 +411,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         formItems.putString( "Phone[3].phone_number", "55555555" );
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         ContentEntity content = fixture.findFirstContentByCategory( fixture.findCategoryByName( "PersonsCategory" ) );
@@ -434,7 +434,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // execise: create the content
         String categoryName = "MyCategory3";
@@ -445,7 +445,7 @@ public class ContentServicesProcessor_operation_ModifyTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         CustomContentData contentData = getCustomContentDataResult( categoryName );
         Integer existingBinaryKey = getExistingBinaryKey( contentData, "unrequired" );
@@ -457,7 +457,7 @@ public class ContentServicesProcessor_operation_ModifyTest
 
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         contentData = getCustomContentDataResult( categoryName );
 
@@ -473,7 +473,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // execise: create the content
         String categoryName = "MyCategory3";
@@ -484,7 +484,7 @@ public class ContentServicesProcessor_operation_ModifyTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         CustomContentData contentData = getCustomContentDataResult( categoryName );
         Integer existingBinaryKey = getExistingBinaryKey( contentData, "unrequired" );
@@ -497,7 +497,7 @@ public class ContentServicesProcessor_operation_ModifyTest
 
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         contentData = getCustomContentDataResult( categoryName );
 
@@ -513,7 +513,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         createAndSaveContentTypeAndCategory( "MyContentType3", "MyCategory3", ctyconf );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory3", "testuser", "read, create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // execise: create the content
         String categoryName = "MyCategory3";
@@ -524,7 +524,7 @@ public class ContentServicesProcessor_operation_ModifyTest
 
         customContentHandlerController.handlerCreate( request, response, session, formItems, null, siteKey_1 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         CustomContentData contentData = getCustomContentDataResult( categoryName );
         Integer existingBinaryKey = getExistingBinaryKey( contentData, "unrequired" );
@@ -536,7 +536,7 @@ public class ContentServicesProcessor_operation_ModifyTest
 
         customContentHandlerController.handlerModify( request, response, formItems );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         contentData = getCustomContentDataResult( categoryName );
 
@@ -567,7 +567,7 @@ public class ContentServicesProcessor_operation_ModifyTest
         fixture.save(
             factory.createContentType( contentTypeName, ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         createAndSaveCategoryOfContentType( categoryName, contentTypeName );
     }
@@ -577,14 +577,14 @@ public class ContentServicesProcessor_operation_ModifyTest
         String unitName = "UnitFor_" + categoryName;
         fixture.save( factory.createUnit( unitName, "en" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         final CategoryEntity categoryEntity =
             factory.createCategory( categoryName, null, contentTypeName, unitName, User.ANONYMOUS_UID, User.ANONYMOUS_UID, true );
 
         fixture.save( categoryEntity );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private CustomContentData getCustomContentDataResult( String categoryName )

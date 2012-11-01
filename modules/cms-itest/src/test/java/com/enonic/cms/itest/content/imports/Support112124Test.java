@@ -110,8 +110,8 @@ public class Support112124Test
 
         ContentEntity content = fixture.findContentByName( "veitrafikkulykker" );
         Collection<ContentKey> actualOrder = getRelatedContentKeys( content, "kontakter" );
-        final String expected = String.format( "0: %d, 1: %d, 2: %d", all.get( 2-1 ).getKey().toInt(), all.get( 4-1 ).getKey().toInt(),
-                                               all.get( 3-1 ).getKey().toInt() );
+        final String expected = String.format( "0: %d, 1: %d, 2: %d", all.get( 2 - 1 ).getKey().toInt(), all.get( 4 - 1 ).getKey().toInt(),
+                                               all.get( 3 - 1 ).getKey().toInt() );
 
         assertOrderedEquals( expected, actualOrder );
 
@@ -122,7 +122,7 @@ public class Support112124Test
         assertEquals( 5, fixture.countAllContent() );
         assertEquals( 1, fixture.countContentVersionsByTitle( "Veitrafikkulykker" ) );
 
-        content =  fixture.findContentByName( "veitrafikkulykker" );
+        content = fixture.findContentByName( "veitrafikkulykker" );
         actualOrder = getRelatedContentKeys( content, "kontakter" );
 
         assertOrderedEquals( expected, actualOrder );
@@ -133,7 +133,7 @@ public class Support112124Test
         assertEquals( 5, fixture.countAllContent() );
         assertEquals( 2, fixture.countContentVersionsByTitle( "Veitrafikkulykker" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private ImportResult doImport( String categoryName, String importName, String fileName )

@@ -79,14 +79,14 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
 
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, admin_browse, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @After
     public void doAfter()
         throws Exception
     {
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
     }
 
@@ -96,7 +96,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         // setup
         contentService.createContent( createContentCommand( "a-1", "a-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // exercise
@@ -117,7 +117,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
     {
         // setup
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // exercise
@@ -139,7 +139,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         // setup
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // exercise
@@ -162,7 +162,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // exercise
@@ -186,7 +186,7 @@ public class ContentIndexServiceImpl_ContentIndexQueryTest
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // exercise

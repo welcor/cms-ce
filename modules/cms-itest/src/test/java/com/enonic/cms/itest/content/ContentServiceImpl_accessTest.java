@@ -97,7 +97,7 @@ public class ContentServiceImpl_accessTest
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup content type
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "Person", "name" );
@@ -107,11 +107,11 @@ public class ContentServiceImpl_accessTest
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
         fixture.save( factory.createContentType( "Person", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "UnitForPerson", "en" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -415,14 +415,14 @@ public class ContentServiceImpl_accessTest
     {
         final UserEntity user = fixture.findUserByName( userUid );
         fixture.save( factory.createCategoryAccess( categoryName, user, accesses ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private void createAndSaveContentAccess( ContentKey contentKey, String userUid, String accesses )
     {
         final UserEntity user = fixture.findUserByName( userUid );
         fixture.save( factory.createContentAccess( contentKey, user, accesses ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private CreateContentCommand createCreateContentCommand( String categoryName, String creatorUid, ContentStatus contentStatus )
@@ -482,7 +482,7 @@ public class ContentServiceImpl_accessTest
 
         fixture.save( user );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private void createAndStoreCategory( String categoryName )
@@ -495,6 +495,6 @@ public class ContentServiceImpl_accessTest
         fixture.save(
             factory.createCategory( categoryName, null, "Person", "UnitForPerson", User.ANONYMOUS_UID, User.ANONYMOUS_UID, autoApprove ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 }

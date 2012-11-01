@@ -51,7 +51,7 @@ public class InternalClientImpl_DeleteUserTest
         // setup:
         clientLogin( "admin" );
         createUser( "testuserstore", "myuser", "mypassword", "myemail@test.com", "My User" );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup:
         assertEquals( false, fixture.findUserByName( "myuser" ).isDeleted() );
@@ -60,7 +60,7 @@ public class InternalClientImpl_DeleteUserTest
         params.user = "testuserstore:myuser";
         internalClient.deleteUser( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertEquals( true, fixture.findUserByName( "myuser" ).isDeleted() );
@@ -73,7 +73,7 @@ public class InternalClientImpl_DeleteUserTest
         // setup:
         clientLogin( "admin" );
         UserKey userKey = createUser( "testuserstore", "myuser", "mypassword", "myemail@test.com", "My User" );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup:
         assertEquals( false, fixture.findUserByName( "myuser" ).isDeleted() );
@@ -82,7 +82,7 @@ public class InternalClientImpl_DeleteUserTest
         params.user = "#" + userKey;
         internalClient.deleteUser( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertEquals( true, fixture.findUserByName( "myuser" ).isDeleted() );

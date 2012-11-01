@@ -88,7 +88,7 @@ public class RelatedContentFetcherTest
         PortalSecurityHolder.setAnonUser( fixture.findUserByName( User.ANONYMOUS_UID ).getKey() );
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup content type
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "MyRelatingContent", "title" );
@@ -100,13 +100,13 @@ public class RelatedContentFetcherTest
         fixture.save(
             factory.createContentType( "MyRelatingContent", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyRelatingContent", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         contentDao = new OverridingContentEntityDao();
         contentDao.setHibernateTemplate( hibernateTemplate );
@@ -146,7 +146,7 @@ public class RelatedContentFetcherTest
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Agnes", kjellContentKey );
         ContentKey agnesContentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
@@ -177,7 +177,7 @@ public class RelatedContentFetcherTest
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Father", sonContentKey );
         ContentKey fatherContentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
@@ -207,7 +207,7 @@ public class RelatedContentFetcherTest
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Father", sonContentKey );
         ContentKey fatherContentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
@@ -243,7 +243,7 @@ public class RelatedContentFetcherTest
         UpdateContentCommand updateCommand = setupDefaultUpdateContentCommandForMyRelatingContent( contentKeyC, "Content C", contentKeyB );
         contentService.updateContent( updateCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );
@@ -310,7 +310,7 @@ public class RelatedContentFetcherTest
         createCommand = setupDefaultCreateContentCommandForMyRelatingContent( "Content B", commonChild );
         ContentKey contentKeyB = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao );

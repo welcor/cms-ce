@@ -83,7 +83,7 @@ public class InternalClientImpl_DeleteCategoryTest
 
         loginPortalUser( "deleter" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -97,14 +97,14 @@ public class InternalClientImpl_DeleteCategoryTest
         fixture.save( factory.createCategory( "World", null, null, "MyUnit", "deleter", "deleter" ) );
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findUnitByName( "MyUnit" ).isDeleted() );
         assertEquals( 2, fixture.findUnitByName( "MyUnit" ).getContentTypes().size() );
         assertEquals( false, fixture.findCategoryByName( "World" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -113,7 +113,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.recursive = false;
         internalClient.deleteCategory( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertTrue( fixture.findContentTypeByName( "MyContentType" ) != null );
         assertTrue( fixture.findContentTypeByName( "MyOtherContentType" ) != null );
@@ -138,7 +138,7 @@ public class InternalClientImpl_DeleteCategoryTest
 
         createAndStoreContent( "content1", "World" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findUnitByName( "MyUnit" ).isDeleted() );
@@ -146,7 +146,7 @@ public class InternalClientImpl_DeleteCategoryTest
         assertEquals( false, fixture.findCategoryByName( "World" ).isDeleted() );
         assertEquals( 1, fixture.countAllContent() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -155,7 +155,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.recursive = false;
         internalClient.deleteCategory( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertTrue( fixture.findContentTypeByName( "MyContentType" ) != null );
         assertTrue( fixture.findContentTypeByName( "MyOtherContentType" ) != null );
@@ -183,7 +183,7 @@ public class InternalClientImpl_DeleteCategoryTest
         createAndStoreCategory( "Europe", "World" );
         createAndStoreCategory( "Belarus", "Europe" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findUnitByName( "MyUnit" ).isDeleted() );
@@ -193,7 +193,7 @@ public class InternalClientImpl_DeleteCategoryTest
         assertEquals( false, fixture.findCategoryByName( "Belarus" ).isDeleted() );
         assertEquals( 0, fixture.countAllContent() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -202,7 +202,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.recursive = true;
         internalClient.deleteCategory( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertTrue( fixture.findContentTypeByName( "MyContentType" ) != null );
         assertTrue( fixture.findContentTypeByName( "MyOtherContentType" ) != null );
@@ -225,12 +225,12 @@ public class InternalClientImpl_DeleteCategoryTest
 
         createAndStoreCategory( "Europe", "World" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -239,7 +239,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.recursive = false;
         internalClient.deleteCategory( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertEquals( true, fixture.findCategoryByName( "Europe" ).isDeleted() );
         assertEquals( false, fixture.findUnitByName( "MyUnit" ).isDeleted() );
@@ -255,12 +255,12 @@ public class InternalClientImpl_DeleteCategoryTest
 
         createAndStoreCategory( "Europe", "World" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -269,7 +269,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.recursive = true;
         internalClient.deleteCategory( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertEquals( 0, fixture.findCategoryByName( "World" ).getChildren().size() );
         assertEquals( true, fixture.findCategoryByName( "Europe" ).isDeleted() );
@@ -289,12 +289,12 @@ public class InternalClientImpl_DeleteCategoryTest
 
         createAndStoreCategory( "Europe", "World" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -324,7 +324,7 @@ public class InternalClientImpl_DeleteCategoryTest
         createAndStoreContent( "content1", "Europe" );
         createAndStoreContent( "content2", "Belarus" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
@@ -333,7 +333,7 @@ public class InternalClientImpl_DeleteCategoryTest
         assertEquals( 0, fixture.findCategoryByName( "Europe" ).getContents().iterator().next().getDeleted().intValue() );
         assertEquals( 0, fixture.findCategoryByName( "Belarus" ).getContents().iterator().next().getDeleted().intValue() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -342,7 +342,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.recursive = true;
         internalClient.deleteCategory( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertEquals( 0, fixture.findCategoryByName( "World" ).getChildren().size() );
         assertEquals( true, fixture.findCategoryByName( "Europe" ).isDeleted() );
@@ -377,14 +377,14 @@ public class InternalClientImpl_DeleteCategoryTest
             }
         }
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
         assertEquals( false, fixture.findCategoryByName( "Belarus" ).isDeleted() );
         assertEquals( 100, fixture.countAllContent() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -393,7 +393,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.recursive = true;
         internalClient.deleteCategory( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertEquals( true, fixture.findCategoryByName( "Europe" ).isDeleted() );
         assertEquals( true, fixture.findCategoryByName( "Belarus" ).isDeleted() );
@@ -419,13 +419,13 @@ public class InternalClientImpl_DeleteCategoryTest
         createAndStoreCategory( "Europe", "World" );
         createAndStoreCategory( "Belarus", "Europe" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
         assertEquals( false, fixture.findCategoryByName( "Belarus" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -457,13 +457,13 @@ public class InternalClientImpl_DeleteCategoryTest
         createAndStoreCategory( "Belarus", "Europe" );
         createAndStoreContent( "Content-1", "Europe" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
         assertEquals( false, fixture.findCategoryByName( "Belarus" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // delete
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -496,14 +496,14 @@ public class InternalClientImpl_DeleteCategoryTest
         createAndStoreCategory( "Minsk", "Belarus" );
         createAndStoreContent( "Content-1", "Minsk" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
         assertEquals( false, fixture.findCategoryByName( "Belarus" ).isDeleted() );
         assertEquals( false, fixture.findCategoryByName( "Minsk" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise deleteCategory
         DeleteCategoryParams params = new DeleteCategoryParams();
@@ -534,12 +534,12 @@ public class InternalClientImpl_DeleteCategoryTest
 
         createAndStoreCategory( "Europe", "World" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise deleteCategory
         loginPortalUser( "deleter-noaccess" );
@@ -569,7 +569,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.contentTypeKey = fixture.findContentTypeByName( "MyContentType" ).getKey();
 
         int categoryKey = internalClient.createCategory( params );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         return new CategoryKey( categoryKey );
     }
@@ -589,7 +589,7 @@ public class InternalClientImpl_DeleteCategoryTest
         params.status = ContentStatus.STATUS_DRAFT;
         params.fileContentData = fileContentData;
         int contentKey = internalClient.createFileContent( params );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         return new ContentKey( contentKey );
     }

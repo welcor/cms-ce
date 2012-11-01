@@ -103,7 +103,7 @@ public class InternalClientImpl_AssignContentTest
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     @Test
@@ -134,7 +134,7 @@ public class InternalClientImpl_AssignContentTest
         params.status = ContentStatus.STATUS_DRAFT;
         int contentVersionKey = internalClient.updateContent( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentVersionEntity actualVersion = contentVersionDao.findByKey( new ContentVersionKey( contentVersionKey ) );
         ContentEntity persistedContent = contentDao.findByKey( actualVersion.getContent().getKey() );
@@ -170,7 +170,7 @@ public class InternalClientImpl_AssignContentTest
         assignContentParams.contentKey = contentKey;
         internalClient.assignContent( assignContentParams );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( new ContentKey( contentKey ) );
 
@@ -195,7 +195,7 @@ public class InternalClientImpl_AssignContentTest
         assignContentCommand.setAssignmentDueDate( new DateTime( 2010, 6, 6, 10, 0, 0, 0 ).toDate() );
         assignContentCommand.setContentKey( contentKey );
         contentService.assignContent( assignContentCommand );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
         assertEquals( testUser, persistedContent.getAssignee() );
@@ -207,7 +207,7 @@ public class InternalClientImpl_AssignContentTest
         unassignContentparams.contentKey = contentKey.toInt();
 
         internalClient.unassignContent( unassignContentparams );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -242,7 +242,7 @@ public class InternalClientImpl_AssignContentTest
 
         ContentKey contentKey = contentService.createContent( createContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         return contentKey;
     }

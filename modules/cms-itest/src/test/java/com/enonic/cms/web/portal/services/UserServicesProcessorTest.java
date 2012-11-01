@@ -142,7 +142,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         request.setAttribute( Attribute.ORIGINAL_SITEPATH, new SitePath( new SiteKey( 0 ), "/_services/user/create" ) );
@@ -176,7 +176,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         request.setAttribute( Attribute.ORIGINAL_SITEPATH, new SitePath( new SiteKey( 0 ), "/_services/user/create" ) );
@@ -211,7 +211,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         request.setAttribute( Attribute.ORIGINAL_SITEPATH, new SitePath( new SiteKey( 0 ), "/_services/user/create" ) );
@@ -252,7 +252,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.BIRTHDAY, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -320,7 +320,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.BIRTHDAY, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userInfo = new UserFields();
         userInfo.setFirstName( "First name" );
@@ -385,7 +385,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -427,7 +427,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -470,7 +470,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -516,7 +516,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.TIME_ZONE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setBirthday( new DateMidnight( 2012, 12, 12 ).toDate() );
@@ -575,7 +575,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.TIME_ZONE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setBirthday( new DateMidnight( 2012, 12, 12 ).toDate() );
@@ -634,7 +634,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.TIME_ZONE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setBirthday( new DateMidnight( 2012, 12, 12 ).toDate() );
@@ -687,7 +687,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.LOCALE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -740,7 +740,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.LOCALE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -793,7 +793,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.LOCALE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -869,7 +869,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -902,7 +902,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -939,7 +939,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -979,7 +979,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.TIME_ZONE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setBirthday( new DateMidnight( 2012, 12, 12 ).toDate() );
@@ -1038,7 +1038,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.TIME_ZONE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setBirthday( new DateMidnight( 2012, 12, 12 ).toDate() );
@@ -1095,7 +1095,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.LAST_NAME, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -1132,7 +1132,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.LAST_NAME, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -1173,7 +1173,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.TIME_ZONE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setBirthday( new DateMidnight( 2012, 12, 12 ).toDate() );
@@ -1225,7 +1225,7 @@ public class UserServicesProcessorTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.LOCALE, "" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );

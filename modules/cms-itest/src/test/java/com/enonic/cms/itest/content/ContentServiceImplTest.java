@@ -122,7 +122,7 @@ public class ContentServiceImplTest
         fixture.save( factory.createUnit( "MyUnit" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
 
@@ -162,7 +162,7 @@ public class ContentServiceImplTest
 
         ContentKey contenKey = contentService.createContent( createContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contenKey );
         assertNotNull( persistedContent );
@@ -201,7 +201,7 @@ public class ContentServiceImplTest
         fixture.save( factory.createUnit( "MyUnit" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
 
@@ -241,7 +241,7 @@ public class ContentServiceImplTest
 
         ContentKey contenKey = contentService.createContent( createContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contenKey );
         assertNotNull( persistedContent );

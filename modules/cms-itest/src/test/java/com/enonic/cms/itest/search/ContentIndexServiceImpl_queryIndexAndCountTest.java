@@ -75,7 +75,7 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
 
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, admin_browse, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
     }
 
@@ -113,7 +113,7 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
     {
         // setup
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         flushIndex();
@@ -139,7 +139,7 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
         // setup
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         flushIndex();
@@ -171,7 +171,7 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         fixture.flushIndexTransaction();
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         flushIndex();
@@ -199,7 +199,7 @@ public class ContentIndexServiceImpl_queryIndexAndCountTest
         contentService.createContent( createContentCommand( "c-1", "c-1", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-2", "c-2", "MyCategory" ) );
         contentService.createContent( createContentCommand( "c-3", "c-3", "MyCategory" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         flushIndex();

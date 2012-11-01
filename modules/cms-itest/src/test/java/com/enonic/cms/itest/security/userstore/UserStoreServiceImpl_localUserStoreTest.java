@@ -440,7 +440,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         createCommand.setUserFields( userFields );
         userStoreService.storeNewUser( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify created users
         assertEquals( 1, fixture.countUsersByType( UserType.NORMAL ) );
@@ -458,7 +458,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         updateCommand.setUserFields( userFields );
         userStoreService.updateUser( updateCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserEntity actualUser = fixture.findUserByName( "arn" );
         assertEquals( "Wyatt-Skriubakken", actualUser.getDisplayName() );
@@ -490,7 +490,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         createCommand.setUserFields( userFields );
         userStoreService.storeNewUser( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify created users
         assertEquals( 1, fixture.countUsersByType( UserType.NORMAL ) );
@@ -506,7 +506,7 @@ public class UserStoreServiceImpl_localUserStoreTest
         updateCommand.setUserFields( userInfoForUpdate );
         userStoreService.updateUser( updateCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserEntity actualUser = fixture.findUserByName( "arn" );
         assertEquals( "Wyatt-Skriubakken", actualUser.getDisplayName() );

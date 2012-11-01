@@ -119,7 +119,7 @@ public class ContentServiceImpl_snapshotContentTest
 
         setupReadCreateAndApproveUsers();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private void setupReadCreateAndApproveUsers()
@@ -208,7 +208,7 @@ public class ContentServiceImpl_snapshotContentTest
         createCommand.setCreator( createUser );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -228,7 +228,7 @@ public class ContentServiceImpl_snapshotContentTest
         createCommand.setCreator( createUser );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -250,7 +250,7 @@ public class ContentServiceImpl_snapshotContentTest
         createCommand.setCreator( createUser );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -267,7 +267,7 @@ public class ContentServiceImpl_snapshotContentTest
     {
         ContentKey contentKey = createContent( ContentStatus.DRAFT.getKey() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         Date startTime = Calendar.getInstance().getTime();
 
@@ -275,7 +275,7 @@ public class ContentServiceImpl_snapshotContentTest
 
         SnapshotContentResult result = createContentVersionSnapshot( originalContent );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity snapshottedContent = contentDao.findByKey( contentKey );
 
@@ -289,7 +289,7 @@ public class ContentServiceImpl_snapshotContentTest
         // setup
         ContentKey contentKey = createContent( ContentStatus.DRAFT.getKey() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity originalContent = contentDao.findByKey( contentKey );
 
@@ -297,7 +297,7 @@ public class ContentServiceImpl_snapshotContentTest
 
         SnapshotContentResult result = createContentVersionSnapshot( originalContent );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity snapshottedContent = contentDao.findByKey( contentKey );
 
@@ -336,7 +336,7 @@ public class ContentServiceImpl_snapshotContentTest
         // setup
         ContentKey contentKey = createContent( ContentStatus.DRAFT.getKey() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 
@@ -348,7 +348,7 @@ public class ContentServiceImpl_snapshotContentTest
 
         ContentVersionKey snapshotVersionKey = snapshot.getKey();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
 
@@ -358,7 +358,7 @@ public class ContentServiceImpl_snapshotContentTest
         UpdateContentResult updateResult =
             updateContent( contentKey, persistedContent.getDraftVersion().getKey(), ContentStatus.APPROVED.getKey(), true, false );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         persistedContent = contentDao.findByKey( contentKey );
         ContentVersionEntity persistedSnapshot = contentVersionDao.findByKey( snapshotVersionKey );
@@ -374,7 +374,7 @@ public class ContentServiceImpl_snapshotContentTest
     {
         ContentKey contentKey = createContent( ContentStatus.APPROVED.getKey() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
 

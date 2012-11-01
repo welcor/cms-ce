@@ -116,7 +116,7 @@ public class ContentServiceImpl_copyContentTest
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private ContentKey createContent( Integer status )
@@ -171,7 +171,7 @@ public class ContentServiceImpl_copyContentTest
 
         ContentKey contentKey = createContent( ContentStatus.DRAFT.getKey() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity existingContent = contentDao.findByKey( contentKey );
 
@@ -181,7 +181,7 @@ public class ContentServiceImpl_copyContentTest
         final CategoryEntity toCategory = fixture.findCategoryByName( "MyCategory" );
         ContentKey newContentKey = contentService.copyContent( copier, existingContent, toCategory );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertNotNull( newContentKey );

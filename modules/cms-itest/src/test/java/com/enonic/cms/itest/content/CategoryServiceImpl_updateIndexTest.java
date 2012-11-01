@@ -43,10 +43,7 @@ import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CategoryServiceImpl_updateIndexTest
     extends ContentIndexServiceTestHibernatedBase
@@ -116,7 +113,7 @@ public class CategoryServiceImpl_updateIndexTest
             createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
         assertNotNull( contentDao.findByKey( contentKey ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
 
@@ -131,7 +128,7 @@ public class CategoryServiceImpl_updateIndexTest
         acl.setAdminBrowseAccess( true );
         modifyACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -158,7 +155,7 @@ public class CategoryServiceImpl_updateIndexTest
             createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( normalUserAccess ), "aContent" );
         assertNotNull( contentDao.findByKey( contentKey ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
 
@@ -173,7 +170,7 @@ public class CategoryServiceImpl_updateIndexTest
         acl.setAdminBrowseAccess( true );
         syncronizeACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -202,7 +199,7 @@ public class CategoryServiceImpl_updateIndexTest
         final ContentKey contentKey2 =
             createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( content2Access ), "content2" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertNotNull( contentDao.findByKey( contentKey1 ) );
         assertNotNull( contentDao.findByKey( contentKey2 ) );
@@ -220,7 +217,7 @@ public class CategoryServiceImpl_updateIndexTest
         acl.setAdminBrowseAccess( true );
         modifyACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         printAllIndexContent();
 
@@ -251,7 +248,7 @@ public class CategoryServiceImpl_updateIndexTest
         final ContentKey contentKey2 =
             createContent( CONTENT_TYPE_NAME, categoryName, adminUser, Lists.newArrayList( content2Access ), "content2" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertNotNull( contentDao.findByKey( contentKey1 ) );
         assertNotNull( contentDao.findByKey( contentKey2 ) );
@@ -269,7 +266,7 @@ public class CategoryServiceImpl_updateIndexTest
         acl.setAdminBrowseAccess( true );
         syncronizeACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         printAllIndexContent();
 
@@ -307,7 +304,7 @@ public class CategoryServiceImpl_updateIndexTest
 
         modifyACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -324,7 +321,7 @@ public class CategoryServiceImpl_updateIndexTest
         modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
         categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -360,7 +357,7 @@ public class CategoryServiceImpl_updateIndexTest
 
         modifyACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -372,7 +369,7 @@ public class CategoryServiceImpl_updateIndexTest
         // Remove ACL for user on category
         syncronizeACLForCategory( categoryName, adminUser, null );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -408,7 +405,7 @@ public class CategoryServiceImpl_updateIndexTest
 
         modifyACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -429,7 +426,7 @@ public class CategoryServiceImpl_updateIndexTest
         modifyCategoryACLCommand.addCategory( fixture.findCategoryByName( categoryName ).getKey() );
         categoryService.modifyCategoryACL_withoutRequiresNewPropagation_for_test_only( modifyCategoryACLCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -464,7 +461,7 @@ public class CategoryServiceImpl_updateIndexTest
 
         modifyACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Assert user access
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -479,7 +476,7 @@ public class CategoryServiceImpl_updateIndexTest
         acl.setAdminBrowseAccess( false );
 
         syncronizeACLForCategory( categoryName, adminUser, acl );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Verify that user now get content from query
         contentResultSet = contentService.queryContent( queryAssertingCategoryBrowse );
@@ -514,7 +511,7 @@ public class CategoryServiceImpl_updateIndexTest
 
         modifyACLForCategory( categoryName, adminUser, acl );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Assert content exists and accessable
         OpenContentQuery queryAssertingCategoryBrowse = createQueryAssertingCategoryBrowse( aNormalUserUid, categoryKey );
@@ -531,7 +528,7 @@ public class CategoryServiceImpl_updateIndexTest
         deleteCategoryCommand.setRecursive( false );
         categoryService.deleteCategory( deleteCategoryCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // Verify that content is now also deleted from index
@@ -587,7 +584,7 @@ public class CategoryServiceImpl_updateIndexTest
         createContentCommand.addContentAccessRights( contentAccesses, null );
         final ContentKey content = contentService.createContent( createContentCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         return content;
     }

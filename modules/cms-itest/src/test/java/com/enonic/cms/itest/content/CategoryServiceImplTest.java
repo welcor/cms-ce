@@ -345,7 +345,7 @@ public class CategoryServiceImplTest
         fixture.save( factory.createCategory( "ParentCategory", null, null, "MyUnit", "MyUser", "MyUser" ) );
         fixture.save(
             factory.createCategoryAccessForUser( "ParentCategory", "MyUser", "administrate, read, create, approve, admin_browse" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
@@ -364,7 +364,7 @@ public class CategoryServiceImplTest
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
         fixture.save( factory.createCategory( "ParentCategory", null, null, "MyUnit", "MyUser", "MyUser" ) );
         fixture.save( factory.createCategoryAccessForUser( "ParentCategory", "MyUser", "read" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
@@ -379,7 +379,7 @@ public class CategoryServiceImplTest
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit", "en" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
@@ -429,7 +429,7 @@ public class CategoryServiceImplTest
     {
         // setup
         fixture.save( factory.createUnit( "MyCommandUnit", "en" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         StoreNewCategoryCommand command = new StoreNewCategoryCommand();
@@ -490,7 +490,7 @@ public class CategoryServiceImplTest
     {
         // setup
         fixture.save( factory.createUnit( "MyCommandUnit", "en" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // create top category with defined access rights
         StoreNewCategoryCommand topCategoryCommand = new StoreNewCategoryCommand();
@@ -509,7 +509,7 @@ public class CategoryServiceImplTest
 
         CategoryKey topCategoryKey = categoryService.storeNewCategory( topCategoryCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         //create child category under the top category
         StoreNewCategoryCommand childCategoryCommand = new StoreNewCategoryCommand();
@@ -519,7 +519,7 @@ public class CategoryServiceImplTest
 
         CategoryKey childCategoryKey = categoryService.storeNewCategory( childCategoryCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         assertEquals( "Child category", categoryDao.findByKey( childCategoryKey ).getName() );
 
@@ -560,7 +560,7 @@ public class CategoryServiceImplTest
 
         assertEquals( false, fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         DeleteCategoryCommand command = new DeleteCategoryCommand();
@@ -568,7 +568,7 @@ public class CategoryServiceImplTest
         command.setCategoryKey( fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).getKey() );
         categoryService.deleteCategory( command );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertEquals( true, fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).isDeleted() );
@@ -589,7 +589,7 @@ public class CategoryServiceImplTest
 
         assertEquals( false, fixture.findCategoryByName( "MySubCategory" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         DeleteCategoryCommand command = new DeleteCategoryCommand();
@@ -598,7 +598,7 @@ public class CategoryServiceImplTest
         command.setRecursive( true );
         categoryService.deleteCategory( command );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertEquals( true, fixture.findCategoryByName( "MySubCategory" ).isDeleted() );
@@ -616,7 +616,7 @@ public class CategoryServiceImplTest
 
         assertEquals( false, fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).isDeleted() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: create content in category MyTopCategory
         for ( int i = 1; i <= 10; i++ )
@@ -636,7 +636,7 @@ public class CategoryServiceImplTest
         command.setIncludeContent( true );
         categoryService.deleteCategory( command );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertEquals( true, fixture.findCategoryByName( "MyContentArchiveToBeDeleted" ).isDeleted() );
@@ -672,7 +672,7 @@ public class CategoryServiceImplTest
 
         categoryService.storeNewCategory( storeNewCategoryCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         UpdateCategoryCommand command = new UpdateCategoryCommand();
@@ -687,7 +687,7 @@ public class CategoryServiceImplTest
         command.addAllowedContentType( fixture.findContentTypeByName( "cty2" ).getContentTypeKey() );
         categoryService.updateCategory( command );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertNotNull( fixture.findUnitByName( "Changed name" ) );
@@ -721,7 +721,7 @@ public class CategoryServiceImplTest
 
         categoryService.storeNewCategory( storeNewCategoryCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise
         List<CategoryAccessControl> accessControlList = Lists.newArrayList();
@@ -734,7 +734,7 @@ public class CategoryServiceImplTest
         command.addAccessControlList( accessControlList );
         categoryService.synchronizeCategoryACL_withoutRequiresNewPropagation_for_test_only( command );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify access control for myUser have changed
         assertCategoryAC( "MyUser", "read, admin_browse", "MyTopCategory" );
@@ -773,7 +773,7 @@ public class CategoryServiceImplTest
             contentService.createContent( createContentCommand );
         }
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: verify
         assertCategoryAC( "MyUser", "read, admin_browse, create, approve, administrate", "MyTopCategory" );
@@ -797,7 +797,7 @@ public class CategoryServiceImplTest
         command.includeContent();
         command.executeInBatches( categoryService, contentDao );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertCategoryAC( "MyUser", "read, admin_browse", "MyTopCategory" );
@@ -838,7 +838,7 @@ public class CategoryServiceImplTest
             contentService.createContent( createContentCommand );
         }
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // setup: verify
         assertCategoryAC( "MyUser", "read, admin_browse, create, approve, administrate", "MyTopCategory" );
@@ -861,7 +861,7 @@ public class CategoryServiceImplTest
         command.includeContent();
         command.executeInBatches( categoryService, contentDao );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         assertCategoryAC( "MyUser", "read, admin_browse", "MyTopCategory" );

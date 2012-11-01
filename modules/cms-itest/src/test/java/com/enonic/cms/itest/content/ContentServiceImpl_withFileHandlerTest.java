@@ -72,7 +72,7 @@ public class ContentServiceImpl_withFileHandlerTest
         fixture.save( factory.createUnit( "MyUnit" ) );
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccess( "MyCategory", fixture.findUserByName( "testuser" ), "read, create" ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr( "127.0.0.1" );
@@ -88,7 +88,7 @@ public class ContentServiceImpl_withFileHandlerTest
                                                                             new String[]{"keyword1", "keyword2"} );
         ContentKey contenKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity actualContent = contentDao.findByKey( contenKey );
         assertNotNull( actualContent );
@@ -124,7 +124,7 @@ public class ContentServiceImpl_withFileHandlerTest
                                                                             new String[]{"keyword1", "keyword2"} );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
         byte[] changedDummyBytes = new byte[]{1, 2, 3, 4, 5, 6};
@@ -148,7 +148,7 @@ public class ContentServiceImpl_withFileHandlerTest
 
         UpdateContentResult updateContentResult = contentService.updateContent( updateCommand );
         ContentVersionKey versionKey = updateContentResult.getTargetedVersionKey();
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // assertNull( "expected previous binary to not exist any more", binaryDao.findByKey( persistedFileBinaryDataKey ) );
 
@@ -188,7 +188,7 @@ public class ContentServiceImpl_withFileHandlerTest
                                                                             new String[]{"keyword1", "keyword2"} );
         ContentKey contentKey = contentService.createContent( createCommand );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = contentDao.findByKey( contentKey );
         byte[] changedDummyBytes = new byte[]{1, 2, 3, 4, 5, 6};
@@ -212,7 +212,7 @@ public class ContentServiceImpl_withFileHandlerTest
 
         UpdateContentResult updateContentResult = contentService.updateContent( updateCommand );
         ContentVersionKey versionKey = updateContentResult.getTargetedVersionKey();
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity actualContent = contentDao.findByKey( contentKey );
         assertNotNull( actualContent );

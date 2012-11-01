@@ -148,7 +148,7 @@ public class InternalClientImpl_getRelatedContentTest
             createAndStoreDepartmentContent( "dept B", empAnneKey, empBirgerKey, empCecilieKey, empEvenKey, empFrankKey, empHanneKey );
         departments[2] = createAndStoreDepartmentContent( "dept C", empAnneKey, empCecilieKey, empEvenKey, empGreteKey );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         PortalSecurityHolder.setLoggedInUser( fixture.findUserByName( "content-querier" ).getKey() );

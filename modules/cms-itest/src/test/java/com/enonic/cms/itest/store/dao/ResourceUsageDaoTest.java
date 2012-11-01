@@ -64,7 +64,7 @@ public class ResourceUsageDaoTest
 
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Create an article conent type that will be used in the section:
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "article", "heading" );
@@ -78,13 +78,13 @@ public class ResourceUsageDaoTest
         contentTypeEntity.setDefaultCssKey( ResourceKey.from( "CONTENT_TYPE_CSS" ) );
         fixture.save( contentTypeEntity );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Create users that have all and no rights to work with the sections.
         fixture.createAndStoreNormalUserWithUserGroup( "aru", "All rights user", "testuserstore" );
         fixture.createAndStoreNormalUserWithUserGroup( "nru", "No rights user", "testuserstore" );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // Create a unit and a category in the archive to store the articles in, including access rights on the category.
         fixture.save( factory.createUnit( "Archive" ) );
@@ -156,20 +156,18 @@ public class ResourceUsageDaoTest
 
     private void createSite( int n )
     {
-        final Document xmlData = XMLDocumentFactory.create(
-            "<menudata>" +
-                "<defaultcss key=\"DEFAULT_CSS\"/>" +
-                "<default-localization-resource>DEFAULT_LOCALIZATION_RESOURCE</default-localization-resource>" +
-                "<device-class-resolver>DEVICE_CLASS_RESOLVER</device-class-resolver>" +
-                "<locale-resolver>LOCALE_RESOLVER</locale-resolver>" +
-            "</menudata>"
-        ).getAsJDOMDocument();
+        final Document xmlData = XMLDocumentFactory.create( "<menudata>" +
+                                                                "<defaultcss key=\"DEFAULT_CSS\"/>" +
+                                                                "<default-localization-resource>DEFAULT_LOCALIZATION_RESOURCE</default-localization-resource>" +
+                                                                "<device-class-resolver>DEVICE_CLASS_RESOLVER</device-class-resolver>" +
+                                                                "<locale-resolver>LOCALE_RESOLVER</locale-resolver>" +
+                                                                "</menudata>" ).getAsJDOMDocument();
 
         // Create a site and a section page for testing working with sections.
         final SiteEntity site = factory.createSite( "The Newspaper " + n, new Date(), xmlData, "en" );
         fixture.save( site );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( createSection( "News " + n, "The Newspaper " + n, true ) );
         fixture.save( factory.createMenuItemAccess( fixture.findMenuItemByName( "News " + n ), fixture.findUserByName( "aru" ),
@@ -181,7 +179,7 @@ public class ResourceUsageDaoTest
         pageTemplateEntity.setCssKey( ResourceKey.from( "PAGE_TEMPLATE_STYLE" ) );
         fixture.save( pageTemplateEntity );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         final PortletEntity portlet = createPortlet( n, "name " + n );
         portlet.setSite( site );
@@ -189,13 +187,12 @@ public class ResourceUsageDaoTest
         portlet.setBorderKey( ResourceKey.from( "CONTENT_OBJECT_BORDER" ) );
         fixture.save( portlet );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private MenuItemEntity createSection( String name, String siteName, boolean isOrdered )
     {
-        return factory.createSectionMenuItem( name, 0, null, name, siteName, "aru", "aru", "en", null, null, isOrdered,
-                                              null, false, null );
+        return factory.createSectionMenuItem( name, 0, null, name, siteName, "aru", "aru", "en", null, null, isOrdered, null, false, null );
     }
 
 

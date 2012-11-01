@@ -105,7 +105,7 @@ public class UserServicesProcessorTest_operation_UpdateTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.INITIALS, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );
@@ -148,7 +148,7 @@ public class UserServicesProcessorTest_operation_UpdateTest
         userStoreConfig.addUserFieldConfig( createUserStoreUserFieldConfig( UserFieldType.BIRTHDAY, "required" ) );
         createLocalUserStore( "myLocalStore", true, userStoreConfig );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserFields userFields = new UserFields();
         userFields.setFirstName( "First name" );

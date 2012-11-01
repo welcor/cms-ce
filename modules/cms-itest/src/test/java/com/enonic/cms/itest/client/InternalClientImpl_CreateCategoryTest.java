@@ -76,7 +76,7 @@ public class InternalClientImpl_CreateCategoryTest
 
         // exercise
         int categoryKey = internalClient.createCategory( params );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         CategoryEntity createdCategory = fixture.findCategoryByKey( new CategoryKey( categoryKey ) );
@@ -98,7 +98,7 @@ public class InternalClientImpl_CreateCategoryTest
 
         // exercise
         int categoryKey = internalClient.createCategory( params );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         CategoryEntity createdCategory = fixture.findCategoryByKey( new CategoryKey( categoryKey ) );
@@ -121,7 +121,7 @@ public class InternalClientImpl_CreateCategoryTest
 
         // exercise
         int categoryKey = internalClient.createCategory( params );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         CategoryEntity createdCategory = fixture.findCategoryByKey( new CategoryKey( categoryKey ) );
@@ -145,7 +145,7 @@ public class InternalClientImpl_CreateCategoryTest
 
         // exercise
         int categoryKey = internalClient.createCategory( params );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify
         CategoryEntity createdCategory = fixture.findCategoryByKey( new CategoryKey( categoryKey ) );

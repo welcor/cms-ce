@@ -10,7 +10,6 @@ import org.jdom.Document;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -352,7 +351,7 @@ public class ImportServiceImplTest
         fixture.save( factory.createCategory( "Dates", null, "DateCty", "DatesUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "Dates", "testuser", "read, create, approve" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         ContentTypeConfig dateCtyCfg = fixture.findContentTypeByName( "DateCty" ).getContentTypeConfig();
@@ -407,7 +406,7 @@ public class ImportServiceImplTest
         assertEquals( 1, result.getInserted().size() );
         assertEquals( 0, result.getUpdated().size() );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // verify: related content keys are in same order as in import source
         CustomContentData grandDaughterCCD = (CustomContentData) fixture.findMainContentVersionByTitle( "Grand daughter" ).getContentData();
@@ -957,7 +956,7 @@ public class ImportServiceImplTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -981,7 +980,7 @@ public class ImportServiceImplTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -1045,7 +1044,7 @@ public class ImportServiceImplTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -1055,7 +1054,7 @@ public class ImportServiceImplTest
         // find content keys
         ContentKey contentKeyForJrund = fixture.findFirstContentVersionByTitle( "Jørund Vier Skrivbakken" ).getContent().getKey();
         ContentKey contentKeyForAne = fixture.findFirstContentVersionByTitle( "Ane Skrivbakken" ).getContent().getKey();
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // exercise
@@ -1078,7 +1077,7 @@ public class ImportServiceImplTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -2079,7 +2078,7 @@ public class ImportServiceImplTest
         ImportJob job = importJobFactory.createImportJob( command );
         ImportResult result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify setup
@@ -2106,7 +2105,7 @@ public class ImportServiceImplTest
         job = importJobFactory.createImportJob( command );
         result = job.start();
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // verify
@@ -2245,7 +2244,6 @@ public class ImportServiceImplTest
 
 
     @Test
-    @Ignore
     public void given_content_relating_deleted_content_when_importing_an_update_of_the_content_then_the_relation_is_marked_as_deleted()
         throws UnsupportedEncodingException
     {
@@ -2272,7 +2270,8 @@ public class ImportServiceImplTest
 
         // setup: delete content to be deleted
         contentService.deleteContent( fixture.findUserByName( "testuser" ), fixture.findContentByKey( contentToBeDeleted ) );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
+        fixture.flushIndexTransaction();
 
         // setup: verify content is deleted
         assertTrue( fixture.findContentByKey( contentRelatingDeletedContent ).getMainVersion().getContentData().hasRelatedChild(
@@ -2306,7 +2305,8 @@ public class ImportServiceImplTest
         command.inputStream = new ByteArrayInputStream( impData.getBytes( "UTF-8" ) );
         ImportJob job = importJobFactory.createImportJob( command );
         job.start();
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
+        fixture.flushIndexTransaction();
 
         // verify: relation to deleted content is marked as deleted in content data
         ContentEntity content = fixture.findContentByKey( contentRelatingDeletedContent );
@@ -2344,7 +2344,7 @@ public class ImportServiceImplTest
     {
         ContentTypeEntity contentType = fixture.findContentTypeByName( contentTypeName );
         contentType.setData( XMLDocumentFactory.create( contentTypeXml ).getAsJDOMDocument() );
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
     }
 
     private String resourceToString( Resource resource )

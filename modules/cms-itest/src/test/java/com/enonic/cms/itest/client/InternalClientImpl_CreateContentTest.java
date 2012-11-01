@@ -109,7 +109,7 @@ public class InternalClientImpl_CreateContentTest
         fixture.save( factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", "testuser", "testuser" ) );
         fixture.save( factory.createCategoryAccessForUser( "MyCategory", "testuser", "read,create" ) );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         UserEntity runningUser = fixture.findUserByName( "testuser" );
         PortalSecurityHolder.setImpersonatedUser( runningUser.getKey() );
@@ -126,7 +126,7 @@ public class InternalClientImpl_CreateContentTest
         params.status = ContentStatus.STATUS_DRAFT;
         int contentKey = internalClient.createContent( params );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         ContentEntity persistedContent = fixture.findContentByKey( new ContentKey( contentKey ) );
         assertNotNull( persistedContent );

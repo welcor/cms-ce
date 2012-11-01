@@ -116,7 +116,7 @@ public class AttachmentControllerTest
 
         site1.setFirstPage( firstPage );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         fixture.save( factory.createContentHandler( "File content", ContentHandlerName.FILE.getHandlerClassShortName() ) );
         fixture.save( factory.createContentType( "FileContentType", ContentHandlerName.FILE.getHandlerClassShortName() ) );
@@ -128,7 +128,7 @@ public class AttachmentControllerTest
         Mockito.when( wac.getBean( "mimeTypeResolver" ) ).thenReturn( mimeTypeResolver );
         servletContext.setAttribute( WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         webContext = new PortalWebContext();
         webContext.setRequest( this.httpServletRequest );
@@ -342,7 +342,7 @@ public class AttachmentControllerTest
         draftVersion.addContentBinaryData( contentBinaryDataForDraftVersion );
         fixture.save( contentBinaryDataForDraftVersion );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         // exercise & verify
         String attachmentRequestPath = "_attachment/" + contentKey + "/binary/" + binaryDataForDraftVersion.getKey() + ".jpg";
@@ -491,6 +491,6 @@ public class AttachmentControllerTest
     {
         httpServletRequest.setRequestURI( "/site/" + site1.getKey() + "/" + attachmentRequestPath );
         httpServletRequest.setPathInfo( "/" + site1.getKey() + "/" + attachmentRequestPath );
-        webContext.setSitePath( new SitePath( site1.getKey(), "/" +attachmentRequestPath ) );
+        webContext.setSitePath( new SitePath( site1.getKey(), "/" + attachmentRequestPath ) );
     }
 }

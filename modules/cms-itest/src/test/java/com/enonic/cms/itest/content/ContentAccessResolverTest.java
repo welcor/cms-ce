@@ -214,7 +214,7 @@ public class ContentAccessResolverTest
         fixture.save( group1_group2b_group3 );
         group1_group2b.addMembership( group1_group2b_group3 );
 
-        fixture.flushAndClearHibernateSesssion();
+        fixture.flushAndClearHibernateSession();
 
         content.addContentAccessRight( factory.createContentAccess( "read", user.getUserGroup(), content ) );
         content.addContentAccessRight( factory.createContentAccess( "update", group1_group2a_group3, content ) );

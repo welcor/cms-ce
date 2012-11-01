@@ -10,6 +10,7 @@ import org.jdom.Document;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -2244,6 +2245,7 @@ public class ImportServiceImplTest
 
 
     @Test
+    @Ignore
     public void given_content_relating_deleted_content_when_importing_an_update_of_the_content_then_the_relation_is_marked_as_deleted()
         throws UnsupportedEncodingException
     {

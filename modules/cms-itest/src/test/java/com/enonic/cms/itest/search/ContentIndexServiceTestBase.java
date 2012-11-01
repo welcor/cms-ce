@@ -144,9 +144,16 @@ public abstract class ContentIndexServiceTestBase
         SearchResponse result =
             elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content.toString(), termQuery );
 
-        System.out.println( "\n\n------------------------------------------" );
+        System.out.println( "\n\n---------- CONTENT --------------------------------" );
+        System.out.println( result.toString() );
+        System.out.println( "\n\n" );
+        result =
+            elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Binaries.toString(), termQuery );
+
+        System.out.println( "\n\n---------- BINARIES --------------------------------" );
         System.out.println( result.toString() );
         System.out.println( "\n\n\n\n" );
+
     }
 
     protected void flushIndex()

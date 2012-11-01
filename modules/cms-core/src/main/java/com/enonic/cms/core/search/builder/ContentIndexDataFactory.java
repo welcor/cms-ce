@@ -30,9 +30,9 @@ public class ContentIndexDataFactory
 
     private final ContentIndexDataAccessRightsFactory accessRightsFactory = new ContentIndexDataAccessRightsFactory();
 
-    public ContentIndexData create( ContentDocument content, boolean skipAttachments )
+    public ContentIndexData create( ContentDocument content, boolean updateMetadataOnly )
     {
-        return doCreate( content, skipAttachments );
+        return doCreate( content, updateMetadataOnly );
     }
 
     public ContentIndexData create( ContentDocument content )
@@ -40,7 +40,7 @@ public class ContentIndexDataFactory
         return doCreate( content, false );
     }
 
-    private ContentIndexData doCreate( final ContentDocument content, boolean skipAttachments )
+    private ContentIndexData doCreate( final ContentDocument content, boolean updateMetadataOnly )
     {
         ContentIndexData contentIndexData = new ContentIndexData( content.getContentKey() );
 
@@ -52,7 +52,7 @@ public class ContentIndexDataFactory
         addAccessRights( contentIndexData, content );
         addCustomData( contentIndexData, content );
 
-        if ( !skipAttachments )
+        if ( !updateMetadataOnly )
         {
             try
             {

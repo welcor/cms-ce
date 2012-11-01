@@ -31,13 +31,13 @@ public class ContentDocumentFactory
     @Autowired
     BinaryDataExtractor binaryDataExtractor;
 
-    public ContentDocument createContentDocument( final ContentEntity content, final boolean skipAttachment )
+    public ContentDocument createContentDocument( final ContentEntity content, final boolean updateMetadataOnly )
     {
         ContentDocument indexedDoc = insertStandardValues( content );
         insertUserDefinedIndexValues( content, indexedDoc );
         insertOrderedSections( content, indexedDoc );
 
-        if ( !skipAttachment )
+        if ( !updateMetadataOnly )
         {
             insertBinaryExtractedValues( content, indexedDoc );
         }

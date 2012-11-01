@@ -63,7 +63,7 @@ public class IndexTransactionJournal
         }
     }
 
-    public void registerUpdate( Collection<ContentKey> contentKeys, boolean skipAttachments )
+    public void registerUpdate( Collection<ContentKey> contentKeys, boolean updateMetadataOnly )
     {
         if ( TransactionSynchronizationManager.isCurrentTransactionReadOnly() )
         {
@@ -73,14 +73,14 @@ public class IndexTransactionJournal
         for ( ContentKey contentKey : contentKeys )
         {
             final IndexTransactionJournalEntry indexTransactionJournalEntry =
-                new IndexTransactionJournalEntry( UPDATE, contentKey, skipAttachments );
+                new IndexTransactionJournalEntry( UPDATE, contentKey, updateMetadataOnly );
 
             changeHistory.add( indexTransactionJournalEntry );
         }
     }
 
 
-    public void registerUpdate( ContentKey contentKey, boolean skipAttachments )
+    public void registerUpdate( ContentKey contentKey, boolean updateMetadataOnly )
     {
         if ( TransactionSynchronizationManager.isCurrentTransactionReadOnly() )
         {
@@ -88,7 +88,7 @@ public class IndexTransactionJournal
         }
 
         final IndexTransactionJournalEntry indexTransactionJournalEntry =
-            new IndexTransactionJournalEntry( UPDATE, contentKey, skipAttachments );
+            new IndexTransactionJournalEntry( UPDATE, contentKey, updateMetadataOnly );
 
         changeHistory.add( indexTransactionJournalEntry );
     }
@@ -165,7 +165,7 @@ public class IndexTransactionJournal
         }
         else
         {
-            updateContent( content, journalEntry.isSkipAttachments() );
+            doUpdateContent( content, journalEntry.isUpdateMetadataOnly() );
         }
     }
 
@@ -174,12 +174,13 @@ public class IndexTransactionJournal
         deleteContent( journalEntry.getContentKey() );
     }
 
-    private void updateContent( final ContentEntity content, final boolean skipAttachments )
+    private void doUpdateContent( final ContentEntity content, final boolean updateMetadataOnly )
     {
-        final ContentDocument doc = indexService.createContentDocument( content, skipAttachments );
-        final ContentIndexData contentIndexData = contentIndexDataFactory.create( doc, skipAttachments );
+        final ContentDocument doc = indexService.createContentDocument( content, updateMetadataOnly );
+        final ContentIndexData contentIndexData = contentIndexDataFactory.create( doc, updateMetadataOnly );
 
         LOG.fine( "Updating index for content: " + contentIndexData.getKey().toString() );
+
         elasticSearchIndexService.index( CONTENT_INDEX_NAME, contentIndexData );
     }
 

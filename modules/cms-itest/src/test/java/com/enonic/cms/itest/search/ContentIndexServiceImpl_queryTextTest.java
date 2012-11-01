@@ -283,9 +283,9 @@ public class ContentIndexServiceImpl_queryTextTest
     public void testSplittedNormalIndexWithOr()
     {
         contentIndexService.index(
-            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ), false );
+            createContentDocument( 101, "title", new String[][]{{"data/text", "fisk ost"}, {"data/text", "torsk tine"}} ) );
         contentIndexService.index(
-            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ), false );
+            createContentDocument( 102, "title", new String[][]{{"data/text", "ku ost"}, {"data/text", "gryte tine"}} ) );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{101}, contentIndexService.query(

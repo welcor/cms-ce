@@ -45,11 +45,11 @@ public final class IndexServiceImpl
         {
             if ( content.isDeleted() )
             {
-                doRemoveIndex( content );
+                doRemoveContentFromIndex( content );
             }
             else
             {
-                doIndex( content, true );
+                doIndexContent( content );
             }
         }
 
@@ -59,9 +59,9 @@ public final class IndexServiceImpl
 
 
     @Override
-    public ContentDocument createContentDocument( ContentEntity content, final boolean skipAttachments )
+    public ContentDocument createContentDocument( ContentEntity content, final boolean updateMetadataOnly )
     {
-        return contentDocumentFactory.createContentDocument( content, skipAttachments );
+        return contentDocumentFactory.createContentDocument( content, updateMetadataOnly );
     }
 
     @Override
@@ -76,15 +76,15 @@ public final class IndexServiceImpl
         contentIndexService.initializeMapping();
     }
 
-    private void doRemoveIndex( ContentEntity content )
+    private void doRemoveContentFromIndex( ContentEntity content )
     {
         contentIndexService.remove( content.getKey() );
     }
 
-    private void doIndex( ContentEntity content, boolean deleteExisting )
+    private void doIndexContent( ContentEntity content )
     {
         ContentDocument indexedDoc = contentDocumentFactory.createContentDocument( content, false );
-        contentIndexService.index( indexedDoc, deleteExisting );
+        contentIndexService.index( indexedDoc );
 
         contentDao.getHibernateTemplate().flush();
     }

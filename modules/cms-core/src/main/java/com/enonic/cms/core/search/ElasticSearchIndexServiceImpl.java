@@ -1,7 +1,6 @@
 package com.enonic.cms.core.search;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +21,6 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -149,27 +146,6 @@ public class ElasticSearchIndexServiceImpl
         final DeleteResponse deleteResponse = this.client.delete( deleteRequest ).actionGet();
 
         return !deleteResponse.notFound();
-    }
-
-    @Override
-    public void index( String indexName, Collection<ContentIndexData> contentIndexDatas )
-    {
-
-        BulkRequest bulkRequest = new BulkRequest();
-
-        for ( ContentIndexData contentIndexData : contentIndexDatas )
-        {
-            Set<IndexRequest> indexRequests = contentIndexRequestCreator.createIndexRequests( indexName, contentIndexData );
-
-            for ( IndexRequest indexRequest : indexRequests )
-            {
-                bulkRequest.add( indexRequest );
-            }
-        }
-
-        BulkResponse resp = this.client.bulk( bulkRequest ).actionGet();
-
-        LOG.info( "Bulk index of " + contentIndexDatas.size() + " done in " + resp.getTookInMillis() + " ms" );
     }
 
     @Override
@@ -335,7 +311,7 @@ public class ElasticSearchIndexServiceImpl
     public boolean indexExists( String indexName )
     {
         final ClusterHealthRequest clusterHealthRequest =
-            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( 60 ) ).waitForYellowStatus();
+            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( 1 ) ).waitForYellowStatus();
         final ClusterHealthResponse clusterHealth = client.admin().cluster().health( clusterHealthRequest ).actionGet();
         if ( clusterHealth.timedOut() )
         {

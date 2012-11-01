@@ -13,13 +13,13 @@ class IndexTransactionJournalEntry
 
     private final ContentKey contentKey;
 
-    private boolean skipAttachments = true;
+    private boolean updateMetadataOnly = true;
 
-    public IndexTransactionJournalEntry( JournalOperation operation, ContentKey contentKey, boolean skipAttachments )
+    public IndexTransactionJournalEntry( JournalOperation operation, ContentKey contentKey, boolean updateMetadataOnly )
     {
         this.operation = operation;
         this.contentKey = contentKey;
-        this.skipAttachments = skipAttachments;
+        this.updateMetadataOnly = updateMetadataOnly;
     }
 
     public IndexTransactionJournalEntry( JournalOperation operation, ContentKey contentKey )
@@ -33,9 +33,9 @@ class IndexTransactionJournalEntry
         return operation;
     }
 
-    public boolean isSkipAttachments()
+    public boolean isUpdateMetadataOnly()
     {
-        return skipAttachments;
+        return updateMetadataOnly;
     }
 
     public ContentKey getContentKey()
@@ -57,7 +57,7 @@ class IndexTransactionJournalEntry
 
         final IndexTransactionJournalEntry that = (IndexTransactionJournalEntry) o;
 
-        if ( skipAttachments != that.skipAttachments )
+        if ( updateMetadataOnly != that.updateMetadataOnly )
         {
             return false;
         }
@@ -78,7 +78,7 @@ class IndexTransactionJournalEntry
     {
         int result = operation != null ? operation.hashCode() : 0;
         result = 31 * result + ( contentKey != null ? contentKey.hashCode() : 0 );
-        result = 31 * result + ( skipAttachments ? 1 : 0 );
+        result = 31 * result + ( updateMetadataOnly ? 1 : 0 );
         return result;
     }
 }

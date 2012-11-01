@@ -1,6 +1,5 @@
 package com.enonic.cms.core.search;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.elasticsearch.action.index.IndexRequest;
@@ -32,8 +31,6 @@ public interface ElasticSearchIndexService
     public void deleteMapping( String indexName, IndexType indexType );
 
     public boolean delete( String indexName, IndexType indexType, ContentKey contentKey );
-
-    public void index( String indexName, Collection<ContentIndexData> contentIndexDatas );
 
     public void index( String indexName, ContentIndexData contentIndexData );
 

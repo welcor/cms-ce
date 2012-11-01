@@ -29,10 +29,10 @@ public class ContentIndexServiceImpl_queryTextTokensTest
     @Test
     public void testTextWithSpaces_named_fields()
     {
-        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "Dette er en tekst med mange ord med mellomrom" ),
-                                   false );
-        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "Dette en er med tekst ord mange mellomrom med" ),
-                                   false );
+        contentIndexService.index( createContentDocumentWithTextField( 1, "doc1", "doc", "Dette er en tekst med mange ord med mellomrom" )
+                                   );
+        contentIndexService.index( createContentDocumentWithTextField( 2, "doc2", "doc2", "Dette en er med tekst ord mange mellomrom med" )
+                                   );
         flushIndex();
 
         assertContentResultSetEquals( new int[]{1, 2},

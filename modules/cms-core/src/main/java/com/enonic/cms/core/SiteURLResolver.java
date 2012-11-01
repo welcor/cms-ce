@@ -20,6 +20,10 @@ import com.enonic.cms.core.vhost.VirtualHostHelper;
 @Component
 public class SiteURLResolver
 {
+    private final static int DEFAULT_HTTP_PORT = 80;
+
+    private final static int DEFAULT_HTTPS_PORT = 443;
+
     public static final String DEFAULT_SITEPATH_PREFIX = "/site";
 
     private String sitePathPrefix = DEFAULT_SITEPATH_PREFIX;
@@ -63,8 +67,7 @@ public class SiteURLResolver
         }
         else
         {
-            String fullPath = doCreateFullPathForRedirectFromLocalPath( request, siteKey, path );
-            return fullPath;
+            return doCreateFullPathForRedirectFromLocalPath( request, siteKey, path );
         }
     }
 
@@ -144,15 +147,20 @@ public class SiteURLResolver
         URL url;
         try
         {
-            int port = request.getServerPort();
-            final int defaultPort = 80;
-            if ( port != defaultPort )
+            final String scheme = request.getScheme();
+            final int port = request.getServerPort();
+
+            if ( "http".equalsIgnoreCase( scheme ) && (port == DEFAULT_HTTP_PORT ))
             {
-                url = new URL( request.getScheme(), request.getServerName(), request.getServerPort(), pathFromRoot );
+                url = new URL( scheme, request.getServerName(), pathFromRoot );
+            }
+            else if ( "https".equalsIgnoreCase( scheme ) && (port == DEFAULT_HTTPS_PORT ) )
+            {
+                url = new URL( scheme, request.getServerName(), pathFromRoot );
             }
             else
             {
-                url = new URL( request.getScheme(), request.getServerName(), pathFromRoot );
+                url = new URL( scheme, request.getServerName(), port, pathFromRoot );
             }
         }
         catch ( MalformedURLException e )

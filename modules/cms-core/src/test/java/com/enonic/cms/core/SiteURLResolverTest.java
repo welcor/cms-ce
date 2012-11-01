@@ -61,7 +61,7 @@ public class SiteURLResolverTest
         SiteURLResolver siteURLResolver = new SiteURLResolver();
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
-        request.setProtocol( "http" );
+        request.setScheme( "http" );
         request.setServerName( "localhost" );
         request.setRequestURI( "/site/1/" );
 
@@ -90,7 +90,8 @@ public class SiteURLResolverTest
         SiteURLResolver siteURLResolver = new SiteURLResolver();
         siteURLResolver.setSitePropertiesService( sitePropertiesService );
 
-        request.setProtocol( "http" );
+        request.setScheme( "http" );
+        request.setServerPort( 80 );
         request.setServerName( "localhost" );
         request.setRequestURI( "/site/1/" );
 
@@ -107,6 +108,36 @@ public class SiteURLResolverTest
 
         url = siteURLResolver.createUrl( request, new SitePath( siteKey1, new Path( "home" ) ).addParam( "balle", "rusk" ), false );
         assertEquals( "http://localhost/site/1/home", url );
+    }
+
+    public void testCreateHttpsUrl()
+    {
+
+        MockSitePropertiesService sitePropertiesService = new MockSitePropertiesService();
+        sitePropertiesService.setProperty( siteKey1, SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, "UTF-8" );
+        sitePropertiesService.setProperty( siteKey1, SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, "false" );
+
+        SiteURLResolver siteURLResolver = new SiteURLResolver();
+        siteURLResolver.setSitePropertiesService( sitePropertiesService );
+
+        request.setScheme( "https" );
+        request.setServerPort( 443 );
+        request.setServerName( "localhost" );
+        request.setRequestURI( "/site/1/" );
+
+        String url;
+
+        url = siteURLResolver.createUrl( request, new SitePath( siteKey1, new Path( "home" ) ), true );
+        assertEquals( "https://localhost/site/1/home", url );
+
+        url = siteURLResolver.createUrl( request, new SitePath( siteKey1, new Path( "/home/" ) ), true );
+        assertEquals( "https://localhost/site/1/home/", url );
+
+        url = siteURLResolver.createUrl( request, new SitePath( siteKey1, new Path( "home" ) ).addParam( "balle", "rusk" ), true );
+        assertEquals( "https://localhost/site/1/home?balle=rusk", url );
+
+        url = siteURLResolver.createUrl( request, new SitePath( siteKey1, new Path( "home" ) ).addParam( "balle", "rusk" ), false );
+        assertEquals( "https://localhost/site/1/home", url );
     }
 
     public void testGetPathUrlWithVHOSTSet()

@@ -2,6 +2,7 @@ package com.enonic.cms.core.xslt.base;
 
 import javax.xml.transform.Transformer;
 
+import net.sf.saxon.Controller;
 import net.sf.saxon.value.UntypedAtomicValue;
 
 public abstract class SaxonXsltProcessor
@@ -10,6 +11,11 @@ public abstract class SaxonXsltProcessor
     public SaxonXsltProcessor( final Transformer transformer )
     {
         super( transformer );
+    }
+
+    protected final Controller getController()
+    {
+        return (Controller) this.transformer;
     }
 
     @Override

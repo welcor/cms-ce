@@ -19,7 +19,7 @@ import com.enonic.cms.core.xslt.XsltProcessorException;
 public abstract class BaseXsltProcessor
     implements XsltProcessor
 {
-    private final Transformer transformer;
+    protected final Transformer transformer;
 
     public BaseXsltProcessor( final Transformer transformer )
     {

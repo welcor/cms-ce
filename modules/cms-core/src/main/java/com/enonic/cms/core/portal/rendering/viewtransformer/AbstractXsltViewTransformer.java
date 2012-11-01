@@ -4,11 +4,14 @@
  */
 package com.enonic.cms.core.portal.rendering.viewtransformer;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.resource.FileResourceName;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
+import com.enonic.cms.core.structure.TemplateParameterType;
 import com.enonic.cms.core.xslt.XsltProcessorException;
 import com.enonic.cms.core.xslt.portal.PortalXsltProcessor;
 import com.enonic.cms.core.xslt.portal.PortalXsltProcessorFactory;
@@ -33,6 +36,26 @@ public abstract class AbstractXsltViewTransformer
         final PortalXsltProcessor processor = createProcessor( xsl );
         processor.setOmitXmlDecl( omitXmlDecl );
         return processor;
+    }
+
+    protected final void setParameters( final PortalXsltProcessor processor, final TransformationParams params )
+    {
+        final Map<String, String> map = processor.getCustomParameterTypes();
+
+        for ( final Map.Entry<String, String> entry : map.entrySet() )
+        {
+            final String parameterName = entry.getKey();
+            final TemplateParameterType parameterType = TemplateParameterType.parse( entry.getValue() );
+            final TransformationParameter parameter = params.get( parameterName );
+            Object parameterValue = parameter != null ? parameter.getValue() : null;
+
+            if ( ( parameterValue == null ) && ( parameterType != null ) )
+            {
+                parameterValue = "";
+            }
+
+            processor.setParameter( parameterName, parameterValue );
+        }
     }
 
     @Autowired

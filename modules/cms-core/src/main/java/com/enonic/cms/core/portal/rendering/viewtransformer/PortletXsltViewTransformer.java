@@ -4,26 +4,16 @@
  */
 package com.enonic.cms.core.portal.rendering.viewtransformer;
 
-import java.util.List;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
 import org.jdom.transform.JDOMSource;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.portal.PortletXsltViewTransformationException;
 import com.enonic.cms.core.resource.ResourceFile;
-import com.enonic.cms.core.structure.TemplateParameterType;
-import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
+import com.enonic.cms.core.xslt.portal.PortalXsltProcessor;
 
-/**
- * Apr 30, 2009
- */
 @Component
 public class PortletXsltViewTransformer
     extends AbstractXsltViewTransformer
@@ -32,30 +22,8 @@ public class PortletXsltViewTransformer
     {
         try
         {
-            XMLDocument viewAsXMLDocument = viewFile.getDataAsXml();
-
-            XsltProcessor processor = createProcessor( viewFile.getResourceKey(), true );
-            // processor.clearParameters();
-
-            Document viewAsDocument = viewAsXMLDocument.getAsJDOMDocument();
-            for ( Element parameterEl : findXsltParamElements( viewAsDocument ) )
-            {
-                TemplateParameterType parameterType = resolveTemplateParameterType( parameterEl );
-                String parameterName = parameterEl.getAttributeValue( "name" );
-                TransformationParameter parameter = transformationParams.get( parameterName );
-
-                if ( parameter == null || parameter.getValue() == null )
-                {
-                    if ( TemplateParameterType.OBJECT.equals( parameterType ) || TemplateParameterType.PAGE.equals( parameterType ) ||
-                        TemplateParameterType.CATEGORY.equals( parameterType ) || TemplateParameterType.CONTENT.equals( parameterType ) )
-                    {
-                        processor.setParameter( parameterName, "" );
-                    }
-                    continue;
-                }
-
-                processor.setParameter( parameter.getName(), parameter.getValue() );
-            }
+            final PortalXsltProcessor processor = createProcessor( viewFile.getResourceKey(), true );
+            setParameters( processor, transformationParams );
 
             String stringResult;
 
@@ -72,23 +40,5 @@ public class PortletXsltViewTransformer
         {
             throw new PortletXsltViewTransformationException( "Failed to transform portlet template view", e );
         }
-
-    }
-
-    private TemplateParameterType resolveTemplateParameterType( Element paramEl )
-    {
-        Element typeEl = JDOMUtil.getFirstElement( paramEl );
-        if ( typeEl == null )
-        {
-            return null;
-        }
-        return TemplateParameterType.parse( typeEl.getText() );
-    }
-
-    @SuppressWarnings("unchecked")
-    private Element[] findXsltParamElements( Document doc )
-    {
-        List list = doc.getRootElement().getChildren( "param", Namespace.getNamespace( XSLT_NS ) );
-        return (Element[]) list.toArray( new Element[list.size()] );
     }
 }

@@ -65,26 +65,28 @@ final class DataSourceExecutorImpl
 
     public XMLDocument execute( final DataSourcesElement element )
     {
-        final Element resultElem = new Element( resolveResultRootElementName( element ) );
-        executeContext( resultElem );
+        final String rootName = resolveResultRootElementName( element );
+        final DataSourceResultBuilder result = new DataSourceResultBuilder( rootName );
+
+        executeContext( result );
 
         for ( final DataSourceElement ds : element.getList() )
         {
-            executeDataSource( resultElem, ds );
+            executeDataSource( result, ds );
         }
 
-        final Document resultDoc = new Document( resultElem );
+        final Document resultDoc = new Document( result.getRootElement() );
         setTraceDataSourceResult( resultDoc );
         return XMLDocumentFactory.create( resultDoc );
     }
 
-    private void executeContext( final Element result )
+    private void executeContext( final DataSourceResultBuilder result )
     {
         final Element contextElem = this.datasourcesContextXmlCreator.createContextElement( this.context );
-        result.addContent( contextElem );
+        result.addElement( contextElem );
     }
 
-    private void executeDataSource( final Element result, final DataSourceElement ds )
+    private void executeDataSource( final DataSourceResultBuilder result, final DataSourceElement ds )
     {
         this.trace = DatasourceExecutionTracer.startTracing( this.context.getDataSourceType(), ds.getName(), this.livePortalTraceService );
 
@@ -96,7 +98,7 @@ final class DataSourceExecutorImpl
 
             if ( runnableByCondition )
             {
-                result.addContent( doExecuteDataSource( ds ) );
+                doExecuteDataSource( result, ds );
             }
         }
         finally
@@ -166,21 +168,16 @@ final class DataSourceExecutorImpl
         this.invoker = invoker;
     }
 
-    private Element doExecuteDataSource( final DataSourceElement element )
+    private void doExecuteDataSource( final DataSourceResultBuilder result, final DataSourceElement element )
     {
         final DataSourceRequestFactory factory = new DataSourceRequestFactory( this.expressionFunctionsExecutor, this.context );
         final DataSourceRequest request = factory.createRequest( element );
         final Document doc = doExecuteDataSource( request );
 
-        Element result = (Element) doc.getRootElement().clone();
-        if ( !Strings.isNullOrEmpty( element.getResultElement() ) )
-        {
-            final Element wrapped = new Element( element.getResultElement() );
-            wrapped.addContent( result );
-            result = wrapped;
-        }
+        final String groupName = Strings.emptyToNull( element.getResultElement() );
+        final Element resultElement = (Element) doc.getRootElement().clone();
 
-        return result;
+        result.addElementToGroup( groupName, resultElement );
     }
 
     private Document doExecuteDataSource( final DataSourceRequest request )

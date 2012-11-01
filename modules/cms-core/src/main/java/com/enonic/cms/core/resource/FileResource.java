@@ -18,8 +18,6 @@ public final class FileResource
 
     private DateTime lastModified;
 
-    private String blobKey;
-
     public FileResource( FileResourceName name )
     {
         this.name = name;

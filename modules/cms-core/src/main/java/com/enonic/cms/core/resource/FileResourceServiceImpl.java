@@ -2,11 +2,14 @@ package com.enonic.cms.core.resource;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.input.BOMInputStream;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -369,6 +372,31 @@ public class FileResourceServiceImpl
         catch ( IOException e )
         {
             throw new RuntimeException( "Not able to copy from file " + fromFile.getAbsolutePath() + " to " + toFile.getAbsolutePath(), e );
+        }
+    }
+
+    @Override
+    public InputStream getResourceStream( final FileResourceName name, final boolean ignoreBom )
+    {
+        final File file = getFile( name );
+
+        if ( !file.isFile() )
+        {
+            return null;
+        }
+
+        try
+        {
+            final FileInputStream in = new FileInputStream( file );
+            if (ignoreBom) {
+                return new BOMInputStream( in, false );
+            } else {
+                return in;
+            }
+        }
+        catch ( final IOException e )
+        {
+            throw new RuntimeException( "Failed to open " + name.getPath() );
         }
     }
 

@@ -4,12 +4,6 @@
  */
 package com.enonic.cms.core.resource;
 
-import java.io.ByteArrayInputStream;
-
-import org.apache.commons.io.input.BOMInputStream;
-
-import com.google.common.io.ByteStreams;
-
 public final class FileResourceData
 {
     private byte[] bytes;
@@ -29,18 +23,11 @@ public final class FileResourceData
         this.bytes = bytes;
     }
 
-    private static byte[] removeBOM( final byte[] data )
-        throws Exception
-    {
-        final BOMInputStream in = new BOMInputStream( new ByteArrayInputStream( data ) );
-        return ByteStreams.toByteArray( in );
-    }
-
     public String getAsString()
     {
         try
         {
-            return new String( removeBOM( this.bytes ), "UTF-8" );
+            return new String( this.bytes, "UTF-8" );
         }
         catch ( Exception e )
         {

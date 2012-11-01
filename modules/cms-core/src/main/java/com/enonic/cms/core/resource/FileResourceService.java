@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.core.resource;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -32,4 +33,6 @@ public interface FileResourceService
     boolean moveResource( FileResourceName from, FileResourceName to );
 
     boolean copyResource( FileResourceName from, FileResourceName to );
+
+    InputStream getResourceStream( FileResourceName name, boolean ignoreBom );
 }

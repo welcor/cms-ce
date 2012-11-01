@@ -9,7 +9,6 @@ import javax.xml.transform.URIResolver;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.core.xslt.XsltResourceHelper;
 
 final class XsltTrackingUriResolver
@@ -35,9 +34,9 @@ final class XsltTrackingUriResolver
         throws TransformerException
     {
         final FileResourceName name = new FileResourceName( XsltResourceHelper.resolveRelativePath( href, base ) );
-        final XsltResource source = this.resourceLoader.load( name );
+        final Source source = this.resourceLoader.load( name );
 
         this.includeSet.add( name );
-        return source.getAsSource();
+        return source;
     }
 }

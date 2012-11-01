@@ -75,7 +75,7 @@ public final class PortalXsltProcessorFactoryImpl
     {
         try
         {
-            return this.resourceLoader.load( name ).getAsSource();
+            return this.resourceLoader.load( name );
         }
         catch ( final TransformerException e )
         {

@@ -33,6 +33,7 @@ import com.enonic.cms.core.content.contentdata.custom.GroupDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.KeywordsDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.MultipleChoiceAlternative;
 import com.enonic.cms.core.content.contentdata.custom.MultipleChoiceDataEntry;
+import com.enonic.cms.core.content.contentdata.custom.RelationDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.contentkeybased.FileDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.contentkeybased.ImageDataEntry;
 import com.enonic.cms.core.content.contentdata.custom.contentkeybased.RelatedContentDataEntry;
@@ -287,6 +288,7 @@ public class CustomContentDataXmlParser
                     contentKey = new ContentKey( key );
                 }
                 final RelatedContentDataEntry entry = new RelatedContentDataEntry( inputConfig, contentKey );
+                parseDeletedMark( element, entry );
                 dataEntrySet.add( entry );
             }
             else
@@ -298,7 +300,9 @@ public class CustomContentDataXmlParser
                     final Integer key = parseInteger( contentEl.getAttributeValue( "key" ) );
                     if ( key != null )
                     {
-                        entry.add( new RelatedContentDataEntry( inputConfig, new ContentKey( key ) ) );
+                        final RelatedContentDataEntry relatedContentDataEntry = new RelatedContentDataEntry( inputConfig, new ContentKey( key ) );
+                        parseDeletedMark( contentEl, relatedContentDataEntry );
+                        entry.add( relatedContentDataEntry );
                     }
                 }
                 dataEntrySet.add( entry );
@@ -317,6 +321,7 @@ public class CustomContentDataXmlParser
                 }
             }
             final FileDataEntry entry = new FileDataEntry( inputConfig, contentKey );
+            parseDeletedMark( fileEl, entry );
             dataEntrySet.add( entry );
         }
         else if ( type == DataEntryConfigType.FILES )
@@ -328,7 +333,9 @@ public class CustomContentDataXmlParser
                 final Integer key = parseInteger( fileEl.getAttributeValue( "key" ) );
                 if ( key != null )
                 {
-                    entry.add( new FileDataEntry( inputConfig, new ContentKey( key ) ) );
+                    final FileDataEntry fileDataEntry = new FileDataEntry( inputConfig, new ContentKey( key ) );
+                    parseDeletedMark( fileEl, fileDataEntry );
+                    entry.add( fileDataEntry );
                 }
             }
             dataEntrySet.add( entry );
@@ -342,6 +349,7 @@ public class CustomContentDataXmlParser
                 contentKey = new ContentKey( key );
             }
             final ImageDataEntry entry = new ImageDataEntry( inputConfig, contentKey );
+            parseDeletedMark( element, entry );
             dataEntrySet.add( entry );
         }
         else if ( type == DataEntryConfigType.IMAGES )
@@ -356,7 +364,9 @@ public class CustomContentDataXmlParser
                 {
                     text = null;
                 }
-                entry.add( new ImageDataEntry( inputConfig, new ContentKey( key ), text ) );
+                final ImageDataEntry imageDataEntry = new ImageDataEntry( inputConfig, new ContentKey( key ), text );
+                parseDeletedMark( imageEl, imageDataEntry );
+                entry.add( imageDataEntry );
             }
             dataEntrySet.add( entry );
         }
@@ -408,6 +418,21 @@ public class CustomContentDataXmlParser
         else
         {
             LOG.warn( "Input type currently not supported: " + type );
+        }
+    }
+
+    private void parseDeletedMark( final Element contentEl, final RelationDataEntry entry )
+    {
+        if ( contentEl != null )
+        {
+            final String deletedInContentElement = contentEl.getAttributeValue( "deleted" );
+            final Boolean deletedValue = deletedInContentElement != null && parseBoolean( deletedInContentElement );
+            boolean deleted = deletedValue != null && deletedValue;
+
+            if ( deleted )
+            {
+                entry.markAsDeleted();
+            }
         }
     }
 

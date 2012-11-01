@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
+import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentStatus;
@@ -179,6 +180,90 @@ public class ContentServiceImpl_storeRelatedContentTest
         actualRelatedContent = extractContentKeys( fixture.findRelatedContentsByContentVersionKey( targedVersion ) );
         assertStoredRelatedContent( expectedRelatedContent, actualRelatedContent );
     }
+
+
+
+    @Test
+    public void given_existing_content_with_related_content_and_the_related_content_does_not_exist_when_modifying_content_then_the_relation_in_contentdata_should_be_marked_as_deleted()
+    {
+        // setup content to update
+        CreateContentCommand createCommand = new CreateContentCommand();
+        createCommand.setLanguage( fixture.findLanguageByCode( "en" ).getKey() );
+        createCommand.setCategory( fixture.findCategoryByName( "MyCategory" ).getKey() );
+        createCommand.setCreator( fixture.findUserByName( "testuser" ).getKey() );
+        createCommand.setStatus( ContentStatus.APPROVED );
+        createCommand.setPriority( 0 );
+        createCommand.setContentName( "testcontent" );
+
+        CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
+        contentData.add( new TextDataEntry( contentData.getInputConfig( "title" ), "Title 1" ) );
+        contentData.add( new RelatedContentDataEntry( contentData.getInputConfig( "mySingleRelatedToBeUnmodified" ), related1 ) );
+        contentData.add( new RelatedContentDataEntry( contentData.getInputConfig( "mySingleRelatedToBeModified" ), related2 ) );
+        createCommand.setContentData( contentData );
+
+        ContentKey createdContentKey = contentService.createContent( createCommand );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        ContentVersionEntity firstVersion = fixture.findContentByKey( createdContentKey ).getMainVersion();
+        ContentVersionKey firstVersionKey = firstVersion.getKey();
+
+        // verify that created content has expected contentdata
+        assertEquals( contentData, firstVersion.getContentData() );
+
+        // verify that created content has expected contentdata
+        CustomContentData actualContentData = (CustomContentData) firstVersion.getContentData();
+        assertNotNull( actualContentData.getEntry( "mySingleRelatedToBeUnmodified" ) );
+        assertNotNull( actualContentData.getEntry( "mySingleRelatedToBeModified" ) );
+        assertEquals( related1,
+                      ( (RelatedContentDataEntry) actualContentData.getEntry( "mySingleRelatedToBeUnmodified" ) ).getContentKey() );
+        assertEquals( related2, ( (RelatedContentDataEntry) actualContentData.getEntry( "mySingleRelatedToBeModified" ) ).getContentKey() );
+
+        // verify that setup content has expected related content
+        List<ContentKey> expectedRelatedContent = ContentKey.convertToList( related1, related2 );
+        List<ContentKey> actualRelatedContent = extractContentKeys( fixture.findRelatedContentsByContentVersionKey( firstVersionKey ) );
+        assertStoredRelatedContent( expectedRelatedContent, actualRelatedContent );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        //////////////////////////////////// delete related ////////////////////////////////////
+
+        final ContentEntity contentEntity = ContentEntity.class.cast( fixture.findContentByKey( related1 ) );
+        contentService.deleteContent( fixture.findUserByName( "testuser" ), contentEntity );
+
+        //////////////////////////////////////// update ////////////////////////////////////////
+
+        // exercise
+        UpdateContentCommand updateCommand = UpdateContentCommand.storeNewVersionEvenIfUnchanged( firstVersionKey );
+        updateCommand.setContentKey( fixture.findFirstContentVersionByTitle( "Title 1" ).getContent().getKey() );
+        updateCommand.setUpdateStrategy( UpdateContentCommand.UpdateStrategy.MODIFY );
+        updateCommand.setStatus( ContentStatus.DRAFT );
+        updateCommand.setModifier( fixture.findUserByName( "testuser" ).getKey() );
+        contentData = new CustomContentData( fixture.findContentTypeByName( "MyRelatedTypes" ).getContentTypeConfig() );
+        contentData.add( new RelatedContentDataEntry( contentData.getInputConfig( "mySingleRelatedToBeModified" ), related3 ) );
+        updateCommand.setContentData( contentData );
+
+        ContentVersionKey targedVersion = contentService.updateContent( updateCommand ).getTargetedVersionKey();
+
+        // verify that updated content has expected contentdata
+        ContentVersionEntity secondVersion = fixture.findContentVersionByKey( targedVersion );
+        actualContentData = (CustomContentData) secondVersion.getContentData();
+        assertNotNull( actualContentData.getEntry( "mySingleRelatedToBeUnmodified" ) );
+        assertNotNull( actualContentData.getEntry( "mySingleRelatedToBeModified" ) );
+        assertEquals( related1,
+                      ( (RelatedContentDataEntry) actualContentData.getEntry( "mySingleRelatedToBeUnmodified" ) ).getContentKey() );
+        assertEquals( related3, ( (RelatedContentDataEntry) actualContentData.getEntry( "mySingleRelatedToBeModified" ) ).getContentKey() );
+
+        assertEquals( 2, fixture.countContentVersionsByTitle( "Title 1" ) );
+
+        fixture.flushAndClearHibernateSesssion();
+
+        // verify stored related content
+        expectedRelatedContent = ContentKey.convertToList( related1, related3 );
+        actualRelatedContent = extractContentKeys( fixture.findRelatedContentsByContentVersionKey( targedVersion ) );
+        assertStoredRelatedContent( expectedRelatedContent, actualRelatedContent );
+    }
+
 
     @Test
     public void update_version_retain_unmodified_related_content_after_modification_of_other_related_content_input()

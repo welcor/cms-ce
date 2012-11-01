@@ -200,6 +200,7 @@ public class DataEntryXmlCreator
         {
             Element contentEl = new Element( "content" );
             contentEl.setAttribute( "key", rel.getContentKey().toString() );
+            addDeletedAttribute( rel, contentEl );
             entryEl.addContent( contentEl );
         }
     }
@@ -215,11 +216,21 @@ public class DataEntryXmlCreator
         {
             Element contentEl = new Element( "content" );
             contentEl.setAttribute( "key", entry.getContentKey().toString() );
+            addDeletedAttribute( entry, contentEl );
             entryEl.addContent( contentEl );
         }
         else
         {
             entryEl.setAttribute( "key", entry.getContentKey().toString() );
+            addDeletedAttribute( entry, entryEl );
+        }
+    }
+
+    private void addDeletedAttribute( final RelationDataEntry entry, final Element contentEl )
+    {
+        if ( entry.isMarkedAsDeleted() )
+        {
+            contentEl.setAttribute( "deleted", "" + entry.isMarkedAsDeleted() );
         }
     }
 
@@ -290,6 +301,7 @@ public class DataEntryXmlCreator
     {
         Element entryEl = ContentDataXPathCreator.ensurePath( dataEntrySetEl, stripContentdataWhenNotBlockGroup( entry.getConfig() ) );
         entryEl.setAttribute( "key", entry.getContentKey().toString() );
+        addDeletedAttribute( entry, entryEl );
     }
 
     private void addImagesDataEntry( Element dataEntrySetEl, ImagesDataEntry arrayEntry )
@@ -301,6 +313,7 @@ public class DataEntryXmlCreator
             Element imageEl = new Element( "image" );
             entryEl.addContent( imageEl );
             imageEl.setAttribute( "key", entry.getContentKey().toString() );
+            addDeletedAttribute( entry, imageEl );
             Element textEl = new Element( "text" );
             imageEl.addContent( textEl );
             textEl.setText( entry.getImageText() );

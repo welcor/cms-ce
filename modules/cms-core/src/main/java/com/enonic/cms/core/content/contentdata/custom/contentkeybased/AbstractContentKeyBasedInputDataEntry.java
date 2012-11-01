@@ -17,6 +17,8 @@ public abstract class AbstractContentKeyBasedInputDataEntry
 {
     protected ContentKey contentKey;
 
+    protected boolean deleted = false;
+
     public AbstractContentKeyBasedInputDataEntry( DataEntryConfig config, DataEntryType type, ContentKey contentKey )
     {
         super( config, type );
@@ -26,6 +28,16 @@ public abstract class AbstractContentKeyBasedInputDataEntry
     public ContentKey getContentKey()
     {
         return contentKey;
+    }
+
+    public void markAsDeleted()
+    {
+        this.deleted = true;
+    }
+
+    public boolean isMarkedAsDeleted()
+    {
+        return this.deleted;
     }
 
     public boolean hasValue()

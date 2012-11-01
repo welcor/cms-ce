@@ -77,6 +77,13 @@ public class LegacyImageContentData
         return contentKeys;
     }
 
+    @Override
+    public boolean markReferencesToContentAsDeleted( final ContentKey contentKey )
+    {
+        Iterator iterator = contentDataEl.getDescendants( new ElementFilter( "file" ) );
+        return markReferencesToContentAsDeleted( iterator, contentKey );
+    }
+
     private void replaceBinaryKeyPlaceHoldersInSourceImage( List<BinaryDataKey> binaryDatas )
     {
         Element sourceimageEl = contentDataEl.getChild( "sourceimage" );

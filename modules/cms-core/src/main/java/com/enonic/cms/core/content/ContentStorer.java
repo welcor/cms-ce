@@ -103,9 +103,6 @@ public class ContentStorer
     private IndexService indexService;
 
     @Autowired
-    private ContentValidator contentValidator;
-
-    @Autowired
     private ContentDao contentEntityDao;
 
     @Autowired
@@ -260,7 +257,7 @@ public class ContentStorer
     private ContentEntity doStoreNewContent( final CreateContentCommand.AccessRightsStrategy accessRightsStrategy, ContentEntity newContent,
                                              ContentVersionEntity newContentVersion )
     {
-        contentValidator.validate( newContentVersion.getContentData() );
+        new ContentValidator( contentDao ).validate( newContentVersion );
         ContentNameValidator.validate( newContent.getName() );
         ContentTitleValidator.validate( newContentVersion.getContentData() );
 
@@ -555,7 +552,7 @@ public class ContentStorer
 
         final boolean modifiedByUserModifyableProperties = doUpdateContentVersionProperties( persistedVersion, updateContentCommand );
 
-        contentValidator.validate( persistedVersion.getContentData() );
+        new ContentValidator( contentDao ).validate( persistedVersion );
 
         final List<BinaryDataAndBinary> binariesToAdd = updateContentCommand.getBinaryDataToAdd();
         final boolean modifiedByAddedBinaries = doStoreNewBinaries( persistedVersion, binariesToAdd );
@@ -605,7 +602,7 @@ public class ContentStorer
 
         final boolean modifiedByUserModifyableProperties = doUpdateContentVersionProperties( newVersionToPersist, updateContentCommand );
 
-        contentValidator.validate( newVersionToPersist.getContentData() );
+        new ContentValidator( contentDao ).validate( newVersionToPersist );
 
         boolean anyBinaryChanges = false;
         if ( updateContentCommand.useCommandsBinaryDataToAdd() && updateContentCommand.useCommandsBinaryDataToRemove() )
@@ -1317,6 +1314,7 @@ public class ContentStorer
         content.setTimestamp( getNow() );
 
         // delete references from different tables.
+        doMarkReferencesToContentAsDeleted( content );
         doDeleteRelatedContent( content );
         doDeleteContentHome( content );
         doDeleteSectionContent( content );
@@ -1349,6 +1347,35 @@ public class ContentStorer
                 relatedContentDao.delete( relatedContent );
             }
         }
+    }
+
+    /**
+     * removes related content referencing this content from tRelatedContent and
+     * marks as deleted in XML ContentData.
+     *
+     * @param content content to process
+     */
+    private void doMarkReferencesToContentAsDeleted( final ContentEntity content )
+    {
+        final Set<ContentVersionEntity> relatedParentContentVersions = content.getRelatedParentContentVersions();
+
+        for ( final ContentVersionEntity contentVersionEntity : relatedParentContentVersions )
+        {
+            final ContentData contentData = contentVersionEntity.getContentData();
+            final boolean removed = contentData.markReferencesToContentAsDeleted( content.getKey() );
+            if ( removed )
+            {
+                // rebuild XML
+                contentVersionEntity.setXmlDataFromContentData();
+            }
+        }
+
+        // clean both sides of bi-directional relation. ( clean cached entities )
+        for ( final ContentVersionEntity contentVersionEntity : relatedParentContentVersions )
+        {
+            contentVersionEntity.removeRelatedChild( content );
+        }
+        relatedParentContentVersions.clear();
     }
 
     private void doDeleteVersion( ContentVersionEntity version )
@@ -1392,8 +1419,7 @@ public class ContentStorer
 
     private Date getNow()
     {
-        Date now = Calendar.getInstance().getTime();
-        return now;
+        return Calendar.getInstance().getTime();
     }
 
     private void removeSnapshots( ContentVersionEntity version )

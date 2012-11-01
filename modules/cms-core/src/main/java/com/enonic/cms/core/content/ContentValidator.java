@@ -4,9 +4,6 @@
  */
 package com.enonic.cms.core.content;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.InvalidContentDataException;
 import com.enonic.cms.core.content.contentdata.custom.CustomContentData;
@@ -16,11 +13,25 @@ import com.enonic.cms.core.content.contentdata.custom.relationdataentrylistbased
 import com.enonic.cms.core.content.contenttype.dataentryconfig.RelatedContentDataEntryConfig;
 import com.enonic.cms.store.dao.ContentDao;
 
-@Component
 public class ContentValidator
 {
-    @Autowired
     private ContentDao contentDao;
+
+    private boolean contentDataChanged = false;
+
+    public ContentValidator( ContentDao contentDao )
+    {
+        this.contentDao = contentDao;
+    }
+
+    public void validate( ContentVersionEntity contentVersion )
+    {
+        validate( contentVersion.getContentData() );
+        if ( contentDataChanged )
+        {
+            contentVersion.setXmlDataFromContentData();
+        }
+    }
 
     public void validate( ContentData contentData )
     {
@@ -46,6 +57,7 @@ public class ContentValidator
                 }
 
             }
+
         }
     }
 
@@ -59,18 +71,25 @@ public class ContentValidator
 
     private void validateRelatedContent( RelatedContentDataEntry relatedContentDataEntry )
     {
-        ContentKey relatedContentKey = relatedContentDataEntry.getContentKey();
+        if ( relatedContentDataEntry.isMarkedAsDeleted() )
+        {
+            return; // do not validate deleted content
+        }
+
+        final ContentKey relatedContentKey = relatedContentDataEntry.getContentKey();
         if ( relatedContentKey == null )
         {
             return; // A null content key is a valid content key
         }
-        ContentEntity relatedContent = contentDao.findByKey( relatedContentKey );
-        if ( relatedContent == null )
+        final ContentEntity relatedContent = contentDao.findByKey( relatedContentKey );
+        if ( relatedContent == null || relatedContent.isDeleted() )
         {
-            throw new InvalidContentDataException( "Related content does not exist: " + relatedContentKey );
+            relatedContentDataEntry.markAsDeleted();
+            contentDataChanged = true;
+            return;
         }
 
-        RelatedContentDataEntryConfig relatedConfig = (RelatedContentDataEntryConfig) relatedContentDataEntry.getConfig();
+        final RelatedContentDataEntryConfig relatedConfig = (RelatedContentDataEntryConfig) relatedContentDataEntry.getConfig();
 
         if ( !relatedConfig.isContentTypeNameSupported( relatedContent.getContentType().getName() ) )
         {

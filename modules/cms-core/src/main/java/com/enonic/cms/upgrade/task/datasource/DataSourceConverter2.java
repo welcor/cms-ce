@@ -67,17 +67,17 @@ public final class DataSourceConverter2
     {
         if ( "true".equals( source.getAttributeValue( "cookie-context" ) ) )
         {
-            target.addContent( method( "getCookieContext" ).build() );
+            target.addContent( method( "getCookieContext" ).resultElement( "context" ).build() );
         }
 
         if ( "true".equals( source.getAttributeValue( "http-context" ) ) )
         {
-            target.addContent( method( "getHttpContext" ).build() );
+            target.addContent( method( "getHttpContext" ).resultElement( "context" ).build() );
         }
 
         if ( "true".equals( source.getAttributeValue( "session-context" ) ) )
         {
-            target.addContent( method( "getSessionContext" ).build() );
+            target.addContent( method( "getSessionContext" ).resultElement( "context" ).build() );
         }
     }
 

@@ -12,6 +12,12 @@ public final class MethodElementBuilder
         this.result.setAttribute( "name", name );
     }
 
+    public MethodElementBuilder resultElement( final String name )
+    {
+        this.result.setAttribute( "result-element", name );
+        return this;
+    }
+
     public MethodElementBuilder param( final String name, final String value )
     {
         final Element elem = new Element( "parameter" );

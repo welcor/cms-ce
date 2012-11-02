@@ -22,6 +22,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.enonic.cms.core.vhost.VirtualHost;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 import com.enonic.cms.core.vhost.VirtualHostResolver;
+import com.enonic.cms.web.urlrewrite.UrlRewriterBean;
+import com.enonic.cms.web.urlrewrite.UrlRewriterHttpServletRequestWrapper;
 
 @Component
 public final class VirtualHostFilter
@@ -31,6 +33,9 @@ public final class VirtualHostFilter
 
     @Autowired
     private VirtualHostResolver virtualHostResolver;
+
+    @Autowired
+    private UrlRewriterBean urlRewriterBean;
 
     @Value("${cms.security.vhost.require}")
     private boolean requireVirtualHost;
@@ -74,6 +79,16 @@ public final class VirtualHostFilter
         {
             res.setStatus( HttpServletResponse.SC_NOT_FOUND );
             return;
+        }
+
+        if ( urlRewriterBean.isEnabled() )
+        {
+            UrlRewriterHttpServletRequestWrapper wrappedReq = new UrlRewriterHttpServletRequestWrapper( req, fullTargetPath );
+            boolean responseCommited = urlRewriterBean.doRewriteURL( wrappedReq, res, chain );
+            if ( responseCommited )
+            {
+                return;
+            }
         }
 
         if ( fullTargetPath != null )

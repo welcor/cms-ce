@@ -18,7 +18,7 @@ public final class GetUrlAsXmlHandler
 {
     private HTTPService httpService;
 
-    private static String URL_NO_RESULT = "<noresult/>";
+    private final static String URL_NO_RESULT = "<noresult/>";
 
     public GetUrlAsXmlHandler()
     {

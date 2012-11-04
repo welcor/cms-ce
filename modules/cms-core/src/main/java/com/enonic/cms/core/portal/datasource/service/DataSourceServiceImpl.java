@@ -210,10 +210,8 @@ public final class DataSourceServiceImpl
     {
         boolean includeOwnerAndModifierData = true;
         boolean includeCategoryData = true;
-        boolean categoryRecursive = false;
-        return doGetRelatedContent( context, contentKeys, relation, query, orderBy, requireAll, index, count, parentLevel, childrenLevel, 0,
-                                    includeOwnerAndModifierData, includeData, includeCategoryData, includeData, null, categoryRecursive,
-                                    null );
+        return doGetRelatedContent( context, contentKeys, relation, query, orderBy, requireAll, index, count, parentLevel, childrenLevel,
+                                    includeOwnerAndModifierData, includeData, includeCategoryData, includeData );
     }
 
     /**
@@ -808,18 +806,14 @@ public final class DataSourceServiceImpl
     }
 
     private XMLDocument doGetRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
-                                             boolean requireAll, int index, int count, int parentLevel, int childrenLevel,
-                                             int parentChildrenLevel, boolean includeOwnerAndModifierData, boolean includeContentData,
-                                             boolean includeCategoryData, boolean includeRelatedContentData, int[] filterByCategories,
-                                             boolean categoryRecursive, int[] filterByContentTypes )
+                                             boolean requireAll, int index, int count, int parentLevel, int childrenLevel, boolean includeOwnerAndModifierData, boolean includeContentData,
+                                             boolean includeCategoryData, boolean includeRelatedContentData )
     {
         XMLDocument xmlDocument = null;
         try
         {
             final UserEntity user = getUserEntity( context.getUser() );
-            final List<CategoryKey> categoryFilter = CategoryKey.convertToList( filterByCategories );
             final List<ContentKey> contentFilter = ContentKey.convertToList( contentKeys );
-            final List<ContentTypeKey> contentTypeFilter = ContentTypeKey.convertToList( filterByContentTypes );
 
             final GetRelatedContentExecutor getRelatedContentExecutor =
                 new GetRelatedContentExecutor( contentService, timeService.getNowAsDateTime().toDate(), context.getPreviewContext() );
@@ -832,18 +826,10 @@ public final class DataSourceServiceImpl
             getRelatedContentExecutor.count( count );
             getRelatedContentExecutor.childrenLevel( childrenLevel );
             getRelatedContentExecutor.parentLevel( parentLevel );
-            getRelatedContentExecutor.parentChildrenLevel( parentChildrenLevel );
+            getRelatedContentExecutor.parentChildrenLevel( 0 );
             if ( contentFilter != null )
             {
                 getRelatedContentExecutor.contentFilter( contentFilter );
-            }
-            if ( categoryFilter != null )
-            {
-                getRelatedContentExecutor.categoryFilter( categoryFilter, categoryRecursive );
-            }
-            if ( contentTypeFilter != null )
-            {
-                getRelatedContentExecutor.contentTypeFilter( contentTypeFilter );
             }
             final GetRelatedContentResult result = getRelatedContentExecutor.execute();
 

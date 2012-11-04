@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.util.Assert;
 
-import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.SitePropertiesService;
+import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.rendering.RegionsResolver;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
@@ -42,6 +43,8 @@ public abstract class AbstractPageRequestProcessor
     protected DeviceClassResolverService deviceClassResolverService;
 
     protected SectionContentDao sectionContentDao;
+
+    protected SitePropertiesService sitePropertiesService;
 
     protected AbstractPageRequestProcessor( final PageRequestProcessorContext context )
     {
@@ -121,5 +124,10 @@ public abstract class AbstractPageRequestProcessor
     public void setSectionContentDao( SectionContentDao sectionContentDao )
     {
         this.sectionContentDao = sectionContentDao;
+    }
+
+    public void setSitePropertiesService( final SitePropertiesService sitePropertiesService )
+    {
+        this.sitePropertiesService = sitePropertiesService;
     }
 }

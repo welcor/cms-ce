@@ -7,6 +7,7 @@ package com.enonic.cms.core.portal.processor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalAccessService;
 import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
@@ -39,6 +40,9 @@ public class PageRequestProcessorFactory
     @Autowired
     private DeviceClassResolverService deviceClassResolverService;
 
+    @Autowired
+    private SitePropertiesService sitePropertiesService;
+
     public AbstractPageRequestProcessor create( PageRequestProcessorContext context )
     {
         final AbstractPageRequestProcessor pageRequestProcessor;
@@ -65,6 +69,7 @@ public class PageRequestProcessorFactory
         pageRequestProcessor.setDeviceClassResolverService( deviceClassResolverService );
         pageRequestProcessor.setLocaleResolverService( localeResolverService );
         pageRequestProcessor.setSectionContentDao( sectionContentDao );
+        pageRequestProcessor.setSitePropertiesService( sitePropertiesService );
 
         return pageRequestProcessor;
     }

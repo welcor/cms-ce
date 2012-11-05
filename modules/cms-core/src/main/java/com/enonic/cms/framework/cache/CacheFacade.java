@@ -66,12 +66,12 @@ public interface CacheFacade
     /**
      * Number of times a requested item was found in cache.
      */
-    public int getHitCount();
+    public long getHitCount();
 
     /**
      * Number of times a requested item was not found in cache.
      */
-    public int getMissCount();
+    public long getMissCount();
 
     /**
      * Return the number of objects in cache.

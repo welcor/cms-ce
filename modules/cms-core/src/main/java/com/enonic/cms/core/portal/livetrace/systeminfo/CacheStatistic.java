@@ -7,9 +7,9 @@ class CacheStatistic
 
     private int capacity;
 
-    private int hitCount;
+    private long hitCount;
 
-    private int missCount;
+    private long missCount;
 
     @SuppressWarnings("UnusedDeclaration")
     public int getCount()
@@ -34,24 +34,24 @@ class CacheStatistic
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public int getHitCount()
+    public long getHitCount()
     {
         return hitCount;
     }
 
-    void setHitCount( int hitCount )
+    void setHitCount( long hitCount )
     {
         this.hitCount = hitCount;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public int getMissCount()
+    public long getMissCount()
     {
         return missCount;
     }
 
 
-    void setMissCount( int missCount )
+    void setMissCount( long missCount )
     {
         this.missCount = missCount;
     }

@@ -47,13 +47,13 @@ public abstract class AbstractCacheFacade
     }
 
     @Override
-    public final int getMissCount()
+    public final long getMissCount()
     {
         return this.missCount.get();
     }
 
     @Override
-    public final int getHitCount()
+    public final long getHitCount()
     {
         return this.hitCount.get();
     }

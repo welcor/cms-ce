@@ -11,6 +11,8 @@ class CacheStatistic
 
     private long missCount;
 
+    private long removeAllCount;
+
     @SuppressWarnings("UnusedDeclaration")
     public int getCount()
     {
@@ -55,4 +57,16 @@ class CacheStatistic
     {
         this.missCount = missCount;
     }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public long getRemoveAllCount()
+    {
+        return removeAllCount;
+    }
+
+    public void setRemoveAllCount( final long removeAllCount )
+    {
+        this.removeAllCount = removeAllCount;
+    }
+
 }

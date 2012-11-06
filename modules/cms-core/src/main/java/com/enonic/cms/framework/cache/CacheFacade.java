@@ -74,6 +74,11 @@ public interface CacheFacade
     public long getMissCount();
 
     /**
+     * Number of times of clear cache.
+     */
+    public long getRemoveAllCount();
+
+    /**
      * Return the number of objects in cache.
      */
     public int getCount();

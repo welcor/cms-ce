@@ -72,14 +72,13 @@ public interface ContentIndexService
 
     public void flush();
 
-    public void initializeMapping();
+    public void reinitializeIndex();
 
     public Collection<ContentIndexedFields> getContentIndexedFields( ContentKey contentKey );
 
     public boolean indexExists();
 
     public void createIndex();
-
 }
 
 

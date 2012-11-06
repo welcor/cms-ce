@@ -19,10 +19,9 @@ public interface IndexService
 
     public void optimizeIndex();
 
-    public void initializeMapping();
+    public void reinitializeIndex();
 
     public boolean indexExists();
 
     public void createIndex();
-
 }

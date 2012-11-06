@@ -565,7 +565,6 @@ public final class AdminEngine
         if ( !indexService.indexExists() )
         {
             indexService.createIndex();
-            indexService.initializeMapping();
         }
 
         batcher.regenerateIndex( contentType, batchSize, null );

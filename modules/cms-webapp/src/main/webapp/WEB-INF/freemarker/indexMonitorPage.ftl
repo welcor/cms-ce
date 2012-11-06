@@ -17,8 +17,8 @@
         }
 
         function doDeleteIndex() {
-            if (confirm("Are you sure you want to delete the index? A full reindex will be needed")) {
-                location.href = "servlet/tools/com.enonic.cms.core.tools.IndexMonitorController?op=custom&deleteIndex=true";
+            if (confirm("Are you sure you want to recreate the index? All data will be deleted and a full reindex will be needed")) {
+                location.href = "servlet/tools/com.enonic.cms.core.tools.IndexMonitorController?op=custom&recreateIndex=true";
             }
         }
         //-->
@@ -44,7 +44,7 @@
             <li>
                 [#if indexExists == true]
                     <span class="keyField">Index exists:</span> = <span class="valueField">TRUE</span>
-                    <input type="button" class="button_text" name="doDeleteIndex" value="Delete index" onclick="doDeleteIndex()"/>
+                    <input type="button" class="button_text" name="recreateIndex" value="Recreate index" onclick="doDeleteIndex()"/>
                 [#else]
                     <span class="keyField">Index exists:</span> = <span class="valueField">FALSE</span>
                 [/#if]

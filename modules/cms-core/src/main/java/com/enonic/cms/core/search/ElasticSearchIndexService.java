@@ -19,13 +19,9 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
  */
 public interface ElasticSearchIndexService
 {
-    public Map<String, Object> getMapping( IndexType indexType, String indexName );
-
     public void createIndex( String indexName );
 
     public void deleteIndex( String indexName );
-
-    public void updateIndexSettings( String indexName );
 
     public void putMapping( String indexName, String indexType, String mapping );
 
@@ -53,7 +49,7 @@ public interface ElasticSearchIndexService
 
     public boolean indexExists( String indexName );
 
-    public ClusterHealthResponse getClusterHealth(String indexName);
+    public ClusterHealthResponse getClusterHealth( String indexName, boolean waitForYellow );
 
 }
 

@@ -71,9 +71,9 @@ public final class IndexServiceImpl
     }
 
     @Override
-    public void initializeMapping()
+    public void reinitializeIndex()
     {
-        contentIndexService.initializeMapping();
+        contentIndexService.reinitializeIndex();
     }
 
     @Override

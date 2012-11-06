@@ -1,6 +1,5 @@
 package com.enonic.cms.core.search;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingReques
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
-import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -34,9 +32,6 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.cluster.ClusterState;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -64,13 +59,13 @@ public class ElasticSearchIndexServiceImpl
 
     private static final boolean WAIT_FOR_MERGE = true;
 
-    public static final int CLUSTER_HEALTH_TIMEOUT_SECONDS = 10;
+    public static final TimeValue INDEX_REQUEST_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 5 );
 
-    public static final TimeValue INDEX_REQUEST_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 10 );
+    public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 5 );
 
-    public static final int INDEX_EXISTS_TIMEOUT_SECONDS = 10;
+    public static final TimeValue WAITFOR_YELLOW_TIMEOUT = TimeValue.timeValueSeconds( 30 );
 
-    public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 10 );
+    public static final TimeValue CLUSTER_NOWAIT_TIMEOUT = TimeValue.timeValueSeconds( 1 );
 
     private IndexSettingBuilder indexSettingBuilder;
 
@@ -98,40 +93,6 @@ public class ElasticSearchIndexServiceImpl
         }
 
         LOG.info( "Created index: " + indexName );
-    }
-
-    public Map<String, Object> getMapping( IndexType indexType, String indexName )
-    {
-        ClusterState clusterState = client.admin().cluster().prepareState().setFilterIndices( indexName ).execute().actionGet().getState();
-        IndexMetaData indexMetaData = clusterState.getMetaData().index( indexName );
-
-        if ( indexMetaData == null )
-        {
-            LOG.warning( "Not able to load existing mapping for index: " + indexName + ", type: " + indexType.toString() );
-            return null;
-        }
-
-        MappingMetaData mappingMetaData = indexMetaData.mapping( indexType.toString() );
-        try
-        {
-            return mappingMetaData.getSourceAsMap();
-        }
-        catch ( IOException e )
-        {
-            LOG.warning( "Not able to load existing mapping for index: " + indexName + ", type: " + indexType.toString() );
-            return null;
-        }
-    }
-
-    @Override
-    public void updateIndexSettings( String indexName )
-    {
-        UpdateSettingsRequest updateSettingsRequest = new UpdateSettingsRequest( indexName );
-        updateSettingsRequest.settings( indexSettingBuilder.buildIndexSettings() );
-
-        client.admin().indices().updateSettings( updateSettingsRequest ).actionGet();
-
-        LOG.info( "Settings updated for index: " + indexName );
     }
 
     @Override
@@ -353,33 +314,36 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public boolean indexExists( String indexName )
     {
-        final ClusterHealthRequest clusterHealthRequest =
-            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( INDEX_EXISTS_TIMEOUT_SECONDS ) ).waitForNodes( "1" );
-
-        final ClusterHealthResponse clusterHealth = client.admin().cluster().health( clusterHealthRequest ).actionGet();
-        if ( clusterHealth.timedOut() )
-        {
-            LOG.warning( "ElasticSearch cluster health timed out" );
-        }
-        else
-        {
-            LOG.info( "ElasticSearch cluster health: Status " + clusterHealth.status().name() + "; " +
-                          clusterHealth.getNumberOfNodes() + " nodes; " + clusterHealth.getActiveShards() + " active shards." );
-        }
-
         final IndicesExistsResponse exists = this.client.admin().indices().exists( new IndicesExistsRequest( indexName ) ).actionGet();
         return exists.exists();
     }
 
     @Override
-    public ClusterHealthResponse getClusterHealth( String indexName )
+    public ClusterHealthResponse getClusterHealth( String indexName, boolean waitForYellow )
     {
-
         ClusterHealthRequest request = new ClusterHealthRequest( indexName );
-        request.waitForYellowStatus();
-        request.timeout( TimeValue.timeValueSeconds( CLUSTER_HEALTH_TIMEOUT_SECONDS ) );
+
+        if ( waitForYellow )
+        {
+            request.waitForYellowStatus().timeout( WAITFOR_YELLOW_TIMEOUT );
+        }
+        else
+        {
+            request.timeout( CLUSTER_NOWAIT_TIMEOUT );
+        }
 
         final ClusterHealthResponse clusterHealthResponse = this.client.admin().cluster().health( request ).actionGet();
+
+        if ( clusterHealthResponse.timedOut() )
+        {
+            LOG.warning( "ElasticSearch cluster health timed out" );
+        }
+        else
+        {
+            LOG.info( "ElasticSearch cluster health: Status " + clusterHealthResponse.status().name() + "; " +
+                          clusterHealthResponse.getNumberOfNodes() + " nodes; " + clusterHealthResponse.getActiveShards() +
+                          " active shards." );
+        }
 
         return clusterHealthResponse;
     }

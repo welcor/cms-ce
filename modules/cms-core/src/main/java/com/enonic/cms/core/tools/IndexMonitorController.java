@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.action.search.SearchResponse;
@@ -18,10 +17,9 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.URL;
 import com.enonic.vertical.adminweb.AdminHelper;
 
-import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
+import com.enonic.cms.core.search.query.ContentIndexService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,8 +31,6 @@ public class IndexMonitorController
     extends AbstractToolController
 {
 
-    protected static final int DEFAULT_COUNT = 500;
-
     public static final String getAllQUery = "{\n" +
         "  \"from\" : 0,\n" +
         "  \"size\" : 0,\n" +
@@ -45,26 +41,22 @@ public class IndexMonitorController
         "}\n" +
         "";
 
-    protected static enum SortValue
-    {
-        MaxTime,
-        AvgTimeDiff,
-        TotalHits,
-        AvgTime;
-    }
-
     private ElasticSearchIndexService elasticSearchIndexService;
+
+    private ContentIndexService contentIndexService;
 
     @Override
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
-        if ( req.getParameter( "deleteIndex" ) != null )
+        if ( req.getParameter( "recreateIndex" ) != null )
         {
             try
             {
                 elasticSearchIndexService.deleteIndex( "cms" );
+                contentIndexService.createIndex();
+
                 URL referer = new URL( req.getHeader( "referer" ) );
                 redirectClientToURL( referer, res );
             }
@@ -76,10 +68,7 @@ public class IndexMonitorController
 
         model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
 
-        final boolean indexExists = elasticSearchIndexService.indexExists( "cms" );
-        model.put( "indexExists", indexExists );
-
-        ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms" );
+        ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
         model.put( "activeShards", clusterHealthResponse.getActiveShards() );
         final ClusterHealthStatus status = clusterHealthResponse.getStatus();
         model.put( "clusterStatus", status.toString() );
@@ -90,6 +79,9 @@ public class IndexMonitorController
         final List<String> allValidationFailures = clusterHealthResponse.getAllValidationFailures();
         model.put( "validationFailures", allValidationFailures.isEmpty() ? Lists.newArrayList( "None" ) : allValidationFailures );
 
+        final boolean indexExists = elasticSearchIndexService.indexExists( "cms" );
+        model.put( "indexExists", indexExists );
+
         if ( status.equals( ClusterHealthStatus.RED ) )
         {
             process( req, res, model, "indexMonitorPage" );
@@ -99,41 +91,6 @@ public class IndexMonitorController
         model.put( "numberOfContent", getTotalHitsContent() );
         model.put( "numberOfBinaries", getTotalHitsBinaries() );
         process( req, res, model, "indexMonitorPage" );
-    }
-
-    private SortValue getOrderBy( HttpServletRequest req )
-    {
-        String orderByStringValue = req.getParameter( "orderby" );
-
-        if ( StringUtils.isBlank( orderByStringValue ) )
-        {
-            return SortValue.AvgTimeDiff;
-        }
-
-        SortValue orderBy = SortValue.valueOf( orderByStringValue );
-
-        if ( orderBy == null )
-        {
-            return SortValue.AvgTimeDiff;
-        }
-
-        return orderBy;
-    }
-
-    private SearchResponse fetchDocumentByContentKey( ContentKey contentKey )
-    {
-        String termQuery = "{\n" +
-            "  \"from\" : 0,\n" +
-            "  \"size\" : " + 100 + ",\n" +
-            "\"fields\" : [\"*\"],\n" +
-            "  \"query\" : {\n" +
-            "    \"term\" : {\n" +
-            "      \"key\" : \"" + new Long( contentKey.toString() ).toString() + "\"\n" +
-            "    }\n" +
-            "  }\n" +
-            "}";
-
-        return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content.toString(), termQuery );
     }
 
     private String getTotalHitsBinaries()
@@ -171,5 +128,9 @@ public class IndexMonitorController
         this.elasticSearchIndexService = elasticSearchIndexService;
     }
 
-
+    @Autowired
+    public void setContentIndexService( final ContentIndexService contentIndexService )
+    {
+        this.contentIndexService = contentIndexService;
+    }
 }

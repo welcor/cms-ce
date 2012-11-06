@@ -37,11 +37,11 @@ public class ReindexContentToolServiceImpl
             logEntries.add( "Index does not exist, createing..." );
             indexService.createIndex();
         }
-
-        logEntries.add( "Reinitialize mapping" );
-
-        indexService.initializeMapping();
-
+        else
+        {
+            logEntries.add( "Truncate index..." );
+            indexService.reinitializeIndex();
+        }
         Collection<ContentTypeEntity> contentTypes = contentService.getAllContentTypes();
 
         logEntries.add( "Generating indexes for " + contentTypes.size() + " content types..." );

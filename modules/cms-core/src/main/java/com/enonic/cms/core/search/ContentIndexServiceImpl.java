@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.SearchHit;
@@ -86,6 +87,10 @@ public class ContentIndexServiceImpl
     @PostConstruct
     public void initializeContentIndex()
     {
+        final ClusterHealthResponse clusterHealth = elasticSearchIndexService.getClusterHealth( CONTENT_INDEX_NAME, true );
+
+        LOG.info( "Cluster in state: " + clusterHealth.status().toString() );
+
         final boolean indexExists = elasticSearchIndexService.indexExists( CONTENT_INDEX_NAME );
 
         if ( !indexExists )
@@ -96,7 +101,7 @@ public class ContentIndexServiceImpl
             }
             catch ( org.elasticsearch.indices.IndexAlreadyExistsException e )
             {
-                LOG.warning( "Index already exists, skipping index creation" );
+                LOG.warning( "Tried to create index, but index already exists, skipping" );
             }
             addMapping();
         }
@@ -383,7 +388,7 @@ public class ContentIndexServiceImpl
     }
 
     @Override
-    public void initializeMapping()
+    public void reinitializeIndex()
     {
         elasticSearchIndexService.deleteMapping( CONTENT_INDEX_NAME, IndexType.Content );
         elasticSearchIndexService.deleteMapping( CONTENT_INDEX_NAME, IndexType.Binaries );
@@ -393,6 +398,8 @@ public class ContentIndexServiceImpl
     @Override
     public boolean indexExists()
     {
+        elasticSearchIndexService.getClusterHealth( CONTENT_INDEX_NAME, true );
+
         return elasticSearchIndexService.indexExists( CONTENT_INDEX_NAME );
     }
 
@@ -400,6 +407,7 @@ public class ContentIndexServiceImpl
     public void createIndex()
     {
         elasticSearchIndexService.createIndex( CONTENT_INDEX_NAME );
+        addMapping();
     }
 
     @Autowired

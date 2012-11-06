@@ -58,7 +58,7 @@ public class IndexSettingsBuilderImpl
         }
         catch ( IOException e )
         {
-            throw new ContentIndexException( "Not able to create analyzer settings for index", e );
+            throw new IndexException( "Not able to create analyzer settings for index", e );
         }
 
     }

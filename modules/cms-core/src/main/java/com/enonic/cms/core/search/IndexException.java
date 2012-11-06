@@ -6,16 +6,16 @@ package com.enonic.cms.core.search;
  * Date: 12/13/11
  * Time: 3:31 PM
  */
-public class ContentIndexException
+public class IndexException
     extends RuntimeException
 {
 
-    public ContentIndexException( final String message )
+    public IndexException( final String message )
     {
         super( message );
     }
 
-    public ContentIndexException( final String message, final Exception e )
+    public IndexException( final String message, final Exception e )
     {
         super( message, e );
     }

@@ -34,7 +34,7 @@ public final class IndexServiceImpl
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     /* timeout: 12 timer (60 sec * 5 min = 300 sec) */
     /* OLD: timeout: 12 timer (3600 * 12 = 43200) */
-    public void regenerateIndex( final List<ContentKey> contentKeys )
+    public void reindex( final List<ContentKey> contentKeys )
     {
         final FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentKeys ).eagerFetches(
             ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( true );
@@ -74,6 +74,18 @@ public final class IndexServiceImpl
     public void initializeMapping()
     {
         contentIndexService.initializeMapping();
+    }
+
+    @Override
+    public boolean indexExists()
+    {
+        return contentIndexService.indexExists();
+    }
+
+    @Override
+    public void createIndex()
+    {
+        contentIndexService.createIndex();
     }
 
     private void doRemoveContentFromIndex( ContentEntity content )

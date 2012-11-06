@@ -13,11 +13,16 @@ import com.enonic.cms.core.search.query.ContentDocument;
  */
 public interface IndexService
 {
-    public void regenerateIndex( List<ContentKey> contentKeys );
+    public void reindex( List<ContentKey> contentKeys );
 
     ContentDocument createContentDocument( ContentEntity content, final boolean updateMetadataOnly );
 
     public void optimizeIndex();
 
     public void initializeMapping();
+
+    public boolean indexExists();
+
+    public void createIndex();
+
 }

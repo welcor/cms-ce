@@ -561,6 +561,13 @@ public final class AdminEngine
         ContentTypeEntity contentType = contentTypeDao.findByKey( new ContentTypeKey( contentTypeKey ) );
         final int batchSize = 10;
         RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService );
+
+        if ( !indexService.indexExists() )
+        {
+            indexService.createIndex();
+            indexService.initializeMapping();
+        }
+
         batcher.regenerateIndex( contentType, batchSize, null );
     }
 

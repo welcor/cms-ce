@@ -10,7 +10,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.search.ContentIndexException;
+import com.enonic.cms.core.search.IndexException;
 
 public class ContentIndexData
 {
@@ -65,7 +65,7 @@ public class ContentIndexData
         }
         catch ( IOException e )
         {
-            throw new ContentIndexException( "Failed to build json: ", e );
+            throw new IndexException( "Failed to build json: ", e );
         }
     }
 

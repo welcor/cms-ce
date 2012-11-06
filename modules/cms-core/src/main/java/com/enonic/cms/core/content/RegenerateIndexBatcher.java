@@ -62,7 +62,7 @@ public class RegenerateIndexBatcher
 
                 long start = System.currentTimeMillis();
 
-                indexService.regenerateIndex( nextContentKeys );
+                indexService.reindex( nextContentKeys );
                 //indexService.regenerateIndexBatched( nextContentKeys );
 
                 long end = System.currentTimeMillis();

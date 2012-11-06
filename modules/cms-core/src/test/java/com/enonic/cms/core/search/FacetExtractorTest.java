@@ -32,7 +32,7 @@ public class FacetExtractorTest
         assertNotNull( FacetExtractor.getStatisticalFacet( response, "test" ) );
     }
 
-    @Test(expected = ContentIndexException.class)
+    @Test(expected = IndexException.class)
     public void testNotStatistical()
     {
         final Facet queryFacet = createQueryFacet( "test" );

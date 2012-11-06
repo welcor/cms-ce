@@ -21,7 +21,7 @@ public class FacetExtractor
             return (StatisticalFacet) facet;
         }
 
-        throw new ContentIndexException( "Facet '" + facetName + "' not of expected type Statistical" );
+        throw new IndexException( "Facet '" + facetName + "' not of expected type Statistical" );
     }
 
     private static Facet getFacet( SearchResponse response, String facetName )

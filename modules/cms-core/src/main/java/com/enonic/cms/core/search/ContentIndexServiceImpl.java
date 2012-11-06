@@ -390,6 +390,18 @@ public class ContentIndexServiceImpl
         addMapping();
     }
 
+    @Override
+    public boolean indexExists()
+    {
+        return elasticSearchIndexService.indexExists( CONTENT_INDEX_NAME );
+    }
+
+    @Override
+    public void createIndex()
+    {
+        elasticSearchIndexService.createIndex( CONTENT_INDEX_NAME );
+    }
+
     @Autowired
     public void setIndexMappingProvider( IndexMappingProvider indexMappingProvider )
     {

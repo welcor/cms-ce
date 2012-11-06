@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -67,6 +68,10 @@ public class ElasticSearchIndexServiceImpl
 
     public static final TimeValue INDEX_REQUEST_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 10 );
 
+    public static final int INDEX_EXISTS_TIMEOUT_SECONDS = 10;
+
+    public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 10 );
+
     private IndexSettingBuilder indexSettingBuilder;
 
     private ContentIndexRequestCreator contentIndexRequestCreator;
@@ -83,7 +88,14 @@ public class ElasticSearchIndexServiceImpl
         CreateIndexRequest createIndexRequest = new CreateIndexRequest( indexName );
         createIndexRequest.settings( indexSettingBuilder.buildIndexSettings() );
 
-        client.admin().indices().create( createIndexRequest ).actionGet();
+        try
+        {
+            client.admin().indices().create( createIndexRequest ).actionGet();
+        }
+        catch ( ElasticSearchException e )
+        {
+            throw new IndexException( "Failed to create index:" + indexName, e );
+        }
 
         LOG.info( "Created index: " + indexName );
     }
@@ -127,7 +139,14 @@ public class ElasticSearchIndexServiceImpl
     {
         PutMappingRequest mappingRequest = new PutMappingRequest( indexName ).type( indexType ).source( mapping );
 
-        this.client.admin().indices().putMapping( mappingRequest ).actionGet();
+        try
+        {
+            this.client.admin().indices().putMapping( mappingRequest ).actionGet();
+        }
+        catch ( ElasticSearchException e )
+        {
+            throw new IndexException( "Failed to apply mapping to index: " + indexName, e );
+        }
 
         LOG.info( "Mapping for index " + indexName + ", index-type: " + indexType + " deleted" );
     }
@@ -147,7 +166,15 @@ public class ElasticSearchIndexServiceImpl
     {
         DeleteRequest deleteRequest = new DeleteRequest( indexName, indexType.toString(), contentKey.toString() );
 
-        final DeleteResponse deleteResponse = this.client.delete( deleteRequest ).actionGet();
+        final DeleteResponse deleteResponse;
+        try
+        {
+            deleteResponse = this.client.delete( deleteRequest ).actionGet( DELETE_FROM_INDEX_TIMEOUT_SECONDS );
+        }
+        catch ( ElasticSearchException e )
+        {
+            throw new IndexException( "Failed to delete content with key: " + contentKey, e );
+        }
 
         return !deleteResponse.notFound();
     }
@@ -171,8 +198,14 @@ public class ElasticSearchIndexServiceImpl
 
     private IndexResponse doIndex( IndexRequest indexRequest )
     {
-        final IndexResponse indexResponse = this.client.index( indexRequest ).actionGet( INDEX_REQUEST_TIMEOUT_SECONDS );
-        return indexResponse;
+        try
+        {
+            return this.client.index( indexRequest ).actionGet( INDEX_REQUEST_TIMEOUT_SECONDS );
+        }
+        catch ( ElasticSearchException e )
+        {
+            throw new IndexException( "Failed to index content with id: " + indexRequest.id(), e );
+        }
     }
 
     @Override
@@ -180,15 +213,21 @@ public class ElasticSearchIndexServiceImpl
     {
         final GetRequest getRequest = new GetRequest( indexName, indexType.toString(), contentKey.toString() );
 
-        final GetResponse getResponse = this.client.get( getRequest ).actionGet();
+        final GetResponse getResponse;
+        try
+        {
+            getResponse = this.client.get( getRequest ).actionGet();
+        }
+        catch ( ElasticSearchException e )
+        {
+            throw new IndexException( "Failed to get contentKey with id " + contentKey.toString(), e );
+        }
 
         return getResponse.exists();
     }
 
     public long count( String indexName, String indexType, SearchSourceBuilder sourceBuilder )
     {
-        // TODO: This should be optimized to use count, but then get rid of the sourceBuilder-stuff first
-
         final SearchRequest searchRequest =
             Requests.searchRequest( indexName ).types( indexType ).searchType( DEFAULT_SEARCH_TYPE ).source( sourceBuilder );
 
@@ -198,7 +237,6 @@ public class ElasticSearchIndexServiceImpl
 
         return searchResponse.getHits().getTotalHits();
     }
-
 
     @Override
     public void optimize( String indexName )
@@ -299,7 +337,7 @@ public class ElasticSearchIndexServiceImpl
                 reasonBuilder.append( reason );
             }
 
-            throw new ContentIndexException( "Search failed: " + reasonBuilder.toString() );
+            throw new IndexException( "Search failed: " + reasonBuilder.toString() );
         }
     }
 
@@ -316,7 +354,8 @@ public class ElasticSearchIndexServiceImpl
     public boolean indexExists( String indexName )
     {
         final ClusterHealthRequest clusterHealthRequest =
-            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( 60 ) ).waitForYellowStatus();
+            new ClusterHealthRequest( indexName ).timeout( TimeValue.timeValueSeconds( INDEX_EXISTS_TIMEOUT_SECONDS ) ).waitForNodes( "1" );
+
         final ClusterHealthResponse clusterHealth = client.admin().cluster().health( clusterHealthRequest ).actionGet();
         if ( clusterHealth.timedOut() )
         {

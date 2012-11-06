@@ -75,6 +75,11 @@ public interface ContentIndexService
     public void initializeMapping();
 
     public Collection<ContentIndexedFields> getContentIndexedFields( ContentKey contentKey );
+
+    public boolean indexExists();
+
+    public void createIndex();
+
 }
 
 

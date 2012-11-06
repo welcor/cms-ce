@@ -4,13 +4,10 @@
  */
 package com.enonic.cms.core.search.query;
 
-import org.elasticsearch.index.query.ConstantScoreQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.nodep.lucene.search.ConstantScoreQuery;
-import org.elasticsearch.nodep.lucene.search.FilteredQuery;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +21,7 @@ import com.enonic.cms.core.content.index.queryexpression.LogicalExpr;
 import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
-import com.enonic.cms.core.search.ContentIndexException;
+import com.enonic.cms.core.search.IndexException;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.FullTextQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.InQueryBuilderFactory;
@@ -94,7 +91,7 @@ public class QueryTranslator
         }
         catch ( Exception e )
         {
-            throw new ContentIndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
+            throw new IndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
         }
 
         //builder.query( builtQuery );

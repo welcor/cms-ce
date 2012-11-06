@@ -20,13 +20,11 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 public class ReindexContentToolServiceImpl
     implements ReindexContentToolService
 {
-
     private IndexService indexService;
 
     private ContentService contentService;
 
     protected static final int BATCH_SIZE = 10;
-
 
     public void reindexAllContent( List<String> logEntries )
     {
@@ -34,11 +32,17 @@ public class ReindexContentToolServiceImpl
 
         long globalStart = System.currentTimeMillis();
 
-        Collection<ContentTypeEntity> contentTypes = contentService.getAllContentTypes();
+        if ( !indexService.indexExists() )
+        {
+            logEntries.add( "Index does not exist, createing..." );
+            indexService.createIndex();
+        }
 
         logEntries.add( "Reinitialize mapping" );
 
         indexService.initializeMapping();
+
+        Collection<ContentTypeEntity> contentTypes = contentService.getAllContentTypes();
 
         logEntries.add( "Generating indexes for " + contentTypes.size() + " content types..." );
 

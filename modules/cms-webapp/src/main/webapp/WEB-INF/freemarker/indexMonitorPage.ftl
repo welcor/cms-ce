@@ -16,7 +16,7 @@
             location.href = "#last";
         }
 
-        function doDeleteIndex(){
+        function doDeleteIndex() {
             if (confirm("Are you sure you want to delete the index? A full reindex will be needed")) {
                 location.href = "servlet/tools/com.enonic.cms.core.tools.IndexMonitorController?op=custom&deleteIndex=true";
             }
@@ -38,22 +38,35 @@
     <div class="tab-page" id="tab-page-1">
         <span class="tab">Elasticsearch Index Properties</span>
 
-        <p>
-            <input type="button" class="button_text" name="doDeleteIndex" value="Delete index" onclick="doDeleteIndex()"/>
-        </p>
+    [#if indexExists??]
+        <h2>Node status</h2>
+        <ul>
+            <li>
+                [#if indexExists == true]
+                    <span class="keyField">Index exists:</span> = <span class="valueField">TRUE</span>
+                    <input type="button" class="button_text" name="doDeleteIndex" value="Delete index" onclick="doDeleteIndex()"/>
+                [#else]
+                    <span class="keyField">Index exists:</span> = <span class="valueField">FALSE</span>
+                [/#if]
+            </li>
+        </ul>
+    [/#if]
 
-        [#if error??]
-            <h2>Errors</h2>
-            <ul>
-                <li><span class="keyField">Error</span> = <span class="valueField">(${error})</span></li>
-            </ul>
-        [/#if]
 
+    [#if error??]
+        <h2>Errors</h2>
+        <ul>
+            <li><span class="keyField">Error</span> = <span class="valueField">(${error})</span></li>
+        </ul>
+    [/#if]
+
+    [#if numberOfContent?? && numberOfBinaries??]
         <h2>Index types</h2>
         <ul>
             <li><span class="keyField">Content</span> = <span class="valueField">(${numberOfContent})</span></li>
             <li><span class="keyField">Binaries</span> = <span class="valueField">(${numberOfBinaries})</span></li>
         </ul>
+    [/#if]
 
         <h2>Cluster health</h2>
         <ul>

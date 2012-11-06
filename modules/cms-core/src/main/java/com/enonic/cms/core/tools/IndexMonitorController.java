@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.common.collect.Lists;
 
 import com.enonic.esl.containers.ExtendedMap;
+import com.enonic.esl.net.URL;
 import com.enonic.vertical.adminweb.AdminHelper;
 
 import com.enonic.cms.core.content.ContentKey;
@@ -57,7 +58,6 @@ public class IndexMonitorController
     @Override
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
-
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
         if ( req.getParameter( "deleteIndex" ) != null )
@@ -65,6 +65,8 @@ public class IndexMonitorController
             try
             {
                 elasticSearchIndexService.deleteIndex( "cms" );
+                URL referer = new URL( req.getHeader( "referer" ) );
+                redirectClientToURL( referer, res );
             }
             catch ( Exception e )
             {
@@ -74,8 +76,10 @@ public class IndexMonitorController
 
         model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
 
-        ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms" );
+        final boolean indexExists = elasticSearchIndexService.indexExists( "cms" );
+        model.put( "indexExists", indexExists );
 
+        ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms" );
         model.put( "activeShards", clusterHealthResponse.getActiveShards() );
         final ClusterHealthStatus status = clusterHealthResponse.getStatus();
         model.put( "clusterStatus", status.toString() );
@@ -86,9 +90,14 @@ public class IndexMonitorController
         final List<String> allValidationFailures = clusterHealthResponse.getAllValidationFailures();
         model.put( "validationFailures", allValidationFailures.isEmpty() ? Lists.newArrayList( "None" ) : allValidationFailures );
 
+        if ( status.equals( ClusterHealthStatus.RED ) )
+        {
+            process( req, res, model, "indexMonitorPage" );
+            return;
+        }
+
         model.put( "numberOfContent", getTotalHitsContent() );
         model.put( "numberOfBinaries", getTotalHitsBinaries() );
-
         process( req, res, model, "indexMonitorPage" );
     }
 

@@ -94,9 +94,7 @@ public class MyPageServlet
 
         if ( maximize == null || "activation".equals( maximize ) )
         {
-
             handleActivation( verticalDoc, contentTypeKeyHandlerMapping, formItems, user );
-
         }
 
         // Default browse config
@@ -190,7 +188,15 @@ public class MyPageServlet
         categoryAccessTypeFilter.add( CategoryAccessType.APPROVE );
         contentBySectionQuery.setCategoryAccessTypeFilter( categoryAccessTypeFilter, CategoryAccessTypeFilterPolicy.OR );
 
-        ContentResultSet contentResultSet = contentService.queryContent( contentBySectionQuery );
+        ContentResultSet contentResultSet = null;
+        try
+        {
+            contentResultSet = contentService.queryContent( contentBySectionQuery );
+        }
+        catch ( Exception e )
+        {
+            throw new VerticalAdminException( "Failed to get unapproved content", e );
+        }
 
         //build contentTypeKey and handlerName mapping
         for ( ContentEntity entity : contentResultSet.getContents() )

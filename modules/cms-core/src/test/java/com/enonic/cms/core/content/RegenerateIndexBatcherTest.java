@@ -45,9 +45,9 @@ public class RegenerateIndexBatcherTest
 
         when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
 
-        indexService.regenerateIndex( createContentKeys( new int[]{1, 2, 3, 4} ) );
-        indexService.regenerateIndex( createContentKeys( new int[]{5, 6, 7, 8} ) );
-        indexService.regenerateIndex( createContentKeys( new int[]{9, 10, 11} ) );
+        indexService.reindex( createContentKeys( new int[]{1, 2, 3, 4} ) );
+        indexService.reindex( createContentKeys( new int[]{5, 6, 7, 8} ) );
+        indexService.reindex( createContentKeys( new int[]{9, 10, 11} ) );
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
@@ -62,8 +62,8 @@ public class RegenerateIndexBatcherTest
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 8 );
 
         when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
-        indexService.regenerateIndex( createContentKeys( new int[]{1, 2, 3, 4} ) );
-        indexService.regenerateIndex( createContentKeys( new int[]{5, 6, 7, 8} ) );
+        indexService.reindex( createContentKeys( new int[]{1, 2, 3, 4} ) );
+        indexService.reindex( createContentKeys( new int[]{5, 6, 7, 8} ) );
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
@@ -79,7 +79,7 @@ public class RegenerateIndexBatcherTest
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 4 );
 
         when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
-        indexService.regenerateIndex( createContentKeys( new int[]{1, 2, 3, 4} ) );
+        indexService.reindex( createContentKeys( new int[]{1, 2, 3, 4} ) );
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
 
@@ -95,7 +95,7 @@ public class RegenerateIndexBatcherTest
         List<ContentKey> contentKeysOfCty1 = createContentKeys( 2 );
 
         when( contentService.findContentKeysByContentType( cty1 ) ).thenReturn( contentKeysOfCty1 );
-        indexService.regenerateIndex( createContentKeys( new int[]{1, 2} ) );
+        indexService.reindex( createContentKeys( new int[]{1, 2} ) );
 
         regenerateIndexBatcher.regenerateIndex( cty1, 4, null );
     }

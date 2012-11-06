@@ -11,23 +11,15 @@ import org.apache.jackrabbit.webdav.DavResourceLocator;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 
-/**
- * This class implements the locator factory.
- */
-public final class DavLocatorFactoryImpl
+final class DavLocatorFactoryImpl
     implements DavLocatorFactory
 {
-    /**
-     * Dav prefix.
-     */
     private final static String PREFIX = "/dav";
 
-    /**
-     * {@inheritDoc}
-     */
-    public DavResourceLocator createResourceLocator( String prefix, String href )
+    @Override
+    public DavResourceLocator createResourceLocator( final String prefix, String href )
     {
-        StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
 
         if ( href == null )
         {
@@ -64,27 +56,21 @@ public final class DavLocatorFactoryImpl
         return new DavResourceLocatorImpl( buff.toString(), Text.unescape( href ), this );
     }
 
-    /**
-     * Return the base path.
-     */
     private String getBasePath()
     {
-        String basePath = VirtualHostHelper.getBasePath( ServletRequestAccessor.getRequest() );
+        final String basePath = VirtualHostHelper.getBasePath( ServletRequestAccessor.getRequest() );
         return basePath != null ? basePath : PREFIX;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public DavResourceLocator createResourceLocator( String prefix, String workspacePath, String resourcePath )
+    @Override
+    public DavResourceLocator createResourceLocator( final String prefix, final String workspacePath, final String resourcePath )
     {
         return createResourceLocator( prefix, workspacePath, resourcePath, true );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public DavResourceLocator createResourceLocator( String prefix, String workspacePath, String path, boolean isResourcePath )
+    @Override
+    public DavResourceLocator createResourceLocator( final String prefix, final String workspacePath, final String path,
+                                                     final boolean isResourcePath )
     {
         return new DavResourceLocatorImpl( prefix, path, this );
     }

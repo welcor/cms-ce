@@ -21,63 +21,37 @@ import org.apache.jackrabbit.webdav.server.AbstractWebdavServlet;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.enonic.cms.framework.util.MimeTypeResolver;
-
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 
-/**
- * This class implements the webdav servlet.
- */
 public final class SimpleDavServlet
     extends AbstractWebdavServlet
 {
-    /**
-     * Authenticate header value.
-     */
-    private final static String AUTHENTICATE_HEADER_VALUE = "Basic Realm=Enonic Webdav Server";
+    private final static String AUTHENTICATE_HEADER_VALUE = "Basic Realm=\"Enonic Webdav Server\"";
 
-    /**
-     * Session provider.
-     */
     private DavSessionProvider sessionProvider;
 
-    /**
-     * Locator factory.
-     */
     private DavLocatorFactory locatorFactory;
 
-    /**
-     * Resource factory.
-     */
     private DavResourceFactory resourceFactory;
 
-    /**
-     * Initialize the servlet.
-     */
-    public void init( ServletConfig config )
+    public void init( final ServletConfig config )
         throws ServletException
     {
         final ServletContext servletContext = config.getServletContext();
-        final WebApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext( servletContext );
-
-        final String[] beanNames = appContext.getBeanNamesForType( DavConfiguration.class );
-        final boolean beansFound = beanNames != null && beanNames.length > 0;
-        final DavConfiguration davConfig = beansFound ? (DavConfiguration) appContext.getBean( beanNames[0] ) : null;
-
-        if ( davConfig == null )
-        {
-            throw new ServletException( "No dav configuration set" );
-        }
+        final DavConfiguration configuration = getConfiguration( servletContext );
 
         setLocatorFactory( new DavLocatorFactoryImpl() );
-        setDavSessionProvider( new DavSessionProviderImpl( davConfig.getSecurityService(), davConfig.getResourceAccessResolver() ) );
-
-        final MimeTypeResolver mimeTypeResolver = (MimeTypeResolver) appContext.getBean( "mimeTypeResolver" );
-        setResourceFactory( new DavResourceFactoryImpl( mimeTypeResolver, davConfig.getFileResourceService() ) );
+        setDavSessionProvider( new DavSessionProviderImpl( configuration ) );
+        setResourceFactory( new DavResourceFactoryImpl( configuration ) );
 
         super.init( config );
     }
 
+    private DavConfiguration getConfiguration( final ServletContext context )
+    {
+        final WebApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext( context );
+        return appContext.getBean( DavConfiguration.class );
+    }
 
     protected void service( HttpServletRequest request, HttpServletResponse response )
         throws ServletException, IOException
@@ -86,81 +60,49 @@ public final class SimpleDavServlet
         super.service( request, response );
     }
 
-    /**
-     * Return the dav configuration.
-     */
-    private DavConfiguration getDavConfiguration( ServletContext context )
-        throws ServletException
+    @Override
+    protected boolean isPreconditionValid( final WebdavRequest req, final DavResource resource )
     {
-        WebApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext( context );
-        String[] beanNames = appContext.getBeanNamesForType( DavConfiguration.class );
-        if ( ( beanNames != null ) && ( beanNames.length > 0 ) )
-        {
-            return (DavConfiguration) appContext.getBean( beanNames[0] );
-        }
-
-        throw new ServletException( "No dav configuration set" );
+        return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected boolean isPreconditionValid( WebdavRequest request, DavResource resource )
-    {
-        return !resource.exists() || request.matchesIfHeader( resource );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavSessionProvider getDavSessionProvider()
     {
         return this.sessionProvider;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setDavSessionProvider( DavSessionProvider sessionProvider )
+    @Override
+    public void setDavSessionProvider( final DavSessionProvider sessionProvider )
     {
         this.sessionProvider = sessionProvider;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavLocatorFactory getLocatorFactory()
     {
         return this.locatorFactory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setLocatorFactory( DavLocatorFactory locatorFactory )
+    @Override
+    public void setLocatorFactory( final DavLocatorFactory locatorFactory )
     {
         this.locatorFactory = locatorFactory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavResourceFactory getResourceFactory()
     {
         return this.resourceFactory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setResourceFactory( DavResourceFactory resourceFactory )
+    @Override
+    public void setResourceFactory( final DavResourceFactory resourceFactory )
     {
         this.resourceFactory = resourceFactory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getAuthenticateHeaderValue()
     {
         return AUTHENTICATE_HEADER_VALUE;

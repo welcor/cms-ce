@@ -8,36 +8,18 @@ import org.apache.jackrabbit.util.Text;
 import org.apache.jackrabbit.webdav.DavLocatorFactory;
 import org.apache.jackrabbit.webdav.DavResourceLocator;
 
-/**
- * This class implements the resource locator.
- */
-public final class DavResourceLocatorImpl
+final class DavResourceLocatorImpl
     implements DavResourceLocator
 {
-    /**
-     * Prefix.
-     */
     private final String prefix;
 
-    /**
-     * Resource path.
-     */
     private final String resourcePath;
 
-    /**
-     * Locator factory.
-     */
     private final DavLocatorFactory factory;
 
-    /**
-     * Href.
-     */
     private final String href;
 
-    /**
-     * Resource locator.
-     */
-    public DavResourceLocatorImpl( String prefix, String resourcePath, DavLocatorFactory factory )
+    public DavResourceLocatorImpl( final String prefix, String resourcePath, final DavLocatorFactory factory )
     {
         this.prefix = prefix;
         this.factory = factory;
@@ -51,103 +33,79 @@ public final class DavResourceLocatorImpl
         this.href = this.prefix + Text.escapePath( this.resourcePath );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getPrefix()
     {
         return this.prefix;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getResourcePath()
     {
         return this.resourcePath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getWorkspacePath()
     {
         return "";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getWorkspaceName()
     {
         return "";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isSameWorkspace( DavResourceLocator locator )
     {
         return isSameWorkspace( locator.getWorkspaceName() );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isSameWorkspace( String workspaceName )
     {
         return getWorkspaceName().equals( workspaceName );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getHref( boolean isCollection )
     {
         String suffix = ( isCollection && !isRootLocation() ) ? "/" : "";
         return this.href + suffix;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isRootLocation()
     {
         return "/".equals( this.resourcePath );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavLocatorFactory getFactory()
     {
         return this.factory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRepositoryPath()
     {
         return getResourcePath();
     }
 
-    /**
-     * Return the hash code.
-     */
+    @Override
     public int hashCode()
     {
         return this.href.hashCode();
     }
 
-    /**
-     * Return true if equals.
-     */
+    @Override
     public boolean equals( Object obj )
     {
         if ( obj instanceof DavResourceLocator )
         {
-            DavResourceLocator other = (DavResourceLocator) obj;
+            final DavResourceLocator other = (DavResourceLocator) obj;
             return hashCode() == other.hashCode();
         }
 

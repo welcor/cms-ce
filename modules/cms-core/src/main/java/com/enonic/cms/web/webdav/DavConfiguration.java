@@ -4,57 +4,20 @@
  */
 package com.enonic.cms.web.webdav;
 
+import java.io.File;
+
+import com.enonic.cms.framework.util.MimeTypeResolver;
+
 import com.enonic.cms.core.resource.access.ResourceAccessResolver;
 import com.enonic.cms.core.security.SecurityService;
-import com.enonic.cms.core.resource.FileResourceService;
 
-/**
- * This class implements the dav configuration.
- */
-public class DavConfiguration
+public interface DavConfiguration
 {
-    private FileResourceService fileResourceService;
+    public File getResourceRoot();
 
-    /**
-     * Security service.
-     */
-    private SecurityService securityService;
+    public SecurityService getSecurityService();
 
-    private ResourceAccessResolver resourceAccessResolver;
+    public ResourceAccessResolver getResourceAccessResolver();
 
-    public FileResourceService getFileResourceService()
-    {
-        return this.fileResourceService;
-    }
-
-    public void setFileResourceService( FileResourceService value )
-    {
-        this.fileResourceService = value;
-    }
-
-    /**
-     * Return the login service.
-     */
-    public SecurityService getSecurityService()
-    {
-        return this.securityService;
-    }
-
-    /**
-     * Set the login service.
-     */
-    public void setSecurityService( SecurityService securityService )
-    {
-        this.securityService = securityService;
-    }
-
-    public ResourceAccessResolver getResourceAccessResolver()
-    {
-        return resourceAccessResolver;
-    }
-
-    public void setResourceAccessResolver( ResourceAccessResolver resourceAccessResolver )
-    {
-        this.resourceAccessResolver = resourceAccessResolver;
-    }
+    public MimeTypeResolver getMimeTypeResolver();
 }

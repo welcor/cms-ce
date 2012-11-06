@@ -74,12 +74,6 @@
 
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
 
-  <bean id="davConfiguration" class="com.enonic.cms.web.webdav.DavConfiguration">
-    <property name="fileResourceService" ref="fileResourceService"/>
-    <property name="securityService" ref="securityService"/>
-    <property name="resourceAccessResolver" ref="resourceAccessResolver"/>
-  </bean>
-
   <bean id="originalUrlResolver" class="com.enonic.cms.server.service.servlet.OriginalUrlResolver"/>
 
   <bean id="mbeanExporter" class="org.springframework.jmx.export.MBeanExporter">

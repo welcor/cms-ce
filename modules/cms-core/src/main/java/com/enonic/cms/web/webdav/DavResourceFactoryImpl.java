@@ -4,8 +4,9 @@
  */
 package com.enonic.cms.web.webdav;
 
+import java.io.File;
+
 import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.DavMethods;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.DavResourceFactory;
 import org.apache.jackrabbit.webdav.DavResourceLocator;
@@ -17,83 +18,36 @@ import org.apache.jackrabbit.webdav.lock.SimpleLockManager;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
-import com.enonic.cms.core.resource.FileResource;
-import com.enonic.cms.core.resource.FileResourceName;
-import com.enonic.cms.core.resource.FileResourceService;
-
-/**
- * This class implemnts the resource factory.
- */
-public final class DavResourceFactoryImpl
+final class DavResourceFactoryImpl
     implements DavResourceFactory
 {
-    private final FileResourceService resourceService;
+    private final File resourceRoot;
 
     private final LockManager lockManager;
 
-    private MimeTypeResolver mimeTypeResolver;
+    private final MimeTypeResolver mimeTypeResolver;
 
-
-    /**
-     * Construct the factory.
-     */
-    public DavResourceFactoryImpl( MimeTypeResolver mimeTypeResolver, FileResourceService resourceService )
+    public DavResourceFactoryImpl( final DavConfiguration configuration )
     {
-        this.mimeTypeResolver = mimeTypeResolver;
-        this.resourceService = resourceService;
+        this.mimeTypeResolver = configuration.getMimeTypeResolver();
+        this.resourceRoot = configuration.getResourceRoot();
         this.lockManager = new SimpleLockManager();
     }
 
-    public FileResourceService getFileResourceService()
-    {
-        return this.resourceService;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public DavResource createResource( DavResourceLocator locator, DavSession session )
+    @Override
+    public DavResource createResource( final DavResourceLocator locator, final DavSession session )
         throws DavException
     {
-        FileResource fileObject = getFileObject( locator );
-        DavResourceImpl resource = new DavResourceImpl( mimeTypeResolver, locator, this, session, fileObject );
-        return setup( resource );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public DavResource createResource( DavResourceLocator locator, DavServletRequest request, DavServletResponse response )
-        throws DavException
-    {
-        FileResource fileObject = getFileObject( locator );
-        DavResourceImpl resource;
-
-        if ( fileObject == null )
-        {
-            boolean isCollection = DavMethods.isCreateCollectionRequest( request );
-            resource = new DavResourceImpl( mimeTypeResolver, locator, this, request.getDavSession(), isCollection );
-        }
-        else
-        {
-            resource = new DavResourceImpl( mimeTypeResolver, locator, this, request.getDavSession(), fileObject );
-        }
-
-        return setup( resource );
-    }
-
-    private DavResource setup( DavResource resource )
-    {
+        final File file = new File( this.resourceRoot, locator.getResourcePath() );
+        final DavResourceImpl resource = new DavResourceImpl( file, locator, session, this, this.mimeTypeResolver );
         resource.addLockManager( this.lockManager );
         return resource;
     }
 
-    /**
-     * Return the file.
-     */
-    private FileResource getFileObject( DavResourceLocator locator )
+    @Override
+    public DavResource createResource( final DavResourceLocator locator, final DavServletRequest req, final DavServletResponse res )
+        throws DavException
     {
-        final FileResourceName name = new FileResourceName( locator.getRepositoryPath() );
-        return this.resourceService.getResource( name );
+        return createResource( locator, req.getDavSession() );
     }
 }

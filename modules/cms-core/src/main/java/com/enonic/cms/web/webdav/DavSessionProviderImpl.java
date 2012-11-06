@@ -14,41 +14,30 @@ import org.apache.jackrabbit.webdav.DavSession;
 import org.apache.jackrabbit.webdav.DavSessionProvider;
 import org.apache.jackrabbit.webdav.WebdavRequest;
 
+import com.google.common.base.Charsets;
+
 import com.enonic.cms.core.resource.access.ResourceAccessResolver;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 
-/**
- * This class implements the session provider.
- */
-public final class DavSessionProviderImpl
+final class DavSessionProviderImpl
     implements DavSessionProvider
 {
-
-    /**
-     * Security service.
-     */
     private final SecurityService securityService;
 
+    private final ResourceAccessResolver accessResolver;
 
-    private DavAccessResolver accessResolver;
-
-    /**
-     * Construct the provier.
-     */
-    public DavSessionProviderImpl( SecurityService securityService, ResourceAccessResolver resourceAccessResolver )
+    public DavSessionProviderImpl( final DavConfiguration configuration )
     {
-        this.securityService = securityService;
-        this.accessResolver = new DavAccessResolverImpl( resourceAccessResolver );
+        this.securityService = configuration.getSecurityService();
+        this.accessResolver = configuration.getResourceAccessResolver();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean attachSession( WebdavRequest request )
+    @Override
+    public boolean attachSession( final WebdavRequest request )
         throws DavException
     {
-        DavSession session = createSession( request );
+        final DavSession session = createSession( request );
         if ( session != null )
         {
             request.setDavSession( session );
@@ -57,21 +46,16 @@ public final class DavSessionProviderImpl
         return session != null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void releaseSession( WebdavRequest request )
+    @Override
+    public void releaseSession( final WebdavRequest request )
     {
         request.setDavSession( null );
     }
 
-    /**
-     * Login the user.
-     */
-    private DavSession createSession( WebdavRequest request )
+    private DavSession createSession( final WebdavRequest request )
         throws DavException
     {
-        String[] auth = getCredentials( request );
+        final String[] auth = getCredentials( request );
         if ( auth == null )
         {
             throw new DavException( DavServletResponse.SC_UNAUTHORIZED );
@@ -84,45 +68,40 @@ public final class DavSessionProviderImpl
         return new DavSessionImpl();
     }
 
-    /**
-     * Return the credentials.
-     */
     private String[] getCredentials( WebdavRequest request )
         throws DavException
     {
-        try
+        final String authHeader = request.getHeader( DavConstants.HEADER_AUTHORIZATION );
+        if ( authHeader == null )
         {
-            String authHeader = request.getHeader( DavConstants.HEADER_AUTHORIZATION );
-            if ( authHeader != null )
-            {
-                String[] authStr = authHeader.split( " " );
-                if ( authStr.length >= 2 && authStr[0].equalsIgnoreCase( HttpServletRequest.BASIC_AUTH ) )
-                {
-                    String decAuthStr = new String( Base64.decodeBase64( authStr[1].getBytes() ), "ISO-8859-1" );
-                    int pos = decAuthStr.indexOf( ':' );
-                    String userid = decAuthStr.substring( 0, pos );
-                    String passwd = decAuthStr.substring( pos + 1 );
-                    return new String[]{userid, passwd};
-                }
-            }
-
             return null;
         }
-        catch ( Exception e )
+
+        final String[] authStr = authHeader.split( " " );
+        if ( authStr.length < 2 )
         {
-            throw new DavException( DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+            return null;
         }
+
+        if ( !authStr[0].equalsIgnoreCase( HttpServletRequest.BASIC_AUTH ) )
+        {
+            return null;
+        }
+
+        final String decAuthStr = new String( Base64.decodeBase64( authStr[1].getBytes() ), Charsets.ISO_8859_1 );
+        final int pos = decAuthStr.indexOf( ':' );
+        final String userName = decAuthStr.substring( 0, pos );
+        final String password = decAuthStr.substring( pos + 1 );
+
+        return new String[]{userName, password};
     }
 
-    /**
-     * Login the user. Returns true if it has access.
-     */
-    private boolean login( String user, String password )
+    private boolean login( final String user, final String password )
     {
         try
         {
-            securityService.loginDavUser( QualifiedUsername.parse( user ), password );
-            return accessResolver.hasAccess( securityService.getLoggedInPortalUserAsEntity() );
+            this.securityService.loginDavUser( QualifiedUsername.parse( user ), password );
+            return this.accessResolver.hasAccessToResourceTree( this.securityService.getLoggedInPortalUserAsEntity() );
         }
         catch ( Exception e )
         {

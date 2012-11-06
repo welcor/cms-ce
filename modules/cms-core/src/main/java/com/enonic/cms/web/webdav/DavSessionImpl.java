@@ -4,41 +4,49 @@
  */
 package com.enonic.cms.web.webdav;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.jackrabbit.webdav.DavSession;
 
-public final class DavSessionImpl
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
+
+final class DavSessionImpl
     implements DavSession
 {
-    private final HashSet<String> lockTokens;
+    private final Set<String> lockTokens;
 
     public DavSessionImpl()
     {
-        this.lockTokens = new HashSet<String>();
+        this.lockTokens = Sets.newHashSet();
     }
 
-    public void addReference( Object reference )
+    @Override
+    public void addReference( final Object reference )
     {
-        throw new UnsupportedOperationException( "Not implemented." );
+        throw new UnsupportedOperationException();
     }
 
-    public void removeReference( Object reference )
+    @Override
+    public void removeReference( final Object reference )
     {
-        throw new UnsupportedOperationException( "Not implemented." );
+        throw new UnsupportedOperationException();
     }
 
-    public void addLockToken( String token )
+    @Override
+    public void addLockToken( final String token )
     {
         this.lockTokens.add( token );
     }
 
+    @Override
     public String[] getLockTokens()
     {
-        return this.lockTokens.toArray( new String[this.lockTokens.size()] );
+        return Iterables.toArray( this.lockTokens, String.class );
     }
 
-    public void removeLockToken( String token )
+    @Override
+    public void removeLockToken( final String token )
     {
         this.lockTokens.remove( token );
     }

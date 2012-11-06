@@ -4,19 +4,14 @@
  */
 package com.enonic.cms.web.webdav;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.jackrabbit.util.Text;
-import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.DavResourceFactory;
@@ -29,424 +24,215 @@ import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.io.InputContext;
 import org.apache.jackrabbit.webdav.io.OutputContext;
 import org.apache.jackrabbit.webdav.lock.ActiveLock;
-import org.apache.jackrabbit.webdav.lock.LockDiscovery;
 import org.apache.jackrabbit.webdav.lock.LockInfo;
 import org.apache.jackrabbit.webdav.lock.LockManager;
 import org.apache.jackrabbit.webdav.lock.Scope;
-import org.apache.jackrabbit.webdav.lock.SupportedLock;
 import org.apache.jackrabbit.webdav.lock.Type;
 import org.apache.jackrabbit.webdav.property.DavProperty;
-import org.apache.jackrabbit.webdav.property.DavPropertyIterator;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
-import org.apache.jackrabbit.webdav.property.DavPropertyNameIterator;
-import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
+import org.apache.jackrabbit.webdav.property.PropEntry;
 import org.apache.jackrabbit.webdav.property.ResourceType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
+import com.google.common.collect.Lists;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
-import com.enonic.cms.core.product.ProductVersion;
-import com.enonic.cms.core.resource.FileResource;
-import com.enonic.cms.core.resource.FileResourceData;
-import com.enonic.cms.core.resource.FileResourceName;
-
-/**
- * This class implements the resource.
- */
-public final class DavResourceImpl
+final class DavResourceImpl
     implements DavResource
 {
-    /**
-     * Logger.
-     */
-    private final static Logger LOG = LoggerFactory.getLogger( DavResourceImpl.class );
+    private final DavSession session;
 
-    /**
-     * Session.
-     */
-    private DavSession session;
+    private final DavResourceFactory factory;
 
-    /**
-     * Resource factory.
-     */
-    private final DavResourceFactoryImpl factory;
+    private final DavResourceLocator locator;
 
-    /**
-     * Locator.
-     */
-    private DavResourceLocator locator;
+    private final File file;
 
-    private FileResource file;
-
-    /**
-     * True if collection.
-     */
-    private boolean isCollection;
-
-    /**
-     * Properties.
-     */
-    private DavPropertySet properties = new DavPropertySet();
-
-    private boolean propsInitialized = false;
+    private DavPropertySet properties;
 
     private LockManager lockManager;
 
-    private MimeTypeResolver mimeTypeResolver;
+    private final MimeTypeResolver mimeTypeResolver;
 
-    /**
-     * Construct the resource.
-     */
-    public DavResourceImpl( MimeTypeResolver mimeTypeResolver, DavResourceLocator locator, DavResourceFactoryImpl factory,
-                            DavSession session, boolean isCollection )
-        throws DavException
-    {
-        this( mimeTypeResolver, locator, factory, session, null );
-        this.isCollection = isCollection;
-    }
-
-    /**
-     * Construct the resource.
-     */
-    public DavResourceImpl( MimeTypeResolver mimeTypeResolver, DavResourceLocator locator, DavResourceFactoryImpl factory,
-                            DavSession session, FileResource file )
-        throws DavException
-    {
-        this.mimeTypeResolver = mimeTypeResolver;
-
-        this.session = session;
-        this.factory = factory;
-        this.locator = locator;
-
-        if ( locator.getResourcePath() != null )
-        {
-            setFile( file );
-        }
-        else
-        {
-            throw new DavException( DavServletResponse.SC_NOT_FOUND );
-        }
-    }
-
-    /**
-     * Set the file object.
-     */
-    private void setFile( FileResource file )
-        throws DavException
+    public DavResourceImpl( final File file, final DavResourceLocator locator, final DavSession session, final DavResourceFactory factory,
+                            final MimeTypeResolver mimeTypeResolver )
     {
         this.file = file;
-        if ( this.file != null )
-        {
-            this.isCollection = this.file.isFolder();
-        }
+        this.locator = locator;
+        this.session = session;
+        this.factory = factory;
+        this.mimeTypeResolver = mimeTypeResolver;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getComplianceClass()
     {
         return "1, 2";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getSupportedMethods()
     {
-        return "OPTIONS, GET, HEAD, POST, TRACE, PROPFIND, PROPPATCH, MKCOL, COPY, PUT, DELETE, MOVE, LOCK, UNLOCK";
+        return METHODS;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean exists()
     {
-        return this.file != null;
+        return this.file.exists();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isCollection()
     {
-        return this.isCollection;
+        return this.file.isDirectory();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getDisplayName()
     {
-        String resPath = getResourcePath();
+        final String resPath = getResourcePath();
         return ( resPath != null ) ? Text.getName( resPath ) : resPath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavResourceLocator getLocator()
     {
         return this.locator;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getResourcePath()
     {
         return this.locator.getResourcePath();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getHref()
     {
         return this.locator.getHref( isCollection() );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public long getModificationTime()
     {
-        return getLastModifiedTime();
+        return this.file.lastModified();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void spool( OutputContext outputContext )
+    @Override
+    public void spool( final OutputContext out )
         throws IOException
     {
-        if ( this.isCollection )
+        if ( isCollection() )
         {
-            spoolCollection( outputContext );
+            spoolCollection( out );
         }
         else
         {
-            spoolResource( outputContext );
+            spoolResource( out );
         }
     }
 
-    /**
-     * Return true if root.
-     */
-    private boolean isRoot()
-    {
-        return this.locator.getRepositoryPath().equals( "/" );
-    }
-
-    /**
-     * Spool collection.
-     */
-    private void spoolCollection( OutputContext context )
+    private void spoolCollection( final OutputContext out )
         throws IOException
     {
-        context.setModificationTime( new Date().getTime() );
-        context.setContentType( "text/html" );
-        context.setETag( "" );
-
-        if ( context.hasStream() )
-        {
-            PrintWriter writer = new PrintWriter( new OutputStreamWriter( context.getOutputStream(), "utf8" ) );
-            writer.print( "<html><head><title>" );
-            writer.print( getResourcePath() );
-            writer.print( "</title></head>" );
-            writer.print( "<body><h2>" );
-            writer.print( "WebDav " + getResourcePath() );
-            writer.print( "</h2><ul>" );
-
-            if ( !isRoot() )
-            {
-                writer.print( "<li><a href=\"..\">..</a></li>" );
-            }
-
-            DavResourceIterator iter = getMembers();
-            while ( iter.hasNext() )
-            {
-                DavResource child = iter.nextResource();
-                String label = Text.getName( child.getResourcePath() );
-                writer.print( "<li><a href=\"" );
-                writer.print( child.getHref() );
-                writer.print( "\">" );
-                writer.print( label );
-                writer.print( "</a></li>" );
-            }
-
-            writer.print( "</ul><hr size=\"1\"><em>Powered by " );
-            writer.print( ProductVersion.getFullTitleAndVersion() );
-            writer.print( "</em></body></html>" );
-            writer.close();
-        }
+        new DavFolderIndexWriter( this ).write( out );
     }
 
-    /**
-     * Return the last modified time.
-     */
-    private long getLastModifiedTime()
-    {
-        return this.file.getLastModified().getMillis();
-    }
-
-    /**
-     * Spool resource.
-     */
-    private void spoolResource( OutputContext context )
+    private void spoolResource( final OutputContext out )
         throws IOException
     {
-        final long length = this.file.getSize();
-        final long modTime = this.file.getLastModified().getMillis();
+        out.setContentLength( this.file.length() );
+        out.setModificationTime( this.file.lastModified() );
+        out.setContentType( this.mimeTypeResolver.getMimeType( this.file.getName() ) );
 
-        context.setContentLength( length );
-        context.setModificationTime( modTime );
-        context.setContentType( mimeTypeResolver.getMimeType( this.file.getName().getName() ) );
-        context.setETag( "\"" + length + "-" + modTime + "\"" );
-
-        final FileResourceData data = this.factory.getFileResourceService().getResourceData( this.file.getName() );
-        if ( ( data != null ) && context.hasStream() )
+        if ( out.hasStream() )
         {
-            IOUtils.write( data.getAsBytes(), context.getOutputStream() );
+            Files.copy( this.file, out.getOutputStream() );
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavPropertyName[] getPropertyNames()
     {
         return getProperties().getPropertyNames();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public DavProperty getProperty( DavPropertyName name )
+    @Override
+    public DavProperty<?> getProperty( final DavPropertyName name )
     {
         return getProperties().get( name );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavPropertySet getProperties()
     {
-        initProperties();
+        if ( !exists() )
+        {
+            this.properties = new DavPropertySet();
+        }
+
+        if ( this.properties == null )
+        {
+            this.properties = createProperties();
+        }
+
         return this.properties;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setProperty( DavProperty property )
+    @Override
+    public void setProperty( final DavProperty<?> property )
         throws DavException
     {
-        alterProperty( property );
+        // Do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void removeProperty( DavPropertyName propertyName )
+    @Override
+    public void removeProperty( final DavPropertyName name )
         throws DavException
     {
-        alterProperty( propertyName );
+        // Do nothing
     }
 
-    /**
-     * Alter property.
-     */
-    private void alterProperty( Object prop )
+    @Override
+    public MultiStatusResponse alterProperties( final List<? extends PropEntry> entries )
         throws DavException
     {
-        if ( !exists() )
-        {
-            throw new DavException( DavServletResponse.SC_NOT_FOUND );
-        }
-
-        alterProperties( Arrays.asList( prop ) );
+        return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public MultiStatusResponse alterProperties( DavPropertySet setProperties, DavPropertyNameSet removePropertyNames )
-        throws DavException
-    {
-        List<Object> changeList = new ArrayList<Object>();
-        if ( removePropertyNames != null )
-        {
-            DavPropertyNameIterator it = removePropertyNames.iterator();
-            while ( it.hasNext() )
-            {
-                changeList.add( it.next() );
-            }
-        }
-
-        if ( setProperties != null )
-        {
-            DavPropertyIterator it = setProperties.iterator();
-            while ( it.hasNext() )
-            {
-                changeList.add( it.next() );
-            }
-        }
-
-        return alterProperties( changeList );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public MultiStatusResponse alterProperties( List changeList )
-        throws DavException
-    {
-        if ( !exists() )
-        {
-            throw new DavException( DavServletResponse.SC_NOT_FOUND );
-        }
-
-        return new MultiStatusResponse( getHref(), null );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavResource getCollection()
     {
-        DavResource parent = null;
-        if ( getResourcePath() != null && !getResourcePath().equals( "/" ) )
+        if ( getResourcePath() == null )
         {
-            String parentPath = Text.getRelativeParent( getResourcePath(), 1 );
-            if ( parentPath.equals( "" ) )
-            {
-                parentPath = "/";
-            }
-
-            DavResourceLocator parentloc =
-                this.locator.getFactory().createResourceLocator( this.locator.getPrefix(), this.locator.getWorkspacePath(), parentPath );
-
-            try
-            {
-                parent = this.factory.createResource( parentloc, this.session );
-            }
-            catch ( DavException e )
-            {
-                LOG.error( "Failed to get collection", e );
-            }
+            return null;
         }
 
-        return parent;
+        if ( getResourcePath().equals( "/" ) )
+        {
+            return null;
+        }
+
+        String parentPath = Text.getRelativeParent( getResourcePath(), 1 );
+        if ( parentPath.equals( "" ) )
+        {
+            parentPath = "/";
+        }
+
+        final DavResourceLocator parent = createRelativeLocator( parentPath );
+        return createResource( parent );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void addMember( DavResource member, InputContext inputContext )
+    @Override
+    public void addMember( final DavResource member, InputContext in )
         throws DavException
     {
         if ( !exists() )
@@ -454,142 +240,125 @@ public final class DavResourceImpl
             throw new DavException( DavServletResponse.SC_CONFLICT );
         }
 
-        try
+        if ( !isCollection() )
         {
-            String memberName = Text.getName( member.getLocator().getRepositoryPath() );
-            if ( member.isCollection() )
-            {
-                createCollection( memberName, inputContext );
-            }
-            else
-            {
-                createFile( memberName, inputContext );
-            }
+            throw new DavException( HttpServletResponse.SC_BAD_REQUEST );
         }
-        catch ( IOException e )
+
+        final String memberName = Text.getName( member.getLocator().getRepositoryPath() );
+        final File localFile = new File( this.file, memberName );
+
+        if ( in.hasStream() )
         {
-            LOG.error( "Failed to add member", e );
-            throw new DavException( DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+            createFile( localFile, in );
+        }
+        else
+        {
+            createCollection( localFile, in );
         }
     }
 
-    /**
-     * Create collection.
-     */
-    private void createCollection( String memberName, InputContext inputContext )
-        throws IOException, DavException
+    private void createCollection( final File localFile, final InputContext in )
+        throws DavException
     {
-        if ( inputContext.hasStream() )
+        if ( in.hasStream() )
         {
             throw new DavException( DavServletResponse.SC_UNSUPPORTED_MEDIA_TYPE );
         }
 
-        final FileResourceName name = new FileResourceName( this.file.getName(), memberName );
-        this.factory.getFileResourceService().createFolder( name );
-    }
-
-    /**
-     * Create file.
-     */
-    private void createFile( String memberName, InputContext inputContext )
-        throws IOException
-    {
-        final FileResourceName name = new FileResourceName( this.file.getName(), memberName );
-        FileResourceData data = FileResourceData.create( new byte[0] );
-
-        if ( inputContext.hasStream() )
+        if ( !localFile.mkdirs() )
         {
-            data = FileResourceData.create( IOUtils.toByteArray( inputContext.getInputStream() ) );
-        }
-
-        if ( this.factory.getFileResourceService().getResource( name ) != null )
-        {
-            this.factory.getFileResourceService().setResourceData( name, data );
-        }
-        else
-        {
-            this.factory.getFileResourceService().createFile( name, data );
+            throw new DavException( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not create directory" );
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public DavResourceIterator getMembers()
+    private void createFile( final File localFile, final InputContext in )
+        throws DavException
     {
-        ArrayList<DavResource> list = new ArrayList<DavResource>();
-
         try
         {
-            if ( exists() && isCollection() )
+            ByteStreams.copy( in.getInputStream(), Files.newOutputStreamSupplier( localFile ) );
+        }
+        catch ( IOException e )
+        {
+            throw new DavException( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e );
+        }
+    }
+
+    private DavResourceLocator createRelativeLocator( final String path )
+    {
+        return this.locator.getFactory().createResourceLocator( this.locator.getPrefix(), this.locator.getWorkspacePath(), path, false );
+    }
+
+    private DavResource createResource( final DavResourceLocator locator )
+    {
+        try
+        {
+            return this.factory.createResource( locator, this.session );
+        }
+        catch ( final DavException e )
+        {
+            return null;
+        }
+    }
+
+    private boolean isHidden( final String name )
+    {
+        return name.startsWith( "." );
+    }
+
+    @Override
+    public DavResourceIterator getMembers()
+    {
+        final List<DavResource> list = Lists.newArrayList();
+
+        if ( !exists() )
+        {
+            return new DavResourceIteratorImpl( list );
+        }
+
+        if ( !isCollection() )
+        {
+            return new DavResourceIteratorImpl( list );
+        }
+
+        for ( final String item : this.file.list() )
+        {
+            if ( !isHidden( item ) )
             {
-                for ( DavResourceLocator child : getChildLocators() )
+                final String path = this.locator.getResourcePath() + '/' + item;
+                final DavResourceLocator resourceLocator = createRelativeLocator( path );
+                final DavResource resource = createResource( resourceLocator );
+
+                if ( resource != null )
                 {
-                    list.add( this.factory.createResource( child, this.session ) );
+                    list.add( resource );
                 }
             }
-        }
-        catch ( DavException e )
-        {
-            LOG.error( "Failed to get members", e );
         }
 
         return new DavResourceIteratorImpl( list );
     }
 
-    /**
-     * Return member locators.
-     */
-    private List<DavResourceLocator> getChildLocators()
-    {
-        ArrayList<DavResourceLocator> list = new ArrayList<DavResourceLocator>();
-
-        for ( FileResourceName name : this.factory.getFileResourceService().getChildren( this.file.getName() ) )
-        {
-            list.add(
-                this.locator.getFactory().createResourceLocator( this.locator.getPrefix(), this.locator.getWorkspacePath(), name.getPath(),
-                                                                 false ) );
-        }
-
-        return list;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void removeMember( DavResource member )
+    @Override
+    public void removeMember( final DavResource member )
         throws DavException
     {
-        if ( !exists() || !member.exists() )
+        final File targetFile = ( (DavResourceImpl) member ).file;
+        if ( !targetFile.exists() )
         {
-            throw new DavException( DavServletResponse.SC_NOT_FOUND );
+            throw new DavException( HttpServletResponse.SC_NOT_FOUND );
         }
 
-        try
+        if ( !FileUtils.deleteQuietly( targetFile ) )
         {
-            removeMember( member.getLocator().getRepositoryPath() );
-        }
-        catch ( IOException e )
-        {
-            LOG.error( "Failed to remove member", e );
-            throw new DavException( DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+            final String type = targetFile.isDirectory() ? "directory" : "file";
+            throw new DavException( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not remove " + type );
         }
     }
 
-    /**
-     * Remove member.
-     */
-    private void removeMember( String fileName )
-        throws IOException
-    {
-        final FileResourceName name = new FileResourceName( fileName );
-        this.factory.getFileResourceService().deleteResource( name );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void move( DavResource destination )
+    @Override
+    public void move( final DavResource target )
         throws DavException
     {
         if ( !exists() )
@@ -597,31 +366,27 @@ public final class DavResourceImpl
             throw new DavException( DavServletResponse.SC_NOT_FOUND );
         }
 
+        final File targetFile = ( (DavResourceImpl) target ).file;
+
         try
         {
-            move( destination.getLocator().getRepositoryPath() );
+            if ( isCollection() )
+            {
+                FileUtils.moveDirectory( this.file, targetFile );
+            }
+            else
+            {
+                FileUtils.moveFile( this.file, targetFile );
+            }
         }
-        catch ( IOException e )
+        catch ( final IOException e )
         {
-            LOG.error( "Failed to move resource", e );
-            throw new DavException( DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+            throw new DavException( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e );
         }
     }
 
-    /**
-     * Move.
-     */
-    private void move( String fileName )
-        throws IOException
-    {
-        final FileResourceName name = new FileResourceName( fileName );
-        this.factory.getFileResourceService().moveResource( this.file.getName(), name );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void copy( DavResource destination, boolean shallow )
+    @Override
+    public void copy( final DavResource target, final boolean shallow )
         throws DavException
     {
         if ( !exists() )
@@ -629,72 +394,74 @@ public final class DavResourceImpl
             throw new DavException( DavServletResponse.SC_NOT_FOUND );
         }
 
-        if ( !destination.getCollection().exists() )
+        if ( !target.getCollection().exists() )
         {
             throw new DavException( DavServletResponse.SC_CONFLICT );
         }
 
+        final File targetFile = ( (DavResourceImpl) target ).file;
+
         try
         {
-            copy( destination.getLocator().getRepositoryPath() );
+            if ( isCollection() )
+            {
+                FileUtils.copyDirectory( this.file, targetFile );
+            }
+            else
+            {
+                FileUtils.copyFile( this.file, targetFile );
+            }
         }
-        catch ( IOException e )
+        catch ( final IOException e )
         {
-            LOG.error( "Failed to copy resource", e );
-            throw new DavException( DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+            throw new DavException( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e );
         }
     }
 
-    /**
-     * Copy.
-     */
-    private void copy( String fileName )
-        throws IOException
-    {
-        final FileResourceName name = new FileResourceName( fileName );
-        this.factory.getFileResourceService().copyResource( this.file.getName(), name );
-    }
-
-    public boolean isLockable( Type type, Scope scope )
+    @Override
+    public boolean isLockable( final Type type, final Scope scope )
     {
         return Type.WRITE.equals( type ) && Scope.EXCLUSIVE.equals( scope );
     }
 
-    public boolean hasLock( Type type, Scope scope )
+    @Override
+    public boolean hasLock( final Type type, final Scope scope )
     {
         return getLock( type, scope ) != null;
     }
 
-    public ActiveLock getLock( Type type, Scope scope )
+    @Override
+    public ActiveLock getLock( final Type type, final Scope scope )
     {
-        ActiveLock lock = null;
         if ( exists() && Type.WRITE.equals( type ) && Scope.EXCLUSIVE.equals( scope ) )
         {
-            lock = this.lockManager.getLock( type, scope, this );
+            return this.lockManager.getLock( type, scope, this );
         }
-        return lock;
+
+        return null;
     }
 
+    @Override
     public ActiveLock[] getLocks()
     {
-        ActiveLock writeLock = getLock( Type.WRITE, Scope.EXCLUSIVE );
+        final ActiveLock writeLock = getLock( Type.WRITE, Scope.EXCLUSIVE );
         return ( writeLock != null ) ? new ActiveLock[]{writeLock} : new ActiveLock[0];
     }
 
-    public ActiveLock lock( LockInfo lockInfo )
+    @Override
+    public ActiveLock lock( final LockInfo info )
         throws DavException
     {
-        if ( isLockable( lockInfo.getType(), lockInfo.getScope() ) )
+        if ( isLockable( info.getType(), info.getScope() ) )
         {
-            return this.lockManager.createLock( lockInfo, this );
+            return this.lockManager.createLock( info, this );
         }
-        else
-        {
-            throw new DavException( DavServletResponse.SC_PRECONDITION_FAILED, "Unsupported lock type or scope." );
-        }
+
+        throw new DavException( DavServletResponse.SC_PRECONDITION_FAILED );
     }
 
-    public ActiveLock refreshLock( LockInfo lockInfo, String lockToken )
+    @Override
+    public ActiveLock refreshLock( final LockInfo info, final String token )
         throws DavException
     {
         if ( !exists() )
@@ -702,28 +469,28 @@ public final class DavResourceImpl
             throw new DavException( DavServletResponse.SC_NOT_FOUND );
         }
 
-        ActiveLock lock = getLock( lockInfo.getType(), lockInfo.getScope() );
+        final ActiveLock lock = getLock( info.getType(), info.getScope() );
         if ( lock == null )
         {
-            throw new DavException( DavServletResponse.SC_PRECONDITION_FAILED,
-                                    "No lock with the given type/scope present on resource " + getResourcePath() );
+            throw new DavException( DavServletResponse.SC_PRECONDITION_FAILED );
         }
 
-        lock = this.lockManager.refreshLock( lockInfo, lockToken, this );
-        return lock;
+        return this.lockManager.refreshLock( info, token, this );
     }
 
-    public void unlock( String lockToken )
+    @Override
+    public void unlock( final String token )
         throws DavException
     {
-        ActiveLock lock = getLock( Type.WRITE, Scope.EXCLUSIVE );
+        final ActiveLock lock = getLock( Type.WRITE, Scope.EXCLUSIVE );
         if ( lock == null )
         {
-            throw new DavException( HttpServletResponse.SC_PRECONDITION_FAILED );
+            throw new DavException( DavServletResponse.SC_PRECONDITION_FAILED );
         }
-        else if ( lock.isLockedByToken( lockToken ) )
+
+        if ( lock.isLockedByToken( token ) )
         {
-            lockManager.releaseLock( lockToken, this );
+            this.lockManager.releaseLock( token, this );
         }
         else
         {
@@ -731,81 +498,52 @@ public final class DavResourceImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void addLockManager( LockManager lockManager )
+    @Override
+    public void addLockManager( final LockManager lockManager )
     {
         this.lockManager = lockManager;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavResourceFactory getFactory()
     {
         return this.factory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DavSession getSession()
     {
         return this.session;
     }
 
-    /**
-     * Fill the set of properties
-     */
-    private void initProperties()
+    private DavPropertySet createProperties()
     {
-        if ( !exists() || this.propsInitialized )
-        {
-            return;
-        }
+        final DavPropertySet result = new DavPropertySet();
 
         if ( getDisplayName() != null )
         {
-            properties.add( new DefaultDavProperty( DavPropertyName.DISPLAYNAME, getDisplayName() ) );
+            result.add( new DefaultDavProperty<String>( DavPropertyName.DISPLAYNAME, getDisplayName() ) );
         }
 
         if ( isCollection() )
         {
-            properties.add( new ResourceType( ResourceType.COLLECTION ) );
-            properties.add( new DefaultDavProperty( DavPropertyName.ISCOLLECTION, "1" ) );
+            result.add( new ResourceType( ResourceType.COLLECTION ) );
+            result.add( new DefaultDavProperty<String>( DavPropertyName.ISCOLLECTION, "1" ) );
         }
         else
         {
-            properties.add( new ResourceType( ResourceType.DEFAULT_RESOURCE ) );
-            properties.add( new DefaultDavProperty( DavPropertyName.ISCOLLECTION, "0" ) );
+            result.add( new ResourceType( ResourceType.DEFAULT_RESOURCE ) );
+            result.add( new DefaultDavProperty<String>( DavPropertyName.ISCOLLECTION, "0" ) );
         }
 
-        String contentType = mimeTypeResolver.getMimeType( getResourcePath() );
-        properties.add( new DefaultDavProperty( DavPropertyName.GETCONTENTTYPE, contentType ) );
+        final DateTime dt = new DateTime( this.file.lastModified() );
+        final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        final String modifiedDate = fmt.print( dt );
 
-        long modifiedTime = getLastModifiedTime();
-        if ( modifiedTime != DavConstants.UNDEFINED_TIME )
-        {
-            properties.add( new DefaultDavProperty( DavPropertyName.GETLASTMODIFIED,
-                                                    DavConstants.modificationDateFormat.format( new Date( modifiedTime ) ) ) );
-        }
+        result.add( new DefaultDavProperty<String>( DavPropertyName.GETLASTMODIFIED, modifiedDate ) );
+        result.add( new DefaultDavProperty<String>( DavPropertyName.CREATIONDATE, modifiedDate ) );
+        result.add( new DefaultDavProperty<Long>( DavPropertyName.GETCONTENTLENGTH, this.file.length() ) );
 
-        if ( !isCollection() )
-        {
-            properties.add( new DefaultDavProperty( DavPropertyName.GETCONTENTLENGTH, getSize() + "" ) );
-        }
-
-        properties.add( new LockDiscovery( getLock( Type.WRITE, Scope.EXCLUSIVE ) ) );
-        SupportedLock supportedLock = new SupportedLock();
-        supportedLock.addEntry( Type.WRITE, Scope.EXCLUSIVE );
-        properties.add( supportedLock );
-
-        propsInitialized = true;
-    }
-
-    private long getSize()
-    {
-        return this.file.getSize();
+        return result;
     }
 }

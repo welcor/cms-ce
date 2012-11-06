@@ -1,4 +1,4 @@
-package com.enonic.cms.core.webdav;
+package com.enonic.cms.web.webdav;
 
 import org.apache.jackrabbit.webdav.DavResourceLocator;
 import org.junit.Assert;
@@ -8,7 +8,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
-import com.enonic.cms.web.webdav.DavLocatorFactoryImpl;
 
 public class DavLocatorFactoryImplTest
 {
@@ -55,6 +54,4 @@ public class DavLocatorFactoryImplTest
         Assert.assertEquals( "http://localhost:8080/gfdav", resourceLocator.getPrefix() );
         Assert.assertEquals( "/config", resourceLocator.getResourcePath() );
     }
-
-
 }

@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,13 +29,21 @@ public abstract class AbstractElasticsearchSettingsBuilder
     {
         for ( final String property : propertyMap.keySet() )
         {
-            final String indexProperyValue = propertyMap.get( property );
+            String indexProperyValue = propertyMap.get( property );
+            indexProperyValue = cleanUpPropertyValue( indexProperyValue );
             final String indexPropertyName = subtractPrefixFromProperty( property, propertyPrefix );
 
             LOG.info( "Apply elasticsearch setting: " + indexPropertyName + " = " + indexProperyValue );
 
             settings.put( indexPropertyName, indexProperyValue );
         }
+    }
+
+    private String cleanUpPropertyValue( String indexProperyValue )
+    {
+        indexProperyValue = Strings.trimLeadingWhitespace( indexProperyValue );
+        indexProperyValue = Strings.trimTrailingWhitespace( indexProperyValue );
+        return indexProperyValue;
     }
 
     @Autowired

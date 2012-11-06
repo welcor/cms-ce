@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Multimap;
 
-import com.enonic.cms.store.dao.ResourceDao;
 import com.enonic.cms.store.dao.ResourceUsageDao;
 
 @Component("resourceService")
@@ -24,29 +23,37 @@ public class ResourceServiceImpl
     private ResourceUsageDao resourceUsageDao;
 
     @Autowired
-    private ResourceDao resourceDao;
+    private FileResourceService fileResourceService;
 
     public ResourceFolder getResourceRoot()
     {
-        return resourceDao.getResourceRoot();
+        return doGetResourceRoot();
     }
 
     public ResourceFile getResourceFile( ResourceKey resourceKey )
     {
-        return resourceDao.getResourceFile( resourceKey );
+        if ( resourceKey == null )
+        {
+            throw new IllegalArgumentException( "Given resourceKey cannot be null" );
+        }
+        return doGetResourceRoot().getFile( resourceKey.toString() );
     }
 
     public ResourceFolder getResourceFolder( ResourceKey resourceKey )
     {
-        return resourceDao.getResourceFolder( resourceKey );
+        if ( resourceKey == null )
+        {
+            throw new IllegalArgumentException( "Given resourceKey cannot be null" );
+        }
+        return doGetResourceRoot().getFolder( resourceKey.toString() );
     }
 
     public ResourceBase getResource( ResourceKey resourceKey )
     {
-        ResourceBase resource = resourceDao.getResourceFile( resourceKey );
+        ResourceBase resource = getResourceFile( resourceKey );
         if ( resource == null )
         {
-            resource = resourceDao.getResourceFolder( resourceKey );
+            resource = getResourceFolder( resourceKey );
         }
         return resource;
     }
@@ -87,6 +94,34 @@ public class ResourceServiceImpl
                 "Resource must be of type ResourceFile or ResourceFolder, was: " + source.getClass().getName() );
         }
 
-        return source.moveTo( destination );
+        return moveTo( source, destination );
+    }
+
+    private ResourceKey moveTo( ResourceBase source, ResourceFolder destinationFolder )
+    {
+        if ( destinationFolder == null )
+        {
+            throw new IllegalArgumentException( "Destination cannot be null" );
+        }
+        else if ( !( destinationFolder instanceof ResourceFolderImpl ) )
+        {
+            throw new IllegalArgumentException( "Destination '" + destinationFolder.getResourceKey() + "' must be a folder" );
+        }
+
+        boolean exists = ( (ResourceBaseImpl) destinationFolder ).exists();
+        if ( !exists )
+        {
+            throw new IllegalArgumentException( "Destination '" + destinationFolder.getResourceKey() + "' does not exist" );
+        }
+
+        FileResourceName srcName = new FileResourceName( source.getPath() );
+        FileResourceName destName = new FileResourceName( ( (ResourceBaseImpl) destinationFolder ).name, source.getName() );
+        this.fileResourceService.moveResource( srcName, destName );
+        return ResourceKey.from( ( (ResourceBaseImpl) destinationFolder ).name.getPath() );
+    }
+
+    private ResourceFolder doGetResourceRoot()
+    {
+        return new ResourceFolderImpl( this.fileResourceService, new FileResourceName( "/" ) );
     }
 }

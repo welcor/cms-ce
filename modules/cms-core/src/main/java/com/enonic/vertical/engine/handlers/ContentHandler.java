@@ -963,7 +963,7 @@ public final class ContentHandler
             if ( entity.getDefaultCssKey() != null )
             {
                 elem.setAttribute( "csskey", entity.getDefaultCssKey().toString() );
-                elem.setAttribute( "csskeyexists", resourceDao.getResourceFile( entity.getDefaultCssKey() ) != null ? "true" : "false" );
+                elem.setAttribute( "csskeyexists", resourceService.getResourceFile( entity.getDefaultCssKey() ) != null ? "true" : "false" );
             }
 
             if ( includeContentCount )

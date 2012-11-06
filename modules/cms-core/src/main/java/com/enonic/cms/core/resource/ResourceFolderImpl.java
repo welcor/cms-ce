@@ -67,45 +67,4 @@ public final class ResourceFolderImpl
 
         return files;
     }
-
-    public ResourceFolder createFolder( String name )
-    {
-        this.service.createFolder( new FileResourceName( this.name, name ) );
-        FileResource res = this.service.getResource( new FileResourceName( this.name, name ) );
-
-        if ( ( res != null ) && res.isFolder() )
-        {
-            return new ResourceFolderImpl( this.service, res.getName() );
-        }
-
-        return null;
-    }
-
-    public ResourceFile createFile( String name )
-    {
-        this.service.createFile( new FileResourceName( this.name, name ), null );
-        FileResource res = this.service.getResource( new FileResourceName( this.name, name ) );
-
-        if ( ( res != null ) && !res.isFolder() )
-        {
-            return new ResourceFileImpl( this.service, res.getName() );
-        }
-
-        return null;
-    }
-
-    public void removeFolder( String name )
-    {
-        remove( name );
-    }
-
-    public void removeFile( String name )
-    {
-        remove( name );
-    }
-
-    private void remove( String name )
-    {
-        this.service.deleteResource( new FileResourceName( this.name, name ) );
-    }
 }

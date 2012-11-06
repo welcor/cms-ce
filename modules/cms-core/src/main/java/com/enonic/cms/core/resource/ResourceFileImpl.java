@@ -9,11 +9,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.jdom.Document;
 import org.springframework.util.FileCopyUtils;
 
 import com.enonic.cms.framework.io.UnicodeInputStream;
-import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -57,40 +55,6 @@ final class ResourceFileImpl
     {
         byte[] data = getDataAsByteArray();
         return data != null ? new ByteArrayInputStream( data ) : null;
-    }
-
-    public void setData( XMLDocument data )
-    {
-        LazyInitializedJDOMDocument doc = LazyInitializedJDOMDocument.parse( data.getAsJDOMDocument() );
-        doSetData( doc.getDocumentAsString().getBytes() );
-    }
-
-    public void setData( Document data )
-    {
-        LazyInitializedJDOMDocument doc = LazyInitializedJDOMDocument.parse( data );
-        doSetData( doc.getDocumentAsString().getBytes() );
-    }
-
-    public void setData( String data )
-    {
-        doSetData( data.getBytes() );
-    }
-
-    public void setData( byte[] data )
-    {
-        doSetData( data );
-    }
-
-    public void setData( InputStream data )
-    {
-        try
-        {
-            setData( FileCopyUtils.copyToByteArray( data ) );
-        }
-        catch ( Exception e )
-        {
-            throw new IllegalArgumentException( e );
-        }
     }
 
     private ByteArrayOutputStream getAsByteArrayOutputStream( boolean skipBOM )
@@ -142,10 +106,5 @@ final class ResourceFileImpl
         {
             throw new IllegalArgumentException( e );
         }
-    }
-
-    private void doSetData( byte[] data )
-    {
-        this.service.setResourceData( this.name, FileResourceData.create( data ) );
     }
 }

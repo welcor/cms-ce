@@ -8,20 +8,13 @@ import java.util.Calendar;
 
 public interface ResourceBase
 {
-
-    String toString();
-
     String getName();
 
     String getPath();
 
     ResourceKey getResourceKey();
 
-    ResourceFolder getParentFolder();
-
     Calendar getLastModified();
 
     boolean isHidden();
-
-    public ResourceKey moveTo( ResourceFolder destinationFolder );
 }

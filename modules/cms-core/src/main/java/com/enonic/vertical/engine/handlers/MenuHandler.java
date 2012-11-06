@@ -4182,7 +4182,7 @@ public final class MenuHandler
                         {
                             ResourceKey resourceKey = ResourceKey.from( defaultCSSElem.getAttribute( "key" ) );
                             elem.setAttribute( "defaultcss", resourceKey.toString() );
-                            elem.setAttribute( "defaultcssexists", resourceDao.getResourceFile( resourceKey ) != null ? "true" : "false" );
+                            elem.setAttribute( "defaultcssexists", resourceService.getResourceFile( resourceKey ) != null ? "true" : "false" );
                         }
                     }
                 }

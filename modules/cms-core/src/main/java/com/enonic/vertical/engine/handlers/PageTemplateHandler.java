@@ -607,7 +607,7 @@ public final class PageTemplateHandler
             XMLTool.createElement( doc, elem, "description", pageTemplate.getDescription() );
             Element tmp = XMLTool.createElement( doc, elem, "stylesheet" );
             tmp.setAttribute( "stylesheetkey", pageTemplate.getStyleKey().toString() );
-            tmp.setAttribute( "exists", resourceDao.getResourceFile( pageTemplate.getStyleKey() ) != null ? "true" : "false" );
+            tmp.setAttribute( "exists", resourceService.getResourceFile( pageTemplate.getStyleKey() ) != null ? "true" : "false" );
 
             // element conobjects for pagetemplate
             Document contentobj = getPageTemplateCO( pageTemplate );
@@ -633,7 +633,7 @@ public final class PageTemplateHandler
             {
                 tmp = XMLTool.createElement( doc, elem, "css" );
                 tmp.setAttribute( "stylesheetkey", cssKey.toString() );
-                tmp.setAttribute( "exists", resourceDao.getResourceFile( cssKey ) != null ? "true" : "false" );
+                tmp.setAttribute( "exists", resourceService.getResourceFile( cssKey ) != null ? "true" : "false" );
             }
 
             // attribute: runAs & defaultRunAsUser

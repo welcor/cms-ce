@@ -10,8 +10,7 @@ import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 
-
-public class ResourceReferencer
+public final class ResourceReferencer
 {
 
     private String name;
@@ -73,11 +72,6 @@ public class ResourceReferencer
     public String getName()
     {
         return name;
-    }
-
-    public Object getRealObject()
-    {
-        return realObject;
     }
 
     public ResourceReferencerType getType()

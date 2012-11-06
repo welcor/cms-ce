@@ -20,6 +20,7 @@ import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.log.LogService;
+import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
 import com.enonic.cms.core.service.KeyService;
@@ -34,7 +35,6 @@ import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.PageDao;
 import com.enonic.cms.store.dao.PageTemplateDao;
 import com.enonic.cms.store.dao.PortletDao;
-import com.enonic.cms.store.dao.ResourceDao;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UnitDao;
 import com.enonic.cms.store.dao.UserDao;
@@ -93,7 +93,7 @@ public abstract class BaseHandler
     protected PageTemplateDao pageTemplateDao;
 
     @Autowired
-    protected ResourceDao resourceDao;
+    protected ResourceService resourceService;
 
     @Autowired
     protected SiteDao siteDao;

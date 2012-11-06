@@ -16,13 +16,4 @@ public interface ResourceFolder
     List<ResourceFolder> getFolders();
 
     List<ResourceFile> getFiles();
-
-    ResourceFolder createFolder( String name );
-
-    ResourceFile createFile( String name );
-
-    void removeFolder( String name );
-
-    void removeFile( String name );
-
 }

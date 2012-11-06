@@ -63,6 +63,10 @@ public class ElasticSearchIndexServiceImpl
 
     private static final boolean WAIT_FOR_MERGE = true;
 
+    public static final int CLUSTER_HEALTH_TIMEOUT_SECONDS = 10;
+
+    public static final TimeValue INDEX_REQUEST_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 10 );
+
     private IndexSettingBuilder indexSettingBuilder;
 
     private ContentIndexRequestCreator contentIndexRequestCreator;
@@ -167,7 +171,8 @@ public class ElasticSearchIndexServiceImpl
 
     private IndexResponse doIndex( IndexRequest indexRequest )
     {
-        return this.client.index( indexRequest ).actionGet();
+        final IndexResponse indexResponse = this.client.index( indexRequest ).actionGet( INDEX_REQUEST_TIMEOUT_SECONDS );
+        return indexResponse;
     }
 
     @Override
@@ -325,6 +330,19 @@ public class ElasticSearchIndexServiceImpl
 
         final IndicesExistsResponse exists = this.client.admin().indices().exists( new IndicesExistsRequest( indexName ) ).actionGet();
         return exists.exists();
+    }
+
+    @Override
+    public ClusterHealthResponse getClusterHealth( String indexName )
+    {
+
+        ClusterHealthRequest request = new ClusterHealthRequest( indexName );
+        request.waitForYellowStatus();
+        request.timeout( TimeValue.timeValueSeconds( CLUSTER_HEALTH_TIMEOUT_SECONDS ) );
+
+        final ClusterHealthResponse clusterHealthResponse = this.client.admin().cluster().health( request ).actionGet();
+
+        return clusterHealthResponse;
     }
 
     @Autowired

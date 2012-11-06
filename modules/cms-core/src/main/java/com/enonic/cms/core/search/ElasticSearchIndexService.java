@@ -2,6 +2,7 @@ package com.enonic.cms.core.search;
 
 import java.util.Map;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.get.GetField;
@@ -51,6 +52,8 @@ public interface ElasticSearchIndexService
     public void flush( String indexName );
 
     public boolean indexExists( String indexName );
+
+    public ClusterHealthResponse getClusterHealth(String indexName);
 
 }
 

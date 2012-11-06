@@ -1,18 +1,18 @@
 package com.enonic.cms.core.tools;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.adminweb.AdminHelper;
@@ -57,40 +57,39 @@ public class IndexMonitorController
     @Override
     protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
     {
-        SortValue orderBy = getOrderBy( req );
-
-        int count = getCount( req );
 
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
+        if ( req.getParameter( "deleteIndex" ) != null )
+        {
+            try
+            {
+                elasticSearchIndexService.deleteIndex( "cms" );
+            }
+            catch ( Exception e )
+            {
+                model.put( "error", "Not able to delete index: " + e.getMessage() );
+            }
+        }
+
         model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+
+        ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms" );
+
+        model.put( "activeShards", clusterHealthResponse.getActiveShards() );
+        final ClusterHealthStatus status = clusterHealthResponse.getStatus();
+        model.put( "clusterStatus", status.toString() );
+        model.put( "relocatingShards", clusterHealthResponse.getRelocatingShards() );
+        model.put( "activePrimaryShards", clusterHealthResponse.getActivePrimaryShards() );
+        model.put( "numberOfNodes", clusterHealthResponse.getNumberOfNodes() );
+        model.put( "unassignedShards", clusterHealthResponse.getUnassignedShards() );
+        final List<String> allValidationFailures = clusterHealthResponse.getAllValidationFailures();
+        model.put( "validationFailures", allValidationFailures.isEmpty() ? Lists.newArrayList( "None" ) : allValidationFailures );
 
         model.put( "numberOfContent", getTotalHitsContent() );
         model.put( "numberOfBinaries", getTotalHitsBinaries() );
-        model.put( "numberOfNodes", 1 );
-
-        model.put( "count", count );
-        model.put( "orderBy", orderBy );
 
         process( req, res, model, "indexMonitorPage" );
-    }
-
-
-    private Map<String, String> getContentFields( final HttpServletRequest req )
-    {
-        final String contentKey = req.getParameter( "contentKey" );
-
-        final Map<String, String> resultMap = Maps.newTreeMap();
-
-        final Map<String, SearchHitField> fieldMapForId = getFieldMapForId( new ContentKey( contentKey ) );
-
-        for ( String fieldName : fieldMapForId.keySet() )
-        {
-            final SearchHitField searchHitField = fieldMapForId.get( fieldName );
-            resultMap.put( searchHitField.getName(), searchHitField.getValue().toString() );
-        }
-
-        return resultMap;
     }
 
     private SortValue getOrderBy( HttpServletRequest req )
@@ -112,33 +111,6 @@ public class IndexMonitorController
         return orderBy;
     }
 
-    private int getCount( HttpServletRequest req )
-    {
-        String countString = req.getParameter( "count" );
-
-        int count;
-
-        if ( !StringUtils.isNumeric( countString ) )
-        {
-            count = DEFAULT_COUNT;
-        }
-        else
-        {
-            count = new Integer( countString );
-        }
-        return count;
-    }
-
-
-    protected Map<String, SearchHitField> getFieldMapForId( ContentKey contentKey )
-    {
-        SearchResponse result = fetchDocumentByContentKey( contentKey );
-
-        SearchHit hit = result.getHits().getAt( 0 );
-
-        return hit.getFields();
-    }
-
     private SearchResponse fetchDocumentByContentKey( ContentKey contentKey )
     {
         String termQuery = "{\n" +
@@ -155,19 +127,33 @@ public class IndexMonitorController
         return elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Content.toString(), termQuery );
     }
 
-    private long getTotalHitsBinaries()
+    private String getTotalHitsBinaries()
     {
-        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Binaries.toString(), getAllQUery );
+        try
+        {
+            final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Binaries.toString(), getAllQUery );
 
-        return response.getHits().getTotalHits();
+            return "" + response.getHits().getTotalHits();
+        }
+        catch ( Exception e )
+        {
+            return "Not able to get total binaries: " + e.getMessage();
+        }
+
     }
 
-    private long getTotalHitsContent()
+    private String getTotalHitsContent()
     {
+        try
+        {
+            final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content.toString(), getAllQUery );
 
-        final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content.toString(), getAllQUery );
-
-        return response.getHits().getTotalHits();
+            return "" + response.getHits().getTotalHits();
+        }
+        catch ( Exception e )
+        {
+            return "Not able to get total content: " + e.getMessage();
+        }
     }
 
     @Autowired

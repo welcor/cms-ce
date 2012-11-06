@@ -9,27 +9,75 @@
     <link type="text/css" rel="stylesheet" href="css/admin.css"/>
     <link type="text/css" rel="StyleSheet" href="javascript/tab.webfx.css"/>
     <link rel="stylesheet" type="text/css" href="indexmonitor/indexmonitor.css"/>
- </head>
+
+    <script type="text/javascript">
+        <!--
+        function jumpToLast() {
+            location.href = "#last";
+        }
+
+        function doDeleteIndex(){
+            if (confirm("Are you sure you want to delete the index? A full reindex will be needed")) {
+                location.href = "servlet/tools/com.enonic.cms.core.tools.IndexMonitorController?op=custom&deleteIndex=true";
+            }
+        }
+        //-->
+    </script>
+
+</head>
 <body>
 <h1>Info</h1>
 
 <div class="tab-pane" id="tab-main">
 
     <script type="text/javascript" language="JavaScript">
-        var tabPane1 = new WebFXTabPane( document.getElementById( "tab-main" ), true );
-
+        var tabPane1 = new WebFXTabPane(document.getElementById("tab-main"), true);
         var baseUrl = "${baseUrl}";
-
     </script>
 
     <div class="tab-page" id="tab-page-1">
         <span class="tab">Elasticsearch Index Properties</span>
+
+        <p>
+            <input type="button" class="button_text" name="doDeleteIndex" value="Delete index" onclick="doDeleteIndex()"/>
+        </p>
+
+        [#if error??]
+            <h2>Errors</h2>
+            <ul>
+                <li><span class="keyField">Error</span> = <span class="valueField">(${error})</span></li>
+            </ul>
+        [/#if]
 
         <h2>Index types</h2>
         <ul>
             <li><span class="keyField">Content</span> = <span class="valueField">(${numberOfContent})</span></li>
             <li><span class="keyField">Binaries</span> = <span class="valueField">(${numberOfBinaries})</span></li>
         </ul>
+
+        <h2>Cluster health</h2>
+        <ul>
+            <li><span class="keyField">Cluster status</span> = <span class="valueField">(${clusterStatus})</span></li>
+            </li>
+            <li><span class="keyField">Nodes</span> = <span class="valueField">(${numberOfNodes})</span></li>
+            </li>
+            <li><span class="keyField">Active Shards</span> = <span class="valueField">(${activeShards})</span></li>
+            </li>
+            <li><span class="keyField">Active primary shards</span> = <span class="valueField">(${activePrimaryShards})</span></li>
+            </li>
+            <li><span class="keyField">Relocation shards</span> = <span class="valueField">(${relocatingShards})</span></li>
+            </li>
+            <li><span class="keyField">Unassigned shards</span> = <span class="valueField">(${unassignedShards})</span></li>
+            </li>
+        </ul>
+
+        <h2>Validation Failures:</h2>
+        <ul>
+        [#list validationFailures as entry]
+            <li>${entry}</li>
+        [/#list]
+        </ul>
+
     </div>
 
 </div>

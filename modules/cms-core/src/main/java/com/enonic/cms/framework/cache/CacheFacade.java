@@ -74,6 +74,16 @@ public interface CacheFacade
     public long getMissCount();
 
     /**
+     * "Effectiveness" : <cache hits>/(<cache hits>+<cache misses>*100) %
+     */
+    public int getEffectiveness();
+
+    /**
+     * "Mem capasity usage": <objects count>/<max elements in memory>*100 %
+     */
+    public int getMemoryCapacityUsage();
+
+    /**
      * Number of times of clear cache.
      */
     public long getRemoveAllCount();

@@ -410,6 +410,21 @@
                         </tr>
                         <tr>
                             <td>
+                               Capacity usage (memory):
+                            </td>
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="statistics/@memoryCapacityUsage = '-1'">
+                                    <xsl:text>-</xsl:text>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="statistics/@memoryCapacityUsage"/><xsl:text> % </xsl:text>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 Cache hits:
                             </td>
                             <td>
@@ -430,6 +445,21 @@
                             </td>
                             <td>
                                 <xsl:value-of select="statistics/@cacheClears"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Cache effectiveness:
+                            </td>
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="statistics/@cacheEffectiveness = '-1'">
+                                        <xsl:text>-</xsl:text>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="statistics/@cacheEffectiveness"/><xsl:text> % </xsl:text>
+                                    </xsl:otherwise>
+                                </xsl:choose>
                             </td>
                         </tr>
                     </table>

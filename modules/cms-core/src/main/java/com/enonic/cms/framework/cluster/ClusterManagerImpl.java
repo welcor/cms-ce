@@ -29,7 +29,7 @@ public final class ClusterManagerImpl
     @Override
     public String getNodeName()
     {
-        if ( this.provider != null )
+        if ( isEnabled() )
         {
             return this.provider.getNodeName();
         }
@@ -42,7 +42,7 @@ public final class ClusterManagerImpl
     @Override
     public List<String> getMembers()
     {
-        if ( this.provider != null )
+        if ( isEnabled() )
         {
             return this.provider.getMembers();
         }

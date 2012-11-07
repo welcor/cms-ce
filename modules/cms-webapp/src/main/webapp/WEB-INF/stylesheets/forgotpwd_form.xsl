@@ -97,7 +97,7 @@
                 <xsl:value-of select="concat('Enonic CMS ', $version)"/>
                 <br/>
                 <xsl:value-of select="$copyright"/>
-                <xsl:text> All rights reserved.</xsl:text>
+                <xsl:text>. All rights reserved.</xsl:text>
               </p>
             </td>
           </tr>

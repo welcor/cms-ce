@@ -213,7 +213,7 @@
                 <xsl:value-of select="$titleAndVersion"/>
                 <br/>
                 <xsl:value-of select="$copyright"/>
-                <xsl:text> All rights reserved.</xsl:text>
+                <xsl:text>. All rights reserved.</xsl:text>
               </p>
               <xsl:if test="$license_status != 'ok'">
                 <p class="license-{$license_status}">

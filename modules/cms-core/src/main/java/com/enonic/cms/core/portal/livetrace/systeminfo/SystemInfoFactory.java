@@ -59,6 +59,7 @@ public class SystemInfoFactory
         cacheStatistic.setCount( cache.getCount() );
         cacheStatistic.setHitCount( cache.getHitCount() );
         cacheStatistic.setMissCount( cache.getMissCount() );
+        cacheStatistic.setRemoveAllCount( cache.getRemoveAllCount() );
         return cacheStatistic;
     }
 }

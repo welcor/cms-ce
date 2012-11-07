@@ -1,6 +1,6 @@
 package com.enonic.cms.framework.cache.base;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -16,16 +16,19 @@ public abstract class AbstractCacheFacade
 
     private CacheConfig config;
 
-    private final AtomicInteger hitCount;
+    private final AtomicLong hitCount;
 
-    private final AtomicInteger missCount;
+    private final AtomicLong missCount;
+
+    private final AtomicLong removeAllCount;
 
     private CacheClusterSender clusterSender;
 
     public AbstractCacheFacade()
     {
-        this.hitCount = new AtomicInteger( 0 );
-        this.missCount = new AtomicInteger( 0 );
+        this.hitCount = new AtomicLong( 0 );
+        this.missCount = new AtomicLong( 0 );
+        this.removeAllCount = new AtomicLong( 0 );
     }
 
     @Override
@@ -56,6 +59,12 @@ public abstract class AbstractCacheFacade
     public final long getHitCount()
     {
         return this.hitCount.get();
+    }
+
+    @Override
+    public long getRemoveAllCount()
+    {
+        return this.removeAllCount.get();
     }
 
     @Override
@@ -131,6 +140,10 @@ public abstract class AbstractCacheFacade
     public final void removeAll()
     {
         doRemoveAll();
+
+        removeAllCount.incrementAndGet();
+        clearStatistics();
+
         this.clusterSender.sendEvictAllMessage( this.name );
     }
 
@@ -172,6 +185,7 @@ public abstract class AbstractCacheFacade
         statsElem.setAttribute( "objectCount", String.valueOf( getCount() ) );
         statsElem.setAttribute( "cacheHits", String.valueOf( getHitCount() ) );
         statsElem.setAttribute( "cacheMisses", String.valueOf( getMissCount() ) );
+        statsElem.setAttribute( "cacheClears", String.valueOf( getRemoveAllCount() ) );
 
         root.addContent( statsElem );
         return XMLDocumentFactory.create( new Document( root ) );

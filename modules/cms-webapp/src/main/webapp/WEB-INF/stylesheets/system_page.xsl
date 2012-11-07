@@ -424,6 +424,14 @@
                                 <xsl:value-of select="statistics/@cacheMisses"/>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                Cache clears:
+                            </td>
+                            <td>
+                                <xsl:value-of select="statistics/@cacheClears"/>
+                            </td>
+                        </tr>
                     </table>
 
                     <xsl:if test="$siteadmin = 'true'">

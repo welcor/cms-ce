@@ -61,6 +61,34 @@ public abstract class AbstractCacheFacade
         return this.hitCount.get();
     }
 
+    /**
+     * @inherit
+     */
+    public int getMemoryCapacityUsage()
+    {
+        if ( getMemoryCapacity() == 0 )
+        {
+            return -1;
+        }
+
+        return 100 * getCount() / getMemoryCapacity();
+    }
+
+    /**
+     * @inherit
+     */
+    public int getEffectiveness()
+    {
+        final long totalCount = getHitCount() + getMissCount();
+
+        if ( totalCount == 0 )
+        {
+            return -1;
+        }
+
+        return (int) ( 100L * getHitCount() / totalCount );
+    }
+
     @Override
     public long getRemoveAllCount()
     {
@@ -183,8 +211,10 @@ public abstract class AbstractCacheFacade
 
         final Element statsElem = new Element( "statistics" );
         statsElem.setAttribute( "objectCount", String.valueOf( getCount() ) );
+        statsElem.setAttribute( "memoryCapacityUsage", String.valueOf( getMemoryCapacityUsage() ) );
         statsElem.setAttribute( "cacheHits", String.valueOf( getHitCount() ) );
         statsElem.setAttribute( "cacheMisses", String.valueOf( getMissCount() ) );
+        statsElem.setAttribute( "cacheEffectiveness", String.valueOf( getEffectiveness() ) );
         statsElem.setAttribute( "cacheClears", String.valueOf( getRemoveAllCount() ) );
 
         root.addContent( statsElem );

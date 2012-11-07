@@ -315,6 +315,12 @@ public final class DialectConnectionDecorator
             return dialect.getTimestamp( this.result, columnIndex );
         }
 
+        public Blob getBlob( int columnIndex )
+            throws SQLException
+        {
+            return dialect.getBlob( this.result, columnIndex );
+        }
+
         public byte getByte( String columnName )
             throws SQLException
         {

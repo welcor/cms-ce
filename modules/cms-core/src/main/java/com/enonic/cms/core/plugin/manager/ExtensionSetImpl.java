@@ -76,11 +76,11 @@ final class ExtensionSetImpl
         return null;
     }
 
-    public TaskHandler findTaskPlugin( final String name )
+    public TaskHandler findTaskPlugin( final String clzName )
     {
         for ( final TaskHandler plugin : getAllTaskPlugins() )
         {
-            if ( name.equals( plugin.getName() ) )
+            if ( clzName.equals( plugin.getClass().getName() ) )
             {
                 return plugin;
             }

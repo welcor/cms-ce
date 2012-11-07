@@ -10,7 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -600,6 +607,13 @@ public abstract class Dialect
     {
         InputStream value = result.getBinaryStream(columnIndex);
         return result.wasNull() ? null : value;
+    }
+
+    public Blob getBlob( ResultSet result, int columnIndex )
+        throws SQLException
+    {
+        byte[] value = getBytes( result, columnIndex );
+        return value != null ? new SimpleBlob( value ) : null;
     }
 
     public Object getObject( ResultSet result, int columnIndex )

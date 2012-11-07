@@ -43,4 +43,17 @@ public class PortalXsltProcessorImplTest
 
         assertFalse( map.containsKey( "param4" ) );
     }
+
+    @Test
+    public void testCustomParameterTypes_noParams()
+        throws Exception
+    {
+        final PortalXsltProcessor processor = createProcessor( getClass(), "customParameterTypes_noParams.xsl" );
+        assertNotNull( processor );
+
+        final Map<String, String> map = processor.getCustomParameterTypes();
+        assertNotNull( map );
+
+        assertEquals( 0, map.size() );
+    }
 }

@@ -32,6 +32,11 @@ final class ParamTypeExtractor
     private void doExtract()
     {
         final Map<?, ?> variables = this.xsl.getExecutable().getCompiledGlobalVariables();
+        if ( variables == null )
+        {
+            return;
+        }
+
         for ( final Object variable : variables.values() )
         {
             if ( variable instanceof GlobalParam )
@@ -98,7 +103,7 @@ final class ParamTypeExtractor
         return ( (StringLiteral) select ).getStringValue();
     }
 
-    public static Map<String, String> extract(final Controller xsl)
+    public static Map<String, String> extract( final Controller xsl )
     {
         return new ParamTypeExtractor( xsl ).map;
     }

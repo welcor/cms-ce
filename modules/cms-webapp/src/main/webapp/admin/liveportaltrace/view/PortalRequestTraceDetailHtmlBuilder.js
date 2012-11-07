@@ -343,7 +343,10 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
         html += "<td>Security filter</td><td>" + contentIndexQueryTrace.securityFilter + "</td>";
         html += "</tr>";
         html += "<tr id='node-" + id + "-11' class='child-of-node-" + id + "'>";
-        html += "<td>Translated query</td><td>" + contentIndexQueryTrace.translatedQuery + "</td>";
+        html += "<td>Translated query</td><td>" + JSON.stringify(contentIndexQueryTrace.translatedQuery) + "</td>";
+        html += "</tr>";
+        html += "<tr id='node-" + id + "-12' class='child-of-node-" + id + "'>";
+        html += "<td>Duration in Elastic Search</td><td>" + contentIndexQueryTrace.durationInElasticSearch.asHRFormat + "</td>";
         html += "</tr>";
 
         return html;

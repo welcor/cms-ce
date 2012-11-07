@@ -1,5 +1,7 @@
 package com.enonic.cms.core.portal.livetrace;
 
+import org.joda.time.DateTime;
+
 public class ContentIndexQueryTrace
     extends BaseTrace
     implements Trace
@@ -25,6 +27,8 @@ public class ContentIndexQueryTrace
     private String securityFilter;
 
     private String categoryAccessTypeFilter;
+
+    private Duration durationInElasticSearch = new Duration();
 
     ContentIndexQueryTrace()
     {
@@ -149,5 +153,21 @@ public class ContentIndexQueryTrace
     void setMatchCount( int matchCount )
     {
         this.matchCount = matchCount;
+    }
+
+    public void setElasticSearchStartTime( final DateTime time )
+    {
+        this.durationInElasticSearch.setStartTime( time );
+    }
+
+    public void setElasticSearchStopTime( final DateTime time )
+    {
+        this.durationInElasticSearch.setStopTime( time );
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public Duration getDurationInElasticSearch()
+    {
+        return this.durationInElasticSearch;
     }
 }

@@ -52,6 +52,7 @@ import com.enonic.cms.core.search.query.QueryField;
 import com.enonic.cms.core.search.query.QueryFieldFactory;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 import com.enonic.cms.core.search.query.QueryTranslator;
+import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.ContentDao;
 
 /**
@@ -83,6 +84,9 @@ public class ContentIndexServiceImpl
 
     @Autowired
     private LivePortalTraceService livePortalTraceService;
+
+    @Autowired
+    private TimeService timeService;
 
     @PostConstruct
     public void initializeContentIndex()
@@ -222,7 +226,9 @@ public class ContentIndexServiceImpl
 
             ContentIndexQueryTracer.traceQuery( query, query.getIndex(), query.getCount(), translatedQuerySource.toString(), trace );
 
+            ContentIndexQueryTracer.traceElasticSearchStartTime( trace, timeService );
             final SearchHits hits = doExecuteSearchRequest( translatedQuerySource );
+            ContentIndexQueryTracer.traceElasticSearchFinishedTime( trace, timeService );
 
             LOG.finer( "query: " + translatedQuerySource.toString() + " executed with " + hits.getHits().length + " hits of total " +
                            hits.getTotalHits() );
@@ -242,12 +248,13 @@ public class ContentIndexServiceImpl
 
             final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();
 
-            for ( SearchHit hit : hits )
+            for ( final SearchHit hit : hits )
             {
                 keys.add( new ContentKey( hit.getId() ) );
             }
 
             return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
+
         }
         finally
         {

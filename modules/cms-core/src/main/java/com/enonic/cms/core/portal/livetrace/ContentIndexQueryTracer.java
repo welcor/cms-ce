@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
+import com.enonic.cms.core.time.TimeService;
 
 public class ContentIndexQueryTracer
 {
@@ -93,5 +94,21 @@ public class ContentIndexQueryTracer
         }
 
         return sb.toString();
+    }
+
+    public static void traceElasticSearchStartTime( final ContentIndexQueryTrace trace, final TimeService timeService )
+    {
+        if ( trace != null )
+        {
+            trace.setElasticSearchStartTime( timeService.getNowAsDateTime() );
+        }
+    }
+
+    public static void traceElasticSearchFinishedTime( final ContentIndexQueryTrace trace, final TimeService timeService )
+    {
+        if ( trace != null )
+        {
+            trace.setElasticSearchStopTime( timeService.getNowAsDateTime() );
+        }
     }
 }

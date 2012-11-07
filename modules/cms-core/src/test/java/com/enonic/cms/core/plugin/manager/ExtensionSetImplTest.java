@@ -173,7 +173,7 @@ public class ExtensionSetImplTest
         TaskHandler result = set.findTaskPlugin( "other" );
         assertNull( result );
 
-        result = set.findTaskPlugin( ext.getName() );
+        result = set.findTaskPlugin( ext.getClass().getName() );
         assertSame( ext, result );
     }
 

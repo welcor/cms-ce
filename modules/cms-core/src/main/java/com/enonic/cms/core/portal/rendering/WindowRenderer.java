@@ -341,8 +341,6 @@ public class WindowRenderer
             portletResult = new ErrorRenderPortletResult();
             portletResult.setHttpContentType( "text/html" );
             portletResult.setContent( errorMarkup );
-            ErrorRenderPortletResult errorPortletResult = (ErrorRenderPortletResult) portletResult;
-            errorPortletResult.setError( e );
             LOG.error( message, e );
         }
         finally

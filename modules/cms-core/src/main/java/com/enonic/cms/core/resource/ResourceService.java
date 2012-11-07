@@ -10,7 +10,6 @@ import com.google.common.collect.Multimap;
 
 public interface ResourceService
 {
-
     public ResourceFolder getResourceRoot();
 
     public ResourceFile getResourceFile( ResourceKey resourceKey );

@@ -4,21 +4,16 @@
  */
 package com.enonic.cms.core.localization;
 
-/**
- * Created by rmy - Date: May 4, 2009
- */
-public class LocaleParsingException
+public final class LocaleParsingException
     extends RuntimeException
 {
-
-    public LocaleParsingException( String message, Throwable t )
+    public LocaleParsingException( final String message, final Throwable t )
     {
         super( message, t );
     }
 
-    public LocaleParsingException( String message )
+    public LocaleParsingException( final String message )
     {
         super( message );
-
     }
 }

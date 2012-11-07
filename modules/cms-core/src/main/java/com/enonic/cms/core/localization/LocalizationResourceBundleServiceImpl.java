@@ -2,43 +2,42 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.localization.resource;
+package com.enonic.cms.core.localization;
 
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
 
-import com.enonic.cms.core.localization.LocalizationResourceBundle;
-import com.enonic.cms.core.localization.LocalizationResourceException;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 
-/**
- * Created by rmy - Date: Apr 22, 2009
- */
-@Service
-public class LocalizationResourceBundleServiceImpl
-    implements LocalizationResourceBundleService
+@Component
+public final class LocalizationResourceBundleServiceImpl
+    implements LocalizationResourceBundleService, InitializingBean
 {
     private ResourceService resourceService;
 
-    private CacheFacade propertiesCache;
+    private CacheFacade cacheFacade;
 
-    private static final String LOCALIZATION_CACHE_GROUP = "localeproperties";
+    private long checkInterval = 5000;
 
-    public LocalizationResourceBundle getResourceBundle( SiteEntity site, Locale locale )
+    private LocalizationPropertiesCache propertiesCache;
+
+    @Override
+    public LocalizationResourceBundle getResourceBundle( final SiteEntity site, final Locale locale )
     {
-        ResourceKey defaultLocalizationResourceKey = site.getDefaultLocalizationResource();
-
+        final ResourceKey defaultLocalizationResourceKey = site.getDefaultLocalizationResource();
         if ( defaultLocalizationResourceKey == null )
         {
             return null;
@@ -47,14 +46,12 @@ public class LocalizationResourceBundleServiceImpl
         return createResourceBundle( locale, defaultLocalizationResourceKey );
     }
 
-    private Properties loadBundle( ResourceKey defaultLocalizationResourceKey, String bundleExtension )
+    private Properties loadBundle( final ResourceKey defaultLocalizationResourceKey, final String bundleExtension )
     {
-
-        String defaultLocalizationResourceName = defaultLocalizationResourceKey.toString();
-        int pos = defaultLocalizationResourceName.lastIndexOf( '.' );
+        final String defaultLocalizationResourceName = defaultLocalizationResourceKey.toString();
+        final int pos = defaultLocalizationResourceName.lastIndexOf( '.' );
 
         String bundleResourceKey = defaultLocalizationResourceName;
-
         if ( pos > 0 )
         {
             bundleResourceKey = defaultLocalizationResourceName.substring( 0, pos );
@@ -65,7 +62,7 @@ public class LocalizationResourceBundleServiceImpl
         return getOrCreateProperties( ResourceKey.from( bundleResourceKey ) );
     }
 
-    private Properties getOrCreateProperties( ResourceKey resourceKey )
+    private Properties getOrCreateProperties( final ResourceKey resourceKey )
     {
 
         Properties properties = getFromCache( resourceKey );
@@ -78,7 +75,7 @@ public class LocalizationResourceBundleServiceImpl
         return properties;
     }
 
-    private synchronized Properties loadPropertiesFromFile( ResourceKey resourceKey )
+    private synchronized Properties loadPropertiesFromFile( final ResourceKey resourceKey )
     {
         Properties properties = getFromCache( resourceKey );
 
@@ -89,8 +86,7 @@ public class LocalizationResourceBundleServiceImpl
 
         properties = new Properties();
 
-        ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );
-
+        final ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );
         if ( resourceFile != null )
         {
             try
@@ -98,29 +94,28 @@ public class LocalizationResourceBundleServiceImpl
                 properties.load( resourceFile.getDataAsInputStream() );
 
             }
-            catch ( IOException e )
+            catch ( final IOException e )
             {
-                throw new LocalizationResourceException( "Not able to load resourcefile: " + resourceFile.getName() + ". Reason: " + e );
+                throw new LocalizationResourceException( "Not able to load resource: " + resourceFile.getName(), e );
             }
         }
 
         putInCache( resourceKey, properties );
-
         return properties;
     }
 
-    private void putInCache( ResourceKey resourceKey, Properties properties )
+    private void putInCache( final ResourceKey resourceKey, final Properties properties )
     {
-        propertiesCache.put( LOCALIZATION_CACHE_GROUP, resourceKey.toString(), properties );
-
+        this.propertiesCache.put( new LocalizationPropertiesCacheEntry( resourceKey, properties ) );
     }
 
-    private Properties getFromCache( ResourceKey resourceKey )
+    private Properties getFromCache( final ResourceKey resourceKey )
     {
-        return (Properties) propertiesCache.get( LOCALIZATION_CACHE_GROUP, resourceKey.toString() );
+        final LocalizationPropertiesCacheEntry entry = this.propertiesCache.get( resourceKey );
+        return entry != null ? entry.getProperties() : null;
     }
 
-    private LocalizationResourceBundle createResourceBundle( Locale locale, ResourceKey defaultLocalizationResourceKey )
+    private LocalizationResourceBundle createResourceBundle( final Locale locale, final ResourceKey defaultLocalizationResourceKey )
     {
         Properties props = new Properties();
 
@@ -151,13 +146,8 @@ public class LocalizationResourceBundleServiceImpl
         return new LocalizationResourceBundle( props );
     }
 
-    public void setPropertiesCache( CacheFacade propertiesCache )
-    {
-        this.propertiesCache = propertiesCache;
-    }
-
     @Autowired
-    public void setLocalizationResourceFileService( ResourceService resourceService )
+    public void setResourceService( final ResourceService resourceService )
     {
         this.resourceService = resourceService;
     }
@@ -165,6 +155,18 @@ public class LocalizationResourceBundleServiceImpl
     @Autowired
     public void setCacheManager( final CacheManager cacheManager )
     {
-        this.propertiesCache = cacheManager.getOrCreateCache( "localization" );
+        this.cacheFacade = cacheManager.getOrCreateCache( "localization" );
+    }
+
+    @Value("${cms.cache.localization.checkInterval}")
+    public void setCheckInterval( final long checkInterval )
+    {
+        this.checkInterval = checkInterval;
+    }
+
+    @Override
+    public void afterPropertiesSet()
+    {
+        this.propertiesCache = new LocalizationPropertiesCache( this.cacheFacade, this.resourceService, this.checkInterval );
     }
 }

@@ -8,13 +8,8 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import com.enonic.cms.core.localization.resource.LocalizationResourceBundleUtils;
-
 import static org.junit.Assert.*;
 
-/**
- * Created by rmy - Date: Apr 24, 2009
- */
 public class LocalizationResourceBundleUtilsTest
 {
     @Test
@@ -38,7 +33,7 @@ public class LocalizationResourceBundleUtilsTest
     @Test(expected = LocaleParsingException.class)
     public void testParseInvalidLocaleString()
     {
-        Locale locale = LocalizationResourceBundleUtils.parseLocaleString( "_US" );
+        LocalizationResourceBundleUtils.parseLocaleString( "_US" );
     }
 
     @Test
@@ -50,5 +45,4 @@ public class LocalizationResourceBundleUtilsTest
         assertEquals( "Should contain country", "NO", locale.getCountry() );
         assertEquals( "Should contain variant", "NY", locale.getVariant() );
     }
-
 }

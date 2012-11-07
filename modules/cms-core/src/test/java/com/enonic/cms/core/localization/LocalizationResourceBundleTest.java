@@ -10,15 +10,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by rmy - Date: Apr 24, 2009
- */
 public class LocalizationResourceBundleTest
 {
     private static final String NORWEGIAN = "\u00c6\u00d8\u00c5\u00e6\u00f8\u00e5";
 
     @Test
     public void testNorwegianCharacters()
+        throws Exception
     {
         LocalizationResourceBundle resourceBundle = LocalizationTestUtils.create_US_NO_DEFAULT_resourceBundle();
         assertEquals( NORWEGIAN, resourceBundle.getLocalizedPhrase( "norsketegn" ) );
@@ -26,6 +24,7 @@ public class LocalizationResourceBundleTest
 
     @Test
     public void testResourceOrdering()
+        throws Exception
     {
         LocalizationResourceBundle resourceBundle = LocalizationTestUtils.create_US_NO_DEFAULT_resourceBundle();
 
@@ -37,6 +36,7 @@ public class LocalizationResourceBundleTest
 
     @Test
     public void testNonExistingKey()
+        throws Exception
     {
         LocalizationResourceBundle resourceBundle = LocalizationTestUtils.create_US_NO_DEFAULT_resourceBundle();
 
@@ -55,6 +55,7 @@ public class LocalizationResourceBundleTest
 
     @Test
     public void testParameterizedPhrase()
+        throws Exception
     {
         LocalizationResourceBundle resourceBundle = LocalizationTestUtils.create_US_NO_DEFAULT_resourceBundle();
 
@@ -67,6 +68,7 @@ public class LocalizationResourceBundleTest
 
     @Test
     public void testMissingParametersPhrase()
+        throws Exception
     {
         LocalizationResourceBundle resourceBundle = LocalizationTestUtils.create_US_NO_DEFAULT_resourceBundle();
 
@@ -79,6 +81,7 @@ public class LocalizationResourceBundleTest
 
     @Test
     public void testNullParametersPhrase()
+        throws Exception
     {
         LocalizationResourceBundle resourceBundle = LocalizationTestUtils.create_US_NO_DEFAULT_resourceBundle();
 
@@ -86,5 +89,4 @@ public class LocalizationResourceBundleTest
 
         assertEquals( "det ble fisket {1} fisk av type {0} med musse p\u00e5 stampen", resolvedPhrase );
     }
-
 }

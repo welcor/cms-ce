@@ -7,95 +7,67 @@ package com.enonic.cms.core.localization;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.easymock.classextension.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.CacheManager;
 
-import com.enonic.cms.core.localization.resource.LocalizationResourceBundleServiceImpl;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.*;
 
 public class LocalizationResourceBundleServiceImplTest
-    extends LocalizationResourceBundleServiceImpl
 {
     private LocalizationResourceBundleServiceImpl resourceBundleService;
 
-    private ResourceService resourceService;
-
     private CacheFacade propertiesCache;
-
 
     @Before
     public void setUp()
     {
-        resourceBundleService = new LocalizationResourceBundleServiceImpl();
+        this.propertiesCache = Mockito.mock( CacheFacade.class );
+        final CacheManager cacheManager = Mockito.mock( CacheManager.class );
+        Mockito.when( cacheManager.getOrCreateCache( "localization" ) ).thenReturn( this.propertiesCache );
 
-        propertiesCache = createMock( CacheFacade.class );
+        final ResourceService resourceService = Mockito.mock( ResourceService.class );
 
-        resourceBundleService.setPropertiesCache( propertiesCache );
-
-        resourceService = createMock( ResourceService.class );
-
-        resourceBundleService.setLocalizationResourceFileService( resourceService );
-
+        this.resourceBundleService = new LocalizationResourceBundleServiceImpl();
+        this.resourceBundleService.setCacheManager( cacheManager );
+        this.resourceBundleService.setResourceService( resourceService );
+        this.resourceBundleService.afterPropertiesSet();
     }
 
     @Test
     public void testCache()
     {
         setUpFetchFromCache( new Properties() );
-        replay( propertiesCache );
 
-        SiteEntity site = LocalizationTestUtils.createSite( "phrases.properties" );
-        Locale locale = new Locale( "no" );
+        final SiteEntity site = LocalizationTestUtils.createSite( "phrases.properties" );
+        final Locale locale = new Locale( "no" );
 
-        LocalizationResourceBundle resourceBundle = resourceBundleService.getResourceBundle( site, locale );
-
+        final LocalizationResourceBundle resourceBundle = this.resourceBundleService.getResourceBundle( site, locale );
         assertNotNull( "Should fetch empty properties from cache and create ResourceBundle", resourceBundle );
     }
 
     @Test
     public void testNoCache()
     {
-        setUpResourceService();
         setUpFetchFromCache( null );
-        setUpPutInCache();
-        replay( propertiesCache );
 
-        SiteEntity site = LocalizationTestUtils.createSite( "phrases.properties" );
-        Locale locale = new Locale( "no" );
+        final SiteEntity site = LocalizationTestUtils.createSite( "phrases.properties" );
+        final Locale locale = new Locale( "no" );
 
-        LocalizationResourceBundle resourceBundle = resourceBundleService.getResourceBundle( site, locale );
-
+        final LocalizationResourceBundle resourceBundle = this.resourceBundleService.getResourceBundle( site, locale );
         assertNotNull( "Should fetch empty properties from cache and create ResourceBundle", resourceBundle );
     }
 
-
-    private void setUpResourceService()
+    private void setUpFetchFromCache( final Properties properties )
     {
-        expect( resourceService.getResourceFile( isA( ResourceKey.class ) ) ).andReturn( null ).anyTimes();
-        replay( resourceService );
+        final LocalizationPropertiesCacheEntry entry = new LocalizationPropertiesCacheEntry( ResourceKey.from( "" ), properties );
+        Mockito.when( this.propertiesCache.get( Mockito.anyString(), Mockito.anyString() ) ).thenReturn( entry );
     }
-
-    private void setUpFetchFromCache( Properties properties )
-    {
-        expect( propertiesCache.get( isA( String.class ), isA( String.class ) ) ).andReturn( properties ).anyTimes();
-
-    }
-
-    private void setUpPutInCache()
-    {
-        propertiesCache.put( isA( String.class ), isA( String.class ), isA( Properties.class ) );
-        EasyMock.expectLastCall().anyTimes();
-    }
-
 }

@@ -2,25 +2,20 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.localization.resource;
+package com.enonic.cms.core.localization;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.enonic.cms.core.localization.LocaleParsingException;
 
-/**
- * Created by rmy - Date: Apr 24, 2009
- */
 public abstract class LocalizationResourceBundleUtils
 {
-
     // Pattern to parse locale string on format Languagcode[-country][anything]
     private static final String LOCALE_PATTERN = "^(\\w{2})(_(\\w{2}))?(_(\\w{2}))?$";
 
-    private static Matcher match( String inputString, String regexp, int patternOptions )
+    private static Matcher match( String inputString, final String regexp )
     {
-        Pattern pattern = Pattern.compile( regexp, patternOptions );
+        Pattern pattern = Pattern.compile( regexp, Pattern.CASE_INSENSITIVE );
         if ( inputString == null )
         {
             inputString = "";
@@ -33,7 +28,7 @@ public abstract class LocalizationResourceBundleUtils
     {
         localeAsString = localeAsString.replace( '-', '_' );
 
-        Matcher matcher = match( localeAsString, LOCALE_PATTERN, Pattern.CASE_INSENSITIVE );
+        final Matcher matcher = match( localeAsString, LOCALE_PATTERN );
 
         String language = "";
         String country = "";
@@ -53,19 +48,18 @@ public abstract class LocalizationResourceBundleUtils
         return new Locale( language, country == null ? "" : country, variant == null ? "" : variant );
     }
 
-    private static String getLanguageFromMatcher( Matcher matcher )
+    private static String getLanguageFromMatcher( final Matcher matcher )
     {
         return matcher.group( 1 );
     }
 
-    private static String getCountryFromMatcher( Matcher matcher )
+    private static String getCountryFromMatcher( final Matcher matcher )
     {
         return matcher.group( 3 );
     }
 
-    private static String getVariantFromMatcher( Matcher matcher )
+    private static String getVariantFromMatcher( final Matcher matcher )
     {
         return matcher.group( 5 );
     }
-
 }

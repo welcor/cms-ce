@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.localization;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -13,8 +12,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.localization.resource.LocalizationResourceBundleService;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.SiteEntity;
 
@@ -25,9 +25,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
-/**
- * Created by rmy - Date: Apr 22, 2009
- */
 public class LocalizationServiceImplTest
 {
 
@@ -37,7 +34,7 @@ public class LocalizationServiceImplTest
 
     private final SiteKey siteKey = new SiteKey( 0 );
 
-    public static List<String> supportedPhrases = new ArrayList();
+    public static List<String> supportedPhrases = Lists.newArrayList();
 
     private static final String SITE_LOCALIZATION_RESOURCE_KEY = "test";
 
@@ -79,9 +76,7 @@ public class LocalizationServiceImplTest
         expect( resourceBundleServiceMock.getResourceBundle( isA( SiteEntity.class ), isA( Locale.class ) ) ).andReturn(
             resouceBundle ).anyTimes();
         replay( resourceBundleServiceMock );
-
     }
-
 
     private void setUpSupportedPhrases()
     {
@@ -92,24 +87,20 @@ public class LocalizationServiceImplTest
 
     private SiteEntity createSite()
     {
-        SiteEntity site = new SiteEntity();
+        final SiteEntity site = new SiteEntity();
         site.setKey( siteKey.toInt() );
         site.setDefaultLocalizationResource( ResourceKey.from( SITE_LOCALIZATION_RESOURCE_KEY ) );
 
         return site;
     }
 
-
     private LocalizationResourceBundle getNorwegianTestResourceBundle()
     {
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
         properties.put( "test", "testLocalized_no" );
         properties.put( "ost", "ostLocalized_no" );
         properties.put( "fisk", "fiskLocalized_no" );
 
-        LocalizationResourceBundle bundle = new LocalizationResourceBundle( properties );
-
-        return bundle;
+        return new LocalizationResourceBundle( properties );
     }
-
 }

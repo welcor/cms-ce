@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.localization.LocaleParsingException;
-import com.enonic.cms.core.localization.resource.LocalizationResourceBundleUtils;
+import com.enonic.cms.core.localization.LocalizationResourceBundleUtils;
 import com.enonic.cms.core.resolver.ForceResolverValueService;
 import com.enonic.cms.core.resolver.ForcedResolverValueLifetimeSettings;
 import com.enonic.cms.core.resolver.ResolverContext;

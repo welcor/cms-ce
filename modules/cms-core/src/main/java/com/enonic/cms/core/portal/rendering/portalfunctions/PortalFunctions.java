@@ -33,7 +33,7 @@ import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageRequestParser;
 import com.enonic.cms.core.localization.LocalizationService;
-import com.enonic.cms.core.localization.resource.LocalizationResourceBundleUtils;
+import com.enonic.cms.core.localization.LocalizationResourceBundleUtils;
 import com.enonic.cms.core.portal.ReservedLocalPaths;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.image.ImageService;

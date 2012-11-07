@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.localization;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.springframework.core.io.FileSystemResourceLoader;
@@ -18,80 +17,53 @@ public class LocalizationTestUtils
 {
     private static final String BASE_RESOURCE_CLASSPATH = "classpath:com/enonic/cms/core/localization/";
 
-    private static final String[] RESOURCES = {"phrases", "phrases_en", "phrases_no", "phrases_en-us"};
-
     public static Properties create_Default_Properties()
+        throws Exception
     {
         return getPropertiesFromFile( BASE_RESOURCE_CLASSPATH + "phrases.properties" );
     }
 
     public static Properties create_NO_Properties()
+        throws Exception
     {
         return getPropertiesFromFile( BASE_RESOURCE_CLASSPATH + "phrases_no.properties" );
     }
 
-    public static Properties create_EN_Properties()
-    {
-        return getPropertiesFromFile( BASE_RESOURCE_CLASSPATH + "phrases_en.properties" );
-    }
-
     public static Properties create_EN_US_Properties()
+        throws Exception
     {
         return getPropertiesFromFile( BASE_RESOURCE_CLASSPATH + "phrases_en-us.properties" );
     }
 
-
     public static Properties getPropertiesFromFile( String path )
+        throws Exception
     {
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
 
-        ResourceLoader resourceLoader = new FileSystemResourceLoader();
-        Resource resource = resourceLoader.getResource( path );
+        final ResourceLoader resourceLoader = new FileSystemResourceLoader();
+        final Resource resource = resourceLoader.getResource( path );
 
-        try
-        {
-            properties.load( resource.getInputStream() );
-        }
-        catch ( IOException e )
-        {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
+        properties.load( resource.getInputStream() );
         return properties;
     }
 
     public static LocalizationResourceBundle create_US_NO_DEFAULT_resourceBundle()
+        throws Exception
     {
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
 
         properties.putAll( create_Default_Properties() );
         properties.putAll( create_NO_Properties() );
         properties.putAll( create_EN_US_Properties() );
 
-        LocalizationResourceBundle resourceBundle = new LocalizationResourceBundle( properties );
-
-        return resourceBundle;
+        return new LocalizationResourceBundle( properties );
     }
 
-    public static LocalizationResourceBundle create_NO_DEFAULT_resourceBundle()
+    public static SiteEntity createSite( final String defaultLocalizationResource )
     {
-        Properties properties = new Properties();
-
-        properties.putAll( create_Default_Properties() );
-        properties.putAll( create_NO_Properties() );
-
-        LocalizationResourceBundle resourceBundle = new LocalizationResourceBundle( properties );
-
-        return resourceBundle;
-    }
-
-    public static SiteEntity createSite( String defaultLocalizationResource )
-    {
-        SiteEntity site = new SiteEntity();
+        final SiteEntity site = new SiteEntity();
         site.setKey( 0 );
         site.setDefaultLocalizationResource( ResourceKey.from( defaultLocalizationResource ) );
-
         return site;
     }
-
 }

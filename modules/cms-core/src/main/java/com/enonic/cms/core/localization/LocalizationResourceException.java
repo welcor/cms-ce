@@ -4,22 +4,16 @@
  */
 package com.enonic.cms.core.localization;
 
-/**
- * Created by rmy - Date: Apr 24, 2009
- */
-public class LocalizationResourceException
+public final class LocalizationResourceException
     extends RuntimeException
 {
-
-    public LocalizationResourceException( String message, Throwable t )
+    public LocalizationResourceException( final String message, final Throwable t )
     {
-
         super( message, t );
     }
 
-    public LocalizationResourceException( String message )
+    public LocalizationResourceException( final String message )
     {
         super( message );
     }
-
 }

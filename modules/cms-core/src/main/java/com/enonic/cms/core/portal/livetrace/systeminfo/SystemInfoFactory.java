@@ -6,14 +6,30 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
 
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
 
+import com.enonic.cms.core.time.TimeService;
+
+@Component
 public class SystemInfoFactory
 {
+    @Autowired
+    private TimeService timeService;
+
     private ThreadMXBean threadMXBean;
 
     private MemoryMXBean memoryMXBean;
+
+    private static final PeriodFormatter UP_TIME_PERIOD_FORMATTER =
+        new PeriodFormatterBuilder().minimumPrintedDigits( 2 ).appendDays().appendSuffix( "d" ).appendSeparatorIfFieldsAfter(
+            " " ).appendHours().appendSuffix( "h" ).appendSeparatorIfFieldsAfter( " " ).appendMinutes().appendSuffix(
+            "m" ).appendSeparatorIfFieldsAfter( " " ).appendSeconds().appendSuffix( "s" ).toFormatter();
 
     public SystemInfoFactory()
     {
@@ -24,6 +40,8 @@ public class SystemInfoFactory
     public SystemInfo createSystemInfo( final int numberOfPortalRequestsInProgress, final CacheManager cacheManager )
     {
         SystemInfo systemInfo = new SystemInfo();
+        systemInfo.setSystemTime( timeService.getNowAsDateTime() );
+        systemInfo.setSystemUpTime( UP_TIME_PERIOD_FORMATTER.print( timeService.upTime() ) );
         systemInfo.setPortalRequestInProgress( numberOfPortalRequestsInProgress );
         systemInfo.setPageCacheStatistic( createPageCacheStatistic( cacheManager.getOrCreateCache( ( "page" ) ) ) );
         systemInfo.setEntityCacheStatistic( createPageCacheStatistic( cacheManager.getOrCreateCache( "entity" ) ) );

@@ -39,13 +39,14 @@
     <tr>
         <td style="margin-right: 10px">
             <h1>Admin / <a href="${baseUrl}/adminpage?page=912&op=liveportaltrace">Live Portal Trace</a></h1>
-            <button class="button_text" id="stop-auto-update" onclick="automaticUpdateController.stopAutomaticUpdate()">
+            <button class="button_text" id="auto-update" onclick="automaticUpdateController.switchAutomaticUpdate()">
                 Stop automatic update
             </button>
-
-            <button class="button_text" id="start-auto-update" onclick="automaticUpdateController.startAutomaticUpdate()" disabled="true">
-                Start automatic update
-            </button>
+            <br/>
+            <br/>
+            System time: <span id="system-time">?</span>
+            <br/>
+            System up-time: <span id="system-up-time">?</span>
         </td>
         <td style="padding-left: 10px">
             <table id="system-info-table">

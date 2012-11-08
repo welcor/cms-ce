@@ -49,6 +49,19 @@ lpt.AutomaticUpdateController = function ()
         systemInfoController = controller;
     };
 
+    this.switchAutomaticUpdate = function ()
+    {
+        var autoUpdateButton = document.getElementById( "auto-update" );
+        if ( autoUpdateButton.innerText == "Start auto update" )
+        {
+            this.startAutomaticUpdate();
+        }
+        else
+        {
+            this.stopAutomaticUpdate();
+        }
+    };
+
     this.stopAutomaticUpdate = function ()
     {
         if ( !started )
@@ -63,8 +76,9 @@ lpt.AutomaticUpdateController = function ()
         completedPortalRequestsTableController.stopAutomaticRefresh();
         systemInfoController.stopAutomaticUpdate();
 
-        document.getElementById( "stop-auto-update" ).disabled = true;
-        document.getElementById( "start-auto-update" ).disabled = false;
+        var autoUpdateButton = document.getElementById( "auto-update" );
+        autoUpdateButton.innerText = "Start auto update";
+
         document.getElementById( "fetch-recent-history" ).disabled = false;
 
         started = false;
@@ -84,8 +98,9 @@ lpt.AutomaticUpdateController = function ()
         completedPortalRequestsTableController.startAutomaticRefresh();
         systemInfoController.startAutomaticUpdate();
 
-        document.getElementById( "stop-auto-update" ).disabled = false;
-        document.getElementById( "start-auto-update" ).disabled = true;
+        var autoUpdateButton = document.getElementById( "auto-update" );
+        autoUpdateButton.innerText = "Stop auto update";
+
         document.getElementById( "fetch-recent-history" ).disabled = true;
 
         started = true;

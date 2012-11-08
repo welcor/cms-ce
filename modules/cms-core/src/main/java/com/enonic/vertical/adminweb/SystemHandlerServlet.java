@@ -16,6 +16,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.jdom.JDOMException;
+import org.joda.time.format.PeriodFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,6 +35,8 @@ import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
+import com.enonic.cms.core.time.DateTimeFormatters;
+import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
 
 /**
@@ -56,6 +59,9 @@ public class SystemHandlerServlet
 
     @Autowired
     private ConfigProperties configurationProperties;
+
+    @Autowired
+    private TimeService timeService;
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
@@ -110,6 +116,8 @@ public class SystemHandlerServlet
             if ( mode.equals( "system" ) )
             {
                 root.appendChild( buildJavaInfo( doc ) );
+                root.setAttribute( "bootTime", DateTimeFormatters.DATE_TIME.print( timeService.bootTime() ) );
+                root.setAttribute( "upTime", PeriodFormat.wordBased().print( timeService.upTime() ) );
                 root.setAttribute( "version", ProductVersion.getVersion() );
                 root.setAttribute( "modelVersion", String.valueOf( this.upgradeService.getCurrentModelNumber() ) );
                 root.appendChild( buildComponentsInfo( doc ) );
@@ -144,11 +152,11 @@ public class SystemHandlerServlet
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error: %t", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error: %t", e );
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error: %t", e );
+            VerticalAdminLogger.errorAdmin( "I/O error: %t", e );
         }
     }
 

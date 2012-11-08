@@ -110,7 +110,6 @@ public abstract class AbstractCacheFacade
             final int realTimeToLive = timeToLive < 0 ? this.config.getTimeToLive() : timeToLive;
             String compositeKey = createCompositeKey( group, key );
             doPut( compositeKey, value, realTimeToLive );
-            this.clusterSender.sendEvictMessage( this.name, compositeKey );
         }
     }
 
@@ -133,7 +132,7 @@ public abstract class AbstractCacheFacade
     public final void removeGroupByPrefix( String prefix )
     {
         doRemoveGroupByPrefix( prefix );
-        this.clusterSender.sendEvictGroupMessage( this.name, prefix );
+        this.clusterSender.sendEvictByGroupPrefixMessage( this.name, prefix );
     }
 
     @Override

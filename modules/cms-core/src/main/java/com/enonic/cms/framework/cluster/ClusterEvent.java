@@ -12,7 +12,7 @@ public final class ClusterEvent
     public ClusterEvent( final String type, final String payload )
     {
         super( type );
-        this.payload = payload;
+        this.payload = payload != null ? payload: "";
         this.timestamp = System.currentTimeMillis();
     }
 

@@ -24,6 +24,7 @@ final class DataSourceRequestFactory
     public DataSourceRequest createRequest( final DataSourceElement element )
     {
         final DataSourceRequest request = new DataSourceRequest();
+        request.setPreviewContext( context.getPreviewContext() );
         request.setName( element.getName() );
         request.setPortalInstanceKey( context.getPortalInstanceKey() );
         request.setSiteKey( context.getSite() != null ? context.getSite().getKey() : null );

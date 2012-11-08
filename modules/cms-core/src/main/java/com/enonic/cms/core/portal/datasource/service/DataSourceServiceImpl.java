@@ -451,7 +451,8 @@ public final class DataSourceServiceImpl
             return SiteXmlCreator.createEmptyMenus();
         }
 
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        SiteXmlCreator siteXmlCreator =
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
         siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
         siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( tagItem ) ) );
@@ -474,7 +475,8 @@ public final class DataSourceServiceImpl
             return SiteXmlCreator.createEmptyMenus();
         }
 
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        SiteXmlCreator siteXmlCreator =
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
         siteXmlCreator.setIncludeDeviceClassResolverInfo( true );
         return siteXmlCreator.createLegacyGetMenuData( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
@@ -494,7 +496,8 @@ public final class DataSourceServiceImpl
             return SiteXmlCreator.createEmptyMenuBranch();
         }
 
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        SiteXmlCreator siteXmlCreator =
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
 
         siteXmlCreator.setMenuItemInBranch( menuItem );
@@ -513,7 +516,8 @@ public final class DataSourceServiceImpl
         MenuItemXMLCreatorSetting setting = new MenuItemXMLCreatorSetting();
         setting.user = getUserEntity( context.getUser() );
         setting.includeParents = withParents;
-        MenuItemXmlCreator creator = new MenuItemXmlCreator( setting, new MenuItemAccessResolver( groupDao ) );
+        MenuItemXmlCreator creator = new MenuItemXmlCreator( setting, new MenuItemAccessResolver( groupDao ),
+                                                             context.getPreviewContext().getMenuItemInPreviewOrNull() );
         MenuItemEntity menuItem = menuItemDao.findByKey( new MenuItemKey( key ) );
         return creator.createLegacyGetMenuItem( menuItem );
     }
@@ -540,7 +544,8 @@ public final class DataSourceServiceImpl
             return SiteXmlCreator.createEmptyMenuItems();
         }
 
-        SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+        SiteXmlCreator siteXmlCreator =
+            new SiteXmlCreator( new MenuItemAccessResolver( groupDao ), context.getPreviewContext().getMenuItemInPreviewOrNull() );
         siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
         siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
         siteXmlCreator.setMenuItemInBranch( menuItem );
@@ -806,8 +811,9 @@ public final class DataSourceServiceImpl
     }
 
     private XMLDocument doGetRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
-                                             boolean requireAll, int index, int count, int parentLevel, int childrenLevel, boolean includeOwnerAndModifierData, boolean includeContentData,
-                                             boolean includeCategoryData, boolean includeRelatedContentData )
+                                             boolean requireAll, int index, int count, int parentLevel, int childrenLevel,
+                                             boolean includeOwnerAndModifierData, boolean includeContentData, boolean includeCategoryData,
+                                             boolean includeRelatedContentData )
     {
         XMLDocument xmlDocument = null;
         try

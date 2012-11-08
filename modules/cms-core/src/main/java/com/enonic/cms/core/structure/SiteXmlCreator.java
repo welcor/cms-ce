@@ -63,9 +63,18 @@ public class SiteXmlCreator
 
     private boolean userXmlAsAdminConsoleStyle = true;
 
+    private final MenuItemEntity menuItemInPreview;
+
+    public SiteXmlCreator( MenuItemAccessResolver menuItemAccessResolver, MenuItemEntity menuItemInPreview )
+    {
+        this.menuItemAccessResolver = menuItemAccessResolver;
+        this.menuItemInPreview = menuItemInPreview;
+    }
+
     public SiteXmlCreator( MenuItemAccessResolver menuItemAccessResolver )
     {
         this.menuItemAccessResolver = menuItemAccessResolver;
+        this.menuItemInPreview = null;
     }
 
     public Element createSitesElement( Iterable<SiteEntity> sites, Map<SiteKey, SiteProperties> sitesPropertiesMap, String rootElementName )
@@ -96,7 +105,8 @@ public class SiteXmlCreator
     public XMLDocument createLegacyGetMenuData( SiteEntity site, SiteProperties siteProperties )
     {
         includeMenuItems = false;
-        menuItemXmlCreator = new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver );
+        menuItemXmlCreator =
+            new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver, menuItemInPreview );
         XMLBuilder xmlDoc = new XMLBuilder( "menus" );
         createMenuElement( site, siteProperties, xmlDoc, null );
         return xmlDoc.getDocument();
@@ -104,8 +114,8 @@ public class SiteXmlCreator
 
     public XMLDocument createLegacyGetMenu( SiteEntity site, SiteProperties siteProperties )
     {
-
-        menuItemXmlCreator = new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver );
+        menuItemXmlCreator =
+            new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver, menuItemInPreview );
         XMLBuilder xmlDoc = new XMLBuilder( "menus" );
 
         if ( site != null )
@@ -155,7 +165,8 @@ public class SiteXmlCreator
         {
             return createMenuItemsWithErrorMessage( "Menu item not specified" );
         }
-        menuItemXmlCreator = new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver );
+        menuItemXmlCreator =
+            new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver, menuItemInPreview );
         MenuItemEntity menuItemInBranch = getMenuItemInBranch();
         if ( menuItemInBranch == null )
         {
@@ -229,7 +240,8 @@ public class SiteXmlCreator
             // on GetSubMenu-calls shall x menuItemLevels be interpreted as x+1
             setMenuItemLevels( getMenuItemLevels() + 1 );
         }
-        menuItemXmlCreator = new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver );
+        menuItemXmlCreator =
+            new MenuItemXmlCreator( MenuItemXMLCreatorSetting.createFrom( this ), menuItemAccessResolver, menuItemInPreview );
         MenuItemEntity menuItemInBranch = getMenuItemInBranch();
         if ( menuItemInBranch == null )
         {

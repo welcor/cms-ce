@@ -46,10 +46,21 @@ public class MenuItemXmlCreator
 
     private boolean includeUserAccessRightsInfo = false;
 
+    private final MenuItemEntity menuItemInPreview;
+
+    public MenuItemXmlCreator( MenuItemXMLCreatorSetting setting, MenuItemAccessResolver menuItemAccessResolver,
+                               final MenuItemEntity menuItemInPreview )
+    {
+        this.setting = setting;
+        this.menuItemAccessResolver = menuItemAccessResolver;
+        this.menuItemInPreview = menuItemInPreview;
+    }
+
     public MenuItemXmlCreator( MenuItemXMLCreatorSetting setting, MenuItemAccessResolver menuItemAccessResolver )
     {
         this.setting = setting;
         this.menuItemAccessResolver = menuItemAccessResolver;
+        this.menuItemInPreview = null;
     }
 
     public void setIncludeAnonynousReadInfo( boolean value )
@@ -65,13 +76,13 @@ public class MenuItemXmlCreator
     public Element createMenuItemElement( final MenuItemEntity menuItem )
     {
         final XMLBuilder xmlDoc = new XMLBuilder( "menuitems" );
-        doAddMenuItemElement( xmlDoc, menuItem, false, 0 );
+        doAddMenuItemElement( xmlDoc, replaceWithPreview( menuItem ), false, 0 );
         return (Element) xmlDoc.getRootElement().getChild( "menuitem" ).detach();
     }
 
     public Element createMenuItemElement( MenuItemEntity menuItem, MenuItemAccumulatedAccessRights accessRightsForUser )
     {
-        return createMenuItemElement( menuItem, accessRightsForUser, null );
+        return createMenuItemElement( replaceWithPreview( menuItem ), accessRightsForUser, null );
     }
 
     public Element createMenuItemElement( MenuItemEntity menuItem, MenuItemAccumulatedAccessRights accessRightsForUser,
@@ -100,6 +111,8 @@ public class MenuItemXmlCreator
             XMLBuilder xmlDoc = new XMLBuilder( "menuitems" );
             return xmlDoc.getDocument();
         }
+
+        menuItem = replaceWithPreview( menuItem );
 
         // forcing mandantory settings
         setting.menuItemLevels = 1;
@@ -157,29 +170,14 @@ public class MenuItemXmlCreator
         parentMenuItem.addContent( rootLast.detach() );
     }
 
-    public Document createMenuItemsDocument( Iterable<MenuItemEntity> menuItems, String rootElementName )
-    {
-        return doCreateMenuItemsDocument( menuItems, rootElementName );
-    }
-
-    private Document doCreateMenuItemsDocument( Iterable<MenuItemEntity> menuItems, String rootElementName )
-    {
-        XMLBuilder xmlDoc = new XMLBuilder( rootElementName );
-        for ( MenuItemEntity menuItem : menuItems )
-        {
-            doAddMenuItemElement( xmlDoc, menuItem, setting.includeChildren, 0 );
-        }
-        return new Document( (Element) xmlDoc.getRootElement().detach() );
-    }
-
     public void addMenuItemElement( XMLBuilder xmlDoc, MenuItemEntity menuItem )
     {
-        doAddMenuItemElement( xmlDoc, menuItem, true, 0 );
+        doAddMenuItemElement( xmlDoc, replaceWithPreview( menuItem ), true, 0 );
     }
 
     public void addMenuItemElement( XMLBuilder xmlDoc, MenuItemEntity menuItem, boolean includeChildren )
     {
-        doAddMenuItemElement( xmlDoc, menuItem, includeChildren, 0 );
+        doAddMenuItemElement( xmlDoc, replaceWithPreview( menuItem ), includeChildren, 0 );
     }
 
     private void doAddMenuItemElement( XMLBuilder xmlDoc, MenuItemEntity menuItem, boolean includeChildren, int menuItemLevelsWalked )
@@ -497,12 +495,36 @@ public class MenuItemXmlCreator
                 {
                     if ( addable( child ) )
                     {
-                        doAddMenuItemElement( xmlDoc, child, includeChildren, menuItemLevelsWalked );
+                        doAddMenuItemElement( xmlDoc, replaceWithPreview( child ), includeChildren, menuItemLevelsWalked );
                     }
                 }
             }
         }
         xmlDoc.endElement();
+    }
+
+    private MenuItemEntity replaceWithPreview( final MenuItemEntity menuItem )
+    {
+        if ( menuItem == null )
+        {
+            return null;
+        }
+        else if ( menuItemInPreview == null )
+        {
+            return menuItem;
+        }
+        else if ( menuItem == menuItemInPreview )
+        {
+            return menuItem;
+        }
+        else if ( menuItem.equals( menuItemInPreview ) )
+        {
+            return menuItemInPreview;
+        }
+        else
+        {
+            return menuItem;
+        }
     }
 
     private int countNumberOfAccessibleChildren( Collection<MenuItemEntity> children )

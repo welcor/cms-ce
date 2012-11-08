@@ -10,8 +10,9 @@ import com.enonic.cms.api.client.model.GetCategoriesParams;
 import com.enonic.cms.api.client.model.GetMenuDataParams;
 import com.enonic.cms.api.client.model.GetMenuItemParams;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
-import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.portal.datasource.service.DataSourceService;
+import com.enonic.cms.core.preview.PreviewService;
+import com.enonic.cms.core.security.SecurityService;
 
 /**
  * This class wraps the presentation service and calls with the new client api.
@@ -23,15 +24,19 @@ public final class PresentationInvoker
 
     private final SecurityService securityService;
 
-    public PresentationInvoker( DataSourceService dataSourceService, SecurityService securityService )
+    private final PreviewService previewService;
+
+    public PresentationInvoker( DataSourceService dataSourceService, SecurityService securityService, PreviewService previewService )
     {
         this.dataSourceService = dataSourceService;
         this.securityService = securityService;
+        this.previewService = previewService;
     }
 
     private DataSourceContext createDataSourceContext()
     {
         DataSourceContext dataSourceContext = new DataSourceContext();
+        dataSourceContext.setPreviewContext( previewService.getPreviewContext() );
         dataSourceContext.setUser( securityService.getImpersonatedPortalUser() );
         return dataSourceContext;
     }
@@ -41,7 +46,8 @@ public final class PresentationInvoker
     {
         assertMinValue( "categoryKey", params.categoryKey, 0 );
         return this.dataSourceService.getCategories( createDataSourceContext(), params.categoryKey, params.levels,
-                                                     params.includeTopCategory, true, false, params.includeContentCount ).getAsJDOMDocument();
+                                                     params.includeTopCategory, true, false,
+                                                     params.includeContentCount ).getAsJDOMDocument();
     }
 
     public Document getMenuData( GetMenuDataParams params )

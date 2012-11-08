@@ -28,16 +28,20 @@ public class DataSourceContext
 
     private VerticalSession verticalSession;
 
-    public DataSourceContext( PreviewContext previewContext )
+    public DataSourceContext( final PreviewContext previewContext )
     {
         Preconditions.checkNotNull( previewContext );
-
         this.previewContext = previewContext;
     }
 
     public DataSourceContext()
     {
         this.previewContext = PreviewContext.NO_PREVIEW;
+    }
+
+    public void setPreviewContext( final PreviewContext previewContext )
+    {
+        this.previewContext = previewContext;
     }
 
     public final void setSiteKey( final SiteKey value )
@@ -48,11 +52,6 @@ public class DataSourceContext
     public final void setPortalInstanceKey( final PortalInstanceKey value )
     {
         portalInstanceKey = value;
-    }
-
-    public final void setPreviewContext( final PreviewContext previewContext )
-    {
-        this.previewContext = previewContext;
     }
 
     public final void setUser( final UserEntity user )

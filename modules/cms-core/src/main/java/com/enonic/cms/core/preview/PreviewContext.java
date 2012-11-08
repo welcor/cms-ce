@@ -6,6 +6,8 @@ package com.enonic.cms.core.preview;
 
 import com.google.common.base.Preconditions;
 
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+
 /**
  * Sep 29, 2010
  */
@@ -56,5 +58,15 @@ public class PreviewContext
     {
         Preconditions.checkNotNull( menuItemPreviewContext, "Unexpected call when not previewing a menuitem" );
         return menuItemPreviewContext;
+    }
+
+    public MenuItemEntity getMenuItemInPreviewOrNull()
+    {
+        if ( !isPreviewingMenuItem() )
+        {
+            return null;
+        }
+
+        return getMenuItemPreviewContext().getMenuItemPreviewed();
     }
 }

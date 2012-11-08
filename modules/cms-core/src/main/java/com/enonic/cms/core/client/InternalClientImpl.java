@@ -116,6 +116,7 @@ import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
 import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.portal.datasource.context.UserContextXmlCreator;
+import com.enonic.cms.core.portal.datasource.service.DataSourceService;
 import com.enonic.cms.core.portal.livetrace.ClientMethodExecutionTrace;
 import com.enonic.cms.core.portal.livetrace.ClientMethodExecutionTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -161,7 +162,6 @@ import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.core.portal.datasource.service.DataSourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteXmlCreator;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
@@ -803,7 +803,7 @@ public abstract class InternalClientImpl
     {
         if ( this.invoker == null )
         {
-            this.invoker = new PresentationInvoker( this.dataSourceService, securityService );
+            this.invoker = new PresentationInvoker( this.dataSourceService, securityService, previewService );
         }
 
         return this.invoker;
@@ -1696,7 +1696,9 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+            previewService.getPreviewContext().getMenuItemPreviewContext().getMenuItemPreviewed();
+            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ),
+                                                                previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
             siteXmlCreator.setUser( user );
             siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( params.tagItem ) );
@@ -1741,7 +1743,8 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ),
+                                                                previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
 
             siteXmlCreator.setMenuItemInBranch( menuItem );
@@ -1828,7 +1831,8 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ) );
+            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ),
+                                                                previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
             siteXmlCreator.setUser( user );
             siteXmlCreator.setMenuItemInBranch( menuItem );

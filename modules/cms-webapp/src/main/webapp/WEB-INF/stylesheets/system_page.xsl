@@ -381,14 +381,6 @@
                     <table>
                         <tr>
                             <td>
-                                Implementation:
-                            </td>
-                            <td>
-                                <xsl:value-of select="@implementationName"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 Time to live (seconds):
                             </td>
                             <td>
@@ -401,14 +393,6 @@
                             </td>
                             <td>
                                 <xsl:value-of select="@memoryCapacity"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Max elements on disk:
-                            </td>
-                            <td>
-                                <xsl:value-of select="@diskCapacity"/>
                             </td>
                         </tr>
                         <tr>

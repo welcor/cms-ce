@@ -38,20 +38,22 @@
     <div class="tab-page" id="tab-page-1">
         <span class="tab">Elasticsearch Index Properties</span>
 
+    [#if indexExists?? && indexExists == true]
+        <input type="button" class="button_text" name="recreateIndex" value="Recreate index" onclick="doDeleteIndex()"/>
+    [/#if]
+
     [#if indexExists??]
         <h2>Node status</h2>
         <ul>
             <li>
                 [#if indexExists == true]
                     <span class="keyField">Index exists:</span> = <span class="valueField">TRUE</span>
-                    <input type="button" class="button_text" name="recreateIndex" value="Recreate index" onclick="doDeleteIndex()"/>
                 [#else]
                     <span class="keyField">Index exists:</span> = <span class="valueField">FALSE</span>
                 [/#if]
             </li>
         </ul>
     [/#if]
-
 
     [#if error??]
         <h2>Errors</h2>

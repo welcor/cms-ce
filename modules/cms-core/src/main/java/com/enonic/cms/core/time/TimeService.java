@@ -5,6 +5,7 @@
 package com.enonic.cms.core.time;
 
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 /**
  * Jun 18, 2009
@@ -15,4 +16,7 @@ public interface TimeService
 
     long getNowAsMilliseconds();
 
+    DateTime bootTime();
+
+    Period upTime();
 }

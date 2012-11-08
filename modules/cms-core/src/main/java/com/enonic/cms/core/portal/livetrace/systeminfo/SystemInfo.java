@@ -1,7 +1,13 @@
 package com.enonic.cms.core.portal.livetrace.systeminfo;
 
+import org.joda.time.DateTime;
+
 public class SystemInfo
 {
+    private DateTime systemTime;
+
+    private String systemUpTime;
+
     private int portalRequestInProgress;
 
     private JavaThreadStatistic javaThreadStatistic;
@@ -13,6 +19,28 @@ public class SystemInfo
     private CacheStatistic pageCacheStatistic;
 
     private CacheStatistic entityCacheStatistic;
+
+    @SuppressWarnings("UnusedDeclaration")
+    public DateTime getSystemTime()
+    {
+        return systemTime;
+    }
+
+    public void setSystemTime( final DateTime systemTime )
+    {
+        this.systemTime = systemTime;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public String getSystemUpTime()
+    {
+        return systemUpTime;
+    }
+
+    public void setSystemUpTime( final String systemUpTime )
+    {
+        this.systemUpTime = systemUpTime;
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public int getPortalRequestInProgress()

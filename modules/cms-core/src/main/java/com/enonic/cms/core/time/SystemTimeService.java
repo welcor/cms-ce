@@ -4,23 +4,37 @@
  */
 package com.enonic.cms.core.time;
 
+import java.util.logging.Logger;
+
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
-/**
- * Jun 18, 2009
- */
 @Service("timeService")
 public class SystemTimeService
-    implements TimeService
+    extends BaseSystemTimeService
+    implements TimeService, InitializingBean
 {
-    public DateTime getNowAsDateTime()
+    private final Logger LOG = Logger.getLogger( SystemTimeService.class.getName() );
+
+    private DateTime bootTime;
+
+    @Override
+    public void afterPropertiesSet()
+        throws Exception
     {
-        return new DateTime();
+        this.bootTime = DateTime.now();
+        LOG.info( "System Boot Time noted as: " + this.bootTime );
     }
 
-    public long getNowAsMilliseconds()
+    public DateTime getNowAsDateTime()
     {
-        return new DateTime().getMillis();
+        return DateTime.now();
+    }
+
+    @Override
+    public DateTime bootTime()
+    {
+        return bootTime;
     }
 }

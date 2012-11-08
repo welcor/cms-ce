@@ -59,9 +59,9 @@ public class ElasticSearchIndexServiceImpl
 
     private static final boolean WAIT_FOR_MERGE = true;
 
-    public static final TimeValue INDEX_REQUEST_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 5 );
+    public static final TimeValue INDEX_REQUEST_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 10 );
 
-    public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 5 );
+    public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 10 );
 
     public static final TimeValue WAITFOR_YELLOW_TIMEOUT = TimeValue.timeValueSeconds( 30 );
 

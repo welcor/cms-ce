@@ -105,6 +105,8 @@ lpt.SystemInfoController = function ( automaticReloadTimeInMillis )
 
     function updateGUI( systemInfo )
     {
+        $( '#system-time' ).text( formatDateAsMostSignificantValueFirst( new Date( systemInfo.systemTime ) ) );
+        $( '#system-up-time' ).text( systemInfo.systemUpTime );
         $( '#current-requests-tab-label' ).text( systemInfo.portalRequestInProgress );
 
         $( '#entity-cache-count' ).text( systemInfo.entityCacheStatistic.count );
@@ -147,6 +149,22 @@ lpt.SystemInfoController = function ( automaticReloadTimeInMillis )
         {
             $( '#data-source-open-connection-count' ).text( systemInfo.data_source_open_connection_count );
         }
+    }
+
+    function formatDateAsMostSignificantValueFirst( date )
+    {
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + padZero( date.getDate() ) + " " + padZero( date.getHours() ) + ":" +
+            padZero( date.getMinutes() ) + ":" + padZero( date.getSeconds() );
+    }
+
+    function padZero( value )
+    {
+        var res = new String( value );
+        if ( res.length < 2 )
+        {
+            res = "0" + value;
+        }
+        return res;
     }
 
     function humanReadableBytes( size )

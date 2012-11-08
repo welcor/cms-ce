@@ -122,6 +122,17 @@
             </script>
 
             <fieldset>
+              <legend>&nbsp;%blockUptime%&nbsp;</legend>
+              <table class="formtable">
+                <tr>
+                  <td class="form_labelcolumn" colspan="2">
+                    <xsl:value-of select="/vertical/@upTime"/> ( since <xsl:value-of select="/vertical/@bootTime"/> )
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+            <fieldset>
                 <legend>&nbsp;%blockCms%&nbsp;</legend>
                 <table class="formtable">
                     <tr>
@@ -410,6 +421,21 @@
                         </tr>
                         <tr>
                             <td>
+                               Capacity usage (memory):
+                            </td>
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="statistics/@memoryCapacityUsage = '-1'">
+                                    <xsl:text>-</xsl:text>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="statistics/@memoryCapacityUsage"/><xsl:text> % </xsl:text>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 Cache hits:
                             </td>
                             <td>
@@ -430,6 +456,21 @@
                             </td>
                             <td>
                                 <xsl:value-of select="statistics/@cacheClears"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Cache effectiveness:
+                            </td>
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="statistics/@cacheEffectiveness = '-1'">
+                                        <xsl:text>-</xsl:text>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="statistics/@cacheEffectiveness"/><xsl:text> % </xsl:text>
+                                    </xsl:otherwise>
+                                </xsl:choose>
                             </td>
                         </tr>
                     </table>

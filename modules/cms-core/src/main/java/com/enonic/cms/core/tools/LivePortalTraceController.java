@@ -32,7 +32,8 @@ import com.enonic.cms.core.portal.livetrace.systeminfo.SystemInfoFactory;
 public final class LivePortalTraceController
     extends AbstractToolController
 {
-    private SystemInfoFactory systemInfoFactory = new SystemInfoFactory();
+    @Autowired
+    private SystemInfoFactory systemInfoFactory;
 
     private LivePortalTraceService livePortalTraceService;
 

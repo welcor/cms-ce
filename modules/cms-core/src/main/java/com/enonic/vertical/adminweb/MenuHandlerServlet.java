@@ -8,12 +8,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +22,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom.JDOMException;
-import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,46 +31,32 @@ import org.w3c.dom.NodeList;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 import com.enonic.esl.util.ParamsInTextParser;
 import com.enonic.esl.xml.XMLTool;
+import com.enonic.vertical.adminweb.handlers.preview.PreviewPageHandler;
+import com.enonic.vertical.adminweb.handlers.preview.PreviewPageHandlerFactory;
 import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
-import com.enonic.cms.framework.util.JDOMUtil;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.admin.MenuItemsAcrossSitesModel;
 import com.enonic.cms.core.admin.MenuItemsAcrossSitesXmlCreator;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.language.LanguageEntity;
-import com.enonic.cms.core.language.LanguageKey;
-import com.enonic.cms.core.language.LanguageResolver;
-import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.rendering.PageRenderer;
-import com.enonic.cms.core.portal.rendering.PageRendererContext;
-import com.enonic.cms.core.portal.rendering.RegionsResolver;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
-import com.enonic.cms.core.preview.MenuItemPreviewContext;
-import com.enonic.cms.core.preview.PreviewContext;
-import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
-import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.DefaultSiteAccessRightAccumulator;
 import com.enonic.cms.core.structure.DefaultSiteAccumulatedAccessRights;
-import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteXmlCreator;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
@@ -83,21 +65,14 @@ import com.enonic.cms.core.structure.menuitem.MenuItemAccumulatedAccessRights;
 import com.enonic.cms.core.structure.menuitem.MenuItemAndUserAccessRights;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemRequestParameter;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.menuitem.MenuItemXMLCreatorSetting;
 import com.enonic.cms.core.structure.menuitem.MenuItemXmlCreator;
-import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.PageSpecification;
-import com.enonic.cms.core.structure.page.PageWindowEntity;
-import com.enonic.cms.core.structure.page.PageWindowKey;
-import com.enonic.cms.core.structure.page.Regions;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
-import com.enonic.cms.core.structure.page.template.PageTemplateRegionEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.core.structure.portlet.PortletEntity;
 
 public class MenuHandlerServlet
     extends AdminHandlerBaseServlet
@@ -113,6 +88,9 @@ public class MenuHandlerServlet
     private static final String FORM_ITEM_DISPLAY_NAME = "displayname";
 
     private static final String ELEMENT_NAME_DISPLAY_NAME = "displayname";
+
+    @Autowired
+    private PreviewPageHandlerFactory previewPageHandlerFactory;
 
     private void buildPageXML( ExtendedMap formItems, String xmlParams, Element menuItemElem )
         throws VerticalAdminException
@@ -1801,12 +1779,11 @@ public class MenuHandlerServlet
                                 ExtendedMap formItems )
         throws VerticalAdminException
     {
-        MenuItemAccessResolver menuItemAccessResolver = new MenuItemAccessResolver( groupDao );
-        String type = formItems.getString( "type", "" );
+        final String type = formItems.getString( "type", "" );
         if ( type.equals( "shortcut" ) )
         {
-            int shortCut = formItems.getInt( "shortcut", -1 );
-            MenuItemEntity menuItemEntity = menuItemDao.findByKey( shortCut );
+            final MenuItemKey shortCut = new MenuItemKey( formItems.getInt( "shortcut" ) );
+            final MenuItemEntity menuItemEntity = menuItemDao.findByKey( shortCut );
             formItems.remove( "key" );
             formItems.remove( "type" );
             formItems.putInt( "key", menuItemEntity.getKey().toInt() );
@@ -1814,363 +1791,23 @@ public class MenuHandlerServlet
             handlerPreview( request, response, session, admin, formItems );
         }
 
-        User oldUser = securityService.getLoggedInAdminConsoleUser();
-        UserEntity requester = securityService.getUser( oldUser );
+        final MenuItemKey menuItemKey =
+            !"none".equals( formItems.getString( "key" ) ) ? new MenuItemKey( formItems.getInt( "key", -1 ) ) : new MenuItemKey( -1 );
+        final SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
+        final MenuItemKey parentKey = new MenuItemKey( formItems.getInt( "parentkey", -1 ) );
+
         try
         {
-            SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
-            int parentKey = formItems.getInt( "parentkey", -1 );
-            Element oldMenuItemElem = null;
-            int menuItemKeyInt = -1;
-            String tmp = formItems.getString( "key" );
-            if ( !"none".equals( tmp ) )
-            {
-                menuItemKeyInt = formItems.getInt( "key", -1 );
-                if ( menuItemKeyInt != -1 )
-                {
-                    MenuItemXMLCreatorSetting setting = new MenuItemXMLCreatorSetting();
-                    setting.user = requester;
-                    MenuItemXmlCreator xmlCreator = new MenuItemXmlCreator( setting, menuItemAccessResolver );
+            final PreviewPageHandler previewPageHandler = previewPageHandlerFactory.create( request, formItems );
+            final RenderedPageResult renderedPageResult = previewPageHandler.renderPreview( siteKey, parentKey, menuItemKey );
 
-                    List<MenuItemEntity> menuItems = new ArrayList<MenuItemEntity>();
-                    menuItems.add( menuItemDao.findByKey( menuItemKeyInt ) );
-                    Document menuItemDoc = JDOMUtil.toW3CDocument( xmlCreator.createMenuItemsDocument( menuItems, "menuitems" ) );
-                    oldMenuItemElem = (Element) menuItemDoc.getDocumentElement().getFirstChild();
-                }
-            }
-
-            MenuItemKey menuItemKey = new MenuItemKey( menuItemKeyInt );
-            MenuItemEntity persistedMenuItem = menuItemDao.findByKey( menuItemKey.toInt() );
-            MenuItemEntity modifiedMenuItem;
-            if ( persistedMenuItem == null )
-            {
-                modifiedMenuItem = new MenuItemEntity();
-                PageEntity newPage = new PageEntity();
-                int pageTemplateKey = formItems.getInt( "pagetemplatekey" );
-                PageTemplateEntity pageTemplate = pageTemplateDao.findByKey( pageTemplateKey );
-                newPage.setTemplate( pageTemplate );
-                modifiedMenuItem.setPage( newPage );
-                SiteEntity site = siteDao.findByKey( siteKey );
-                modifiedMenuItem.setSite( site );
-                modifiedMenuItem.setKey( new MenuItemKey( -1 ) );
-
-                modifiedMenuItem.setParent( menuItemDao.findByKey( parentKey ) );
-            }
-            else
-            {
-                modifiedMenuItem = new MenuItemEntity( persistedMenuItem );
-            }
-
-            // create new menuitem with same values and modify with values from request
-            modifiedMenuItem = modifyMenuItemForPreview( formItems, modifiedMenuItem );
-
-            Document menuitemsDoc = createPreviewMenuItemXml( admin, oldMenuItemElem, formItems, siteKey.toInt(), menuItemKey.toInt() );
-
-            Element menuitemsElem = menuitemsDoc.getDocumentElement();
-            Element newMenuItemElem = XMLTool.getElement( menuitemsElem, "menuitem" );
-
-            final PageTemplateEntity pageTemplate = modifiedMenuItem.getPage().getTemplate();
-            final Regions regionsInPage =
-                RegionsResolver.resolveRegionsForPageRequest( modifiedMenuItem, pageTemplate, PageRequestType.MENUITEM );
-
-            // vertical context
-            request.setAttribute( Attribute.PREVIEW_ENABLED, "true" );
-            HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper( request );
-            wrappedRequest.setParameter( "id", menuItemKey.toString() );
-            wrappedRequest.setServletPath( "/site" );
-            ServletRequestAccessor.setRequest( wrappedRequest );
-
-            for ( MenuItemRequestParameter menuItemRequestParameter : modifiedMenuItem.getRequestParameters().values() )
-            {
-                wrappedRequest.setParameter( menuItemRequestParameter.getName(), menuItemRequestParameter.getValue() );
-            }
-
-            SiteEntity site = modifiedMenuItem.getSite();
-            SiteXmlCreator siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
-            siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );
-            siteXmlCreator.setIncludeDeviceClassResolverInfo( false );
-            siteXmlCreator.setUser( requester );
-            if ( parentKey == -1 )
-            {
-                siteXmlCreator.setMenuItemLevels( 0 );
-            }
-            else
-            {
-                siteXmlCreator.setMenuItemLevels( modifiedMenuItem.getLevel() + 1 );
-            }
-            siteXmlCreator.setBranchStartLevel( 0 );
-            siteXmlCreator.setMenuItemInBranch( modifiedMenuItem );
-            siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( modifiedMenuItem.getKey() ) );
-            siteXmlCreator.setIncludeTopLevel( true );
-
-            XMLDocument menusXmlDocument = siteXmlCreator.createLegacyGetMenuBranch( site );
-
-            org.jdom.Element menusEl = new org.jdom.Element( "menus" );
-            org.jdom.Element menuEl = new org.jdom.Element( "menu" );
-            menuEl.addContent( menusXmlDocument.getAsJDOMDocument().getRootElement().detach() );
-            menusEl.addContent( menuEl );
-            org.jdom.Document menusDoc = new org.jdom.Document( menusEl );
-
-            Element menusElem = JDOMUtil.toW3CDocument( menusDoc ).getDocumentElement();
-
-            MenuItemPreviewContext menuItemPreviewContext = new MenuItemPreviewContext( modifiedMenuItem );
-            PreviewContext previewContext = new PreviewContext( menuItemPreviewContext );
-            previewService.setPreviewContext( previewContext );
-
-            SitePath sitePath = new SitePath( site.getKey(), modifiedMenuItem.getPath() );
-            sitePath.addParam( "id", menuItemKey.toString() );
-            request.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
-
-            // Resolve run as user
-            UserEntity runAsUser = modifiedMenuItem.resolveRunAsUser( requester, true );
-            if ( runAsUser == null )
-            {
-                runAsUser = requester;
-            }
-
-            LanguageEntity language = LanguageResolver.resolve( site, modifiedMenuItem );
-
-            ResolverContext resolverContext = new ResolverContext( wrappedRequest, site, modifiedMenuItem, language );
-            resolverContext.setUser( requester );
-
-            final Locale locale = localeResolverService.getLocale( resolverContext );
-            final String deviceClass = deviceClassResolverService.getDeviceClass( resolverContext );
-
-            // render page
-            PageRendererContext pageRendererContext = new PageRendererContext();
-            pageRendererContext.setDeviceClass( deviceClass );
-            pageRendererContext.setForceNoCacheUsage( true );
-            pageRendererContext.setHttpRequest( wrappedRequest );
-            pageRendererContext.setLanguage( language );
-            pageRendererContext.setLocale( locale );
-            pageRendererContext.setMenuItem( modifiedMenuItem );
-            pageRendererContext.setOriginalSitePath( sitePath );
-            pageRendererContext.setPageRequestType( PageRequestType.MENUITEM );
-            pageRendererContext.setPreviewContext( previewContext );
-            pageRendererContext.setRegionsInPage( regionsInPage );
-            pageRendererContext.setRenderer( requester );
-            pageRendererContext.setRequestTime( new DateTime() );
-            pageRendererContext.setRunAsUser( runAsUser );
-            pageRendererContext.setTicketId( request.getSession().getId() );
-            pageRendererContext.setSite( site );
-            pageRendererContext.setSitePath( sitePath );
-
-            PageRenderer renderer = pageRendererFactory.createPageRenderer( pageRendererContext );
-            RenderedPageResult result = renderer.renderPage( pageTemplate );
-
-            PrintWriter writer = response.getWriter();
-            writer.write( result.getContent() );
+            final PrintWriter writer = response.getWriter();
+            writer.write( renderedPageResult.getContent() );
         }
         catch ( IOException e )
         {
             VerticalAdminLogger.errorAdmin( "Failed to get response writer: %t", e );
         }
-        catch ( JDOMException e )
-        {
-            VerticalAdminLogger.errorAdmin( "Failed to convert jdom to w3c document: %t", e );
-        }
-    }
-
-
-    private MenuItemEntity modifyMenuItemForPreview( ExtendedMap formItems, MenuItemEntity menuItem )
-        throws VerticalAdminException
-    {
-
-        menuItem.removeRequestParameters();
-
-        if ( isArrayFormItem( formItems, "paramname" ) )
-        {
-            // there are multiple parameters
-            String[] paramNames = (String[]) formItems.get( "paramname" );
-            String[] paramVals = (String[]) formItems.get( "paramval" );
-            String[] paramOverrides = (String[]) formItems.get( "paramoverride" );
-
-            for ( int i = 0; i < paramNames.length; i++ )
-            {
-                String paramName = paramNames[i];
-                String paramValue = paramVals[i];
-                if ( paramName.length() == 0 || paramValue.length() == 0 )
-                {
-                    continue;
-                }
-
-                String paramOverride = paramOverrides[i];
-                menuItem.addRequestParameter( paramName, paramValue, paramOverride );
-            }
-        }
-        else
-        {
-            // there is only one (or zero) parameter
-            String paramName = formItems.getString( "paramname", null );
-            String paramVal = formItems.getString( "paramval", null );
-            String paramOverride = formItems.getString( "paramoverride", null );
-
-            if ( paramName != null || paramVal != null )
-            {
-                menuItem.addRequestParameter( paramName, paramVal, paramOverride );
-            }
-        }
-
-        menuItem.setXmlData( menuItem.getMenuDataJDOMDocument() );
-
-        // name
-        String menuItemName = formItems.getString( "name", null ) != null ? formItems.getString( "name" ) : menuItem.getName();
-
-        // display-name
-        String displayName = formItems.getString( FORM_ITEM_DISPLAY_NAME, null );
-
-        String menuName = formItems.getString( FORM_ITEM_MENU_NAME, null );
-
-        menuItemName = ensureOrGenerateMenuItemName( menuItemName, displayName, menuName );
-
-        menuItem.setName( menuItemName );
-
-        menuItem.setDisplayName( displayName != null ? formItems.getString( FORM_ITEM_DISPLAY_NAME ) : menuItem.getDisplayName() );
-
-        menuItem.setMenuName( menuName != null ? formItems.getString( FORM_ITEM_MENU_NAME ) : menuItem.getMenuName() );
-
-        // type
-        String type = formItems.getString( "type", "" );
-        MenuItemType menuItemType = null;
-        if ( type.equals( "form" ) )
-        {
-            menuItemType = MenuItemType.CONTENT;
-        }
-        else if ( type.equals( "section" ) )
-        {
-            menuItemType = MenuItemType.SECTION;
-        }
-        else if ( type.equals( "page" ) )
-        {
-            menuItemType = MenuItemType.PAGE;
-        }
-        else if ( type.equals( "sectionpage" ) )
-        {
-            menuItemType = MenuItemType.PAGE;
-        }
-        else if ( type.equals( "content" ) )
-        {
-            menuItemType = MenuItemType.CONTENT;
-        }
-        else if ( type.equals( "newsletter" ) )
-        {
-            menuItemType = MenuItemType.PAGE;
-        }
-        else if ( type.equals( "label" ) )
-        {
-            menuItemType = MenuItemType.LABEL;
-        }
-        else if ( type.equals( "shortcut" ) )
-        {
-            menuItemType = MenuItemType.SHORTCUT;
-        }
-        else if ( "localurl".equals( type ) || "externalurl".equals( type ) )
-        {
-            menuItemType = MenuItemType.URL;
-        }
-        if ( menuItemType != null )
-        {
-            menuItem.setType( menuItemType );
-        }
-
-        // set runAs
-        String runAs = formItems.getString( "runAs", "" );
-        RunAsType runAsType = RunAsType.INHERIT;
-        // automatically treat a form as a page
-        if ( runAs.equals( "DEFAULT_USER" ) )
-        {
-            runAsType = RunAsType.DEFAULT_USER;
-        }
-        else if ( runAs.equals( "INHERIT" ) )
-        {
-            runAsType = RunAsType.INHERIT;
-        }
-        else if ( runAs.equals( "PERSONALIZED" ) )
-        {
-            runAsType = RunAsType.PERSONALIZED;
-        }
-        menuItem.setRunAs( runAsType );
-
-        // set description
-        menuItem.setDescription(
-            formItems.getString( "description", null ) != null ? formItems.getString( "description" ) : menuItem.getDescription() );
-
-        // set keywords
-        menuItem.setKeywords(
-            formItems.getString( "keywords", null ) != null ? formItems.getString( "keywords" ) : menuItem.getKeywords() );
-
-        // set language
-        if ( formItems.getString( "languagekey", null ) != null )
-        {
-            String languageKeyStr = formItems.getString( "languagekey" );
-            LanguageKey languageKey = new LanguageKey( languageKeyStr );
-            LanguageEntity language = languageDao.findByKey( languageKey );
-            menuItem.setLanguage( language );
-        }
-
-        // set visibility:
-        if ( "on".equals( formItems.getString( "visibility", null ) ) )
-        {
-            menuItem.setHidden( false );
-        }
-        else
-        {
-            menuItem.setHidden( true );
-        }
-
-        // timestamp
-        menuItem.setTimestamp( new Date() );
-
-        // content
-        if ( formItems.containsKey( "_selected_content" ) && menuItem.getRequestParameterValue( "key" ) == null )
-        {
-            int contentKey = formItems.getInt( "_selected_content" );
-            ContentEntity contentEntity = contentDao.findByKey( new ContentKey( contentKey ) );
-            menuItem.setContent( contentEntity );
-        }
-        else if ( menuItem.getRequestParameterValue( "key" ) != null )
-        {
-            int contentKey = Integer.valueOf( menuItem.getRequestParameterValue( "key" ) );
-            ContentEntity contentEntity = contentDao.findByKey( new ContentKey( contentKey ) );
-            menuItem.setContent( contentEntity );
-        }
-
-        //page windows
-        if ( menuItem.getPage() != null )
-        {
-            PageEntity modifiedPage = new PageEntity( menuItem.getPage() );
-            menuItem.setPage( modifiedPage );
-            modifiedPage.removeAllPortletPlacements();
-
-            PageTemplateEntity pageTemplate = modifiedPage.getTemplate();
-            Set<PageTemplateRegionEntity> pageTemplateRegions = pageTemplate.getPageTemplateRegions();
-            for ( PageTemplateRegionEntity pageTemplateRegion : pageTemplateRegions )
-            {
-                String[] portletKeys = formItems.getStringArray( pageTemplateRegion.getName() );
-                if ( portletKeys.length > 0 )
-                {
-                    for ( String portletKeyStr : portletKeys )
-                    {
-                        if ( StringUtils.isBlank( portletKeyStr ) )
-                        {
-                            continue;
-                        }
-
-                        PortletEntity portlet = portletDao.findByKey( Integer.valueOf( portletKeyStr ) );
-
-                        PageWindowEntity pageWindow = new PageWindowEntity();
-                        pageWindow.setKey( new PageWindowKey( modifiedPage.getKey(), portlet.getKey() ) );
-                        pageWindow.setPage( modifiedPage );
-                        pageWindow.setPageTemplateRegion( pageTemplateRegion );
-                        pageWindow.setTimestamp( new Date() );
-                        pageWindow.setPortlet( portlet );
-                        modifiedPage.addPortletPlacement( pageWindow );
-                    }
-                }
-            }
-        }
-
-        return menuItem;
     }
 
     private String ensureOrGenerateMenuItemName( String menuItemName, String displayName, String menuName )

@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.vertical.adminweb.handlers;
+package com.enonic.vertical.adminweb.handlers.preview;
 
 import java.util.Date;
 import java.util.Locale;
@@ -56,7 +56,7 @@ import com.enonic.cms.store.dao.ContentVersionDao;
  */
 public class PreviewContentHandler
 {
-    private HttpServletRequest request;
+    private HttpServletRequest httpRequest;
 
     private HttpSession session;
 
@@ -110,11 +110,11 @@ public class PreviewContentHandler
         // Override base path
         final SitePath sitePath = new SitePath( site.getKey(), Path.ROOT.appendPath( ReservedLocalPaths.PATH_PAGE ) );
 
-        request.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
-        request.setAttribute( Attribute.PREVIEW_ENABLED, "true" );
+        httpRequest.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
+        httpRequest.setAttribute( Attribute.PREVIEW_ENABLED, "true" );
 
         // wrap and modify request
-        HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper( request );
+        HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper( httpRequest );
         wrappedRequest.setServletPath( "/site" );
         wrappedRequest.setParameter( "id", menuItem.getKey().toString() );
         if ( this.contentKey != null )
@@ -313,9 +313,9 @@ public class PreviewContentHandler
         this.pageRendererFactory = pageRendererFactory;
     }
 
-    public void setRequest( HttpServletRequest request )
+    public void setHttpRequest( HttpServletRequest httpRequest )
     {
-        this.request = request;
+        this.httpRequest = httpRequest;
     }
 
     public void setSession( HttpSession session )

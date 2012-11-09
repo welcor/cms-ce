@@ -13,11 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.net.URL;
 import com.enonic.vertical.adminweb.AdminHelper;
 
-import com.enonic.cms.core.tools.AbstractToolController;
 import com.enonic.cms.core.tools.AbstractToolController2;
 
 public class ReindexContentToolController

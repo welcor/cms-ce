@@ -12,12 +12,12 @@ import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.cache.event.CacheEventHandler;
 import com.enonic.cms.framework.cache.event.CacheEventHandlerAdapter;
-import com.enonic.cms.framework.cache.event.CacheEventPublisher;
 import com.enonic.cms.framework.cache.event.CacheEventPublisherAdapter;
 
 import com.enonic.cms.core.cluster.ClusterEvent;
 import com.enonic.cms.core.cluster.ClusterEventListener;
 import com.enonic.cms.core.cluster.ClusterEventPublisher;
+import com.enonic.cms.core.cluster.NopClusterEventPublisher;
 import com.enonic.cms.core.config.ConfigProperties;
 
 public abstract class AbstractCacheManager
@@ -27,7 +27,7 @@ public abstract class AbstractCacheManager
 
     private final CacheEventHandlerAdapter cacheEventHandlerAdapter;
 
-    private CacheEventPublisher cacheEventPublisher;
+    private CacheEventPublisherAdapter cacheEventPublisher;
 
     private CacheManagerConfig config;
 
@@ -35,6 +35,7 @@ public abstract class AbstractCacheManager
     {
         this.cacheMap = Maps.newLinkedHashMap();
         this.cacheEventHandlerAdapter = new CacheEventHandlerAdapter( this );
+        this.cacheEventPublisher = new CacheEventPublisherAdapter( new NopClusterEventPublisher() );
     }
 
     @Override
@@ -119,7 +120,7 @@ public abstract class AbstractCacheManager
         this.config = new CacheManagerConfig( properties );
     }
 
-    @Autowired
+    @Autowired(required = false)
     public final void setClusterEventPublisher( final ClusterEventPublisher clusterEventPublisher )
     {
         this.cacheEventPublisher = new CacheEventPublisherAdapter( clusterEventPublisher );

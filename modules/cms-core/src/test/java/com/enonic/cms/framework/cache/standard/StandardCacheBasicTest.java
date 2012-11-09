@@ -7,7 +7,7 @@ package com.enonic.cms.framework.cache.standard;
 import junit.framework.TestCase;
 
 import com.enonic.cms.framework.cache.CacheFacade;
-import com.enonic.cms.framework.cache.NopClusterEventPublisher;
+import com.enonic.cms.core.cluster.NopClusterEventPublisher;
 
 import com.enonic.cms.core.config.ConfigProperties;
 

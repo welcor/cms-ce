@@ -5,11 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.enonic.cms.framework.cache.CacheFacade;
-import com.enonic.cms.framework.cache.NopClusterEventPublisher;
+import com.enonic.cms.core.cluster.NopClusterEventPublisher;
 import com.enonic.cms.framework.cache.standard.StandardCacheManager;
 
-import com.enonic.cms.core.cluster.ClusterEvent;
-import com.enonic.cms.core.cluster.ClusterEventPublisher;
 import com.enonic.cms.core.config.ConfigProperties;
 
 import static junit.framework.Assert.assertEquals;

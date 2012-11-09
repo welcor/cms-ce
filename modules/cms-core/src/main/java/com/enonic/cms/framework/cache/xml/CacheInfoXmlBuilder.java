@@ -45,5 +45,6 @@ public final class CacheInfoXmlBuilder
         statsElem.setAttribute( "cacheMisses", String.valueOf( cache.getMissCount() ) );
         statsElem.setAttribute( "cacheEffectiveness", String.valueOf( cache.getEffectiveness() ) );
         statsElem.setAttribute( "cacheClears", String.valueOf( cache.getRemoveAllCount() ) );
+        root.addContent( statsElem );
     }
 }

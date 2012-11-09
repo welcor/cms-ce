@@ -1,7 +1,4 @@
-package com.enonic.cms.framework.cache;
-
-import com.enonic.cms.core.cluster.ClusterEvent;
-import com.enonic.cms.core.cluster.ClusterEventPublisher;
+package com.enonic.cms.core.cluster;
 
 public final class NopClusterEventPublisher
     implements ClusterEventPublisher

@@ -141,16 +141,28 @@
                value-ref="systemHandlerServletWrapper"/>
         <entry key="/admin/servlet/com.enonic.vertical.adminweb.UserHandlerServlet"
                value-ref="userHandlerServletWrapper"/>
-        <!-- Tools controllers  -->
-        <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.PluginInfoController"
-               value-ref="pluginInfoController"/>
-        <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.LivePortalTraceController"
-               value-ref="livePortalTraceController"/>
-        <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController"
-               value-ref="reindexContentToolController"/>
-        <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.IndexMonitorController" value-ref="indexMonitorController"/>
-        <entry key="/admin/servlet/tools/com.enonic.cms.core.tools.ClusterMonitorController" value-ref="clusterMonitorController"/>
         <entry key="/admin/servlet/com.enonic.vertical.adminweb.SchedulerServlet" value-ref="schedulerServletWrapper"/>
+
+        <!-- Tools controllers  -->
+        <entry key="/admin/tools/pluginInfo">
+          <bean class="com.enonic.cms.core.tools.plugin.PluginInfoController"/>
+        </entry>
+
+        <entry key="/admin/tools/clusterInfo">
+          <bean class="com.enonic.cms.core.tools.ClusterMonitorController"/>
+        </entry>
+
+        <entry key="/admin/tools/indexMonitor">
+          <bean class="com.enonic.cms.core.tools.index.IndexMonitorController"/>
+        </entry>
+
+        <entry key="/admin/tools/reindexContent">
+          <bean class="com.enonic.cms.core.tools.index.ReindexContentToolController"/>
+        </entry>
+
+        <entry key="/admin/tools/livePortalTrace">
+          <bean class="com.enonic.cms.core.tools.LivePortalTraceController"/>
+        </entry>
       </map>
     </property>
   </bean>
@@ -166,11 +178,6 @@
     </property>
   </bean>
 
-  <bean id="pluginInfoController" class="com.enonic.cms.core.tools.PluginInfoController"/>
-  <bean id="livePortalTraceController" class="com.enonic.cms.core.tools.LivePortalTraceController"/>
-  <bean id="reindexContentToolController" class="com.enonic.cms.core.tools.ReindexContentToolController"/>
-  <bean id="indexMonitorController" class="com.enonic.cms.core.tools.IndexMonitorController"/>
-  <bean id="clusterMonitorController" class="com.enonic.cms.core.tools.ClusterMonitorController"/>
   <bean id="resourceController" class="com.enonic.cms.server.service.admin.mvc.controller.ResourceController"/>
 
   <bean id="debugViewController" class="com.enonic.cms.server.service.admin.mvc.controller.SiteDebugViewController"/>

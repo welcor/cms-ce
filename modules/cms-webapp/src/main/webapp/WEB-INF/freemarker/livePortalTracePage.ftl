@@ -11,9 +11,9 @@
 <html>
 <head>
     <title>Admin / Live Portal Trace </title>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery.sparkline.min-2.0.js"></script>
-    <script type="text/javascript" src="javascript/lib/jquery/jquery.treeTable.js"></script>
+    <script type="text/javascript" src="../javascript/lib/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="../javascript/lib/jquery/jquery.sparkline.min-2.0.js"></script>
+    <script type="text/javascript" src="../javascript/lib/jquery/jquery.treeTable.js"></script>
     <script type="text/javascript" src="liveportaltrace/Utility.js"></script>
     <script type="text/javascript" src="liveportaltrace/view/PortalRequestTraceDetailHtmlBuilder.js"></script>
     <script type="text/javascript" src="liveportaltrace/view/PortalRequestTraceRowView.js"></script>
@@ -26,19 +26,20 @@
     <script type="text/javascript" src="liveportaltrace/ctrl/CompletedRequestsGraphController.js"></script>
     <script type="text/javascript" src="liveportaltrace/ctrl/PageCacheCapacityGraphController.js"></script>
     <script type="text/javascript" src="liveportaltrace/ctrl/EntityCacheCapacityGraphController.js"></script>
-    <script type="text/javascript" src="javascript/tabpane.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/tools/jquery-ui-1.8.21.css"/>
+    <script type="text/javascript" src="../javascript/tabpane.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/tools/jquery-ui-1.8.21.css"/>
     <link rel="stylesheet" type="text/css" href="liveportaltrace/jquery.treeTable.css"/>
     <link rel="stylesheet" type="text/css" href="liveportaltrace/live-portal-trace.css"/>
-    <link type="text/css" rel="stylesheet" href="css/admin.css"/>
-    <link type="text/css" rel="StyleSheet" href="javascript/tab.webfx.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/admin.css"/>
+    <link type="text/css" rel="StyleSheet" href="../javascript/tab.webfx.css"/>
 </head>
 <body>
+
+<h1>Admin / Live Portal Trace</h1>
 
 <table style="margin-bottom: 10px">
     <tr>
         <td style="margin-right: 10px">
-            <h1>Admin / <a href="${baseUrl}/adminpage?page=912&op=liveportaltrace">Live Portal Trace</a></h1>
             <button class="button_text" id="auto-update" onclick="automaticUpdateController.switchAutomaticUpdate()">
                 Stop automatic update
             </button>
@@ -324,7 +325,7 @@
 
     lpt.resolveURLAndAddParams = function ( params )
     {
-        return "servlet/tools/com.enonic.cms.core.tools.LivePortalTraceController?page=914&op=custom&" + params;
+        return "livePortalTrace?" + params;
     };
 
     var portalRequestTraceDetailHtmlBuilder = lpt.PortalRequestTraceDetailHtmlBuilder();

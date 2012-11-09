@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.tools;
+package com.enonic.cms.core.tools.index;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,11 +17,12 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.URL;
 import com.enonic.vertical.adminweb.AdminHelper;
 
-public class ReindexContentToolController
-    extends AbstractToolController
-{
+import com.enonic.cms.core.tools.AbstractToolController;
+import com.enonic.cms.core.tools.AbstractToolController2;
 
-    @Autowired
+public class ReindexContentToolController
+    extends AbstractToolController2
+{
     private ReindexContentToolService reindexContentToolService;
 
     private List<String> logEntries = new ArrayList<String>();
@@ -29,29 +30,21 @@ public class ReindexContentToolController
     private Boolean reindexingInProgress = Boolean.FALSE;
 
     @Override
-    protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
+    protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
+        throws Exception
     {
         if ( req.getParameter( "reindex" ) != null )
         {
             startReindexAllContentTypes();
-
-            try
-            {
-                URL referer = new URL( req.getHeader( "referer" ) );
-                redirectClientToURL( referer, res );
-            }
-            catch ( Exception e )
-            {
-                //TODO : FIX, what happend in tools
-            }
+            redirectToReferrer( req, res );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>();
+        final HashMap<String, Object> model = new HashMap<String, Object>();
         model.put( "reindexInProgress", reindexingInProgress );
         model.put( "reindexLog", logEntries );
         model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
 
-        process(req, res, model, "reindexContentPage" );
+        renderView(req, res, model, "reindexContentPage" );
     }
 
     private synchronized void startReindexAllContentTypes()
@@ -83,6 +76,7 @@ public class ReindexContentToolController
         reindexThread.start();
     }
 
+    @Autowired
     public void setReindexContentToolService( ReindexContentToolService value )
     {
         this.reindexContentToolService = value;

@@ -1,4 +1,4 @@
-package com.enonic.cms.core.tools;
+package com.enonic.cms.core.tools.plugin;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,39 +9,38 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.net.URL;
-import com.enonic.vertical.adminweb.AdminHelper;
-
 import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.tools.AbstractToolController2;
 
 public final class PluginInfoController
-    extends AbstractToolController
+    extends AbstractToolController2
 {
     private PluginManager pluginManager;
 
     @Autowired
-    public void setPluginManager(final PluginManager pluginManager)
+    public void setPluginManager( final PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
     }
 
-    protected void doHandleRequest( final HttpServletRequest req, final HttpServletResponse res, ExtendedMap formItems )
+    @Override
+    protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
+        throws Exception
     {
-        final String updateKey = formItems.getString("update", null);
+        final String updateKey = req.getParameter( "update" );
 
         if ( updateKey != null )
         {
-            doUpdatePlugin(new Long(updateKey), req, res);
+            doUpdatePlugin( new Long( updateKey ), req, res );
         }
 
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
         final ExtensionSet extensions = this.pluginManager.getExtensions();
-        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+        model.put( "baseUrl", getBaseUrl( req ) );
         model.put( "functionLibraryExtensions", toWrappers( extensions.getAllFunctionLibraries() ) );
         model.put( "autoLoginExtensions", toWrappers( extensions.getAllHttpAutoLoginPlugins() ) );
         model.put( "httpInterceptors", toWrappers( extensions.getAllHttpInterceptors() ) );
@@ -50,26 +49,19 @@ public final class PluginInfoController
         model.put( "textExtractorExtensions", toWrappers( extensions.getAllTextExtractorPlugins() ) );
         model.put( "pluginHandles", toPluginWrappers( this.pluginManager.getPlugins() ) );
 
-        process(req, res, model, "pluginInfoPage" );
+        renderView( req, res, model, "pluginInfoPage" );
     }
 
     private void doUpdatePlugin( final long pluginKey, final HttpServletRequest req, final HttpServletResponse res )
+        throws Exception
     {
-        final PluginHandle handle = this.pluginManager.findPluginByKey(pluginKey);
-        if (handle != null) {
+        final PluginHandle handle = this.pluginManager.findPluginByKey( pluginKey );
+        if ( handle != null )
+        {
             handle.update();
         }
 
-        try
-        {
-            URL referer = new URL( req.getHeader( "referer" ) );
-            redirectClientToURL( referer, res );
-        }
-        catch ( Exception e )
-        {
-            //TODO: FIX
-        }
-
+        redirectToReferrer( req, res );
     }
 
     private Collection<ExtensionWrapper> toWrappers( final List<? extends Extension> list )

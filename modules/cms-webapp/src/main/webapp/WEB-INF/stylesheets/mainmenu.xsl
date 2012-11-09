@@ -300,7 +300,7 @@
                 <img src="javascript/images/T.png" border="0"/>
               </td>
               <td>
-                <a href="adminpage?page=910&amp;op=pluginInfo" target="mainFrame">
+                <a href="tools/pluginInfo" target="mainFrame">
                   <img src="images/icon_plugins.png" border="0"/>
                   <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
                   <xsl:text>%mnuPluginInfo%</xsl:text>
@@ -312,7 +312,7 @@
                 <img src="javascript/images/T.png" border="0"/>
               </td>
               <td>
-                <a href="adminpage?page=912&amp;op=liveportaltrace" target="mainFrame">
+                <a href="tools/livePortalTrace" target="mainFrame">
                   <img src="images/utilities-system-monitor.png" border="0"/>
                   <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
                   <xsl:text>%mnuLivePortalTrace%</xsl:text>
@@ -324,7 +324,7 @@
                       <img src="javascript/images/T.png" border="0"/>
                   </td>
                   <td>
-                      <a href="adminpage?page=914&amp;op=indexmonitor" target="mainFrame">
+                      <a href="tools/indexMonitor" target="mainFrame">
                           <img src="images/utilities-system-monitor.png" border="0"/>
                           <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
                           <xsl:text>%mnuIndexMonitor%</xsl:text>
@@ -336,7 +336,7 @@
                 <img src="javascript/images/T.png" border="0"/>
               </td>
               <td>
-                <a href="adminpage?page=918&amp;op=clustermonitor" target="mainFrame">
+                <a href="tools/clusterInfo" target="mainFrame">
                   <img src="images/utilities-system-monitor.png" border="0"/>
                   <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
                   <xsl:text>Cluster Monitor</xsl:text>

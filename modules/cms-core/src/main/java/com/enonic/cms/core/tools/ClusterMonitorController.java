@@ -5,21 +5,19 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.vertical.adminweb.AdminHelper;
-
-public class ClusterMonitorController
-    extends AbstractToolController
+public final class ClusterMonitorController
+    extends AbstractToolController2
 {
     @Override
-    protected void doHandleRequest( final HttpServletRequest req, final HttpServletResponse res, final ExtendedMap formItems )
+    protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
+        throws Exception
     {
         // TODO: This should be using elastic search instead
 
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
-        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+        model.put( "baseUrl", getBaseUrl( req ) );
 
-        process( req, res, model, "clusterInfoPage" );
+        renderView( req, res, model, "clusterInfoPage" );
     }
 }

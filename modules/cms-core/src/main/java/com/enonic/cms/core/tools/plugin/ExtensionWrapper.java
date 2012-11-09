@@ -1,4 +1,4 @@
-package com.enonic.cms.core.tools;
+package com.enonic.cms.core.tools.plugin;
 
 import java.util.ArrayList;
 import java.util.Collection;

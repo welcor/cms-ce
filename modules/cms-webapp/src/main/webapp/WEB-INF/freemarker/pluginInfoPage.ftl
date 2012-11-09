@@ -3,21 +3,19 @@
 <html>
 <head>
     <title>Plugin info</title>
-      <link type="text/css" rel="stylesheet" href="css/admin.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/admin.css"/>
     <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript">
 
         var lastKey = 0;
 
-        function showDetails(key)
-        {
+        function showDetails(key) {
             hideDetails(lastKey);
             $("#details-" + key).show();
             lastKey = key;
         }
 
-        function hideDetails(key)
-        {
+        function hideDetails(key) {
             $("#details-" + key).hide();
             lastKey = 0;
         }
@@ -30,7 +28,7 @@
             padding: 8px;
             margin: 10px;
             border: 1px dotted #000000;
-            background-color:#EEEEEE;
+            background-color: #EEEEEE;
         }
 
         pre {
@@ -57,13 +55,13 @@
 
 </head>
 <body>
-    <h1>Admin / <a href="${baseUrl}/adminpage?page=910&op=plugininfo">Plugin info</a></h1>
+<h1>Admin / System / Plugin Info</h1>
 
 <div class="infoBox">
     <b>Registered Plugins</b>
 
     <ul>
-    	[#list pluginHandles as plugin ]
+    [#list pluginHandles as plugin ]
             [@lib.pluginInfoRowWithDetails plugin=plugin/]
 		[/#list]
     </ul>
@@ -85,7 +83,9 @@
 
 [#if autoLoginExtensions?size > 0]
     <fieldset class="infoBox">
-        <legend>Autologin Extensions <small>(Sorted by priority)</small></legend>
+        <legend>Autologin Extensions
+            <small>(Sorted by priority)</small>
+        </legend>
         <ul>
             [#list autoLoginExtensions as plugin]
                 <li>${plugin.html}</li>
@@ -96,7 +96,9 @@
 
 [#if httpInterceptors?size > 0]
     <fieldset class="infoBox">
-        <legend>Http Interceptor Extensions <small>(Sorted by priority)</small></legend>
+        <legend>Http Interceptor Extensions
+            <small>(Sorted by priority)</small>
+        </legend>
         <ul>
             [#list httpInterceptors as plugin]
                 <li>${plugin.html}</li>
@@ -107,7 +109,9 @@
 
 [#if httpResponseFilters?size > 0]
     <fieldset class="infoBox">
-        <legend>Http Response Filters Extensions <small>(Sorted by priority)</small></legend>
+        <legend>Http Response Filters Extensions
+            <small>(Sorted by priority)</small>
+        </legend>
         <ul>
             [#list httpResponseFilters as plugin]
                 <li>${plugin.html}</li>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Reindex Content Tool</title>
-    <link type="text/css" rel="stylesheet" href="css/admin.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/admin.css"/>
     <style type="text/css">
 
         .infoBox {

@@ -1,4 +1,4 @@
-package com.enonic.cms.core.tools;
+package com.enonic.cms.core.tools.index;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,22 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Lists;
 
-import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.net.URL;
-import com.enonic.vertical.adminweb.AdminHelper;
-
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.query.ContentIndexService;
+import com.enonic.cms.core.tools.AbstractToolController2;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: 2/23/12
- * Time: 9:23 AM
- */
-public class IndexMonitorController
-    extends AbstractToolController
+public final class IndexMonitorController
+    extends AbstractToolController2
 {
 
     public static final String getAllQUery = "{\n" +
@@ -46,27 +37,19 @@ public class IndexMonitorController
     private ContentIndexService contentIndexService;
 
     @Override
-    protected void doHandleRequest( HttpServletRequest req, HttpServletResponse res, ExtendedMap formItems )
+    protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
+        throws Exception
     {
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
         if ( req.getParameter( "recreateIndex" ) != null )
         {
-            try
-            {
-                elasticSearchIndexService.deleteIndex( "cms" );
-                contentIndexService.createIndex();
-
-                URL referer = new URL( req.getHeader( "referer" ) );
-                redirectClientToURL( referer, res );
-            }
-            catch ( Exception e )
-            {
-                model.put( "error", "Not able to delete index: " + e.getMessage() );
-            }
+            elasticSearchIndexService.deleteIndex( "cms" );
+            contentIndexService.createIndex();
+            redirectToReferrer( req, res );
         }
 
-        model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
+        model.put( "baseUrl", getBaseUrl( req ) );
 
         ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
         model.put( "activeShards", clusterHealthResponse.getActiveShards() );
@@ -84,13 +67,13 @@ public class IndexMonitorController
 
         if ( status.equals( ClusterHealthStatus.RED ) )
         {
-            process( req, res, model, "indexMonitorPage" );
+            renderView( req, res, model, "indexMonitorPage" );
             return;
         }
 
         model.put( "numberOfContent", getTotalHitsContent() );
         model.put( "numberOfBinaries", getTotalHitsBinaries() );
-        process( req, res, model, "indexMonitorPage" );
+        renderView( req, res, model, "indexMonitorPage" );
     }
 
     private String getTotalHitsBinaries()

@@ -7,12 +7,14 @@ lpt.CompletedPortalRequestsTableController = function ( tableId, automaticRefres
 {
     var thisCtrl = this;
     var refreshIntervalId;
-    var initialRowsToLoad = 50;
+    var initialTracesToLoad = 100;
+    var maxTracesToKeep = 1000;
     var loadCompletedAfterUrl;
     var loadCompletedBeforeUrl;
     var lastCompletedNumber = -1;
     var firstCompletedNumber = -1;
     var completedRequestsMap = {};
+    var completedRequestsMapArray = new Array();
     var worker;
     var completedRequestsGraphController;
     var portalRequestTraceDetailController;
@@ -95,6 +97,7 @@ lpt.CompletedPortalRequestsTableController = function ( tableId, automaticRefres
     {
         if ( workerThreadIsSupported )
         {
+            // Supported by: Chrome, Firefox
             reloadUsingThread();
         }
         else
@@ -168,13 +171,13 @@ lpt.CompletedPortalRequestsTableController = function ( tableId, automaticRefres
 
         worker.postMessage( {
                                 "operation":"load-latest",
-                                "url":resolveCompletedAfterUrl( lastCompletedNumber, initialRowsToLoad )
+                                "url":resolveCompletedAfterUrl( lastCompletedNumber, initialTracesToLoad )
                             } );
     }
 
     function reloadWithoutUsingThread()
     {
-        jQuery.getJSON( resolveCompletedAfterUrl( lastCompletedNumber, initialRowsToLoad ), function ( firstTraces )
+        jQuery.getJSON( resolveCompletedAfterUrl( lastCompletedNumber, initialTracesToLoad ), function ( firstTraces )
         {
             insertAtTop( firstTraces );
             jQuery.getJSON( resolveCompletedBeforeUrl( getFirstCompletedNumber() ), function ( restOfTraces )
@@ -192,10 +195,19 @@ lpt.CompletedPortalRequestsTableController = function ( tableId, automaticRefres
             for ( var i = 0, length = traces.length; i < length; i++ )
             {
                 var row = traces[i];
+
+                completedRequestsMapArray.unshift( row.portalRequestTrace.completedNumber );
                 completedRequestsMap[ row.portalRequestTrace.completedNumber ] = row.portalRequestTrace;
 
                 var firstTr = tableBody.getElementsByTagName( "tr" )[0];
                 tableBody.insertBefore( portalRequestTraceRowView.createPortalRequestTraceTR( row ), firstTr );
+
+                if ( completedRequestsMapArray.length > maxTracesToKeep )
+                {
+                    table.deleteRow( -1 );
+                    var completedNumberToRemove = completedRequestsMapArray.pop();
+                    delete completedRequestsMap[completedNumberToRemove];
+                }
             }
 
             lastCompletedNumber = traces[traces.length - 1].completedNumber;
@@ -206,11 +218,19 @@ lpt.CompletedPortalRequestsTableController = function ( tableId, automaticRefres
 
     function appendTraces( traces )
     {
-        for ( var i = 0, length = traces.length; i < length; i++ )
+        var max = traces.length;
+
+        if ( traces.length + completedRequestsMapArray.length > maxTracesToKeep )
         {
-            var row = traces[i];
-            completedRequestsMap[ row.portalRequestTrace.completedNumber ] = row.portalRequestTrace;
-            tableBody.appendChild( portalRequestTraceRowView.createPortalRequestTraceTR( row ) );
+            max = maxTracesToKeep - completedRequestsMapArray.length;
+        }
+
+        for ( var i = 0; i < max; i++ )
+        {
+            completedRequestsMapArray[ completedRequestsMapArray.length ] = traces[i].portalRequestTrace.completedNumber;
+            completedRequestsMap[ traces[i].portalRequestTrace.completedNumber ] = traces[i].portalRequestTrace;
+
+            tableBody.appendChild( portalRequestTraceRowView.createPortalRequestTraceTR( traces[i] ) );
         }
     }
 

@@ -16,10 +16,10 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.search.query.ContentIndexService;
-import com.enonic.cms.core.tools.AbstractToolController2;
+import com.enonic.cms.core.tools.AbstractToolController;
 
 public final class IndexMonitorController
-    extends AbstractToolController2
+    extends AbstractToolController
 {
 
     public static final String getAllQUery = "{\n" +

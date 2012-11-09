@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.vertical.adminweb.AdminHelper;
 
-import com.enonic.cms.core.tools.AbstractToolController2;
+import com.enonic.cms.core.tools.AbstractToolController;
 
 public class ReindexContentToolController
-    extends AbstractToolController2
+    extends AbstractToolController
 {
     private ReindexContentToolService reindexContentToolService;
 
@@ -41,7 +41,7 @@ public class ReindexContentToolController
         model.put( "reindexLog", logEntries );
         model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
 
-        renderView(req, res, model, "reindexContentPage" );
+        renderView( req, res, model, "reindexContentPage" );
     }
 
     private synchronized void startReindexAllContentTypes()

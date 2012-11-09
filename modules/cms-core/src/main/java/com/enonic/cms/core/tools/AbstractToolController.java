@@ -24,7 +24,7 @@ import com.enonic.vertical.adminweb.AdminHelper;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 
-public abstract class AbstractToolController2
+public abstract class AbstractToolController
     implements Controller
 {
     private SecurityService securityService;

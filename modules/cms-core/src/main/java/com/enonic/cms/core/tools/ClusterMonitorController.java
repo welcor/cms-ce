@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public final class ClusterMonitorController
-    extends AbstractToolController2
+    extends AbstractToolController
 {
     @Override
     protected void doGet( final HttpServletRequest req, final HttpServletResponse res )

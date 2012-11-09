@@ -26,7 +26,7 @@ import com.enonic.cms.core.portal.livetrace.systeminfo.SystemInfoFactory;
  * This class implements the connection info controller.
  */
 public final class LivePortalTraceController
-    extends AbstractToolController2
+    extends AbstractToolController
 {
     @Autowired
     private SystemInfoFactory systemInfoFactory;

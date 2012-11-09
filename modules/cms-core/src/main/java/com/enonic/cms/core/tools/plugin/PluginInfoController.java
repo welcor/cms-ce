@@ -13,10 +13,10 @@ import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.tools.AbstractToolController2;
+import com.enonic.cms.core.tools.AbstractToolController;
 
 public final class PluginInfoController
-    extends AbstractToolController2
+    extends AbstractToolController
 {
     private PluginManager pluginManager;
 

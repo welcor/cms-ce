@@ -1,4 +1,4 @@
-package com.enonic.cms.framework.cluster;
+package com.enonic.cms.core.cluster;
 
 public interface ClusterEventListener
 {

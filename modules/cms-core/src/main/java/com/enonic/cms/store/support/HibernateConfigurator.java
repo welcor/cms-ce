@@ -80,7 +80,6 @@ public final class HibernateConfigurator
         throws Exception
     {
         HibernateCacheBootstrap cacheBootstrap = new HibernateCacheBootstrap();
-        cacheBootstrap.setCacheName( "entity" );
         cacheBootstrap.setCacheManager( this.cacheManager );
         setHibernateDialect( getHibernateProperties() );
 

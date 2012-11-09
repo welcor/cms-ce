@@ -92,7 +92,7 @@ public final class PortalXsltProcessorFactoryImpl
     @Autowired
     public void setCacheManager( final CacheManager cacheManager )
     {
-        this.cacheFacade = cacheManager.getOrCreateCache( "xslt" );
+        this.cacheFacade = cacheManager.getXsltCache();
     }
 
     @Value("${cms.cache.xslt.checkInterval}")

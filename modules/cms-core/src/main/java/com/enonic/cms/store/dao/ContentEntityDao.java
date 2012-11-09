@@ -222,6 +222,6 @@ public class ContentEntityDao
     @Autowired
     public void setCacheManager( CacheManager cacheManager )
     {
-        this.entityCache = cacheManager.getOrCreateCache( "entity" );
+        this.entityCache = cacheManager.getEntityCache();
     }
 }

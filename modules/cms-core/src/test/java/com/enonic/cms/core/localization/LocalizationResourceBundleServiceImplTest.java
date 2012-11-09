@@ -31,7 +31,7 @@ public class LocalizationResourceBundleServiceImplTest
     {
         this.propertiesCache = Mockito.mock( CacheFacade.class );
         final CacheManager cacheManager = Mockito.mock( CacheManager.class );
-        Mockito.when( cacheManager.getOrCreateCache( "localization" ) ).thenReturn( this.propertiesCache );
+        Mockito.when( cacheManager.getLocalizationCache() ).thenReturn( this.propertiesCache );
 
         final ResourceService resourceService = Mockito.mock( ResourceService.class );
 

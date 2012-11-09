@@ -17,7 +17,7 @@ final class StandardCacheFacade
     }
 
     @Override
-    public Object doGet( final String compositeKey )
+    protected Object doGet( final String compositeKey )
     {
         final CacheEntry entry = this.peer.get( compositeKey );
 
@@ -30,7 +30,7 @@ final class StandardCacheFacade
     }
 
     @Override
-    public void doPut( final String compositeKey, final Object value, final int timeToLive )
+    protected void doPut( final String compositeKey, final Object value, final int timeToLive )
     {
         final CacheEntry entry = new CacheEntry( compositeKey, value, timeToLive > 0 ? timeToLive * 1000L : 0 );
         this.peer.put( entry );
@@ -43,13 +43,13 @@ final class StandardCacheFacade
     }
 
     @Override
-    public void doRemove( final String compositeKey )
+    protected void doRemove( final String compositeKey )
     {
         this.peer.remove( compositeKey );
     }
 
     @Override
-    public void doRemoveGroup( final String groupName )
+    protected void doRemoveGroup( final String groupName )
     {
         if ( groupName != null )
         {
@@ -62,7 +62,7 @@ final class StandardCacheFacade
     }
 
     @Override
-    public void doRemoveGroupByPrefix( final String prefix )
+    protected void doRemoveGroupByPrefix( final String prefix )
     {
         if ( prefix != null )
         {
@@ -75,7 +75,7 @@ final class StandardCacheFacade
     }
 
     @Override
-    public void doRemoveAll()
+    protected void doRemoveAll()
     {
         this.peer.removeAll();
     }

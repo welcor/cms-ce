@@ -5,7 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.NopClusterEventPublisher;
 import com.enonic.cms.framework.cache.standard.StandardCacheManager;
+
+import com.enonic.cms.core.cluster.ClusterEvent;
+import com.enonic.cms.core.cluster.ClusterEventPublisher;
 import com.enonic.cms.core.config.ConfigProperties;
 
 import static junit.framework.Assert.assertEquals;
@@ -19,9 +23,11 @@ public class AbstractCacheFacadeTest
         throws Exception
     {
         ConfigProperties props = new ConfigProperties();
-        props.setProperty( "cms.cache.cache1.memoryCapacity", "10" );
+        props.setProperty( "cms.cache.xslt.memoryCapacity", "10" );
         this.cacheManager = new StandardCacheManager();
         this.cacheManager.setProperties( props );
+        this.cacheManager.setClusterEventPublisher( new NopClusterEventPublisher() );
+        this.cacheManager.afterPropertiesSet();
     }
 
 
@@ -29,7 +35,7 @@ public class AbstractCacheFacadeTest
     public void testRemoveAllCount()
         throws Exception
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache1" );
+        CacheFacade cache = this.cacheManager.getXsltCache();
 
         assertEquals( 0, cache.getRemoveAllCount());
 
@@ -42,7 +48,7 @@ public class AbstractCacheFacadeTest
     public void testGetEffectiveness()
         throws Exception
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache1" );
+        CacheFacade cache = this.cacheManager.getXsltCache();
 
         cache.put( null, "key1", "value1" );
         cache.put( null, "key2", "value2" );
@@ -61,7 +67,7 @@ public class AbstractCacheFacadeTest
     public void testGetMemoryCapacityUsage()
         throws Exception
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache1" );
+        CacheFacade cache = this.cacheManager.getXsltCache();
 
         cache.put( null, "key1", "value1" );
         assertEquals( 10, cache.getMemoryCapacityUsage());
@@ -74,7 +80,7 @@ public class AbstractCacheFacadeTest
     public void testRemoveAllCountClearsStatistics()
         throws Exception
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache1" );
+        CacheFacade cache = this.cacheManager.getXsltCache();
 
         cache.put( null, "key1", "value1" );
         cache.put( null, "key2", "value2" );

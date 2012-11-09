@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.NopClusterEventPublisher;
 import com.enonic.cms.framework.cache.standard.StandardCacheManager;
 
 import com.enonic.cms.core.CacheObjectSettings;
@@ -50,8 +51,10 @@ public class PageCacheServiceImplTest
 
         final StandardCacheManager cacheManager = new StandardCacheManager();
         cacheManager.setProperties( props );
+        cacheManager.setClusterEventPublisher( new NopClusterEventPublisher() );
+        cacheManager.afterPropertiesSet();
 
-        cacheFacade = cacheManager.getOrCreateCache( "page" );
+        cacheFacade = cacheManager.getPageCache();
 
         pageCacheService_site_1 = new PageCacheServiceImpl( siteKey_1 );
         pageCacheService_site_1.setEnabled( true );

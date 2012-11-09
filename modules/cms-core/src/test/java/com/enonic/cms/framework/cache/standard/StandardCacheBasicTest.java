@@ -7,6 +7,7 @@ package com.enonic.cms.framework.cache.standard;
 import junit.framework.TestCase;
 
 import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.NopClusterEventPublisher;
 
 import com.enonic.cms.core.config.ConfigProperties;
 
@@ -20,24 +21,18 @@ public class StandardCacheBasicTest
     {
 
         ConfigProperties props = new ConfigProperties();
-        props.setProperty( "cms.cache.cache1.memoryCapacity", "10" );
-        props.setProperty( "cms.cache.cache2.memoryCapacity", "2" );
+        props.setProperty( "cms.cache.xslt.memoryCapacity", "10" );
+        props.setProperty( "cms.cache.localization.memoryCapacity", "2" );
 
         this.cacheManager = new StandardCacheManager();
         this.cacheManager.setProperties( props );
-    }
-
-    public void testCreate()
-    {
-
-        assertNull( this.cacheManager.getCache( "cache1" ) );
-        assertNotNull( this.cacheManager.getOrCreateCache( "cache1" ) );
-        assertNotNull( this.cacheManager.getCache( "cache1" ) );
+        this.cacheManager.setClusterEventPublisher( new NopClusterEventPublisher() );
+        this.cacheManager.afterPropertiesSet();
     }
 
     public void testGeneral()
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache1" );
+        CacheFacade cache = this.cacheManager.getXsltCache();
 
         assertNull( cache.get( null, "key" ) );
         assertNull( cache.get( "group", "key" ) );
@@ -59,7 +54,7 @@ public class StandardCacheBasicTest
 
     public void testOverflow()
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache2" );
+        CacheFacade cache = this.cacheManager.getLocalizationCache();
 
         cache.put( null, "key1", "value1" );
         cache.put( null, "key2", "value2" );
@@ -75,7 +70,7 @@ public class StandardCacheBasicTest
 
     public void testRemove()
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache1" );
+        CacheFacade cache = this.cacheManager.getXsltCache();
 
         cache.put( "group1", "key1", "value1" );
         cache.put( "group2", "key1", "value1" );
@@ -102,7 +97,7 @@ public class StandardCacheBasicTest
     public void testExpire()
         throws Exception
     {
-        CacheFacade cache = this.cacheManager.getOrCreateCache( "cache1" );
+        CacheFacade cache = this.cacheManager.getXsltCache();
 
         cache.put( null, "key1", "value1" );
         cache.put( null, "key2", "value2", 1 );

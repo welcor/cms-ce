@@ -43,8 +43,8 @@ public class SystemInfoFactory
         systemInfo.setSystemTime( timeService.getNowAsDateTime() );
         systemInfo.setSystemUpTime( UP_TIME_PERIOD_FORMATTER.print( timeService.upTime() ) );
         systemInfo.setPortalRequestInProgress( numberOfPortalRequestsInProgress );
-        systemInfo.setPageCacheStatistic( createPageCacheStatistic( cacheManager.getOrCreateCache( ( "page" ) ) ) );
-        systemInfo.setEntityCacheStatistic( createPageCacheStatistic( cacheManager.getOrCreateCache( "entity" ) ) );
+        systemInfo.setPageCacheStatistic( createPageCacheStatistic( cacheManager.getPageCache() ) );
+        systemInfo.setEntityCacheStatistic( createPageCacheStatistic( cacheManager.getEntityCache() ) );
 
         systemInfo.setJavaHeapMemoryStatistic( createJavaMemoryStatistic( memoryMXBean.getHeapMemoryUsage() ) );
         systemInfo.setJavaNonHeapMemoryStatistic( createJavaMemoryStatistic( memoryMXBean.getNonHeapMemoryUsage() ) );

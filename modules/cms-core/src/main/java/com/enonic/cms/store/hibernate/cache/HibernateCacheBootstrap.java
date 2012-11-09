@@ -13,11 +13,6 @@ import com.enonic.cms.framework.cache.CacheManager;
 public final class HibernateCacheBootstrap
 {
     /**
-     * Default cache name.
-     */
-    private final static String DEFAULT_CACHE_NAME = "hibernate";
-
-    /**
      * Instance.
      */
     private static HibernateCacheBootstrap INSTANCE;
@@ -28,40 +23,11 @@ public final class HibernateCacheBootstrap
     private CacheManager cacheManager;
 
     /**
-     * Cache name.
-     */
-    private String cacheName;
-
-    /**
      * Construct.
      */
     public HibernateCacheBootstrap()
     {
         INSTANCE = this;
-    }
-
-    /**
-     * Return the cache name.
-     */
-    public String getCacheName()
-    {
-        return this.cacheName != null ? this.cacheName : DEFAULT_CACHE_NAME;
-    }
-
-    /**
-     * Return the cache manager.
-     */
-    public CacheManager getCacheManager()
-    {
-        return this.cacheManager;
-    }
-
-    /**
-     * Set the cache name.
-     */
-    public void setCacheName( String cacheName )
-    {
-        this.cacheName = cacheName;
     }
 
     /**
@@ -77,7 +43,7 @@ public final class HibernateCacheBootstrap
      */
     public CacheFacade getCache()
     {
-        return this.cacheManager.getOrCreateCache( getCacheName() );
+        return this.cacheManager.getEntityCache();
     }
 
     /**

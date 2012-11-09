@@ -30,7 +30,7 @@ public class ImageCacheFactoryTest
         final CacheManager manager = Mockito.mock( CacheManager.class );
         final CacheFacade facade = Mockito.mock( CacheFacade.class );
 
-        Mockito.when( manager.getOrCreateCache( "image" ) ).thenReturn( facade );
+        Mockito.when( manager.getImageCache() ).thenReturn( facade );
 
         final ImageCacheFactory factory = new ImageCacheFactory();
         factory.setCacheManager( manager );
@@ -38,6 +38,6 @@ public class ImageCacheFactoryTest
         final ImageCache cache = factory.getObject();
         assertNotNull( cache );
 
-        Mockito.verify( manager, Mockito.times( 1 ) ).getOrCreateCache( "image" );
+        Mockito.verify( manager, Mockito.times( 1 ) ).getImageCache();
     }
 }

@@ -155,7 +155,7 @@ public final class LocalizationResourceBundleServiceImpl
     @Autowired
     public void setCacheManager( final CacheManager cacheManager )
     {
-        this.cacheFacade = cacheManager.getOrCreateCache( "localization" );
+        this.cacheFacade = cacheManager.getLocalizationCache();
     }
 
     @Value("${cms.cache.localization.checkInterval}")

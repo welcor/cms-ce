@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.framework.cache;
 
-import com.enonic.cms.framework.xml.XMLDocument;
-
 /**
  * This interface defines the cache definition.
  */
@@ -97,9 +95,4 @@ public interface CacheFacade
      * Clears the statistics.
      */
     public void clearStatistics();
-
-    /**
-     * Return xml details.
-     */
-    public XMLDocument getInfoAsXml();
 }

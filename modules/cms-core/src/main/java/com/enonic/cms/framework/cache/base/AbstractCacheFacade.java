@@ -2,12 +2,8 @@ package com.enonic.cms.framework.cache.base;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.jdom.Document;
-import org.jdom.Element;
-
 import com.enonic.cms.framework.cache.CacheFacade;
-import com.enonic.cms.framework.xml.XMLDocument;
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
+import com.enonic.cms.framework.cache.event.CacheEventPublisher;
 
 public abstract class AbstractCacheFacade
     implements CacheFacade
@@ -22,7 +18,7 @@ public abstract class AbstractCacheFacade
 
     private final AtomicLong removeAllCount;
 
-    private CacheClusterSender clusterSender;
+    private CacheEventPublisher eventPublisher;
 
     public AbstractCacheFacade()
     {
@@ -61,10 +57,8 @@ public abstract class AbstractCacheFacade
         return this.hitCount.get();
     }
 
-    /**
-     * @inherit
-     */
-    public int getMemoryCapacityUsage()
+    @Override
+    public final int getMemoryCapacityUsage()
     {
         if ( getMemoryCapacity() == 0 )
         {
@@ -74,10 +68,8 @@ public abstract class AbstractCacheFacade
         return 100 * getCount() / getMemoryCapacity();
     }
 
-    /**
-     * @inherit
-     */
-    public int getEffectiveness()
+    @Override
+    public final int getEffectiveness()
     {
         final long totalCount = getHitCount() + getMissCount();
 
@@ -146,21 +138,21 @@ public abstract class AbstractCacheFacade
     {
         String compositeKey = createCompositeKey( group, key );
         doRemove( compositeKey );
-        this.clusterSender.sendEvictMessage( this.name, compositeKey );
+        this.eventPublisher.publishEvictByKey( this.name, compositeKey );
     }
 
     @Override
     public final void removeGroup( String group )
     {
         doRemoveGroup( group );
-        this.clusterSender.sendEvictGroupMessage( this.name, group );
+        this.eventPublisher.publishEvictByGroup( this.name, group );
     }
 
     @Override
     public final void removeGroupByPrefix( String prefix )
     {
         doRemoveGroupByPrefix( prefix );
-        this.clusterSender.sendEvictByGroupPrefixMessage( this.name, prefix );
+        this.eventPublisher.publishEvictByPrefix( this.name, prefix );
     }
 
     @Override
@@ -171,7 +163,7 @@ public abstract class AbstractCacheFacade
         removeAllCount.incrementAndGet();
         clearStatistics();
 
-        this.clusterSender.sendEvictAllMessage( this.name );
+        this.eventPublisher.publishEvictAll( this.name );
     }
 
     private String createCompositeKey( final String group, final String key )
@@ -186,39 +178,17 @@ public abstract class AbstractCacheFacade
         }
     }
 
-    public abstract Object doGet( String compositeKey );
+    protected abstract Object doGet( String compositeKey );
 
-    public abstract void doPut( String compositeKey, Object value, int timeToLive );
+    protected abstract void doPut( String compositeKey, Object value, int timeToLive );
 
-    public abstract void doRemove( String compositeKey );
+    protected abstract void doRemove( String compositeKey );
 
-    public abstract void doRemoveGroup( String groupName );
+    protected abstract void doRemoveGroup( String groupName );
 
-    public abstract void doRemoveGroupByPrefix( String prefix );
+    protected abstract void doRemoveGroupByPrefix( String prefix );
 
-    public abstract void doRemoveAll();
-
-    @Override
-    public final XMLDocument getInfoAsXml()
-    {
-        final Element root = new Element( "cache" );
-
-        root.setAttribute( "name", getName() );
-        root.setAttribute( "implementationName", "Standard Cache" );
-        root.setAttribute( "memoryCapacity", String.valueOf( getMemoryCapacity() ) );
-        root.setAttribute( "timeToLive", String.valueOf( getTimeToLive() ) );
-
-        final Element statsElem = new Element( "statistics" );
-        statsElem.setAttribute( "objectCount", String.valueOf( getCount() ) );
-        statsElem.setAttribute( "memoryCapacityUsage", String.valueOf( getMemoryCapacityUsage() ) );
-        statsElem.setAttribute( "cacheHits", String.valueOf( getHitCount() ) );
-        statsElem.setAttribute( "cacheMisses", String.valueOf( getMissCount() ) );
-        statsElem.setAttribute( "cacheEffectiveness", String.valueOf( getEffectiveness() ) );
-        statsElem.setAttribute( "cacheClears", String.valueOf( getRemoveAllCount() ) );
-
-        root.addContent( statsElem );
-        return XMLDocumentFactory.create( new Document( root ) );
-    }
+    protected abstract void doRemoveAll();
 
     public final void setName( final String name )
     {
@@ -230,8 +200,8 @@ public abstract class AbstractCacheFacade
         this.config = config;
     }
 
-    public final void setClusterSender( final CacheClusterSender clusterSender )
+    protected final void setCacheEventPublisher( final CacheEventPublisher eventPublisher )
     {
-        this.clusterSender = clusterSender;
+        this.eventPublisher = eventPublisher;
     }
 }

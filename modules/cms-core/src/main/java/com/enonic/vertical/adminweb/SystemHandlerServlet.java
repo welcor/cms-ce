@@ -27,6 +27,7 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.framework.cache.CacheManager;
+import com.enonic.cms.framework.cache.xml.CacheInfoXmlBuilder;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.config.ConfigProperties;
@@ -131,7 +132,8 @@ public class SystemHandlerServlet
             {
                 doc = XMLTool.createDocument( "vertical" );
 
-                XMLTool.mergeDocuments( doc, cacheManager.getInfoAsXml().getAsDOMDocument(), true );
+                final CacheInfoXmlBuilder cacheInfoXmlBuilder = new CacheInfoXmlBuilder( this.cacheManager );
+                XMLTool.mergeDocuments( doc, cacheInfoXmlBuilder.build().getAsDOMDocument(), true );
             }
 
             Source xmlSource = new DOMSource( doc );

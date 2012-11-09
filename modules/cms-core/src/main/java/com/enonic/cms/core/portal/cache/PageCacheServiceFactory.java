@@ -36,7 +36,7 @@ public class PageCacheServiceFactory
     public PageCacheServiceImpl createPageAndObjectCacheService( SiteKey siteKey )
     {
 
-        CacheFacade cacheFacade = cacheManager.getOrCreateCache( "page" );
+        CacheFacade cacheFacade = cacheManager.getPageCache();
 
         PageCacheServiceImpl cacheService = new PageCacheServiceImpl( siteKey );
         cacheService.setCacheFacade( cacheFacade );

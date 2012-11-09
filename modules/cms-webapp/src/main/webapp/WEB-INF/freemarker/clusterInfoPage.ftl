@@ -19,16 +19,6 @@
         var baseUrl = "${baseUrl}";
     </script>
 
-    <div class="tab-page" id="tab-page-1">
-        <h2>Node: ${nodeName}: Enabled: ${isEnabled}</h2>
-        <h2>Members</h2>
-        <ul>
-            [#list members as clusterMember]
-             <li>${clusterMember}</li>
-            [/#list]
-        </ul>
-    </div>
-
 </div>
 </body>
 </html>

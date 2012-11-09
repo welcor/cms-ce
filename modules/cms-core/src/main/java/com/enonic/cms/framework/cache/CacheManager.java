@@ -11,18 +11,17 @@ import com.enonic.cms.framework.xml.XMLDocument;
  */
 public interface CacheManager
 {
-    /**
-     * Return the cache by name, if no cache was found return null.
-     */
+    public Iterable<CacheFacade> getAll();
+
     public CacheFacade getCache( String name );
 
-    /**
-     * Create a cache by name with default configuration.
-     */
-    public CacheFacade getOrCreateCache( String name );
+    public CacheFacade getEntityCache();
 
-    /**
-     * Return xml details.
-     */
-    public XMLDocument getInfoAsXml();
+    public CacheFacade getImageCache();
+
+    public CacheFacade getLocalizationCache();
+
+    public CacheFacade getPageCache();
+
+    public CacheFacade getXsltCache();
 }

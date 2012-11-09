@@ -24,7 +24,7 @@ public final class ImageCacheFactory
 
     public ImageCache getObject()
     {
-        return new WrappedImageCache( this.cacheManager.getOrCreateCache( "image" ) );
+        return new WrappedImageCache( this.cacheManager.getImageCache() );
     }
 
     public Class getObjectType()

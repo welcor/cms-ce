@@ -26,8 +26,6 @@ import com.enonic.esl.net.URL;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.framework.cache.CacheManager;
-import com.enonic.cms.framework.cache.xml.CacheInfoXmlBuilder;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.config.ConfigProperties;
@@ -46,9 +44,6 @@ import com.enonic.cms.core.tools.DataSourceInfoResolver;
 public class SystemHandlerServlet
     extends AdminHandlerBaseServlet
 {
-    @Autowired
-    private CacheManager cacheManager;
-
     @Autowired
     private SiteCachesService siteCachesService;
 
@@ -127,13 +122,6 @@ public class SystemHandlerServlet
             {
                 XMLTool.mergeDocuments( doc, createPropertiesInfoDocument(), true );
 
-            }
-            else if ( mode.equals( "system_cache" ) )
-            {
-                doc = XMLTool.createDocument( "vertical" );
-
-                final CacheInfoXmlBuilder cacheInfoXmlBuilder = new CacheInfoXmlBuilder( this.cacheManager );
-                XMLTool.mergeDocuments( doc, cacheInfoXmlBuilder.build().getAsDOMDocument(), true );
             }
 
             Source xmlSource = new DOMSource( doc );
@@ -295,11 +283,6 @@ public class SystemHandlerServlet
         URL referrer = new URL( request.getHeader( "referer" ) );
         referrer.setParameter( "selectedoperation", "optimizeindex" );
         redirectClientToURL( referrer, response );
-    }
-
-    public void setCacheFacadeManager( CacheManager value )
-    {
-        this.cacheManager = value;
     }
 
     public void setSiteCachesService( SiteCachesService value )

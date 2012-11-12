@@ -6,11 +6,13 @@ package com.enonic.cms.core.tools;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.codehaus.jackson.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -89,11 +91,11 @@ public abstract class AbstractToolController
         AdminHelper.redirectToURL( url, res );
     }
 
-    protected final void renderView( final HttpServletRequest req, final HttpServletResponse res, final HashMap<String, Object> model,
+    protected final void renderView( final HttpServletRequest req, final HttpServletResponse res, final Map<String, Object> model,
                                      final String templateName )
         throws Exception
     {
-        res.setContentType( "text/html" );
+        res.setContentType( "text/html; charset=utf-8" );
         final View view = this.viewResolver.resolveViewName( templateName, Locale.getDefault() );
         view.render( model, req, res );
     }
@@ -101,6 +103,13 @@ public abstract class AbstractToolController
     protected final String getBaseUrl( final HttpServletRequest req )
     {
         return AdminHelper.getAdminPath( req, true );
+    }
+
+    protected final void renderJson( final HttpServletResponse res, final JsonNode node )
+        throws Exception
+    {
+        res.setContentType( "application/json; charset=utf-8" );
+        res.getWriter().println( node.toString() );
     }
 
     @Autowired

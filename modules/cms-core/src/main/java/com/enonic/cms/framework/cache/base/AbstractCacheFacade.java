@@ -62,7 +62,7 @@ public abstract class AbstractCacheFacade
     {
         if ( getMemoryCapacity() == 0 )
         {
-            return -1;
+            return 0;
         }
 
         return 100 * getCount() / getMemoryCapacity();
@@ -75,7 +75,7 @@ public abstract class AbstractCacheFacade
 
         if ( totalCount == 0 )
         {
-            return -1;
+            return 100;
         }
 
         return (int) ( 100L * getHitCount() / totalCount );

@@ -163,6 +163,11 @@
         <entry key="/admin/tools/livePortalTrace">
           <bean class="com.enonic.cms.core.tools.LivePortalTraceController"/>
         </entry>
+
+        <entry key="/admin/tools/cacheInfo">
+          <bean class="com.enonic.cms.core.tools.CacheInfoController"/>
+        </entry>
+
       </map>
     </property>
   </bean>

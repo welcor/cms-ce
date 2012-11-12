@@ -231,7 +231,7 @@
                 <img src="javascript/images/T.png" border="0"/>
               </td>
               <td>
-                <a target="mainFrame" href="adminpage?page=10&amp;op=page&amp;mode=system_cache">
+                <a target="mainFrame" href="tools/cacheInfo">
                   <img src="images/icon_system.gif" border="0"/>
                   <img src="images/shim.gif" width="3" height="1" class="shim" border="0"/>
                   <xsl:text>%mnuSystemCaches%</xsl:text>

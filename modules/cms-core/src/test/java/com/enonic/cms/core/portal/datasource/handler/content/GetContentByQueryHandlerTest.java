@@ -53,7 +53,7 @@ public class GetContentByQueryHandlerTest
                 eq( 10 ),
                 eq( true ),
                 eq( 1 ),
-                eq( 0 ) ) )
+                eq( 0 ), null ) )
             .thenReturn( this.dummyDoc );
 
         this.handler.handle( this.request );
@@ -66,6 +66,6 @@ public class GetContentByQueryHandlerTest
             eq( 10 ),
             eq( true ),
             eq( 1 ),
-            eq( 0 ) );
+            eq( 0 ), null );
     }
 }

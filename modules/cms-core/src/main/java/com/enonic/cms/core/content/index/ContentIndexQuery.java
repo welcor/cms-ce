@@ -25,8 +25,9 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 public final class ContentIndexQuery
     extends AbstractQuery
 {
-
     protected static final int DEFAULT_COUNT = 200;
+
+    private String facetDefinition;
 
     public enum SectionFilterStatus
     {
@@ -275,6 +276,7 @@ public final class ContentIndexQuery
         s.append( "contentTypeFilter", getContentTypeFilter() );
         s.append( "securityFilter", getSecurityFilter() );
         s.append( "orderBySection", orderBySection );
+        s.append( "facetDefinition", facetDefinition );
         return s.toString();
     }
 
@@ -293,4 +295,13 @@ public final class ContentIndexQuery
         this.orderBySection = orderBySection;
     }
 
+    public String getFacetDefinition()
+    {
+        return facetDefinition;
+    }
+
+    public void setFacetDefinition( final String facetDefinition )
+    {
+        this.facetDefinition = facetDefinition;
+    }
 }

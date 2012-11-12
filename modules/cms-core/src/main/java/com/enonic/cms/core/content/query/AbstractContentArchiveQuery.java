@@ -32,6 +32,8 @@ public abstract class AbstractContentArchiveQuery
 
     private CategoryAccessTypeFilterPolicy categoryAccessTypeFilterPolicy;
 
+    private String facetDefinition;
+
     public Collection<ContentKey> getContentKeyFilter()
     {
         return contentKeyFilter;
@@ -118,6 +120,8 @@ public abstract class AbstractContentArchiveQuery
             query.setCategoryAccessTypeFilter( catAccessFilter, CategoryAccessTypeFilterPolicy.AND );
         }
 
+        query.setFacetDefinition( this.facetDefinition );
+
         return query;
     }
 
@@ -129,4 +133,13 @@ public abstract class AbstractContentArchiveQuery
     }
 
 
+    public String getFacetDefinition()
+    {
+        return facetDefinition;
+    }
+
+    public void setFacetDefinition( final String facetDefinition )
+    {
+        this.facetDefinition = facetDefinition;
+    }
 }

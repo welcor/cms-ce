@@ -4,11 +4,14 @@
  */
 package com.enonic.cms.core.search.query;
 
+import java.util.Collection;
+
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.facet.AbstractFacetBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +32,7 @@ import com.enonic.cms.core.search.query.factory.LikeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.OrderQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.RangeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.TermQueryBuilderFactory;
+import com.enonic.cms.core.search.query.factory.facet.FacetBuilderFactory;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.ContentTypeDao;
 
@@ -49,6 +53,8 @@ public class QueryTranslator
 
     private final FullTextQueryBuilderFactory fullTextQueryBuilderFactory;
 
+    private final FacetBuilderFactory facetBuilderFactory;
+
     @Autowired
     private ContentTypeDao contentTypeDao;
 
@@ -61,6 +67,7 @@ public class QueryTranslator
         likeQueryBuilderFactory = new LikeQueryBuilderFactory();
         inQueryBuilderFactory = new InQueryBuilderFactory();
         fullTextQueryBuilderFactory = new FullTextQueryBuilderFactory();
+        facetBuilderFactory = new FacetBuilderFactory();
     }
 
 
@@ -94,20 +101,29 @@ public class QueryTranslator
             throw new IndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
         }
 
-        //builder.query( builtQuery );
-
         applySorting( builder, contentIndexQuery, queryExpr.getOrderBy() );
-        final FilterBuilder filtersToApply = filterQueryBuilderFactory.buildFilter( contentIndexQuery );
 
-        // if ( filtersToApply != null )
-        //  {
-        //      builder.filter( filtersToApply );
-        //  }
+        doAddFilters( contentIndexQuery, builder, builtQuery );
 
-        FilteredQueryBuilder filterQueryBuilder = new FilteredQueryBuilder( builtQuery, filtersToApply );
-        builder.query( filterQueryBuilder );
+        doAddFacets( contentIndexQuery, builder );
 
         return builder;
+    }
+
+    private void doAddFilters( final ContentIndexQuery contentIndexQuery, final SearchSourceBuilder builder, final QueryBuilder builtQuery )
+    {
+        final FilterBuilder filtersToApply = filterQueryBuilderFactory.buildFilter( contentIndexQuery );
+        FilteredQueryBuilder filterQueryBuilder = new FilteredQueryBuilder( builtQuery, filtersToApply );
+        builder.query( filterQueryBuilder );
+    }
+
+    private void doAddFacets( final ContentIndexQuery contentIndexQuery, final SearchSourceBuilder builder )
+    {
+        final Collection<AbstractFacetBuilder> facetBuilders = facetBuilderFactory.buildFacetBuilder( contentIndexQuery );
+        for ( AbstractFacetBuilder facetBuilder : facetBuilders )
+        {
+            builder.facet( facetBuilder );
+        }
     }
 
     private void applySorting( SearchSourceBuilder builder, ContentIndexQuery contentIndexQuery, OrderByExpr orderByExpr )

@@ -152,7 +152,7 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         int parentLevel = 0;
 
         XMLDocument xmlDocResult =
-            dataSourceService.getContentByQuery( context, query, orderBy, index, count, includeData, childrenLevel, parentLevel );
+            dataSourceService.getContentByQuery( context, query, orderBy, index, count, includeData, childrenLevel, parentLevel, null );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
@@ -205,7 +205,7 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         int parentLevel = 0;
 
         XMLDocument xmlDocResult =
-            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel );
+            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel, null );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
@@ -258,7 +258,7 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         int parentLevel = 10;
 
         XMLDocument xmlDocResult =
-            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel );
+            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel, null );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
@@ -313,7 +313,7 @@ public class DataSourceServiceImpl_getContentByQuery_relatedContentTest
         int parentLevel = 10;
 
         XMLDocument xmlDocResult =
-            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel );
+            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel, null );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();

@@ -124,7 +124,7 @@ public final class DataSourceServiceImpl
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentByQuery( DataSourceContext context, String query, String orderBy, int index, int count,
-                                          boolean includeData, int childrenLevel, int parentLevel )
+                                          boolean includeData, int childrenLevel, int parentLevel, final String facetDefinition )
     {
         final PreviewContext previewContext = context.getPreviewContext();
 
@@ -141,6 +141,7 @@ public final class DataSourceServiceImpl
             spec.setCount( count );
             spec.setFilterContentOnlineAt( now );
             spec.setUser( user );
+            spec.setFacetDefinition( facetDefinition );
             ContentResultSet contents = contentService.queryContent( spec );
             if ( previewContext.isPreviewingContent() )
             {

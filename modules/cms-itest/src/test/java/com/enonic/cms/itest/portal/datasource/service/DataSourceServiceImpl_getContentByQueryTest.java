@@ -129,7 +129,7 @@ public class DataSourceServiceImpl_getContentByQueryTest
         int parentLevel = 0;
 
         XMLDocument xmlDocResult =
-            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel );
+            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel, null );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();

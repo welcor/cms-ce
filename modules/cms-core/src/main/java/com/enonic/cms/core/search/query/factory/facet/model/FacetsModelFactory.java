@@ -12,7 +12,7 @@ public final class FacetsModelFactory
     {
         try
         {
-            final JAXBContext context = JAXBContext.newInstance( FacetsModelImpl.class );
+            final JAXBContext context = JAXBContext.newInstance( FacetsModel.class );
             return (FacetsModel) context.createUnmarshaller().unmarshal( new StringReader( xml ) );
         }
         catch ( Exception e )

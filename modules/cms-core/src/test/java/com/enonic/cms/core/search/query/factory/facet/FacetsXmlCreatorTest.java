@@ -10,7 +10,7 @@ import javax.xml.bind.ValidationEventHandler;
 
 import org.junit.Test;
 
-import com.enonic.cms.core.search.query.factory.facet.model.FacetsModelImpl;
+import com.enonic.cms.core.search.query.factory.facet.model.FacetsModel;
 import com.enonic.cms.core.search.query.factory.facet.model.RangeFacetModel;
 import com.enonic.cms.core.search.query.factory.facet.model.TermsFacetModel;
 
@@ -20,12 +20,11 @@ public class FacetsXmlCreatorTest
     implements ValidationEventHandler
 {
 
-
     @Test
     public void testCreateTermsFacetXml_simple()
         throws Exception
     {
-        FacetsModelImpl facets = new FacetsModelImpl();
+        FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
         facet.setField( "termsFacetField" );
@@ -33,7 +32,7 @@ public class FacetsXmlCreatorTest
         facet.setSize( 10 );
         facets.addFacet( facet );
 
-        createXml( facets );
+        System.out.println(createXml( facets ));
     }
 
     @Test
@@ -49,7 +48,7 @@ public class FacetsXmlCreatorTest
             "    </facet>\n" +
             "</facets>\n";
 
-        FacetsModelImpl facets = new FacetsModelImpl();
+        FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
         facet.setFields( "field1,field2,field3" );
@@ -81,7 +80,7 @@ public class FacetsXmlCreatorTest
             "    </facet>\n" +
             "</facets>\n";
 
-        FacetsModelImpl facets = new FacetsModelImpl();
+        FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
         facet.setField( "field" );
@@ -106,7 +105,7 @@ public class FacetsXmlCreatorTest
     @Test
     public void testRangeFacetXml()
     {
-        FacetsModelImpl facets = new FacetsModelImpl();
+        FacetsModel facets = new FacetsModel();
 
         final RangeFacetModel rangeFacet = new RangeFacetModel();
         rangeFacet.addRange( null, 49 );
@@ -128,10 +127,10 @@ public class FacetsXmlCreatorTest
     }
 
 
-    private String createXml( final FacetsModelImpl facets )
+    private String createXml( final FacetsModel facets )
         throws JAXBException
     {
-        JAXBContext context = JAXBContext.newInstance( FacetsModelImpl.class );
+        JAXBContext context = JAXBContext.newInstance( FacetsModel.class );
         Marshaller m = context.createMarshaller();
         m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
         final StringWriter stringWriter = new StringWriter();

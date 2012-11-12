@@ -34,9 +34,10 @@ public class FacetBuilderFactoryTest
     public void testFacets_singleTermsFacet()
     {
         String facetXml = "<facets>\n" +
-            "    <terms name=\"myFacetName\">\n" +
+            "    <terms>\n" +
+            "        <name>myFacetName</name>\n" +
             "        <size>10</size>\n" +
-            "        <field>fieldName</field>\n" +
+            "        <field>termsFacetField</field>\n" +
             "    </terms>\n" +
             "</facets>";
 
@@ -45,7 +46,7 @@ public class FacetBuilderFactoryTest
 
         final Set<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 
-        assertTrue( abstractFacetBuilders.size() == 1 );
+        assertTrue( "Should create one facet", abstractFacetBuilders.size() == 1 );
 
         for ( AbstractFacetBuilder builder : abstractFacetBuilders )
         {

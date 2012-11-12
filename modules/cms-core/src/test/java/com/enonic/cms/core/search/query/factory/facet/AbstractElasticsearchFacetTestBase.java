@@ -5,7 +5,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.search.facet.AbstractFacetBuilder;
 
-public class AbstractElasticsearchFacetBuilder
+public abstract class AbstractElasticsearchFacetTestBase
 {
     public String getJson( AbstractFacetBuilder facetBuilder )
         throws Exception

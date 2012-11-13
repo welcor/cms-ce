@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.search.result.FacetsResultSet;
 
 /**
  * Sep 16, 2010
@@ -22,6 +23,8 @@ public class ContentResultSetWithOverridingContent
     private ContentEntity overridingContent;
 
     private Collection<ContentEntity> cachedContents;
+
+    private FacetsResultSet facetsResultSet;
 
     public ContentResultSetWithOverridingContent( ContentResultSet source, ContentEntity overridingContent )
     {
@@ -122,5 +125,17 @@ public class ContentResultSetWithOverridingContent
             }
         }
         return contentsWithOverridenContent;
+    }
+
+    @Override
+    public FacetsResultSet getFacetsResultSet()
+    {
+        return facetsResultSet;
+    }
+
+    @Override
+    public void setFacetsResultSet( final FacetsResultSet facetsResultSet )
+    {
+        this.facetsResultSet = facetsResultSet;
     }
 }

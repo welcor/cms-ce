@@ -1,4 +1,4 @@
-package com.enonic.cms.core.content.resultset.facet;
+package com.enonic.cms.core.search.result;
 
 import java.util.Map;
 
@@ -8,7 +8,9 @@ public class TermsFacetResultSet
     extends AbstractFacetResultSet
     implements FacetResultSet
 {
-    private Map<String, Integer> results = Maps.newHashMap();
+    FacetType facetType = FacetType.TERMS;
+
+    private Map<String, Integer> results = Maps.newLinkedHashMap();
 
     public Map<String, Integer> getResults()
     {
@@ -20,4 +22,9 @@ public class TermsFacetResultSet
         results.put( term, count );
     }
 
+    @Override
+    public FacetType getFacetType()
+    {
+        return facetType;
+    }
 }

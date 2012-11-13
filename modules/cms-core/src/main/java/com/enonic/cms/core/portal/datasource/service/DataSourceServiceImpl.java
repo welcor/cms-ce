@@ -64,6 +64,7 @@ import com.enonic.cms.core.preference.PreferenceSpecification;
 import com.enonic.cms.core.preference.PreferenceUniqueMatchResolver;
 import com.enonic.cms.core.preference.PreferenceXmlCreator;
 import com.enonic.cms.core.preview.PreviewContext;
+import com.enonic.cms.core.search.result.FacetResultXmlCreator;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
@@ -122,9 +123,11 @@ public final class DataSourceServiceImpl
 
     private UserStoreService userStoreService;
 
+    private FacetResultXmlCreator facetResultXmlCreator = new FacetResultXmlCreator();
+
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentByQuery( DataSourceContext context, String query, String orderBy, int index, int count,
-                                          boolean includeData, int childrenLevel, int parentLevel, final String facetDefinition )
+                                          boolean includeData, int childrenLevel, int parentLevel, final String facetsDefinition )
     {
         final PreviewContext previewContext = context.getPreviewContext();
 
@@ -141,7 +144,7 @@ public final class DataSourceServiceImpl
             spec.setCount( count );
             spec.setFilterContentOnlineAt( now );
             spec.setUser( user );
-            spec.setFacetDefinition( facetDefinition );
+            spec.setFacetDefinition( facetsDefinition );
             ContentResultSet contents = contentService.queryContent( spec );
             if ( previewContext.isPreviewingContent() )
             {
@@ -170,6 +173,12 @@ public final class DataSourceServiceImpl
             xmlCreator.setIncludeVersionsInfoForPortal( false );
             xmlCreator.setIncludeAssignment( true );
             XMLDocument xml = xmlCreator.createContentsDocument( user, contents, relatedContents );
+
+            if ( contents.getFacetsResultSet() != null )
+            {
+                facetResultXmlCreator.addFacetResultXml( xml.getAsJDOMDocument(), contents.getFacetsResultSet() );
+            }
+
             addDataTraceInfo( xml.getAsJDOMDocument() );
             return xml;
         }

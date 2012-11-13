@@ -10,6 +10,7 @@ import java.util.List;
 import com.enonic.cms.core.ResultSet;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.search.result.FacetsResultSet;
 
 /**
  * This class defines the content result set.
@@ -44,5 +45,9 @@ public interface ContentResultSet
     Collection<ContentEntity> getContents();
 
     ContentResultSet createRandomizedResult( int count );
+
+    FacetsResultSet getFacetsResultSet();
+
+    void setFacetsResultSet( FacetsResultSet facetsResultSet );
 
 }

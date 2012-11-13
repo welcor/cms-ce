@@ -14,6 +14,7 @@ import java.util.Set;
 import com.enonic.cms.core.AbstractResultSet;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.search.result.FacetsResultSet;
 
 
 public final class ContentResultSetNonLazy
@@ -21,6 +22,8 @@ public final class ContentResultSetNonLazy
     implements ContentResultSet
 {
     private List<ContentEntity> contents;
+
+    private FacetsResultSet facetsResultSet;
 
     /**
      * Lazy initialized distinct set of the keys.
@@ -160,4 +163,16 @@ public final class ContentResultSetNonLazy
         }
     }
 
+
+    @Override
+    public FacetsResultSet getFacetsResultSet()
+    {
+        return facetsResultSet;
+    }
+
+    @Override
+    public void setFacetsResultSet( final FacetsResultSet facetsResultSet )
+    {
+        this.facetsResultSet = facetsResultSet;
+    }
 }

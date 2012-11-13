@@ -18,11 +18,14 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
-        query.setFacetDefinition( "<facets>\n" +
-                                      "    <terms name=\"mySimpleTermFacet\">\n" +
-                                      "        <field>data/person/gender</field>\n" +
-                                      "    </terms>\n" +
-                                      "</facets>" );
+        final String facetDefinition = "<facets>\n" +
+            "    <terms>\n" +
+            "        <name>myFacetQuery</name>\n" +
+            "        <field>data/person/gender</field>\n" +
+            "    </terms>\n" +
+            "</facets>";
+
+        query.setFacetDefinition( facetDefinition );
 
         final ContentResultSet result = contentIndexService.query( query );
     }

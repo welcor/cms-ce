@@ -2,7 +2,6 @@ package com.enonic.cms.core.search.query.factory.facet.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.base.Strings;
@@ -12,7 +11,6 @@ import com.google.common.base.Strings;
 public class TermsFacetModel
     extends AbstractFacetModel
 {
-    private final static String type = "terms";
 
     private String field;
 
@@ -83,12 +81,6 @@ public class TermsFacetModel
     public String getRegexFlags()
     {
         return regexFlags;
-    }
-
-    @XmlAttribute(name = "type")
-    public String getType()
-    {
-        return type;
     }
 
     public void setOrder( final String order )

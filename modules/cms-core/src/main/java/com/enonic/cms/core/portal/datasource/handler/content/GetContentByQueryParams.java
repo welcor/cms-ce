@@ -15,4 +15,6 @@ public final class GetContentByQueryParams
     public int childrenLevel = 1;
 
     public int parentLevel = 0;
+
+    public String facetsDefinition;
 }

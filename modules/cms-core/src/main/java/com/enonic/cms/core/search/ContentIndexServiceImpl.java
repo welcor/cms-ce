@@ -30,7 +30,6 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
-import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTrace;
 import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -52,6 +51,8 @@ import com.enonic.cms.core.search.query.QueryField;
 import com.enonic.cms.core.search.query.QueryFieldFactory;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 import com.enonic.cms.core.search.query.QueryTranslator;
+import com.enonic.cms.core.search.result.FacetsResultSet;
+import com.enonic.cms.core.search.result.FacetsResultSetCreator;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.ContentDao;
 
@@ -79,6 +80,8 @@ public class ContentIndexServiceImpl
     private final IndexValueQueryTranslator indexValueQueryTranslator = new IndexValueQueryTranslator();
 
     private final AggregatedQueryTranslator aggregatedQueryTranslator = new AggregatedQueryTranslator();
+
+    private final FacetsResultSetCreator facetsResultSetCreator = new FacetsResultSetCreator();
 
     private ContentDao contentDao;
 
@@ -153,7 +156,8 @@ public class ContentIndexServiceImpl
 
         build = queryTranslator.build( contentIndexQuery );
 
-        SearchHits hits = doExecuteSearchRequest( build );
+        SearchResponse searchResponse = doExecuteSearchRequest( build );
+        SearchHits hits = searchResponse.getHits();
 
         final int entriesToDelete = hits.getHits().length;
 
@@ -227,34 +231,43 @@ public class ContentIndexServiceImpl
             ContentIndexQueryTracer.traceQuery( query, query.getIndex(), query.getCount(), translatedQuerySource.toString(), trace );
 
             ContentIndexQueryTracer.traceElasticSearchStartTime( trace, timeService );
-            final SearchHits hits = doExecuteSearchRequest( translatedQuerySource );
+            final SearchResponse searchResponse = doExecuteSearchRequest( translatedQuerySource );
             ContentIndexQueryTracer.traceElasticSearchFinishedTime( trace, timeService );
 
-            LOG.finer( "query: " + translatedQuerySource.toString() + " executed with " + hits.getHits().length + " hits of total " +
-                           hits.getTotalHits() );
+            SearchHits searchHits = searchResponse.getHits();
 
-            final int queryResultTotalSize = new Long( hits.getTotalHits() ).intValue();
+            LOG.finer(
+                "query: " + translatedQuerySource.toString() + " executed with " + searchHits.getHits().length + " searchHits of total " +
+                    searchHits.getTotalHits() );
+
+            final int queryResultTotalSize = new Long( searchHits.getTotalHits() ).intValue();
 
             ContentIndexQueryTracer.traceMatchCount( queryResultTotalSize, trace );
 
-            if ( query.getIndex() > queryResultTotalSize )
-            {
-                final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
-                rs.addError( "Index greater than result count: " + query.getIndex() + " greater than " + queryResultTotalSize );
-                return rs;
-            }
+            // TODO: This could be removed?
+            //if ( query.getIndex() > queryResultTotalSize )
+            //{
+            //    final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
+            //    rs.addError( "Index greater than result count: " + query.getIndex() + " greater than " + queryResultTotalSize );
+            //    return rs;
+            //}
 
             final int fromIndex = Math.max( query.getIndex(), 0 );
 
             final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();
 
-            for ( final SearchHit hit : hits )
+            for ( final SearchHit hit : searchHits )
             {
                 keys.add( new ContentKey( hit.getId() ) );
             }
 
-            return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
+            final ContentResultSetLazyFetcher contentResult =
+                new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), keys, fromIndex, queryResultTotalSize );
 
+            final FacetsResultSet facetsResultSet = facetsResultSetCreator.createResultSet( searchResponse );
+            contentResult.setFacetsResultSet( facetsResultSet );
+
+            return contentResult;
         }
         finally
         {
@@ -325,7 +338,8 @@ public class ContentIndexServiceImpl
             throw new IndexQueryException( "Failed to translate query: " + query, e );
         }
 
-        final SearchHits hits = doExecuteSearchRequest( build );
+        final SearchResponse searchResponse = doExecuteSearchRequest( build );
+        final SearchHits hits = searchResponse.getHits();
 
         final IndexValueResultSetImpl resultSet = new IndexValueResultSetImpl( query.getIndex(), Ints.saturatedCast( hits.totalHits() ) );
 
@@ -354,12 +368,12 @@ public class ContentIndexServiceImpl
         return new IndexValueResultImpl( contentKey, fieldValue.get( 0 ) );
     }
 
-    private SearchHits doExecuteSearchRequest( final SearchSourceBuilder searchSourceBuilder )
+    private SearchResponse doExecuteSearchRequest( final SearchSourceBuilder searchSourceBuilder )
     {
-        final SearchResponse res =
+        final SearchResponse searchResponse =
             elasticSearchIndexService.search( CONTENT_INDEX_NAME, IndexType.Content.toString(), searchSourceBuilder );
 
-        return res.getHits();
+        return searchResponse;
     }
 
     public SearchResponse query( final String query )

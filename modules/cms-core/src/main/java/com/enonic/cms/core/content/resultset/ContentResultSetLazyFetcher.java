@@ -16,12 +16,15 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentEntityFetcher;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentMap;
+import com.enonic.cms.core.search.result.FacetsResultSet;
 
 
 public final class ContentResultSetLazyFetcher
     extends AbstractResultSet
     implements ContentResultSet
 {
+
+    private FacetsResultSet facetsResultSet;
 
     private final ContentEntityFetcher fetcher;
 
@@ -162,5 +165,17 @@ public final class ContentResultSetLazyFetcher
                 keySet.add( key );
             }
         }
+    }
+
+    @Override
+    public FacetsResultSet getFacetsResultSet()
+    {
+        return facetsResultSet;
+    }
+
+    @Override
+    public void setFacetsResultSet( final FacetsResultSet facetsResultSet )
+    {
+        this.facetsResultSet = facetsResultSet;
     }
 }

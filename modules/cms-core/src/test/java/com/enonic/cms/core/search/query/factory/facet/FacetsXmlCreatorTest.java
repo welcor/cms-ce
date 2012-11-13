@@ -8,6 +8,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 
+import org.elasticsearch.common.Strings;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.query.factory.facet.model.FacetsModel;
@@ -36,16 +37,16 @@ public class FacetsXmlCreatorTest
     }
 
     @Test
-    public void testCreateTermsFacetXml_multi_field_()
+    public void testCreateTermsFacetXml_multi_field()
         throws Exception
     {
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<facets>\n" +
-            "    <facet type=\"terms\">\n" +
+            "    <terms>\n" +
             "        <name>myFacetName</name>\n" +
             "        <size>10</size>\n" +
             "        <fields>field1,field2,field3</fields>\n" +
-            "    </facet>\n" +
+            "    </terms>\n" +
             "</facets>\n";
 
         FacetsModel facets = new FacetsModel();
@@ -58,7 +59,7 @@ public class FacetsXmlCreatorTest
 
         final String xml = createXml( facets );
 
-        assertEquals( expected, xml );
+        assertEquals( Strings.trimTrailingWhitespace(expected), Strings.trimTrailingWhitespace(xml) );
     }
 
     @Test
@@ -67,7 +68,7 @@ public class FacetsXmlCreatorTest
     {
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<facets>\n" +
-            "    <facet type=\"terms\">\n" +
+            "    <terms>\n" +
             "        <name>myFacetName</name>\n" +
             "        <size>10</size>\n" +
             "        <all_terms>true</all_terms>\n" +
@@ -77,8 +78,8 @@ public class FacetsXmlCreatorTest
             "        <order>orderby</order>\n" +
             "        <regex>regexp</regex>\n" +
             "        <regex_flags>DOTALL</regex_flags>\n" +
-            "    </facet>\n" +
-            "</facets>\n";
+            "    </terms>\n" +
+            "</facets>";
 
         FacetsModel facets = new FacetsModel();
 
@@ -96,9 +97,7 @@ public class FacetsXmlCreatorTest
 
         final String xml = createXml( facets );
 
-        System.out.println( xml );
-
-        assertEquals( expected, xml );
+        assertEquals( Strings.trimTrailingWhitespace(expected), Strings.trimTrailingWhitespace(xml) );
     }
 
 

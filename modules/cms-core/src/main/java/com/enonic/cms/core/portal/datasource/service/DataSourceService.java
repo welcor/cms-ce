@@ -15,7 +15,7 @@ public interface DataSourceService
 {
 
     public XMLDocument getContentByQuery( DataSourceContext context, String query, String orderBy, int index, int count,
-                                          boolean includeData, int childrenLevel, int parentLevel, final String facetDefinition );
+                                          boolean includeData, int childrenLevel, int parentLevel, final String facetsDefinition );
 
     /**
      * Get content, specified by the one of more given content keys. with the possibility to restrict it by filters, so it is only returned

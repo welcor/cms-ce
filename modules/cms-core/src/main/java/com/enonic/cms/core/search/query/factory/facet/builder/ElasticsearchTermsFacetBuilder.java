@@ -5,6 +5,7 @@ import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 
 import com.google.common.base.Strings;
 
+import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 import com.enonic.cms.core.search.query.factory.facet.model.TermsFacetModel;
 
@@ -53,7 +54,21 @@ final class ElasticsearchTermsFacetBuilder
     {
         if ( !com.google.common.base.Strings.isNullOrEmpty( termsFacetXml.getOrder() ) )
         {
-            builder.order( TermsFacet.ComparatorType.valueOf( termsFacetXml.getOrder() ) );
+            final TermsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( termsFacetXml );
+
+            builder.order( comparatorType );
+        }
+    }
+
+    private TermsFacet.ComparatorType getTermsFacetComperatorType( final TermsFacetModel termsFacetXml )
+    {
+        try
+        {
+            return TermsFacet.ComparatorType.valueOf( termsFacetXml.getOrder().toUpperCase() );
+        }
+        catch ( Exception e )
+        {
+            throw new IndexQueryException( "Parameter value '" + termsFacetXml.getOrder() + "' not valid order value", e );
         }
     }
 

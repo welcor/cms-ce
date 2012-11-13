@@ -50,7 +50,4 @@ public abstract class AbstractFacetResultSet
     {
         this.requiredSize = requiredSize;
     }
-
-    @Override
-    public abstract FacetType getFacetType();
 }

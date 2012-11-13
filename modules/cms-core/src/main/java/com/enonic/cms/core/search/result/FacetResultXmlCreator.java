@@ -23,9 +23,9 @@ public class FacetResultXmlCreator
         {
             final FacetResultSet facet = iterator.next();
 
-            final FacetType facetType = facet.getFacetType();
+            final FacetResultType facetResultType = facet.getFacetResultType();
 
-            switch ( facetType )
+            switch ( facetResultType )
             {
                 case TERMS:
                     addTermFacetResult( facetsNode, (TermsFacetResultSet) facet );

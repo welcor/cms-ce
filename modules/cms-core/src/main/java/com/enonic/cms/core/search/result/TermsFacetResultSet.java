@@ -8,7 +8,7 @@ public class TermsFacetResultSet
     extends AbstractFacetResultSet
     implements FacetResultSet
 {
-    FacetType facetType = FacetType.TERMS;
+    FacetResultType facetResultType = FacetResultType.TERMS;
 
     private Map<String, Integer> results = Maps.newLinkedHashMap();
 
@@ -23,8 +23,8 @@ public class TermsFacetResultSet
     }
 
     @Override
-    public FacetType getFacetType()
+    public FacetResultType getFacetResultType()
     {
-        return facetType;
+        return facetResultType;
     }
 }

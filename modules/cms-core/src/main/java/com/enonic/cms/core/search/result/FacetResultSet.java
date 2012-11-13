@@ -7,6 +7,6 @@ public interface FacetResultSet
 
     public void setName( String facetName );
 
-    public FacetType getFacetType();
+    public FacetResultType getFacetResultType();
 
 }

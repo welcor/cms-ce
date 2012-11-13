@@ -20,10 +20,9 @@ public class FacetsResultSet
     {
         if ( facetResultSets == null )
         {
-            this.facetResultSets = Sets.newHashSet();
+            this.facetResultSets = Sets.newLinkedHashSet();
         }
 
         this.facetResultSets.add( facetResultSet );
     }
-
 }

@@ -15,6 +15,10 @@ public class ContentLocationComparatorOnPath
 {
     public int compare( final ContentLocation a, final ContentLocation b )
     {
+        if (a == b) {
+            return 0;
+        }
+
         final int siteNameCompare = a.getSiteName().compareTo( b.getSiteName() );
         if ( siteNameCompare != 0 )
         {

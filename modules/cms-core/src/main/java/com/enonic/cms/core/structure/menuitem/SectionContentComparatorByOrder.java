@@ -9,6 +9,10 @@ public class SectionContentComparatorByOrder
 {
     public int compare( SectionContentEntity a, SectionContentEntity b )
     {
+        if (a == b) {
+            return 0;
+        }
+
         if ( !a.isApproved() && b.isApproved() )
         {
             return -1;

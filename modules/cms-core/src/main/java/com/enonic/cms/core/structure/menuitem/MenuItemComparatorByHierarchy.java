@@ -14,6 +14,10 @@ public class MenuItemComparatorByHierarchy
 {
     public int compare( final MenuItemEntity a, final MenuItemEntity b )
     {
+        if (a == b) {
+            return 0;
+        }
+
         // return -1 if a is before than b
         // return 0 if a has equal order to b
         // return +1 if a is after b

@@ -36,7 +36,7 @@ public class ContentLocationsTest
         content.addDirectMenuItemPlacement( directlyPlaced );
         content.addContentHome( createContentHome( site, explicitHome ) );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey() );
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site.getKey() );
         assertEquals( directlyPlaced, resolvedLocation.getMenuItem() );
     }
@@ -52,7 +52,7 @@ public class ContentLocationsTest
         content.addDirectMenuItemPlacement( directlyPlaced );
         content.addSectionContent( createApprovedSectionContent( section ) );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey() );
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site.getKey() );
         assertEquals( directlyPlaced, resolvedLocation.getMenuItem() );
     }
@@ -71,7 +71,7 @@ public class ContentLocationsTest
         content.addSectionContent( createApprovedSectionContent( news_national ) );
         content.addDirectMenuItemPlacement( news_national_ObamaInOslo );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey() );
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site.getKey() );
         assertEquals( news_national_ObamaInOslo, resolvedLocation.getMenuItem() );
     }
@@ -87,7 +87,7 @@ public class ContentLocationsTest
         content.addContentHome( createContentHome( site, news ) );
         content.addSectionContent( createApprovedSectionContent( latestNews ) );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey() );
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site.getKey() );
         assertEquals( news, resolvedLocation.getMenuItem() );
     }
@@ -102,7 +102,7 @@ public class ContentLocationsTest
         content.addContentHome( createContentHome( site, news ) );
         content.addSectionContent( createApprovedSectionContent( news ) );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey() );
         assertEquals( 1, contentLocations.numberOfLocations() );
 
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site.getKey() );
@@ -128,7 +128,7 @@ public class ContentLocationsTest
         content.addContentHome( createContentHome( site1, site1_home ) );
         content.addContentHome( createContentHome( site2, site2_home ) );
 
-        ContentLocations contentLocations = getContentLocationsForAllSites( content, true );
+        ContentLocations contentLocations = getContentLocationsForAllSites( content );
         assertEquals( 4, contentLocations.numberOfLocations() );
 
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site1.getKey() );
@@ -154,7 +154,7 @@ public class ContentLocationsTest
         content.addSectionContent( createApprovedSectionContent( home_with_big_m ) );
         content.addSectionContent( createApprovedSectionContent( home_with_big_m_news ) );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site1.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site1.getKey() );
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site1.getKey() );
         assertEquals( home_with_big_m, resolvedLocation.getMenuItem() );
 
@@ -176,7 +176,7 @@ public class ContentLocationsTest
         content.addSectionContent( createApprovedSectionContent( news ) );
         content.addSectionContent( createApprovedSectionContent( news_national ) );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey() );
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site.getKey() );
         assertEquals( news, resolvedLocation.getMenuItem() );
     }
@@ -191,7 +191,7 @@ public class ContentLocationsTest
         content.addContentHome( createContentHome( site, news ) );
         content.addDirectMenuItemPlacement( news );
 
-        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey(), true );
+        ContentLocations contentLocations = getContentLocationsForSite( content, site.getKey() );
         ContentLocation resolvedLocation = contentLocations.getHomeLocation( site.getKey() );
         assertEquals( news, resolvedLocation.getMenuItem() );
     }
@@ -243,20 +243,18 @@ public class ContentLocationsTest
         return sectionContent;
     }
 
-    private ContentLocations getContentLocationsForSite( ContentEntity content, SiteKey siteKey, boolean includeInactiveLocations )
+    private ContentLocations getContentLocationsForSite( ContentEntity content, SiteKey siteKey )
     {
         ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
         contentLocationSpecification.setSiteKey( siteKey );
         contentLocationSpecification.setIncludeInactiveLocationsInSection( true );
-        ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
-        return contentLocations;
+        return content.getLocations( contentLocationSpecification );
     }
 
-    private ContentLocations getContentLocationsForAllSites( ContentEntity content, boolean includeInactiveLocations )
+    private ContentLocations getContentLocationsForAllSites( ContentEntity content )
     {
         ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
         contentLocationSpecification.setIncludeInactiveLocationsInSection( true );
-        ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
-        return contentLocations;
+        return content.getLocations( contentLocationSpecification );
     }
 }

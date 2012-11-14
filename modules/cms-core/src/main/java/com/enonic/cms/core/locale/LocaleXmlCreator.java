@@ -16,7 +16,7 @@ public class LocaleXmlCreator
 
     public Document createLocalesDocument( final Locale[] locales )
     {
-        Preconditions.checkNotNull(locales, "locales cannot be null" );
+        Preconditions.checkNotNull( locales, "locales cannot be null" );
 
         Element localesEl = new Element( "locales" );
         for ( Locale locale : locales )
@@ -28,7 +28,7 @@ public class LocaleXmlCreator
 
     public Document createLocalesDocument( final Locale locale )
     {
-        Preconditions.checkNotNull(locale, "locale cannot be null" );
+        Preconditions.checkNotNull( locale, "locale cannot be null" );
 
         Element localesEl = new Element( "locales" );
         localesEl.addContent( doCreateLocaleElement( locale, null ) );
@@ -37,11 +37,35 @@ public class LocaleXmlCreator
 
     public Document createLocaleDocument( final Locale locale, Locale inLocale )
     {
-        Preconditions.checkNotNull(locale, "locale cannot be null" );
+        Preconditions.checkNotNull( locale, "locale cannot be null" );
 
         Element localesEl = new Element( "locales" );
         localesEl.addContent( doCreateLocaleElement( locale, inLocale ) );
         return new Document( localesEl );
+    }
+
+    private String getISO3Country( final Locale locale )
+    {
+        try
+        {
+            return locale.getISO3Country();
+        }
+        catch ( final Exception e )
+        {
+            return null;
+        }
+    }
+
+    private String getISO3Language( final Locale locale )
+    {
+        try
+        {
+            return locale.getISO3Language();
+        }
+        catch ( final Exception e )
+        {
+            return null;
+        }
     }
 
     private Element doCreateLocaleElement( final Locale locale, final Locale inLocale )
@@ -53,8 +77,8 @@ public class LocaleXmlCreator
         localeEl.addContent( new Element( "display-language" ).setText( asEmptyIfNull( locale.getDisplayLanguage() ) ) );
         localeEl.addContent( new Element( "display-name" ).setText( asEmptyIfNull( locale.getDisplayName() ) ) );
         localeEl.addContent( new Element( "display-variant" ).setText( asEmptyIfNull( locale.getDisplayVariant() ) ) );
-        localeEl.addContent( new Element( "iso3country" ).setText( asEmptyIfNull( locale.getISO3Country() ) ) );
-        localeEl.addContent( new Element( "iso3language" ).setText( asEmptyIfNull( locale.getISO3Language() ) ) );
+        localeEl.addContent( new Element( "iso3country" ).setText( asEmptyIfNull( getISO3Country( locale ) ) ) );
+        localeEl.addContent( new Element( "iso3language" ).setText( asEmptyIfNull( getISO3Language( locale ) ) ) );
         localeEl.addContent( new Element( "language" ).setText( asEmptyIfNull( locale.getLanguage() ) ) );
         localeEl.addContent( new Element( "variant" ).setText( asEmptyIfNull( locale.getVariant() ) ) );
 

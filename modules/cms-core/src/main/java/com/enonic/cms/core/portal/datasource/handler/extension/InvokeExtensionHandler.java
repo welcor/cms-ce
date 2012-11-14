@@ -58,14 +58,19 @@ public final class InvokeExtensionHandler
 
         final String[] parameterValues = getParameterValues( req );
         final int parameterCount = parameterValues.length;
-        final Method targetMethod = findMethod( library, methodName, parameterCount );
-        if ( targetMethod == null )
-        {
+        final List<Method> methods = findMethod( library, methodName, parameterCount );
+
+        if (methods.isEmpty()) {
             throw new DataSourceException( "Method [{0}] with {1} parameters was not found in function library [{2}]", methodName,
                                            parameterCount == 0 ? "no" : parameterCount, namespace );
         }
 
-        return wrapResultValue( invokeMethod( targetMethod, library.getTarget(), parameterValues ) );
+        if (methods.size() != 1) {
+            throw new DataSourceException( "Multiple methods [{0}] with {1} parameters found in function library [{2}]", methodName,
+                                           parameterCount == 0 ? "no" : parameterCount, namespace );
+        }
+
+        return wrapResultValue( invokeMethod( methods.get( 0 ), library.getTarget(), parameterValues ) );
     }
 
     private String[] getParameterValues( final DataSourceRequest req )
@@ -119,17 +124,20 @@ public final class InvokeExtensionHandler
         }
     }
 
-    private Method findMethod( final FunctionLibrary library, final String methodName, final int parameterCount )
+    private List<Method> findMethod( final FunctionLibrary library, final String methodName, final int parameterCount )
     {
         final Class<?> targetClass = library.getTargetClass();
-        for ( Method method : targetClass.getMethods() )
+        final List<Method> methods = Lists.newArrayList();
+
+        for ( final Method method : targetClass.getMethods() )
         {
             if ( method.getName().equals( methodName ) && method.getParameterTypes().length == parameterCount )
             {
-                return method;
+                methods.add( method );
             }
         }
-        return null;
+
+        return methods;
     }
 
     @Autowired

@@ -69,12 +69,6 @@ public class InvokeExtensionHandlerTest
             return "method1: " + param1 + ", " + param2;
         }
 
-        // Should never be called
-        public String method1( final int param1, final int param2 )
-        {
-            return "method1: " + param1 + " - " + param2;
-        }
-
         public String method2( final int[] param1 )
         {
             return "method2: " + Arrays.toString( param1 );
@@ -83,6 +77,16 @@ public class InvokeExtensionHandlerTest
         public String method3( final boolean param1 )
         {
             return "method3: " + param1;
+        }
+
+        public String method4( final int param1, final String param2 )
+        {
+            return "method4: " + param1 + ", " + param2;
+        }
+
+        public String method4( final int param1, final int param2 )
+        {
+            return "method4: " + param1 + " - " + param2;
         }
     }
 
@@ -214,6 +218,17 @@ public class InvokeExtensionHandlerTest
         this.request.addParam( "param1", "33" );
         this.request.addParam( "param2", "text" );
         this.request.addParam( "param3", "one-too-many" );
+
+        this.handler.handle( this.request );
+    }
+
+    @Test(expected = DataSourceException.class)
+    public void testHandler_extension_non_unique_method()
+        throws Exception
+    {
+        this.request.addParam( "name", "lib2.method4" );
+        this.request.addParam( "param1", "33" );
+        this.request.addParam( "param2", "text" );
 
         this.handler.handle( this.request );
     }

@@ -1,8 +1,8 @@
 package com.enonic.cms.framework.jdbc;
 
-import com.enonic.cms.framework.jdbc.delegate.DelegatingConnection;
-import com.enonic.cms.framework.jdbc.delegate.DelegatingPreparedStatement;
-import com.enonic.cms.framework.jdbc.delegate.DelegatingStatement;
+import com.enonic.cms.framework.jdbc.wrapper.ConnectionWrapper;
+import com.enonic.cms.framework.jdbc.wrapper.PreparedStatementWrapper;
+import com.enonic.cms.framework.jdbc.wrapper.StatementWrapper;
 
 import java.sql.*;
 
@@ -13,6 +13,7 @@ import java.sql.*;
 public final class DriverFixConnectionDecorator
     implements ConnectionDecorator
 {
+    @Override
     public Connection decorate( final Connection connection )
         throws SQLException
     {
@@ -20,44 +21,53 @@ public final class DriverFixConnectionDecorator
     }
 
     private final class ConnectionImpl
-        extends DelegatingConnection
+        extends ConnectionWrapper
     {
-        public ConnectionImpl( Connection conn )
+        public ConnectionImpl( final Connection conn )
         {
             super( conn );
         }
 
-        protected Statement createWrappedStatement( Statement stmt )
+        @Override
+        protected Statement createWrappedStatement( final Statement stmt )
         {
             return new StatementImpl( stmt, this );
         }
 
-        protected PreparedStatement createWrappedPreparedStatement( PreparedStatement stmt, String sql )
+        @Override
+        protected PreparedStatement createWrappedPreparedStatement( final PreparedStatement stmt, final String sql )
         {
             return new PreparedStatementImpl( stmt, this );
         }
     }
 
     private final class StatementImpl
-        extends DelegatingStatement
+        extends StatementWrapper
     {
-        public StatementImpl( Statement stmt, Connection conn )
+        public StatementImpl( final Statement stmt, final Connection conn )
         {
             super( stmt, conn );
         }
 
         @Override
-        public void setQueryTimeout( int seconds )
+        public void setQueryTimeout( final int seconds )
             throws SQLException
         {
             doSetQueryTimeout( this.stmt, seconds );
+        }
+
+        @Override
+        protected ResultSet createWrappedResultSet( final ResultSet result )
+            throws SQLException
+        {
+            return result;
         }
     }
 
     private final class PreparedStatementImpl
-        extends DelegatingPreparedStatement
+        extends PreparedStatementWrapper
     {
-        public PreparedStatementImpl( PreparedStatement stmt, Connection conn )
+        public PreparedStatementImpl( final PreparedStatement stmt, final Connection conn )
         {
             super( stmt, conn );
         }
@@ -67,6 +77,13 @@ public final class DriverFixConnectionDecorator
             throws SQLException
         {
             doSetQueryTimeout( this.stmt, seconds );
+        }
+
+        @Override
+        protected ResultSet createWrappedResultSet( final ResultSet result )
+            throws SQLException
+        {
+            return result;
         }
     }
 

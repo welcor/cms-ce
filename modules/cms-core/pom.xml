@@ -261,5 +261,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa-lib</artifactId>
+      <version>2.2.1</version>
+    </dependency>
   </dependencies>
 </project>

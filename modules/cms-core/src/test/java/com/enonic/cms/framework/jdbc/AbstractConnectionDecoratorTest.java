@@ -6,15 +6,14 @@ package com.enonic.cms.framework.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.mockito.Mockito;
 
-import com.enonic.cms.framework.jdbc.delegate.DelegatingConnection;
-import com.enonic.cms.framework.jdbc.delegate.DelegatingResultSet;
-import com.enonic.cms.framework.jdbc.delegate.DelegatingStatement;
+import com.enonic.cms.framework.jdbc.wrapper.ConnectionWrapper;
+import com.enonic.cms.framework.jdbc.wrapper.PreparedStatementWrapper;
+import com.enonic.cms.framework.jdbc.wrapper.StatementWrapper;
 
 import static org.junit.Assert.*;
 
@@ -23,10 +22,6 @@ import static org.junit.Assert.*;
  */
 public abstract class AbstractConnectionDecoratorTest
 {
-    protected ResultSet realResultsetForStatement;
-
-    protected ResultSet realResultsetForPreparedStatement;
-
     protected Statement realStatement;
 
     protected PreparedStatement realPreparedStatement;
@@ -43,15 +38,6 @@ public abstract class AbstractConnectionDecoratorTest
 
         Mockito.when( realConnection.createStatement() ).thenReturn( realStatement );
         Mockito.when( realConnection.prepareStatement( Mockito.anyString() ) ).thenReturn( realPreparedStatement );
-
-        realResultsetForStatement = Mockito.mock( ResultSet.class );
-        realResultsetForPreparedStatement = Mockito.mock( ResultSet.class );
-
-        Mockito.when( realStatement.executeQuery( Mockito.anyString() ) ).thenReturn( realResultsetForStatement );
-        Mockito.when( realPreparedStatement.executeQuery() ).thenReturn( realResultsetForPreparedStatement );
-
-        Mockito.when( realResultsetForStatement.getString( 1 ) ).thenReturn( "dummy" );
-        Mockito.when( realResultsetForPreparedStatement.getString( 1 ) ).thenReturn( "dummy" );
     }
 
     public void testDecoratingLevel( ConnectionDecorator connectionDecorator, int levels )
@@ -71,15 +57,6 @@ public abstract class AbstractConnectionDecoratorTest
         // verify statement
         Statement decoratedStatement = decoratedConnnection.createStatement();
         assertDecoratedStatement( realStatement, decoratedStatement, levels );
-
-        // verify resultset
-        ResultSet decoratedResultSet = decoratedStatement.executeQuery( "dummy" );
-        assertDelegatingResultSet( realResultsetForStatement, decoratedResultSet, levels );
-
-        // verify get column
-        String actualColumnValue = decoratedResultSet.getString( 1 );
-        assertNotNull( actualColumnValue );
-        assertEquals( "dummy", actualColumnValue );
     }
 
     public void testDecoratingLevelWithPreparedStatement( ConnectionDecorator connectionDecorator, int levels )
@@ -91,16 +68,7 @@ public abstract class AbstractConnectionDecoratorTest
 
         // verify statement
         PreparedStatement decoratedPreparedStatement = decoratedConnnection.prepareStatement( "dummySQL" );
-        assertDecoratedStatement( realPreparedStatement, decoratedPreparedStatement, levels );
-
-        // verify resultset
-        ResultSet decoratedResultSet = decoratedPreparedStatement.executeQuery();
-        assertDelegatingResultSet( realResultsetForPreparedStatement, decoratedResultSet, levels );
-
-        // verify get column
-        String actualColumnValue = decoratedResultSet.getString( 1 );
-        assertNotNull( actualColumnValue );
-        assertEquals( "dummy", actualColumnValue );
+        assertDecoratedPreparedStatement( realPreparedStatement, decoratedPreparedStatement, levels );
     }
 
     Connection decorate( ConnectionDecorator connectionDecorator, Connection connectionToBeDecorated, int times )
@@ -119,20 +87,20 @@ public abstract class AbstractConnectionDecoratorTest
     {
         assertNotSame( real, decorated );
         assertTrue( "decorated Connection not DelegatingConnection at level " + numberOfLevelsToReal,
-                    decorated instanceof DelegatingConnection );
+                    decorated instanceof ConnectionWrapper );
     }
 
     void assertDecoratedStatement( Statement real, Statement decorated, int numberOfLevelsToReal )
     {
         assertNotSame( real, decorated );
         assertTrue( "decorated Statement not DelegatingStatement at level " + numberOfLevelsToReal,
-                    decorated instanceof DelegatingStatement );
+                    decorated instanceof StatementWrapper );
     }
 
-    void assertDelegatingResultSet( ResultSet real, ResultSet decorated, int numberOfLevelsToReal )
+    void assertDecoratedPreparedStatement( PreparedStatement real, PreparedStatement decorated, int numberOfLevelsToReal )
     {
         assertNotSame( real, decorated );
-        assertTrue( "decorated ResultSet not DelegatingResultSet at level " + numberOfLevelsToReal,
-                    decorated instanceof DelegatingResultSet );
+        assertTrue( "decorated Statement not DelegatingStatement at level " + numberOfLevelsToReal,
+                    decorated instanceof PreparedStatementWrapper );
     }
 }

@@ -12,9 +12,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.enonic.cms.framework.jdbc.ConnectionDecorator;
-import com.enonic.cms.framework.jdbc.delegate.DelegatingConnection;
-import com.enonic.cms.framework.jdbc.delegate.DelegatingPreparedStatement;
-import com.enonic.cms.framework.jdbc.delegate.DelegatingStatement;
+import com.enonic.cms.framework.jdbc.wrapper.ConnectionWrapper;
+import com.enonic.cms.framework.jdbc.wrapper.PreparedStatementWrapper;
+import com.enonic.cms.framework.jdbc.wrapper.StatementWrapper;
 
 /**
  * This class implements a connection decorator based on the auto cache invalidator.
@@ -22,178 +22,120 @@ import com.enonic.cms.framework.jdbc.delegate.DelegatingStatement;
 public final class InvalidatorConnectionDecorator
     implements ConnectionDecorator
 {
-    /**
-     * Cache invalidator.
-     */
     private final CacheInvalidator invalidator;
 
-    /**
-     * Construct the decorator.
-     */
-    public InvalidatorConnectionDecorator( CacheInvalidator invalidator )
+    public InvalidatorConnectionDecorator( final CacheInvalidator invalidator )
     {
         this.invalidator = invalidator;
     }
 
-    /**
-     * Decorate the connection.
-     */
-    public Connection decorate( Connection connection )
+    @Override
+    public Connection decorate( final Connection connection )
         throws SQLException
     {
-        return new ConnectionImpl( connection, this.invalidator );
+        return new ConnectionImpl( connection );
     }
 
-    /**
-     * Dialect connection.
-     */
     private final class ConnectionImpl
-        extends DelegatingConnection
+        extends ConnectionWrapper
     {
-        /**
-         * Invalidator.
-         */
-        private final CacheInvalidator invalidator;
-
-        /**
-         * Construct the connection.
-         */
-        public ConnectionImpl( Connection conn, CacheInvalidator invalidator )
+        public ConnectionImpl( final Connection conn )
         {
             super( conn );
-            this.invalidator = invalidator;
         }
 
-        /**
-         * Create prepared statement.
-         */
-        protected Statement createWrappedStatement( Statement stmt )
+        @Override
+        protected Statement createWrappedStatement( final Statement stmt )
         {
-            return new StatementImpl( stmt, this, this.invalidator );
+            return new StatementImpl( stmt, this );
         }
 
-        /**
-         * Create prepared statement.
-         */
-        protected PreparedStatement createWrappedPreparedStatement( PreparedStatement stmt, String sql )
+        @Override
+        protected PreparedStatement createWrappedPreparedStatement( final PreparedStatement stmt, final String sql )
         {
-            return new PreparedStatementImpl( sql, stmt, this, this.invalidator );
-        }
-
-        public PreparedStatement prepareStatement( String sql )
-            throws SQLException
-        {
-            return super.prepareStatement( sql );
+            return new PreparedStatementImpl( sql, stmt, this );
         }
     }
 
-    /**
-     * Dialect statement.
-     */
     private final class StatementImpl
-        extends DelegatingStatement
+        extends StatementWrapper
     {
-        /**
-         * Invalidator.
-         */
-        private final CacheInvalidator invalidator;
-
-        /**
-         * Construct the statement.
-         */
-        public StatementImpl( Statement stmt, Connection conn, CacheInvalidator invalidator )
+        public StatementImpl( final Statement stmt, final Connection conn )
         {
             super( stmt, conn );
-            this.invalidator = invalidator;
         }
 
-        public int executeUpdate( String sql )
+        @Override
+        public int executeUpdate( final String sql )
             throws SQLException
         {
-            this.invalidator.invalidateSql( sql );
+            invalidator.invalidateSql( sql );
             return super.executeUpdate( sql );
         }
 
-        public boolean execute( String sql )
+        @Override
+        public boolean execute( final String sql )
             throws SQLException
         {
-            this.invalidator.invalidateSql( sql );
+            invalidator.invalidateSql( sql );
             return super.execute( sql );
         }
 
-        public ResultSet executeQuery( String sql )
+        @Override
+        protected ResultSet createWrappedResultSet( final ResultSet result )
             throws SQLException
         {
-            return super.executeQuery( sql );
+            return result;
         }
     }
 
-    /**
-     * Dialect prepared statement.
-     */
     private final class PreparedStatementImpl
-        extends DelegatingPreparedStatement
+        extends PreparedStatementWrapper
     {
-        /**
-         * Sql.
-         */
         private final String sql;
 
-        /**
-         * Invalidator.
-         */
-        private final CacheInvalidator invalidator;
-
-        /**
-         * List of parameters.
-         */
         private final ArrayList<Object> paramList;
 
-        /**
-         * Construct the statement.
-         */
-        public PreparedStatementImpl( String sql, PreparedStatement stmt, Connection conn, CacheInvalidator invalidator )
+        public PreparedStatementImpl( final String sql, final PreparedStatement stmt, final Connection conn )
         {
             super( stmt, conn );
             this.sql = sql;
-            this.invalidator = invalidator;
             this.paramList = new ArrayList<Object>();
         }
 
+        @Override
         public boolean execute()
             throws SQLException
         {
-            this.invalidator.invalidateSql( this.sql, this.paramList );
+            invalidator.invalidateSql( this.sql, this.paramList );
             return super.execute();
         }
 
+        @Override
         public int executeUpdate()
             throws SQLException
         {
-            this.invalidator.invalidateSql( this.sql, this.paramList );
+            invalidator.invalidateSql( this.sql, this.paramList );
             return super.executeUpdate();
         }
 
+        @Override
         public int executeUpdate( String sql )
             throws SQLException
         {
-            this.invalidator.invalidateSql( sql );
+            invalidator.invalidateSql( sql );
             return super.executeUpdate( sql );
         }
 
+        @Override
         public boolean execute( String sql )
             throws SQLException
         {
-            this.invalidator.invalidateSql( sql );
+            invalidator.invalidateSql( sql );
             return super.execute( sql );
         }
 
-        public ResultSet executeQuery( String sql )
-            throws SQLException
-        {
-            return super.executeQuery( sql );
-        }
-
+        @Override
         public void setObject( int parameterIndex, Object x )
             throws SQLException
         {
@@ -201,6 +143,7 @@ public final class InvalidatorConnectionDecorator
             setParam( parameterIndex, x );
         }
 
+        @Override
         public void setObject( int parameterIndex, Object x, int targetSqlType )
             throws SQLException
         {
@@ -208,6 +151,7 @@ public final class InvalidatorConnectionDecorator
             setParam( parameterIndex, x );
         }
 
+        @Override
         public void setObject( int parameterIndex, Object x, int targetSqlType, int scale )
             throws SQLException
         {
@@ -215,6 +159,7 @@ public final class InvalidatorConnectionDecorator
             setParam( parameterIndex, x );
         }
 
+        @Override
         public void setString( int parameterIndex, String x )
             throws SQLException
         {
@@ -222,6 +167,7 @@ public final class InvalidatorConnectionDecorator
             setParam( parameterIndex, x );
         }
 
+        @Override
         public void setInt( int parameterIndex, int x )
             throws SQLException
         {
@@ -237,6 +183,13 @@ public final class InvalidatorConnectionDecorator
             }
 
             this.paramList.set( index - 1, value );
+        }
+
+        @Override
+        protected ResultSet createWrappedResultSet( final ResultSet result )
+            throws SQLException
+        {
+            return result;
         }
     }
 }

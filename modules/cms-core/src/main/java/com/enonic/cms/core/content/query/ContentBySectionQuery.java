@@ -23,6 +23,8 @@ public class ContentBySectionQuery
 
     private boolean searchInAllSections = false;
 
+    private String facets;
+
     public Collection<MenuItemKey> getMenuItemKeys()
     {
         return menuItemKeys;
@@ -77,6 +79,7 @@ public class ContentBySectionQuery
         query.setIndex( this.getIndex() );
         query.setCount( this.getCount() );
         query.setCategoryAccessTypeFilter( getCategoryAccessTypeFilter(), getCategoryAccessTypeFilterPolicy() );
+        query.setFacets( facets );
         checkAndApplyPublishedOnlyFilter( query );
 
         return query;
@@ -104,6 +107,11 @@ public class ContentBySectionQuery
     public boolean hasSectionFilter()
     {
         return ( menuItemKeys != null && menuItemKeys.size() > 0 ) || searchInAllSections;
+    }
+
+    public void setFacets( final String facets )
+    {
+        this.facets = facets;
     }
 
     @Override

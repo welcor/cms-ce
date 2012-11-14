@@ -22,4 +22,6 @@ public final class GetContentBySectionParams
     public int childrenLevel = 1;
 
     public int parentLevel = 0;
+
+    public String facets;
 }

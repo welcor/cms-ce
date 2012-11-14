@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetContentHandler")
 public final class GetContentHandler
@@ -23,7 +23,7 @@ public final class GetContentHandler
     {
         XMLDocument document =
             dataSourceService.getContent( req, params.contentKeys, params.query, params.orderBy, params.index, params.count,
-                                          params.includeData, params.childrenLevel, params.parentLevel );
+                                          params.includeData, params.childrenLevel, params.parentLevel, params.facets );
         return document.getAsJDOMDocument();
     }
 }

@@ -22,7 +22,7 @@ public class FacetBuilderFactoryTest
         String facetXml = "<facets/>";
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
-        query.setFacetDefinition( facetXml );
+        query.setFacets( facetXml );
 
         final Collection<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 
@@ -41,7 +41,7 @@ public class FacetBuilderFactoryTest
             "</facets>";
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
-        query.setFacetDefinition( facetXml );
+        query.setFacets( facetXml );
 
         final Set<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 
@@ -75,7 +75,7 @@ public class FacetBuilderFactoryTest
             "</facets>";
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
-        query.setFacetDefinition( facetXml );
+        query.setFacets( facetXml );
 
         final Set<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 

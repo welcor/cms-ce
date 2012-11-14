@@ -120,7 +120,7 @@ public abstract class AbstractContentArchiveQuery
             query.setCategoryAccessTypeFilter( catAccessFilter, CategoryAccessTypeFilterPolicy.AND );
         }
 
-        query.setFacetDefinition( this.facetDefinition );
+        query.setFacets( this.facetDefinition );
 
         return query;
     }

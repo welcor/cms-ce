@@ -58,7 +58,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <field>data/person/type</field>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
 
         final ContentResultSet result = contentIndexService.query( query );
 
@@ -97,7 +97,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <field>data/person/drink</field>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
 
         final ContentResultSet result = contentIndexService.query( query );
 
@@ -128,7 +128,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <size>3</size>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
 
         final ContentResultSet result = contentIndexService.query( query );
 
@@ -166,7 +166,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <order>count</order>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
 
         printAllIndexContent();
 
@@ -204,7 +204,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <field>data/person/type</field>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
         ContentResultSet result = contentIndexService.query( query );
 
         TermsFacetResultSet termFacetResultSet = getTermFacetResultSet( result );
@@ -232,7 +232,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <order>reverse_count</order>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
         ContentResultSet result = contentIndexService.query( query );
 
         TermsFacetResultSet termFacetResultSet = getTermFacetResultSet( result );
@@ -259,7 +259,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <order>term</order>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
         ContentResultSet result = contentIndexService.query( query );
 
         TermsFacetResultSet termFacetResultSet = getTermFacetResultSet( result );
@@ -286,7 +286,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <order>reverse_term</order>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
         ContentResultSet result = contentIndexService.query( query );
 
         TermsFacetResultSet termFacetResultSet = getTermFacetResultSet( result );
@@ -313,7 +313,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <order>sushi</order>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
         contentIndexService.query( query );
     }
 
@@ -333,7 +333,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <exclude>robot</exclude>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
         ContentResultSet result = contentIndexService.query( query );
 
         TermsFacetResultSet termFacetResultSet = getTermFacetResultSet( result );
@@ -361,7 +361,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <exclude>robot,alien</exclude>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
         ContentResultSet result = contentIndexService.query( query );
 
         TermsFacetResultSet termFacetResultSet = getTermFacetResultSet( result );
@@ -387,7 +387,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <regex>.*h.*</regex>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
 
         final ContentResultSet result = contentIndexService.query( query );
 
@@ -423,7 +423,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <regex_flags>CASE_INSENSITIVE,DOTALL</regex_flags>\n" +
             "    </terms>\n" +
             "</facets>";
-        query.setFacetDefinition( facetDefinition );
+        query.setFacets( facetDefinition );
 
         final ContentResultSet result = contentIndexService.query( query );
 

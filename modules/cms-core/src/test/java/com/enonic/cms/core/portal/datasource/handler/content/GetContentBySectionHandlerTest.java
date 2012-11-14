@@ -46,11 +46,11 @@ public class GetContentBySectionHandlerTest
         this.request.addParam( "childrenLevel", "1" );
         this.request.addParam( "parentLevel", "0" );
 
-        Mockito.when( this.dataSourceService.getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+        Mockito.when( this.dataSourceService.getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0, null ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10,
-                                                                                          true, 1, 0 );
+                                                                                          true, 1, 0, null );
     }
 
     @Test
@@ -68,11 +68,11 @@ public class GetContentBySectionHandlerTest
         this.request.addParam( "parentLevel", "0" );
 
         Mockito.when(
-            this.dataSourceService.getContentBySection( this.request, new int[]{11, 3}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+            this.dataSourceService.getContentBySection( this.request, new int[]{11, 3}, 1, "", "", 0, 10, true, 1, 0, null ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getContentBySection( this.request, new int[]{11, 3}, 1, "", "", 0, 10,
-                                                                                          true, 1, 0 );
+                                                                                          true, 1, 0, null );
     }
 
     @Test(expected = DataSourceException.class)
@@ -89,7 +89,7 @@ public class GetContentBySectionHandlerTest
         this.request.addParam( "childrenLevel", "true" );
         this.request.addParam( "parentLevel", "false" );
 
-        Mockito.when( this.dataSourceService.getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+        Mockito.when( this.dataSourceService.getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0, null ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
     }
@@ -107,11 +107,11 @@ public class GetContentBySectionHandlerTest
         this.request.addParam( "childrenLevel", "1" );
         this.request.addParam( "parentLevel", "0" );
 
-        Mockito.when( this.dataSourceService.getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0 ) ).thenReturn(
+        Mockito.when( this.dataSourceService.getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10, true, 1, 0, null ) ).thenReturn(
             this.dummyDoc );
         this.handler.handle( this.request );
         Mockito.verify( this.dataSourceService, Mockito.times( 1 ) ).getContentBySection( this.request, new int[]{11}, 1, "", "", 0, 10,
-                                                                                          true, 1, 0 );
+                                                                                          true, 1, 0, null );
     }
 
 }

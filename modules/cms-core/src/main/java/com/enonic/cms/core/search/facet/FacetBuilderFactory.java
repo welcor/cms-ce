@@ -22,7 +22,7 @@ public class FacetBuilderFactory
     {
         Set<AbstractFacetBuilder> facetBuilders = Sets.newHashSet();
 
-        String xml = query.getFacetDefinition();
+        String xml = query.getFacets();
 
         if ( Strings.isNullOrEmpty( xml ) )
         {

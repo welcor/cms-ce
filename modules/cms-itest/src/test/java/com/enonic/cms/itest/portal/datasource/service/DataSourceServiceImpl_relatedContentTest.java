@@ -474,7 +474,7 @@ public class DataSourceServiceImpl_relatedContentTest
 
         XMLDocument xmlDocResult =
             dataSourceService.getContentBySection( context, menuItemKeys, levels, query, orderyBy, index, count, includeData, childrenLevel,
-                                                   parentLevel );
+                                                   parentLevel, null );
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
 

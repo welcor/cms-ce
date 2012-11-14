@@ -66,6 +66,8 @@ public class GetContentExecutor
 
     private boolean includeOfflineRelatedContent = false;
 
+    private String facets;
+
 
     public GetContentExecutor( ContentService contentService, ContentDao contentDao, UserDao userDao, DateTime now,
                                PreviewContext previewContext )
@@ -156,6 +158,11 @@ public class GetContentExecutor
         return this;
     }
 
+    public GetContentExecutor facets( String facets )
+    {
+        this.facets = facets;
+        return this;
+    }
 
     public GetContentResult execute()
     {
@@ -168,6 +175,8 @@ public class GetContentExecutor
         contentByContentQuery.setContentKeyFilter( contentFilter );
         contentByContentQuery.setCategoryKeyFilter( categoryFilter, categoryLevels );
         contentByContentQuery.setContentTypeFilter( contentTypeFilter );
+        contentByContentQuery.setFacetDefinition( facets );
+
         if ( includeOfflineContent )
         {
             contentByContentQuery.setFilterIncludeOfflineContent();

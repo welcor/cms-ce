@@ -174,11 +174,7 @@ public final class DataSourceServiceImpl
             xmlCreator.setIncludeAssignment( true );
             XMLDocument xml = xmlCreator.createContentsDocument( user, contents, relatedContents );
 
-            if ( contents.getFacetsResultSet() != null )
-            {
-                facetResultXmlCreator.addFacetResultXml( xml.getAsJDOMDocument(), contents.getFacetsResultSet() );
-            }
-
+            addFacetResultSet( contents, xml );
             addDataTraceInfo( xml.getAsJDOMDocument() );
             return xml;
         }
@@ -188,17 +184,25 @@ public final class DataSourceServiceImpl
         }
     }
 
+    private void addFacetResultSet( final ContentResultSet contents, final XMLDocument xml )
+    {
+        if ( contents.getFacetsResultSet() != null )
+        {
+            facetResultXmlCreator.addFacetResultXml( xml.getAsJDOMDocument(), contents.getFacetsResultSet() );
+        }
+    }
+
     /**
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContent( DataSourceContext context, int[] contentKeys, String query, String orderBy, int index, int count,
-                                   boolean includeData, int childrenLevel, int parentLevel )
+                                   boolean includeData, int childrenLevel, int parentLevel, final String facets )
     {
         boolean includeUserRights = false;
         boolean categoryRecursive = false;
         return doGetContent( context, contentKeys, query, orderBy, index, count, parentLevel, childrenLevel, 0, includeData, includeData,
-                             includeUserRights, null, categoryRecursive, null );
+                             includeUserRights, null, categoryRecursive, null, facets );
     }
 
     /**
@@ -229,13 +233,15 @@ public final class DataSourceServiceImpl
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentBySection( DataSourceContext context, int[] menuItemKeys, int levels, String query, String orderBy,
-                                            int index, int count, boolean includeData, int childrenLevel, int parentLevel )
+                                            int index, int count, boolean includeData, int childrenLevel, int parentLevel,
+                                            final String facets )
     {
         boolean includeOwnerAndModifierData = true;
         boolean includeCategoryData = true;
         boolean includeUserRights = false;
         return doGetContentBySection( context, menuItemKeys, levels, query, orderBy, index, count, parentLevel, childrenLevel, 0,
-                                      includeOwnerAndModifierData, includeData, includeCategoryData, includeData, includeUserRights, null );
+                                      includeOwnerAndModifierData, includeData, includeCategoryData, includeData, includeUserRights, null,
+                                      facets );
     }
 
     /**
@@ -350,58 +356,7 @@ public final class DataSourceServiceImpl
     /**
      * @inheritDoc
      */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getContent( DataSourceContext context, int[] contentKeys, int parentLevel, int childrenLevel,
-                                   int parentChildrenLevel, boolean updateStatistics )
-    {
-        boolean includeContentData = true;
-        boolean includeRelatedContentData = false;
-        int[] categoriesFilter = null;
-        boolean categoriesRecursive = false;
-        int[] filterContentTypes = null;
-        boolean includeUserRights = false;
-
-        return doGetContent( context, contentKeys, "", "", 0, contentKeys.length, parentLevel, childrenLevel, parentChildrenLevel,
-                             includeContentData, includeRelatedContentData, includeUserRights, categoriesFilter, categoriesRecursive,
-                             filterContentTypes );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getContent( DataSourceContext context, int[] contentKeys, int parentLevel, int childrenLevel,
-                                   int parentChildrenLevel, boolean updateStatistics, boolean includeUserRights )
-    {
-        boolean includeContentData = true;
-        boolean includeRelatedContentData = false;
-        int[] categoriesFilter = null;
-        boolean categoriesRecursive = false;
-        int[] filterContentTypes = null;
-
-        return doGetContent( context, contentKeys, "", "", 0, contentKeys.length, parentLevel, childrenLevel, parentChildrenLevel,
-                             includeContentData, includeRelatedContentData, includeUserRights, categoriesFilter, categoriesRecursive,
-                             filterContentTypes );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getContent( DataSourceContext context, int[] contentKeys, int parentLevel, int childrenLevel,
-                                   int parentChildrenLevel, boolean updateStatistics, boolean includeUserRights, int[] filterByCategories,
-                                   boolean categoryRecursive, int[] filterByContentTypes )
-    {
-        boolean includeContentData = true;
-        boolean includeRelatedContentData = false;
-        return doGetContent( context, contentKeys, "", "", 0, contentKeys.length, parentLevel, childrenLevel, parentChildrenLevel,
-                             includeContentData, includeRelatedContentData, includeUserRights, filterByCategories, categoryRecursive,
-                             filterByContentTypes );
-    }
-
-    /**
-     * @inheritDoc
-     */
+    @Deprecated
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContent( DataSourceContext context, int[] contentKeys, int parentLevel, int childrenLevel,
                                    int parentChildrenLevel, boolean updateStatistics, boolean relatedTitlesOnly, boolean includeUserRights,
@@ -410,39 +365,9 @@ public final class DataSourceServiceImpl
         boolean includeContentData = true;
         return doGetContent( context, contentKeys, "", "@key asc", 0, contentKeys.length, parentLevel, childrenLevel, parentChildrenLevel,
                              includeContentData, !relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                             filterByContentTypes );
+                             filterByContentTypes, null );
     }
 
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getContentBySection( DataSourceContext context, int[] menuItemKeys, int levels, String orderBy, int fromIndex,
-                                            int count, boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                            boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
-                                            int[] filterByContentTypes )
-    {
-        return doGetContentBySection( context, menuItemKeys, levels, "", orderBy, fromIndex, count, parentLevel, childrenLevel,
-                                      parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights,
-                                      filterByContentTypes );
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getContentBySection( DataSourceContext context, String query, int[] menuItemKeys, int levels, String orderBy,
-                                            int fromIndex, int count, boolean titlesOnly, int parentLevel, int childrenLevel,
-                                            int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                            boolean includeUserRights, int[] filterByContentTypes )
-    {
-        return doGetContentBySection( context, menuItemKeys, levels, query, orderBy, fromIndex, count, parentLevel, childrenLevel,
-                                      parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights,
-                                      filterByContentTypes );
-
-    }
 
     /**
      * @inheritDoc
@@ -878,7 +803,7 @@ public final class DataSourceServiceImpl
     private XMLDocument doGetContent( DataSourceContext context, int[] contentKeys, String query, String orderBy, int index, int count,
                                       int parentLevel, int childrenLevel, int parentChildrenLevel, boolean includeContentData,
                                       boolean includeRelatedContentData, boolean includeUserRights, int[] filterByCategories,
-                                      boolean categoryRecursive, int[] filterByContentTypes )
+                                      boolean categoryRecursive, int[] filterByContentTypes, final String facets )
     {
 
         UserEntity user = getUserEntity( context.getUser() );
@@ -898,6 +823,7 @@ public final class DataSourceServiceImpl
             executor.contentFilter( ContentKey.convertToList( contentKeys ) );
             executor.categoryFilter( CategoryKey.convertToList( filterByCategories ), categoryRecursive ? Integer.MAX_VALUE : 1 );
             executor.contentTypeFilter( ContentTypeKey.convertToList( filterByContentTypes ) );
+            executor.facets( facets );
 
             GetContentResult getContentResult = executor.execute();
 
@@ -911,6 +837,8 @@ public final class DataSourceServiceImpl
             getContentXmlCreator.includeUserRights( includeUserRights );
             getContentXmlCreator.versionInfoStyle( GetContentXmlCreator.VersionInfoStyle.PORTAL );
             XMLDocument xml = getContentXmlCreator.create( getContentResult );
+
+            addFacetResultSet( getContentResult.getContentResultSet(), xml );
             addDataTraceInfo( xml.getAsJDOMDocument() );
             return xml;
         }
@@ -1068,7 +996,8 @@ public final class DataSourceServiceImpl
     private XMLDocument doGetContentBySection( DataSourceContext context, int[] menuItemKeys, int levels, String query, String orderBy,
                                                int fromIndex, int count, int parentLevel, int childrenLevel, int parentChildrenLevel,
                                                boolean includeOwnerAndModifierData, boolean includeContentData, boolean includeCategoryData,
-                                               boolean includeRelatedContentData, boolean includeUserRights, int[] filterByContentTypes )
+                                               boolean includeRelatedContentData, boolean includeUserRights, int[] filterByContentTypes,
+                                               final String facets )
     {
         PreviewContext previewContext = context.getPreviewContext();
         UserEntity user = getUserEntity( context.getUser() );
@@ -1091,6 +1020,9 @@ public final class DataSourceServiceImpl
             spec.setQuery( query );
             spec.setOrderBy( orderBy );
             spec.setFilterContentOnlineAt( now );
+            spec.setFacets( facets );
+
+            ContentResultSet contents = contentService.queryContent( spec );
 
             xmlCreator.setIncludeOwnerAndModifierData( includeOwnerAndModifierData );
             xmlCreator.setIncludeContentData( includeContentData );
@@ -1102,7 +1034,6 @@ public final class DataSourceServiceImpl
             xmlCreator.setIncludeVersionsInfoForPortal( false );
             xmlCreator.setIncludeAssignment( true );
 
-            ContentResultSet contents = contentService.queryContent( spec );
             if ( previewContext.isPreviewingContent() )
             {
                 contents = previewContext.getContentPreviewContext().overrideContentResultSet( contents );
@@ -1124,6 +1055,7 @@ public final class DataSourceServiceImpl
             }
 
             XMLDocument document = xmlCreator.createContentsDocument( user, contents, relatedContents );
+            addFacetResultSet( contents, document );
             addDataTraceInfo( document.getAsJDOMDocument() );
             return document;
         }

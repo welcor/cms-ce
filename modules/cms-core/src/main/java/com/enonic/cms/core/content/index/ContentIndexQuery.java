@@ -27,7 +27,7 @@ public final class ContentIndexQuery
 {
     protected static final int DEFAULT_COUNT = 200;
 
-    private String facetDefinition;
+    private String facets;
 
     public enum SectionFilterStatus
     {
@@ -272,7 +272,7 @@ public final class ContentIndexQuery
         s.append( "contentTypeFilter", getContentTypeFilter() );
         s.append( "securityFilter", getSecurityFilter() );
         s.append( "orderBySection", orderBySection );
-        s.append( "facetDefinition", facetDefinition );
+        s.append( "facetDefinition", facets );
         return s.toString();
     }
 
@@ -291,13 +291,13 @@ public final class ContentIndexQuery
         this.orderBySection = orderBySection;
     }
 
-    public String getFacetDefinition()
+    public String getFacets()
     {
-        return facetDefinition;
+        return facets;
     }
 
-    public void setFacetDefinition( final String facetDefinition )
+    public void setFacets( final String facets )
     {
-        this.facetDefinition = facetDefinition;
+        this.facets = facets;
     }
 }

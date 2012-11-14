@@ -21,6 +21,7 @@ public interface DataSourceService
      * Get content, specified by the one of more given content keys. with the possibility to restrict it by filters, so it is only returned
      * if it belongs to a certain category or content type.  Full information about related content is not included.
      *
+     *
      * @param context       the Vertical Site context
      * @param contentKeys   The content keys
      * @param query         The string query, specifying detailed filters and rules for which content to fetch, in and SQL like maner.
@@ -31,10 +32,11 @@ public interface DataSourceService
      *                      parameter.
      * @param childrenLevel the level of children to include
      * @param parentLevel   the level of parents to include
+     * @param facets
      * @return An XML document with the result of the search
      */
     public XMLDocument getContent( DataSourceContext context, int[] contentKeys, String query, String orderBy, int index, int count,
-                                   boolean includeData, int childrenLevel, int parentLevel );
+                                   boolean includeData, int childrenLevel, int parentLevel, final String facets );
 
     /**
      * Finds all the different versions of the keys presented, and includes possible children as related content, if specified. This method
@@ -77,6 +79,7 @@ public interface DataSourceService
     /**
      * Find content in a section specified by the given menu item keys.
      *
+     *
      * @param context       The Vertical Site context
      * @param menuItemKeys  The menu items to search for the content within.
      * @param levels        Include sub menus below the specified menu item keys, this number of levels down.
@@ -88,10 +91,12 @@ public interface DataSourceService
      *                      parameter.
      * @param childrenLevel The number of levels of children to include.
      * @param parentLevel   The number of levels of parents to include.
+     * @param facets
      * @return An XML document with the result of the search
      */
     public XMLDocument getContentBySection( DataSourceContext context, int[] menuItemKeys, int levels, String query, String orderBy,
-                                            int index, int count, boolean includeData, int childrenLevel, int parentLevel );
+                                            int index, int count, boolean includeData, int childrenLevel, int parentLevel,
+                                            final String facets );
 
     /**
      * Retrieve random content in a section specified by the given menu item keys.
@@ -150,56 +155,6 @@ public interface DataSourceService
                                                    boolean includeData, int childrenLevel, int parentLevel );
 
     /**
-     * Get one content.  Full information about related content or user rights are not included.
-     *
-     * @param context             the Vertical Site context
-     * @param contentKey          the content key
-     * @param parentLevel         the level of parents to include
-     * @param childrenLevel       the level of children to include
-     * @param parentChildrenLevel the level of children for parents to include
-     * @param updateStatistics    update the read statistics for this content
-     * @return a content xml
-     */
-    public XMLDocument getContent( DataSourceContext context, int[] contentKey, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                   boolean updateStatistics );
-
-    /**
-     * Get one content with the possibility to include information about the user rights.  Full information about related content is not
-     * included.
-     *
-     * @param context             the Vertical Site context
-     * @param contentKey          the content key
-     * @param parentLevel         the level of parents to include
-     * @param childrenLevel       the level of children to include
-     * @param parentChildrenLevel the level of children for parents to include
-     * @param updateStatistics    update the read statistics for this content
-     * @param includeUserRights   include the user access rights in content
-     * @return a content xml
-     */
-    public XMLDocument getContent( DataSourceContext context, int[] contentKey, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                   boolean updateStatistics, boolean includeUserRights );
-
-    /**
-     * Get one content with the possibility to include information about the user rights, and to restrict it by filters, so it is only
-     * returned if it belongs to a certain category or content type.  Full information about related content is not included.
-     *
-     * @param context              the Vertical Site context
-     * @param contentKey           the content key
-     * @param parentLevel          the level of parents to include
-     * @param childrenLevel        the level of children to include
-     * @param parentChildrenLevel  the level of children for parents to include
-     * @param updateStatistics     update the read statistics for this content
-     * @param includeUserRights    include the user access rights in content
-     * @param filterByCategories   filter by zero or more category keys
-     * @param categoryRecursive    include subcategories of the category keys above
-     * @param filterByContentTypes filter by zero or more content keys
-     * @return a content xml
-     */
-    public XMLDocument getContent( DataSourceContext context, int[] contentKey, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                   boolean updateStatistics, boolean includeUserRights, int[] filterByCategories, boolean categoryRecursive,
-                                   int[] filterByContentTypes );
-
-    /**
      * Get one content with the possibility to include information about the user rights. Filter for categories and/or content types may be
      * applied. May also specify if full related contents should be fetched (relatedTitlesOnly == false) or not.
      *
@@ -219,71 +174,6 @@ public interface DataSourceService
     public XMLDocument getContent( DataSourceContext context, int[] contentKey, int parentLevel, int childrenLevel, int parentChildrenLevel,
                                    boolean updateStatistics, boolean relatedTitlesOnly, boolean includeUserRights, int[] filterByCategories,
                                    boolean categoryRecursive, int[] filterByContentTypes );
-
-    /**
-     * Get contents based on a selection of sections. The default ordering is specified the following rules: <ol> <li>if only one ordered
-     * section, order is specified by the section's ordering</li> <li>if only one unordered section, order is specified by the 'publishfrom'
-     * attribute.</li> <li>if more than one section, order is specified by the 'publishfrom' attribute.</li> </ol>
-     * <p/>
-     * Order by syntax (described in EBNF): <table border="0"> <tr><td>Order</td><td>::=</td><td>(|Expression)?</td></tr>
-     * <tr><td>Expression</td><td>::=</td><td>(Sortelement) (Expression, Sortelement)?</td></tr>
-     * <tr><td>Sortelement</td><td>::=</td><td>Identifier Operator</td></tr> <tr><td>Operator</td><td>::=</td><td>'ASC' | 'DESC'</td></tr>
-     * <tr><td>Identifier</td><td>::=</td><td>'title' | 'publishfrom' | 'publishto' | 'owner' | 'modifier' | 'timestamp'</td></tr> </table>
-     *
-     * @param context             the Vertical Site context
-     * @param menuItemKeys        one or more menuitems to get section content from
-     * @param levels              The number of levels below each menu item, to look for content.
-     * @param orderBy             order by string (see syntax above)
-     * @param fromIndex           start from this index
-     * @param count               maximum number of contents to get (related content not included)
-     * @param titlesOnly          get only titles
-     * @param parentLevel         the level of parents to include
-     * @param childrenLevel       the level of children to include
-     * @param parentChildrenLevel the level of children for parents to include
-     * @param relatedTitlesOnly   get only titles for related content
-     * @param includeTotalCount   include total count of contents returned excluding fromIndex and count
-     * @param includeUserRights   include the user access rights in content
-     * @param filterByContentType A list of specific content types which the result should be limited to.
-     * @param query               A specification of which content within the section to search for.  This may be pure text, or a more
-     *                            specific searches where field names are specified.
-     * @return contents xml
-     */
-    public XMLDocument getContentBySection( DataSourceContext context, String query, int[] menuItemKeys, int levels, String orderBy,
-                                            int fromIndex, int count, boolean titlesOnly, int parentLevel, int childrenLevel,
-                                            int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                            boolean includeUserRights, int[] filterByContentType );
-
-    /**
-     * Get contents based on a selection of sections. The default ordering is specified the following rules: <ol> <li>if only one ordered
-     * section, order is specified by the section's ordering</li> <li>if only one unordered section, order is specified by the 'publishfrom'
-     * attribute.</li> <li>if more than one section, order is specified by the 'publishfrom' attribute.</li> </ol>
-     * <p/>
-     * Order by syntax (described in EBNF): <table border="0"> <tr><td>Order</td><td>::=</td><td>(|Expression)?</td></tr>
-     * <tr><td>Expression</td><td>::=</td><td>(Sortelement) (Expression, Sortelement)?</td></tr>
-     * <tr><td>Sortelement</td><td>::=</td><td>Identifier Operator</td></tr> <tr><td>Operator</td><td>::=</td><td>'ASC' | 'DESC'</td></tr>
-     * <tr><td>Identifier</td><td>::=</td><td>'title' | 'publishfrom' | 'publishto' | 'owner' | 'modifier' | 'timestamp'</td></tr> </table>
-     *
-     * @param context              the Vertical Site context
-     * @param menuItemKeys         one or more menuitems to get section content from
-     * @param levels               The number of levels below each menu item, to look for content.
-     * @param orderBy              order by string (see syntax above)
-     * @param fromIndex            start from this index
-     * @param count                maximum number of contents to get (related content not included)
-     * @param titlesOnly           get only titles
-     * @param parentLevel          the level of parents to include
-     * @param childrenLevel        the level of children to include
-     * @param parentChildrenLevel  the level of children for parents to include
-     * @param relatedTitlesOnly    get only titles for related content
-     * @param includeTotalCount    include total count of contents returned excluding fromIndex and count
-     * @param includeUserRights    include the user access rights in content
-     * @param filterByContentTypes filter by zero or more content type keys
-     * @return contents xml
-     */
-    public XMLDocument getContentBySection( DataSourceContext context, int[] menuItemKeys, int levels, String orderBy, int fromIndex,
-                                            int count, boolean titlesOnly, int parentLevel, int childrenLevel, int parentChildrenLevel,
-                                            boolean relatedTitlesOnly, boolean includeTotalCount, boolean includeUserRights,
-                                            int[] filterByContentTypes );
-
     /**
      * Returns a menu tree. If levels is 0, entire menu are return. If levels is non-negative number, that number of tree levels are
      * returned or the entire tree if levels is greater than or equal to the number of levels in the menu tree. Only menu items marked as

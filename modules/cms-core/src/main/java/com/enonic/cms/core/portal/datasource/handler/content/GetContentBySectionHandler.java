@@ -3,8 +3,8 @@ package com.enonic.cms.core.portal.datasource.handler.content;
 import org.jdom.Document;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
+import com.enonic.cms.core.portal.datasource.handler.base.ParamsDataSourceHandler;
 
 @Component("ds.GetContentBySectionHandler")
 public final class GetContentBySectionHandler
@@ -21,6 +21,6 @@ public final class GetContentBySectionHandler
     {
         return this.dataSourceService.getContentBySection( req, params.menuItemKeys, params.levels, params.query, params.orderBy,
                                                            params.index, params.count, params.includeData, params.childrenLevel,
-                                                           params.parentLevel ).getAsJDOMDocument();
+                                                           params.parentLevel, params.facets ).getAsJDOMDocument();
     }
 }

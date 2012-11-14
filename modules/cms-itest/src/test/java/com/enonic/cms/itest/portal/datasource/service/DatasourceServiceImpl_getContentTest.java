@@ -30,10 +30,10 @@ import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
+import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.preview.ContentPreviewContext;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -77,7 +77,6 @@ public class DatasourceServiceImpl_getContentTest
     @Before
     public void setUp()
     {
-
         factory = fixture.getFactory();
 
         // setup needed common data for each test
@@ -156,7 +155,8 @@ public class DatasourceServiceImpl_getContentTest
 
         int[] contentKeys = new int[]{expectedContentKey.toInt()};
         XMLDocument xmlDocResult =
-            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
 
         assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(), expectedContentKey.toString() );
     }

@@ -29,6 +29,7 @@ public class GetContentHandlerTest
         this.request.addParam( "includeData", "true" );
         this.request.addParam( "childrenLevel", "1" );
         this.request.addParam( "parentLevel", "0" );
+        this.request.addParam( "facets", "" );
     }
 
     @Test
@@ -45,7 +46,7 @@ public class GetContentHandlerTest
                 eq( 10 ),
                 eq( true ),
                 eq( 1 ),
-                eq( 0 ) ) )
+                eq( 0 ), eq( "" ) ) )
             .thenReturn( this.dummyDoc );
 
         this.handler.handle( this.request );
@@ -59,6 +60,6 @@ public class GetContentHandlerTest
             eq( 10 ),
             eq( true ),
             eq( 1 ),
-            eq( 0 ) );
+            eq( 0 ), eq( "" ) );
     }
 }

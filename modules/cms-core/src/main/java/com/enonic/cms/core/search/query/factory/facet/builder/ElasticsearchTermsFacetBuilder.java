@@ -17,6 +17,8 @@ final class ElasticsearchTermsFacetBuilder
 {
     final TermsFacetBuilder build( TermsFacetModel termsFacetXml )
     {
+        termsFacetXml.verify();
+
         TermsFacetBuilder builder = new TermsFacetBuilder( termsFacetXml.getName() );
 
         setField( termsFacetXml, builder );
@@ -78,7 +80,7 @@ final class ElasticsearchTermsFacetBuilder
 
     private void setExcludes( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        final String[] excludes = getCommaDelimitedStringAsArray( termsFacetXml.getExclude() );
+        final String[] excludes = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getExclude() );
 
         if ( excludes != null && excludes.length > 0 )
         {
@@ -103,7 +105,7 @@ final class ElasticsearchTermsFacetBuilder
 
     private int getRegexFlagValue( final TermsFacetModel termsFacetXml )
     {
-        final String[] flags = getCommaDelimitedStringAsArray( termsFacetXml.getRegexFlags() );
+        final String[] flags = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getRegexFlags() );
 
         int flagValue = 0;
 
@@ -114,7 +116,7 @@ final class ElasticsearchTermsFacetBuilder
             {
                 try
                 {
-                    flagValue += regExFlags.valueOf( flag ).getValue();
+                    flagValue += RegExpFlags.valueOf( flag ).getValue();
                 }
                 catch ( IllegalArgumentException e )
                 {
@@ -129,7 +131,7 @@ final class ElasticsearchTermsFacetBuilder
 
     private void setFields( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        final String[] fields = getCommaDelimitedStringAsArray( termsFacetXml.getFields() );
+        final String[] fields = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getFields() );
 
         if ( fields != null && fields.length > 0 )
         {

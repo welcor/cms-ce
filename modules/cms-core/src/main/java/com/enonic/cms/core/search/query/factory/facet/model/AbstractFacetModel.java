@@ -33,7 +33,7 @@ public abstract class AbstractFacetModel
         this.size = size;
     }
 
-    protected void verify()
+    public void verify()
     {
         Assert.notNull( this.name, "Facet 'name' is required" );
     }

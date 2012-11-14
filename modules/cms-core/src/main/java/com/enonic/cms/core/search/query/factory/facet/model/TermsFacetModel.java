@@ -31,7 +31,7 @@ public class TermsFacetModel
         this.field = field;
     }
 
-    protected void verify()
+    public void verify()
     {
         super.verify();
 

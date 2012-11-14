@@ -33,7 +33,7 @@ public class GetContentByQueryHandlerTest
         this.request.addParam( "includeData", "true" );
         this.request.addParam( "childrenLevel", "1" );
         this.request.addParam( "parentLevel", "0" );
-        this.request.addParam( "facetsDefinition", "" );
+        this.request.addParam( "facets", "" );
     }
 
     @Test

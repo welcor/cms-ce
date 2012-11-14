@@ -114,6 +114,84 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
     }
 
     @Test
+    public void size()
+    {
+        setUpValuesWithFacetGoodies();
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+        final String facetName = "specietypes";
+        final String facetDefinition = "<facets>\n" +
+            "    <terms>\n" +
+            "        <name>" + facetName + "</name>\n" +
+            "        <field>data/person/type</field>\n" +
+            "        <size>3</size>\n" +
+            "    </terms>\n" +
+            "</facets>";
+        query.setFacetDefinition( facetDefinition );
+
+        final ContentResultSet result = contentIndexService.query( query );
+
+        final FacetsResultSet facetsResultSet = result.getFacetsResultSet();
+        assertNotNull( facetsResultSet );
+        assertTrue( facetsResultSet.iterator().hasNext() );
+
+        final FacetResultSet termFacet = facetsResultSet.iterator().next();
+        assertNotNull( termFacet );
+        assertEquals( facetName, termFacet.getName() );
+        assertTrue( termFacet instanceof TermsFacetResultSet );
+
+        TermsFacetResultSet termFacetResultSet = (TermsFacetResultSet) termFacet;
+
+        final Map<String, Integer> results = termFacetResultSet.getResults();
+        assertEquals( 3, results.keySet().size() );
+    }
+
+
+    // this test is failing, if using size = 3. This is not how (I think) its supposed to work.
+    // Question asked on mailing-list
+    @Test
+    public void fields()
+    {
+        setUpValuesWithFacetGoodies();
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+        final String facetName = "specietypes";
+        final String facetDefinition = "<facets>\n" +
+            "    <terms>\n" +
+            "        <name>" + facetName + "</name>\n" +
+            "        <fields>data/person/type,data/person/type,data/person/gender,data/person/drink</fields>\n" +
+            "        <size>4</size>\n" +
+            "        <order>count</order>\n" +
+            "    </terms>\n" +
+            "</facets>";
+        query.setFacetDefinition( facetDefinition );
+
+        printAllIndexContent();
+
+        final ContentResultSet result = contentIndexService.query( query );
+
+        final FacetsResultSet facetsResultSet = result.getFacetsResultSet();
+        assertNotNull( facetsResultSet );
+        assertTrue( facetsResultSet.iterator().hasNext() );
+
+        final FacetResultSet termFacet = facetsResultSet.iterator().next();
+        assertNotNull( termFacet );
+        assertEquals( facetName, termFacet.getName() );
+        assertTrue( termFacet instanceof TermsFacetResultSet );
+
+
+        TermsFacetResultSet termFacetResultSet = (TermsFacetResultSet) termFacet;
+
+        final Map<String, Integer> results = termFacetResultSet.getResults();
+        assertEquals( 4L, (long) results.get( "male" ) );
+        assertEquals( 3L, (long) results.get( "human" ) );
+        assertEquals( 3L, (long) results.get( "beer" ) );
+    }
+
+
+    @Test
     public void ordering_default()
     {
         setUpValuesWithFacetGoodies();
@@ -295,6 +373,78 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertFalse( resultIterator.hasNext() );
     }
 
+    @Test
+    public void regexp()
+    {
+        setUpValuesWithFacetGoodies();
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+        final String facetName = "specietypes";
+        final String facetDefinition = "<facets>\n" +
+            "    <terms>\n" +
+            "        <name>" + facetName + "</name>\n" +
+            "        <field>data/person/food</field>\n" +
+            "        <regex>.*h.*</regex>\n" +
+            "    </terms>\n" +
+            "</facets>";
+        query.setFacetDefinition( facetDefinition );
+
+        final ContentResultSet result = contentIndexService.query( query );
+
+        final FacetsResultSet facetsResultSet = result.getFacetsResultSet();
+        assertNotNull( facetsResultSet );
+        assertTrue( facetsResultSet.iterator().hasNext() );
+
+        final FacetResultSet termFacet = facetsResultSet.iterator().next();
+        assertNotNull( termFacet );
+        assertEquals( facetName, termFacet.getName() );
+        assertTrue( termFacet instanceof TermsFacetResultSet );
+
+        TermsFacetResultSet termFacetResultSet = (TermsFacetResultSet) termFacet;
+
+        final Map<String, Integer> results = termFacetResultSet.getResults();
+        assertEquals( 1L, (long) results.get( "sushi" ) );
+        assertEquals( 1L, (long) results.get( "shells" ) );
+    }
+
+    @Test
+    public void regexp_with_flag()
+    {
+        setUpValuesWithFacetGoodies();
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+        final String facetName = "specietypes";
+        final String facetDefinition = "<facets>\n" +
+            "    <terms>\n" +
+            "        <name>" + facetName + "</name>\n" +
+            "        <field>data/person/food</field>\n" +
+            "        <regex>S.*</regex>\n" +
+                "        <regex_flags>CASE_INSENSITIVE,DOTALL</regex_flags>\n" +
+            "    </terms>\n" +
+            "</facets>";
+        query.setFacetDefinition( facetDefinition );
+
+        final ContentResultSet result = contentIndexService.query( query );
+
+        final FacetsResultSet facetsResultSet = result.getFacetsResultSet();
+        assertNotNull( facetsResultSet );
+        assertTrue( facetsResultSet.iterator().hasNext() );
+
+        final FacetResultSet termFacet = facetsResultSet.iterator().next();
+        assertNotNull( termFacet );
+        assertEquals( facetName, termFacet.getName() );
+        assertTrue( termFacet instanceof TermsFacetResultSet );
+
+
+        TermsFacetResultSet termFacetResultSet = (TermsFacetResultSet) termFacet;
+
+        final Map<String, Integer> results = termFacetResultSet.getResults();
+        assertEquals( 1L, (long) results.get( "sushi" ) );
+        assertEquals( 1L, (long) results.get( "shells" ) );
+    }
+
 
     private TermsFacetResultSet getTermFacetResultSet( final ContentResultSet result )
     {
@@ -309,7 +459,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         Set<String> strings = results.keySet();
         return strings.iterator();
     }
-
 
     protected void setUpValuesWithFacetGoodies()
     {
@@ -342,7 +491,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         doc3.addUserDefinedField( "data/person/gender", "male" );
         doc3.addUserDefinedField( "data/person/age", new SimpleText( "150" ) );
         doc3.addUserDefinedField( "data/person/food", new SimpleText( "oil" ) );
-        doc3.addUserDefinedField( "data/person/drink", "gasoline" );
+        doc3.addUserDefinedField( "data/person/drink", "oil" );
         contentIndexService.index( doc3 );
 
         ContentDocument doc4 = new ContentDocument( new ContentKey( 4 ) );
@@ -361,8 +510,8 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         doc5.addUserDefinedField( "data/person/type", new SimpleText( "alien" ) );
         doc5.addUserDefinedField( "data/person/gender", "male" );
         doc5.addUserDefinedField( "data/person/age", new SimpleText( "79" ) );
-        doc5.addUserDefinedField( "data/person/food", new SimpleText( "human" ) );
-        doc5.addUserDefinedField( "data/person/drink", "blood" );
+        doc5.addUserDefinedField( "data/person/food", new SimpleText( "humans" ) );
+        doc5.addUserDefinedField( "data/person/drink", "beer" );
         contentIndexService.index( doc5 );
 
         ContentDocument doc6 = new ContentDocument( new ContentKey( 6 ) );
@@ -371,7 +520,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         doc6.addUserDefinedField( "data/person/type", new SimpleText( "human" ) );
         doc6.addUserDefinedField( "data/person/gender", "female" );
         doc6.addUserDefinedField( "data/person/age", new SimpleText( "729" ) );
-        doc6.addUserDefinedField( "data/person/food", new SimpleText( "blood pudding" ) );
+        doc6.addUserDefinedField( "data/person/food", new SimpleText( "Shells" ) );
         doc6.addUserDefinedField( "data/person/drink", "blood" );
         contentIndexService.index( doc6 );
 

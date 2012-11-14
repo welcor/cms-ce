@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factory.facet.model;
+package com.enonic.cms.core.search.facet.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,7 +31,7 @@ public class TermsFacetModel
         this.field = field;
     }
 
-    protected void verify()
+    public void verify()
     {
         super.verify();
 

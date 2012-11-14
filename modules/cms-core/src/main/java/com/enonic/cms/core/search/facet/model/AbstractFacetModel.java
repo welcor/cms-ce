@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factory.facet.model;
+package com.enonic.cms.core.search.facet.model;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -33,7 +33,7 @@ public abstract class AbstractFacetModel
         this.size = size;
     }
 
-    protected void verify()
+    public void verify()
     {
         Assert.notNull( this.name, "Facet 'name' is required" );
     }

@@ -25,6 +25,7 @@ import com.enonic.cms.core.content.index.queryexpression.NotExpr;
 import com.enonic.cms.core.content.index.queryexpression.OrderByExpr;
 import com.enonic.cms.core.content.index.queryexpression.QueryExpr;
 import com.enonic.cms.core.search.IndexException;
+import com.enonic.cms.core.search.facet.FacetBuilderFactory;
 import com.enonic.cms.core.search.query.factory.FilterQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.FullTextQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.InQueryBuilderFactory;
@@ -32,7 +33,6 @@ import com.enonic.cms.core.search.query.factory.LikeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.OrderQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.RangeQueryBuilderFactory;
 import com.enonic.cms.core.search.query.factory.TermQueryBuilderFactory;
-import com.enonic.cms.core.search.query.factory.facet.FacetBuilderFactory;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.ContentTypeDao;
 

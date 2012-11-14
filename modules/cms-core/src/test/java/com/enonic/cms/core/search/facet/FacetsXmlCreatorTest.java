@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factory.facet;
+package com.enonic.cms.core.search.facet;
 
 import java.io.StringWriter;
 
@@ -11,9 +11,9 @@ import javax.xml.bind.ValidationEventHandler;
 import org.elasticsearch.common.Strings;
 import org.junit.Test;
 
-import com.enonic.cms.core.search.query.factory.facet.model.FacetsModel;
-import com.enonic.cms.core.search.query.factory.facet.model.RangeFacetModel;
-import com.enonic.cms.core.search.query.factory.facet.model.TermsFacetModel;
+import com.enonic.cms.core.search.facet.model.FacetsModel;
+import com.enonic.cms.core.search.facet.model.RangeFacetModel;
+import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 
 import static org.junit.Assert.*;
 

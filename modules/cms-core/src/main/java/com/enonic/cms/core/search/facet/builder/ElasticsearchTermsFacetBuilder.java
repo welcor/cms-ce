@@ -1,19 +1,24 @@
-package com.enonic.cms.core.search.query.factory.facet.builder;
+package com.enonic.cms.core.search.facet.builder;
+
+import java.util.Set;
 
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
+import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
-import com.enonic.cms.core.search.query.factory.facet.model.TermsFacetModel;
 
 final class ElasticsearchTermsFacetBuilder
     extends AbstractElasticsearchFacetBuilder
 {
     final TermsFacetBuilder build( TermsFacetModel termsFacetXml )
     {
+        termsFacetXml.verify();
+
         TermsFacetBuilder builder = new TermsFacetBuilder( termsFacetXml.getName() );
 
         setField( termsFacetXml, builder );
@@ -36,7 +41,7 @@ final class ElasticsearchTermsFacetBuilder
         final String fieldName = termsFacetXml.getField();
         if ( !com.google.common.base.Strings.isNullOrEmpty( fieldName ) )
         {
-            final String resolvedQueryFieldName = QueryFieldNameResolver.resolveQueryFieldName( fieldName );
+            final String resolvedQueryFieldName = createQueryFieldName( fieldName );
 
             builder.field( resolvedQueryFieldName );
         }
@@ -75,7 +80,7 @@ final class ElasticsearchTermsFacetBuilder
 
     private void setExcludes( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        final String[] excludes = getCommaDelimitedStringAsArray( termsFacetXml.getExclude() );
+        final String[] excludes = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getExclude() );
 
         if ( excludes != null && excludes.length > 0 )
         {
@@ -89,8 +94,7 @@ final class ElasticsearchTermsFacetBuilder
         {
             if ( !Strings.isNullOrEmpty( termsFacetXml.getRegexFlags() ) )
             {
-                builder.regex( termsFacetXml.getRegex(),
-                               AbstractElasticsearchFacetBuilder.regExFlags.valueOf( termsFacetXml.getRegexFlags() ).getValue() );
+                builder.regex( termsFacetXml.getRegex(), getRegexFlagValue( termsFacetXml ) );
             }
             else
             {
@@ -99,14 +103,59 @@ final class ElasticsearchTermsFacetBuilder
         }
     }
 
+    private int getRegexFlagValue( final TermsFacetModel termsFacetXml )
+    {
+        final String[] flags = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getRegexFlags() );
+
+        int flagValue = 0;
+
+        if ( flags != null && flags.length > 0 )
+        {
+
+            for ( String flag : flags )
+            {
+                try
+                {
+                    flagValue += RegExpFlags.valueOf( flag ).getValue();
+                }
+                catch ( IllegalArgumentException e )
+                {
+                    throw new IndexQueryException( "Error in definition of facet '" + termsFacetXml.getName() + "': Regex flag '" + flag +
+                                                       "' is not a valid regexp flag value" );
+                }
+            }
+        }
+
+        return flagValue;
+    }
+
     private void setFields( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        final String[] fields = getCommaDelimitedStringAsArray( termsFacetXml.getFields() );
+        final String[] fields = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getFields() );
 
         if ( fields != null && fields.length > 0 )
         {
-            builder.fields( fields );
+            final String[] fieldNamesArray = cleanupAndConvertToQueryFieldNames( fields );
+
+            builder.fields( fieldNamesArray );
         }
+    }
+
+    private String[] cleanupAndConvertToQueryFieldNames( final String[] fields )
+    {
+        Set<String> fieldNames = Sets.newLinkedHashSet();
+
+        for ( String field : fields )
+        {
+            fieldNames.add( createQueryFieldName( field ) );
+        }
+
+        return fieldNames.toArray( new String[fieldNames.size()] );
+    }
+
+    private String createQueryFieldName( final String field )
+    {
+        return QueryFieldNameResolver.resolveQueryFieldName( field );
     }
 
 

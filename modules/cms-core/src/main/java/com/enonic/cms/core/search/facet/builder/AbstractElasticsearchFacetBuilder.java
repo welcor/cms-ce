@@ -1,12 +1,13 @@
-package com.enonic.cms.core.search.query.factory.facet.builder;
+package com.enonic.cms.core.search.facet.builder;
 
 import java.util.regex.Pattern;
 
-import org.elasticsearch.common.Strings;
+import com.google.common.base.Strings;
+
 
 abstract class AbstractElasticsearchFacetBuilder
 {
-    protected enum regExFlags
+    public enum RegExpFlags
     {
         CASE_INSENSITIVE( Pattern.CASE_INSENSITIVE ),
         MULTILINE( Pattern.MULTILINE ),
@@ -19,7 +20,7 @@ abstract class AbstractElasticsearchFacetBuilder
 
         int value;
 
-        private regExFlags( final int value )
+        private RegExpFlags( final int value )
         {
             this.value = value;
         }
@@ -30,9 +31,14 @@ abstract class AbstractElasticsearchFacetBuilder
         }
     }
 
-    protected static String[] getCommaDelimitedStringAsArray( String commaSeparatedString )
+    protected static String[] getCommaDelimitedStringAsArraySkipWhitespaces( String commaSeparatedString )
     {
-        return Strings.commaDelimitedListToStringArray( commaSeparatedString );
+        if ( Strings.isNullOrEmpty( commaSeparatedString ) )
+        {
+            return null;
+        }
+
+        return commaSeparatedString.split( ",\\s*" );
     }
 
 

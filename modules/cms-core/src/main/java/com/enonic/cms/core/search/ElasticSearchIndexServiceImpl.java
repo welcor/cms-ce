@@ -63,7 +63,7 @@ public class ElasticSearchIndexServiceImpl
 
     public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 60 );
 
-    public static final TimeValue WAITFOR_YELLOW_TIMEOUT = TimeValue.timeValueSeconds( 5 );
+    public TimeValue waitforyellowTimeout = TimeValue.timeValueSeconds( 60 );
 
     public static final TimeValue CLUSTER_NOWAIT_TIMEOUT = TimeValue.timeValueSeconds( 1 );
 
@@ -325,7 +325,7 @@ public class ElasticSearchIndexServiceImpl
 
         if ( waitForYellow )
         {
-            request.waitForYellowStatus().timeout( WAITFOR_YELLOW_TIMEOUT );
+            request.waitForYellowStatus().timeout( waitforyellowTimeout );
         }
         else
         {
@@ -364,6 +364,11 @@ public class ElasticSearchIndexServiceImpl
     public void setContentIndexRequestCreator( ContentIndexRequestCreator contentIndexRequestCreator )
     {
         this.contentIndexRequestCreator = contentIndexRequestCreator;
+    }
+
+    public void setWaitforyellowTimeout( final TimeValue waitforyellowTimeout )
+    {
+        this.waitforyellowTimeout = waitforyellowTimeout;
     }
 }
 

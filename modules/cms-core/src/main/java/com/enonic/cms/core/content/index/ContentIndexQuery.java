@@ -149,10 +149,6 @@ public final class ContentIndexQuery
 
     public void setCount( int count )
     {
-        if ( count <= 0 )
-        {
-            throw new IllegalArgumentException( "Count must be larger than zero" );
-        }
         this.count = count;
     }
 

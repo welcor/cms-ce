@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factory.facet;
+package com.enonic.cms.core.search.facet;
 
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;

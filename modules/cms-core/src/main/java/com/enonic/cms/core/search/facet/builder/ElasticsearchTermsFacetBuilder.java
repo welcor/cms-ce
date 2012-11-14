@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factory.facet.builder;
+package com.enonic.cms.core.search.facet.builder;
 
 import java.util.Set;
 
@@ -8,9 +8,9 @@ import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 
+import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
-import com.enonic.cms.core.search.query.factory.facet.model.TermsFacetModel;
 
 final class ElasticsearchTermsFacetBuilder
     extends AbstractElasticsearchFacetBuilder

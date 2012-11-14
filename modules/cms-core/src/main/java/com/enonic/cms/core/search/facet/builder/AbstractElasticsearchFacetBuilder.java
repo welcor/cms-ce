@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factory.facet.builder;
+package com.enonic.cms.core.search.facet.builder;
 
 import java.util.regex.Pattern;
 

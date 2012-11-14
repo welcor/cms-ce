@@ -1,4 +1,4 @@
-package com.enonic.cms.core.search.query.factory;
+package com.enonic.cms.core.search.facet;
 
 import java.util.Collection;
 import java.util.Set;
@@ -8,7 +8,6 @@ import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
-import com.enonic.cms.core.search.query.factory.facet.FacetBuilderFactory;
 
 import static org.junit.Assert.*;
 

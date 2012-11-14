@@ -175,7 +175,7 @@ public class GetContentExecutor
         contentByContentQuery.setContentKeyFilter( contentFilter );
         contentByContentQuery.setCategoryKeyFilter( categoryFilter, categoryLevels );
         contentByContentQuery.setContentTypeFilter( contentTypeFilter );
-        contentByContentQuery.setFacetDefinition( facets );
+        contentByContentQuery.setFacets( facets );
 
         if ( includeOfflineContent )
         {

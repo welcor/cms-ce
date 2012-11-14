@@ -141,7 +141,7 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
 
         XMLDocument xmlDocResult =
             dataSourceService.getContentByCategory( context, categoryKeys, levels, query, orderyBy, index, count, includeData,
-                                                    childrenLevel, parentLevel, false );
+                                                    childrenLevel, parentLevel, false, null );
 
         // verify
         AssertTool.assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(),
@@ -211,7 +211,7 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
 
         XMLDocument xmlDocResult =
             dataSourceService.getContentByCategory( context, categoryKeys, levels, query, orderyBy, index, count, includeData,
-                                                    childrenLevel, parentLevel, filterOnUser );
+                                                    childrenLevel, parentLevel, filterOnUser, null );
 
         // verify
         AssertTool.assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(),

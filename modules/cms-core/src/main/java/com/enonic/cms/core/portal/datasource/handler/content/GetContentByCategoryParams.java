@@ -24,4 +24,6 @@ public final class GetContentByCategoryParams
     public int parentLevel = 0;
 
     public boolean filterOnUser = false;
+
+    public String facets;
 }

@@ -32,7 +32,7 @@ public abstract class AbstractContentArchiveQuery
 
     private CategoryAccessTypeFilterPolicy categoryAccessTypeFilterPolicy;
 
-    private String facetDefinition;
+    private String facets;
 
     public Collection<ContentKey> getContentKeyFilter()
     {
@@ -120,7 +120,7 @@ public abstract class AbstractContentArchiveQuery
             query.setCategoryAccessTypeFilter( catAccessFilter, CategoryAccessTypeFilterPolicy.AND );
         }
 
-        query.setFacets( this.facetDefinition );
+        query.setFacets( this.facets );
 
         return query;
     }
@@ -133,13 +133,13 @@ public abstract class AbstractContentArchiveQuery
     }
 
 
-    public String getFacetDefinition()
+    public String getFacets()
     {
-        return facetDefinition;
+        return facets;
     }
 
-    public void setFacetDefinition( final String facetDefinition )
+    public void setFacets( final String facets )
     {
-        this.facetDefinition = facetDefinition;
+        this.facets = facets;
     }
 }

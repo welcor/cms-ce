@@ -144,7 +144,7 @@ public final class DataSourceServiceImpl
             spec.setCount( count );
             spec.setFilterContentOnlineAt( now );
             spec.setUser( user );
-            spec.setFacetDefinition( facetsDefinition );
+            spec.setFacets( facetsDefinition );
             ContentResultSet contents = contentService.queryContent( spec );
             if ( previewContext.isPreviewingContent() )
             {
@@ -264,29 +264,14 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentByCategory( DataSourceContext context, int[] categoryKeys, int levels, String query, String orderBy,
                                              int index, int count, boolean includeData, int childrenLevel, int parentLevel,
-                                             final boolean filterOnUser )
+                                             final boolean filterOnUser, final String facets )
     {
         boolean includeOwnerAndModifierData = true;
         boolean includeCategoryData = true;
         boolean includeUserRights = false;
         return doGetContentByCategory( context, categoryKeys, levels, query, orderBy, index, count, childrenLevel, parentLevel, 0,
                                        includeOwnerAndModifierData, includeData, includeCategoryData, includeData, includeUserRights, null,
-                                       filterOnUser );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getContentByCategory( DataSourceContext context, String query, int[] categories, boolean includeSubCategories,
-                                             String orderBy, int index, int count, boolean titlesOnly, int childrenLevel, int parentLevel,
-                                             int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                             boolean includeUserRights, int[] contentTypes )
-    {
-        int levels = includeSubCategories ? Integer.MAX_VALUE : 1;
-        return doGetContentByCategory( context, categories, levels, query, orderBy, index, count, childrenLevel, parentLevel,
-                                       parentChildrenLevel, !titlesOnly, !titlesOnly, !titlesOnly, !relatedTitlesOnly, includeUserRights,
-                                       contentTypes, false );
+                                       filterOnUser, facets );
     }
 
     /**
@@ -909,7 +894,7 @@ public final class DataSourceServiceImpl
                                                 int index, int count, int childrenLevel, int parentLevel, int parentChildrenLevel,
                                                 boolean includeOwnerAndModifierData, boolean includeContentData,
                                                 boolean includeCategoryData, boolean includeRelatedContentData, boolean includeUserRights,
-                                                int[] contentTypes, final boolean filterOnUser )
+                                                int[] contentTypes, final boolean filterOnUser, final String facets )
     {
         final PreviewContext previewContext = context.getPreviewContext();
 
@@ -933,6 +918,7 @@ public final class DataSourceServiceImpl
             contentByCategoryQuery.setCount( count );
             contentByCategoryQuery.setIndex( index );
             contentByCategoryQuery.setFilterContentOnlineAt( now );
+            contentByCategoryQuery.setFacets( facets );
 
             ContentResultSet contents = contentService.queryContent( contentByCategoryQuery );
             if ( previewContext.isPreviewingContent() )
@@ -966,6 +952,7 @@ public final class DataSourceServiceImpl
             xmlCreator.setIncludeAssignment( true );
 
             XMLDocument doc = xmlCreator.createContentsDocument( user, contents, relatedContent );
+            addFacetResultSet( contents, doc );
             addDataTraceInfo( doc.getAsJDOMDocument() );
             return doc;
 

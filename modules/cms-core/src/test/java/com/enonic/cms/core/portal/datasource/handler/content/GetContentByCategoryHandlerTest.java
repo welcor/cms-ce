@@ -39,7 +39,7 @@ public class GetContentByCategoryHandlerTest
     {
         Mockito.when(
             dataSourceService.getContentByCategory( Mockito.<DataSourceContext>any(), eq( new int[]{11, 12, 13} ), eq( 2 ), eq( "a > 5" ),
-                                                    eq( "a" ), eq( 0 ), eq( 21 ), eq( true ), eq( 1 ), eq( 0 ), eq( false ) ) ).thenReturn(
+                                                    eq( "a" ), eq( 0 ), eq( 21 ), eq( true ), eq( 1 ), eq( 0 ), eq( false ), null ) ).thenReturn(
             this.dummyDoc );
 
         this.request.addParam( "categoryKeys", "11,12,13" );

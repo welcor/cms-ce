@@ -119,6 +119,7 @@ public interface DataSourceService
      * Find content in the specified categories.
      *
      *
+     *
      * @param context       The Vertical Site context
      * @param categoryKeys  The keys of the categories to search in.
      * @param levels        Include sub categories below the specified menu item keys, this number of levels down.
@@ -131,11 +132,12 @@ public interface DataSourceService
      * @param childrenLevel The number of levels of children to include.
      * @param parentLevel   The number of levels of parents to include.
      * @param filterOnUser
+     * @param facets
      * @return An XML document with the result of the search
      */
     public XMLDocument getContentByCategory( DataSourceContext context, int[] categoryKeys, int levels, String query, String orderBy,
                                              int index, int count, boolean includeData, int childrenLevel, int parentLevel,
-                                             final boolean filterOnUser );
+                                             final boolean filterOnUser, final String facets );
 
     /**
      * Find content randomly in the specified categories.
@@ -252,31 +254,6 @@ public interface DataSourceService
      */
     public XMLDocument getAggregatedIndexValues( DataSourceContext context, String path, int[] categories, boolean includeSubCategories,
                                                  int[] contentTypes );
-
-    /**
-     * Return content by category.
-     *
-     * @param context              the Vertical Site context
-     * @param query                a search query (refer to the Administrator Guide for the syntax)
-     * @param categories           one or more categories to search in
-     * @param includeSubCategories include sub-categories of the categories before
-     * @param orderBy              an order by string (refer to the Administrator Guide for the syntax)
-     * @param index                start from this index
-     * @param count                maximum number of contents to get
-     * @param titlesOnly           if true, return only content titles
-     * @param parentLevel          the level of parents to include
-     * @param childrenLevel        the level of children to include
-     * @param parentChildrenLevel  the level of children for parents to include
-     * @param relatedTitlesOnly    if true, return only related content titles
-     * @param includeTotalCount    if true, include total count of contents returned excluding fromIndex and count
-     * @param includeUserRights    if true, include the current user's access rights to the content
-     * @param contentTypes         filter by zero or more content types
-     * @return contents xml
-     */
-    public XMLDocument getContentByCategory( DataSourceContext context, String query, int[] categories, boolean includeSubCategories,
-                                             String orderBy, int index, int count, boolean titlesOnly, int childrenLevel, int parentLevel,
-                                             int parentChildrenLevel, boolean relatedTitlesOnly, boolean includeTotalCount,
-                                             boolean includeUserRights, int[] contentTypes );
 
     /**
      * Return content by category for the logged in user.

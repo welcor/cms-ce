@@ -31,9 +31,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
     @Test
     public void query_with_no_facet()
     {
-        // Setup standard values
         setUpValuesWithFacetGoodies();
-        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
 
@@ -48,7 +46,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
     public void single_facet()
     {
         setUpValuesWithFacetGoodies();
-        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetName = "specietypes";
@@ -84,7 +81,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
     {
         // Setup standard values
         setUpValuesWithFacetGoodies();
-        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetDefinition = "<facets>\n" +
@@ -117,7 +113,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
     public void size()
     {
         setUpValuesWithFacetGoodies();
-        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetName = "specietypes";
@@ -147,14 +142,12 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( 3, results.keySet().size() );
     }
 
-
     // this test is failing, if using size = 3. This is not how (I think) its supposed to work.
     // Question asked on mailing-list
     @Test
     public void fields()
     {
         setUpValuesWithFacetGoodies();
-        flushIndex();
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetName = "specietypes";
@@ -162,7 +155,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "    <terms>\n" +
             "        <name>" + facetName + "</name>\n" +
             "        <fields>data/person/type,data/person/type,data/person/gender,data/person/drink</fields>\n" +
-            "        <size>4</size>\n" +
+            "        <size>3</size>\n" +
             "        <order>count</order>\n" +
             "    </terms>\n" +
             "</facets>";

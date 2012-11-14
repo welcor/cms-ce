@@ -36,10 +36,19 @@ public class FacetResultXmlCreator
         }
     }
 
-    private void addTermFacetResult( final Element facetsNode, final TermsFacetResultSet facet )
+    private void addTermFacetResult( final Element facetsRoot, final TermsFacetResultSet facet )
     {
-        Element facetEl = new Element( facet.getName() );
-        facetsNode.addContent( facetEl );
+        final Element facetEl = new Element( "facet" );
+        facetEl.setAttribute( "name", facet.getName() );
+        facetsRoot.addContent( facetEl );
+
+        final Long missing = facet.getMissing();
+        final Long total = facet.getTotal();
+        final Long other = facet.getOther();
+
+        facetEl.setAttribute( "total", total != null ? total.toString() : "" );
+        facetEl.setAttribute( "missing", missing != null ? missing.toString() : "" );
+        facetEl.setAttribute( "other", other != null ? other.toString() : "" );
 
         final Map<String, Integer> resultMap = facet.getResults();
         for ( String result : resultMap.keySet() )
@@ -47,9 +56,7 @@ public class FacetResultXmlCreator
             final Integer count = resultMap.get( result );
 
             Element resultEl = new Element( "result" );
-            Element termEl = new Element( "term" );
-            termEl.addContent( result );
-            resultEl.addContent( termEl );
+            resultEl.setAttribute( "term", result );
             Element countEl = new Element( "count" );
             countEl.addContent( "" + count );
             resultEl.addContent( countEl );
@@ -57,5 +64,6 @@ public class FacetResultXmlCreator
             facetEl.addContent( resultEl );
         }
     }
+
 
 }

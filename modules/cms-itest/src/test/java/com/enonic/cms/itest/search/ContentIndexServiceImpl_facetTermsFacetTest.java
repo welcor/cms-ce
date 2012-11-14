@@ -181,7 +181,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( facetName, termFacet.getName() );
         assertTrue( termFacet instanceof TermsFacetResultSet );
 
-
         TermsFacetResultSet termFacetResultSet = (TermsFacetResultSet) termFacet;
 
         final Map<String, Integer> results = termFacetResultSet.getResults();
@@ -421,7 +420,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "        <name>" + facetName + "</name>\n" +
             "        <field>data/person/food</field>\n" +
             "        <regex>S.*</regex>\n" +
-                "        <regex_flags>CASE_INSENSITIVE,DOTALL</regex_flags>\n" +
+            "        <regex_flags>CASE_INSENSITIVE,DOTALL</regex_flags>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacetDefinition( facetDefinition );
@@ -436,7 +435,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertNotNull( termFacet );
         assertEquals( facetName, termFacet.getName() );
         assertTrue( termFacet instanceof TermsFacetResultSet );
-
 
         TermsFacetResultSet termFacetResultSet = (TermsFacetResultSet) termFacet;
 

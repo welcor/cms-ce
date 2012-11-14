@@ -1,9 +1,9 @@
 package com.enonic.cms.core.search.result;
 
-import org.elasticsearch.common.Strings;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.junit.Test;
+import org.springframework.util.StringUtils;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
@@ -17,32 +17,26 @@ public class FacetResultXmlCreatorTest
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<root>\n" +
             "  <facets>\n" +
-            "    <MyTermFacet>\n" +
-            "      <result>\n" +
-            "        <term>term1sef</term>\n" +
+            "    <facet name=\"MyTermFacet\" total=\"100\" missing=\"5\" other=\"10\">\n" +
+            "      <result term=\"term1sef \">\n" +
             "        <count>10</count>\n" +
             "      </result>\n" +
-            "      <result>\n" +
-            "        <term>s2312</term>\n" +
+            "      <result term=\" s2312\">\n" +
             "        <count>12</count>\n" +
             "      </result>\n" +
-            "      <result>\n" +
-            "        <term>123 fsef __´!#!$# term3</term>\n" +
+            "      <result term=\"123 fsef __´!#!$# term3\">\n" +
             "        <count>14</count>\n" +
             "      </result>\n" +
-            "      <result>\n" +
-            "        <term>term4</term>\n" +
+            "      <result term=\"term4\">\n" +
             "        <count>16</count>\n" +
             "      </result>\n" +
-            "      <result>\n" +
-            "        <term>term5</term>\n" +
+            "      <result term=\"term5\">\n" +
             "        <count>18</count>\n" +
             "      </result>\n" +
-            "      <result>\n" +
-            "        <term>term6</term>\n" +
+            "      <result term=\"term6\">\n" +
             "        <count>20</count>\n" +
             "      </result>\n" +
-            "    </MyTermFacet>\n" +
+            "    </facet>\n" +
             "  </facets>\n" +
             "</root>";
 
@@ -53,7 +47,7 @@ public class FacetResultXmlCreatorTest
         FacetsResultSet facetsResultSet = new FacetsResultSet();
         TermsFacetResultSet termFacetResult = new TermsFacetResultSet();
         termFacetResult.setName( "MyTermFacet" );
-        termFacetResult.setRequiredSize( 10L );
+        termFacetResult.setOther( 10L );
         termFacetResult.setTotal( 100L );
         termFacetResult.setMissing( 5L );
         termFacetResult.addResult( "term1sef ", 10 );
@@ -73,8 +67,11 @@ public class FacetResultXmlCreatorTest
     private void compareIgnoreWhitespacesAndLinebreaks( String expected, final Document doc )
     {
         String resultString = JDOMUtil.prettyPrintDocument( doc );
-        expected = Strings.trimAllWhitespace( expected );
-        resultString = Strings.trimAllWhitespace( resultString );
-        assertEquals( Strings.trimTrailingWhitespace( expected ), Strings.trimTrailingWhitespace( resultString ) );
+
+        System.out.println(resultString);
+
+        expected = StringUtils.trimAllWhitespace( expected );
+        resultString = StringUtils.trimAllWhitespace( resultString );
+        assertEquals( StringUtils.trimTrailingWhitespace( expected ), StringUtils.trimTrailingWhitespace( resultString ) );
     }
 }

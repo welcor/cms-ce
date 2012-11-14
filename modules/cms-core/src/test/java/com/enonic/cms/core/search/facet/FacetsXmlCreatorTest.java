@@ -32,8 +32,6 @@ public class FacetsXmlCreatorTest
         facet.setName( "myFacetName" );
         facet.setSize( 10 );
         facets.addFacet( facet );
-
-        System.out.println(createXml( facets ));
     }
 
     @Test
@@ -122,7 +120,6 @@ public class FacetsXmlCreatorTest
         rangeFacet2.setKeyField( "rangeKeyField" );
         rangeFacet2.setValueField( "rangeValueField" );
         facets.addFacet( rangeFacet2 );
-
     }
 
 

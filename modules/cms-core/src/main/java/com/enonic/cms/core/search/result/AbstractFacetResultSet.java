@@ -7,7 +7,7 @@ public abstract class AbstractFacetResultSet
 
     private Long missing;
 
-    private Long requiredSize;
+    private Long other;
 
     private String name;
 
@@ -41,13 +41,13 @@ public abstract class AbstractFacetResultSet
         this.missing = missing;
     }
 
-    public Long getRequiredSize()
+    public Long getOther()
     {
-        return requiredSize;
+        return other;
     }
 
-    public void setRequiredSize( final Long requiredSize )
+    public void setOther( final Long other )
     {
-        this.requiredSize = requiredSize;
+        this.other = other;
     }
 }

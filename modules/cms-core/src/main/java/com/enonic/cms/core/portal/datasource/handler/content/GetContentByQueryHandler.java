@@ -23,7 +23,7 @@ public final class GetContentByQueryHandler
     {
         XMLDocument document =
             dataSourceService.getContentByQuery( req, params.query, params.orderBy, params.index, params.count, params.includeData,
-                                                 params.childrenLevel, params.parentLevel, params.facetsDefinition );
+                                                 params.childrenLevel, params.parentLevel, params.facets );
         return document.getAsJDOMDocument();
     }
 }

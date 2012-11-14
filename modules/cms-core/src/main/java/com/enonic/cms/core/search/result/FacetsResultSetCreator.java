@@ -13,8 +13,6 @@ public class FacetsResultSetCreator
 
     public FacetsResultSet createResultSet( SearchResponse searchResponse )
     {
-        //System.out.println( searchResponse );
-
         Facets facets = searchResponse.getFacets();
 
         if ( facets == null )
@@ -44,15 +42,11 @@ public class FacetsResultSetCreator
     {
         TermsFacetResultSet termsFacetResultSet = new TermsFacetResultSet();
         termsFacetResultSet.setName( facetName );
+        termsFacetResultSet.setTotal( facet.getTotalCount() );
+        termsFacetResultSet.setMissing( facet.getMissingCount() );
+        termsFacetResultSet.setOther( facet.getOtherCount() );
 
-        TermsFacet termFacet = (TermsFacet) facet;
-
-        termsFacetResultSet.setTotal( termFacet.getTotalCount() );
-        termsFacetResultSet.setMissing( termFacet.getMissingCount() );
-        // TODO Set the correct count-variables
-        termsFacetResultSet.setRequiredSize( termFacet.getOtherCount() );
-
-        final List<? extends TermsFacet.Entry> entries = termFacet.entries();
+        final List<? extends TermsFacet.Entry> entries = facet.entries();
         for ( TermsFacet.Entry entry : entries )
         {
             termsFacetResultSet.addResult( entry.getTerm(), entry.getCount() );

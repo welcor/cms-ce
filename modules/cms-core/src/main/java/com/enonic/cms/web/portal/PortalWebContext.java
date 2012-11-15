@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.enonic.cms.core.Attribute;
+import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 
 public final class PortalWebContext
@@ -32,6 +33,11 @@ public final class PortalWebContext
     public void setResponse( final HttpServletResponse response )
     {
         this.response = response;
+    }
+
+    public SiteKey getSiteKey()
+    {
+        return sitePath.getSiteKey();
     }
 
     public SitePath getSitePath()
@@ -64,16 +70,34 @@ public final class PortalWebContext
         return request.getHeader( "referer" );
     }
 
-    public boolean isProcessingException()
+    public boolean isAlreadyProcessingException()
     {
-        final Object isProcessingExceptionFlag = request.getAttribute( Attribute.IS_PROCESSING_EXCEPTION );
+        final Integer isProcessingExceptionCount = (Integer) request.getAttribute( Attribute.PROCESSING_EXCEPTION_COUNT );
 
-        return isProcessingExceptionFlag != null;
+        return isProcessingExceptionCount != null;
     }
 
-    public void setIsProcessingException()
+    public int processingExceptionCount()
     {
-        request.setAttribute( Attribute.IS_PROCESSING_EXCEPTION, "true" );
+        final Integer count = (Integer) request.getAttribute( Attribute.PROCESSING_EXCEPTION_COUNT );
+        if ( count == null )
+        {
+            return 0;
+        }
+        return count;
+    }
+
+    public void increaseProcessingExceptionCount()
+    {
+        if ( request.getAttribute( Attribute.PROCESSING_EXCEPTION_COUNT ) != null )
+        {
+            Integer count = (Integer) request.getAttribute( Attribute.PROCESSING_EXCEPTION_COUNT );
+            request.setAttribute( Attribute.PROCESSING_EXCEPTION_COUNT, ++count );
+        }
+        else
+        {
+            request.setAttribute( Attribute.PROCESSING_EXCEPTION_COUNT, 1 );
+        }
     }
 
 }

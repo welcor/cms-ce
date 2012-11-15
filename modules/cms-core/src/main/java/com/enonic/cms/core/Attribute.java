@@ -17,6 +17,6 @@ public class Attribute
 
     public static final String PREVIEW_ENABLED = "com.enonic.render.previewEnabled";
 
-    public static final String IS_PROCESSING_EXCEPTION = "com.enonic.render.isProcessingException";
+    public static final String PROCESSING_EXCEPTION_COUNT = "com.enonic.render.processingExceptionCount";
 
 }

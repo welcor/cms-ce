@@ -35,6 +35,7 @@ import com.enonic.cms.core.portal.SiteErrorDetails;
 import com.enonic.cms.core.portal.UnauthorizedErrorType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.web.portal.PortalWebContext;
@@ -44,11 +45,14 @@ import com.enonic.cms.web.portal.image.ImageRequestException;
 import com.enonic.cms.web.portal.page.DefaultRequestException;
 import com.enonic.cms.web.portal.template.TemplateProcessor;
 
+@SuppressWarnings("UnusedDeclaration")
 @Component
 public final class ExceptionHandlerImpl
     implements ExceptionHandler
 {
     private static final Logger LOG = LoggerFactory.getLogger( ExceptionHandlerImpl.class );
+
+    private static final String ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION = "ALREADY_PROCESSING_EXCEPTION";
 
     private SiteRedirectAndForwardHelper siteRedirectAndForwardHelper;
 
@@ -87,31 +91,80 @@ public final class ExceptionHandlerImpl
     public void handle( final PortalWebContext context, final Exception outerException )
         throws ServletException, IOException
     {
+        if ( context.processingExceptionCount() >= 2 )
+        {
+            throw new Error( outerException );
+        }
+
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
 
-        final Throwable causingExeption;
+        final boolean builtInErrorPageIsAlsoFailing = resolveAlreadyProcessingExceptionCount( request ) >= 2;
+        if ( builtInErrorPageIsAlsoFailing )
+        {
+            throw new Error( outerException );
+        }
+
+        final Throwable causingException;
         if ( isExceptionAnyOfThose( outerException, new Class[]{DefaultRequestException.class, AttachmentRequestException.class,
             ImageRequestException.class} ) )
         {
             // Have to unwrap these exceptions to get the causing exception
-            causingExeption = outerException.getCause();
+            causingException = outerException.getCause();
         }
         else
         {
-            causingExeption = outerException;
+            causingException = outerException;
         }
 
-        logException( outerException, causingExeption, request );
-        AbstractBaseError error = getError( causingExeption );
-
+        logException( outerException, causingException, request );
+        final AbstractBaseError error = getError( causingException );
         response.setStatus( error.getStatusCode() );
-        handleExceptions( context, causingExeption, error );
+
+        if ( context.isAlreadyProcessingException() )
+        {
+            serveBuiltInExceptionPage( context, error );
+            return;
+        }
+
+        context.increaseProcessingExceptionCount();
+
+        handleExceptions( context, causingException, error );
     }
 
-    private void logException( Throwable outerException, Throwable causingException, HttpServletRequest request )
+    private void handleExceptions( final PortalWebContext context, final Throwable exception, final AbstractBaseError error )
+        throws ServletException, IOException
     {
+        if ( isExceptionAnyOfThose( exception, new Class[]{InvalidKeyException.class} ) &&
+            ( (InvalidKeyException) exception ).forClass( SiteKey.class ) )
+        {
+            serveBuiltInExceptionPage( context, error );
+            return;
+        }
+        else if ( exception instanceof UnauthorizedErrorType )
+        {
+            serveLoginPage( context );
+            return;
+        }
 
+        try
+        {
+            if ( hasErrorPage( context.getSiteKey() ) )
+            {
+                serveErrorPage( context, error );
+                return;
+            }
+        }
+        catch ( Exception e )
+        {
+            LOG.error( "Failed to get error page: " + e.getMessage(), e );
+        }
+
+        serveBuiltInExceptionPage( context, error );
+    }
+
+    private void logException( final Throwable outerException, final Throwable causingException, final HttpServletRequest request )
+    {
         if ( isExceptionAnyOfThose( causingException, new Class[]{ResourceNotFoundException.class} ) )
         {
             ResourceNotFoundException resourceNotFoundException = (ResourceNotFoundException) causingException;
@@ -147,7 +200,7 @@ public final class ExceptionHandlerImpl
         }
         else
         {
-            StringBuffer message = new StringBuffer();
+            StringBuilder message = new StringBuilder();
             message.append( causingException.getMessage() ).append( "\n" );
             if ( this.logRequestInfoOnException )
             {
@@ -157,10 +210,9 @@ public final class ExceptionHandlerImpl
         }
     }
 
-    private String buildRequestInfo( HttpServletRequest request )
+    private String buildRequestInfo( final HttpServletRequest request )
     {
-
-        StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
         s.append( "Request information:\n" );
         s.append( " - cms.originalURL: " ).append( request.getAttribute( Attribute.ORIGINAL_URL ) ).append( "\n" );
         s.append( " - cms.originalSitePath: " ).append( request.getAttribute( Attribute.ORIGINAL_SITEPATH ) ).append( "\n" );
@@ -175,9 +227,8 @@ public final class ExceptionHandlerImpl
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
-    private AbstractBaseError getError( Throwable exception )
+    private AbstractBaseError getError( final Throwable exception )
     {
-
         if ( exception instanceof BadRequestErrorType )
         {
             return new ClientError( HttpServletResponse.SC_BAD_REQUEST, exception.getMessage(), exception );
@@ -209,78 +260,31 @@ public final class ExceptionHandlerImpl
         }
     }
 
-    private void handleExceptions( PortalWebContext context, Throwable exception, AbstractBaseError error )
-        throws ServletException, IOException
-    {
-        if ( isExceptionAnyOfThose( exception, new Class[]{InvalidKeyException.class} ) &&
-            ( (InvalidKeyException) exception ).forClass( SiteKey.class ) )
-        {
-            serveExceptionPage( context, error );
-            return;
-        }
-        else if ( exception instanceof UnauthorizedErrorType )
-        {
-            serveLoginPage( context );
-            return;
-        }
-
-        if ( context.isProcessingException() )
-        {
-            serveExceptionPage( context, error );
-            return;
-        }
-
-        try
-        {
-            context.setIsProcessingException();
-
-            if ( serveErrorPage( context, error ) )
-            {
-                return;
-            }
-        }
-        catch ( Exception e )
-        {
-            LOG.error( "Failed to get error page: " + e.getMessage(), e );
-            serveExceptionPage( context, error );
-            return;
-        }
-
-        serveExceptionPage( context, error );
-    }
-
-    private boolean serveErrorPage( PortalWebContext context, AbstractBaseError error )
+    private void serveErrorPage( final PortalWebContext context, final AbstractBaseError error )
         throws Exception
     {
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
         final SitePath sitePath = context.getSitePath();
 
-        boolean siteExists = siteExists( sitePath.getSiteKey() );
-        if ( siteExists && hasErrorPage( sitePath.getSiteKey().toInt() ) )
+        request.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
+        final MenuItemKey errorPageKey = getErrorPage( context.getSiteKey() );
+        final SitePath errorPagePath = new SitePath( sitePath.getSiteKey(), new Path( resolveMenuItemPath( errorPageKey ) ) );
+        final String statusCodeString = String.valueOf( error.getStatusCode() );
+        errorPagePath.addParam( "http_status_code", statusCodeString );
+        errorPagePath.addParam( "exception_message", error.getMessage() );
+
+        if ( error instanceof ContentNameMismatchClientError )
         {
-            request.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
-            int errorPageKey = getErrorPage( sitePath.getSiteKey().toInt() );
-            SitePath errorPagePath = new SitePath( sitePath.getSiteKey(), new Path( resolveMenuItemPath( errorPageKey ) ) );
-            final String statusCodeString = String.valueOf( error.getStatusCode() );
-            errorPagePath.addParam( "http_status_code", statusCodeString );
-            errorPagePath.addParam( "exception_message", error.getMessage() );
-
-            if ( error instanceof ContentNameMismatchClientError )
-            {
-                ContentNameMismatchClientError contentNameMismatchClientError = (ContentNameMismatchClientError) error;
-                errorPagePath.addParam( "content_key", contentNameMismatchClientError.getContentKey().toString() );
-            }
-            siteRedirectAndForwardHelper.forward( request, response, errorPagePath );
-            return true;
+            final ContentNameMismatchClientError contentNameMismatchClientError = (ContentNameMismatchClientError) error;
+            errorPagePath.addParam( "content_key", contentNameMismatchClientError.getContentKey().toString() );
         }
-
-        return false;
+        siteRedirectAndForwardHelper.forward( request, response, errorPagePath );
     }
 
-    private String resolveMenuItemPath( int menuItemKey )
+    private String resolveMenuItemPath( final MenuItemKey menuItemKey )
     {
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+        final MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
         if ( menuItem == null )
         {
             return "";
@@ -288,31 +292,31 @@ public final class ExceptionHandlerImpl
         return menuItem.getPathAsString();
     }
 
-    private void serveExceptionPage( PortalWebContext context, AbstractBaseError e )
+    private void serveBuiltInExceptionPage( final PortalWebContext context, final AbstractBaseError e )
         throws IOException
     {
         if ( this.detailInformation )
         {
-            serveFullExceptionPage( context, e );
+            serveFullBuiltInExceptionPage( context, e );
             return;
         }
 
-        serveMinimalExceptionPage( context, e );
+        serveMinimalBuiltInExceptionPage( context, e );
     }
 
-    private void serveMinimalExceptionPage( PortalWebContext context, AbstractBaseError e )
+    private void serveMinimalBuiltInExceptionPage( final PortalWebContext context, final AbstractBaseError e )
         throws IOException
     {
-        serveExceptionPage( "errorPageMinimal.ftl", context, e );
+        serveBuiltInExceptionPage( "errorPageMinimal.ftl", context, e );
     }
 
-    private void serveFullExceptionPage( PortalWebContext context, AbstractBaseError e )
+    private void serveFullBuiltInExceptionPage( final PortalWebContext context, final AbstractBaseError e )
         throws IOException
     {
-        serveExceptionPage( "errorPage.ftl", context, e );
+        serveBuiltInExceptionPage( "errorPage.ftl", context, e );
     }
 
-    private void serveExceptionPage( String templateName, PortalWebContext context, AbstractBaseError e )
+    private void serveBuiltInExceptionPage( final String templateName, final PortalWebContext context, final AbstractBaseError e )
         throws IOException
     {
         final Map<String, Object> model = new HashMap<String, Object>();
@@ -325,28 +329,29 @@ public final class ExceptionHandlerImpl
         context.getResponse().getWriter().println( result );
     }
 
-    private void serveLoginPage( PortalWebContext context )
+    private void serveLoginPage( final PortalWebContext context )
         throws ServletException, IOException
     {
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
-        final SitePath unauthPageSitePath = context.getSitePath();
+        final SitePath unauthorizedPageSitePath = context.getSitePath();
 
-        SiteKey siteKey = unauthPageSitePath.getSiteKey();
-        int menuItemKey = getLoginPage( siteKey.toInt() );
+        final SiteKey siteKey = unauthorizedPageSitePath.getSiteKey();
+        final MenuItemKey menuItemKey = getLoginPage( siteKey );
 
-        if ( menuItemKey >= 0 )
+        if ( menuItemKey != null )
         {
 
-            Path loginPageLocalPath = new Path( resolveMenuItemPath( menuItemKey ) );
-            SitePath loginPageSitePath = unauthPageSitePath.createNewInSameSite( loginPageLocalPath, unauthPageSitePath.getParams() );
-            // remove the id param, because we may have got that from the unauthPageSitePath
+            final Path loginPageLocalPath = new Path( resolveMenuItemPath( menuItemKey ) );
+            final SitePath loginPageSitePath =
+                unauthorizedPageSitePath.createNewInSameSite( loginPageLocalPath, unauthorizedPageSitePath.getParams() );
+            // remove the id param, because we may have got that from the unauthorizedPageSitePath
             loginPageSitePath.removeParam( "id" );
 
-            // we dont want the error code in the referer, so remove it
-            unauthPageSitePath.removeParam( "error_user_login" );
-            String referer = siteURLResolver.createUrl( request, unauthPageSitePath, true );
-            loginPageSitePath.addParam( "referer", referer );
+            // we dont want the error code in the referrer, so remove it
+            unauthorizedPageSitePath.removeParam( "error_user_login" );
+            final String referrer = siteURLResolver.createUrl( request, unauthorizedPageSitePath, true );
+            loginPageSitePath.addParam( "referrer", referrer );
 
             siteRedirectAndForwardHelper.forward( request, response, loginPageSitePath );
         }
@@ -356,9 +361,35 @@ public final class ExceptionHandlerImpl
         }
     }
 
-    private boolean isExceptionAnyOfThose( Throwable e, Class[] classes )
+    private int resolveAlreadyProcessingExceptionCount( final HttpServletRequest request )
     {
+        final Integer alreadyProcessingExceptionCount = (Integer) request.getAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION );
+        if ( alreadyProcessingExceptionCount == null )
+        {
+            return 0;
+        }
+        else
+        {
+            return alreadyProcessingExceptionCount;
+        }
+    }
 
+    private void increaseAlreadyProcessingCounter( final HttpServletRequest request )
+    {
+        if ( request.getAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION ) != null )
+        {
+            Integer count = (Integer) request.getAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION );
+            request.setAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION, ++count );
+        }
+        else
+        {
+            request.setAttribute( ATTRIBUTE_ALREADY_PROCESSING_EXCEPTION, 1 );
+        }
+    }
+
+
+    private boolean isExceptionAnyOfThose( final Throwable e, final Class[] classes )
+    {
         for ( Class cls : classes )
         {
             if ( cls.isInstance( e ) )
@@ -369,34 +400,34 @@ public final class ExceptionHandlerImpl
         return false;
     }
 
-    private int getErrorPage( final int siteKey )
+    private MenuItemKey getErrorPage( final SiteKey siteKey )
     {
-        final SiteEntity entity = this.siteDao.findByKey( siteKey );
-        if ( ( entity == null ) || ( entity.getErrorPage() == null ) )
+        final SiteEntity site = this.siteDao.findByKey( siteKey );
+        if ( site == null || ( site.getErrorPage() == null ) )
         {
-            return -1;
+            return null;
         }
         else
         {
-            return entity.getErrorPage().getKey().toInt();
+            return site.getErrorPage().getKey();
         }
     }
 
-    private boolean hasErrorPage( final int siteKey )
+    private boolean hasErrorPage( final SiteKey siteKey )
     {
-        return getErrorPage( siteKey ) >= 0;
+        return getErrorPage( siteKey ) != null;
     }
 
-    private int getLoginPage( final int siteKey )
+    private MenuItemKey getLoginPage( final SiteKey siteKey )
     {
-        final SiteEntity entity = this.siteDao.findByKey( siteKey );
-        if ( ( entity == null ) || ( entity.getLoginPage() == null ) )
+        final SiteEntity site = this.siteDao.findByKey( siteKey );
+        if ( ( site == null ) || ( site.getLoginPage() == null ) )
         {
-            return -1;
+            return null;
         }
         else
         {
-            return entity.getLoginPage().getKey().toInt();
+            return site.getLoginPage().getKey();
         }
     }
 

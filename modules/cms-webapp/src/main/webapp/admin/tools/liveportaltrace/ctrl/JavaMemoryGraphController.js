@@ -5,7 +5,7 @@ if ( !lpt )
 
 lpt.JavaMemoryGraphController = function ()
 {
-    var memoryGraphValues = new Array( 170 );
+    var memoryGraphValues = new Array( 290 );
 
     this.add = function ( used, max )
     {
@@ -14,9 +14,18 @@ lpt.JavaMemoryGraphController = function ()
             lpt.ArrayUtility.initialize( memoryGraphValues, 0 );
         }
 
-        lpt.ArrayUtility.shiftAndAdd( memoryGraphValues, used );
+        var usageInPercent = Math.round( 100 * used / max );
 
-        $( '#graph-memory' ).sparkline( memoryGraphValues,
-                                        {chartRangeMin:0, chartRangeMax:max, type:'line', lineColor:'#939F74', fillColor:'#ECFFBB', height:'2em'} );
+        lpt.ArrayUtility.shiftAndAdd( memoryGraphValues, usageInPercent );
+
+        $( '#graph-memory' ).sparkline( memoryGraphValues, {
+            chartRangeMin:0,
+            chartRangeMax:100,
+            type:'line',
+            lineColor:'#939F74',
+            fillColor:'#ECFFBB',
+            height:'2em',
+            tooltipSuffix:" % used"
+        } );
     };
 };

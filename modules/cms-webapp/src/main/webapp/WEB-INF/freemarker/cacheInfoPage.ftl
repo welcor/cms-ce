@@ -14,7 +14,7 @@
 <div class="tab-pane" id="tab-main">
 
     <script type="text/javascript" language="JavaScript">
-        var tabPane1 = new WebFXTabPane(document.getElementById("tab-main"), true);
+        var tabPane1 = new WebFXTabPane( document.getElementById( "tab-main" ), true );
         var baseUrl = "${baseUrl}";
     </script>
 
@@ -27,8 +27,8 @@
             <legend>${x?cap_first} Cache</legend>
             <div data-bind="template: { name: 'cache-template', data: ${x} }" style="float: left"></div>
             <div style="float: left; margin-left: 10px">
-                <button onclick="clearCache('${x}')">Clear Cache</button><br/>
-                <button onclick="clearStatistics('${x}')">Clear Statistics</button>
+                <button onclick="clearCache('${x}')">Clear Cache</button>
+                <br/>
             </div>
         </fieldset>
         <br/>
@@ -107,36 +107,41 @@
 </script>
 
 <script type="text/javascript">
-    function clearCache(id) {
-        sendOperation(id, "clear-cache");
+    function clearCache( id )
+    {
+        sendOperation( id, "clear-cache" );
     }
 
-    function clearStatistics(id) {
-        sendOperation(id, "clear-statistics");
+    function clearStatistics( id )
+    {
+        sendOperation( id, "clear-statistics" );
     }
 
-    function sendOperation(id, op) {
-        var request = $.ajax({
-            type: "POST",
-            url: "${baseUrl}/tools/cacheInfo?cache=" + id + "&op=" + op
-        });
+    function sendOperation( id, op )
+    {
+        var request = $.ajax( {
+                                  type:"POST",
+                                  url:"${baseUrl}/tools/cacheInfo?cache=" + id + "&op=" + op
+                              } );
 
         request.done();
         loadData();
     }
 
-    function loadData() {
-        var request = $.ajax({
-            type: "GET",
-            datatype: "json",
-            url: "${baseUrl}/tools/cacheInfo?op=info"
-        });
+    function loadData()
+    {
+        var request = $.ajax( {
+                                  type:"GET",
+                                  datatype:"json",
+                                  url:"${baseUrl}/tools/cacheInfo?op=info"
+                              } );
 
-        request.done(function (response) {
-            ko.applyBindings(response);
-        });
+        request.done( function ( response )
+                      {
+                          ko.applyBindings( response );
+                      } );
 
-        setTimeout(loadData, 5000);
+        setTimeout( loadData, 5000 );
     }
 
     loadData();

@@ -78,6 +78,8 @@ public class SystemInfoFactory
         cacheStatistic.setHitCount( cache.getHitCount() );
         cacheStatistic.setMissCount( cache.getMissCount() );
         cacheStatistic.setRemoveAllCount( cache.getRemoveAllCount() );
+        cacheStatistic.setMemoryCapacityUsage( cache.getMemoryCapacityUsage() );
+        cacheStatistic.setEffectiveness( cache.getEffectiveness() );
         return cacheStatistic;
     }
 }

@@ -685,7 +685,6 @@
 %blockCaching%|Mellomlagring|Caching|Mellemlagring|Mellanlagring
 %blockPerformanceTuning%|Ytelsesjustering|Performance tuning|Ydelsesjustering|Prestandajustering
 %butClearCache%|Tøm mellomlager|Clear cache|Ryd mellemlager|Töm mellanlager
-%butClearCacheStatistics%|Resett statistikk|Clear statistics|Nulstil statistik|Återställ statistik
 %alertClearCache%|Er du sikker på at du vil tømme mellomlageret?|Are your sure you want to clear the cache?|Er du sikker på, at du vil tømme mellemlagret?|Är du säker på att du vill tömma mellanlagret?
 %alertClearCacheStatistics%|Er du sikker på at du vil slette mellomlagerets statistikk?|Are your sure you want to clear the cache statistics?|Er du sikker på, at du vil slette mellemlagrets statistik?|Är du säker på att du vill radera statistik för mellanlagret?
 %blockCaches%|Mellomlagere|Caches|Mellemlagre|Mellanlagre

@@ -80,10 +80,6 @@ public class SystemHandlerServlet
         {
             clearCache( request, response, formItems );
         }
-        else if ( "clearstatistics".equals( operation ) )
-        {
-            clearStatistics( request, response, formItems );
-        }
         else if ( "optimizeIndex".equals( operation ) )
         {
             optimizeIndex( request, response, formItems );
@@ -259,19 +255,6 @@ public class SystemHandlerServlet
         referer.setParameter( "selectedcachename", formItems.getString( "selectedcachename", formItems.getString( "cacheName", "" ) ) );
         referer.setParameter( "selectedtabpage", formItems.getString( "selectedtabpage", "" ) );
 
-        redirectClientToURL( referer, response );
-    }
-
-    private void clearStatistics( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
-        throws VerticalAdminException
-    {
-        String cacheName = formItems.getString( "cacheName" );
-        siteCachesService.clearCacheStatistics( cacheName );
-
-        URL referer = new URL( request.getHeader( "referer" ) );
-        referer.setParameter( "selectedtabpage", formItems.getString( "selectedtabpage", "" ) );
-        referer.setParameter( "selectedoperation", formItems.getString( "selectedoperation", formItems.getString( "op", "" ) ) );
-        referer.setParameter( "selectedcachename", formItems.getString( "selectedcachename", formItems.getString( "cacheName", "" ) ) );
         redirectClientToURL( referer, response );
     }
 

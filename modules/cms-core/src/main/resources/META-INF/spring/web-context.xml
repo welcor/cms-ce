@@ -149,7 +149,7 @@
         </entry>
 
         <entry key="/admin/tools/clusterInfo">
-          <bean class="com.enonic.cms.core.tools.ClusterMonitorController"/>
+          <bean class="com.enonic.cms.core.tools.cluster.ClusterInfoController"/>
         </entry>
 
         <entry key="/admin/tools/indexMonitor">

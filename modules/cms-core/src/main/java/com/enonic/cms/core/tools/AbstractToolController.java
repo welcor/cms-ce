@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.tools;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -108,8 +107,14 @@ public abstract class AbstractToolController
     protected final void renderJson( final HttpServletResponse res, final JsonNode node )
         throws Exception
     {
+        renderJson( res, node.toString() );
+    }
+
+    protected final void renderJson( final HttpServletResponse res, final String json )
+        throws Exception
+    {
         res.setContentType( "application/json; charset=utf-8" );
-        res.getWriter().println( node.toString() );
+        res.getWriter().println( json );
     }
 
     @Autowired

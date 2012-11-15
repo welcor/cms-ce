@@ -5,8 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Strings;
@@ -28,7 +26,10 @@ public final class CacheInfoController
 
         if ( "info".equals( op ) )
         {
-            renderJson( res, createCacheInfo() );
+            final Map<String, Object> model = Maps.newHashMap();
+            model.put( "baseUrl", getBaseUrl( req ) );
+            model.put( "cacheList", this.cacheManager.getAll() );
+            renderView( req, res, model, "cacheInfoPage_info" );
         }
         else
         {
@@ -76,29 +77,5 @@ public final class CacheInfoController
     public void setCacheManager( final CacheManager cacheManager )
     {
         this.cacheManager = cacheManager;
-    }
-
-    private ObjectNode createCacheInfo()
-    {
-        final ObjectNode node = JsonNodeFactory.instance.objectNode();
-        for ( final CacheFacade cache : this.cacheManager.getAll() )
-        {
-            appendCacheInfo( node, cache );
-        }
-
-        return node;
-    }
-
-    private void appendCacheInfo( final ObjectNode parent, final CacheFacade cache )
-    {
-        final ObjectNode node = parent.putObject( cache.getName() );
-        node.put( "memoryCapacity", cache.getMemoryCapacity() );
-        node.put( "timeToLive", cache.getTimeToLive() );
-        node.put( "objectCount", cache.getCount() );
-        node.put( "memoryCapacityUsage", cache.getMemoryCapacityUsage() );
-        node.put( "cacheHits", cache.getHitCount() );
-        node.put( "cacheMisses", cache.getMissCount() );
-        node.put( "cacheEffectiveness", cache.getEffectiveness() );
-        node.put( "cacheClears", cache.getRemoveAllCount() );
     }
 }

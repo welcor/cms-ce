@@ -67,6 +67,7 @@ public final class PageRedirectHandler
         newPagePath.removeParam( "id" );
 
         PortalRequest request = new PortalRequest();
+        request.setSitePath( newPagePath );
 
         RedirectInstruction redirectInstruction = new RedirectInstruction( newPagePath );
         redirectInstruction.setPermanentRedirect( true );

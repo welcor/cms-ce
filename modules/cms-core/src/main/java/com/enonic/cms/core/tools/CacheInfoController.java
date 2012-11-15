@@ -62,12 +62,7 @@ public final class CacheInfoController
         {
             return;
         }
-
-        if ( "clear-statistics".equalsIgnoreCase( command ) )
-        {
-            cacheFacade.clearStatistics();
-        }
-        else if ( "clear-cache".equalsIgnoreCase( command ) )
+        if ( "clear-cache".equalsIgnoreCase( command ) )
         {
             cacheFacade.removeAll();
         }

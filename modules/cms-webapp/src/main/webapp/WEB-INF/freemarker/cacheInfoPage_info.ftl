@@ -56,8 +56,6 @@
         </div>
         <div style="float: left; margin-left: 10px">
             <button onclick="clearCache('${x.name}')">Clear Cache</button>
-            <br/>
-            <button onclick="clearStatistics('${x.name}')">Clear Statistics</button>
         </div>
     </fieldset>
 </#list>

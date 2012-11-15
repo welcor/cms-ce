@@ -27,17 +27,9 @@
 
 <script type="text/javascript">
     function clearCache(id) {
-        sendOperation(id, "clear-cache");
-    }
-
-    function clearStatistics(id) {
-        sendOperation(id, "clear-statistics");
-    }
-
-    function sendOperation(id, op) {
         var request = $.ajax({
             type: "POST",
-            url: "${baseUrl}/tools/cacheInfo?cache=" + id + "&op=" + op
+            url: "${baseUrl}/tools/cacheInfo?cache=" + id + "&op=clear-cache"
         });
 
         request.done();

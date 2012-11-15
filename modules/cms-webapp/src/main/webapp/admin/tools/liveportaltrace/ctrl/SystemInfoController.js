@@ -110,20 +110,24 @@ lpt.SystemInfoController = function ( automaticReloadTimeInMillis )
         $( '#current-requests-tab-label' ).text( systemInfo.portalRequestInProgress );
 
         $( '#entity-cache-count' ).text( systemInfo.entityCacheStatistic.count );
+        $( '#entity-cache-effectiveness' ).text( systemInfo.entityCacheStatistic.effectiveness + " %" );
         $( '#entity-cache-hit-count' ).text( systemInfo.entityCacheStatistic.hitCount );
         $( '#entity-cache-miss-count' ).text( systemInfo.entityCacheStatistic.missCount );
         $( '#entity-cache-capacity-count' ).text( systemInfo.entityCacheStatistic.capacity );
+        $( '#entity-cache-capacity-usage' ).text( systemInfo.entityCacheStatistic.memoryCapacityUsage + " %" );
 
-        entityCacheCapacityGraphController.add( systemInfo.entityCacheStatistic.count, systemInfo.entityCacheStatistic.capacity,
-                                                systemInfo.entityCacheStatistic.hitCount, systemInfo.entityCacheStatistic.missCount );
+        entityCacheCapacityGraphController.add( systemInfo.entityCacheStatistic.memoryCapacityUsage,
+                                                systemInfo.entityCacheStatistic.effectiveness );
 
         $( '#page-cache-count' ).text( systemInfo.pageCacheStatistic.count );
+        $( '#page-cache-effectiveness' ).text( systemInfo.pageCacheStatistic.effectiveness + " %" );
         $( '#page-cache-hit-count' ).text( systemInfo.pageCacheStatistic.hitCount );
         $( '#page-cache-miss-count' ).text( systemInfo.pageCacheStatistic.missCount );
         $( '#page-cache-capacity-count' ).text( systemInfo.pageCacheStatistic.capacity );
+        $( '#page-cache-capacity-usage' ).text( systemInfo.pageCacheStatistic.memoryCapacityUsage + " %" );
 
-        pageCacheCapacityGraphController.add( systemInfo.pageCacheStatistic.count, systemInfo.pageCacheStatistic.capacity,
-                                              systemInfo.pageCacheStatistic.hitCount, systemInfo.pageCacheStatistic.missCount );
+        pageCacheCapacityGraphController.add( systemInfo.pageCacheStatistic.memoryCapacityUsage,
+                                              systemInfo.pageCacheStatistic.effectiveness );
 
         $( '#java-heap-memory-usage-init' ).text( humanReadableBytes( systemInfo.javaHeapMemoryStatistic.init ) );
         $( '#java-heap-memory-usage-used' ).text( humanReadableBytes( systemInfo.javaHeapMemoryStatistic.used ) );

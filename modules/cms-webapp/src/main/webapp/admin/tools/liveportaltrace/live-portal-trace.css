@@ -87,10 +87,11 @@
 
 .system-info-label {
     text-align: right;
+    white-space: nowrap;
 }
 
 .system-info-value {
-    text-align: right;
+    text-align: left;
     width: 80px;
 }
 

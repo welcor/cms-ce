@@ -51,8 +51,8 @@ lpt.AutomaticUpdateController = function ()
 
     this.switchAutomaticUpdate = function ()
     {
-        var autoUpdateButton = document.getElementById( "auto-update" );
-        if ( autoUpdateButton.innerText == "Start auto update" )
+        var autoUpdateCheckbox = document.getElementById( "auto-update" );
+        if ( autoUpdateCheckbox.checked == true )
         {
             this.startAutomaticUpdate();
         }
@@ -76,9 +76,6 @@ lpt.AutomaticUpdateController = function ()
         completedPortalRequestsTableController.stopAutomaticRefresh();
         systemInfoController.stopAutomaticUpdate();
 
-        var autoUpdateButton = document.getElementById( "auto-update" );
-        autoUpdateButton.innerText = "Start auto update";
-
         document.getElementById( "fetch-recent-history" ).disabled = false;
 
         started = false;
@@ -97,9 +94,6 @@ lpt.AutomaticUpdateController = function ()
         longestImageRequestsController.startAutomaticReload();
         completedPortalRequestsTableController.startAutomaticRefresh();
         systemInfoController.startAutomaticUpdate();
-
-        var autoUpdateButton = document.getElementById( "auto-update" );
-        autoUpdateButton.innerText = "Stop auto update";
 
         document.getElementById( "fetch-recent-history" ).disabled = true;
 

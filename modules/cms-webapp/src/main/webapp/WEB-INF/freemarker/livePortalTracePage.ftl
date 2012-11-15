@@ -40,16 +40,19 @@
 <table style="margin-bottom: 10px">
     <tr>
         <td style="margin-right: 10px">
-            <button class="button_text" id="auto-update" onclick="automaticUpdateController.switchAutomaticUpdate()">
+            <!--button class="button_text" id="auto-update" onclick="automaticUpdateController.switchAutomaticUpdate()">
                 Stop automatic update
-            </button>
-            <br/>
-            <br/>
-            System time: <span id="system-time">?</span>
-            <br/>
+            </button-->
+            <input type="checkbox" checked="checked" id="auto-update" onclick="automaticUpdateController.switchAutomaticUpdate()"/><label
+                for="auto-update">Auto update</label>
+            &nbsp;&nbsp;&nbsp;System time: <span id="system-time">?</span>
+            &nbsp;&nbsp;&nbsp;
             System up-time: <span id="system-up-time">?</span>
         </td>
-        <td style="padding-left: 10px">
+    </tr>
+    <tr>
+        <td style="margin-right: 10px">
+
             <table id="system-info-table">
                 <tr style="border-bottom: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td">
@@ -57,19 +60,22 @@
                             Entity cache
                         </a>
                     </th>
-                    <td colspan="8">usage:<span id="graph-entity-cache-capacity"></span> hits/misses: <span
-                            id="graph-entity-cache-hits-vs-misses"></span></td>
+                    <td colspan="8"><span id="graph-entity-cache"></span></td>
                 </tr>
                 <tr id="entity-cache-details-row" style="display: none; background-color: #EEEEEE; border-bottom: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td"></th>
                     <td class="system-info-label">count:</td>
                     <td class="system-info-value" id="entity-cache-count"></td>
+                    <td class="system-info-label">eff.:</td>
+                    <td class="system-info-value" id="entity-cache-effectiveness"></td>
                     <td class="system-info-label">hit count:</td>
                     <td class="system-info-value" id="entity-cache-hit-count"></td>
                     <td class="system-info-label">miss count:</td>
                     <td class="system-info-value" id="entity-cache-miss-count"></td>
                     <td class="system-info-label">capacity:</td>
                     <td class="system-info-value" id="entity-cache-capacity-count"></td>
+                    <td class="system-info-label">cap. usage:</td>
+                    <td class="system-info-value" id="entity-cache-capacity-usage"></td>
                 </tr>
                 <tr style="border-bottom: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td">
@@ -77,19 +83,22 @@
                             Page cache
                         </a>
                     </th>
-                    <td colspan="8">usage:<span id="graph-page-cache-capacity"></span> hits/misses: <span
-                            id="graph-page-cache-hits-vs-misses"></span></td>
+                    <td colspan="8"><span id="graph-page-cache"></span></td>
                 </tr>
                 <tr id="page-cache-details-row" style="display: none; background-color: #EEEEEE; border-bottom: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td"></th>
                     <td class="system-info-label">count:</td>
                     <td class="system-info-value" id="page-cache-count"></td>
+                    <td class="system-info-label">eff.:</td>
+                    <td class="system-info-value" id="page-cache-effectiveness"></td>
                     <td class="system-info-label">hit count:</td>
                     <td class="system-info-value" id="page-cache-hit-count"></td>
                     <td class="system-info-label">miss count:</td>
                     <td class="system-info-value" id="page-cache-miss-count"></td>
                     <td class="system-info-label">capacity:</td>
                     <td class="system-info-value" id="page-cache-capacity-count"></td>
+                    <td class="system-info-label">cap. usage:</td>
+                    <td class="system-info-value" id="page-cache-capacity-usage"></td>
                 </tr>
                 <tr style="border-bottom: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td">
@@ -97,7 +106,7 @@
                             Java Memory
                         </a>
                     </th>
-                    <td colspan="8">usage: <span id="graph-memory"></span></td>
+                    <td colspan="8"><span id="graph-memory"></span></td>
                 </tr>
                 <tr class="java-memory-details-rows" style="display: none; background-color: #EEEEEE; border-bottom: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td">Heap</th>

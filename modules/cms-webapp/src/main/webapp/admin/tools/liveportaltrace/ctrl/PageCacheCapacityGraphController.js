@@ -5,21 +5,43 @@ if ( !lpt )
 
 lpt.PageCacheCapacityGraphController = function ()
 {
-    var pageCacheCapacityGraphValues = new Array( 170 );
+    var pageCapacityUsageArray = new Array( 290 );
 
-    this.add = function ( count, capacity, hitCount, missCount )
+    var pageEffectivenessArray = new Array( 290 );
+
+    this.add = function ( capacityUsage, effectiveness )
     {
-        if ( !lpt.ArrayUtility.isInitialized( pageCacheCapacityGraphValues ) )
+        if ( !lpt.ArrayUtility.isInitialized( pageCapacityUsageArray ) )
         {
-            lpt.ArrayUtility.initialize( pageCacheCapacityGraphValues, 0 );
+            lpt.ArrayUtility.initialize( pageCapacityUsageArray, 0 );
+        }
+        if ( !lpt.ArrayUtility.isInitialized( pageEffectivenessArray ) )
+        {
+            lpt.ArrayUtility.initialize( pageEffectivenessArray, 0 );
         }
 
-        lpt.ArrayUtility.shiftAndAdd( pageCacheCapacityGraphValues, count );
+        lpt.ArrayUtility.shiftAndAdd( pageCapacityUsageArray, capacityUsage );
+        lpt.ArrayUtility.shiftAndAdd( pageEffectivenessArray, effectiveness );
 
-        $( '#graph-page-cache-capacity' ).sparkline( pageCacheCapacityGraphValues,
-                                                     {chartRangeMin:0, chartRangeMax:capacity, type:'line', lineColor:'#70A5A9', fillColor:'#8ED0D5', height:'2em'} );
+        $( '#graph-page-cache' ).sparkline( pageCapacityUsageArray, {
+            chartRangeMin:0,
+            chartRangeMax:100,
+            type:'line',
+            lineColor:'#cd7058',
+            fillColor:false,
+            height:'2em',
+            tooltipSuffix:" % capacity usage"
+        } );
 
-        $( '#graph-page-cache-hits-vs-misses' ).sparkline( [missCount, hitCount],
-                                                           {type:'pie', height:'1.7em', sliceColors:['#ECB9AE', '#78C469']} );
+        $( '#graph-page-cache' ).sparkline( pageEffectivenessArray, {
+            chartRangeMin:0,
+            chartRangeMax:100,
+            type:'line',
+            lineColor:'#79c36a',
+            fillColor:false,
+            height:'2em',
+            tooltipSuffix:" % effectiveness",
+            composite:true
+        } );
     };
 };

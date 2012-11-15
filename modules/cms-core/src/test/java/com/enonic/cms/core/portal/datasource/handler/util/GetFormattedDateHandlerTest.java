@@ -1,5 +1,8 @@
 package com.enonic.cms.core.portal.datasource.handler.util;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -19,8 +22,11 @@ public class GetFormattedDateHandlerTest
     protected void initTest()
         throws Exception
     {
+
         final TimeService timeService = Mockito.mock( TimeService.class );
-        Mockito.when( timeService.getNowAsMilliseconds() ).thenReturn( 0L );
+        final Calendar calendar = Calendar.getInstance( TimeZone.getTimeZone( "GMT+2:00" ) );
+        calendar.set( 1970, 0, 1, 0, 0, 0 );
+        Mockito.when( timeService.getNowAsMilliseconds() ).thenReturn( calendar.getTimeInMillis() );
         this.handler.setTimeService( timeService );
     }
 

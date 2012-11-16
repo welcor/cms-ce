@@ -38,7 +38,7 @@
             <xsl:value-of select="$rightframe"/>
             <xsl:if test="$referer">
               <xsl:text>&amp;referer=</xsl:text>
-              <xsl:value-of select="admin:encode($referer)"/>
+              <xsl:value-of select="admin:urlEncode($referer)"/>
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>

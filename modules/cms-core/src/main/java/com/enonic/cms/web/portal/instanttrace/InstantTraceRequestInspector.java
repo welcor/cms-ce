@@ -11,7 +11,7 @@ public final class InstantTraceRequestInspector
 {
     public static boolean isClientEnabled( final HttpServletRequest request )
     {
-        return "true".equals( request.getHeader( "X-Instant-Trace-Client-Enabled" ) );
+        return "true".equals( request.getHeader( "X-Instant-Trace-Enabled" ) );
     }
 
     public static boolean isAuthenticationSubmitted( final HttpServletRequest request )

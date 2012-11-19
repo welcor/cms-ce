@@ -11,7 +11,7 @@ import org.elasticsearch.search.facet.terms.TermsFacet;
 public class FacetsResultSetCreator
 {
 
-    private final TermFacetResultSetCreator1 termFacetResultSetCreator1 = new TermFacetResultSetCreator1();
+    private final TermFacetResultSetCreator termFacetResultSetCreator = new TermFacetResultSetCreator();
 
     private final RangeFacetResultSetCreator rangeFacetResultSetCreator = new RangeFacetResultSetCreator();
 
@@ -34,7 +34,7 @@ public class FacetsResultSetCreator
 
             if ( facet instanceof TermsFacet )
             {
-                facetsResultSet.addFacetResultSet( termFacetResultSetCreator1.createTermFacetResultSet( facetName, (TermsFacet) facet ) );
+                facetsResultSet.addFacetResultSet( termFacetResultSetCreator.createTermFacetResultSet( facetName, (TermsFacet) facet ) );
             }
             else if ( facet instanceof RangeFacet )
             {

@@ -22,7 +22,6 @@ public class RangeFacetResultSetXmlCreator
 
         for ( RangeFacetResultEntry result : resultEntries )
         {
-
             Element resultEl = new Element( "result" );
             addAttributeIfNotNull( resultEl, "from", getFacetRangeValueAsFormattedString( result.getFrom() ) );
             addAttributeIfNotNull( resultEl, "to", getFacetRangeValueAsFormattedString( result.getTo() ) );
@@ -37,7 +36,6 @@ public class RangeFacetResultSetXmlCreator
 
         return rangeFacetRootElement;
     }
-
 
     private String getFacetRangeValueAsFormattedString( final String valueString )
     {
@@ -60,6 +58,5 @@ public class RangeFacetResultSetXmlCreator
 
         return valueString;
     }
-
 
 }

@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
-public class TermFacetResultSetCreator1
+public class TermFacetResultSetCreator
 {
-    public TermFacetResultSetCreator1()
+    public TermFacetResultSetCreator()
     {
     }
 

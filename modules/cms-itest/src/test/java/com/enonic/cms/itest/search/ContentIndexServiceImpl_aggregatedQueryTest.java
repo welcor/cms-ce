@@ -104,6 +104,7 @@ public class ContentIndexServiceImpl_aggregatedQueryTest
         contentIndexService.index( doc2 );
         contentIndexService.index( doc3 );
         contentIndexService.index( doc4 );
+
         flushIndex();
     }
 

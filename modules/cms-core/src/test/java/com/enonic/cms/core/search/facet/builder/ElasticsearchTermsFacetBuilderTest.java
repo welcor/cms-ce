@@ -22,7 +22,6 @@ public class ElasticsearchTermsFacetBuilderTest
         termsFacetBuilder.build( termFacetModel );
     }
 
-
     @Test
     public void testFullModel()
         throws Exception

@@ -6,7 +6,7 @@ import com.enonic.cms.core.search.facet.FacetQueryException;
 
 import static org.junit.Assert.*;
 
-public class FacetsModelFactoryTest
+public class FacetModelFactoryTest_rangeFacetTest
 {
     private FacetsModelFactory facetsModelFactory = new FacetsModelFactory();
 
@@ -61,8 +61,7 @@ public class FacetsModelFactoryTest
         throws Exception
     {
         String xml = "<facets>\n" +
-            "    <range>\n" +
-            "        <name>myRangeFacet</name>\n" +
+            "    <range name=\"myRangeFacet\">\n" +
             "        <ranges>\n" +
             "            <range>\n" +
             "                <to>xx</to>\n" +
@@ -74,9 +73,7 @@ public class FacetsModelFactoryTest
 
         final FacetsModel facetsModel = facetsModelFactory.buildFromXml( xml );
 
-        RangeFacetModel rangeFacetModel = null;
-        rangeFacetModel = assertAndGetRangeFacetModel( facetsModel );
-
+        assertAndGetRangeFacetModel( facetsModel );
     }
 
 
@@ -165,6 +162,5 @@ public class FacetsModelFactoryTest
         assertTrue( facetModel instanceof RangeFacetModel );
         return (RangeFacetModel) facetModel;
     }
-
 
 }

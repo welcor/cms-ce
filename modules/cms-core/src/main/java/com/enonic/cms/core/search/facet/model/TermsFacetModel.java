@@ -11,7 +11,6 @@ import com.google.common.base.Strings;
 public class TermsFacetModel
     extends AbstractFacetModel
 {
-
     private String field;
 
     private String fields;

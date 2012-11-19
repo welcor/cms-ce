@@ -54,15 +54,15 @@ public class ElasticsearchRangeFacetBuilder
         builder.addRange( from, to );
     }
 
-    protected void setField( final RangeFacetModel termsFacetXml, final RangeFacetBuilder builder )
+    protected void setField( final RangeFacetModel rangeFacetModel, final RangeFacetBuilder builder )
     {
-        final String fieldName = termsFacetXml.getField();
+        final String fieldName = rangeFacetModel.getField();
 
         if ( !Strings.isNullOrEmpty( fieldName ) )
         {
             QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
 
-            if ( termsFacetXml.getFacetRanges().isNumericRanges() )
+            if ( rangeFacetModel.getFacetRanges().isNumericRanges() )
             {
                 builder.field( queryField.getFieldNameForNumericQueries() );
             }
@@ -70,7 +70,11 @@ public class ElasticsearchRangeFacetBuilder
             {
                 builder.field( queryField.getFieldNameForDateQueries() );
             }
-
+        }
+        else if ( !Strings.isNullOrEmpty( rangeFacetModel.getKeyField() ) && !Strings.isNullOrEmpty( rangeFacetModel.getValueField() ) )
+        {
+            builder.keyField( rangeFacetModel.getKeyField() );
+            builder.valueField( rangeFacetModel.getValueField() );
         }
     }
 

@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElement;
 public class FacetRanges
     extends AbstractFacetModel
 {
-
     @XmlElement(name = "range")
     private Set<FacetRange> ranges = new LinkedHashSet<FacetRange>();
 
@@ -32,7 +31,6 @@ public class FacetRanges
 
         return firstRange.isNumericRange();
     }
-
 
     @Override
     public void validate()

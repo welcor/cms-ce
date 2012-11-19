@@ -107,7 +107,7 @@ public class QueryTranslator
 
         doAddFacets( contentIndexQuery, builder );
 
-        System.out.println( builder.toString() );
+        //System.out.println( builder.toString() );
 
         return builder;
     }

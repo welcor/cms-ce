@@ -7,17 +7,17 @@ import javax.xml.bind.annotation.XmlElement;
 import com.google.common.base.Strings;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class RangeFacetModel
+public class HistogramFacetModel
     extends AbstractFacetModel
 {
+
     private String field;
+
+    private Long interval;
 
     private String keyField;
 
     private String valueField;
-
-    @XmlElement(name = "ranges")
-    private FacetRanges facetRanges;
 
     @XmlElement(name = "field")
     public String getField()
@@ -25,43 +25,42 @@ public class RangeFacetModel
         return field;
     }
 
-    @XmlElement(name = "key_field")
+    public void setField( final String field )
+    {
+        this.field = field;
+    }
+
+    @XmlElement(name = "interval")
+    public long getInterval()
+    {
+        return interval;
+    }
+
+    public void setInterval( final long interval )
+    {
+        this.interval = interval;
+    }
+
+    @XmlElement(name = "key-field")
     public String getKeyField()
     {
         return keyField;
     }
-
-    @XmlElement(name = "value_field")
-    public String getValueField()
-    {
-        return valueField;
-    }
-
 
     public void setKeyField( final String keyField )
     {
         this.keyField = keyField;
     }
 
+    @XmlElement(name = "value-field")
+    public String getValueField()
+    {
+        return valueField;
+    }
 
     public void setValueField( final String valueField )
     {
         this.valueField = valueField;
-    }
-
-    public FacetRanges getFacetRanges()
-    {
-        return facetRanges;
-    }
-
-    public void setFacetRanges( final FacetRanges facetRanges )
-    {
-        this.facetRanges = facetRanges;
-    }
-
-    public void setField( final String field )
-    {
-        this.field = field;
     }
 
     @Override
@@ -80,7 +79,13 @@ public class RangeFacetModel
                 "Error in range-facet + " + getName() + ": both 'key-field' and 'value-field' must be set" );
         }
 
-        facetRanges.validate();
+        if ( this.interval == null )
+        {
+            throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'interval' must be set" );
+        }
+
     }
 
+
 }
+

@@ -10,28 +10,28 @@ import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 import com.enonic.cms.core.search.query.IndexQueryException;
-import com.enonic.cms.core.search.query.QueryFieldNameResolver;
+import com.enonic.cms.core.search.query.QueryField;
 
 final class ElasticsearchTermsFacetBuilder
     extends AbstractElasticsearchFacetBuilder
 {
-    final TermsFacetBuilder build( TermsFacetModel termsFacetXml )
+    final TermsFacetBuilder build( TermsFacetModel termsFacetModel )
     {
-        termsFacetXml.verify();
+        termsFacetModel.validate();
 
-        TermsFacetBuilder builder = new TermsFacetBuilder( termsFacetXml.getName() );
+        TermsFacetBuilder builder = new TermsFacetBuilder( termsFacetModel.getName() );
 
-        setField( termsFacetXml, builder );
+        setField( termsFacetModel, builder );
 
-        setSize( termsFacetXml, builder );
+        setSize( termsFacetModel, builder );
 
-        setFields( termsFacetXml, builder );
+        setFields( termsFacetModel, builder );
 
-        setOrder( termsFacetXml, builder );
+        setOrder( termsFacetModel, builder );
 
-        setRegexp( termsFacetXml, builder );
+        setRegexp( termsFacetModel, builder );
 
-        setExcludes( termsFacetXml, builder );
+        setExcludes( termsFacetModel, builder );
 
         return builder;
     }
@@ -39,11 +39,10 @@ final class ElasticsearchTermsFacetBuilder
     protected void setField( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
         final String fieldName = termsFacetXml.getField();
-        if ( !com.google.common.base.Strings.isNullOrEmpty( fieldName ) )
+        if ( !Strings.isNullOrEmpty( fieldName ) )
         {
-            final String resolvedQueryFieldName = createQueryFieldName( fieldName );
-
-            builder.field( resolvedQueryFieldName );
+            QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
+            builder.field( queryField.getFieldName() );
         }
     }
 
@@ -57,7 +56,7 @@ final class ElasticsearchTermsFacetBuilder
 
     protected void setOrder( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        if ( !com.google.common.base.Strings.isNullOrEmpty( termsFacetXml.getOrder() ) )
+        if ( !Strings.isNullOrEmpty( termsFacetXml.getOrder() ) )
         {
             final TermsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( termsFacetXml );
 
@@ -151,11 +150,6 @@ final class ElasticsearchTermsFacetBuilder
         }
 
         return fieldNames.toArray( new String[fieldNames.size()] );
-    }
-
-    private String createQueryFieldName( final String field )
-    {
-        return QueryFieldNameResolver.resolveQueryFieldName( field );
     }
 
 

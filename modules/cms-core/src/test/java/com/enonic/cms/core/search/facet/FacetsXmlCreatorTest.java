@@ -5,12 +5,12 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 
 import org.elasticsearch.common.Strings;
 import org.junit.Test;
 
+import com.enonic.cms.core.search.facet.model.FacetRange;
+import com.enonic.cms.core.search.facet.model.FacetRanges;
 import com.enonic.cms.core.search.facet.model.FacetsModel;
 import com.enonic.cms.core.search.facet.model.RangeFacetModel;
 import com.enonic.cms.core.search.facet.model.TermsFacetModel;
@@ -18,7 +18,6 @@ import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 import static org.junit.Assert.*;
 
 public class FacetsXmlCreatorTest
-    implements ValidationEventHandler
 {
 
     @Test
@@ -57,7 +56,7 @@ public class FacetsXmlCreatorTest
 
         final String xml = createXml( facets );
 
-        assertEquals( Strings.trimTrailingWhitespace(expected), Strings.trimTrailingWhitespace(xml) );
+        assertEquals( Strings.trimTrailingWhitespace( expected ), Strings.trimTrailingWhitespace( xml ) );
     }
 
     @Test
@@ -95,31 +94,32 @@ public class FacetsXmlCreatorTest
 
         final String xml = createXml( facets );
 
-        assertEquals( Strings.trimTrailingWhitespace(expected), Strings.trimTrailingWhitespace(xml) );
+        assertEquals( Strings.trimTrailingWhitespace( expected ), Strings.trimTrailingWhitespace( xml ) );
     }
 
 
     @Test
     public void testRangeFacetXml()
+        throws Exception
     {
         FacetsModel facets = new FacetsModel();
 
         final RangeFacetModel rangeFacet = new RangeFacetModel();
-        rangeFacet.addRange( null, 49 );
-        rangeFacet.addRange( 50, 100 );
-        rangeFacet.addRange( 101, 200 );
-        rangeFacet.addRange( 201, null );
+        rangeFacet.setName( "myRangeFacet" );
         rangeFacet.setField( "rangeField" );
+
+        FacetRanges facetRanges = new FacetRanges();
+        facetRanges.addFacetRange( new FacetRange( null, "49" ) );
+        facetRanges.addFacetRange( new FacetRange( "50", "100" ) );
+        facetRanges.addFacetRange( new FacetRange( "101", "200" ) );
+        facetRanges.addFacetRange( new FacetRange( "201", null ) );
+        rangeFacet.setFacetRanges( facetRanges );
+
         facets.addFacet( rangeFacet );
 
-        final RangeFacetModel rangeFacet2 = new RangeFacetModel();
-        rangeFacet2.addRange( null, 49 );
-        rangeFacet2.addRange( 50, 100 );
-        rangeFacet2.addRange( 101, 200 );
-        rangeFacet2.addRange( 201, null );
-        rangeFacet2.setKeyField( "rangeKeyField" );
-        rangeFacet2.setValueField( "rangeValueField" );
-        facets.addFacet( rangeFacet2 );
+        final String xml = createXml( facets );
+
+        System.out.println( xml );
     }
 
 
@@ -134,12 +134,4 @@ public class FacetsXmlCreatorTest
         return stringWriter.toString();
     }
 
-
-    @Override
-    public boolean handleEvent( final ValidationEvent validationEvent )
-    {
-
-        System.out.println( "Validation Event: " + validationEvent.toString() );
-        return true;
-    }
 }

@@ -3,16 +3,13 @@ package com.enonic.cms.core.search.result;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.junit.Test;
-import org.springframework.util.StringUtils;
 
-import com.enonic.cms.framework.util.JDOMUtil;
-
-import static org.junit.Assert.*;
-
-public class FacetResultXmlCreatorTest
+public class TermFacetResultSetXmlCreatorTest
+    extends FacetResultSetTestBase
 {
+
     @Test
-    public void testStuff()
+    public void simple_term_facet_result()
     {
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<root>\n" +
@@ -40,7 +37,7 @@ public class FacetResultXmlCreatorTest
             "  </facets>\n" +
             "</root>";
 
-        FacetResultXmlCreator resultXmlCreator = new FacetResultXmlCreator();
+        FacetResultSetXmlCreator resultSetXmlCreator = new FacetResultSetXmlCreator();
 
         Document doc = new Document( new Element( "root" ) );
 
@@ -59,19 +56,10 @@ public class FacetResultXmlCreatorTest
 
         facetsResultSet.addFacetResultSet( termFacetResult );
 
-        resultXmlCreator.addFacetResultXml( doc, facetsResultSet );
+        resultSetXmlCreator.addFacetResultXml( doc, facetsResultSet );
 
         compareIgnoreWhitespacesAndLinebreaks( expected, doc );
     }
 
-    private void compareIgnoreWhitespacesAndLinebreaks( String expected, final Document doc )
-    {
-        String resultString = JDOMUtil.prettyPrintDocument( doc );
 
-        System.out.println(resultString);
-
-        expected = StringUtils.trimAllWhitespace( expected );
-        resultString = StringUtils.trimAllWhitespace( resultString );
-        assertEquals( StringUtils.trimTrailingWhitespace( expected ), StringUtils.trimTrailingWhitespace( resultString ) );
-    }
 }

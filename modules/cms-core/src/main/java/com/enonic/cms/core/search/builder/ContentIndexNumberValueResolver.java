@@ -4,6 +4,11 @@ public class ContentIndexNumberValueResolver
 {
     public static Double resolveNumberValue( Object value )
     {
+        if ( value == null )
+        {
+            return null;
+        }
+
         try
         {
             return Double.parseDouble( value.toString() );

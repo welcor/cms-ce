@@ -4,9 +4,15 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Strings;
 
+import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 
 abstract class AbstractElasticsearchFacetBuilder
 {
+    protected String createQueryFieldName( final String field )
+    {
+        return QueryFieldNameResolver.resolveQueryFieldName( field );
+    }
+
     public enum RegExpFlags
     {
         CASE_INSENSITIVE( Pattern.CASE_INSENSITIVE ),

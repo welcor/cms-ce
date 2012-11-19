@@ -1,5 +1,8 @@
 package com.enonic.cms.itest.search;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -10,6 +13,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.query.ContentDocument;
+import com.enonic.cms.core.search.query.SimpleText;
 
 import static org.junit.Assert.*;
 
@@ -23,27 +27,69 @@ public class ContentIndexServiceImpl_queryDatesTest
     {
         setUpStandardTestValues();
 
-        ContentIndexQuery query1 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')" );
+        ContentIndexQuery query1 = new ContentIndexQuery( "publishFrom = date('2008-02-28 00:00:00')" );
         ContentResultSet res1 = contentIndexService.query( query1 );
         assertEquals( 1, res1.getLength() );
 
-        /* ContentIndexQuery query2 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')" );
-            ContentResultSet res2 = contentIndexService.query( query2 );
-            assertEquals( 1, res2.getLength() );
+        ContentIndexQuery query2 = new ContentIndexQuery( "publishFrom = date('2008-02-28T00:00:00')" );
+        ContentResultSet res2 = contentIndexService.query( query2 );
+        assertEquals( 1, res2.getLength() );
 
-            ContentIndexQuery query3 = new ContentIndexQuery( "publishFrom <= date('2008-02-29T00:00:00')" );
-            ContentResultSet res3 = contentIndexService.query( query3 );
-            assertEquals( 2, res3.getLength() );
+        ContentIndexQuery query3 = new ContentIndexQuery( "publishFrom <= date('2008-02-29T00:00:00')" );
+        ContentResultSet res3 = contentIndexService.query( query3 );
+        assertEquals( 2, res3.getLength() );
 
-            ContentIndexQuery query4 = new ContentIndexQuery( "publishFrom > date('2008-02-28')" );
-            ContentResultSet res4 = contentIndexService.query( query4 );
-            assertEquals( 3, res4.getLength() );
+        ContentIndexQuery query4 = new ContentIndexQuery( "publishFrom > date('2008-02-28')" );
+        ContentResultSet res4 = contentIndexService.query( query4 );
+        assertEquals( 3, res4.getLength() );
 
-            ContentIndexQuery query5 =
-                new ContentIndexQuery( "publishFrom >= date('2008-02-29T00:00:00') AND publishTo < date('2008-03-29T00:00:00')" );
-            ContentResultSet res5 = contentIndexService.query( query5 );
-            assertEquals( 1, res5.getLength() );
-        */
+        ContentIndexQuery query5 =
+            new ContentIndexQuery( "publishFrom >= date('2008-02-29T00:00:00') AND publishTo < date('2008-03-29T00:00:00')" );
+        ContentResultSet res5 = contentIndexService.query( query5 );
+        assertEquals( 1, res5.getLength() );
+
+    }
+
+    @Test
+    public void testBirthDateWithTime()
+    {
+        final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
+
+        ContentDocument doc1 = new ContentDocument( new ContentKey( 1322 ) );
+        doc1.setCategoryKey( new CategoryKey( 9 ) );
+        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
+        doc1.setContentTypeName( "Adults" );
+        doc1.setTitle( "Homer" );
+
+        doc1.addUserDefinedField( "data/person/age", new SimpleText( "38" ) );
+        doc1.addUserDefinedField( "data/person/gender", "male" );
+        doc1.addUserDefinedField( "data/person/description", "description1-1" );
+        doc1.addUserDefinedField( "data/person/birthdate", new SimpleText( "1975-05-05" ) );
+
+        // Publish from February 28th to March 28th.
+        doc1.setPublishFrom( date.getTime() );
+        date.add( Calendar.MONTH, 1 );
+        doc1.setPublishTo( date.getTime() );
+        date.add( Calendar.MONTH, -1 );
+        doc1.setStatus( 2 );
+        doc1.setPriority( 0 );
+        doc1.setLanguageCode( "en" );
+        contentIndexService.index( doc1 );
+
+        flushIndex();
+
+        ContentIndexQuery query1 = new ContentIndexQuery( "data/person/birthdate = date('1975-05-05')" );
+        ContentResultSet res1 = contentIndexService.query( query1 );
+        assertEquals( 1, res1.getLength() );
+
+        doc1.addUserDefinedField( "data/person/birthdate2", new SimpleText( "1975-05-05 01:00" ) );
+        contentIndexService.index( doc1 );
+
+        flushIndex();
+        query1 = new ContentIndexQuery( "data/person/birthdate2 = date('1975-05-05')" );
+        res1 = contentIndexService.query( query1 );
+        assertEquals( 1, res1.getLength() );
+
     }
 
 

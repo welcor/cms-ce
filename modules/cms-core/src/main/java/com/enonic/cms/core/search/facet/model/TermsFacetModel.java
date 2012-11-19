@@ -31,9 +31,9 @@ public class TermsFacetModel
         this.field = field;
     }
 
-    public void verify()
+    public void validate()
     {
-        super.verify();
+        super.validate();
 
         if ( Strings.isNullOrEmpty( fields ) && Strings.isNullOrEmpty( field ) )
         {

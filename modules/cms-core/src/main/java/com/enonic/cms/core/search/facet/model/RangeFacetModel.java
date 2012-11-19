@@ -1,14 +1,10 @@
 package com.enonic.cms.core.search.facet.model;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Strings;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class RangeFacetModel
@@ -20,22 +16,8 @@ public class RangeFacetModel
 
     private String valueField;
 
-    private List<RangeXml> ranges;
-
-    public void setField( final String field )
-    {
-        this.field = field;
-    }
-
-    public void addRange( final Integer low, final Integer high )
-    {
-        if ( this.ranges == null )
-        {
-            this.ranges = Lists.newArrayList();
-        }
-
-        this.ranges.add( new RangeXml( low, high ) );
-    }
+    @XmlElement(name = "ranges")
+    private FacetRanges facetRanges;
 
     @XmlElement
     public String getField()
@@ -49,49 +31,56 @@ public class RangeFacetModel
         return keyField;
     }
 
-    public void setKeyField( final String keyField )
-    {
-        this.keyField = keyField;
-    }
-
     @XmlElement(name = "value_field")
     public String getValueField()
     {
         return valueField;
     }
 
+
+    public void setKeyField( final String keyField )
+    {
+        this.keyField = keyField;
+    }
+
+
     public void setValueField( final String valueField )
     {
         this.valueField = valueField;
     }
 
-    @XmlElementWrapper
-    public List<RangeXml> getRanges()
+    public FacetRanges getFacetRanges()
     {
-        return ranges;
+        return facetRanges;
     }
 
-    public void setRanges( final List<RangeXml> ranges )
+    public void setFacetRanges( final FacetRanges facetRanges )
     {
-        this.ranges = ranges;
+        this.facetRanges = facetRanges;
     }
 
-    private static class RangeXml
+    public void setField( final String field )
     {
-        @XmlAttribute
-        private Integer from;
+        this.field = field;
+    }
 
-        @XmlAttribute
-        private Integer to;
+    @Override
+    public void validate()
+    {
+        super.validate();
 
-        private RangeXml()
+        if ( Strings.isNullOrEmpty( this.field ) && Strings.isNullOrEmpty( this.keyField ) )
         {
+            throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'field' or 'keyField' must be set" );
         }
 
-        private RangeXml( final Integer from, final Integer to )
+        if ( Strings.isNullOrEmpty( this.field ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
         {
-            this.from = from;
-            this.to = to;
+            throw new IllegalArgumentException(
+                "Error in range-facet + " + getName() + ": both 'key-field' and 'value-field' must be set" );
         }
+
+        facetRanges.validate();
     }
+
 }

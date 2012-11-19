@@ -64,7 +64,7 @@ import com.enonic.cms.core.preference.PreferenceSpecification;
 import com.enonic.cms.core.preference.PreferenceUniqueMatchResolver;
 import com.enonic.cms.core.preference.PreferenceXmlCreator;
 import com.enonic.cms.core.preview.PreviewContext;
-import com.enonic.cms.core.search.result.FacetResultXmlCreator;
+import com.enonic.cms.core.search.result.FacetResultSetXmlCreator;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
@@ -123,7 +123,7 @@ public final class DataSourceServiceImpl
 
     private UserStoreService userStoreService;
 
-    private FacetResultXmlCreator facetResultXmlCreator = new FacetResultXmlCreator();
+    private FacetResultSetXmlCreator facetResultSetXmlCreator = new FacetResultSetXmlCreator();
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getContentByQuery( DataSourceContext context, String query, String orderBy, int index, int count,
@@ -188,7 +188,7 @@ public final class DataSourceServiceImpl
     {
         if ( contents.getFacetsResultSet() != null )
         {
-            facetResultXmlCreator.addFacetResultXml( xml.getAsJDOMDocument(), contents.getFacetsResultSet() );
+            facetResultSetXmlCreator.addFacetResultXml( xml.getAsJDOMDocument(), contents.getFacetsResultSet() );
         }
     }
 

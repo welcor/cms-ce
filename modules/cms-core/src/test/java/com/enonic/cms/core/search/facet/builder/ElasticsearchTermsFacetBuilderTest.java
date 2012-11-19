@@ -4,6 +4,7 @@ import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.facet.AbstractElasticsearchFacetTestBase;
+import com.enonic.cms.core.search.facet.FacetQueryException;
 import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 
 import static org.junit.Assert.*;
@@ -14,7 +15,7 @@ public class ElasticsearchTermsFacetBuilderTest
 
     ElasticsearchTermsFacetBuilder termsFacetBuilder = new ElasticsearchTermsFacetBuilder();
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = FacetQueryException.class)
     public void testEmptyModel()
     {
         TermsFacetModel termFacetModel = new TermsFacetModel();

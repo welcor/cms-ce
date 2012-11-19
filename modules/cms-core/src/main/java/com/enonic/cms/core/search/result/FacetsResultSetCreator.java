@@ -1,15 +1,19 @@
 package com.enonic.cms.core.search.result;
 
-import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.Facets;
+import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
 public class FacetsResultSetCreator
 {
+
+    private final TermFacetResultSetCreator termFacetResultSetCreator = new TermFacetResultSetCreator();
+
+    private final RangeFacetResultSetCreator rangeFacetResultSetCreator = new RangeFacetResultSetCreator();
 
     public FacetsResultSet createResultSet( SearchResponse searchResponse )
     {
@@ -28,31 +32,18 @@ public class FacetsResultSetCreator
         {
             final Facet facet = facetsMap.get( facetName );
 
-            if ( "terms".equals( facet.getType() ) )
+            if ( facet instanceof TermsFacet )
             {
-                createTermFacetResultSet( facetsResultSet, facetName, (TermsFacet) facet );
+                facetsResultSet.addFacetResultSet( termFacetResultSetCreator.createTermFacetResultSet( facetName, (TermsFacet) facet ) );
+            }
+            else if ( facet instanceof RangeFacet )
+            {
+                facetsResultSet.addFacetResultSet( rangeFacetResultSetCreator.createRangeFacetResultSet( facetName, (RangeFacet) facet ) );
             }
 
         }
 
         return facetsResultSet;
-    }
-
-    private void createTermFacetResultSet( final FacetsResultSet facetsResultSet, final String facetName, final TermsFacet facet )
-    {
-        TermsFacetResultSet termsFacetResultSet = new TermsFacetResultSet();
-        termsFacetResultSet.setName( facetName );
-        termsFacetResultSet.setTotal( facet.getTotalCount() );
-        termsFacetResultSet.setMissing( facet.getMissingCount() );
-        termsFacetResultSet.setOther( facet.getOtherCount() );
-
-        final List<? extends TermsFacet.Entry> entries = facet.entries();
-        for ( TermsFacet.Entry entry : entries )
-        {
-            termsFacetResultSet.addResult( entry.getTerm(), entry.getCount() );
-        }
-
-        facetsResultSet.addFacetResultSet( termsFacetResultSet );
     }
 
 

@@ -244,14 +244,6 @@ public class ContentIndexServiceImpl
 
             ContentIndexQueryTracer.traceMatchCount( queryResultTotalSize, trace );
 
-            // TODO: This could be removed?
-            //if ( query.getIndex() > queryResultTotalSize )
-            //{
-            //    final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
-            //    rs.addError( "Index greater than result count: " + query.getIndex() + " greater than " + queryResultTotalSize );
-            //    return rs;
-            //}
-
             final int fromIndex = Math.max( query.getIndex(), 0 );
 
             final ArrayList<ContentKey> keys = new ArrayList<ContentKey>();

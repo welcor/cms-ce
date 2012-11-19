@@ -10,6 +10,12 @@ public class TermsFacetResultSet
 {
     FacetResultType facetResultType = FacetResultType.TERMS;
 
+    private Long total;
+
+    private Long missing;
+
+    private Long other;
+
     private Map<String, Integer> results = Maps.newLinkedHashMap();
 
     public Map<String, Integer> getResults()
@@ -26,5 +32,35 @@ public class TermsFacetResultSet
     public FacetResultType getFacetResultType()
     {
         return facetResultType;
+    }
+
+    public Long getTotal()
+    {
+        return total;
+    }
+
+    public void setTotal( final Long total )
+    {
+        this.total = total;
+    }
+
+    public Long getMissing()
+    {
+        return missing;
+    }
+
+    public void setMissing( final Long missing )
+    {
+        this.missing = missing;
+    }
+
+    public Long getOther()
+    {
+        return other;
+    }
+
+    public void setOther( final Long other )
+    {
+        this.other = other;
     }
 }

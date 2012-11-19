@@ -2,7 +2,9 @@ package com.enonic.cms.core.search.facet.model;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import org.springframework.util.Assert;
+import com.google.common.base.Strings;
+
+import com.enonic.cms.core.search.facet.FacetQueryException;
 
 public abstract class AbstractFacetModel
     implements FacetModel
@@ -16,7 +18,7 @@ public abstract class AbstractFacetModel
         this.name = name;
     }
 
-    @XmlElement(name = "name", required = true)
+    @XmlElement(name = "name")
     public String getName()
     {
         return name;
@@ -33,10 +35,12 @@ public abstract class AbstractFacetModel
         this.size = size;
     }
 
-    public void verify()
+    public void validate()
     {
-        Assert.notNull( this.name, "Facet 'name' is required" );
+        if ( Strings.isNullOrEmpty( this.name ) )
+        {
+            throw new FacetQueryException( "Facet must specify name" );
+        }
     }
-
 }
 

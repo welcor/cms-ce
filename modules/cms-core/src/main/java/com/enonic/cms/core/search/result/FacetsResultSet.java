@@ -8,7 +8,7 @@ import com.google.common.collect.Sets;
 public class FacetsResultSet
     implements Iterable<FacetResultSet>
 {
-    Set<FacetResultSet> facetResultSets;
+    Set<FacetResultSet> facetResultSets = Sets.newLinkedHashSet();
 
     @Override
     public Iterator<FacetResultSet> iterator()

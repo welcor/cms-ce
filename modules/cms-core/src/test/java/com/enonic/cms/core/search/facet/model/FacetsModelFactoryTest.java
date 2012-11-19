@@ -16,8 +16,7 @@ public class FacetsModelFactoryTest
     {
         final String rangeFacetName = "myRangeFacet";
         String xml = "<facets>\n" +
-            "    <range>\n" +
-            "        <name>myRangeFacet</name>\n" +
+            "    <range name=\"myRangeFacet\">\n" +
             "        <ranges>\n" +
             "            <range>\n" +
             "                <to>49</to>\n" +
@@ -86,8 +85,7 @@ public class FacetsModelFactoryTest
         throws Exception
     {
         String xml = "<facets>\n" +
-            "    <range>\n" +
-            "        <name>myRangeFacet</name>\n" +
+            "    <range name=\"myRangeFacet\">\n" +
             "        <ranges>\n" +
             "            <range>\n" +
             "                <to>49</to>\n" +
@@ -121,8 +119,7 @@ public class FacetsModelFactoryTest
         throws Exception
     {
         String xml = "<facets>\n" +
-            "    <range>\n" +
-            "        <name>myRangeFacet</name>\n" +
+            "    <range name=\"myRangeFacet\">\n" +
             "        <ranges>\n" +
             "            <range>\n" +
             "            </range>\n" +

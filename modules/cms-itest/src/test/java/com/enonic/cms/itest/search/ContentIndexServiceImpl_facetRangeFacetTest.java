@@ -27,8 +27,7 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
     {
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetDefinition = "<facets>\n" +
-            "    <range>\n" +
-            "        <name>myRangeFacet</name>\n" +
+            "    <range name=\"myRangeFacet\">\n" +
             "        <ranges>\n" +
             "            <range>\n" +
             "                <to>2001-01-01</to>\n" +
@@ -81,8 +80,7 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
     {
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetDefinition = "<facets>\n" +
-            "    <range>\n" +
-            "        <name>myRangeFacet</name>\n" +
+            "    <range name=\"myRangeFacet\">\n" +
             "        <ranges>\n" +
             "            <range>\n" +
             "                <to>1</to>\n" +

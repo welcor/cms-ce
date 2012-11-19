@@ -33,8 +33,7 @@ public class FacetBuilderFactoryTest
     public void testFacets_singleTermsFacet()
     {
         String facetXml = "<facets>\n" +
-            "    <terms>\n" +
-            "        <name>myFacetName</name>\n" +
+            "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
             "        <field>termsFacetField</field>\n" +
             "    </terms>\n" +
@@ -57,18 +56,15 @@ public class FacetBuilderFactoryTest
     public void testFacets_multipleTermsFacet()
     {
         String facetXml = "<facets>\n" +
-            "    <terms>\n" +
-            "        <name>myFacet1</name>\n" +
+            "    <terms name=\"myFacet1\">\n" +
             "        <size>10</size>\n" +
             "        <field>fieldName</field>\n" +
             "    </terms>\n" +
-            "    <terms>\n" +
-            "        <name>myFacet2</name>\n" +
+            "    <terms name=\"myFacet2\">\n" +
             "        <size>10</size>\n" +
             "        <field>fieldName</field>\n" +
             "    </terms>\n" +
-            "    <terms>\n" +
-            "        <name>myFacet3</name>\n" +
+            "    <terms name=\"myFacet3\">\n" +
             "        <size>10</size>\n" +
             "        <field>fieldName</field>\n" +
             "    </terms>\n" +

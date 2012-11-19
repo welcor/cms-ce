@@ -39,8 +39,7 @@ public class FacetsXmlCreatorTest
     {
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<facets>\n" +
-            "    <terms>\n" +
-            "        <name>myFacetName</name>\n" +
+            "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
             "        <fields>field1,field2,field3</fields>\n" +
             "    </terms>\n" +
@@ -65,8 +64,7 @@ public class FacetsXmlCreatorTest
     {
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<facets>\n" +
-            "    <terms>\n" +
-            "        <name>myFacetName</name>\n" +
+            "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
             "        <all_terms>true</all_terms>\n" +
             "        <exclude>exclude1,exclude2,exclude3</exclude>\n" +

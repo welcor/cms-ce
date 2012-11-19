@@ -1,5 +1,6 @@
 package com.enonic.cms.core.search.facet.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.base.Strings;
@@ -18,7 +19,7 @@ public abstract class AbstractFacetModel
         this.name = name;
     }
 
-    @XmlElement(name = "name")
+    @XmlAttribute(name = "name")
     public String getName()
     {
         return name;

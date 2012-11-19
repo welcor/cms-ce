@@ -111,6 +111,7 @@ public class DataSourceServiceImpl_getContentByQueryTest
         ContentKey content_2 =
             contentService.createContent( createCreateContentCommand( "MyOtherCategory", contentData, "content-creator" ) );
 
+        fixture.flushAndClearHibernateSession();
         fixture.flushIndexTransaction();
 
         // setup: verify that 2 content is created

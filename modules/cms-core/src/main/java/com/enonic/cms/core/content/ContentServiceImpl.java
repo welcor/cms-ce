@@ -399,12 +399,12 @@ public class ContentServiceImpl
         return new ContentResultSetLazyFetcher( new ContentEntityFetcherImpl( contentDao ), actualKeysWanted, index, totalCount );
     }
 
-    public RelatedContentResultSet queryRelatedContent( RelatedContentQuery spec )
+    public RelatedContentResultSet queryRelatedContent( final RelatedContentQuery spec )
     {
         final RelatedContentFetchTrace trace = RelatedContentFetchTracer.startTracing( livePortalTraceService );
         try
         {
-            RelatedContentFetcher fetcher = new RelatedContentFetcher( contentDao, trace );
+            final RelatedContentFetcher fetcher = new RelatedContentFetcher( contentDao, trace );
             fetcher.setSecurityFilter( spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null );
             fetcher.setMaxChildrenLevel( spec.getChildrenLevel() );
             fetcher.setMaxParentLevel( spec.getParentLevel() );
@@ -422,44 +422,80 @@ public class ContentServiceImpl
         }
     }
 
-    public RelatedContentResultSet queryRelatedContent( RelatedChildrenContentQuery spec )
+    public RelatedContentResultSet queryRelatedContent( final RelatedChildrenContentQuery spec )
     {
-        RelatedContentFetcherForContentVersion fetcher = new RelatedContentFetcherForContentVersion( contentDao );
-        fetcher.setSecurityFilter( spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null );
-        fetcher.setAvailableCheckDate( spec.getOnlineCheckDate() );
-        fetcher.setMaxChildrenLevel( spec.getChildrenLevel() );
-        fetcher.setIncludeOfflineContent( !spec.isOnline() );
+        final RelatedContentFetchTrace trace = RelatedContentFetchTracer.startTracing( livePortalTraceService );
+        try
+        {
+            final RelatedContentFetcherForContentVersion fetcher = new RelatedContentFetcherForContentVersion( contentDao, trace );
+            fetcher.setSecurityFilter( spec.getUser() != null ? contentSecurityFilterResolver.resolveGroupKeys( spec.getUser() ) : null );
+            fetcher.setAvailableCheckDate( spec.getOnlineCheckDate() );
+            fetcher.setMaxChildrenLevel( spec.getChildrenLevel() );
+            fetcher.setIncludeOfflineContent( !spec.isOnline() );
 
-        return fetcher.fetch( spec.getContentVersions(), false );
+            return fetcher.fetch( spec.getContentVersions(), false );
+        }
+        finally
+        {
+            RelatedContentFetchTracer.stopTracing( trace, livePortalTraceService );
+        }
     }
 
-    public RelatedContentResultSet getRelatedContentRequiresAll( UserEntity user, int relation, ContentResultSet contents )
+    public RelatedContentResultSet getRelatedContentRequiresAll( final UserEntity user, final int relation,
+                                                                 final ContentResultSet contents )
     {
-        int parentLevel = relation > 0 ? 0 : 1;
-        int childrenLevel = relation > 0 ? 1 : 0;
+        RelatedContentFetchTrace trace = RelatedContentFetchTracer.startTracing( livePortalTraceService );
 
-        RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, null );
-        relatedContentFetcher.setSecurityFilter( user != null ? contentSecurityFilterResolver.resolveGroupKeys( user ) : null );
-        relatedContentFetcher.setAvailableCheckDate( new Date() );
-        relatedContentFetcher.setMaxChildrenLevel( childrenLevel );
-        relatedContentFetcher.setMaxParentLevel( parentLevel );
-        relatedContentFetcher.setMaxParentChildrenLevel( 0 );
+        final int parentLevel = relation > 0 ? 0 : 1;
+        final int childrenLevel = relation > 0 ? 1 : 0;
 
-        Set<ContentKey> relatedContentIntersectionSet = new HashSet<ContentKey>();
-        final RelatedContentResultSet firstRelatedContentSet = relatedContentFetcher.fetch( contents.getContent( 0 ) );
+        final Set<ContentKey> relatedContentIntersectionSet = new HashSet<ContentKey>();
+        final RelatedContentResultSet firstRelatedContentSet;
+        try
+        {
+            final RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, trace );
+            relatedContentFetcher.setSecurityFilter( user != null ? contentSecurityFilterResolver.resolveGroupKeys( user ) : null );
+            relatedContentFetcher.setAvailableCheckDate( new Date() );
+            relatedContentFetcher.setMaxChildrenLevel( childrenLevel );
+            relatedContentFetcher.setMaxParentLevel( parentLevel );
+            relatedContentFetcher.setMaxParentChildrenLevel( 0 );
+
+            firstRelatedContentSet = relatedContentFetcher.fetch( contents.getContent( 0 ) );
+
+        }
+        finally
+        {
+            RelatedContentFetchTracer.stopTracing( trace, livePortalTraceService );
+        }
+
         relatedContentIntersectionSet.addAll( firstRelatedContentSet.getContentKeys() );
 
         for ( int i = 1; i < contents.getLength(); i++ )
         {
-            final RelatedContentResultSet otherRelatedContent = relatedContentFetcher.fetch( contents.getContent( i ), true );
-            relatedContentIntersectionSet.retainAll( otherRelatedContent.getContentKeys() );
-
-            if ( relatedContentIntersectionSet.size() == 0 )
+            trace = RelatedContentFetchTracer.startTracing( livePortalTraceService );
+            try
             {
-                break;
+                final RelatedContentFetcher relatedContentFetcher = new RelatedContentFetcher( contentDao, trace );
+                relatedContentFetcher.setSecurityFilter( user != null ? contentSecurityFilterResolver.resolveGroupKeys( user ) : null );
+                relatedContentFetcher.setAvailableCheckDate( new Date() );
+                relatedContentFetcher.setMaxChildrenLevel( childrenLevel );
+                relatedContentFetcher.setMaxParentLevel( parentLevel );
+                relatedContentFetcher.setMaxParentChildrenLevel( 0 );
+
+                final RelatedContentResultSet otherRelatedContent = relatedContentFetcher.fetch( contents.getContent( i ), true );
+                relatedContentIntersectionSet.retainAll( otherRelatedContent.getContentKeys() );
+
+                if ( relatedContentIntersectionSet.size() == 0 )
+                {
+                    break;
+                }
+            }
+            finally
+            {
+                RelatedContentFetchTracer.stopTracing( trace, livePortalTraceService );
             }
         }
-        RelatedContentResultSetImpl relatedContent = new RelatedContentResultSetImpl();
+        final RelatedContentResultSetImpl relatedContent = new RelatedContentResultSetImpl();
         for ( ContentKey contentKey : relatedContentIntersectionSet )
         {
             relatedContent.add( firstRelatedContentSet.getRelatedContent( contentKey ) );

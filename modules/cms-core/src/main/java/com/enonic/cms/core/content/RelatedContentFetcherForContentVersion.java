@@ -12,6 +12,8 @@ import com.enonic.cms.core.content.resultset.RelatedChildContent;
 import com.enonic.cms.core.content.resultset.RelatedContent;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTrace;
+import com.enonic.cms.core.portal.livetrace.RelatedContentFetchTracer;
 import com.enonic.cms.store.dao.ContentDao;
 
 
@@ -20,6 +22,11 @@ public class RelatedContentFetcherForContentVersion
 {
 
     private Collection<ContentVersionEntity> originallyRequestedContentVersions;
+
+    public RelatedContentFetcherForContentVersion( ContentDao contentDao, RelatedContentFetchTrace trace )
+    {
+        super( contentDao, trace );
+    }
 
     public RelatedContentFetcherForContentVersion( ContentDao contentDao )
     {
@@ -47,6 +54,7 @@ public class RelatedContentFetcherForContentVersion
         if ( fetchChildren )
         {
             Collection<RelatedChildContent> rootRelatedChildren = doFindRelatedChildren( versions );
+            RelatedContentFetchTracer.traceChildrenFetch( 1, rootRelatedChildren.size(), trace );
             if ( versions.size() > 0 )
             {
                 doAddAndFetchChildren( rootRelatedChildren, maxChildrenLevel, includeVisited );

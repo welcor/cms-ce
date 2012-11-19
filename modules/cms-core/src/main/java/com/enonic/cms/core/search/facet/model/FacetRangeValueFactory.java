@@ -1,7 +1,8 @@
 package com.enonic.cms.core.search.facet.model;
 
-import java.util.Date;
+import org.joda.time.ReadableDateTime;
 
+import com.enonic.cms.core.search.ElasticSearchFormatter;
 import com.enonic.cms.core.search.builder.ContentIndexDateValueResolver;
 import com.enonic.cms.core.search.builder.ContentIndexNumberValueResolver;
 
@@ -22,11 +23,13 @@ public class FacetRangeValueFactory
             return new FacetRangeNumericValue( doubleValue );
         }
 
-        final Date dateValue = ContentIndexDateValueResolver.resolveDateValue( value );
+        final ReadableDateTime readableDateTime = ContentIndexDateValueResolver.resolveReadableDateTimeValue( value );
 
-        if ( dateValue != null )
+        if ( readableDateTime != null )
         {
-            return new FacetRangeDateValue( dateValue );
+            ReadableDateTime UTCTime = ElasticSearchFormatter.toUTCTimeZone( readableDateTime );
+
+            return new FacetRangeDateValue( UTCTime );
         }
 
         throw new IllegalArgumentException( "Not a numeric or valid date-value: " + value );

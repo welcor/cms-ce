@@ -10,6 +10,18 @@ public class ContentIndexDateValueResolver
 {
     public static Date resolveDateValue( Object value )
     {
+        ReadableDateTime date = doResolveDateValue( value );
+
+        if ( date == null )
+        {
+            return null;
+        }
+
+        return date.toDateTime().toDate();
+    }
+
+    private static ReadableDateTime doResolveDateValue( final Object value )
+    {
         if ( value == null )
         {
             return null;
@@ -21,7 +33,12 @@ public class ContentIndexDateValueResolver
         {
             return null;
         }
-
-        return date.toDateTime().toDate();
+        return date;
     }
+
+    public static ReadableDateTime resolveReadableDateTimeValue( final Object value )
+    {
+        return doResolveDateValue( value );
+    }
+
 }

@@ -35,9 +35,9 @@ public class ElasticSearchFormatter
         return elasticsearchFullDateFormat.format( date );
     }
 
-    public static String formatDateAsStringFullWithTimezone( final Date date )
+    public static String formatDateAsStringFullWithTimezone( final ReadableDateTime dateTime )
     {
-        return elasticsearchDateOptionalTimeFormat.format( date );
+        return elasticsearchDateOptionalTimeFormat.format( dateTime.toDateTime().toDate() );
     }
 
     public static ReadableDateTime toUTCTimeZone( final ReadableDateTime dateTime )

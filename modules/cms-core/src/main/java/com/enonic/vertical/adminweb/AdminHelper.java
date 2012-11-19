@@ -17,7 +17,6 @@ import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
 
 import com.enonic.cms.core.DeploymentPathResolver;
-
 import com.enonic.cms.core.SiteKey;
 
 public class AdminHelper
@@ -26,12 +25,12 @@ public class AdminHelper
 
     public static String getDebugPath( HttpServletRequest request, SiteKey siteKey )
     {
-        return getAdminPath( request, false ) + "/site/" + siteKey.toInt() + "/";
+        return getAdminPath( request, true ) + "/site/" + siteKey.toInt() + "/";
     }
 
     public static String getAdminPath( HttpServletRequest request, boolean relative )
     {
-        StringBuffer path = new StringBuffer();
+        final StringBuilder path = new StringBuilder();
         if ( !relative )
         {
             path.append( request.getScheme() );

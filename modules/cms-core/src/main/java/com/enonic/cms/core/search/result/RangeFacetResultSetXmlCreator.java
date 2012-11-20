@@ -1,11 +1,11 @@
 package com.enonic.cms.core.search.result;
 
 
-import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
+import org.joda.time.DateTime;
 
 import com.enonic.cms.core.CmsDateAndTimeFormats;
 import com.enonic.cms.core.search.ElasticSearchFormatter;
@@ -49,14 +49,14 @@ public class RangeFacetResultSetXmlCreator
             return valueString;
         }
 
-        final Date date = ElasticSearchFormatter.parseStringAsElasticsearchDateOptionalTimeFormat( valueString );
+        final DateTime parsedDateTime = ElasticSearchFormatter.parseStringAsElasticsearchDateOptionalTimeFormat( valueString );
 
-        if ( date != null )
+        if ( parsedDateTime != null )
         {
-            return CmsDateAndTimeFormats.printAs_XML_TIMESTAMP( date );
+            return CmsDateAndTimeFormats.printAs_XML_TIMESTAMP( parsedDateTime.toLocalDateTime().toDate() );
         }
 
-        return valueString;
+        return null;
     }
 
 }

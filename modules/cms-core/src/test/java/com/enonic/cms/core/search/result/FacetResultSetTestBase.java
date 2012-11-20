@@ -16,8 +16,9 @@ public class FacetResultSetTestBase
 
         System.out.println( resultString );
 
-        expected = StringUtils.trimAllWhitespace( expected );
-        resultString = StringUtils.trimAllWhitespace( resultString );
+        expected = expected.replace( "\n", "" ).replace( "\r", "" );
+        resultString = resultString.replace( "\n", "" ).replace( "\r", "" );
+
         assertEquals( StringUtils.trimTrailingWhitespace( expected ), StringUtils.trimTrailingWhitespace( resultString ) );
     }
 

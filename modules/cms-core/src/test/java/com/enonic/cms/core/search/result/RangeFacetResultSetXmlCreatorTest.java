@@ -58,10 +58,10 @@ public class RangeFacetResultSetXmlCreatorTest
             "<root>\n" +
             "  <facets>\n" +
             "    <facet name=\"myRangeFacet\">\n" +
-            "      <result to=\"2000-12-31 23:59:59\">\n" +
+            "      <result to=\"2000-01-02 00:00:00\">\n" +
             "        <count>1</count>\n" +
             "      </result>\n" +
-            "      <result from=\"2001-01-01 00:00:00\">\n" +
+            "      <result from=\"2001-01-02 01:00:00\">\n" +
             "        <count>3</count>\n" +
             "      </result>\n" +
             "    </facet>\n" +
@@ -76,8 +76,8 @@ public class RangeFacetResultSetXmlCreatorTest
         RangeFacetResultSet rangeFacetResultSet = new RangeFacetResultSet();
 
         rangeFacetResultSet.setName( "myRangeFacet" );
-        rangeFacetResultSet.addResult( createResultEntry( null, "2000-12-31T23:59:59", 1L ) );
-        rangeFacetResultSet.addResult( createResultEntry( "2001-01-01T00:00:00", null, 3L ) );
+        rangeFacetResultSet.addResult( createResultEntry( null, "2000-01-01T23:00:00.000Z", 1L ) );
+        rangeFacetResultSet.addResult( createResultEntry( "2001-01-02T00:00:00.000Z", null, 3L ) );
 
         facetsResultSet.addFacetResultSet( rangeFacetResultSet );
 

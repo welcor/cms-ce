@@ -170,7 +170,7 @@ public class ContentIndexDataElementFactoryTest
     @Test
     public void testValidStringFormatForDateAsSet()
     {
-        SimpleDateFormat expectedFormat = ElasticSearchFormatter.elasticsearchSimpleDateFormat;
+        SimpleDateFormat expectedFormat = ElasticSearchFormatter.ELASTICSEARCH_SIMPLE_DATE_FORMAT;
 
         final DateTime dateTime = new DateTime( 1975, 8, 1, 12, 00 );
 

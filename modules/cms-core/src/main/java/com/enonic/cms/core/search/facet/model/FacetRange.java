@@ -1,7 +1,10 @@
 package com.enonic.cms.core.search.facet.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class FacetRange
     extends AbstractFacetModel
 {
@@ -20,13 +23,13 @@ public class FacetRange
     {
     }
 
-    @XmlElement(name = "from")
+    @XmlAttribute(name = "from")
     public void setFrom( final String from )
     {
         this.fromRangeValue = FacetRangeValueFactory.createFacetRangeValue( from );
     }
 
-    @XmlElement(name = "to")
+    @XmlAttribute(name = "to")
     public void setTo( final String to )
     {
         this.toRangeValue = FacetRangeValueFactory.createFacetRangeValue( to );

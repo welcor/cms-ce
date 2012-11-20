@@ -36,9 +36,8 @@ public class ElasticsearchRangeFacetBuilder
 
     private void setRanges( final RangeFacetModel rangeFacetModel, final RangeFacetBuilder builder )
     {
-        final FacetRanges facetRanges = rangeFacetModel.getFacetRanges();
 
-        for ( final FacetRange facetRange : facetRanges.getRanges() )
+        for ( final FacetRange facetRange : rangeFacetModel.getRanges() )
         {
             final FacetRangeValue fromRangeValue = facetRange.getFromRangeValue();
             final FacetRangeValue toRangeValue = facetRange.getToRangeValue();
@@ -56,13 +55,13 @@ public class ElasticsearchRangeFacetBuilder
 
     protected void setField( final RangeFacetModel rangeFacetModel, final RangeFacetBuilder builder )
     {
-        final String fieldName = rangeFacetModel.getField();
+        final String fieldName = rangeFacetModel.getIndex();
 
         if ( !Strings.isNullOrEmpty( fieldName ) )
         {
             QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
 
-            if ( rangeFacetModel.getFacetRanges().isNumericRanges() )
+            if ( rangeFacetModel.isNumericRanges() )
             {
                 builder.field( queryField.getFieldNameForNumericQueries() );
             }

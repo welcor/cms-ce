@@ -1,5 +1,8 @@
 package com.enonic.cms.core.search.facet.model;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -10,19 +13,24 @@ import com.google.common.base.Strings;
 public class RangeFacetModel
     extends AbstractFacetModel
 {
-    private String field;
+    private String index;
 
     private String keyField;
 
     private String valueField;
 
-    @XmlElement(name = "ranges")
-    private FacetRanges facetRanges;
+    @XmlElement(name = "range")
+    private Set<FacetRange> ranges = new LinkedHashSet<FacetRange>();
 
-    @XmlElement(name = "field")
-    public String getField()
+    public void addFacetRange( FacetRange facetRange )
     {
-        return field;
+        this.ranges.add( facetRange );
+    }
+
+    @XmlElement(name = "index")
+    public String getIndex()
+    {
+        return index;
     }
 
     @XmlElement(name = "key_field")
@@ -49,19 +57,21 @@ public class RangeFacetModel
         this.valueField = valueField;
     }
 
-    public FacetRanges getFacetRanges()
+    public void setIndex( final String index )
     {
-        return facetRanges;
+        this.index = index;
     }
 
-    public void setFacetRanges( final FacetRanges facetRanges )
+    public Set<FacetRange> getRanges()
     {
-        this.facetRanges = facetRanges;
+        return ranges;
     }
 
-    public void setField( final String field )
+    public boolean isNumericRanges()
     {
-        this.field = field;
+        final FacetRange firstRange = this.ranges.iterator().next();
+
+        return firstRange.isNumericRange();
     }
 
     @Override
@@ -69,18 +79,38 @@ public class RangeFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.field ) && Strings.isNullOrEmpty( this.keyField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyField ) )
         {
-            throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'field' or 'keyField' must be set" );
+            throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'index' or 'keyField' must be set" );
         }
 
-        if ( Strings.isNullOrEmpty( this.field ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
         {
             throw new IllegalArgumentException(
                 "Error in range-facet + " + getName() + ": both 'key-field' and 'value-field' must be set" );
         }
 
-        facetRanges.validate();
+        validateFacetRanges();
+    }
+
+    public void validateFacetRanges()
+    {
+        if ( ranges.size() == 0 )
+        {
+            throw new IllegalArgumentException( "No ranges defined" );
+        }
+
+        boolean shouldBeNumericRanges = ranges.iterator().next().isNumericRange();
+
+        for ( final FacetRange facetRange : this.ranges )
+        {
+            facetRange.validate();
+
+            if ( shouldBeNumericRanges != facetRange.isNumericRange() )
+            {
+                throw new IllegalArgumentException( "All range-values must be of same type" );
+            }
+        }
     }
 
 }

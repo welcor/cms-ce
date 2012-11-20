@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.elasticsearch.search.facet.AbstractFacetBuilder;
+import org.elasticsearch.search.facet.histogram.HistogramFacet;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.junit.Test;
 
@@ -41,6 +42,7 @@ public class FacetBuilderFactoryTest
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
         query.setFacets( facetXml );
+
 
         final Set<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 

@@ -24,16 +24,13 @@ public class ElasticsearchRangeFacetBuilderTest
 
         RangeFacetModel model = new RangeFacetModel();
         model.setName( "rangeFacet" );
-        model.setField( "myDateField" );
+        model.setIndex( "myDateField" );
         model.setSize( 10 );
 
-        FacetRanges ranges = new FacetRanges();
+        model.addFacetRange( new FacetRange( "0", "9" ) );
+        model.addFacetRange( new FacetRange( "10", "19" ) );
+        model.addFacetRange( new FacetRange( "20", "29" ) );
 
-        ranges.addFacetRange( new FacetRange( "0", "9" ) );
-        ranges.addFacetRange( new FacetRange( "10", "19" ) );
-        ranges.addFacetRange( new FacetRange( "20", "29" ) );
-
-        model.setFacetRanges( ranges );
 
         final RangeFacetBuilder build = facetBuilder.build( model );
 
@@ -57,13 +54,9 @@ public class ElasticsearchRangeFacetBuilderTest
         model.setValueField( "valueField" );
         model.setSize( 10 );
 
-        FacetRanges ranges = new FacetRanges();
-
-        ranges.addFacetRange( new FacetRange( "0", "9" ) );
-        ranges.addFacetRange( new FacetRange( "10", "19" ) );
-        ranges.addFacetRange( new FacetRange( "20", "29" ) );
-
-        model.setFacetRanges( ranges );
+        model.addFacetRange( new FacetRange( "0", "9" ) );
+        model.addFacetRange( new FacetRange( "10", "19" ) );
+        model.addFacetRange( new FacetRange( "20", "29" ) );
 
         final RangeFacetBuilder build = facetBuilder.build( model );
 

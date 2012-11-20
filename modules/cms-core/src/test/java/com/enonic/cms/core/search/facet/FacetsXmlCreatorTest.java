@@ -104,14 +104,13 @@ public class FacetsXmlCreatorTest
 
         final RangeFacetModel rangeFacet = new RangeFacetModel();
         rangeFacet.setName( "myRangeFacet" );
-        rangeFacet.setField( "rangeField" );
+        rangeFacet.setIndex( "rangeField" );
 
-        FacetRanges facetRanges = new FacetRanges();
-        facetRanges.addFacetRange( new FacetRange( null, "49" ) );
-        facetRanges.addFacetRange( new FacetRange( "50", "100" ) );
-        facetRanges.addFacetRange( new FacetRange( "101", "200" ) );
-        facetRanges.addFacetRange( new FacetRange( "201", null ) );
-        rangeFacet.setFacetRanges( facetRanges );
+
+        rangeFacet.addFacetRange( new FacetRange( null, "49" ) );
+        rangeFacet.addFacetRange( new FacetRange( "50", "100" ) );
+        rangeFacet.addFacetRange( new FacetRange( "101", "200" ) );
+        rangeFacet.addFacetRange( new FacetRange( "201", null ) );
 
         facets.addFacet( rangeFacet );
 

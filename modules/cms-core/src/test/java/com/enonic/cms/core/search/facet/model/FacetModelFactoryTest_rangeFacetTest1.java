@@ -10,31 +10,35 @@ public class FacetModelFactoryTest_rangeFacetTest1
 {
     private FacetsModelFactory facetsModelFactory = new FacetsModelFactory();
 
+
+    @Test
+    public void plain_xml()
+        throws Exception
+    {
+        String xml = "<facets>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "        <range to=\"4\"/>\n" +
+            "        <index>rangeField</index>\n" +
+            "    </ranges>\n" +
+            "</facets>\n";
+
+        final FacetsModel facetsModel = facetsModelFactory.buildFromXml( xml );
+
+        assertAndGetRangeFacetModel( facetsModel );
+    }
+
     @Test
     public void testBuildRangeFacetModel_numericRanges()
         throws Exception
     {
-        final String rangeFacetName = "myRangeFacet";
         String xml = "<facets>\n" +
-            "    <range name=\"myRangeFacet\">\n" +
-            "        <ranges>\n" +
-            "            <range>\n" +
-            "                <to>49</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>50</from>\n" +
-            "                <to>100</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>101</from>\n" +
-            "                <to>199</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>201</from>\n" +
-            "            </range>\n" +
-            "        </ranges>\n" +
-            "        <field>rangeField</field>\n" +
-            "    </range>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "            <range to=\"45\"/>\n" +
+            "            <range from=\"50\" to=\"100\"/>\n" +
+            "            <range from=\"100\" to=\"200\"/>\n" +
+            "            <range from=\"200\" />\n" +
+            "        <index>rangeField</index>\n" +
+            "    </ranges>\n" +
             "</facets>\n";
 
         final FacetsModel facetsModel = facetsModelFactory.buildFromXml( xml );
@@ -43,12 +47,9 @@ public class FacetModelFactoryTest_rangeFacetTest1
 
         rangeFacetModel.validate();
 
-        assertEquals( rangeFacetName, rangeFacetModel.getName() );
+        assertEquals( "myRangeFacet", rangeFacetModel.getName() );
 
-        final FacetRanges facetRanges = rangeFacetModel.getFacetRanges();
-        assertNotNull( facetRanges );
-
-        for ( final FacetRange facetRange : facetRanges.getRanges() )
+        for ( final FacetRange facetRange : rangeFacetModel.getRanges() )
         {
             assertTrue( facetRange.getFromRangeValue() == null || facetRange.getFromRangeValue() instanceof FacetRangeNumericValue );
             assertTrue( facetRange.getToRangeValue() == null || facetRange.getToRangeValue() instanceof FacetRangeNumericValue );
@@ -61,14 +62,13 @@ public class FacetModelFactoryTest_rangeFacetTest1
         throws Exception
     {
         String xml = "<facets>\n" +
-            "    <range name=\"myRangeFacet\">\n" +
-            "        <ranges>\n" +
-            "            <range>\n" +
-            "                <to>xx</to>\n" +
-            "            </range>\n" +
-            "        </ranges>\n" +
-            "        <field>rangeField</field>\n" +
-            "    </range>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "            <range to=\"xx\"/>\n" +
+            "            <range from=\"50\" to=\"100\"/>\n" +
+            "            <range from=\"100\" to=\"200\"/>\n" +
+            "            <range from=\"200\" />\n" +
+            "        <index>rangeField</index>\n" +
+            "    </ranges>\n" +
             "</facets>\n";
 
         final FacetsModel facetsModel = facetsModelFactory.buildFromXml( xml );
@@ -82,32 +82,20 @@ public class FacetModelFactoryTest_rangeFacetTest1
         throws Exception
     {
         String xml = "<facets>\n" +
-            "    <range name=\"myRangeFacet\">\n" +
-            "        <ranges>\n" +
-            "            <range>\n" +
-            "                <to>49</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>1975-08-01</from>\n" +
-            "                <to>100</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>101</from>\n" +
-            "                <to>199</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>201</from>\n" +
-            "            </range>\n" +
-            "        </ranges>\n" +
-            "        <field>rangeField</field>\n" +
-            "    </range>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "            <range to=\"2001-01-01\"/>\n" +
+            "            <range from=\"50\" to=\"100\"/>\n" +
+            "            <range from=\"100\" to=\"200\"/>\n" +
+            "            <range from=\"200\" />\n" +
+            "        <index>rangeField</index>\n" +
+            "    </ranges>\n" +
             "</facets>\n";
 
         final FacetsModel facetsModel = facetsModelFactory.buildFromXml( xml );
 
         RangeFacetModel rangeFacetModel = assertAndGetRangeFacetModel( facetsModel );
 
-        assertExceptionContainingString( rangeFacetModel, "Incompatible values in range" );
+        assertExceptionContainingString( rangeFacetModel, "All range-values" );
     }
 
 
@@ -116,17 +104,13 @@ public class FacetModelFactoryTest_rangeFacetTest1
         throws Exception
     {
         String xml = "<facets>\n" +
-            "    <range name=\"myRangeFacet\">\n" +
-            "        <ranges>\n" +
-            "            <range>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>1975-08-01</from>\n" +
-            "                <to>100</to>\n" +
-            "            </range>\n" +
-            "        </ranges>\n" +
-            "        <field>rangeField</field>\n" +
-            "    </range>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "            <range/>\n" +
+            "            <range from=\"50\" to=\"100\"/>\n" +
+            "            <range from=\"100\" to=\"200\"/>\n" +
+            "            <range from=\"200\" />\n" +
+            "        <index>rangeField</index>\n" +
+            "    </ranges>\n" +
             "</facets>\n";
 
         final FacetsModel facetsModel = facetsModelFactory.buildFromXml( xml );

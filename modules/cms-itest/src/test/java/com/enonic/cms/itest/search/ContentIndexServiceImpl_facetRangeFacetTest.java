@@ -26,26 +26,15 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
     public void dates()
     {
         ContentIndexQuery query = new ContentIndexQuery( "" );
+
         final String facetDefinition = "<facets>\n" +
-            "    <range name=\"myRangeFacet\">\n" +
-            "        <ranges>\n" +
-            "            <range>\n" +
-            "                <to>2001-01-01</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>2001-01-01</from>\n" +
-            "                <to>2001-01-02</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>2001-01-01 00:00:01:001</from>\n" +
-            "                <to>2001-01-01 23:59:59</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>2001-01-02</from>\n" +
-            "            </range>\n" +
-            "        </ranges>\n" +
-            "        <field>data/myDate</field>\n" +
-            "    </range>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "            <range to=\"2001-01-01\"/>\n" +
+            "            <range from=\"2001-01-01\" to=\"2001-01-02\"/>\n" +
+            "            <range from=\"2001-01-01 00:00:01:001\" to=\"2001-01-01 23:59:59\"/>\n" +
+            "            <range from=\"2001-01-02\" />\n" +
+            "        <index>data.myDate</index>\n" +
+            "    </ranges>\n" +
             "</facets>\n";
 
         query.setFacets( facetDefinition );
@@ -79,26 +68,15 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
     public void numeric()
     {
         ContentIndexQuery query = new ContentIndexQuery( "" );
+
         final String facetDefinition = "<facets>\n" +
-            "    <range name=\"myRangeFacet\">\n" +
-            "        <ranges>\n" +
-            "            <range>\n" +
-            "                <to>1</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>1</from>\n" +
-            "                <to>10</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>10</from>\n" +
-            "                <to>100</to>\n" +
-            "            </range>\n" +
-            "            <range>\n" +
-            "                <from>100</from>\n" +
-            "            </range>\n" +
-            "        </ranges>\n" +
-            "        <field>data/price</field>\n" +
-            "    </range>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "            <range to=\"1\"/>\n" +
+            "            <range from=\"1\" to=\"10\"/>\n" +
+            "            <range from=\"10\" to=\"100\"/>\n" +
+            "            <range from=\"100\" />\n" +
+            "        <index>data.price</index>\n" +
+            "    </ranges>\n" +
             "</facets>\n";
 
         query.setFacets( facetDefinition );

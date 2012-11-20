@@ -108,4 +108,34 @@
     <parameter name="includeUserRights">false</parameter>
     <parameter name="filterByContentTypes"/>
   </datasource>
+  <datasource name="getContentBySection">
+    <parameter name="menuItemKeys">menuItemKeys</parameter>
+    <parameter name="levels">levels</parameter>
+    <parameter name="orderBy">orderBy</parameter>
+    <parameter name="fromIndex">index</parameter>
+    <parameter name="count">count</parameter>
+    <parameter name="titlesOnly">titlesOnly</parameter>
+    <parameter name="parentLevel">parentLevel</parameter>
+    <parameter name="childrenLevel">childrenLevel</parameter>
+    <parameter name="parentChildrenLevel">parentChildrenLevel</parameter>
+    <parameter name="relatedTitlesOnly">relatedTitlesOnly</parameter>
+    <parameter name="includeTotalCount">includeTotalCount</parameter>
+    <parameter name="includeUserRights">includeUserRights</parameter>
+    <parameter name="filterByContentTypes"/>
+  </datasource>
+  <datasource name="getContentBySection">
+    <parameter name="menuItemKeys">menuItemKeys</parameter>
+    <parameter name="levels">levels</parameter>
+    <parameter name="orderBy">orderBy</parameter>
+    <parameter name="fromIndex">index</parameter>
+    <parameter name="count">count</parameter>
+    <parameter name="titlesOnly">titlesOnly</parameter>
+    <parameter name="parentLevel">parentLevel</parameter>
+    <parameter name="childrenLevel">childrenLevel</parameter>
+    <parameter name="parentChildrenLevel">parentChildrenLevel</parameter>
+    <parameter name="relatedTitlesOnly">relatedTitlesOnly</parameter>
+    <parameter name="includeTotalCount">includeTotalCount</parameter>
+    <parameter name="includeUserRights">includeUserRights</parameter>
+    <parameter name="filterByContentTypes">1,2,3</parameter>
+  </datasource>
 </datasources>

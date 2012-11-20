@@ -39,7 +39,7 @@ final class GetContentBySectionConverter
              12 int[] filterByContentTypes )
             */
 
-            String query = params[0];
+            String query = "";
 
             String contentTypesString = params[12];
 

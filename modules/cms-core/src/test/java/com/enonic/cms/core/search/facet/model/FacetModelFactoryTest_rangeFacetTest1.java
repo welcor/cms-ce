@@ -6,7 +6,7 @@ import com.enonic.cms.core.search.facet.FacetQueryException;
 
 import static org.junit.Assert.*;
 
-public class FacetModelFactoryTest_rangeFacetTest
+public class FacetModelFactoryTest_rangeFacetTest1
 {
     private FacetsModelFactory facetsModelFactory = new FacetsModelFactory();
 

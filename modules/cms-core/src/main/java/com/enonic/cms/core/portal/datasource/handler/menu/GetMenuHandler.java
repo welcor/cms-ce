@@ -19,6 +19,13 @@ public final class GetMenuHandler
     protected Document handle( final DataSourceRequest req, final GetMenuParams params )
         throws Exception
     {
-        return this.dataSourceService.getMenu( req, params.siteKey, params.tagItem, params.levels ).getAsJDOMDocument();
+        Integer siteKey = params.siteKey;
+
+        if ( siteKey == null )
+        {
+            siteKey = req.getSiteKey().toInt();
+        }
+
+        return this.dataSourceService.getMenu( req, siteKey, params.tagItem, params.levels ).getAsJDOMDocument();
     }
 }

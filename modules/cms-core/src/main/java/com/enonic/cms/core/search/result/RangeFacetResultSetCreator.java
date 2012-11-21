@@ -6,7 +6,6 @@ import org.elasticsearch.search.facet.range.RangeFacet;
 
 public class RangeFacetResultSetCreator
 {
-
     protected FacetResultSet createRangeFacetResultSet( final String facetName, final RangeFacet facet )
     {
         RangeFacetResultSet rangeFacetResultSet = new RangeFacetResultSet();
@@ -27,11 +26,63 @@ public class RangeFacetResultSetCreator
     {
         RangeFacetResultEntry rangeFacetResultEntry = new RangeFacetResultEntry();
 
-        rangeFacetResultEntry.setFrom( entry.getFromAsString() );
-        rangeFacetResultEntry.setTo( entry.getToAsString() );
+        rangeFacetResultEntry.setFrom( createRangeLimitValue( entry.getFromAsString() ) );
+        rangeFacetResultEntry.setTo( createRangeLimitValue( entry.getToAsString() ) );
         rangeFacetResultEntry.setCount( entry.getCount() );
 
+        boolean isNumericFacetResult = isNumericFacetResult( entry );
+
+        if ( isNumericFacetResult )
+        {
+            rangeFacetResultEntry.setMin( entry.getMin() );
+            rangeFacetResultEntry.setMean( entry.getMean() );
+            rangeFacetResultEntry.setMax( entry.getMax() );
+        }
+
         return rangeFacetResultEntry;
+    }
+
+    private String createRangeLimitValue( final String value )
+    {
+
+        final Double fromAsNumber = getAsNumber( value );
+
+        if ( fromAsNumber == null || !fromAsNumber.isInfinite() )
+        {
+            return value;
+        }
+
+        return null;
+    }
+
+    private boolean isNumericFacetResult( final RangeFacet.Entry entry )
+    {
+        if ( isNumericAndNotInifinte( entry.getFromAsString() ) || isNumericAndNotInifinte( entry.getToAsString() ) )
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isNumericAndNotInifinte( final String value )
+    {
+        final Double asNumber = getAsNumber( value );
+        return asNumber != null && !asNumber.isInfinite();
+    }
+
+    public Double getAsNumber( String value )
+    {
+        try
+        {
+            return new Double( value );
+        }
+        catch ( NumberFormatException e )
+        {
+            return null;
+        }
+
+
     }
 
 }

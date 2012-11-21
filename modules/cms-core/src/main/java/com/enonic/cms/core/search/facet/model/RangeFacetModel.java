@@ -81,13 +81,12 @@ public class RangeFacetModel
 
         if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyField ) )
         {
-            throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'index' or 'keyField' must be set" );
+            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": 'index' or 'keyField' must be set" );
         }
 
         if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
         {
-            throw new IllegalArgumentException(
-                "Error in range-facet + " + getName() + ": both 'key-field' and 'value-field' must be set" );
+            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": both 'key-field' and 'value-field' must be set" );
         }
 
         validateFacetRanges();

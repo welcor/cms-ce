@@ -11,7 +11,6 @@ public class RangeFacetResultSet
 
     Set<RangeFacetResultEntry> resultEntries = Sets.newLinkedHashSet();
 
-
     @Override
     public FacetResultType getFacetResultType()
     {

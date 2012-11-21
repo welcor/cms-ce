@@ -15,21 +15,13 @@ public class RangeFacetResultSetXmlCreatorTest
             "<root>\n" +
             "  <facets>\n" +
             "    <facet name=\"myRangeFacet\">\n" +
-            "      <result to=\"9\">\n" +
-            "        <count>1</count>\n" +
-            "      </result>\n" +
-            "      <result from=\"10\" to=\"19\">\n" +
-            "        <count>3</count>\n" +
-            "      </result>\n" +
-            "      <result from=\"20\" to=\"29\">\n" +
-            "        <count>5</count>\n" +
-            "      </result>\n" +
-            "      <result from=\"30\">\n" +
-            "        <count>0</count>\n" +
-            "      </result>\n" +
+            "      <result count=\"1\" to=\"10\" min=\"5.0\" mean=\"5.0\" max=\"5.0\" />\n" +
+            "      <result count=\"3\" from=\"10\" to=\"20\" min=\"11.0\" mean=\"14.3\" max=\"19.0\" />\n" +
+            "      <result count=\"5\" from=\"20\" to=\"30\" min=\"21.0\" mean=\"24.5\" max=\"29.2\" />\n" +
+            "      <result count=\"1\" from=\"30\" min=\"122.0\" mean=\"122.0\" max=\"122.0\" />\n" +
             "    </facet>\n" +
             "  </facets>\n" +
-            "</root>\n";
+            "</root>";
 
         FacetResultSetXmlCreator resultSetXmlCreator = new FacetResultSetXmlCreator();
 
@@ -39,10 +31,10 @@ public class RangeFacetResultSetXmlCreatorTest
         RangeFacetResultSet rangeFacetResultSet = new RangeFacetResultSet();
 
         rangeFacetResultSet.setName( "myRangeFacet" );
-        rangeFacetResultSet.addResult( createResultEntry( null, "9", 1L ) );
-        rangeFacetResultSet.addResult( createResultEntry( "10", "19", 3L ) );
-        rangeFacetResultSet.addResult( createResultEntry( "20", "29", 5L ) );
-        rangeFacetResultSet.addResult( createResultEntry( "30", null, 0L ) );
+        rangeFacetResultSet.addResult( createResultEntry( null, "10", 1L, new Double( 5 ), new Double( 5 ), new Double( 5 ) ) );
+        rangeFacetResultSet.addResult( createResultEntry( "10", "20", 3L, new Double( 11 ), new Double( 14.3 ), new Double( 19 ) ) );
+        rangeFacetResultSet.addResult( createResultEntry( "20", "30", 5L, new Double( 21 ), new Double( 24.5 ), new Double( 29.2 ) ) );
+        rangeFacetResultSet.addResult( createResultEntry( "30", null, 1L, new Double( 122 ), new Double( 122 ), new Double( 122 ) ) );
 
         facetsResultSet.addFacetResultSet( rangeFacetResultSet );
 
@@ -58,12 +50,8 @@ public class RangeFacetResultSetXmlCreatorTest
             "<root>\n" +
             "  <facets>\n" +
             "    <facet name=\"myRangeFacet\">\n" +
-            "      <result to=\"2000-01-02 00:00:00\">\n" +
-            "        <count>1</count>\n" +
-            "      </result>\n" +
-            "      <result from=\"2001-01-02 01:00:00\">\n" +
-            "        <count>3</count>\n" +
-            "      </result>\n" +
+            "      <result count=\"1\" to=\"2000-01-02 00:00:00\" />\n" +
+            "      <result count=\"3\" from=\"2001-01-02 01:00:00\" />\n" +
             "    </facet>\n" +
             "  </facets>\n" +
             "</root>";
@@ -76,8 +64,8 @@ public class RangeFacetResultSetXmlCreatorTest
         RangeFacetResultSet rangeFacetResultSet = new RangeFacetResultSet();
 
         rangeFacetResultSet.setName( "myRangeFacet" );
-        rangeFacetResultSet.addResult( createResultEntry( null, "2000-01-01T23:00:00.000Z", 1L ) );
-        rangeFacetResultSet.addResult( createResultEntry( "2001-01-02T00:00:00.000Z", null, 3L ) );
+        rangeFacetResultSet.addResult( createResultEntry( null, "2000-01-01T23:00:00.000Z", 1L, null, null, null ) );
+        rangeFacetResultSet.addResult( createResultEntry( "2001-01-02T00:00:00.000Z", null, 3L, null, null, null ) );
 
         facetsResultSet.addFacetResultSet( rangeFacetResultSet );
 
@@ -87,12 +75,16 @@ public class RangeFacetResultSetXmlCreatorTest
     }
 
 
-    private RangeFacetResultEntry createResultEntry( final String from, final String to, final Long count )
+    private RangeFacetResultEntry createResultEntry( final String from, final String to, final Long count, final Double min,
+                                                     final Double mean, final Double max )
     {
         RangeFacetResultEntry resultEntry = new RangeFacetResultEntry();
         resultEntry.setFrom( from );
         resultEntry.setTo( to );
         resultEntry.setCount( count );
+        resultEntry.setMin( min );
+        resultEntry.setMax( max );
+        resultEntry.setMean( mean );
         return resultEntry;
     }
 

@@ -3,7 +3,6 @@ package com.enonic.cms.core.search.result;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 import org.joda.time.DateTime;
 
@@ -13,7 +12,6 @@ import com.enonic.cms.core.search.ElasticSearchFormatter;
 public class RangeFacetResultSetXmlCreator
     extends AbstractFacetResultXmlCreator
 {
-
     public Element createRangeFacetElement( RangeFacetResultSet rangeFacet )
     {
         final Element rangeFacetRootElement = createFacetRootElement( rangeFacet );
@@ -23,13 +21,12 @@ public class RangeFacetResultSetXmlCreator
         for ( RangeFacetResultEntry result : resultEntries )
         {
             Element resultEl = new Element( "result" );
+            addAttributeIfNotNull( resultEl, "count", result.getCount() );
             addAttributeIfNotNull( resultEl, "from", getFacetRangeValueAsFormattedString( result.getFrom() ) );
             addAttributeIfNotNull( resultEl, "to", getFacetRangeValueAsFormattedString( result.getTo() ) );
-            Element countEl = new Element( "count" );
-            final Long count = result.getCount();
-            countEl.addContent( "" + count );
-
-            resultEl.addContent( countEl );
+            addAttributeIfNotNull( resultEl, "min", result.getMin() );
+            addAttributeIfNotNull( resultEl, "mean", result.getMean() );
+            addAttributeIfNotNull( resultEl, "max", result.getMax() );
 
             rangeFacetRootElement.addContent( resultEl );
         }
@@ -44,7 +41,7 @@ public class RangeFacetResultSetXmlCreator
             return null;
         }
 
-        if ( StringUtils.isNumeric( valueString ) )
+        if ( isNumber( valueString ) )
         {
             return valueString;
         }
@@ -59,4 +56,17 @@ public class RangeFacetResultSetXmlCreator
         return null;
     }
 
+    private boolean isNumber( String value )
+    {
+        try
+        {
+            new Double( value );
+            return true;
+        }
+        catch ( NumberFormatException e )
+        {
+            // do Nothing
+            return false;
+        }
+    }
 }

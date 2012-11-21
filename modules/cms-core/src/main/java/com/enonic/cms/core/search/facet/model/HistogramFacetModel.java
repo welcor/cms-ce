@@ -70,18 +70,18 @@ public class HistogramFacetModel
 
         if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyField ) )
         {
-            throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'field' or 'keyField' must be set" );
+            throw new IllegalArgumentException( "Error in histogram-facet  " + getName() + ": 'field' or 'keyField' must be set" );
         }
 
         if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
         {
             throw new IllegalArgumentException(
-                "Error in range-facet + " + getName() + ": both 'key-field' and 'value-field' must be set" );
+                "Error in histogram-facet  " + getName() + ": both 'key-field' and 'value-field' must be set" );
         }
 
         if ( this.interval == null )
         {
-            throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'interval' must be set" );
+            throw new IllegalArgumentException( "Error in histogram-facet " + getName() + ": 'interval' must be set" );
         }
 
     }

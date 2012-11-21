@@ -14,7 +14,7 @@ public class RangeFacetResultSetXmlCreator
 {
     public Element createRangeFacetElement( RangeFacetResultSet rangeFacet )
     {
-        final Element rangeFacetRootElement = createFacetRootElement( rangeFacet );
+        final Element rangeFacetRootElement = createFacetRootElement( "ranges", rangeFacet );
 
         final Set<RangeFacetResultEntry> resultEntries = rangeFacet.getResultEntries();
 

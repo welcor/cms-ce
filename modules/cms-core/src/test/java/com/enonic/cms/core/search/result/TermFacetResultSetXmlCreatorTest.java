@@ -14,26 +14,14 @@ public class TermFacetResultSetXmlCreatorTest
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<root>\n" +
             "  <facets>\n" +
-            "    <facet name=\"MyTermFacet\" total=\"100\" missing=\"5\" other=\"10\">\n" +
-            "      <result term=\"term1sef \">\n" +
-            "        <count>10</count>\n" +
-            "      </result>\n" +
-            "      <result term=\" s2312\">\n" +
-            "        <count>12</count>\n" +
-            "      </result>\n" +
-            "      <result term=\"123 fsef __´!#!$# term3\">\n" +
-            "        <count>14</count>\n" +
-            "      </result>\n" +
-            "      <result term=\"term4\">\n" +
-            "        <count>16</count>\n" +
-            "      </result>\n" +
-            "      <result term=\"term5\">\n" +
-            "        <count>18</count>\n" +
-            "      </result>\n" +
-            "      <result term=\"term6\">\n" +
-            "        <count>20</count>\n" +
-            "      </result>\n" +
-            "    </facet>\n" +
+            "    <terms name=\"MyTermFacet\" total=\"100\" missing=\"5\" other=\"10\">\n" +
+            "      <term count=\"10\">term1sef</term>\n" +
+            "      <term count=\"12\">s2312</term>\n" +
+            "      <term count=\"14\">123 fsef __´!#!$# term3</term>\n" +
+            "      <term count=\"16\">term4</term>\n" +
+            "      <term count=\"18\">term5</term>\n" +
+            "      <term count=\"20\">term6</term>\n" +
+            "    </terms>\n" +
             "  </facets>\n" +
             "</root>";
 

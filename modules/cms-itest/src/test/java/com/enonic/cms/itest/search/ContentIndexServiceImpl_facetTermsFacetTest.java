@@ -25,7 +25,7 @@ import com.enonic.cms.core.search.result.TermsFacetResultSet;
 import static org.junit.Assert.*;
 
 public class ContentIndexServiceImpl_facetTermsFacetTest
-    extends ContentIndexServiceTestBase
+    extends ContentIndexServiceFacetTestBase
 {
 
     @Test
@@ -73,6 +73,20 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( 2L, (long) results.get( "robot" ) );
         assertEquals( 3L, (long) results.get( "human" ) );
         assertEquals( 1L, (long) results.get( "alien" ) );
+
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "      <term count=\"2\">robot</term>\n" +
+            "      <term count=\"1\">alien</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>";
+
+        createAndCompareResultAsXml( result, expectedXml );
+
     }
 
     @Test
@@ -104,6 +118,23 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         termFacet = facetsResultSet.iterator().next();
         assertNotNull( termFacet );
         assertTrue( termFacet instanceof TermsFacetResultSet );
+
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"facet1\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "      <term count=\"2\">robot</term>\n" +
+            "      <term count=\"1\">alien</term>\n" +
+            "    </terms>\n" +
+            "    <terms name=\"facet2\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"3\">beer</term>\n" +
+            "      <term count=\"2\">oil</term>\n" +
+            "      <term count=\"1\">blood</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>";
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
     @Test
@@ -136,10 +167,20 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
 
         final Map<String, Integer> results = termFacetResultSet.getResults();
         assertEquals( 3, results.keySet().size() );
+
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "      <term count=\"2\">robot</term>\n" +
+            "      <term count=\"1\">alien</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>\n";
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
-    // this test is failing, if using size = 3. This is not how (I think) its supposed to work.
-    // Question asked on mailing-list
     @Test
     public void fields()
     {
@@ -155,8 +196,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
-
-        printAllIndexContent();
 
         final ContentResultSet result = contentIndexService.query( query );
 
@@ -175,6 +214,18 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( 4L, (long) results.get( "male" ) );
         assertEquals( 3L, (long) results.get( "human" ) );
         assertEquals( 3L, (long) results.get( "beer" ) );
+
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"specietypes\" total=\"18\" missing=\"0\" other=\"8\">\n" +
+            "      <term count=\"4\">male</term>\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "      <term count=\"3\">beer</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>";
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
 
@@ -202,6 +253,17 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( "robot", resultIterator.next() );
         assertEquals( "alien", resultIterator.next() );
 
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "      <term count=\"2\">robot</term>\n" +
+            "      <term count=\"1\">alien</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>";
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
     @Test
@@ -228,6 +290,18 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( "alien", resultIterator.next() );
         assertEquals( "robot", resultIterator.next() );
         assertEquals( "human", resultIterator.next() );
+
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"1\">alien</term>\n" +
+            "      <term count=\"2\">robot</term>\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>";
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
     @Test
@@ -254,6 +328,19 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( "alien", resultIterator.next() );
         assertEquals( "human", resultIterator.next() );
         assertEquals( "robot", resultIterator.next() );
+
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"1\">alien</term>\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "      <term count=\"2\">robot</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>\n" +
+            "\n";
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
     @Test
@@ -280,6 +367,18 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         assertEquals( "robot", resultIterator.next() );
         assertEquals( "human", resultIterator.next() );
         assertEquals( "alien", resultIterator.next() );
+
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
+            "      <term count=\"2\">robot</term>\n" +
+            "      <term count=\"3\">human</term>\n" +
+            "      <term count=\"1\">alien</term>\n" +
+            "    </terms>\n" +
+            "  </facets>\n" +
+            "</content>\n";
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
     @Test(expected = IndexQueryException.class)

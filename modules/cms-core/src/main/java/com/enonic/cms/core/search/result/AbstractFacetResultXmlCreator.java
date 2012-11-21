@@ -6,9 +6,9 @@ import com.google.common.base.Strings;
 
 public abstract class AbstractFacetResultXmlCreator
 {
-    protected Element createFacetRootElement( final AbstractFacetResultSet facet )
+    protected Element createFacetRootElement( String facetType, final AbstractFacetResultSet facet )
     {
-        final Element facetEl = new Element( "facet" );
+        final Element facetEl = new Element( facetType );
         facetEl.setAttribute( "name", facet.getName() );
 
         return facetEl;

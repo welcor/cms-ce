@@ -1,7 +1,6 @@
 package com.enonic.cms.core.search.result;
 
 import org.jdom.Document;
-import org.springframework.util.StringUtils;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
@@ -10,16 +9,21 @@ import static org.junit.Assert.*;
 public class FacetResultSetTestBase
 {
 
-    protected void compareIgnoreWhitespacesAndLinebreaks( String expected, final Document doc )
+    protected void compareIgnoreWhitespacesAndLinebreaks( String expectedXml, final Document doc )
     {
-        String resultString = JDOMUtil.prettyPrintDocument( doc );
+        final String resultXml = JDOMUtil.prettyPrintDocument( doc );
 
-        System.out.println( resultString );
+        final String expectedXmlTrimmed = expectedXml.replace( "\n", "" ).replace( "\r", "" );
+        final String resultXmlTrimmed = resultXml.replace( "\n", "" ).replace( "\r", "" );
 
-        expected = expected.replace( "\n", "" ).replace( "\r", "" );
-        resultString = resultString.replace( "\n", "" ).replace( "\r", "" );
-
-        assertEquals( StringUtils.trimTrailingWhitespace( expected ), StringUtils.trimTrailingWhitespace( resultString ) );
+        // Trickery to get the nice output of diff
+        if ( !expectedXmlTrimmed.equals( resultXmlTrimmed ) )
+        {
+            assertEquals( expectedXml, resultXml );
+        }
+        else
+        {
+            assertEquals( expectedXmlTrimmed, resultXmlTrimmed );
+        }
     }
-
 }

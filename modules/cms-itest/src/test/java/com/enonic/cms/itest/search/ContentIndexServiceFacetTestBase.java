@@ -13,9 +13,9 @@ import static org.junit.Assert.*;
 public class ContentIndexServiceFacetTestBase
     extends ContentIndexServiceTestBase
 {
+    private final FacetResultSetXmlCreator facetResultSetXmlCreator = new FacetResultSetXmlCreator();
 
-    protected void createAndCompareResultAsXml( final ContentResultSet result, final FacetResultSetXmlCreator facetResultSetXmlCreator,
-                                                final String expectedXml )
+    protected void createAndCompareResultAsXml( final ContentResultSet result, final String expectedXml )
     {
         Document doc = new Document();
         doc.addContent( new Element( "content" ) );

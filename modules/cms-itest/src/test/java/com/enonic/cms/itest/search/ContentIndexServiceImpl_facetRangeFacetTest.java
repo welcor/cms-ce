@@ -13,7 +13,6 @@ import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.query.ContentDocument;
 import com.enonic.cms.core.search.result.FacetResultSet;
-import com.enonic.cms.core.search.result.FacetResultSetXmlCreator;
 import com.enonic.cms.core.search.result.FacetsResultSet;
 import com.enonic.cms.core.search.result.RangeFacetResultEntry;
 import com.enonic.cms.core.search.result.RangeFacetResultSet;
@@ -23,7 +22,6 @@ import static org.junit.Assert.*;
 public class ContentIndexServiceImpl_facetRangeFacetTest
     extends ContentIndexServiceFacetTestBase
 {
-    private final FacetResultSetXmlCreator facetResultSetXmlCreator = new FacetResultSetXmlCreator();
 
     @Test
     public void dates()
@@ -67,16 +65,16 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
         final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<content>\n" +
             "  <facets>\n" +
-            "    <facet name=\"myRangeFacet\">\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
             "      <result count=\"1\" to=\"2001-01-01 00:00:00\" />\n" +
             "      <result count=\"4\" from=\"2001-01-01 00:00:00\" to=\"2001-01-02 00:00:00\" />\n" +
             "      <result count=\"3\" from=\"2001-01-01 00:00:01\" to=\"2001-01-01 23:59:59\" />\n" +
             "      <result count=\"2\" from=\"2001-01-02 00:00:00\" />\n" +
-            "    </facet>\n" +
+            "    </ranges>\n" +
             "  </facets>\n" +
             "</content>";
 
-        createAndCompareResultAsXml( result, facetResultSetXmlCreator, expectedXml );
+        createAndCompareResultAsXml( result, expectedXml );
     }
 
     @Test
@@ -122,16 +120,16 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
         final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<content>\n" +
             "  <facets>\n" +
-            "    <facet name=\"myRangeFacet\">\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
             "      <result count=\"2\" to=\"1.0\" min=\"0.0\" mean=\"0.495\" max=\"0.99\" />\n" +
             "      <result count=\"2\" from=\"1.0\" to=\"10.0\" min=\"1.0\" mean=\"1.0\" max=\"1.0\" />\n" +
             "      <result count=\"1\" from=\"10.0\" to=\"100.0\" min=\"10.0\" mean=\"10.0\" max=\"10.0\" />\n" +
             "      <result count=\"3\" from=\"100.0\" min=\"100.0\" mean=\"400.3333333333333\" max=\"1000.0\" />\n" +
-            "    </facet>\n" +
+            "    </ranges>\n" +
             "  </facets>\n" +
             "</content>\n";
 
-        createAndCompareResultAsXml( result, facetResultSetXmlCreator, expectedXml );
+        createAndCompareResultAsXml( result, expectedXml );
 
     }
 

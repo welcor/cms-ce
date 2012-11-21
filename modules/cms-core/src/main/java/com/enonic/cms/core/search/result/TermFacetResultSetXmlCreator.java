@@ -9,7 +9,7 @@ public class TermFacetResultSetXmlCreator
 {
     Element createTermFacetElement( final TermsFacetResultSet facet )
     {
-        final Element termFacetRoot = createFacetRootElement( facet );
+        final Element termFacetRoot = createFacetRootElement( "terms", facet );
 
         setFacetResultMetaData( facet, termFacetRoot );
 
@@ -18,12 +18,9 @@ public class TermFacetResultSetXmlCreator
         {
             final Integer count = resultMap.get( result );
 
-            Element resultEl = new Element( "result" );
-            addAttributeIfNotNull( resultEl, "term", result );
-            Element countEl = new Element( "count" );
-            countEl.addContent( "" + count );
-            resultEl.addContent( countEl );
-
+            Element resultEl = new Element( "term" );
+            addAttributeIfNotNull( resultEl, "count", count );
+            resultEl.addContent( result );
             termFacetRoot.addContent( resultEl );
         }
         return termFacetRoot;

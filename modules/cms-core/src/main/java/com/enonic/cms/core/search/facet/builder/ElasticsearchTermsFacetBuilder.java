@@ -35,9 +35,9 @@ final class ElasticsearchTermsFacetBuilder
 
     protected void setSize( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        if ( termsFacetXml.getSize() != null )
+        if ( termsFacetXml.getCount() != null )
         {
-            builder.size( termsFacetXml.getSize() );
+            builder.size( termsFacetXml.getCount() );
         }
     }
 

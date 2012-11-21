@@ -12,7 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class FacetsModel
     implements Iterable<FacetModel>
 {
-    @XmlElements({@XmlElement(name = "terms", type = TermsFacetModel.class), @XmlElement(name = "ranges", type = RangeFacetModel.class)})
+    @XmlElements({@XmlElement(name = "terms", type = TermsFacetModel.class), @XmlElement(name = "ranges", type = RangeFacetModel.class),
+                     @XmlElement(name = "histogram", type = HistogramFacetModel.class)})
 
     private final Set<FacetModel> facetModels = new HashSet<FacetModel>();
 

@@ -26,7 +26,7 @@ public class FacetsXmlCreatorTest
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
-            "        <size>10</size>\n" +
+            "        <count>10</count>\n" +
             "        <indices>termsFacetField</indices>\n" +
             "    </terms>\n" +
             "</facets>";
@@ -36,7 +36,7 @@ public class FacetsXmlCreatorTest
         final TermsFacetModel facet = new TermsFacetModel();
         facet.setIndices( "termsFacetField" );
         facet.setName( "myFacetName" );
-        facet.setSize( 10 );
+        facet.setCount( 10 );
         facets.addFacet( facet );
 
         String xml = createXml( facets );
@@ -53,7 +53,7 @@ public class FacetsXmlCreatorTest
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
-            "        <size>10</size>\n" +
+            "        <count>10</count>\n" +
             "        <indices>field1,field2,field3</indices>\n" +
             "    </terms>\n" +
             "</facets>\n";
@@ -63,7 +63,7 @@ public class FacetsXmlCreatorTest
         final TermsFacetModel facet = new TermsFacetModel();
         facet.setIndices( "field1,field2,field3" );
         facet.setName( "myFacetName" );
-        facet.setSize( 10 );
+        facet.setCount( 10 );
         facets.addFacet( facet );
 
         final String xml = createXml( facets );
@@ -78,7 +78,7 @@ public class FacetsXmlCreatorTest
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
-            "        <size>10</size>\n" +
+            "        <count>10</count>\n" +
             "        <all-terms>true</all-terms>\n" +
             "        <exclude>exclude1,exclude2,exclude3</exclude>\n" +
             "        <indices>fields1, fields2, fields3</indices>\n" +
@@ -96,7 +96,7 @@ public class FacetsXmlCreatorTest
         facet.setName( "myFacetName" );
         facet.setAllTerms( true );
         facet.setOrderby( "orderby" );
-        facet.setSize( 10 );
+        facet.setCount( 10 );
         facet.setRegex( "regexp" );
         facet.setRegexFlags( "DOTALL" );
         facets.addFacet( facet );

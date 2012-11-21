@@ -11,7 +11,7 @@ public class HistogramFacetModel
     extends AbstractFacetModel
 {
 
-    private String field;
+    private String index;
 
     private Long interval;
 
@@ -19,15 +19,15 @@ public class HistogramFacetModel
 
     private String valueField;
 
-    @XmlElement(name = "field")
-    public String getField()
+    @XmlElement(name = "index")
+    public String getIndex()
     {
-        return field;
+        return index;
     }
 
-    public void setField( final String field )
+    public void setIndex( final String index )
     {
-        this.field = field;
+        this.index = index;
     }
 
     @XmlElement(name = "interval")
@@ -68,12 +68,12 @@ public class HistogramFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.field ) && Strings.isNullOrEmpty( this.keyField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyField ) )
         {
             throw new IllegalArgumentException( "Error in range-facet + " + getName() + ": 'field' or 'keyField' must be set" );
         }
 
-        if ( Strings.isNullOrEmpty( this.field ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
         {
             throw new IllegalArgumentException(
                 "Error in range-facet + " + getName() + ": both 'key-field' and 'value-field' must be set" );

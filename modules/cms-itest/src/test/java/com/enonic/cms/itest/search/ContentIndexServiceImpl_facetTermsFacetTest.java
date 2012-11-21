@@ -116,7 +116,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
             "        <indices>data/person/type</indices>\n" +
-            "        <size>3</size>\n" +
+            "        <count>3</count>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -150,7 +150,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
             "        <indices>data/person/type,data/person/type,data/person/gender,data/person/drink</indices>\n" +
-            "        <size>3</size>\n" +
+            "        <count>3</count>\n" +
             "        <orderby>count</orderby>\n" +
             "    </terms>\n" +
             "</facets>";

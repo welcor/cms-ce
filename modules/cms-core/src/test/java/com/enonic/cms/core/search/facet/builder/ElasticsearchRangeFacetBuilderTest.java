@@ -24,7 +24,7 @@ public class ElasticsearchRangeFacetBuilderTest
         RangeFacetModel model = new RangeFacetModel();
         model.setName( "rangeFacet" );
         model.setIndex( "myDateField" );
-        model.setSize( 10 );
+        model.setCount( 10 );
 
         model.addFacetRange( new FacetRange( "0", "9" ) );
         model.addFacetRange( new FacetRange( "10", "19" ) );
@@ -50,7 +50,7 @@ public class ElasticsearchRangeFacetBuilderTest
         model.setName( "rangeFacet" );
         model.setKeyField( "keyField" );
         model.setValueField( "valueField" );
-        model.setSize( 10 );
+        model.setCount( 10 );
 
         model.addFacetRange( new FacetRange( "0", "9" ) );
         model.addFacetRange( new FacetRange( "10", "19" ) );

@@ -12,7 +12,7 @@ public abstract class AbstractFacetModel
 {
     private String name;
 
-    private Integer size;
+    private Integer count;
 
     public void setName( final String name )
     {
@@ -25,15 +25,15 @@ public abstract class AbstractFacetModel
         return name;
     }
 
-    @XmlElement(name = "size")
-    public Integer getSize()
+    @XmlElement(name = "count")
+    public Integer getCount()
     {
-        return size;
+        return count;
     }
 
-    public void setSize( final Integer size )
+    public void setCount( final Integer count )
     {
-        this.size = size;
+        this.count = count;
     }
 
     public void validate()

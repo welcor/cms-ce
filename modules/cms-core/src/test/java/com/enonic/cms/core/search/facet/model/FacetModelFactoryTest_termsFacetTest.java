@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class FacetModelFactoryTest_termsFacet
+public class FacetModelFactoryTest_termsFacetTest
 {
     private FacetsModelFactory facetsModelFactory = new FacetsModelFactory();
 
@@ -14,7 +14,7 @@ public class FacetModelFactoryTest_termsFacet
     {
         String xml = "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
-            "        <size>10</size>\n" +
+            "        <count>10</count>\n" +
             "        <all-terms>true</all-terms>\n" +
             "        <indices>data/activity, data/something</indices>\n" +
             "        <orderby>count</orderby>\n" +
@@ -38,7 +38,7 @@ public class FacetModelFactoryTest_termsFacet
     {
         String xml = "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
-            "        <size>10</size>\n" +
+            "        <count>10</count>\n" +
             "        <all-terms>true</all-terms>\n" +
             "        <orderby>count</orderby>\n" +
             "    </terms>\n" +

@@ -82,7 +82,7 @@ public class FacetsXmlCreatorTest
             "        <all-terms>true</all-terms>\n" +
             "        <exclude>exclude1,exclude2,exclude3</exclude>\n" +
             "        <indices>fields1, fields2, fields3</indices>\n" +
-            "        <order>orderby</order>\n" +
+            "        <orderby>orderby</orderby>\n" +
             "        <regex>regexp</regex>\n" +
             "        <regex-flags>DOTALL</regex-flags>\n" +
             "    </terms>\n" +

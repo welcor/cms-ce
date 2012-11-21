@@ -7,7 +7,6 @@ import org.junit.Test;
 public class TermFacetResultSetXmlCreatorTest
     extends FacetResultSetTestBase
 {
-
     @Test
     public void simple_term_facet_result()
     {

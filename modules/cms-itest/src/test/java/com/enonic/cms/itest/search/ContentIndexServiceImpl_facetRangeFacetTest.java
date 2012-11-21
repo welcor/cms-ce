@@ -42,13 +42,13 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
 
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
 
-        createDocumentWithDate( date, 1, "2000-12-31 23:59:59", "data/myDate" );
-        createDocumentWithDate( date, 2, "2001-01-01 00:00:00", "data/myDate" );
-        createDocumentWithDate( date, 3, "2001-01-01 01:00:00", "data/myDate" );
-        createDocumentWithDate( date, 4, "2001-01-01 01:00:00:001", "data/myDate" );
-        createDocumentWithDate( date, 5, "2001-01-01 23:59:58", "data/myDate" );
-        createDocumentWithDate( date, 6, "2001-01-02", "data/myDate" );
-        createDocumentWithDate( date, 7, "2001-01-03", "data/myDate" );
+        createContent( date, 1, "2000-12-31 23:59:59", "data/myDate" );
+        createContent( date, 2, "2001-01-01 00:00:00", "data/myDate" );
+        createContent( date, 3, "2001-01-01 01:00:00", "data/myDate" );
+        createContent( date, 4, "2001-01-01 01:00:00:001", "data/myDate" );
+        createContent( date, 5, "2001-01-01 23:59:58", "data/myDate" );
+        createContent( date, 6, "2001-01-02", "data/myDate" );
+        createContent( date, 7, "2001-01-03", "data/myDate" );
 
         flushIndex();
 
@@ -96,14 +96,14 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
 
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
 
-        createDocumentWithDate( date, 1, "0", "data/price" );
-        createDocumentWithDate( date, 2, "0.99", "data/price" );
-        createDocumentWithDate( date, 3, "1", "data/price" );
-        createDocumentWithDate( date, 4, "1.0", "data/price" );
-        createDocumentWithDate( date, 5, "10.0", "data/price" );
-        createDocumentWithDate( date, 6, "100", "data/price" );
-        createDocumentWithDate( date, 7, "101", "data/price" );
-        createDocumentWithDate( date, 8, "1000", "data/price" );
+        createContent( date, 1, "0", "data/price" );
+        createContent( date, 2, "0.99", "data/price" );
+        createContent( date, 3, "1", "data/price" );
+        createContent( date, 4, "1.0", "data/price" );
+        createContent( date, 5, "10.0", "data/price" );
+        createContent( date, 6, "100", "data/price" );
+        createContent( date, 7, "101", "data/price" );
+        createContent( date, 8, "1000", "data/price" );
 
         flushIndex();
 
@@ -152,8 +152,7 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
         assertEquals( count, currentEntry.getCount() );
     }
 
-    private ContentDocument createDocumentWithDate( final GregorianCalendar date, int contentKey, final String dateString,
-                                                    final String fieldName )
+    private ContentDocument createContent( final GregorianCalendar date, int contentKey, final String dateString, final String fieldName )
     {
         ContentDocument doc1 = new ContentDocument( new ContentKey( contentKey ) );
         setMetadata( date, doc1 );

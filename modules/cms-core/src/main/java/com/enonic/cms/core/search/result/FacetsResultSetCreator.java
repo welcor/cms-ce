@@ -5,6 +5,7 @@ import java.util.Map;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.Facets;
+import org.elasticsearch.search.facet.histogram.HistogramFacet;
 import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
@@ -14,6 +15,8 @@ public class FacetsResultSetCreator
     private final TermFacetResultSetCreator termFacetResultSetCreator = new TermFacetResultSetCreator();
 
     private final RangeFacetResultSetCreator rangeFacetResultSetCreator = new RangeFacetResultSetCreator();
+
+    private final HistogramFacetResultSetCreator histogramFacetResultSetCreator = new HistogramFacetResultSetCreator();
 
     public FacetsResultSet createResultSet( SearchResponse searchResponse )
     {
@@ -39,6 +42,11 @@ public class FacetsResultSetCreator
             else if ( facet instanceof RangeFacet )
             {
                 facetsResultSet.addFacetResultSet( rangeFacetResultSetCreator.createRangeFacetResultSet( facetName, (RangeFacet) facet ) );
+            }
+            else if ( facet instanceof HistogramFacet )
+            {
+                facetsResultSet.addFacetResultSet(
+                    histogramFacetResultSetCreator.createHistogramFacetResultSet( facetName, (HistogramFacet) facet ) );
             }
 
         }

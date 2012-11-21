@@ -10,7 +10,6 @@ import com.google.common.base.Strings;
 public class HistogramFacetModel
     extends AbstractFacetModel
 {
-
     private String index;
 
     private Long interval;

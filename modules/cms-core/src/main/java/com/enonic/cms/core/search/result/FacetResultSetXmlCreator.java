@@ -11,6 +11,9 @@ public class FacetResultSetXmlCreator
 
     private final TermFacetResultSetXmlCreator termFacetResultSetXmlCreator = new TermFacetResultSetXmlCreator();
 
+    private final HistogramFacetResultSetXmlCreator histogramFacetResultSetXmlCreator = new HistogramFacetResultSetXmlCreator();
+
+
     public void addFacetResultXml( Document doc, FacetsResultSet facetsResultSet )
     {
         Element root = doc.getRootElement();
@@ -35,8 +38,16 @@ public class FacetResultSetXmlCreator
                 case RANGE:
                     addRangeFacetResult( facetsNode, (RangeFacetResultSet) facet );
                     break;
+                case HISTOGRAM:
+                    addHistogramFacetResult( facetsNode, (HistogramFacetResultSet) facet );
+                    break;
             }
         }
+    }
+
+    private void addHistogramFacetResult( final Element facetsRoot, final HistogramFacetResultSet facet )
+    {
+        facetsRoot.addContent( histogramFacetResultSetXmlCreator.createHistogramFacetElement( facet ) );
     }
 
     private void addRangeFacetResult( final Element facetsRoot, final RangeFacetResultSet facet )

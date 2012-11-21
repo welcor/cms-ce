@@ -43,18 +43,20 @@ public class ElasticsearchHistogramFacetBuilder
 
         if ( !Strings.isNullOrEmpty( fieldName ) )
         {
-            QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
-
-            builder.field( queryField.getFieldNameForNumericQueries() );
+            builder.field( getNumericFieldName( fieldName ) );
 
         }
         else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyField() ) &&
             !Strings.isNullOrEmpty( histogramFacetModel.getValueField() ) )
         {
-            builder.keyField( histogramFacetModel.getKeyField() );
-            builder.valueField( histogramFacetModel.getValueField() );
+            builder.keyField( getNumericFieldName( histogramFacetModel.getKeyField() ) );
+            builder.valueField( getNumericFieldName( histogramFacetModel.getValueField() ) );
         }
     }
 
-
+    private String getNumericFieldName( String fieldName )
+    {
+        QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
+        return queryField.getFieldNameForNumericQueries();
+    }
 }

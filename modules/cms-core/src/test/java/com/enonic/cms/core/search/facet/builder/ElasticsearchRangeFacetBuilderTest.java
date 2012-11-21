@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import com.enonic.cms.core.search.facet.AbstractElasticsearchFacetTestBase;
 import com.enonic.cms.core.search.facet.model.FacetRange;
-import com.enonic.cms.core.search.facet.model.FacetRanges;
 import com.enonic.cms.core.search.facet.model.RangeFacetModel;
 
 import static org.junit.Assert.*;
@@ -30,7 +29,6 @@ public class ElasticsearchRangeFacetBuilderTest
         model.addFacetRange( new FacetRange( "0", "9" ) );
         model.addFacetRange( new FacetRange( "10", "19" ) );
         model.addFacetRange( new FacetRange( "20", "29" ) );
-
 
         final RangeFacetBuilder build = facetBuilder.build( model );
 

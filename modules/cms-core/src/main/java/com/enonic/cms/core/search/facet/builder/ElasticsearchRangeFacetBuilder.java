@@ -7,7 +7,6 @@ import com.google.common.base.Strings;
 import com.enonic.cms.core.search.facet.FacetQueryException;
 import com.enonic.cms.core.search.facet.model.FacetRange;
 import com.enonic.cms.core.search.facet.model.FacetRangeValue;
-import com.enonic.cms.core.search.facet.model.FacetRanges;
 import com.enonic.cms.core.search.facet.model.RangeFacetModel;
 import com.enonic.cms.core.search.query.QueryField;
 

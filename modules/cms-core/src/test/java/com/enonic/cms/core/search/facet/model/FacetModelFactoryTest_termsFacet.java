@@ -15,9 +15,9 @@ public class FacetModelFactoryTest_termsFacet
         String xml = "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
-            "        <all_terms>true</all_terms>\n" +
-            "        <fields>data/activity, data/something</fields>\n" +
-            "        <order>count</order>\n" +
+            "        <all-terms>true</all-terms>\n" +
+            "        <indices>data/activity, data/something</indices>\n" +
+            "        <orderby>count</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
 
@@ -28,8 +28,8 @@ public class FacetModelFactoryTest_termsFacet
 
         TermsFacetModel termsFacetModel = (TermsFacetModel) next;
         assertTrue( termsFacetModel.getAllTerms() );
-        assertEquals( "data/activity, data/something", termsFacetModel.getFields() );
-        assertEquals( "count", termsFacetModel.getOrder() );
+        assertEquals( "data/activity, data/something", termsFacetModel.getIndices() );
+        assertEquals( "count", termsFacetModel.getOrderby() );
     }
 
     @Test
@@ -39,8 +39,8 @@ public class FacetModelFactoryTest_termsFacet
         String xml = "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
-            "        <all_terms>true</all_terms>\n" +
-            "        <order>count</order>\n" +
+            "        <all-terms>true</all-terms>\n" +
+            "        <orderby>count</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
 
@@ -59,7 +59,7 @@ public class FacetModelFactoryTest_termsFacet
         }
         catch ( Exception e )
         {
-            assertTrue( e.getMessage().contains( "Field or fields must be set" ) );
+            assertTrue( e.getMessage(), e.getMessage().contains( "'indices' must be set" ) );
             exceptionThrown = true;
         }
 

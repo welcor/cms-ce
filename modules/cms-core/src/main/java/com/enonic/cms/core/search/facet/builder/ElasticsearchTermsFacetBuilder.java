@@ -10,7 +10,6 @@ import com.google.common.collect.Sets;
 
 import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 import com.enonic.cms.core.search.query.IndexQueryException;
-import com.enonic.cms.core.search.query.QueryField;
 
 final class ElasticsearchTermsFacetBuilder
     extends AbstractElasticsearchFacetBuilder
@@ -21,11 +20,9 @@ final class ElasticsearchTermsFacetBuilder
 
         TermsFacetBuilder builder = new TermsFacetBuilder( termsFacetModel.getName() );
 
-        setField( termsFacetModel, builder );
+        setFields( termsFacetModel, builder );
 
         setSize( termsFacetModel, builder );
-
-        setFields( termsFacetModel, builder );
 
         setOrder( termsFacetModel, builder );
 
@@ -34,16 +31,6 @@ final class ElasticsearchTermsFacetBuilder
         setExcludes( termsFacetModel, builder );
 
         return builder;
-    }
-
-    protected void setField( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
-    {
-        final String fieldName = termsFacetXml.getField();
-        if ( !Strings.isNullOrEmpty( fieldName ) )
-        {
-            QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
-            builder.field( queryField.getFieldName() );
-        }
     }
 
     protected void setSize( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
@@ -56,7 +43,7 @@ final class ElasticsearchTermsFacetBuilder
 
     protected void setOrder( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        if ( !Strings.isNullOrEmpty( termsFacetXml.getOrder() ) )
+        if ( !Strings.isNullOrEmpty( termsFacetXml.getOrderby() ) )
         {
             final TermsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( termsFacetXml );
 
@@ -68,11 +55,11 @@ final class ElasticsearchTermsFacetBuilder
     {
         try
         {
-            return TermsFacet.ComparatorType.valueOf( termsFacetXml.getOrder().toUpperCase() );
+            return TermsFacet.ComparatorType.valueOf( termsFacetXml.getOrderby().toUpperCase() );
         }
         catch ( Exception e )
         {
-            throw new IndexQueryException( "Parameter value '" + termsFacetXml.getOrder() + "' not valid order value", e );
+            throw new IndexQueryException( "Parameter value '" + termsFacetXml.getOrderby() + "' not valid order value", e );
         }
     }
 
@@ -130,12 +117,21 @@ final class ElasticsearchTermsFacetBuilder
 
     private void setFields( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        final String[] fields = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getFields() );
+        final String[] fields = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getIndices() );
 
-        if ( fields != null && fields.length > 0 )
+        if ( fields == null || fields.length == 0 )
         {
-            final String[] fieldNamesArray = cleanupAndConvertToQueryFieldNames( fields );
+            return;
+        }
 
+        final String[] fieldNamesArray = cleanupAndConvertToQueryFieldNames( fields );
+
+        if ( fields.length == 1 )
+        {
+            builder.field( fieldNamesArray[0] );
+        }
+        else
+        {
             builder.fields( fieldNamesArray );
         }
     }

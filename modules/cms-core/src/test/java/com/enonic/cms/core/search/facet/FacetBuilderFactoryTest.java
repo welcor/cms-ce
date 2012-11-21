@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.elasticsearch.search.facet.AbstractFacetBuilder;
-import org.elasticsearch.search.facet.histogram.HistogramFacet;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.junit.Test;
 
@@ -36,13 +35,12 @@ public class FacetBuilderFactoryTest
         String facetXml = "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
-            "        <field>termsFacetField</field>\n" +
+            "        <indices>termsFacetField</indices>\n" +
             "    </terms>\n" +
             "</facets>";
 
         ContentIndexQuery query = new ContentIndexQuery( "" );
         query.setFacets( facetXml );
-
 
         final Set<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 
@@ -60,15 +58,15 @@ public class FacetBuilderFactoryTest
         String facetXml = "<facets>\n" +
             "    <terms name=\"myFacet1\">\n" +
             "        <size>10</size>\n" +
-            "        <field>fieldName</field>\n" +
+            "        <indices>fieldName</indices>\n" +
             "    </terms>\n" +
             "    <terms name=\"myFacet2\">\n" +
             "        <size>10</size>\n" +
-            "        <field>fieldName</field>\n" +
+            "        <indices>fieldName</indices>\n" +
             "    </terms>\n" +
             "    <terms name=\"myFacet3\">\n" +
             "        <size>10</size>\n" +
-            "        <field>fieldName</field>\n" +
+            "        <indices>fieldName</indices>\n" +
             "    </terms>\n" +
             "</facets>";
 

@@ -31,7 +31,7 @@ public class ElasticsearchFacetBuilderTest
 
         TermsFacetModel termFacetModel = new TermsFacetModel();
         termFacetModel.setName( "test" );
-        termFacetModel.setField( "test" );
+        termFacetModel.setIndices( "test" );
 
         facetsModel.addFacet( termFacetModel );
 

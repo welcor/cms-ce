@@ -51,7 +51,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
+            "        <indices>data/person/type</indices>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -84,10 +84,10 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"facet1\">\n" +
-            "        <field>data/person/type</field>\n" +
+            "        <indices>data/person/type</indices>\n" +
             "    </terms>\n" +
             "    <terms name=\"facet2\">\n" +
-            "        <field>data/person/drink</field>\n" +
+            "        <indices>data/person/drink</indices>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -115,7 +115,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
+            "        <indices>data/person/type</indices>\n" +
             "        <size>3</size>\n" +
             "    </terms>\n" +
             "</facets>";
@@ -149,9 +149,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <fields>data/person/type,data/person/type,data/person/gender,data/person/drink</fields>\n" +
+            "        <indices>data/person/type,data/person/type,data/person/gender,data/person/drink</indices>\n" +
             "        <size>3</size>\n" +
-            "        <order>count</order>\n" +
+            "        <orderby>count</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -188,7 +188,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
+            "        <indices>data/person/type</indices>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -214,8 +214,8 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
-            "        <order>reverse_count</order>\n" +
+            "        <indices>data/person/type</indices>\n" +
+            "        <orderby>reverse_count</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -240,8 +240,8 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
-            "        <order>term</order>\n" +
+            "        <indices>data/person/type</indices>\n" +
+            "        <orderby>term</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -266,8 +266,8 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
-            "        <order>reverse_term</order>\n" +
+            "        <indices>data/person/type</indices>\n" +
+            "        <orderby>reverse_term</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -292,8 +292,8 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
-            "        <order>sushi</order>\n" +
+            "        <indices>data/person/type</indices>\n" +
+            "        <orderby>sushi</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -311,7 +311,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
+            "        <indices>data/person/type</indices>\n" +
             "        <exclude>robot</exclude>\n" +
             "    </terms>\n" +
             "</facets>";
@@ -338,7 +338,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/type</field>\n" +
+            "        <indices>data/person/type</indices>\n" +
             "        <exclude>robot,alien</exclude>\n" +
             "    </terms>\n" +
             "</facets>";
@@ -363,7 +363,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/food</field>\n" +
+            "        <indices>data/person/food</indices>\n" +
             "        <regex>.*h.*</regex>\n" +
             "    </terms>\n" +
             "</facets>";
@@ -397,9 +397,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         final String facetName = "specietypes";
         final String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
-            "        <field>data/person/food</field>\n" +
+            "        <indices>data/person/food</indices>\n" +
             "        <regex>S.*</regex>\n" +
-            "        <regex_flags>CASE_INSENSITIVE,DOTALL</regex_flags>\n" +
+            "        <regex-flags>CASE_INSENSITIVE,DOTALL</regex-flags>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );

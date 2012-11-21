@@ -11,13 +11,11 @@ import com.google.common.base.Strings;
 public class TermsFacetModel
     extends AbstractFacetModel
 {
-    private String field;
-
-    private String fields;
+    private String indices;
 
     private String exclude;
 
-    private String order;
+    private String orderby;
 
     private String regex;
 
@@ -25,43 +23,32 @@ public class TermsFacetModel
 
     private Boolean allTerms;
 
-    public void setField( final String field )
-    {
-        this.field = field;
-    }
-
     public void validate()
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( fields ) && Strings.isNullOrEmpty( field ) )
+        if ( Strings.isNullOrEmpty( indices ) )
         {
-            throw new IllegalArgumentException( "Termfacet + " + getName() + ": Field or fields must be set" );
+            throw new IllegalArgumentException( "Termfacet " + getName() + ": Field 'indices' must be set" );
         }
     }
 
-    @XmlElement(name = "field")
-    public String getField()
+    @XmlElement(name = "orderby")
+    public String getOrderby()
     {
-        return field;
+        return orderby;
     }
 
-    @XmlElement(name = "order")
-    public String getOrder()
-    {
-        return order;
-    }
-
-    @XmlElement(name = "all_terms")
+    @XmlElement(name = "all-terms")
     public Boolean getAllTerms()
     {
         return allTerms;
     }
 
-    @XmlElement(name = "fields")
-    public String getFields()
+    @XmlElement(name = "indices")
+    public String getIndices()
     {
-        return fields;
+        return indices;
     }
 
     @XmlElement(name = "exclude")
@@ -76,15 +63,15 @@ public class TermsFacetModel
         return regex;
     }
 
-    @XmlElement(name = "regex_flags")
+    @XmlElement(name = "regex-flags")
     public String getRegexFlags()
     {
         return regexFlags;
     }
 
-    public void setOrder( final String order )
+    public void setOrderby( final String orderby )
     {
-        this.order = order;
+        this.orderby = orderby;
     }
 
     public void setAllTerms( final Boolean allTerms )
@@ -92,9 +79,9 @@ public class TermsFacetModel
         this.allTerms = allTerms;
     }
 
-    public void setFields( final String fields )
+    public void setIndices( final String indices )
     {
-        this.fields = fields;
+        this.indices = indices;
     }
 
     public void setExclude( final String exclude )

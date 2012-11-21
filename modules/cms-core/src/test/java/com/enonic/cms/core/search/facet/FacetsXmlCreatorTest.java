@@ -10,7 +10,6 @@ import org.elasticsearch.common.Strings;
 import org.junit.Test;
 
 import com.enonic.cms.core.search.facet.model.FacetRange;
-import com.enonic.cms.core.search.facet.model.FacetRanges;
 import com.enonic.cms.core.search.facet.model.FacetsModel;
 import com.enonic.cms.core.search.facet.model.RangeFacetModel;
 import com.enonic.cms.core.search.facet.model.TermsFacetModel;
@@ -24,13 +23,27 @@ public class FacetsXmlCreatorTest
     public void testCreateTermsFacetXml_simple()
         throws Exception
     {
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+            "<facets>\n" +
+            "    <terms name=\"myFacetName\">\n" +
+            "        <size>10</size>\n" +
+            "        <indices>termsFacetField</indices>\n" +
+            "    </terms>\n" +
+            "</facets>";
+
         FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
-        facet.setField( "termsFacetField" );
+        facet.setIndices( "termsFacetField" );
         facet.setName( "myFacetName" );
         facet.setSize( 10 );
         facets.addFacet( facet );
+
+        String xml = createXml( facets );
+
+        System.out.println( xml );
+
+        assertEquals( Strings.trimTrailingWhitespace( expected ), Strings.trimTrailingWhitespace( xml ) );
     }
 
     @Test
@@ -41,14 +54,14 @@ public class FacetsXmlCreatorTest
             "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
-            "        <fields>field1,field2,field3</fields>\n" +
+            "        <indices>field1,field2,field3</indices>\n" +
             "    </terms>\n" +
             "</facets>\n";
 
         FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
-        facet.setFields( "field1,field2,field3" );
+        facet.setIndices( "field1,field2,field3" );
         facet.setName( "myFacetName" );
         facet.setSize( 10 );
         facets.addFacet( facet );
@@ -66,25 +79,23 @@ public class FacetsXmlCreatorTest
             "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <size>10</size>\n" +
-            "        <all_terms>true</all_terms>\n" +
+            "        <all-terms>true</all-terms>\n" +
             "        <exclude>exclude1,exclude2,exclude3</exclude>\n" +
-            "        <field>field</field>\n" +
-            "        <fields>fields1, fields2, fields3</fields>\n" +
+            "        <indices>fields1, fields2, fields3</indices>\n" +
             "        <order>orderby</order>\n" +
             "        <regex>regexp</regex>\n" +
-            "        <regex_flags>DOTALL</regex_flags>\n" +
+            "        <regex-flags>DOTALL</regex-flags>\n" +
             "    </terms>\n" +
             "</facets>";
 
         FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
-        facet.setField( "field" );
-        facet.setFields( "fields1, fields2, fields3" );
+        facet.setIndices( "fields1, fields2, fields3" );
         facet.setExclude( "exclude1,exclude2,exclude3" );
         facet.setName( "myFacetName" );
         facet.setAllTerms( true );
-        facet.setOrder( "orderby" );
+        facet.setOrderby( "orderby" );
         facet.setSize( 10 );
         facet.setRegex( "regexp" );
         facet.setRegexFlags( "DOTALL" );
@@ -105,7 +116,6 @@ public class FacetsXmlCreatorTest
         final RangeFacetModel rangeFacet = new RangeFacetModel();
         rangeFacet.setName( "myRangeFacet" );
         rangeFacet.setIndex( "rangeField" );
-
 
         rangeFacet.addFacetRange( new FacetRange( null, "49" ) );
         rangeFacet.addFacetRange( new FacetRange( "50", "100" ) );

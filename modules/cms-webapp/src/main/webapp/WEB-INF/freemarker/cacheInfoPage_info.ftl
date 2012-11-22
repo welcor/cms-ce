@@ -12,21 +12,15 @@
                 </tr>
                 <tr>
                     <td>
-                        Max elements in memory:
+                        Capacity:
                     </td>
                     <td>${x.memoryCapacity}</td>
                 </tr>
                 <tr>
                     <td>
-                        Object count:
+                        Capacity usage:
                     </td>
-                    <td>${x.count}</td>
-                </tr>
-                <tr>
-                    <td>
-                        Capacity usage (memory):
-                    </td>
-                    <td>${x.memoryCapacityUsage} %</td>
+                    <td>${x.count} (${x.memoryCapacityUsage} %)</td>
                 </tr>
                 <tr>
                     <td>

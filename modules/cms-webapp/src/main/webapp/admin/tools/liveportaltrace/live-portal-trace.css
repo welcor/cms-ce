@@ -69,10 +69,14 @@
     text-align: left;
 }
 
+#system-info-table tr {
+    height: 2em;
+}
+
 #system-info-table tr td,
 #system-info-table tr th {
     height: 18px;
-    padding: 2px 10px 2px 10px;
+    padding: 0px 10px 0px 10px;
     vertical-align: middle;
 }
 
@@ -93,6 +97,7 @@
 .system-info-value {
     text-align: left;
     width: 80px;
+    white-space: nowrap;
 }
 
 pre {

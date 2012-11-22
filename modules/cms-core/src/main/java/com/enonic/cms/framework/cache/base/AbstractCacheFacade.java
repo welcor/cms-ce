@@ -1,5 +1,6 @@
 package com.enonic.cms.framework.cache.base;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.enonic.cms.framework.cache.CacheFacade;
@@ -16,7 +17,7 @@ public abstract class AbstractCacheFacade
 
     private final AtomicLong missCount;
 
-    private final AtomicLong removeAllCount;
+    private final AtomicInteger removeAllCount;
 
     private CacheEventPublisher eventPublisher;
 
@@ -24,7 +25,7 @@ public abstract class AbstractCacheFacade
     {
         this.hitCount = new AtomicLong( 0 );
         this.missCount = new AtomicLong( 0 );
-        this.removeAllCount = new AtomicLong( 0 );
+        this.removeAllCount = new AtomicInteger( 0 );
     }
 
     @Override
@@ -82,7 +83,7 @@ public abstract class AbstractCacheFacade
     }
 
     @Override
-    public long getRemoveAllCount()
+    public int getRemoveAllCount()
     {
         return this.removeAllCount.get();
     }

@@ -11,11 +11,11 @@ class CacheStatistic
 
     private long missCount;
 
-    private long removeAllCount;
+    private int removeAllCount;
 
     private int memoryCapacityUsage;
 
-    private int Effectiveness;
+    private int effectiveness;
 
     @SuppressWarnings("UnusedDeclaration")
     public int getCount()
@@ -61,13 +61,13 @@ class CacheStatistic
         this.missCount = missCount;
     }
 
-    void setRemoveAllCount( final long removeAllCount )
+    void setRemoveAllCount( final int removeAllCount )
     {
         this.removeAllCount = removeAllCount;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public long getRemoveAllCount()
+    public int getRemoveAllCount()
     {
         return removeAllCount;
     }
@@ -86,11 +86,11 @@ class CacheStatistic
     @SuppressWarnings("UnusedDeclaration")
     public int getEffectiveness()
     {
-        return Effectiveness;
+        return effectiveness;
     }
 
     void setEffectiveness( final int effectiveness )
     {
-        Effectiveness = effectiveness;
+        this.effectiveness = effectiveness;
     }
 }

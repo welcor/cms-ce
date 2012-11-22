@@ -84,7 +84,7 @@ public interface CacheFacade
     /**
      * Number of times of clear cache.
      */
-    public long getRemoveAllCount();
+    public int getRemoveAllCount();
 
     /**
      * Return the number of objects in cache.

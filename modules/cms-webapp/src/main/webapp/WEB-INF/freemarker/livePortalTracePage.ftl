@@ -37,12 +37,9 @@
 
 <h1>Admin / Live Portal Trace</h1>
 
-<table style="margin-bottom: 10px">
+<table>
     <tr>
         <td style="margin-right: 10px">
-            <!--button class="button_text" id="auto-update" onclick="automaticUpdateController.switchAutomaticUpdate()">
-                Stop automatic update
-            </button-->
             <input type="checkbox" checked="checked" id="auto-update" onclick="automaticUpdateController.switchAutomaticUpdate()"/><label
                 for="auto-update">Auto update</label>
             &nbsp;&nbsp;&nbsp;System time: <span id="system-time">?</span>
@@ -54,7 +51,7 @@
         <td style="margin-right: 10px">
 
             <table id="system-info-table">
-                <tr style="border-bottom: 1px solid #DDDDDD">
+                <tr style="border-bottom: 1px solid #DDDDDD; border-top: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td">
                         <a onclick="$('#entity-cache-details-row').toggle();" href="javascript: void(0);">
                             Entity cache
@@ -138,7 +135,7 @@
                     <td class="system-info-value" id="java-thread-count"></td>
                     <td class="system-info-label">peak thread count:</td>
                     <td class="system-info-value" id="java-thread-peak-count"></td>
-                    <td class="system-info-label">open JDBC conn.:</td>
+                    <td class="system-info-label"></td>
                     <td class="system-info-value" id="data-source-open-connection-count"></td>
                     <td></td>
                     <td></td>

@@ -5,6 +5,7 @@ import java.util.Map;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.Facets;
+import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.elasticsearch.search.facet.histogram.HistogramFacet;
 import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
@@ -17,6 +18,8 @@ public class FacetsResultSetCreator
     private final RangeFacetResultSetCreator rangeFacetResultSetCreator = new RangeFacetResultSetCreator();
 
     private final HistogramFacetResultSetCreator histogramFacetResultSetCreator = new HistogramFacetResultSetCreator();
+
+    private final DateHistogramFacetResultSetCreator dateHistogramFacetResultSetCreator = new DateHistogramFacetResultSetCreator();
 
     public FacetsResultSet createResultSet( SearchResponse searchResponse )
     {
@@ -37,18 +40,20 @@ public class FacetsResultSetCreator
 
             if ( facet instanceof TermsFacet )
             {
-                facetsResultSet.addFacetResultSet( termFacetResultSetCreator.createTermFacetResultSet( facetName, (TermsFacet) facet ) );
+                facetsResultSet.addFacetResultSet( termFacetResultSetCreator.create( facetName, (TermsFacet) facet ) );
             }
             else if ( facet instanceof RangeFacet )
             {
-                facetsResultSet.addFacetResultSet( rangeFacetResultSetCreator.createRangeFacetResultSet( facetName, (RangeFacet) facet ) );
+                facetsResultSet.addFacetResultSet( rangeFacetResultSetCreator.create( facetName, (RangeFacet) facet ) );
             }
             else if ( facet instanceof HistogramFacet )
             {
-                facetsResultSet.addFacetResultSet(
-                    histogramFacetResultSetCreator.createHistogramFacetResultSet( facetName, (HistogramFacet) facet ) );
+                facetsResultSet.addFacetResultSet( histogramFacetResultSetCreator.create( facetName, (HistogramFacet) facet ) );
             }
-
+            else if ( facet instanceof DateHistogramFacet )
+            {
+                facetsResultSet.addFacetResultSet( dateHistogramFacetResultSetCreator.create( facetName, (DateHistogramFacet) facet ) );
+            }
         }
 
         return facetsResultSet;

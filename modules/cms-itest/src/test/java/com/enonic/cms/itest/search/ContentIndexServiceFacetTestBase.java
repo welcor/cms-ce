@@ -44,6 +44,18 @@ public class ContentIndexServiceFacetTestBase
         }
     }
 
+    protected ContentDocument createAndIndexContent( int contentKey, final String customDataValue, final String fieldName )
+    {
+        final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
+
+        ContentDocument doc1 = new ContentDocument( new ContentKey( contentKey ) );
+        setMetadata( date, doc1 );
+        doc1.setTitle( "Homer" );
+        doc1.addUserDefinedField( fieldName, customDataValue );
+        contentIndexService.index( doc1 );
+        return doc1;
+    }
+
     protected ContentDocument createAndIndexContent( int contentKey, String[] values, String[] fields )
     {
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );

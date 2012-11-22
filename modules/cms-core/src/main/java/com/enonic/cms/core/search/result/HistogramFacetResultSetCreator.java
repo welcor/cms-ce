@@ -7,7 +7,7 @@ import org.elasticsearch.search.facet.histogram.HistogramFacet;
 public class HistogramFacetResultSetCreator
 {
 
-    protected HistogramFacetResultSet createHistogramFacetResultSet( final String facetName, final HistogramFacet facet )
+    protected HistogramFacetResultSet create( final String facetName, final HistogramFacet facet )
     {
         HistogramFacetResultSet histogramFacetResultSet = new HistogramFacetResultSet();
 

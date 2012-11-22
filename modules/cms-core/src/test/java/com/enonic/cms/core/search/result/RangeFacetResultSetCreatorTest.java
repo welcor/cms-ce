@@ -30,7 +30,7 @@ public class RangeFacetResultSetCreatorTest
         when( entry.getMin() ).thenReturn( new Double( -123456 ) );
         when( entry.getMean() ).thenReturn( new Double( -123456 ) );
 
-        final FacetResultSet facetResultSet = rangeFacetResultSetCreator.createRangeFacetResultSet( "myRangeFacet", rangeFacet );
+        final FacetResultSet facetResultSet = rangeFacetResultSetCreator.create( "myRangeFacet", rangeFacet );
         assertTrue( facetResultSet instanceof RangeFacetResultSet );
         assertEquals( "myRangeFacet", facetResultSet.getName() );
 

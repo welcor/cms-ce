@@ -13,7 +13,8 @@ public class FacetsModel
     implements Iterable<FacetModel>
 {
     @XmlElements({@XmlElement(name = "terms", type = TermsFacetModel.class), @XmlElement(name = "ranges", type = RangeFacetModel.class),
-                     @XmlElement(name = "histogram", type = HistogramFacetModel.class)})
+                     @XmlElement(name = "histogram", type = HistogramFacetModel.class),
+                     @XmlElement(name = "date-histogram", type = DateHistogramFacetModel.class)})
 
     private final Set<FacetModel> facetModels = new HashSet<FacetModel>();
 

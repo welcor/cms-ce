@@ -13,6 +13,8 @@ public class FacetResultSetXmlCreator
 
     private final HistogramFacetResultSetXmlCreator histogramFacetResultSetXmlCreator = new HistogramFacetResultSetXmlCreator();
 
+    private final DateHistogramFacetResultSetXmlCreator dateHistogramFacetResultSetXmlCreator = new DateHistogramFacetResultSetXmlCreator();
+
 
     public void addFacetResultXml( Document doc, FacetsResultSet facetsResultSet )
     {
@@ -41,22 +43,30 @@ public class FacetResultSetXmlCreator
                 case HISTOGRAM:
                     addHistogramFacetResult( facetsNode, (HistogramFacetResultSet) facet );
                     break;
+                case DATE_HISTOGRAM:
+                    addDateHistogramFacetResult( facetsNode, (DateHistogramFacetResultSet) facet );
+                    break;
             }
         }
     }
 
+    private void addDateHistogramFacetResult( final Element facetsRoot, final DateHistogramFacetResultSet facet )
+    {
+        facetsRoot.addContent( dateHistogramFacetResultSetXmlCreator.create( facet ) );
+    }
+
     private void addHistogramFacetResult( final Element facetsRoot, final HistogramFacetResultSet facet )
     {
-        facetsRoot.addContent( histogramFacetResultSetXmlCreator.createHistogramFacetElement( facet ) );
+        facetsRoot.addContent( histogramFacetResultSetXmlCreator.create( facet ) );
     }
 
     private void addRangeFacetResult( final Element facetsRoot, final RangeFacetResultSet facet )
     {
-        facetsRoot.addContent( rangeFacetResultSetXmlCreator.createRangeFacetElement( facet ) );
+        facetsRoot.addContent( rangeFacetResultSetXmlCreator.create( facet ) );
     }
 
     private void addTermFacetResult( final Element facetsRoot, final TermsFacetResultSet facet )
     {
-        facetsRoot.addContent( termFacetResultSetXmlCreator.createTermFacetElement( facet ) );
+        facetsRoot.addContent( termFacetResultSetXmlCreator.create( facet ) );
     }
 }

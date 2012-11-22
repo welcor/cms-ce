@@ -8,7 +8,7 @@ public class HistogramFacetResultSetXmlCreator
     extends AbstractFacetResultXmlCreator
 {
 
-    public Element createHistogramFacetElement( HistogramFacetResultSet histogramFacetResultSet )
+    public Element create( HistogramFacetResultSet histogramFacetResultSet )
     {
         final Element rangeFacetRootElement = createFacetRootElement( "histogram", histogramFacetResultSet );
 

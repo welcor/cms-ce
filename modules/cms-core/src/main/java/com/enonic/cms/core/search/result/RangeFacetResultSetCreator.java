@@ -6,7 +6,7 @@ import org.elasticsearch.search.facet.range.RangeFacet;
 
 public class RangeFacetResultSetCreator
 {
-    protected FacetResultSet createRangeFacetResultSet( final String facetName, final RangeFacet facet )
+    protected FacetResultSet create( final String facetName, final RangeFacet facet )
     {
         RangeFacetResultSet rangeFacetResultSet = new RangeFacetResultSet();
 

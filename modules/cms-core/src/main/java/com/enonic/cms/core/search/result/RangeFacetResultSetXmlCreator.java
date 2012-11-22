@@ -12,7 +12,7 @@ import com.enonic.cms.core.search.ElasticSearchFormatter;
 public class RangeFacetResultSetXmlCreator
     extends AbstractFacetResultXmlCreator
 {
-    public Element createRangeFacetElement( RangeFacetResultSet rangeFacet )
+    public Element create( RangeFacetResultSet rangeFacet )
     {
         final Element rangeFacetRootElement = createFacetRootElement( "ranges", rangeFacet );
 

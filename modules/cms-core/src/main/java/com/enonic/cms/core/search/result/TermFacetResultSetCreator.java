@@ -10,7 +10,7 @@ public class TermFacetResultSetCreator
     {
     }
 
-    protected FacetResultSet createTermFacetResultSet( final String facetName, final TermsFacet facet )
+    protected FacetResultSet create( final String facetName, final TermsFacet facet )
     {
         TermsFacetResultSet termsFacetResultSet = new TermsFacetResultSet();
         termsFacetResultSet.setName( facetName );

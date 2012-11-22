@@ -7,7 +7,7 @@ import org.jdom.Element;
 public class TermFacetResultSetXmlCreator
     extends AbstractFacetResultXmlCreator
 {
-    Element createTermFacetElement( final TermsFacetResultSet facet )
+    Element create( final TermsFacetResultSet facet )
     {
         final Element termFacetRoot = createFacetRootElement( "terms", facet );
 

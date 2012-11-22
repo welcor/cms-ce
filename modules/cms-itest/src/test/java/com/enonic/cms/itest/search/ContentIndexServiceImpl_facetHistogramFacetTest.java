@@ -1,14 +1,9 @@
 package com.enonic.cms.itest.search;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import org.junit.Test;
 
-import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
-import com.enonic.cms.core.search.query.ContentDocument;
 import com.enonic.cms.core.search.result.FacetResultSet;
 import com.enonic.cms.core.search.result.HistogramFacetResultSet;
 
@@ -114,17 +109,5 @@ public class ContentIndexServiceImpl_facetHistogramFacetTest
         createAndCompareResultAsXml( result, expectedXml );
     }
 
-
-    private ContentDocument createAndIndexContent( int contentKey, final String customDataValue, final String fieldName )
-    {
-        final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
-
-        ContentDocument doc1 = new ContentDocument( new ContentKey( contentKey ) );
-        setMetadata( date, doc1 );
-        doc1.setTitle( "Homer" );
-        doc1.addUserDefinedField( fieldName, customDataValue );
-        contentIndexService.index( doc1 );
-        return doc1;
-    }
 
 }

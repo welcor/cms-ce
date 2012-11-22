@@ -4,6 +4,7 @@ public enum FacetResultType
 {
     TERMS,
     RANGE,
-    HISTOGRAM;
+    HISTOGRAM,
+    DATE_HISTOGRAM;
 
 }

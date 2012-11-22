@@ -8,6 +8,7 @@ import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 
+import com.enonic.cms.core.search.facet.FacetQueryException;
 import com.enonic.cms.core.search.facet.model.TermsFacetModel;
 import com.enonic.cms.core.search.query.IndexQueryException;
 
@@ -16,7 +17,14 @@ final class ElasticsearchTermsFacetBuilder
 {
     final TermsFacetBuilder build( TermsFacetModel termsFacetModel )
     {
-        termsFacetModel.validate();
+        try
+        {
+            termsFacetModel.validate();
+        }
+        catch ( Exception e )
+        {
+            throw new FacetQueryException( "Error in term-facet definition", e );
+        }
 
         TermsFacetBuilder builder = new TermsFacetBuilder( termsFacetModel.getName() );
 

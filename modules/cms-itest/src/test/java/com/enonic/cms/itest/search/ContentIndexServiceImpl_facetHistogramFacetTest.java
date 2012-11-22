@@ -6,8 +6,6 @@ import java.util.GregorianCalendar;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.query.ContentDocument;
@@ -116,23 +114,6 @@ public class ContentIndexServiceImpl_facetHistogramFacetTest
         createAndCompareResultAsXml( result, expectedXml );
     }
 
-    private ContentDocument createAndIndexContent( int contentKey, String[] values, String[] fields )
-    {
-        final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
-
-        ContentDocument doc1 = new ContentDocument( new ContentKey( contentKey ) );
-        setMetadata( date, doc1 );
-        doc1.setTitle( "Homer" );
-
-        for ( int i = 0; i < fields.length; i++ )
-        {
-            doc1.addUserDefinedField( fields[i], values[i] );
-        }
-
-        contentIndexService.index( doc1 );
-        return doc1;
-    }
-
 
     private ContentDocument createAndIndexContent( int contentKey, final String customDataValue, final String fieldName )
     {
@@ -146,18 +127,4 @@ public class ContentIndexServiceImpl_facetHistogramFacetTest
         return doc1;
     }
 
-    private void setMetadata( final GregorianCalendar date, final ContentDocument doc1 )
-    {
-        doc1.setCategoryKey( new CategoryKey( 9 ) );
-        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
-        doc1.setContentTypeName( "Species" );
-        // Publish from February 28th to March 28th.
-        doc1.setPublishFrom( date.getTime() );
-        date.add( Calendar.MONTH, 1 );
-        doc1.setPublishTo( date.getTime() );
-        date.add( Calendar.MONTH, -1 );
-        doc1.setStatus( 2 );
-        doc1.setPriority( 0 );
-        doc1.setLanguageCode( "en" );
-    }
 }

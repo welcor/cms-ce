@@ -71,10 +71,19 @@ public class ElasticsearchRangeFacetBuilder
         }
         else if ( !Strings.isNullOrEmpty( rangeFacetModel.getKeyField() ) && !Strings.isNullOrEmpty( rangeFacetModel.getValueField() ) )
         {
-            builder.keyField( rangeFacetModel.getKeyField() );
-            builder.valueField( rangeFacetModel.getValueField() );
+            QueryField keyField = new QueryField( createQueryFieldName( rangeFacetModel.getKeyField() ) );
+            QueryField valueField = new QueryField( createQueryFieldName( rangeFacetModel.getValueField() ) );
+
+            if ( rangeFacetModel.isNumericRanges() )
+            {
+                builder.keyField( keyField.getFieldNameForNumericQueries() );
+                builder.valueField( valueField.getFieldNameForNumericQueries() );
+            }
+            else
+            {
+                builder.keyField( keyField.getFieldNameForDateQueries() );
+                builder.valueField( valueField.getFieldNameForDateQueries() );
+            }
         }
     }
-
-
 }

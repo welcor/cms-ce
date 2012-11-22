@@ -603,21 +603,6 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         flushIndex();
     }
 
-    private void setMetadata( final GregorianCalendar date, final ContentDocument doc1 )
-    {
-        doc1.setCategoryKey( new CategoryKey( 9 ) );
-        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
-        doc1.setContentTypeName( "Species" );
-        // Publish from February 28th to March 28th.
-        doc1.setPublishFrom( date.getTime() );
-        date.add( Calendar.MONTH, 1 );
-        doc1.setPublishTo( date.getTime() );
-        date.add( Calendar.MONTH, -1 );
-        doc1.setStatus( 2 );
-        doc1.setPriority( 0 );
-        doc1.setLanguageCode( "en" );
-    }
-
     protected ContentDocument createContentDocument( ContentKey contentKey, CategoryKey categoryKey, ContentTypeKey contentTypeKey,
                                                      String title, List<UserDefinedField> userDefinedFields )
     {

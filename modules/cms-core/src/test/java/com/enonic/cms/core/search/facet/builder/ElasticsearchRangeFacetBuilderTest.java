@@ -38,13 +38,13 @@ public class ElasticsearchRangeFacetBuilderTest
     }
 
     @Test
-    public void key_field()
+    public void key_value_field()
         throws Exception
     {
         ElasticsearchRangeFacetBuilder facetBuilder = new ElasticsearchRangeFacetBuilder();
 
         String expectedJson =
-            "{\"rangeFacet\":{\"range\":{\"key_field\":\"keyField\",\"value_field\":\"valueField\",\"ranges\":[{\"from\":\"0.0\",\"to\":\"9.0\"},{\"from\":\"10.0\",\"to\":\"19.0\"},{\"from\":\"20.0\",\"to\":\"29.0\"}]}}}";
+            "{\"rangeFacet\":{\"range\":{\"key_field\":\"keyfield.number\",\"value_field\":\"valuefield.number\",\"ranges\":[{\"from\":\"0.0\",\"to\":\"9.0\"},{\"from\":\"10.0\",\"to\":\"19.0\"},{\"from\":\"20.0\",\"to\":\"29.0\"}]}}}";
 
         RangeFacetModel model = new RangeFacetModel();
         model.setName( "rangeFacet" );

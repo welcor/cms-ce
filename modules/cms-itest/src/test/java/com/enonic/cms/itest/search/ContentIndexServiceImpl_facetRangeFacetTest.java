@@ -7,8 +7,6 @@ import java.util.Iterator;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.ContentKey;
-import com.enonic.cms.core.content.category.CategoryKey;
-import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.search.query.ContentDocument;
@@ -42,13 +40,13 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
 
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
 
-        createContent( date, 1, "2000-12-31 23:59:59", "data/myDate" );
-        createContent( date, 2, "2001-01-01 00:00:00", "data/myDate" );
-        createContent( date, 3, "2001-01-01 01:00:00", "data/myDate" );
-        createContent( date, 4, "2001-01-01 01:00:00:001", "data/myDate" );
-        createContent( date, 5, "2001-01-01 23:59:58", "data/myDate" );
-        createContent( date, 6, "2001-01-02", "data/myDate" );
-        createContent( date, 7, "2001-01-03", "data/myDate" );
+        createContent( 1, "2000-12-31 23:59:59", "data/myDate" );
+        createContent( 2, "2001-01-01 00:00:00", "data/myDate" );
+        createContent( 3, "2001-01-01 01:00:00", "data/myDate" );
+        createContent( 4, "2001-01-01 01:00:00:001", "data/myDate" );
+        createContent( 5, "2001-01-01 23:59:58", "data/myDate" );
+        createContent( 6, "2001-01-02", "data/myDate" );
+        createContent( 7, "2001-01-03", "data/myDate" );
 
         flushIndex();
 
@@ -96,14 +94,14 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
 
         final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
 
-        createContent( date, 1, "0", "data/price" );
-        createContent( date, 2, "0.99", "data/price" );
-        createContent( date, 3, "1", "data/price" );
-        createContent( date, 4, "1.0", "data/price" );
-        createContent( date, 5, "10.0", "data/price" );
-        createContent( date, 6, "100", "data/price" );
-        createContent( date, 7, "101", "data/price" );
-        createContent( date, 8, "1000", "data/price" );
+        createContent( 1, "0", "data/price" );
+        createContent( 2, "0.99", "data/price" );
+        createContent( 3, "1", "data/price" );
+        createContent( 4, "1.0", "data/price" );
+        createContent( 5, "10.0", "data/price" );
+        createContent( 6, "100", "data/price" );
+        createContent( 7, "101", "data/price" );
+        createContent( 8, "1000", "data/price" );
 
         flushIndex();
 
@@ -134,6 +132,60 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
     }
 
 
+    @Test
+    public void numeric_key_and_valuefields()
+    {
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+
+        final String facetDefinition = "<facets>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "            <range to=\"1\"/>\n" +
+            "            <range from=\"1\" to=\"10\"/>\n" +
+            "            <range from=\"10\" to=\"100\"/>\n" +
+            "            <range from=\"100\" />\n" +
+            "        <key-field>data.price</key-field>\n" +
+            "        <value-field>data.myValue</value-field>\n" +
+            "    </ranges>\n" +
+            "</facets>\n";
+
+        query.setFacets( facetDefinition );
+
+        createAndIndexContent( 1, new String[]{"0", "2"}, new String[]{"data.price", "data.myValue"} );
+        createAndIndexContent( 2, new String[]{"0.99", "4"}, new String[]{"data.price", "data.myValue"} );
+        createAndIndexContent( 3, new String[]{"1", "6"}, new String[]{"data.price", "data.myValue"} );
+        createAndIndexContent( 4, new String[]{"1.0", "8"}, new String[]{"data.price", "data.myValue"} );
+        createAndIndexContent( 5, new String[]{"10.0", "10"}, new String[]{"data.price", "data.myValue"} );
+        createAndIndexContent( 6, new String[]{"100", "12"}, new String[]{"data.price", "data.myValue"} );
+        createAndIndexContent( 7, new String[]{"101", "14"}, new String[]{"data.price", "data.myValue"} );
+        createAndIndexContent( 8, new String[]{"1000", "16"}, new String[]{"data.price", "data.myValue"} );
+
+        flushIndex();
+
+        final ContentResultSet result = contentIndexService.query( query );
+
+        final Iterator<RangeFacetResultEntry> iterator = getResultIterator( result, 4 );
+
+        // NOTE: ES-range facets threats 'from' as 'from & including' and 'to' as 'to !including'
+        assertNextEntry( iterator, 2L ); // 0, 0.99
+        assertNextEntry( iterator, 2L ); // 1, 1.0
+        assertNextEntry( iterator, 1L ); // 10.0
+        assertNextEntry( iterator, 3L ); // 100, 101, 1000
+
+        final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<content>\n" +
+            "  <facets>\n" +
+            "    <ranges name=\"myRangeFacet\">\n" +
+            "      <result count=\"2\" to=\"1.0\" min=\"2.0\" mean=\"3.0\" max=\"4.0\" />\n" +
+            "      <result count=\"2\" from=\"1.0\" to=\"10.0\" min=\"6.0\" mean=\"7.0\" max=\"8.0\" />\n" +
+            "      <result count=\"1\" from=\"10.0\" to=\"100.0\" min=\"10.0\" mean=\"10.0\" max=\"10.0\" />\n" +
+            "      <result count=\"3\" from=\"100.0\" min=\"12.0\" mean=\"14.0\" max=\"16.0\" />\n" +
+            "    </ranges>\n" +
+            "  </facets>\n" +
+            "</content>";
+
+        createAndCompareResultAsXml( result, expectedXml );
+    }
+
     private Iterator<RangeFacetResultEntry> getResultIterator( final ContentResultSet result, int expectedHits )
     {
         final FacetsResultSet facetsResultSet = result.getFacetsResultSet();
@@ -152,29 +204,16 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
         assertEquals( count, currentEntry.getCount() );
     }
 
-    private ContentDocument createContent( final GregorianCalendar date, int contentKey, final String dateString, final String fieldName )
+    private ContentDocument createContent( int contentKey, final String dateString, final String fieldName )
     {
+        final GregorianCalendar date = new GregorianCalendar( 2008, Calendar.FEBRUARY, 28 );
+
         ContentDocument doc1 = new ContentDocument( new ContentKey( contentKey ) );
         setMetadata( date, doc1 );
         doc1.setTitle( "Homer" );
         doc1.addUserDefinedField( fieldName, dateString );
         contentIndexService.index( doc1 );
         return doc1;
-    }
-
-    private void setMetadata( final GregorianCalendar date, final ContentDocument doc1 )
-    {
-        doc1.setCategoryKey( new CategoryKey( 9 ) );
-        doc1.setContentTypeKey( new ContentTypeKey( 32 ) );
-        doc1.setContentTypeName( "Species" );
-        // Publish from February 28th to March 28th.
-        doc1.setPublishFrom( date.getTime() );
-        date.add( Calendar.MONTH, 1 );
-        doc1.setPublishTo( date.getTime() );
-        date.add( Calendar.MONTH, -1 );
-        doc1.setStatus( 2 );
-        doc1.setPriority( 0 );
-        doc1.setLanguageCode( "en" );
     }
 
 }

@@ -33,13 +33,13 @@ public class RangeFacetModel
         return index;
     }
 
-    @XmlElement(name = "key_field")
+    @XmlElement(name = "key-field")
     public String getKeyField()
     {
         return keyField;
     }
 
-    @XmlElement(name = "value_field")
+    @XmlElement(name = "value-field")
     public String getValueField()
     {
         return valueField;

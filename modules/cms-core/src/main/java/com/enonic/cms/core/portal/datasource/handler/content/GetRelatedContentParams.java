@@ -24,4 +24,6 @@ public final class GetRelatedContentParams
     public int parentLevel = 0;
 
     public boolean requireAll = false;
+
+    public String facets;
 }

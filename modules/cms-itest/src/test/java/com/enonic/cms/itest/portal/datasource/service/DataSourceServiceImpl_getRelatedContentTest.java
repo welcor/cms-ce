@@ -157,7 +157,7 @@ public class DataSourceServiceImpl_getRelatedContentTest
 
         XMLDocument xmlDocResult =
             dataSourceService.getRelatedContent( context, contentKeys, relation, query, orderBy, index, count, includeData, childrenLevel,
-                                                 parentLevel, false );
+                                                 parentLevel, false, null );
 
         // verify
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
@@ -183,7 +183,7 @@ public class DataSourceServiceImpl_getRelatedContentTest
 
         assertXPathEquals( "/contents/relatedcontents/content[title = 'Son']/relatedcontentkeys/@count", jdomDocResult, "2" );
         assertXPathEquals( "/contents/relatedcontents/content[title = 'Son']/relatedcontentkeys/relatedcontentkey[@level = 1]/@key",
-                           jdomDocResult, true, new Object[] { grandDaughter, grandSon } );
+                           jdomDocResult, true, new Object[]{grandDaughter, grandSon} );
 
         assertXPathEquals( "/contents/relatedcontents/content[title = 'Daughter']/relatedcontentkeys/@count", jdomDocResult, "0" );
         assertXPathNotExist( "/contents/relatedcontents/content[title = 'Daughter']/relatedcontentkeys/relatedcontentkey", jdomDocResult );

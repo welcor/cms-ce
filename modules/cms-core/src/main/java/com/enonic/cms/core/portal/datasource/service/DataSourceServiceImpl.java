@@ -220,12 +220,12 @@ public final class DataSourceServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public XMLDocument getRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
                                           int index, int count, boolean includeData, int childrenLevel, int parentLevel,
-                                          final boolean requireAll )
+                                          final boolean requireAll, final String facets )
     {
         boolean includeOwnerAndModifierData = true;
         boolean includeCategoryData = true;
         return doGetRelatedContent( context, contentKeys, relation, query, orderBy, requireAll, index, count, parentLevel, childrenLevel,
-                                    includeOwnerAndModifierData, includeData, includeCategoryData, includeData );
+                                    includeOwnerAndModifierData, includeData, includeCategoryData, includeData, facets );
     }
 
     /**
@@ -733,7 +733,7 @@ public final class DataSourceServiceImpl
     private XMLDocument doGetRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
                                              boolean requireAll, int index, int count, int parentLevel, int childrenLevel,
                                              boolean includeOwnerAndModifierData, boolean includeContentData, boolean includeCategoryData,
-                                             boolean includeRelatedContentData )
+                                             boolean includeRelatedContentData, final String facets )
     {
         XMLDocument xmlDocument = null;
         try
@@ -770,6 +770,8 @@ public final class DataSourceServiceImpl
             getRelatedContentXmlCreator.includeOwnerAndModifierData( includeOwnerAndModifierData );
             getRelatedContentXmlCreator.includeCategoryData( includeCategoryData );
             xmlDocument = getRelatedContentXmlCreator.create( result );
+
+            addFacetResultSet( result.getContent(), xmlDocument );
         }
         catch ( InvalidKeyException e )
         {

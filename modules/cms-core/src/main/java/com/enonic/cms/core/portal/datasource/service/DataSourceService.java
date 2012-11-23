@@ -21,7 +21,6 @@ public interface DataSourceService
      * Get content, specified by the one of more given content keys. with the possibility to restrict it by filters, so it is only returned
      * if it belongs to a certain category or content type.  Full information about related content is not included.
      *
-     *
      * @param context       the Vertical Site context
      * @param contentKeys   The content keys
      * @param query         The string query, specifying detailed filters and rules for which content to fetch, in and SQL like maner.
@@ -57,7 +56,6 @@ public interface DataSourceService
      * method.  Related content, as specified by <code>parentLevel</code> or <code>childrenLevel</code> are the related content of the root
      * set of children or parents, and may include the content that was passed in as content keys to the method.
      *
-     *
      * @param context       the Vertical Site context
      * @param contentKeys   The content keys
      * @param relation      the allowed values are -1 for parents and 1 for children
@@ -70,15 +68,15 @@ public interface DataSourceService
      * @param childrenLevel the level of children to include
      * @param parentLevel   the level of parents to include
      * @param requireAll
+     * @param facets
      * @return An XML document with the result of the search
      */
     public XMLDocument getRelatedContent( DataSourceContext context, int[] contentKeys, int relation, String query, String orderBy,
                                           int index, int count, boolean includeData, int childrenLevel, int parentLevel,
-                                          final boolean requireAll );
+                                          final boolean requireAll, final String facets );
 
     /**
      * Find content in a section specified by the given menu item keys.
-     *
      *
      * @param context       The Vertical Site context
      * @param menuItemKeys  The menu items to search for the content within.
@@ -117,8 +115,6 @@ public interface DataSourceService
 
     /**
      * Find content in the specified categories.
-     *
-     *
      *
      * @param context       The Vertical Site context
      * @param categoryKeys  The keys of the categories to search in.
@@ -176,6 +172,7 @@ public interface DataSourceService
     public XMLDocument getContent( DataSourceContext context, int[] contentKey, int parentLevel, int childrenLevel, int parentChildrenLevel,
                                    boolean updateStatistics, boolean relatedTitlesOnly, boolean includeUserRights, int[] filterByCategories,
                                    boolean categoryRecursive, int[] filterByContentTypes );
+
     /**
      * Returns a menu tree. If levels is 0, entire menu are return. If levels is non-negative number, that number of tree levels are
      * returned or the entire tree if levels is greater than or equal to the number of levels in the menu tree. Only menu items marked as

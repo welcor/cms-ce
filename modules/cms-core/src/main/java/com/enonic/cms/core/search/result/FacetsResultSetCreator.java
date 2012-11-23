@@ -9,10 +9,10 @@ import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.elasticsearch.search.facet.histogram.HistogramFacet;
 import org.elasticsearch.search.facet.range.RangeFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
+import org.elasticsearch.search.facet.termsstats.TermsStatsFacet;
 
 public class FacetsResultSetCreator
 {
-
     private final TermFacetResultSetCreator termFacetResultSetCreator = new TermFacetResultSetCreator();
 
     private final RangeFacetResultSetCreator rangeFacetResultSetCreator = new RangeFacetResultSetCreator();
@@ -20,6 +20,8 @@ public class FacetsResultSetCreator
     private final HistogramFacetResultSetCreator histogramFacetResultSetCreator = new HistogramFacetResultSetCreator();
 
     private final DateHistogramFacetResultSetCreator dateHistogramFacetResultSetCreator = new DateHistogramFacetResultSetCreator();
+
+    private final TermsStatsFacetResultSetCreator termsStatsFacetResultSetCreator = new TermsStatsFacetResultSetCreator();
 
     public FacetsResultSet createResultSet( SearchResponse searchResponse )
     {
@@ -54,10 +56,12 @@ public class FacetsResultSetCreator
             {
                 facetsResultSet.addFacetResultSet( dateHistogramFacetResultSetCreator.create( facetName, (DateHistogramFacet) facet ) );
             }
+            else if ( facet instanceof TermsStatsFacet )
+            {
+                facetsResultSet.addFacetResultSet( termsStatsFacetResultSetCreator.create( facetName, (TermsStatsFacet) facet ) );
+            }
         }
 
         return facetsResultSet;
     }
-
-
 }

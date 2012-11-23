@@ -5,6 +5,7 @@ import java.util.List;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 
 public class DateHistogramFacetResultSetCreator
+    extends AbstractFacetResultSetCreator
 {
 
     protected DateHistogramFacetResultSet create( final String facetName, final DateHistogramFacet facet )
@@ -29,11 +30,6 @@ public class DateHistogramFacetResultSetCreator
         }
 
         return dateHistogramFacetResultSet;
-    }
-
-    private Double getValueIfNumber( final double entry )
-    {
-        return Double.isNaN( entry ) ? null : entry;
     }
 
 }

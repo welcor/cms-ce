@@ -5,6 +5,7 @@ public enum FacetResultType
     TERMS,
     RANGE,
     HISTOGRAM,
-    DATE_HISTOGRAM;
+    DATE_HISTOGRAM,
+    TERMS_STATS;
 
 }

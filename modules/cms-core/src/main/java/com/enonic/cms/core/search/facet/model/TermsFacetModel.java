@@ -25,11 +25,9 @@ public class TermsFacetModel
 
     public void validate()
     {
-        super.validate();
-
         if ( Strings.isNullOrEmpty( indices ) )
         {
-            throw new IllegalArgumentException( "Termfacet " + getName() + ": Field 'indices' must be set" );
+            throw new IllegalArgumentException( "Terms-facet " + getName() + ": Field 'indices' must be set" );
         }
     }
 

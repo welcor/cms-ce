@@ -125,8 +125,6 @@ public class FacetsXmlCreatorTest
         facets.addFacet( rangeFacet );
 
         final String xml = createXml( facets );
-
-        System.out.println( xml );
     }
 
 

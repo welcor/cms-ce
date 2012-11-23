@@ -5,6 +5,7 @@ import java.util.List;
 import org.elasticsearch.search.facet.range.RangeFacet;
 
 public class RangeFacetResultSetCreator
+    extends AbstractFacetResultSetCreator
 {
     protected FacetResultSet create( final String facetName, final RangeFacet facet )
     {

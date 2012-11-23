@@ -15,6 +15,7 @@ public class FacetResultSetXmlCreator
 
     private final DateHistogramFacetResultSetXmlCreator dateHistogramFacetResultSetXmlCreator = new DateHistogramFacetResultSetXmlCreator();
 
+    private final TermsStatsFacetResultSetXmlCreator termsStatsFacetResultSetXmlCreator = new TermsStatsFacetResultSetXmlCreator();
 
     public void addFacetResultXml( Document doc, FacetsResultSet facetsResultSet )
     {
@@ -28,26 +29,34 @@ public class FacetResultSetXmlCreator
 
         while ( iterator.hasNext() )
         {
-            final FacetResultSet facet = iterator.next();
+            final FacetResultSet facetResultSet = iterator.next();
 
-            final FacetResultType facetResultType = facet.getFacetResultType();
+            final FacetResultType facetResultType = facetResultSet.getFacetResultType();
 
             switch ( facetResultType )
             {
                 case TERMS:
-                    addTermFacetResult( facetsNode, (TermsFacetResultSet) facet );
+                    addTermFacetResult( facetsNode, (TermsFacetResultSet) facetResultSet );
                     break;
                 case RANGE:
-                    addRangeFacetResult( facetsNode, (RangeFacetResultSet) facet );
+                    addRangeFacetResult( facetsNode, (RangeFacetResultSet) facetResultSet );
                     break;
                 case HISTOGRAM:
-                    addHistogramFacetResult( facetsNode, (HistogramFacetResultSet) facet );
+                    addHistogramFacetResult( facetsNode, (HistogramFacetResultSet) facetResultSet );
                     break;
                 case DATE_HISTOGRAM:
-                    addDateHistogramFacetResult( facetsNode, (DateHistogramFacetResultSet) facet );
+                    addDateHistogramFacetResult( facetsNode, (DateHistogramFacetResultSet) facetResultSet );
+                    break;
+                case TERMS_STATS:
+                    addTermsStatsFacetResult( facetsNode, (TermsStatsFacetResultSet) facetResultSet );
                     break;
             }
         }
+    }
+
+    private void addTermsStatsFacetResult( final Element facetsRoot, final TermsStatsFacetResultSet facetResultSet )
+    {
+        facetsRoot.addContent( termsStatsFacetResultSetXmlCreator.create( facetResultSet ) );
     }
 
     private void addDateHistogramFacetResult( final Element facetsRoot, final DateHistogramFacetResultSet facet )

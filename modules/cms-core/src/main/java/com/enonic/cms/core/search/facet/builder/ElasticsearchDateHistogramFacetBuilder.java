@@ -65,14 +65,14 @@ public class ElasticsearchDateHistogramFacetBuilder
 
         if ( !Strings.isNullOrEmpty( fieldName ) )
         {
-            builder.field( getDateFieldName( fieldName ) );
+            builder.field( createDateFieldName( fieldName ) );
 
         }
         else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyField() ) &&
             !Strings.isNullOrEmpty( histogramFacetModel.getValueField() ) )
         {
-            builder.keyField( getDateFieldName( histogramFacetModel.getKeyField() ) );
-            builder.valueField( getNumericFieldName( histogramFacetModel.getValueField() ) );
+            builder.keyField( createDateFieldName( histogramFacetModel.getKeyField() ) );
+            builder.valueField( createNumericFieldName( histogramFacetModel.getValueField() ) );
         }
     }
 

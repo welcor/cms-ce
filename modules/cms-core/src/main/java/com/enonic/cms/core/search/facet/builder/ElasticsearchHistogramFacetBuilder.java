@@ -42,14 +42,14 @@ public class ElasticsearchHistogramFacetBuilder
 
         if ( !Strings.isNullOrEmpty( fieldName ) )
         {
-            builder.field( getNumericFieldName( fieldName ) );
+            builder.field( createNumericFieldName( fieldName ) );
 
         }
         else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyField() ) &&
             !Strings.isNullOrEmpty( histogramFacetModel.getValueField() ) )
         {
-            builder.keyField( getNumericFieldName( histogramFacetModel.getKeyField() ) );
-            builder.valueField( getNumericFieldName( histogramFacetModel.getValueField() ) );
+            builder.keyField( createNumericFieldName( histogramFacetModel.getKeyField() ) );
+            builder.valueField( createNumericFieldName( histogramFacetModel.getValueField() ) );
         }
     }
 }

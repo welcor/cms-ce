@@ -23,7 +23,7 @@ final class ElasticsearchTermsFacetBuilder
         }
         catch ( Exception e )
         {
-            throw new FacetQueryException( "Error in term-facet definition", e );
+            throw new FacetQueryException( "Error in terms-facet definition", e );
         }
 
         TermsFacetBuilder builder = new TermsFacetBuilder( termsFacetModel.getName() );
@@ -41,40 +41,40 @@ final class ElasticsearchTermsFacetBuilder
         return builder;
     }
 
-    protected void setSize( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
+    protected void setSize( final TermsFacetModel termsFacetModel, final TermsFacetBuilder builder )
     {
-        if ( termsFacetXml.getCount() != null )
+        if ( termsFacetModel.getCount() != null )
         {
-            builder.size( termsFacetXml.getCount() );
+            builder.size( termsFacetModel.getCount() );
         }
     }
 
-    protected void setOrder( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
+    protected void setOrder( final TermsFacetModel termsFacetModel, final TermsFacetBuilder builder )
     {
-        if ( !Strings.isNullOrEmpty( termsFacetXml.getOrderby() ) )
+        if ( !Strings.isNullOrEmpty( termsFacetModel.getOrderby() ) )
         {
-            final TermsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( termsFacetXml );
+            final TermsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( termsFacetModel );
 
             builder.order( comparatorType );
         }
     }
 
-    private TermsFacet.ComparatorType getTermsFacetComperatorType( final TermsFacetModel termsFacetXml )
+    private TermsFacet.ComparatorType getTermsFacetComperatorType( final TermsFacetModel termsFacetModel )
     {
         try
         {
-            return TermsFacet.ComparatorType.valueOf( termsFacetXml.getOrderby().toUpperCase() );
+            return TermsFacet.ComparatorType.valueOf( termsFacetModel.getOrderby().toUpperCase() );
         }
         catch ( Exception e )
         {
-            throw new IndexQueryException( "Parameter value '" + termsFacetXml.getOrderby() + "' not valid order value", e );
+            throw new IndexQueryException( "Parameter value '" + termsFacetModel.getOrderby() + "' not valid order value", e );
         }
     }
 
 
-    private void setExcludes( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
+    private void setExcludes( final TermsFacetModel termsFacetModel, final TermsFacetBuilder builder )
     {
-        final String[] excludes = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getExclude() );
+        final String[] excludes = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetModel.getExclude() );
 
         if ( excludes != null && excludes.length > 0 )
         {
@@ -82,17 +82,17 @@ final class ElasticsearchTermsFacetBuilder
         }
     }
 
-    private void setRegexp( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
+    private void setRegexp( final TermsFacetModel termsFacetModel, final TermsFacetBuilder builder )
     {
-        if ( !Strings.isNullOrEmpty( termsFacetXml.getRegex() ) )
+        if ( !Strings.isNullOrEmpty( termsFacetModel.getRegex() ) )
         {
-            if ( !Strings.isNullOrEmpty( termsFacetXml.getRegexFlags() ) )
+            if ( !Strings.isNullOrEmpty( termsFacetModel.getRegexFlags() ) )
             {
-                builder.regex( termsFacetXml.getRegex(), getRegexFlagValue( termsFacetXml ) );
+                builder.regex( termsFacetModel.getRegex(), getRegexFlagValue( termsFacetModel ) );
             }
             else
             {
-                builder.regex( termsFacetXml.getRegex() );
+                builder.regex( termsFacetModel.getRegex() );
             }
         }
     }

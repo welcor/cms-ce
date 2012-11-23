@@ -14,13 +14,13 @@ abstract class AbstractElasticsearchFacetBuilder
         return QueryFieldNameResolver.resolveQueryFieldName( field );
     }
 
-    protected String getDateFieldName( String fieldName )
+    protected String createDateFieldName( String fieldName )
     {
         QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
         return queryField.getFieldNameForDateQueries();
     }
 
-    protected String getNumericFieldName( String fieldName )
+    protected String createNumericFieldName( String fieldName )
     {
         QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
         return queryField.getFieldNameForNumericQueries();

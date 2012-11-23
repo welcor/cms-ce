@@ -59,24 +59,24 @@ public class ElasticsearchRangeFacetBuilder
         {
             if ( rangeFacetModel.isNumericRanges() )
             {
-                builder.field( getNumericFieldName( rangeFacetModel.getIndex() ) );
+                builder.field( createNumericFieldName( rangeFacetModel.getIndex() ) );
             }
             else
             {
-                builder.field( getDateFieldName( rangeFacetModel.getIndex() ) );
+                builder.field( createDateFieldName( rangeFacetModel.getIndex() ) );
             }
         }
         else if ( !Strings.isNullOrEmpty( rangeFacetModel.getKeyField() ) && !Strings.isNullOrEmpty( rangeFacetModel.getValueField() ) )
         {
             if ( rangeFacetModel.isNumericRanges() )
             {
-                builder.keyField( getNumericFieldName( rangeFacetModel.getKeyField() ) );
-                builder.valueField( getNumericFieldName( rangeFacetModel.getValueField() ) );
+                builder.keyField( createNumericFieldName( rangeFacetModel.getKeyField() ) );
+                builder.valueField( createNumericFieldName( rangeFacetModel.getValueField() ) );
             }
             else
             {
-                builder.keyField( getDateFieldName( rangeFacetModel.getKeyField() ) );
-                builder.valueField( getDateFieldName( rangeFacetModel.getValueField() ) );
+                builder.keyField( createDateFieldName( rangeFacetModel.getKeyField() ) );
+                builder.valueField( createDateFieldName( rangeFacetModel.getValueField() ) );
             }
         }
     }

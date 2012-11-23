@@ -5,6 +5,7 @@ import java.util.List;
 import org.elasticsearch.search.facet.histogram.HistogramFacet;
 
 public class HistogramFacetResultSetCreator
+    extends AbstractFacetResultSetCreator
 {
 
     protected HistogramFacetResultSet create( final String facetName, final HistogramFacet facet )
@@ -29,11 +30,6 @@ public class HistogramFacetResultSetCreator
         }
 
         return histogramFacetResultSet;
-    }
-
-    private Double getValueIfNumber( final double entry )
-    {
-        return Double.isNaN( entry ) ? null : entry;
     }
 
 }

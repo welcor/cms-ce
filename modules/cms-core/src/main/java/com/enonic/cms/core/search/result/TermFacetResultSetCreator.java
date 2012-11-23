@@ -5,11 +5,8 @@ import java.util.List;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
 public class TermFacetResultSetCreator
+    extends AbstractFacetResultSetCreator
 {
-    public TermFacetResultSetCreator()
-    {
-    }
-
     protected FacetResultSet create( final String facetName, final TermsFacet facet )
     {
         TermsFacetResultSet termsFacetResultSet = new TermsFacetResultSet();

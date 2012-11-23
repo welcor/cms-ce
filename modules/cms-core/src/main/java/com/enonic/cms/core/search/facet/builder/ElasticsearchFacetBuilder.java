@@ -12,6 +12,7 @@ import com.enonic.cms.core.search.facet.model.FacetsModel;
 import com.enonic.cms.core.search.facet.model.HistogramFacetModel;
 import com.enonic.cms.core.search.facet.model.RangeFacetModel;
 import com.enonic.cms.core.search.facet.model.TermsFacetModel;
+import com.enonic.cms.core.search.facet.model.TermsStatsFacetModel;
 
 public class ElasticsearchFacetBuilder
 {
@@ -22,6 +23,8 @@ public class ElasticsearchFacetBuilder
     private final ElasticsearchHistogramFacetBuilder histogramFacetBuilder = new ElasticsearchHistogramFacetBuilder();
 
     private final ElasticsearchDateHistogramFacetBuilder dateHistogramFacetBuilder = new ElasticsearchDateHistogramFacetBuilder();
+
+    private final ElasticsearchTermsStatsFacetBuilder termsStatsFacetBuilder = new ElasticsearchTermsStatsFacetBuilder();
 
     public Set<AbstractFacetBuilder> build( FacetsModel facetsModel )
     {
@@ -46,6 +49,10 @@ public class ElasticsearchFacetBuilder
             else if ( model instanceof DateHistogramFacetModel )
             {
                 facetBuilders.add( dateHistogramFacetBuilder.build( (DateHistogramFacetModel) model ) );
+            }
+            else if ( model instanceof TermsStatsFacetModel )
+            {
+                facetBuilders.add( termsStatsFacetBuilder.build( (TermsStatsFacetModel) model ) );
             }
         }
 

@@ -7,12 +7,10 @@ import com.google.common.base.Strings;
 
 import com.enonic.cms.core.search.facet.FacetQueryException;
 import com.enonic.cms.core.search.facet.model.DateHistogramFacetModel;
-import com.enonic.cms.core.search.query.QueryField;
 
 public class ElasticsearchDateHistogramFacetBuilder
     extends AbstractElasticsearchFacetBuilder
 {
-
     final DateHistogramFacetBuilder build( DateHistogramFacetModel dateHistogramFacetModel )
     {
         try
@@ -30,12 +28,30 @@ public class ElasticsearchDateHistogramFacetBuilder
 
         setInterval( dateHistogramFacetModel, builder );
 
-        builder.preZone( DateTimeZone.getDefault().getID() );
-
-        builder.preZoneAdjustLargeInterval( true );
+        setTimeZoneSettings( dateHistogramFacetModel, builder );
 
         return builder;
     }
+
+    private void setTimeZoneSettings( final DateHistogramFacetModel model, final DateHistogramFacetBuilder builder )
+    {
+        if ( Strings.isNullOrEmpty( model.getPreZone() ) )
+        {
+            builder.preZone( DateTimeZone.getDefault().getID() );
+        }
+        else
+        {
+            builder.preZone( model.getPreZone() );
+        }
+
+        if ( !Strings.isNullOrEmpty( model.getPostZone() ) )
+        {
+            builder.postZone( model.getPostZone() );
+        }
+
+        builder.preZoneAdjustLargeInterval( true );
+    }
+
 
     private void setInterval( final DateHistogramFacetModel dateHistogramFacetModel, final DateHistogramFacetBuilder builder )
     {
@@ -56,13 +72,8 @@ public class ElasticsearchDateHistogramFacetBuilder
             !Strings.isNullOrEmpty( histogramFacetModel.getValueField() ) )
         {
             builder.keyField( getDateFieldName( histogramFacetModel.getKeyField() ) );
-            builder.valueField( getDateFieldName( histogramFacetModel.getValueField() ) );
+            builder.valueField( getNumericFieldName( histogramFacetModel.getValueField() ) );
         }
     }
 
-    private String getDateFieldName( String fieldName )
-    {
-        QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
-        return queryField.getFieldNameForDateQueries();
-    }
 }

@@ -6,7 +6,6 @@ import com.google.common.base.Strings;
 
 import com.enonic.cms.core.search.facet.FacetQueryException;
 import com.enonic.cms.core.search.facet.model.HistogramFacetModel;
-import com.enonic.cms.core.search.query.QueryField;
 
 public class ElasticsearchHistogramFacetBuilder
     extends AbstractElasticsearchFacetBuilder
@@ -52,11 +51,5 @@ public class ElasticsearchHistogramFacetBuilder
             builder.keyField( getNumericFieldName( histogramFacetModel.getKeyField() ) );
             builder.valueField( getNumericFieldName( histogramFacetModel.getValueField() ) );
         }
-    }
-
-    private String getNumericFieldName( String fieldName )
-    {
-        QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
-        return queryField.getFieldNameForNumericQueries();
     }
 }

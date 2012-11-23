@@ -8,7 +8,6 @@ import com.enonic.cms.core.search.facet.FacetQueryException;
 import com.enonic.cms.core.search.facet.model.FacetRange;
 import com.enonic.cms.core.search.facet.model.FacetRangeValue;
 import com.enonic.cms.core.search.facet.model.RangeFacetModel;
-import com.enonic.cms.core.search.query.QueryField;
 
 public class ElasticsearchRangeFacetBuilder
     extends AbstractElasticsearchFacetBuilder
@@ -58,31 +57,26 @@ public class ElasticsearchRangeFacetBuilder
 
         if ( !Strings.isNullOrEmpty( fieldName ) )
         {
-            QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
-
             if ( rangeFacetModel.isNumericRanges() )
             {
-                builder.field( queryField.getFieldNameForNumericQueries() );
+                builder.field( getNumericFieldName( rangeFacetModel.getIndex() ) );
             }
             else
             {
-                builder.field( queryField.getFieldNameForDateQueries() );
+                builder.field( getDateFieldName( rangeFacetModel.getIndex() ) );
             }
         }
         else if ( !Strings.isNullOrEmpty( rangeFacetModel.getKeyField() ) && !Strings.isNullOrEmpty( rangeFacetModel.getValueField() ) )
         {
-            QueryField keyField = new QueryField( createQueryFieldName( rangeFacetModel.getKeyField() ) );
-            QueryField valueField = new QueryField( createQueryFieldName( rangeFacetModel.getValueField() ) );
-
             if ( rangeFacetModel.isNumericRanges() )
             {
-                builder.keyField( keyField.getFieldNameForNumericQueries() );
-                builder.valueField( valueField.getFieldNameForNumericQueries() );
+                builder.keyField( getNumericFieldName( rangeFacetModel.getKeyField() ) );
+                builder.valueField( getNumericFieldName( rangeFacetModel.getValueField() ) );
             }
             else
             {
-                builder.keyField( keyField.getFieldNameForDateQueries() );
-                builder.valueField( valueField.getFieldNameForDateQueries() );
+                builder.keyField( getDateFieldName( rangeFacetModel.getKeyField() ) );
+                builder.valueField( getDateFieldName( rangeFacetModel.getValueField() ) );
             }
         }
     }

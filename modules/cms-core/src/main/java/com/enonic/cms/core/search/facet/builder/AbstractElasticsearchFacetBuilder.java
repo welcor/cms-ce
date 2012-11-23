@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Strings;
 
+import com.enonic.cms.core.search.query.QueryField;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 
 abstract class AbstractElasticsearchFacetBuilder
@@ -11,6 +12,18 @@ abstract class AbstractElasticsearchFacetBuilder
     protected String createQueryFieldName( final String field )
     {
         return QueryFieldNameResolver.resolveQueryFieldName( field );
+    }
+
+    protected String getDateFieldName( String fieldName )
+    {
+        QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
+        return queryField.getFieldNameForDateQueries();
+    }
+
+    protected String getNumericFieldName( String fieldName )
+    {
+        QueryField queryField = new QueryField( createQueryFieldName( fieldName ) );
+        return queryField.getFieldNameForNumericQueries();
     }
 
     public enum RegExpFlags

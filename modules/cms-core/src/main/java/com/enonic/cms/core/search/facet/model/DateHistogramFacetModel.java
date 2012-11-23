@@ -22,6 +22,10 @@ public class DateHistogramFacetModel
 
     private String valueField;
 
+    private String preZone;
+
+    private String postZone;
+
     public static final Pattern INTERVAL_PATTERN =
         Pattern.compile( "((\\d+(\\.(\\d)+)?)?(m|h|d|w))|(year|quarter|month|week|day|hour|minute)" );
 
@@ -69,6 +73,27 @@ public class DateHistogramFacetModel
         this.valueField = valueField;
     }
 
+    @XmlElement(name = "pre-zone")
+    public String getPreZone()
+    {
+        return preZone;
+    }
+
+    public void setPreZone( final String preZone )
+    {
+        this.preZone = preZone;
+    }
+
+    @XmlElement(name = "post-zone")
+    public String getPostZone()
+    {
+        return postZone;
+    }
+
+    public void setPostZone( final String postZone )
+    {
+        this.postZone = postZone;
+    }
 
     @Override
     public void validate()

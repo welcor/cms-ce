@@ -20,7 +20,7 @@ public class RangeFacetResultSetXmlCreator
 
         for ( RangeFacetResultEntry result : resultEntries )
         {
-            Element resultEl = new Element( "result" );
+            Element resultEl = new Element( "range" );
             addAttributeIfNotNull( resultEl, "count", result.getCount() );
             addAttributeIfNotNull( resultEl, "from", getFacetRangeValueAsFormattedString( result.getFrom() ) );
             addAttributeIfNotNull( resultEl, "to", getFacetRangeValueAsFormattedString( result.getTo() ) );

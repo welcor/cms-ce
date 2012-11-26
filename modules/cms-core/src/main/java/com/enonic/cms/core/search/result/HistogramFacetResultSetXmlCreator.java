@@ -16,7 +16,7 @@ public class HistogramFacetResultSetXmlCreator
 
         for ( HistogramFacetResultEntry result : resultEntries )
         {
-            Element resultEl = new Element( "result" );
+            Element resultEl = new Element( "interval" );
             addAttributeIfNotNull( resultEl, "total", result.getTotal() );
             addAttributeIfNotNull( resultEl, "total-count", result.getTotalCount() );
             addAttributeIfNotNull( resultEl, "count", result.getCount() );

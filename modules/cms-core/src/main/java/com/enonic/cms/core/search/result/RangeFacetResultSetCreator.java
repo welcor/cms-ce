@@ -38,6 +38,7 @@ public class RangeFacetResultSetCreator
             rangeFacetResultEntry.setMin( entry.getMin() );
             rangeFacetResultEntry.setMean( entry.getMean() );
             rangeFacetResultEntry.setMax( entry.getMax() );
+            rangeFacetResultEntry.setTotal( entry.getTotal() );
         }
 
         return rangeFacetResultEntry;

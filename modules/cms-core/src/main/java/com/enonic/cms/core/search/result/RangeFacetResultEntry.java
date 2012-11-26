@@ -14,6 +14,18 @@ public class RangeFacetResultEntry
 
     private Double mean;
 
+    private Double total;
+
+    public Double getTotal()
+    {
+        return total;
+    }
+
+    public void setTotal( final Double total )
+    {
+        this.total = total;
+    }
+
     public String getFrom()
     {
         return from;

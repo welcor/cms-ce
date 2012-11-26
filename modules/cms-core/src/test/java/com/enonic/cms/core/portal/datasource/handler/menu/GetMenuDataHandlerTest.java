@@ -61,11 +61,4 @@ public class GetMenuDataHandlerTest
         this.handler.handle( this.request );
     }
 
-    @Test(expected = DataSourceException.class)
-    public void testHandler_missing_required_parameter()
-        throws Exception
-    {
-        this.handler.handle( this.request );
-    }
-
 }

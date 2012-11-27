@@ -4,13 +4,14 @@
  */
 package com.enonic.esl.sql.model;
 
-import com.google.common.collect.Maps;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Maps;
 
 public class Table
 {
@@ -18,21 +19,23 @@ public class Table
 
     private final String tableName, elementName, parentName;
 
-    private final ArrayList<Column> columnList = new ArrayList<Column>();
+    private final List<Column> columnList = new ArrayList<Column>();
 
     private final Map<String, Column> columnNameMap = Maps.newHashMap();
 
     private final Map<String, Column> columnXPathMap = Maps.newHashMap();
 
-    private final ArrayList<Column> foreignKeys = new ArrayList<Column>();
+    private final List<Column> foreignKeys = new ArrayList<Column>();
 
-    private final ArrayList<Column> primaryKeys = new ArrayList<Column>();
+    private final List<Column> primaryKeys = new ArrayList<Column>();
 
-    private final ArrayList<ForeignKeyColumn> referencedKeys = new ArrayList<ForeignKeyColumn>();
+    private final List<ForeignKeyColumn> referencedKeys = new ArrayList<ForeignKeyColumn>();
 
-    private final ArrayList<ForeignKey> realForeignKeys = new ArrayList<ForeignKey>();
+    private final List<ForeignKey> realForeignKeys = new ArrayList<ForeignKey>();
 
-    private final ArrayList<Index> indexes = new ArrayList<Index>();
+    private final List<Index> indexes = new ArrayList<Index>();
+
+    private final List<UniqueConstraint> uniqueConstraints = new ArrayList<UniqueConstraint>();
 
     public Table( String tableName, String elementName, String parentName )
     {
@@ -233,6 +236,16 @@ public class Table
             foreignKeys[i] = realForeignKeys.get( i );
         }
         return foreignKeys;
+    }
+
+    public void addUniqueConstraint( UniqueConstraint constraint )
+    {
+        uniqueConstraints.add( constraint );
+    }
+
+    public List<UniqueConstraint> getUniqueConstraints()
+    {
+        return uniqueConstraints;
     }
 
     public void addIndex( Index index )

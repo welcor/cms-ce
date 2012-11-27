@@ -111,6 +111,29 @@ public final class DatabaseXMLFactory
     }
 
     /**
+     * Generate unique constraint.
+     */
+    private static UniqueConstraint generateUniqueConstraint( Element current, Database database )
+    {
+        String tableName = current.getParentElement().getAttributeValue( "name" );
+        Table table = database.getTable( tableName );
+        String constraintName = current.getAttributeValue( "name" );
+
+        UniqueConstraint uqConstraint = new UniqueConstraint( constraintName );
+
+        List columns = current.getChildren( "column" );
+        for ( Object child : columns )
+        {
+            Element childElement = (Element) child;
+            String columnName = childElement.getAttributeValue( "name" );
+            Column column = table.getColumn( columnName );
+            uqConstraint.addColumn( column );
+        }
+
+        return uqConstraint;
+    }
+
+    /**
      * Generate index.
      */
     private static Index generateIndex( Element current, Table table )
@@ -195,6 +218,13 @@ public final class DatabaseXMLFactory
                 Element foreignKeyElem = (Element) item;
                 ForeignKey foreignKey = generateRealForeignKey( foreignKeyElem, database );
                 table.addRealForeignKey( foreignKey );
+            }
+
+            for ( Object item : ( (Element) child ).getChildren( "uniqueconstraint" ) )
+            {
+                Element constraintElem = (Element) item;
+                UniqueConstraint uqConstraint = generateUniqueConstraint( constraintElem, database );
+                table.addUniqueConstraint( uqConstraint );
             }
 
             for ( Object item : ( (Element) child ).getChildren( "index" ) )

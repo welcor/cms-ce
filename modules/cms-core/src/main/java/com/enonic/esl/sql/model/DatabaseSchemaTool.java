@@ -19,7 +19,7 @@ public final class DatabaseSchemaTool
      */
     public static List<String> generateCreateForeignKeys( Database db )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         Table[] tables = db.getTables();
 
         for ( int i = 0; i < tables.length; i++ )
@@ -35,12 +35,12 @@ public final class DatabaseSchemaTool
      */
     public static List<String> generateCreateForeignKeys( Table table )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         ForeignKey[] foreignKeys = table.getRealForeignKeys();
 
         for ( int i = 0; i < foreignKeys.length; i++ )
         {
-            StringBuffer sql = new StringBuffer();
+            StringBuilder sql = new StringBuilder();
             sql.append( "ALTER TABLE " );
             sql.append( table );
             sql.append( "\n\tADD CONSTRAINT " );
@@ -78,11 +78,64 @@ public final class DatabaseSchemaTool
     }
 
     /**
+     * Generate create unique constraints.
+     */
+    public static List<String> generateCreateUniqueConstraints( Database db )
+    {
+        List<String> list = new ArrayList<String>();
+        Table[] tables = db.getTables();
+
+        for ( Table table : tables )
+        {
+            list.addAll( generateCreateUniqueConstraints( table ) );
+        }
+
+        return list;
+    }
+
+    /**
+     * Generate create unique constraints.
+     */
+    public static List<String> generateCreateUniqueConstraints( Table table )
+    {
+        List<String> list = new ArrayList<String>();
+        List<UniqueConstraint> constraints = table.getUniqueConstraints();
+
+        for ( UniqueConstraint constraint : constraints )
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.append( "ALTER TABLE " );
+            sql.append( table );
+            sql.append( "\n\tADD CONSTRAINT " );
+            sql.append( constraint.getName() );
+            sql.append( " UNIQUE (" );
+
+            List<Column> columns = constraint.getColumns();
+            int size = columns.size();
+
+            for ( int j = 0; j < size; j++ )
+            {
+                sql.append( columns.get( j ) );
+                if ( j < columns.size() - 1 )
+                {
+                    sql.append( ", " );
+                }
+            }
+
+            sql.append( ")" );
+            list.add( sql.toString() );
+        }
+
+        return list;
+    }
+
+    /**
+     * /**
      * Generate create indexes.
      */
     public static List<String> generateCreateIndexes( Database db )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         Table[] tables = db.getTables();
 
         for ( int i = 0; i < tables.length; i++ )
@@ -98,19 +151,19 @@ public final class DatabaseSchemaTool
      */
     public static List<String> generateCreateIndexes( Table table )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         Index[] indexes = table.getIndexes();
 
         for ( int i = 0; i < indexes.length; i++ )
         {
-            StringBuffer sql = new StringBuffer();
+            StringBuilder sql = new StringBuilder();
             sql.append( "CREATE INDEX " );
             sql.append( indexes[i].getName() );
             sql.append( " ON " );
             sql.append( table );
             sql.append( " (" );
 
-            ArrayList<Column> columns = indexes[i].getColumns();
+            List<Column> columns = indexes[i].getColumns();
             for ( int j = 0; j < columns.size(); j++ )
             {
                 sql.append( columns.get( j ) );
@@ -132,7 +185,7 @@ public final class DatabaseSchemaTool
      */
     public static String generateCreateTable( Table table )
     {
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
         sql.append( "CREATE TABLE " );
         sql.append( table.getName() );
         sql.append( " (\n" );
@@ -169,7 +222,7 @@ public final class DatabaseSchemaTool
      */
     public static String generateCreateView( View view )
     {
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
         sql.append( "CREATE VIEW " );
         sql.append( view.getName() );
         sql.append( " (\n" );
@@ -195,7 +248,7 @@ public final class DatabaseSchemaTool
      */
     public static List<String> generateCreateTables( Database db )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         Table[] tables = db.getTables();
 
         for ( int i = 0; i < tables.length; i++ )
@@ -211,7 +264,7 @@ public final class DatabaseSchemaTool
      */
     public static List<String> generateCreateViews( Database db )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         View[] views = db.getViews();
 
         for ( int i = 0; i < views.length; i++ )
@@ -227,7 +280,7 @@ public final class DatabaseSchemaTool
      */
     public static List<String> generateDropViews( Database db )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         View[] views = db.getViews();
 
         /* Reverse order - views might be dependent on each other */
@@ -243,8 +296,9 @@ public final class DatabaseSchemaTool
      */
     public static List<String> generateDatabaseSchema( Database db )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         list.addAll( generateCreateTables( db ) );
+        list.addAll( generateCreateUniqueConstraints( db ) );
         list.addAll( generateCreateForeignKeys( db ) );
         list.addAll( generateCreateIndexes( db ) );
         list.addAll( generateCreateViews( db ) );

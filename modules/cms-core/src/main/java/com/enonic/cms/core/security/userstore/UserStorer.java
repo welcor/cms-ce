@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.util.Assert;
+
 import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -90,6 +92,12 @@ public class UserStorer
         newUser.setUserFields( command.getUserFields() );
 
         userDao.storeNew( newUser );
+
+        if ( !newUser.isInRemoteUserStore() )
+        {
+            Assert.notNull( newUser.getKey() );
+            newUser.setSyncValue( newUser.getKey().toString() );
+        }
 
         if ( command.getType() == UserType.ANONYMOUS )
         {

@@ -17,7 +17,7 @@
       <column name="USR_SEMAIL" length="256" not-null="false"/>
     </property>
     <property name="syncValue" type="string">
-      <column name="USR_SSYNCVALUE" length="2048" not-null="true"/>
+      <column name="USR_SSYNCVALUE2" length="255" not-null="true"/>
     </property>
     <property name="timestamp" type="com.enonic.cms.store.hibernate.type.DateTimeUserType">
       <column name="USR_DTETIMESTAMP" not-null="true"/>

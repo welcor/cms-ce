@@ -5,6 +5,7 @@
 package com.enonic.esl.sql.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ForeignKey
 {
@@ -12,7 +13,7 @@ public class ForeignKey
 
     private final Table remoteTable;
 
-    private final ArrayList<Reference> references = new ArrayList<Reference>();
+    private final List<Reference> references = new ArrayList<Reference>();
 
     public class Reference
     {
@@ -51,6 +52,6 @@ public class ForeignKey
 
     public ForeignKey.Reference[] getReferences()
     {
-        return this.references.toArray(new ForeignKey.Reference[this.references.size()]);
+        return this.references.toArray( new ForeignKey.Reference[this.references.size()] );
     }
 }

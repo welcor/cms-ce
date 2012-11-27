@@ -114,4 +114,7 @@ public interface UpgradeContext
 
     public boolean hasTable( final String table )
         throws Exception;
+
+    public boolean columnExist( String tableName, String columnName )
+        throws Exception;
 }

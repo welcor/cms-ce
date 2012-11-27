@@ -20,8 +20,7 @@ public final class UserTable
 
     public Column usr_sFullName = new Column( "usr_sFullName", "@fullname", true, false, Constants.COLUMN_VARCHAR, 256 );
 
-    public Column usr_dteTimestamp =
-        new Column( "usr_dteTimestamp", "timestamp", true, false, Constants.COLUMN_CURRENT_TIMESTAMP, -1 );
+    public Column usr_dteTimestamp = new Column( "usr_dteTimestamp", "timestamp", true, false, Constants.COLUMN_CURRENT_TIMESTAMP, -1 );
 
     public Column usr_bIsDeleted = new Column( "usr_bIsDeleted", "@deleted", true, false, Constants.COLUMN_BOOLEAN, -1 );
 
@@ -31,7 +30,7 @@ public final class UserTable
         new ForeignKeyColumn( "usr_dom_lKey", "@domainkey", false, false, Constants.COLUMN_INTEGER, null, "tDomain", "dom_lKey", false,
                               -1 );
 
-    public Column usr_sSyncValue = new Column( "usr_sSyncValue", "@syncvalue", true, false, Constants.COLUMN_VARCHAR, 2048 );
+    public Column usr_sSyncValue2 = new Column( "usr_sSyncValue2", "@syncvalue", true, false, Constants.COLUMN_VARCHAR, 255 );
 
     public Column usr_sEmail = new Column( "usr_sEmail", "null", false, false, Constants.COLUMN_VARCHAR, 256 );
 
@@ -51,7 +50,7 @@ public final class UserTable
         addColumn( usr_bIsDeleted );
         addColumn( usr_ut_lKey );
         addColumn( usr_dom_lKey );
-        addColumn( usr_sSyncValue );
+        addColumn( usr_sSyncValue2 );
         addColumn( usr_sEmail );
         addColumn( usr_sPassword );
         addColumn( usr_grp_hKey );

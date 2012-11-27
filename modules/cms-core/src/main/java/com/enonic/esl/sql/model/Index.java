@@ -5,12 +5,13 @@
 package com.enonic.esl.sql.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Index
 {
     private final String name;
 
-    private final ArrayList<Column> columns = new ArrayList<Column>();
+    private final List<Column> columns = new ArrayList<Column>();
 
     public Index( String name )
     {
@@ -27,9 +28,8 @@ public class Index
         return name;
     }
 
-    public ArrayList<Column> getColumns()
+    public List<Column> getColumns()
     {
         return columns;
     }
-
 }

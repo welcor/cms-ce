@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -212,6 +213,36 @@ public final class SqlOperationHelper
         {
             stmt = conn.createStatement();
             close( stmt.executeQuery( "SELECT * FROM " + tableName ) );
+            return true;
+        }
+        catch ( SQLException e )
+        {
+            try
+            {
+                conn.rollback();
+            }
+            catch ( Exception e2 )
+            {
+                // Do nothing
+            }
+
+            return false;
+        }
+        finally
+        {
+            close( stmt );
+        }
+    }
+
+    public boolean columnExist( Connection conn, String tableName, String columnName )
+        throws Exception
+    {
+        Statement stmt = null;
+
+        try
+        {
+            stmt = conn.createStatement();
+            close( stmt.executeQuery( "SELECT " + columnName + " FROM " + tableName ) );
             return true;
         }
         catch ( SQLException e )

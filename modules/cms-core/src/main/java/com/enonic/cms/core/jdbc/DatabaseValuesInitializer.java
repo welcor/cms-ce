@@ -30,7 +30,7 @@ public final class DatabaseValuesInitializer
      * Do not pull these or the utility-methods up into the base-handler, since the implementation of these could vary based on the model-version
      */
     private static final String INSERT_USER_SQL =
-        "INSERT INTO tUser ( usr_hkey, usr_sUID, usr_sFullName, usr_dteTimestamp, usr_bIsDeleted, usr_ut_lkey, usr_sSyncValue ) VALUES (?, ?, ?, @currentTimestamp@, ?, ?, ? )";
+        "INSERT INTO tUser ( usr_hkey, usr_sUID, usr_sFullName, usr_dteTimestamp, usr_bIsDeleted, usr_ut_lkey, usr_sSyncValue2 ) VALUES (?, ?, ?, @currentTimestamp@, ?, ?, ? )";
 
     private static final String INSERT_GROUP_SQL =
         "INSERT INTO tGroup (grp_hKey, grp_sName, grp_bIsDeleted, grp_bRestricted, grp_sSyncValue, grp_lType, grp_usr_hKey) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -64,6 +64,7 @@ public final class DatabaseValuesInitializer
 
         Statement stmt = conn.createStatement();
         stmt.executeUpdate( "UPDATE tUser SET usr_grp_hkey = '" + anonymousGroupKey + "' WHERE usr_hkey = '" + anonymousUserKey + "'" );
+        stmt.executeUpdate( "UPDATE tUser SET usr_sSyncValue2 = usr_hKey WHERE usr_ut_lKey IN ( 1, 2 )" );
         stmt.close();
     }
 

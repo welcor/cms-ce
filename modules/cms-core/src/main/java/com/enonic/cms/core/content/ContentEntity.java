@@ -134,6 +134,12 @@ public class ContentEntity
         this.sectionContents = source.getSectionContents() != null ? Sets.newHashSet( source.getSectionContents() ) : null;
         this.directMenuItemPlacements =
             source.getDirectMenuItemPlacements() != null ? new TreeSet<MenuItemEntity>( source.getDirectMenuItemPlacements() ) : null;
+        if ( source.getContentAccessRights() != null )
+        {
+            TreeMap<GroupKey, ContentAccessEntity> contentAccessRightsCopy = Maps.newTreeMap( new GroupKeyComparator() );
+            contentAccessRightsCopy.putAll( source.contentAccessRights );
+            this.contentAccessRights = contentAccessRightsCopy;
+        }
     }
 
     public ContentKey getKey()

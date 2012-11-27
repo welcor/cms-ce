@@ -443,9 +443,9 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval total=\"30.0\" hits=\"2\" min=\"10.0\" mean=\"15.0\" max=\"20.0\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval total=\"70.0\" hits=\"2\" min=\"30.0\" mean=\"35.0\" max=\"40.0\">2012-01-02 00:00:00</interval>\n" +
-            "      <interval total=\"260.0\" hits=\"4\" min=\"50.0\" mean=\"65.0\" max=\"80.0\">2012-01-04 00:00:00</interval>\n" +
+            "      <interval sum=\"30.0\" hits=\"2\" min=\"10.0\" mean=\"15.0\" max=\"20.0\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval sum=\"70.0\" hits=\"2\" min=\"30.0\" mean=\"35.0\" max=\"40.0\">2012-01-02 00:00:00</interval>\n" +
+            "      <interval sum=\"260.0\" hits=\"4\" min=\"50.0\" mean=\"65.0\" max=\"80.0\">2012-01-04 00:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>\n" +

@@ -27,7 +27,7 @@ public class RangeFacetResultSetXmlCreator
             addAttributeIfNotNull( resultEl, "min", result.getMin() );
             addAttributeIfNotNull( resultEl, "mean", result.getMean() );
             addAttributeIfNotNull( resultEl, "max", result.getMax() );
-            addAttributeIfNotNull( resultEl, "total", result.getTotal() );
+            addAttributeIfNotNull( resultEl, "sum", result.getTotal() );
 
             rangeFacetRootElement.addContent( resultEl );
         }

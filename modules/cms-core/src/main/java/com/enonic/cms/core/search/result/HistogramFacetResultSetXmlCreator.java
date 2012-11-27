@@ -17,7 +17,7 @@ public class HistogramFacetResultSetXmlCreator
         for ( HistogramFacetResultEntry result : resultEntries )
         {
             Element resultEl = new Element( "interval" );
-            addAttributeIfNotNull( resultEl, "total", result.getTotal() );
+            addAttributeIfNotNull( resultEl, "sum", result.getTotal() );
             addAttributeIfNotNull( resultEl, "total-count", result.getTotalCount() );
             addAttributeIfNotNull( resultEl, "hits", result.getCount() );
             addAttributeIfNotNull( resultEl, "min", result.getMin() );

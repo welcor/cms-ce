@@ -54,9 +54,9 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "      <term total=\"899.0\" count=\"3\" min=\"-100.0\" mean=\"299.6666666666667\" max=\"999.0\">c</term>\n" +
-            "      <term total=\"510.0\" count=\"3\" min=\"10.0\" mean=\"170.0\" max=\"300.0\">a</term>\n" +
-            "      <term total=\"0.0\" count=\"1\" min=\"0.0\" mean=\"0.0\" max=\"0.0\">b</term>\n" +
+            "      <term total=\"899.0\" hits=\"3\" min=\"-100.0\" mean=\"299.6666666666667\" max=\"999.0\">c</term>\n" +
+            "      <term total=\"510.0\" hits=\"3\" min=\"10.0\" mean=\"170.0\" max=\"300.0\">a</term>\n" +
+            "      <term total=\"0.0\" hits=\"1\" min=\"0.0\" mean=\"0.0\" max=\"0.0\">b</term>\n" +
             "    </terms-stats>\n" +
             "  </facets>\n" +
             "</content>";
@@ -176,9 +176,9 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "      <term total=\"3200.0\" count=\"6\" min=\"-100.0\" mean=\"533.3333333333334\" max=\"2000.0\">b</term>\n" +
-            "      <term total=\"410.0\" count=\"5\" min=\"-100.0\" mean=\"82.0\" max=\"300.0\">a</term>\n" +
-            "      <term total=\"2900.0\" count=\"4\" min=\"-100.0\" mean=\"725.0\" max=\"2000.0\">c</term>\n" +
+            "      <term total=\"3200.0\" hits=\"6\" min=\"-100.0\" mean=\"533.3333333333334\" max=\"2000.0\">b</term>\n" +
+            "      <term total=\"410.0\" hits=\"5\" min=\"-100.0\" mean=\"82.0\" max=\"300.0\">a</term>\n" +
+            "      <term total=\"2900.0\" hits=\"4\" min=\"-100.0\" mean=\"725.0\" max=\"2000.0\">c</term>\n" +
             "    </terms-stats>\n" +
             "  </facets>\n" +
             "</content>";

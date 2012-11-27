@@ -53,9 +53,22 @@ public class ElasticsearchRangeFacetBuilder
 
     protected void setField( final RangeFacetModel rangeFacetModel, final RangeFacetBuilder builder )
     {
-        final String fieldName = rangeFacetModel.getIndex();
+        final String indexName = rangeFacetModel.getIndex();
 
-        if ( !Strings.isNullOrEmpty( fieldName ) )
+        if ( !Strings.isNullOrEmpty( rangeFacetModel.getValueIndex() ) )
+        {
+            if ( rangeFacetModel.isNumericRanges() )
+            {
+                builder.keyField( createNumericFieldName( indexName ) );
+                builder.valueField( createNumericFieldName( rangeFacetModel.getValueIndex() ) );
+            }
+            else
+            {
+                builder.keyField( createDateFieldName( indexName ) );
+                builder.valueField( createDateFieldName( rangeFacetModel.getValueIndex() ) );
+            }
+        }
+        else
         {
             if ( rangeFacetModel.isNumericRanges() )
             {
@@ -64,19 +77,6 @@ public class ElasticsearchRangeFacetBuilder
             else
             {
                 builder.field( createDateFieldName( rangeFacetModel.getIndex() ) );
-            }
-        }
-        else if ( !Strings.isNullOrEmpty( rangeFacetModel.getKeyIndex() ) && !Strings.isNullOrEmpty( rangeFacetModel.getValueIndex() ) )
-        {
-            if ( rangeFacetModel.isNumericRanges() )
-            {
-                builder.keyField( createNumericFieldName( rangeFacetModel.getKeyIndex() ) );
-                builder.valueField( createNumericFieldName( rangeFacetModel.getValueIndex() ) );
-            }
-            else
-            {
-                builder.keyField( createDateFieldName( rangeFacetModel.getKeyIndex() ) );
-                builder.valueField( createDateFieldName( rangeFacetModel.getValueIndex() ) );
             }
         }
     }

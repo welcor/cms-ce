@@ -15,8 +15,6 @@ public class RangeFacetModel
 {
     private String index;
 
-    private String keyIndex;
-
     private String valueIndex;
 
     @XmlElement(name = "range")
@@ -33,24 +31,11 @@ public class RangeFacetModel
         return index;
     }
 
-    @XmlElement(name = "key-index")
-    public String getKeyIndex()
-    {
-        return keyIndex;
-    }
-
     @XmlElement(name = "value-index")
     public String getValueIndex()
     {
         return valueIndex;
     }
-
-
-    public void setKeyIndex( final String keyIndex )
-    {
-        this.keyIndex = keyIndex;
-    }
-
 
     public void setValueIndex( final String valueIndex )
     {
@@ -79,14 +64,9 @@ public class RangeFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyIndex ) )
+        if ( Strings.isNullOrEmpty( this.index ) )
         {
-            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": 'index' or 'key-index' must be set" );
-        }
-
-        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyIndex ) && Strings.isNullOrEmpty( this.valueIndex ) )
-        {
-            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": both 'key-index' and 'value-index' must be set" );
+            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": 'index' must be set" );
         }
 
         validateFacetRanges();

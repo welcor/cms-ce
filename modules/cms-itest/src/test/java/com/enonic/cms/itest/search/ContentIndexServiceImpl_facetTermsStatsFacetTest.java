@@ -34,7 +34,7 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-index>data/term</key-index>\n" +
+            "        <index>data/term</index>\n" +
             "        <value-index>data/price</value-index>\n" +
             "    </terms-stats >\n" +
             "</facets>";
@@ -80,7 +80,7 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-index>data/term</key-index>\n" +
+            "        <index>data/term</index>\n" +
             "        <value-index>data/price</value-index>\n" +
             "        <orderby>min</orderby>\n" +
             "    </terms-stats >\n" +
@@ -116,7 +116,7 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-index>data/term</key-index>\n" +
+            "        <index>data/term</index>\n" +
             "        <value-index>data/price</value-index>\n" +
             "        <orderby>max</orderby>\n" +
             "    </terms-stats >\n" +
@@ -153,7 +153,7 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-index>data/term</key-index>\n" +
+            "        <index>data/term</index>\n" +
             "        <value-index>data/price</value-index>\n" +
             "        <orderby>count</orderby>\n" +
             "    </terms-stats >\n" +

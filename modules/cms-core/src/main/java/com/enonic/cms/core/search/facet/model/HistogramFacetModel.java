@@ -14,8 +14,6 @@ public class HistogramFacetModel
 
     private Long interval;
 
-    private String keyIndex;
-
     private String valueIndex;
 
     @XmlElement(name = "index")
@@ -40,17 +38,6 @@ public class HistogramFacetModel
         this.interval = interval;
     }
 
-    @XmlElement(name = "key-index")
-    public String getKeyIndex()
-    {
-        return keyIndex;
-    }
-
-    public void setKeyIndex( final String keyIndex )
-    {
-        this.keyIndex = keyIndex;
-    }
-
     @XmlElement(name = "value-index")
     public String getValueIndex()
     {
@@ -67,24 +54,15 @@ public class HistogramFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyIndex ) )
+        if ( Strings.isNullOrEmpty( this.index ) )
         {
-            throw new IllegalArgumentException( "Error in histogram-facet  " + getName() + ": 'field' or 'key-index' must be set" );
-        }
-
-        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyIndex ) && Strings.isNullOrEmpty( this.valueIndex ) )
-        {
-            throw new IllegalArgumentException(
-                "Error in histogram-facet  " + getName() + ": both 'key-index' and 'value-index' must be set" );
+            throw new IllegalArgumentException( "Error in histogram-facet  " + getName() + ": 'index' must be set" );
         }
 
         if ( this.interval == null )
         {
             throw new IllegalArgumentException( "Error in histogram-facet " + getName() + ": 'interval' must be set" );
         }
-
     }
-
-
 }
 

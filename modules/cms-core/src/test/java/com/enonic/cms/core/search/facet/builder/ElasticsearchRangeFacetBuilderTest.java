@@ -48,7 +48,7 @@ public class ElasticsearchRangeFacetBuilderTest
 
         RangeFacetModel model = new RangeFacetModel();
         model.setName( "rangeFacet" );
-        model.setKeyIndex( "keyField" );
+        model.setIndex( "keyField" );
         model.setValueIndex( "valueField" );
         model.setCount( 10 );
 

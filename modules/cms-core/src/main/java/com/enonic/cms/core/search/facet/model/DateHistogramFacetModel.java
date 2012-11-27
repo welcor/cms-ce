@@ -13,12 +13,9 @@ import com.google.common.base.Strings;
 public class DateHistogramFacetModel
     extends AbstractFacetModel
 {
-
     private String index;
 
     private String interval;
-
-    private String keyIndex;
 
     private String valueIndex;
 
@@ -49,17 +46,6 @@ public class DateHistogramFacetModel
     public void setInterval( final String interval )
     {
         this.interval = interval;
-    }
-
-    @XmlElement(name = "key-index")
-    public String getKeyIndex()
-    {
-        return keyIndex;
-    }
-
-    public void setKeyIndex( final String keyIndex )
-    {
-        this.keyIndex = keyIndex;
     }
 
     @XmlElement(name = "value-index")
@@ -100,15 +86,9 @@ public class DateHistogramFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyIndex ) )
+        if ( Strings.isNullOrEmpty( this.index ) )
         {
-            throw new IllegalArgumentException( "Error in date histogram-facet  " + getName() + ": 'field' or 'key-index' must be set" );
-        }
-
-        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyIndex ) && Strings.isNullOrEmpty( this.valueIndex ) )
-        {
-            throw new IllegalArgumentException(
-                "Error in histogram-facet  " + getName() + ": both 'key-index' and 'value-index' must be set if any" );
+            throw new IllegalArgumentException( "Error in date histogram-facet  " + getName() + ": 'index' must be set" );
         }
 
         if ( this.interval == null )
@@ -128,9 +108,5 @@ public class DateHistogramFacetModel
             throw new IllegalArgumentException(
                 "Error in date histogram-facet " + getName() + ": Invalid 'interval' expression: " + this.interval );
         }
-
-
     }
-
-
 }

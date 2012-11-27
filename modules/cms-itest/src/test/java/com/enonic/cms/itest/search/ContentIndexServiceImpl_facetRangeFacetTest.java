@@ -30,8 +30,8 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
             "    <ranges name=\"myRangeFacet\">\n" +
             "            <range to=\"2001-01-01\"/>\n" +
             "            <range from=\"2001-01-01\" to=\"2001-01-02\"/>\n" +
-            "            <range from=\"2001-01-01 00:00:01:001\" to=\"2001-01-01 23:59:59\"/>\n" +
-            "            <range from=\"2001-01-02\" />\n" +
+            "            <range from=\"2001-01-01T00:00:01:001\" to=\"2001-01-01 23:59:59\"/>\n" +
+            "            <range from=\"2001-01-02T\" />\n" +
             "        <index>data.myDate</index>\n" +
             "    </ranges>\n" +
             "</facets>\n";
@@ -143,7 +143,7 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
             "            <range from=\"1\" to=\"10\"/>\n" +
             "            <range from=\"10\" to=\"100\"/>\n" +
             "            <range from=\"100\" />\n" +
-            "        <key-index>data.price</key-index>\n" +
+            "        <index>data.price</index>\n" +
             "        <value-index>data.myValue</value-index>\n" +
             "    </ranges>\n" +
             "</facets>\n";

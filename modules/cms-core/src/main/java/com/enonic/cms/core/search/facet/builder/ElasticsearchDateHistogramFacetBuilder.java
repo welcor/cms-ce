@@ -61,19 +61,17 @@ public class ElasticsearchDateHistogramFacetBuilder
 
     protected void setField( final DateHistogramFacetModel histogramFacetModel, final DateHistogramFacetBuilder builder )
     {
-        final String fieldName = histogramFacetModel.getIndex();
+        final String indexName = histogramFacetModel.getIndex();
 
-        if ( !Strings.isNullOrEmpty( fieldName ) )
+        if ( !Strings.isNullOrEmpty( histogramFacetModel.getValueIndex() ) )
         {
-            builder.field( createDateFieldName( fieldName ) );
+            builder.keyField( createDateFieldName( indexName ) );
+            builder.valueField( createNumericFieldName( histogramFacetModel.getValueIndex() ) );
 
         }
-        else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyIndex() ) &&
-            !Strings.isNullOrEmpty( histogramFacetModel.getValueIndex() ) )
+        else
         {
-            builder.keyField( createDateFieldName( histogramFacetModel.getKeyIndex() ) );
-            builder.valueField( createNumericFieldName( histogramFacetModel.getValueIndex() ) );
+            builder.field( createDateFieldName( indexName ) );
         }
     }
-
 }

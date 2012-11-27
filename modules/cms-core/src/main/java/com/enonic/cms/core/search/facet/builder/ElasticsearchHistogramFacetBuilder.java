@@ -38,18 +38,17 @@ public class ElasticsearchHistogramFacetBuilder
 
     protected void setField( final HistogramFacetModel histogramFacetModel, final HistogramFacetBuilder builder )
     {
-        final String fieldName = histogramFacetModel.getIndex();
+        final String indexName = histogramFacetModel.getIndex();
 
-        if ( !Strings.isNullOrEmpty( fieldName ) )
+        if ( !Strings.isNullOrEmpty( histogramFacetModel.getValueIndex() ) )
         {
-            builder.field( createNumericFieldName( fieldName ) );
+            builder.keyField( createNumericFieldName( indexName ) );
+            builder.valueField( createNumericFieldName( histogramFacetModel.getValueIndex() ) );
 
         }
-        else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyIndex() ) &&
-            !Strings.isNullOrEmpty( histogramFacetModel.getValueIndex() ) )
+        else
         {
-            builder.keyField( createNumericFieldName( histogramFacetModel.getKeyIndex() ) );
-            builder.valueField( createNumericFieldName( histogramFacetModel.getValueIndex() ) );
+            builder.field( createNumericFieldName( indexName ) );
         }
     }
 }

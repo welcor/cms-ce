@@ -77,7 +77,7 @@ public class ContentIndexServiceImpl_facetHistogramFacetTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetDefinition = "<facets>\n" +
             "    <histogram name=\"myHistogramFacet\">\n" +
-            "        <key-index>data.myKey</key-index>\n" +
+            "        <index>data.myKey</index>\n" +
             "        <value-index>data.myValue</value-index>\n" +
             "        <interval>100</interval>\n" +
             "    </histogram>\n" +

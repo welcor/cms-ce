@@ -12,15 +12,15 @@ public class TermsStatsFacetModel
 {
     private String orderby;
 
-    private String keyIndex;
+    private String index;
 
     private String valueIndex;
 
 
-    @XmlElement(name = "key-index")
-    public String getKeyIndex()
+    @XmlElement(name = "index")
+    public String getIndex()
     {
-        return keyIndex;
+        return index;
     }
 
     @XmlElement(name = "value-index")
@@ -40,9 +40,9 @@ public class TermsStatsFacetModel
         this.orderby = orderby;
     }
 
-    public void setKeyIndex( final String keyIndex )
+    public void setIndex( final String index )
     {
-        this.keyIndex = keyIndex;
+        this.index = index;
     }
 
     public void setValueIndex( final String valueIndex )
@@ -54,9 +54,9 @@ public class TermsStatsFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.keyIndex ) || Strings.isNullOrEmpty( this.valueIndex ) )
+        if ( Strings.isNullOrEmpty( this.index ) || Strings.isNullOrEmpty( this.valueIndex ) )
         {
-            throw new IllegalArgumentException( "Terms-stats-facet " + getName() + ": Fields 'key-index' and 'value-index' must be set" );
+            throw new IllegalArgumentException( "Terms-stats-facet " + getName() + ": Fields 'index' and 'value-index' must be set" );
         }
     }
 

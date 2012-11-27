@@ -15,7 +15,7 @@ public class FacetModelFactoryTest_termsStatsFacetModel
         String xml = "<facets>\n" +
             "    <terms-stats name=\"myFacetName\">\n" +
             "        <count>10</count>\n" +
-            "        <key-index>data/activity</key-index>\n" +
+            "        <index>data/activity</index>\n" +
             "        <value-index>data/hours</value-index>\n" +
             "        <orderby>count</orderby>\n" +
             "    </terms-stats>\n" +
@@ -27,7 +27,7 @@ public class FacetModelFactoryTest_termsStatsFacetModel
         assertTrue( next instanceof TermsStatsFacetModel );
 
         TermsStatsFacetModel termsStatsFacetModel = (TermsStatsFacetModel) next;
-        assertEquals( "data/activity", termsStatsFacetModel.getKeyIndex() );
+        assertEquals( "data/activity", termsStatsFacetModel.getIndex() );
         assertEquals( "data/hours", termsStatsFacetModel.getValueIndex() );
         assertEquals( "count", termsStatsFacetModel.getOrderby() );
     }

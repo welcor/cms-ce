@@ -47,7 +47,7 @@ public class ElasticsearchHistogramFacetBuilderTest
         model.setName( "myHistogramFacet" );
         model.setCount( 10 );
         model.setInterval( 100L );
-        model.setKeyIndex( "data/myKeyField" );
+        model.setIndex( "data/myKeyField" );
         model.setValueIndex( "data/myValueField" );
 
         final HistogramFacetBuilder histogramFacetBuilder = facetBuilder.build( model );

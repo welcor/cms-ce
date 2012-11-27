@@ -202,7 +202,8 @@ public final class TranslationReader
     {
         boolean letter = ( ( c >= 'a' && c <= 'z' ) || ( c >= 'A' && c <= 'Z' ) );
         boolean number = ( c >= '0' && c <= '9' );
-        return ( i == 0 && letter ) || ( i > 0 && ( letter || number ) );
+        boolean underscore = c == '_';
+        return ( i == 0 && letter ) || ( i > 0 && ( letter || number || underscore) );
     }
 
     /**

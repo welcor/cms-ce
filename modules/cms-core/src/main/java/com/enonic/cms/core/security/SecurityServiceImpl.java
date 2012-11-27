@@ -479,7 +479,7 @@ public class SecurityServiceImpl
 
     public void logoutPortalUser()
     {
-        doLogoutPortalUser( true );
+        doLogoutPortalUser( false );
     }
 
     public void logoutClientApiUser( boolean invalidateSession )
@@ -516,12 +516,9 @@ public class SecurityServiceImpl
         PortalSecurityHolder.setImpersonatedUser( null );
 
         // Only invalidate session if logged out of both "portal" and "admin". Check admin user!
-        if ( AdminSecurityHolder.getUser() == null )
+        if ( invalidateSession && AdminSecurityHolder.getUser() == null )
         {
-            if ( invalidateSession )
-            {
-                invalidateSession();
-            }
+            invalidateSession();
         }
     }
 

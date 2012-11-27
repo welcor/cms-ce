@@ -19,7 +19,7 @@ public class TermFacetResultSetXmlCreator
             final Integer count = resultMap.get( result );
 
             Element resultEl = new Element( "term" );
-            addAttributeIfNotNull( resultEl, "count", count );
+            addAttributeIfNotNull( resultEl, "hits", count );
             resultEl.addContent( result );
             termFacetRoot.addContent( resultEl );
         }

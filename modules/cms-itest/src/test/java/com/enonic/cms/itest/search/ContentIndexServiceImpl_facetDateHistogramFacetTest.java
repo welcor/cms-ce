@@ -48,14 +48,14 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"1\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-01 12:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-02 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-03 23:59:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 10:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 12:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 14:10:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 16:01:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 12:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-02 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-03 23:59:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 10:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 12:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 14:10:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 16:01:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -97,9 +97,9 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"4\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-01 00:02:00</interval>\n" +
-            "      <interval count=\"2\">2012-01-01 01:00:00</interval>\n" +
+            "      <interval hits=\"4\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 00:02:00</interval>\n" +
+            "      <interval hits=\"2\">2012-01-01 01:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -142,14 +142,14 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"1\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-01 12:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-02 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-03 23:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 10:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 12:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 14:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-04 16:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 12:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-02 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-03 23:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 10:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 12:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 14:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-04 16:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -192,11 +192,11 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"2\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"2\">2012-01-01 01:30:00</interval>\n" +
-            "      <interval count=\"2\">2012-01-01 03:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-01 04:30:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-01 06:00:00</interval>\n" +
+            "      <interval hits=\"2\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"2\">2012-01-01 01:30:00</interval>\n" +
+            "      <interval hits=\"2\">2012-01-01 03:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 04:30:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 06:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -239,9 +239,9 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"2\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"2\">2012-01-02 00:00:00</interval>\n" +
-            "      <interval count=\"4\">2012-01-04 00:00:00</interval>\n" +
+            "      <interval hits=\"2\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"2\">2012-01-02 00:00:00</interval>\n" +
+            "      <interval hits=\"4\">2012-01-04 00:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>\n" +
@@ -287,14 +287,14 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"1\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-02-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-03-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-04-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-05-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-06-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-07-01 00:00:00</interval>\n" +
-            "      <interval count=\"2\">2012-08-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-02-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-03-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-04-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-05-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-06-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-07-01 00:00:00</interval>\n" +
+            "      <interval hits=\"2\">2012-08-01 00:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -338,14 +338,14 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"1\">2001-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2002-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2003-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2004-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2005-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2006-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"1\">2007-01-01 00:00:00</interval>\n" +
-            "      <interval count=\"2\">2008-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2001-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2002-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2003-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2004-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2005-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2006-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"1\">2007-01-01 00:00:00</interval>\n" +
+            "      <interval hits=\"2\">2008-01-01 00:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -394,11 +394,11 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"1\">2011-12-31 12:00:00</interval>\n" +
-            "      <interval count=\"2\">2012-01-01 12:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-02 12:00:00</interval>\n" +
-            "      <interval count=\"1\">2012-01-03 12:00:00</interval>\n" +
-            "      <interval count=\"3\">2012-01-04 12:00:00</interval>\n" +
+            "      <interval hits=\"1\">2011-12-31 12:00:00</interval>\n" +
+            "      <interval hits=\"2\">2012-01-01 12:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-02 12:00:00</interval>\n" +
+            "      <interval hits=\"1\">2012-01-03 12:00:00</interval>\n" +
+            "      <interval hits=\"3\">2012-01-04 12:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -443,9 +443,9 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval total=\"30.0\" count=\"2\" min=\"10.0\" mean=\"15.0\" max=\"20.0\">2012-01-01 00:00:00</interval>\n" +
-            "      <interval total=\"70.0\" count=\"2\" min=\"30.0\" mean=\"35.0\" max=\"40.0\">2012-01-02 00:00:00</interval>\n" +
-            "      <interval total=\"260.0\" count=\"4\" min=\"50.0\" mean=\"65.0\" max=\"80.0\">2012-01-04 00:00:00</interval>\n" +
+            "      <interval total=\"30.0\" hits=\"2\" min=\"10.0\" mean=\"15.0\" max=\"20.0\">2012-01-01 00:00:00</interval>\n" +
+            "      <interval total=\"70.0\" hits=\"2\" min=\"30.0\" mean=\"35.0\" max=\"40.0\">2012-01-02 00:00:00</interval>\n" +
+            "      <interval total=\"260.0\" hits=\"4\" min=\"50.0\" mean=\"65.0\" max=\"80.0\">2012-01-04 00:00:00</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>\n" +

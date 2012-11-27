@@ -48,12 +48,12 @@ public class ContentIndexServiceImpl_facetHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <histogram name=\"myHistogramFacet\">\n" +
-            "      <interval count=\"2\">100</interval>\n" +
-            "      <interval count=\"2\">200</interval>\n" +
-            "      <interval count=\"1\">300</interval>\n" +
-            "      <interval count=\"1\">400</interval>\n" +
-            "      <interval count=\"1\">500</interval>\n" +
-            "      <interval count=\"1\">1000</interval>\n" +
+            "      <interval hits=\"2\">100</interval>\n" +
+            "      <interval hits=\"2\">200</interval>\n" +
+            "      <interval hits=\"1\">300</interval>\n" +
+            "      <interval hits=\"1\">400</interval>\n" +
+            "      <interval hits=\"1\">500</interval>\n" +
+            "      <interval hits=\"1\">1000</interval>\n" +
             "    </histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -96,12 +96,12 @@ public class ContentIndexServiceImpl_facetHistogramFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <histogram name=\"myHistogramFacet\">\n" +
-            "      <interval total=\"3.0\" count=\"2\" min=\"1.0\" mean=\"1.5\" max=\"2.0\">100</interval>\n" +
-            "      <interval total=\"7.0\" count=\"2\" min=\"3.0\" mean=\"3.5\" max=\"4.0\">200</interval>\n" +
-            "      <interval total=\"5.0\" count=\"1\" min=\"5.0\" mean=\"5.0\" max=\"5.0\">300</interval>\n" +
-            "      <interval total=\"6.0\" count=\"1\" min=\"6.0\" mean=\"6.0\" max=\"6.0\">400</interval>\n" +
-            "      <interval total=\"7.0\" count=\"1\" min=\"7.0\" mean=\"7.0\" max=\"7.0\">500</interval>\n" +
-            "      <interval total=\"8.0\" count=\"1\" min=\"8.0\" mean=\"8.0\" max=\"8.0\">1000</interval>\n" +
+            "      <interval total=\"3.0\" hits=\"2\" min=\"1.0\" mean=\"1.5\" max=\"2.0\">100</interval>\n" +
+            "      <interval total=\"7.0\" hits=\"2\" min=\"3.0\" mean=\"3.5\" max=\"4.0\">200</interval>\n" +
+            "      <interval total=\"5.0\" hits=\"1\" min=\"5.0\" mean=\"5.0\" max=\"5.0\">300</interval>\n" +
+            "      <interval total=\"6.0\" hits=\"1\" min=\"6.0\" mean=\"6.0\" max=\"6.0\">400</interval>\n" +
+            "      <interval total=\"7.0\" hits=\"1\" min=\"7.0\" mean=\"7.0\" max=\"7.0\">500</interval>\n" +
+            "      <interval total=\"8.0\" hits=\"1\" min=\"8.0\" mean=\"8.0\" max=\"8.0\">1000</interval>\n" +
             "    </histogram>\n" +
             "  </facets>\n" +
             "</content>";

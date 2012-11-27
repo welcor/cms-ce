@@ -64,10 +64,10 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <ranges name=\"myRangeFacet\">\n" +
-            "      <range count=\"1\" to=\"2001-01-01 00:00:00\" />\n" +
-            "      <range count=\"4\" from=\"2001-01-01 00:00:00\" to=\"2001-01-02 00:00:00\" />\n" +
-            "      <range count=\"3\" from=\"2001-01-01 00:00:01\" to=\"2001-01-01 23:59:59\" />\n" +
-            "      <range count=\"2\" from=\"2001-01-02 00:00:00\" />\n" +
+            "      <range hits=\"1\" to=\"2001-01-01 00:00:00\" />\n" +
+            "      <range hits=\"4\" from=\"2001-01-01 00:00:00\" to=\"2001-01-02 00:00:00\" />\n" +
+            "      <range hits=\"3\" from=\"2001-01-01 00:00:01\" to=\"2001-01-01 23:59:59\" />\n" +
+            "      <range hits=\"2\" from=\"2001-01-02 00:00:00\" />\n" +
             "    </ranges>\n" +
             "  </facets>\n" +
             "</content>";
@@ -119,10 +119,10 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <ranges name=\"myRangeFacet\">\n" +
-            "      <range count=\"2\" to=\"1.0\" min=\"0.0\" mean=\"0.495\" max=\"0.99\" total=\"0.99\" />\n" +
-            "      <range count=\"2\" from=\"1.0\" to=\"10.0\" min=\"1.0\" mean=\"1.0\" max=\"1.0\" total=\"2.0\" />\n" +
-            "      <range count=\"1\" from=\"10.0\" to=\"100.0\" min=\"10.0\" mean=\"10.0\" max=\"10.0\" total=\"10.0\" />\n" +
-            "      <range count=\"3\" from=\"100.0\" min=\"100.0\" mean=\"400.3333333333333\" max=\"1000.0\" total=\"1201.0\" />\n" +
+            "      <range hits=\"2\" to=\"1.0\" min=\"0.0\" mean=\"0.495\" max=\"0.99\" total=\"0.99\" />\n" +
+            "      <range hits=\"2\" from=\"1.0\" to=\"10.0\" min=\"1.0\" mean=\"1.0\" max=\"1.0\" total=\"2.0\" />\n" +
+            "      <range hits=\"1\" from=\"10.0\" to=\"100.0\" min=\"10.0\" mean=\"10.0\" max=\"10.0\" total=\"10.0\" />\n" +
+            "      <range hits=\"3\" from=\"100.0\" min=\"100.0\" mean=\"400.3333333333333\" max=\"1000.0\" total=\"1201.0\" />\n" +
             "    </ranges>\n" +
             "  </facets>\n" +
             "</content>";
@@ -175,10 +175,10 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <ranges name=\"myRangeFacet\">\n" +
-            "      <range count=\"2\" to=\"1.0\" min=\"2.0\" mean=\"3.0\" max=\"4.0\" total=\"6.0\" />\n" +
-            "      <range count=\"2\" from=\"1.0\" to=\"10.0\" min=\"6.0\" mean=\"7.0\" max=\"8.0\" total=\"14.0\" />\n" +
-            "      <range count=\"1\" from=\"10.0\" to=\"100.0\" min=\"10.0\" mean=\"10.0\" max=\"10.0\" total=\"10.0\" />\n" +
-            "      <range count=\"3\" from=\"100.0\" min=\"12.0\" mean=\"14.0\" max=\"16.0\" total=\"42.0\" />\n" +
+            "      <range hits=\"2\" to=\"1.0\" min=\"2.0\" mean=\"3.0\" max=\"4.0\" total=\"6.0\" />\n" +
+            "      <range hits=\"2\" from=\"1.0\" to=\"10.0\" min=\"6.0\" mean=\"7.0\" max=\"8.0\" total=\"14.0\" />\n" +
+            "      <range hits=\"1\" from=\"10.0\" to=\"100.0\" min=\"10.0\" mean=\"10.0\" max=\"10.0\" total=\"10.0\" />\n" +
+            "      <range hits=\"3\" from=\"100.0\" min=\"12.0\" mean=\"14.0\" max=\"16.0\" total=\"42.0\" />\n" +
             "    </ranges>\n" +
             "  </facets>\n" +
             "</content>\n";

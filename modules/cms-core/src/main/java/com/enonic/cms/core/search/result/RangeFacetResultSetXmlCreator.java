@@ -21,7 +21,7 @@ public class RangeFacetResultSetXmlCreator
         for ( RangeFacetResultEntry result : resultEntries )
         {
             Element resultEl = new Element( "range" );
-            addAttributeIfNotNull( resultEl, "count", result.getCount() );
+            addAttributeIfNotNull( resultEl, "hits", result.getCount() );
             addAttributeIfNotNull( resultEl, "from", getFacetRangeValueAsFormattedString( result.getFrom() ) );
             addAttributeIfNotNull( resultEl, "to", getFacetRangeValueAsFormattedString( result.getTo() ) );
             addAttributeIfNotNull( resultEl, "min", result.getMin() );

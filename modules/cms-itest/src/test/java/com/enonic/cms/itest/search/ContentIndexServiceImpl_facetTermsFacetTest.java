@@ -78,9 +78,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"3\">human</term>\n" +
-            "      <term count=\"2\">robot</term>\n" +
-            "      <term count=\"1\">alien</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
+            "      <term hits=\"2\">robot</term>\n" +
+            "      <term hits=\"1\">alien</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>";
@@ -123,14 +123,14 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"facet1\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"3\">human</term>\n" +
-            "      <term count=\"2\">robot</term>\n" +
-            "      <term count=\"1\">alien</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
+            "      <term hits=\"2\">robot</term>\n" +
+            "      <term hits=\"1\">alien</term>\n" +
             "    </terms>\n" +
             "    <terms name=\"facet2\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"3\">beer</term>\n" +
-            "      <term count=\"2\">oil</term>\n" +
-            "      <term count=\"1\">blood</term>\n" +
+            "      <term hits=\"3\">beer</term>\n" +
+            "      <term hits=\"2\">oil</term>\n" +
+            "      <term hits=\"1\">blood</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>";
@@ -172,9 +172,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"3\">human</term>\n" +
-            "      <term count=\"2\">robot</term>\n" +
-            "      <term count=\"1\">alien</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
+            "      <term hits=\"2\">robot</term>\n" +
+            "      <term hits=\"1\">alien</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>\n";
@@ -219,9 +219,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"specietypes\" total=\"18\" missing=\"0\" other=\"8\">\n" +
-            "      <term count=\"4\">male</term>\n" +
-            "      <term count=\"3\">human</term>\n" +
-            "      <term count=\"3\">beer</term>\n" +
+            "      <term hits=\"4\">male</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
+            "      <term hits=\"3\">beer</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>";
@@ -257,9 +257,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"3\">human</term>\n" +
-            "      <term count=\"2\">robot</term>\n" +
-            "      <term count=\"1\">alien</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
+            "      <term hits=\"2\">robot</term>\n" +
+            "      <term hits=\"1\">alien</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>";
@@ -295,9 +295,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"1\">alien</term>\n" +
-            "      <term count=\"2\">robot</term>\n" +
-            "      <term count=\"3\">human</term>\n" +
+            "      <term hits=\"1\">alien</term>\n" +
+            "      <term hits=\"2\">robot</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>";
@@ -333,9 +333,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"1\">alien</term>\n" +
-            "      <term count=\"3\">human</term>\n" +
-            "      <term count=\"2\">robot</term>\n" +
+            "      <term hits=\"1\">alien</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
+            "      <term hits=\"2\">robot</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>\n" +
@@ -372,9 +372,9 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "<content>\n" +
             "  <facets>\n" +
             "    <terms name=\"specietypes\" total=\"6\" missing=\"0\" other=\"0\">\n" +
-            "      <term count=\"2\">robot</term>\n" +
-            "      <term count=\"3\">human</term>\n" +
-            "      <term count=\"1\">alien</term>\n" +
+            "      <term hits=\"2\">robot</term>\n" +
+            "      <term hits=\"3\">human</term>\n" +
+            "      <term hits=\"1\">alien</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</content>\n";

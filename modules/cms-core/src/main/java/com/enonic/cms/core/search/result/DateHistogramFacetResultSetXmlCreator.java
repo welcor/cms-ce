@@ -22,7 +22,7 @@ public class DateHistogramFacetResultSetXmlCreator
             Element resultEl = new Element( "interval" );
             addAttributeIfNotNull( resultEl, "total", result.getTotal() );
             addAttributeIfNotNull( resultEl, "total-count", result.getTotalCount() );
-            addAttributeIfNotNull( resultEl, "count", result.getCount() );
+            addAttributeIfNotNull( resultEl, "hits", result.getCount() );
             addAttributeIfNotNull( resultEl, "min", result.getMin() );
             addAttributeIfNotNull( resultEl, "mean", result.getMean() );
             addAttributeIfNotNull( resultEl, "max", result.getMax() );

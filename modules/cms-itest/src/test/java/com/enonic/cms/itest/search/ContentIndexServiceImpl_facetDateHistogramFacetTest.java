@@ -424,8 +424,8 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         final String facetDefinition = "<facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "        <key-field>data.myDate</key-field>\n" +
-            "        <value-field>data.myValue</value-field>\n" +
+            "        <key-index>data.myDate</key-index>\n" +
+            "        <value-index>data.myValue</value-index>\n" +
             "        <interval>day</interval>\n" +
             "    </date-histogram>\n" +
             "</facets>\n";

@@ -12,21 +12,21 @@ public class TermsStatsFacetModel
 {
     private String orderby;
 
-    private String keyField;
+    private String keyIndex;
 
-    private String valueField;
+    private String valueIndex;
 
 
-    @XmlElement(name = "key-field")
-    public String getKeyField()
+    @XmlElement(name = "key-index")
+    public String getKeyIndex()
     {
-        return keyField;
+        return keyIndex;
     }
 
-    @XmlElement(name = "value-field")
-    public String getValueField()
+    @XmlElement(name = "value-index")
+    public String getValueIndex()
     {
-        return valueField;
+        return valueIndex;
     }
 
     @XmlElement(name = "orderby")
@@ -40,23 +40,23 @@ public class TermsStatsFacetModel
         this.orderby = orderby;
     }
 
-    public void setKeyField( final String keyField )
+    public void setKeyIndex( final String keyIndex )
     {
-        this.keyField = keyField;
+        this.keyIndex = keyIndex;
     }
 
-    public void setValueField( final String valueField )
+    public void setValueIndex( final String valueIndex )
     {
-        this.valueField = valueField;
+        this.valueIndex = valueIndex;
     }
 
     public void validate()
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.keyField ) || Strings.isNullOrEmpty( this.valueField ) )
+        if ( Strings.isNullOrEmpty( this.keyIndex ) || Strings.isNullOrEmpty( this.valueIndex ) )
         {
-            throw new IllegalArgumentException( "Terms-stats-facet " + getName() + ": Fields 'key-field' and 'value-field' must be set" );
+            throw new IllegalArgumentException( "Terms-stats-facet " + getName() + ": Fields 'key-index' and 'value-index' must be set" );
         }
     }
 

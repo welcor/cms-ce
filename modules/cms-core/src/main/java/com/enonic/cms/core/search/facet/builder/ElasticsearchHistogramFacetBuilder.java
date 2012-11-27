@@ -45,11 +45,11 @@ public class ElasticsearchHistogramFacetBuilder
             builder.field( createNumericFieldName( fieldName ) );
 
         }
-        else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyField() ) &&
-            !Strings.isNullOrEmpty( histogramFacetModel.getValueField() ) )
+        else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyIndex() ) &&
+            !Strings.isNullOrEmpty( histogramFacetModel.getValueIndex() ) )
         {
-            builder.keyField( createNumericFieldName( histogramFacetModel.getKeyField() ) );
-            builder.valueField( createNumericFieldName( histogramFacetModel.getValueField() ) );
+            builder.keyField( createNumericFieldName( histogramFacetModel.getKeyIndex() ) );
+            builder.valueField( createNumericFieldName( histogramFacetModel.getValueIndex() ) );
         }
     }
 }

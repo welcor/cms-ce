@@ -23,14 +23,6 @@ public class TermsFacetModel
 
     private Boolean allTerms;
 
-    public void validate()
-    {
-        if ( Strings.isNullOrEmpty( indices ) )
-        {
-            throw new IllegalArgumentException( "Terms-facet " + getName() + ": Field 'indices' must be set" );
-        }
-    }
-
     @XmlElement(name = "orderby")
     public String getOrderby()
     {
@@ -95,5 +87,13 @@ public class TermsFacetModel
     public void setRegexFlags( final String regexFlags )
     {
         this.regexFlags = regexFlags;
+    }
+
+    public void validate()
+    {
+        if ( Strings.isNullOrEmpty( indices ) )
+        {
+            throw new IllegalArgumentException( "Terms-facet " + getName() + ": Field 'indices' must be set" );
+        }
     }
 }

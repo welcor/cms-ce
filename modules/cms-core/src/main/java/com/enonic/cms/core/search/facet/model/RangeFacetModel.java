@@ -15,9 +15,9 @@ public class RangeFacetModel
 {
     private String index;
 
-    private String keyField;
+    private String keyIndex;
 
-    private String valueField;
+    private String valueIndex;
 
     @XmlElement(name = "range")
     private Set<FacetRange> ranges = new LinkedHashSet<FacetRange>();
@@ -33,28 +33,28 @@ public class RangeFacetModel
         return index;
     }
 
-    @XmlElement(name = "key-field")
-    public String getKeyField()
+    @XmlElement(name = "key-index")
+    public String getKeyIndex()
     {
-        return keyField;
+        return keyIndex;
     }
 
-    @XmlElement(name = "value-field")
-    public String getValueField()
+    @XmlElement(name = "value-index")
+    public String getValueIndex()
     {
-        return valueField;
-    }
-
-
-    public void setKeyField( final String keyField )
-    {
-        this.keyField = keyField;
+        return valueIndex;
     }
 
 
-    public void setValueField( final String valueField )
+    public void setKeyIndex( final String keyIndex )
     {
-        this.valueField = valueField;
+        this.keyIndex = keyIndex;
+    }
+
+
+    public void setValueIndex( final String valueIndex )
+    {
+        this.valueIndex = valueIndex;
     }
 
     public void setIndex( final String index )
@@ -79,14 +79,14 @@ public class RangeFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyIndex ) )
         {
-            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": 'index' or 'keyField' must be set" );
+            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": 'index' or 'key-index' must be set" );
         }
 
-        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyIndex ) && Strings.isNullOrEmpty( this.valueIndex ) )
         {
-            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": both 'key-field' and 'value-field' must be set" );
+            throw new IllegalArgumentException( "Error in range-facet " + getName() + ": both 'key-index' and 'value-index' must be set" );
         }
 
         validateFacetRanges();

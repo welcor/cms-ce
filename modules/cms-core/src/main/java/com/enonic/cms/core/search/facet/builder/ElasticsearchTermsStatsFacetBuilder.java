@@ -37,8 +37,8 @@ public class ElasticsearchTermsStatsFacetBuilder
 
     protected void setField( final TermsStatsFacetModel termsStatsFacetModel, final TermsStatsFacetBuilder builder )
     {
-        builder.keyField( createQueryFieldName( termsStatsFacetModel.getKeyField() ) );
-        builder.valueField( createNumericFieldName( termsStatsFacetModel.getValueField() ) );
+        builder.keyField( createQueryFieldName( termsStatsFacetModel.getKeyIndex() ) );
+        builder.valueField( createNumericFieldName( termsStatsFacetModel.getValueIndex() ) );
     }
 
 

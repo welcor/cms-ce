@@ -66,17 +66,17 @@ public class ElasticsearchRangeFacetBuilder
                 builder.field( createDateFieldName( rangeFacetModel.getIndex() ) );
             }
         }
-        else if ( !Strings.isNullOrEmpty( rangeFacetModel.getKeyField() ) && !Strings.isNullOrEmpty( rangeFacetModel.getValueField() ) )
+        else if ( !Strings.isNullOrEmpty( rangeFacetModel.getKeyIndex() ) && !Strings.isNullOrEmpty( rangeFacetModel.getValueIndex() ) )
         {
             if ( rangeFacetModel.isNumericRanges() )
             {
-                builder.keyField( createNumericFieldName( rangeFacetModel.getKeyField() ) );
-                builder.valueField( createNumericFieldName( rangeFacetModel.getValueField() ) );
+                builder.keyField( createNumericFieldName( rangeFacetModel.getKeyIndex() ) );
+                builder.valueField( createNumericFieldName( rangeFacetModel.getValueIndex() ) );
             }
             else
             {
-                builder.keyField( createDateFieldName( rangeFacetModel.getKeyField() ) );
-                builder.valueField( createDateFieldName( rangeFacetModel.getValueField() ) );
+                builder.keyField( createDateFieldName( rangeFacetModel.getKeyIndex() ) );
+                builder.valueField( createDateFieldName( rangeFacetModel.getValueIndex() ) );
             }
         }
     }

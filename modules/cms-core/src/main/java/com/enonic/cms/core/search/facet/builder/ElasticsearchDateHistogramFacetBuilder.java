@@ -68,11 +68,11 @@ public class ElasticsearchDateHistogramFacetBuilder
             builder.field( createDateFieldName( fieldName ) );
 
         }
-        else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyField() ) &&
-            !Strings.isNullOrEmpty( histogramFacetModel.getValueField() ) )
+        else if ( !Strings.isNullOrEmpty( histogramFacetModel.getKeyIndex() ) &&
+            !Strings.isNullOrEmpty( histogramFacetModel.getValueIndex() ) )
         {
-            builder.keyField( createDateFieldName( histogramFacetModel.getKeyField() ) );
-            builder.valueField( createNumericFieldName( histogramFacetModel.getValueField() ) );
+            builder.keyField( createDateFieldName( histogramFacetModel.getKeyIndex() ) );
+            builder.valueField( createNumericFieldName( histogramFacetModel.getValueIndex() ) );
         }
     }
 

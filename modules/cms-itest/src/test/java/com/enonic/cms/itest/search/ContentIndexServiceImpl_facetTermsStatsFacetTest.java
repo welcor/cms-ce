@@ -34,8 +34,8 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-field>data/term</key-field>\n" +
-            "        <value-field>data/price</value-field>\n" +
+            "        <key-index>data/term</key-index>\n" +
+            "        <value-index>data/price</value-index>\n" +
             "    </terms-stats >\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -80,8 +80,8 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-field>data/term</key-field>\n" +
-            "        <value-field>data/price</value-field>\n" +
+            "        <key-index>data/term</key-index>\n" +
+            "        <value-index>data/price</value-index>\n" +
             "        <orderby>min</orderby>\n" +
             "    </terms-stats >\n" +
             "</facets>";
@@ -116,8 +116,8 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-field>data/term</key-field>\n" +
-            "        <value-field>data/price</value-field>\n" +
+            "        <key-index>data/term</key-index>\n" +
+            "        <value-index>data/price</value-index>\n" +
             "        <orderby>max</orderby>\n" +
             "    </terms-stats >\n" +
             "</facets>";
@@ -153,8 +153,8 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
 
         final String facetDefinition = "<facets>\n" +
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
-            "        <key-field>data/term</key-field>\n" +
-            "        <value-field>data/price</value-field>\n" +
+            "        <key-index>data/term</key-index>\n" +
+            "        <value-index>data/price</value-index>\n" +
             "        <orderby>count</orderby>\n" +
             "    </terms-stats >\n" +
             "</facets>";

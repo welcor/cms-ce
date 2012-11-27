@@ -143,8 +143,8 @@ public class ContentIndexServiceImpl_facetRangeFacetTest
             "            <range from=\"1\" to=\"10\"/>\n" +
             "            <range from=\"10\" to=\"100\"/>\n" +
             "            <range from=\"100\" />\n" +
-            "        <key-field>data.price</key-field>\n" +
-            "        <value-field>data.myValue</value-field>\n" +
+            "        <key-index>data.price</key-index>\n" +
+            "        <value-index>data.myValue</value-index>\n" +
             "    </ranges>\n" +
             "</facets>\n";
 

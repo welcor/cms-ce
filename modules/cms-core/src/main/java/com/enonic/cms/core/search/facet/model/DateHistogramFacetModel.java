@@ -18,9 +18,9 @@ public class DateHistogramFacetModel
 
     private String interval;
 
-    private String keyField;
+    private String keyIndex;
 
-    private String valueField;
+    private String valueIndex;
 
     private String preZone;
 
@@ -51,26 +51,26 @@ public class DateHistogramFacetModel
         this.interval = interval;
     }
 
-    @XmlElement(name = "key-field")
-    public String getKeyField()
+    @XmlElement(name = "key-index")
+    public String getKeyIndex()
     {
-        return keyField;
+        return keyIndex;
     }
 
-    public void setKeyField( final String keyField )
+    public void setKeyIndex( final String keyIndex )
     {
-        this.keyField = keyField;
+        this.keyIndex = keyIndex;
     }
 
-    @XmlElement(name = "value-field")
-    public String getValueField()
+    @XmlElement(name = "value-index")
+    public String getValueIndex()
     {
-        return valueField;
+        return valueIndex;
     }
 
-    public void setValueField( final String valueField )
+    public void setValueIndex( final String valueIndex )
     {
-        this.valueField = valueField;
+        this.valueIndex = valueIndex;
     }
 
     @XmlElement(name = "pre-zone")
@@ -100,15 +100,15 @@ public class DateHistogramFacetModel
     {
         super.validate();
 
-        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && Strings.isNullOrEmpty( this.keyIndex ) )
         {
-            throw new IllegalArgumentException( "Error in date histogram-facet  " + getName() + ": 'field' or 'keyField' must be set" );
+            throw new IllegalArgumentException( "Error in date histogram-facet  " + getName() + ": 'field' or 'key-index' must be set" );
         }
 
-        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyField ) && Strings.isNullOrEmpty( this.valueField ) )
+        if ( Strings.isNullOrEmpty( this.index ) && !Strings.isNullOrEmpty( this.keyIndex ) && Strings.isNullOrEmpty( this.valueIndex ) )
         {
             throw new IllegalArgumentException(
-                "Error in histogram-facet  " + getName() + ": both 'key-field' and 'value-field' must be set if any" );
+                "Error in histogram-facet  " + getName() + ": both 'key-index' and 'value-index' must be set if any" );
         }
 
         if ( this.interval == null )

@@ -15,10 +15,10 @@ public class RangeFacetResultSetXmlCreatorTest
             "<root>\n" +
             "  <facets>\n" +
             "    <ranges name=\"myRangeFacet\">\n" +
-            "      <range count=\"1\" to=\"10\" min=\"5.0\" mean=\"5.0\" max=\"5.0\" />\n" +
-            "      <range count=\"3\" from=\"10\" to=\"20\" min=\"11.0\" mean=\"14.3\" max=\"19.0\" />\n" +
-            "      <range count=\"5\" from=\"20\" to=\"30\" min=\"21.0\" mean=\"24.5\" max=\"29.2\" />\n" +
-            "      <range count=\"1\" from=\"30\" min=\"122.0\" mean=\"122.0\" max=\"122.0\" />\n" +
+            "      <range hits=\"1\" to=\"10\" min=\"5.0\" mean=\"5.0\" max=\"5.0\" />\n" +
+            "      <range hits=\"3\" from=\"10\" to=\"20\" min=\"11.0\" mean=\"14.3\" max=\"19.0\" />\n" +
+            "      <range hits=\"5\" from=\"20\" to=\"30\" min=\"21.0\" mean=\"24.5\" max=\"29.2\" />\n" +
+            "      <range hits=\"1\" from=\"30\" min=\"122.0\" mean=\"122.0\" max=\"122.0\" />\n" +
             "    </ranges>\n" +
             "  </facets>\n" +
             "</root>";
@@ -50,8 +50,8 @@ public class RangeFacetResultSetXmlCreatorTest
             "<root>\n" +
             "  <facets>\n" +
             "    <ranges name=\"myRangeFacet\">\n" +
-            "      <range count=\"1\" to=\"2000-01-02 00:00:00\" />\n" +
-            "      <range count=\"3\" from=\"2001-01-02 01:00:00\" />\n" +
+            "      <range hits=\"1\" to=\"2000-01-02 00:00:00\" />\n" +
+            "      <range hits=\"3\" from=\"2001-01-02 01:00:00\" />\n" +
             "    </ranges>\n" +
             "  </facets>\n" +
             "</root>";

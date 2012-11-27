@@ -14,12 +14,12 @@ public class TermFacetResultSetXmlCreatorTest
             "<root>\n" +
             "  <facets>\n" +
             "    <terms name=\"MyTermFacet\" total=\"100\" missing=\"5\" other=\"10\">\n" +
-            "      <term count=\"10\">term1sef</term>\n" +
-            "      <term count=\"12\">s2312</term>\n" +
-            "      <term count=\"14\">123 fsef __´!#!$# term3</term>\n" +
-            "      <term count=\"16\">term4</term>\n" +
-            "      <term count=\"18\">term5</term>\n" +
-            "      <term count=\"20\">term6</term>\n" +
+            "      <term hits=\"10\">term1sef</term>\n" +
+            "      <term hits=\"12\">s2312</term>\n" +
+            "      <term hits=\"14\">123 fsef __´!#!$# term3</term>\n" +
+            "      <term hits=\"16\">term4</term>\n" +
+            "      <term hits=\"18\">term5</term>\n" +
+            "      <term hits=\"20\">term6</term>\n" +
             "    </terms>\n" +
             "  </facets>\n" +
             "</root>";

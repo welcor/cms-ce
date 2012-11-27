@@ -300,8 +300,9 @@ public final class ExpressionFunctionsExecutor
         {
             if ( target instanceof ExpressionRootObject )
             {
-                LOG.warn( "Accessing map {} as root object as the Map by parameter {}. Expression is {}", name,
-                          expression ); // must be accessed directly !
+                //TODO: Do we really need this?
+                //LOG.warn( "Accessing map {} as root object as the Map by parameter {}. Expression is {}", name,
+                //          expression ); // must be accessed directly !
 
                 ExpressionRootObject rootObject = (ExpressionRootObject) target;
 

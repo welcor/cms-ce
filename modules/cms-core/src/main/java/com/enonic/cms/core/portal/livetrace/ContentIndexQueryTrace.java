@@ -2,6 +2,8 @@ package com.enonic.cms.core.portal.livetrace;
 
 import org.joda.time.DateTime;
 
+import com.google.common.base.Strings;
+
 public class ContentIndexQueryTrace
     extends BaseTrace
     implements Trace
@@ -68,14 +70,21 @@ public class ContentIndexQueryTrace
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public MaxLengthedString getTranslatedQuery()
+    public String getTranslatedQuery()
     {
-        return translatedQuery;
+        return translatedQuery.toString();
     }
 
     public void setTranslatedQuery( final String translatedQuery )
     {
-        this.translatedQuery = new MaxLengthedString( translatedQuery, 6000 );
+        this.translatedQuery =
+            new MaxLengthedString( Strings.isNullOrEmpty( translatedQuery ) ? "" : stripGarbageFromTranslatedQuery( translatedQuery ),
+                                   6000 );
+    }
+
+    private String stripGarbageFromTranslatedQuery( final String translatedQuery )
+    {
+        return translatedQuery.replace( "\n", "" );
     }
 
     @SuppressWarnings("UnusedDeclaration")

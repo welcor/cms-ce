@@ -36,17 +36,11 @@ public abstract class AbstractToolController
     public final ModelAndView handleRequest( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception
     {
-        final HttpSession session = req.getSession( false );
-        if ( session == null )
-        {
-            redirectToLogin( req, res );
-            return null;
-        }
-
         final User user = this.securityService.getLoggedInAdminConsoleUser();
         if ( user == null )
         {
-            redirectToLogin( req, res );
+            res.sendError( HttpServletResponse.SC_FORBIDDEN );
+            // redirectToLogin( req, res );
             return null;
         }
 

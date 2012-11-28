@@ -353,9 +353,9 @@ public class ElasticSearchIndexServiceImpl
         }
         else
         {
-            LOG.info( "ElasticSearch cluster health: Status " + clusterHealthResponse.status().name() + "; " +
-                          clusterHealthResponse.getNumberOfNodes() + " nodes; " + clusterHealthResponse.getActiveShards() +
-                          " active shards." );
+            LOG.finest( "ElasticSearch cluster health: Status " + clusterHealthResponse.status().name() + "; " +
+                            clusterHealthResponse.getNumberOfNodes() + " nodes; " + clusterHealthResponse.getActiveShards() +
+                            " active shards." );
         }
 
         return clusterHealthResponse;

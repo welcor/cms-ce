@@ -1,7 +1,7 @@
 package com.enonic.cms.core.tools.index;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,20 +9,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
-import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.core.tools.AbstractToolController;
 
 public final class IndexMonitorController
     extends AbstractToolController
 {
-
-    public static final String getAllQUery = "{\n" +
+    private static final String GET_ALL_QUERY = "{\n" +
         "  \"from\" : 0,\n" +
         "  \"size\" : 0,\n" +
         "  \"query\" : {\n" +
@@ -34,74 +33,64 @@ public final class IndexMonitorController
 
     private ElasticSearchIndexService elasticSearchIndexService;
 
-    private ContentIndexService contentIndexService;
-
     @Override
     protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception
     {
-        final HashMap<String, Object> model = new HashMap<String, Object>();
-
-        if ( req.getParameter( "recreateIndex" ) != null )
-        {
-            elasticSearchIndexService.deleteIndex( "cms" );
-            contentIndexService.createIndex();
-            redirectToReferrer( req, res );
-        }
-
+        final Map<String, Object> model = Maps.newHashMap();
         model.put( "baseUrl", getBaseUrl( req ) );
 
-        ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
+        final String op = req.getParameter( "op" );
+        if ( !"info".equals( op ) )
+        {
+            renderView( req, res, model, "indexMonitorPage" );
+            return;
+        }
+
+        final ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
         model.put( "activeShards", clusterHealthResponse.getActiveShards() );
+
         final ClusterHealthStatus status = clusterHealthResponse.getStatus();
         model.put( "clusterStatus", status.toString() );
         model.put( "relocatingShards", clusterHealthResponse.getRelocatingShards() );
         model.put( "activePrimaryShards", clusterHealthResponse.getActivePrimaryShards() );
         model.put( "numberOfNodes", clusterHealthResponse.getNumberOfNodes() );
         model.put( "unassignedShards", clusterHealthResponse.getUnassignedShards() );
+
         final List<String> allValidationFailures = clusterHealthResponse.getAllValidationFailures();
         model.put( "validationFailures", allValidationFailures.isEmpty() ? Lists.newArrayList( "None" ) : allValidationFailures );
 
         final boolean indexExists = elasticSearchIndexService.indexExists( "cms" );
         model.put( "indexExists", indexExists );
+        model.put( "numberOfContent", getTotalHitsContent( status ) );
+        model.put( "numberOfBinaries", getTotalHitsBinaries( status ) );
 
-        if ( status.equals( ClusterHealthStatus.RED ) )
-        {
-            renderView( req, res, model, "indexMonitorPage" );
-            return;
-        }
-
-        model.put( "numberOfContent", getTotalHitsContent() );
-        model.put( "numberOfBinaries", getTotalHitsBinaries() );
-        renderView( req, res, model, "indexMonitorPage" );
+        renderView( req, res, model, "indexMonitorPage_info" );
     }
 
-    private String getTotalHitsBinaries()
+    private long getTotalHitsBinaries( final ClusterHealthStatus status )
     {
-        try
+        if ( !status.equals( ClusterHealthStatus.RED ) )
         {
-            final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Binaries.toString(), getAllQUery );
-
-            return "" + response.getHits().getTotalHits();
+            final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Binaries.toString(), GET_ALL_QUERY );
+            return response.getHits().getTotalHits();
         }
-        catch ( Exception e )
+        else
         {
-            return "Not able to get total binaries: " + e.getMessage();
+            return -1;
         }
-
     }
 
-    private String getTotalHitsContent()
+    private long getTotalHitsContent( final ClusterHealthStatus status )
     {
-        try
+        if ( !status.equals( ClusterHealthStatus.RED ) )
         {
-            final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content.toString(), getAllQUery );
-
-            return "" + response.getHits().getTotalHits();
+            final SearchResponse response = elasticSearchIndexService.search( "cms", IndexType.Content.toString(), GET_ALL_QUERY );
+            return response.getHits().getTotalHits();
         }
-        catch ( Exception e )
+        else
         {
-            return "Not able to get total content: " + e.getMessage();
+            return -1;
         }
     }
 
@@ -109,11 +98,5 @@ public final class IndexMonitorController
     public void setElasticSearchIndexService( ElasticSearchIndexService elasticSearchIndexService )
     {
         this.elasticSearchIndexService = elasticSearchIndexService;
-    }
-
-    @Autowired
-    public void setContentIndexService( final ContentIndexService contentIndexService )
-    {
-        this.contentIndexService = contentIndexService;
     }
 }

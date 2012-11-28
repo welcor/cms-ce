@@ -36,7 +36,6 @@ import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.GroupQuery;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
-import com.enonic.cms.web.portal.instanttrace.InstantTraceSessionInspector;
 
 @Service("securityService")
 public class SecurityServiceImpl
@@ -542,7 +541,7 @@ public class SecurityServiceImpl
         while ( attributeNames.hasMoreElements() )
         {
             String attributeName = (String) attributeNames.nextElement();
-            if ( !attributeName.equals( InstantTraceSessionInspector.AUTHENTICATION_ATTRIBUTE_NAME ) )
+            if ( !attributeName.startsWith( "Instant-Trace-" ) )
             {
                 session.removeAttribute( attributeName );
             }

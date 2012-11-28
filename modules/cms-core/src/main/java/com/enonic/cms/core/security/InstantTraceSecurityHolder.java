@@ -11,7 +11,7 @@ import com.enonic.cms.core.security.user.UserKey;
 
 public final class InstantTraceSecurityHolder
 {
-    private static final String USER_KEY = "instant-tracer";
+    public static final String USER_KEY = "Instant-Trace-Client";
 
     public static UserKey getUser()
     {

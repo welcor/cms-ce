@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,8 @@ public class IndexInitializerService
 {
     private static final Logger LOG = Logger.getLogger( IndexInitializerService.class.getName() );
 
-    public static final String DO_REINDEX_ON_STARTUP = "reindexOnStartup";
+    @Value("${cms.index.indexOnStartup}")
+    private boolean indexOnStartup;
 
     @Autowired
     ReindexContentToolServiceImpl reindexContentToolService;
@@ -33,9 +35,7 @@ public class IndexInitializerService
     @PostConstruct
     public void checkForIndexExists()
     {
-        final String reindexOnStartup = System.getProperty( DO_REINDEX_ON_STARTUP );
-
-        if ( !Boolean.valueOf( reindexOnStartup ) )
+        if ( !indexOnStartup )
         {
             return;
         }

@@ -7,7 +7,7 @@ public final class InstantTraceSessionInspector
 {
     public final static String AUTHENTICATION_ATTRIBUTE_NAME = "Instant-Trace-Client-Authenticated";
 
-    private final static String SESSION_OBJECT_ATTRIBUTE_NAME = "Instant-Trace";
+    private final static String SESSION_OBJECT_ATTRIBUTE_NAME = "Instant-Trace-Client-Session";
 
     static void markAuthenticated( final HttpSession httpSession )
     {

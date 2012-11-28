@@ -326,7 +326,12 @@ final class DavResourceImpl
         {
             if ( !isHidden( item ) )
             {
-                final String path = this.locator.getResourcePath() + '/' + item;
+                String path = this.locator.getResourcePath();
+                if ( !path.endsWith( "/" ) )
+                {
+                    path += '/';
+                }
+                path += item;
                 final DavResourceLocator resourceLocator = createRelativeLocator( path );
                 final DavResource resource = createResource( resourceLocator );
 

@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Index Monitor page</title>
+    <script type="text/javascript">var baseUrl = "${baseUrl}";</script>
     <script type="text/javascript" src="../javascript/lib/jquery/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="../javascript/tabpane.js"></script>
     <script type="text/javascript" src="indexmonitor/indexmonitor.js"></script>
@@ -28,11 +29,43 @@
 <body>
 <h1>Admin / System / Index Monitor</h1>
 
+<table style="margin-bottom: 2px"><tr><td style="margin-right: 10px">
+    <label><input type="checkbox" checked="checked" id="auto-update" />Auto update</label>
+</td></tr></table>
+
 <div class="tab-pane" id="tab-main">
 
-    <script type="text/javascript" language="JavaScript">
+    <script type="text/javascript">
         var tabPane1 = new WebFXTabPane(document.getElementById("tab-main"), true);
-        var baseUrl = "${baseUrl}";
+
+        ! function() {
+            function refreshPage() {
+                $.ajax({ // reload data
+                    url: baseUrl + '/tools/indexMonitor',
+                    global: false,
+                    type: "GET",
+                    dataType: "html",
+                    success: function(html) {
+                        var re = new RegExp('<div' + ' id="tab-page-1-content">(.*)</div>.*</div></div>', "mig");
+                        var match = re.exec(html.replace(/[\t\r\n]/mig,''));
+                        if ( match != null ) {
+                            $('#tab-page-1-content').html(match[1]);
+                        } else {
+                            console.log('cannot update index monitor page');
+                        }
+                    }
+                });
+            }
+
+            var timerId = setInterval(refreshPage, 2000);
+            $('#auto-update').click(function() {
+                if (this.checked) {
+                    timerId = setInterval(refreshPage, 2000);
+                } else {
+                    clearInterval(timerId);
+                }
+            });
+        } ();
     </script>
 
     <div class="tab-page" id="tab-page-1">
@@ -42,6 +75,7 @@
         <input type="button" class="button_text" name="recreateIndex" value="Recreate index" onclick="doDeleteIndex()"/>
     [/#if]
 
+    <div id="tab-page-1-content">
     [#if indexExists??]
         <h2>Node status</h2>
         <ul>
@@ -93,6 +127,7 @@
         [/#list]
         </ul>
 
+    </div>
     </div>
 
 </div>

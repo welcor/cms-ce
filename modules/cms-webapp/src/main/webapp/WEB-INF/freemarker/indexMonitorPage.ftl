@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cache Info Page</title>
+    <title>Index Monitor</title>
     <script type="text/javascript" src="../javascript/lib/jquery/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="../javascript/tabpane.js"></script>
     <link type="text/css" rel="StyleSheet" href="../javascript/tab.webfx.css"/>

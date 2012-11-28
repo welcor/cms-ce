@@ -8,8 +8,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.enonic.cms.upgrade.UpgradeService;
-
 /**
  * This class implements the upgrade checker and should be used in all servlets that needs this functionality.
  */

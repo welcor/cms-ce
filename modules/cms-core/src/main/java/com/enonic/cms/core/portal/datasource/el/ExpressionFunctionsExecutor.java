@@ -115,13 +115,14 @@ public final class ExpressionFunctionsExecutor
 
     }
 
-    private Boolean createIsWindowInline()
+    private boolean createIsWindowInline()
     {
         if ( expressionContext.isPortletWindowRenderedInline() != null )
         {
             return expressionContext.isPortletWindowRenderedInline();
         }
-        return null;
+
+        return false;
     }
 
     private String createPortalInstanceKey()

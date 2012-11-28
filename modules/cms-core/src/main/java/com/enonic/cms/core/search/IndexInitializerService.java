@@ -24,13 +24,13 @@ public class IndexInitializerService
     private boolean indexOnStartup;
 
     @Autowired
-    ReindexContentToolServiceImpl reindexContentToolService;
+    private ReindexContentToolServiceImpl reindexContentToolService;
 
     @Autowired
-    ElasticSearchIndexService elasticSearchIndexService;
+    private ElasticSearchIndexService elasticSearchIndexService;
 
     @Autowired
-    TaskExecutor taskExecutor;
+    private TaskExecutor taskExecutor;
 
     @PostConstruct
     public void checkForIndexExists()
@@ -87,6 +87,4 @@ public class IndexInitializerService
             return logEntries;
         }
     }
-
-
 }

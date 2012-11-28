@@ -36,9 +36,14 @@ public final class VirtualHostResolver
     /**
      * List of virtual hosts.
      */
-    private volatile AtomicReference<ArrayList<VirtualHost>> virtualHosts = new AtomicReference<ArrayList<VirtualHost>>();
+    private AtomicReference<ArrayList<VirtualHost>> virtualHosts = new AtomicReference<ArrayList<VirtualHost>>();
 
     private File configFile;
+
+    public VirtualHostResolver()
+    {
+        this.virtualHosts.set( new ArrayList<VirtualHost>() );
+    }
 
     /**
      * Initializes the resolver.
@@ -46,8 +51,6 @@ public final class VirtualHostResolver
     public void afterPropertiesSet()
         throws Exception
     {
-        this.virtualHosts.set( new ArrayList<VirtualHost>() );
-
         configureVirtualHosts();
 
         watchConfigFile();

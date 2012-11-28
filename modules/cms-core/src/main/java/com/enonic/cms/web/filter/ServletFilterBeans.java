@@ -29,8 +29,8 @@ public class ServletFilterBeans
         filters.add( requestContextFilter() );
         filters.add( this.characterEncodingFilter );
         filters.add( openSessionInViewFilter() );
-        filters.add( this.virtualHostFilter );
         filters.add( this.upgradeCheckFilter );
+        filters.add( this.virtualHostFilter );
 
         final CompositeFilter filter = new CompositeFilter();
         filter.setFilters( filters );

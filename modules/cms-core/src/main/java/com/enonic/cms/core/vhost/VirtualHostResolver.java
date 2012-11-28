@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public final class VirtualHostResolver
-        implements InitializingBean
+    implements InitializingBean
 {
     /**
      * Logger.
@@ -35,12 +36,7 @@ public final class VirtualHostResolver
     /**
      * List of virtual hosts.
      */
-    private ArrayList<VirtualHost> virtualHosts = new ArrayList<VirtualHost>();
-
-    /**
-     * Configuration.
-     */
-    private Properties configuration;
+    private volatile AtomicReference<ArrayList<VirtualHost>> virtualHosts = new AtomicReference<ArrayList<VirtualHost>>();
 
     private File configFile;
 
@@ -50,15 +46,26 @@ public final class VirtualHostResolver
     public void afterPropertiesSet()
         throws Exception
     {
-        this.virtualHosts = new ArrayList<VirtualHost>();
-        this.configuration = new Properties();
-
-        if ((this.configFile != null) && this.configFile.exists()) {
-            this.configuration = PropertiesLoaderUtils.loadProperties(new FileSystemResource(this.configFile));
-        }
+        this.virtualHosts.set( new ArrayList<VirtualHost>() );
 
         configureVirtualHosts();
-        Collections.sort( this.virtualHosts );
+
+        watchConfigFile();
+    }
+
+    private void watchConfigFile()
+    {
+        final Runnable configFileChangedHandler = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                configureVirtualHosts();
+            }
+        };
+
+        // after switching to java 7 use NIO.2 file watcher instead of timer
+        new FileWatcherByTimer( configFile, configFileChangedHandler, 2000 );
     }
 
     /**
@@ -66,11 +73,32 @@ public final class VirtualHostResolver
      */
     private void configureVirtualHosts()
     {
-        for ( Object key : this.configuration.keySet() )
+        if ( this.configFile != null && this.configFile.exists() )
         {
-            String pattern = key.toString();
-            String targetPath = this.configuration.getProperty( pattern );
-            addVirtualHost( pattern, targetPath );
+            try
+            {
+                final ArrayList<VirtualHost> virtualHosts = new ArrayList<VirtualHost>();
+
+                final Properties properties = PropertiesLoaderUtils.loadProperties( new FileSystemResource( this.configFile ) );
+
+                for ( final Object key : properties.keySet() )
+                {
+                    final String pattern = key.toString();
+                    final String targetPath = properties.getProperty( pattern );
+                    addVirtualHost( virtualHosts, pattern, targetPath );
+                }
+
+                // strange sort, that may introduce problems.
+                Collections.sort( virtualHosts );
+
+                this.virtualHosts.lazySet( virtualHosts );
+
+                LOG.info( "loaded virtual hosts configuration. {} rule(s) found.", properties.size() );
+            }
+            catch ( Exception e )
+            {
+                LOG.error( "cannot configure virtual hosts !", e );
+            }
         }
     }
 
@@ -79,7 +107,9 @@ public final class VirtualHostResolver
      */
     public VirtualHost resolve( HttpServletRequest req )
     {
-        for ( VirtualHost virtualHost : this.virtualHosts )
+        final ArrayList<VirtualHost> virtualHosts = this.virtualHosts.get();
+
+        for ( final VirtualHost virtualHost : virtualHosts )
         {
             if ( virtualHost.matches( req ) )
             {
@@ -90,27 +120,34 @@ public final class VirtualHostResolver
         return null;
     }
 
-    /**
-     * Add the virtual host.
-     */
-    public void addVirtualHost( String pattern, String targetPath )
+
+    private void addVirtualHost( ArrayList<VirtualHost> virtualHosts, String pattern, String targetPath )
     {
         pattern = pattern.trim();
         if ( !pattern.equals( "" ) )
         {
             try
             {
-                this.virtualHosts.add( new VirtualHost( pattern, targetPath.trim() ) );
+                virtualHosts.add( new VirtualHost( pattern, targetPath.trim() ) );
             }
             catch ( InvalidVirtualHostPatternException e )
             {
                 LOG.warn( e.getMessage() );
             }
         }
+
+    }
+
+    /**
+     * Add the virtual host.
+     */
+    public void addVirtualHost( String pattern, String targetPath )
+    {
+        addVirtualHost( this.virtualHosts.get(), pattern, targetPath );
     }
 
     @Value("${cms.home}/config/vhost.properties")
-    public void setConfigFile(final File file)
+    public void setConfigFile( final File file )
     {
         this.configFile = file;
     }

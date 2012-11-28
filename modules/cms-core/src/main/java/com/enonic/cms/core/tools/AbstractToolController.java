@@ -9,16 +9,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.codehaus.jackson.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.mvc.Controller;
 
-import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
 import com.enonic.vertical.adminweb.AdminHelper;
 
@@ -72,11 +69,6 @@ public abstract class AbstractToolController
         res.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED );
     }
 
-    private void redirectToLogin( final HttpServletRequest req, final HttpServletResponse res )
-    {
-        AdminHelper.redirectClientToAdminPath( req, res, "login", new MultiValueMap() );
-    }
-
     protected final void redirectToReferrer( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception
     {
@@ -96,19 +88,6 @@ public abstract class AbstractToolController
     protected final String getBaseUrl( final HttpServletRequest req )
     {
         return AdminHelper.getAdminPath( req, true );
-    }
-
-    protected final void renderJson( final HttpServletResponse res, final JsonNode node )
-        throws Exception
-    {
-        renderJson( res, node.toString() );
-    }
-
-    protected final void renderJson( final HttpServletResponse res, final String json )
-        throws Exception
-    {
-        res.setContentType( "application/json; charset=utf-8" );
-        res.getWriter().println( json );
     }
 
     @Autowired

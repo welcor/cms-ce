@@ -46,7 +46,7 @@ public class IndexTransactionJournal
     public void startTransaction()
     {
         registerSynchronization();
-        LOG.info( "Index transaction started" );
+        LOG.fine( "Index transaction started" );
     }
 
     private void registerSynchronization()
@@ -96,19 +96,19 @@ public class IndexTransactionJournal
     {
         if ( changeHistory.isEmpty() )
         {
-            LOG.info( "No changes found in transaction, skipping index update." );
+            LOG.fine( "No changes found in transaction, skipping index update." );
             return;
         }
 
         if ( TransactionSynchronizationManager.isCurrentTransactionReadOnly() )
         {
-            LOG.info( "Read-only transaction, nothing to do." );
+            LOG.fine( "Read-only transaction, nothing to do." );
             return;
         }
 
         final ContentMap contentMap = preloadContent();
 
-        LOG.info( "Flushing index changes from transaction journal" );
+        LOG.fine( "Flushing index changes from transaction journal" );
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
         {
             switch ( journalEntry.getOperation() )

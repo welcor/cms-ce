@@ -99,8 +99,8 @@ public class InstantTraceAuthenticationHandler
         }
 
         String html = templateProcessor.process( "instantTraceAuthenticationPage.ftl", model );
+        context.getResponse().setContentType( "text/html; charset=UTF-8" );
         context.getResponse().getWriter().println( html );
-
     }
 
     private void authenticateUser( HttpServletRequest request )

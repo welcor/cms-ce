@@ -3,6 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>com.enonic.pom</groupId>
+    <artifactId>base</artifactId>
+    <version>6</version>
+  </parent>
+
   <groupId>com.enonic.cms</groupId>
   <artifactId>cms-ce</artifactId>
   <packaging>pom</packaging>
@@ -17,18 +23,10 @@
   </licenses>
 
   <properties>
-    <!-- source encoding -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <!-- maven-compiler-plugin -->
-    <maven.compiler.target>1.6</maven.compiler.target>
-    <maven.compiler.source>1.6</maven.compiler.source>
-
-    <!-- maven timestamp format -->
-    <maven.build.timestamp.format>yyyyMMdd.HHmmss</maven.build.timestamp.format>
-    <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
-
-    <!-- some shared dependency versions -->
+	<!-- Distribution repository -->
+	<distribution.repo>public</distribution.repo>
+	
+	<!-- Dependency versions of some libraries -->
     <spring.version>3.1.0.RELEASE</spring.version>
     <slf4j.version>1.6.6</slf4j.version>
     <servlet.version>2.5</servlet.version>
@@ -107,13 +105,7 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.0</version>
         <executions>
           <execution>
             <goals>
@@ -153,7 +145,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.12</version>
           <configuration>
             <forkMode>once</forkMode>
             <argLine>-Xmx2048m -XX:MaxPermSize=700m -Djava.awt.headless=true</argLine>
@@ -170,12 +161,5 @@
       <url>http://repo.enonic.com/maven</url>
     </repository>
   </repositories>
-
-  <distributionManagement>
-    <repository>
-      <id>enonic.internal</id>
-      <url>http://repo.enonic.net/artifactory/public</url>
-    </repository>
-  </distributionManagement>
 
 </project>

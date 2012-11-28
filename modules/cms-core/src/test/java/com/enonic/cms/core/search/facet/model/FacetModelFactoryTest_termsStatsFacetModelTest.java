@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class FacetModelFactoryTest_termsStatsFacetModel
+public class FacetModelFactoryTest_termsStatsFacetModelTest
 {
     private FacetsModelFactory facetsModelFactory = new FacetsModelFactory();
 
@@ -17,7 +17,7 @@ public class FacetModelFactoryTest_termsStatsFacetModel
             "        <count>10</count>\n" +
             "        <index>data/activity</index>\n" +
             "        <value-index>data/hours</value-index>\n" +
-            "        <orderby>count</orderby>\n" +
+            "        <orderby>hits</orderby>\n" +
             "    </terms-stats>\n" +
             "</facets>";
 
@@ -29,7 +29,7 @@ public class FacetModelFactoryTest_termsStatsFacetModel
         TermsStatsFacetModel termsStatsFacetModel = (TermsStatsFacetModel) next;
         assertEquals( "data/activity", termsStatsFacetModel.getIndex() );
         assertEquals( "data/hours", termsStatsFacetModel.getValueIndex() );
-        assertEquals( "count", termsStatsFacetModel.getOrderby() );
+        assertEquals( "hits", termsStatsFacetModel.getOrderby() );
     }
 
 

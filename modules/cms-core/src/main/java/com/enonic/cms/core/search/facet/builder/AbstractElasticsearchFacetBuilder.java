@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Strings;
 
+import com.enonic.cms.core.search.facet.model.FacetOrderBy;
 import com.enonic.cms.core.search.query.QueryField;
 import com.enonic.cms.core.search.query.QueryFieldNameResolver;
 
@@ -60,5 +61,49 @@ abstract class AbstractElasticsearchFacetBuilder
         return commaSeparatedString.split( ",\\s*" );
     }
 
+    protected String createElasticsearchOrderByString( FacetOrderBy facetOrderBy )
+    {
+        if ( facetOrderBy == null )
+        {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        appendDirection( facetOrderBy, builder );
+
+        String orderbyESStringValue = translateToEsSortValues( facetOrderBy );
+
+        builder.append( orderbyESStringValue );
+
+        return builder.toString();
+    }
+
+    private void appendDirection( final FacetOrderBy facetOrderBy, final StringBuilder builder )
+    {
+        if ( facetOrderBy.getDirection() != null && facetOrderBy.getDirection().equals( FacetOrderBy.Direction.ASC ) )
+        {
+            builder.append( "reverse_" );
+        }
+    }
+
+    private String translateToEsSortValues( final FacetOrderBy facetOrderBy )
+    {
+        String orderbyESStringValue = "";
+
+        final FacetOrderBy.Value value = facetOrderBy.getValue();
+        switch ( value )
+        {
+            case HITS:
+                orderbyESStringValue = "count";
+                break;
+            case SUM:
+                orderbyESStringValue = "total";
+                break;
+            default:
+                orderbyESStringValue = value.toString();
+        }
+        return orderbyESStringValue;
+    }
 
 }

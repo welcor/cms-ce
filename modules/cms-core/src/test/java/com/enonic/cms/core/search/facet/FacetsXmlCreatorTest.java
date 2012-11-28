@@ -82,7 +82,7 @@ public class FacetsXmlCreatorTest
             "        <all-terms>true</all-terms>\n" +
             "        <exclude>exclude1,exclude2,exclude3</exclude>\n" +
             "        <indices>fields1, fields2, fields3</indices>\n" +
-            "        <orderby>orderby</orderby>\n" +
+            "        <orderby>term</orderby>\n" +
             "        <regex>regexp</regex>\n" +
             "        <regex-flags>DOTALL</regex-flags>\n" +
             "    </terms>\n" +
@@ -95,7 +95,7 @@ public class FacetsXmlCreatorTest
         facet.setExclude( "exclude1,exclude2,exclude3" );
         facet.setName( "myFacetName" );
         facet.setAllTerms( true );
-        facet.setOrderby( "orderby" );
+        facet.setOrderby( "term" );
         facet.setCount( 10 );
         facet.setRegex( "regexp" );
         facet.setRegexFlags( "DOTALL" );

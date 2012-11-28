@@ -51,23 +51,25 @@ final class ElasticsearchTermsFacetBuilder
 
     protected void setOrder( final TermsFacetModel termsFacetModel, final TermsFacetBuilder builder )
     {
-        if ( !Strings.isNullOrEmpty( termsFacetModel.getOrderby() ) )
+        final String elasticsearchOrderBy = createElasticsearchOrderByString( termsFacetModel.getFacetOrderBy() );
+
+        if ( !Strings.isNullOrEmpty( elasticsearchOrderBy ) )
         {
-            final TermsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( termsFacetModel );
+            final TermsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( elasticsearchOrderBy );
 
             builder.order( comparatorType );
         }
     }
 
-    private TermsFacet.ComparatorType getTermsFacetComperatorType( final TermsFacetModel termsFacetModel )
+    private TermsFacet.ComparatorType getTermsFacetComperatorType( final String elasticsearchOrderBy )
     {
         try
         {
-            return TermsFacet.ComparatorType.valueOf( termsFacetModel.getOrderby().toUpperCase() );
+            return TermsFacet.ComparatorType.valueOf( elasticsearchOrderBy.toUpperCase() );
         }
         catch ( Exception e )
         {
-            throw new IndexQueryException( "Parameter value '" + termsFacetModel.getOrderby() + "' not valid order value", e );
+            throw new IndexQueryException( "Parameter value '" + elasticsearchOrderBy + "' not valid order value", e );
         }
     }
 

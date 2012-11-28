@@ -101,6 +101,42 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
     }
 
     @Test
+    public void orderby_min_asc()
+    {
+        createAndIndexContent( 1, new String[]{"10", "a"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 2, new String[]{"200", "a"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 3, new String[]{"300", "a"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 4, new String[]{"0", "b"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 5, new String[]{"-100", "c"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 6, new String[]{"0", "c"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 7, new String[]{"1000", "c"}, new String[]{"data/price", "data/term"} );
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+
+        final String facetDefinition = "<facets>\n" +
+            "    <terms-stats name=\"myTermsStatsFacet\">\n" +
+            "        <index>data/term</index>\n" +
+            "        <value-index>data/price</value-index>\n" +
+            "        <orderby>min ASC</orderby>\n" +
+            "    </terms-stats >\n" +
+            "</facets>";
+        query.setFacets( facetDefinition );
+
+        final ContentResultSet contentResultSet = contentIndexService.query( query );
+
+        final FacetsResultSet facetsResultSet = contentResultSet.getFacetsResultSet();
+        final FacetResultSet termsStatsFacet = facetsResultSet.iterator().next();
+        TermsStatsFacetResultSet termFacetResultSet = (TermsStatsFacetResultSet) termsStatsFacet;
+        final Iterator<TermsStatsFacetResultEntry> termsStatsFacetResultEntryIterator = termFacetResultSet.getResults().iterator();
+
+        assertEquals( "a", termsStatsFacetResultEntryIterator.next().getTerm() );
+        assertEquals( "b", termsStatsFacetResultEntryIterator.next().getTerm() );
+        assertEquals( "c", termsStatsFacetResultEntryIterator.next().getTerm() );
+    }
+
+
+    @Test
     public void orderby_max()
     {
         createAndIndexContent( 1, new String[]{"10", "a"}, new String[]{"data/price", "data/term"} );
@@ -135,6 +171,40 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
         assertEquals( "b", termsStatsFacetResultEntryIterator.next().getTerm() );
     }
 
+    @Test
+    public void sum()
+    {
+        createAndIndexContent( 1, new String[]{"10", "a"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 2, new String[]{"200", "a"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 3, new String[]{"300", "a"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 4, new String[]{"0", "b"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 5, new String[]{"-100", "c"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 6, new String[]{"0", "c"}, new String[]{"data/price", "data/term"} );
+        createAndIndexContent( 7, new String[]{"1000", "c"}, new String[]{"data/price", "data/term"} );
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+
+        final String facetDefinition = "<facets>\n" +
+            "    <terms-stats name=\"myTermsStatsFacet\">\n" +
+            "        <index>data/term</index>\n" +
+            "        <value-index>data/price</value-index>\n" +
+            "        <orderby>sum</orderby>\n" +
+            "    </terms-stats >\n" +
+            "</facets>";
+        query.setFacets( facetDefinition );
+
+        final ContentResultSet contentResultSet = contentIndexService.query( query );
+
+        final FacetsResultSet facetsResultSet = contentResultSet.getFacetsResultSet();
+        final FacetResultSet termsStatsFacet = facetsResultSet.iterator().next();
+        TermsStatsFacetResultSet termFacetResultSet = (TermsStatsFacetResultSet) termsStatsFacet;
+        final Iterator<TermsStatsFacetResultEntry> termsStatsFacetResultEntryIterator = termFacetResultSet.getResults().iterator();
+
+        assertEquals( "c", termsStatsFacetResultEntryIterator.next().getTerm() );
+        assertEquals( "a", termsStatsFacetResultEntryIterator.next().getTerm() );
+        assertEquals( "b", termsStatsFacetResultEntryIterator.next().getTerm() );
+    }
 
     @Test
     public void multifield()
@@ -155,7 +225,7 @@ public class ContentIndexServiceImpl_facetTermsStatsFacetTest
             "    <terms-stats name=\"myTermsStatsFacet\">\n" +
             "        <index>data/term</index>\n" +
             "        <value-index>data/price</value-index>\n" +
-            "        <orderby>count</orderby>\n" +
+            "        <orderby>hits</orderby>\n" +
             "    </terms-stats >\n" +
             "</facets>";
         query.setFacets( facetDefinition );

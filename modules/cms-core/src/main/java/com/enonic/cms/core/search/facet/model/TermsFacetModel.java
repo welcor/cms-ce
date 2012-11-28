@@ -15,7 +15,7 @@ public class TermsFacetModel
 
     private String exclude;
 
-    private String orderby;
+    private FacetOrderBy orderby;
 
     private String regex;
 
@@ -26,7 +26,12 @@ public class TermsFacetModel
     @XmlElement(name = "orderby")
     public String getOrderby()
     {
-        return orderby;
+        return this.orderby != null ? this.orderby.getFacetOrderbyString().toLowerCase() : null;
+    }
+
+    public FacetOrderBy getFacetOrderBy()
+    {
+        return this.orderby;
     }
 
     @XmlElement(name = "all-terms")
@@ -61,7 +66,7 @@ public class TermsFacetModel
 
     public void setOrderby( final String orderby )
     {
-        this.orderby = orderby;
+        this.orderby = FacetOrderBy.createFacetOrderBy( orderby );
     }
 
     public void setAllTerms( final Boolean allTerms )
@@ -94,6 +99,17 @@ public class TermsFacetModel
         if ( Strings.isNullOrEmpty( indices ) )
         {
             throw new IllegalArgumentException( "Terms-facet " + getName() + ": Field 'indices' must be set" );
+        }
+
+        if ( orderby != null )
+        {
+            final FacetOrderBy.Value value = orderby.getValue();
+
+            if ( !( value.equals( FacetOrderBy.Value.HITS ) || value.equals( FacetOrderBy.Value.TERM ) ) )
+            {
+                throw new IllegalArgumentException(
+                    "Terms-facet " + getName() + ": Unsupported orderby-value: " + orderby.getFacetOrderbyString() );
+            }
         }
     }
 }

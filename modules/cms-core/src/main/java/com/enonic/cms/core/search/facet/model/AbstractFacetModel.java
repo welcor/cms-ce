@@ -43,5 +43,7 @@ public abstract class AbstractFacetModel
             throw new FacetQueryException( "Facet must specify name" );
         }
     }
+
+
 }
 

@@ -44,11 +44,42 @@ public class ElasticsearchTermsFacetBuilderTest
         termFacetModel.setIndices( "fields1, fields2" );
         termFacetModel.setRegex( "myRegexp" );
         termFacetModel.setRegexFlags( "CASE_INSENSITIVE, DOTALL" );
-        termFacetModel.setOrderby( "count" );
+        termFacetModel.setOrderby( "hits" );
 
         final TermsFacetBuilder build = termsFacetBuilder.build( termFacetModel );
         assertEquals( expected, getJson( build ) );
     }
+
+    @Test
+    public void testReverseOrdering()
+        throws Exception
+    {
+        String expected = "{\"myFullModel\":{\"terms\":{\"fields\":[\"fields1\",\"fields2\"],\"size\":10,\"order\":\"reverse_count\"}}}";
+
+        TermsFacetModel termFacetModel = new TermsFacetModel();
+        termFacetModel.setName( "myFullModel" );
+        termFacetModel.setIndices( "fields1, fields2" );
+        termFacetModel.setOrderby( "hits ASC" );
+
+        final TermsFacetBuilder build = termsFacetBuilder.build( termFacetModel );
+        assertEquals( expected, getJson( build ) );
+    }
+
+    @Test
+    public void testDescOrdering()
+        throws Exception
+    {
+        String expected = "{\"myFullModel\":{\"terms\":{\"fields\":[\"fields1\",\"fields2\"],\"size\":10,\"order\":\"count\"}}}";
+
+        TermsFacetModel termFacetModel = new TermsFacetModel();
+        termFacetModel.setName( "myFullModel" );
+        termFacetModel.setIndices( "fields1, fields2" );
+        termFacetModel.setOrderby( "hits DESC" );
+
+        final TermsFacetBuilder build = termsFacetBuilder.build( termFacetModel );
+        assertEquals( expected, getJson( build ) );
+    }
+
 
     @Test
     public void testFieldNameConverting()

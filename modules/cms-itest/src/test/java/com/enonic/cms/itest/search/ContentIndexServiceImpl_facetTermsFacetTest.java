@@ -15,8 +15,8 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.UserDefinedField;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.facet.FacetQueryException;
 import com.enonic.cms.core.search.query.ContentDocument;
-import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.SimpleText;
 import com.enonic.cms.core.search.result.FacetResultSet;
 import com.enonic.cms.core.search.result.FacetsResultSet;
@@ -192,7 +192,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
             "    <terms name=\"" + facetName + "\">\n" +
             "        <indices>data/person/type,data/person/type,data/person/gender,data/person/drink</indices>\n" +
             "        <count>3</count>\n" +
-            "        <orderby>count</orderby>\n" +
+            "        <orderby>hits</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -277,7 +277,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
             "        <indices>data/person/type</indices>\n" +
-            "        <orderby>reverse_count</orderby>\n" +
+            "        <orderby>hits ASC</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -354,7 +354,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         String facetDefinition = "<facets>\n" +
             "    <terms name=\"" + facetName + "\">\n" +
             "        <indices>data/person/type</indices>\n" +
-            "        <orderby>reverse_term</orderby>\n" +
+            "        <orderby>term ASC</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
         query.setFacets( facetDefinition );
@@ -381,7 +381,7 @@ public class ContentIndexServiceImpl_facetTermsFacetTest
         createAndCompareResultAsXml( result, expectedXml );
     }
 
-    @Test(expected = IndexQueryException.class)
+    @Test(expected = FacetQueryException.class)
     public void invalid_order_parameter()
     {
         setUpValuesWithFacetGoodies();

@@ -50,26 +50,29 @@ public class ElasticsearchTermsStatsFacetBuilder
         }
     }
 
-    protected void setOrder( final TermsStatsFacetModel termStatsFacetsModel, final TermsStatsFacetBuilder builder )
+    protected void setOrder( final TermsStatsFacetModel termsStatsFacetModel, final TermsStatsFacetBuilder builder )
     {
-        if ( !Strings.isNullOrEmpty( termStatsFacetsModel.getOrderby() ) )
+        final String elasticsearchOrderBy = createElasticsearchOrderByString( termsStatsFacetModel.getFacetOrderBy() );
+
+        if ( !Strings.isNullOrEmpty( elasticsearchOrderBy ) )
         {
-            final TermsStatsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( termStatsFacetsModel );
+            final TermsStatsFacet.ComparatorType comparatorType = getTermsFacetComperatorType( elasticsearchOrderBy );
 
             builder.order( comparatorType );
         }
     }
 
-    private TermsStatsFacet.ComparatorType getTermsFacetComperatorType( final TermsStatsFacetModel termStatsFacetModel )
+    private TermsStatsFacet.ComparatorType getTermsFacetComperatorType( final String elasticsearchOrderBy )
     {
         try
         {
-            return TermsStatsFacet.ComparatorType.valueOf( termStatsFacetModel.getOrderby().toUpperCase() );
+            return TermsStatsFacet.ComparatorType.valueOf( elasticsearchOrderBy.toUpperCase() );
         }
         catch ( Exception e )
         {
-            throw new IndexQueryException( "Parameter value '" + termStatsFacetModel.getOrderby() + "' not valid order value", e );
+            throw new IndexQueryException( "Parameter value '" + elasticsearchOrderBy + "' not valid order value", e );
         }
     }
+
 
 }

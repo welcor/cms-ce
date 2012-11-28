@@ -10,11 +10,27 @@ import com.google.common.base.Strings;
 public class TermsStatsFacetModel
     extends AbstractFacetModel
 {
-    private String orderby;
-
     private String index;
 
     private String valueIndex;
+
+    private FacetOrderBy orderby;
+
+    @XmlElement(name = "orderby")
+    public String getOrderby()
+    {
+        return this.orderby != null ? this.orderby.getFacetOrderbyString().toLowerCase() : null;
+    }
+
+    public FacetOrderBy getFacetOrderBy()
+    {
+        return this.orderby;
+    }
+
+    public void setOrderby( final String orderby )
+    {
+        this.orderby = FacetOrderBy.createFacetOrderBy( orderby );
+    }
 
 
     @XmlElement(name = "index")
@@ -29,16 +45,6 @@ public class TermsStatsFacetModel
         return valueIndex;
     }
 
-    @XmlElement(name = "orderby")
-    public String getOrderby()
-    {
-        return orderby;
-    }
-
-    public void setOrderby( final String orderby )
-    {
-        this.orderby = orderby;
-    }
 
     public void setIndex( final String index )
     {

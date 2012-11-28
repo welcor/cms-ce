@@ -20,6 +20,8 @@ import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingReques
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
+import org.elasticsearch.action.count.CountRequestBuilder;
+import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -197,6 +199,17 @@ public class ElasticSearchIndexServiceImpl
         parseSearchResultFailures( searchResponse );
 
         return searchResponse.getHits().getTotalHits();
+    }
+
+    public long count( String indexName, String indexType )
+    {
+        final CountRequestBuilder countRequestBuilder = new CountRequestBuilder( this.client );
+        countRequestBuilder.setIndices( indexName );
+        countRequestBuilder.setTypes( indexType );
+
+        final CountResponse countResponse = this.client.count( countRequestBuilder.request() ).actionGet();
+
+        return countResponse.count();
     }
 
     @Override

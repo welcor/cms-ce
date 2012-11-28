@@ -37,6 +37,8 @@ public interface ElasticSearchIndexService
 
     public long count( String indexName, String indexType, SearchSourceBuilder sourceBuilder );
 
+    public long count( String indexName, String indexType );
+
     public void optimize( String indexName );
 
     public SearchResponse search( String indexName, String indexType, SearchSourceBuilder sourceBuilder );

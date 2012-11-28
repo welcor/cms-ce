@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.enonic.pom</groupId>
     <artifactId>base</artifactId>
-    <version>6</version>
+    <version>7</version>
   </parent>
 
   <groupId>com.enonic.cms</groupId>

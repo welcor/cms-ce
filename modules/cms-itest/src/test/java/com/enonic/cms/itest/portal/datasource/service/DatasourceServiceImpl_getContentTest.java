@@ -28,7 +28,6 @@ import com.enonic.cms.core.content.contentdata.custom.relationdataentrylistbased
 import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
-import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
 import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.preview.ContentPreviewContext;
@@ -168,25 +167,20 @@ public class DatasourceServiceImpl_getContentTest
 
         DataSourceContext context = new DataSourceContext();
         context.setUser( fixture.findUserByName( "content-querier" ) );
-        int parentLevel = 0;
-        int childrenLevel = 0;
-        int parentChildrenLevel = 1;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-
-        ContentTypeEntity personContentType = fixture.findContentTypeByName( "MyPersonType" );
-
-        int[] filterByContentTypes = new int[]{personContentType.getKey()};
 
         // Query the content with access
         int[] contentKeys = new int[]{expectedContentKey.toInt()};
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
+        int parentLevel = 0;
+        int childrenLevel = 0;
         XMLDocument xmlDocResult =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
+
         assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(), expectedContentKey.toString() );
     }
 
@@ -201,22 +195,20 @@ public class DatasourceServiceImpl_getContentTest
 
         DataSourceContext context = new DataSourceContext();
         context.setUser( fixture.findUserByName( "content-querier" ) );
-        int parentLevel = 0;
-        int childrenLevel = 2;
-        int parentChildrenLevel = 0;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-        int[] filterByContentTypes = null;
 
         // Exercise
         int[] contentKeys = new int[]{requested1.toInt(), requested2.toInt()};
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
+        int parentLevel = 0;
+        int childrenLevel = 2;
+
         XMLDocument resultAsXMLDocument =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
 
         // Verify
         Document resultAsJDOM = resultAsXMLDocument.getAsJDOMDocument();
@@ -251,22 +243,19 @@ public class DatasourceServiceImpl_getContentTest
 
         DataSourceContext context = new DataSourceContext( previewContext );
         context.setUser( fixture.findUserByName( "content-querier" ) );
-        int parentLevel = 0;
-        int childrenLevel = 0;
-        int parentChildrenLevel = 0;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-        int[] filterByContentTypes = null;
 
         // Exercise
         int[] contentKeys = new int[]{contentKey.toInt()};
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        int parentLevel = 0;
+        int childrenLevel = 0;
+        boolean includeData = false;
         XMLDocument resultAsXMLDocument =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
 
         // Verify
         Document resultAsJDOM = resultAsXMLDocument.getAsJDOMDocument();
@@ -290,22 +279,19 @@ public class DatasourceServiceImpl_getContentTest
 
         DataSourceContext context = new DataSourceContext( previewContext );
         context.setUser( fixture.findUserByName( "content-querier" ) );
-        int parentLevel = 0;
-        int childrenLevel = 0;
-        int parentChildrenLevel = 0;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-        int[] filterByContentTypes = null;
 
         // Exercise
         int[] contentKeys = new int[]{contentKey.toInt()};
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
+        int parentLevel = 0;
+        int childrenLevel = 0;
         XMLDocument resultAsXMLDocument =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
 
         // Verify
         Document resultAsJDOM = resultAsXMLDocument.getAsJDOMDocument();
@@ -327,22 +313,19 @@ public class DatasourceServiceImpl_getContentTest
         PreviewContext previewContext = new PreviewContext( contentPreviewContext );
         DataSourceContext context = new DataSourceContext( previewContext );
         context.setUser( fixture.findUserByName( "content-querier" ) );
-        int parentLevel = 1;
-        int childrenLevel = 1;
-        int parentChildrenLevel = 1;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-        int[] filterByContentTypes = null;
 
         // Exercise
         int[] contentKeys = new int[]{content1.toInt()};
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
+        int parentLevel = 1;
+        int childrenLevel = 1;
         XMLDocument resultAsXMLDocument =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
 
         // Verify
         Document resultAsJDOM = resultAsXMLDocument.getAsJDOMDocument();
@@ -356,9 +339,8 @@ public class DatasourceServiceImpl_getContentTest
 
         assertXPathEquals( "/contents/content/relatedcontentkeys/relatedcontentkey[ @key = " + parentOf1 + "]/@level", resultAsJDOM, "-1" );
 
-        assertXPathEquals( "/contents/relatedcontents/@count", resultAsJDOM, "3" );
-        assertXPathEquals( "/contents/relatedcontents/content/@key", resultAsJDOM, relatedTo1.toString(), parentOf1.toString(),
-                           content1.toString() );
+        assertXPathEquals( "/contents/relatedcontents/@count", resultAsJDOM, "2" );
+        assertXPathEquals( "/contents/relatedcontents/content/@key", resultAsJDOM, relatedTo1.toString(), parentOf1.toString() );
     }
 
     @Test
@@ -381,22 +363,19 @@ public class DatasourceServiceImpl_getContentTest
         PreviewContext previewContext = new PreviewContext( contentPreviewContext );
         DataSourceContext context = new DataSourceContext( previewContext );
         context.setUser( fixture.findUserByName( "content-querier" ) );
-        int parentLevel = 0;
-        int childrenLevel = 1;
-        int parentChildrenLevel = 0;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-        int[] filterByContentTypes = null;
 
         // Exercise
         int[] contentKeys = new int[]{fatherContentKey.toInt()};
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
+        int parentLevel = 0;
+        int childrenLevel = 1;
         XMLDocument resultAsXMLDocument =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
 
         // Verify
         Document resultAsJDOM = resultAsXMLDocument.getAsJDOMDocument();
@@ -448,18 +427,14 @@ public class DatasourceServiceImpl_getContentTest
         int[] contentKeys = new int[]{father.toInt()};
         int parentLevel = 0;
         int childrenLevel = 1;
-        int parentChildrenLevel = 0;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-        int[] filterByContentTypes = null;
-
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
         XMLDocument xmlDocResult =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
 
         // verify: result does not include father's relation to the son
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
@@ -487,23 +462,19 @@ public class DatasourceServiceImpl_getContentTest
         PreviewContext previewContext = new PreviewContext( contentPreviewContext );
         DataSourceContext context = new DataSourceContext( previewContext );
         context.setUser( fixture.findUserByName( "content-querier" ) );
-        int parentLevel = 0;
-        int childrenLevel = 1;
-        int parentChildrenLevel = 1;
-        boolean updateStatistics = false;
-        boolean relatedTitlesOnly = false;
-        boolean includeUserRights = false;
-        int[] filterByCategories = new int[]{};
-        boolean categoryRecursive = false;
-        int[] filterByContentTypes = null;
 
         // Exercise
         int[] contentKeys = new int[]{parent1.toInt()};
+        String query = "";
+        String orderBy = "";
+        int index = 0;
+        int count = 100;
+        boolean includeData = false;
+        int parentLevel = 0;
+        int childrenLevel = 1;
         XMLDocument resultAsXMLDocument =
-            dataSourceService.getContent( context, contentKeys, parentLevel, childrenLevel, parentChildrenLevel, updateStatistics,
-                                          relatedTitlesOnly, includeUserRights, filterByCategories, categoryRecursive,
-                                          filterByContentTypes );
-
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
         // Verify
         Document resultAsJDOM = resultAsXMLDocument.getAsJDOMDocument();
 

@@ -19,21 +19,21 @@
         }
 
         .passwordbox strong {
-            display:block;
+            display: block;
             font-size: 10pt;
         }
 
         .disabledbox strong {
             font-size: 10pt;
-            display:block;
-            background:#ddd;
-            color:green;
+            display: block;
+            background: #ddd;
+            color: green;
         }
 
         .authenticationFailed {
             font-size: 10px;
             color: red;
-            margin-top:5px;
+            margin-top: 5px;
         }
 
         .buttonbar {
@@ -42,14 +42,14 @@
 
         .container {
             float: right;
-            padding:10px;
-            border:1px solid #eee;
-            background:#ddd;
-            width:320px;
+            padding: 10px;
+            border: 1px solid #eee;
+            background: #ddd;
+            width: 320px;
         }
 
         .messages {
-            overflow : auto;
+            overflow: auto;
             height: 600px;
             width: 100%;
             margin-top: 10px;
@@ -82,19 +82,18 @@
             margin-left: 4px;
         }
     </style>
-    [#if upgradeInProgress == true]
+[#if upgradeInProgress == true]
     <meta http-equiv="refresh" content="5"/>
-    [/#if]
+[/#if]
     <script type="text/javascript">
-    <!--
+        <!--
         function jumpToLast() {
             location.href = "#last";
         }
 
-        function startUpgrade(all){
+        function startUpgrade(all) {
             if (confirm("Are you sure you want to start the upgrade?")) {
-                if (all)
-                {
+                if (all) {
                     document.getElementById('upgrade_all').value = 'true';
                 } else {
                     document.getElementById('upgrade_all').value = 'false';
@@ -103,60 +102,65 @@
                 document.upgrade_db.submit();
             }
         }
-    //-->
-    </script>    
+        //-->
+    </script>
 </head>
 <body onload="jumpToLast()">
-    <h1>Database Upgrade Tool</h1>
-    <div class="infoBox">
+<h1>Database Upgrade Tool</h1>
 
-    [#if upgradeInProgress == true]
-        Upgrade in progress. Please wait for the upgrade to finish.
-    [#elseif upgradeNeeded == true]
-        <div class="container">
-             [#if authenticated]
-              <div class="disabledbox">
-                <strong>Authenticated</strong><br/>
-                &nbsp;<br>
-              </div>
-             [#else]
-            <form name="upgrade_db" action="upgrade_db" method="post">
-                <input type='hidden' name='upgrade_all' id='upgrade_all' />
+<div class="infoBox">
+
+[#if upgradeInProgress == true]
+    Upgrade in progress. Please wait for the upgrade to finish.
+[#elseif upgradeNeeded == true]
+    <div class="container">
+        <form name="upgrade_db" action="upgrade_db" method="post">
+            <input type='hidden' name='upgrade_all' id='upgrade_all'/>
+            [#if authenticated]
+                <div class="disabledbox">
+                    <strong>Authenticated</strong><br/>
+                    &nbsp;<br>
+                </div>
+            [#else]
                 <div class="passwordbox">
                     <strong>Enterprise Administrator password:</strong>
                     <input type="password" id="adminPassword" name="adminPassword"/>
                 </div>
-             [/#if]
-                <div class="buttonbar">
-                    <input type="button" name="upgradeStep" value="Upgrade Step" onclick="startUpgrade(false)"/>
-                    <input type="button" name="upgradeAll" value="Upgrade All" onclick="startUpgrade(true)"/>
-                </div>
-            </form>
-              [#if authenticationFailed == true]
-                     <div class="authenticationFailed">Authentication needed, please fill in Enterprise Administrator password</div>
-              [/#if]
-        </div>
+            [/#if]
 
-        Upgrade from model <b>${upgradeFrom}</b> to model <b>${upgradeTo}</b>. Do the following steps:
-        <ul>
-            <li>Backup the database before proceeding.</li>
-            <li>Run either one step at a time, or do the entire upgrade into one step.</li>
-            <li>If successful, go back to the <a href="${baseUrl}">info page</a></li>
-        </ul>
-    [#else]
-        Upgrade is done. System is up-to-date. Go back to <a href="${baseUrl}">info page</a>.
-    [/#if]
+            <div class="buttonbar">
+                <input type="button" name="upgradeStep" value="Upgrade Step" onclick="startUpgrade(false)"/>
+                <input type="button" name="upgradeAll" value="Upgrade All" onclick="startUpgrade(true)"/>
+            </div>
+
+            [#if authenticationFailed == true]
+                <div class="authenticationFailed">Authentication needed, please fill in Enterprise Administrator password</div>
+            [/#if]
+
+        </form>
     </div>
-    [#if upgradeLog?size > 0]
-    <div class="infoBox">
-        <b>${upgradeInProgress?string("Log Messages", "Last Log Messages")}</b>
-        <div class="messages">
-            [#list upgradeLog as entry]
-                ${entry}
-            [/#list]
-            <a name="last"/>
-        </div>
+
+    Upgrade from model <b>${upgradeFrom}</b> to model <b>${upgradeTo}</b>. Do the following steps:
+    <ul>
+        <li>Backup the database before proceeding.</li>
+        <li>Run either one step at a time, or do the entire upgrade into one step.</li>
+        <li>If successful, go back to the <a href="${baseUrl}">info page</a></li>
+    </ul>
+[#else]
+    Upgrade is done. System is up-to-date. Go back to <a href="${baseUrl}">info page</a>.
+[/#if]
+</div>
+[#if upgradeLog?size > 0]
+<div class="infoBox">
+    <b>${upgradeInProgress?string("Log Messages", "Last Log Messages")}</b>
+
+    <div class="messages">
+        [#list upgradeLog as entry]
+        ${entry}
+        [/#list]
+        <a name="last"/>
     </div>
-    [/#if]
+</div>
+[/#if]
 </body>
 </html>

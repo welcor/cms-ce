@@ -15,6 +15,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Enonic CMS - Boot Page</title>
+    <meta name="robots" content="noindex,nofollow" />
 
     <link rel="shortcut icon" type="image/x-icon" href="${baseUrl}/resources/favicon.ico"/>
     <link rel="stylesheet" href="${baseUrl}/resources/bootpage.css" type="text/css"/>

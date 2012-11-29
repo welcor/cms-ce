@@ -23,6 +23,8 @@
     <html xml:lang="{$languagecode}" lang="{$languagecode}" xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <title>Enonic CMS - Login</title>
+        <meta name="robots" content="noindex,nofollow" />
+
         <link type="text/css" rel="stylesheet" media="screen" href="css/admin.css" />
         <link type="text/css" rel="stylesheet" media="screen" href="css/login.css" />
         <xsl:comment><![CDATA[[if IE 6]>

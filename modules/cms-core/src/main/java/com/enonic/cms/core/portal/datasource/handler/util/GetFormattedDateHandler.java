@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,10 +34,11 @@ public final class GetFormattedDateHandler
         final String language = params.language;
         final String country = params.country;
 
-        final long now = this.timeService.getNowAsMilliseconds();
         final Locale locale = new Locale( language, country );
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat( dateFormat, locale );
-        return getFormattedDate( now, offset, simpleDateFormat );
+
+        final DateTime now = this.timeService.getNowAsDateTime();
+        return getFormattedDate( now.toCalendar( locale ), offset, simpleDateFormat );
     }
 
     @Autowired
@@ -45,11 +47,8 @@ public final class GetFormattedDateHandler
         this.timeService = timeService;
     }
 
-    private Document getFormattedDate( final long now, final int offset, final SimpleDateFormat sdf )
+    private Document getFormattedDate( final Calendar today, final int offset, final SimpleDateFormat sdf )
     {
-        final Calendar today = Calendar.getInstance();
-        today.setTimeInMillis( now );
-
         if ( offset != 0 )
         {
             today.add( Calendar.DATE, offset );

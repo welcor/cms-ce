@@ -48,27 +48,24 @@ public class ElasticSearchServiceTest
     public void testInitializeIndex()
         throws Exception
     {
-        for ( int i = 0; i < 3; i++ )
-        {
-            initIndex();
+        initIndex();
 
-            indexContent( 1 );
-            indexContent( 2 );
-            indexContent( 3 );
-            indexContent( 4 );
-            indexContent( 5 );
+        indexContent( 1 );
+        indexContent( 2 );
+        indexContent( 3 );
+        indexContent( 4 );
+        indexContent( 5 );
 
-            flushIndex();
+        flushIndex();
 
-            ContentIndexQuery query = new ContentIndexQuery( "title = 'test'" );
-            query.setCount( Integer.MAX_VALUE );
-            contentIndexService.query( query );
+        ContentIndexQuery query = new ContentIndexQuery( "title = 'test'" );
+        query.setCount( Integer.MAX_VALUE );
+        contentIndexService.query( query );
 
-            final NodesShutdownRequest nodesShutdown = new NodesShutdownRequest();
-            nodesShutdown.masterNodeTimeout( TimeValue.timeValueSeconds( 0 ) );
-            client.admin().cluster().nodesShutdown( nodesShutdown.exit( false ) ).actionGet();
-            client.close();
-        }
+        final NodesShutdownRequest nodesShutdown = new NodesShutdownRequest();
+        nodesShutdown.masterNodeTimeout( TimeValue.timeValueSeconds( 0 ) );
+        client.admin().cluster().nodesShutdown( nodesShutdown.exit( false ) ).actionGet();
+        client.close();
     }
 
     private void initIndex()

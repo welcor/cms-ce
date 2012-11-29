@@ -391,6 +391,7 @@ public class SecurityServiceImpl
             userSpec.setName( uid );
             UserEntity user = userDao.findSingleBySpecification( userSpec );
             PortalSecurityHolder.setLoggedInUser( user.getKey() );
+            PortalSecurityHolder.setImpersonatedUser( user.getKey() );
         }
     }
 

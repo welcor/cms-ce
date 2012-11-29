@@ -169,4 +169,18 @@
     </pluginRepository>
   </pluginRepositories>
 
+  <profiles>
+    <profile>
+      <id>enterprise</id>
+      <activation>
+        <file>
+          <exists>cms-ee</exists>
+        </file>
+      </activation>
+      <modules>
+        <module>cms-ee</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>

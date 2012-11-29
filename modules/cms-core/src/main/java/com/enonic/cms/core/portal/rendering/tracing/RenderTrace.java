@@ -118,7 +118,7 @@ public final class RenderTrace
 
         LinkedList<RenderTraceInfo> history = getHistory();
 
-        if ( renderTraceInfo.getPageInfo() == null )
+        if ( renderTraceInfo != null && renderTraceInfo.getPageInfo() == null )
         {
             getHistory().remove( renderTraceInfo );
             history.remove( renderTraceInfo );

@@ -1,8 +1,5 @@
 package com.enonic.cms.core.portal.datasource.handler.util;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;

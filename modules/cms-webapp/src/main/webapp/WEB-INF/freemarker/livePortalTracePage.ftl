@@ -24,8 +24,9 @@
     <script type="text/javascript" src="liveportaltrace/ctrl/AutomaticUpdateController.js"></script>
     <script type="text/javascript" src="liveportaltrace/ctrl/JavaMemoryGraphController.js"></script>
     <script type="text/javascript" src="liveportaltrace/ctrl/CompletedRequestsGraphController.js"></script>
-    <script type="text/javascript" src="liveportaltrace/ctrl/PageCacheCapacityGraphController.js"></script>
-    <script type="text/javascript" src="liveportaltrace/ctrl/EntityCacheCapacityGraphController.js"></script>
+    <script type="text/javascript" src="liveportaltrace/ctrl/PageCacheGraphController.js"></script>
+    <script type="text/javascript" src="liveportaltrace/ctrl/EntityCacheGraphController.js"></script>
+    <script type="text/javascript" src="liveportaltrace/ctrl/XsltCacheGraphController.js"></script>
     <script type="text/javascript" src="../javascript/tabpane.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/tools/jquery-ui-1.8.21.css"/>
     <link rel="stylesheet" type="text/css" href="liveportaltrace/jquery.treeTable.css"/>
@@ -73,6 +74,29 @@
                     <td class="system-info-value" id="entity-cache-capacity-count"></td>
                     <td class="system-info-label">cap. usage:</td>
                     <td class="system-info-value" id="entity-cache-capacity-usage"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #DDDDDD">
+                    <th class="system-info-group-name-td">
+                        <a onclick="$('#xslt-cache-details-row').toggle();" href="javascript: void(0);">
+                            XSLT cache
+                        </a>
+                    </th>
+                    <td colspan="8"><span id="graph-xslt-cache"></span></td>
+                </tr>
+                <tr id="xslt-cache-details-row" style="display: none; background-color: #EEEEEE; border-bottom: 1px solid #DDDDDD">
+                    <th class="system-info-group-name-td"></th>
+                    <td class="system-info-label">count:</td>
+                    <td class="system-info-value" id="xslt-cache-count"></td>
+                    <td class="system-info-label">eff.:</td>
+                    <td class="system-info-value" id="xslt-cache-effectiveness"></td>
+                    <td class="system-info-label">hit count:</td>
+                    <td class="system-info-value" id="xslt-cache-hit-count"></td>
+                    <td class="system-info-label">miss count:</td>
+                    <td class="system-info-value" id="xslt-cache-miss-count"></td>
+                    <td class="system-info-label">capacity:</td>
+                    <td class="system-info-value" id="xslt-cache-capacity-count"></td>
+                    <td class="system-info-label">cap. usage:</td>
+                    <td class="system-info-value" id="xslt-cache-capacity-usage"></td>
                 </tr>
                 <tr style="border-bottom: 1px solid #DDDDDD">
                     <th class="system-info-group-name-td">
@@ -385,15 +409,17 @@
     longestImageRequestsController.reload();
     completedPortalRequestsTableController.reload();
 
-    var pageCacheCapacityGraphController = new lpt.PageCacheCapacityGraphController();
-    var entityCacheCapacityGraphController = new lpt.EntityCacheCapacityGraphController();
+    var pageCacheGraphController = new lpt.PageCacheGraphController();
+    var entityCacheGraphController = new lpt.EntityCacheGraphController();
+    var xsltCacheGraphController = new lpt.XsltCacheGraphController();
     var javaMemoryGraphController = new lpt.JavaMemoryGraphController();
 
     var systemInfoController = new lpt.SystemInfoController( 1000 );
     systemInfoController.setWorkerThreadIsSupported( lpt.WorkerUtility.isWorkerSupported() );
     systemInfoController.setRefreshUrl( lpt.resolveURLAndAddParams( "system-info=true" ) );
-    systemInfoController.setPageCacheCapacityGraphController( pageCacheCapacityGraphController );
-    systemInfoController.setEntityCacheCapacityGraphController( entityCacheCapacityGraphController );
+    systemInfoController.setPageCacheGraphController( pageCacheGraphController );
+    systemInfoController.setEntityCacheGraphController( entityCacheGraphController );
+    systemInfoController.setXsltCacheGraphController( xsltCacheGraphController );
     systemInfoController.setJavaMemoryGraphController( javaMemoryGraphController );
     systemInfoController.init();
 

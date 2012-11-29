@@ -43,8 +43,9 @@ public class SystemInfoFactory
         systemInfo.setSystemTime( timeService.getNowAsDateTime() );
         systemInfo.setSystemUpTime( UP_TIME_PERIOD_FORMATTER.print( timeService.upTime() ) );
         systemInfo.setPortalRequestInProgress( numberOfPortalRequestsInProgress );
-        systemInfo.setPageCacheStatistic( createPageCacheStatistic( cacheManager.getPageCache() ) );
-        systemInfo.setEntityCacheStatistic( createPageCacheStatistic( cacheManager.getEntityCache() ) );
+        systemInfo.setPageCacheStatistic( createCacheStatistic( cacheManager.getPageCache() ) );
+        systemInfo.setEntityCacheStatistic( createCacheStatistic( cacheManager.getEntityCache() ) );
+        systemInfo.setXsltCacheStatistic( createCacheStatistic( cacheManager.getXsltCache() ) );
 
         systemInfo.setJavaHeapMemoryStatistic( createJavaMemoryStatistic( memoryMXBean.getHeapMemoryUsage() ) );
         systemInfo.setJavaNonHeapMemoryStatistic( createJavaMemoryStatistic( memoryMXBean.getNonHeapMemoryUsage() ) );
@@ -70,7 +71,7 @@ public class SystemInfoFactory
         return javaMemoryStatistic;
     }
 
-    private CacheStatistic createPageCacheStatistic( final CacheFacade cache )
+    private CacheStatistic createCacheStatistic( final CacheFacade cache )
     {
         CacheStatistic cacheStatistic = new CacheStatistic();
         cacheStatistic.setCapacity( cache.getMemoryCapacity() );

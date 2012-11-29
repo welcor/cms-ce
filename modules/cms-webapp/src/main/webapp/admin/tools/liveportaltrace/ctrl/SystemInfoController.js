@@ -9,8 +9,9 @@ lpt.SystemInfoController = function ( automaticReloadTimeInMillis )
     var refreshUrl;
     var worker;
     var timeoutId;
-    var pageCacheCapacityGraphController;
-    var entityCacheCapacityGraphController;
+    var pageCacheGraphController;
+    var entityCacheGraphController;
+    var xsltCacheGraphController;
     var javaMemoryGraphController;
 
     var workerThreadIsSupported = false;
@@ -25,14 +26,19 @@ lpt.SystemInfoController = function ( automaticReloadTimeInMillis )
         refreshUrl = url;
     };
 
-    this.setPageCacheCapacityGraphController = function ( ctrl )
+    this.setPageCacheGraphController = function ( ctrl )
     {
-        pageCacheCapacityGraphController = ctrl;
+        pageCacheGraphController = ctrl;
     };
 
-    this.setEntityCacheCapacityGraphController = function ( ctrl )
+    this.setEntityCacheGraphController = function ( ctrl )
     {
-        entityCacheCapacityGraphController = ctrl;
+        entityCacheGraphController = ctrl;
+    };
+
+    this.setXsltCacheGraphController = function ( ctrl )
+    {
+        xsltCacheGraphController = ctrl;
     };
 
     this.setJavaMemoryGraphController = function ( ctrl )
@@ -118,12 +124,28 @@ lpt.SystemInfoController = function ( automaticReloadTimeInMillis )
             $( '#entity-cache-capacity-count' ).text( systemInfo.entityCacheStatistic.capacity );
             $( '#entity-cache-capacity-usage' ).text( systemInfo.entityCacheStatistic.memoryCapacityUsage + " %" );
 
-            entityCacheCapacityGraphController.add( systemInfo.entityCacheStatistic.memoryCapacityUsage,
-                                                    systemInfo.entityCacheStatistic.effectiveness );
+            entityCacheGraphController.add( systemInfo.entityCacheStatistic.memoryCapacityUsage,
+                                            systemInfo.entityCacheStatistic.effectiveness );
         }
         else
         {
             $( '#graph-entity-cache' ).text( "off" );
+        }
+
+        if ( systemInfo.xsltCacheStatistic.count > 0 )
+        {
+            $( '#xslt-cache-count' ).text( systemInfo.xsltCacheStatistic.count );
+            $( '#xslt-cache-effectiveness' ).text( systemInfo.xsltCacheStatistic.effectiveness + " %" );
+            $( '#xslt-cache-hit-count' ).text( systemInfo.xsltCacheStatistic.hitCount );
+            $( '#xslt-cache-miss-count' ).text( systemInfo.xsltCacheStatistic.missCount );
+            $( '#xslt-cache-capacity-count' ).text( systemInfo.xsltCacheStatistic.capacity );
+            $( '#xslt-cache-capacity-usage' ).text( systemInfo.xsltCacheStatistic.memoryCapacityUsage + " %" );
+
+            xsltCacheGraphController.add( systemInfo.xsltCacheStatistic.memoryCapacityUsage, systemInfo.xsltCacheStatistic.effectiveness );
+        }
+        else
+        {
+            $( '#graph-xslt-cache' ).text( "off" );
         }
 
         if ( systemInfo.pageCacheStatistic.count > 0 )
@@ -135,8 +157,7 @@ lpt.SystemInfoController = function ( automaticReloadTimeInMillis )
             $( '#page-cache-capacity-count' ).text( systemInfo.pageCacheStatistic.capacity );
             $( '#page-cache-capacity-usage' ).text( systemInfo.pageCacheStatistic.memoryCapacityUsage + " %" );
 
-            pageCacheCapacityGraphController.add( systemInfo.pageCacheStatistic.memoryCapacityUsage,
-                                                  systemInfo.pageCacheStatistic.effectiveness );
+            pageCacheGraphController.add( systemInfo.pageCacheStatistic.memoryCapacityUsage, systemInfo.pageCacheStatistic.effectiveness );
         }
         else
         {

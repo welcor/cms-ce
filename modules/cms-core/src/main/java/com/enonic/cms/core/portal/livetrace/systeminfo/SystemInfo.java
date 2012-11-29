@@ -20,6 +20,8 @@ public class SystemInfo
 
     private CacheStatistic entityCacheStatistic;
 
+    private CacheStatistic xsltCacheStatistic;
+
     @SuppressWarnings("UnusedDeclaration")
     public DateTime getSystemTime()
     {
@@ -106,5 +108,16 @@ public class SystemInfo
     void setEntityCacheStatistic( CacheStatistic entityCacheStatistic )
     {
         this.entityCacheStatistic = entityCacheStatistic;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public CacheStatistic getXsltCacheStatistic()
+    {
+        return xsltCacheStatistic;
+    }
+
+    void setXsltCacheStatistic( CacheStatistic xsltCacheStatistic )
+    {
+        this.xsltCacheStatistic = xsltCacheStatistic;
     }
 }

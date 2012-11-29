@@ -4,7 +4,9 @@
  */
 package com.enonic.cms.web.webdav;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -26,6 +28,8 @@ import com.enonic.cms.core.servlet.ServletRequestAccessor;
 public final class SimpleDavServlet
     extends AbstractWebdavServlet
 {
+    private final static Logger LOG = Logger.getLogger( SimpleDavServlet.class.getName() );
+
     private final static String AUTHENTICATE_HEADER_VALUE = "Basic Realm=\"Enonic Webdav Server\"";
 
     private DavSessionProvider sessionProvider;
@@ -34,11 +38,15 @@ public final class SimpleDavServlet
 
     private DavResourceFactory resourceFactory;
 
+    private File resourceRoot;
+
     public void init( final ServletConfig config )
         throws ServletException
     {
         final ServletContext servletContext = config.getServletContext();
         final DavConfiguration configuration = getConfiguration( servletContext );
+
+        this.resourceRoot = configuration.getResourceRoot();
 
         setLocatorFactory( new DavLocatorFactoryImpl() );
         setDavSessionProvider( new DavSessionProviderImpl( configuration ) );
@@ -57,7 +65,21 @@ public final class SimpleDavServlet
         throws ServletException, IOException
     {
         ServletRequestAccessor.setRequest( request );
+        ensureResourceRootExists();
         super.service( request, response );
+    }
+
+    private void ensureResourceRootExists()
+    {
+        if ( !resourceRoot.exists() )
+        {
+            final boolean created = resourceRoot.mkdirs();
+
+            if ( !created )
+            {
+                LOG.severe( "cannot create resource root at " + resourceRoot.getAbsolutePath() );
+            }
+        }
     }
 
     @Override

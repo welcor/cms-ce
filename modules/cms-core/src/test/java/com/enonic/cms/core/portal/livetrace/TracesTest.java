@@ -20,7 +20,7 @@ public class TracesTest
     @Test
     public void given_three_traces_then_getTotalPeriodInMilliseconds_has_included_all_three()
     {
-        Traces<WindowRenderingTrace> traces = new Traces<WindowRenderingTrace>();
+        Traces<WindowRenderingTrace> traces = Traces.create();
         traces.add( createWindowRenderingTrace( "1:1", 5 ) );
         traces.add( createWindowRenderingTrace( "1:2", 15 ) );
         traces.add( createWindowRenderingTrace( "1:3", 10 ) );

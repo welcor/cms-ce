@@ -19,7 +19,7 @@ public class WindowRenderingTrace
 
     private CacheUsage cacheUsage = new CacheUsage();
 
-    private Traces<DatasourceExecutionTrace> datasourceExecutionTraces = new Traces<DatasourceExecutionTrace>();
+    private Traces<DatasourceExecutionTrace> datasourceExecutionTraces;
 
     private ViewTransformationTrace viewTransformationTrace;
 
@@ -64,6 +64,10 @@ public class WindowRenderingTrace
 
     public void addDatasourceExecutionTrace( DatasourceExecutionTrace trace )
     {
+        if ( datasourceExecutionTraces == null )
+        {
+            datasourceExecutionTraces = Traces.create();
+        }
         this.datasourceExecutionTraces.add( trace );
     }
 

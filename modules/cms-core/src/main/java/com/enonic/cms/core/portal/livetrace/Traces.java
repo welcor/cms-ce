@@ -21,6 +21,11 @@ public class Traces<T extends Trace>
 
     private int totalPeriodTimeInMilliseconds = 0;
 
+    private Traces()
+    {
+        // protection
+    }
+
     @Override
     public Iterator<T> iterator()
     {

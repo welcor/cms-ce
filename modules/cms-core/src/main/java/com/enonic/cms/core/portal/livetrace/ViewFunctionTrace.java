@@ -14,7 +14,7 @@ public class ViewFunctionTrace
 
     private List<ViewFunctionArgument> arguments = new ArrayList<ViewFunctionArgument>();
 
-    private Traces<Trace> traces = new Traces<Trace>();
+    private Traces<Trace> traces;
 
     void setName( String name )
     {
@@ -42,6 +42,11 @@ public class ViewFunctionTrace
     {
         Preconditions.checkArgument( !( trace instanceof ViewFunctionTrace ),
                                      "Preventing infinite recursion: trying to add trace of same type" );
+
+        if ( traces == null )
+        {
+            traces = Traces.create();
+        }
         traces.add( trace );
     }
 

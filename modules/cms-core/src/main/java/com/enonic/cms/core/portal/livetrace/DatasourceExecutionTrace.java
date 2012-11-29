@@ -18,11 +18,11 @@ public class DatasourceExecutionTrace
 
     private List<DatasourceMethodArgument> datasourceMethodArgumentList = new ArrayList<DatasourceMethodArgument>();
 
-    private Traces<ClientMethodExecutionTrace> clientMethodExecutionTraceTraces = new Traces<ClientMethodExecutionTrace>();
+    private Traces<ClientMethodExecutionTrace> clientMethodExecutionTraceTraces;
 
-    private Traces<ContentIndexQueryTrace> contentIndexQueryTraces = new Traces<ContentIndexQueryTrace>();
+    private Traces<ContentIndexQueryTrace> contentIndexQueryTraces;
 
-    private Traces<RelatedContentFetchTrace> relatedContentFetchTraces = new Traces<RelatedContentFetchTrace>();
+    private Traces<RelatedContentFetchTrace> relatedContentFetchTraces;
 
     DatasourceExecutionTrace( String methodName )
     {
@@ -81,6 +81,10 @@ public class DatasourceExecutionTrace
 
     void addClientMethodExecutionTrace( ClientMethodExecutionTrace trace )
     {
+        if ( clientMethodExecutionTraceTraces == null )
+        {
+            clientMethodExecutionTraceTraces = Traces.create();
+        }
         clientMethodExecutionTraceTraces.add( trace );
     }
 
@@ -93,12 +97,20 @@ public class DatasourceExecutionTrace
     @Override
     public void addContentIndexQueryTrace( ContentIndexQueryTrace trace )
     {
+        if ( contentIndexQueryTraces == null )
+        {
+            contentIndexQueryTraces = Traces.create();
+        }
         contentIndexQueryTraces.add( trace );
     }
 
     @Override
     public void addRelatedContentFetchTrace( final RelatedContentFetchTrace trace )
     {
+        if ( relatedContentFetchTraces == null )
+        {
+            relatedContentFetchTraces = Traces.create();
+        }
         relatedContentFetchTraces.add( trace );
     }
 

@@ -6,9 +6,9 @@ public class ClientMethodExecutionTrace
 {
     private String methodName;
 
-    private Traces<ContentIndexQueryTrace> contentIndexQueryTraces = new Traces<ContentIndexQueryTrace>();
+    private Traces<ContentIndexQueryTrace> contentIndexQueryTraces;
 
-    private Traces<RelatedContentFetchTrace> relatedContentFetchTraces = new Traces<RelatedContentFetchTrace>();
+    private Traces<RelatedContentFetchTrace> relatedContentFetchTraces;
 
     ClientMethodExecutionTrace()
     {
@@ -28,12 +28,20 @@ public class ClientMethodExecutionTrace
     @Override
     public void addContentIndexQueryTrace( ContentIndexQueryTrace trace )
     {
+        if ( contentIndexQueryTraces == null )
+        {
+            contentIndexQueryTraces = Traces.create();
+        }
         contentIndexQueryTraces.add( trace );
     }
 
     @Override
     public void addRelatedContentFetchTrace( final RelatedContentFetchTrace trace )
     {
+        if ( relatedContentFetchTraces == null )
+        {
+            relatedContentFetchTraces = Traces.create();
+        }
         relatedContentFetchTraces.add( trace );
     }
 

@@ -77,11 +77,20 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
 
         if ( !pageRenderingTrace.usedCachedResult === true )
         {
-            // Datasource executions
-            html += "<tr id='node-" + id + "-3' class='child-of-node-" + id + "'>";
-            html += "<td>Datasource Executions</td><td>" + pageRenderingTrace.datasourceExecutionTraces.totalPeriodInHRFormat + "</td>";
-            html += "</tr>";
-            html += buildDatasourceExecutionTraces( pageRenderingTrace.datasourceExecutionTraces, id + "-3" );
+            if ( pageRenderingTrace.datasourceExecutionTraces != null )
+            {
+                // Datasource executions
+                html += "<tr id='node-" + id + "-3' class='child-of-node-" + id + "'>";
+                html += "<td>Datasource Executions</td><td>" + pageRenderingTrace.datasourceExecutionTraces.totalPeriodInHRFormat + "</td>";
+                html += "</tr>";
+                html += buildDatasourceExecutionTraces( pageRenderingTrace.datasourceExecutionTraces, id + "-3" );
+            }
+            else
+            {
+                html += "<tr id='node-" + id + "-3' class='child-of-node-" + id + "'>";
+                html += "<td>Datasource Executions</td><td></td>";
+                html += "</tr>";
+            }
 
             // View transformation
             if ( pageRenderingTrace.viewTransformationTrace != null )
@@ -104,6 +113,14 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
     function buildWindowRenderingTraces( windowRenderingTraces, id )
     {
         var html = "";
+
+        if ( windowRenderingTraces == null )
+        {
+            html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
+            html += "<td>Window rendering traces</td><td></td>";
+            html += "</tr>";
+            return "";
+        }
 
         html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
         html += "<td>Window rendering traces</td><td>" + windowRenderingTraces.totalPeriodInHRFormat + "</td>";
@@ -151,10 +168,20 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
         {
             childId = id + "-" + (childCount++);
 
-            html += "<tr id='node-" + childId + "' class='child-of-node-" + id + "'>";
-            html += "<td>Datasource Executions</td><td>" + windowRenderingTrace.datasourceExecutionTraces.totalPeriodInHRFormat + "</td>";
-            html += "</tr>";
-            html += buildDatasourceExecutionTraces( windowRenderingTrace.datasourceExecutionTraces, childId );
+            if ( windowRenderingTrace.datasourceExecutionTraces != null )
+            {
+                html += "<tr id='node-" + childId + "' class='child-of-node-" + id + "'>";
+                html +=
+                    "<td>Datasource Executions</td><td>" + windowRenderingTrace.datasourceExecutionTraces.totalPeriodInHRFormat + "</td>";
+                html += "</tr>";
+                html += buildDatasourceExecutionTraces( windowRenderingTrace.datasourceExecutionTraces, childId );
+            }
+            else
+            {
+                html += "<tr id='node-" + childId + "' class='child-of-node-" + id + "'>";
+                html += "<td>Datasource Executions</td><td></td>";
+                html += "</tr>";
+            }
 
             // View transformation
             if ( windowRenderingTrace.viewTransformationTrace != null )
@@ -203,18 +230,18 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
 
             var counter = 4;
 
-            if ( datasourceExecutionTrace.contentIndexQueryTraces.list.length > 0 )
+            if ( datasourceExecutionTrace.contentIndexQueryTraces != null )
             {
                 html += buildContentIndexQueryTraces( datasourceExecutionTrace.contentIndexQueryTraces, id + "-" + (++counter) );
             }
 
-            if ( datasourceExecutionTrace.relatedContentFetchTraces.list.length > 0 )
+            if ( datasourceExecutionTrace.relatedContentFetchTraces != null )
             {
                 html += buildRelatedContentFetchTraces( datasourceExecutionTrace.relatedContentFetchTraces, id + "-" + (++counter) );
             }
 
             // Client Method Execution traces
-            if ( datasourceExecutionTrace.clientMethodExecutionTraces.list.length > 0 )
+            if ( datasourceExecutionTrace.clientMethodExecutionTraces != null )
             {
                 var clientMethodExecutionTracesId = id + "-" + (++counter);
 
@@ -274,11 +301,11 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
 
             var counter = 0;
 
-            if ( clientMethodExecutionTrace.contentIndexQueryTraces.list.length > 0 )
+            if ( clientMethodExecutionTrace.contentIndexQueryTraces != null )
             {
                 html += buildContentIndexQueryTraces( clientMethodExecutionTrace.contentIndexQueryTraces, id + "-" + (++counter) );
             }
-            if ( clientMethodExecutionTrace.relatedContentFetchTraces.list.length > 0 )
+            if ( clientMethodExecutionTrace.relatedContentFetchTraces != null )
             {
                 html += buildRelatedContentFetchTraces( clientMethodExecutionTrace.relatedContentFetchTraces, id + "-" + (++counter) );
             }
@@ -343,7 +370,7 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
         html += "<td>Security filter</td><td>" + contentIndexQueryTrace.securityFilter + "</td>";
         html += "</tr>";
         html += "<tr id='node-" + id + "-11' class='child-of-node-" + id + "'>";
-        html += "<td>Translated query</td><td>" + JSON.stringify(contentIndexQueryTrace.translatedQuery) + "</td>";
+        html += "<td>Translated query</td><td>" + JSON.stringify( contentIndexQueryTrace.translatedQuery ) + "</td>";
         html += "</tr>";
         html += "<tr id='node-" + id + "-12' class='child-of-node-" + id + "'>";
         html += "<td>Duration in Elastic Search</td><td>" + contentIndexQueryTrace.durationInElasticSearch.asHRFormat + "</td>";
@@ -406,18 +433,16 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
         html += "<td>View</td><td>" + viewTransformationTrace.view + "</td>";
         html += "</tr>";
 
-        html += buildViewFunctionTraces( viewTransformationTrace.viewFunctionTraces, id + "-2" );
+        if ( viewTransformationTrace.viewFunctionTraces != null )
+        {
+            html += buildViewFunctionTraces( viewTransformationTrace.viewFunctionTraces, id + "-2" );
+        }
 
         return html;
     }
 
     function buildViewFunctionTraces( viewFunctionTraces, id )
     {
-        if ( viewFunctionTraces.list.length === 0 )
-        {
-            return "";
-        }
-
         var html = "";
         html += "<tr id='node-" + id + "' class='child-of-node-" + resolveParentId( id ) + "'>";
         html += "<td>View functions</td><td>" + viewFunctionTraces.totalPeriodInHRFormat + "</td>";
@@ -436,7 +461,7 @@ lpt.PortalRequestTraceDetailHtmlBuilder = function ()
         var html = "";
 
         var windowRenderingTrace = null;
-        if ( viewFunctionTrace.traces.list.length > 0 )
+        if ( viewFunctionTrace.traces != null )
         {
             windowRenderingTrace = viewFunctionTrace.traces.list[0];
         }

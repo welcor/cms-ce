@@ -6,7 +6,7 @@ public class ViewTransformationTrace
 {
     private String view;
 
-    private Traces<ViewFunctionTrace> viewFunctionTraces = new Traces<ViewFunctionTrace>();
+    private Traces<ViewFunctionTrace> viewFunctionTraces;
 
     @SuppressWarnings("UnusedDeclaration")
     public String getView()
@@ -21,6 +21,10 @@ public class ViewTransformationTrace
 
     void addViewFunctionTrace( ViewFunctionTrace trace )
     {
+        if ( viewFunctionTraces == null )
+        {
+            viewFunctionTraces = Traces.create();
+        }
         viewFunctionTraces.add( trace );
     }
 

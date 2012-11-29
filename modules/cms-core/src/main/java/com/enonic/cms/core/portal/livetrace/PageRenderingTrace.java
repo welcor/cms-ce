@@ -15,9 +15,9 @@ public class PageRenderingTrace
 
     private CacheUsage cacheUsage = new CacheUsage();
 
-    private Traces<WindowRenderingTrace> windowRenderingTraces = Traces.create();
+    private Traces<WindowRenderingTrace> windowRenderingTraces;
 
-    private Traces<DatasourceExecutionTrace> datasourceExecutionTraces = Traces.create();
+    private Traces<DatasourceExecutionTrace> datasourceExecutionTraces;
 
     private ViewTransformationTrace viewTransformationTrace;
 
@@ -42,6 +42,10 @@ public class PageRenderingTrace
 
     void addWindowRenderingTrace( WindowRenderingTrace trace )
     {
+        if ( windowRenderingTraces == null )
+        {
+            windowRenderingTraces = Traces.create();
+        }
         windowRenderingTraces.add( trace );
     }
 
@@ -50,9 +54,13 @@ public class PageRenderingTrace
         return windowRenderingTraces;
     }
 
-    void addDatasourceExecutionTrace( DatasourceExecutionTrace datasourceExecutionTrace )
+    void addDatasourceExecutionTrace( DatasourceExecutionTrace trace )
     {
-        datasourceExecutionTraces.add( datasourceExecutionTrace );
+        if ( datasourceExecutionTraces == null )
+        {
+            datasourceExecutionTraces = Traces.create();
+        }
+        datasourceExecutionTraces.add( trace );
     }
 
     @SuppressWarnings("UnusedDeclaration")

@@ -14,7 +14,10 @@ class PageCacheUsagesResolver
             collectWindowRenderingTracesInViewTransformationTrace( pageRenderingTrace.getViewTransformationTrace(), collection );
         }
 
-        collectWindowRenderingTraces( pageRenderingTrace.getWindowRenderingTraces(), collection );
+        if ( pageRenderingTrace.getWindowRenderingTraces() != null )
+        {
+            collectWindowRenderingTraces( pageRenderingTrace.getWindowRenderingTraces(), collection );
+        }
 
         final CacheUsages resolvedCacheUsages = new CacheUsages();
         resolvedCacheUsages.add( pageRenderingTrace.getCacheUsage() );
@@ -38,13 +41,16 @@ class PageCacheUsagesResolver
     private static void collectWindowRenderingTracesInViewTransformationTrace( final ViewTransformationTrace viewTransformationTrace,
                                                                                final HashMap<String, WindowRenderingTrace> collection )
     {
-        for ( ViewFunctionTrace viewFunctionTrace : viewTransformationTrace.getViewFunctionTraces() )
+        if ( viewTransformationTrace.getViewFunctionTraces() != null )
         {
-            for ( Trace trace : viewFunctionTrace.getTraces() )
+            for ( ViewFunctionTrace viewFunctionTrace : viewTransformationTrace.getViewFunctionTraces() )
             {
-                if ( trace instanceof WindowRenderingTrace )
+                for ( Trace trace : viewFunctionTrace.getTraces() )
                 {
-                    collectWindowRenderingTrace( (WindowRenderingTrace) trace, collection );
+                    if ( trace instanceof WindowRenderingTrace )
+                    {
+                        collectWindowRenderingTrace( (WindowRenderingTrace) trace, collection );
+                    }
                 }
             }
         }
@@ -67,3 +73,4 @@ class PageCacheUsagesResolver
         }
     }
 }
+

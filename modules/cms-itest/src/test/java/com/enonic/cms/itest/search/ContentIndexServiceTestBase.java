@@ -62,6 +62,8 @@ public abstract class ContentIndexServiceTestBase
     public void initIndex()
         throws Exception
     {
+        elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
+
         final boolean indexExists = elasticSearchIndexService.indexExists( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
 
         if ( indexExists )
@@ -147,8 +149,7 @@ public abstract class ContentIndexServiceTestBase
         System.out.println( "\n\n---------- CONTENT --------------------------------" );
         System.out.println( result.toString() );
         System.out.println( "\n\n" );
-        result =
-            elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Binaries.toString(), termQuery );
+        result = elasticSearchIndexService.search( ContentIndexServiceImpl.CONTENT_INDEX_NAME, IndexType.Binaries.toString(), termQuery );
 
         System.out.println( "\n\n---------- BINARIES --------------------------------" );
         System.out.println( result.toString() );

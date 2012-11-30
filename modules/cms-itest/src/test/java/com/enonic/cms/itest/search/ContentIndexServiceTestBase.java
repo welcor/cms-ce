@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.node.shutdown.NodesShutdownRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.search.SearchHit;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -82,6 +85,16 @@ public abstract class ContentIndexServiceTestBase
         addMapping();
 
         elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
+    }
+
+    @After
+    public void shutDown()
+    {
+        final Client client = elasticSearchIndexService.getClient();
+
+        final NodesShutdownRequest nodesShutdown = new NodesShutdownRequest();
+        client.admin().cluster().nodesShutdown( nodesShutdown.exit( false ) ).actionGet();
+        client.close();
     }
 
     private void addMapping()

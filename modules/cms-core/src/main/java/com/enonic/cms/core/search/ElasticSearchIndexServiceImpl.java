@@ -77,6 +77,12 @@ public class ElasticSearchIndexServiceImpl
 
     private final Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
 
+
+    public Client getClient()
+    {
+        return client;
+    }
+
     @Override
     public void createIndex( String indexName )
     {

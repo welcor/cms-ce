@@ -3,6 +3,7 @@ package com.enonic.cms.itest.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -24,6 +25,7 @@ import static org.junit.Assert.*;
  * Date: 1/13/12
  * Time: 12:20 PM
  */
+@Ignore("Tests is hanging on team city")
 public class ContentIndexServiceImpl_queryContentQueriesTest
     extends ContentIndexServiceTestBase
 {

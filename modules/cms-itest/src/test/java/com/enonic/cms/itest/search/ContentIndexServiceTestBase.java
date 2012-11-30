@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.junit.Assert;
@@ -62,7 +63,8 @@ public abstract class ContentIndexServiceTestBase
     public void initIndex()
         throws Exception
     {
-        elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
+        final ClusterHealthResponse clusterHealth =
+            elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
 
         final boolean indexExists = elasticSearchIndexService.indexExists( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
 
@@ -72,6 +74,8 @@ public abstract class ContentIndexServiceTestBase
         }
 
         elasticSearchIndexService.createIndex( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
+
+        elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
         addMapping();
     }
 

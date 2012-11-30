@@ -65,7 +65,7 @@ public class ElasticSearchIndexServiceImpl
 
     public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 60 );
 
-    public TimeValue waitforyellowTimeout = TimeValue.timeValueSeconds( 60 );
+    private TimeValue waitforyellowTimeout = TimeValue.timeValueSeconds( 60 );
 
     public static final TimeValue CLUSTER_NOWAIT_TIMEOUT = TimeValue.timeValueSeconds( 1 );
 

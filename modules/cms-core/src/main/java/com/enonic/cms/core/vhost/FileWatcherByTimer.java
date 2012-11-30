@@ -5,29 +5,31 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FileWatcherByTimer
+final class FileWatcherByTimer
     extends TimerTask
 {
     private long timeStamp;
 
-    private File file;
+    private final File file;
 
-    private Runnable listener;
+    private final Runnable listener;
 
-    public FileWatcherByTimer( File file, Runnable listener, int period )
+    private final Timer timer;
+
+    public FileWatcherByTimer( final File file, final Runnable listener, final int period )
     {
         this.file = file;
         this.listener = listener;
         this.timeStamp = file.lastModified();
+        this.timer = new Timer( "VHost File Monitor" );
 
-        if ( this.file != null && this.file.exists() )
+        if ( this.file.exists() )
         {
-            // repeat the check every second
-            new Timer().schedule( this, new Date(), period );
+            this.timer.schedule( this, new Date(), period );
         }
     }
 
-    public final void run()
+    public void run()
     {
         long timeStamp = file.lastModified();
 
@@ -36,5 +38,10 @@ public class FileWatcherByTimer
             this.timeStamp = timeStamp;
             listener.run();
         }
+    }
+
+    public void stop()
+    {
+        this.timer.cancel();
     }
 }

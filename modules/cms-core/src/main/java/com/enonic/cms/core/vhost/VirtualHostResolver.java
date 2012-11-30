@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public final class VirtualHostResolver
-    implements InitializingBean
+    implements InitializingBean, DisposableBean
 {
     /**
      * Logger.
@@ -36,9 +37,11 @@ public final class VirtualHostResolver
     /**
      * List of virtual hosts.
      */
-    private AtomicReference<ArrayList<VirtualHost>> virtualHosts = new AtomicReference<ArrayList<VirtualHost>>();
+    private final AtomicReference<ArrayList<VirtualHost>> virtualHosts = new AtomicReference<ArrayList<VirtualHost>>();
 
     private File configFile;
+
+    private FileWatcherByTimer fileWatcher;
 
     public VirtualHostResolver()
     {
@@ -68,7 +71,14 @@ public final class VirtualHostResolver
         };
 
         // after switching to java 7 use NIO.2 file watcher instead of timer
-        new FileWatcherByTimer( configFile, configFileChangedHandler, 2000 );
+        this.fileWatcher = new FileWatcherByTimer( configFile, configFileChangedHandler, 2000 );
+    }
+
+    @Override
+    public void destroy()
+        throws Exception
+    {
+        this.fileWatcher.stop();
     }
 
     /**

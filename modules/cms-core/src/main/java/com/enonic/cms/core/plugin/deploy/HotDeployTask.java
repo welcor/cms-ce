@@ -25,8 +25,6 @@ public final class HotDeployTask
 
     private FileAlterationMonitor monitor;
 
-    private HotDeployListener listener;
-
     private PluginManager pluginManager;
 
     @Value("${cms.plugin.deployDir}")

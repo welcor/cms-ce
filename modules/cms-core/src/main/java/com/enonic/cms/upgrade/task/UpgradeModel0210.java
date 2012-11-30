@@ -24,5 +24,6 @@ final class UpgradeModel0210
 
         context.logInfo( "Drop column 'usr_sSyncValue' on table 'tUser'" );
         context.getJdbcTemplate().execute( "ALTER TABLE tUser DROP column usr_sSyncValue" );
+        context.reorganizeTablesForDb2( "tUser" );
     }
 }

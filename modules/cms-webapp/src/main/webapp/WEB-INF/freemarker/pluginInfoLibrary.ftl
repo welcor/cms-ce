@@ -1,31 +1,31 @@
 [#ftl]
 
 [#macro pluginInfoRow plugin]
-[#if plugin.framework == false]
-<li>
+    [#if plugin.framework == false]
+    <li>
     ${plugin.name} -
-    [#if plugin.active == false]
-        <b style="color: #A00000">INACTIVE</b>
-    [#else]
-        <b style="color: #00A000">ACTIVE</b>
+        [#if plugin.active == false]
+            <b style="color: #A00000">INACTIVE</b>
+        [#else]
+            <b style="color: #00A000">ACTIVE</b>
+        [/#if]
+        <ul>
+            <li>${plugin.id} ${plugin.version} deployed ${plugin.timestamp}</li>
+        </ul>
+    </li>
     [/#if]
-    <ul>
-        <li>${plugin.id} ${plugin.version} deployed ${plugin.timestamp}</li>
-    </ul>
-</li>
-[/#if]
 [/#macro]
 
 [#macro pluginInfoRowWithDetails plugin]
 <li>
-    ${plugin.name} -
+${plugin.name} -
     [#if plugin.active == false]
         <b style="color: #A00000">INACTIVE</b>
     [#else]
         <b style="color: #00A000">ACTIVE</b>
     [/#if] -
     <a href="javascript: showDetails(${plugin.key})">details</a>
-    | <a href="servlet/tools/com.enonic.cms.core.tools.PluginInfoController?op=custom&update=${plugin.key}">update</a>
+    | <a href="${baseUrl}/tools/pluginInfo?op=custom&update=${plugin.key}">update</a>
     <ul>
         <li>${plugin.id} ${plugin.version} deployed ${plugin.timestamp}</li>
     </ul>
@@ -56,7 +56,7 @@
         <li>Configuration</li>
         <ul>
             [#list plugin.config?keys as key]
-            <li>${key} = ${plugin.config[key]}</li>
+                <li>${key} = ${plugin.config[key]}</li>
             [/#list]
         </ul>
     </ul>

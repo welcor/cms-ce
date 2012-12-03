@@ -106,7 +106,12 @@ public final class UpgradeProcessTask
         {
             if ( this.executeAll )
             {
-                this.upgradeService.upgrade( this.upgradeLog );
+                boolean upgrade;
+                do
+                {
+                    upgrade = this.upgradeService.upgradeStep( this.upgradeLog );
+                }
+                while ( upgrade );
             }
             else
             {

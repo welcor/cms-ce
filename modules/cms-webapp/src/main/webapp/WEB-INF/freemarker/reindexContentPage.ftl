@@ -62,7 +62,7 @@
 
         function startReindex(){
             if (confirm("Are you sure you want to start the reindexing of all content?")) {
-                location.href = "servlet/tools/com.enonic.cms.core.tools.ReindexContentToolController?op=custom&reindex=true";
+                   location.href = '${baseUrl}/tools/reindexContent??op=custom&reindex=true';
             }
         }
     //-->

@@ -10,13 +10,13 @@
             </tr>
             <tr>
                 <td>
-                    Number of contents:
+                    Number of indexed contents:
                 </td>
                 <td>${numberOfContent}</td>
             </tr>
             <tr>
                 <td>
-                    Number of binaries:
+                    Number of indexed attachments:
                 </td>
                 <td>${numberOfBinaries}</td>
             </tr>

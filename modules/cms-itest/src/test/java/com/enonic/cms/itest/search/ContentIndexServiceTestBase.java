@@ -12,7 +12,6 @@ import org.elasticsearch.action.admin.cluster.node.shutdown.NodesShutdownRequest
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.SearchHit;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -101,7 +100,7 @@ public abstract class ContentIndexServiceTestBase
             "Mapping added: Cluster health: " + ( clusterHealth.timedOut() ? "Timed out" : clusterHealth.getStatus().toString() ) );
     }
 
-    @After
+    // @After
     public void shutDown()
     {
         final Client client = elasticSearchIndexService.getClient();

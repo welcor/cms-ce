@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.shutdown.NodesShutdownRequest;
@@ -51,6 +52,9 @@ import static org.junit.Assert.*;
 @ContextConfiguration("classpath:com/enonic/cms/itest/base-core-test-context.xml")
 public abstract class ContentIndexServiceTestBase
 {
+    private final Logger LOG = Logger.getLogger( ContentIndexServiceTestBase.class.getName() );
+
+
     private IndexMappingProvider indexMappingProvider;
 
     @Autowired
@@ -69,22 +73,30 @@ public abstract class ContentIndexServiceTestBase
         final ClusterHealthResponse clusterHealth =
             elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
 
+        LOG.info(
+            "Initialize index: Cluster health: " + ( clusterHealth.timedOut() ? "Timed out" : clusterHealth.getStatus().toString() ) );
+
         final boolean indexExists = elasticSearchIndexService.indexExists( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
 
         if ( indexExists )
         {
             elasticSearchIndexService.deleteIndex( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
+            LOG.info( "Index exists, deleting..." );
         }
 
-        elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
+        LOG.info( "Creating index......" );
 
         elasticSearchIndexService.createIndex( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
 
         elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
 
+        LOG.info( "Index created: Cluster health: " + ( clusterHealth.timedOut() ? "Timed out" : clusterHealth.getStatus().toString() ) );
+
         addMapping();
 
         elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
+
+        LOG.info( "Mapping added: Cluster health: " + ( clusterHealth.timedOut() ? "Timed out" : clusterHealth.getStatus().toString() ) );
     }
 
     @After

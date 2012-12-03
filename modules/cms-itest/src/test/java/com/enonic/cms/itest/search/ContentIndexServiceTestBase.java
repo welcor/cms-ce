@@ -72,32 +72,16 @@ public abstract class ContentIndexServiceTestBase
         final ClusterHealthResponse clusterHealth =
             elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
 
-        System.out.println(
-            "Initialize index: Cluster health: " + ( clusterHealth.timedOut() ? "Timed out" : clusterHealth.getStatus().toString() ) );
-
         final boolean indexExists = elasticSearchIndexService.indexExists( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
 
         if ( indexExists )
         {
             elasticSearchIndexService.deleteIndex( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
-            LOG.info( "Index exists, deleting..." );
         }
-
-        System.out.println( "Creating index......" );
 
         elasticSearchIndexService.createIndex( ContentIndexServiceImpl.CONTENT_INDEX_NAME );
 
-        elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
-
-        System.out.println(
-            "Index created: Cluster health: " + ( clusterHealth.timedOut() ? "Timed out" : clusterHealth.getStatus().toString() ) );
-
         addMapping();
-
-        elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
-
-        System.out.println(
-            "Mapping added: Cluster health: " + ( clusterHealth.timedOut() ? "Timed out" : clusterHealth.getStatus().toString() ) );
     }
 
     // @After

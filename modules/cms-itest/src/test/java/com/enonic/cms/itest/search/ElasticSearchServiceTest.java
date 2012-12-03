@@ -1,11 +1,9 @@
 package com.enonic.cms.itest.search;
 
-import org.elasticsearch.action.admin.cluster.node.shutdown.NodesShutdownRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.common.logging.slf4j.Slf4jESLoggerFactory;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.junit.Test;
@@ -17,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
-import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.ElasticSearchIndexServiceImpl;
 import com.enonic.cms.core.search.IndexMappingProvider;
@@ -44,28 +41,31 @@ public class ElasticSearchServiceTest
     @Autowired
     private ContentIndexServiceImpl contentIndexService;
 
-    //@Test
+    @Test
     public void testInitializeIndex()
         throws Exception
     {
-        initIndex();
+        int i = 0;
 
-        indexContent( 1 );
-        indexContent( 2 );
-        indexContent( 3 );
-        indexContent( 4 );
-        indexContent( 5 );
+        /*    initIndex();
 
-        flushIndex();
+            indexContent( 1 );
+            indexContent( 2 );
+            indexContent( 3 );
+            indexContent( 4 );
+            indexContent( 5 );
 
-        ContentIndexQuery query = new ContentIndexQuery( "title = 'test'" );
-        query.setCount( Integer.MAX_VALUE );
-        contentIndexService.query( query );
+            flushIndex();
 
-        final NodesShutdownRequest nodesShutdown = new NodesShutdownRequest();
-        nodesShutdown.masterNodeTimeout( TimeValue.timeValueSeconds( 0 ) );
-        client.admin().cluster().nodesShutdown( nodesShutdown.exit( false ) ).actionGet();
-        client.close();
+            ContentIndexQuery query = new ContentIndexQuery( "title = 'test'" );
+            query.setCount( Integer.MAX_VALUE );
+            contentIndexService.query( query );
+
+            final NodesShutdownRequest nodesShutdown = new NodesShutdownRequest();
+            nodesShutdown.masterNodeTimeout( TimeValue.timeValueSeconds( 0 ) );
+            client.admin().cluster().nodesShutdown( nodesShutdown.exit( false ) ).actionGet();
+            client.close();
+        */
     }
 
     private void initIndex()
@@ -84,7 +84,8 @@ public class ElasticSearchServiceTest
         addMapping();
     }
 
-    private Client createClient() {
+    private Client createClient()
+    {
         ESLoggerFactory.setDefaultFactory( new Slf4jESLoggerFactory() );
         Node node;
 

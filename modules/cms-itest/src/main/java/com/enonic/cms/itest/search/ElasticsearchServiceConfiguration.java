@@ -16,7 +16,7 @@ public class ElasticsearchServiceConfiguration
     public ElasticSearchIndexServiceImpl elasticSearchIndexService()
     {
         final ElasticSearchIndexServiceImpl elasticSearchIndexService = new ElasticSearchIndexServiceImpl();
-        elasticSearchIndexService.setWaitforyellowTimeout( TimeValue.timeValueSeconds( 10 ) );
+        elasticSearchIndexService.setWaitforyellowTimeout( TimeValue.timeValueSeconds( 20 ) );
         return elasticSearchIndexService;
     }
 

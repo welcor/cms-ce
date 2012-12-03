@@ -44,7 +44,7 @@ public class ElasticSearchServiceTest
     @Autowired
     private ContentIndexServiceImpl contentIndexService;
 
-    @Test
+    //@Test
     public void testInitializeIndex()
         throws Exception
     {

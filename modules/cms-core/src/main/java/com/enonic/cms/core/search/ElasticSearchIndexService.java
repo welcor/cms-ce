@@ -5,6 +5,7 @@ import java.util.Map;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
@@ -52,6 +53,8 @@ public interface ElasticSearchIndexService
     public boolean indexExists( String indexName );
 
     public ClusterHealthResponse getClusterHealth( String indexName, boolean waitForYellow );
+
+    public Client getClient();
 
 }
 

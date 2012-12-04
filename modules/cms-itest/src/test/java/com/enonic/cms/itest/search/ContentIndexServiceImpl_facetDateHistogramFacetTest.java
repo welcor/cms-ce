@@ -1,5 +1,9 @@
 package com.enonic.cms.itest.search;
 
+import java.text.SimpleDateFormat;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import com.enonic.cms.core.content.index.ContentIndexQuery;
@@ -12,6 +16,8 @@ import static org.junit.Assert.*;
 public class ContentIndexServiceImpl_facetDateHistogramFacetTest
     extends ContentIndexServiceFacetTestBase
 {
+
+    public static final SimpleDateFormat INTERVAL_DATE_FORMAT = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 
     @Test
     public void minute_interval()
@@ -361,14 +367,25 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             Setting preZone to Pacific/Tongatapu means that facet-data settings is threaded to be in timezone+13
          */
 
-        createAndIndexContent( 1, "2012-01-01", "data.myDate" );
-        createAndIndexContent( 2, "2012-01-01 12:00", "data.myDate" );
-        createAndIndexContent( 3, "2012-01-02", "data.myDate" );
-        createAndIndexContent( 4, "2012-01-02 23:59:59", "data.myDate" );
-        createAndIndexContent( 5, "2012-01-04 00:00", "data.myDate" );
-        createAndIndexContent( 6, "2012-01-04 12:00", "data.myDate" );
-        createAndIndexContent( 7, "2012-01-04 22:10", "data.myDate" );
-        createAndIndexContent( 8, "2012-01-04 23:50", "data.myDate" );
+        final String timeZoneId = "Pacific/Tongatapu";
+
+        String date1 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 01, 0, 0 );
+        String date2 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 01, 12, 0 );
+        String date3 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 02, 0, 0 );
+        String date4 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 02, 23, 59 );
+        String date5 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 04, 0, 0 );
+        String date6 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 04, 12, 0 );
+        String date7 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 04, 22, 10 );
+        String date8 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 04, 23, 50 );
+
+        createAndIndexContent( 1, date1, "data.myDate" );
+        createAndIndexContent( 2, date2, "data.myDate" );
+        createAndIndexContent( 3, date3, "data.myDate" );
+        createAndIndexContent( 4, date4, "data.myDate" );
+        createAndIndexContent( 5, date5, "data.myDate" );
+        createAndIndexContent( 6, date6, "data.myDate" );
+        createAndIndexContent( 7, date7, "data.myDate" );
+        createAndIndexContent( 8, date8, "data.myDate" );
 
         flushIndex();
 
@@ -377,7 +394,7 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
             "    <date-histogram name=\"myHistogramFacet\">\n" +
             "        <index>data.myDate</index>\n" +
             "        <interval>day</interval>\n" +
-            "        <pre-zone>Pacific/Tongatapu</pre-zone>\n" +
+            "        <pre-zone>" + timeZoneId + "</pre-zone>\n" +
             "    </date-histogram>\n" +
             "</facets>\n";
 
@@ -388,17 +405,19 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
         assertNotNull( next );
         assertTrue( next instanceof DateHistogramFacetResultSet );
         DateHistogramFacetResultSet histogramFacetResultSet = (DateHistogramFacetResultSet) next;
-        assertEquals( 5, histogramFacetResultSet.getResultEntries().size() );
+        assertEquals( 3, histogramFacetResultSet.getResultEntries().size() );
+
+        String interval1 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 01, 0, 0 );
+        String interval2 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 02, 0, 0 );
+        String interval3 = formatAsCurrentTZDate( timeZoneId, 2012, 01, 04, 0, 0 );
 
         String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<content>\n" +
             "  <facets>\n" +
             "    <date-histogram name=\"myHistogramFacet\">\n" +
-            "      <interval hits=\"1\">2011-12-31 12:00:00</interval>\n" +
-            "      <interval hits=\"2\">2012-01-01 12:00:00</interval>\n" +
-            "      <interval hits=\"1\">2012-01-02 12:00:00</interval>\n" +
-            "      <interval hits=\"1\">2012-01-03 12:00:00</interval>\n" +
-            "      <interval hits=\"3\">2012-01-04 12:00:00</interval>\n" +
+            "      <interval hits=\"2\">" + interval1 + "</interval>\n" +
+            "      <interval hits=\"2\">" + interval2 + "</interval>\n" +
+            "      <interval hits=\"4\">" + interval3 + "</interval>\n" +
             "    </date-histogram>\n" +
             "  </facets>\n" +
             "</content>";
@@ -406,6 +425,11 @@ public class ContentIndexServiceImpl_facetDateHistogramFacetTest
         createAndCompareResultAsXml( result, expectedXml );
     }
 
+    private String formatAsCurrentTZDate( String timeZoneId, int year, int mont, int day, int hour, int minute )
+    {
+        DateTime interval1 = new DateTime( year, mont, day, hour, minute, DateTimeZone.forID( timeZoneId ) );
+        return INTERVAL_DATE_FORMAT.format( interval1.toDate() );
+    }
 
     @Test
     public void key_and_value()

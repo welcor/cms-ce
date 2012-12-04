@@ -432,7 +432,8 @@ public class LivePortalTraceServiceImpl
 
         if ( getCurrentTrace().isInPageRenderingTrace() )
         {
-            int windowsTotalPeriod = getCurrentTrace().getPageRenderingTrace().getWindowRenderingTraces().getTotalPeriodInMilliseconds();
+            final Traces<WindowRenderingTrace> windowRenderingTraces = getCurrentTrace().getPageRenderingTrace().getWindowRenderingTraces();
+            int windowsTotalPeriod = windowRenderingTraces != null ? windowRenderingTraces.getTotalPeriodInMilliseconds() : 0;
             final long stopTime = timeService.getNowAsDateTime().getMillis();
             final long startTime = instructionPostProcessingTrace.getStartTime().getMillis();
             final long duration = ( stopTime - startTime ) - windowsTotalPeriod;

@@ -1,5 +1,6 @@
 package com.enonic.cms.core.structure.menuitem;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +67,8 @@ public class MenuItemServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void execute( final MenuItemServiceCommand... commands )
     {
+        sectionContentDao.getHibernateTemplate().clear();
+
         indexTransactionService.startTransaction();
         for ( final MenuItemServiceCommand command : commands )
         {
@@ -222,10 +225,10 @@ public class MenuItemServiceImpl
         }
 
         content.addSectionContent( sectionContent );
-        sectionContentDao.getHibernateTemplate().flush();
 
-        sectionContentDao.getHibernateTemplate().getSessionFactory().evictCollection( MenuItemEntity.class.getName() + ".sectionContents",
-                                                                                      section.getKey() );
+        sectionContentDao.getHibernateTemplate().flush();
+        evictCollection( MenuItemEntity.class.getName() + ".sectionContents", section.getKey() );
+
         if ( !content.hasHome( section.getSite().getKey() ) )
         {
             doSetContentHome( content, section, null );
@@ -278,9 +281,7 @@ public class MenuItemServiceImpl
             content.removeSectionContent( command.getSection() );
 
             sectionContentDao.getHibernateTemplate().flush();
-
-            sectionContentDao.getHibernateTemplate().getSessionFactory().evictCollection(
-                MenuItemEntity.class.getName() + ".sectionContents", section.getKey() );
+            evictCollection( MenuItemEntity.class.getName() + ".sectionContents", section.getKey() );
 
             removeContentHomeIfThisSectionIs( content, section );
             indexTransactionService.registerUpdate( content.getKey(), true );
@@ -461,8 +462,12 @@ public class MenuItemServiceImpl
             contentHomeDao.delete( contentHome );
         }
 
-        contentHomeDao.getHibernateTemplate().getSessionFactory().evictCollection( ContentEntity.class.getName() + ".contentHomes",
-                                                                                   content.getKey() );
+        evictCollection( ContentEntity.class.getName() + ".contentHomes", content.getKey() );
+    }
+
+    private void evictCollection(String role, Serializable ownerIdentifier)
+    {
+        sectionContentDao.getHibernateTemplate().getSessionFactory().getCache().evictCollection( role, ownerIdentifier );
     }
 
     @Autowired

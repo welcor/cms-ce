@@ -2,6 +2,7 @@ package com.enonic.cms.core.search.result;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 public class RangeFacetResultSetXmlCreatorTest
@@ -46,7 +47,7 @@ public class RangeFacetResultSetXmlCreatorTest
     @Test
     public void date_range_facet()
     {
-        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<root>\n" +
             "  <facets>\n" +
             "    <ranges name=\"myRangeFacet\">\n" +
@@ -56,16 +57,19 @@ public class RangeFacetResultSetXmlCreatorTest
             "  </facets>\n" +
             "</root>";
 
-        FacetResultSetXmlCreator resultSetXmlCreator = new FacetResultSetXmlCreator();
+        final FacetResultSetXmlCreator resultSetXmlCreator = new FacetResultSetXmlCreator();
 
-        Document doc = new Document( new Element( "root" ) );
+        final Document doc = new Document( new Element( "root" ) );
 
-        FacetsResultSet facetsResultSet = new FacetsResultSet();
-        RangeFacetResultSet rangeFacetResultSet = new RangeFacetResultSet();
+        final FacetsResultSet facetsResultSet = new FacetsResultSet();
+        final RangeFacetResultSet rangeFacetResultSet = new RangeFacetResultSet();
+
+        final DateTime dateTime1 = new DateTime( 2000, 1, 2, 0, 0 );
+        final DateTime dateTime2 = new DateTime( 2001, 1, 2, 1, 0 );
 
         rangeFacetResultSet.setName( "myRangeFacet" );
-        rangeFacetResultSet.addResult( createResultEntry( null, "2000-01-01T23:00:00.000Z", 1L, null, null, null ) );
-        rangeFacetResultSet.addResult( createResultEntry( "2001-01-02T00:00:00.000Z", null, 3L, null, null, null ) );
+        rangeFacetResultSet.addResult( createResultEntry( null, dateTime1.toString(), 1L, null, null, null ) );
+        rangeFacetResultSet.addResult( createResultEntry( dateTime2.toString(), null, 3L, null, null, null ) );
 
         facetsResultSet.addFacetResultSet( rangeFacetResultSet );
 

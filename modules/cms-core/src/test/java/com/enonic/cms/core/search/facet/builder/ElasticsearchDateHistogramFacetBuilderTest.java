@@ -21,9 +21,8 @@ public class ElasticsearchDateHistogramFacetBuilderTest
     {
         ElasticsearchDateHistogramFacetBuilder facetBuilder = new ElasticsearchDateHistogramFacetBuilder();
 
-        String timezone = Calendar.getInstance().getTimeZone().getID();
         String expectedJson =
-            "{\"myDateHistogramFacet\":{\"date_histogram\":{\"field\":\"myfield.date\",\"interval\":\"1.5d\",\"pre_zone\":\"" + timezone +
+            "\\{\"myDateHistogramFacet\":\\{\"date_histogram\":\\{\"field\":\"myfield.date\",\"interval\":\"1.5d\",\"pre_zone\":\"" + ".*?" +
                 "\",\"pre_zone_adjust_large_interval\":true}}}";
 
         DateHistogramFacetModel model = new DateHistogramFacetModel();
@@ -37,7 +36,7 @@ public class ElasticsearchDateHistogramFacetBuilderTest
 
         final String json = getJson( dateHistogramFacetBuilder );
 
-        assertEquals( expectedJson, json );
+        assertTrue( "json does not match", json.matches( expectedJson ) );
     }
 
 }

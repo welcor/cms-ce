@@ -16,6 +16,9 @@ final class UpgradeModel0208
     @Override
     protected boolean canModelUpgrade( UpgradeContext context )
     {
+        context.logInfo( "Looking for duplicate users in database..." );
+        context.logInfo( "Duplicates user are found if more than one user resides in a user-store with same sync value" );
+
         List<Pair> duplicates;
         SyncValueColumn syncValueColumn;
 
@@ -39,13 +42,20 @@ final class UpgradeModel0208
             return true;
         }
 
-        context.logInfo( "There are duplicates entries in table [tUser] present in DB:" );
+        context.logInfo( "Duplicate users found:" );
         for ( Pair duplicate : duplicates )
         {
-            context.logInfo(
-                "\nDuplicate user[tUser]: [usr_dom_lKey] = " + duplicate.getDomKey() + ", [" + syncValueColumn.getName() + "] = " +
-                    duplicate.getSyncValue() );
+            final String message =
+                "\nusr_dom_lKey = " + duplicate.getDomKey() + ", " + syncValueColumn.getName() + " = '" + duplicate.getSyncValue() + "', " +
+                    "SELECT SQL: SELECT * FROM tuser WHERE usr_dom_lKey = " + duplicate.getDomKey() + " AND " + syncValueColumn.getName() +
+                    " = '" +
+                    duplicate.getSyncValue() + "'";
+
+            context.logInfo( message );
         }
+
+        context.logInfo( "Please use the generated SELECT SQL to identify each duplicated user." );
+        context.logInfo( "Then set the " + syncValueColumn.getName() + " of the user that is no longer needed to something unique." );
 
         return false;
     }

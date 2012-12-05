@@ -73,6 +73,10 @@ public class ResourceController
 
             serveResourceToResponse( request, response, resource );
         }
+        else
+        {
+            response.sendError( HttpServletResponse.SC_NOT_FOUND );
+        }
 
         return null;
     }

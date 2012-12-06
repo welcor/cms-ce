@@ -1,6 +1,7 @@
 package com.enonic.cms.core.plugin.container;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.util.ResourceUtils;
 
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
@@ -28,6 +31,8 @@ import com.enonic.cms.core.plugin.PluginManager;
 public abstract class OsgiContainer
     implements Constants, PluginManager
 {
+    private static final String VFS_CONTENTS_FOLDER = "contents";
+
     private Framework framework;
 
     private BundleInstaller bundleInstaller;
@@ -100,7 +105,26 @@ public abstract class OsgiContainer
     private void copyFrameworkJar( final File targetFile )
         throws Exception
     {
-        final URL location = FrameworkProperties.class.getProtectionDomain().getCodeSource().getLocation();
-        Files.copy( Resources.newInputStreamSupplier(location), targetFile );
+        URL location = FrameworkProperties.class.getProtectionDomain().getCodeSource().getLocation();
+
+        if ( ResourceUtils.URL_PROTOCOL_VFS.equals( location.getProtocol() ) ) // JBOSS 7.1.1 VFS
+        {
+            final URI uri = ResourceUtils.toURI( location );
+            final UrlResource urlResource = new UrlResource( uri );
+            final File file = urlResource.getFile();
+
+            String absolutePath = file.getAbsolutePath();
+
+            if ( !absolutePath.endsWith( urlResource.getFilename() ) )
+            {
+                // removing /contents folder from path and adding unpacked jar to path.
+                absolutePath =
+                    absolutePath.substring( 0, absolutePath.length() - VFS_CONTENTS_FOLDER.length() ) + urlResource.getFilename();
+            }
+
+            location = new URL( "file:/" + absolutePath );
+        }
+
+        Files.copy( Resources.newInputStreamSupplier( location ), targetFile );
     }
 }

@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -23,6 +22,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import com.enonic.esl.sql.model.Database;
 import com.enonic.esl.sql.model.DatabaseSchemaTool;
 import com.enonic.esl.sql.model.Table;
+import com.enonic.esl.sql.model.UniqueConstraint;
 import com.enonic.esl.sql.model.View;
 
 import com.enonic.cms.framework.jdbc.dialect.Db2Dialect;
@@ -472,7 +472,7 @@ public final class UpgradeContextImpl
         ResultSet resultSet = null;
         try
         {
-            resultSet = metaData.getIndexInfo( null, getCurrentSchema(), getTableName( metaData, tableName ), true, false );
+            resultSet = metaData.getIndexInfo( null, null, getTableName( metaData, tableName ), true, false );
             while ( resultSet.next() )
             {
                 Boolean bUnique = !resultSet.getBoolean( "NON_UNIQUE" );
@@ -481,8 +481,8 @@ public final class UpgradeContextImpl
                     String name = resultSet.getString( "INDEX_NAME" );
                     if ( name != null )
                     {
-                        Pattern uq_pattern = Pattern.compile( "^.*_UC\\d$", Pattern.CASE_INSENSITIVE );
-                        Matcher matcher = uq_pattern.matcher( name );
+                        // Note: Removes only constraints ending with UC<number>
+                        Matcher matcher = UniqueConstraint.REQUIRED_NAME_PATTERN.matcher( name );
 
                         if ( matcher.matches() )
                         {

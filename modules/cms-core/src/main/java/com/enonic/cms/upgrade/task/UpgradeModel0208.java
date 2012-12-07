@@ -75,7 +75,7 @@ final class UpgradeModel0208
         }
 
         context.logInfo( "Adding new column 'usr_sSyncValue2' to table 'tUser'" );
-        context.getJdbcTemplate().execute( "ALTER TABLE tUser ADD usr_sSyncValue2 @varchar(255)@ DEFAULT '' NOT NULL" );
+        context.getJdbcTemplate().execute( "ALTER TABLE tUser ADD usr_sSyncValue2 @varchar(255)@ DEFAULT '-' NOT NULL" );
 
         context.reorganizeTablesForDb2( "tUser" );
     }

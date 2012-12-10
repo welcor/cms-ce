@@ -6,6 +6,22 @@
     <script type="text/javascript" src="../javascript/tabpane.js"></script>
     <link type="text/css" rel="StyleSheet" href="../javascript/tab.webfx.css"/>
     <link type="text/css" rel="stylesheet" href="../css/admin.css"/>
+
+    <script type="text/javascript">
+        function recreateIndex() {
+            if (confirm("WARNING: Are you sure you want to recreate the index? All data will be deleted, and a full reindex will be done. " +
+                        "This will affect your live sites by making content not available until it has been reindexed.")) {
+                location.href = "${baseUrl}/tools/reindexContent?op=custom&recreateIndex=true&reindex=true";
+            }
+        }
+
+        function startReindex() {
+            if (confirm("Reindex all content now?")) {
+                location.href = '${baseUrl}/tools/reindexContent??op=custom&reindex=true';
+            }
+        }
+
+    </script>
 </head>
 <body>
 <h1>Admin / System / Index Monitor</h1>

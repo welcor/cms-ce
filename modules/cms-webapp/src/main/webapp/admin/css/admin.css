@@ -744,6 +744,24 @@ ul.paging a, ul.paging span {
     padding: 6px
 }
 
+.infoBox {
+    padding: 8px;
+    margin: 10px;
+    border: 1px dotted #000000;
+    background-color: #EEEEEE;
+}
+
+.monospace {
+    font-family: 'Courier New';
+}
+
+.messages {
+    overflow: auto;
+    height: 600px;
+    width: 100%;
+    margin-top: 10px;
+}
+
 /* Publish date table cell */
 table.datetime-grid td {
     padding-right: 6px;

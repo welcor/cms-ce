@@ -6,7 +6,8 @@
                 <td>
                     Index exists:
                 </td>
-                <td>${indexExists?string("yes", "no")}</td>
+                <td>${indexExists?string("yes", "no")}
+                </td>
             </tr>
             <tr>
                 <td>
@@ -88,4 +89,14 @@
         </ul>
     </fieldset>
     <br/>
+    <fieldset>
+        <legend>Operations</legend>
+        <input type="button" class="button_text" name="startReindex" value="Reindex all content"
+               onclick="startReindex()" ${reindexInProgress?string("disabled","")}/>
+        <input type="button" class="button_text" name="recreateIndex" value="Rebuild index"
+               onclick="recreateIndex()" ${reindexInProgress?string("disabled","")}/>
+    <#if reindexInProgress>
+        <a href="${baseUrl}/tools/reindexContent?op=custom"> Reindex in progress</a>
+    </#if>
+    </fieldset>
 </div>

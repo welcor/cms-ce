@@ -79,7 +79,14 @@ public class IndexInitializerService
         @Override
         public void run()
         {
-            reindexContentToolService.reindexAllContent( logEntries );
+            if ( !reindexContentToolService.isReIndexInProgress() )
+            {
+                reindexContentToolService.reindexAllContent( logEntries );
+            }
+            else
+            {
+                LOG.info( "Reindex already in content" );
+            }
         }
 
         public List<String> getLogEntries()

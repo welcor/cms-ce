@@ -26,6 +26,8 @@ public class ReindexContentToolServiceImpl
 
     protected static final int BATCH_SIZE = 10;
 
+    private Boolean reIndexInProgress = Boolean.FALSE;
+
     public void reindexAllContent( List<String> logEntries )
     {
         logEntries.clear();
@@ -37,11 +39,7 @@ public class ReindexContentToolServiceImpl
             logEntries.add( "Index does not exist, createing..." );
             indexService.createIndex();
         }
-        else
-        {
-            logEntries.add( "Truncate index..." );
-            indexService.reinitializeIndex();
-        }
+
         Collection<ContentTypeEntity> contentTypes = contentService.getAllContentTypes();
 
         logEntries.add( "Generating indexes for " + contentTypes.size() + " content types..." );
@@ -88,5 +86,15 @@ public class ReindexContentToolServiceImpl
     public void setContentService( @Qualifier("contentService") ContentService value )
     {
         this.contentService = value;
+    }
+
+    public Boolean isReIndexInProgress()
+    {
+        return reIndexInProgress;
+    }
+
+    public void setReIndexInProgress( final Boolean reIndexInProgress )
+    {
+        this.reIndexInProgress = reIndexInProgress;
     }
 }

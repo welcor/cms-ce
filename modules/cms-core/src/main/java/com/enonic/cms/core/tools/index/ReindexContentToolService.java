@@ -9,6 +9,9 @@ import java.util.List;
 
 public interface ReindexContentToolService
 {
-
     public void reindexAllContent( List<String> logEntries );
+
+    public Boolean isReIndexInProgress();
+
+    public void setReIndexInProgress( final Boolean reIndexInProgress );
 }

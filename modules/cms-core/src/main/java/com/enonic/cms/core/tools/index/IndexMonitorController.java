@@ -33,6 +33,8 @@ public final class IndexMonitorController
 
     private ElasticSearchIndexService elasticSearchIndexService;
 
+    private ReindexContentToolService reindexContentToolService;
+
     @Override
     protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception
@@ -64,6 +66,8 @@ public final class IndexMonitorController
         model.put( "indexExists", indexExists );
         model.put( "numberOfContent", getTotalHitsContent( status ) );
         model.put( "numberOfBinaries", getTotalHitsBinaries( status ) );
+
+        model.put( "reindexInProgress", reindexContentToolService.isReIndexInProgress() );
 
         renderView( req, res, model, "indexMonitorPage_info" );
     }
@@ -98,5 +102,11 @@ public final class IndexMonitorController
     public void setElasticSearchIndexService( ElasticSearchIndexService elasticSearchIndexService )
     {
         this.elasticSearchIndexService = elasticSearchIndexService;
+    }
+
+    @Autowired
+    public void setReindexContentToolService( final ReindexContentToolService reindexContentToolService )
+    {
+        this.reindexContentToolService = reindexContentToolService;
     }
 }

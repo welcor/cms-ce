@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.vertical.adminweb.AdminHelper;
 
+import com.enonic.cms.core.search.ElasticSearchIndexService;
+import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.core.tools.AbstractToolController;
 
 public class ReindexContentToolController
@@ -24,35 +26,54 @@ public class ReindexContentToolController
 
     private List<String> logEntries = new ArrayList<String>();
 
-    private Boolean reindexingInProgress = Boolean.FALSE;
+    private ElasticSearchIndexService elasticSearchIndexService;
+
+    private ContentIndexService contentIndexService;
+
 
     @Override
     protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception
     {
+        final HashMap<String, Object> model = new HashMap<String, Object>();
+
         if ( req.getParameter( "reindex" ) != null )
         {
+            if ( req.getParameter( "recreateIndex" ) != null )
+            {
+                recreateIndex();
+            }
+
             startReindexAllContentTypes();
             redirectToReferrer( req, res );
         }
 
-        final HashMap<String, Object> model = new HashMap<String, Object>();
-        model.put( "reindexInProgress", reindexingInProgress );
+        model.put( "reindexInProgress", reindexContentToolService.isReIndexInProgress() );
         model.put( "reindexLog", logEntries );
         model.put( "baseUrl", AdminHelper.getAdminPath( req, true ) );
 
         renderView( req, res, model, "reindexContentPage" );
     }
 
+    private void recreateIndex()
+    {
+        if ( !reindexContentToolService.isReIndexInProgress() )
+        {
+            elasticSearchIndexService.deleteIndex( "cms" );
+            contentIndexService.createIndex();
+        }
+    }
+
+
     private synchronized void startReindexAllContentTypes()
     {
 
-        if ( reindexingInProgress )
+        if ( reindexContentToolService.isReIndexInProgress() )
         {
             return;
         }
 
-        reindexingInProgress = Boolean.TRUE;
+        reindexContentToolService.setReIndexInProgress( Boolean.TRUE );
 
         Thread reindexThread = new Thread( new Runnable()
         {
@@ -65,7 +86,7 @@ public class ReindexContentToolController
                 }
                 finally
                 {
-                    reindexingInProgress = Boolean.FALSE;
+                    reindexContentToolService.setReIndexInProgress( Boolean.FALSE );
                 }
             }
         }, "Reindex Content Thread" );
@@ -77,5 +98,17 @@ public class ReindexContentToolController
     public void setReindexContentToolService( ReindexContentToolService value )
     {
         this.reindexContentToolService = value;
+    }
+
+    @Autowired
+    public void setElasticSearchIndexService( final ElasticSearchIndexService elasticSearchIndexService )
+    {
+        this.elasticSearchIndexService = elasticSearchIndexService;
+    }
+
+    @Autowired
+    public void setContentIndexService( final ContentIndexService contentIndexService )
+    {
+        this.contentIndexService = contentIndexService;
     }
 }

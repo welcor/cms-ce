@@ -1,9 +1,15 @@
 package com.enonic.cms.core.portal.rendering.tracing;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.LinkedList;
 
 import javax.servlet.http.HttpSession;
+
+import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.security.user.UserKey;
 
@@ -12,11 +18,16 @@ import com.enonic.cms.core.security.user.UserKey;
  * allows the history to be saved in session without errors.
  */
 public final class RenderTraceHistory
-    implements Serializable
+    implements Externalizable
 {
     private final static String HISTORY_PREFIX = "HISTORY_";
 
     private transient LinkedList<RenderTraceInfo> history;
+
+    public RenderTraceHistory()
+    {
+        this.history = Lists.newLinkedList();
+    }
 
     public LinkedList<RenderTraceInfo> getHistory()
     {
@@ -47,5 +58,19 @@ public final class RenderTraceHistory
     {
         final String key = HISTORY_PREFIX + userKey;
         session.setAttribute( key, this );
+    }
+
+    @Override
+    public void writeExternal( final ObjectOutput out )
+        throws IOException
+    {
+        // Do nothing
+    }
+
+    @Override
+    public void readExternal( final ObjectInput in )
+        throws IOException, ClassNotFoundException
+    {
+        this.history = Lists.newLinkedList();
     }
 }

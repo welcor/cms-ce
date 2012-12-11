@@ -6,7 +6,6 @@
     <script type="text/javascript" src="../javascript/tabpane.js"></script>
     <script type="text/javascript" src="../indexmonitor/indexmonitor.js"></script>
     <link type="text/css" rel="StyleSheet" href="../javascript/tab.webfx.css"/>
-    <link rel="stylesheet" type="text/css" href="../indexmonitor/indexmonitor.css"/>
     <link type="text/css" rel="stylesheet" href="../css/admin.css"/>
 </head>
 <body>

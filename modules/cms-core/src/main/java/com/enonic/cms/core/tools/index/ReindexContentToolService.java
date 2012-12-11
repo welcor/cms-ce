@@ -6,6 +6,7 @@ package com.enonic.cms.core.tools.index;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
 
 public interface ReindexContentToolService
 {
@@ -14,4 +15,9 @@ public interface ReindexContentToolService
     public Boolean isReIndexInProgress();
 
     public void setReIndexInProgress( final Boolean reIndexInProgress );
+
+    public DateTime getLastReindexTime();
+
+    public Long getLastReindexTimeUsed();
+
 }

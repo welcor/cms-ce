@@ -7,6 +7,7 @@ package com.enonic.cms.core.tools.index;
 import java.util.Collection;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,10 @@ public class ReindexContentToolServiceImpl
     protected static final int BATCH_SIZE = 10;
 
     private Boolean reIndexInProgress = Boolean.FALSE;
+
+    private Long lastReindexRuntime = 0L;
+
+    private DateTime lastIndexedTime;
 
     public void reindexAllContent( List<String> logEntries )
     {
@@ -67,13 +72,41 @@ public class ReindexContentToolServiceImpl
             logEntries.add( "... index values generated in " + ( end - start ) + " ms" );
         }
 
-        long globalTimeUsed = ( System.currentTimeMillis() - globalStart ) / 1000;
-        String timeUsed = globalTimeUsed > 240 ? globalTimeUsed / 60 + " min" : globalTimeUsed + " sec";
+        long globalTimeUsed = ( System.currentTimeMillis() - globalStart );
+        long timeUsedSeconds = globalTimeUsed / 1000;
+
+        String timeUsed = timeUsedSeconds > 240 ? timeUsedSeconds / 60 + " min" : timeUsedSeconds + " sec";
+
+        this.lastIndexedTime = new DateTime();
+        this.lastReindexRuntime = globalTimeUsed;
 
         logEntries.add( "Reindexing of all content types was successful!" );
         logEntries.add( "Total time used: " + timeUsed );
 
         batcher.optimizeIndex();
+    }
+
+    @Override
+    public DateTime getLastReindexTime()
+    {
+        return lastIndexedTime;
+
+    }
+
+    @Override
+    public Long getLastReindexTimeUsed()
+    {
+        return lastReindexRuntime;
+    }
+
+    public Boolean isReIndexInProgress()
+    {
+        return reIndexInProgress;
+    }
+
+    public void setReIndexInProgress( final Boolean reIndexInProgress )
+    {
+        this.reIndexInProgress = reIndexInProgress;
     }
 
     @Autowired
@@ -86,15 +119,5 @@ public class ReindexContentToolServiceImpl
     public void setContentService( @Qualifier("contentService") ContentService value )
     {
         this.contentService = value;
-    }
-
-    public Boolean isReIndexInProgress()
-    {
-        return reIndexInProgress;
-    }
-
-    public void setReIndexInProgress( final Boolean reIndexInProgress )
-    {
-        this.reIndexInProgress = reIndexInProgress;
     }
 }

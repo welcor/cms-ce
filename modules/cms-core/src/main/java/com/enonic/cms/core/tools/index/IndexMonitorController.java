@@ -10,6 +10,11 @@ import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Maps;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Lists;
@@ -21,6 +26,14 @@ import com.enonic.cms.core.tools.AbstractToolController;
 public final class IndexMonitorController
     extends AbstractToolController
 {
+
+    protected static final PeriodFormatter HOURS_MINUTES_MILLIS =
+        new PeriodFormatterBuilder().appendHours().appendSuffix( " h ", " h " ).appendMinutes().appendSuffix( " m ",
+                                                                                                              " m " ).appendSeconds().appendSuffix(
+            " s ", " s " ).appendMillis().appendSuffix( " ms", " ms" ).toFormatter();
+
+    private static final DateTimeFormatter SIMPLE_DATE_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm" );
+
     private static final String GET_ALL_QUERY = "{\n" +
         "  \"from\" : 0,\n" +
         "  \"size\" : 0,\n" +
@@ -69,7 +82,25 @@ public final class IndexMonitorController
 
         model.put( "reindexInProgress", reindexContentToolService.isReIndexInProgress() );
 
+        if ( reindexContentToolService.getLastReindexTime() != null )
+        {
+            model.put( "lastReindexTime", getLastIndexTimeString() );
+            model.put( "lastReindexTimeUsed", getTimeUsedString() );
+        }
+
         renderView( req, res, model, "indexMonitorPage_info" );
+    }
+
+    private String getLastIndexTimeString()
+    {
+        return SIMPLE_DATE_FORMAT.print( reindexContentToolService.getLastReindexTime() );
+    }
+
+    private String getTimeUsedString()
+    {
+        final long lastReindexTimeUsed = reindexContentToolService.getLastReindexTimeUsed();
+
+        return HOURS_MINUTES_MILLIS.print( new Period( lastReindexTimeUsed ) ).trim();
     }
 
     private long getTotalHitsBinaries( final ClusterHealthStatus status )

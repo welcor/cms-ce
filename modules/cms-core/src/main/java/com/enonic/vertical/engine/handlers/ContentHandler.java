@@ -79,7 +79,9 @@ public final class ContentHandler
     private final static String CON_IS_CHILD = "SELECT rco_con_lParent,rco_con_lChild FROM TRELATEDCONTENT WHERE rco_con_lChild = ?";
 
     // tContentType
-    private final static String CTY_INSERT = "INSERT INTO  " + CTY_TABLE + " VALUES (?,?,?,?,@currentTimestamp@" + ",?,?,?)";
+    private final static String CTY_INSERT = "INSERT INTO " + CTY_TABLE +
+        "(cty_lkey, cty_sname, cty_sdescription, cty_mbdata, cty_dtetimestamp, cty_han_lkey, cty_blocal, cty_scss) " +
+        " VALUES (?,?,?,?,@currentTimestamp@" + ",?,?,?)";
 
     private final static String CTY_DELETE = "DELETE FROM " + CTY_TABLE + " WHERE cty_lKey=?";
 
@@ -91,7 +93,8 @@ public final class ContentHandler
     private final static String CTY_WHERE_CLAUSE_HAN = " cty_han_lKey = ?";
 
     // tContentHandler
-    private final static String HAN_INSERT = "INSERT INTO  " + HAN_TABLE + " VALUES (?,?,?,?,?,@currentTimestamp@)";
+    private final static String HAN_INSERT = "INSERT INTO  " + HAN_TABLE +
+        "(han_lkey, han_sname, han_sclass,han_sdescription,han_xmlconfig,han_dtetimestamp)" + " VALUES (?,?,?,?,?,@currentTimestamp@)";
 
     private final static String HAN_SELECT_KEY = "SELECT han_lKey FROM " + HAN_TABLE;
 
@@ -963,7 +966,8 @@ public final class ContentHandler
             if ( entity.getDefaultCssKey() != null )
             {
                 elem.setAttribute( "csskey", entity.getDefaultCssKey().toString() );
-                elem.setAttribute( "csskeyexists", resourceService.getResourceFile( entity.getDefaultCssKey() ) != null ? "true" : "false" );
+                elem.setAttribute( "csskeyexists",
+                                   resourceService.getResourceFile( entity.getDefaultCssKey() ) != null ? "true" : "false" );
             }
 
             if ( includeContentCount )

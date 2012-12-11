@@ -25,11 +25,6 @@ public final class RenderTrace
     private final static String CONTEXT_KEY = TraceContext.class.getName();
 
     /**
-     * History size.
-     */
-    public final static String HISTORY_PREFIX = "HISTORY_";
-
-    /**
      * History size per user.
      */
     private final static int HISTORY_SIZE_PER_USER = 10;
@@ -85,14 +80,17 @@ public final class RenderTrace
     @SuppressWarnings("unchecked")
     private static LinkedList<RenderTraceInfo> getHistoryPerUser()
     {
-        UserKey userKey = PortalSecurityHolder.getLoggedInUser();
-        return (LinkedList<RenderTraceInfo>) getSession().getAttribute( HISTORY_PREFIX + userKey );
+        final UserKey userKey = PortalSecurityHolder.getLoggedInUser();
+        final RenderTraceHistory history = RenderTraceHistory.getFromSession( getSession(), userKey );
+        return history != null ? history.getHistory() : null;
     }
 
-    private static void setHistoryPerUser( LinkedList<RenderTraceInfo> history )
+    private static void setHistoryPerUser( final LinkedList<RenderTraceInfo> history )
     {
-        UserKey userKey = PortalSecurityHolder.getLoggedInUser();
-        getSession().setAttribute( HISTORY_PREFIX + userKey, history );
+        final UserKey userKey = PortalSecurityHolder.getLoggedInUser();
+        final RenderTraceHistory obj = new RenderTraceHistory();
+        obj.setHistory( history );
+        obj.setInSession( getSession(), userKey );
     }
 
     /**

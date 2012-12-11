@@ -106,8 +106,8 @@ public class RenderTraceTest
 
     private static List<RenderTraceInfo> getHistoryForUser( UserKey userKey )
     {
-        //noinspection unchecked
-        return (List) ServletRequestAccessor.getRequest().getSession().getAttribute( RenderTrace.HISTORY_PREFIX + userKey );
+        final RenderTraceHistory history = RenderTraceHistory.getFromSession( ServletRequestAccessor.getRequest().getSession(), userKey );
+        return history != null ? history.getHistory() : null;
     }
 
     private static class UserTraceSimulator

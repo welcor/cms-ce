@@ -1,0 +1,51 @@
+package com.enonic.cms.core.portal.rendering.tracing;
+
+import java.io.Serializable;
+import java.util.LinkedList;
+
+import javax.servlet.http.HttpSession;
+
+import com.enonic.cms.core.security.user.UserKey;
+
+/**
+ * This class is used as a serializable render trace history. It does not actually serialize the history, but
+ * allows the history to be saved in session without errors.
+ */
+public final class RenderTraceHistory
+    implements Serializable
+{
+    private final static String HISTORY_PREFIX = "HISTORY_";
+
+    private transient LinkedList<RenderTraceInfo> history;
+
+    public LinkedList<RenderTraceInfo> getHistory()
+    {
+        return history;
+    }
+
+    public void setHistory( final LinkedList<RenderTraceInfo> history )
+    {
+        this.history = history;
+    }
+
+    public static RenderTraceHistory getFromSession( final HttpSession session, final UserKey userKey )
+    {
+        final String key = HISTORY_PREFIX + userKey;
+        final Object value = session.getAttribute( key );
+
+        if ( value instanceof RenderTraceHistory )
+        {
+            return (RenderTraceHistory) value;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void setInSession( final HttpSession session, final UserKey userKey )
+    {
+        final String key = HISTORY_PREFIX + userKey;
+        session.setAttribute( key, this );
+    }
+}

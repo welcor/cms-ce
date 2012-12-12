@@ -9,7 +9,7 @@ import com.enonic.cms.upgrade.UpgradeContext;
 public abstract class AbstractUpgradeTask
     implements UpgradeTask
 {
-    private final static int START_MODEL_NUMBER = 121;
+    private final static int START_MODEL_NUMBER = 122;
 
     private final int modelNumber;
 
@@ -25,7 +25,6 @@ public abstract class AbstractUpgradeTask
 
     protected boolean canModelUpgrade( UpgradeContext context )
     {
-        context.logInfo( "Upgrade check ok." );
         return true;
     }
 
@@ -34,7 +33,7 @@ public abstract class AbstractUpgradeTask
         if ( context.getStartModelNumber() < START_MODEL_NUMBER )
         {
             context.logError( "Cannot upgrade from database version " + context.getStartModelNumber() + ". Version " + START_MODEL_NUMBER +
-                " required. Please upgrade to latest version of 4.5 and try again." );
+                " required. Please upgrade to latest version of 4.5 (4.5.7 or greater) and try again." );
             return false;
         }
         return canModelUpgrade( context );

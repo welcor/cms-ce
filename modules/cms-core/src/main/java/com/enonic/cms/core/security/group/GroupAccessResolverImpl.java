@@ -19,6 +19,33 @@ public class GroupAccessResolverImpl
     @Autowired
     private MemberOfResolver memberOfResolver;
 
+    @Override
+    public boolean hasReadGroupAccess( UserEntity reader, GroupEntity group )
+    {
+        GroupType groupType = group.getType();
+
+        if ( groupType.equals( GroupType.USERSTORE_GROUP ) || groupType.equals( GroupType.USERSTORE_ADMINS ) ||
+            groupType.equals( GroupType.AUTHENTICATED_USERS ) )
+        {
+            return memberOfResolver.hasUserStoreAdministratorPowers( reader, group.getUserStore().getKey() );
+        }
+
+        if ( groupType.equals( GroupType.ENTERPRISE_ADMINS ) )
+        {
+            return memberOfResolver.hasEnterpriseAdminPowers( reader );
+        }
+
+        if ( groupType.equals( GroupType.GLOBAL_GROUP ) || groupType.equals( GroupType.ADMINS ) ||
+            groupType.equals( GroupType.CONTRIBUTORS ) || groupType.equals( GroupType.DEVELOPERS ) ||
+            groupType.equals( GroupType.EXPERT_CONTRIBUTORS ) )
+        {
+            return memberOfResolver.hasAdministratorPowers( reader.getKey() );
+        }
+
+        // User groups (GroupType.USER) or the Anonymous group (GroupType.ANONYMOUS) are not available for access by anyone:
+        return false;
+    }
+
     public boolean hasCreateGroupAccess( UserEntity executor, GroupType groupType, UserStoreEntity userStore )
     {
         if ( !( groupType.equals( GroupType.USERSTORE_GROUP ) || groupType.equals( GroupType.GLOBAL_GROUP ) ) )

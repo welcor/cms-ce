@@ -11,6 +11,8 @@ import com.enonic.cms.core.security.userstore.UserStoreEntity;
 public interface GroupAccessResolver
 {
 
+    boolean hasReadGroupAccess( UserEntity reader, GroupEntity group );
+
     boolean hasCreateGroupAccess( UserEntity executor, GroupType userstoreGroup, UserStoreEntity userStore );
 
     boolean hasDeleteGroupAccess( UserEntity executor, GroupEntity group );

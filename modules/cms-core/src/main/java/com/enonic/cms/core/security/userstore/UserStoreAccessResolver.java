@@ -14,6 +14,11 @@ public class UserStoreAccessResolver
 {
     private MemberOfResolver memberOfResolver;
 
+    public boolean hasReadUserAccess( UserEntity user, UserStoreEntity userstore )
+    {
+        return memberOfResolver.hasUserStoreAdministratorPowers( user, userstore.getKey() );
+    }
+
     public boolean hasDeleteUserAccess( UserEntity user, UserStoreEntity userstore )
     {
         return memberOfResolver.hasUserStoreAdministratorPowers( user, userstore.getKey() );

@@ -14,41 +14,41 @@ public enum GroupType
 {
 
     /**
-     * Only one occurence. Members of this group shall have any rights, regardless of what rights are set for this group.
+     * Only one occurrence. Members of this group shall have any rights, regardless of what rights are set for this group.
      */
     ENTERPRISE_ADMINS( 0, "Enterprise Administrators", true, true, true ),
 
-    // any occurence per userstore
+    // any occurrence per user store
     USERSTORE_GROUP( 1, "userStoreGroup", false, false, false ),
 
-    // one occurence per userstore
+    // one occurrence per user store
     USERSTORE_ADMINS( 2, "Userstore Administrators", true, false, false ),
 
     /**
-     * One occurence per userstore. All users except anonymous is implisit member of this group. So remember to do extra security checks on
+     * One occurrence per user store. All users except anonymous is implicit member of this group. So remember to do extra security checks on
      * this group.
      */
     AUTHENTICATED_USERS( 3, "Authenticated Users", true, false, false ),
 
-    // any number of occurence
+    // any number of occurrence
     GLOBAL_GROUP( 4, "globalGroup", false, false, true ),
 
-    // only one occurence
+    // only one occurrence
     ADMINS( 5, "Administrators", true, true, true ),
 
-    // one occurence per user
+    // one occurrence per user
     USER( 6, "userGroup", false, false, false ),
 
-    // only one occurence
+    // only one occurrence
     ANONYMOUS( 7, "anonymousGroup", true, true, true ),
 
-    // only one occurence
+    // only one occurrence
     CONTRIBUTORS( 8, "Contributors", true, true, true ),
 
-    // only one occurence
+    // only one occurrence
     DEVELOPERS( 9, "Developers", true, true, true ),
 
-    // only one occurence
+    // only one occurrence
     EXPERT_CONTRIBUTORS( 10, "Expert Contributors", true, true, true );
 
     private Integer value;

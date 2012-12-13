@@ -10,12 +10,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
+import org.jdom.Element;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,6 +140,7 @@ import com.enonic.cms.core.security.ImpersonateCommand;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
+import com.enonic.cms.core.security.group.GroupAccessResolver;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupNotFoundException;
@@ -152,12 +155,14 @@ import com.enonic.cms.core.security.user.DisplayNameResolver;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
 import com.enonic.cms.core.security.user.UpdateUserCommand;
+import com.enonic.cms.core.security.user.UserAccessResolver;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserParser;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.user.UserXmlCreator;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
+import com.enonic.cms.core.security.userstore.UserStoreAccessResolver;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreParser;
@@ -198,13 +203,19 @@ public abstract class InternalClientImpl
     private InternalClientRenderService internalClientRenderService;
 
     @Autowired
-    private DataSourceService dataSourceService;
-
-    @Autowired
     private UserStoreService userStoreService;
 
     @Autowired
     private MemberOfResolver memberOfResolver;
+
+    @Autowired
+    private UserStoreAccessResolver userStoreAccessResolver;
+
+    @Autowired
+    private GroupAccessResolver groupAccessResolver;
+
+    @Autowired
+    private DataSourceService dataSourceService;
 
     @Autowired
     private CategoryService categoryService;
@@ -320,9 +331,18 @@ public abstract class InternalClientImpl
         {
             final UserEntity user =
                 new UserParser( securityService, userStoreService, userDao, new UserStoreParser( userStoreDao ) ).parseUser( params.user );
+
+            UserAccessResolver userAccessResolver = new UserAccessResolver( userStoreAccessResolver );
+
+            if ( !userAccessResolver.hasReadUserAccess( securityService.getImpersonatedPortalUser(), user ) )
+            {
+                return new Document(new Element("user"));
+            }
+
             final UserXmlCreator xmlCreator = new UserXmlCreator();
             xmlCreator.setIncludeUserFields( params.includeCustomUserFields );
             xmlCreator.wrappUserFieldsInBlockElement( false );
+//            xmlCreator.setAdminConsoleStyle( false );
             final Document userDoc = xmlCreator.createUserDocument( user, params.includeMemberships, params.normalizeGroups );
             return userDoc;
 
@@ -348,7 +368,12 @@ public abstract class InternalClientImpl
                 throw new IllegalArgumentException( "group must be specified" );
             }
 
-            GroupEntity group = parseGroup( params.group );
+            GroupEntity group = parseAndGetGroup( params.group );
+            if ( !groupAccessResolver.hasReadGroupAccess( securityService.getImpersonatedPortalUser(), group ) )
+            {
+                return new Document(new Element("group"));
+            }
+
             GroupXmlCreator xmlCreator = new GroupXmlCreator();
             xmlCreator.setAdminConsoleStyle( false );
             return xmlCreator.createGroupDocument( group, params.includeMemberships, params.includeMembers, params.normalizeGroups );
@@ -383,14 +408,30 @@ public abstract class InternalClientImpl
                 throw new IllegalArgumentException( "Given count must be 1 or above" );
             }
 
+            UserAccessResolver userAccessResolver = new UserAccessResolver( userStoreAccessResolver );
             UserStoreEntity userStore = new UserStoreParser( userStoreDao ).parseUserStore( params.userStore );
-            List<UserEntity> users =
-                this.securityService.getUsers( userStore.getKey(), params.index, params.count, params.includeDeletedUsers );
+            List<UserEntity> users = this.securityService.getUsers( userStore.getKey(), params.index, null, params.includeDeletedUsers );
+
+            UserEntity impersonatedPortalUser = securityService.getImpersonatedPortalUser();
+            List<UserEntity> accessibleUsers = new LinkedList<UserEntity>();
+            for ( UserEntity user : users )
+            {
+                if ( userAccessResolver.hasReadUserAccess( impersonatedPortalUser, user ) )
+                {
+                    accessibleUsers.add( user );
+                }
+            }
+
+            if ( accessibleUsers.size() > params.count )
+            {
+                accessibleUsers = accessibleUsers.subList( 0, params.count );
+            }
+
             UserXmlCreator xmlCreator = new UserXmlCreator();
             xmlCreator.setIncludeUserFields( params.includeCustomUserFields );
             xmlCreator.wrappUserFieldsInBlockElement( false );
             xmlCreator.setAdminConsoleStyle( false );
-            return xmlCreator.createUsersDocument( users, params.includeMemberships, params.normalizeGroups );
+            return xmlCreator.createUsersDocument( accessibleUsers, params.includeMemberships, params.normalizeGroups );
 
         }
         catch ( Exception e )
@@ -438,16 +479,29 @@ public abstract class InternalClientImpl
                 spec.setUserStoreKey( userStore.getKey() );
                 spec.setGroupTypes( groupTypes );
                 spec.setIndex( params.index );
-                spec.setCount( params.count );
+                spec.setCount( null );
                 spec.setIncludeDeleted( params.includeDeletedGroups );
                 spec.setIncludeBuiltInGroups( params.includeBuiltInGroups );
                 spec.setIncludeAnonymousGroups( true );
                 groups = securityService.getGroups( spec );
             }
 
+            List<GroupEntity> accessibleGroups = new LinkedList<GroupEntity>();
+            for (GroupEntity group : groups) {
+                if ( groupAccessResolver.hasReadGroupAccess( securityService.getImpersonatedPortalUser(), group ) ) {
+                    accessibleGroups.add( group );
+                }
+
+            }
+
+            if ( accessibleGroups.size() > params.count )
+            {
+                accessibleGroups = accessibleGroups.subList( 0, params.count );
+            }
+
             GroupXmlCreator xmlCreator = new GroupXmlCreator();
             xmlCreator.setAdminConsoleStyle( false );
-            return xmlCreator.createGroupsDocument( groups, params.includeMemberships, params.includeMembers );
+            return xmlCreator.createGroupsDocument( accessibleGroups, params.includeMemberships, params.includeMembers );
 
         }
         catch ( Exception e )
@@ -484,7 +538,7 @@ public abstract class InternalClientImpl
             GroupEntity groupToUse;
             if ( params.group != null )
             {
-                groupToUse = parseGroup( params.group );
+                groupToUse = parseAndGetGroup( params.group );
             }
             else
             {
@@ -540,7 +594,7 @@ public abstract class InternalClientImpl
             GroupEntity groupToRemoveMembershipsFor;
             if ( params.group != null )
             {
-                groupToRemoveMembershipsFor = parseGroup( params.group );
+                groupToRemoveMembershipsFor = parseAndGetGroup( params.group );
             }
             else
             {
@@ -631,7 +685,7 @@ public abstract class InternalClientImpl
                 throw new IllegalArgumentException( "group must be specified" );
             }
 
-            GroupEntity group = parseGroup( params.group );
+            GroupEntity group = parseAndGetGroup( params.group );
 
             UserEntity runningUser = securityService.getImpersonatedPortalUser();
 
@@ -2295,7 +2349,7 @@ public abstract class InternalClientImpl
         }
     }
 
-    private GroupEntity parseGroup( String string )
+    private GroupEntity parseAndGetGroup( String string )
     {
 
         if ( string == null )
@@ -2346,7 +2400,7 @@ public abstract class InternalClientImpl
             // noinspection CaughtExceptionImmediatelyRethrown
             try
             {
-                GroupEntity groupEntity = parseGroup( group );
+                GroupEntity groupEntity = parseAndGetGroup( group );
                 groupEntities.add( groupEntity );
             }
             catch ( GroupNotFoundException e )

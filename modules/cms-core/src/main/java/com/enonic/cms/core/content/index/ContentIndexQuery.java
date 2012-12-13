@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.category.CategoryAccessType;
+import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.query.AbstractQuery;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
@@ -25,7 +26,8 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 public final class ContentIndexQuery
     extends AbstractQuery
 {
-    protected static final int DEFAULT_COUNT = 200;
+    // Set the default count to the threshold value for optimizing the count to be shure to get all content
+    protected static final int DEFAULT_COUNT = ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE;
 
     private String facets;
 

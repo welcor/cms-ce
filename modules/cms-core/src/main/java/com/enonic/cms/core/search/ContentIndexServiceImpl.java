@@ -65,7 +65,7 @@ public class ContentIndexServiceImpl
 {
     public final static String CONTENT_INDEX_NAME = "cms";
 
-    private static final int COUNT_THRESHOULD_VALUE = 1000;
+    public static final int COUNT_OPTIMIZER_THRESHOULD_VALUE = 1000;
 
     private IndexMappingProvider indexMappingProvider;
 
@@ -289,7 +289,7 @@ public class ContentIndexServiceImpl
 
     private void optimizeCount( final ContentIndexQuery query )
     {
-        if ( query.getCount() >= COUNT_THRESHOULD_VALUE )
+        if ( query.getCount() >= COUNT_OPTIMIZER_THRESHOULD_VALUE )
         {
             final int actualNumberOfHits = getActualNumberOfHits( query );
 

@@ -19,7 +19,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
@@ -58,7 +58,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +
@@ -98,7 +98,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp.date\" : {\n" +
@@ -124,7 +124,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp.date\" : {\n" +
@@ -150,7 +150,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"range\" : {\n" +
             "      \"timestamp.date\" : {\n" +
@@ -176,7 +176,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -205,7 +205,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"term\" : {\n" +
             "      \"timestamp\" : \"12345678\"\n" +
@@ -226,7 +226,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"term\" : {\n" +
             "      \"timestamp\" : \"2011/11/15\"\n" +
@@ -247,7 +247,7 @@ public class QueryTranslator_dateTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + QUERY_DEFAULT_SIZE + ",\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"bool\" : {\n" +
             "      \"must\" : [ {\n" +

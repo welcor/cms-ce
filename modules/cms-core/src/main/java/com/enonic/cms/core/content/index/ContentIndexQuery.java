@@ -27,7 +27,7 @@ public final class ContentIndexQuery
     extends AbstractQuery
 {
     // Set the default count to the threshold value for optimizing the count to be shure to get all content
-    protected static final int DEFAULT_COUNT = ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE;
+    public static final int DEFAULT_COUNT = ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE;
 
     private String facets;
 

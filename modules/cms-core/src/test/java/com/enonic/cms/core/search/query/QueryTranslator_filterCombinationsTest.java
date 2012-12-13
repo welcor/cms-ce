@@ -19,7 +19,7 @@ public class QueryTranslator_filterCombinationsTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 200,\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -63,7 +63,7 @@ public class QueryTranslator_filterCombinationsTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 200,\n" +
+            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +

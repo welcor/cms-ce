@@ -80,6 +80,7 @@ public class ContentIndexServiceImpl_indexValueQueryTest
         List<String> foundValues = getValueList( result );
         assertTrue( foundValues.contains( "28" ) );
 
+        query = new IndexValueQuery( "data/person/age" );
         query.setCategoryFilter( Lists.newArrayList( new CategoryKey( 9 ) ) );
 
         result = contentIndexService.query( query );
@@ -106,6 +107,7 @@ public class ContentIndexServiceImpl_indexValueQueryTest
         List<String> foundValues = getValueList( result );
         assertTrue( foundValues.contains( "10" ) );
 
+        query = new IndexValueQuery( "data/person/age" );
         query.setContentTypeFilter( Lists.newArrayList( new ContentTypeKey( 32 ) ) );
 
         result = contentIndexService.query( query );

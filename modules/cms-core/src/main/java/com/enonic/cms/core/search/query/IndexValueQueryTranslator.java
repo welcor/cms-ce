@@ -14,13 +14,24 @@ public class IndexValueQueryTranslator
 
     private final FilterQueryBuilderFactory filterQueryBuilderFactory = new FilterQueryBuilderFactory();
 
+    public SearchSourceBuilder build( final IndexValueQuery query, QueryField queryField, int count )
+    {
+        return doBuild( query, queryField, count );
+    }
+
     // Selects the values from a given field in index for all contents matching filter
     public SearchSourceBuilder build( final IndexValueQuery query, QueryField queryField )
     {
+        return doBuild( query, queryField, query.getCount() );
+    }
+
+    private SearchSourceBuilder doBuild( final IndexValueQuery query, final QueryField queryField, final int size )
+    {
         final SearchSourceBuilder builder = new SearchSourceBuilder();
 
+        builder.size( size );
+
         builder.from( query.getIndex() );
-        builder.size( query.getCount() );
 
         //builder.fields( queryField.getFieldName() );
 

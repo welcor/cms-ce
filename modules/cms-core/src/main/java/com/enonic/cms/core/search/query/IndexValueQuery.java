@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.search.query;
 
+import com.enonic.cms.core.search.ContentIndexServiceImpl;
+
 /**
  * This class implements the index value query.
  */
@@ -17,8 +19,7 @@ public final class IndexValueQuery
 
     private int index = 0;
 
-    // TODO: FIX THIS
-    private int count = 200;
+    private int count = ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE;
 
     private boolean descOrder;
 

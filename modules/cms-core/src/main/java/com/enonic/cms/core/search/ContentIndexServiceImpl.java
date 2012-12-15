@@ -321,6 +321,8 @@ public class ContentIndexServiceImpl
         final String path = QueryFieldNameResolver.resolveQueryFieldName( query.getField() );
         final QueryField queryField = QueryFieldFactory.resolveQueryField( path );
 
+        optimizeCount( query, queryField );
+
         try
         {
             build = this.indexValueQueryTranslator.build( query, queryField );
@@ -346,6 +348,27 @@ public class ContentIndexServiceImpl
         return resultSet;
     }
 
+    private void optimizeCount( final IndexValueQuery query, final QueryField queryField )
+    {
+        if ( query.getCount() >= COUNT_OPTIMIZER_THRESHOULD_VALUE )
+        {
+            final int actualNumberOfHits = getActualNumberOfHits( query, queryField );
+
+            if ( actualNumberOfHits < query.getCount() )
+            {
+                query.setCount( actualNumberOfHits == 0 ? 1 : actualNumberOfHits );
+            }
+        }
+    }
+
+    private int getActualNumberOfHits( final IndexValueQuery query, QueryField queryField )
+    {
+        final SearchSourceBuilder searchSource = indexValueQueryTranslator.build( query, queryField, 1 );
+
+        final long actualCount = elasticSearchIndexService.count( CONTENT_INDEX_NAME, IndexType.Content.toString(), searchSource );
+
+        return Ints.saturatedCast( actualCount );
+    }
 
     private IndexValueResultImpl createIndexValueResult( final SearchHit hit, final QueryField queryField )
     {

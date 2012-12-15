@@ -3,6 +3,8 @@ package com.enonic.cms.core.search.query;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 
+import com.enonic.cms.core.search.ContentIndexServiceImpl;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rmh
@@ -21,7 +23,7 @@ public class IndexValueQueryTranslatorTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 200,\n" +
+            "  \"size\" : " + ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE + ",\n" +
             "  \"query\" : {\n" +
             "    \"match_all\" : { }\n" +
             "  },\n" +
@@ -46,7 +48,7 @@ public class IndexValueQueryTranslatorTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : 200,\n" +
+            "  \"size\" : " + ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE + ",\n" +
             "  \"query\" : {\n" +
             "    \"match_all\" : { }\n" +
             "  },\n" +

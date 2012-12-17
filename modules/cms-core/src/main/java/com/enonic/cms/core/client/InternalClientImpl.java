@@ -336,7 +336,7 @@ public abstract class InternalClientImpl
 
             if ( !userAccessResolver.hasReadUserAccess( securityService.getImpersonatedPortalUser(), user ) )
             {
-                return new Document(new Element("user"));
+                return new Document( new Element( "user" ) );
             }
 
             final UserXmlCreator xmlCreator = new UserXmlCreator();
@@ -371,7 +371,7 @@ public abstract class InternalClientImpl
             GroupEntity group = parseAndGetGroup( params.group );
             if ( !groupAccessResolver.hasReadGroupAccess( securityService.getImpersonatedPortalUser(), group ) )
             {
-                return new Document(new Element("group"));
+                return new Document( new Element( "group" ) );
             }
 
             GroupXmlCreator xmlCreator = new GroupXmlCreator();
@@ -487,8 +487,10 @@ public abstract class InternalClientImpl
             }
 
             List<GroupEntity> accessibleGroups = new LinkedList<GroupEntity>();
-            for (GroupEntity group : groups) {
-                if ( groupAccessResolver.hasReadGroupAccess( securityService.getImpersonatedPortalUser(), group ) ) {
+            for ( GroupEntity group : groups )
+            {
+                if ( groupAccessResolver.hasReadGroupAccess( securityService.getImpersonatedPortalUser(), group ) )
+                {
                     accessibleGroups.add( group );
                 }
 
@@ -1750,7 +1752,6 @@ public abstract class InternalClientImpl
                 return xml.getAsJDOMDocument();
             }
 
-            previewService.getPreviewContext().getMenuItemPreviewContext().getMenuItemPreviewed();
             SiteXmlCreator siteXmlCreator = new SiteXmlCreator( new MenuItemAccessResolver( groupDao ),
                                                                 previewService.getPreviewContext().getMenuItemInPreviewOrNull() );
             siteXmlCreator.setUserXmlAsAdminConsoleStyle( false );

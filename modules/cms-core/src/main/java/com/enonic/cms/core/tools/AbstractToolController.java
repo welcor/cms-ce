@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.Controller;
 import com.enonic.esl.net.URL;
 import com.enonic.vertical.adminweb.AdminHelper;
 
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 
@@ -29,10 +30,23 @@ public abstract class AbstractToolController
 
     private ViewResolver viewResolver;
 
+    private boolean enterpriseFeature = false;
+
+    protected final void setEnterpriseFeature( final boolean value )
+    {
+        this.enterpriseFeature = value;
+    }
+
     @Override
     public final ModelAndView handleRequest( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception
     {
+        if ( this.enterpriseFeature && !ProductVersion.isEnterprise() )
+        {
+            res.sendError( HttpServletResponse.SC_FORBIDDEN, "Enterprise Only Feature" );
+            return null;
+        }
+
         final User user = this.securityService.getLoggedInAdminConsoleUser();
         if ( user == null )
         {

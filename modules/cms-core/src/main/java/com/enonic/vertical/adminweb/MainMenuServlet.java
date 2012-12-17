@@ -29,6 +29,7 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.xml.ResourceXmlCreator;
 import com.enonic.cms.core.security.user.User;
@@ -189,6 +190,7 @@ public class MainMenuServlet
             // Disse tre neste linjene må være her!
             parameters.put( "selectedunitkey", String.valueOf( selectedUnitKey ) );
             parameters.put( "selectedmenukey", String.valueOf( selectedMenuKey ) );
+            parameters.put( "enterprise", ProductVersion.isEnterprise() );
             UserStoreKey userStoreKey = userStoreService.getDefaultUserStore().getKey();
 
             if ( userStoreKey != null )

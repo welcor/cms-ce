@@ -19,6 +19,7 @@
   <xsl:param name="scheduler"/>
   <xsl:param name="defaultuserstorekey"/>
   <xsl:param name="selectedmenukey"/>
+  <xsl:param name="enterprise"/>
 
   <xsl:variable name="splash-servlet-then-redirect-to-dashboard" select="concat('adminpage?page=5&amp;redirect=', admin:urlEncode('adminpage?page=960&amp;op=page'))"/>
 
@@ -307,6 +308,7 @@
                 </a>
               </td>
             </tr>
+            <xsl:if test="$enterprise = 'true'">
               <tr>
               <td width="16">
                 <img src="javascript/images/T.png" border="0"/>
@@ -319,6 +321,7 @@
                 </a>
               </td>
             </tr>
+            </xsl:if>
               <tr>
                   <td width="16">
                       <img src="javascript/images/T.png" border="0"/>
@@ -331,6 +334,7 @@
                       </a>
                   </td>
               </tr>
+            <xsl:if test="$enterprise = 'true'">
             <tr>
               <td width="16">
                 <img src="javascript/images/T.png" border="0"/>
@@ -343,6 +347,7 @@
                 </a>
               </td>
             </tr>
+            </xsl:if>
           </table>
         </td>
       </tr>

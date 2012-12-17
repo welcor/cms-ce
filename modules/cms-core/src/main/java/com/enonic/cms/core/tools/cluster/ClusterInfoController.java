@@ -22,6 +22,11 @@ public final class ClusterInfoController
 {
     private Client client;
 
+    public ClusterInfoController()
+    {
+        setEnterpriseFeature( true );
+    }
+
     @Override
     protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception

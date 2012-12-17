@@ -38,6 +38,11 @@ public final class LivePortalTraceController
     @Autowired
     private LivePortalTraceJsonGenerator livePortalTraceJsonGenerator;
 
+    public LivePortalTraceController()
+    {
+        setEnterpriseFeature( true );
+    }
+
     @Override
     protected void doPost( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception

@@ -68,8 +68,7 @@
                   <xsl:with-param name="type" select="'link'"/>
                   <xsl:with-param name="caption" select="'%btnReindexAll%'"/>
                   <xsl:with-param name="href">
-                    <xsl:text>adminpage?page=916</xsl:text>
-                    <xsl:text>&amp;op=regenerateindexall</xsl:text>
+                    <xsl:text>tools/reindexContent</xsl:text>
                   </xsl:with-param>
                 </xsl:call-template>
               </xsl:if>

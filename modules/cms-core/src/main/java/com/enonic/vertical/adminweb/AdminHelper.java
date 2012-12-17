@@ -5,12 +5,12 @@
 package com.enonic.vertical.adminweb;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import com.enonic.esl.containers.MultiValueMap;
@@ -21,7 +21,7 @@ import com.enonic.cms.core.SiteKey;
 
 public class AdminHelper
 {
-    private static final Logger LOG = Logger.getLogger( AdminHelper.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( AdminHelper.class );
 
     public static String getDebugPath( HttpServletRequest request, SiteKey siteKey )
     {
@@ -94,7 +94,7 @@ public class AdminHelper
         }
         catch ( IOException ioe )
         {
-            LOG.log( Level.SEVERE, "Failed to redirect client", ioe );
+            LOG.error( "Failed to redirect client", ioe );
             throw new RuntimeException( "Failed to redirect client", ioe );
         }
     }

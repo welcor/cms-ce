@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -25,7 +26,7 @@ import static com.enonic.cms.core.search.IndexTransactionJournalEntry.JournalOpe
 public class IndexTransactionJournal
     implements TransactionSynchronization
 {
-    private final Logger LOG = Logger.getLogger( IndexTransactionJournal.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( IndexTransactionJournal.class );
 
     private final ContentDao contentDao;
 
@@ -46,7 +47,7 @@ public class IndexTransactionJournal
     public void startTransaction()
     {
         registerSynchronization();
-        LOG.fine( "Index transaction started" );
+        LOG.debug( "Index transaction started" );
     }
 
     private void registerSynchronization()
@@ -96,19 +97,19 @@ public class IndexTransactionJournal
     {
         if ( changeHistory.isEmpty() )
         {
-            LOG.fine( "No changes found in transaction, skipping index update." );
+            LOG.debug( "No changes found in transaction, skipping index update." );
             return;
         }
 
         if ( TransactionSynchronizationManager.isCurrentTransactionReadOnly() )
         {
-            LOG.fine( "Read-only transaction, nothing to do." );
+            LOG.debug( "Read-only transaction, nothing to do." );
             return;
         }
 
         final ContentMap contentMap = preloadContent();
 
-        LOG.fine( "Flushing index changes from transaction journal" );
+        LOG.debug( "Flushing index changes from transaction journal" );
         for ( IndexTransactionJournalEntry journalEntry : changeHistory )
         {
             switch ( journalEntry.getOperation() )
@@ -149,7 +150,7 @@ public class IndexTransactionJournal
         final ContentEntity content = contentMap.get( journalEntry.getContentKey() );
         if ( content == null )
         {
-            LOG.warning(
+            LOG.warn(
                 "Content to update index for did not exist (removing index for content instead): " + journalEntry.getContentKey() );
             deleteContent( journalEntry.getContentKey() );
         }
@@ -172,14 +173,14 @@ public class IndexTransactionJournal
     {
         final ContentDocument doc = indexService.createContentDocument( content, updateMetadataOnly );
 
-        LOG.fine( "Updating index for content: " + doc.getContentKey().toString() );
+        LOG.debug( "Updating index for content: " + doc.getContentKey().toString() );
 
         contentIndexService.index( doc, updateMetadataOnly );
     }
 
     private void deleteContent( ContentKey contentKey )
     {
-        LOG.fine( "Deleting index for content: " + contentKey.toString() );
+        LOG.debug( "Deleting index for content: " + contentKey.toString() );
 
         contentIndexService.remove( contentKey );
     }

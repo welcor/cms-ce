@@ -9,8 +9,6 @@ import java.io.FileInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +17,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class UrlRewriterBeanImpl
     implements UrlRewriterBean, InitializingBean
 {
 
-    private final static Logger LOG = Logger.getLogger( UrlRewriterBean.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( UrlRewriterBean.class );
 
     private boolean enabled = false;
 
@@ -123,7 +123,7 @@ public class UrlRewriterBeanImpl
         }
         catch ( InvocationTargetException e )
         {
-            LOG.log( Level.SEVERE, e.getMessage(), e );
+            LOG.error( e.getMessage(), e );
         }
         return false;
     }

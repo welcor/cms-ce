@@ -7,11 +7,7 @@ package com.enonic.cms.web.filter;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,14 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.map.MultiValueMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
 public final class ASCIICharactersFilter
     extends GenericFilterBean
 {
 
-    private final static Logger LOG = Logger.getLogger( ASCIICharactersFilter.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( ASCIICharactersFilter.class );
 
     public void doFilter( ServletRequest req, ServletResponse res, FilterChain chain )
         throws IOException, ServletException
@@ -48,7 +45,7 @@ public final class ASCIICharactersFilter
         }
         catch ( Exception e )
         {
-            LOG.log( Level.SEVERE, e.getMessage(), e );
+            LOG.error( e.getMessage(), e );
             throw new ServletException( e );
         }
     }

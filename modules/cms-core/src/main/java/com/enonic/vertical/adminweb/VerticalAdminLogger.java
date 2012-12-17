@@ -4,36 +4,33 @@
  */
 package com.enonic.vertical.adminweb;
 
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.vertical.VerticalLogger;
 
 public class VerticalAdminLogger
     extends VerticalLogger
 {
-    private final static LogFacade LOG = LogFacade.get(VerticalAdminLogger.class);
-
     public static void errorAdmin( String message )
     {
-        LOG.error(message);
-        throw new VerticalAdminException(message);
+        error( message );
+        throw new VerticalAdminException( message );
     }
 
     public static void errorAdmin( String message, Object[] msgData )
     {
-        LOG.error(message, msgData);
-        throw new VerticalAdminException(format(message, msgData));
+        error( message, msgData );
+        throw new VerticalAdminException( format( message, msgData ) );
     }
 
-    public static void errorAdmin(String message, Object msgData, Throwable throwable)
+    public static void errorAdmin( String message, Object msgData, Throwable throwable )
     {
-        LOG.errorCause(message, throwable, msgData);
-        throw new VerticalAdminException(format(message, msgData), throwable);
+        error( message, msgData, throwable );
+        throw new VerticalAdminException( format( message, msgData ), throwable );
     }
 
-    public static void errorAdmin(String message, Throwable throwable)
+    public static void errorAdmin( String message, Throwable throwable )
     {
-        LOG.errorCause(message, throwable);
-        throw new VerticalAdminException(message, throwable);
+        error( message, throwable );
+        throw new VerticalAdminException( message, throwable );
     }
 }
 

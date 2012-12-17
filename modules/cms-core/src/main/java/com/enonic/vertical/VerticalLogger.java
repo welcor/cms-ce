@@ -4,13 +4,16 @@
  */
 package com.enonic.vertical;
 
-import com.enonic.cms.api.util.LogFacade;
+import com.enonic.cms.core.util.LoggingUtil;
 
 import java.text.MessageFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class VerticalLogger
 {
-    private final static LogFacade LOG = LogFacade.get(VerticalLogger.class);
+    private final static Logger LOG = LoggerFactory.getLogger( VerticalLogger.class );
 
     public static void debug( String message )
     {
@@ -19,51 +22,51 @@ public class VerticalLogger
 
     public static void info( String message, Object msgData )
     {
-        LOG.info( message, msgData );
+        LOG.info( LoggingUtil.format( message, msgData ) );
     }
 
     public static void warn( String message, Object[] msgData )
     {
-        LOG.warning( message, msgData );
+        LOG.warn( LoggingUtil.format( message, msgData ) );
     }
 
-    public static void warn(String message, Object msgData, Throwable throwable)
+    public static void warn( String message, Object msgData, Throwable throwable )
     {
-        LOG.warningCause(message, throwable, msgData);
+        LOG.warn( LoggingUtil.formatCause( message, throwable, msgData ), throwable );
     }
 
-    public static void warn(String message, Throwable throwable)
+    public static void warn( String message, Throwable throwable )
     {
-        LOG.warningCause(message, throwable);
+        LOG.warn( LoggingUtil.formatCause( message, throwable ), throwable );
     }
 
     public static void error( String message, Object[] msgData )
     {
-        LOG.error(message, msgData);
+        LOG.error( LoggingUtil.format( message, msgData ) );
     }
 
-    public static void error(String message, Object msgData, Throwable throwable)
+    public static void error( String message, Object msgData, Throwable throwable )
     {
-        LOG.errorCause(message, throwable, msgData);
+        LOG.error( LoggingUtil.formatCause( message, throwable, msgData ), throwable );
     }
 
-    public static void warn(String message)
+    public static void warn( String message )
     {
-        LOG.warning(message);
+        LOG.warn( message );
     }
 
-    public static void error(String message)
+    public static void error( String message )
     {
-        LOG.error(message);
+        LOG.error( message );
     }
 
-    public static void error(String message, Throwable throwable)
+    public static void error( String message, Throwable throwable )
     {
-        LOG.errorCause(message, throwable);
+        LOG.error( LoggingUtil.formatCause( message, throwable ), throwable );
     }
 
-    protected static String format(String message, Object... msgData)
+    protected static String format( String message, Object... msgData )
     {
-        return MessageFormat.format(message, msgData);
+        return MessageFormat.format( message, msgData );
     }
 }

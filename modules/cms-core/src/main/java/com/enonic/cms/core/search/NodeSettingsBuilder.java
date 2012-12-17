@@ -1,11 +1,12 @@
 package com.enonic.cms.core.search;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Predicate;
@@ -21,7 +22,7 @@ import com.google.common.base.Strings;
 public final class NodeSettingsBuilder
     extends AbstractElasticsearchSettingsBuilder
 {
-    private final Logger LOG = Logger.getLogger( NodeSettingsBuilder.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( NodeSettingsBuilder.class );
 
     public Settings buildNodeSettings()
     {
@@ -49,7 +50,7 @@ public final class NodeSettingsBuilder
         {
             if ( local != ( !clusterEnabled ) )
             {
-                LOG.warning( "Elasticsearch cluster enabled setting: '" + !local + "' differ from cms.cluster.enabled - property: '" +
+                LOG.warn( "Elasticsearch cluster enabled setting: '" + !local + "' differ from cms.cluster.enabled - property: '" +
                                  clusterEnabled + "' which may cause unexpected behaviour" );
             }
         }

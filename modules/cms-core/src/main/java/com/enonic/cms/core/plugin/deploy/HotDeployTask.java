@@ -7,17 +7,18 @@ import javax.annotation.PreDestroy;
 
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.plugin.PluginManager;
 
 @Component
 public final class HotDeployTask
 {
-    private final static LogFacade LOG = LogFacade.get( HotDeployTask.class );
+    private final static Logger LOG = LoggerFactory.getLogger( HotDeployTask.class );
 
     private File deployDir;
 
@@ -58,7 +59,7 @@ public final class HotDeployTask
         this.monitor = new FileAlterationMonitor(this.scanPeriod, observer);
         this.monitor.start();
 
-        LOG.info("Hot deploying plugins from [{0}]. Scanning every [{1}] ms.", this.deployDir.getAbsolutePath(), this.scanPeriod);
+        LOG.info("Hot deploying plugins from [{}]. Scanning every [{}] ms.", this.deployDir.getAbsolutePath(), this.scanPeriod);
     }
 
     @PreDestroy

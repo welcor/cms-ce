@@ -12,16 +12,16 @@ import java.util.Properties;
 
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
-
-import com.enonic.cms.api.util.LogFacade;
 
 final class PluginConfigHelper
 {
     private final static String DEFAULT_CONFIG = "META-INF/cms/default.properties";
 
-    private final static LogFacade LOG = LogFacade.get( PluginConfigHelper.class );
+    private final static Logger LOG = LoggerFactory.getLogger( PluginConfigHelper.class );
 
     public static Map<String, String> loadDefaultProperties( final Bundle bundle )
     {
@@ -50,7 +50,7 @@ final class PluginConfigHelper
         }
         catch ( Exception e )
         {
-            LOG.warningCause("Error occurred loading properties from [{0}]", e, url.toExternalForm());
+            LOG.warn("Error occurred loading properties from [{}]", url.toExternalForm(), e);
         }
 
         return Collections.emptyMap();
@@ -78,7 +78,7 @@ final class PluginConfigHelper
         }
         catch ( Exception e )
         {
-            LOG.warningCause("Error occurred loading properties from [{0}]", e, file.getAbsolutePath());
+            LOG.warn("Error occurred loading properties from [{}]", file.getAbsolutePath(), e);
         }
 
         return Collections.emptyMap();

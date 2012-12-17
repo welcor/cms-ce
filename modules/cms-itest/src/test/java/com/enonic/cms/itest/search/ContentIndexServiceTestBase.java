@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.shutdown.NodesShutdownRequest;
@@ -51,9 +50,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration("classpath:com/enonic/cms/itest/base-core-test-context.xml")
 public abstract class ContentIndexServiceTestBase
 {
-    private final Logger LOG = Logger.getLogger( ContentIndexServiceTestBase.class.getName() );
-
-
     private IndexMappingProvider indexMappingProvider;
 
     @Autowired

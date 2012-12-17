@@ -3,13 +3,15 @@ package com.enonic.cms.itest.util;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MockHTTPServer
     extends NanoHTTPD
 {
 
-    private static final Logger LOG = Logger.getLogger( "ENONIC." + MockHTTPServer.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( MockHTTPServer.class );
 
     static public String TYPE_PARAM = "type";
 

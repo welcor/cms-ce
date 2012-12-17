@@ -6,7 +6,6 @@ package com.enonic.cms.web.webdav;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -20,6 +19,8 @@ import org.apache.jackrabbit.webdav.DavResourceFactory;
 import org.apache.jackrabbit.webdav.DavSessionProvider;
 import org.apache.jackrabbit.webdav.WebdavRequest;
 import org.apache.jackrabbit.webdav.server.AbstractWebdavServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -28,7 +29,7 @@ import com.enonic.cms.core.servlet.ServletRequestAccessor;
 public final class SimpleDavServlet
     extends AbstractWebdavServlet
 {
-    private final static Logger LOG = Logger.getLogger( SimpleDavServlet.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( SimpleDavServlet.class );
 
     private final static String AUTHENTICATE_HEADER_VALUE = "Basic Realm=\"Enonic Webdav Server\"";
 
@@ -77,7 +78,7 @@ public final class SimpleDavServlet
 
             if ( !created )
             {
-                LOG.severe( "cannot create resource root at " + resourceRoot.getAbsolutePath() );
+                LOG.error( "cannot create resource root at " + resourceRoot.getAbsolutePath() );
             }
         }
     }

@@ -1,11 +1,12 @@
 package com.enonic.cms.core.search;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.settings.ImmutableSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.core.config.ConfigProperties;
@@ -18,7 +19,7 @@ public abstract class AbstractElasticsearchSettingsBuilder
 
     ConfigProperties configProperties;
 
-    private final Logger LOG = Logger.getLogger( AbstractElasticsearchSettingsBuilder.class.getName() );
+    private final Logger LOG = LoggerFactory.getLogger( AbstractElasticsearchSettingsBuilder.class );
 
     String subtractPrefixFromProperty( final String property, final String propertyPrefix )
     {

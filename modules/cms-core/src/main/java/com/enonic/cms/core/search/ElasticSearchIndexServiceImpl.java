@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
@@ -37,6 +36,8 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +76,7 @@ public class ElasticSearchIndexServiceImpl
 
     private Client client;
 
-    private final Logger LOG = Logger.getLogger( ElasticSearchIndexServiceImpl.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( ElasticSearchIndexServiceImpl.class );
 
 
     public Client getClient()
@@ -86,7 +87,7 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public void createIndex( String indexName )
     {
-        LOG.fine( "creating index: " + indexName );
+        LOG.debug( "creating index: " + indexName );
 
         CreateIndexRequest createIndexRequest = new CreateIndexRequest( indexName );
         createIndexRequest.settings( indexSettingBuilder.buildIndexSettings() );
@@ -156,7 +157,7 @@ public class ElasticSearchIndexServiceImpl
         for ( IndexRequest indexRequest : indexRequests )
         {
             final IndexResponse indexResponse = doIndex( indexRequest );
-            LOG.finest( "Content indexed with id: " + indexResponse.getId() );
+            LOG.trace( "Content indexed with id: " + indexResponse.getId() );
         }
     }
 
@@ -228,7 +229,7 @@ public class ElasticSearchIndexServiceImpl
         final OptimizeResponse optimizeResponse = this.client.admin().indices().optimize( optimizeRequest ).actionGet();
         long finished = System.currentTimeMillis();
 
-        LOG.fine( "Optimized index for " + optimizeResponse.successfulShards() + " shards in " + ( finished - start ) + " ms" );
+        LOG.debug( "Optimized index for " + optimizeResponse.successfulShards() + " shards in " + ( finished - start ) + " ms" );
     }
 
     @Override
@@ -240,11 +241,11 @@ public class ElasticSearchIndexServiceImpl
 
         if ( !deleteIndexResponse.acknowledged() )
         {
-            LOG.warning( "Index " + indexName + " not deleted" );
+            LOG.warn( "Index " + indexName + " not deleted" );
         }
         else
         {
-            LOG.fine( "Index " + indexName + " deleted" );
+            LOG.debug( "Index " + indexName + " deleted" );
         }
     }
 
@@ -313,7 +314,7 @@ public class ElasticSearchIndexServiceImpl
             for ( ShardSearchFailure failure : shardFailures )
             {
                 final String reason = failure.reason();
-                LOG.severe( "Status: " + failure.status() + " - Search failed on shard: " + reason );
+                LOG.error( "Status: " + failure.status() + " - Search failed on shard: " + reason );
                 reasonBuilder.append( reason );
             }
 
@@ -327,7 +328,7 @@ public class ElasticSearchIndexServiceImpl
         final FlushRequest flushRequest = Requests.flushRequest( indexName ).refresh( true );
         final FlushResponse flushResponse = client.admin().indices().flush( flushRequest ).actionGet();
 
-        LOG.fine( "Flush request executed with " + flushResponse.getSuccessfulShards() + " successfull shards" );
+        LOG.debug( "Flush request executed with " + flushResponse.getSuccessfulShards() + " successfull shards" );
     }
 
     @Override
@@ -355,13 +356,13 @@ public class ElasticSearchIndexServiceImpl
 
         if ( clusterHealthResponse.timedOut() )
         {
-            LOG.warning( "ElasticSearch cluster health timed out" );
+            LOG.warn( "ElasticSearch cluster health timed out" );
         }
         else
         {
-            LOG.finest( "ElasticSearch cluster health: Status " + clusterHealthResponse.status().name() + "; " +
-                            clusterHealthResponse.getNumberOfNodes() + " nodes; " + clusterHealthResponse.getActiveShards() +
-                            " active shards." );
+            LOG.trace( "ElasticSearch cluster health: Status " + clusterHealthResponse.status().name() + "; " +
+                           clusterHealthResponse.getNumberOfNodes() + " nodes; " + clusterHealthResponse.getActiveShards() +
+                           " active shards." );
         }
 
         return clusterHealthResponse;

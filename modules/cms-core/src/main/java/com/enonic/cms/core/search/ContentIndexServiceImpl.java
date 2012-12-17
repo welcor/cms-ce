@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
@@ -17,6 +16,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.facet.statistical.StatisticalFacet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -71,7 +72,7 @@ public class ContentIndexServiceImpl
 
     private ElasticSearchIndexService elasticSearchIndexService;
 
-    private final Logger LOG = Logger.getLogger( ContentIndexServiceImpl.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( ContentIndexServiceImpl.class );
 
     private final ContentIndexDataFactory contentIndexDataFactory = new ContentIndexDataFactory();
 
@@ -108,7 +109,7 @@ public class ContentIndexServiceImpl
             }
             catch ( org.elasticsearch.indices.IndexAlreadyExistsException e )
             {
-                LOG.warning( "Tried to create index, but index already exists, skipping" );
+                LOG.warn( "Tried to create index, but index already exists, skipping" );
             }
             addMapping();
         }
@@ -161,7 +162,7 @@ public class ContentIndexServiceImpl
 
         final int entriesToDelete = hits.getHits().length;
 
-        LOG.fine( "Prepare to delete: " + entriesToDelete + " entries from index " + CONTENT_INDEX_NAME );
+        LOG.debug( "Prepare to delete: " + entriesToDelete + " entries from index " + CONTENT_INDEX_NAME );
 
         for ( SearchHit hit : hits )
         {
@@ -169,7 +170,7 @@ public class ContentIndexServiceImpl
             doRemoveEntryWithId( contentKey );
         }
 
-        LOG.fine( "Deleted from index " + CONTENT_INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
+        LOG.debug( "Deleted from index " + CONTENT_INDEX_NAME + ", " + entriesToDelete + " entries successfully" );
     }
 
     private void doRemoveEntryWithId( final ContentKey contentKey )
@@ -236,7 +237,7 @@ public class ContentIndexServiceImpl
 
             SearchHits searchHits = searchResponse.getHits();
 
-            LOG.finer(
+            LOG.debug(
                 "query: " + translatedQuerySource.toString() + " executed with " + searchHits.getHits().length + " searchHits of total " +
                     searchHits.getTotalHits() );
 
@@ -342,7 +343,7 @@ public class ContentIndexServiceImpl
             resultSet.add( createIndexValueResult( hit, queryField ) );
         }
 
-        LOG.finer( "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " +
+        LOG.debug( "query: " + build.toString() + " executed with " + resultSet.getCount() + " hits of total " +
                        resultSet.getTotalCount() );
 
         return resultSet;

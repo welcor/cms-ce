@@ -7,13 +7,13 @@ import java.io.Writer;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.framework.log.FrameworkLogEntry;
 import org.osgi.framework.FrameworkEvent;
-
-import com.enonic.cms.api.util.LogFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class FrameworkLogImpl
     implements FrameworkLog
 {
-    private final static LogFacade LOG = LogFacade.get( FrameworkLogImpl.class );
+    private final static Logger LOG = LoggerFactory.getLogger( FrameworkLogImpl.class );
 
     public void log( final FrameworkEvent event )
     {
@@ -27,16 +27,16 @@ final class FrameworkLogImpl
         
         switch (severity) {
             case FrameworkLogEntry.ERROR:
-                LOG.errorCause( message, cause );
+                LOG.error( message, cause );
                 break;
             case FrameworkLogEntry.WARNING:
-                LOG.warningCause( message, cause );
+                LOG.warn( message, cause );
                 break;
             case FrameworkLogEntry.INFO:
-                LOG.infoCause( message, cause );
+                LOG.info( message, cause );
                 break;
             default:
-                LOG.debugCause( message, cause );
+                LOG.debug( message, cause );
         }
     }
 

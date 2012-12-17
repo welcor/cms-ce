@@ -1,14 +1,15 @@
 package com.enonic.cms.web.boot;
 
 import org.apache.commons.lang.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.home.HomeResolver;
 import com.enonic.cms.core.product.ProductVersion;
 
 final class BootEnvironment
 {
-    private final static LogFacade LOG = LogFacade.get( BootEnvironment.class );
+    private final static Logger LOG = LoggerFactory.getLogger( BootEnvironment.class );
 
     private final static String BANNER = "\n" +
         " _______ _______ _______ _______ _______ ______   ______ _______ _______ \n" +
@@ -24,7 +25,7 @@ final class BootEnvironment
         }
         catch ( final Exception e )
         {
-            LOG.errorCause( "Error occurred starting system", e );
+            LOG.error( "Error occurred starting system", e );
 
             if ( e instanceof RuntimeException )
             {

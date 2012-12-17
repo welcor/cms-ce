@@ -1,14 +1,14 @@
 package com.enonic.vertical.work.quartz;
 
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class defines a simple invoker job.
@@ -17,7 +17,7 @@ public final class WorkJobAdapter
     implements Job
 {
 
-    private final static Logger LOG = Logger.getLogger( WorkJobAdapter.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( WorkJobAdapter.class );
 
     public final static String CLASS_KEY = "class";
 
@@ -50,7 +50,7 @@ public final class WorkJobAdapter
         }
         catch ( Exception e )
         {
-            LOG.log( Level.SEVERE, "Failed to execute job [" + className + "]: " + e.getMessage(), e );
+            LOG.error( "Failed to execute job [" + className + "]: " + e.getMessage(), e );
             throw new JobExecutionException( e );
         }
     }

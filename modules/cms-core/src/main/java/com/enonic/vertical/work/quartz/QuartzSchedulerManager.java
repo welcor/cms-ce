@@ -1,10 +1,11 @@
 package com.enonic.vertical.work.quartz;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public final class QuartzSchedulerManager
     implements InitializingBean, DisposableBean
 {
 
-    private final static Logger LOG = Logger.getLogger( QuartzSchedulerManager.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( QuartzSchedulerManager.class );
 
     /**
      * Instance.

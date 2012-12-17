@@ -5,19 +5,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.config.ConfigProperties;
 
 @Component
 public final class ConfigFactoryImpl
     implements ConfigFactory
 {
-    private final static LogFacade LOG = LogFacade.get( ConfigFactoryImpl.class );
+    private final static Logger LOG = LoggerFactory.getLogger( ConfigFactoryImpl.class );
 
     private File configDir;
 
@@ -39,7 +40,7 @@ public final class ConfigFactoryImpl
 
         if ( file.exists() )
         {
-            LOG.info( "Loaded configuration for bundle [{0}] from [{1}]", bundle.getSymbolicName(), file.getAbsolutePath() );
+            LOG.info( "Loaded configuration for bundle [{}] from [{}]", bundle.getSymbolicName(), file.getAbsolutePath() );
         }
 
         return new PluginConfigImpl( PluginConfigHelper.interpolate( this.globalProperties, config ) );

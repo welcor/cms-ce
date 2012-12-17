@@ -2,9 +2,10 @@ package com.enonic.vertical.work;
 
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.core.CalendarUtil;
@@ -12,7 +13,7 @@ import com.enonic.cms.core.plugin.ExtensionSet;
 
 public final class WorkHelper
 {
-    private final static Logger LOG = Logger.getLogger( WorkHelper.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( WorkHelper.class );
 
     private WorkHelper()
     {
@@ -28,7 +29,7 @@ public final class WorkHelper
         }
         else
         {
-            LOG.severe( "TaskPlugin with name: " + className + ", does not exist." );
+            LOG.error( "TaskPlugin with name: " + className + ", does not exist." );
             throw new IllegalStateException( "No plugin of class, " + className + " found." );
         }
     }

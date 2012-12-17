@@ -2,12 +2,13 @@ package com.enonic.cms.core.search;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
@@ -18,7 +19,7 @@ import com.enonic.cms.core.tools.index.ReindexContentToolServiceImpl;
 @Component
 public class IndexInitializerService
 {
-    private static final Logger LOG = Logger.getLogger( IndexInitializerService.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( IndexInitializerService.class );
 
     @Value("${cms.index.indexOnStartup}")
     private boolean indexOnStartup;
@@ -45,7 +46,7 @@ public class IndexInitializerService
 
         if ( clusterHealth.timedOut() || ClusterHealthStatus.RED.equals( clusterHealth.getStatus() ) )
         {
-            LOG.warning( "Not able to get a valid cluster status, skipping reindex" );
+            LOG.warn( "Not able to get a valid cluster status, skipping reindex" );
         }
 
         final boolean contentIndexExists = elasticSearchIndexService.indexExists( ContentIndexServiceImpl.CONTENT_INDEX_NAME );

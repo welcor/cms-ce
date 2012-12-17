@@ -4,7 +4,7 @@
  */
 package com.enonic.vertical;
 
-import com.enonic.cms.api.util.LogFacade;
+import com.enonic.cms.core.util.LoggingUtil;
 
 /**
  * Root exception for all Vertical exceptions.
@@ -19,6 +19,6 @@ public class VerticalException
 
     public VerticalException( String message, Throwable cause )
     {
-        super( LogFacade.formatThrowable( message, cause ), cause );
+        super( LoggingUtil.formatCause( message, cause ), cause );
     }
 }

@@ -7,14 +7,16 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.enonic.cms.framework.util.PropertiesUtil;
 
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.home.HomeDir;
 
 final class ConfigLoader
 {
-    private final static LogFacade LOG = LogFacade.get( ConfigLoader.class );
+    private final static Logger LOG = LoggerFactory.getLogger( ConfigLoader.class );
 
     private final static String CMS_PROPERTIES = "config/cms.properties";
 
@@ -89,7 +91,7 @@ final class ConfigLoader
         final File file = new File( this.homeDir.toFile(), CMS_PROPERTIES );
         if ( !file.exists() || file.isDirectory() )
         {
-            LOG.info( "Could not find cms.properties from [{0}]. Using defaults.", file.getAbsolutePath() );
+            LOG.info( "Could not find cms.properties from [{}]. Using defaults.", file.getAbsolutePath() );
             return new Properties();
         }
 
@@ -99,7 +101,7 @@ final class ConfigLoader
         }
         catch ( final Exception e )
         {
-            LOG.errorCause( "Failed to load cms.properties from [{0}]. Using defaults.", e, file.getAbsolutePath() );
+            LOG.error( "Failed to load cms.properties from [{}]. Using defaults.", file.getAbsolutePath() );
         }
 
         return new Properties();

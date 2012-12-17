@@ -6,11 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Logger;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class HTTPService
 {
 
-    private static final Logger LOG = Logger.getLogger( HTTPService.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( HTTPService.class );
 
     private final static int DEFAULT_CONNECTION_TIMEOUT = 2000;
 
@@ -47,7 +48,7 @@ public class HTTPService
         catch ( Exception e )
         {
             String message = "Failed to get URL: \"" + address + "\": " + e.getMessage();
-            LOG.warning( message );
+            LOG.warn( message );
         }
         finally
         {
@@ -58,7 +59,7 @@ public class HTTPService
             catch ( IOException ioe )
             {
                 String message = "Failed to close reader stream: \"" + address + "\": " + ioe.getMessage();
-                LOG.warning( message );
+                LOG.warn( message );
             }
         }
 
@@ -78,7 +79,7 @@ public class HTTPService
         catch ( Exception e )
         {
             String message = "Failed to get URL: \"" + address + "\": " + e.getMessage();
-            LOG.warning( message );
+            LOG.warn( message );
         }
         finally
         {
@@ -89,7 +90,7 @@ public class HTTPService
             catch ( IOException ioe )
             {
                 String message = "Failed to close reader stream: \"" + address + "\": " + ioe.getMessage();
-                LOG.warning( message );
+                LOG.warn( message );
             }
         }
 

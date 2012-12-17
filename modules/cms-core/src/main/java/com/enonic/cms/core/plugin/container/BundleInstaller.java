@@ -4,12 +4,12 @@ import java.io.File;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-
-import com.enonic.cms.api.util.LogFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class BundleInstaller
 {
-    private final static LogFacade LOG = LogFacade.get( BundleInstaller.class );
+    private final static Logger LOG = LoggerFactory.getLogger( BundleInstaller.class );
 
     private final BundleContext context;
 
@@ -64,7 +64,7 @@ final class BundleInstaller
         }
         catch ( final Exception e )
         {
-            LOG.errorCause( "Error updating plugin from location [{0}]", e, bundle.getLocation() );
+            LOG.error( "Error updating plugin from location [{}]", bundle.getLocation(), e );
         }
     }
 
@@ -77,7 +77,7 @@ final class BundleInstaller
         }
         catch ( final Exception e )
         {
-            LOG.errorCause( "Error installing plugin from location [{0}]", e, location );
+            LOG.error( "Error installing plugin from location [{}]", location, e );
         }
     }
 
@@ -89,7 +89,7 @@ final class BundleInstaller
         }
         catch ( final Exception e )
         {
-            LOG.errorCause( "Error occurred removing plugin [{0}]", e, bundle.getSymbolicName() );
+            LOG.error( "Error occurred removing plugin [{}]", bundle.getSymbolicName(), e );
         }
     }
 

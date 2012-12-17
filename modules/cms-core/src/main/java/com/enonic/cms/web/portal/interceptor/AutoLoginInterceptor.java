@@ -1,10 +1,9 @@
 package com.enonic.cms.web.portal.interceptor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,7 @@ import com.enonic.cms.web.portal.PortalWebContext;
 public final class AutoLoginInterceptor
     implements RequestInterceptor
 {
-    private final static Logger LOG = Logger.getLogger( AutoLoginInterceptor.class.getName() );
+    private final static Logger LOG = LoggerFactory.getLogger( AutoLoginInterceptor.class );
 
     private PluginManager pluginManager;
 
@@ -74,20 +73,20 @@ public final class AutoLoginInterceptor
         {
             if ( current.isEnterpriseAdmin() )
             {
-                LOG.finest( "Already logged in as Enterprise Admin. Skipping auto-login." );
+                LOG.debug( "Already logged in as Enterprise Admin. Skipping auto-login." );
                 return;
             }
 
-            LOG.finest( "Already logged in. Checking if current user equals SSO user." );
+            LOG.debug( "Already logged in. Checking if current user equals SSO user." );
             boolean currentUserIsValid = plugin.validateCurrentUser( current.getName(), current.getUserStore().getName(), req );
             if ( currentUserIsValid )
             {
-                LOG.finest( "Already logged in. Skipping auto-login." );
+                LOG.debug( "Already logged in. Skipping auto-login." );
                 return;
             }
             else
             {
-                LOG.finest( "A new SSO user has arrived. Logging out current user before continueing" );
+                LOG.debug( "A new SSO user has arrived. Logging out current user before continueing" );
                 securityService.logoutPortalUser();
             }
         }
@@ -100,11 +99,11 @@ public final class AutoLoginInterceptor
 
         if ( securityService.autoLoginPortalUser( qualifiedUserName ) )
         {
-            LOG.finest( "Auto-login logged in user [" + qualifiedUserName + "]" );
+            LOG.debug( "Auto-login logged in user [" + qualifiedUserName + "]" );
         }
         else
         {
-            LOG.severe( "Auto-login user [" + qualifiedUserName + "] does not exist. Auto-login failed." );
+            LOG.debug( "Auto-login user [" + qualifiedUserName + "] does not exist. Auto-login failed." );
         }
     }
 
@@ -122,7 +121,7 @@ public final class AutoLoginInterceptor
         }
         catch ( Exception e )
         {
-            LOG.log( Level.SEVERE, "Failed to get authenticated user from plugin", e );
+            LOG.error( "Failed to get authenticated user from plugin", e );
             return null;
         }
     }

@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,11 +20,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.servlet.http.CookieUtil;
-import com.enonic.esl.util.StringUtil;
 
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.DeploymentPathResolver;
@@ -51,7 +50,7 @@ import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
 public final class AdminLogInServlet
     extends AdminHandlerBaseServlet
 {
-    private static final Logger LOG = Logger.getLogger( AdminLogInServlet.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( AdminLogInServlet.class );
 
     private static final int COOKIE_TIMEOUT = 60 * 60 * 24 * 365 * 50;   // 50 years
 
@@ -639,7 +638,7 @@ public final class AdminLogInServlet
         }
         catch ( Exception ex )
         {
-            LOG.log( Level.SEVERE, "cannot change password for " + uid, ex );
+            LOG.error( "cannot change password for " + uid, ex );
 
             session.setAttribute( "passworderrorcode", EC_401_ACCESS_DENIED );
             session.setAttribute( "passworderror", ex.getMessage() );
@@ -667,7 +666,7 @@ public final class AdminLogInServlet
             session.setAttribute( "passworderror", message );
             session.setMaxInactiveInterval( SESSION_TIMEOUT_ERROR );
 
-            LOG.log( Level.SEVERE, message );
+            LOG.error( message );
 
             redirectClientToAdminPath( "forgotpassword", request, response );
         }

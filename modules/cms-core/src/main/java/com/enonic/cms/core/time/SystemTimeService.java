@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.core.time;
 
-import java.util.logging.Logger;
-
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class SystemTimeService
     extends BaseSystemTimeService
     implements TimeService, InitializingBean
 {
-    private final Logger LOG = Logger.getLogger( SystemTimeService.class.getName() );
+    private final Logger LOG = LoggerFactory.getLogger( SystemTimeService.class );
 
     private DateTime bootTime;
 

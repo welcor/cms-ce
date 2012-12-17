@@ -2,12 +2,13 @@ package com.enonic.cms.core.search;
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.enonic.cms.api.util.LogFacade;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.IndexService;
 import com.enonic.cms.core.search.query.ContentIndexService;
@@ -18,7 +19,7 @@ import com.enonic.cms.store.dao.ContentDao;
 public class IndexTransactionServiceImpl
     implements IndexTransactionService
 {
-    private final static LogFacade LOG = LogFacade.get( IndexTransactionServiceImpl.class );
+    private final static Logger LOG = LoggerFactory.getLogger( IndexTransactionServiceImpl.class );
 
     public static final Object TRANSACTION_JOURNAL_KEY = IndexTransactionJournal.class;
 

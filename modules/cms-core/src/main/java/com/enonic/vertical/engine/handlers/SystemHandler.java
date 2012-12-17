@@ -6,6 +6,7 @@ package com.enonic.vertical.engine.handlers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -72,6 +73,82 @@ public final class SystemHandler
         }
         finally
         {
+            close( stmt );
+        }
+    }
+
+    /**
+     * Return the model version.
+     */
+    private int getModelNumber( Connection conn )
+        throws Exception
+    {
+        if ( hasTable( conn, this.db.tModelVersion.getName() ) )
+        {
+            return selectModelNumber( conn );
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    /**
+     * Select the model version.
+     */
+    private int selectModelNumber( Connection conn )
+        throws Exception
+    {
+        PreparedStatement stmt =
+            conn.prepareStatement( "SELECT " + this.db.tModelVersion.mve_lVersion.getName() + " FROM " + this.db.tModelVersion.getName() +
+                                       " WHERE " + this.db.tModelVersion.mve_sKey.getName() + " = ?" );
+        ResultSet result = null;
+
+        try
+        {
+            stmt.setString( 1, "model" );
+            result = stmt.executeQuery();
+
+            if ( result.next() )
+            {
+                return result.getInt( 1 );
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        finally
+        {
+            close( result );
+            close( stmt );
+        }
+    }
+
+    /**
+     * Return version number.
+     */
+    private String getVerticalVersion( Connection conn )
+        throws Exception
+    {
+        PreparedStatement stmt = conn.prepareStatement( "SELECT vve_sVersionName FROM tVerticalVersion" );
+        ResultSet result = null;
+
+        try
+        {
+            result = stmt.executeQuery();
+            if ( result.next() )
+            {
+                return result.getString( 1 );
+            }
+            else
+            {
+                return "";
+            }
+        }
+        finally
+        {
+            close( result );
             close( stmt );
         }
     }
@@ -245,7 +322,18 @@ public final class SystemHandler
     private boolean isDatabaseValuesInitialized( Connection conn )
         throws Exception
     {
-        return hasTable( conn, this.db.tModelVersion.getName() );
+        if ( hasTable( conn, this.db.tModelVersion.getName() ) )
+        {
+            return getModelNumber( conn ) > 0;
+        }
+        else if ( hasTable( conn, "tVerticalVersion" ) )
+        {
+            return getVerticalVersion( conn ) != null;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     /**

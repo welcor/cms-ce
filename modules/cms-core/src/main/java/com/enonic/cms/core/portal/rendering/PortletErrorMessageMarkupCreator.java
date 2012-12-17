@@ -21,7 +21,7 @@ final class PortletErrorMessageMarkupCreator
         final String details = getDetailsBase64( exception );
 
         final StringBuilder str = new StringBuilder();
-        str.append( "<div" );
+        str.append( "<div class=\"-cms-portlet-error\"" );
         str.append( " style=\"" );
         str.append( " border-style: solid;" );
         str.append( " border-width: 2px;" );

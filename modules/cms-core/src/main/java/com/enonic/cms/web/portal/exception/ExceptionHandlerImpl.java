@@ -186,7 +186,8 @@ public final class ExceptionHandlerImpl
         final boolean outerExceptionIsPortalRequestException = isExceptionAnyOfThose( outerException,
                                                                                       new Class[]{DefaultRequestException.class,
                                                                                           AttachmentRequestException.class,
-                                                                                          ImageRequestException.class} );
+                                                                                          ImageRequestException.class,
+                                                                                          ResourceNotFoundException.class} );
         final boolean innerExceptionIsQuietException =
             isExceptionAnyOfThose( causingException, new Class[]{StacktraceLoggingUnrequired.class} );
 

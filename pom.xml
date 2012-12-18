@@ -162,13 +162,6 @@
     </repository>
   </repositories>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>enonic.repo</id>
-      <url>http://repo.enonic.com/maven</url>
-    </pluginRepository>
-  </pluginRepositories>
-
   <profiles>
     <profile>
       <id>enterprise</id>

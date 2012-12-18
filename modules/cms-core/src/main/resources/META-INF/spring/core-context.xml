@@ -20,7 +20,12 @@
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
   <bean id="dataSource" class="com.enonic.cms.store.support.DataSourceFactory">
-    <property name="jndiName" value="java:comp/env/jdbc/cms"/>
+    <property name="jndiName" value="${cms.jdbc.jndiName}"/>
+    <property name="jdbcUrl" value="${cms.jdbc.embedded.url}"/>
+    <property name="userName" value="${cms.jdbc.embedded.user}"/>
+    <property name="password" value="${cms.jdbc.embedded.password}"/>
+    <property name="maxConnections" value="${cms.jdbc.embedded.maxConnections}"/>
+    <property name="useEmbedded" value="${cms.jdbc.useEmbedded}"/>
   </bean>
 
   <bean id="dialect" class="com.enonic.cms.framework.jdbc.dialect.DialectFactory">

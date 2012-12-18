@@ -107,6 +107,16 @@ public abstract class OsgiContainer
     {
         URL location = FrameworkProperties.class.getProtectionDomain().getCodeSource().getLocation();
 
+        final String locationFile = location.getFile();
+        if ( locationFile.endsWith( ".jar!/" ) ) // for IBM Websphere 8.5 Liberty Profile
+        {
+            String absolutePath = locationFile.substring( 0, locationFile.length() - 2 );
+
+            location = new URL( absolutePath );
+        }
+
+        else
+
         if ( ResourceUtils.URL_PROTOCOL_VFS.equals( location.getProtocol() ) ) // JBOSS 7.1.1 VFS
         {
             final URI uri = ResourceUtils.toURI( location );

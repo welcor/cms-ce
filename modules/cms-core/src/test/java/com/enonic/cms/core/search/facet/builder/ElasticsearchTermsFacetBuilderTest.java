@@ -40,8 +40,8 @@ public class ElasticsearchTermsFacetBuilderTest
         termFacetModel.setName( "myFullModel" );
         termFacetModel.setAllTerms( true );
         termFacetModel.setExclude( "exclude1, exclude2" );
-        termFacetModel.setIndices( "field" );
-        termFacetModel.setIndices( "fields1, fields2" );
+        termFacetModel.setIndexes( "field" );
+        termFacetModel.setIndexes( "fields1, fields2" );
         termFacetModel.setRegex( "myRegexp" );
         termFacetModel.setRegexFlags( "CASE_INSENSITIVE, DOTALL" );
         termFacetModel.setOrderby( "hits" );
@@ -58,7 +58,7 @@ public class ElasticsearchTermsFacetBuilderTest
 
         TermsFacetModel termFacetModel = new TermsFacetModel();
         termFacetModel.setName( "myFullModel" );
-        termFacetModel.setIndices( "fields1, fields2" );
+        termFacetModel.setIndexes( "fields1, fields2" );
         termFacetModel.setOrderby( "hits ASC" );
 
         final TermsFacetBuilder build = termsFacetBuilder.build( termFacetModel );
@@ -73,7 +73,7 @@ public class ElasticsearchTermsFacetBuilderTest
 
         TermsFacetModel termFacetModel = new TermsFacetModel();
         termFacetModel.setName( "myFullModel" );
-        termFacetModel.setIndices( "fields1, fields2" );
+        termFacetModel.setIndexes( "fields1, fields2" );
         termFacetModel.setOrderby( "hits DESC" );
 
         final TermsFacetBuilder build = termsFacetBuilder.build( termFacetModel );
@@ -89,7 +89,7 @@ public class ElasticsearchTermsFacetBuilderTest
 
         TermsFacetModel termFacetModel = new TermsFacetModel();
         termFacetModel.setName( "myModel" );
-        termFacetModel.setIndices( "data/field, data.person.field" );
+        termFacetModel.setIndexes( "data/field, data.person.field" );
 
         final TermsFacetBuilder build = termsFacetBuilder.build( termFacetModel );
         assertEquals( expected, getJson( build ) );

@@ -35,7 +35,7 @@ public class FacetBuilderFactoryTest
         String facetXml = "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <count>10</count>\n" +
-            "        <indices>termsFacetField</indices>\n" +
+            "        <indexes>termsFacetField</indexes>\n" +
             "    </terms>\n" +
             "</facets>";
 
@@ -58,15 +58,15 @@ public class FacetBuilderFactoryTest
         String facetXml = "<facets>\n" +
             "    <terms name=\"myFacet1\">\n" +
             "        <count>10</count>\n" +
-            "        <indices>fieldName</indices>\n" +
+            "        <indexes>fieldName</indexes>\n" +
             "    </terms>\n" +
             "    <terms name=\"myFacet2\">\n" +
             "        <count>10</count>\n" +
-            "        <indices>fieldName</indices>\n" +
+            "        <indexes>fieldName</indexes>\n" +
             "    </terms>\n" +
             "    <terms name=\"myFacet3\">\n" +
             "        <count>10</count>\n" +
-            "        <indices>fieldName</indices>\n" +
+            "        <indexes>fieldName</indexes>\n" +
             "    </terms>\n" +
             "</facets>";
 

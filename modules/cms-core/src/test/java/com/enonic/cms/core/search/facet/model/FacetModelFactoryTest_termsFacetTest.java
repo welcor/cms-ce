@@ -16,7 +16,7 @@ public class FacetModelFactoryTest_termsFacetTest
             "    <terms name=\"myFacetName\">\n" +
             "        <count>10</count>\n" +
             "        <all-terms>true</all-terms>\n" +
-            "        <indices>data/activity, data/something</indices>\n" +
+            "        <indexes>data/activity, data/something</indexes>\n" +
             "        <orderby>hits</orderby>\n" +
             "    </terms>\n" +
             "</facets>";
@@ -28,7 +28,7 @@ public class FacetModelFactoryTest_termsFacetTest
 
         TermsFacetModel termsFacetModel = (TermsFacetModel) next;
         assertTrue( termsFacetModel.getAllTerms() );
-        assertEquals( "data/activity, data/something", termsFacetModel.getIndices() );
+        assertEquals( "data/activity, data/something", termsFacetModel.getIndexes() );
         assertEquals( "hits", termsFacetModel.getOrderby() );
     }
 
@@ -59,7 +59,7 @@ public class FacetModelFactoryTest_termsFacetTest
         }
         catch ( Exception e )
         {
-            assertTrue( e.getMessage(), e.getMessage().contains( "'indices' must be set" ) );
+            assertTrue( e.getMessage(), e.getMessage().contains( "'indexes' must be set" ) );
             exceptionThrown = true;
         }
 
@@ -74,7 +74,7 @@ public class FacetModelFactoryTest_termsFacetTest
             "    <terms name=\"myFacetName\">\n" +
             "        <count>10</count>\n" +
             "        <all-terms>true</all-terms>\n" +
-            "        <indices>data/activity, data/something</indices>\n" +
+            "        <indexes>data/activity, data/something</indexes>\n" +
             "        <orderby>max</orderby>\n" +
             "    </terms>\n" +
             "</facets>";

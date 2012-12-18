@@ -27,14 +27,14 @@ public class FacetsXmlCreatorTest
             "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <count>10</count>\n" +
-            "        <indices>termsFacetField</indices>\n" +
+            "        <indexes>termsFacetField</indexes>\n" +
             "    </terms>\n" +
             "</facets>";
 
         FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
-        facet.setIndices( "termsFacetField" );
+        facet.setIndexes( "termsFacetField" );
         facet.setName( "myFacetName" );
         facet.setCount( 10 );
         facets.addFacet( facet );
@@ -54,14 +54,14 @@ public class FacetsXmlCreatorTest
             "<facets>\n" +
             "    <terms name=\"myFacetName\">\n" +
             "        <count>10</count>\n" +
-            "        <indices>field1,field2,field3</indices>\n" +
+            "        <indexes>field1,field2,field3</indexes>\n" +
             "    </terms>\n" +
             "</facets>\n";
 
         FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
-        facet.setIndices( "field1,field2,field3" );
+        facet.setIndexes( "field1,field2,field3" );
         facet.setName( "myFacetName" );
         facet.setCount( 10 );
         facets.addFacet( facet );
@@ -81,7 +81,7 @@ public class FacetsXmlCreatorTest
             "        <count>10</count>\n" +
             "        <all-terms>true</all-terms>\n" +
             "        <exclude>exclude1,exclude2,exclude3</exclude>\n" +
-            "        <indices>fields1, fields2, fields3</indices>\n" +
+            "        <indexes>fields1, fields2, fields3</indexes>\n" +
             "        <orderby>term</orderby>\n" +
             "        <regex>regexp</regex>\n" +
             "        <regex-flags>DOTALL</regex-flags>\n" +
@@ -91,7 +91,7 @@ public class FacetsXmlCreatorTest
         FacetsModel facets = new FacetsModel();
 
         final TermsFacetModel facet = new TermsFacetModel();
-        facet.setIndices( "fields1, fields2, fields3" );
+        facet.setIndexes( "fields1, fields2, fields3" );
         facet.setExclude( "exclude1,exclude2,exclude3" );
         facet.setName( "myFacetName" );
         facet.setAllTerms( true );

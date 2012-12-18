@@ -127,7 +127,7 @@ final class ElasticsearchTermsFacetBuilder
 
     private void setFields( final TermsFacetModel termsFacetXml, final TermsFacetBuilder builder )
     {
-        final String[] fields = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getIndices() );
+        final String[] fields = getCommaDelimitedStringAsArraySkipWhitespaces( termsFacetXml.getIndexes() );
 
         if ( fields == null || fields.length == 0 )
         {

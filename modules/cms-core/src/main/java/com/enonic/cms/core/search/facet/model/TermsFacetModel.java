@@ -11,7 +11,7 @@ import com.google.common.base.Strings;
 public class TermsFacetModel
     extends AbstractFacetModel
 {
-    private String indices;
+    private String indexes;
 
     private String exclude;
 
@@ -40,10 +40,10 @@ public class TermsFacetModel
         return allTerms;
     }
 
-    @XmlElement(name = "indices")
-    public String getIndices()
+    @XmlElement(name = "indexes")
+    public String getIndexes()
     {
-        return indices;
+        return indexes;
     }
 
     @XmlElement(name = "exclude")
@@ -74,9 +74,9 @@ public class TermsFacetModel
         this.allTerms = allTerms;
     }
 
-    public void setIndices( final String indices )
+    public void setIndexes( final String indexes )
     {
-        this.indices = indices;
+        this.indexes = indexes;
     }
 
     public void setExclude( final String exclude )
@@ -96,9 +96,9 @@ public class TermsFacetModel
 
     public void validate()
     {
-        if ( Strings.isNullOrEmpty( indices ) )
+        if ( Strings.isNullOrEmpty( indexes ) )
         {
-            throw new IllegalArgumentException( "Terms-facet " + getName() + ": Field 'indices' must be set" );
+            throw new IllegalArgumentException( "Terms-facet " + getName() + ": Field 'indexes' must be set" );
         }
 
         if ( orderby != null )

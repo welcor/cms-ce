@@ -140,9 +140,7 @@ public class DomainFixture
 
         UserStoreEntity testuserstore = factory.createUserStore( "testuserstore" );
         testuserstore.setDefaultStore( true );
-        save( testuserstore );
-        save( factory.createGroupInUserstore( GroupType.AUTHENTICATED_USERS.getName(), GroupType.AUTHENTICATED_USERS, "testuserstore" ) );
-        save( factory.createGroupInUserstore( GroupType.USERSTORE_ADMINS.getName(), GroupType.USERSTORE_ADMINS, "testuserstore" ) );
+        storeAndSetupUserStore( testuserstore );
 
         createAndStoreUserAndUserGroup( "anonymous", UserType.ANONYMOUS.getName(), UserType.ANONYMOUS, null );
 
@@ -154,6 +152,14 @@ public class DomainFixture
         PortalSecurityHolder.setLoggedInUser( findUserByName( "anonymous" ).getKey() );
 
         userDao.resetCachedValues();
+    }
+
+    public void storeAndSetupUserStore( UserStoreEntity userStore )
+    {
+        save( userStore );
+        save(
+            factory.createGroupInUserstore( GroupType.AUTHENTICATED_USERS.getName(), GroupType.AUTHENTICATED_USERS, userStore.getName() ) );
+        save( factory.createGroupInUserstore( GroupType.USERSTORE_ADMINS.getName(), GroupType.USERSTORE_ADMINS, userStore.getName() ) );
     }
 
     public UserEntity createAndStoreNormalUserWithUserGroup( String uid, String displayName, String userStoreName )

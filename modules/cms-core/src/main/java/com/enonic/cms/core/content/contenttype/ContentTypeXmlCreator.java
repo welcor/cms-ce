@@ -47,7 +47,7 @@ public class ContentTypeXmlCreator
     {
         final Element elem = new Element( "contenttype" );
 
-        setHandlerAttributes( elem, contentType.getHandler() );
+        setHandlerAttributes( elem, contentType.getContentHandler() );
         setDefaultCssAttributes( elem, contentType.getDefaultCssKey() );
 
         elem.setAttribute( "key", String.valueOf( contentType.getKey() ) );

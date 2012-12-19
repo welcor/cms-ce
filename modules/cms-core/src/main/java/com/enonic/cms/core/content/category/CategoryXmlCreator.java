@@ -353,7 +353,7 @@ public class CategoryXmlCreator
         if ( contentType != null )
         {
             categoryEl.setAttribute( "contenttypekey", contentType.getContentTypeKey().toString() );
-            ContentHandlerEntity contentHandler = contentType.getHandler();
+            ContentHandlerEntity contentHandler = contentType.getContentHandler();
             if ( contentHandler != null )
             {
                 categoryEl.setAttribute( "handler", contentHandler.getClassName() );

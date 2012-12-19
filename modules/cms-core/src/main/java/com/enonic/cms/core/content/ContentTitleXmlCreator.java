@@ -53,7 +53,7 @@ public class ContentTitleXmlCreator
         CategoryEntity category = content.getCategory();
         UnitEntity unit = category.getUnitExcludeDeleted();
         ContentTypeEntity contentType = category.getContentType();
-        ContentHandlerEntity contentHandler = contentType.getHandler();
+        ContentHandlerEntity contentHandler = contentType.getContentHandler();
 
         Element el = new Element( elementName );
         el.setAttribute( "key", content.getKey().toString() );

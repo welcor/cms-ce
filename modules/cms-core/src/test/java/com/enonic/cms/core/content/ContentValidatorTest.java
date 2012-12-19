@@ -102,7 +102,7 @@ public class ContentValidatorTest
     private ContentTypeEntity createContentType( final ContentTypeConfigBuilder ctyBuilder, final ContentHandlerEntity contentHandler )
     {
         ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
         contentType.setData( XMLDocumentFactory.create( ctyBuilder.toString() ).getAsJDOMDocument() );
         return contentType;
     }

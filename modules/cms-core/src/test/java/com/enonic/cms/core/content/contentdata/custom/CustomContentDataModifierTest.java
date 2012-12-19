@@ -38,7 +38,7 @@ public class CustomContentDataModifierTest
         contentHandler.setClassName( ContentHandlerName.CUSTOM.getHandlerClassShortName() );
 
         ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
         contentType.setData( createPersonContentTypeXml() );
         config = contentType.getContentTypeConfig();
     }
@@ -384,7 +384,7 @@ public class CustomContentDataModifierTest
         Document configAsJDOMDocument = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
 
         ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
         contentType.setData( configAsJDOMDocument );
         config = contentType.getContentTypeConfig();
 

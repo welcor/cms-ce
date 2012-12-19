@@ -53,32 +53,38 @@ public class CreateWindowUrlFunction
 
     SitePath createWindowUrl()
     {
+        final MenuItemKey menuItemKey = windowKey.getMenuItemKey();
 
-        MenuItemKey menuItemKey = windowKey.getMenuItemKey();
-
-        MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
+        final MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
         if ( menuItem == null )
         {
             throw new PortalFunctionException( "Menuitem does not exist: " + menuItemKey );
         }
-        boolean menuItemIsInAnotherSite = !menuItem.getSite().equals( context.getSite() );
+        final boolean menuItemIsInAnotherSite = !menuItem.getSite().equals( context.getSite() );
         if ( menuItemIsInAnotherSite )
         {
             throw new PortalFunctionException( "Menuitem exist in another site: " + menuItemKey );
         }
 
-        PortletKey portletKey = windowKey.getPortletKey();
-        PortletEntity portlet = portletDao.findByKey( portletKey.toInt() );
+        final PortletKey portletKey = windowKey.getPortletKey();
+        final PortletEntity portlet = portletDao.findByKey( portletKey.toInt() );
         if ( portlet == null )
         {
             throw new PortalFunctionException( "Portlet does not exist: " + menuItemKey );
         }
 
+        final Path localPath = buildPathToWindow( menuItem, portlet );
+
+        return new SitePath( context.getSite().getKey(), localPath );
+    }
+
+    private Path buildPathToWindow( MenuItemEntity menuItem, PortletEntity portlet )
+    {
         Path localPath;
         boolean givenWindowKeyReferCurrentPage = context.getPortalInstanceKey().getMenuItemKey().equals( windowKey.getMenuItemKey() );
         if ( useCurrentLocation || givenWindowKeyReferCurrentPage )
         {
-            localPath = context.getOriginalSitePath().getLocalPath();
+            localPath = resolvePathToPageOnly( context.getOriginalSitePath().getLocalPath() );
         }
         else
         {
@@ -91,6 +97,16 @@ public class CreateWindowUrlFunction
             portletPathStr = portletPathStr + "." + outputFormat;
         }
         localPath = localPath.appendPath( new Path( portletPathStr ) );
-        return new SitePath( context.getSite().getKey(), localPath );
+        return localPath;
+    }
+
+    private Path resolvePathToPageOnly( final Path path )
+    {
+        final SitePath sitePathToPageWithPotentialWindowReference = new SitePath( context.getSite().getKey(), path );
+        if ( sitePathToPageWithPotentialWindowReference.hasReferenceToWindow() )
+        {
+            return sitePathToPageWithPotentialWindowReference.removeWindowReference().getLocalPath();
+        }
+        return path;
     }
 }

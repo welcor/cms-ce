@@ -431,7 +431,7 @@ public class PortalFunctionsTest
         ContentHandlerEntity contentHandler = new ContentHandlerEntity();
         contentHandler.setClassName( ContentHandlerName.FILE.getHandlerClassShortName() );
         ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
 
         CategoryEntity category = new CategoryEntity();
         category.setContentType( contentType );
@@ -460,7 +460,7 @@ public class PortalFunctionsTest
         ContentHandlerEntity contentHandler = new ContentHandlerEntity();
         contentHandler.setClassName( ContentHandlerName.FILE.getHandlerClassShortName() );
         ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
 
         CategoryEntity category = new CategoryEntity();
         category.setContentType( contentType );

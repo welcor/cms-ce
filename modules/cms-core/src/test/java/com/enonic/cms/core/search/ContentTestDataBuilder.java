@@ -61,7 +61,7 @@ public class ContentTestDataBuilder
         contentHandler.setClassName( ContentHandlerName.CUSTOM.getHandlerClassShortName() );
 
         ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
         contentType.setData( this.getStandardConfigDoc() );
 
         CategoryEntity cat = new CategoryEntity();

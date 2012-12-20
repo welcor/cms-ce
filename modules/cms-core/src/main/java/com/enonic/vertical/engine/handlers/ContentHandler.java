@@ -960,8 +960,8 @@ public final class ContentHandler
         {
             Element elem = XMLTool.createElement( doc, root, "contenttype" );
             elem.setAttribute( "key", String.valueOf( entity.getKey() ) );
-            elem.setAttribute( "contenthandlerkey", String.valueOf( entity.getHandler().getKey() ) );
-            elem.setAttribute( "handler", entity.getHandler().getClassName() );
+            elem.setAttribute( "contenthandlerkey", String.valueOf( entity.getContentHandler().getKey() ) );
+            elem.setAttribute( "handler", entity.getContentHandler().getClassName() );
 
             if ( entity.getDefaultCssKey() != null )
             {
@@ -1056,7 +1056,7 @@ public final class ContentHandler
         {
             return null;
         }
-        return entity.getHandler().getClassName();
+        return entity.getContentHandler().getClassName();
     }
 
     public org.jdom.Document getContentHandler( final int contentHandlerKey )

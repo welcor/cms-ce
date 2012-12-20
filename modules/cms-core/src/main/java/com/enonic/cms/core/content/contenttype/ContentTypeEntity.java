@@ -37,7 +37,7 @@ public class ContentTypeEntity
 
     private Date timestamp;
 
-    private ContentHandlerEntity handler;
+    private ContentHandlerEntity contentHandler;
 
     private ResourceKey defaultCssKey;
 
@@ -73,9 +73,9 @@ public class ContentTypeEntity
         return timestamp;
     }
 
-    public ContentHandlerEntity getHandler()
+    public ContentHandlerEntity getContentHandler()
     {
-        return handler;
+        return contentHandler;
     }
 
     public ResourceKey getDefaultCssKey()
@@ -139,9 +139,9 @@ public class ContentTypeEntity
         this.timestamp = timestamp;
     }
 
-    public void setHandler( ContentHandlerEntity handler )
+    public void setContentHandler( ContentHandlerEntity contentHandler )
     {
-        this.handler = handler;
+        this.contentHandler = contentHandler;
     }
 
     public void setDefaultCssKey( ResourceKey defaultCssKey )
@@ -199,7 +199,7 @@ public class ContentTypeEntity
 
     public ContentHandlerName getContentHandlerName()
     {
-        return ContentHandlerName.parse( handler.getClassName() );
+        return ContentHandlerName.parse( contentHandler.getClassName() );
     }
 
     public List<ContentEntity> getAllContent( boolean includeDeleted )

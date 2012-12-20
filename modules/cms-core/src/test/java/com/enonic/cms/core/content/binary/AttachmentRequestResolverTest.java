@@ -53,7 +53,7 @@ public class AttachmentRequestResolverTest
         contentHandler = createContentHandler( "File content", ContentHandlerName.FILE.getHandlerClassShortName() );
 
         contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
 
         category = new CategoryEntity();
         category.setContentType( contentType );

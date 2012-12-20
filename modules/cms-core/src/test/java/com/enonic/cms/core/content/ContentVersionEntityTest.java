@@ -118,7 +118,7 @@ public class ContentVersionEntityTest
         ContentHandlerEntity contentHandler = new ContentHandlerEntity();
         contentHandler.setClassName( ContentHandlerName.CUSTOM.getHandlerClassShortName() );
         ContentTypeEntity contentType = new ContentTypeEntity();
-        contentType.setHandler( contentHandler );
+        contentType.setContentHandler( contentHandler );
         contentType.setData( standardConfigAsXMLBytes );
         CategoryEntity category = new CategoryEntity();
         category.setContentType( contentType );

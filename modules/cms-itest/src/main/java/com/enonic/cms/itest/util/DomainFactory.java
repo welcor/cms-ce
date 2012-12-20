@@ -216,7 +216,7 @@ public class DomainFactory
         ContentTypeEntity contenType = new ContentTypeEntity();
         contenType.setKey( mockKeyService.generateNextKeySafe( "TCONTENTTYPE" ) );
         contenType.setName( name );
-        contenType.setHandler( fixture.findContentHandlerByClassName( contentHandlerClassName ) );
+        contenType.setContentHandler( fixture.findContentHandlerByClassName( contentHandlerClassName ) );
         contenType.setTimestamp( new Date() );
         contenType.setData( data );
         return contenType;
@@ -227,7 +227,7 @@ public class DomainFactory
         ContentTypeEntity contenType = new ContentTypeEntity();
         contenType.setKey( key );
         contenType.setName( name );
-        contenType.setHandler( fixture.findContentHandlerByClassName( contentHandlerClassName ) );
+        contenType.setContentHandler( fixture.findContentHandlerByClassName( contentHandlerClassName ) );
         contenType.setTimestamp( new Date() );
         contenType.setData( data );
         return contenType;

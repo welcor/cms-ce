@@ -35,12 +35,12 @@ public class BlockGroupDataEntriesModifierTest
         contentHandler.setClassName( ContentHandlerName.CUSTOM.getHandlerClassShortName() );
 
         ContentTypeEntity personContentType = new ContentTypeEntity();
-        personContentType.setHandler( contentHandler );
+        personContentType.setContentHandler( contentHandler );
         personContentType.setData( createPersonContentTypeXml() );
         personCTYConfig = personContentType.getContentTypeConfig();
 
         ContentTypeEntity numbersContentType = new ContentTypeEntity();
-        numbersContentType.setHandler( contentHandler );
+        numbersContentType.setContentHandler( contentHandler );
         numbersContentType.setData( createNumbersContentTypeXml() );
         numbersCTYConfig = numbersContentType.getContentTypeConfig();
     }

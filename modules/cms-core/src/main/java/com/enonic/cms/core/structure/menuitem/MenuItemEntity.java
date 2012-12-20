@@ -17,6 +17,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.CacheSettings;
@@ -119,42 +122,40 @@ public class MenuItemEntity
     /**
      * Constructor that creates a new instance as a copy of another menu item.
      *
-     * @param menuItem The menu item to copy.
+     * @param source The menu item to copy.
      */
-    public MenuItemEntity( MenuItemEntity menuItem )
+    public MenuItemEntity( MenuItemEntity source )
     {
         this();
 
-        key = menuItem.key;
-        name = menuItem.name;
-        order = menuItem.order;
-        timestamp = menuItem.timestamp;
-        menuName = menuItem.menuName;
-        hidden = menuItem.hidden;
-        description = menuItem.description;
-        noAuth = menuItem.noAuth;
-        xmlData = (LazyInitializedJDOMDocument) menuItem.xmlData.clone();
-        keywords = menuItem.keywords;
-        site = menuItem.site;
-        menuItemType = menuItem.menuItemType;
-        parent = menuItem.parent;
-        url = menuItem.url;
-        openNewWindowForURL = menuItem.openNewWindowForURL;
-        page = menuItem.page;
-        owner = menuItem.owner;
-        modifier = menuItem.modifier;
-        language = menuItem.language;
-        shortcutForward = menuItem.shortcutForward;
-        menuItemShortcut = menuItem.menuItemShortcut;
-        childrenMapByName = menuItem.childrenMapByName;
-        section = menuItem.section;
-        orderedSection = menuItem.orderedSection;
-        runAs = menuItem.runAs;
-        allowedSectionContentTypes = menuItem.allowedSectionContentTypes;
-        sectionContents = menuItem.sectionContents;
-
-        // no defensive copies are created here, since
-        // there are no mutable object fields (String is immutable)
+        key = source.key;
+        name = source.name;
+        order = source.order;
+        timestamp = source.timestamp;
+        menuName = source.menuName;
+        hidden = source.hidden;
+        description = source.description;
+        noAuth = source.noAuth;
+        xmlData = (LazyInitializedJDOMDocument) source.xmlData.clone();
+        keywords = source.keywords;
+        site = source.site;
+        menuItemType = source.menuItemType;
+        parent = source.parent;
+        url = source.url;
+        openNewWindowForURL = source.openNewWindowForURL;
+        page = source.page;
+        owner = source.owner;
+        modifier = source.modifier;
+        language = source.language;
+        shortcutForward = source.shortcutForward;
+        menuItemShortcut = source.menuItemShortcut;
+        childrenMapByName = Maps.newLinkedHashMap( source.childrenMapByName );
+        section = source.section;
+        orderedSection = source.orderedSection;
+        runAs = source.runAs;
+        allowedSectionContentTypes = Sets.newLinkedHashSet( source.allowedSectionContentTypes );
+        sectionContents = Sets.newTreeSet( source.sectionContents );
+        accesses = Maps.newHashMap( source.accesses );
     }
 
     public boolean isRenderable()

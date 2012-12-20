@@ -342,7 +342,7 @@ public abstract class InternalClientImpl
             final UserXmlCreator xmlCreator = new UserXmlCreator();
             xmlCreator.setIncludeUserFields( params.includeCustomUserFields );
             xmlCreator.wrappUserFieldsInBlockElement( false );
-//            xmlCreator.setAdminConsoleStyle( false );
+            xmlCreator.setAdminConsoleStyle( false );
             final Document userDoc = xmlCreator.createUserDocument( user, params.includeMemberships, params.normalizeGroups );
             return userDoc;
 

@@ -131,7 +131,9 @@ final class UpgradeModel0204
 
         if ( !blobFile.exists() )
         {
-            context.logWarning( "No blobfile found for file with name " + fileItem.name );
+            context.logWarning(
+                "No blobfile found for file with name " + fileItem.name + ", blobKey = " + fileItem.blobkey + ", blobFile = " +
+                    blobFile.getAbsolutePath() );
             return false;
         }
 

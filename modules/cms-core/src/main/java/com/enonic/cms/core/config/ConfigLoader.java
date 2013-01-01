@@ -14,7 +14,7 @@ import com.enonic.cms.framework.util.PropertiesUtil;
 
 import com.enonic.cms.core.home.HomeDir;
 
-final class ConfigLoader
+public final class ConfigLoader
 {
     private final static Logger LOG = LoggerFactory.getLogger( ConfigLoader.class );
 

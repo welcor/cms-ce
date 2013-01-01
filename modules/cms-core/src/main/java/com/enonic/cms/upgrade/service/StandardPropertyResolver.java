@@ -8,12 +8,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Properties;
-import org.springframework.beans.factory.InitializingBean;
-import com.enonic.cms.framework.util.PropertiesUtil;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.config.ConfigProperties;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.InitializingBean;
+
+import com.enonic.cms.framework.util.PropertiesUtil;
+
+import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.config.ConfigLoader;
+import com.enonic.cms.core.home.HomeDir;
+
 import org.springframework.beans.factory.annotation.Value;
 
 public final class StandardPropertyResolver
@@ -36,6 +39,11 @@ public final class StandardPropertyResolver
         throws Exception
     {
         this.configDir = new File( this.homeDir, "config" );
+
+        if ( this.cmsProperties == null )
+        {
+            this.cmsProperties = new ConfigLoader( new HomeDir( this.homeDir ) ).load();
+        }
     }
 
     @Value("${cms.home}")
@@ -44,8 +52,7 @@ public final class StandardPropertyResolver
         this.homeDir = homeDir;
     }
 
-    @Autowired
-    public void setProperties( final ConfigProperties props )
+    public void setProperties( final Properties props )
     {
         this.cmsProperties = props;
     }

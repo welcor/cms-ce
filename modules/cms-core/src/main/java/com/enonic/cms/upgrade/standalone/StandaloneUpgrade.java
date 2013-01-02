@@ -1,21 +1,49 @@
 package com.enonic.cms.upgrade.standalone;
 
+import com.enonic.cms.upgrade.UpgradeService;
+import com.enonic.cms.upgrade.log.UpgradeLog;
+
 /**
  * This interface is used by stand-alone upgrade managers and should be handled as API.
  */
 @SuppressWarnings( "unused" )
-public interface StandaloneUpgrade
+public final class StandaloneUpgrade
 {
-    public int getCurrentModel();
+    private final UpgradeLog logger;
 
-    public int getTargetModel();
+    private final UpgradeService upgradeService;
+
+    public StandaloneUpgrade( final UpgradeService upgradeService )
+    {
+        this.logger = new UpgradeLog();
+        this.upgradeService = upgradeService;
+    }
+
+    public int getCurrentModel()
+    {
+        return this.upgradeService.getCurrentModelNumber();
+    }
+
+    public int getTargetModel()
+    {
+        return this.upgradeService.getTargetModelNumber();
+    }
 
     public boolean upgradeAll()
-        throws Exception;
+        throws Exception
+    {
+        return this.upgradeService.upgrade( this.logger );
+    }
 
     public boolean upgradeStep()
-        throws Exception;
+        throws Exception
+    {
+        return this.upgradeService.upgradeStep( this.logger );
+    }
 
     public boolean upgradeCheck()
-        throws Exception;
+        throws Exception
+    {
+        return this.upgradeService.canUpgrade( this.logger );
+    }
 }

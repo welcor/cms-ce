@@ -40,7 +40,7 @@ public final class StandaloneUpgradeFactory
         throws Exception
     {
         final UpgradeService upgradeService = createUpgradeService();
-        return new StandaloneUpgradeImpl( upgradeService );
+        return new StandaloneUpgrade( upgradeService );
     }
 
     private UpgradeService createUpgradeService()

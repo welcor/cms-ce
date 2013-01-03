@@ -204,14 +204,6 @@
                         <xsl:if test="$create = '1'">
                             <input type="hidden" name="create" value="true"/>
                         </xsl:if>
-                        <xsl:if test="$create = '0'">
-                            <xsl:call-template name="readonlyvalue">
-                                <xsl:with-param name="name" select="'key'"/>
-                                <xsl:with-param name="label" select="'%fldModuleNo%:'"/>
-                                <xsl:with-param name="selectnode" select="/contenttypes/contenttype/@key"/>
-                                <xsl:with-param name="colspan" select="'1'"/>
-                            </xsl:call-template>
-                        </xsl:if>
                         <tr>
                             <xsl:call-template name="dropdown_refresh">
                                 <xsl:with-param name="name" select="'contenthandlerkey'"/>

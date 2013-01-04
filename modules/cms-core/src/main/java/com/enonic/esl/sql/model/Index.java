@@ -13,6 +13,8 @@ public class Index
 
     private final List<Column> columns = new ArrayList<Column>();
 
+    private boolean unique = false;
+
     public Index( String name )
     {
         this.name = name;
@@ -31,5 +33,15 @@ public class Index
     public List<Column> getColumns()
     {
         return columns;
+    }
+
+    public boolean isUnique()
+    {
+        return unique;
+    }
+
+    public void setUnique( final boolean unique )
+    {
+        this.unique = unique;
     }
 }

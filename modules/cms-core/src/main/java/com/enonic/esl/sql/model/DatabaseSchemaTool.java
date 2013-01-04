@@ -157,7 +157,12 @@ public final class DatabaseSchemaTool
         for ( int i = 0; i < indexes.length; i++ )
         {
             StringBuilder sql = new StringBuilder();
-            sql.append( "CREATE INDEX " );
+            sql.append( "CREATE " );
+            if ( indexes[i].isUnique() )
+            {
+                sql.append( "UNIQUE " );
+            }
+            sql.append( "INDEX " );
             sql.append( indexes[i].getName() );
             sql.append( " ON " );
             sql.append( table );

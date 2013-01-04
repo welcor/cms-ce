@@ -140,6 +140,7 @@ public final class DatabaseXMLFactory
     {
         String indexName = current.getAttributeValue( "name" );
         Index index = new Index( indexName );
+        index.setUnique( Boolean.valueOf( current.getAttributeValue( "unique" ) ) );
 
         List columns = current.getChildren( "column" );
         for ( Object child : columns )

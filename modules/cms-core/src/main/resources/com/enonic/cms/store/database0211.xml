@@ -960,10 +960,10 @@
     <foreignkey name="usr_grp_FK1" foreignTable="tGroup">
       <column name="usr_grp_hKey" foreignColumn="grp_hKey"/>
     </foreignkey>
-    <uniqueconstraint name="usr_dom_syncValue_UC1">
+    <index name="idx_dom_syncValue" unique="true">
       <column name="usr_dom_lKey"/>
       <column name="usr_sSyncValue2"/>
-    </uniqueconstraint>
+    </index>
     <index name="idx_usr_1">
       <column name="usr_sUID"/>
     </index>

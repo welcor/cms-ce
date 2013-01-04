@@ -91,9 +91,15 @@ public class ExpressionFunctions
         }
     }
 
-    public String concat( String a, String b )
+    public String concat( String... str )
     {
-        return a + b;
+        StringBuilder sb = new StringBuilder(  );
+
+        for(String s : str) {
+            sb.append( s );
+        }
+
+        return sb.toString();
     }
 
     public String replace( String source, String regex, String replacement )

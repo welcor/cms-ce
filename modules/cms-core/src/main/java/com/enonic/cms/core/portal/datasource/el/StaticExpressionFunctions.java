@@ -35,9 +35,9 @@ public class StaticExpressionFunctions
         return ExpressionFunctionsFactory.get().createExpressionFunctions().select( s1, s2 );
     }
 
-    public static String concat( String a, String b )
+    public static String concat( String... str )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().concat( a, b );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().concat( str );
     }
 
     public static String replace( String source, String regex, String replacement )

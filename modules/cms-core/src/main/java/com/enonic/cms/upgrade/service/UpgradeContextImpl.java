@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -22,7 +21,6 @@ import org.springframework.transaction.support.TransactionCallback;
 import com.enonic.esl.sql.model.Database;
 import com.enonic.esl.sql.model.DatabaseSchemaTool;
 import com.enonic.esl.sql.model.Table;
-import com.enonic.esl.sql.model.UniqueConstraint;
 import com.enonic.esl.sql.model.View;
 
 import com.enonic.cms.framework.jdbc.dialect.Db2Dialect;
@@ -168,12 +166,6 @@ public final class UpgradeContextImpl
 
     }
 
-    private void createTableUniqueConstraints( String tableName, boolean logSql )
-        throws Exception
-    {
-        executeStatements( DatabaseSchemaTool.generateCreateUniqueConstraints( this.getDatabase().getTable( tableName ) ), logSql );
-    }
-
     private void createTableForeignKeys( String tableName, boolean logSql )
         throws Exception
     {
@@ -185,40 +177,14 @@ public final class UpgradeContextImpl
     {
         createTableIndexes( tableName, logSql );
         createTableForeignKeys( tableName, logSql );
-        createTableUniqueConstraints( tableName, logSql );
     }
 
     public void dropTableConstraints( String tableName, boolean logSql )
         throws Exception
     {
-        /* Dropping foreign keys before indexes. Some databases allways create a matching index for each foreign key */
-        dropTableUniqueConstraints( tableName, logSql );
+        /* Dropping foreign keys before indexes. Some databases always create a matching index for each foreign key */
         dropTableForeignKeys( tableName, logSql );
         dropTableIndexes( tableName, logSql );
-    }
-
-    private void dropTableUniqueConstraints( String tableName, boolean logSql )
-        throws Exception
-    {
-
-        Connection conn = null;
-
-        try
-        {
-            conn = getConnection();
-            DatabaseMetaData metaData = conn.getMetaData();
-            Collection<String> keys = getUniqueConstraints( metaData, tableName );
-
-            for ( String key : keys )
-            {
-                String sql = getDialect().translateDropConstraint( tableName, key );
-                executeStatement( sql, logSql );
-            }
-        }
-        finally
-        {
-            close( conn );
-        }
     }
 
     private void dropTableForeignKeys( String tableName, boolean logSql )
@@ -451,44 +417,6 @@ public final class UpgradeContextImpl
                 if ( name != null )
                 {
                     keys.add( name );
-                }
-            }
-        }
-        finally
-        {
-            if ( resultSet != null )
-            {
-                resultSet.close();
-            }
-        }
-        return keys;
-    }
-
-    private Set<String> getUniqueConstraints( DatabaseMetaData metaData, String tableName )
-        throws SQLException
-    {
-        Set<String> keys = new HashSet<String>();
-
-        ResultSet resultSet = null;
-        try
-        {
-            resultSet = metaData.getIndexInfo( null, null, getTableName( metaData, tableName ), true, false );
-            while ( resultSet.next() )
-            {
-                Boolean bUnique = !resultSet.getBoolean( "NON_UNIQUE" );
-                if ( bUnique )
-                {
-                    String name = resultSet.getString( "INDEX_NAME" );
-                    if ( name != null )
-                    {
-                        // Note: Removes only constraints ending with UC<number>
-                        Matcher matcher = UniqueConstraint.REQUIRED_NAME_PATTERN.matcher( name );
-
-                        if ( matcher.matches() )
-                        {
-                            keys.add( name );
-                        }
-                    }
                 }
             }
         }

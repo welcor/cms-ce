@@ -35,8 +35,6 @@ public class Table
 
     private final List<Index> indexes = new ArrayList<Index>();
 
-    private final List<UniqueConstraint> uniqueConstraints = new ArrayList<UniqueConstraint>();
-
     public Table( String tableName, String elementName, String parentName )
     {
         this.tableName = tableName;
@@ -236,16 +234,6 @@ public class Table
             foreignKeys[i] = realForeignKeys.get( i );
         }
         return foreignKeys;
-    }
-
-    public void addUniqueConstraint( UniqueConstraint constraint )
-    {
-        uniqueConstraints.add( constraint );
-    }
-
-    public List<UniqueConstraint> getUniqueConstraints()
-    {
-        return uniqueConstraints;
     }
 
     public void addIndex( Index index )

@@ -78,58 +78,6 @@ public final class DatabaseSchemaTool
     }
 
     /**
-     * Generate create unique constraints.
-     */
-    public static List<String> generateCreateUniqueConstraints( Database db )
-    {
-        List<String> list = new ArrayList<String>();
-        Table[] tables = db.getTables();
-
-        for ( Table table : tables )
-        {
-            list.addAll( generateCreateUniqueConstraints( table ) );
-        }
-
-        return list;
-    }
-
-    /**
-     * Generate create unique constraints.
-     */
-    public static List<String> generateCreateUniqueConstraints( Table table )
-    {
-        List<String> list = new ArrayList<String>();
-        List<UniqueConstraint> constraints = table.getUniqueConstraints();
-
-        for ( UniqueConstraint constraint : constraints )
-        {
-            StringBuilder sql = new StringBuilder();
-            sql.append( "ALTER TABLE " );
-            sql.append( table );
-            sql.append( "\n\tADD CONSTRAINT " );
-            sql.append( constraint.getName() );
-            sql.append( " UNIQUE (" );
-
-            List<Column> columns = constraint.getColumns();
-            int size = columns.size();
-
-            for ( int j = 0; j < size; j++ )
-            {
-                sql.append( columns.get( j ) );
-                if ( j < columns.size() - 1 )
-                {
-                    sql.append( ", " );
-                }
-            }
-
-            sql.append( ")" );
-            list.add( sql.toString() );
-        }
-
-        return list;
-    }
-
-    /**
      * /**
      * Generate create indexes.
      */
@@ -303,7 +251,6 @@ public final class DatabaseSchemaTool
     {
         List<String> list = new ArrayList<String>();
         list.addAll( generateCreateTables( db ) );
-        list.addAll( generateCreateUniqueConstraints( db ) );
         list.addAll( generateCreateForeignKeys( db ) );
         list.addAll( generateCreateIndexes( db ) );
         list.addAll( generateCreateViews( db ) );

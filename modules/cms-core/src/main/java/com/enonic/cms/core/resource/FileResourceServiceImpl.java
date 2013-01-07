@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -147,15 +148,20 @@ public class FileResourceServiceImpl
     @Override
     public List<FileResourceName> getChildren( final FileResourceName name )
     {
-        ArrayList<FileResourceName> list = new ArrayList<FileResourceName>();
+        final ArrayList<FileResourceName> list = new ArrayList<FileResourceName>();
 
         final File parent = getFile( name );
 
         if ( parent.exists() && parent.isDirectory() )
         {
-            for ( File f : parent.listFiles() )
+            final File[] files = parent.listFiles();
+
+            // sort files, because listFiles does not guaranty any order.
+            Arrays.sort( files );
+
+            for ( final File file : files )
             {
-                list.add( new FileResourceName( name, f.getName() ) );
+                list.add( new FileResourceName( name, file.getName() ) );
             }
         }
 

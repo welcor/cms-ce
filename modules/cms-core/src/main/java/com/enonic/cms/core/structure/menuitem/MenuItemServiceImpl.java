@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -64,22 +66,25 @@ public class MenuItemServiceImpl
     private IndexTransactionService indexTransactionService;
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void execute( final MenuItemServiceCommand... commands )
+    public void execute( MenuItemServiceCommand... commands )
     {
         indexTransactionService.startTransaction();
+
+        commands = moveRemoveCommandsBeforeAnySetHomeCommands( commands );
+
         for ( final MenuItemServiceCommand command : commands )
         {
-            if ( command instanceof SetContentHomeCommand )
+            if ( command instanceof RemoveContentsFromSectionCommand )
+            {
+                doExecuteRemoveContentsFromSectionCommand( (RemoveContentsFromSectionCommand) command );
+            }
+            else if ( command instanceof SetContentHomeCommand )
             {
                 doExecuteSetContentHomeCommand( (SetContentHomeCommand) command );
             }
             else if ( command instanceof AddContentToSectionCommand )
             {
                 doExecuteAddContentToSectionCommand( (AddContentToSectionCommand) command );
-            }
-            else if ( command instanceof RemoveContentsFromSectionCommand )
-            {
-                doExecuteRemoveContentsFromSectionCommand( (RemoveContentsFromSectionCommand) command );
             }
             else if ( command instanceof ApproveContentInSectionCommand )
             {
@@ -463,6 +468,60 @@ public class MenuItemServiceImpl
 
         contentHomeDao.getHibernateTemplate().getSessionFactory().evictCollection( ContentEntity.class.getName() + ".contentHomes",
                                                                                    content.getKey() );
+    }
+
+    public MenuItemServiceCommand[] moveRemoveCommandsBeforeAnySetHomeCommands( final MenuItemServiceCommand[] commandArray )
+    {
+        if ( containsCommand( RemoveContentsFromSectionCommand.class, commandArray ) &&
+            containsCommand( SetContentHomeCommand.class, commandArray ) )
+        {
+            List<MenuItemServiceCommand> newOrder = Lists.newArrayList();
+
+            boolean removeCommandsAlreadyMoved = false;
+
+            for ( MenuItemServiceCommand command : commandArray )
+            {
+                if ( command instanceof SetContentHomeCommand )
+                {
+                    if ( !removeCommandsAlreadyMoved )
+                    {
+                        // find all RemoveContentsFromSectionCommand's and add them first
+                        for ( MenuItemServiceCommand potentialRemoveCommand : commandArray )
+                        {
+                            if ( potentialRemoveCommand instanceof RemoveContentsFromSectionCommand )
+                            {
+                                newOrder.add( potentialRemoveCommand );
+                            }
+                        }
+                    }
+                    removeCommandsAlreadyMoved = true;
+                    newOrder.add( command );
+                }
+                else if ( !( command instanceof RemoveContentsFromSectionCommand ) )
+                {
+                    newOrder.add( command );
+                }
+            }
+
+            return Iterables.toArray( newOrder, MenuItemServiceCommand.class );
+        }
+        else
+        {
+            return commandArray;
+        }
+    }
+
+    private boolean containsCommand( Class clazz, MenuItemServiceCommand[] commands )
+    {
+        for ( MenuItemServiceCommand currCommand : commands )
+        {
+            if ( clazz.equals( currCommand.getClass() ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Autowired

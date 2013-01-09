@@ -8,6 +8,6 @@
     <jndi-name>jdbc/cms</jndi-name>
   </resource-description>
   <session-descriptor>
-    <cookie-http-only>false</cookie-http-only>
+    <cookie-http-only>true</cookie-http-only>
   </session-descriptor>
 </weblogic-web-app>

@@ -117,7 +117,7 @@ public final class DwrServletWrapper
 
         final Map<String, String> params = new HashMap<String, String>();
         params.put( "debug", configProperties.getProperty( "cms.admin.dwr.debug", "false" ) );
-        params.put( "crossDomainSessionSecurity", configProperties.getProperty( "cms.admin.dwr.crossDomainSessionSecurity", "true" ) );
+        params.put( "crossDomainSessionSecurity", configProperties.getProperty( "cms.admin.dwr.crossDomainSessionSecurity", "false" ) );
         params.put( "classes", this.classes.toString() );
 
         final ServletConfig wrapper = new ServletConfig()

@@ -518,6 +518,7 @@
 %msgNotUpdateableGroup%|Gruppen kan ikke endres|Group cannot be changed|Gruppen kan ikke ændres|Grupp kan inte ändras
 %blockOCSchema%|Objektklasser skjema|Object classes schema|Objektklasser skema|Objektsklasser översikt
 %fldMimeType%|MIME type|MIME type|MIME type|MIME-typ
+%fldModuleNo%|Innholdstype nr|Content type no|Indholdstype nr|Innehållstyp nr
 %blockFrameworkUsedByPage%|Menypunkter|Menu items|Menupunkter|Menypunkter
 %blockContent%|Innhold|Content|Indhold|Innehåll
 %blockAvailability%|Tilgjengelighet|Availability|Tilgængelighed|Tillgänglighet
@@ -753,6 +754,7 @@
 %fldConfig%|Konfigurasjon|Configuration|Konfiguration|Konfiguration
 %fldDefaultIndexing%|Basis indeks konfigurasjon|Default indexing|Basis indekskonfiguration|Konfiguration standardindex
 %fldCtyDefault%|Basis innholdstype konfigurasjon|Default content type config|Standard indholdstype konfig|Konfiguration standardinnehållstyp
+%fldContentTypeNo%|Innholdstype nr|Content type no|Indholdstype nr.|Innehållstyp nr
 %mnuContentHandlers%|Content handlers|Content handlers|Content handlers|Innehållshanterare
 %mnuLocalContentTypes%|Innholdstyper|Content types|Indholdstyper|Innehållstyper
 %fldContentHandler%|Content handler|Content handler|Content handler|Innehållshanterare

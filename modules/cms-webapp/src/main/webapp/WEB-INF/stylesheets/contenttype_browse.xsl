@@ -93,6 +93,16 @@
                   </xsl:call-template>
 
                   <xsl:call-template name="tablecolumnheader">
+                    <xsl:with-param name="width" select="'120'"/>
+                    <xsl:with-param name="align" select="'center'"/>
+                    <xsl:with-param name="caption" select="'%fldContentTypeNo%'"/>
+                    <xsl:with-param name="pageURL" select="$pageURL"/>
+                    <xsl:with-param name="current-sortby" select="$sortby"/>
+                    <xsl:with-param name="current-sortby-direction" select="$sortby-direction"/>
+                    <xsl:with-param name="sortby" select="'@key'"/>
+                  </xsl:call-template>
+
+                  <xsl:call-template name="tablecolumnheader">
                     <xsl:with-param name="width" select="'100'"/>
                     <xsl:with-param name="align" select="'center'"/>
                     <xsl:with-param name="caption" select="'%fldModified%'"/>
@@ -141,6 +151,12 @@
                         <xsl:with-param name="key" select="@key"/>
                       </xsl:call-template>
                       <xsl:value-of select="name"/>
+                    </td>
+                    <td align="center" class="{$className}" title="%msgClickToEdit%">
+                      <xsl:call-template name="addJSEvent">
+                        <xsl:with-param name="key" select="@key"/>
+                      </xsl:call-template>
+                      <xsl:value-of select="@key"/>
                     </td>
                     <td align="center" class="{$className}" title="%msgClickToEdit%">
                       <xsl:call-template name="addJSEvent">

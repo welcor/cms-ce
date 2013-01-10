@@ -7,11 +7,23 @@
     <link type="text/css" rel="StyleSheet" href="../javascript/tab.webfx.css"/>
     <link type="text/css" rel="stylesheet" href="../css/admin.css"/>
 
+    <link  href="${baseUrl}/javascript/indexing.css" rel="stylesheet"/>
+    <link  href="${baseUrl}/javascript/bootstrap-progressbar.css" rel="stylesheet">
+    <script src="${baseUrl}/javascript/indexing.js"></script>
+
+    <#if reindexInProgress>
+    <script>
+    <!--
+        reindex(false, '${baseUrl}');
+    //-->
+    </script>
+    </#if>
+
+
     <style type="text/css">
         .operation_button {
             margin-right: 5px;
         }
-
     </style>
 
     <script type="text/javascript">
@@ -19,13 +31,15 @@
             if (confirm("WARNING: Are you sure you want to rebuild the index?\n\n" +
                         "All data will be deleted, and a full reindex will be done. " +
                         "This will affect your live sites by making content not available until it has been reindexed.")) {
-                location.href = "${baseUrl}/tools/reindexContent?op=custom&recreateIndex=true&reindex=true";
+                // location.href = "${baseUrl}/tools/reindexContent?op=custom&recreateIndex=true&reindex=true";
+                reindex( "${baseUrl}/tools/reindexContent??op=custom&recreateIndex=true&reindex=true", "${baseUrl}" );
             }
         }
 
         function startReindex() {
             if (confirm("Reindex all content now?")) {
-                location.href = '${baseUrl}/tools/reindexContent??op=custom&reindex=true';
+                // location.href = '${baseUrl}/tools/reindexContent??op=custom&reindex=true';
+                reindex( "${baseUrl}/tools/reindexContent??op=custom&reindex=true", "${baseUrl}" );
             }
         }
     </script>
@@ -46,6 +60,27 @@
 
         <div id="indexInfo">
         </div>
+
+        <fieldset>
+            <legend>Operations</legend>
+            <input type="button" class="operation_button" name="startReindex" value="Reindex all content"
+                   onclick="startReindex()" ${reindexInProgress?string("disabled","")}/>
+            <input type="button" class="operation_button" name="recreateIndex" value="Rebuild index (FULL)"
+                   onclick="recreateIndex()" ${reindexInProgress?string("disabled","")}/>
+            <br/>
+
+            <div>
+                <div class="progress" style="width: 300px; margin-top: 20px;">
+                    <div class="bar" style="width: 0"></div>
+                </div>
+            </div>
+
+            <div id="message" class="operation-bottom">Click some button to start</div>
+
+            <div class="operation-bottom">
+                <a href="${baseUrl}/tools/reindexContent?op=custom&info=logLines&back=indexMonitor">View last reindex log</a><br/>
+            </div>
+        </fieldset>
     </div>
 </div>
 

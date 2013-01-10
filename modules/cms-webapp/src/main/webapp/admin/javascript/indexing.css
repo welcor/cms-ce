@@ -1,0 +1,44 @@
+.infoBox {
+    padding: 8px;
+    margin: 10px;
+    border: 1px dotted #000000;
+    background-color: #EEEEEE;
+}
+
+.monospace {
+    font-family: 'Courier New';
+}
+
+.messages {
+    overflow : auto;
+    height: 600px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.logentry {
+    margin-left: 10px;
+}
+
+.level-info {
+    color: #808080;
+}
+
+.level-error {
+    color: #FF0000;
+}
+
+.level-warning {
+    color: #808000;
+}
+
+.stacktrace {
+    font-size: 10pt;
+    border-left: medium solid #808080;
+    margin-left: 20px;
+    color: #808080;
+}
+
+.traceelem {
+    margin-left: 4px;
+}

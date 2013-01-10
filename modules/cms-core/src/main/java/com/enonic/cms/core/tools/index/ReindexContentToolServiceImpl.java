@@ -5,6 +5,7 @@
 package com.enonic.cms.core.tools.index;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -33,19 +34,29 @@ public class ReindexContentToolServiceImpl
 
     private DateTime lastIndexedTime;
 
+    private ProgressInfo progressInfo = new ProgressInfo();
+
     public void reindexAllContent( List<String> logEntries )
     {
         logEntries.clear();
+
+        logEntries.add( "Reindex started at " + new Date() );
+
+        progressInfo.setPercent( 0 );
+        progressInfo.setLogLine( "Generating indexes..." );
+        progressInfo.setInProgress( true );
 
         long globalStart = System.currentTimeMillis();
 
         if ( !indexService.indexExists() )
         {
-            logEntries.add( "Index does not exist, createing..." );
+            logEntries.add( "Index does not exist, creating..." );
             indexService.createIndex();
         }
 
         Collection<ContentTypeEntity> contentTypes = contentService.getAllContentTypes();
+
+        progressInfo.setInterval( 98 / contentTypes.size() );
 
         logEntries.add( "Generating indexes for " + contentTypes.size() + " content types..." );
 
@@ -63,14 +74,25 @@ public class ReindexContentToolServiceImpl
 
             long start = System.currentTimeMillis();
 
-            batcher = new RegenerateIndexBatcher( indexService, contentService );
+            batcher = new RegenerateIndexBatcher( indexService, contentService, progressInfo );
 
             batcher.regenerateIndex( contentType, BATCH_SIZE, logEntries );
 
             long end = System.currentTimeMillis();
 
             logEntries.add( "... index values generated in " + ( end - start ) + " ms" );
+
+            progressInfo.setPercent( 98 * ( count - 1 ) / contentTypes.size() );
+            progressInfo.setLogLine( message.toString() );
         }
+
+
+        progressInfo.setLogLine( "Optimizing index ..." );
+        logEntries.add( "Optimizing index ..." );
+
+        batcher.optimizeIndex();
+
+        progressInfo.setPercent( 100 );
 
         long globalTimeUsed = ( System.currentTimeMillis() - globalStart );
         long timeUsedSeconds = globalTimeUsed / 1000;
@@ -82,8 +104,6 @@ public class ReindexContentToolServiceImpl
 
         logEntries.add( "Reindexing of all content types was successful!" );
         logEntries.add( "Total time used: " + timeUsed );
-
-        batcher.optimizeIndex();
     }
 
     @Override
@@ -97,6 +117,12 @@ public class ReindexContentToolServiceImpl
     public Long getLastReindexTimeUsed()
     {
         return lastReindexRuntime;
+    }
+
+    @Override
+    public ProgressInfo getProgressInfo()
+    {
+        return progressInfo;
     }
 
     public Boolean isReIndexInProgress()

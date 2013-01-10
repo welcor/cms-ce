@@ -89,24 +89,4 @@
         </ul>
     </fieldset>
     <br/>
-    <fieldset>
-        <legend>Operations</legend>
-        <input type="button" class="operation_button" name="startReindex" value="Reindex all content"
-               onclick="startReindex()" ${reindexInProgress?string("disabled","")}/>
-        <input type="button" class="operation_button" name="recreateIndex" value="Rebuild index (FULL)"
-               onclick="recreateIndex()" ${reindexInProgress?string("disabled","")}/>
-        <br/>
-    <#if reindexInProgress>
-        <div class="operation-bottom">
-            <a href="${baseUrl}/tools/reindexContent?op=custom">Reindex in progress...</a><br/>
-        </div>
-    </#if>
-
-    <#if lastReindexTime??>
-        <div class="operation-bottom">
-            Last reindex: ${lastReindexTime} ( took ${lastReindexTimeUsed} )
-        </div>
-    </#if>
-
-    </fieldset>
 </div>

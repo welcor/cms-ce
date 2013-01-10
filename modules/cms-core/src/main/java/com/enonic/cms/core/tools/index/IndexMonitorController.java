@@ -54,6 +54,7 @@ public final class IndexMonitorController
     {
         final Map<String, Object> model = Maps.newHashMap();
         model.put( "baseUrl", getBaseUrl( req ) );
+        model.put( "reindexInProgress", reindexContentToolService.isReIndexInProgress() );
 
         final String op = req.getParameter( "op" );
         if ( !"info".equals( op ) )

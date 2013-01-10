@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.tools.index.ProgressInfo;
 
 public class RegenerateIndexBatcher
 {
@@ -20,11 +21,22 @@ public class RegenerateIndexBatcher
 
     private ContentService contentService;
 
+    private ProgressInfo progressInfo;
+
     public RegenerateIndexBatcher( IndexService indexService, ContentService contentService )
     {
 
         this.indexService = indexService;
         this.contentService = contentService;
+        this.progressInfo = new ProgressInfo();
+    }
+
+    public RegenerateIndexBatcher( IndexService indexService, ContentService contentService, ProgressInfo progressInfo )
+    {
+
+        this.indexService = indexService;
+        this.contentService = contentService;
+        this.progressInfo = progressInfo;
     }
 
     public void regenerateIndex( ContentTypeEntity contentType, int batchSize, List<String> logEntries )
@@ -43,22 +55,29 @@ public class RegenerateIndexBatcher
 
         int currentIndex = 0;
 
+        final int percent = progressInfo.getPercent();
+        final int interval = progressInfo.getInterval();
+
         while ( currentIndex < allContentKeys.size() )
         {
             List<ContentKey> nextContentKeys = getNextContentKeys( allContentKeys, currentIndex, batchSize );
 
             if ( nextContentKeys != null && nextContentKeys.size() > 0 )
             {
+                final String message =
+                    "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
+                        " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'";
 
                 if ( logEntries != null )
                 {
-                    logEntries.add(
-                        "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
-                            " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
+                    logEntries.add( message );
                 }
 
-                LOG.info( "Regenerating indexes, (batch: " + ( currentIndex + 1 ) + " -> " + ( currentIndex + nextContentKeys.size() ) +
-                              " of total " + allContentKeys.size() + ") of content type '" + contentType.getName() + "'" );
+                LOG.info( message );
+
+                progressInfo.setPercent( percent + interval * ( currentIndex/batchSize  ) / allContentKeys.size() );
+                progressInfo.setLogLine( message );
+
 
                 long start = System.currentTimeMillis();
 

@@ -20,4 +20,5 @@ public interface ReindexContentToolService
 
     public Long getLastReindexTimeUsed();
 
+    public ProgressInfo getProgressInfo();
 }

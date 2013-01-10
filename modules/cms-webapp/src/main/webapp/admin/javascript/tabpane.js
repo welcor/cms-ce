@@ -299,7 +299,7 @@ WebFXTabPage.prototype.select = function () {
 };
 
 WebFXTabPage.prototype.dispose = function () {
-	this.aElement.onclick = null;
+	if (this.aElement) this.aElement.onclick = null;
 	this.aElement = null;
 	this.element.tabPage = null;
 	this.tab.onclick = null;

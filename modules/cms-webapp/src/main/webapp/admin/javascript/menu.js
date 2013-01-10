@@ -87,7 +87,7 @@ function toggleShortcuts( toggle ) {
     button.style.opacity = show ? '' : '.3';
 
     var menu = document.getElementById( 'id-menus' );
-    searchShortcuts( menu, show ? '' : 'none', true );
+    if (menu) searchShortcuts( menu, show ? '' : 'none', true );
 }
 
 function openTree() {

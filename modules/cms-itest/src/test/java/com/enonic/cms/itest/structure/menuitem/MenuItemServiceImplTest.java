@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.jdom.Document;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,6 +39,7 @@ import com.enonic.cms.core.structure.menuitem.ApproveContentInSectionCommand;
 import com.enonic.cms.core.structure.menuitem.ApproveContentsInSectionCommand;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.core.structure.menuitem.ContentHomeKey;
+import com.enonic.cms.core.structure.menuitem.ContentTypeNotSupportedException;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessException;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -84,14 +86,13 @@ public class MenuItemServiceImplTest
 
         fixture.flushAndClearHibernateSession();
 
-        // Create an article conent type that will be used in the section:
+        // Create an article content type that will be used in the section:
         ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "article", "heading" );
         ctyconf.startBlock( "intro" );
         ctyconf.addInput( "heading", "text", "contentdata/intro/heading", "heading", true );
         ctyconf.addInput( "teaser", "text", "contentdata/intro/teaser", "teaser" );
         ctyconf.endBlock();
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
-        fixture.save( factory.createContentType( "MenuItem", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
         fixture.save( factory.createContentType( "article", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
 
         fixture.flushAndClearHibernateSession();
@@ -104,9 +105,7 @@ public class MenuItemServiceImplTest
 
         // Create a unit and a category in the archive to store the articles in, including access rights on the category.
         fixture.save( factory.createUnit( "Archive" ) );
-        final CategoryEntity category = factory.createCategory( "Articles", null, "article", "Archive", "aru", "aru" );
-        category.setContentType( fixture.findContentTypeByName( "MenuItem" ) );
-        fixture.save( category );
+        fixture.save( factory.createCategory( "Articles", null, "article", "Archive", "aru", "aru" ) );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "aru", "read, admin_browse, create, delete, approve" ) );
         fixture.save( factory.createCategoryAccessForUser( "Articles", "nru", "read" ) );
 
@@ -292,7 +291,7 @@ public class MenuItemServiceImplTest
     }
 
 
-    // @Test
+    @Test
     public void removeContentsFromSection_removes_home_also_when_last()
     {
         // setup sections
@@ -355,7 +354,7 @@ public class MenuItemServiceImplTest
     }
 
 
-    // @Test
+    @Test
     public void removeContentsFromSection()
     {
         // setup
@@ -432,7 +431,8 @@ public class MenuItemServiceImplTest
         menuItemService.execute( command );
     }
 
-    // @Test(expected = ContentTypeNotSupportedException.class)
+    @Test(expected = ContentTypeNotSupportedException.class)
+    @Ignore
     // TODO: Ignore until it is easy to setup content type filter for a section page
     public void addContentToSection_adding_content_that_is_not_supported_by_section_page__trows_exception()
     {
@@ -464,7 +464,7 @@ public class MenuItemServiceImplTest
         }
     }
 
-    // @Test
+    @Test
     public void addContentToSection_adding_content_that_is_supported_by_section_passes()
     {
         // setup
@@ -490,7 +490,7 @@ public class MenuItemServiceImplTest
         assertEquals( 1, fixture.findMenuItemByName( "My section" ).getSectionContents().size() );
     }
 
-    // @Test(expected = ContentTypeNotSupportedException.class)
+    @Test(expected = ContentTypeNotSupportedException.class)
     public void addContentToSection_adding_content_that_is_not_supported_by_section_throws_exception()
     {
         // setup section with different content type supported
@@ -1400,19 +1400,19 @@ public class MenuItemServiceImplTest
     }
 
 
-    // @Test
+    @Test
     public void removeContentsFromSection_checkRemoverPermissions_read_delete_publish_APPROVED()
     {
         checkUserPermissionForRemoveContentFromSection( "read, delete, publish", SectionStatus.APPROVE_CONTENT, RemoveAccess.ALLOWED );
     }
 
-    // @Test
+    @Test
     public void removeContentsFromSection_checkRemoverPermissions_read_add_publish_APPROVED()
     {
         checkUserPermissionForRemoveContentFromSection( "read, add, publish", SectionStatus.APPROVE_CONTENT, RemoveAccess.ALLOWED );
     }
 
-    // @Test
+    @Test
     public void removeContentsFromSection_checkRemoverPermissions_read_add_publish_delete_APPROVED()
     {
         checkUserPermissionForRemoveContentFromSection( "read, add, publish, delete", SectionStatus.APPROVE_CONTENT, RemoveAccess.ALLOWED );
@@ -1442,13 +1442,13 @@ public class MenuItemServiceImplTest
         checkUserPermissionForRemoveContentFromSection( "read, delete", SectionStatus.DO_NOT_APPROVE_CONTENT, RemoveAccess.DENIED );
     }
 
-    // @Test
+    @Test
     public void removeContentsFromSection_checkRemoverPermissions_read_add_NOT_APPROVED()
     {
         checkUserPermissionForRemoveContentFromSection( "read, add", SectionStatus.DO_NOT_APPROVE_CONTENT, RemoveAccess.ALLOWED );
     }
 
-    // @Test
+    @Test
     public void removeContentsFromSection_checkRemoverPermissions_read_add_delete_NOT_APPROVED()
     {
         checkUserPermissionForRemoveContentFromSection( "read, add, delete", SectionStatus.DO_NOT_APPROVE_CONTENT, RemoveAccess.ALLOWED );
@@ -1461,13 +1461,13 @@ public class MenuItemServiceImplTest
                                                         RemoveAccess.DENIED );
     }
 
-    // @Test
+    @Test
     public void removeContentsFromSection_checkRemoverPermissions_read_add_publish_NOT_APPROVED()
     {
         checkUserPermissionForRemoveContentFromSection( "read, add, publish", SectionStatus.DO_NOT_APPROVE_CONTENT, RemoveAccess.ALLOWED );
     }
 
-    // @Test
+    @Test
     public void removeContentsFromSection_checkRemoverPermissions_read_add_publish_delete_NOT_APPROVED()
     {
         checkUserPermissionForRemoveContentFromSection( "read, add, publish, delete", SectionStatus.DO_NOT_APPROVE_CONTENT,
@@ -1584,7 +1584,9 @@ public class MenuItemServiceImplTest
     private CreateContentCommand createCreateContentCommand( String contentName, String categoryName, ContentStatus status,
                                                              UserKey creator )
     {
-        ContentTypeEntity contentType = fixture.findContentTypeByName( "MenuItem" );
+        CategoryEntity category = fixture.findCategoryByName( categoryName );
+
+        ContentTypeEntity contentType = category.getContentType();
         CustomContentData contentData = new CustomContentData( contentType.getContentTypeConfig() );
         TextDataEntryConfig headingConfig = new TextDataEntryConfig( "heading", true, "Tittel", "contentdata/intro/heading" );
         contentData.add( new TextDataEntry( headingConfig, "test title" ) );
@@ -1592,7 +1594,7 @@ public class MenuItemServiceImplTest
         CreateContentCommand createContentCommand = new CreateContentCommand();
         createContentCommand.setCreator( creator );
         createContentCommand.setLanguage( fixture.findLanguageByCode( "en" ) );
-        createContentCommand.setCategory( fixture.findCategoryByName( categoryName ) );
+        createContentCommand.setCategory( category );
         createContentCommand.setPriority( 0 );
         createContentCommand.setStatus( status );
         createContentCommand.setContentData( contentData );

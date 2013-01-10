@@ -13,7 +13,7 @@
   <artifactId>cms</artifactId>
   <packaging>pom</packaging>
   <name>Enonic CMS</name>
-  <version>4.7.1-SNAPSHOT</version>
+  <version>4.7.1</version>
 
   <licenses>
     <license>

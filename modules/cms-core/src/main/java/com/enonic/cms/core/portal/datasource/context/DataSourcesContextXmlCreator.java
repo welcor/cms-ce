@@ -10,11 +10,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.portal.PageRequestType;
-import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
+import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteProperties;
@@ -68,6 +70,20 @@ public final class DataSourcesContextXmlCreator
             queryStringContextXmlCreator.createQueryStringElement( context.getHttpRequest(), context.getOriginalSitePath(),
                                                                    context.getRequestParameters() );
         contextElem.addContent( queryStringElem );
+
+        // render mode
+        String mode = "live";
+
+        if ( RenderTrace.isTraceOn() )
+        {
+            mode = "edit";
+        }
+        else if ( "true".equals( context.getHttpRequest().getAttribute( Attribute.PREVIEW_ENABLED ) ) )
+        {
+            mode = "preview";
+        }
+
+        addElement( "render-mode", mode, contextElem );
 
         // Device context
         if ( context.getDeviceClass() != null )

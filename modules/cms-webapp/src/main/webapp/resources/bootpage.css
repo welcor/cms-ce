@@ -33,7 +33,7 @@ h2 {
     line-height: 1.2;
 }
 
-#sites h2 {
+.links h2 {
     margin-bottom: 0.25em;
 }
 
@@ -171,29 +171,40 @@ h3,
     height: 20px;
 }
 
-#sites {
+.links {
     padding: 15px 10px;
 }
 
-#sites ul {
+.links ul {
     list-style: none;
 }
 
-#sites ul li {
+.links ul li {
     cursor: pointer;
 }
 
-#sites ul li {
+.links ul li {
     padding-left: 40px;
-    background: url("images/applications-internet.png") no-repeat 0 7px TRANSPARENT;
     margin-bottom: 10px;
 }
 
-#sites ul li a {
+#sites ul li {
+    background: url("images/icoMoon/32x32/globe.png") no-repeat 0 7px TRANSPARENT;
+}
+
+.links #console {
+    background: url("images/icoMoon/32x32/home.png") no-repeat 0 7px TRANSPARENT;
+}
+
+.links #webdav {
+    background: url("images/icoMoon/32x32/folder.png") no-repeat 0 7px TRANSPARENT;
+}
+
+.links ul li a {
     display: block;
 }
 
-#sites ul li a span {
+.links ul li a span {
     display: inline-block;
 }
 

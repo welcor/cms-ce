@@ -29,10 +29,10 @@
  *
  *      Features added are:
  *
- *        * Support for first day of week.
- *        * Open the month and year described in the input field.
+ *        * Support for first day of week. ( tan@enonic.com )
+ *        * Open the month and year described in the input field. ( tan@enonic.com )
+ *        * Support for both Quirks and Standard mode in IE ( hza@enonic.com )
  *
- *      tan@enonic.com
  */
 
 var g_cal_firstDayOfWeek = 1;
@@ -355,6 +355,10 @@ var calendar = {
         },
         p: function(node)
         {
+            function ieclass() {
+                return document.compatMode == 'BackCompat' ? "className" : "class";
+            }
+
             node.make = function(tag, body, html)
             {
                 var element = document.createElement(typeof tag == "string" ? tag.split("::")[0] : "div");
@@ -364,7 +368,7 @@ var calendar = {
                             if (y == "css")
                                 element.style[(x == "cssFloat" && calendar.lib.n.ie ? "styleFloat" : x)] = body[y][x];
                             else if (y == "att" || y == "on")
-                                element[y == "att" ? "setAttribute" : (calendar.lib.n.ie ? "attachEvent" : "addEventListener")](y == "att" ? (x == "class" && calendar.lib.n.ie ? "className" : x) : ((calendar.lib.n.ie ? "on" : "") + x), body[y][x], false);
+                                element[y == "att" ? "setAttribute" : (calendar.lib.n.ie ? "attachEvent" : "addEventListener")](y == "att" ? (x == "class" && calendar.lib.n.ie ? ieclass() : x) : ((calendar.lib.n.ie ? "on" : "") + x), body[y][x], false);
 
                 try {
                     element.innerHTML = typeof tag == "string" && tag.split("::").length > 1 ? tag.split("::")[1] : (typeof html == "undefined" ? "" : html);
@@ -389,7 +393,7 @@ var calendar = {
             {
                 if (typeof node.getAttribute == "undefined")return 0;
 
-                var ieFix = { "class":"className" };
+                var ieFix = { "class": ieclass() };
 
                 if (typeof val != "undefined" && typeof remove == "undefined") node.setAttribute(calendar.lib.n.ie ? ieFix[att] : att, att == "class" ? node.att(calendar.lib.n.ie ? ieFix[att] : att) + ' ' + val : val);
                 else if (typeof val != "undefined" && typeof remove != "undefined") node.setAttribute(calendar.lib.n.ie ? ieFix[att] : att, node.att(calendar.lib.n.ie ? ieFix[att] : att).replace(val));

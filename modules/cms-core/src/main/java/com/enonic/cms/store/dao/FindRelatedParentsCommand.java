@@ -160,8 +160,7 @@ class FindRelatedParentsCommand
     private ContentMap retrieveContent( final Set<ContentKey> contentKeys )
     {
         final FindContentByKeysQuerier findContentByKeysQuerier =
-            new FindContentByKeysQuerier( hibernateTemplate.getSessionFactory().getCurrentSession(), ContentEagerFetches.PRESET_FOR_PORTAL,
-                                          true );
+            new FindContentByKeysQuerier( hibernateTemplate.getSessionFactory().getCurrentSession(), ContentEagerFetches.PRESET_FOR_PORTAL );
 
         final FindContentByKeysCommandExecutor commandExecutor =
             new FindContentByKeysCommandExecutor( entityCache, hibernateTemplate, findContentByKeysQuerier );

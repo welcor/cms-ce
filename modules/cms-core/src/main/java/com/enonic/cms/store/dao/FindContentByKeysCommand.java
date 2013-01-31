@@ -13,17 +13,9 @@ public class FindContentByKeysCommand
 
     private boolean byPassCache = false;
 
-    private boolean fetchEntitiesAsReadOnly = true;
-
     public FindContentByKeysCommand contentKeys( List<ContentKey> value )
     {
         this.contentKeys = value;
-        return this;
-    }
-
-    public FindContentByKeysCommand fetchEntitiesAsReadOnly( boolean value )
-    {
-        this.fetchEntitiesAsReadOnly = value;
         return this;
     }
 
@@ -47,11 +39,6 @@ public class FindContentByKeysCommand
     public ContentEagerFetches getContentEagerFetches()
     {
         return contentEagerFetches;
-    }
-
-    public boolean isFetchEntitiesAsReadOnly()
-    {
-        return fetchEntitiesAsReadOnly;
     }
 
     public boolean isByPassCache()

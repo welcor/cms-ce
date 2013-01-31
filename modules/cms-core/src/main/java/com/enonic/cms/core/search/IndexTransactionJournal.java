@@ -140,7 +140,7 @@ public class IndexTransactionJournal
         }
 
         FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentToLoad ).eagerFetches(
-            ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( false );
+            ContentEagerFetches.PRESET_FOR_INDEXING ).byPassCache( false );
 
         return contentDao.findByKeys( command );
     }

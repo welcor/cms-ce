@@ -173,7 +173,7 @@ public class CategoryCommandProcessorFactory
     SynchronizeContentACLProcessor createSynchronizeContentACLCommandProcessor( final SynchronizeContentACLCommand command )
     {
         final ContentMap contentToSynchronize = contentDao.findByKeys(
-            new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
+            new FindContentByKeysCommand().contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 
         final SynchronizeContentACLProcessor processor =
@@ -204,7 +204,7 @@ public class CategoryCommandProcessorFactory
     ModifyContentACLCommandProcessor createModifyContentACLCommandProcessor( final ModifyContentACLCommand command )
     {
         final ContentMap contentToSynchronize = contentDao.findByKeys(
-            new FindContentByKeysCommand().fetchEntitiesAsReadOnly( false ).contentKeys( command.getContentToUpdate() ).eagerFetches(
+            new FindContentByKeysCommand().contentKeys( command.getContentToUpdate() ).eagerFetches(
                 ContentEagerFetches.PRESET_FOR_APPLYING_CONTENT_ACCESS ).byPassCache( true ) );
 
         final ModifyContentACLCommandProcessor prosessor = new ModifyContentACLCommandProcessor( groupDao, indexTransactionService );

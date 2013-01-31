@@ -19,14 +19,10 @@ class FindContentByKeysQuerier
 
     private ContentEagerFetches contentEagerFetches;
 
-    private boolean fetchEntitiesAsReadOnly = true;
-
-    FindContentByKeysQuerier( final Session hibernateSession, final ContentEagerFetches contentEagerFetches,
-                              final boolean fetchEntitiesAsReadOnly )
+    FindContentByKeysQuerier( final Session hibernateSession, final ContentEagerFetches contentEagerFetches )
     {
         this.hibernateSession = hibernateSession;
         this.contentEagerFetches = contentEagerFetches;
-        this.fetchEntitiesAsReadOnly = fetchEntitiesAsReadOnly;
     }
 
     List<ContentEntity> queryContent( final Collection<ContentKey> contentKeys )
@@ -63,7 +59,6 @@ class FindContentByKeysQuerier
         }.toString() );
 
         final Query compiled = hibernateSession.createQuery( hqlQuery.toString() );
-        compiled.setReadOnly( fetchEntitiesAsReadOnly );
         compiled.setCacheable( false );
         //noinspection unchecked
         return compiled.list();

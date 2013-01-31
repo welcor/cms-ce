@@ -37,7 +37,7 @@ public final class IndexServiceImpl
     public void reindex( final List<ContentKey> contentKeys )
     {
         final FindContentByKeysCommand command = new FindContentByKeysCommand().contentKeys( contentKeys ).eagerFetches(
-            ContentEagerFetches.PRESET_FOR_INDEXING ).fetchEntitiesAsReadOnly( true ).byPassCache( true );
+            ContentEagerFetches.PRESET_FOR_INDEXING ).byPassCache( true );
 
         final ContentMap contentMap = contentDao.findByKeys( command );
 

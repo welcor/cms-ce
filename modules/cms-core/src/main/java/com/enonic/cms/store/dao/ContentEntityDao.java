@@ -45,8 +45,7 @@ public class ContentEntityDao
     public ContentMap findByKeys( final FindContentByKeysCommand command )
     {
         final FindContentByKeysQuerier findContentByKeysQuerier =
-            new FindContentByKeysQuerier( getHibernateTemplate().getSessionFactory().getCurrentSession(), command.getContentEagerFetches(),
-                                          command.isFetchEntitiesAsReadOnly() );
+            new FindContentByKeysQuerier( getHibernateTemplate().getSessionFactory().getCurrentSession(), command.getContentEagerFetches() );
         final FindContentByKeysCommandExecutor commandExecutor =
             new FindContentByKeysCommandExecutor( entityCache, getHibernateTemplate(), findContentByKeysQuerier );
 

@@ -42,7 +42,7 @@
         <script type="text/javascript" src="javascript/cms/element/Dimensions.js">//</script>
         <script type="text/javascript" src="javascript/cms/ui/MenuButton.js">//</script>
 
-        <script type="text/javascript" src="javascript/lib/jquery/jquery-1.3.2.min.js">//</script>
+        <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js">//</script>
         <script type="text/javascript" src="javascript/userstore.js">//</script>
         <script type="text/javascript" src="dwr/interface/AjaxService.js"/>
         <script type="text/javascript" src="dwr/engine.js"/>

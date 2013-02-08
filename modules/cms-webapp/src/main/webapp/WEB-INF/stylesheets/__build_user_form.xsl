@@ -156,6 +156,7 @@
 
       <x:template match="/">
         <html>
+          <head>
           <script type="text/javascript" src="javascript/admin.js">//</script>
           <script type="text/javascript" src="javascript/validate.js">//</script>
           <script type="text/javascript" src="javascript/tabpane.js">//</script>
@@ -164,7 +165,7 @@
           <script type="text/javascript" src="javascript/calendar_picker.js">//</script>
           <script type="text/javascript" src="dwr/interface/AjaxService.js">//</script>
           <script type="text/javascript" src="dwr/engine.js">//</script>
-          <script type="text/javascript" src="javascript/lib/jquery/jquery-1.3.2.min.js">//</script>
+          <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js">//</script>
           <script type="text/javascript" src="javascript/lib/jquery-ui-1.7.2.custom/js/jquery-ui-1.7.2.custom.min.js">//</script>
           <script type="text/javascript" src="javascript/lib/jquery/autocomplete/lib/jquery.bgiframe.min.js">//</script>
           <script type="text/javascript" src="javascript/lib/jquery/autocomplete/jquery.autocomplete.min.js">//</script>
@@ -302,6 +303,7 @@
             // -----------------------------------------------------------------------------------------------------------------------------
 
           </script>
+          </head>
 
           <body>
             <h1>

@@ -7,7 +7,7 @@ public class DataSourceConverter1Test
 {
     public DataSourceConverter1Test()
     {
-        super( new DataSourceConverter1() );
+        super( new DataSourceConverter1( null ) );
     }
 
     @Test

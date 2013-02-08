@@ -11,16 +11,12 @@ import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.findElem
 import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.getTextNode;
 
 public final class DataSourceConverter1
-    implements DataSourceConverter
+    extends DataSourceConverter
 {
-    private String currentContext = "";
-
-    @Override
-    public void setCurrentContext( final String context )
+    public DataSourceConverter1( final DataSourceConverterLogger logger )
     {
-        this.currentContext = context;
+        super( logger );
     }
-
 
     public Element convert( final Element elem )
     {
@@ -43,7 +39,13 @@ public final class DataSourceConverter1
     {
         final Element result = new Element( "datasource" );
         final String methodName = getTextNode( findElement( elem, "methodName" ) );
-        result.setAttribute( "name", methodName );
+
+        if ( Strings.isNullOrEmpty( methodName ) )
+        {
+            this.logger.logWarning( this.currentContext + " : method name is missing in data source. Setting to empty." );
+        }
+
+        result.setAttribute( "name", methodName != null ? methodName : "" );
 
         copyAttributeIfExists( elem, result, "result-element" );
         copyAttributeIfExists( elem, result, "cache" );

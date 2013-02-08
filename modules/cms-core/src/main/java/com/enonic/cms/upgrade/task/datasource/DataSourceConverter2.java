@@ -19,27 +19,17 @@ import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.findElem
 import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.getTextNode;
 
 public final class DataSourceConverter2
-    implements DataSourceConverter
+    extends DataSourceConverter
 {
-    private final DataSourceConverterLogger logger;
-
     private final DataSourceMethodConverters converters;
 
     private final XMLOutputter xmlOutputter;
 
-    private String currentContext = "";
-
     public DataSourceConverter2( final DataSourceConverterLogger logger )
     {
-        this.logger = logger;
+        super( logger );
         this.converters = new DataSourceMethodConverters();
         this.xmlOutputter = new XMLOutputter( Format.getCompactFormat() );
-    }
-
-    @Override
-    public void setCurrentContext( final String context )
-    {
-        this.currentContext = context;
     }
 
     @Override
@@ -124,11 +114,8 @@ public final class DataSourceConverter2
 
     private Comment createComment( final String name, final String[] params, final Element elem )
     {
-        if ( this.logger != null )
-        {
-            this.logger.logWarning(  currentContext + " : method name[" + name + "]with[" + params.length +
+        this.logger.logWarning( currentContext + " : method name[" + name + "]with[" + params.length +
                                     "] parameters not found. Commenting out." );
-        }
 
         return new Comment( this.xmlOutputter.outputString( elem ) );
     }

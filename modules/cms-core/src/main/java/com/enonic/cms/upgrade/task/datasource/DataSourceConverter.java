@@ -2,10 +2,22 @@ package com.enonic.cms.upgrade.task.datasource;
 
 import org.jdom.Element;
 
-public interface DataSourceConverter
+public abstract class DataSourceConverter
 {
-    public void setCurrentContext(String context);
+    protected final DataSourceConverterLogger logger;
 
-    public Element convert( Element root )
+    protected String currentContext = "";
+
+    public DataSourceConverter( final DataSourceConverterLogger logger )
+    {
+        this.logger = logger != null ? logger : new NopDataSourceConverterLogger();
+    }
+
+    public final void setCurrentContext( String context )
+    {
+        this.currentContext = context;
+    }
+
+    public abstract Element convert( Element root )
         throws Exception;
 }

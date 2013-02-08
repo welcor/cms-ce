@@ -3,7 +3,7 @@ package com.enonic.cms.upgrade.task;
 import com.enonic.cms.upgrade.UpgradeContext;
 import com.enonic.cms.upgrade.task.datasource.DataSourceConverter;
 import com.enonic.cms.upgrade.task.datasource.DataSourceConverter2;
-import com.enonic.cms.upgrade.task.datasource.DataSourceConverterLogger;
+import com.enonic.cms.upgrade.task.datasource.DataSourceConverterLoggerImpl;
 
 final class UpgradeModel0207
     extends AbstractDataSourceUpgradeTask
@@ -16,14 +16,7 @@ final class UpgradeModel0207
     @Override
     protected DataSourceConverter newConverter( final UpgradeContext context )
     {
-        return new DataSourceConverter2( new DataSourceConverterLogger()
-        {
-            @Override
-            public void logWarning( final String message )
-            {
-                context.logWarning( message );
-            }
-        } );
+        return new DataSourceConverter2( new DataSourceConverterLoggerImpl( context ) );
     }
 
     @Override

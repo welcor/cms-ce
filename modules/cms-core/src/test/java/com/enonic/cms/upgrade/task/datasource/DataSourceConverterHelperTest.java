@@ -17,7 +17,7 @@ public class DataSourceConverterHelperTest
 
     public DataSourceConverterHelperTest()
     {
-        this.helper = new DataSourceConverterHelper( new DataSourceConverter()
+        this.helper = new DataSourceConverterHelper( new DataSourceConverter( null )
         {
             @Override
             public Element convert( final Element root )
@@ -28,12 +28,6 @@ public class DataSourceConverterHelperTest
                 subElem.setAttribute( "name", "dummy" );
                 elem.addContent( subElem );
                 return elem;
-            }
-
-            @Override
-            public void setCurrentContext( final String context )
-            {
-
             }
         } );
     }

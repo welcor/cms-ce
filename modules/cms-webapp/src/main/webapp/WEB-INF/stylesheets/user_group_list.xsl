@@ -74,7 +74,7 @@
 			<head>
 				<link type="text/css" href="css/admin.css" rel="stylesheet" />
 				<script type="text/javascript" src="javascript/admin.js">//</script>
-        <script type="text/javascript" src="javascript/lib/jquery/jquery-1.3.2.min.js">//</script>
+        <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js">//</script>
 
 				<script type="text/javascript" src="javascript/batchAdd.js">//</script>
 				<script type="text/javascript" src="javascript/accessrights.js">//</script>

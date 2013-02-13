@@ -29,6 +29,7 @@ import com.enonic.cms.core.security.user.User;
 public class SimpleContentXMLBuilder
     extends ContentBaseXMLBuilder
 {
+    private static final String RADIO_ITEMS_REGEX = "^rb:[a-zA-Z0-9]+:";
 
     public int[] getRelatedContentKeys( ExtendedMap formItems )
     {
@@ -357,7 +358,8 @@ public class SimpleContentXMLBuilder
                 // radiobutton
                 else if ( type.equals( "radiobutton" ) )
                 {
-                    String[] radiobuttonName = getFormItemsByRegexp( "^rb:[a-zA-Z0-9]+:" + name, formItems );
+                    final String[] radiobuttonName = getFormItemsByRegexp( RADIO_ITEMS_REGEX + name, formItems );
+
                     if ( radiobuttonName.length == 1 )
                     {
                         if ( formItems.getString( radiobuttonName[0] ) != null &&
@@ -704,7 +706,7 @@ public class SimpleContentXMLBuilder
                 // radiobutton
                 else if ( type.equals( "radiobutton" ) )
                 {
-                    String[] radiobuttonNames = getFormItemsByRegexp( "rb:[0-9].*:" + name, formItems );
+                    final String[] radiobuttonNames = getFormItemsByRegexp( RADIO_ITEMS_REGEX + name, formItems );
 
                     for ( int j = 0; j < instances; ++j )
                     {

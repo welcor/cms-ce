@@ -1303,6 +1303,7 @@
                         <xsl:call-template name="displayinput">
                           <xsl:with-param name="input" select="."/>
                           <xsl:with-param name="grpname" select="$grpname"/>
+                          <xsl:with-param name="grpnum"><x:value-of select="position()"/></xsl:with-param>
                         </xsl:call-template>
                       </xsl:for-each>
                       <tr>
@@ -1508,6 +1509,7 @@
   <xsl:template name="displayinput">
     <xsl:param name="input"/>
     <xsl:param name="grpname"/>
+    <xsl:param name="grpnum" select="'0'"/>
 
     <xsl:variable name="title">
       <xsl:if test="$developer = 'true'">
@@ -1658,6 +1660,7 @@
         <xsl:call-template name="displayradiobutton">
           <xsl:with-param name="input" select="$input"/>
           <xsl:with-param name="title" select="$title"/>
+          <xsl:with-param name="grpnum" select="$grpnum"/>
         </xsl:call-template>
       </xsl:when>
 
@@ -2987,6 +2990,7 @@
   <xsl:template name="displayradiobutton">
     <xsl:param name="input"/>
     <xsl:param name="title"/>
+    <xsl:param name="grpnum"/>
 
     <xsl:variable name="xpath">
       <xsl:value-of select="$input/xpath"/>
@@ -3030,7 +3034,7 @@
         </xsl:if>
 
         <x:variable name="uniqueId">
-          <xsl:value-of select="admin:uniqueId()"/>
+          <xsl:copy-of select="$grpnum"/>
         </x:variable>
 
         <div class="radiobutton-group">

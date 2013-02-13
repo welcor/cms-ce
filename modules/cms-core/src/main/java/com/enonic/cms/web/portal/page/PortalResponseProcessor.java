@@ -76,6 +76,8 @@ public class PortalResponseProcessor
 
     private PortalRequestTrace currentPortalRequestTrace;
 
+    private boolean encodeRedirectUrl;
+
     public void serveResponse()
         throws Exception
     {
@@ -256,18 +258,17 @@ public class PortalResponseProcessor
 
     private void sendRedirectResponse( final String redirectUrl, final int redirectStatus )
     {
-        String encodedRedirectUrl = httpResponse.encodeRedirectURL( redirectUrl );
-
         if ( redirectStatus == HttpServletResponse.SC_MOVED_PERMANENTLY )
         {
             httpResponse.setStatus( redirectStatus );
-            httpResponse.setHeader( "Location", encodedRedirectUrl );
         }
         else
         {
             httpResponse.setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
-            httpResponse.setHeader( "Location", encodedRedirectUrl );
         }
+
+        final String location = this.encodeRedirectUrl ? httpResponse.encodeRedirectURL( redirectUrl ) : redirectUrl;
+        httpResponse.setHeader( "Location", location );
     }
 
     private void serveForwardToSitePathResponse()
@@ -399,5 +400,10 @@ public class PortalResponseProcessor
     public void setCurrentPortalRequestTrace( final PortalRequestTrace currentPortalRequestTrace )
     {
         this.currentPortalRequestTrace = currentPortalRequestTrace;
+    }
+
+    public void setEncodeRedirectUrl( final boolean encodeRedirectUrl )
+    {
+        this.encodeRedirectUrl = encodeRedirectUrl;
     }
 }

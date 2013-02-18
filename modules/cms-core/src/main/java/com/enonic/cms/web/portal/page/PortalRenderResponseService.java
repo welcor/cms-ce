@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Attribute;
@@ -41,6 +42,9 @@ public class PortalRenderResponseService
 
     private LivePortalTraceService livePortalTraceService;
 
+    @Value("${cms.portal.encodeRedirectUrl}")
+    private boolean encodeRedirectUrl;
+
     public void serveResponse( final PortalRequest request, final PortalResponse response, final HttpServletResponse httpResponse,
                                final HttpServletRequest httpRequest )
         throws Exception
@@ -63,6 +67,7 @@ public class PortalRenderResponseService
         processor.setLocalizationEnabled( site.isLocalizationEnabled() );
         processor.setForceNoCacheForSite(
             sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_FORCENOCACHE, requestedSiteKey ) );
+        processor.setEncodeRedirectUrl( encodeRedirectUrl );
         processor.setCacheHeadersEnabledForSite(
             sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED, requestedSiteKey ) );
         processor.setResponseFilters( pluginManager.getExtensions().findMatchingHttpResponseFilters( originalSitePath.asString() ) );

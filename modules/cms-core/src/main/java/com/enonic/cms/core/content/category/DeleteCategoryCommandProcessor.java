@@ -78,6 +78,12 @@ class DeleteCategoryCommandProcessor
         }
         else
         {
+            // if category contains content it cannot be deleted unless includeContent is true
+            if ( !includeContent )
+            {
+                checkContainsContent( categoryToDelete );
+            }
+
             doDeleteCategory( categoryToDelete );
         }
     }
@@ -93,11 +99,7 @@ class DeleteCategoryCommandProcessor
         // if category contains content it cannot be deleted unless includeContent is true
         if ( !includeContent )
         {
-            if ( contentDao.countContentByCategory( category ) > 0 )
-            {
-                throw new IllegalArgumentException( "Category [" + category.getPathAsString() +
-                                                        "] contains content. Deleting a category that contains content is not allowed when includeContent is false." );
-            }
+            checkContainsContent( category );
         }
 
         doDeleteCategory( category );
@@ -122,6 +124,15 @@ class DeleteCategoryCommandProcessor
                 unitToDelete.setDeleted( true );
                 unitToDelete.removeContentTypes();
             }
+        }
+    }
+
+    private void checkContainsContent( final CategoryEntity category )
+    {
+        if ( contentDao.countContentByCategory( category ) > 0 )
+        {
+            throw new IllegalArgumentException( "Category [" + category.getPathAsString() +
+                                                    "] contains content. Deleting a category that contains content is not allowed when includeContent is false." );
         }
     }
 

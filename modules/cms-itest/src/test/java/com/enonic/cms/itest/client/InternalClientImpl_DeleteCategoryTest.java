@@ -524,7 +524,7 @@ public class InternalClientImpl_DeleteCategoryTest
     }
 
     @Test
-    public void deleteCategory_that_is_category_which_have_sub_category_with_content_throws_exception_when_includeContent_is_false_and_not_recursive()
+    public void deleteCategory_that_is_category_with_content_throws_exception_when_includeContent_is_false_and_not_recursive()
     {
         // setup
         fixture.save( factory.createUnit( "MyUnit" ) );
@@ -532,16 +532,12 @@ public class InternalClientImpl_DeleteCategoryTest
         fixture.save( factory.createCategoryAccessForUser( "World", "deleter", "read,administrate" ) );
 
         createAndStoreCategory( "Europe", "World" );
-        createAndStoreCategory( "Belarus", "Europe" );
-        createAndStoreCategory( "Minsk", "Belarus" );
-        createAndStoreContent( "Content-1", "Minsk" );
+        createAndStoreContent( "Content-1", "Europe" );
 
         fixture.flushAndClearHibernateSession();
 
         // verify setup
         assertEquals( false, fixture.findCategoryByName( "Europe" ).isDeleted() );
-        assertEquals( false, fixture.findCategoryByName( "Belarus" ).isDeleted() );
-        assertEquals( false, fixture.findCategoryByName( "Minsk" ).isDeleted() );
 
         fixture.flushAndClearHibernateSession();
 
@@ -559,7 +555,7 @@ public class InternalClientImpl_DeleteCategoryTest
         {
             assertTrue( e instanceof ClientException );
             assertTrue( e.getMessage().contains(
-                "Failed to delete category: Category [/World/Europe] contains categories. Deleting a category that contains categories is not allowed when recursive flag is false." ) );
+                "Failed to delete category: Category [/World/Europe] contains content. Deleting a category that contains content is not allowed when includeContent is false." ) );
         }
     }
 

@@ -22,6 +22,7 @@ import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.instanttrace.InstantTraceRequestInspector;
@@ -42,6 +43,8 @@ public class PortalRenderResponseService
 
     private LivePortalTraceService livePortalTraceService;
 
+    private final OriginalPathResolver originalPathResolver = new OriginalPathResolver();
+
     @Value("${cms.portal.encodeRedirectUrl}")
     private boolean encodeRedirectUrl;
 
@@ -54,7 +57,6 @@ public class PortalRenderResponseService
         final SiteEntity site = siteDao.findByKey( requestedSiteKey );
 
         final PortalResponseProcessor processor = new PortalResponseProcessor();
-        final SitePath originalSitePath = (SitePath) httpRequest.getAttribute( Attribute.ORIGINAL_SITEPATH );
         processor.setSiteRedirectAndForwardHelper( siteRedirectAndForwardHelper );
         processor.setRequest( request );
         processor.setResponse( response );
@@ -70,7 +72,9 @@ public class PortalRenderResponseService
         processor.setEncodeRedirectUrl( encodeRedirectUrl );
         processor.setCacheHeadersEnabledForSite(
             sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED, requestedSiteKey ) );
-        processor.setResponseFilters( pluginManager.getExtensions().findMatchingHttpResponseFilters( originalSitePath.asString() ) );
+
+        final String matchingPath = originalPathResolver.getRequestPathFromHttpRequest( httpRequest );
+        processor.setResponseFilters( pluginManager.getExtensions().findMatchingHttpResponseFilters( matchingPath ) );
         processor.setInstantTraceEnabled( InstantTraceRequestInspector.isClientEnabled( httpRequest ) );
         processor.setCurrentPortalRequestTrace( livePortalTraceService.getCurrentPortalRequestTrace() );
         processor.serveResponse();

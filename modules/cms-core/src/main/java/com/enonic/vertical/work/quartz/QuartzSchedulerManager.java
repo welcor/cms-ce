@@ -3,6 +3,7 @@ package com.enonic.vertical.work.quartz;
 import java.util.Properties;
 
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,15 +100,48 @@ public final class QuartzSchedulerManager
     public void afterPropertiesSet()
         throws Exception
     {
-        if ( this.enabled && !this.upgradeService.needsUpgrade() )
+        initScheduler();
+    }
+
+    private synchronized void initScheduler()
+    {
+        if ( this.scheduler == null && this.enabled && !this.upgradeService.needsUpgrade() )
         {
             QuartzHelper.setConnectionFactory( this.connectionFactory );
             QuartzHelper.setWorkRunner( this.workRunner );
-            StdSchedulerFactory factory = new StdSchedulerFactory( createProperties() );
 
-            this.scheduler = factory.getScheduler();
-            LOG.info( "Starting Quartz Scheduler (version: " + this.scheduler.getMetaData().getVersion() + ")" );
-            this.scheduler.start();
+            final Scheduler scheduler;
+
+            try
+            {
+                scheduler = new StdSchedulerFactory( createProperties() ).getScheduler();
+            }
+            catch ( SchedulerException e )
+            {
+                LOG.error( "Quartz Scheduler instantiation failed", e );
+                return;
+            }
+
+            try
+            {
+                scheduler.start();
+            }
+            catch ( SchedulerException e )
+            {
+                LOG.error( "Quartz Scheduler starting failed", e );
+                return;
+            }
+
+            try
+            {
+                LOG.info( "Started Quartz Scheduler (version: " + scheduler.getMetaData().getVersion() + ")" );
+            }
+            catch ( SchedulerException e )
+            {
+                LOG.warn( "Cannot determine scheduler version: " + e.getMessage() );
+            }
+
+            this.scheduler = scheduler;
         }
     }
 
@@ -147,6 +181,11 @@ public final class QuartzSchedulerManager
 
     public Scheduler getScheduler()
     {
+        if ( this.scheduler == null )
+        {
+            initScheduler();
+        }
+
         return this.scheduler;
     }
 

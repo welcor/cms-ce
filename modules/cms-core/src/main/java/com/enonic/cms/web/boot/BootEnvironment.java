@@ -4,6 +4,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.enonic.cms.core.home.HomeDir;
 import com.enonic.cms.core.home.HomeResolver;
 import com.enonic.cms.core.product.ProductVersion;
 
@@ -41,13 +42,8 @@ final class BootEnvironment
     private void doInitialize()
         throws Exception
     {
-        logBanner();
         resolveHomeDir();
-    }
-
-    public void destroy()
-    {
-        // Do nothing for now
+        logBanner();
     }
 
     private void resolveHomeDir()
@@ -64,6 +60,7 @@ final class BootEnvironment
         str.append( "  # " ).append( ProductVersion.getFullTitleAndVersion() ).append( "\n" );
         str.append( "  # " ).append( getFormattedJvmInfo() ).append( "\n" );
         str.append( "  # " ).append( getFormattedOsInfo() ).append( "\n" );
+        str.append( "  # Home directory is " ).append( HomeDir.get() ).append( "\n" );
 
         LOG.info( str.toString() );
     }

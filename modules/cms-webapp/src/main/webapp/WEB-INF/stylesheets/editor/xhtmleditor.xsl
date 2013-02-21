@@ -633,6 +633,8 @@
     <xsl:text>,</xsl:text>
     <xsl:call-template name="getImageControls"/>
     <xsl:text>,</xsl:text>
+    <xsl:call-template name="getEmbedControls"/>
+    <xsl:text>,</xsl:text>
     <xsl:call-template name="getSeparatorControls"/>
     <xsl:text>,</xsl:text>
     <xsl:call-template name="getTableControls"/>

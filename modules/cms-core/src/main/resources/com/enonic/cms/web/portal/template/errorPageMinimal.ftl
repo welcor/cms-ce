@@ -99,6 +99,5 @@
     Due to technical problems this page cannot be served. Please try again later
     - or contact the system administrator.
 </div>
-<div class="infoBox footerLine">${details.generatedOnString}</div>
 </body>
 </html>

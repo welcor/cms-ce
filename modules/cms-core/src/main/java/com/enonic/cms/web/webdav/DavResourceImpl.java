@@ -6,12 +6,14 @@ package com.enonic.cms.web.webdav;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.jackrabbit.util.Text;
+import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.DavResourceFactory;
@@ -34,9 +36,6 @@ import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.property.PropEntry;
 import org.apache.jackrabbit.webdav.property.ResourceType;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
@@ -541,13 +540,17 @@ final class DavResourceImpl
             result.add( new DefaultDavProperty<String>( DavPropertyName.ISCOLLECTION, "0" ) );
         }
 
-        final DateTime dt = new DateTime( this.file.lastModified() );
-        final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-        final String modifiedDate = fmt.print( dt );
+        final long modifiedTime = this.file.lastModified();
+        if ( modifiedTime != DavConstants.UNDEFINED_TIME )
+        {
+            result.add( new DefaultDavProperty<String>( DavPropertyName.GETLASTMODIFIED,
+                                                        DavConstants.modificationDateFormat.format( new Date( modifiedTime ) ) ) );
+        }
 
-        result.add( new DefaultDavProperty<String>( DavPropertyName.GETLASTMODIFIED, modifiedDate ) );
-        result.add( new DefaultDavProperty<String>( DavPropertyName.CREATIONDATE, modifiedDate ) );
-        result.add( new DefaultDavProperty<Long>( DavPropertyName.GETCONTENTLENGTH, this.file.length() ) );
+        if ( !isCollection() )
+        {
+            result.add( new DefaultDavProperty<String>( DavPropertyName.GETCONTENTLENGTH, String.valueOf( this.file.length() ) ) );
+        }
 
         return result;
     }

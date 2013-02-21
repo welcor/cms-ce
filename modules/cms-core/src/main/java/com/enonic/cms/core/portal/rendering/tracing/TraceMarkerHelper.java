@@ -18,6 +18,11 @@ public final class TraceMarkerHelper
      */
     public static String writePageMarker( RenderTraceInfo traceInfo, String markup, String outputMethod )
     {
+        if ( outputMethod == null )
+        {
+            return markup;
+        }
+
         outputMethod = outputMethod.toLowerCase();
         boolean usePageMarker = outputMethod.contains( "html" );
 

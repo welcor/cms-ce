@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.enonic.cms.core.product.LicenseChecker;
+import com.enonic.cms.core.product.NopLicenseChecker;
 import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.store.dao.SiteDao;
@@ -85,6 +86,11 @@ public final class WelcomeController
         model.put( "softwareUpgradeNeeded", softwareUpgradeNeeded );
         model.put( "upgradeFrom", this.upgradeService.getCurrentModelNumber() );
         model.put( "upgradeTo", this.upgradeService.getTargetModelNumber() );
+
+        if (this.licenseChecker == null) {
+            this.licenseChecker = new NopLicenseChecker();
+        }
+
         model.put( "license", this.licenseChecker );
         return new ModelAndView( "welcomePage", model );
     }

@@ -38,6 +38,13 @@
 </div>
 
 <div id="content-outer" class="clearfix">
+[#if license.error == true]
+    <div class="error">
+        <b>${license.message}</b><br/>
+        Update your license key in cms.properties. If you do not have a valid license, please contact
+        <a href="http://www.enonic.com/licensing">Enonic</a>.
+    </div>
+[/#if]
 [#if modelUpgradeNeeded == true]
     <div class="error">
         <strong>Upgrade Needed!</strong>
@@ -96,15 +103,15 @@
                     <h2>Create</h2>
 
                     <p>
-                        Enonic provides sample templates, including a themes framework, utilities and modules for
-                        building
-                        new
-                        sites
-                        quickly.
+                        Kickstart your projects with Enonic Standard Templating Kit (STK). STK is a framework for building new sites.
+                        It includes utilities, theme configuration, mobile support and more.
                     </p>
                     <ul>
                         <li>
-                            <a href="http://github.com/enonic/cms-packages" rel="external">http://github.com/enonic/cms-packages</a>
+                            <a href="https://enonic.com/en/docs/stk" rel="external">https://enonic.com/en/docs/stk</a>
+                        </li>
+                        <li>
+                            <a href="http://github.com/enonic/cms-stk" rel="external">http://github.com/enonic/cms-stk</a>
                         </li>
                     </ul>
                 </div>

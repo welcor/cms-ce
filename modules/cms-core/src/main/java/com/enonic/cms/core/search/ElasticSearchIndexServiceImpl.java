@@ -39,6 +39,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
@@ -66,7 +67,7 @@ public class ElasticSearchIndexServiceImpl
 
     public static final TimeValue DELETE_FROM_INDEX_TIMEOUT_SECONDS = TimeValue.timeValueSeconds( 60 );
 
-    private TimeValue waitforyellowTimeout = TimeValue.timeValueSeconds( 60 );
+    private int statusTimeout;
 
     public static final TimeValue CLUSTER_NOWAIT_TIMEOUT = TimeValue.timeValueSeconds( 1 );
 
@@ -345,7 +346,7 @@ public class ElasticSearchIndexServiceImpl
 
         if ( waitForYellow )
         {
-            request.waitForYellowStatus().timeout( waitforyellowTimeout );
+            request.waitForYellowStatus().timeout( TimeValue.timeValueSeconds( statusTimeout ) );
         }
         else
         {
@@ -386,9 +387,10 @@ public class ElasticSearchIndexServiceImpl
         this.contentIndexRequestCreator = contentIndexRequestCreator;
     }
 
-    public void setWaitforyellowTimeout( final TimeValue waitforyellowTimeout )
+    @Value("${cms.index.statusTimeout}")
+    public void setStatusTimeout( final int statusTimeout )
     {
-        this.waitforyellowTimeout = waitforyellowTimeout;
+        this.statusTimeout = statusTimeout;
     }
 }
 

@@ -1,6 +1,5 @@
 package com.enonic.cms.itest.search;
 
-import org.elasticsearch.common.unit.TimeValue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,7 +15,7 @@ public class ElasticsearchServiceConfiguration
     public ElasticSearchIndexServiceImpl elasticSearchIndexService()
     {
         final ElasticSearchIndexServiceImpl elasticSearchIndexService = new ElasticSearchIndexServiceImpl();
-        elasticSearchIndexService.setWaitforyellowTimeout( TimeValue.timeValueSeconds( 10 ) );
+        elasticSearchIndexService.setStatusTimeout( 5 );
         return elasticSearchIndexService;
     }
 

@@ -60,34 +60,6 @@
 [#assign componentsUrlMaxLength = 30]
 
     <div id="content" class="clearfix">
-        <div id="management-components" class="clearfix">
-            <a class="component box admin left" title="${adminUrl}" href="${adminUrl}">
-                <span class="icon-admin left">
-                    <img src="${baseUrl}/resources/images/icon-admin.png" alt="Admin"/>
-                </span>
-                <span class="info left">
-                    <span class="name">Admin Console</span>
-
-                    <span>
-                    ${elipsis(adminUrl, componentsUrlMaxLength)}
-                    </span>
-                </span>
-            </a>
-
-            <a class="component box left" title="${webDavUrl}" href="${webDavUrl}">
-                <span class="icon-webdav left">
-                    <img src="${baseUrl}/resources/images/folder-remote.png" alt="WebDAV"/>
-                </span>
-                <span class="info left">
-                    <span class="name">WebDAV</span>
-
-                    <span>
-                    ${elipsis(webDavUrl, componentsUrlMaxLength)}
-                    </span>
-                </span>
-            </a>
-        </div>
-
         <div id="welcome">
             <h1>Welcome to Enonic CMS</h1>
 
@@ -160,7 +132,32 @@
         </div>
     </div>
     <div id="east">
-        <div id="sites" class="box">
+        <div id="management-components" class="links box clearfix">
+            <h2>Administrative Components</h2>
+            <ul>
+
+                <li id="console">
+                    <a href="${adminUrl}" title="${adminUrl}">
+                        <span class="name">Admin Console</span>
+                        <br/>
+                        <span>
+                           ${elipsis(adminUrl, componentsUrlMaxLength)}
+                        </span>
+                    </a>
+                </li>
+
+                <li id="webdav">
+                    <a href="${webDavUrl}" title="${webDavUrl}">
+                        <span class="name">WebDAV</span>
+                        <br/>
+                        <span>
+                           ${elipsis(webDavUrl, componentsUrlMaxLength)}
+                        </span>
+                    </a>
+                </li>
+        </div>
+
+        <div id="sites" class="links box">
             <h2>Sites</h2>
             <ul>
 

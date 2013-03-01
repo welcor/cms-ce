@@ -28,7 +28,6 @@
     <script type="text/javascript" src="liveportaltrace/ctrl/EntityCacheGraphController.js"></script>
     <script type="text/javascript" src="liveportaltrace/ctrl/XsltCacheGraphController.js"></script>
     <script type="text/javascript" src="../javascript/tabpane.js"></script>
-    <link rel="stylesheet" type="text/css" href="../css/tools/jquery-ui-1.8.21.css"/>
     <link rel="stylesheet" type="text/css" href="liveportaltrace/jquery.treeTable.css"/>
     <link rel="stylesheet" type="text/css" href="liveportaltrace/live-portal-trace.css"/>
     <link type="text/css" rel="stylesheet" href="../css/admin.css"/>
@@ -172,14 +171,14 @@
 <div class="tab-pane" id="tab-main">
 
     <script type="text/javascript" language="JavaScript">
-        var tabPane1 = new WebFXTabPane( document.getElementById( "tab-main" ), true );
+        var tabPane1 = new WebFXTabPane(document.getElementById("tab-main"), true);
     </script>
 
     <!-- Completed portal requests -->
     <div class="tab-page" id="tab-page-1">
         <span class="tab">Completed requests</span>
         <script type="text/javascript" language="JavaScript">
-            tabPane1.addTabPage( document.getElementById( "tab-page-1" ) );
+            tabPane1.addTabPage(document.getElementById("tab-page-1"));
         </script>
         <button class="button_text" id="fetch-recent-history" onclick="completedPortalRequestsTableController.loadNew()" disabled="true">
             Fetch recent
@@ -212,7 +211,7 @@
         <span class="tab">Current portal requests (<span id="current-requests-tab-label"></span>)</span>
 
         <script type="text/javascript" language="JavaScript">
-            tabPane1.addTabPage( document.getElementById( "tab-page-2" ) );
+            tabPane1.addTabPage(document.getElementById("tab-page-2"));
         </script>
         <button class="button_text" id="reloadCurrentPortalRequests" onclick="currentPageRequestsController.reload()">Refresh
         </button>
@@ -239,7 +238,7 @@
     <div class="tab-page" id="tab-page-3">
         <span class="tab">Longest page requests</span>
         <script type="text/javascript" language="JavaScript">
-            tabPane1.addTabPage( document.getElementById( "tab-page-3" ) );
+            tabPane1.addTabPage(document.getElementById("tab-page-3"));
         </script>
         <button class="button_text" id="reloadLongestPortalPageRequests" onclick="longestPageRequestsController.reload()">Refresh
         </button>
@@ -267,7 +266,7 @@
     <div class="tab-page" id="tab-page-4">
         <span class="tab">Longest attachment requests</span>
         <script type="text/javascript" language="JavaScript">
-            tabPane1.addTabPage( document.getElementById( "tab-page-4" ) );
+            tabPane1.addTabPage(document.getElementById("tab-page-4"));
         </script>
 
         <button class="button_text" id="reloadLongestPortalAttachmentRequests"
@@ -297,7 +296,7 @@
     <div class="tab-page" id="tab-page-5">
         <span class="tab">Longest image requests</span>
         <script type="text/javascript" language="JavaScript">
-            tabPane1.addTabPage( document.getElementById( "tab-page-5" ) );
+            tabPane1.addTabPage(document.getElementById("tab-page-5"));
         </script>
         <button class="button_text" id="reloadLongestPortalImageRequests" onclick="longestImageRequestsController.reload()">
             Refresh
@@ -348,59 +347,59 @@
 
     setupAllTabs();
 
-    if ( !lpt )
-    {
+    if (!lpt) {
         var lpt = {};
     }
 
-    lpt.resolveURLAndAddParams = function ( params )
-    {
+    lpt.resolveURLAndAddParams = function (params) {
         return "livePortalTrace?" + params;
     };
+
+    console.log("Web Worker threads supported: " + lpt.WorkerUtility.isWorkerSupported());
 
     var portalRequestTraceDetailHtmlBuilder = lpt.PortalRequestTraceDetailHtmlBuilder();
     var portalRequestTraceRowView = lpt.PortalRequestTraceRowView();
 
     var portalRequestTraceDetailController = new lpt.PortalRequestTraceDetailController();
-    portalRequestTraceDetailController.setPortalRequestTraceDetailHtmlBuilder( portalRequestTraceDetailHtmlBuilder );
+    portalRequestTraceDetailController.setPortalRequestTraceDetailHtmlBuilder(portalRequestTraceDetailHtmlBuilder);
 
     var completedRequestsGraphController = new lpt.CompletedRequestsGraphController();
 
-    var completedPortalRequestsTableController = new lpt.CompletedPortalRequestsTableController( "completedPortalRequestTraces-table",
-                                                                                                 1000 );
-    completedPortalRequestsTableController.setWorkerThreadIsSupported( lpt.WorkerUtility.isWorkerSupported() );
-    completedPortalRequestsTableController.setLoadCompletedAfterUrl( lpt.resolveURLAndAddParams( "history=true&completed-after=" ) );
-    completedPortalRequestsTableController.setLoadCompletedBeforeUrl( lpt.resolveURLAndAddParams( "history=true&completed-before=" ) );
-    completedPortalRequestsTableController.setCompletedRequestsGraphController( completedRequestsGraphController );
-    completedPortalRequestsTableController.setPortalRequestTraceDetailController( portalRequestTraceDetailController );
-    completedPortalRequestsTableController.setPortalRequestTraceRowView( portalRequestTraceRowView );
+    var completedPortalRequestsTableController = new lpt.CompletedPortalRequestsTableController("completedPortalRequestTraces-table",
+            1000);
+    completedPortalRequestsTableController.setWorkerThreadIsSupported(lpt.WorkerUtility.isWorkerSupported());
+    completedPortalRequestsTableController.setLoadCompletedAfterUrl(lpt.resolveURLAndAddParams("history=true&completed-after="));
+    completedPortalRequestsTableController.setLoadCompletedBeforeUrl(lpt.resolveURLAndAddParams("history=true&completed-before="));
+    completedPortalRequestsTableController.setCompletedRequestsGraphController(completedRequestsGraphController);
+    completedPortalRequestsTableController.setPortalRequestTraceDetailController(portalRequestTraceDetailController);
+    completedPortalRequestsTableController.setPortalRequestTraceRowView(portalRequestTraceRowView);
     completedPortalRequestsTableController.init();
 
-    var currentPageRequestsController = new lpt.ReloadableTableController( "currentPageRequests-table", 2000 );
-    currentPageRequestsController.setReloadUrl( lpt.resolveURLAndAddParams( "window=current" ) );
-    currentPageRequestsController.setPortalRequestTraceDetailController( portalRequestTraceDetailController );
-    currentPageRequestsController.setPortalRequestTraceRowView( portalRequestTraceRowView );
+    var currentPageRequestsController = new lpt.ReloadableTableController("currentPageRequests-table", 2000);
+    currentPageRequestsController.setReloadUrl(lpt.resolveURLAndAddParams("window=current"));
+    currentPageRequestsController.setPortalRequestTraceDetailController(portalRequestTraceDetailController);
+    currentPageRequestsController.setPortalRequestTraceRowView(portalRequestTraceRowView);
     currentPageRequestsController.init();
 
-    var longestPageRequestsController = new lpt.ReloadableTableController( "longestPageRequests-table", 2000 );
-    longestPageRequestsController.setReloadUrl( lpt.resolveURLAndAddParams( "window=longestpagerequests" ) );
-    longestPageRequestsController.setClearUrl( lpt.resolveURLAndAddParams( "command=clear-longestpagerequests" ) );
-    longestPageRequestsController.setPortalRequestTraceDetailController( portalRequestTraceDetailController );
-    longestPageRequestsController.setPortalRequestTraceRowView( portalRequestTraceRowView );
+    var longestPageRequestsController = new lpt.ReloadableTableController("longestPageRequests-table", 2000);
+    longestPageRequestsController.setReloadUrl(lpt.resolveURLAndAddParams("window=longestpagerequests"));
+    longestPageRequestsController.setClearUrl(lpt.resolveURLAndAddParams("command=clear-longestpagerequests"));
+    longestPageRequestsController.setPortalRequestTraceDetailController(portalRequestTraceDetailController);
+    longestPageRequestsController.setPortalRequestTraceRowView(portalRequestTraceRowView);
     longestPageRequestsController.init();
 
-    var longestAttachmentRequestsController = new lpt.ReloadableTableController( "longestAttachmentRequests-table", 2000 );
-    longestAttachmentRequestsController.setReloadUrl( lpt.resolveURLAndAddParams( "window=longestattachmentrequests" ) );
-    longestAttachmentRequestsController.setClearUrl( lpt.resolveURLAndAddParams( "command=clear-longestattachmentrequests" ) );
-    longestAttachmentRequestsController.setPortalRequestTraceDetailController( portalRequestTraceDetailController );
-    longestAttachmentRequestsController.setPortalRequestTraceRowView( portalRequestTraceRowView );
+    var longestAttachmentRequestsController = new lpt.ReloadableTableController("longestAttachmentRequests-table", 2000);
+    longestAttachmentRequestsController.setReloadUrl(lpt.resolveURLAndAddParams("window=longestattachmentrequests"));
+    longestAttachmentRequestsController.setClearUrl(lpt.resolveURLAndAddParams("command=clear-longestattachmentrequests"));
+    longestAttachmentRequestsController.setPortalRequestTraceDetailController(portalRequestTraceDetailController);
+    longestAttachmentRequestsController.setPortalRequestTraceRowView(portalRequestTraceRowView);
     longestAttachmentRequestsController.init();
 
-    var longestImageRequestsController = new lpt.ReloadableTableController( "longestImageRequests-table", 2000 );
-    longestImageRequestsController.setReloadUrl( lpt.resolveURLAndAddParams( "window=longestimagerequests" ) );
-    longestImageRequestsController.setClearUrl( lpt.resolveURLAndAddParams( "command=clear-longestimagerequests" ) );
-    longestImageRequestsController.setPortalRequestTraceDetailController( portalRequestTraceDetailController );
-    longestImageRequestsController.setPortalRequestTraceRowView( portalRequestTraceRowView );
+    var longestImageRequestsController = new lpt.ReloadableTableController("longestImageRequests-table", 2000);
+    longestImageRequestsController.setReloadUrl(lpt.resolveURLAndAddParams("window=longestimagerequests"));
+    longestImageRequestsController.setClearUrl(lpt.resolveURLAndAddParams("command=clear-longestimagerequests"));
+    longestImageRequestsController.setPortalRequestTraceDetailController(portalRequestTraceDetailController);
+    longestImageRequestsController.setPortalRequestTraceRowView(portalRequestTraceRowView);
     longestImageRequestsController.init();
 
     currentPageRequestsController.reload();
@@ -414,22 +413,22 @@
     var xsltCacheGraphController = new lpt.XsltCacheGraphController();
     var javaMemoryGraphController = new lpt.JavaMemoryGraphController();
 
-    var systemInfoController = new lpt.SystemInfoController( 1000 );
-    systemInfoController.setWorkerThreadIsSupported( lpt.WorkerUtility.isWorkerSupported() );
-    systemInfoController.setRefreshUrl( lpt.resolveURLAndAddParams( "system-info=true" ) );
-    systemInfoController.setPageCacheGraphController( pageCacheGraphController );
-    systemInfoController.setEntityCacheGraphController( entityCacheGraphController );
-    systemInfoController.setXsltCacheGraphController( xsltCacheGraphController );
-    systemInfoController.setJavaMemoryGraphController( javaMemoryGraphController );
+    var systemInfoController = new lpt.SystemInfoController(1000);
+    systemInfoController.setWorkerThreadIsSupported(lpt.WorkerUtility.isWorkerSupported());
+    systemInfoController.setRefreshUrl(lpt.resolveURLAndAddParams("system-info=true"));
+    systemInfoController.setPageCacheGraphController(pageCacheGraphController);
+    systemInfoController.setEntityCacheGraphController(entityCacheGraphController);
+    systemInfoController.setXsltCacheGraphController(xsltCacheGraphController);
+    systemInfoController.setJavaMemoryGraphController(javaMemoryGraphController);
     systemInfoController.init();
 
     var automaticUpdateController = new lpt.AutomaticUpdateController();
-    automaticUpdateController.setCompletedPortalRequestsTableController( completedPortalRequestsTableController );
-    automaticUpdateController.setCurrentPageRequestsController( currentPageRequestsController );
-    automaticUpdateController.setLongestPageRequestsController( longestPageRequestsController );
-    automaticUpdateController.setLongestAttachmentRequestsController( longestAttachmentRequestsController );
-    automaticUpdateController.setLongestImageRequestsController( longestImageRequestsController );
-    automaticUpdateController.setSystemInfoController( systemInfoController );
+    automaticUpdateController.setCompletedPortalRequestsTableController(completedPortalRequestsTableController);
+    automaticUpdateController.setCurrentPageRequestsController(currentPageRequestsController);
+    automaticUpdateController.setLongestPageRequestsController(longestPageRequestsController);
+    automaticUpdateController.setLongestAttachmentRequestsController(longestAttachmentRequestsController);
+    automaticUpdateController.setLongestImageRequestsController(longestImageRequestsController);
+    automaticUpdateController.setSystemInfoController(systemInfoController);
     automaticUpdateController.startAutomaticUpdate();
 
 </script>

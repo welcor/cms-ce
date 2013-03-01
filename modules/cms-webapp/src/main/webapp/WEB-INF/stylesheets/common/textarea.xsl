@@ -35,8 +35,6 @@
     <!-- Firefox only -->
     <xsl:param name="spellcheck" select="'true'"/>
 
-    <xsl:param name="disable-translate" select="false()"/>
-
     <xsl:if test="$withoutlabel != 'true'">
       <xsl:call-template name="labelcolumn">
         <xsl:with-param name="width" select="$lefttdwidth"/>
@@ -129,16 +127,13 @@
             <xsl:value-of select="/*/errors/error[@name=$name]/value" disable-output-escaping="yes"/>
           </xsl:when>
           <xsl:when test="$xml = 'false' and $default !='' and not($selectnode)">
-            <xsl:value-of select="translate($default, '&#xD;','')" disable-output-escaping="yes"/>
+            <xsl:value-of select="$default" disable-output-escaping="yes"/>
           </xsl:when>
           <xsl:when test="$disable-output-escaping">
-            <xsl:value-of select="translate($selectnode, '&#xD;','')" disable-output-escaping="yes"/>
-          </xsl:when>
-          <xsl:when test="$disable-translate">
-            <xsl:value-of select="$selectnode"/>
+            <xsl:value-of select="$selectnode" disable-output-escaping="yes"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="translate($selectnode, '&#xD;','')"/>
+            <xsl:value-of select="$selectnode"/>
           </xsl:otherwise>
         </xsl:choose>
 

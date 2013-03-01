@@ -156,7 +156,16 @@ public final class ContentSourceXmlCreator
 
     private String serializeDocument( Document doc )
     {
-        XMLOutputter out = new XMLOutputter( Format.getPrettyFormat().setOmitDeclaration( true ) );
+        // \r is converted to &#xD; by default escapeElementEntities XMLOutputter implementation
+        final XMLOutputter out = new XMLOutputter( Format.getPrettyFormat().setOmitDeclaration( true ) )
+        {
+            @Override
+            public String escapeElementEntities( final String text )
+            {
+                return super.escapeElementEntities( text.replaceAll( "\r", "" ) );
+            }
+        };
+
         return out.outputString( doc );
     }
 }

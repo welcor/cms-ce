@@ -1257,7 +1257,6 @@
                                       <xsl:with-param name="cols" select="'50'"/>
                                       <xsl:with-param name="name" select="'description'"/>
                                       <xsl:with-param name="selectnode" select="$description2"/>
-                                      <xsl:with-param name="disable-translate" select="true()"/>
                                     </xsl:call-template>
                                   </tr>
                                   <tr>
@@ -1277,7 +1276,6 @@
                                       <xsl:with-param name="cols" select="'50'"/>
                                       <xsl:with-param name="name" select="'keywords'"/>
                                       <xsl:with-param name="selectnode" select="$keywords2"/>
-                                      <xsl:with-param name="disable-translate" select="true()"/>
                                     </xsl:call-template>
                                   </tr>
                                 </table>
@@ -2914,7 +2912,6 @@
             <xsl:with-param name="rows" select="'4'"/>
             <xsl:with-param name="width" select="'600'"/>
             <xsl:with-param name="required" select="'true'"/>
-            <xsl:with-param name="disable-translate" select="true()"/>
           </xsl:call-template>
         </tr>
         <tr>

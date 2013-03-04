@@ -89,13 +89,31 @@ public final class ImageHandler
 
             PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
 
-            ImageRequest imageRequest = createImageRequest( request );
+            final ImageRequest imageRequest = createImageRequest( request );
 
             final ImageRequestTrace imageRequestTrace = ImageRequestTracer.startTracing( livePortalTraceService );
             try
             {
                 ImageRequestTracer.traceImageRequest( imageRequestTrace, imageRequest );
-                process( imageRequest, response, sitePath, imageRequestTrace );
+                final ImageResponse imageResponse;
+                try
+                {
+                    verifyValidMenuItemInPath( sitePath );
+                    checkRequestAccess( imageRequest, sitePath );
+                    imageResponse = imageService.process( imageRequest );
+                }
+                catch ( ImageProcessorException e )
+                {
+                    response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+                    return;
+                }
+
+                if ( imageResponse.isImageNotFound() )
+                {
+                    throw new ResourceNotFoundException( sitePath.getSiteKey(), sitePath.getLocalPath() );
+                }
+
+                serveResponse( response, sitePath, imageRequestTrace, imageResponse );
             }
             finally
             {
@@ -110,6 +128,21 @@ public final class ImageHandler
         {
             PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
         }
+    }
+
+    private void serveResponse( final HttpServletResponse response, final SitePath sitePath, final ImageRequestTrace imageRequestTrace,
+                                final ImageResponse imageResponse )
+        throws IOException
+    {
+        final boolean anonymousAccess = securityService.getLoggedInPortalUser().isAnonymous();
+        setHttpHeaders( response, sitePath, anonymousAccess );
+
+        response.setContentType( imageResponse.getMimeType() );
+        response.setContentLength( imageResponse.getSize() );
+        ImageRequestTracer.traceSize( imageRequestTrace, (long) imageResponse.getSize() );
+
+        HttpServletUtil.setContentDisposition( response, false, imageResponse.getName() );
+        HttpServletUtil.copyNoCloseOut( imageResponse.getDataAsStream(), response.getOutputStream() );
     }
 
     private ImageRequest createImageRequest( final HttpServletRequest request )
@@ -129,38 +162,6 @@ public final class ImageHandler
         imageRequest.setRequester( securityService.getLoggedInPortalUser() );
         imageRequest.setRequestDateTime( new DateTime() );
         return imageRequest;
-    }
-
-    private void process( final ImageRequest imageRequest, final HttpServletResponse response, final SitePath sitePath,
-                          final ImageRequestTrace imageRequestTrace )
-        throws IOException
-    {
-        verifyValidMenuItemInPath( sitePath );
-        checkRequestAccess( imageRequest, sitePath );
-
-        try
-        {
-            final ImageResponse imageResponse = imageService.process( imageRequest );
-
-            if ( imageResponse.isImageNotFound() )
-            {
-                throw new ResourceNotFoundException( sitePath.getSiteKey(), sitePath.getLocalPath() );
-            }
-
-            final boolean anonymousAccess = securityService.getLoggedInPortalUser().isAnonymous();
-            setHttpHeaders( response, sitePath, anonymousAccess );
-
-            response.setContentType( imageResponse.getMimeType() );
-            response.setContentLength( imageResponse.getSize() );
-            ImageRequestTracer.traceSize( imageRequestTrace, (long) imageResponse.getSize() );
-
-            HttpServletUtil.setContentDisposition( response, false, imageResponse.getName() );
-            HttpServletUtil.copyNoCloseOut( imageResponse.getDataAsStream(), response.getOutputStream() );
-        }
-        catch ( ImageProcessorException e )
-        {
-            response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
-        }
     }
 
     private void verifyValidMenuItemInPath( SitePath sitePath )

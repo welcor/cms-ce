@@ -9,7 +9,8 @@ import com.enonic.cms.core.image.ImageResponse;
 
 public interface ImageService
 {
-    public ImageResponse process( ImageRequest req );
+    public ImageResponse process( ImageRequest req )
+        throws ImageProcessorException;
 
     public Long getImageTimestamp( ImageRequest req );
 

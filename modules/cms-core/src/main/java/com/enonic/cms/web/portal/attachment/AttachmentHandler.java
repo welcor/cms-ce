@@ -102,9 +102,7 @@ public final class AttachmentHandler
     {
 
         final UserEntity loggedInUser = resolveLoggedInUser( request, response, sitePath );
-
         PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
-
         final AttachmentRequestTrace attachmentRequestTrace = AttachmentRequestTracer.startTracing( livePortalTraceService );
 
         try
@@ -120,11 +118,7 @@ public final class AttachmentHandler
             checkContentAccess( loggedInUser, content, downloadRequested, sitePath );
             checkContentIsOnline( content, sitePath );
 
-            final ContentVersionEntity contentVersion = resolveContentVersion( content );
-            final ContentBinaryDataEntity contentBinaryData = resolveContentBinaryData( contentVersion, attachmentRequest, sitePath );
-            final BinaryDataEntity binaryData = contentBinaryData.getBinaryData();
-
-            setHttpHeaders( request, response, sitePath, loggedInUser );
+            final BinaryDataEntity binaryData = resolveBinaryData( sitePath, attachmentRequest, content );
 
             final BlobRecord blob = binaryDataDao.getBlob( binaryData.getBinaryDataKey() );
             if ( blob == null )
@@ -132,6 +126,7 @@ public final class AttachmentHandler
                 throw AttachmentNotFoundException.notFound( sitePath.getLocalPath().toString() );
             }
 
+            setHttpHeaders( request, response, sitePath, loggedInUser );
             putBinaryOnResponse( downloadRequested, response, binaryData, blob, attachmentRequestTrace );
             return null;
         }
@@ -160,6 +155,14 @@ public final class AttachmentHandler
             }
         }
         return loggedInUser;
+    }
+
+    private BinaryDataEntity resolveBinaryData( final SitePath sitePath, final AttachmentRequest attachmentRequest,
+                                                final ContentEntity content )
+    {
+        final ContentVersionEntity contentVersion = resolveContentVersion( content );
+        final ContentBinaryDataEntity contentBinaryData = resolveContentBinaryData( contentVersion, attachmentRequest, sitePath );
+        return contentBinaryData.getBinaryData();
     }
 
     private void verifyValidMenuItemInPath( SitePath sitePath )

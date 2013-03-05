@@ -46,7 +46,7 @@ public class InstantTraceInterceptor
     {
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
-        InstantTraceRequestInspector.setAttributeOriginalUrl( context.getSitePath().getLocalPath(), context.getRequest() );
+        InstantTraceRequestInspector.setAttributeOriginalUrl( context.getSitePath().getPathAndParams(), context.getRequest() );
         SitePath sitePath = context.getSitePath().createNewInSameSite( new Path( "/_itrace/authenticate" ) );
         siteRedirectAndForwardHelper.forward( request, response, sitePath );
     }

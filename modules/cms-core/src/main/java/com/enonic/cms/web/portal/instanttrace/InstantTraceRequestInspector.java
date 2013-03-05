@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import com.enonic.cms.core.Path;
+import com.enonic.cms.core.PathAndParams;
+import com.enonic.cms.core.PathAndParamsToStringBuilder;
 
 
 public final class InstantTraceRequestInspector
@@ -30,9 +32,13 @@ public final class InstantTraceRequestInspector
         return false;
     }
 
-    public static void setAttributeOriginalUrl( final Path localPath, final HttpServletRequest request )
+    public static void setAttributeOriginalUrl( final PathAndParams pathAndParams, final HttpServletRequest request )
     {
-        request.setAttribute( "itrace.originalUrl", localPath.toString() );
+        final PathAndParamsToStringBuilder builder = new PathAndParamsToStringBuilder();
+        builder.setIncludeFragment( true );
+        builder.setIncludeParamsInPath( true );
+        String originalUrl = builder.toString( pathAndParams );
+        request.setAttribute( "itrace.originalUrl", originalUrl );
     }
 
     public static InstantTraceId getInstantTraceId( final Path path )

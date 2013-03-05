@@ -106,9 +106,9 @@ public final class AttachmentHandler
                     {
                         throw AttachmentNotFoundException.notFound( sitePath.getLocalPath().toString() );
                     }
-
+                    AttachmentRequestTracer.traceSize( attachmentRequestTrace, blob.getLength() );
                     setHttpHeaders( request, response, sitePath, loggedInUser );
-                    putBinaryOnResponse( downloadRequested, response, binaryData, blob, attachmentRequestTrace );
+                    putBinaryOnResponse( downloadRequested, response, binaryData, blob );
                 }
                 finally
                 {
@@ -216,11 +216,11 @@ public final class AttachmentHandler
         }
     }
 
-    private void putBinaryOnResponse( boolean download, HttpServletResponse response, BinaryDataEntity binaryData, final BlobRecord blob,
-                                      final AttachmentRequestTrace trace )
+    private void putBinaryOnResponse( final boolean download, final HttpServletResponse response, final BinaryDataEntity binaryData,
+                                      final BlobRecord blob )
         throws IOException
     {
-        AttachmentRequestTracer.traceSize( trace, blob.getLength() );
+
         HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
 
         response.setContentType( this.mimeTypeResolver.getMimeType( binaryData.getName() ) );
@@ -229,13 +229,13 @@ public final class AttachmentHandler
         ByteStreams.copy( blob.getStream(), response.getOutputStream() );
     }
 
-    private boolean isInPreviewMode( HttpServletRequest httpRequest )
+    private boolean isInPreviewMode( final HttpServletRequest httpRequest )
     {
         String previewEnabled = (String) httpRequest.getAttribute( Attribute.PREVIEW_ENABLED );
         return "true".equals( previewEnabled );
     }
 
-    private ContentEntity resolveContent( AttachmentRequest attachmentRequest, SitePath sitePath )
+    private ContentEntity resolveContent( final AttachmentRequest attachmentRequest, final SitePath sitePath )
     {
         final ContentEntity content = contentDao.findByKey( attachmentRequest.getContentKey() );
         if ( content == null || content.isDeleted() )
@@ -245,13 +245,13 @@ public final class AttachmentHandler
         return content;
     }
 
-    private ContentVersionEntity resolveContentVersion( ContentEntity content )
+    private ContentVersionEntity resolveContentVersion( final ContentEntity content )
     {
         return content.getMainVersion();
     }
 
-    private ContentBinaryDataEntity resolveContentBinaryData( ContentVersionEntity contentVersion, AttachmentRequest attachmentRequest,
-                                                              SitePath sitePath )
+    private ContentBinaryDataEntity resolveContentBinaryData( final ContentVersionEntity contentVersion,
+                                                              final AttachmentRequest attachmentRequest, final SitePath sitePath )
     {
         final ContentBinaryDataEntity contentBinaryData = contentVersion.getContentBinaryData( attachmentRequest.getBinaryDataKey() );
         if ( contentBinaryData == null )
@@ -261,7 +261,7 @@ public final class AttachmentHandler
         return contentBinaryData;
     }
 
-    private boolean resolveDownloadRequested( HttpServletRequest request )
+    private boolean resolveDownloadRequested( final HttpServletRequest request )
     {
         boolean downloadRequested = "true".equals( request.getParameter( "download" ) );
         downloadRequested = downloadRequested || "true".equals( request.getParameter( "_download" ) );

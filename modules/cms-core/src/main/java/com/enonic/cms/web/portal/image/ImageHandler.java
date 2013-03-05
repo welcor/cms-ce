@@ -98,7 +98,7 @@ public final class ImageHandler
                 }
 
                 ImageRequestTracer.traceSize( imageRequestTrace, (long) imageResponse.getSize() );
-                serveResponse( response, sitePath, imageRequestTrace, imageResponse );
+                serveResponse( response, sitePath, imageResponse );
             }
             finally
             {
@@ -115,8 +115,7 @@ public final class ImageHandler
         }
     }
 
-    private void serveResponse( final HttpServletResponse response, final SitePath sitePath, final ImageRequestTrace imageRequestTrace,
-                                final ImageResponse imageResponse )
+    private void serveResponse( final HttpServletResponse response, final SitePath sitePath, final ImageResponse imageResponse )
         throws IOException
     {
         final boolean anonymousAccess = securityService.getLoggedInPortalUser().isAnonymous();
@@ -168,7 +167,7 @@ public final class ImageHandler
         return imageRequest;
     }
 
-    private void verifyValidMenuItemInPath( SitePath sitePath )
+    private void verifyValidMenuItemInPath( final SitePath sitePath )
     {
         SiteEntity site = siteDao.findByKey( sitePath.getSiteKey() );
 
@@ -182,7 +181,7 @@ public final class ImageHandler
         }
     }
 
-    private Path getImageMenuItemPath( SitePath sitePath )
+    private Path getImageMenuItemPath( final SitePath sitePath )
     {
         String pathAsString = sitePath.getLocalPath().toString();
 

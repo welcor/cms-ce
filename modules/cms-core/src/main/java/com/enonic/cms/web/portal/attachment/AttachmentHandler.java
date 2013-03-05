@@ -101,22 +101,7 @@ public final class AttachmentHandler
         throws Exception
     {
 
-        UserEntity loggedInUser = userDao.findByKey( securityService.getLoggedInPortalUser().getKey() );
-        if ( loggedInUser.isAnonymous() )
-        {
-            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED, sitePath.getSiteKey() ) )
-            {
-                loggedInUser = autoLoginService.autologinWithRemoteUser( request );
-            }
-        }
-        if ( loggedInUser.isAnonymous() )
-        {
-            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED,
-                                                             sitePath.getSiteKey() ) )
-            {
-                loggedInUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), request, response );
-            }
-        }
+        final UserEntity loggedInUser = resolveLoggedInUser( request, response, sitePath );
 
         PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
 
@@ -154,6 +139,27 @@ public final class AttachmentHandler
         {
             AttachmentRequestTracer.stopTracing( attachmentRequestTrace, livePortalTraceService );
         }
+    }
+
+    private UserEntity resolveLoggedInUser( final HttpServletRequest request, final HttpServletResponse response, final SitePath sitePath )
+    {
+        UserEntity loggedInUser = securityService.getLoggedInPortalUserAsEntity();
+        if ( loggedInUser.isAnonymous() )
+        {
+            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED, sitePath.getSiteKey() ) )
+            {
+                loggedInUser = autoLoginService.autologinWithRemoteUser( request );
+            }
+        }
+        if ( loggedInUser.isAnonymous() )
+        {
+            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED,
+                                                             sitePath.getSiteKey() ) )
+            {
+                loggedInUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), request, response );
+            }
+        }
+        return loggedInUser;
     }
 
     private void verifyValidMenuItemInPath( SitePath sitePath )

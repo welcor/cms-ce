@@ -69,23 +69,7 @@ public final class ImageHandler
             PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, sitePath );
             PortalRequestTracer.traceRequestedSite( portalRequestTrace, siteDao.findByKey( sitePath.getSiteKey() ) );
 
-            UserEntity loggedInUser = securityService.getLoggedInPortalUserAsEntity();
-            if ( loggedInUser.isAnonymous() )
-            {
-                if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED,
-                                                                 sitePath.getSiteKey() ) )
-                {
-                    loggedInUser = autoLoginService.autologinWithRemoteUser( request );
-                }
-            }
-            if ( loggedInUser.isAnonymous() )
-            {
-                if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED,
-                                                                 sitePath.getSiteKey() ) )
-                {
-                    loggedInUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), request, response );
-                }
-            }
+            final UserEntity loggedInUser = resolveLoggedInUser( request, response, sitePath );
 
             PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
 
@@ -113,6 +97,7 @@ public final class ImageHandler
                     throw new ResourceNotFoundException( sitePath.getSiteKey(), sitePath.getLocalPath() );
                 }
 
+                ImageRequestTracer.traceSize( imageRequestTrace, (long) imageResponse.getSize() );
                 serveResponse( response, sitePath, imageRequestTrace, imageResponse );
             }
             finally
@@ -139,10 +124,29 @@ public final class ImageHandler
 
         response.setContentType( imageResponse.getMimeType() );
         response.setContentLength( imageResponse.getSize() );
-        ImageRequestTracer.traceSize( imageRequestTrace, (long) imageResponse.getSize() );
-
         HttpServletUtil.setContentDisposition( response, false, imageResponse.getName() );
         HttpServletUtil.copyNoCloseOut( imageResponse.getDataAsStream(), response.getOutputStream() );
+    }
+
+    private UserEntity resolveLoggedInUser( final HttpServletRequest request, final HttpServletResponse response, final SitePath sitePath )
+    {
+        UserEntity loggedInUser = securityService.getLoggedInPortalUserAsEntity();
+        if ( loggedInUser.isAnonymous() )
+        {
+            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED, sitePath.getSiteKey() ) )
+            {
+                loggedInUser = autoLoginService.autologinWithRemoteUser( request );
+            }
+        }
+        if ( loggedInUser.isAnonymous() )
+        {
+            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED,
+                                                             sitePath.getSiteKey() ) )
+            {
+                loggedInUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), request, response );
+            }
+        }
+        return loggedInUser;
     }
 
     private ImageRequest createImageRequest( final HttpServletRequest request )

@@ -19,7 +19,7 @@ public final class PortalRequestTrace
 {
     private long requestNumber;
 
-    private long completedNumber;
+    private long completedNumber = -1;
 
     private HttpRequest httpRequest;
 

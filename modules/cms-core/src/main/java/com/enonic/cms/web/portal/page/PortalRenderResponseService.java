@@ -19,7 +19,7 @@ import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalResponse;
-import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
+import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
@@ -41,15 +41,13 @@ public class PortalRenderResponseService
 
     private PluginManager pluginManager;
 
-    private LivePortalTraceService livePortalTraceService;
-
     private final OriginalPathResolver originalPathResolver = new OriginalPathResolver();
 
     @Value("${cms.portal.encodeRedirectUrl}")
     private boolean encodeRedirectUrl;
 
     public void serveResponse( final PortalRequest request, final PortalResponse response, final HttpServletResponse httpResponse,
-                               final HttpServletRequest httpRequest )
+                               final HttpServletRequest httpRequest, final PortalRequestTrace portalRequestTrace )
         throws Exception
     {
         final SitePath requestedPath = request.getSitePath();
@@ -76,7 +74,7 @@ public class PortalRenderResponseService
         final String matchingPath = originalPathResolver.getRequestPathFromHttpRequest( httpRequest );
         processor.setResponseFilters( pluginManager.getExtensions().findMatchingHttpResponseFilters( matchingPath ) );
         processor.setInstantTraceEnabled( InstantTraceRequestInspector.isClientEnabled( httpRequest ) );
-        processor.setCurrentPortalRequestTrace( livePortalTraceService.getCurrentPortalRequestTrace() );
+        processor.setCurrentPortalRequestTrace( portalRequestTrace );
         processor.serveResponse();
     }
 
@@ -102,11 +100,5 @@ public class PortalRenderResponseService
     public void setPluginManager( PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
-    }
-
-    @Autowired
-    public void setLivePortalTraceService( final LivePortalTraceService livePortalTraceService )
-    {
-        this.livePortalTraceService = livePortalTraceService;
     }
 }

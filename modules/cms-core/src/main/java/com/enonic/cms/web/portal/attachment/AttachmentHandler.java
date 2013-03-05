@@ -70,59 +70,63 @@ public final class AttachmentHandler
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
         final SitePath sitePath = context.getSitePath();
+        final boolean downloadRequested;
+        final UserEntity loggedInUser;
+        final BlobRecord blob;
+        final BinaryDataEntity binaryData;
 
         final PortalRequestTrace portalRequestTrace = PortalRequestTracer.startTracing( context.getOriginalUrl(), livePortalTraceService );
         try
         {
-            PortalRequestTracer.traceMode( portalRequestTrace, previewService );
-            PortalRequestTracer.traceHttpRequest( portalRequestTrace, request );
-            PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, sitePath );
-            PortalRequestTracer.traceRequestedSite( portalRequestTrace, siteDao.findByKey( sitePath.getSiteKey() ) );
-
             try
             {
-                final UserEntity loggedInUser = resolveLoggedInUser( request, response, sitePath );
-                PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
-                final AttachmentRequestTrace attachmentRequestTrace = AttachmentRequestTracer.startTracing( livePortalTraceService );
+                PortalRequestTracer.traceMode( portalRequestTrace, previewService );
+                PortalRequestTracer.traceHttpRequest( portalRequestTrace, request );
+                PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, sitePath );
+                PortalRequestTracer.traceRequestedSite( portalRequestTrace, siteDao.findByKey( sitePath.getSiteKey() ) );
 
+                loggedInUser = resolveLoggedInUser( request, response, sitePath );
+                PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
+
+                final AttachmentRequestTrace attachmentRequestTrace = AttachmentRequestTracer.startTracing( livePortalTraceService );
                 try
                 {
+                    verifyValidMenuItemInPath( sitePath );
+
                     final AttachmentRequest attachmentRequest =
                         attachmentRequestResolver.resolveBinaryDataKey( sitePath.getPathAndParams() );
                     AttachmentRequestTracer.traceAttachmentRequest( attachmentRequestTrace, attachmentRequest );
 
-                    verifyValidMenuItemInPath( sitePath );
-
-                    boolean downloadRequested = resolveDownloadRequested( request );
-
+                    downloadRequested = resolveDownloadRequested( request );
                     final ContentEntity content = resolveContent( attachmentRequest, sitePath );
                     checkContentAccess( loggedInUser, content, downloadRequested, sitePath );
                     checkContentIsOnline( content, sitePath );
 
-                    final BinaryDataEntity binaryData = resolveBinaryData( sitePath, attachmentRequest, content );
-
-                    final BlobRecord blob = binaryDataDao.getBlob( binaryData.getBinaryDataKey() );
+                    binaryData = resolveBinaryData( sitePath, attachmentRequest, content );
+                    blob = binaryDataDao.getBlob( binaryData.getBinaryDataKey() );
                     if ( blob == null )
                     {
                         throw AttachmentNotFoundException.notFound( sitePath.getLocalPath().toString() );
                     }
                     AttachmentRequestTracer.traceSize( attachmentRequestTrace, blob.getLength() );
-                    setHttpHeaders( request, response, sitePath, loggedInUser );
-                    putBinaryOnResponse( downloadRequested, response, binaryData, blob );
                 }
                 finally
                 {
                     AttachmentRequestTracer.stopTracing( attachmentRequestTrace, livePortalTraceService );
                 }
             }
-            catch ( Exception e )
+            finally
             {
-                throw new AttachmentRequestException( context.getOriginalSitePath(), context.getReferrerHeader(), e );
+                PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
             }
+
+            // serve response ...
+            setHttpHeaders( request, response, sitePath, loggedInUser );
+            putBinaryOnResponse( downloadRequested, response, binaryData, blob );
         }
-        finally
+        catch ( Exception e )
         {
-            PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
+            throw new AttachmentRequestException( context.getOriginalSitePath(), context.getReferrerHeader(), e );
         }
     }
 

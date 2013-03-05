@@ -74,7 +74,7 @@ public final class PageRedirectHandler
 
         PortalResponse response = PortalResponse.createRedirect( redirectInstruction );
 
-        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
+        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest, null );
     }
 
     @Autowired

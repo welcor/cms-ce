@@ -74,15 +74,17 @@ public final class PageHandler
         String originalUrl = OriginalUrlResolver.get().resolveOriginalUrl( httpRequest );
         SitePath originalSitePath = (SitePath) httpRequest.getAttribute( Attribute.ORIGINAL_SITEPATH );
 
-        final PortalRequestTrace portalRequestTrace = PortalRequestTracer.startTracing( originalUrl, livePortalTraceService );
+        final PortalRequest request;
+        final PortalResponse response;
 
+        final PortalRequestTrace portalRequestTrace = PortalRequestTracer.startTracing( originalUrl, livePortalTraceService );
         try
         {
             PortalRequestTracer.traceMode( portalRequestTrace, previewService );
             PortalRequestTracer.traceHttpRequest( portalRequestTrace, httpRequest );
             PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, sitePath );
 
-            PortalRequest request = new PortalRequest();
+            request = new PortalRequest();
             request.setRequestTime( timeService.getNowAsDateTime() );
             request.setSitePath( sitePath );
             request.setRequestParams( getRequestParameters( httpRequest ) );
@@ -111,15 +113,13 @@ public final class PageHandler
             }
             request.setRequester( loggedInPortalUser.getKey() );
             request.setPreviewContext( previewService.getPreviewContext() );
-
-            PortalResponse response = portalRequestService.processRequest( request );
-
-            portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
+            response = portalRequestService.processRequest( request );
         }
         finally
         {
             PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
         }
+        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest, portalRequestTrace );
     }
 
     private void redirectToRoot( HttpServletRequest httpRequest, HttpServletResponse httpResponse, SitePath sitePath )
@@ -135,7 +135,7 @@ public final class PageHandler
         redirectInstruction.setPermanentRedirect( true );
 
         PortalResponse response = PortalResponse.createRedirect( redirectInstruction );
-        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest );
+        portalRenderResponseService.serveResponse( request, response, httpResponse, httpRequest, null );
     }
 
     private HashMap<String, Object> getRequestParameters( HttpServletRequest request )

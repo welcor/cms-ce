@@ -58,61 +58,73 @@ public final class ImageHandler
         final HttpServletRequest request = context.getRequest();
         final HttpServletResponse response = context.getResponse();
         final SitePath sitePath = context.getSitePath();
+        final UserEntity loggedInUser;
 
-        PortalRequestTrace portalRequestTrace =
+        final PortalRequestTrace portalRequestTrace =
             PortalRequestTracer.startTracing( (String) request.getAttribute( Attribute.ORIGINAL_URL ), livePortalTraceService );
-
         try
         {
-            PortalRequestTracer.traceMode( portalRequestTrace, previewService );
-            PortalRequestTracer.traceHttpRequest( portalRequestTrace, request );
-            PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, sitePath );
-            PortalRequestTracer.traceRequestedSite( portalRequestTrace, siteDao.findByKey( sitePath.getSiteKey() ) );
-
-            final UserEntity loggedInUser = resolveLoggedInUser( request, response, sitePath );
-
-            PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
-
-            final ImageRequest imageRequest = createImageRequest( request );
-
-            final ImageRequestTrace imageRequestTrace = ImageRequestTracer.startTracing( livePortalTraceService );
+            final ImageResponse imageResponse;
             try
             {
-                ImageRequestTracer.traceImageRequest( imageRequestTrace, imageRequest );
-                final ImageResponse imageResponse;
+                PortalRequestTracer.traceMode( portalRequestTrace, previewService );
+                PortalRequestTracer.traceHttpRequest( portalRequestTrace, request );
+                PortalRequestTracer.traceRequestedSitePath( portalRequestTrace, sitePath );
+                PortalRequestTracer.traceRequestedSite( portalRequestTrace, siteDao.findByKey( sitePath.getSiteKey() ) );
+
+                loggedInUser = resolveLoggedInUser( request, response, sitePath );
+                PortalRequestTracer.traceRequester( portalRequestTrace, loggedInUser );
+
+                final ImageRequestTrace imageRequestTrace = ImageRequestTracer.startTracing( livePortalTraceService );
                 try
                 {
                     verifyValidMenuItemInPath( sitePath );
-                    checkRequestAccess( imageRequest, sitePath );
-                    imageResponse = imageService.process( imageRequest );
-                }
-                catch ( ImageProcessorException e )
-                {
-                    response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
-                    return;
-                }
 
-                if ( imageResponse.isImageNotFound() )
-                {
-                    throw new ResourceNotFoundException( sitePath.getSiteKey(), sitePath.getLocalPath() );
-                }
+                    final ImageRequest imageRequest = createImageRequest( request );
+                    try
+                    {
+                        imageResponse = processImageRequest( imageRequest, sitePath, imageRequestTrace );
+                    }
+                    catch ( ImageProcessorException e )
+                    {
+                        response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+                        return;
+                    }
 
-                ImageRequestTracer.traceSize( imageRequestTrace, (long) imageResponse.getSize() );
-                serveResponse( response, sitePath, imageResponse );
+                    ImageRequestTracer.traceSize( imageRequestTrace, (long) imageResponse.getSize() );
+                }
+                finally
+                {
+                    ImageRequestTracer.stopTracing( imageRequestTrace, livePortalTraceService );
+                }
             }
             finally
             {
-                ImageRequestTracer.stopTracing( imageRequestTrace, livePortalTraceService );
+                PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
             }
+
+            serveResponse( response, sitePath, imageResponse );
         }
         catch ( Exception e )
         {
             throw new ImageRequestException( sitePath, request.getHeader( "referer" ), e );
         }
-        finally
+    }
+
+    private ImageResponse processImageRequest( final ImageRequest imageRequest, final SitePath sitePath,
+                                               final ImageRequestTrace imageRequestTrace )
+        throws ImageProcessorException
+    {
+        ImageRequestTracer.traceImageRequest( imageRequestTrace, imageRequest );
+        checkRequestAccess( imageRequest, sitePath );
+
+        final ImageResponse imageResponse = imageService.process( imageRequest );
+
+        if ( imageResponse.isImageNotFound() )
         {
-            PortalRequestTracer.stopTracing( portalRequestTrace, livePortalTraceService );
+            throw new ResourceNotFoundException( sitePath.getSiteKey(), sitePath.getLocalPath() );
         }
+        return imageResponse;
     }
 
     private void serveResponse( final HttpServletResponse response, final SitePath sitePath, final ImageResponse imageResponse )

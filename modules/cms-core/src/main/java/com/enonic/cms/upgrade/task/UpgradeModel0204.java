@@ -47,7 +47,15 @@ final class UpgradeModel0204
         initResourceRoot( context );
 
         VirtualFileItem root = getRootElement( context );
-        processFiles( context, root, "" );
+
+        if ( root == null )
+        {
+            context.logInfo( "No resource root found, no resources to process." );
+        }
+        else
+        {
+            processFiles( context, root, "" );
+        }
     }
 
     private void initResourceRoot( final UpgradeContext context )
@@ -206,12 +214,8 @@ final class UpgradeModel0204
         final List<VirtualFileItem> rootItems =
             context.getJdbcTemplate().query( "SELECT * FROM tVirtualFile where vf_skey = '" + ROOT_KEY + "'",
                                              new VirtualFileItemExtractor() );
-        if ( rootItems.size() != 1 )
-        {
-            throw new RuntimeException( "Expected one root-object" );
-        }
 
-        return rootItems.get( 0 );
+        return rootItems != null && rootItems.size() == 1 ? rootItems.get( 0 ) : null;
     }
 
     private static VirtualFileItem createVirtualFileItem( final ResultSet rs )

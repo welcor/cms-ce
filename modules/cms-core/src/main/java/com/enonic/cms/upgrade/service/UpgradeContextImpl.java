@@ -378,6 +378,11 @@ public final class UpgradeContextImpl
                     qualifier = null;
                 }
 
+                if ( name.toLowerCase().startsWith( "idx_" ) )
+                {
+                    indexNames.add( name );
+                }
+
                 if ( qualifier != null && qualifier.trim().length() > 0 )
                 {
                     /* some databases give empty ("") qualifier */
@@ -386,7 +391,6 @@ public final class UpgradeContextImpl
 
                 if ( ( name != null ) && !primaryKeys.contains( name ) && nonUnique )
                 {
-
                     indexNames.add( name );
                 }
             }

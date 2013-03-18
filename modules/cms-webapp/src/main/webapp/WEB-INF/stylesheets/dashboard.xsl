@@ -4,6 +4,7 @@
     ]>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:admin="http://www.enonic.com/cms/admin"
     >
 
   <xsl:output method="html"/>
@@ -460,7 +461,7 @@
                 <xsl:with-param name="key" select="$contentkey"/>
                 <xsl:with-param name="previewmenukey" select="../@sitekey"/>
                 <xsl:with-param name="menukey" select="../@sitekey"/>
-                <xsl:with-param name="contentpage" select="($contenttypekey + 999)"/>
+                <xsl:with-param name="contentpage" select="admin:toInteger($contenttypekey + 999)"/>
                 <xsl:with-param name="menuitemkey" select="../@menuitemkey"/>
                 <xsl:with-param name="unitkey" select="$unitkey"/>
                 <xsl:with-param name="cat" select="$categorykey"/>
@@ -576,7 +577,7 @@
                   <xsl:with-param name="includeremoveversion" select="$include-remove-version-button"/>
                   <xsl:with-param name="contenttypekey" select="@contenttypekey"/>
                   <xsl:with-param name="cat" select="category/@key"/>
-                  <xsl:with-param name="page" select="(@contenttypekey + 999)"/>
+                  <xsl:with-param name="page" select="admin:toInteger(@contenttypekey + 999)"/>
                   <xsl:with-param name="key" select="@key"/>
                   <xsl:with-param name="usereferer" select="true()"/>
                   <xsl:with-param name="ischild" select="@child"/>

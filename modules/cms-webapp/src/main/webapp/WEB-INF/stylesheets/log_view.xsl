@@ -3,6 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ]>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
     <xsl:output method="html"/>
 
@@ -110,7 +111,7 @@
                                                             <xsl:choose>
                                                                 <xsl:when test="/logentries/logentry/@tablekey = 0">
                                                                     <xsl:text>adminpage?page=</xsl:text>
-                                                                    <xsl:value-of select="/logentries/content/@contenttypekey + 999"/>
+                                                                    <xsl:value-of select="admin:toInteger(/logentries/content/@contenttypekey + 999)"/>
                                                                     <xsl:text>&amp;op=form&amp;key=</xsl:text>
                                                                     <xsl:value-of select="/logentries/content/@key"/>
                                                                     <xsl:text>&amp;cat=</xsl:text>

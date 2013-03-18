@@ -6,6 +6,7 @@
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:saxon="http://saxon.sf.net/"
+                xmlns:admin="http://www.enonic.com/cms/admin"
     >
 
     <xsl:output method="html"/>
@@ -1635,7 +1636,7 @@
                             <xsl:text>994</xsl:text>
                           </xsl:when>
                           <xsl:otherwise>
-                            <xsl:value-of select="number(@contenttypekey) + 999"/>
+                          <xsl:value-of select="admin:toInteger(@contenttypekey + 999)"/>
                           </xsl:otherwise>
                         </xsl:choose>
                       </xsl:variable>

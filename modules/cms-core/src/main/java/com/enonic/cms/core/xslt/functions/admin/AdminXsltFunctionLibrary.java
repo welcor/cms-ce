@@ -15,5 +15,6 @@ public final class AdminXsltFunctionLibrary
         add( new SerializeFunction() );
         add( new UniqueIdFunction( generator ) );
         add( new UrlEncodeFunction() );
+        add( new ToIntegerFunction() );
     }
 }

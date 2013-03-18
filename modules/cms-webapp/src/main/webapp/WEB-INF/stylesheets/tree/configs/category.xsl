@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:admin="http://www.enonic.com/cms/admin"
     >
 
     <!--xsl:include href="../../handlerconfigs/default.xsl"/-->
@@ -55,7 +56,7 @@
     <xsl:template match="category" mode="page">
         <xsl:choose>
             <xsl:when test="@contenttypekey">
-                <xsl:value-of select="(@contenttypekey + 999)"/>
+        <xsl:value-of select="admin:toInteger(@contenttypekey + 999)"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>991</xsl:text>

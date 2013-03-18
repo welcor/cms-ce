@@ -3,6 +3,7 @@
     <!ENTITY nbsp "&#160;">
 ]>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
     <xsl:output method="html"/>
 
@@ -567,7 +568,7 @@
                         <xsl:with-param name="menukey" select="$menukey"/>
                         <xsl:with-param name="previewmenukey" select="$menukey"/>
                         <xsl:with-param name="previewnotavailable" select="not($has-page-template)"/>
-                        <xsl:with-param name="contentpage" select="(@contenttypekey + 999)"/>
+                        <xsl:with-param name="contentpage" select="admin:toInteger(@contenttypekey + 999)"/>
                         <xsl:with-param name="cat" select="@categorykey"/>
                         <xsl:with-param name="menuitemkey" select="$menuitemkey"/>
                         <xsl:with-param name="approved" select="@approved = 'true'"/>

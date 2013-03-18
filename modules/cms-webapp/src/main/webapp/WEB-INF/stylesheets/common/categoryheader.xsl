@@ -5,6 +5,7 @@
 
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:admin="http://www.enonic.com/cms/admin"
     >
 
   <xsl:output method="html"/>
@@ -200,7 +201,7 @@
                 <xsl:value-of select="991"/>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="string(number($category/@contenttypekey) + 999)"/>
+                <xsl:value-of select="string(admin:toInteger($category/@contenttypekey + 999))"/>
               </xsl:otherwise>
             </xsl:choose>
             <xsl:text>&amp;op=</xsl:text><xsl:value-of select="$op"/>

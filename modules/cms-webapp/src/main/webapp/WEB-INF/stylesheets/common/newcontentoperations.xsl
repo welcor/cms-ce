@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="#all"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    >
+                xmlns:admin="http://www.enonic.com/cms/admin">
 
   <xsl:output method="html"/>
 
@@ -32,7 +32,7 @@
 
     <xsl:variable name="cat" select="$contentelem/categoryname/@key"/>
     <xsl:variable name="contenttypekey" select="$contentelem/@contenttypekey"/>
-    <xsl:variable name="page" select="number($contenttypekey) + 999"/>
+    <xsl:variable name="page" select="admin:toInteger($contenttypekey + 999)"/>
 
     <xsl:variable name="categorycreate"
                   select="not($contentelem/accessrights/userright) or $contentelem/accessrights/userright/@categorycreate = 'true'"/>

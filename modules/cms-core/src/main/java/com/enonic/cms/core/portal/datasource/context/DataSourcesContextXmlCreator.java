@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core.portal.datasource.context;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.InitializingBean;
@@ -62,6 +64,8 @@ public final class DataSourcesContextXmlCreator
 
         LanguageEntity language = context.getLanguage();
 
+        final HttpServletRequest request = context.getHttpRequest();
+
         // Language context
         contextElem.setAttribute( "languagecode", language.getCode() );
 
@@ -78,7 +82,7 @@ public final class DataSourcesContextXmlCreator
         {
             mode = "edit";
         }
-        else if ( "true".equals( context.getHttpRequest().getAttribute( Attribute.PREVIEW_ENABLED ) ) )
+        else if ( request == null || "true".equals( request.getAttribute( Attribute.PREVIEW_ENABLED ) ) )
         {
             mode = "preview";
         }

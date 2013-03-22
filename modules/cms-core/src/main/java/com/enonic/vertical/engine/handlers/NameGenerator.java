@@ -50,7 +50,6 @@ public class NameGenerator
         .put( '>', DEFAULT_REPLACE )
         .put( ';', DEFAULT_REPLACE )
         .put( ':', DEFAULT_REPLACE )
-        .put( '_', DEFAULT_REPLACE )
         .put( '#', DEFAULT_REPLACE )
         .put( '~', DEFAULT_REPLACE )
         .put( '+', DEFAULT_REPLACE )

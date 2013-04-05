@@ -36,6 +36,6 @@ public class ContentKeyEqualsTest
 
     public Object getObjectThatEqualsXButNotTheSame2()
     {
-        return new ContentKey( 1 );
+        return new ContentKey( 3 );
     }
 }

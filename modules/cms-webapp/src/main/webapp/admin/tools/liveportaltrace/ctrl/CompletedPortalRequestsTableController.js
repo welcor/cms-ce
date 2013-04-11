@@ -3,7 +3,6 @@ if (!lpt) {
 }
 
 lpt.CompletedPortalRequestsTableController = function (tableId, automaticRefreshTimeInMillis) {
-    var thisCtrl = this;
     var refreshIntervalId;
     var initialTracesToLoad = 100;
     var maxTracesToKeep = 1000;
@@ -20,6 +19,10 @@ lpt.CompletedPortalRequestsTableController = function (tableId, automaticRefresh
     var table = document.getElementById(tableId);
     var tableBody = table.getElementsByTagName("tbody")[0];
     var workerThreadIsSupported = false;
+    var taskInProgress = {
+        loadNew: false,
+        reloadAll: false
+    };
 
     this.setWorkerThreadIsSupported = function (value) {
         workerThreadIsSupported = value;
@@ -48,6 +51,7 @@ lpt.CompletedPortalRequestsTableController = function (tableId, automaticRefresh
     this.init = function () {
         if (workerThreadIsSupported) {
             worker = new Worker("liveportaltrace/request-worker.js");
+            worker.onmessage = handleMessageFromWorker;
         }
 
         table.addEventListener("click", function (event) {
@@ -69,86 +73,122 @@ lpt.CompletedPortalRequestsTableController = function (tableId, automaticRefresh
 
     this.loadNew = function () {
         if (workerThreadIsSupported) {
-            loadNewUsingThread();
+            loadNew_usingThread();
         }
         else {
-            loadNewWithoutUsingThread();
+            loadNew_withoutUsingThread();
         }
     };
 
     this.reload = function () {
         if (workerThreadIsSupported) {
-            // Supported by: Chrome, Firefox
-            reloadUsingThread();
+            reloadAll_usingThread();
         }
         else {
-            reloadWithoutUsingThread();
+            reloadAll_withoutUsingThread();
         }
     };
 
     this.startAutomaticRefresh = function () {
+        if (workerThreadIsSupported) {
+            doAutomaticRefresh_usingThread();
+        }
+        else {
+            doAutomaticRefresh_withoutThread();
+        }
+    };
+
+    function doAutomaticRefresh_withoutThread() {
         (function loop() {
             refreshIntervalId = setTimeout(function () {
-                thisCtrl.loadNew();
+                loadNew_withoutUsingThread();
                 loop();
             }, automaticRefreshTimeInMillis);
         })();
-    };
+    }
+
+    function doAutomaticRefresh_usingThread() {
+        (function loop() {
+            refreshIntervalId = setTimeout(function () {
+                loadNew_usingThread();
+                loop();
+            }, automaticRefreshTimeInMillis);
+        })();
+    }
 
     this.stopAutomaticRefresh = function () {
         clearInterval(refreshIntervalId);
     };
 
-    function loadNewUsingThread() {
-        worker.onmessage = function (event) {
-            var message = event.data;
-            if (message.operation === "load-new") {
-                var traces = jQuery.parseJSON(event.data.jsonData);
+    function loadNew_withoutUsingThread() {
+        if (noTasksInProgress()) {
+            taskInProgress.loadNew = true;
+
+            $.getJSON(resolveCompletedAfterUrl(lastCompletedNumber, null), function (traces) {
                 insertAtTop(traces);
-            }
-        };
 
-        worker.postMessage({
-            "operation": "load-new",
-            "url": resolveCompletedAfterUrl(lastCompletedNumber, null)
-        });
-    }
-
-    function loadNewWithoutUsingThread() {
-        $.getJSON(resolveCompletedAfterUrl(lastCompletedNumber, null), function (traces) {
-            insertAtTop(traces);
-        });
-    }
-
-    function reloadUsingThread() {
-        worker.onmessage = function (event) {
-            var message = event.data;
-            if (message.operation === "load-latest") {
-                insertAtTop(jQuery.parseJSON(event.data.jsonData));
-                worker.postMessage({
-                    "operation": "load-rest-of-history",
-                    "url": resolveCompletedBeforeUrl(getFirstCompletedNumber())
-                });
-
-            }
-            else if (message.operation === "load-rest-of-history") {
-                appendTraces(jQuery.parseJSON(event.data.jsonData));
-            }
-        };
-
-        worker.postMessage({
-            "operation": "load-latest",
-            "url": resolveCompletedAfterUrl(lastCompletedNumber, initialTracesToLoad)
-        });
-    }
-
-    function reloadWithoutUsingThread() {
-        jQuery.getJSON(resolveCompletedAfterUrl(lastCompletedNumber, initialTracesToLoad), function (firstTraces) {
-            insertAtTop(firstTraces);
-            jQuery.getJSON(resolveCompletedBeforeUrl(getFirstCompletedNumber()), function (restOfTraces) {
-                appendTraces(restOfTraces);
+                taskInProgress.loadNew = false;
             });
-        });
+        }
+    }
+
+    function reloadAll_withoutUsingThread() {
+        if (noTasksInProgress()) {
+            taskInProgress.reloadAll = true;
+
+            jQuery.getJSON(resolveCompletedAfterUrl(lastCompletedNumber, initialTracesToLoad), function (firstTraces) {
+                insertAtTop(firstTraces);
+                jQuery.getJSON(resolveCompletedBeforeUrl(getFirstCompletedNumber()), function (restOfTraces) {
+                    appendTraces(restOfTraces);
+                    taskInProgress.reloadAll = false;
+                });
+            });
+        }
+    }
+
+    function loadNew_usingThread() {
+        if (noTasksInProgress()) {
+            taskInProgress.loadNew = true;
+
+            worker.postMessage({
+                "operation": "load-new",
+                "url": resolveCompletedAfterUrl(lastCompletedNumber, null)
+            });
+        }
+    }
+
+    function reloadAll_usingThread() {
+        if (noTasksInProgress()) {
+            taskInProgress.reloadAll = true;
+
+            worker.postMessage({
+                "operation": "load-all",
+                "url": resolveCompletedAfterUrl(lastCompletedNumber, initialTracesToLoad)
+            });
+        }
+
+    }
+
+    function handleMessageFromWorker(event) {
+        var message = event.data;
+
+        if (message.operation === "load-new") {
+            var traces = jQuery.parseJSON(event.data.jsonData);
+            insertAtTop(traces);
+            taskInProgress.loadNew = false;
+        }
+        else if (message.operation === "load-all") {
+            insertAtTop(jQuery.parseJSON(event.data.jsonData));
+            worker.postMessage({
+                "operation": "load-all-remaining",
+                "url": resolveCompletedBeforeUrl(getFirstCompletedNumber())
+            });
+
+        }
+        else if (message.operation === "load-all-remaining") {
+            appendTraces(jQuery.parseJSON(event.data.jsonData));
+            taskInProgress.reloadAll = false;
+        }
     }
 
     function insertAtTop(traces) {
@@ -206,5 +246,9 @@ lpt.CompletedPortalRequestsTableController = function (tableId, automaticRefresh
 
     function getFirstCompletedNumber() {
         return firstCompletedNumber;
+    }
+
+    function noTasksInProgress() {
+        return !taskInProgress.loadNew && !taskInProgress.reloadAll;
     }
 };

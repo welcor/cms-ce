@@ -123,7 +123,7 @@
 
                     <p>
                         Join the Enonic Community for Updates, Forum and Tutorials. Get help,
-                        <br/>Discuss and share. All out
+                        <br/>Discuss and share. All our
                         code is also available on GitHub - you are welcome with your contributions.<br/>
                     </p>
                     <ul>

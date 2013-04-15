@@ -52,6 +52,7 @@ lpt.CompletedPortalRequestsTableController = function (tableId, automaticRefresh
         if (workerThreadIsSupported) {
             worker = new Worker("liveportaltrace/request-worker.js");
             worker.onmessage = handleMessageFromWorker;
+            worker.onmessage = handleMessageFromWorker;
         }
 
         table.addEventListener("click", function (event) {
@@ -172,21 +173,32 @@ lpt.CompletedPortalRequestsTableController = function (tableId, automaticRefresh
     function handleMessageFromWorker(event) {
         var message = event.data;
 
-        if (message.operation === "load-new") {
+        if (message.operation === "load-new" && message.success === true) {
             var traces = jQuery.parseJSON(event.data.jsonData);
             insertAtTop(traces);
             taskInProgress.loadNew = false;
         }
-        else if (message.operation === "load-all") {
+        else if (message.operation === "load-new" && message.success === false) {
+            console.log("Operation " + message.operation + " failed: " + message.errorMessage);
+            taskInProgress.loadNew = false;
+        }
+        else if (message.operation === "load-all" && message.success === true) {
             insertAtTop(jQuery.parseJSON(event.data.jsonData));
             worker.postMessage({
                 "operation": "load-all-remaining",
                 "url": resolveCompletedBeforeUrl(getFirstCompletedNumber())
             });
-
         }
-        else if (message.operation === "load-all-remaining") {
+        else if (message.operation === "load-all" && message.success === false) {
+            console.log("Operation " + message.operation + " failed: " + message.errorMessage);
+            taskInProgress.reloadAll = false;
+        }
+        else if (message.operation === "load-all-remaining" && message.success === true) {
             appendTraces(jQuery.parseJSON(event.data.jsonData));
+            taskInProgress.reloadAll = false;
+        }
+        else if (message.operation === "load-all-remaining" && message.success === false) {
+            console.log("Operation " + message.operation + " failed: " + message.errorMessage);
             taskInProgress.reloadAll = false;
         }
     }

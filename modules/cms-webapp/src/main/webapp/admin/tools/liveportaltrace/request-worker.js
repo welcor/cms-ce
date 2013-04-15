@@ -4,6 +4,7 @@ self.onmessage = function (event) {
 
     var request = new XMLHttpRequest();
     request.open('GET', url, false);
+
     try {
         request.send(null);
 
@@ -13,7 +14,7 @@ self.onmessage = function (event) {
                 "success": true,
                 "jsonData": request.responseText
             };
-            self.postMessage(message);
+
         }
         else {
             message = {
@@ -21,15 +22,15 @@ self.onmessage = function (event) {
                 "success": false,
                 "errorMessage": "HTTP response: " + request.status
             };
-            self.postMessage(message);
         }
     }
     catch (error) {
         message = {
             "operation": event.data.operation,
             "success": false,
-            "errorMessage": error
+            "errorMessage": error.name + ": " + error.message
         };
-        self.postMessage(message);
     }
+
+    self.postMessage(message);
 };

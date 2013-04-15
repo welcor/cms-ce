@@ -1,10 +1,8 @@
-if ( !lpt )
-{
+if (!lpt) {
     var lpt = {};
 }
 
-lpt.AutomaticUpdateController = function ()
-{
+lpt.AutomaticUpdateController = function () {
     var started = false;
 
     var completedPortalRequestsTableController;
@@ -19,53 +17,42 @@ lpt.AutomaticUpdateController = function ()
 
     var systemInfoController;
 
-    this.setCompletedPortalRequestsTableController = function ( controller )
-    {
+    this.setCompletedPortalRequestsTableController = function (controller) {
         completedPortalRequestsTableController = controller;
     };
 
-    this.setCurrentPageRequestsController = function ( controller )
-    {
+    this.setCurrentPageRequestsController = function (controller) {
         currentPageRequestsController = controller;
     };
 
-    this.setLongestPageRequestsController = function ( controller )
-    {
+    this.setLongestPageRequestsController = function (controller) {
         longestPageRequestsController = controller;
     };
 
-    this.setLongestAttachmentRequestsController = function ( controller )
-    {
+    this.setLongestAttachmentRequestsController = function (controller) {
         longestAttachmentRequestsController = controller;
     };
 
-    this.setLongestImageRequestsController = function ( controller )
-    {
+    this.setLongestImageRequestsController = function (controller) {
         longestImageRequestsController = controller;
     };
 
-    this.setSystemInfoController = function ( controller )
-    {
+    this.setSystemInfoController = function (controller) {
         systemInfoController = controller;
     };
 
-    this.switchAutomaticUpdate = function ()
-    {
-        var autoUpdateCheckbox = document.getElementById( "auto-update" );
-        if ( autoUpdateCheckbox.checked == true )
-        {
+    this.switchAutomaticUpdate = function () {
+        var autoUpdateCheckbox = document.getElementById("auto-update");
+        if (autoUpdateCheckbox.checked == true) {
             this.startAutomaticUpdate();
         }
-        else
-        {
+        else {
             this.stopAutomaticUpdate();
         }
     };
 
-    this.stopAutomaticUpdate = function ()
-    {
-        if ( !started )
-        {
+    this.stopAutomaticUpdate = function () {
+        if (!started) {
             throw "Illegal state: Trying to stop automatic update when it is already stopped";
         }
 
@@ -76,15 +63,13 @@ lpt.AutomaticUpdateController = function ()
         completedPortalRequestsTableController.stopAutomaticRefresh();
         systemInfoController.stopAutomaticUpdate();
 
-        document.getElementById( "fetch-recent-history" ).disabled = false;
+        document.getElementById("fetch-recent-history").disabled = false;
 
         started = false;
     };
 
-    this.startAutomaticUpdate = function ()
-    {
-        if ( started )
-        {
+    this.startAutomaticUpdate = function () {
+        if (started) {
             throw "Illegal state: Trying to start automatic update when it is already started";
         }
 
@@ -95,7 +80,7 @@ lpt.AutomaticUpdateController = function ()
         completedPortalRequestsTableController.startAutomaticRefresh();
         systemInfoController.startAutomaticUpdate();
 
-        document.getElementById( "fetch-recent-history" ).disabled = true;
+        document.getElementById("fetch-recent-history").disabled = true;
 
         started = true;
     }

@@ -1,5 +1,6 @@
 package com.enonic.cms.core.plugin.hook;
 
+import org.eclipse.core.runtime.internal.adaptor.EclipseClassLoadingHook;
 import org.eclipse.osgi.baseadaptor.HookConfigurator;
 import org.eclipse.osgi.baseadaptor.HookRegistry;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ public final class HookConfiguratorImpl
     {
         registry.addAdaptorHook( new LoggingHook() );
         registry.addBundleFileWrapperFactoryHook( new TransformerHook() );
+        registry.addClassLoadingHook( new EclipseClassLoadingHook() );
         registry.addClassLoaderDelegateHook( new ParentClassLoaderHook() );
     }
 }

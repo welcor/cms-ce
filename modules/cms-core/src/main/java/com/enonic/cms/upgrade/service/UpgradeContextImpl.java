@@ -378,7 +378,7 @@ public final class UpgradeContextImpl
                     qualifier = null;
                 }
 
-                if ( name.toLowerCase().startsWith( "idx_" ) )
+                if ( ( name != null ) && name.toLowerCase().startsWith( "idx_" ) )
                 {
                     indexNames.add( name );
                 }

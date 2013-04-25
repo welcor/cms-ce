@@ -150,8 +150,7 @@ public class IndexTransactionJournal
         final ContentEntity content = contentMap.get( journalEntry.getContentKey() );
         if ( content == null )
         {
-            LOG.warn(
-                "Content to update index for did not exist (removing index for content instead): " + journalEntry.getContentKey() );
+            LOG.warn( "Content to update index for did not exist (removing index for content instead): " + journalEntry.getContentKey() );
             deleteContent( journalEntry.getContentKey() );
         }
         else if ( content.isDeleted() )

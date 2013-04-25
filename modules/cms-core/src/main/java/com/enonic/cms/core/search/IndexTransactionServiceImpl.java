@@ -94,7 +94,6 @@ public class IndexTransactionServiceImpl
             (IndexTransactionJournal) TransactionSynchronizationManager.getResource( TRANSACTION_JOURNAL_KEY );
         if ( indexTransactionJournal != null )
         {
-            LOG.error( "Index transaction already started" );
             return indexTransactionJournal;
         }
         indexTransactionJournal = new IndexTransactionJournal( contentIndexService, indexService, contentDao );

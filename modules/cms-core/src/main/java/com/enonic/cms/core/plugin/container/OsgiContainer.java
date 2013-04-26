@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.internal.adaptor.EclipseLogHook;
 import org.eclipse.osgi.baseadaptor.HookConfigurator;
 import org.eclipse.osgi.baseadaptor.HookRegistry;
@@ -132,7 +133,14 @@ public abstract class OsgiContainer
                     absolutePath.substring( 0, absolutePath.length() - VFS_CONTENTS_FOLDER.length() ) + urlResource.getFilename();
             }
 
-            location = new URL( "file:/" + absolutePath );
+            final StringBuilder stringBuilder = new StringBuilder( "file:/" );
+            if ( !SystemUtils.IS_OS_WINDOWS ) // windows already has one slash in path like /c:/Program Files/....
+            {
+                stringBuilder.append( '/' );
+            }
+            stringBuilder.append( absolutePath );
+
+            location = new URL( stringBuilder.toString() );
         }
 
         Files.copy( Resources.newInputStreamSupplier( location ), targetFile );

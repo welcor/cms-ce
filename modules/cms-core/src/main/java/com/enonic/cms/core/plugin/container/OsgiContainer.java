@@ -132,7 +132,14 @@ public abstract class OsgiContainer
                     absolutePath.substring( 0, absolutePath.length() - VFS_CONTENTS_FOLDER.length() ) + urlResource.getFilename();
             }
 
-            location = new URL( "file:/" + absolutePath );
+            final StringBuilder stringBuilder = new StringBuilder( "file:/" );
+            if ( File.separatorChar != '\\' ) // windows already has one slash in path like /c:/Program Files/....
+            {
+                stringBuilder.append( '/' );
+            }
+            stringBuilder.append( absolutePath );
+
+            location = new URL( stringBuilder.toString() );
         }
 
         Files.copy( Resources.newInputStreamSupplier( location ), targetFile );

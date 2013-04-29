@@ -15,7 +15,7 @@
             ed.addCommand( 'cmslink', function()
             {
                 var selection = ed.selection;
-                var popupUpWindowWidth = 460, popupWindowHeight = 285;
+                var popupUpWindowWidth = 460, popupWindowHeight = 300;
 
                 ed.windowManager.open( {
                     file : 'adminpage?page=1048&op=select',

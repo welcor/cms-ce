@@ -210,6 +210,14 @@
                     </td>
                   </tr>
                   <tr>
+                    <td nowrap="nowrap">
+                      <label id="anchorlabel" for="anchor">%fldAnchor%:</label>
+                    </td>
+                    <td>
+                      <input type="text" name="anchor" value="" id="anchor" size="48"/>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>
                       <label id="targetlistlabel" for="targetlist">%fldRel%:</label>
                     </td>

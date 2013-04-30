@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<dataSources>
+  <dataSource result-element="result" cache="true" condition="${true()}">
+    <methodname>dummy</methodname>
+    <parameters>
+
+      <parameter name="template" override="url"/>
+
+      <parameter name="n.template" override="url"/>
+      <parameter name="n.template" override="session"/>
+
+      <parameter name="#template" override="session"/>
+      <parameter name="{template}" override="session"/>
+      <parameter name="a.b." override="session"/>
+      <parameter name="a>b" override="session"/>
+
+    </parameters>
+  </dataSource>
+</dataSources>

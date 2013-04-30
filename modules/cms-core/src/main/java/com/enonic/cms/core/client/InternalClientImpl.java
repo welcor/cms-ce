@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.google.common.collect.Lists;
+
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLException;
 
@@ -54,6 +56,7 @@ import com.enonic.cms.api.client.model.GetContentTypeConfigXMLParams;
 import com.enonic.cms.api.client.model.GetContentVersionsParams;
 import com.enonic.cms.api.client.model.GetGroupParams;
 import com.enonic.cms.api.client.model.GetGroupsParams;
+import com.enonic.cms.api.client.model.GetLogEntriesParams;
 import com.enonic.cms.api.client.model.GetMenuBranchParams;
 import com.enonic.cms.api.client.model.GetMenuDataParams;
 import com.enonic.cms.api.client.model.GetMenuItemParams;
@@ -77,6 +80,8 @@ import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
 import com.enonic.cms.api.client.model.UpdateUserParams;
+import com.enonic.cms.api.client.model.log.LogEntries;
+import com.enonic.cms.api.client.model.log.LogEntry;
 import com.enonic.cms.api.client.model.preference.Preference;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
@@ -90,6 +95,7 @@ import com.enonic.cms.core.content.ContentXMLCreator;
 import com.enonic.cms.core.content.GetContentExecutor;
 import com.enonic.cms.core.content.GetContentResult;
 import com.enonic.cms.core.content.GetContentXmlCreator;
+import com.enonic.cms.core.content.GetLogEntryExecutor;
 import com.enonic.cms.core.content.GetRelatedContentExecutor;
 import com.enonic.cms.core.content.GetRelatedContentResult;
 import com.enonic.cms.core.content.GetRelatedContentXmlCreator;
@@ -115,6 +121,11 @@ import com.enonic.cms.core.content.query.RelatedContentQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSet;
 import com.enonic.cms.core.content.resultset.RelatedContentResultSetImpl;
+import com.enonic.cms.core.log.LogEntryEntity;
+import com.enonic.cms.core.log.LogEntryResultSet;
+import com.enonic.cms.core.log.LogService;
+import com.enonic.cms.core.log.LogType;
+import com.enonic.cms.core.log.Table;
 import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.portal.datasource.context.UserContextXmlCreator;
@@ -274,6 +285,8 @@ public abstract class InternalClientImpl
     private UserDao userDao;
 
     private ContentDao contentDao;
+
+    private LogService logService;
 
     private final boolean clientForRemoteInvocations;
 
@@ -2528,6 +2541,105 @@ public abstract class InternalClientImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public LogEntries getLogEntries( GetLogEntriesParams params )
+        throws ClientException
+    {
+        final ClientMethodExecutionTrace trace = ClientMethodExecutionTracer.startTracing( "getLogEntries", livePortalTraceService );
+        try
+        {
+            if ( params.count < 1 )
+            {
+                throw new IllegalArgumentException( "Specified count must be higher than zero" );
+            }
+
+            final GetLogEntryExecutor executor = new GetLogEntryExecutor( logService );
+            executor.count( params.count );
+            executor.publishFrom( params.from );
+            executor.publishTo( params.to );
+
+            final LogEntryResultSet logEntriesResult = executor.execute();
+
+            final List<LogEntry> logEntryList = Lists.newArrayList();
+            for ( LogEntryEntity logEntryEntity : logEntriesResult.getLogEntries() )
+            {
+                final LogEntry logEntry = logEntryEntityToApiLogEntry( logEntryEntity );
+                logEntryList.add( logEntry );
+            }
+            return new LogEntries( logEntryList );
+        }
+        catch ( Exception e )
+        {
+            throw handleException( e );
+        }
+        finally
+        {
+            ClientMethodExecutionTracer.stopTracing( trace, livePortalTraceService );
+        }
+    }
+
+    private LogEntry logEntryEntityToApiLogEntry( final LogEntryEntity logEntryEntity )
+    {
+        final LogEntry logEntry = new LogEntry();
+        logEntry.logKey = logEntryEntity.getKey().toString();
+        switch ( LogType.parse( logEntryEntity.getType() ) )
+        {
+            case LOGIN:
+                logEntry.eventType = LogEntry.LogEventType.LOGIN;
+                break;
+            case LOGIN_USERSTORE:
+                logEntry.eventType = LogEntry.LogEventType.LOGIN_USERSTORE;
+                break;
+            case LOGIN_FAILED:
+                logEntry.eventType = LogEntry.LogEventType.LOGIN_FAILED;
+                break;
+            case LOGOUT:
+                logEntry.eventType = LogEntry.LogEventType.LOGOUT;
+                break;
+            case ENTITY_CREATED:
+                logEntry.eventType = LogEntry.LogEventType.ENTITY_CREATED;
+                break;
+            case ENTITY_UPDATED:
+                logEntry.eventType = LogEntry.LogEventType.ENTITY_UPDATED;
+                break;
+            case ENTITY_REMOVED:
+                logEntry.eventType = LogEntry.LogEventType.ENTITY_REMOVED;
+                break;
+            case ENTITY_OPENED:
+                logEntry.eventType = LogEntry.LogEventType.ENTITY_OPENED;
+                break;
+        }
+        logEntry.user = logEntryEntity.getUser().getName();
+        logEntry.username = logEntryEntity.getUser().getDisplayName();
+        logEntry.timestamp = logEntryEntity.getTimestamp();
+        logEntry.title = logEntryEntity.getTitle();
+        if ( logEntryEntity.getTableKey() != null )
+        {
+            final Table table = Table.parse( logEntryEntity.getTableKey() );
+            logEntry.table = table.name();
+        }
+
+        if ( logEntryEntity.getKeyValue() != null )
+        {
+            logEntry.contentKey = logEntryEntity.getKeyValue();
+        }
+
+        if ( logEntryEntity.getInetAddress() != null )
+        {
+            logEntry.inetAddress = logEntryEntity.getInetAddress();
+        }
+
+        if ( logEntryEntity.getPath() != null )
+        {
+            logEntry.path = logEntryEntity.getPath();
+        }
+        if ( logEntryEntity.getSite() != null )
+        {
+            logEntry.site = logEntryEntity.getSite().getName();
+            logEntry.siteKey = logEntryEntity.getSite().getKey().toInt();
+        }
+        return logEntry;
+    }
+
     public Document getContentTypeConfigXML( GetContentTypeConfigXMLParams params )
         throws ClientException
     {
@@ -2621,5 +2733,11 @@ public abstract class InternalClientImpl
     public void setUserDao( UserDao userDao )
     {
         this.userDao = userDao;
+    }
+
+    @Autowired
+    public void setLogService( final LogService logService )
+    {
+        this.logService = logService;
     }
 }

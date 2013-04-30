@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.transform.ResultTransformer;
 import org.springframework.stereotype.Repository;
@@ -33,12 +34,18 @@ final class LogEntryEntityDao
     public List<LogEntryKey> findBySpecification( LogEntrySpecification specification, final String orderBy )
     {
 
+        final String logEntryKeysHQL = getLogEntryKeysHQL( specification, orderBy );
         Query compiled =
-            getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery( getLogEntryKeysHQL( specification, orderBy ) );
+            getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery( logEntryKeysHQL );
 
         if ( specification.getDateFilter() != null )
         {
             compiled.setDate( "dateFilter", specification.getDateFilter() );
+        }
+
+        if ( specification.isDateSpanSet() )
+        {
+            specification.setDateSpanParameters( compiled );
         }
 
         compiled.setCacheable( true );
@@ -84,9 +91,11 @@ final class LogEntryEntityDao
 
         applyDateFilter( specification, hqlQuery );
 
+        applyDateSpan( specification, hqlQuery );
+
         String hql = hqlQuery.toString();
 
-        if ( orderBy != null )
+        if ( StringUtils.isNotBlank( orderBy ) )
         {
             hqlQuery.addOrderBy( "le." + orderBy );
             hql = hqlQuery.toString();
@@ -113,6 +122,14 @@ final class LogEntryEntityDao
             hqlQuery.addFilter( "AND", "le.timestamp > :dateFilter" );
         }
 
+    }
+
+    private void applyDateSpan( LogEntrySpecification specification, SelectBuilder hqlQuery )
+    {
+        if ( specification.isDateSpanSet() )
+        {
+            specification.appendDateSpan( "le", hqlQuery );
+        }
     }
 
     private void applyNonDeletedContentOnlyFilter( LogEntrySpecification specification, SelectBuilder hqlQuery )
@@ -233,12 +250,7 @@ final class LogEntryResultTransformer
 
     private boolean isAlreadyAdded( Integer key, Set<Integer> added )
     {
-        if ( added.contains( key ) )
-        {
-            return true;
-        }
-        return false;
-
+        return added.contains( key );
     }
 
 }

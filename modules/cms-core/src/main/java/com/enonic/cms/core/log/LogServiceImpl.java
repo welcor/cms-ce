@@ -66,35 +66,6 @@ public class LogServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public LogEntryKey storeNew( LogEntryEntity logEntry )
-    {
-
-        if ( logEntry.getType() == null )
-        {
-            throw new IllegalArgumentException( "Type must be set (nullable = no )" );
-        }
-        if ( logEntry.getUser() == null )
-        {
-            throw new IllegalArgumentException( "User must be set (nullable = no )" );
-        }
-        if ( logEntry.getTitle() == null )
-        {
-            throw new IllegalArgumentException( "Title must be set (nullable = no )" );
-        }
-        if ( logEntry.getXmlData() == null )
-        {
-            throw new IllegalArgumentException( "XML data must be set (nullable = no )" );
-        }
-        if ( logEntry.getTimestamp() == null )
-        {
-            throw new IllegalArgumentException( "Timestamp must be set (nullable = no )" );
-        }
-
-        logEntryDao.storeNew( logEntry );
-        return logEntry.getKey();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public LogEntryKey storeNew( StoreNewLogEntryCommand command )
     {
         Assert.notNull( command.getType(), "type cannot be nul" );

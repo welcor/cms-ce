@@ -82,6 +82,7 @@ import com.enonic.cms.api.client.model.UpdateFileContentParams;
 import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.log.LogEntries;
 import com.enonic.cms.api.client.model.log.LogEntry;
+import com.enonic.cms.api.client.model.log.LogEventType;
 import com.enonic.cms.api.client.model.preference.Preference;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
@@ -2580,62 +2581,62 @@ public abstract class InternalClientImpl
     private LogEntry logEntryEntityToApiLogEntry( final LogEntryEntity logEntryEntity )
     {
         final LogEntry logEntry = new LogEntry();
-        logEntry.logKey = logEntryEntity.getKey().toString();
+        logEntry.setLogKey( logEntryEntity.getKey().toString() );
         switch ( LogType.parse( logEntryEntity.getType() ) )
         {
             case LOGIN:
-                logEntry.eventType = LogEntry.LogEventType.LOGIN;
+                logEntry.setEventType( LogEventType.LOGIN );
                 break;
             case LOGIN_USERSTORE:
-                logEntry.eventType = LogEntry.LogEventType.LOGIN_USERSTORE;
+                logEntry.setEventType( LogEventType.LOGIN_USERSTORE );
                 break;
             case LOGIN_FAILED:
-                logEntry.eventType = LogEntry.LogEventType.LOGIN_FAILED;
+                logEntry.setEventType( LogEventType.LOGIN_FAILED );
                 break;
             case LOGOUT:
-                logEntry.eventType = LogEntry.LogEventType.LOGOUT;
+                logEntry.setEventType( LogEventType.LOGOUT );
                 break;
             case ENTITY_CREATED:
-                logEntry.eventType = LogEntry.LogEventType.ENTITY_CREATED;
+                logEntry.setEventType( LogEventType.ENTITY_CREATED );
                 break;
             case ENTITY_UPDATED:
-                logEntry.eventType = LogEntry.LogEventType.ENTITY_UPDATED;
+                logEntry.setEventType( LogEventType.ENTITY_UPDATED );
                 break;
             case ENTITY_REMOVED:
-                logEntry.eventType = LogEntry.LogEventType.ENTITY_REMOVED;
+                logEntry.setEventType( LogEventType.ENTITY_REMOVED );
                 break;
             case ENTITY_OPENED:
-                logEntry.eventType = LogEntry.LogEventType.ENTITY_OPENED;
+                logEntry.setEventType( LogEventType.ENTITY_OPENED );
                 break;
         }
-        logEntry.user = logEntryEntity.getUser().getName();
-        logEntry.username = logEntryEntity.getUser().getDisplayName();
-        logEntry.timestamp = logEntryEntity.getTimestamp();
-        logEntry.title = logEntryEntity.getTitle();
+        logEntry.setUser( logEntryEntity.getUser().getName() );
+        logEntry.setUsername( logEntryEntity.getUser().getDisplayName() );
+        logEntry.setTimestamp( logEntryEntity.getTimestamp() );
+        logEntry.setTitle( logEntryEntity.getTitle() );
         if ( logEntryEntity.getTableKey() != null )
         {
             final Table table = Table.parse( logEntryEntity.getTableKey() );
-            logEntry.table = table.name();
+            logEntry.setTable( table.name() );
         }
 
         if ( logEntryEntity.getKeyValue() != null )
         {
-            logEntry.contentKey = logEntryEntity.getKeyValue();
+            logEntry.setContentKey( logEntryEntity.getKeyValue() );
         }
 
         if ( logEntryEntity.getInetAddress() != null )
         {
-            logEntry.inetAddress = logEntryEntity.getInetAddress();
+            logEntry.setInetAddress( logEntryEntity.getInetAddress() );
         }
 
         if ( logEntryEntity.getPath() != null )
         {
-            logEntry.path = logEntryEntity.getPath();
+            logEntry.setPath( logEntryEntity.getPath() );
         }
         if ( logEntryEntity.getSite() != null )
         {
-            logEntry.site = logEntryEntity.getSite().getName();
-            logEntry.siteKey = logEntryEntity.getSite().getKey().toInt();
+            logEntry.setSite( logEntryEntity.getSite().getName() );
+            logEntry.setSiteKey( logEntryEntity.getSite().getKey().toInt() );
         }
         return logEntry;
     }

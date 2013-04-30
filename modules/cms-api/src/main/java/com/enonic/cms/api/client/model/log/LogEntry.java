@@ -8,39 +8,147 @@ public class LogEntry
 {
     private static final long serialVersionUID = -1L;
 
-    public enum LogEventType
+    private String logKey;
+
+    private LogEventType eventType;
+
+    private String table;
+
+    private String user;
+
+    private String username;
+
+    private Date timestamp;
+
+    private Integer contentKey;
+
+    private String inetAddress;
+
+    private String path;
+
+    private String title;
+
+    private String site;
+
+    private Integer siteKey;
+
+    public String getLogKey()
     {
-        LOGIN,
-        LOGIN_USERSTORE,
-        LOGIN_FAILED,
-        LOGOUT,
-        ENTITY_CREATED,
-        ENTITY_UPDATED,
-        ENTITY_REMOVED,
-        ENTITY_OPENED
+        return logKey;
     }
 
-    public String logKey;
+    public void setLogKey( final String logKey )
+    {
+        this.logKey = logKey;
+    }
 
-    public LogEventType eventType;
+    public LogEventType getEventType()
+    {
+        return eventType;
+    }
 
-    public String table;
+    public void setEventType( final LogEventType eventType )
+    {
+        this.eventType = eventType;
+    }
 
-    public String user;
+    public String getTable()
+    {
+        return table;
+    }
 
-    public String username;
+    public void setTable( final String table )
+    {
+        this.table = table;
+    }
 
-    public Date timestamp;
+    public String getUser()
+    {
+        return user;
+    }
 
-    public Integer contentKey;
+    public void setUser( final String user )
+    {
+        this.user = user;
+    }
 
-    public String inetAddress;
+    public String getUsername()
+    {
+        return username;
+    }
 
-    public String path;
+    public void setUsername( final String username )
+    {
+        this.username = username;
+    }
 
-    public String title;
+    public Date getTimestamp()
+    {
+        return timestamp;
+    }
 
-    public String site;
+    public void setTimestamp( final Date timestamp )
+    {
+        this.timestamp = timestamp;
+    }
 
-    public Integer siteKey;
+    public Integer getContentKey()
+    {
+        return contentKey;
+    }
+
+    public void setContentKey( final Integer contentKey )
+    {
+        this.contentKey = contentKey;
+    }
+
+    public String getInetAddress()
+    {
+        return inetAddress;
+    }
+
+    public void setInetAddress( final String inetAddress )
+    {
+        this.inetAddress = inetAddress;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath( final String path )
+    {
+        this.path = path;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle( final String title )
+    {
+        this.title = title;
+    }
+
+    public String getSite()
+    {
+        return site;
+    }
+
+    public void setSite( final String site )
+    {
+        this.site = site;
+    }
+
+    public Integer getSiteKey()
+    {
+        return siteKey;
+    }
+
+    public void setSiteKey( final Integer siteKey )
+    {
+        this.siteKey = siteKey;
+    }
 }

@@ -14,6 +14,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.api.client.model.GetLogEntriesParams;
 import com.enonic.cms.api.client.model.log.LogEntries;
 import com.enonic.cms.api.client.model.log.LogEntry;
+import com.enonic.cms.api.client.model.log.LogEventType;
 import com.enonic.cms.core.client.InternalClientImpl;
 import com.enonic.cms.core.client.InternalLocalClient;
 import com.enonic.cms.core.content.ContentEntity;
@@ -199,35 +200,35 @@ public class InternalClientImpl_getLogEntriesTest
         final LogEntry logEntry3 = logEntries.getLogEntry( 2 );
         final LogEntry logEntry4 = logEntries.getLogEntry( 3 );
 
-        assertEquals( contentKey1.toInt(), logEntry1.contentKey.intValue() );
-        assertEquals( contentKey1.toInt(), logEntry2.contentKey.intValue() );
-        assertEquals( contentKey1.toInt(), logEntry3.contentKey.intValue() );
+        assertEquals( contentKey1.toInt(), logEntry1.getContentKey().intValue() );
+        assertEquals( contentKey1.toInt(), logEntry2.getContentKey().intValue() );
+        assertEquals( contentKey1.toInt(), logEntry3.getContentKey().intValue() );
 
-        assertEquals( LogEntry.LogEventType.ENTITY_CREATED, logEntry1.eventType );
-        assertEquals( LogEntry.LogEventType.ENTITY_UPDATED, logEntry2.eventType );
-        assertEquals( LogEntry.LogEventType.ENTITY_OPENED, logEntry3.eventType );
-        assertEquals( LogEntry.LogEventType.LOGIN, logEntry4.eventType );
+        assertEquals( LogEventType.ENTITY_CREATED, logEntry1.getEventType() );
+        assertEquals( LogEventType.ENTITY_UPDATED, logEntry2.getEventType() );
+        assertEquals( LogEventType.ENTITY_OPENED, logEntry3.getEventType() );
+        assertEquals( LogEventType.LOGIN, logEntry4.getEventType() );
 
-        assertEquals( "Some content created" + " (" + contentKey1.toInt() + ")", logEntry1.title );
-        assertEquals( "Some content updated" + " (" + contentKey1.toInt() + ")", logEntry2.title );
-        assertEquals( "Some content opened" + " (" + contentKey1.toInt() + ")", logEntry3.title );
-        assertEquals( userQuerier.getDisplayName() + " (" + userQuerier.getName() + ")", logEntry4.title );
+        assertEquals( "Some content created" + " (" + contentKey1.toInt() + ")", logEntry1.getTitle() );
+        assertEquals( "Some content updated" + " (" + contentKey1.toInt() + ")", logEntry2.getTitle() );
+        assertEquals( "Some content opened" + " (" + contentKey1.toInt() + ")", logEntry3.getTitle() );
+        assertEquals( userQuerier.getDisplayName() + " (" + userQuerier.getName() + ")", logEntry4.getTitle() );
 
-        assertEquals( "content-creator", logEntry1.user );
-        assertEquals( "content-updater", logEntry2.user );
-        assertEquals( "content-querier", logEntry3.user );
-        assertEquals( "content-querier", logEntry4.user );
+        assertEquals( "content-creator", logEntry1.getUser() );
+        assertEquals( "content-updater", logEntry2.getUser() );
+        assertEquals( "content-querier", logEntry3.getUser() );
+        assertEquals( "content-querier", logEntry4.getUser() );
 
-        assertEquals( "Creator", logEntry1.username );
-        assertEquals( "Updater", logEntry2.username );
-        assertEquals( "Querier", logEntry3.username );
-        assertEquals( "Querier", logEntry4.username );
+        assertEquals( "Creator", logEntry1.getUsername() );
+        assertEquals( "Updater", logEntry2.getUsername() );
+        assertEquals( "Querier", logEntry3.getUsername() );
+        assertEquals( "Querier", logEntry4.getUsername() );
 
-        assertEquals( "127.0.0.1", logEntry1.inetAddress );
-        assertEquals( "/MyPersonCategory/testcontent", logEntry1.path );
-        assertEquals( logEntryKey3.toString(), logEntry3.logKey );
-        assertEquals( site.getName(), logEntry4.site );
-        assertEquals( site.getKey().toInt(), logEntry4.siteKey.intValue() );
+        assertEquals( "127.0.0.1", logEntry1.getInetAddress() );
+        assertEquals( "/MyPersonCategory/testcontent", logEntry1.getPath() );
+        assertEquals( logEntryKey3.toString(), logEntry3.getLogKey() );
+        assertEquals( site.getName(), logEntry4.getSite() );
+        assertEquals( site.getKey().toInt(), logEntry4.getSiteKey().intValue() );
     }
 
     @Test
@@ -260,8 +261,8 @@ public class InternalClientImpl_getLogEntriesTest
         final LogEntry logEntry1 = logEntries.getLogEntry( 0 );
         final LogEntry logEntry2 = logEntries.getLogEntry( 1 );
 
-        assertEquals( contentKey1.toInt(), logEntry1.contentKey.intValue() );
-        assertEquals( contentKey2.toInt(), logEntry2.contentKey.intValue() );
+        assertEquals( contentKey1.toInt(), logEntry1.getContentKey().intValue() );
+        assertEquals( contentKey2.toInt(), logEntry2.getContentKey().intValue() );
     }
 
     @Test
@@ -297,7 +298,7 @@ public class InternalClientImpl_getLogEntriesTest
         assertEquals( 1, logEntries.getCount() );
         final LogEntry logEntry1 = logEntries.getLogEntry( 0 );
 
-        assertEquals( contentKey3.toInt(), logEntry1.contentKey.intValue() );
+        assertEquals( contentKey3.toInt(), logEntry1.getContentKey().intValue() );
     }
 
     @Test
@@ -334,8 +335,8 @@ public class InternalClientImpl_getLogEntriesTest
         final LogEntry logEntry1 = logEntries.getLogEntry( 0 );
         final LogEntry logEntry2 = logEntries.getLogEntry( 1 );
 
-        assertEquals( contentKey1.toInt(), logEntry1.contentKey.intValue() );
-        assertEquals( contentKey2.toInt(), logEntry2.contentKey.intValue() );
+        assertEquals( contentKey1.toInt(), logEntry1.getContentKey().intValue() );
+        assertEquals( contentKey2.toInt(), logEntry2.getContentKey().intValue() );
     }
 
     private ContentKey createPersonContent( String name, ContentStatus status )

@@ -1236,6 +1236,7 @@
                                       <xsl:with-param name="name" select="'languagekey'"/>
                                       <xsl:with-param name="label" select="'%fldLanguage%:'"/>
                                       <xsl:with-param name="selectedkey" select="$menuitem/@languagekey"/>
+                                      <xsl:with-param name="defaultkey" select="//menuitem-parents/menuitem[position()=last()]/@languagekey"/>
                                       <xsl:with-param name="selectnode" select="//languages/language"/>
                                       <xsl:with-param name="emptyrow" select="'%cmdSelect%'"/>
                                     </xsl:call-template>

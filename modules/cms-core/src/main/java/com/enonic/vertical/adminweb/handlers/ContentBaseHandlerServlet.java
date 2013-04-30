@@ -433,7 +433,7 @@ public class ContentBaseHandlerServlet
                 Element zipElem = XMLTool.getFirstElement( stateDoc.getDocumentElement() );
                 zipElem.setAttribute( "dir", firstZipElem.getAttribute( "dir" ) );
 
-                boolean publish = Boolean.valueOf( zipElem.getAttribute( "publish" ) );
+                boolean publish = ContentStatus.APPROVED.getKey() == Integer.parseInt( zipElem.getAttribute( "publish" ) );
                 if ( publish )
                 {
                     if ( formItems.containsKey( "date_publishfrom" ) )

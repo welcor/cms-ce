@@ -16,6 +16,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 import com.enonic.cms.api.client.ClientException;
 
@@ -193,17 +194,29 @@ public final class BinRpcInvocationHandler
      */
     private void checkResponseHeaders( HttpURLConnection conn )
     {
-        String setCookie = conn.getHeaderField( HTTP_HEADER_SET_COOKIE );
-        if ( ( setCookie != null ) && setCookie.startsWith( SESSION_COOKIE_NAME + "=" ) )
+        List<String> setCookieHeaders = conn.getHeaderFields().get( HTTP_HEADER_SET_COOKIE );
+
+        if ( setCookieHeaders == null )
         {
-            String[] bits = setCookie.split( "[=;]" );
-            setSessionId( bits[1] );
+            return;
         }
+
+        for ( String setCookie : setCookieHeaders )
+        {
+            if ( ( setCookie != null ) && setCookie.startsWith( SESSION_COOKIE_NAME + "=" ) )
+            {
+                String[] bits = setCookie.split( "[=;]" );
+                setSessionId( bits[1] );
+                return;
+            }
+        }
+
     }
 
     /**
      * Read response body.
      */
+
     private BinRpcInvocationResult readResponseBody( HttpURLConnection conn )
         throws IOException, ClassNotFoundException
     {

@@ -1,11 +1,10 @@
 var templates = {
-	"window.open" : "window.open('${url}','${target}','${options}')"
+    "window.open": "window.open('${url}','${target}','${options}')"
 };
 
 var CMSLinkDialog = {
 
-    init : function()
-    {
+    init: function () {
         tinyMCEPopup.restoreSelection();
 
         var ed = tinyMCEPopup.editor;
@@ -16,146 +15,137 @@ var CMSLinkDialog = {
 
         var selectedNode = selection.getNode();
 
-        var selectedNodeIsLink = dom.getParent( selectedNode, 'A' ) !== null;
+        var selectedNodeIsLink = dom.getParent(selectedNode, 'A') !== null;
 
         var selectedNodeIsImageWithLink = selectedNode.nodeName == 'IMG' && selectedNodeIsLink;
 
-        var linkTextContainer = document.getElementById( 'link-text-container' );
+        var linkTextContainer = document.getElementById('link-text-container');
 
         var moreThanOneBlockIsSelected = selection.getSelectedBlocks().length > 1;
 
         var selectionHasLink = selectedNode && selectedNodeIsLink || selectedNodeIsImageWithLink;
 
         var showLinkTextField = !moreThanOneBlockIsSelected && selectedNode.nodeName !== 'IMG' ||
-                ( !moreThanOneBlockIsSelected && selectedNode.nodeName !== 'IMG' && selectedNodeIsLink );
+                                ( !moreThanOneBlockIsSelected && selectedNode.nodeName !== 'IMG' && selectedNodeIsLink );
 
-        if ( selectedNodeIsImageWithLink )
-        {
+        if (selectedNodeIsImageWithLink) {
             selectedNode = selectedNode.parentNode;
         }
 
-        if ( showLinkTextField )
-        {
+        if (showLinkTextField) {
             linkTextContainer.style.display = '';
 
-            var selectedText = selection.getContent( { 'format' : 'text' } );
-            if (  selectedNodeIsLink )
-            {
+            var selectedText = selection.getContent({ 'format': 'text' });
+            if (selectedNodeIsLink) {
                 selectedText = selectedNode.innerHTML;
             }
 
             document.getElementById('link-text').value = selectedText;
         }
 
-        if ( selectionHasLink )
-        {
-            updateInsertButtonText( cmslang.cmdUpdateLink );
+        if (selectionHasLink) {
+            updateInsertButtonText(cmslang.cmdUpdateLink);
         }
 
-        this.updateFormElements( selectedNode );
+        this.updateFormElements(selectedNode);
     },
 
-    updateFormElements : function( selectedNode )
-    {
+    updateFormElements: function (selectedNode) {
         var ed = tinyMCEPopup.editor;
         var dom = ed.dom;
-        var hrefVal = dom.getAttrib( selectedNode, 'href' );
-        var titleVal =  dom.getAttrib( selectedNode, 'title' );
-        var relVal = dom.getAttrib( selectedNode, 'rel' );
-        var linkType = getLinkType( hrefVal );
+        var url = splitAnchorFromLink(dom.getAttrib(selectedNode, 'href'));
+        console.log(url);
+        var hrefVal = url.url;
+        var anchorVal = url.anchor;
+        var titleVal = dom.getAttrib(selectedNode, 'title');
+        var relVal = dom.getAttrib(selectedNode, 'rel');
+        var linkType = getLinkType(hrefVal);
         var linkTypeUrlField = 'input-' + linkType;
-        var targetValue = dom.getAttrib( selectedNode, 'target' );
+        var targetValue = dom.getAttrib(selectedNode, 'target');
 
-        this.onChangeLinkType( linkType );
+        this.onChangeLinkType(linkType);
 
-        if ( hrefVal.indexOf('_download=true') > -1 )
+        if (hrefVal.indexOf('_download=true') > -1) {
             targetValue = 'download';
+        }
 
-        setFormElemValue( 'targetlist', targetValue );
-        setFormElemValue( 'title', titleVal );
-        setFormElemValue( 'rel', relVal );
+        setFormElemValue('targetlist', targetValue);
+        setFormElemValue('title', titleVal);
+        setFormElemValue('rel', relVal);
+        if (anchorVal) {
+            setFormElemValue('anchor', anchorVal);
+        }
 
         var selectedIsUrlOrMailLink = linkTypeUrlField === 'input-standard' || linkTypeUrlField === 'input-mail';
         var selectedIsAnchor = linkTypeUrlField === 'input-anchor';
 
-        this.populateAnchorList( hrefVal );
+        this.populateAnchorList(hrefVal);
 
-        if ( selectedIsUrlOrMailLink )
-        {
-            setFormElemValue( linkTypeUrlField, hrefVal );
+        if (selectedIsUrlOrMailLink) {
+            setFormElemValue(linkTypeUrlField, hrefVal);
         }
-        else
-        {
-            setPickerFieldValues( linkTypeUrlField, hrefVal, titleVal );
+        else {
+            setPickerFieldValues(linkTypeUrlField, hrefVal, titleVal);
         }
     },
 
-    onChangeLinkType : function( linkType )
-    {
-        this.handleTargetForTypeFile( linkType )
+    onChangeLinkType: function (linkType) {
+        this.handleTargetForTypeFile(linkType)
 
-        var linkTypeSelectElem = document.getElementById( 'link-type' );
-        var urlFieldContainers = document.getElementById( 'url-field-containers').getElementsByTagName( 'tr' );
-        var urlFieldToDisplay = document.getElementById( linkType + '-field-container' );
+        var linkTypeSelectElem = document.getElementById('link-type');
+        var urlFieldContainers = document.getElementById('url-field-containers').getElementsByTagName('tr');
+        var urlFieldToDisplay = document.getElementById(linkType + '-field-container');
 
         linkTypeSelectElem.value = linkType;
 
         var i, urlFieldContainer;
-        for ( i = 0; i < urlFieldContainers.length; i++ )
-        {
+        for (i = 0; i < urlFieldContainers.length; i++) {
             urlFieldContainer = urlFieldContainers[i];
 
-            if ( urlFieldContainer.id.indexOf( '-field-container' ) > -1 )
-            {
+            if (urlFieldContainer.id.indexOf('-field-container') > -1) {
                 urlFieldContainer.style.display = ( urlFieldContainer === urlFieldToDisplay ) ? '' : 'none';
             }
         }
     },
 
-    handleTargetForTypeFile: function( linkType )
-    {
+    handleTargetForTypeFile: function (linkType) {
         var targetList = document.getElementById('targetlist');
         var selected = targetList.selectedIndex;
 
-        removeAllDropdownOptions( targetList );
+        removeAllDropdownOptions(targetList);
 
-        addDropdownOption( targetList, cmslang.optOpenExistingWindow, '' );
+        addDropdownOption(targetList, cmslang.optOpenExistingWindow, '');
 
-        if ( linkType !== 'file' )
-        {
-            addDropdownOption( targetList, cmslang.optURLOpenNewWindow, '_blank' );
+        if (linkType !== 'file') {
+            addDropdownOption(targetList, cmslang.optURLOpenNewWindow, '_blank');
         }
 
-        if ( linkType === 'file' )
-        {
-            addDropdownOption( targetList, cmslang.optDownloadFile, 'download' );
+        if (linkType === 'file') {
+            addDropdownOption(targetList, cmslang.optDownloadFile, 'download');
         }
 
         targetList.selectedIndex = selected;
     },
 
-    insertLinkAction : function()
-    {
+    insertLinkAction: function () {
         var ed = tinyMCEPopup.editor;
         var selection = ed.selection;
         var linkType = getLinkTypeValue();
         var linkTypeIsMail = linkType === 'mail';
-        var hrefVal = getFormElementValue( 'input-' + linkType );
+        var hrefVal = getFormElementValue('input-' + linkType);
         var selectedNode = selection.getNode();
-        var selectedText = selection.getContent( { 'format' : 'text' } );
+        var selectedText = selection.getContent({ 'format': 'text' });
         var selectedNodeIsImage = selectedNode.nodeName === 'IMG';
 
         // Validate url
-        if ( !this.validateUrl( hrefVal ) )
-        {
-            alert( cmslang.errInvalidLink );
-            document.getElementsByName( 'input-' + linkType )[0].focus();
+        if (!this.validateUrl(hrefVal)) {
+            alert(cmslang.errInvalidLink);
+            document.getElementsByName('input-' + linkType)[0].focus();
             return;
         }
 
-        var mailToSchemePattern = /^mailto:/i.test( hrefVal );
-        if (  linkTypeIsMail && !mailToSchemePattern )
-        {
+        var mailToSchemePattern = /^mailto:/i.test(hrefVal);
+        if (linkTypeIsMail && !mailToSchemePattern) {
             hrefVal = 'mailto:' + hrefVal;
         }
 
@@ -163,17 +153,16 @@ var CMSLinkDialog = {
 
         tinyMCEPopup.execCommand("mceBeginUndoLevel");
 
-        var linkTextInputElement = document.getElementById( 'link-text' );
+        var linkTextInputElement = document.getElementById('link-text');
 
-        var selectedHyperlinkElement = ed.dom.getParent( selectedNode, 'A' );
+        var selectedHyperlinkElement = ed.dom.getParent(selectedNode, 'A');
 
-        var selectedNodeIsNotHyperLinkAndNoTextIsSelected = selectedNodeIsImage === false && selectedHyperlinkElement == null && selectedText.length === 0;
+        var selectedNodeIsNotHyperLinkAndNoTextIsSelected = selectedNodeIsImage === false && selectedHyperlinkElement == null &&
+                                                            selectedText.length === 0;
 
-        if ( selectedNodeIsNotHyperLinkAndNoTextIsSelected )
-        {
+        if (selectedNodeIsNotHyperLinkAndNoTextIsSelected) {
             var linkTextToSet;
-            if ( linkTextInputElement.value === '' )
-            {
+            if (linkTextInputElement.value === '') {
                 linkTextToSet = hrefVal;
             }
 
@@ -182,43 +171,36 @@ var CMSLinkDialog = {
             selectedHyperlinkElement = ed.dom.select('#_cms_temp_link')[0];
         }
 
-        if ( selectedHyperlinkElement == null )
-        {
-            ed.getDoc().execCommand( "unlink", false, null );
-            tinyMCEPopup.execCommand( "CreateLink", false, "#mce_temp_url#", {skip_undo : 1} );
+        if (selectedHyperlinkElement == null) {
+            ed.getDoc().execCommand("unlink", false, null);
+            tinyMCEPopup.execCommand("CreateLink", false, "#mce_temp_url#", {skip_undo: 1});
 
-            var elementArray = tinymce.grep( ed.dom.select( "a" ), function( n )
-            {
-                return ed.dom.getAttrib( n, 'href' ) == '#mce_temp_url#';
-            } );
+            var elementArray = tinymce.grep(ed.dom.select("a"), function (n) {
+                return ed.dom.getAttrib(n, 'href') == '#mce_temp_url#';
+            });
 
             var i;
-            for ( i = 0; i < elementArray.length; i++ )
-            {
-                setAllAttribs( selectedHyperlinkElement = elementArray[i] );
+            for (i = 0; i < elementArray.length; i++) {
+                setAllAttribs(selectedHyperlinkElement = elementArray[i]);
 
-                if ( linkTextInputElement.value !== '' )
-                {
+                if (linkTextInputElement.value !== '') {
                     selectedHyperlinkElement.innerHTML = linkTextInputElement.value;
                 }
             }
         }
-        else
-        {
-            setAllAttribs( selectedHyperlinkElement );
+        else {
+            setAllAttribs(selectedHyperlinkElement);
 
-            if ( !selectedNodeIsImage )
-            {
+            if (!selectedNodeIsImage) {
                 selectedHyperlinkElement.innerHTML = linkTextInputElement.value;
             }
         }
 
         // Don't move caret if selection was image
-        if ( selectedHyperlinkElement.childNodes.length != 1 || selectedHyperlinkElement.firstChild.nodeName != 'IMG' )
-        {
+        if (selectedHyperlinkElement.childNodes.length != 1 || selectedHyperlinkElement.firstChild.nodeName != 'IMG') {
             ed.focus();
-            ed.selection.select( selectedHyperlinkElement );
-            ed.selection.collapse( 0 );
+            ed.selection.select(selectedHyperlinkElement);
+            ed.selection.collapse(0);
             tinyMCEPopup.storeSelection();
         }
 
@@ -226,183 +208,181 @@ var CMSLinkDialog = {
         tinyMCEPopup.close();
     },
 
-    populateAnchorList : function( selectedLinkHrefValue )
-    {
-        document.getElementById( 'anchorlistcontainer' ).innerHTML = getAnchorListHTML( selectedLinkHrefValue );
+    populateAnchorList: function (selectedLinkHrefValue) {
+        document.getElementById('anchorlistcontainer').innerHTML = getAnchorListHTML(selectedLinkHrefValue);
     },
 
-    openPickerWindow : function( url, width, height )
-    {
+    openPickerWindow: function (url, width, height) {
         var w = ( width ) ? width : 990;
         var h = ( height ) ? height : 620;
         var leftPos = (screen.width - w) / 2;
         var topPos = (screen.height - h) / 2;
-        var pickerWindow = window.open( url, "pickerWindow", "toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,copyhistory=0,width=" +
-                                                             w + ",height=" + h + ",top=" + topPos + ",left=" + leftPos );
+        var pickerWindow = window.open(url, "pickerWindow",
+            "toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,copyhistory=0,width=" +
+            w + ",height=" + h + ",top=" + topPos + ",left=" + leftPos);
         pickerWindow.focus();
     },
 
-    validateUrl : function( hrefVal )
-    {
-        return !/^(http:\/\/||mailto:)$/.test( hrefVal );
+    validateUrl: function (hrefVal) {
+        return !/^(http:\/\/||mailto:)$/.test(hrefVal);
     }
 };
 
-function setAllAttribs( elm ) {
-	var formObj = document.forms[0];
+function splitAnchorFromLink(val) {
+    console.log(val);
+    var values = val.split('#');
+    return {
+        url: values[0],
+        anchor: values[1]
+
+    }
+}
+
+function setAllAttribs(elm) {
+    var formObj = document.forms[0];
     var selectedLinkType = getLinkTypeValue();
     var href = getFormElementValue('input-' + selectedLinkType);
-	var target = getSelectValue(formObj, 'targetlist');
+    var anchor = '#' + getFormElementValue('anchor');
+    var target = getSelectValue(formObj, 'targetlist');
 
     var isDownloadFileEqTrue = target === 'download';
-    if ( isDownloadFileEqTrue )
-    {
+    if (isDownloadFileEqTrue) {
         target = '';
         var hrefValueHasParameters = href.indexOf('?') > -1 || href.indexOf('&') > -1;
         href = hrefValueHasParameters ? ( href + '&_download=true' ) : ( href + '?_download=true' )
     }
-    else
-    {
-       href = href.replace(/(\?|&)_download=true/gim, '');
+    else {
+        href = href.replace(/(\?|&)_download=true/gim, '');
     }
 
-	setAttrib(elm, 'href', href);
-	setAttrib(elm, 'title');
-	setAttrib(elm, 'target', target == '_self' ? '' : target);
-	setAttrib(elm, 'id');
-	setAttrib(elm, 'style');
-	setAttrib(elm, 'class', getSelectValue(formObj, 'classlist'));
-	setAttrib(elm, 'rel');
-	setAttrib(elm, 'rev');
-	setAttrib(elm, 'charset');
-	setAttrib(elm, 'hreflang');
-	setAttrib(elm, 'dir');
-	setAttrib(elm, 'lang');
-	setAttrib(elm, 'tabindex');
-	setAttrib(elm, 'accesskey');
-	setAttrib(elm, 'type');
-	setAttrib(elm, 'onfocus');
-	setAttrib(elm, 'onblur');
-	setAttrib(elm, 'onclick');
-	setAttrib(elm, 'ondblclick');
-	setAttrib(elm, 'onmousedown');
-	setAttrib(elm, 'onmouseup');
-	setAttrib(elm, 'onmouseover');
-	setAttrib(elm, 'onmousemove');
-	setAttrib(elm, 'onmouseout');
-	setAttrib(elm, 'onkeypress');
-	setAttrib(elm, 'onkeydown');
-	setAttrib(elm, 'onkeyup');
+    setAttrib(elm, 'href', href);
+    setAttrib(elm, 'title');
+    setAttrib(elm, 'target', target == '_self' ? '' : target);
+    setAttrib(elm, 'id');
+    setAttrib(elm, 'style');
+    setAttrib(elm, 'class', getSelectValue(formObj, 'classlist'));
+    setAttrib(elm, 'rel');
+    setAttrib(elm, 'rev');
+    setAttrib(elm, 'charset');
+    setAttrib(elm, 'hreflang');
+    setAttrib(elm, 'dir');
+    setAttrib(elm, 'lang');
+    setAttrib(elm, 'tabindex');
+    setAttrib(elm, 'accesskey');
+    setAttrib(elm, 'type');
+    setAttrib(elm, 'onfocus');
+    setAttrib(elm, 'onblur');
+    setAttrib(elm, 'onclick');
+    setAttrib(elm, 'ondblclick');
+    setAttrib(elm, 'onmousedown');
+    setAttrib(elm, 'onmouseup');
+    setAttrib(elm, 'onmouseover');
+    setAttrib(elm, 'onmousemove');
+    setAttrib(elm, 'onmouseout');
+    setAttrib(elm, 'onkeypress');
+    setAttrib(elm, 'onkeydown');
+    setAttrib(elm, 'onkeyup');
+    if (anchor.length > 1) {
+        setAttrib(elm, 'href', href + anchor)
+    }
 
-	// Refresh in old MSIE
-	if (tinyMCE.isMSIE5)
-		elm.outerHTML = elm.outerHTML;
+    // Refresh in old MSIE
+    if (tinyMCE.isMSIE5) {
+        elm.outerHTML = elm.outerHTML;
+    }
 }
 
 function setAttrib(elm, attrib, value) {
-	var formObj = document.forms[0];
-	var valueElm = formObj.elements[attrib.toLowerCase()];
-	var dom = tinyMCEPopup.editor.dom;
+    var formObj = document.forms[0];
+    var valueElm = formObj.elements[attrib.toLowerCase()];
+    var dom = tinyMCEPopup.editor.dom;
 
-	if (typeof(value) == "undefined" || value == null) {
-		value = "";
+    if (typeof(value) == "undefined" || value == null) {
+        value = "";
 
-		if (valueElm)
-			value = valueElm.value;
-	}
+        if (valueElm) {
+            value = valueElm.value;
+        }
+    }
 
-	// Clean up the style
-	if (attrib == 'style')
-		value = dom.serializeStyle(dom.parseStyle(value));
+    // Clean up the style
+    if (attrib == 'style') {
+        value = dom.serializeStyle(dom.parseStyle(value));
+    }
 
-	dom.setAttrib(elm, attrib, value);
+    dom.setAttrib(elm, attrib, value);
 }
 
 
-function getLinkType( uri )
-{
+function getLinkType(uri) {
     var linkType;
 
-    if ( /^attachment:\/\//i.test( uri ) )
-    {
+    if (/^attachment:\/\//i.test(uri)) {
         linkType = 'file';
     }
-    else if ( /^page:\/\//i.test( uri ) )
-    {
+    else if (/^page:\/\//i.test(uri)) {
         linkType = 'page';
     }
-    else if ( /^content:\/\//i.test( uri ) )
-    {
+    else if (/^content:\/\//i.test(uri)) {
         linkType = 'content';
     }
-    else if ( /^mailto:/i.test( uri ) )
-    {
+    else if (/^mailto:/i.test(uri)) {
         linkType = 'mail';
     }
-    else if ( /^#.+/i.test( uri ) )
-    {
+    else if (/^#.+/i.test(uri)) {
         linkType = 'anchor';
     }
-    else
-    {
+    else {
         linkType = 'standard';
     }
 
     return linkType;
 }
 
-function setPickerFieldValues( inputName, cmsInternalUrl, contentTitle )
-{
+function setPickerFieldValues(inputName, cmsInternalUrl, contentTitle) {
     var key = getKeyFromInternalUrl(cmsInternalUrl);
     var altTextFieldElem = document.getElementById('title');
 
-    if ( key === null ) return;
+    if (key === null) {
+        return;
+    }
 
-    if ( altTextFieldElem.value !== '' )
-    {
+    if (altTextFieldElem.value !== '') {
         altTextFieldElem.value = contentTitle;
     }
 
-    if ( inputName === 'input-page' )
-    {
-        AjaxService.getPagePath( key, function( pagePath )
-        {
+    if (inputName === 'input-page') {
+        AjaxService.getPagePath(key, function (pagePath) {
             var path = cmslang.sites + '/' + pagePath;
-            document.getElementById( 'view' + inputName ).value = path;
-            document.getElementById( 'view' + inputName ).title = path;
-            document.getElementById( inputName ).value = cmsInternalUrl;
-        } );
+            document.getElementById('view' + inputName).value = path;
+            document.getElementById('view' + inputName).title = path;
+            document.getElementById(inputName).value = cmsInternalUrl;
+        });
     }
-    else
-    {
-        AjaxService.getContentPath( key, function( contentPath )
-        {
-            document.getElementById( 'view' + inputName ).value = contentPath;
-            document.getElementById( 'view' + inputName ).title = contentPath;
-            document.getElementById( inputName ).value = cmsInternalUrl;
-        } );
+    else {
+        AjaxService.getContentPath(key, function (contentPath) {
+            document.getElementById('view' + inputName).value = contentPath;
+            document.getElementById('view' + inputName).title = contentPath;
+            document.getElementById(inputName).value = cmsInternalUrl;
+        });
     }
 }
 
-function setFormElemValue( inputName, value )
-{
+function setFormElemValue(inputName, value) {
     var val = value;
     var isMailtoLink = /^mailto:/i.test(val);
 
-    if ( inputName === 'input-standard' && val === '' )
-    {
+    if (inputName === 'input-standard' && val === '') {
         val = 'http://';
     }
 
-    if ( isMailtoLink )
-    {
+    if (isMailtoLink) {
         val = val.replace(/^mailto:(.+)/, '$1');
 
         /*validate.js*/
         val = window.opener.tinymce.trim(val);
 
-        if ( val === '' )
-        {
+        if (val === '') {
             val = 'mailto:';
         }
     }
@@ -410,61 +390,52 @@ function setFormElemValue( inputName, value )
     document.forms['formAdmin'].elements[inputName].value = val;
 }
 
-function getFormElementValue( inputName )
-{
+function getFormElementValue(inputName) {
     return document.forms['formAdmin'][inputName].value;
 }
 
-function getKeyFromInternalUrl( url )
-{
-    try
-    {
-        return url.match( /\d+/ )[0];
+function getKeyFromInternalUrl(url) {
+    try {
+        return url.match(/\d+/)[0];
     }
-    catch( e )
-    {
+    catch (e) {
         return null;
     }
 }
 
-function getLinkTypeValue()
-{
+function getLinkTypeValue() {
     return document.forms['formAdmin']['link-type'].value;
 }
 
-function addDropdownOption( dropdown, labelText, value )
-{
-    dropdown.options[dropdown.options.length] = new Option( labelText, value );
+function addDropdownOption(dropdown, labelText, value) {
+    dropdown.options[dropdown.options.length] = new Option(labelText, value);
 }
 
-function removeAllDropdownOptions( dropdown )
-{
-    if ( dropdown === null )
+function removeAllDropdownOptions(dropdown) {
+    if (dropdown === null) {
         return;
+    }
 
-    while ( dropdown.hasChildNodes() )
-    {
-        dropdown.removeChild( dropdown.firstChild );
+    while (dropdown.hasChildNodes()) {
+        dropdown.removeChild(dropdown.firstChild);
     }
 }
 
-function getAnchorListHTML( selectedLinkHrefValue )
-{
+function getAnchorListHTML(selectedLinkHrefValue) {
     var html = '';
     var ed = tinyMCEPopup.editor;
     var nodes = ed.dom.select('a.mceItemAnchor,img.mceItemAnchor');
     var name, i;
 
-    html += '<select id="input-anchor" name="input-anchor" class="mceAnchorList" o2nfocus="tinyMCE.addSelectAccessibility(event, this, window);" onchange="document.forms[0][\'input-standard\'].value=';
+    html +=
+    '<select id="input-anchor" name="input-anchor" class="mceAnchorList" o2nfocus="tinyMCE.addSelectAccessibility(event, this, window);" onchange="document.forms[0][\'input-standard\'].value=';
     html += 'this.options[this.selectedIndex].value;">';
     html += '<option value="">---</option>';
 
-    for ( i = 0; i < nodes.length; i++ )
-    {
-        if ( ( name = ed.dom.getAttrib( nodes[i], "name" ) ) !== '' )  {
+    for (i = 0; i < nodes.length; i++) {
+        if (( name = ed.dom.getAttrib(nodes[i], "name") ) !== '') {
             html += '<option value="#' + name + '"';
-            if ( selectedLinkHrefValue && ( '#' + name === selectedLinkHrefValue ) )
-            {
+            if (selectedLinkHrefValue && ( '#' + name === selectedLinkHrefValue )) {
                 html += ' selected="true"';
             }
             html += '>' + name + '</option>';
@@ -475,11 +446,10 @@ function getAnchorListHTML( selectedLinkHrefValue )
     return html;
 }
 
-function updateInsertButtonText( text )
-{
-    document.getElementById( 'insert' ).value = text;
+function updateInsertButtonText(text) {
+    document.getElementById('insert').value = text;
 }
 
-window.onload = function() {
+window.onload = function () {
     CMSLinkDialog.init();
 };

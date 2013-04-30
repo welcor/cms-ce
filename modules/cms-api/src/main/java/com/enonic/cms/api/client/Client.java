@@ -33,6 +33,7 @@ import com.enonic.cms.api.client.model.GetContentTypeConfigXMLParams;
 import com.enonic.cms.api.client.model.GetContentVersionsParams;
 import com.enonic.cms.api.client.model.GetGroupParams;
 import com.enonic.cms.api.client.model.GetGroupsParams;
+import com.enonic.cms.api.client.model.GetLogEntriesParams;
 import com.enonic.cms.api.client.model.GetMenuBranchParams;
 import com.enonic.cms.api.client.model.GetMenuDataParams;
 import com.enonic.cms.api.client.model.GetMenuItemParams;
@@ -56,6 +57,7 @@ import com.enonic.cms.api.client.model.UnassignContentParams;
 import com.enonic.cms.api.client.model.UpdateContentParams;
 import com.enonic.cms.api.client.model.UpdateFileContentParams;
 import com.enonic.cms.api.client.model.UpdateUserParams;
+import com.enonic.cms.api.client.model.log.LogEntries;
 import com.enonic.cms.api.client.model.preference.Preference;
 
 /**
@@ -354,4 +356,6 @@ public interface Client
     public Document getContentTypeConfigXML( GetContentTypeConfigXMLParams params )
         throws ClientException;
 
+    public LogEntries getLogEntries( GetLogEntriesParams params )
+        throws ClientException;
 }

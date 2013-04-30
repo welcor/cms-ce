@@ -6,6 +6,9 @@ package com.enonic.cms.core.log;
 
 import java.util.Date;
 
+import org.hibernate.Query;
+
+import com.enonic.cms.framework.hibernate.support.SelectBuilder;
 import com.enonic.cms.core.security.user.UserEntity;
 
 /**
@@ -23,6 +26,8 @@ public class LogEntrySpecification
     private boolean allowDuplicateEntries = false;
 
     private Date dateFilter;
+
+    private DateSpan dateSpan;
 
     public UserEntity getUser()
     {
@@ -74,5 +79,61 @@ public class LogEntrySpecification
         this.tableTypes = tableTypes;
     }
 
+    public void setDateSpan( Date publishFrom, Date publishTo )
+    {
+        this.dateSpan = new DateSpan( publishFrom, publishTo );
+    }
 
+    public void appendDateSpan( String alias, SelectBuilder hqlQuery )
+    {
+        dateSpan.appendSpan( alias, hqlQuery );
+    }
+
+    public boolean isDateSpanSet()
+    {
+        return dateSpan != null && dateSpan.isSpanSet();
+    }
+
+    public void setDateSpanParameters( Query compiled )
+    {
+        dateSpan.setSpanParameters( compiled );
+    }
+
+    private class DateSpan
+    {
+        private final Date publishFrom;
+
+        private final Date publishTo;
+
+        private DateSpan( final Date publishFrom, final Date publishTo )
+        {
+            this.publishFrom = publishFrom;
+            this.publishTo = publishTo;
+        }
+
+        private boolean isSpanSet()
+        {
+            return publishTo != null;
+        }
+
+        private void appendSpan( String alias, SelectBuilder hqlQuery )
+        {
+            if ( publishFrom != null )
+            {
+                hqlQuery.addFilter( "AND", alias + ".timestamp >= :publishFrom" );
+            }
+
+            hqlQuery.addFilter( "AND", alias + ".timestamp <= :publishTo" );
+        }
+
+        private void setSpanParameters( Query compiled )
+        {
+            if ( publishFrom != null )
+            {
+                compiled.setTimestamp( "publishFrom", publishFrom );
+            }
+
+            compiled.setTimestamp( "publishTo", publishTo );
+        }
+    }
 }

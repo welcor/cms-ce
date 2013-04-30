@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.expression.MapAccessor;
@@ -88,7 +89,16 @@ public final class ExpressionFunctionsExecutor
 
         try
         {
-            evaluatedString = exp.getValue( context ).toString();
+            Object result = exp.getValue( context );
+
+            if ( result instanceof String[] )
+            {
+                evaluatedString = StringUtils.join( (String[]) result, ',' );
+            }
+            else
+            {
+                evaluatedString = result.toString();
+            }
         }
         finally
         {
@@ -223,15 +233,15 @@ public final class ExpressionFunctionsExecutor
         return userMap;
     }
 
-    private Map<String, String> createParameterMap()
+    private Map<String, String[]> createParameterMap()
     {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String[]> map = new HashMap<String, String[]>();
         if ( this.requestParameters != null )
         {
             for ( RequestParameters.Param param : this.requestParameters.getParameters() )
             {
                 String name = param.getName();
-                String value = param.getFirstValue();
+                String[] value = param.getValues();
 
                 if ( value != null )
                 {

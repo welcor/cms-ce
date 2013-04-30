@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.RequestParameters;
-import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
+import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsFactory;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -20,7 +20,7 @@ import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ExpressionFunctionsExecutorTest
     extends AbstractSpringTest
@@ -65,14 +65,15 @@ public class ExpressionFunctionsExecutorTest
 
     @Test
     public void testUserGetEmailReturnsLoggedInUserEmail()
-            throws Exception {
+        throws Exception
+    {
         String evaluted = efExecutor.evaluate( "${user.email}" );
         assertEquals( "email@email.com", evaluted );
     }
 
     @Test
-    public void testParametersEvaulation()
-            throws Exception
+    public void testSingleParameterEvaulation()
+        throws Exception
     {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter( "subCat", "18" );
@@ -85,6 +86,33 @@ public class ExpressionFunctionsExecutorTest
 
         String evaluated27 = efExecutor.evaluate( "${param['sub-cat']}" );
         assertEquals( "27", evaluated27 );
+    }
+
+    @Test
+    public void testArrayOfParametersWithTheSameNameEvaulation()
+        throws Exception
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter( "brands", "bmw" );
+        request.addParameter( "brands", "volvo" );
+        request.addParameter( "brands", "skoda" );
+        efExecutor.setHttpRequest( request );
+        efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
+
+        String param = efExecutor.evaluate( "${param.brands}" );
+        assertEquals( "bmw,volvo,skoda", param );
+
+        param = efExecutor.evaluate( "${param.brands[0]}" );
+        assertEquals( "bmw", param );
+
+        param = efExecutor.evaluate( "${param.brands[1]}" );
+        assertEquals( "volvo", param );
+
+        param = efExecutor.evaluate( "${param.brands[2]}" );
+        assertEquals( "skoda", param );
+
+        String length = efExecutor.evaluate( "${param.brands.length}" );
+        assertEquals( "3", length );
     }
 
     @Test

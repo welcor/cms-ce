@@ -4,31 +4,34 @@ import java.util.Map;
 
 /**
  * root object for Spring EL.
- *
+ * <p/>
  * SpEL does not allow to add random properties, they must exist in root object
- *
+ * <p/>
  * all functions in StaticExpressionFunctions will be available by default in contexts
- *
  */
 public class ExpressionRootObject
     extends StaticExpressionFunctions
 {
-    private Map<String, String> param;
+    private Map<String, String[]> param;
+
     private Map<String, String> session;
+
     private Map<String, String> cookie;
+
     private Map<String, String> user;
+
     private Map<String, Object> portal;
 
     public ExpressionRootObject()
     {
     }
 
-    public Map<String, String> getParam()
+    public Map<String, String[]> getParam()
     {
         return param;
     }
 
-    public void setParam( final Map<String, String> param )
+    public void setParam( final Map<String, String[]> param )
     {
         this.param = param;
     }

@@ -378,20 +378,26 @@ public final class UpgradeContextImpl
                     qualifier = null;
                 }
 
-                if ( ( name != null ) && name.toLowerCase().startsWith( "idx_" ) )
+                if ( name != null )
                 {
-                    indexNames.add( name );
-                }
+                    if ( name.toLowerCase().startsWith( "idx_" ) )
+                    {
+                        indexNames.add( name );
+                    }
+                    else
+                    {
+                        // Do we need this?  Haven't all indexes been added with the previous statement?
+                        if ( qualifier != null && qualifier.trim().length() > 0 )
+                        {
+                            /* some databases give empty ("") qualifier */
+                            name = qualifier + "." + name;
+                        }
 
-                if ( qualifier != null && qualifier.trim().length() > 0 )
-                {
-                    /* some databases give empty ("") qualifier */
-                    name = qualifier + "." + name;
-                }
-
-                if ( ( name != null ) && !primaryKeys.contains( name ) && nonUnique )
-                {
-                    indexNames.add( name );
+                        if ( !primaryKeys.contains( name ) && nonUnique )
+                        {
+                            indexNames.add( name );
+                        }
+                    }
                 }
             }
         }

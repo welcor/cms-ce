@@ -5,6 +5,7 @@
 package com.enonic.cms.web.main;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +60,8 @@ public final class WelcomeController
         final HashMap<String, Integer> siteMap = new HashMap<String, Integer>();
         for ( final SiteEntity entity : this.siteDao.findAll() )
         {
-            siteMap.put( entity.getName(), entity.getKey().toInt() );
+            final String code = entity.getLanguage() == null ? "" : " (" + entity.getLanguage().getCode() + ")";
+            siteMap.put( entity.getName() + code, entity.getKey().toInt() );
         }
 
         return siteMap;

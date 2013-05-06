@@ -12,6 +12,7 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.esl.util.Base64Util;
@@ -148,6 +149,9 @@ public class InternalClientContentService
     @Autowired
     private CategoryService categoryService;
 
+    @Value("${cms.name.transliterate}")
+    private boolean transliterate;
+
     public int createCategory( CreateCategoryParams params )
     {
         if ( params.contentTypeKey != null && params.contentTypeName != null )
@@ -250,7 +254,7 @@ public class InternalClientContentService
         final CustomContentData contentdata = customContentResolver.resolveContentdata( params.contentData, contentType );
 
         command.setContentData( contentdata );
-        command.setContentName( PrettyPathNameCreator.generatePrettyPathName( contentdata.getTitle() ) );
+        command.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentdata.getTitle() ) );
 
         final List<BinaryDataAndBinary> binaryDatas = BinaryDataAndBinary.convertFromBinaryInputs( params.contentData.getBinaryInputs() );
 
@@ -287,7 +291,7 @@ public class InternalClientContentService
         createCommand.setAvailableFrom( params.publishFrom );
         createCommand.setAvailableTo( params.publishTo );
         createCommand.setContentData( contentdata );
-        createCommand.setContentName( PrettyPathNameCreator.generatePrettyPathName( contentdata.getTitle() ) );
+        createCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentdata.getTitle() ) );
         createCommand.setBinaryDatas( binaryDatas );
         createCommand.setUseCommandsBinaryDataToAdd( true );
 
@@ -547,7 +551,7 @@ public class InternalClientContentService
         createCommand.setAvailableFrom( params.publishFrom );
         createCommand.setAvailableTo( params.publishTo );
         createCommand.setContentData( contentdata );
-        createCommand.setContentName( PrettyPathNameCreator.generatePrettyPathName( contentdata.getTitle() ) );
+        createCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentdata.getTitle() ) );
         createCommand.setBinaryDatas( binaryDataEntries );
         createCommand.setUseCommandsBinaryDataToAdd( true );
 

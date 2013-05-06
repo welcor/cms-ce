@@ -350,7 +350,7 @@ public abstract class ContentBaseXMLBuilder
 
         if ( StringUtils.isBlank( contentName ) )
         {
-            contentName = PrettyPathNameCreator.generatePrettyPathName( contentTitle );
+            contentName = new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentTitle );
         }
 
         XMLTool.createElement( doc, content, "name", contentName );

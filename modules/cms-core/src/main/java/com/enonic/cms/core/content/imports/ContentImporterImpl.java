@@ -59,14 +59,17 @@ public class ContentImporterImpl
 
     private final ImportDataEntry importDataEntry;
 
+    private boolean transliterate;
+
     private final ImportResult importResult;
 
     private final Set<String> usedSyncValues = new HashSet<String>();
 
-    public ContentImporterImpl( ImportJob importJob, ImportDataEntry importDataEntry )
+    public ContentImporterImpl( ImportJob importJob, ImportDataEntry importDataEntry, boolean transliterate )
     {
         this.importJob = importJob;
         this.importDataEntry = importDataEntry;
+        this.transliterate = transliterate;
         this.category = importJob.getCategoryToImportTo();
         this.defaultPublishFrom = importJob.getDefaultPublishFrom();
         this.defaultPublishTo = importJob.getDefaultPublishTo();
@@ -195,7 +198,7 @@ public class ContentImporterImpl
         final UpdateContentCommand command = createUpdateContentCommand( existingContent, versionToBaseNewVersionOn );
         if ( importConfig.getUpdateContentName() )
         {
-            command.setContentName( PrettyPathNameCreator.generatePrettyPathName( newContentData.getTitle() ) );
+            command.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( newContentData.getTitle() ) );
         }
         command.setModifier( importer );
         command.setContentKey( existingContent.getKey() );
@@ -322,7 +325,7 @@ public class ContentImporterImpl
         final CreateContentCommand createCommand = new CreateContentCommand();
         createCommand.setCreator( importer );
         createCommand.setAccessRightsStrategy( CreateContentCommand.AccessRightsStrategy.INHERIT_FROM_CATEGORY );
-        createCommand.setContentName( PrettyPathNameCreator.generatePrettyPathName( newContentData.getTitle() ) );
+        createCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( newContentData.getTitle() ) );
         createCommand.setCategory( category );
         final DateTime availableFrom = resolveAvailableFrom( importData );
         if ( availableFrom != null )

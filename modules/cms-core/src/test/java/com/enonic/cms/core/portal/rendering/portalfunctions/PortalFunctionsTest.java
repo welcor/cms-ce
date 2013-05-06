@@ -877,7 +877,7 @@ public class PortalFunctionsTest
         ContentVersionEntity contentVersion = new ContentVersionEntity();
         contentVersion.setTitle( contentTitle );
         ContentEntity content = new ContentEntity();
-        content.setName( PrettyPathNameCreator.generatePrettyPathName( contentTitle ) );
+        content.setName( new PrettyPathNameCreator( false ).generatePrettyPathName( contentTitle ) );
         content.setKey( new ContentKey( contentKeyStr ) );
         content.setMainVersion( contentVersion );
         return content;

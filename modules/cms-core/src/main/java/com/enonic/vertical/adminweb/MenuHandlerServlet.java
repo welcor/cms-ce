@@ -23,6 +23,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -91,6 +92,9 @@ public class MenuHandlerServlet
 
     @Autowired
     private PreviewPageHandlerFactory previewPageHandlerFactory;
+
+    @Value("${cms.name.transliterate}")
+    private boolean transliterate;
 
     private void buildPageXML( ExtendedMap formItems, String xmlParams, Element menuItemElem )
         throws VerticalAdminException
@@ -1821,7 +1825,7 @@ public class MenuHandlerServlet
                 suggestedName = displayName;
             }
 
-            menuItemName = PrettyPathNameCreator.generatePrettyPathName( suggestedName );
+            menuItemName = new PrettyPathNameCreator( transliterate ).generatePrettyPathName( suggestedName );
         }
         return menuItemName;
     }

@@ -136,6 +136,17 @@ public class PrettyPathNameCreatorTest
         generateAndVerify( "runar___myklebust", "runar-myklebust" );
     }
 
+    @Test
+    public void testCyrillic()
+    {
+        generateAndVerify( "Норвегия", "норвегия" );
+    }
+
+    @Test
+    public void testTransliterateCyrillic()
+    {
+        generateWithTransliterationAndVerify( "Норвегия", "norvegija" );
+    }
 
     @Test
     public void testReplaceUnsafeWithHyphens()
@@ -164,7 +175,13 @@ public class PrettyPathNameCreatorTest
 
     private void generateAndVerify( String suggestedName, String result )
     {
-        String generatedName = PrettyPathNameCreator.generatePrettyPathName( suggestedName );
+        final String generatedName = new PrettyPathNameCreator( false ).generatePrettyPathName( suggestedName );
+        assertEquals( "Unexpected result for : " + suggestedName, result, generatedName );
+    }
+
+    private void generateWithTransliterationAndVerify( String suggestedName, String result )
+    {
+        final String generatedName = new PrettyPathNameCreator( true ).generatePrettyPathName( suggestedName );
         assertEquals( "Unexpected result for : " + suggestedName, result, generatedName );
     }
 

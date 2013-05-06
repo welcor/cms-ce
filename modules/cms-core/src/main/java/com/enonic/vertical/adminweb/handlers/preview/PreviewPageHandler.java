@@ -94,6 +94,8 @@ public class PreviewPageHandler
 
     private UserEntity previewer;
 
+    private boolean transliterate;
+
     public RenderedPageResult renderPreview( final SiteKey siteKey, final MenuItemKey parentKey, final MenuItemKey menuItemKey )
     {
         final MenuItemEntity menuItem = resolveModifiedMenuItem( siteKey, parentKey, menuItemKey );
@@ -389,7 +391,7 @@ public class PreviewPageHandler
                 suggestedName = displayName;
             }
 
-            menuItemName = PrettyPathNameCreator.generatePrettyPathName( suggestedName );
+            menuItemName = new PrettyPathNameCreator( transliterate ).generatePrettyPathName( suggestedName );
         }
         return menuItemName;
     }
@@ -492,5 +494,10 @@ public class PreviewPageHandler
     public void setPreviewer( final UserEntity previewer )
     {
         this.previewer = previewer;
+    }
+
+    public void setTransliterate( final boolean transliterate )
+    {
+        this.transliterate = transliterate;
     }
 }

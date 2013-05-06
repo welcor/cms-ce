@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.enonic.vertical.engine.handlers.NameGenerator;
+
+import static com.enonic.vertical.engine.handlers.NameGenerator.transcribe;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +35,14 @@ public class PrettyPathNameCreator
 
     private final static Pattern STRIP_ENDING_PATTERN = Pattern.compile( "(.*[^\\.|\\-|_])([\\.|\\-|_]+)$" );
 
-    public static String generatePrettyPathName( String originalName )
+    private boolean transliterate;
+
+    public PrettyPathNameCreator( final boolean transliterate )
+    {
+        this.transliterate = transliterate;
+    }
+
+    public String generatePrettyPathName( String originalName )
     {
         if ( StringUtils.isBlank( originalName ) )
         {
@@ -49,6 +59,11 @@ public class PrettyPathNameCreator
         prettifiedPathName = replaceTrailingHyphens( prettifiedPathName );
         prettifiedPathName = replaceHyphensAroundDot( prettifiedPathName );
         prettifiedPathName = ensureNiceBeginningAndEnding( prettifiedPathName );
+
+        if (this.transliterate)
+        {
+            prettifiedPathName = transcribe( prettifiedPathName );
+        }
 
         if ( StringUtils.isBlank( prettifiedPathName ) )
         {

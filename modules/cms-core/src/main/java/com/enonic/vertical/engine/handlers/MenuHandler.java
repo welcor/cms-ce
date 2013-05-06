@@ -106,6 +106,8 @@ public final class MenuHandler
 
     private static final String ELEMENT_NAME_MENUITEM_NAME = "name";
 
+    private boolean transliterate;
+
     public synchronized void addListener( MenuHandlerListener mhl )
     {
         multicaster.add( mhl );
@@ -1355,7 +1357,7 @@ public final class MenuHandler
             suggestedName = getElementValue( menuItemElement, ELEMENT_NAME_DISPLAY_NAME );
         }
 
-        menuItemName = PrettyPathNameCreator.generatePrettyPathName( suggestedName );
+        menuItemName = new PrettyPathNameCreator( transliterate ).generatePrettyPathName( suggestedName );
 
         return menuItemName;
     }
@@ -4576,5 +4578,11 @@ public final class MenuHandler
     public void setStoreXHTML( final String storeXHTML )
     {
         this.storeXHTML = storeXHTML;
+    }
+
+    @Value("${cms.name.transliterate}")
+    public void setTransliterate( boolean transliterate )
+    {
+        this.transliterate = transliterate;
     }
 }

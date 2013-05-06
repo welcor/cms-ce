@@ -4,6 +4,7 @@ package com.enonic.vertical.adminweb.handlers.preview;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.esl.containers.ExtendedMap;
@@ -58,6 +59,8 @@ public class PreviewPageHandlerFactory
     @Autowired
     private DeviceClassResolverService deviceClassResolverService;
 
+    @Value("${cms.name.transliterate}")
+    private boolean transliterate;
 
     @Autowired
     private PreviewService previewService;
@@ -67,6 +70,7 @@ public class PreviewPageHandlerFactory
         PreviewPageHandler previewPageHandler = new PreviewPageHandler();
         previewPageHandler.setPreviewService( previewService );
         previewPageHandler.setTicketId( httpRequest.getSession().getId() );
+        previewPageHandler.setTransliterate( transliterate );
         previewPageHandler.setHttpRequest( httpRequest );
         previewPageHandler.setContentDao( contentDao );
         previewPageHandler.setLanguageDao( languageDao );

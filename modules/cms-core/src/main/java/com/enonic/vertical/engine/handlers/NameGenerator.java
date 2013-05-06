@@ -244,7 +244,7 @@ public class NameGenerator
         return name;
     }
 
-    private static String transcribe( final String string )
+    public static String transcribe( final String string )
     {
         if ( string == null )
         {

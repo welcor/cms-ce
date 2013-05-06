@@ -376,7 +376,7 @@ public abstract class ContentServicesBase
 
         if ( StringUtils.isBlank( command.getContentName() ) )
         {
-            command.setContentName( PrettyPathNameCreator.generatePrettyPathName( parsedVersion.getTitle() ) );
+            command.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( parsedVersion.getTitle() ) );
         }
 
         command.setCreator( runningUser );
@@ -916,7 +916,7 @@ public abstract class ContentServicesBase
         CustomContentDataFormParser customContentParser = new CustomContentDataFormParser( contentType.getContentTypeConfig(), formItems );
         ContentData contentData = customContentParser.parseContentData();
         createContentCommand.setContentData( contentData );
-        createContentCommand.setContentName( PrettyPathNameCreator.generatePrettyPathName( contentData.getTitle() ) );
+        createContentCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( contentData.getTitle() ) );
 
         return createContentCommand;
     }

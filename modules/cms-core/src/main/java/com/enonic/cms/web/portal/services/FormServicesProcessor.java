@@ -383,7 +383,7 @@ public final class FormServicesProcessor
                 createCommand.setBinaryDatas( binaryDataAndBinaries );
                 createCommand.setUseCommandsBinaryDataToAdd( true );
 
-                createCommand.setContentName( PrettyPathNameCreator.generatePrettyPathName( parsedVersion.getTitle() ) );
+                createCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( parsedVersion.getTitle() ) );
 
                 ContentKey key = contentService.createContent( createCommand );
 

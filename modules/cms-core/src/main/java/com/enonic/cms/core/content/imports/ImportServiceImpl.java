@@ -5,6 +5,7 @@
 package com.enonic.cms.core.content.imports;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,9 @@ public class ImportServiceImpl
     @Autowired
     private IndexTransactionService indexTransactionService;
 
+    @Value("${cms.name.transliterate}")
+    protected boolean transliterate;
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class, timeout = 3600)
     public boolean importData( ImportDataEntry importDataEntry, ImportJob importJob )
     {
@@ -58,7 +62,7 @@ public class ImportServiceImpl
     {
         try
         {
-            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataEntry );
+            ContentImporterImpl contentImporter = new ContentImporterImpl( importJob, importDataEntry, transliterate );
             contentImporter.setContentStorer( contentStorer );
             contentImporter.setContentDao( contentDao );
 

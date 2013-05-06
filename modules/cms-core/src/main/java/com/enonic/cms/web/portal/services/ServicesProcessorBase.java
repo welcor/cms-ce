@@ -24,6 +24,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.enonic.esl.containers.ExtendedMap;
@@ -116,6 +117,8 @@ public abstract class ServicesProcessorBase
     protected ContentService contentService;
 
     protected SiteCachesService siteCachesService;
+
+    protected boolean transliterate;
 
     private UserServicesService userServicesService;
 
@@ -624,6 +627,12 @@ public abstract class ServicesProcessorBase
     public void setUserServicesAccessManager( UserServicesAccessManager userServicesAccessManager )
     {
         this.userServicesAccessManager = userServicesAccessManager;
+    }
+
+    @Value("${cms.name.transliterate}")
+    public void setTransliterate( boolean transliterate )
+    {
+        this.transliterate = transliterate;
     }
 
     public ModelAndView handleRequest( HttpServletRequest request, HttpServletResponse response )

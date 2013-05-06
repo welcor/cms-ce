@@ -83,9 +83,13 @@ public class ExpressionFunctionsExecutorTest
 
         String evaluated18 = efExecutor.evaluate( "${param.subCat}" );
         assertEquals( "18", evaluated18 );
+        assertEquals( "18", efExecutor.evaluate( "${param.subCat[0]}" ));
+        assertEquals( "1", efExecutor.evaluate( "${param.subCat.length}" ));
 
         String evaluated27 = efExecutor.evaluate( "${param['sub-cat']}" );
         assertEquals( "27", evaluated27 );
+        assertEquals( "27", efExecutor.evaluate( "${param['sub-cat'][0]}" ));
+        assertEquals( "1", efExecutor.evaluate( "${param['sub-cat'].length}" ));
     }
 
     @Test
@@ -114,6 +118,34 @@ public class ExpressionFunctionsExecutorTest
         String length = efExecutor.evaluate( "${param.brands.length}" );
         assertEquals( "3", length );
     }
+
+    @Test
+    public void testArrayOfParametersWithTheSameNameEvaulation_variableWithDash()
+        throws Exception
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter( "my-brands", "bmw" );
+        request.addParameter( "my-brands", "volvo" );
+        request.addParameter( "my-brands", "skoda" );
+        efExecutor.setHttpRequest( request );
+        efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
+
+        String param = efExecutor.evaluate( "${param['my-brands']}" );
+        assertEquals( "bmw,volvo,skoda", param );
+
+        param = efExecutor.evaluate( "${param['my-brands'][0]}" );
+        assertEquals( "bmw", param );
+
+        param = efExecutor.evaluate( "${param['my-brands'][1]}" );
+        assertEquals( "volvo", param );
+
+        param = efExecutor.evaluate( "${param['my-brands'][2]}" );
+        assertEquals( "skoda", param );
+
+        String length = efExecutor.evaluate( "${param['my-brands'].length}" );
+        assertEquals( "3", length );
+    }
+
 
     @Test
     public void testEvaluateCurrentDateWithTime()

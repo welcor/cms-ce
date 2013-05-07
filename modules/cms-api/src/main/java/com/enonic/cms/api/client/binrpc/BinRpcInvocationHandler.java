@@ -16,7 +16,9 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.enonic.cms.api.client.ClientException;
 
@@ -76,10 +78,13 @@ public final class BinRpcInvocationHandler
      */
     private final ThreadLocal<String> localSessionIds;
 
+
+    private final ThreadLocal<Map<String, String>> localCookies;
+
     /**
      * Current session id.
      */
-    private String sessionId;
+    private String globalSessionId;
 
     /**
      * Construct the invocation handler.
@@ -89,6 +94,7 @@ public final class BinRpcInvocationHandler
         this.serviceUrl = serviceUrl;
         this.useGlobalSession = useGlobalSession;
         this.localSessionIds = new ThreadLocal<String>();
+        this.localCookies = new ThreadLocal<Map<String, String>>();
     }
 
     /**
@@ -162,8 +168,48 @@ public final class BinRpcInvocationHandler
 
         if ( getSessionId() != null )
         {
-            conn.setRequestProperty( HTTP_HEADER_COOKIE, SESSION_COOKIE_NAME + "=" + getSessionId() );
+            conn.setRequestProperty( HTTP_HEADER_COOKIE, createCookieString() );
         }
+    }
+
+    private String createCookieString()
+    {
+        StringBuffer buf = new StringBuffer();
+
+        if ( getSessionId() != null )
+        {
+            buf.append( createSessionCookie() );
+        }
+
+        final Map<String, String> localCookies = this.localCookies.get();
+        if ( localCookies != null && localCookies.size() > 0 )
+        {
+            buf.append( createLocalCookies( localCookies ) );
+        }
+
+        return buf.toString();
+    }
+
+    private String createLocalCookies( Map<String, String> localCookies )
+    {
+        StringBuffer buf = new StringBuffer();
+
+        for ( String cookieKey : localCookies.keySet() )
+        {
+            buf.append( cookieKey ).append( "=" ).append( localCookies.get( cookieKey ) ).append( ";" );
+        }
+
+        return buf.toString();
+    }
+
+    private String createSessionCookie()
+    {
+        if ( getSessionId() == null )
+        {
+            return null;
+        }
+
+        return SESSION_COOKIE_NAME + "=" + getSessionId() + ";";
     }
 
     /**
@@ -194,23 +240,41 @@ public final class BinRpcInvocationHandler
      */
     private void checkResponseHeaders( HttpURLConnection conn )
     {
-        List<String> setCookieHeaders = conn.getHeaderFields().get( HTTP_HEADER_SET_COOKIE );
+        List<String> responseCookieHeaders = conn.getHeaderFields().get( HTTP_HEADER_SET_COOKIE );
 
-        if ( setCookieHeaders == null )
+        if ( responseCookieHeaders == null )
         {
             return;
         }
 
-        for ( String setCookie : setCookieHeaders )
+        for ( String cookieHeader : responseCookieHeaders )
         {
-            if ( ( setCookie != null ) && setCookie.startsWith( SESSION_COOKIE_NAME + "=" ) )
+            if ( cookieHeader == null )
             {
-                String[] bits = setCookie.split( "[=;]" );
+                continue;
+            }
+
+            String[] bits = cookieHeader.split( "[=;]" );
+
+            if ( SESSION_COOKIE_NAME.equals( bits[0] ) )
+            {
                 setSessionId( bits[1] );
-                return;
+            }
+            else if ( bits[0] != null )
+            {
+                getLocalCookies().put( bits[0], bits[1] );
             }
         }
+    }
 
+    private Map<String, String> getLocalCookies()
+    {
+        if ( this.localCookies.get() == null )
+        {
+            this.localCookies.set( new HashMap<String, String>() );
+        }
+
+        return this.localCookies.get();
     }
 
     /**
@@ -271,7 +335,7 @@ public final class BinRpcInvocationHandler
     {
         if ( this.useGlobalSession )
         {
-            return this.sessionId;
+            return this.globalSessionId;
         }
         else
         {
@@ -286,7 +350,7 @@ public final class BinRpcInvocationHandler
     {
         if ( this.useGlobalSession )
         {
-            this.sessionId = sessionId;
+            this.globalSessionId = sessionId;
         }
         else
         {

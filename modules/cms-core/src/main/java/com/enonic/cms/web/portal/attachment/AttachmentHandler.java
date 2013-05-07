@@ -10,8 +10,6 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.common.io.ByteStreams;
-
 import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.util.HttpServletUtil;
 import com.enonic.cms.framework.util.MimeTypeResolver;
@@ -230,7 +228,7 @@ public final class AttachmentHandler
         response.setContentType( this.mimeTypeResolver.getMimeType( binaryData.getName() ) );
         response.setContentLength( (int) blob.getLength() );
 
-        ByteStreams.copy( blob.getStream(), response.getOutputStream() );
+        HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );
     }
 
     private boolean isInPreviewMode( final HttpServletRequest httpRequest )

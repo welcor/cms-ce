@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -22,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.google.common.io.ByteStreams;
 
 public class HttpServletUtil
 {
@@ -59,7 +62,8 @@ public class HttpServletUtil
         }
         else
         {
-            s.append( "private" ); //Indicates that all or part of the response message is intended for a single user and must not be cached by a shared cache.
+            s.append(
+                "private" ); //Indicates that all or part of the response message is intended for a single user and must not be cached by a shared cache.
         }
         if ( settings.maxAgeSecondsToLive != null )
         {
@@ -97,55 +101,59 @@ public class HttpServletUtil
     {
         final WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext( servletContext );
 
-        final MimeTypeResolver mimeTypeResolver = (MimeTypeResolver) wac.getBean("mimeTypeResolver");
+        final MimeTypeResolver mimeTypeResolver = (MimeTypeResolver) wac.getBean( "mimeTypeResolver" );
 
         final String mimeType = mimeTypeResolver.getMimeType( filename );
 
-        return mimeType;    }
+        return mimeType;
+    }
 
     /**
      * Copy the contents of the given InputStream to the given OutputStream.
      *
-     * @param in  The stream to copy from.
-     * @param out The stram to copy to.
+     * @param from The InputStream to copy from.
+     * @param to   The OutputStream to copy to.
      * @return The number of bytes copied from the input stream to the output stream.
-     * @throws java.io.IOException If an I/O error occurs.
+     * @throws IOException If an I/O error occurs.
      */
-    public static int copyNoCloseOut( InputStream in, OutputStream out )
-            throws IOException
+    public static long copyNoCloseOut( final InputStream from, final OutputStream to )
+        throws IOException
     {
-        int byteCount = 0;
-        byte[] buffer = new byte[BUFFER_SIZE];
-        int bytesRead;
-        while ( ( bytesRead = in.read( buffer ) ) != -1 )
+        long byteCount = 0;
+        try
         {
             try
             {
-                out.write( buffer, 0, bytesRead );
+                byteCount = ByteStreams.copy( from, to );
+                to.flush();
+                return byteCount;
+            }
+            catch ( SocketException e )
+            {
+                LOG.info( "Error writing to OutputStream: " + e.getMessage() );
             }
             catch ( IOException e )
             {
-                LOG.warn( "Error writing to outputstream: " + e.getMessage() +
-                                  ". Closing inputstream and passing on the original exception" );
-                try
-                {
-                    in.close();
-                }
-                catch ( IOException ex )
-                {
-                    LOG.warn( "Error closing inputstream: " + ex.getMessage() );
-                }
-                throw e;
+                LOG.warn( "Error writing to OutputStream: " + e.getMessage() );
             }
-            byteCount += bytesRead;
         }
-        out.flush();
-        in.close();
+        finally
+        {
+            try
+            {
+                from.close();
+            }
+            catch ( IOException e )
+            {
+                LOG.warn( "Error closing InputStream: " + e.getMessage() );
+            }
+        }
+
         return byteCount;
     }
 
     public static int copyNoCloseOut( Reader in, Writer out )
-            throws IOException
+        throws IOException
     {
         int byteCount = 0;
         char[] buffer = new char[BUFFER_SIZE];
@@ -159,7 +167,7 @@ public class HttpServletUtil
             catch ( IOException e )
             {
                 LOG.warn( "Error writing to outputstream: " + e.getMessage() +
-                                  ". Closing inputstream and passing on the original exception" );
+                              ". Closing inputstream and passing on the original exception" );
                 try
                 {
                     in.close();

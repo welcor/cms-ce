@@ -20,8 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.util.UrlPathHelper;
 
-import com.google.common.io.ByteStreams;
-
 import com.enonic.cms.framework.blob.BlobRecord;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
@@ -169,7 +167,7 @@ public class AttachmentController
         response.setContentType( HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() ) );
         response.setContentLength( (int) blob.getLength() );
 
-        ByteStreams.copy( blob.getStream(), response.getOutputStream() );
+        HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );
     }
 
     private ContentEntity resolveContent( AttachmentRequest attachmentRequest, PathAndParams pathAndParams )

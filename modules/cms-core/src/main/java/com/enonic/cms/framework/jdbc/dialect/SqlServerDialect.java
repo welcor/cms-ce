@@ -42,4 +42,13 @@ public final class SqlServerDialect
          */
         setLengthFunctionName( "datalength" );
     }
+
+    @Override
+    public String translateDropIndex( String tableName, String indexName )
+    {
+        StringBuilder sql = new StringBuilder("ALTER TABLE ");
+        sql.append( tableName );
+        sql.append( " DROP INDEX " ).append( indexName );
+        return sql.toString();
+    }
 }

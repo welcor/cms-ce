@@ -184,7 +184,7 @@ public interface DataSourceService
      * @param levels  Number of levels to return
      * @return An XML Document with all details about the requested menu.
      */
-    public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels );
+    public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels, boolean includeHidden );
 
     /**
      * Get the settings defined for a menu.

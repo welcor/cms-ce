@@ -26,6 +26,6 @@ public final class GetMenuHandler
             siteKey = req.getSiteKey().toInt();
         }
 
-        return this.dataSourceService.getMenu( req, siteKey, params.tagItem, params.levels ).getAsJDOMDocument();
+        return this.dataSourceService.getMenu( req, siteKey, params.tagItem, params.levels, params.includeHidden ).getAsJDOMDocument();
     }
 }

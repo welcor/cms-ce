@@ -19,6 +19,8 @@ import org.eclipse.osgi.launch.EquinoxFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.util.ResourceUtils;
@@ -32,6 +34,8 @@ import com.enonic.cms.core.plugin.PluginManager;
 public abstract class OsgiContainer
     implements Constants, PluginManager
 {
+    private final static Logger LOG = LoggerFactory.getLogger( OsgiContainer.class );
+
     private static final String VFS_CONTENTS_FOLDER = "contents";
 
     private Framework framework;
@@ -109,6 +113,9 @@ public abstract class OsgiContainer
         URL location = FrameworkProperties.class.getProtectionDomain().getCodeSource().getLocation();
 
         final String locationFile = location.getFile();
+
+        LOG.info( "Location of framework.jar : " +  locationFile );
+
         if ( locationFile.endsWith( ".jar!/" ) ) // for IBM Websphere 8.5 Liberty Profile
         {
             String absolutePath = locationFile.substring( 0, locationFile.length() - 2 );
@@ -143,6 +150,7 @@ public abstract class OsgiContainer
             location = new URL( stringBuilder.toString() );
         }
 
+        LOG.info( "Copying " +  location.toString()  + " to " + targetFile.toString() );
         Files.copy( Resources.newInputStreamSupplier( location ), targetFile );
     }
 }

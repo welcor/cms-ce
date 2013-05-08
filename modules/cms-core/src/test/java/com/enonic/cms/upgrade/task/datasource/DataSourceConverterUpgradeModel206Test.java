@@ -2,12 +2,12 @@ package com.enonic.cms.upgrade.task.datasource;
 
 import org.junit.Test;
 
-public class DataSourceConverter1Test
+public class DataSourceConverterUpgradeModel206Test
     extends AbstractDataSourceConverterTest
 {
-    public DataSourceConverter1Test()
+    public DataSourceConverterUpgradeModel206Test()
     {
-        super( new DataSourceConverter1( null ) );
+        super( new DataSourceConverterUpgradeModel206( null ) );
     }
 
     @Test

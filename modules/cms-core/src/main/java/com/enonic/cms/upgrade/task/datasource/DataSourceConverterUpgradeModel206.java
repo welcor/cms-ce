@@ -10,10 +10,10 @@ import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.findElem
 import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.findElements;
 import static com.enonic.cms.upgrade.task.datasource.JDOMDocumentHelper.getTextNode;
 
-public final class DataSourceConverter1
+public final class DataSourceConverterUpgradeModel206
     extends DataSourceConverter
 {
-    public DataSourceConverter1( final DataSourceConverterLogger logger )
+    public DataSourceConverterUpgradeModel206( final DataSourceConverterLogger logger )
     {
         super( logger );
     }
@@ -91,23 +91,28 @@ public final class DataSourceConverter1
 
     private String composeSelect( String prefix, String name, String value )
     {
-        boolean isNonAscii = isNonWordCharacter( name );
-        return isNonAscii ? composeSpecialSelect( prefix, name, value ) : composeNonSpecialSelect( prefix + "." + name, value );
+        boolean isNonAlphabetChar = isNonAlphabetCharacter( name );
+        return isNonAlphabetChar ? composeSpecialSelect( prefix, name, value ) : composeNonSpecialSelect( prefix + "." + name, value );
     }
 
     /**
      * Check for special characters
+     *
      * @param string to process
      * @return true if special character exists, false otherwise
      */
-    private boolean isNonWordCharacter( String string )
+    private boolean isNonAlphabetCharacter( String string )
     {
+        final int ASCII_UPPERCASE_A = 65;
+        final int ASCII_UPPERCASE_Z = 90;
+        final int ASCII_LOWERCASE_A = 97;
+        final int ASCII_LOWERCASE_Z = 122;
+
         final char[] chars = string.toCharArray();
 
         for ( final char c : chars )
         {
-            // A-Z: 65..90; a-z: 97..122
-            if ( c < 65 || ( c > 90 && c < 97) || c > 122 )
+            if ( ( c < ASCII_UPPERCASE_A ) || ( c > ASCII_UPPERCASE_Z && c < ASCII_LOWERCASE_A ) || ( c > ASCII_LOWERCASE_Z ) )
             {
                 return true;
             }

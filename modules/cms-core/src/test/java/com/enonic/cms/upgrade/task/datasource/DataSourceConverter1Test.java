@@ -44,4 +44,11 @@ public class DataSourceConverter1Test
     {
         testConvert( "task1/multiple" );
     }
+
+    @Test
+    public void testSpecialCharacter()
+        throws Exception
+    {
+        testConvert( "task1/special_character" );
+    }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<datasources>
+  <datasource name="dummy" result-element="result" cache="true" condition="${true()}">
+
+    <parameter>${select(param.template, '')}</parameter>
+
+    <parameter>${select(param['n.template'], '')}</parameter>
+    <parameter>${select(session['n.template'], '')}</parameter>
+
+    <parameter>${select(session['#template'], '')}</parameter>
+    <parameter>${select(session['{template}'], '')}</parameter>
+    <parameter>${select(session['a.b.'], '')}</parameter>
+    <parameter>${select(session['a>b'], '')}</parameter>
+
+  </datasource>
+</datasources>

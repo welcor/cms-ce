@@ -74,19 +74,74 @@ public final class DataSourceConverter1
         final String name = elem.getAttributeValue( "name" );
         String value = JDOMDocumentHelper.getTextNode( elem );
 
-        if ( !Strings.isNullOrEmpty( name ) && "url".equalsIgnoreCase( override ) )
+        if ( !Strings.isNullOrEmpty( name ) )
         {
-            value = composeSelect( "param." + name, value );
-        }
-        else if ( !Strings.isNullOrEmpty( name ) && "session".equalsIgnoreCase( override ) )
-        {
-            value = composeSelect( "session." + name, value );
+            if ( "url".equalsIgnoreCase( override ) )
+            {
+                value = composeSelect( "param", name, value );
+            }
+            else if ( "session".equalsIgnoreCase( override ) )
+            {
+                value = composeSelect( "session", name, value );
+            }
         }
 
         return value;
     }
 
-    private String composeSelect( final String left, final String right )
+    private String composeSelect( String prefix, String name, String value )
+    {
+        boolean isNonAscii = isNonWordCharacter( name );
+        return isNonAscii ? composeSpecialSelect( prefix, name, value ) : composeNonSpecialSelect( prefix + "." + name, value );
+    }
+
+    /**
+     * Check for special characters
+     * @param string to process
+     * @return true if special character exists, false otherwise
+     */
+    private boolean isNonWordCharacter( String string )
+    {
+        final char[] chars = string.toCharArray();
+
+        for ( final char c : chars )
+        {
+            // A-Z: 65..90; a-z: 97..122
+            if ( c < 65 || ( c > 90 && c < 97) || c > 122 )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Result sequence like this:
+     * <parameter name="param10">${select(param['n.template'], '')}</parameter>
+     */
+    private String composeSpecialSelect( String prefix, String left, String right )
+    {
+        final StringBuilder str = new StringBuilder();
+        str.append( "${select(" ).append( prefix ).append( "['" ).append( left ).append( "']" ).append( ", " );
+
+        if ( isElExpression( right ) )
+        {
+            str.append( getStrippedElExpression( right ) ).append( ")}" );
+        }
+        else
+        {
+            str.append( "'" ).append( right != null ? right : "" ).append( "')}" );
+        }
+
+        return str.toString();
+    }
+
+    /**
+     * Result sequence like this:
+     * <parameter name="param10">${select(param.n.template, '')}</parameter>
+     */
+    private String composeNonSpecialSelect( final String left, final String right )
     {
         final StringBuilder str = new StringBuilder();
         str.append( "${select(" ).append( left ).append( ", " );
@@ -102,7 +157,6 @@ public final class DataSourceConverter1
 
         return str.toString();
     }
-
 
     private boolean isElExpression( final String right )
     {

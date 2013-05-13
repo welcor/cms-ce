@@ -46,9 +46,7 @@ public final class SqlServerDialect
     @Override
     public String translateDropIndex( String tableName, String indexName )
     {
-        StringBuilder sql = new StringBuilder("ALTER TABLE ");
-        sql.append( tableName );
-        sql.append( " DROP INDEX " ).append( indexName );
+        StringBuilder sql = new StringBuilder("DROP INDEX " ).append( tableName ).append( "." ).append( indexName );
         return sql.toString();
     }
 }

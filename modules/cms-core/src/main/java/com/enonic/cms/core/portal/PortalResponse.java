@@ -23,8 +23,6 @@ public class PortalResponse
 
     private String httpContentType;
 
-    private String outputMethod;
-
     private DateTime expirationTime;
 
     private SitePath forwardToSitePath;
@@ -36,7 +34,6 @@ public class PortalResponse
         PortalResponse response = new PortalResponse();
         response.content = renderedWindowResult.getContent();
         response.httpContentType = renderedWindowResult.getHttpContentType();
-        response.outputMethod = renderedWindowResult.getOutputMethod();
         if ( renderedWindowResult.getContentEncoding() != null )
         {
             response.contentEncoding = renderedWindowResult.getContentEncoding();
@@ -58,7 +55,6 @@ public class PortalResponse
         PortalResponse response = new PortalResponse();
         response.content = renderedPageResult.getContent();
         response.httpContentType = renderedPageResult.getHttpContentType();
-        response.outputMethod = renderedPageResult.getOutputMethod();
         if ( renderedPageResult.getContentEncoding() != null )
         {
             response.contentEncoding = renderedPageResult.getContentEncoding();
@@ -109,11 +105,6 @@ public class PortalResponse
     public String getHttpContentType()
     {
         return httpContentType;
-    }
-
-    public String getOutputMethod()
-    {
-        return outputMethod;
     }
 
     public boolean isForwardToSitePath()

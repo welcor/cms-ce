@@ -31,7 +31,7 @@ public final class XsltProcessorException
      */
     public XsltProcessorException( final String message )
     {
-        super(message);
+        super( message );
         this.errors = new XsltProcessorErrors();
     }
 
@@ -79,31 +79,41 @@ public final class XsltProcessorException
     @Override
     public String getMessage()
     {
-        return formatMessage(super.getMessage(), this.errors.getAllErrors());
+        return formatMessage( super.getMessage(), this.errors.getAllErrors() );
     }
 
-    private static String formatMessage(final String heading, final Collection<TransformerException> errors)
+    private static String formatMessage( final String heading, final Collection<TransformerException> errors )
     {
-        if (errors.isEmpty()) {
+        if ( errors.isEmpty() )
+        {
             return heading;
         }
 
-        final Formatter fmt = new Formatter().format(heading).format(":%n");
+        final Formatter fmt = new Formatter().format( heading ).format( ":%n" );
 
         int index = 1;
-        for (final TransformerException error : errors) {
-            fmt.format("%s) %s (%s)%n", index++, error.getMessage(), getLocation( error.getLocator() ));
+        for ( final TransformerException error : errors )
+        {
+            if ( error.getLocationAsString() != null )
+            {
+                fmt.format( "%s) %s (%s)%n", index++, error.getMessage(), getLocation( error.getLocator() ) );
+            }
+            else
+            {
+                fmt.format( "%s) %s (%s)%n", index++, error.getMessage(), "?" );
+            }
         }
 
         return fmt.toString();
     }
 
-    private static String getLocation(final SourceLocator locator)
+    private static String getLocation( final SourceLocator locator )
     {
         final StringBuilder str = new StringBuilder();
         str.append( XsltResourceHelper.resolvePath( locator.getSystemId() ) );
 
-        if (locator.getLineNumber() >= 0) {
+        if ( locator.getLineNumber() >= 0 )
+        {
             str.append( " #" ).append( locator.getLineNumber() );
         }
 

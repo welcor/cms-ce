@@ -7,6 +7,8 @@ package com.enonic.cms.core.portal.rendering;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.framework.util.MimeTypeResolver;
+
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.portal.cache.PageCacheService;
@@ -42,6 +44,9 @@ public class WindowRendererFactory
     private SiteURLResolver siteURLResolver;
 
     @Autowired
+    private MimeTypeResolver mimeTypeResolver;
+
+    @Autowired
     private PostProcessInstructionExecutor postProcessInstructionExecutor;
 
     @Autowired
@@ -58,6 +63,7 @@ public class WindowRendererFactory
         windowRenderer.setPortletXsltViewTransformer( portletXsltViewTransformer );
         windowRenderer.setResourceService( resourceService );
         windowRenderer.setSiteURLResolver( siteURLResolver );
+        windowRenderer.setMimeTypeResolver( mimeTypeResolver );
         windowRenderer.setSitePropertiesService( sitePropertiesService );
         windowRenderer.setPostProcessInstructionExecutor( postProcessInstructionExecutor );
         windowRenderer.setLiveTraceService( livePortalTraceService );

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
+import com.enonic.cms.framework.util.MimeTypeResolver;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
@@ -23,10 +24,11 @@ import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
+import com.enonic.cms.core.portal.WindowReference;
 import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
@@ -86,6 +88,8 @@ public class WindowRenderer
     private SiteURLResolver siteURLResolver;
 
     private RequestParameters requestParameters;
+
+    private MimeTypeResolver mimeTypeResolver;
 
     private PostProcessInstructionExecutor postProcessInstructionExecutor;
 
@@ -164,6 +168,12 @@ public class WindowRenderer
             requestParameters = context.getSitePath().getRequestParameters();
             RenderedWindowResult result = doRenderWindow( window );
             result.setContent( result.getContent().replace( Ticket.getPlaceholder(), context.getTicketId() ) );
+            final WindowReference windowReference = context.getSitePath().getWindowReference();
+            if ( windowReference.hasExtension() )
+            {
+                final String mimeType = mimeTypeResolver.getMimeTypeByExtension( windowReference.getExtension() );
+                result.setHttpContentType( mimeType );
+            }
             return result;
         }
         finally
@@ -619,6 +629,11 @@ public class WindowRenderer
     public void setSiteURLResolver( SiteURLResolver siteURLResolver )
     {
         this.siteURLResolver = siteURLResolver;
+    }
+
+    public void setMimeTypeResolver( final MimeTypeResolver mimeTypeResolver )
+    {
+        this.mimeTypeResolver = mimeTypeResolver;
     }
 
     public void setSitePropertiesService( final SitePropertiesService sitePropertiesService )

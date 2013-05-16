@@ -90,6 +90,26 @@ public class WindowReferenceTest
     }
 
     @Test
+    public void getExtension()
+        throws Exception
+    {
+        Assert.assertEquals( "xml", WindowReference.parse( new Path( "/myPage/_window/myWindow.xml" ) ).getExtension() );
+        Assert.assertEquals( null, WindowReference.parse( new Path( "/myPage/_window/myWindow" ) ).getExtension() );
+        Assert.assertEquals( null, WindowReference.parse( new Path( "/myPage/_window/myWindow." ) ).getExtension() );
+        Assert.assertEquals( null, WindowReference.parse( new Path( "/myPage/_window/myWindow. " ) ).getExtension() );
+    }
+
+    @Test
+    public void hasExtension()
+        throws Exception
+    {
+        Assert.assertEquals( true, WindowReference.parse( new Path( "/myPage/_window/myWindow.xml" ) ).hasExtension() );
+        Assert.assertEquals( false, WindowReference.parse( new Path( "/myPage/_window/myWindow" ) ).hasExtension() );
+        Assert.assertEquals( false, WindowReference.parse( new Path( "/myPage/_window/myWindow." ) ).hasExtension() );
+        Assert.assertEquals( false, WindowReference.parse( new Path( "/myPage/_window/myWindow. " ) ).hasExtension() );
+    }
+
+    @Test
     public void testParse_long_path_with_spaces_and_several_extensions()
         throws Exception
     {

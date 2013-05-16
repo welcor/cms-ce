@@ -37,7 +37,7 @@ public class WindowReference
         final String portletNameWithoutExtension = portletName.replaceAll( "\\.[^\\.]*?$", "" );
 
         String extension = null;
-        if ( portletNameWithoutExtension.length() < portletName.length() )
+        if ( portletNameWithoutExtension.length() + 1 < portletName.length() )
         {
             extension = portletName.substring( portletNameWithoutExtension.length() + 1, portletName.length() );
         }
@@ -62,6 +62,11 @@ public class WindowReference
     public String getPortletName()
     {
         return portletName;
+    }
+
+    public boolean hasExtension()
+    {
+        return extension != null;
     }
 
     public String getExtension()

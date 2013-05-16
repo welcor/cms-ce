@@ -8,7 +8,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.joda.time.DateTime;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
 import com.enonic.cms.core.portal.rendering.RenderedWindowResult;
@@ -18,8 +17,6 @@ import com.enonic.cms.core.portal.rendering.RenderedWindowResult;
  */
 public class PortalResponse
 {
-    private SiteKey site;
-
     private String contentEncoding = "UTF-8";
 
     private String content;
@@ -107,11 +104,6 @@ public class PortalResponse
     public void setContent( String content )
     {
         this.content = content;
-    }
-
-    public void setContentEncoding( String contentEncoding )
-    {
-        this.contentEncoding = contentEncoding;
     }
 
     public String getHttpContentType()

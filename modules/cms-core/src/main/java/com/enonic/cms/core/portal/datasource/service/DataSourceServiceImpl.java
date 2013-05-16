@@ -358,7 +358,7 @@ public final class DataSourceServiceImpl
      * @inheritDoc
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels )
+    public XMLDocument getMenu( DataSourceContext context, int menuKey, int tagItem, int levels, boolean includeHidden )
     {
         if ( menuKey < 0 )
         {
@@ -377,6 +377,7 @@ public final class DataSourceServiceImpl
         siteXmlCreator.setUser( getUserEntity( context.getUser() ) );
         siteXmlCreator.setActiveMenuItem( menuItemDao.findByKey( new MenuItemKey( tagItem ) ) );
         siteXmlCreator.setMenuItemLevels( levels );
+        siteXmlCreator.setIncludeHiddenMenuItems( includeHidden );
 
         return siteXmlCreator.createLegacyGetMenu( site, sitePropertiesService.getSiteProperties( site.getKey() ) );
     }

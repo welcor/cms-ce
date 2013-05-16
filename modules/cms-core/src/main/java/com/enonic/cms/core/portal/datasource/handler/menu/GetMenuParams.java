@@ -7,4 +7,6 @@ public final class GetMenuParams
     public int tagItem = -1;
 
     public int levels = 0;
+
+    public boolean includeHidden = false;
 }

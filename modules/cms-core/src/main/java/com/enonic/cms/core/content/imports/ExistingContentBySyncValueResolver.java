@@ -48,6 +48,8 @@ public class ExistingContentBySyncValueResolver
     private Map<String, ContentKey> resolveContentKeysBySyncValueFromAllContentInCategory( final CategoryEntity category )
     {
         ContentIndexQuery contentQuery = new ContentIndexQuery( "categorykey = " + category.getKey().toString() );
+        contentQuery.setReturnAllHits( true );
+
         ContentResultSet contentResultSet = contentIndexService.query( contentQuery );
         List<ContentKey> contentKeysInCategory = contentResultSet.getKeys();
 
@@ -65,6 +67,7 @@ public class ExistingContentBySyncValueResolver
     {
         final String syncXpath = getSyncXpath( category, importConfig );
         final IndexValueQuery query = new IndexValueQuery( syncXpath );
+        query.setReturnAllHits( true );
         query.setCategoryFilter( Arrays.asList( category.getKey() ) );
 
         final IndexValueResultSet resSet = contentIndexService.query( query );

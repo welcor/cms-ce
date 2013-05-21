@@ -67,6 +67,8 @@ public final class ContentIndexQuery
 
     private int count = DEFAULT_COUNT;
 
+    private boolean returnAllHits = false;
+
     private Integer contentStatusFilter;
 
     private DateTime contentOnlineAtFilter;
@@ -301,5 +303,15 @@ public final class ContentIndexQuery
     public void setFacets( final String facets )
     {
         this.facets = facets;
+    }
+
+    public boolean doReturnAllHits()
+    {
+        return returnAllHits;
+    }
+
+    public void setReturnAllHits( final boolean returnAllHits )
+    {
+        this.returnAllHits = returnAllHits;
     }
 }

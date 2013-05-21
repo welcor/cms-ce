@@ -21,6 +21,8 @@ public final class IndexValueQuery
 
     private int count = ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE;
 
+    private boolean returnAllHits = false;
+
     private boolean descOrder;
 
     public IndexValueQuery( String field )
@@ -61,5 +63,15 @@ public final class IndexValueQuery
     public void setDescOrder( boolean descOrder )
     {
         this.descOrder = descOrder;
+    }
+
+    public boolean doReturnAllHits()
+    {
+        return returnAllHits;
+    }
+
+    public void setReturnAllHits( final boolean returnAllHits )
+    {
+        this.returnAllHits = returnAllHits;
     }
 }

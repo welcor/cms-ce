@@ -298,6 +298,10 @@ public class ContentIndexServiceImpl
             {
                 query.setCount( actualNumberOfHits == 0 ? 1 : actualNumberOfHits );
             }
+            else if ( actualNumberOfHits > query.getCount() && query.doReturnAllHits() )
+            {
+                query.setCount( actualNumberOfHits );
+            }
         }
     }
 
@@ -322,7 +326,7 @@ public class ContentIndexServiceImpl
         final String path = QueryFieldNameResolver.resolveQueryFieldName( query.getField() );
         final QueryField queryField = QueryFieldFactory.resolveQueryField( path );
 
-        optimizeCount( query, queryField );
+        optimizeCount( query, queryField, query.doReturnAllHits() );
 
         try
         {
@@ -349,7 +353,7 @@ public class ContentIndexServiceImpl
         return resultSet;
     }
 
-    private void optimizeCount( final IndexValueQuery query, final QueryField queryField )
+    private void optimizeCount( final IndexValueQuery query, final QueryField queryField, final boolean returnAllHits )
     {
         if ( query.getCount() >= COUNT_OPTIMIZER_THRESHOULD_VALUE )
         {
@@ -358,6 +362,10 @@ public class ContentIndexServiceImpl
             if ( actualNumberOfHits < query.getCount() )
             {
                 query.setCount( actualNumberOfHits == 0 ? 1 : actualNumberOfHits );
+            }
+            else if ( actualNumberOfHits > query.getCount() && returnAllHits )
+            {
+                query.setCount( actualNumberOfHits );
             }
         }
     }

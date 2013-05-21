@@ -41,8 +41,14 @@ public class PageCacheServiceFactory
         PageCacheServiceImpl cacheService = new PageCacheServiceImpl( siteKey );
         cacheService.setCacheFacade( cacheFacade );
 
+        updateTimeToLive(siteKey, cacheService);
+
+        return cacheService;
+    }
+
+    public void updateTimeToLive( SiteKey siteKey, PageCacheServiceImpl cacheService )
+    {
         Integer defaultTimeToLive = sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey );
         cacheService.setTimeToLive( defaultTimeToLive );
-        return cacheService;
     }
 }

@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public final class VirtualHostResolver
-    implements InitializingBean, DisposableBean
+    implements InitializingBean
 {
     /**
      * Logger.
@@ -39,9 +39,7 @@ public final class VirtualHostResolver
      */
     private final AtomicReference<ArrayList<VirtualHost>> virtualHosts = new AtomicReference<ArrayList<VirtualHost>>();
 
-    private File configFile;
-
-    private FileWatcherByTimer fileWatcher;
+    private String configFile;
 
     public VirtualHostResolver()
     {
@@ -55,44 +53,22 @@ public final class VirtualHostResolver
         throws Exception
     {
         configureVirtualHosts();
-
-        watchConfigFile();
-    }
-
-    private void watchConfigFile()
-    {
-        final Runnable configFileChangedHandler = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                configureVirtualHosts();
-            }
-        };
-
-        // after switching to java 7 use NIO.2 file watcher instead of timer
-        this.fileWatcher = new FileWatcherByTimer( configFile, configFileChangedHandler, 2000 );
-    }
-
-    @Override
-    public void destroy()
-        throws Exception
-    {
-        this.fileWatcher.stop();
     }
 
     /**
      * Configure property.
      */
-    private void configureVirtualHosts()
+    public void configureVirtualHosts()
     {
-        if ( this.configFile != null && this.configFile.exists() )
+        final File file = new File( this.configFile );
+
+        if ( file.exists() )
         {
             try
             {
                 final ArrayList<VirtualHost> virtualHosts = new ArrayList<VirtualHost>();
 
-                final Properties properties = PropertiesLoaderUtils.loadProperties( new FileSystemResource( this.configFile ) );
+                final Properties properties = PropertiesLoaderUtils.loadProperties( new FileSystemResource( file ) );
 
                 for ( final Object key : properties.keySet() )
                 {
@@ -105,13 +81,14 @@ public final class VirtualHostResolver
                 Collections.sort( virtualHosts );
 
                 this.virtualHosts.lazySet( virtualHosts );
-
-                LOG.info( "loaded virtual hosts configuration. {} rule(s) found.", properties.size() );
             }
             catch ( Exception e )
             {
                 LOG.error( "cannot configure virtual hosts !", e );
             }
+        }
+        else {
+            this.virtualHosts.lazySet( new ArrayList<VirtualHost>() );
         }
     }
 
@@ -160,7 +137,7 @@ public final class VirtualHostResolver
     }
 
     @Value("${cms.home}/config/vhost.properties")
-    public void setConfigFile( final File file )
+    public void setConfigFile( final String file )
     {
         this.configFile = file;
     }

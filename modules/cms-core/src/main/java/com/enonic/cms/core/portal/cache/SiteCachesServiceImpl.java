@@ -74,6 +74,11 @@ public class SiteCachesServiceImpl
             pageCacheServices.put( siteKey, cacheService );
             LOG.info( "Page cache service is set up for site " + siteKey );
         }
+        else
+        {
+            pageCacheServiceFactory.updateTimeToLive( siteKey, cacheService );
+        }
+
         cacheService.setEnabled( cacheEnabled );
     }
 

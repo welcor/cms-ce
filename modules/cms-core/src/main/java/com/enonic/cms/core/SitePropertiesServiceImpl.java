@@ -13,13 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.structure.SiteProperties;
+import com.enonic.cms.core.structure.SiteService;
+import com.enonic.cms.core.structure.SiteServiceImpl;
 
 @Component("sitePropertiesService")
 public class SitePropertiesServiceImpl
@@ -27,13 +31,19 @@ public class SitePropertiesServiceImpl
 {
     private Properties defaultProperties;
 
-    private Map<SiteKey, Properties> sitePropertiesMap = new ConcurrentHashMap<SiteKey, Properties>();
+    private final Map<SiteKey, Properties> sitePropertiesMap = new ConcurrentHashMap<SiteKey, Properties>();
 
     private File homeDir;
 
     private ResourceLoader resourceLoader = new FileSystemResourceLoader();
 
     private String characterEncoding;
+
+    @Autowired
+    private SiteCachesService siteCachesService;
+
+    @Autowired
+    private SiteServiceImpl siteService;
 
     public void afterPropertiesSet()
         throws Exception
@@ -67,17 +77,55 @@ public class SitePropertiesServiceImpl
         return new SiteProperties( doGetSiteProperties( siteKey ) );
     }
 
+    /**
+     * Loads properties from the disk if properties are not loaded
+     *
+     * thread safe
+     *
+     * @param siteKey
+     * @return
+     */
     private Properties doGetSiteProperties( SiteKey siteKey )
     {
 
         Properties props = sitePropertiesMap.get( siteKey );
         if ( props == null )
         {
-            props = loadSiteProperties( siteKey );
-            sitePropertiesMap.put( siteKey, props );
+            synchronized ( sitePropertiesMap )
+            {
+                props = sitePropertiesMap.get( siteKey ); // check if already loaded in concurrent thread
+
+                if ( props == null )
+                {
+                    props = loadSiteProperties( siteKey );
+                }
+            }
         }
 
         return props;
+    }
+
+    /**
+     * removes site properties from internal map. New properties will be loaded on demand.
+     *
+     * @param siteKey site key
+     */
+    public void reloadSiteProperties( SiteKey siteKey )
+    {
+        synchronized ( sitePropertiesMap )
+        {
+            final Properties props = sitePropertiesMap.get( siteKey );
+
+            if ( props != null )
+            {
+                sitePropertiesMap.remove( siteKey );
+            }
+
+            loadSiteProperties( siteKey );
+
+            siteCachesService.setUpSiteCachesService( siteKey );
+            siteService.updateAuthenticationLoggingEnabled( siteKey, null );
+        }
     }
 
     public String getProperty( String key, SiteKey siteKey )
@@ -126,6 +174,7 @@ public class SitePropertiesServiceImpl
                 InputStream stream = resource.getInputStream();
                 siteProperties.load( stream );
                 siteProperties.setProperty( "customSiteProperties", "true" );
+                stream.close();
             }
         }
         catch ( IOException e )

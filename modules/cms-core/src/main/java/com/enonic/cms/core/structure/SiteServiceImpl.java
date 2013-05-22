@@ -116,10 +116,23 @@ public class SiteServiceImpl
         initCache( siteContext );
 
         siteContext.setAccessLoggingEnabled( sitePropertiesService.getPropertyAsBoolean( "cms.site.logging.access", siteKey ) );
-        siteContext.setAuthenticationLoggingEnabled(
-            sitePropertiesService.getPropertyAsBoolean( "cms.site.logging.authentication", siteKey ) );
+        updateAuthenticationLoggingEnabled( siteKey, siteContext );
 
         return siteContext;
+    }
+
+    public void updateAuthenticationLoggingEnabled( SiteKey siteKey, SiteContext siteContext )
+    {
+        if ( siteContext == null )
+        {
+            siteContext = siteContextManager.getSiteContext( siteKey );
+        }
+
+        if ( siteContext != null )
+        {
+            siteContext.setAuthenticationLoggingEnabled(
+                sitePropertiesService.getPropertyAsBoolean( "cms.site.logging.authentication", siteKey ) );
+        }
     }
 
     private void initCache( SiteContext siteContext )

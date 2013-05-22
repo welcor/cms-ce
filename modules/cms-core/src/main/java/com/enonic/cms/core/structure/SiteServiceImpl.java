@@ -115,7 +115,6 @@ public class SiteServiceImpl
 
         initCache( siteContext );
 
-        siteContext.setAccessLoggingEnabled( sitePropertiesService.getPropertyAsBoolean( "cms.site.logging.access", siteKey ) );
         updateAuthenticationLoggingEnabled( siteKey, siteContext );
 
         return siteContext;
@@ -141,8 +140,6 @@ public class SiteServiceImpl
         SiteKey siteKey = siteContext.getSiteKey();
 
         siteCachesService.setUpSiteCachesService( siteKey );
-
-        siteContext.setPageAndObjectCacheService( siteCachesService.getPageCacheService( siteKey ) );
     }
 
     /**

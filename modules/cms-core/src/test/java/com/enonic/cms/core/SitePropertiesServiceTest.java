@@ -13,8 +13,12 @@ import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import com.google.common.collect.Lists;
+
+import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePropertiesServiceImpl;
+import com.enonic.cms.store.dao.SiteDao;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -58,6 +62,8 @@ public class SitePropertiesServiceTest
 
     private ResourceLoader resourceLoader = createMock( ResourceLoader.class );
 
+    private SiteDao siteDao = createMock( SiteDao.class );
+
     private SiteKey siteKey = new SiteKey( TEST_SITE_KEY_ID );
 
     @Before
@@ -72,6 +78,7 @@ public class SitePropertiesServiceTest
         throws Exception
     {
         sitePropertiesService = new SitePropertiesServiceImpl();
+        sitePropertiesService.setSiteDao( siteDao );
         sitePropertiesService.setHomeDir( folder.newFolder( "cms-home" ) );
         sitePropertiesService.setResourceLoader( resourceLoader );
         sitePropertiesService.setCharacterEncoding( "UTF-8" );
@@ -83,6 +90,12 @@ public class SitePropertiesServiceTest
         expect( resourceLoader.getResource( isA( String.class ) ) ).andReturn( getLocalTestDefaultPropertyResouce() );
         expect( resourceLoader.getResource( isA( String.class ) ) ).andReturn( getLocalTestSitePropertyResouce() );
         replay( resourceLoader );
+
+        SiteEntity site = new SiteEntity();
+        site.setKey( siteKey.toInt() );
+
+        expect( siteDao.findAll() ).andReturn( Lists.newArrayList( site ) );
+        replay( siteDao );
     }
 
     private Resource getLocalTestSitePropertyResouce()

@@ -47,7 +47,6 @@ public class SitePropertiesServiceImpl
     @Autowired
     private SiteServiceImpl siteService;
 
-    @Autowired
     private SiteDao siteDao;
 
     public void afterPropertiesSet()
@@ -188,5 +187,11 @@ public class SitePropertiesServiceImpl
     public void setResourceLoader( ResourceLoader resourceLoader )
     {
         this.resourceLoader = resourceLoader;
+    }
+
+    @Autowired
+    public void setSiteDao( final SiteDao siteDao )
+    {
+        this.siteDao = siteDao;
     }
 }

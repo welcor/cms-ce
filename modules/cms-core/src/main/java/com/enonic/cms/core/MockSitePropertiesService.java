@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertiesService;
 

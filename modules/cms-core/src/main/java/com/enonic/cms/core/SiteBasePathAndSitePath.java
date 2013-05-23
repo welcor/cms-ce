@@ -7,6 +7,8 @@ package com.enonic.cms.core;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.enonic.cms.core.structure.SitePath;
+
 /**
  * Aug 6, 2010
  */

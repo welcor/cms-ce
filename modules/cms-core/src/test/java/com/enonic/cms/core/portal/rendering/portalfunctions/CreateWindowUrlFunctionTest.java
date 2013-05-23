@@ -5,10 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.WindowKey;

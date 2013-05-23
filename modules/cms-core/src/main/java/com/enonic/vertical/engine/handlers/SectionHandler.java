@@ -36,8 +36,8 @@ import com.enonic.cms.framework.util.TIntArrayList;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
@@ -281,13 +281,17 @@ public class SectionHandler
     public MenuItemKey getSectionKeyByMenuItem( MenuItemKey menuItemKey )
     {
         final MenuItemEntity entity = this.menuItemDao.findByKey( menuItemKey );
-        if (entity == null) {
+        if ( entity == null )
+        {
             return null;
         }
 
-        if (entity.isSection()) {
+        if ( entity.isSection() )
+        {
             return menuItemKey;
-        } else {
+        }
+        else
+        {
             return null;
         }
     }

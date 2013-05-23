@@ -11,13 +11,13 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
 import com.enonic.cms.store.dao.ContentDao;
@@ -138,9 +138,9 @@ public class PageRequestContextResolver
 
         // prevent explisit content paths outside locations of content
         if ( !contentLocations.hasMenuItemAsLocation( requestedMenuItem ) )
-            {
+        {
             return;
-            }
+        }
 
         context.setRequestedMenuItem( requestedMenuItem );
         context.setResolvedContentPath( contentPath );

@@ -21,7 +21,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.MockSitePropertiesService;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.content.ContentEntity;
@@ -35,15 +34,16 @@ import com.enonic.cms.core.portal.rendering.WindowRendererContext;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceName;
+import com.enonic.cms.core.resource.FileResourceService;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
-import com.enonic.cms.core.resource.FileResourceService;
 
 import static org.junit.Assert.*;
 

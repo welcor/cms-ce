@@ -13,6 +13,7 @@ import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePropertiesServiceImpl;
 
 import static org.easymock.EasyMock.createMock;

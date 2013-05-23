@@ -22,7 +22,6 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentAndVersion;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -37,6 +36,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Component
 public final class FormServicesProcessor
@@ -383,7 +383,8 @@ public final class FormServicesProcessor
                 createCommand.setBinaryDatas( binaryDataAndBinaries );
                 createCommand.setUseCommandsBinaryDataToAdd( true );
 
-                createCommand.setContentName( new PrettyPathNameCreator( transliterate ).generatePrettyPathName( parsedVersion.getTitle() ) );
+                createCommand.setContentName(
+                    new PrettyPathNameCreator( transliterate ).generatePrettyPathName( parsedVersion.getTitle() ) );
 
                 ContentKey key = contentService.createContent( createCommand );
 

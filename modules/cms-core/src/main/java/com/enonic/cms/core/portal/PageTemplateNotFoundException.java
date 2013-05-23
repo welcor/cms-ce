@@ -5,8 +5,8 @@
 package com.enonic.cms.core.portal;
 
 import com.enonic.cms.core.NotFoundErrorType;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.StacktraceLoggingUnrequired;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * Aug 28, 2009

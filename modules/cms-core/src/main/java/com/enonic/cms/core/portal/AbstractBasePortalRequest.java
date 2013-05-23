@@ -6,8 +6,8 @@ package com.enonic.cms.core.portal;
 
 import org.joda.time.DateTime;
 
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * May 11, 2009

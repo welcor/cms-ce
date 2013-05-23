@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.SiteKey;
-
 @Component
 public class SiteContextManager
 {

@@ -9,8 +9,8 @@ import java.util.HashMap;
 import org.junit.Test;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 
 import static org.junit.Assert.*;
 

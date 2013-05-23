@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.DefaultSiteAccessRightAccumulator;
 import com.enonic.cms.core.structure.DefaultSiteAccumulatedAccessRights;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessRightAccumulator;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccumulatedAccessRights;

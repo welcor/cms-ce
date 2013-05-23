@@ -25,8 +25,6 @@ import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.api.client.model.user.Gender;
 import com.enonic.cms.core.Attribute;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
@@ -43,6 +41,8 @@ import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.user.field.UserFieldType;
 import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.itest.AbstractSpringTest;

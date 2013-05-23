@@ -7,8 +7,8 @@ package com.enonic.cms.core.preference;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.PortalInstanceKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 
 public class PreferenceScopeResolver

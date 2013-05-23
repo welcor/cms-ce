@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SiteURLResolver;
+import com.enonic.cms.core.structure.SitePath;
 
 @Component
 public class SiteRedirectAndForwardHelper

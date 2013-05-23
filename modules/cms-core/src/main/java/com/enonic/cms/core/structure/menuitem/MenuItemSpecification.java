@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.structure.menuitem;
 
-import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.page.PageSpecification;
 
 /**

@@ -4,8 +4,8 @@
  */
 package com.enonic.cms.core.login;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 /**
  * Jul 10, 2009

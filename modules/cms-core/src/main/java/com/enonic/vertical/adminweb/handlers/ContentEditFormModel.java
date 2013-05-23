@@ -14,9 +14,9 @@ import com.google.common.collect.Maps;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentLocationXmlCreator;
 import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SiteXmlCreator;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccumulatedAccessRights;
@@ -99,8 +99,7 @@ public class ContentEditFormModel
 
         for ( MenuItemEntity menuItem : contentLocations.getMenuItems() )
         {
-            MenuItemAndUserAccessRights menuItemAndUserAccessRights =
-                menuItemAndUserAccessRightsMapByMenuItemKey.get( menuItem.getKey() );
+            MenuItemAndUserAccessRights menuItemAndUserAccessRights = menuItemAndUserAccessRightsMapByMenuItemKey.get( menuItem.getKey() );
             final MenuItemAccumulatedAccessRights accessRightsForExecutor = menuItemAndUserAccessRights.getAccessRightsForUser();
             final MenuItemAccumulatedAccessRights accessRightsForAnonymous = menuItemAndUserAccessRights.getAccessrightsForAnonymous();
             locationMenuitemsEl.addContent(

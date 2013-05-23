@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocationSpecification;
@@ -17,6 +16,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.search.query.ContentDocument;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;

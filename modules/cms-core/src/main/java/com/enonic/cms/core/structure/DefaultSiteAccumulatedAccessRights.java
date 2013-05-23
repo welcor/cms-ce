@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.structure;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.user.UserKey;
 
 /**

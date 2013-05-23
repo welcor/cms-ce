@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.ResourceNotFoundException;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 
@@ -51,8 +51,7 @@ public final class ResourceHandler
             sitePublicHome = publicPath.toString();
         }
 
-        final ResourceKeyResolver resourceKeyResolverForSiteLocalResources =
-            new ResourceKeyResolver( sitePublicHome );
+        final ResourceKeyResolver resourceKeyResolverForSiteLocalResources = new ResourceKeyResolver( sitePublicHome );
 
         final ResourceKey resourceKey = resourceKeyResolverForSiteLocalResources.resolveResourceKey( sitePath );
         final ResourceFile resourceFile = resourceService.getResourceFile( resourceKey );

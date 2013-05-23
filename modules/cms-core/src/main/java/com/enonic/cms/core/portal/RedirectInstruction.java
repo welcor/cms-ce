@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.portal;
 
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * Created by IntelliJ IDEA.

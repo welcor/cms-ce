@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.enonic.esl.servlet.http.CookieUtil;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.login.LoginService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Service
 public class AutoLoginService

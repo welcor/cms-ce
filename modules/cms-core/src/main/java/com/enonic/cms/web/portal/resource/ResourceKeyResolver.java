@@ -5,8 +5,8 @@
 package com.enonic.cms.web.portal.resource;
 
 import com.enonic.cms.core.PathAndParams;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.structure.SitePath;
 
 final class ResourceKeyResolver
 {

@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.content;
 
-import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 /**
  * Oct 28, 2009

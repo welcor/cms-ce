@@ -6,8 +6,8 @@ package com.enonic.cms.store.dao;
 
 import java.util.List;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resource.ResourceKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 import com.enonic.cms.store.support.EntityPageList;
 

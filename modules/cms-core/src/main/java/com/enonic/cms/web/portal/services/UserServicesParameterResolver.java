@@ -5,7 +5,7 @@
 package com.enonic.cms.web.portal.services;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  *

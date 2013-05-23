@@ -10,7 +10,6 @@ import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.RequestParametersMerger;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
@@ -35,6 +34,7 @@ import com.enonic.cms.core.portal.rendering.WindowRendererFactory;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.WindowKey;

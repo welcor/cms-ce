@@ -4,6 +4,8 @@
  */
 package com.enonic.cms.core;
 
+import com.enonic.cms.core.structure.SitePath;
+
 /**
  * Aug 6, 2010
  */

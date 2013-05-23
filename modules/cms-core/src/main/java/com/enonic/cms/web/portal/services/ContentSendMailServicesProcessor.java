@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.CreateContentException;
 import com.enonic.cms.core.content.command.CreateContentCommand;
 import com.enonic.cms.core.content.contentdata.ContentDataParserException;
@@ -24,6 +23,7 @@ import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Component
 public final class ContentSendMailServicesProcessor

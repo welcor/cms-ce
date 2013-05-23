@@ -2,11 +2,13 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core;
+package com.enonic.cms.core.structure;
 
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import com.enonic.cms.core.AbstractIntegerBasedKey;
 
 public class SiteKey
     extends AbstractIntegerBasedKey

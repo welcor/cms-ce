@@ -38,8 +38,6 @@ import com.enonic.vertical.engine.VerticalSecurityException;
 import com.enonic.cms.framework.util.UrlPathDecoder;
 
 import com.enonic.cms.core.Attribute;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.captcha.CaptchaService;
 import com.enonic.cms.core.content.ContentParserService;
 import com.enonic.cms.core.content.ContentService;
@@ -53,6 +51,8 @@ import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteContext;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;

@@ -4,8 +4,8 @@
  */
 package com.enonic.cms.core.preference;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.PortalInstanceKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 
 public class PreferenceScopeKeyResolver

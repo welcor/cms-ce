@@ -16,8 +16,8 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.net.Mail;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.structure.SiteKey;
 
 public abstract class SendMailServicesBase
     extends ContentServicesBase

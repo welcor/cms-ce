@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.RememberedLoginEntity;
 import com.enonic.cms.core.security.RememberedLoginKey;
 import com.enonic.cms.core.security.user.UserKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.RememberedLoginDao;
 

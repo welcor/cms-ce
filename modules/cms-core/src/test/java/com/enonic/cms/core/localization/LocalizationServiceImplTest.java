@@ -14,9 +14,9 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

@@ -6,8 +6,8 @@ package com.enonic.cms.core.portal;
 
 import com.enonic.cms.core.NotFoundErrorType;
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.StacktraceLoggingUnrequired;
+import com.enonic.cms.core.structure.SiteKey;
 
 public class ResourceNotFoundException
     extends RuntimeException

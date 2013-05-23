@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SiteURLResolver;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Component
 public class SiteRedirectHelper

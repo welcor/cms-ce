@@ -50,7 +50,6 @@ import com.enonic.vertical.event.VerticalEventMulticaster;
 import com.enonic.cms.framework.util.TIntArrayList;
 
 import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.group.GroupKey;
@@ -62,6 +61,7 @@ import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteData;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
@@ -3850,7 +3850,8 @@ public final class MenuHandler
     {
         CommonHandler commonHandler = getCommonHandler();
         StringBuffer path =
-            commonHandler.getPathString( db.tMenuItem, db.tMenuItem.mei_lKey, db.tMenuItem.mei_lParent, db.tMenuItem.mei_sName, menuItemKey );
+            commonHandler.getPathString( db.tMenuItem, db.tMenuItem.mei_lKey, db.tMenuItem.mei_lParent, db.tMenuItem.mei_sName,
+                                         menuItemKey );
         path.insert( 0, " / " );
         path.insert( 0, getMenuName( getMenuKeyByMenuItem( menuItemKey ) ) );
         return path;
@@ -4184,7 +4185,8 @@ public final class MenuHandler
                         {
                             ResourceKey resourceKey = ResourceKey.from( defaultCSSElem.getAttribute( "key" ) );
                             elem.setAttribute( "defaultcss", resourceKey.toString() );
-                            elem.setAttribute( "defaultcssexists", resourceService.getResourceFile( resourceKey ) != null ? "true" : "false" );
+                            elem.setAttribute( "defaultcssexists",
+                                               resourceService.getResourceFile( resourceKey ) != null ? "true" : "false" );
                         }
                     }
                 }

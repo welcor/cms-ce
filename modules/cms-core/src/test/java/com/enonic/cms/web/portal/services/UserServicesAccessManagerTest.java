@@ -7,7 +7,7 @@ package com.enonic.cms.web.portal.services;
 import junit.framework.TestCase;
 
 import com.enonic.cms.core.MockSitePropertiesService;
-import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteService;
 
 import static org.easymock.EasyMock.isA;

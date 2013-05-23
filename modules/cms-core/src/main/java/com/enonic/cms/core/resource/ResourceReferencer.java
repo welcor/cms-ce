@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.core.resource;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 

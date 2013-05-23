@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resource.ResourceReferencer;
 import com.enonic.cms.core.resource.ResourceReferencerType;
+import com.enonic.cms.core.structure.SiteKey;
 
 final class SortBySiteBuilderWrapper
 {

@@ -7,12 +7,12 @@ package com.enonic.cms.core.portal;
 import org.apache.commons.lang.StringUtils;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentLocation;
 import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.SectionContentDao;
 

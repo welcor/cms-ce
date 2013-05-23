@@ -10,11 +10,11 @@ import com.enonic.cms.framework.util.HttpCacheControlSettings;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.security.AutoLoginService;
 import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.core.time.TimeService;

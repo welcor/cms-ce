@@ -29,7 +29,6 @@ import com.enonic.vertical.adminweb.VerticalAdminLogger;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
@@ -56,14 +55,15 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJobFactory;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
 import com.enonic.cms.core.xslt.XsltProcessor;
 import com.enonic.cms.core.xslt.XsltProcessorException;
+import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.core.xslt.admin.AdminXsltProcessor;
 import com.enonic.cms.core.xslt.admin.AdminXsltProcessorFactory;
-import com.enonic.cms.core.xslt.XsltResource;
 import com.enonic.cms.server.service.admin.ajax.dto.PreferenceDto;
 import com.enonic.cms.server.service.admin.ajax.dto.RegionDto;
 import com.enonic.cms.server.service.admin.ajax.dto.SynchronizeStatusDto;

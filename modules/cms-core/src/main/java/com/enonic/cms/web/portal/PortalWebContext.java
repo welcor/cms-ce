@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.enonic.cms.core.Attribute;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 
 public final class PortalWebContext
 {

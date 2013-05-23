@@ -17,12 +17,12 @@ import com.enonic.cms.framework.xml.XMLBuilder;
 import com.enonic.cms.framework.xml.XMLDocument;
 
 import com.enonic.cms.core.CmsDateAndTimeFormats;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resource.ResourceBase;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceFolder;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceReferencer;
+import com.enonic.cms.core.structure.SiteKey;
 
 public final class ResourceXmlCreator
 {

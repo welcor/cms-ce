@@ -10,14 +10,13 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.enonic.cms.framework.util.PropertiesUtil;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.config.ConfigLoader;
 import com.enonic.cms.core.home.HomeDir;
-
-import org.springframework.beans.factory.annotation.Value;
+import com.enonic.cms.core.structure.SiteKey;
 
 public final class StandardPropertyResolver
     implements PropertyResolver, InitializingBean

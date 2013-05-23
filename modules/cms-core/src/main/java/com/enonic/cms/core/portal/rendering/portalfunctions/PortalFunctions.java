@@ -19,8 +19,6 @@ import com.enonic.cms.framework.util.URLUtils;
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.captcha.CaptchaService;
@@ -52,6 +50,8 @@ import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;

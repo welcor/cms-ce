@@ -8,8 +8,8 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;

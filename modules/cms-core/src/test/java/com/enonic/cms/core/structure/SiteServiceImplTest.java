@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import junit.framework.TestCase;
 
 import com.enonic.cms.core.MockSitePropertiesService;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.SiteNotFoundException;
 import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.store.dao.SiteDao;

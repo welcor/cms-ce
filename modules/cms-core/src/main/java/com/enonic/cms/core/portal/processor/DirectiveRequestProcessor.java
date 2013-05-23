@@ -7,7 +7,7 @@ package com.enonic.cms.core.portal.processor;
 import java.util.Map;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 
@@ -58,7 +58,8 @@ public class DirectiveRequestProcessor
         if ( originalSitePath.getLocalPath().toString().equalsIgnoreCase( pathToShortcuttedMenuItem.toString() ) )
         {
             throw new RuntimeException( "Eternal shortcut loop prevented. " + "Shortcut '" + originalPath + "' points to the menuitem '" +
-                pathToShortcuttedMenuItem.toString() + "' which have equal name (case ignored). Shortcut must be deleted!" );
+                                            pathToShortcuttedMenuItem.toString() +
+                                            "' which have equal name (case ignored). Shortcut must be deleted!" );
         }
 
         if ( context.getMenuItem().isShortcutForward() )

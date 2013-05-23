@@ -6,10 +6,10 @@ package com.enonic.cms.core.portal.processor;
 
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageResolver;
 import com.enonic.cms.core.portal.PageTemplateNotFoundException;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
@@ -60,13 +60,13 @@ public class PageRequestProcessor
     {
         final PageEntity page = context.getMenuItem().getPage();
 
-        if ( page == null || page.getTemplate() == null)
+        if ( page == null || page.getTemplate() == null )
         {
             throw new PageTemplateNotFoundException( context.getSitePath() );
         }
 
         return page.getTemplate();
-     }
+    }
 
     private LanguageEntity resolveLanguage()
     {

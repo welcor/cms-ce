@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UrlPathHelper;
 
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePropertiesService;
 
 @Component

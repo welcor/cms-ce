@@ -26,7 +26,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.access.ContentAccessEntity;
 import com.enonic.cms.core.content.access.ContentAccessRightsAccumulated;
 import com.enonic.cms.core.content.access.ContentAccessType;
@@ -37,6 +36,7 @@ import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupKeyComparator;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.core.structure.menuitem.ContentHomeKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemComparatorByHierarchy;

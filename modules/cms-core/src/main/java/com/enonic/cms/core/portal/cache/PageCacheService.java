@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.portal.cache;
 
-import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 public interface PageCacheService
 {

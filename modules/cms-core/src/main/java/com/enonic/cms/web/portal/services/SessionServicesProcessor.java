@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Component
 public final class SessionServicesProcessor

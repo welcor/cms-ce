@@ -6,6 +6,8 @@ package com.enonic.cms.core;
 
 import org.junit.Test;
 
+import com.enonic.cms.core.structure.SiteKey;
+
 import static org.junit.Assert.*;
 
 /**

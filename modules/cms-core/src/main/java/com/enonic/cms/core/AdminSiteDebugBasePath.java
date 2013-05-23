@@ -7,6 +7,8 @@ package com.enonic.cms.core;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.enonic.cms.core.structure.SiteKey;
+
 /**
  * If admin setup at /admin:
  * /admin/site/<site-key>

@@ -13,9 +13,9 @@ import com.enonic.cms.framework.cache.CacheFacade;
 
 import com.enonic.cms.core.CacheObjectSettings;
 import com.enonic.cms.core.CachedObject;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.rendering.PageCacheKey;
 import com.enonic.cms.core.portal.rendering.WindowCacheKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 public class PageCache

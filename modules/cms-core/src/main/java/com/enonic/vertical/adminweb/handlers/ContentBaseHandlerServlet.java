@@ -75,7 +75,6 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.AssignContentResult;
 import com.enonic.cms.core.content.AssignmentAction;
 import com.enonic.cms.core.content.AssignmentActionResolver;
@@ -139,6 +138,7 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessRightAccumulator;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;

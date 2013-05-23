@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.security.InstantTraceSecurityHolder;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.SiteRedirectAndForwardHelper;
 import com.enonic.cms.web.portal.instanttrace.InstantTracePathInspector;

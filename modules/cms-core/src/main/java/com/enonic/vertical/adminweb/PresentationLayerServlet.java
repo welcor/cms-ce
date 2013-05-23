@@ -29,7 +29,6 @@ import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.resource.ResourceKey;
@@ -37,6 +36,7 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteXmlCreator;
 
 public final class PresentationLayerServlet

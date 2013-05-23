@@ -45,7 +45,6 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.admin.MenuItemsAcrossSitesModel;
 import com.enonic.cms.core.admin.MenuItemsAcrossSitesXmlCreator;
 import com.enonic.cms.core.content.ContentEntity;
@@ -59,6 +58,7 @@ import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.structure.DefaultSiteAccessRightAccumulator;
 import com.enonic.cms.core.structure.DefaultSiteAccumulatedAccessRights;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteXmlCreator;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessRightAccumulator;

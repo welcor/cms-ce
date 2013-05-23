@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.web.portal.attachment;
 
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * Feb 17, 2010

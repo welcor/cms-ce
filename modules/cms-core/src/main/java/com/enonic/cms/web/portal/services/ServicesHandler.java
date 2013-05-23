@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.InvalidParameterValueException;
 import com.enonic.cms.core.portal.InvalidTicketException;
 import com.enonic.cms.core.portal.ticket.TicketValidator;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
 

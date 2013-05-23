@@ -17,9 +17,9 @@ import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.xml.XMLTool;
 
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Component
 public final class PollServicesProcessor

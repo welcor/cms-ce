@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
+import com.enonic.cms.core.structure.SiteKey;
 
 import static org.junit.Assert.*;
 

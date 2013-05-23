@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.portal.processor;
 
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * Sep 29, 2009

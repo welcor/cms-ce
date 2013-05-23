@@ -13,8 +13,6 @@ import com.google.common.base.Preconditions;
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentLocationSpecification;
@@ -29,6 +27,8 @@ import com.enonic.cms.core.portal.PageTemplateNotFoundException;
 import com.enonic.cms.core.portal.PathToContentResolver;
 import com.enonic.cms.core.portal.rendering.PageTemplateResolver;
 import com.enonic.cms.core.preview.PreviewContext;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
@@ -82,12 +82,12 @@ public class ContentRequestProcessor
         if ( contentPath.isPermaLink() )
         {
             SiteKey siteKey = sitePath.getSiteKey();
-            if( !sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.ENABLE_UNPUBLISHED_CONTENT_PERMALINKS, siteKey ) )
+            if ( !sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.ENABLE_UNPUBLISHED_CONTENT_PERMALINKS, siteKey ) )
             {
                 ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
                 contentLocationSpecification.setSiteKey( siteKey );
                 ContentLocations contentLocations = contentFromRequest.getLocations( contentLocationSpecification );
-                if( !contentLocations.hasLocations() )
+                if ( !contentLocations.hasLocations() )
                 {
                     throw new ContentNotFoundException( contentFromRequest.getKey(), contentFromRequest.getMainVersion().getTitle() );
                 }

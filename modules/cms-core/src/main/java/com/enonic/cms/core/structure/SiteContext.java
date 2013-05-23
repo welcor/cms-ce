@@ -4,8 +4,6 @@
  */
 package com.enonic.cms.core.structure;
 
-import com.enonic.cms.core.SiteKey;
-
 public class SiteContext
 {
     private SiteKey siteKey;

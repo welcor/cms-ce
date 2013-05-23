@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resolver.ForcedResolverValueLifetimeSettings;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Component
 public final class PortalServicesProcessor
@@ -102,8 +102,7 @@ public final class PortalServicesProcessor
     private void handleForceDeviceClass( ResolverContext context, HttpServletResponse response, ExtendedMap formItems )
     {
 
-        ForcedResolverValueLifetimeSettings forcedDeviceClassSetting =
-            getForcedDeviceClassSetting( formItems );
+        ForcedResolverValueLifetimeSettings forcedDeviceClassSetting = getForcedDeviceClassSetting( formItems );
 
         String deviceClass = formItems.getString( FORM_ITEM_DEVICE_CLASS );
 
@@ -118,8 +117,7 @@ public final class PortalServicesProcessor
     private void handleForceLocale( ResolverContext context, HttpServletResponse response, ExtendedMap formItems )
     {
 
-        ForcedResolverValueLifetimeSettings forceLocaleLifeTimeSetting =
-            getForcedDeviceClassSetting( formItems );
+        ForcedResolverValueLifetimeSettings forceLocaleLifeTimeSetting = getForcedDeviceClassSetting( formItems );
 
         String localeString = formItems.getString( FORM_ITEM_LOCALE );
 

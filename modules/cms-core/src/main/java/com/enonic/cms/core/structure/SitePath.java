@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core;
+package com.enonic.cms.core.structure;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +12,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.Assert;
 
+import com.enonic.cms.core.Path;
+import com.enonic.cms.core.PathAndParams;
+import com.enonic.cms.core.RequestParameters;
+import com.enonic.cms.core.RequestParametersToStringBuilder;
 import com.enonic.cms.core.portal.ContentPath;
 import com.enonic.cms.core.portal.ContentPathResolver;
 import com.enonic.cms.core.portal.WindowReference;

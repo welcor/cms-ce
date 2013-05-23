@@ -17,7 +17,6 @@ import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentAndVersion;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -44,6 +43,7 @@ import com.enonic.cms.core.resolver.locale.LocaleResolverService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.Regions;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;

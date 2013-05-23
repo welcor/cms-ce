@@ -19,12 +19,12 @@ import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.PathAndParams;
 import com.enonic.cms.core.PathAndParamsToStringBuilder;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.PageRequestContext;
 import com.enonic.cms.core.portal.PageRequestContextResolver;
 import com.enonic.cms.core.portal.SiteNotFoundException;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.SiteDao;
 
@@ -32,7 +32,7 @@ import com.enonic.cms.store.dao.SiteDao;
  * This class implements the debug controller.
  */
 public final class SiteDebugViewController
-        extends SiteDebugController
+    extends SiteDebugController
 {
     private ContentDao contentDao;
 
@@ -41,7 +41,7 @@ public final class SiteDebugViewController
     private String characterEncoding;
 
     protected ModelAndView handleRequestInternal( HttpServletRequest request, HttpServletResponse response )
-            throws Exception
+        throws Exception
     {
         SitePath sitePath = getSitePath( request );
 
@@ -80,8 +80,8 @@ public final class SiteDebugViewController
 
     private String getEncodedUrlForForwarding( SitePath sitePath )
     {
-        String encodedLocalPath = UrlPathEncoder.encodeUrlPathNoParameters( sitePath.getLocalPath().getPathAsString(),
-                                                                            this.characterEncoding );
+        String encodedLocalPath =
+            UrlPathEncoder.encodeUrlPathNoParameters( sitePath.getLocalPath().getPathAsString(), this.characterEncoding );
         SitePath newSitePath = new SitePath( sitePath.getSiteKey(), encodedLocalPath, sitePath.getParams() );
         return "/site" + newSitePath.asString();
     }

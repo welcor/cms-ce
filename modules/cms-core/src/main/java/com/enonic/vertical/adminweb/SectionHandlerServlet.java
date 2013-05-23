@@ -63,7 +63,6 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.CmsDateAndTimeFormats;
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocation;
@@ -85,6 +84,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SiteService;

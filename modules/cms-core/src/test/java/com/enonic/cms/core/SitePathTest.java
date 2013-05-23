@@ -14,6 +14,8 @@ import junit.framework.TestCase;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.portal.ContentPath;
 import com.enonic.cms.core.portal.WindowReference;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 
 public class SitePathTest
     extends TestCase

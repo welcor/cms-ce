@@ -7,10 +7,10 @@ package com.enonic.cms.core.portal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;

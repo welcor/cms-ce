@@ -14,7 +14,6 @@ import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
@@ -37,6 +36,7 @@ import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.structure.SiteKey;
 
 @Component
 public final class ContentServicesProcessor

@@ -13,13 +13,13 @@ import com.enonic.cms.framework.cache.CacheFacade;
 import com.enonic.cms.framework.cache.standard.StandardCacheManager;
 
 import com.enonic.cms.core.CacheObjectSettings;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.cluster.NopClusterEventPublisher;
 import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.portal.rendering.PageCacheKey;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
 import com.enonic.cms.core.portal.rendering.RenderedWindowResult;
 import com.enonic.cms.core.portal.rendering.WindowCacheKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 import static org.junit.Assert.*;

@@ -7,7 +7,6 @@ package com.enonic.vertical.adminweb.handlers;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentLocationSpecification;
@@ -15,6 +14,7 @@ import com.enonic.cms.core.content.ContentLocations;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessRightAccumulator;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccumulatedAccessRights;

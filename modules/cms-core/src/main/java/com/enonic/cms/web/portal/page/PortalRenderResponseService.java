@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Attribute;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.plugin.PluginManager;
 import com.enonic.cms.core.portal.PortalRequest;
@@ -21,6 +19,8 @@ import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 import com.enonic.cms.store.dao.SiteDao;

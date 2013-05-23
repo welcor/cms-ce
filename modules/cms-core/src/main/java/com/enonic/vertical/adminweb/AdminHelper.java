@@ -17,7 +17,7 @@ import com.enonic.esl.containers.MultiValueMap;
 import com.enonic.esl.net.URL;
 
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 public class AdminHelper
 {

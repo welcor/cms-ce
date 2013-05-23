@@ -28,7 +28,6 @@ import com.enonic.vertical.engine.VerticalRemoveException;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
 import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentAndVersion;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -56,6 +55,7 @@ import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
+import com.enonic.cms.core.structure.SiteKey;
 
 public abstract class ContentServicesBase
     extends ServicesProcessorBase

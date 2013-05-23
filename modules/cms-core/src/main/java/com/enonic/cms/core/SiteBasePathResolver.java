@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.common.base.Preconditions;
 
 import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
+import com.enonic.cms.core.structure.SiteKey;
 
 /**
  * Sep 3, 2010

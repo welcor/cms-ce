@@ -8,9 +8,9 @@ import java.io.UnsupportedEncodingException;
 
 import org.joda.time.DateTime;
 
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
 import com.enonic.cms.core.portal.rendering.RenderedWindowResult;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * May 7, 2009

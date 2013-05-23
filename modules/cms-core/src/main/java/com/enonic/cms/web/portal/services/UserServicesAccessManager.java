@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.web.portal.services;
 
-import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 
 public interface UserServicesAccessManager

@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.portal;
 
-import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.WindowKey;
 import com.enonic.cms.core.structure.portlet.PortletKey;

@@ -6,8 +6,8 @@ package com.enonic.cms.core.portal;
 
 import java.util.Map;
 
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.preview.PreviewContext;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * May 6, 2009

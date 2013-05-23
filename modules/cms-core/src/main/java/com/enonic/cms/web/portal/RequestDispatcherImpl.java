@@ -6,11 +6,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.enonic.cms.core.InvalidKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.InvalidKeyException;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.web.portal.exception.ExceptionHandler;
 import com.enonic.cms.web.portal.handler.WebHandler;
 import com.enonic.cms.web.portal.handler.WebHandlerRegistry;

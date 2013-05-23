@@ -10,7 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.resolver.BaseResolverTest;
 import com.enonic.cms.core.resolver.ResolverContext;
 import com.enonic.cms.core.resolver.ScriptResolverResult;
@@ -18,6 +17,7 @@ import com.enonic.cms.core.resolver.ScriptResolverService;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

@@ -2,7 +2,11 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core;
+package com.enonic.cms.core.structure;
+
+import com.enonic.cms.core.Path;
+import com.enonic.cms.core.RequestParameters;
+import com.enonic.cms.core.RequestParametersToStringBuilder;
 
 public class SitePathToStringBuilder
 {

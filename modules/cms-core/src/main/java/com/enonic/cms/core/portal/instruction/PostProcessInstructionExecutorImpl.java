@@ -17,7 +17,6 @@ import com.enonic.cms.framework.util.UrlPathEncoder;
 
 import com.enonic.cms.core.Path;
 import com.enonic.cms.core.RequestParameters;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.binary.AttachmentNativeLinkKey;
@@ -38,14 +37,15 @@ import com.enonic.cms.core.portal.rendering.WindowRendererFactory;
 import com.enonic.cms.core.portal.rendering.portalfunctions.PortalFunctionException;
 import com.enonic.cms.core.resource.FileResource;
 import com.enonic.cms.core.resource.FileResourceName;
+import com.enonic.cms.core.resource.FileResourceService;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.WindowKey;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SectionContentDao;
-import com.enonic.cms.core.resource.FileResourceService;
 
 @Component
 public class PostProcessInstructionExecutorImpl

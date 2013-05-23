@@ -32,8 +32,6 @@ import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
 import com.enonic.cms.core.DeploymentPathResolver;
-import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
@@ -78,6 +76,8 @@ import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteContext;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
 import com.enonic.cms.core.user.field.UserFields;
 import com.enonic.cms.store.dao.UserDao;

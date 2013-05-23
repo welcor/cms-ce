@@ -6,12 +6,12 @@ package com.enonic.cms.core.portal.rendering.portalfunctions;
 
 import java.util.Locale;
 
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.SiteURLResolver;
-import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 

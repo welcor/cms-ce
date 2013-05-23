@@ -7,8 +7,8 @@ package com.enonic.cms.core.portal.livetrace;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.enonic.cms.core.PathAndParamsToStringBuilder;
-import com.enonic.cms.core.SitePath;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePath;
 
 /**
  * Oct 6, 2010

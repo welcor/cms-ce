@@ -2,7 +2,7 @@ package com.enonic.cms.core.portal.rendering.portalfunctions;
 
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePath;
+import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.WindowKey;

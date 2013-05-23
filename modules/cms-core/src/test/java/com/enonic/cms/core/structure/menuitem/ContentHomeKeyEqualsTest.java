@@ -7,8 +7,8 @@ package com.enonic.cms.core.structure.menuitem;
 import org.junit.Test;
 
 import com.enonic.cms.core.AbstractEqualsTest;
-import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.content.ContentKey;
+import com.enonic.cms.core.structure.SiteKey;
 
 
 public class ContentHomeKeyEqualsTest

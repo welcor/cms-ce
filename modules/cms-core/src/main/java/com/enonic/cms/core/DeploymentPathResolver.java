@@ -6,6 +6,7 @@ package com.enonic.cms.core;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.enonic.cms.core.structure.SiteKeyResolver;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 
 public class DeploymentPathResolver

@@ -14,6 +14,7 @@ final class CacheManagerConfig
     private final static String KEY_PREFIX = "cms.cache.";
 
     private final static int DEFAULT_MEMORY_CAPACITY = 1000;
+
     private final static int DEFAULT_TIME_TO_LIVE = 0;
 
     private final Properties properties;
@@ -31,7 +32,7 @@ final class CacheManagerConfig
 
     private int getIntegerProperty( final String key, final int defValue )
     {
-        final String value = getProperty( key, String.valueOf( defValue ));
+        final String value = getProperty( key, String.valueOf( defValue ) );
 
         try
         {
@@ -46,7 +47,15 @@ final class CacheManagerConfig
     public CacheConfig getCacheConfig( final String name )
     {
         final int memoryCapacity = getIntegerProperty( name + ".memoryCapacity", DEFAULT_MEMORY_CAPACITY );
-        final int timeToLive = getIntegerProperty( name + ".timeToLive", DEFAULT_TIME_TO_LIVE );
+        final int timeToLive;
+        if ( "entity".equalsIgnoreCase( name ) )
+        {
+            timeToLive = 0;
+        }
+        else
+        {
+            timeToLive = getIntegerProperty( name + ".timeToLive", DEFAULT_TIME_TO_LIVE );
+        }
         return new CacheConfig( memoryCapacity, timeToLive );
     }
 }

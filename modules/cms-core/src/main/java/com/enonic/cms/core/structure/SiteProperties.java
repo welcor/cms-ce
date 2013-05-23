@@ -6,18 +6,17 @@ package com.enonic.cms.core.structure;
 
 import java.util.Properties;
 
-/**
- * Created by IntelliJ IDEA.
- * User: rmh
- * Date: Oct 7, 2010
- * Time: 1:15:52 PM
- */
+import org.apache.commons.lang.StringUtils;
+
 public class SiteProperties
 {
-    private Properties properties;
+    private final SiteKey siteKey;
 
-    public SiteProperties( Properties properties )
+    private final Properties properties;
+
+    public SiteProperties( final SiteKey siteKey, final Properties properties )
     {
+        this.siteKey = siteKey;
         this.properties = properties;
     }
 
@@ -31,9 +30,32 @@ public class SiteProperties
         return properties.getProperty( propertyKey );
     }
 
-
     public Properties getProperties()
     {
         return properties;
+    }
+
+    public Integer getPageCacheTimeToLive()
+    {
+        return getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE );
+    }
+
+    private Integer getPropertyAsInteger( final String key )
+    {
+        String svalue = properties.getProperty( key );
+
+        if ( svalue != null && !StringUtils.isNumeric( svalue ) )
+        {
+            throw new NumberFormatException( "Invalid value of property " + key + " = " + svalue + " in site-" + siteKey + ".properties" );
+        }
+
+        return svalue == null ? null : new Integer( svalue );
+    }
+
+    private Boolean getPropertyAsBoolean( final String key )
+    {
+        String svalue = properties.getProperty( key );
+
+        return svalue == null ? Boolean.FALSE : Boolean.valueOf( svalue );
     }
 }

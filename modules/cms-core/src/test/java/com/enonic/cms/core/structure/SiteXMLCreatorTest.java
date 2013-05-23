@@ -71,7 +71,8 @@ public class SiteXMLCreatorTest
 
         siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
 
-        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( null ) ) ) );
+        assertEquals( expectedXml,
+                      getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site.getKey(), null ) ) ) );
     }
 
     public void testGetHiddenMenuItemsAllHidden()
@@ -96,7 +97,8 @@ public class SiteXMLCreatorTest
 
         siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
 
-        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( null ) ) ) );
+        assertEquals( expectedXml,
+                      getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( site_1.getKey(), null ) ) ) );
     }
 
     public void testGetHiddenMenuItemsOneHidden()
@@ -121,13 +123,15 @@ public class SiteXMLCreatorTest
 
         siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
 
-        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( null ) ) ) );
+        assertEquals( expectedXml,
+                      getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( site_1.getKey(), null ) ) ) );
     }
 
     public void testGetHiddenMenuItemsIncludeHiddenMenuItems()
         throws JDOMException, IOException
     {
-        String expectedXml = getXml( "/com/enonic/cms/core/structure/SiteXMLCreatorTest-Menu-fixture1-result-include-hidden-menu-items.xml" );
+        String expectedXml =
+            getXml( "/com/enonic/cms/core/structure/SiteXMLCreatorTest-Menu-fixture1-result-include-hidden-menu-items.xml" );
 
         site_1 = new SiteEntity();
         site_1.setKey( 1 );
@@ -147,7 +151,8 @@ public class SiteXMLCreatorTest
         siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
         siteXmlCreator.setIncludeHiddenMenuItems( true );
 
-        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( null ) ) ) );
+        assertEquals( expectedXml,
+                      getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site_1, new SiteProperties( site_1.getKey(), null ) ) ) );
     }
 
     public void xtestCreateLegacyGetMenuByMenuItem()
@@ -161,7 +166,8 @@ public class SiteXMLCreatorTest
         siteXmlCreator = new SiteXmlCreator( menuItemAccessResolver );
         siteXmlCreator.setActiveMenuItem( mi_1_1 );
 
-        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( null ) ) ) );
+        assertEquals( expectedXml,
+                      getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site_1.getKey(), null ) ) ) );
     }
 
     public void xtestCreateLegacyGetMenuByMenuItemWithOneLevelOnly()
@@ -176,7 +182,8 @@ public class SiteXMLCreatorTest
         siteXmlCreator.setActiveMenuItem( mi_1_1 );
         siteXmlCreator.setMenuItemLevels( 1 );
 
-        assertEquals( expectedXml, getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( null ) ) ) );
+        assertEquals( expectedXml,
+                      getFormattedXmlString( siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site.getKey(), null ) ) ) );
     }
 
     public void xtestCreateLegacyGetSubMenu()
@@ -557,7 +564,7 @@ public class SiteXMLCreatorTest
         LOG.info( "Created huge site with " + keyCounter + " menu items" );
 
         long start = System.currentTimeMillis();
-        siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( null ) );
+        siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site.getKey(), null ) );
         long end = System.currentTimeMillis();
         LOG.info( "SiteXmlCreator.createLegacyGetMenu took " + ( end - start ) + " ms" );
 
@@ -573,7 +580,7 @@ public class SiteXMLCreatorTest
         LOG.info( "Created slightly huge site with " + keyCounter + " menu items" );
 
         long start = System.currentTimeMillis();
-        siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( null ) );
+        siteXmlCreator.createLegacyGetMenu( site, new SiteProperties( site.getKey(), null ) );
         long end = System.currentTimeMillis();
         LOG.info( "SiteXmlCreator.createLegacyGetMenu took " + ( end - start ) + " ms" );
 

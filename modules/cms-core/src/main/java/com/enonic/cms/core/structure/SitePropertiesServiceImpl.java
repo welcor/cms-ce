@@ -71,7 +71,7 @@ public class SitePropertiesServiceImpl
 
     public SiteProperties getSiteProperties( SiteKey siteKey )
     {
-        return new SiteProperties( doGetSiteProperties( siteKey ) );
+        return new SiteProperties( siteKey, doGetSiteProperties( siteKey ) );
     }
 
     public String getProperty( String key, SiteKey siteKey )

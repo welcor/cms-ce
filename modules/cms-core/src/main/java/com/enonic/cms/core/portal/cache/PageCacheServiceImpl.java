@@ -68,7 +68,7 @@ public class PageCacheServiceImpl
     private PageCache createPageCache( final SiteKey siteKey )
     {
         final PageCache pageCache = new PageCache( siteKey, cacheManager.getPageCache() );
-        pageCache.setDefaultTimeToLive( sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey ) );
+        pageCache.setDefaultTimeToLive( sitePropertiesService.getSiteProperties( siteKey ).getPageCacheTimeToLive() );
         pageCache.setEnabled( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey ) );
         return pageCache;
     }

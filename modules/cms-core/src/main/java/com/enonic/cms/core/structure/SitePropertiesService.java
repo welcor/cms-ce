@@ -7,6 +7,8 @@ package com.enonic.cms.core.structure;
 public interface SitePropertiesService
 {
 
+    void reloadSiteProperties( SiteKey siteKey );
+
     SiteProperties getSiteProperties( SiteKey siteKey );
 
     String getProperty( String key, SiteKey siteKey );

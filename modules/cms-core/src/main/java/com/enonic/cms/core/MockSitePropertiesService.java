@@ -26,12 +26,18 @@ public class MockSitePropertiesService
         props.setProperty( key, value );
     }
 
+    @Override
+    public void reloadSiteProperties( final SiteKey siteKey )
+    {
+        // nothing
+    }
+
     public SiteProperties getSiteProperties( SiteKey siteKey )
     {
-        SiteProperties props = (SiteProperties) sitePropertiesMapBySiteKey.get( siteKey );
+        SiteProperties props = sitePropertiesMapBySiteKey.get( siteKey );
         if ( props == null )
         {
-            props = new SiteProperties( new Properties() );
+            props = new SiteProperties( siteKey, new Properties() );
             sitePropertiesMapBySiteKey.put( siteKey, props );
         }
 

@@ -45,6 +45,7 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -73,7 +74,10 @@ public class AttachmentControllerTest
     private PreviewService previewService;
 
     @Autowired
-    private AttachmentHandler attachmentController;
+    private AttachmentHandler attachmentHandler;
+
+    @Autowired
+    private SitePropertiesService sitePropertiesService;
 
     @Autowired
     private MimeTypeResolver mimeTypeResolver;
@@ -104,10 +108,10 @@ public class AttachmentControllerTest
         previewService = Mockito.mock( PreviewService.class );
         Mockito.when( previewService.isInPreview() ).thenReturn( false );
         Mockito.when( previewService.getPreviewContext() ).thenReturn( PreviewContext.NO_PREVIEW );
-        attachmentController.setPreviewService( previewService );
+        attachmentHandler.setPreviewService( previewService );
 
         MockTimeService timeService = new MockTimeService( new DateTime( 2011, 6, 27, 12, 0, 0, 0 ) );
-        attachmentController.setTimeService( timeService );
+        attachmentHandler.setTimeService( timeService );
 
         site1 = factory.createSite( "MySite", new Date(), null, "en" );
         fixture.save( site1 );
@@ -133,6 +137,8 @@ public class AttachmentControllerTest
         webContext = new PortalWebContext();
         webContext.setRequest( this.httpServletRequest );
         webContext.setResponse( this.httpServletResponse );
+
+        sitePropertiesService.reloadSiteProperties( site1.getKey() );
     }
 
     @Test
@@ -145,7 +151,7 @@ public class AttachmentControllerTest
 
         String attachmentRequestPath = "_attachment/" + contentKey.toString() + "/label/source";
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
-        attachmentController.handle( webContext );
+        attachmentHandler.handle( webContext );
 
         assertEquals( "text/plain", httpServletResponse.getContentType() );
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
@@ -162,7 +168,7 @@ public class AttachmentControllerTest
 
         String attachmentRequestPath = "_attachment/" + contentKey.toString();
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
-        attachmentController.handle( webContext );
+        attachmentHandler.handle( webContext );
 
         assertEquals( "text/plain", httpServletResponse.getContentType() );
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
@@ -177,7 +183,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handle( webContext );
+            attachmentHandler.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -201,7 +207,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handle( webContext );
+            attachmentHandler.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -228,7 +234,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handle( webContext );
+            attachmentHandler.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -252,7 +258,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handle( webContext );
+            attachmentHandler.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -279,7 +285,7 @@ public class AttachmentControllerTest
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
         try
         {
-            attachmentController.handle( webContext );
+            attachmentHandler.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -309,7 +315,7 @@ public class AttachmentControllerTest
         String attachmentRequestPath = "_attachment/" + contentKey + "/binary/" + binaryDataOfMainVersion.getKey() + ".jpg";
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
 
-        attachmentController.handle( webContext );
+        attachmentHandler.handle( webContext );
 
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
         assertTrue( "Content Length", httpServletResponse.getContentLength() > 0 );
@@ -350,7 +356,7 @@ public class AttachmentControllerTest
 
         try
         {
-            attachmentController.handle( webContext );
+            attachmentHandler.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )
@@ -391,7 +397,7 @@ public class AttachmentControllerTest
         String attachmentRequestPath = "_attachment/" + contentKey;
         setPathInfoAndRequestURI( httpServletRequest, attachmentRequestPath );
 
-        attachmentController.handle( webContext );
+        attachmentHandler.handle( webContext );
 
         assertEquals( HttpServletResponse.SC_OK, httpServletResponse.getStatus() );
         assertTrue( "Content Length", httpServletResponse.getContentLength() > 0 );
@@ -428,7 +434,7 @@ public class AttachmentControllerTest
 
         try
         {
-            attachmentController.handle( webContext );
+            attachmentHandler.handle( webContext );
             fail( "Expected exception" );
         }
         catch ( Exception e )

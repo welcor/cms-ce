@@ -23,7 +23,7 @@ import com.enonic.cms.core.time.TimeService;
 public class PageRendererFactory
 {
     @Autowired
-    @Qualifier("siteCachesService")
+    @Qualifier("pageCacheService")
     private PageCacheService pageCacheService;
 
     @Autowired

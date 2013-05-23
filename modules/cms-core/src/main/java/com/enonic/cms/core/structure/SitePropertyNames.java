@@ -44,4 +44,6 @@ public class SitePropertyNames
     public static final String ENABLE_UNPUBLISHED_CONTENT_PERMALINKS = "cms.site.page.enableUnpublishedContentPermalinks";
 
     public static final String SITE_URL = "cms.site.url";
+
+    public static final String LOGGING_AUTHENTICATION = "cms.site.logging.authentication";
 }

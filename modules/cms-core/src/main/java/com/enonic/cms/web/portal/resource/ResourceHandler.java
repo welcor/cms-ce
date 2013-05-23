@@ -14,6 +14,7 @@ import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;
@@ -75,20 +76,18 @@ public final class ResourceHandler
         final DateTime now = new DateTime();
         HttpServletUtil.setDateHeader( response, now.toDate() );
 
-        final boolean cacheHeadersEnabled =
-            sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.RESOURCE_CACHE_HEADERS_ENABLED, sitePath.getSiteKey() );
+        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( sitePath.getSiteKey() );
+        final boolean cacheHeadersEnabled = siteProperties.getPropertyAsBoolean( SitePropertyNames.RESOURCE_CACHE_HEADERS_ENABLED );
         if ( cacheHeadersEnabled )
         {
-            final boolean forceNoCache =
-                sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.RESOURCE_CACHE_HEADERS_FORCENOCACHE, sitePath.getSiteKey() );
+            final boolean forceNoCache = siteProperties.getPropertyAsBoolean( SitePropertyNames.RESOURCE_CACHE_HEADERS_FORCENOCACHE );
             if ( forceNoCache )
             {
                 HttpServletUtil.setCacheControlNoCache( response );
             }
             else
             {
-                Integer siteCacheSettingsMaxAge =
-                    sitePropertiesService.getPropertyAsInteger( SitePropertyNames.RESOURCE_CACHE_HEADERS_MAXAGE, sitePath.getSiteKey() );
+                Integer siteCacheSettingsMaxAge = siteProperties.getPropertyAsInteger( SitePropertyNames.RESOURCE_CACHE_HEADERS_MAXAGE );
 
                 enableHttpCacheHeaders( response, sitePath, now, siteCacheSettingsMaxAge, true );
 

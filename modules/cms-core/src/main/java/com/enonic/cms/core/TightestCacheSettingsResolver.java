@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
@@ -31,13 +32,14 @@ public class TightestCacheSettingsResolver
             throw new IllegalArgumentException( "Given menuItem cannot be null" );
         }
 
-        SiteKey siteKey = menuItem.getSite().getKey();
-        boolean pageCacheEnabledForSite = sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey );
+        final SiteKey siteKey = menuItem.getSite().getKey();
+        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( siteKey );
+        boolean pageCacheEnabledForSite = siteProperties.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE );
         if ( !pageCacheEnabledForSite )
         {
             return new CacheSettings( false, CacheSettings.TYPE_DEFAULT, 0 );
         }
-        int defaultSecondsToLiveForSite = sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey );
+        int defaultSecondsToLiveForSite = siteProperties.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE );
 
         CacheSettings menuItemCacheSettings = menuItem.getCacheSettings( defaultSecondsToLiveForSite, pageTemplate );
         if ( menuItemCacheSettings.isDisabled() )

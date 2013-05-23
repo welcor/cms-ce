@@ -22,6 +22,7 @@ import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
@@ -95,18 +96,17 @@ public final class PageHandler
             request.setOriginalUrl( originalUrl );
 
             User loggedInPortalUser = securityService.getLoggedInPortalUser();
+            final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( sitePath.getSiteKey() );
             if ( loggedInPortalUser.isAnonymous() )
             {
-                if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED,
-                                                                 sitePath.getSiteKey() ) )
+                if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED ) )
                 {
                     loggedInPortalUser = autoLoginService.autologinWithRemoteUser( httpRequest );
                 }
             }
             if ( loggedInPortalUser.isAnonymous() )
             {
-                if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED,
-                                                                 sitePath.getSiteKey() ) )
+                if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED ) )
                 {
                     loggedInPortalUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), httpRequest, httpResponse );
                 }

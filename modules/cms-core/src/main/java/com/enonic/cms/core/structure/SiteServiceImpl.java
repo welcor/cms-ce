@@ -6,6 +6,8 @@ package com.enonic.cms.core.structure;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import com.enonic.cms.store.dao.UserDao;
 
 @Component("siteService")
 public class SiteServiceImpl
-    implements SiteService
+    implements SiteService, SitePropertiesListener
 {
 
     private static final Logger LOG = LoggerFactory.getLogger( SiteServiceImpl.class );
@@ -37,6 +39,25 @@ public class SiteServiceImpl
 
     private final Object lock = new Object();
 
+    @PostConstruct
+    public void postConstruct()
+    {
+        sitePropertiesService.registerSitePropertiesListener( this );
+    }
+
+    @Override
+    public void sitePropertiesLoaded( final SiteProperties siteProperties )
+    {
+        registerSite( siteProperties.getSiteKey() );
+    }
+
+    @Override
+    public void sitePropertiesReloaded( final SiteProperties siteProperties )
+    {
+        final SiteContext siteContext = siteContextManager.getSiteContext( siteProperties.getSiteKey() );
+        siteContext.setAuthenticationLoggingEnabled( siteProperties.getAuthenticationLoggingEnabled() );
+    }
+
     private void registerSite( SiteKey siteKey )
     {
 
@@ -48,10 +69,7 @@ public class SiteServiceImpl
                 SiteContext siteContext = createSiteContext( siteKey );
                 siteContextManager.registerSiteContext( siteContext );
 
-                boolean usingCustomProperties = sitePropertiesService.getPropertyAsBoolean( "customSiteProperties", siteKey );
-                String typeOfProperties = usingCustomProperties ? "custom" : "only default";
-
-                LOG.info( "Site [" + siteKey + "] is registered, using " + typeOfProperties + " properties." );
+                LOG.info( "Site [" + siteKey + "] is registered" );
             }
         }
     }
@@ -75,27 +93,12 @@ public class SiteServiceImpl
 
     private SiteContext createSiteContext( SiteKey siteKey )
     {
-        SiteContext siteContext = new SiteContext( siteKey );
+        final SiteContext siteContext = new SiteContext( siteKey );
+        siteContext.setAuthenticationLoggingEnabled( sitePropertiesService.getSiteProperties( siteKey ).getAuthenticationLoggingEnabled() );
 
         pageCacheService.setUpPageCache( siteKey );
 
-        updateAuthenticationLoggingEnabled( siteKey, siteContext );
-
         return siteContext;
-    }
-
-    public void updateAuthenticationLoggingEnabled( SiteKey siteKey, SiteContext siteContext )
-    {
-        if ( siteContext == null )
-        {
-            siteContext = siteContextManager.getSiteContext( siteKey );
-        }
-
-        if ( siteContext != null )
-        {
-            siteContext.setAuthenticationLoggingEnabled(
-                sitePropertiesService.getPropertyAsBoolean( "cms.site.logging.authentication", siteKey ) );
-        }
     }
 
     /**

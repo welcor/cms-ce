@@ -8,10 +8,7 @@ import com.enonic.cms.core.structure.SiteKey;
 
 public interface PageCacheService
 {
-
     void setUpPageCache( SiteKey siteKey );
-
-    void reloadPageCacheConfig( SiteKey siteKey );
 
     void tearDownPageCache( SiteKey siteKey );
 

@@ -74,17 +74,6 @@ public class SitePropertiesServiceTest
         setupSitePropertiesService();
     }
 
-    private void setupSitePropertiesService()
-        throws Exception
-    {
-        sitePropertiesService = new SitePropertiesServiceImpl();
-        sitePropertiesService.setSiteDao( siteDao );
-        sitePropertiesService.setHomeDir( folder.newFolder( "cms-home" ) );
-        sitePropertiesService.setResourceLoader( resourceLoader );
-        sitePropertiesService.setCharacterEncoding( "UTF-8" );
-        sitePropertiesService.afterPropertiesSet();
-    }
-
     private void mockAndLoadTestProperties()
     {
         expect( resourceLoader.getResource( isA( String.class ) ) ).andReturn( getLocalTestDefaultPropertyResouce() );
@@ -96,6 +85,17 @@ public class SitePropertiesServiceTest
 
         expect( siteDao.findAll() ).andReturn( Lists.newArrayList( site ) );
         replay( siteDao );
+    }
+
+    private void setupSitePropertiesService()
+        throws Exception
+    {
+        sitePropertiesService = new SitePropertiesServiceImpl();
+        sitePropertiesService.setSiteDao( siteDao );
+        sitePropertiesService.setHomeDir( folder.newFolder( "cms-home" ) );
+        sitePropertiesService.setResourceLoader( resourceLoader );
+        sitePropertiesService.setCharacterEncoding( "UTF-8" );
+        sitePropertiesService.start();
     }
 
     private Resource getLocalTestSitePropertyResouce()
@@ -126,7 +126,7 @@ public class SitePropertiesServiceTest
 
     private String getProp( String propertyName )
     {
-        return sitePropertiesService.getProperty( propertyName, siteKey );
+        return sitePropertiesService.getSiteProperties( siteKey ).getProperty( propertyName );
     }
 
     private Boolean getBooleanProp( String propertyName )
@@ -136,7 +136,7 @@ public class SitePropertiesServiceTest
 
     private Integer getIntegerProp( String propertyName )
     {
-        return sitePropertiesService.getPropertyAsInteger( propertyName, siteKey );
+        return sitePropertiesService.getSiteProperties( siteKey ).getPropertyAsInteger( propertyName );
     }
 
     @Test

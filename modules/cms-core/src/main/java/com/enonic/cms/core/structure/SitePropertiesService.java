@@ -6,14 +6,10 @@ package com.enonic.cms.core.structure;
 
 public interface SitePropertiesService
 {
+    void registerSitePropertiesListener( SitePropertiesListener listener );
 
     void reloadSiteProperties( SiteKey siteKey );
 
     SiteProperties getSiteProperties( SiteKey siteKey );
 
-    String getProperty( String key, SiteKey siteKey );
-
-    Integer getPropertyAsInteger( String key, SiteKey siteKey );
-
-    Boolean getPropertyAsBoolean( String key, SiteKey siteKey );
 }

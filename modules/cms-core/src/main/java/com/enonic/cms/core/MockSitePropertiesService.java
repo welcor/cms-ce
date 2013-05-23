@@ -8,10 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteProperties;
+import com.enonic.cms.core.structure.SitePropertiesListener;
 import com.enonic.cms.core.structure.SitePropertiesService;
 
 public class MockSitePropertiesService
@@ -24,6 +23,12 @@ public class MockSitePropertiesService
     {
         Properties props = getSiteProperties( siteKey ).getProperties();
         props.setProperty( key, value );
+    }
+
+    @Override
+    public void registerSitePropertiesListener( final SitePropertiesListener listener )
+    {
+        // nothing
     }
 
     @Override
@@ -42,35 +47,5 @@ public class MockSitePropertiesService
         }
 
         return props;
-    }
-
-    public Integer getPropertyAsInteger( String key, SiteKey siteKey )
-    {
-        String svalue = getProperty( key, siteKey );
-
-        if ( svalue != null && !StringUtils.isNumeric( svalue ) )
-        {
-            throw new NumberFormatException( "Invalid value of property " + key + " = " + svalue + " in site-" + siteKey + ".properties" );
-        }
-
-        return svalue == null ? null : new Integer( svalue );
-    }
-
-    public Boolean getPropertyAsBoolean( String key, SiteKey siteKey )
-    {
-        String svalue = getProperty( key, siteKey );
-
-        return svalue == null ? Boolean.FALSE : Boolean.valueOf( svalue );
-    }
-
-    public String getProperty( String key, SiteKey siteKey )
-    {
-        SiteProperties props = getSiteProperties( siteKey );
-        if ( props == null )
-        {
-            throw new IllegalArgumentException( "No properties for site " + siteKey );
-        }
-
-        return StringUtils.trimToNull( props.getProperty( key ) );
     }
 }

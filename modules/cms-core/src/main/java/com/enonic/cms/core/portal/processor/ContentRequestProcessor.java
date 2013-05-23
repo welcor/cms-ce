@@ -82,7 +82,8 @@ public class ContentRequestProcessor
         if ( contentPath.isPermaLink() )
         {
             SiteKey siteKey = sitePath.getSiteKey();
-            if ( !sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.ENABLE_UNPUBLISHED_CONTENT_PERMALINKS, siteKey ) )
+            if ( !sitePropertiesService.getSiteProperties( siteKey ).getPropertyAsBoolean(
+                SitePropertyNames.ENABLE_UNPUBLISHED_CONTENT_PERMALINKS ) )
             {
                 ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
                 contentLocationSpecification.setSiteKey( siteKey );

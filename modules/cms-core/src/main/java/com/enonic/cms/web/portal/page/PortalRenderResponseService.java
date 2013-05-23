@@ -20,6 +20,7 @@ import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
@@ -65,11 +66,10 @@ public class PortalRenderResponseService
         processor.setRenderTraceOn( RenderTrace.isTraceOn() );
         processor.setDeviceClassificationEnabled( site.isDeviceClassificationEnabled() );
         processor.setLocalizationEnabled( site.isLocalizationEnabled() );
-        processor.setForceNoCacheForSite(
-            sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_FORCENOCACHE, requestedSiteKey ) );
+        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( requestedSiteKey );
+        processor.setForceNoCacheForSite( siteProperties.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_FORCENOCACHE ) );
         processor.setEncodeRedirectUrl( encodeRedirectUrl );
-        processor.setCacheHeadersEnabledForSite(
-            sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED, requestedSiteKey ) );
+        processor.setCacheHeadersEnabledForSite( siteProperties.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED ) );
 
         final String matchingPath = originalPathResolver.getRequestPathFromHttpRequest( httpRequest );
         processor.setResponseFilters( pluginManager.getExtensions().findMatchingHttpResponseFilters( matchingPath ) );

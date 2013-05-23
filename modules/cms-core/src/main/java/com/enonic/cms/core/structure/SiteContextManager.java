@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("siteContextManager")
 public class SiteContextManager
 {
 

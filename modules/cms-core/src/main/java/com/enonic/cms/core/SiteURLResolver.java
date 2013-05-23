@@ -105,8 +105,8 @@ public class SiteURLResolver
         else
         {
             //check property
-            createPathOnly =
-                sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, sitePath.getSiteKey() );
+            createPathOnly = sitePropertiesService.getSiteProperties( sitePath.getSiteKey() ).getPropertyAsBoolean(
+                SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY );
         }
 
         SiteBasePath siteBasePath = SiteBasePathResolver.resolveSiteBasePath( request, sitePath.getSiteKey() );
@@ -276,14 +276,13 @@ public class SiteURLResolver
 
     private String getUrlCharacterEncodingForSite( SiteKey siteKey )
     {
-        return sitePropertiesService.getProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, siteKey );
+        return sitePropertiesService.getSiteProperties( siteKey ).getProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING );
     }
 
     private boolean siteIsCreatingRelativeUrlsFromRoot( SiteKey siteKey )
     {
-        return sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY, siteKey );
+        return sitePropertiesService.getSiteProperties( siteKey ).getPropertyAsBoolean( SitePropertyNames.CREATE_URL_AS_PATH_PROPERTY );
     }
-
 
     public void setOverridingSitePropertyCreateUrlAsPath( final Boolean value )
     {

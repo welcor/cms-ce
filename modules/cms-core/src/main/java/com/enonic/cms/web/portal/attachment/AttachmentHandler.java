@@ -33,6 +33,7 @@ import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.store.dao.BinaryDataDao;
@@ -132,17 +133,17 @@ public final class AttachmentHandler
     private UserEntity resolveLoggedInUser( final HttpServletRequest request, final HttpServletResponse response, final SitePath sitePath )
     {
         UserEntity loggedInUser = securityService.getLoggedInPortalUserAsEntity();
+        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( sitePath.getSiteKey() );
         if ( loggedInUser.isAnonymous() )
         {
-            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED, sitePath.getSiteKey() ) )
+            if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED ) )
             {
                 loggedInUser = autoLoginService.autologinWithRemoteUser( request );
             }
         }
         if ( loggedInUser.isAnonymous() )
         {
-            if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED,
-                                                             sitePath.getSiteKey() ) )
+            if ( siteProperties.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_REMEMBER_ME_COOKIE_ENABLED ) )
             {
                 loggedInUser = autoLoginService.autologinWithCookie( sitePath.getSiteKey(), request, response );
             }
@@ -195,14 +196,12 @@ public final class AttachmentHandler
         final DateTime now = new DateTime();
         HttpServletUtil.setDateHeader( response, now.toDate() );
 
-        final boolean cacheHeadersEnabled =
-            sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.ATTACHMENT_CACHE_HEADERS_ENABLED, sitePath.getSiteKey() );
+        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( sitePath.getSiteKey() );
+        final boolean cacheHeadersEnabled = siteProperties.getPropertyAsBoolean( SitePropertyNames.ATTACHMENT_CACHE_HEADERS_ENABLED );
 
         if ( cacheHeadersEnabled )
         {
-            final boolean forceNoCache =
-                sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.ATTACHMENT_CACHE_HEADERS_FORCENOCACHE,
-                                                            sitePath.getSiteKey() );
+            final boolean forceNoCache = siteProperties.getPropertyAsBoolean( SitePropertyNames.ATTACHMENT_CACHE_HEADERS_FORCENOCACHE );
 
             if ( forceNoCache || isInPreviewMode( request ) )
             {
@@ -210,8 +209,7 @@ public final class AttachmentHandler
             }
             else
             {
-                Integer siteCacheSettingsMaxAge =
-                    sitePropertiesService.getPropertyAsInteger( SitePropertyNames.ATTACHMENT_CACHE_HEADERS_MAXAGE, sitePath.getSiteKey() );
+                Integer siteCacheSettingsMaxAge = siteProperties.getPropertyAsInteger( SitePropertyNames.ATTACHMENT_CACHE_HEADERS_MAXAGE );
                 boolean publicAccess = requester.isAnonymous();
                 enableHttpCacheHeaders( response, sitePath, now, siteCacheSettingsMaxAge, publicAccess );
             }

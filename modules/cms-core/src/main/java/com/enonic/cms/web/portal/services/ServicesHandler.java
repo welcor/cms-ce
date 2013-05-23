@@ -46,7 +46,8 @@ public final class ServicesHandler
             throw new InvalidTicketException();
         }
 
-        if ( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED, sitePath.getSiteKey() ) )
+        if ( sitePropertiesService.getSiteProperties( sitePath.getSiteKey() ).getPropertyAsBoolean(
+            SitePropertyNames.AUTOLOGIN_HTTP_REMOTE_USER_ENABLED ) )
         {
             autoLoginService.autologinWithRemoteUser( request );
         }

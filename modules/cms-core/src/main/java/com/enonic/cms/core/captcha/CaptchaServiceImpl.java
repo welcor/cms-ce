@@ -69,7 +69,7 @@ public class CaptchaServiceImpl
             return false;
         }
         String sitePropertyVariable = SITE_PROPERTY_CAPTCHA_ENABLE + "." + handler;
-        String sitePropertySetting = sitePropertiesService.getProperty( sitePropertyVariable, siteKey );
+        String sitePropertySetting = sitePropertiesService.getSiteProperties( siteKey ).getProperty( sitePropertyVariable );
         if ( sitePropertySetting == null )
         {
             return false;

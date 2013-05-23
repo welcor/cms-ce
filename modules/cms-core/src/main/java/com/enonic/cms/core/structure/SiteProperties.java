@@ -20,14 +20,19 @@ public class SiteProperties
         this.properties = properties;
     }
 
+    public SiteKey getSiteKey()
+    {
+        return siteKey;
+    }
+
     public String getSiteURL()
     {
         return properties.getProperty( SitePropertyNames.SITE_URL );
     }
 
-    public String getProperty( String propertyKey )
+    public String getProperty( final String propertyKey )
     {
-        return properties.getProperty( propertyKey );
+        return StringUtils.trimToNull( properties.getProperty( propertyKey ) );
     }
 
     public Properties getProperties()
@@ -35,14 +40,24 @@ public class SiteProperties
         return properties;
     }
 
-    public Integer getPageCacheTimeToLive()
+    public int getPageCacheTimeToLive()
     {
         return getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE );
     }
 
-    private Integer getPropertyAsInteger( final String key )
+    public boolean getPageCacheEnabled()
     {
-        String svalue = properties.getProperty( key );
+        return getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE );
+    }
+
+    public boolean getAuthenticationLoggingEnabled()
+    {
+        return getPropertyAsBoolean( SitePropertyNames.LOGGING_AUTHENTICATION );
+    }
+
+    public Integer getPropertyAsInteger( final String key )
+    {
+        String svalue = StringUtils.trimToNull( properties.getProperty( key ) );
 
         if ( svalue != null && !StringUtils.isNumeric( svalue ) )
         {
@@ -52,7 +67,7 @@ public class SiteProperties
         return svalue == null ? null : new Integer( svalue );
     }
 
-    private Boolean getPropertyAsBoolean( final String key )
+    public Boolean getPropertyAsBoolean( final String key )
     {
         String svalue = properties.getProperty( key );
 

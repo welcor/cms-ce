@@ -6,6 +6,7 @@ package com.enonic.cms.core.captcha;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.structure.SitePropertiesService;
 
 import static org.easymock.EasyMock.createMock;
@@ -73,8 +75,10 @@ public class CaptchaServiceTest
         formItems.remove( "_captcha_response" );
 
         // Setup code for this specific test:
-        expect( sitePropsService.getProperty( "cms.site.httpServices.captchaEnabled.dog", new SiteKey( 0 ) ) ).andReturn( null );
-        expect( sitePropsService.getProperty( "cms.site.httpServices.captchaEnabled.cat", new SiteKey( 0 ) ) ).andReturn( null );
+
+        Properties props = new Properties();
+        expect( sitePropsService.getSiteProperties( new SiteKey( 0 ) ) ).andReturn( new SiteProperties( new SiteKey( 0 ), props ) ).times(
+            2 );
         replay( sitePropsService );
 
         expect( securityService.getLoggedInPortalUser() ).andReturn( createUser( "anonymous", UserType.ANONYMOUS ) ).times( 2 );
@@ -87,7 +91,6 @@ public class CaptchaServiceTest
         req.setAttribute( Attribute.ORIGINAL_SITEPATH, new SitePath( new SiteKey( 0 ), "/_services/cat/create" ) );
         assertNull( captchaService.validateCaptcha( formItems, req, "cat", "create" ) );
 
-        verify( sitePropsService );
         verify( securityService );
     }
 
@@ -110,8 +113,11 @@ public class CaptchaServiceTest
     public void testHandleCaptchaAsAnonymous()
     {
         // Setup code for this specific test:
-        expect( sitePropsService.getProperty( "cms.site.httpServices.captchaEnabled.form", new SiteKey( 0 ) ) ).andReturn( "*" );
-        expect( sitePropsService.getProperty( "cms.site.httpServices.captchaEnabled.content", new SiteKey( 0 ) ) ).andReturn( "create" );
+        Properties props = new Properties();
+        props.setProperty( "cms.site.httpServices.captchaEnabled.form", "*" );
+        props.setProperty( "cms.site.httpServices.captchaEnabled.content", "create" );
+        SiteProperties siteProperties = new SiteProperties( new SiteKey( 0 ), props );
+        expect( sitePropsService.getSiteProperties( new SiteKey( 0 ) ) ).andReturn( siteProperties ).times( 2 );
         replay( sitePropsService );
 
         expect( securityService.getLoggedInPortalUser() ).andReturn( createUser( "anonymous", UserType.ANONYMOUS ) ).times( 2 );
@@ -134,7 +140,6 @@ public class CaptchaServiceTest
         assertTrue( xml.contains( "Norsk Tipping" ) );
 
         verify( securityService );
-        verify( sitePropsService );
         verify( repo );
     }
 
@@ -142,9 +147,18 @@ public class CaptchaServiceTest
     public void testHasCaptchaStandalone()
     {
         // Setup code for this specific test:
-        expect( sitePropsService.getProperty( "cms.site.httpServices.captchaEnabled.form", new SiteKey( 0 ) ) ).andReturn( "update" );
-        expect( sitePropsService.getProperty( "cms.site.httpServices.captchaEnabled.content", new SiteKey( 3 ) ) ).andReturn( "*" );
-        expect( sitePropsService.getProperty( "cms.site.httpServices.captchaEnabled.gurba", new SiteKey( 58 ) ) ).andReturn( "remove" );
+        Properties props0 = new Properties();
+        props0.setProperty( "cms.site.httpServices.captchaEnabled.form", "update" );
+        expect( sitePropsService.getSiteProperties( new SiteKey( 0 ) ) ).andReturn( new SiteProperties( new SiteKey( 0 ), props0 ) );
+
+        Properties props3 = new Properties();
+        props3.setProperty( "cms.site.httpServices.captchaEnabled.content", "*" );
+        expect( sitePropsService.getSiteProperties( new SiteKey( 3 ) ) ).andReturn( new SiteProperties( new SiteKey( 3 ), props3 ) );
+
+        Properties props58 = new Properties();
+        props58.setProperty( "cms.site.httpServices.captchaEnabled.gurba", "remove" );
+        expect( sitePropsService.getSiteProperties( new SiteKey( 58 ) ) ).andReturn( new SiteProperties( new SiteKey( 58 ), props58 ) );
+
         replay( sitePropsService );
 
         expect( securityService.getLoggedInPortalUser() ).andReturn( createUser( "anonymous", UserType.ANONYMOUS ) ).times( 3 );
@@ -154,7 +168,6 @@ public class CaptchaServiceTest
         assertTrue( captchaService.hasCaptchaCheck( new SiteKey( 3 ), "content", "update" ) );
         assertTrue( captchaService.hasCaptchaCheck( new SiteKey( 58 ), "gurba", "remove" ) );
 
-        verify( sitePropsService );
         verify( securityService );
     }
 

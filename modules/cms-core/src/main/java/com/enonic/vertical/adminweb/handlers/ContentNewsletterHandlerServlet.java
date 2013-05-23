@@ -731,7 +731,7 @@ public class ContentNewsletterHandlerServlet
 
         request.setAttribute( Attribute.ORIGINAL_SITEPATH, sitePath );
 
-        String siteUrl = sitePropertiesService.getProperty( SitePropertyNames.SITE_URL, site.getKey() );
+        String siteUrl = sitePropertiesService.getSiteProperties( site.getKey() ).getProperty( SitePropertyNames.SITE_URL );
 
         if ( !URLUtils.verifyValidURL( siteUrl ) )
         {

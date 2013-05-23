@@ -45,7 +45,7 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SitePath;
-import com.enonic.cms.core.structure.SitePropertiesService;
+import com.enonic.cms.core.structure.SitePropertiesServiceImpl;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -77,7 +77,7 @@ public class AttachmentControllerTest
     private AttachmentHandler attachmentHandler;
 
     @Autowired
-    private SitePropertiesService sitePropertiesService;
+    private SitePropertiesServiceImpl sitePropertiesService;
 
     @Autowired
     private MimeTypeResolver mimeTypeResolver;
@@ -115,6 +115,7 @@ public class AttachmentControllerTest
 
         site1 = factory.createSite( "MySite", new Date(), null, "en" );
         fixture.save( site1 );
+        fixture.flushAndClearHibernateSession();
         MenuItemEntity firstPage = createPage( "Firstpage", null, "MySite" );
         fixture.save( firstPage );
 
@@ -138,7 +139,7 @@ public class AttachmentControllerTest
         webContext.setRequest( this.httpServletRequest );
         webContext.setResponse( this.httpServletResponse );
 
-        sitePropertiesService.reloadSiteProperties( site1.getKey() );
+        sitePropertiesService.restart();
     }
 
     @Test

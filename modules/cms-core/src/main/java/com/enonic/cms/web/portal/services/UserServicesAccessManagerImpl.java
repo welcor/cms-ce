@@ -7,17 +7,21 @@ package com.enonic.cms.web.portal.services;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SiteProperties;
+import com.enonic.cms.core.structure.SitePropertiesListener;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SiteService;
 
 @Component
 public class UserServicesAccessManagerImpl
-    implements UserServicesAccessManager
+    implements UserServicesAccessManager, SitePropertiesListener
 {
 
     private static enum AccessPermission
@@ -43,6 +47,12 @@ public class UserServicesAccessManagerImpl
     public UserServicesAccessManagerImpl()
     {
         sitesAccessRules = new ConcurrentHashMap<SiteKey, ConcurrentMap<String, AccessPermission>>();
+    }
+
+    @PostConstruct
+    public void postConstruct()
+    {
+        sitePropertiesService.registerSitePropertiesListener( this );
     }
 
     @Override
@@ -90,12 +100,27 @@ public class UserServicesAccessManagerImpl
         return rules;
     }
 
+    @Override
+    public void sitePropertiesLoaded( final SiteProperties siteProperties )
+    {
+        // nothing
+    }
+
+    @Override
+    public void sitePropertiesReloaded( final SiteProperties siteProperties )
+    {
+        sitesAccessRules.remove( siteProperties.getSiteKey() );
+        initSiteRules( siteProperties.getSiteKey() );
+    }
+
     private void initSiteRules( SiteKey site )
     {
         ConcurrentMap<String, AccessPermission> siteRules = new ConcurrentHashMap<String, AccessPermission>();
 
-        String allowRules = sitePropertiesService.getProperty( HTTP_SERVICES_ALLOW_PROPERTY, site );
-        String denyRules = sitePropertiesService.getProperty( HTTP_SERVICES_DENY_PROPERTY, site );
+        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( site );
+
+        String allowRules = siteProperties.getProperty( HTTP_SERVICES_ALLOW_PROPERTY );
+        String denyRules = siteProperties.getProperty( HTTP_SERVICES_DENY_PROPERTY );
         parseAndAddRules( allowRules, AccessPermission.ALLOW, siteRules, site );
         parseAndAddRules( denyRules, AccessPermission.DENY, siteRules, site );
 

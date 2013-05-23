@@ -59,6 +59,6 @@
     </map>
   </class>
   <query name="SiteEntity.findAll" cacheable="true" read-only="false">
-    from SiteEntity
+    from SiteEntity order by key
   </query>
 </hibernate-mapping>

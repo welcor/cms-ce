@@ -42,7 +42,7 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SitePath;
-import com.enonic.cms.core.structure.SitePropertiesService;
+import com.enonic.cms.core.structure.SitePropertiesServiceImpl;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -74,7 +74,7 @@ public class ImageControllerTest
     private ImageHandler imageHandler;
 
     @Autowired
-    private SitePropertiesService sitePropertiesService;
+    private SitePropertiesServiceImpl sitePropertiesService;
 
     private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
@@ -125,7 +125,7 @@ public class ImageControllerTest
         webContext.setRequest( this.httpServletRequest );
         webContext.setResponse( this.httpServletResponse );
 
-        sitePropertiesService.reloadSiteProperties( site1.getKey() );
+        sitePropertiesService.restart();
     }
 
     @Test

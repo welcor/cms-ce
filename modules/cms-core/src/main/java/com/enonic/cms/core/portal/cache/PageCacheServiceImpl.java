@@ -7,6 +7,8 @@ package com.enonic.cms.core.portal.cache;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,13 @@ import org.springframework.util.Assert;
 import com.enonic.cms.framework.cache.CacheManager;
 
 import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SiteProperties;
+import com.enonic.cms.core.structure.SitePropertiesListener;
 import com.enonic.cms.core.structure.SitePropertiesService;
-import com.enonic.cms.core.structure.SitePropertyNames;
 
-@Component("siteCachesService")
+@Component("pageCacheService")
 public class PageCacheServiceImpl
-    implements PageCacheService
+    implements PageCacheService, SitePropertiesListener
 {
     private static final Logger LOG = LoggerFactory.getLogger( PageCacheServiceImpl.class );
 
@@ -31,6 +34,12 @@ public class PageCacheServiceImpl
 
     private CacheManager cacheManager;
 
+
+    @PostConstruct
+    public void postConstruct()
+    {
+        sitePropertiesService.registerSitePropertiesListener( this );
+    }
 
     public synchronized void setUpPageCache( final SiteKey siteKey )
     {
@@ -48,28 +57,35 @@ public class PageCacheServiceImpl
         }
         else
         {
-            pageCache.setDefaultTimeToLive(
-                sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey ) );
-            pageCache.setEnabled( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey ) );
+            final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( siteKey );
+            pageCache.setEnabled( siteProperties.getPageCacheEnabled() );
+            pageCache.setDefaultTimeToLive( siteProperties.getPageCacheTimeToLive() );
         }
     }
 
-    public synchronized void reloadPageCacheConfig( final SiteKey siteKey )
+    @Override
+    public void sitePropertiesLoaded( final SiteProperties siteProperties )
     {
-        final PageCache pageCache = pageCaches.get( siteKey );
+        // nothing
+    }
+
+    @Override
+    public void sitePropertiesReloaded( final SiteProperties siteProperties )
+    {
+        final PageCache pageCache = pageCaches.get( siteProperties.getSiteKey() );
         if ( pageCache != null )
         {
-            pageCache.setDefaultTimeToLive(
-                sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey ) );
-            pageCache.setEnabled( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey ) );
+            pageCache.setEnabled( siteProperties.getPageCacheEnabled() );
+            pageCache.setDefaultTimeToLive( siteProperties.getPageCacheTimeToLive() );
         }
     }
 
     private PageCache createPageCache( final SiteKey siteKey )
     {
         final PageCache pageCache = new PageCache( siteKey, cacheManager.getPageCache() );
-        pageCache.setDefaultTimeToLive( sitePropertiesService.getSiteProperties( siteKey ).getPageCacheTimeToLive() );
-        pageCache.setEnabled( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey ) );
+        final SiteProperties siteProperties = sitePropertiesService.getSiteProperties( siteKey );
+        pageCache.setDefaultTimeToLive( siteProperties.getPageCacheTimeToLive() );
+        pageCache.setEnabled( siteProperties.getPageCacheEnabled() );
         return pageCache;
     }
 

@@ -13,7 +13,6 @@ import com.google.common.base.Preconditions;
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentLocationSpecification;
 import com.enonic.cms.core.content.ContentLocations;
@@ -29,6 +28,7 @@ import com.enonic.cms.core.portal.rendering.PageTemplateResolver;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalRequestService;
 import com.enonic.cms.core.portal.PortalResponse;
@@ -23,6 +22,7 @@ import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTracer;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;

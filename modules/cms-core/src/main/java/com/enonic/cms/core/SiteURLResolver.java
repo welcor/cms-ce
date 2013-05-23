@@ -18,6 +18,7 @@ import com.enonic.cms.framework.util.UrlPathEncoder;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.structure.SitePropertiesService;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 
 @Component

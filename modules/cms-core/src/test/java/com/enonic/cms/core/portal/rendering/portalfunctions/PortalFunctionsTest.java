@@ -12,7 +12,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.MockSitePropertiesService;
-import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -39,6 +38,7 @@ import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.WindowKey;

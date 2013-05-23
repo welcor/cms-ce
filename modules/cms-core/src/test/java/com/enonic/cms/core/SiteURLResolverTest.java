@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SitePropertyNames;
 
 public class SiteURLResolverTest
     extends TestCase

@@ -13,6 +13,7 @@ import org.springframework.web.util.UrlPathHelper;
 
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePropertiesService;
+import com.enonic.cms.core.structure.SitePropertyNames;
 
 @Component
 public class UrlPathHelperManager

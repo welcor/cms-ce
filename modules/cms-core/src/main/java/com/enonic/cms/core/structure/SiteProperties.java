@@ -6,8 +6,6 @@ package com.enonic.cms.core.structure;
 
 import java.util.Properties;
 
-import com.enonic.cms.core.SitePropertyNames;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rmh

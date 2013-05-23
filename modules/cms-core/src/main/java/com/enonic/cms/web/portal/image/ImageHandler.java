@@ -15,7 +15,6 @@ import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.Path;
-import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.content.access.ContentAccessResolver;
 import com.enonic.cms.core.image.ImageRequest;
 import com.enonic.cms.core.image.ImageRequestParser;
@@ -33,6 +32,7 @@ import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SitePath;
+import com.enonic.cms.core.structure.SitePropertyNames;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.web.portal.PortalWebContext;
 import com.enonic.cms.web.portal.handler.WebHandlerBase;

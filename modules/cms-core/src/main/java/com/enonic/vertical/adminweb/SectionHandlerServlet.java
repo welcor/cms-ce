@@ -78,8 +78,8 @@ import com.enonic.cms.core.content.command.UpdateContentCommand;
 import com.enonic.cms.core.mail.ApproveAndRejectMailTemplate;
 import com.enonic.cms.core.mail.MailRecipient;
 import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -150,7 +150,7 @@ public class SectionHandlerServlet
         private SendMailService sendMailService;
 
         @Autowired
-        private SiteCachesService siteCachesService;
+        private PageCacheService pageCacheService;
 
         @Autowired
         private SiteService siteService;
@@ -560,11 +560,11 @@ public class SectionHandlerServlet
 
             for ( SiteKey siteKey : listOfMenuItemKeysBySiteKey.keySet() )
             {
-                PageCacheService pageCacheService = siteCachesService.getPageCacheService( siteKey );
+                PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
                 List<MenuItemKey> menuItemKeys = listOfMenuItemKeysBySiteKey.get( siteKey );
                 for ( MenuItemKey menuItemKeyToRemoveCacheEntriesFor : menuItemKeys )
                 {
-                    pageCacheService.removeEntriesByMenuItem( menuItemKeyToRemoveCacheEntriesFor );
+                    pageCache.removeEntriesByMenuItem( menuItemKeyToRemoveCacheEntriesFor );
                 }
             }
         }
@@ -946,7 +946,7 @@ public class SectionHandlerServlet
                     final String selector = "//contenttitle[@key = '" + contenttitleElem.getAttribute( "key" ) + "']";
                     final Element exist = XMLTool.selectElement( doc.getDocumentElement(), selector );
 
-                    if (exist == null)
+                    if ( exist == null )
                     {
                         if ( elem != null )
                         {
@@ -2605,7 +2605,7 @@ public class SectionHandlerServlet
     {
         MenuItemEntity menuItem = menuItemDao.findByKey( menuItemKey );
         SiteEntity site = menuItem.getSite();
-        PageCacheService pageCacheService = siteCachesService.getPageCacheService( site.getKey() );
-        pageCacheService.removeEntriesByMenuItem( menuItemKey );
+        PageCache pageCache = pageCacheService.getPageCacheService( site.getKey() );
+        pageCache.removeEntriesByMenuItem( menuItemKey );
     }
 }

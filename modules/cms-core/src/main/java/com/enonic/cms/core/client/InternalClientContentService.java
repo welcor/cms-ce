@@ -73,8 +73,8 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.image.ContentImageUtil;
 import com.enonic.cms.core.content.image.ImageUtil;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.preview.PreviewContext;
 import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.security.SecurityService;
@@ -140,7 +140,7 @@ public class InternalClientContentService
     private TimeService timeService;
 
     @Autowired
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     private FileContentdataResolver fileContentResolver = new FileContentdataResolver();
 
@@ -219,8 +219,8 @@ public class InternalClientContentService
 
             for ( ContentLocation contentLocation : contentLocations.getAllLocations() )
             {
-                PageCacheService pageCacheService = siteCachesService.getPageCacheService( contentLocation.getSiteKey() );
-                pageCacheService.removeEntriesByMenuItem( contentLocation.getMenuItemKey() );
+                PageCache pageCache = pageCacheService.getPageCacheService( contentLocation.getSiteKey() );
+                pageCache.removeEntriesByMenuItem( contentLocation.getMenuItemKey() );
             }
         }
     }
@@ -523,7 +523,7 @@ public class InternalClientContentService
 
         if ( updateContentResult.isAnyChangesMade() )
         {
-            new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( updateContentResult.getTargetedVersion() );
+            new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( updateContentResult.getTargetedVersion() );
         }
 
         return updateContentResult.getTargetedVersionKey().toInt();
@@ -617,7 +617,7 @@ public class InternalClientContentService
 
         if ( updateContentResult.isAnyChangesMade() )
         {
-            new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( updateContentResult.getTargetedVersion() );
+            new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( updateContentResult.getTargetedVersion() );
         }
 
         return updateContentResult.getTargetedVersionKey().toInt();

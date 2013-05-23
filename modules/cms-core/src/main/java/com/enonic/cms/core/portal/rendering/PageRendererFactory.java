@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -24,7 +24,7 @@ public class PageRendererFactory
 {
     @Autowired
     @Qualifier("siteCachesService")
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     @Autowired
     private DataSourceExecutorFactory datasourceExecutorFactory;
@@ -60,7 +60,7 @@ public class PageRendererFactory
         pageRenderer.setDataSourceExecutorFactory( datasourceExecutorFactory );
         pageRenderer.setPageTemplateXsltViewTransformer( pageTemplateXsltViewTransformer );
         pageRenderer.setResourceService( resourceService );
-        pageRenderer.setPageCacheService( siteCachesService.getPageCacheService( pageRendererContext.getSite().getKey() ) );
+        pageRenderer.setPageCache( pageCacheService.getPageCacheService( pageRendererContext.getSite().getKey() ) );
         pageRenderer.setSiteURLResolver( siteURLResolver );
         pageRenderer.setSitePropertiesService( sitePropertiesService );
         pageRenderer.setTightestCacheSettingsResolver( tightestCacheSettingsResolver );

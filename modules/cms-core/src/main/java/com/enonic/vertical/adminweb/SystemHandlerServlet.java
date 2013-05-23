@@ -26,10 +26,12 @@ import com.enonic.esl.net.URL;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineException;
 
+import com.enonic.cms.framework.cache.CacheFacade;
+import com.enonic.cms.framework.cache.CacheManager;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.core.config.ConfigProperties;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.product.ProductVersion;
 import com.enonic.cms.core.search.query.ContentIndexService;
 import com.enonic.cms.core.security.user.User;
@@ -45,9 +47,6 @@ public class SystemHandlerServlet
     extends AdminHandlerBaseServlet
 {
     @Autowired
-    private SiteCachesService siteCachesService;
-
-    @Autowired
     private DataSourceInfoResolver datasourceInfoResolver;
 
     @Autowired
@@ -58,6 +57,9 @@ public class SystemHandlerServlet
 
     @Autowired
     private TimeService timeService;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
@@ -246,8 +248,12 @@ public class SystemHandlerServlet
     private void clearCache( HttpServletRequest request, HttpServletResponse response, ExtendedMap formItems )
         throws VerticalAdminException
     {
-        String cacheName = formItems.getString( "cacheName" );
-        siteCachesService.clearCache( cacheName );
+        final String cacheName = formItems.getString( "cacheName" );
+        final CacheFacade cache = cacheManager.getCache( cacheName );
+        if ( cache != null )
+        {
+            cache.removeAll();
+        }
 
         URL referer = new URL( request.getHeader( "referer" ) );
         referer.setParameter( "selectedtabpage", formItems.getString( "selectedtabpage", "" ) );
@@ -268,9 +274,9 @@ public class SystemHandlerServlet
         redirectClientToURL( referrer, response );
     }
 
-    public void setSiteCachesService( SiteCachesService value )
+    public void setPageCacheService( PageCacheService value )
     {
-        this.siteCachesService = value;
+        this.pageCacheService = value;
     }
 
     public void setDatasourceInfoResolver( DataSourceInfoResolver datasourceInfoResolver )

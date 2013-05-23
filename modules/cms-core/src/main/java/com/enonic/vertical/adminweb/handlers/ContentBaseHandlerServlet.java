@@ -126,7 +126,7 @@ import com.enonic.cms.core.log.Table;
 import com.enonic.cms.core.mail.ApproveAndRejectMailTemplate;
 import com.enonic.cms.core.mail.MailRecipient;
 import com.enonic.cms.core.mail.SendMailService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
 import com.enonic.cms.core.preview.NoLazyInitializationEnforcerForPreview;
 import com.enonic.cms.core.resource.ResourceFile;
@@ -277,7 +277,7 @@ public class ContentBaseHandlerServlet
         private ContentParserService contentParserService;
 
         @Autowired
-        private SiteCachesService siteCachesService;
+        private PageCacheService pageCacheService;
 
         @Autowired
         private CategoryService categoryService;
@@ -908,7 +908,7 @@ public class ContentBaseHandlerServlet
 
             if ( updateContentResult.isAnyChangesMade() )
             {
-                new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( updateContentResult.getTargetedVersion() );
+                new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( updateContentResult.getTargetedVersion() );
             }
 
             return updateContentResult;
@@ -1703,7 +1703,7 @@ public class ContentBaseHandlerServlet
 
             contentService.deleteContent( runningerUser, content );
 
-            new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContentLocations( contentLocations );
+            new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContentLocations( contentLocations );
         }
 
         CategoryKey categoryKey = new CategoryKey( formItems.getInt( "cat" ) );
@@ -1872,7 +1872,7 @@ public class ContentBaseHandlerServlet
 
         if ( updateContentResult.isAnyChangesMade() )
         {
-            new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( updateContentResult.getTargetedVersion() );
+            new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( updateContentResult.getTargetedVersion() );
         }
 
         AssignmentActionResolver assignmentActionResolver = new AssignmentActionResolver();
@@ -3312,7 +3312,7 @@ public class ContentBaseHandlerServlet
 
                     contentService.deleteContent( runningUser, content );
 
-                    new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContentLocations( contentLocations );
+                    new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContentLocations( contentLocations );
                 }
             }
             catch ( ContentAccessException e )

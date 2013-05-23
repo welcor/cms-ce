@@ -25,7 +25,7 @@ import com.enonic.cms.core.portal.PortalRenderingException;
 import com.enonic.cms.core.portal.Ticket;
 import com.enonic.cms.core.portal.WindowNotFoundException;
 import com.enonic.cms.core.portal.WindowReference;
-import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
@@ -73,7 +73,7 @@ public class WindowRenderer
 
     private static final String DUMMY_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?><dummy/>";
 
-    private PageCacheService pageCacheService;
+    private PageCache pageCache;
 
     private DataSourceExecutorFactory dataSourceExecutorFactory;
 
@@ -193,7 +193,7 @@ public class WindowRenderer
 
         WindowRenderingTracer.traceRenderer( windowRenderingTrace, executor );
 
-        final CacheSettings portletCacheSettings = window.getPortlet().getCacheSettings( pageCacheService.getDefaultTimeToLive() );
+        final CacheSettings portletCacheSettings = window.getPortlet().getCacheSettings( pageCache.getDefaultTimeToLive() );
         enterTrace( window, executor, portletCacheSettings );
 
         try
@@ -217,7 +217,7 @@ public class WindowRenderer
                 WindowRenderingTracer.stopConcurrencyBlockTimer( windowRenderingTrace );
 
                 // see if window result is in cache
-                final CachedObject cachedPortletHolder = pageCacheService.getCachedPortletWindow( cacheKey );
+                final CachedObject cachedPortletHolder = pageCache.getCachedPortletWindow( cacheKey );
                 if ( cachedPortletHolder != null )
                 {
                     windowResult = (RenderedWindowResult) cachedPortletHolder.getObject();
@@ -232,9 +232,8 @@ public class WindowRenderer
                     // register the rendered window in the cache
                     if ( windowResult.isErrorFree() )
                     {
-                        final CachedObject newCachedPortletHolder = pageCacheService.cachePortletWindow( cacheKey, windowResult,
-                                                                                                         CacheObjectSettings.createFrom(
-                                                                                                             portletCacheSettings ) );
+                        final CachedObject newCachedPortletHolder =
+                            pageCache.cachePortletWindow( cacheKey, windowResult, CacheObjectSettings.createFrom( portletCacheSettings ) );
                         windowResult.setExpirationTimeInCache( newCachedPortletHolder.getExpirationTime() );
                     }
                 }
@@ -581,7 +580,7 @@ public class WindowRenderer
         {
             return false;
         }
-        else if ( !pageCacheService.isEnabled() )
+        else if ( !pageCache.isEnabled() )
         {
             return false;
         }
@@ -616,9 +615,9 @@ public class WindowRenderer
         this.portletXsltViewTransformer = value;
     }
 
-    public void setPageCacheService( PageCacheService value )
+    public void setPageCache( PageCache value )
     {
-        this.pageCacheService = value;
+        this.pageCache = value;
     }
 
     public void setResourceService( ResourceService resourceService )

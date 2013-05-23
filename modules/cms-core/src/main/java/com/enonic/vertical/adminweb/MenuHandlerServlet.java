@@ -51,7 +51,7 @@ import com.enonic.cms.core.admin.MenuItemsAcrossSitesXmlCreator;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
-import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.rendering.RenderedPageResult;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -1249,8 +1249,8 @@ public class MenuHandlerServlet
 
         admin.removeMenuItem( user, menuItemKey.toInt() );
 
-        PageCacheService pageCacheService = siteCachesService.getPageCacheService( siteKey );
-        pageCacheService.removeEntriesByMenuItem( menuItemKey );
+        PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+        pageCache.removeEntriesByMenuItem( menuItemKey );
 
         formItems.put( "page", ADMIN_PAGE_KEY );
         formItems.put( "insertbelow", parentMenuItemKey != null ? parentMenuItemKey.toInt() : "-1" );
@@ -1744,8 +1744,8 @@ public class MenuHandlerServlet
             {
                 admin.updateMenuItem( user, menuItemXML );
 
-                PageCacheService pageCacheService = siteCachesService.getPageCacheService( siteKey );
-                pageCacheService.removeEntriesByMenuItem( new MenuItemKey( menuItemKey ) );
+                PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+                pageCache.removeEntriesByMenuItem( new MenuItemKey( menuItemKey ) );
             }
             else
             {

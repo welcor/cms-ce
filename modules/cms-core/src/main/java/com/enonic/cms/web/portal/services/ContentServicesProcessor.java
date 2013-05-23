@@ -213,7 +213,7 @@ public final class ContentServicesProcessor
 
         if ( updateContentResult.isAnyChangesMade() )
         {
-            new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( updateContentResult.getTargetedVersion() );
+            new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( updateContentResult.getTargetedVersion() );
         }
 
         redirectToPage( request, response, formItems );
@@ -293,7 +293,7 @@ public final class ContentServicesProcessor
 
         if ( updateContentResult.isAnyChangesMade() )
         {
-            new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( updateContentResult.getTargetedVersion() );
+            new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( updateContentResult.getTargetedVersion() );
         }
 
         redirectToPage( request, response, formItems );

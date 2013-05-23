@@ -12,6 +12,8 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,15 +22,18 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.SiteProperties;
-import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.core.structure.SiteServiceImpl;
+import com.enonic.cms.store.dao.SiteDao;
 
 @Component("sitePropertiesService")
 public class SitePropertiesServiceImpl
     implements SitePropertiesService, InitializingBean
 {
+    private static final Logger LOG = LoggerFactory.getLogger( SitePropertiesService.class );
+
     private Properties defaultProperties;
 
     private final Map<SiteKey, Properties> sitePropertiesMap = new ConcurrentHashMap<SiteKey, Properties>();
@@ -40,10 +45,13 @@ public class SitePropertiesServiceImpl
     private String characterEncoding;
 
     @Autowired
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     @Autowired
     private SiteServiceImpl siteService;
+
+    @Autowired
+    private SiteDao siteDao;
 
     public void afterPropertiesSet()
         throws Exception
@@ -58,74 +66,16 @@ public class SitePropertiesServiceImpl
         {
             throw new RuntimeException( "Failed to load site-default.properties", e );
         }
-    }
 
-    @Value("${cms.home}")
-    public void setHomeDir( File homeDir )
-    {
-        this.homeDir = homeDir;
-    }
-
-    @Value("${cms.url.characterEncoding}")
-    public void setCharacterEncoding( final String encoding )
-    {
-        this.characterEncoding = encoding;
+        for ( final SiteEntity currSite : siteDao.findAll() )
+        {
+            loadSiteProperties( currSite.getKey() );
+        }
     }
 
     public SiteProperties getSiteProperties( SiteKey siteKey )
     {
         return new SiteProperties( doGetSiteProperties( siteKey ) );
-    }
-
-    /**
-     * Loads properties from the disk if properties are not loaded
-     *
-     * thread safe
-     *
-     * @param siteKey
-     * @return
-     */
-    private Properties doGetSiteProperties( SiteKey siteKey )
-    {
-
-        Properties props = sitePropertiesMap.get( siteKey );
-        if ( props == null )
-        {
-            synchronized ( sitePropertiesMap )
-            {
-                props = sitePropertiesMap.get( siteKey ); // check if already loaded in concurrent thread
-
-                if ( props == null )
-                {
-                    props = loadSiteProperties( siteKey );
-                }
-            }
-        }
-
-        return props;
-    }
-
-    /**
-     * removes site properties from internal map. New properties will be loaded on demand.
-     *
-     * @param siteKey site key
-     */
-    public void reloadSiteProperties( SiteKey siteKey )
-    {
-        synchronized ( sitePropertiesMap )
-        {
-            final Properties props = sitePropertiesMap.get( siteKey );
-
-            if ( props != null )
-            {
-                sitePropertiesMap.remove( siteKey );
-            }
-
-            loadSiteProperties( siteKey );
-
-            siteCachesService.setUpSiteCachesService( siteKey );
-            siteService.updateAuthenticationLoggingEnabled( siteKey, null );
-        }
     }
 
     public String getProperty( String key, SiteKey siteKey )
@@ -158,12 +108,50 @@ public class SitePropertiesServiceImpl
         return svalue == null ? Boolean.FALSE : Boolean.valueOf( svalue );
     }
 
-    private Properties loadSiteProperties( SiteKey siteKey )
+    /**
+     * Loads properties from the disk if properties are not loaded
+     * <p/>
+     * thread safe
+     *
+     * @param siteKey
+     * @return
+     */
+    private Properties doGetSiteProperties( final SiteKey siteKey )
     {
-        Properties siteProperties = new Properties( defaultProperties );
+        Properties props;
+        synchronized ( sitePropertiesMap )
+        {
+            props = sitePropertiesMap.get( siteKey );
+            if ( props == null )
+            {
+                loadSiteProperties( siteKey );
+            }
+        }
+        return props;
+    }
+
+    /**
+     * removes site properties from internal map. New properties will be loaded on demand.
+     *
+     * @param siteKey site key
+     */
+    public void reloadSiteProperties( final SiteKey siteKey )
+    {
+        synchronized ( sitePropertiesMap )
+        {
+            loadSiteProperties( siteKey );
+
+            pageCacheService.reloadPageCacheConfig( siteKey );
+            siteService.updateAuthenticationLoggingEnabled( siteKey, null );
+        }
+    }
+
+    private void loadSiteProperties( final SiteKey siteKey )
+    {
+        final Properties siteProperties = new Properties( defaultProperties );
         siteProperties.setProperty( "sitekey", String.valueOf( siteKey ) );
 
-        String relativePathToCmsHome = "/config/site-" + siteKey + ".properties";
+        final String relativePathToCmsHome = "/config/site-" + siteKey + ".properties";
         try
         {
             String resourcePath = this.homeDir.toURI().toURL() + relativePathToCmsHome;
@@ -185,7 +173,19 @@ public class SitePropertiesServiceImpl
         siteProperties.setProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, this.characterEncoding );
         sitePropertiesMap.put( siteKey, siteProperties );
 
-        return siteProperties;
+        LOG.info( "Loaded properties for site #{}", siteKey );
+    }
+
+    @Value("${cms.home}")
+    public void setHomeDir( File homeDir )
+    {
+        this.homeDir = homeDir;
+    }
+
+    @Value("${cms.url.characterEncoding}")
+    public void setCharacterEncoding( final String encoding )
+    {
+        this.characterEncoding = encoding;
     }
 
     public void setResourceLoader( ResourceLoader resourceLoader )

@@ -4,34 +4,17 @@
  */
 package com.enonic.cms.core.portal.cache;
 
-import com.enonic.cms.core.CacheObjectSettings;
-import com.enonic.cms.core.CachedObject;
-import com.enonic.cms.core.portal.rendering.PageCacheKey;
-import com.enonic.cms.core.portal.rendering.WindowCacheKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.SiteKey;
 
 public interface PageCacheService
-    extends BaseCacheService
 {
-    /**
-     * Cache page and returns the wrapping CachedObject.
-     */
-    CachedObject cachePage( PageCacheKey key, Object page, CacheObjectSettings settings );
 
-    /**
-     * Cache content object and returns the wrapping CachedObject.
-     */
-    CachedObject cachePortletWindow( WindowCacheKey key, Object object, CacheObjectSettings settings );
+    void setUpPageCache( SiteKey siteKey );
 
-    CachedObject getCachedPage( PageCacheKey key );
+    void reloadPageCacheConfig( SiteKey siteKey );
 
-    CachedObject getCachedPortletWindow( WindowCacheKey key );
+    void tearDownPageCache( SiteKey siteKey );
 
-    void removeEntriesBySite();
+    PageCache getPageCacheService( SiteKey siteKey );
 
-    void removePageEntriesBySite();
-
-    void removePortletWindowEntriesBySite();
-
-    void removeEntriesByMenuItem( MenuItemKey menuItemKey );
 }

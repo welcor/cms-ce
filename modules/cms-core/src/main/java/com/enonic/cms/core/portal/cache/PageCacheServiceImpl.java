@@ -4,136 +4,103 @@
  */
 package com.enonic.cms.core.portal.cache;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
-import com.enonic.cms.core.CacheObjectSettings;
-import com.enonic.cms.core.CachedObject;
+import com.enonic.cms.framework.cache.CacheManager;
+
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.portal.rendering.PageCacheKey;
-import com.enonic.cms.core.portal.rendering.WindowCacheKey;
-import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.SitePropertiesService;
+import com.enonic.cms.core.SitePropertyNames;
 
-
+@Component("siteCachesService")
 public class PageCacheServiceImpl
-    extends AbstractBaseCacheService
     implements PageCacheService
 {
-    private static final String TYPE_PAGE = "P";
+    private static final Logger LOG = LoggerFactory.getLogger( PageCacheServiceImpl.class );
 
-    private static final String TYPE_OBJECT = "O";
+    private Map<SiteKey, PageCache> pageCaches = new LinkedHashMap<SiteKey, PageCache>();
 
-    public PageCacheServiceImpl( SiteKey siteKey )
+    private SitePropertiesService sitePropertiesService;
+
+    private CacheManager cacheManager;
+
+
+    public synchronized void setUpPageCache( final SiteKey siteKey )
     {
-        super( siteKey );
+        doSetupPageCache( siteKey );
     }
 
-    public CachedObject cachePage( PageCacheKey key, Object page, CacheObjectSettings settings )
+    private void doSetupPageCache( final SiteKey siteKey )
     {
-        if ( !isEnabled() )
+        PageCache pageCache = pageCaches.get( siteKey );
+        if ( pageCache == null )
         {
-            return new CachedObject( page, false );
-        }
-
-        int secondsToLive = parseSecondsToLive( settings );
-        CachedObject cachedObject = new CachedObject( page );
-        cachedObject.setExpirationTime( new DateTime().plusSeconds( secondsToLive ) );
-        String group = resolveGroupStringForPage( getSiteKey(), key.getMenuItemKey() );
-        cacheObject( group, key, cachedObject, secondsToLive );
-        return cachedObject;
-    }
-
-    public CachedObject cachePortletWindow( WindowCacheKey key, Object object, CacheObjectSettings settings )
-    {
-        if ( !isEnabled() )
-        {
-            return new CachedObject( object, false );
-        }
-
-        int secondsToLive = parseSecondsToLive( settings );
-        CachedObject cachedObject = new CachedObject( object );
-        cachedObject.setExpirationTime( new DateTime().plusSeconds( secondsToLive ) );
-        String group = resolveGroupStringForObject( getSiteKey(), key.getMenuItemKey() );
-        cacheObject( group, key, cachedObject, secondsToLive );
-        return cachedObject;
-    }
-
-    public CachedObject getCachedPage( PageCacheKey key )
-    {
-        if ( !isEnabled() )
-        {
-            return null;
-        }
-
-        final String group = resolveGroupStringForPage( getSiteKey(), key.getMenuItemKey() );
-        return getCachedObject( group, key );
-    }
-
-    public CachedObject getCachedPortletWindow( WindowCacheKey key )
-    {
-        if ( !isEnabled() )
-        {
-            return null;
-        }
-
-        final String group = resolveGroupStringForObject( getSiteKey(), key.getMenuItemKey() );
-        return getCachedObject( group, key );
-    }
-
-    public void removeEntriesBySite()
-    {
-        cacheFacade.removeGroupByPrefix( getSiteKey() + "-" );
-    }
-
-    public void removePageEntriesBySite()
-    {
-        cacheFacade.removeGroupByPrefix( getSiteKey() + "-" + TYPE_PAGE + "-" );
-    }
-
-    public void removePortletWindowEntriesBySite()
-    {
-        cacheFacade.removeGroupByPrefix( getSiteKey() + "-" + TYPE_OBJECT + "-" );
-    }
-
-    public void removeEntriesByMenuItem( final MenuItemKey menuItemKey )
-    {
-        if ( !isEnabled() )
-        {
-            return;
-        }
-
-        String groupForPage = resolveGroupStringForPage( getSiteKey(), menuItemKey );
-        cacheFacade.removeGroup( groupForPage );
-
-        String groupForObjects = resolveGroupStringForObject( getSiteKey(), menuItemKey );
-        cacheFacade.removeGroup( groupForObjects );
-    }
-
-    private String resolveGroupStringForPage( SiteKey siteKey, MenuItemKey menuItemKey )
-    {
-        StringBuffer s = new StringBuffer();
-        s.append( siteKey.toString() ).append( "-" ).append( TYPE_PAGE ).append( "-" ).append( menuItemKey );
-        return s.toString();
-    }
-
-    private String resolveGroupStringForObject( SiteKey siteKey, MenuItemKey menuItemKey )
-    {
-        StringBuffer s = new StringBuffer();
-        s.append( siteKey.toString() ).append( "-" ).append( TYPE_OBJECT ).append( "-" ).append( menuItemKey );
-        return s.toString();
-    }
-
-    private int parseSecondsToLive( CacheObjectSettings settings )
-    {
-        if ( settings.useDefaultSettings() )
-        {
-            return getDefaultTimeToLive();
+            pageCache = createPageCache( siteKey );
+            pageCaches.put( siteKey, pageCache );
+            LOG.info( "Page cache is set up for site " + siteKey );
         }
         else
         {
-            // specified or "live forever"
-            return settings.getSecondsToLive();
+            pageCache.setDefaultTimeToLive(
+                sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey ) );
+            pageCache.setEnabled( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey ) );
         }
     }
 
+    public synchronized void reloadPageCacheConfig( final SiteKey siteKey )
+    {
+        final PageCache pageCache = pageCaches.get( siteKey );
+        if ( pageCache != null )
+        {
+            pageCache.setDefaultTimeToLive(
+                sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey ) );
+            pageCache.setEnabled( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey ) );
+        }
+    }
+
+    private PageCache createPageCache( final SiteKey siteKey )
+    {
+        final PageCache pageCache = new PageCache( siteKey, cacheManager.getPageCache() );
+        pageCache.setDefaultTimeToLive( sitePropertiesService.getPropertyAsInteger( SitePropertyNames.PAGE_CACHE_TIMETOLIVE, siteKey ) );
+        pageCache.setEnabled( sitePropertiesService.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE, siteKey ) );
+        return pageCache;
+    }
+
+    public synchronized PageCache getPageCacheService( final SiteKey siteKey )
+    {
+        Assert.notNull( siteKey, "Given siteKey cannot be null" );
+
+        PageCache cacheService = pageCaches.get( siteKey );
+        if ( cacheService == null )
+        {
+            doSetupPageCache( siteKey );
+            cacheService = pageCaches.get( siteKey );
+        }
+        return cacheService;
+    }
+
+    public synchronized void tearDownPageCache( final SiteKey siteKey )
+    {
+        pageCaches.remove( siteKey );
+        LOG.info( "Page cache is teared down for site " + siteKey );
+    }
+
+    @Autowired
+    public void setSitePropertiesService( SitePropertiesService value )
+    {
+        this.sitePropertiesService = value;
+    }
+
+    @Autowired
+    public void setCacheManager( CacheManager value )
+    {
+        this.cacheManager = value;
+    }
 }

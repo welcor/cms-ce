@@ -18,14 +18,14 @@ import com.enonic.cms.core.CachedObject;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.TightestCacheSettingsResolver;
-import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
-import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
-import com.enonic.cms.core.portal.datasource.DataSourceType;
-import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.Ticket;
-import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.cache.PageCache;
+import com.enonic.cms.core.portal.datasource.DataSourceType;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
+import com.enonic.cms.core.portal.datasource.executor.DataSourceInvocationCache;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionContext;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionProcessor;
@@ -79,7 +79,7 @@ public class PageRenderer
 
     private PostProcessInstructionExecutor postProcessInstructionExecutor;
 
-    private PageCacheService pageCacheService;
+    private PageCache pageCache;
 
     private CacheSettings resolvedMenuItemCacheSettings = null;
 
@@ -177,7 +177,7 @@ public class PageRenderer
             locker.lock();
             PageRenderingTracer.stopConcurrencyBlockTimer( pageRenderingTrace );
 
-            CachedObject cachedPageHolder = pageCacheService.getCachedPage( pageCacheKey );
+            CachedObject cachedPageHolder = pageCache.getCachedPage( pageCacheKey );
             if ( cachedPageHolder != null )
             {
                 // Found the page in cache, return the clone to prevent further rendering of the cached object
@@ -190,7 +190,7 @@ public class PageRenderer
             // Ensure to mark the result as retrieved from cache, before we put it in the cache
             renderedPageResultToCache.setRetrievedFromCache( true );
             CacheObjectSettings cacheSettings = CacheObjectSettings.createFrom( resolvedMenuItemCacheSettings );
-            CachedObject cachedPage = pageCacheService.cachePage( pageCacheKey, renderedPageResultToCache, cacheSettings );
+            CachedObject cachedPage = pageCache.cachePage( pageCacheKey, renderedPageResultToCache, cacheSettings );
             renderedPageResultToCache.setExpirationTime( cachedPage.getExpirationTime() );
 
             // Have to return another instance since we did not retrieve this result from cache
@@ -454,7 +454,7 @@ public class PageRenderer
         {
             return false;
         }
-        else if ( !pageCacheService.isEnabled() )
+        else if ( !pageCache.isEnabled() )
         {
             return false;
         }
@@ -472,7 +472,7 @@ public class PageRenderer
     {
         if ( resolvedMenuItemCacheSettings == null )
         {
-            resolvedMenuItemCacheSettings = context.getMenuItem().getCacheSettings( pageCacheService.getDefaultTimeToLive(), pageTemplate );
+            resolvedMenuItemCacheSettings = context.getMenuItem().getCacheSettings( pageCache.getDefaultTimeToLive(), pageTemplate );
         }
 
         return resolvedMenuItemCacheSettings;
@@ -519,9 +519,9 @@ public class PageRenderer
         this.pageTemplateXsltViewTransformer = value;
     }
 
-    public void setPageCacheService( PageCacheService value )
+    public void setPageCache( PageCache value )
     {
-        this.pageCacheService = value;
+        this.pageCache = value;
     }
 
     public void setSitePropertiesService( final SitePropertiesService value )

@@ -30,22 +30,20 @@ import com.enonic.vertical.engine.AccessRight;
 import com.enonic.vertical.engine.VerticalEngineException;
 
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.security.user.UserEntity;
-import com.enonic.cms.core.service.AdminService;
-
-import com.enonic.cms.core.structure.SiteXmlCreator;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
-
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserEntity;
+import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteXmlCreator;
 
 public final class PresentationLayerServlet
     extends AdminHandlerBaseServlet
 {
 
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     private static final String DEFAULT_LOCALIZATIONRESOURCE_FORMITEM = "defaultlocalizationresource";
 
@@ -54,9 +52,9 @@ public final class PresentationLayerServlet
     private static final String LOCALRESOLVER_FORMITEM = "localeresolver";
 
     @Autowired
-    public void setSiteCachesService( SiteCachesService value )
+    public void setPageCacheService( PageCacheService value )
     {
-        this.siteCachesService = value;
+        this.pageCacheService = value;
     }
 
     protected Document buildXML( HttpSession session, ExtendedMap formItems )
@@ -204,8 +202,8 @@ public final class PresentationLayerServlet
             }*/
 
             // add cache settings info
-            PageCacheService pageCacheService = siteCachesService.getPageCacheService( siteKey );
-            formItems.put( "pageCacheEnabled", pageCacheService.isEnabled() );
+            PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+            formItems.put( "pageCacheEnabled", pageCache.isEnabled() );
             formItems.put( "debugpath", MenuHandlerServlet.getSiteUrl( request, siteKey.toInt() ) );
             formItems.put( "defaultCssExist", resourceExists( site.getDefaultCssKey() ) ? "true" : "false" );
             formItems.put( "deviceClassResolverExist", resourceExists( site.getDeviceClassResolver() ) ? "true" : "false" );
@@ -220,17 +218,17 @@ public final class PresentationLayerServlet
         catch ( IOException ioe )
         {
             String MESSAGE_20 = "I/O error.";
-            VerticalAdminLogger.errorAdmin(MESSAGE_20, ioe );
+            VerticalAdminLogger.errorAdmin( MESSAGE_20, ioe );
         }
         catch ( TransformerConfigurationException tce )
         {
             String MESSAGE_40 = "XSL transformer configuration error.";
-            VerticalAdminLogger.errorAdmin(MESSAGE_40, tce );
+            VerticalAdminLogger.errorAdmin( MESSAGE_40, tce );
         }
         catch ( TransformerException te )
         {
             String MESSAGE_50 = "XSL transformer error.";
-            VerticalAdminLogger.errorAdmin(MESSAGE_50, te );
+            VerticalAdminLogger.errorAdmin( MESSAGE_50, te );
         }
     }
 
@@ -276,8 +274,8 @@ public final class PresentationLayerServlet
         else if ( "clearcachedpages".equals( operation ) )
         {
             SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
-            PageCacheService pageCacheService = siteCachesService.getPageCacheService( siteKey );
-            pageCacheService.removePageEntriesBySite();
+            PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+            pageCache.removePageEntriesBySite();
 
             formItems.put( "feedback", "clearedcachedpages" );
 
@@ -286,8 +284,8 @@ public final class PresentationLayerServlet
         else if ( "clearcachedobjects".equals( operation ) )
         {
             SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
-            PageCacheService pageCacheService = siteCachesService.getPageCacheService( siteKey );
-            pageCacheService.removePortletWindowEntriesBySite();
+            PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+            pageCache.removePortletWindowEntriesBySite();
 
             formItems.put( "feedback", "clearedcachedobjects" );
 
@@ -296,8 +294,8 @@ public final class PresentationLayerServlet
         else if ( "clearcachedpagesandobjects".equals( operation ) )
         {
             SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
-            PageCacheService pageCacheService = siteCachesService.getPageCacheService( siteKey );
-            pageCacheService.removeEntriesBySite();
+            PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+            pageCache.removeEntriesBySite();
 
             formItems.put( "feedback", "clearedcachedpagesandobjects" );
 
@@ -403,11 +401,11 @@ public final class PresentationLayerServlet
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error: %t", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error: %t", e );
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error: %t", e );
+            VerticalAdminLogger.errorAdmin( "I/O error: %t", e );
         }
 
     }
@@ -461,11 +459,11 @@ public final class PresentationLayerServlet
         }
         catch ( TransformerException e )
         {
-            VerticalAdminLogger.errorAdmin("XSLT error: %t", e );
+            VerticalAdminLogger.errorAdmin( "XSLT error: %t", e );
         }
         catch ( IOException e )
         {
-            VerticalAdminLogger.errorAdmin("I/O error: %t", e );
+            VerticalAdminLogger.errorAdmin( "I/O error: %t", e );
         }
 
     }
@@ -515,12 +513,12 @@ public final class PresentationLayerServlet
         catch ( TransformerException te )
         {
             String message = "Transformer error while transforming XSL: %t";
-            VerticalAdminLogger.errorAdmin(message, te );
+            VerticalAdminLogger.errorAdmin( message, te );
         }
         catch ( IOException ioe )
         {
             String message = "I/O error: %t";
-            VerticalAdminLogger.errorAdmin(message, ioe );
+            VerticalAdminLogger.errorAdmin( message, ioe );
         }
     }
 
@@ -600,12 +598,12 @@ public final class PresentationLayerServlet
         catch ( TransformerException e )
         {
             String message = "Failed to transmform XML document: %t";
-            VerticalAdminLogger.errorAdmin(message, e );
+            VerticalAdminLogger.errorAdmin( message, e );
         }
         catch ( IOException e )
         {
             String message = "Failed to transmform XML document: %t";
-            VerticalAdminLogger.errorAdmin(message, e );
+            VerticalAdminLogger.errorAdmin( message, e );
         }
     }
 

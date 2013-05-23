@@ -4,7 +4,6 @@
  */
 package com.enonic.cms.core.structure;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.portal.SiteNotFoundException;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.store.dao.SiteDao;
@@ -28,46 +27,17 @@ public class SiteServiceImpl
 
     private static final Logger LOG = LoggerFactory.getLogger( SiteServiceImpl.class );
 
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     private SiteContextManager siteContextManager;
 
     private SitePropertiesService sitePropertiesService;
-
-    private List<SiteEventListener> siteEventListeners = new ArrayList<SiteEventListener>();
 
     private SiteDao siteDao;
 
     private UserDao userDao;
 
     private final Object lock = new Object();
-
-
-    public void registerSiteEventListener( SiteEventListener l )
-    {
-        siteEventListeners.add( l );
-    }
-
-    public void unregisterSiteEventListener( SiteEventListener l )
-    {
-        siteEventListeners.remove( l );
-    }
-
-    private void fireSiteRegisteredEvent( SiteKey siteKey )
-    {
-        for ( SiteEventListener l : siteEventListeners )
-        {
-            l.onSiteRegistered( siteKey );
-        }
-    }
-
-    private void fireSiteUnregisteredEvent( SiteKey siteKey )
-    {
-        for ( SiteEventListener l : siteEventListeners )
-        {
-            l.onSiteUnregistered( siteKey );
-        }
-    }
 
     private void registerSite( SiteKey siteKey )
     {
@@ -86,8 +56,6 @@ public class SiteServiceImpl
                 LOG.info( "Site [" + siteKey + "] is registered, using " + typeOfProperties + " properties." );
             }
         }
-
-        fireSiteRegisteredEvent( siteKey );
     }
 
     private void unregisterSite( SiteKey siteKey )
@@ -100,20 +68,18 @@ public class SiteServiceImpl
                 LOG.info( "Site [" + siteKey + "] is unregistering..." );
 
                 siteContextManager.unregisterSiteContext( siteKey );
-                siteCachesService.tearDownSiteCachesService( siteKey );
+                pageCacheService.tearDownPageCache( siteKey );
 
                 LOG.info( "Site [" + siteKey + "] is unregistered." );
             }
         }
-
-        fireSiteUnregisteredEvent( siteKey );
     }
 
     private SiteContext createSiteContext( SiteKey siteKey )
     {
         SiteContext siteContext = new SiteContext( siteKey );
 
-        initCache( siteContext );
+        pageCacheService.setUpPageCache( siteKey );
 
         updateAuthenticationLoggingEnabled( siteKey, siteContext );
 
@@ -132,14 +98,6 @@ public class SiteServiceImpl
             siteContext.setAuthenticationLoggingEnabled(
                 sitePropertiesService.getPropertyAsBoolean( "cms.site.logging.authentication", siteKey ) );
         }
-    }
-
-    private void initCache( SiteContext siteContext )
-    {
-
-        SiteKey siteKey = siteContext.getSiteKey();
-
-        siteCachesService.setUpSiteCachesService( siteKey );
     }
 
     /**
@@ -202,9 +160,9 @@ public class SiteServiceImpl
     }
 
     @Autowired
-    public void setSiteCachesService( SiteCachesService value )
+    public void setPageCacheService( PageCacheService value )
     {
-        this.siteCachesService = value;
+        this.pageCacheService = value;
     }
 
     @Autowired

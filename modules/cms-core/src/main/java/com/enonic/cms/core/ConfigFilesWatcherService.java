@@ -64,7 +64,7 @@ public class ConfigFilesWatcherService
 
     /**
      * used spring scheduler. Runs every 2 sec.
-     *
+     * <p/>
      * monitors cms.properties, vhost.properties and site-*.properties
      */
     @Scheduled(fixedRate = 2000)
@@ -72,12 +72,12 @@ public class ConfigFilesWatcherService
     {
         final String[] dir = configDir.list();
 
-        final Set<String> filenames = new HashSet<String>( );
+        final Set<String> filenames = new HashSet<String>();
 
         filenames.addAll( Arrays.asList( dir ) );
         filenames.addAll( lastModified.keySet() );
 
-        for (final String filename : filenames )
+        for ( final String filename : filenames )
         {
             if ( !filename.endsWith( ".properties" ) )
             {
@@ -88,9 +88,8 @@ public class ConfigFilesWatcherService
             {
                 virtualHostResolver.configureVirtualHosts();
 
-                LOG.info( "Updated vhost configuration." );
+                LOG.info( "Reloaded vhost configuration." );
             }
-
             else if ( filename.matches( SITE_PROPERTIES_FILENAME ) && isFileModified( filename ) )
             {
                 final Pattern pattern = Pattern.compile( SITE_PROPERTIES_FILENAME );
@@ -98,26 +97,20 @@ public class ConfigFilesWatcherService
 
                 if ( matcher.matches() )
                 {
-                    final String site = matcher.group( 1 );
+                    final SiteKey site = new SiteKey( matcher.group( 1 ) );
 
-                    sitePropertiesService.reloadSiteProperties( new SiteKey( site ) );
+                    sitePropertiesService.reloadSiteProperties( site );
 
-                    LOG.info( "Updated site #{} configuration.", site );
+                    LOG.info( "Reloaded configuration for site #{}.", site );
                 }
             }
-
-            else if ( filename.equals( "cms.properties" ) && isFileModified( filename ))
+            else if ( filename.equals( "cms.properties" ) && isFileModified( filename ) )
             {
                 LOG.info( "{} was changed. Please restart the application to load new values.", filename );
             }
         }
     }
 
-    /**
-     * check file modification
-     * @param filename filename
-     * @return true if changed
-     */
     private boolean isFileModified( final String filename )
     {
         final File file = new File( configDir.getAbsoluteFile() + File.separator + filename );

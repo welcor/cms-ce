@@ -47,7 +47,7 @@ import com.enonic.cms.core.content.access.ContentAccessException;
 import com.enonic.cms.core.content.category.CategoryAccessException;
 import com.enonic.cms.core.mail.SendMailService;
 import com.enonic.cms.core.portal.VerticalSession;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.userstore.UserStoreService;
@@ -116,7 +116,7 @@ public abstract class ServicesProcessorBase
 
     protected ContentService contentService;
 
-    protected SiteCachesService siteCachesService;
+    protected PageCacheService pageCacheService;
 
     protected boolean transliterate;
 
@@ -162,9 +162,9 @@ public abstract class ServicesProcessorBase
     }
 
     @Autowired
-    public void setSiteCachesService( SiteCachesService value )
+    public void setPageCacheService( PageCacheService value )
     {
-        this.siteCachesService = value;
+        this.pageCacheService = value;
     }
 
     @Autowired

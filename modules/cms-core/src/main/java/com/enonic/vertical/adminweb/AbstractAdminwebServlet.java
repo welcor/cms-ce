@@ -36,7 +36,7 @@ import com.enonic.cms.core.country.CountryService;
 import com.enonic.cms.core.locale.LocaleService;
 import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.mail.SendMailService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.rendering.PageRendererFactory;
 import com.enonic.cms.core.preview.PreviewService;
 import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
@@ -168,7 +168,7 @@ public abstract class AbstractAdminwebServlet
     protected SiteService siteService;
 
     @Autowired
-    protected SiteCachesService siteCachesService;
+    protected PageCacheService pageCacheService;
 
     @Autowired
     protected SitePropertiesService sitePropertiesService;

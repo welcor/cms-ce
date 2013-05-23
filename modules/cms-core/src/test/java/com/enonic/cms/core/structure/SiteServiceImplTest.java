@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import com.enonic.cms.core.MockSitePropertiesService;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.portal.SiteNotFoundException;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.store.dao.SiteDao;
 
 import static org.easymock.EasyMock.createNiceMock;
@@ -25,7 +25,7 @@ public class SiteServiceImplTest
 
     private SiteContextManager siteContextManager = new SiteContextManager();
 
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     private MockSitePropertiesService sitePropertiesService;
 
@@ -38,7 +38,7 @@ public class SiteServiceImplTest
     {
         super.setUp();
 
-        siteCachesService = createNiceMock( SiteCachesService.class );
+        pageCacheService = createNiceMock( PageCacheService.class );
         sitePropertiesService = new MockSitePropertiesService();
 
         siteDao = Mockito.mock( SiteDao.class );
@@ -46,14 +46,14 @@ public class SiteServiceImplTest
         siteService = new SiteServiceImpl();
         siteService.setSiteDao( siteDao );
         siteService.setSiteContextManager( siteContextManager );
-        siteService.setSiteCachesService( siteCachesService );
+        siteService.setPageCacheService( pageCacheService );
         siteService.setSitePropertiesService( sitePropertiesService );
 
     }
 
     public void testGetSiteContext()
     {
-        replay( siteCachesService );
+        replay( pageCacheService );
 
         Mockito.when( siteDao.findByKey( siteKey ) ).thenReturn( createSite( siteKey, "MySite" ) );
 
@@ -69,7 +69,7 @@ public class SiteServiceImplTest
 
     public void testGetSiteContextWhenSiteNotExist()
     {
-        replay( siteCachesService );
+        replay( pageCacheService );
 
         try
         {
@@ -85,7 +85,7 @@ public class SiteServiceImplTest
 
     public void testGetSiteContextWhenSiteNotExistingAnymore()
     {
-        replay( siteCachesService );
+        replay( pageCacheService );
 
         siteContextManager.registerSiteContext( new SiteContext( new SiteKey( 123 ) ) );
 

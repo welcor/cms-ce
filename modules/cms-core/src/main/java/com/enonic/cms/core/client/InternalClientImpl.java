@@ -127,8 +127,8 @@ import com.enonic.cms.core.log.LogEntryResultSet;
 import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.Table;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.portal.datasource.context.UserContextXmlCreator;
 import com.enonic.cms.core.portal.datasource.service.DataSourceService;
 import com.enonic.cms.core.portal.livetrace.ClientMethodExecutionTrace;
@@ -263,7 +263,7 @@ public abstract class InternalClientImpl
     private ContentTypeDao contentTypeDao;
 
     @Autowired(required = false)
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     @Autowired
     private ConfigProperties cmsProperties;
@@ -2263,7 +2263,7 @@ public abstract class InternalClientImpl
             }
 
             SiteKey siteKey = new SiteKey( siteKeyInt );
-            final PageCacheService pageCache = siteCachesService.getPageCacheService( siteKey );
+            final PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
             if ( pageCache != null )
             {
                 pageCache.removeEntriesBySite();
@@ -2300,7 +2300,7 @@ public abstract class InternalClientImpl
                 MenuItemKey menuItemKey = new MenuItemKey( menuItemKeyInt );
 
                 SiteKey siteKey = new SiteKey( siteKeyInt );
-                final PageCacheService pageCache = siteCachesService.getPageCacheService( siteKey );
+                final PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
                 if ( pageCache != null )
                 {
                     pageCache.removeEntriesByMenuItem( menuItemKey );
@@ -2329,7 +2329,7 @@ public abstract class InternalClientImpl
                 ContentEntity content = contentDao.findByKey( contentKey );
                 if ( content != null )
                 {
-                    new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( content );
+                    new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( content );
                 }
             }
         }

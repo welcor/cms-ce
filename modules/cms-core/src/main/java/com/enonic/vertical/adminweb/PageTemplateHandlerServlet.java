@@ -30,7 +30,7 @@ import com.enonic.vertical.engine.VerticalSecurityException;
 
 import com.enonic.cms.framework.xml.XMLException;
 
-import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.User;
@@ -101,14 +101,18 @@ public class PageTemplateHandlerServlet
                 if ( createPageTemplate )
                 {
                     createTemplateParamXML( createPageTemplate, doc, templateParams, "", null,
-                                            formItems.getString( "multiple1", null ) != null && formItems.getString( "multiple1", "" ).length() > 0 ? formItems.getString( "multiple1" )
+                                            formItems.getString( "multiple1", null ) != null &&
+                                                formItems.getString( "multiple1", "" ).length() > 0
+                                                ? formItems.getString( "multiple1" )
                                                 : "0", "0", formItems.getString( "paramname", "" ),
                                             formItems.getString( "separator", "" ) );
                 }
                 else
                 {
                     createTemplateParamXML( createPageTemplate, doc, templateParams, formItems.getString( "paramkey", "" ), key,
-                                            formItems.getString( "multiple1", null ) != null && ( formItems.getString( "multiple1" ) ).length() > 0 ? formItems.getString( "multiple1" )
+                                            formItems.getString( "multiple1", null ) != null &&
+                                                ( formItems.getString( "multiple1" ) ).length() > 0
+                                                ? formItems.getString( "multiple1" )
                                                 : "0", "0", formItems.getString( "paramname" ), formItems.getString( "separator", "" ) );
                 }
             }
@@ -790,13 +794,13 @@ public class PageTemplateHandlerServlet
             return;
         }
 
-        PageCacheService pageCacheService = siteCachesService.getPageCacheService( pageTemplate.getSite().getKey() );
+        PageCache pageCache = pageCacheService.getPageCacheService( pageTemplate.getSite().getKey() );
 
         boolean clearAllPageEntriesOnSite = pageTemplate.getType().equals( PageTemplateType.CONTENT );
 
         if ( clearAllPageEntriesOnSite )
         {
-            pageCacheService.removePageEntriesBySite();
+            pageCache.removePageEntriesBySite();
         }
         else
         {
@@ -804,7 +808,7 @@ public class PageTemplateHandlerServlet
 
             for ( MenuItemEntity menuItem : menuItemsUsingPageTemplate )
             {
-                pageCacheService.removeEntriesByMenuItem( menuItem.getKey() );
+                pageCache.removeEntriesByMenuItem( menuItem.getKey() );
             }
         }
     }

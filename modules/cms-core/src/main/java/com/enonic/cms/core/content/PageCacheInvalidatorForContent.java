@@ -4,18 +4,18 @@
  */
 package com.enonic.cms.core.content;
 
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
 
 public class PageCacheInvalidatorForContent
 {
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
-    public PageCacheInvalidatorForContent( SiteCachesService siteCachesService )
+    public PageCacheInvalidatorForContent( PageCacheService pageCacheService )
     {
-        this.siteCachesService = siteCachesService;
+        this.pageCacheService = pageCacheService;
     }
 
     public void invalidateForContent( ContentVersionEntity version )
@@ -36,24 +36,24 @@ public class PageCacheInvalidatorForContent
     {
         for ( ContentLocation contentLocation : contentLocations.getAllLocations() )
         {
-            PageCacheService pageCacheService = siteCachesService.getPageCacheService( contentLocation.getSiteKey() );
-            pageCacheService.removeEntriesByMenuItem( contentLocation.getMenuItemKey() );
+            PageCache pageCache = pageCacheService.getPageCacheService( contentLocation.getSiteKey() );
+            pageCache.removeEntriesByMenuItem( contentLocation.getMenuItemKey() );
 
-            cleanPageCache( contentLocation.getMenuItem().getParent(), pageCacheService );
+            cleanPageCache( contentLocation.getMenuItem().getParent(), pageCache );
         }
     }
 
-    private void cleanPageCache( MenuItemEntity menuItem, PageCacheService pageCacheService )
+    private void cleanPageCache( MenuItemEntity menuItem, PageCache pageCache )
     {
         if ( menuItem != null )
         {
             if ( menuItem.isRenderable() )
             {
-                pageCacheService.removeEntriesByMenuItem( menuItem.getKey() );
+                pageCache.removeEntriesByMenuItem( menuItem.getKey() );
             }
             else
             {
-                cleanPageCache( menuItem.getParent(), pageCacheService );
+                cleanPageCache( menuItem.getParent(), pageCache );
             }
         }
     }

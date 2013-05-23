@@ -37,10 +37,6 @@ public interface SiteService
     SiteContext getSiteContext( SiteKey siteKey )
         throws SiteNotFoundException;
 
-    public void registerSiteEventListener( SiteEventListener l );
-
-    public void unregisterSiteEventListener( SiteEventListener l );
-
     List<SiteEntity> getSitesToPublishTo( int contentTypeKey, User user );
 
 }

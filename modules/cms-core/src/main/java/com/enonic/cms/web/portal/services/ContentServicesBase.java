@@ -52,7 +52,7 @@ import com.enonic.cms.core.content.contentdata.ContentData;
 import com.enonic.cms.core.content.contentdata.custom.support.CustomContentDataFormParser;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
-import com.enonic.cms.core.portal.cache.PageCacheService;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.UserServicesService;
@@ -217,8 +217,8 @@ public abstract class ContentServicesBase
 
             for ( ContentLocation contentLocation : contentLocations.getAllLocations() )
             {
-                PageCacheService pageCacheService = siteCachesService.getPageCacheService( contentLocation.getSiteKey() );
-                pageCacheService.removeEntriesByMenuItem( contentLocation.getMenuItemKey() );
+                PageCache pageCache = pageCacheService.getPageCacheService( contentLocation.getSiteKey() );
+                pageCache.removeEntriesByMenuItem( contentLocation.getMenuItemKey() );
             }
         }
 
@@ -295,7 +295,7 @@ public abstract class ContentServicesBase
 
         if ( updateContentResult.isAnyChangesMade() )
         {
-            new PageCacheInvalidatorForContent( siteCachesService ).invalidateForContent( updateContentResult.getTargetedVersion() );
+            new PageCacheInvalidatorForContent( pageCacheService ).invalidateForContent( updateContentResult.getTargetedVersion() );
         }
 
         return updateContentResult.getTargetedVersionKey();

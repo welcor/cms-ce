@@ -11,8 +11,8 @@ import com.enonic.cms.framework.util.MimeTypeResolver;
 
 import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
+import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.portal.cache.SiteCachesService;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorFactory;
 import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -26,7 +26,7 @@ import com.enonic.cms.core.resource.ResourceService;
 public class WindowRendererFactory
 {
     @Autowired
-    private SiteCachesService siteCachesService;
+    private PageCacheService pageCacheService;
 
     @Autowired
     private ResourceService resourceService;
@@ -54,12 +54,12 @@ public class WindowRendererFactory
 
     public WindowRenderer createPortletRenderer( WindowRendererContext windowRendererContext )
     {
-        PageCacheService pageCacheService = siteCachesService.getPageCacheService( windowRendererContext.getSite().getKey() );
+        PageCache pageCache = pageCacheService.getPageCacheService( windowRendererContext.getSite().getKey() );
 
         WindowRenderer windowRenderer = new WindowRenderer( windowRendererContext );
 
         windowRenderer.setDataSourceExecutorFactory( datasourceExecutorFactory );
-        windowRenderer.setPageCacheService( pageCacheService );
+        windowRenderer.setPageCache( pageCache );
         windowRenderer.setPortletXsltViewTransformer( portletXsltViewTransformer );
         windowRenderer.setResourceService( resourceService );
         windowRenderer.setSiteURLResolver( siteURLResolver );

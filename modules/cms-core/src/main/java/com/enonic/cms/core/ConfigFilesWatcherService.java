@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.enonic.cms.core.structure.SitePropertiesServiceImpl;
 import com.enonic.cms.core.vhost.VirtualHostResolver;
 
 @Service

@@ -26,7 +26,6 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.core.InvalidKeyException;
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.ContentVersionEntity;
@@ -73,6 +72,7 @@ import com.enonic.cms.core.security.userstore.UserStoreParser;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SiteXmlCreator;
 import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;

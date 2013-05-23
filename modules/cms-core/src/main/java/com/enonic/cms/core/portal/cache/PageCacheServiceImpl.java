@@ -16,8 +16,8 @@ import org.springframework.util.Assert;
 import com.enonic.cms.framework.cache.CacheManager;
 
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SitePropertyNames;
+import com.enonic.cms.core.structure.SitePropertiesService;
 
 @Component("siteCachesService")
 public class PageCacheServiceImpl

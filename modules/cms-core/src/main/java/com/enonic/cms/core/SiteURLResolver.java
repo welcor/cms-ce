@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.UrlPathEncoder;
 
+import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.vhost.VirtualHostHelper;
 
 @Component
@@ -150,11 +151,11 @@ public class SiteURLResolver
             final String scheme = request.getScheme();
             final int port = request.getServerPort();
 
-            if ( "http".equalsIgnoreCase( scheme ) && (port == DEFAULT_HTTP_PORT ))
+            if ( "http".equalsIgnoreCase( scheme ) && ( port == DEFAULT_HTTP_PORT ) )
             {
                 url = new URL( scheme, request.getServerName(), pathFromRoot );
             }
-            else if ( "https".equalsIgnoreCase( scheme ) && (port == DEFAULT_HTTPS_PORT ) )
+            else if ( "https".equalsIgnoreCase( scheme ) && ( port == DEFAULT_HTTPS_PORT ) )
             {
                 url = new URL( scheme, request.getServerName(), pathFromRoot );
             }

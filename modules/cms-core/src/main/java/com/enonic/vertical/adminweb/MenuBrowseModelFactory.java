@@ -4,20 +4,24 @@
  */
 package com.enonic.vertical.adminweb;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.DefaultSiteAccessRightAccumulator;
 import com.enonic.cms.core.structure.DefaultSiteAccumulatedAccessRights;
 import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.menuitem.*;
+import com.enonic.cms.core.structure.SitePropertiesService;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccessRightAccumulator;
+import com.enonic.cms.core.structure.menuitem.MenuItemAccumulatedAccessRights;
+import com.enonic.cms.core.structure.menuitem.MenuItemAndUserAccessRights;
+import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.SiteDao;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Nov 24, 2009

@@ -17,10 +17,10 @@ import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.SiteKey;
 import com.enonic.cms.core.SitePath;
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
+import com.enonic.cms.core.structure.SitePropertiesService;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

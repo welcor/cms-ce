@@ -7,11 +7,11 @@ package com.enonic.cms.core.portal.processor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.PortalAccessService;
 import com.enonic.cms.core.resolver.deviceclass.DeviceClassResolverService;
 import com.enonic.cms.core.resolver.locale.LocaleResolverService;
+import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.store.dao.ContentDao;
 import com.enonic.cms.store.dao.PageTemplateDao;
 import com.enonic.cms.store.dao.SectionContentDao;

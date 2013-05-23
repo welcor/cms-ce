@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.SiteKey;
-import com.enonic.cms.core.SitePropertiesService;
+import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SiteService;
 
 @Component

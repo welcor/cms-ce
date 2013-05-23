@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.SiteURLResolver;
 import com.enonic.cms.core.portal.cache.PageCache;
 import com.enonic.cms.core.portal.cache.PageCacheService;
@@ -18,6 +17,7 @@ import com.enonic.cms.core.portal.instruction.PostProcessInstructionExecutor;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
 import com.enonic.cms.core.portal.rendering.viewtransformer.PortletXsltViewTransformer;
 import com.enonic.cms.core.resource.ResourceService;
+import com.enonic.cms.core.structure.SitePropertiesService;
 
 /**
  * Apr 20, 2009

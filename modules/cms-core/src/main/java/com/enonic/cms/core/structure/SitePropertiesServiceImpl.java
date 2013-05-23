@@ -2,7 +2,7 @@
  * Copyright 2000-2011 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core;
+package com.enonic.cms.core.structure;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +22,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.core.SiteKey;
+import com.enonic.cms.core.SitePropertyNames;
 import com.enonic.cms.core.portal.cache.PageCacheService;
-import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.SiteProperties;
-import com.enonic.cms.core.structure.SiteServiceImpl;
 import com.enonic.cms.store.dao.SiteDao;
 
 @Component("sitePropertiesService")

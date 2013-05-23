@@ -26,7 +26,6 @@ import com.enonic.esl.net.URL;
 
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
-import com.enonic.cms.core.SitePropertiesService;
 import com.enonic.cms.core.content.ContentParserService;
 import com.enonic.cms.core.content.ContentService;
 import com.enonic.cms.core.content.category.CategoryService;
@@ -51,6 +50,7 @@ import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.security.userstore.connector.synchronize.SynchronizeUserStoreJobFactory;
 import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.service.KeyService;
+import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.core.structure.menuitem.MenuItemService;
 import com.enonic.cms.core.time.TimeService;

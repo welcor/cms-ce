@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,6 +40,8 @@ import com.enonic.cms.framework.xml.XMLException;
 import com.enonic.cms.core.AdminConsoleTranslationService;
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.portal.PageRequestType;
+import com.enonic.cms.core.portal.cache.PageCache;
+import com.enonic.cms.core.portal.cache.PageCacheService;
 import com.enonic.cms.core.portal.datasource.DataSourceType;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutor;
 import com.enonic.cms.core.portal.datasource.executor.DataSourceExecutorContext;
@@ -65,6 +68,9 @@ public final class ContentObjectHandlerServlet
 {
     @Autowired
     private DataSourceExecutorFactory datasourceExecutorFactory;
+
+    @Autowired
+    private PageCacheService pageCacheService;
 
     private Document buildContentObjectXML( AdminService admin, ExtendedMap formItems, boolean createContentObject,
                                             boolean updateStyleSheets )
@@ -1061,6 +1067,11 @@ public final class ContentObjectHandlerServlet
         User user = securityService.getLoggedInAdminConsoleUser();
         Document coDoc = buildContentObjectXML( admin, formItems, false, false );
         admin.updateContentObject( XMLTool.documentToString( coDoc ) );
+
+        // it is better to have these 3 lines inside updateContentObject, but updateContentObject is used only from here
+        final SiteKey siteKey = new SiteKey( formItems.getInt( "menukey" ) );
+        final PageCache pageCache = pageCacheService.getPageCacheService( siteKey );
+        pageCache.removePortletWindowEntriesBySite();
 
         String subop = formItems.getString( "subop", "" );
         if ( "popup".equals( subop ) )

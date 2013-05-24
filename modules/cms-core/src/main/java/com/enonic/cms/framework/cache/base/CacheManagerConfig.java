@@ -47,15 +47,16 @@ final class CacheManagerConfig
     public CacheConfig getCacheConfig( final String name )
     {
         final int memoryCapacity = getIntegerProperty( name + ".memoryCapacity", DEFAULT_MEMORY_CAPACITY );
-        final int timeToLive;
+        final int timeToLive = getIntegerProperty( name + ".timeToLive", DEFAULT_TIME_TO_LIVE );
         if ( "entity".equalsIgnoreCase( name ) )
         {
-            timeToLive = 0;
+            if ( timeToLive != 0 )
+            {
+                throw new IllegalArgumentException( "Entity cache timeToLive cannot be other than default value (zero). " +
+                                                        "Please remove property 'cms.cache.entity.timeToLive' from cms.properties." );
+            }
         }
-        else
-        {
-            timeToLive = getIntegerProperty( name + ".timeToLive", DEFAULT_TIME_TO_LIVE );
-        }
+
         return new CacheConfig( memoryCapacity, timeToLive );
     }
 }

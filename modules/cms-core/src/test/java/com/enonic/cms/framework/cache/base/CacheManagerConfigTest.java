@@ -16,7 +16,7 @@ public class CacheManagerConfigTest
     {
         final Properties props = new Properties();
         props.setProperty( "cms.cache.entity.memoryCapacity", "100" );
-        props.setProperty( "cms.cache.entity.timeToLive", "10" );
+        props.setProperty( "cms.cache.entity.timeToLive", "0" );
 
         this.managerConfig = new CacheManagerConfig( props );
     }
@@ -39,5 +39,17 @@ public class CacheManagerConfigTest
         assertNotNull( config );
         assertEquals( 100, config.getMemoryCapacity() );
         assertEquals( 0, config.getTimeToLive() );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCacheConfig_IllegalArgumentException_thrown_when_entity_cache_timeToLive_is_other_than_zero()
+    {
+        final Properties props = new Properties();
+        props.setProperty( "cms.cache.entity.memoryCapacity", "100" );
+        props.setProperty( "cms.cache.entity.timeToLive", "100" );
+        this.managerConfig = new CacheManagerConfig( props );
+
+        // exercise
+        this.managerConfig.getCacheConfig( "entity" );
     }
 }

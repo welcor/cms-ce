@@ -1,12 +1,11 @@
 package com.enonic.cms.framework.cache.base;
 
+import java.util.Properties;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Properties;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class CacheManagerConfigTest
 {
@@ -27,7 +26,7 @@ public class CacheManagerConfigTest
     {
         final CacheConfig config = this.managerConfig.getCacheConfig( "unknown" );
 
-        assertNotNull(config);
+        assertNotNull( config );
         assertEquals( 1000, config.getMemoryCapacity() );
         assertEquals( 0, config.getTimeToLive() );
     }
@@ -37,8 +36,8 @@ public class CacheManagerConfigTest
     {
         final CacheConfig config = this.managerConfig.getCacheConfig( "entity" );
 
-        assertNotNull(config);
+        assertNotNull( config );
         assertEquals( 100, config.getMemoryCapacity() );
-        assertEquals( 10, config.getTimeToLive() );
+        assertEquals( 0, config.getTimeToLive() );
     }
 }

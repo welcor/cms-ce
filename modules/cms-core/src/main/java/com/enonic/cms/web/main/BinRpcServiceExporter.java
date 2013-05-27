@@ -16,12 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
 
+import com.enonic.cms.api.client.ClientException;
 import com.enonic.cms.api.client.LocalClient;
 import com.enonic.cms.api.client.binrpc.BinRpcInvocation;
 import com.enonic.cms.api.client.binrpc.BinRpcInvocationResult;
@@ -36,6 +38,9 @@ public final class BinRpcServiceExporter
 
     private LocalClient client;
 
+    @Value("${cms.security.rpc.enabled}")
+    private boolean rpcEnabled;
+
     @Autowired
     @Qualifier("remoteClient")
     public void setLocalClient( final LocalClient client )
@@ -47,6 +52,13 @@ public final class BinRpcServiceExporter
     public ModelAndView handleRequest( final HttpServletRequest req, final HttpServletResponse res )
         throws ServletException, IOException
     {
+        if ( !this.rpcEnabled )
+        {
+            BinRpcInvocationResult result = new BinRpcInvocationResult( new ClientException("Access to RPC service is denied.") );
+            writeInvocationResult( res, result );
+            return null;
+        }
+
         try
         {
             BinRpcInvocation invocation = readInvocation( req );

@@ -302,10 +302,12 @@ WebFXTabPage.prototype.dispose = function () {
 	if (this.aElement) this.aElement.onclick = null;
 	this.aElement = null;
 	this.element.tabPage = null;
-	this.tab.onclick = null;
-	this.tab.onmouseover = null;
-	this.tab.onmouseout = null;
-	this.tab = null;
+    if (this.tab) {
+        this.tab.onclick = null;
+        this.tab.onmouseover = null;
+        this.tab.onmouseout = null;
+        this.tab = null;
+    }
 	this.tabPane = null;
 	this.element = null;
 };

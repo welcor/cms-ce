@@ -78,12 +78,6 @@
               </xsl:choose>
             </xsl:attribute>
 
-            <div id="{concat('ca-caret-info-', $name)}" class="ca-caret-info">
-              <span id="{concat('ca-current-line-number-', $name)}" class="ca-current-line-number">0</span>
-              <span>:</span>
-              <span id="{concat('ca-current-column-number-', $name)}" class="ca-current-column-number">0</span>
-            </div>
-
           </td>
         </tr>
       </table>

@@ -6,14 +6,17 @@ import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
+import com.enonic.cms.core.search.ContentIndexServiceImpl;
 import com.enonic.cms.core.search.query.ContentDocument;
+
+import static org.junit.Assert.*;
 
 public class ContentIndexServiceImpl_countTest
     extends ContentIndexServiceTestBase
 {
 
 
- @Test
+    @Test
     public void testLargeCountNumber()
         throws Exception
     {
@@ -42,5 +45,41 @@ public class ContentIndexServiceImpl_countTest
 
         contentIndexService.index( contentDoc );
     }
+
+    @Test
+    public void testQueryThreshold()
+    {
+        for ( int i = 1; i <= ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE + 10; i++ )
+        {
+            indexContent( i );
+        }
+
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+
+        final ContentResultSet result = contentIndexService.query( query );
+
+        assertEquals( ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE, result.getLength() );
+    }
+
+    @Test
+    public void testReturnAllContent()
+    {
+        for ( int i = 1; i <= ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE + 10; i++ )
+        {
+             indexContent( i );
+        }
+
+        flushIndex();
+
+        ContentIndexQuery query = new ContentIndexQuery( "" );
+        query.setReturnAllHits( true );
+
+        final ContentResultSet result = contentIndexService.query( query );
+
+        assertEquals( ContentIndexServiceImpl.COUNT_OPTIMIZER_THRESHOULD_VALUE + 10, result.getLength() );
+    }
+
 
 }

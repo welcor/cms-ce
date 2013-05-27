@@ -14,6 +14,7 @@ import com.enonic.cms.core.content.category.CategoryAccessType;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.index.ContentIndexQuery.CategoryAccessTypeFilterPolicy;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.security.user.UserEntity;
 
 public abstract class AbstractContentQuery
@@ -207,6 +208,10 @@ public abstract class AbstractContentQuery
 
     public void validate()
     {
+        if ( getIndex() < 0 )
+        {
+            throw new DataSourceException( "Index parameter must be greater then zero" );
+        }
 
     }
 

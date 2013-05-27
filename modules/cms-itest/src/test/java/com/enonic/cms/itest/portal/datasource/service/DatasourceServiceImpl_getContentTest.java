@@ -29,6 +29,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.preview.ContentPreviewContext;
 import com.enonic.cms.core.preview.PreviewContext;
@@ -159,6 +160,32 @@ public class DatasourceServiceImpl_getContentTest
 
         assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(), expectedContentKey.toString() );
     }
+
+    @Test(expected = DataSourceException.class)
+    public void testIndexGreaterThanZeroRequirement()
+    {
+        ContentKey expectedContentKey = createPersonContent( "Test Dummy" );
+
+        fixture.flushIndexTransaction();
+
+        DataSourceContext context = new DataSourceContext();
+        context.setUser( fixture.findUserByName( "content-querier" ) );
+        String query = "";
+        String orderBy = "";
+        int index = -1;
+        int count = 100;
+        boolean includeData = false;
+        int childrenLevel = 0;
+        int parentLevel = 0;
+
+        int[] contentKeys = new int[]{expectedContentKey.toInt()};
+        XMLDocument xmlDocResult =
+            dataSourceService.getContent( context, contentKeys, query, orderBy, index, count, includeData, childrenLevel, parentLevel,
+                                          null );
+
+        assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(), expectedContentKey.toString() );
+    }
+
 
     @Test
     public void getContent_10_parameters_datasource()

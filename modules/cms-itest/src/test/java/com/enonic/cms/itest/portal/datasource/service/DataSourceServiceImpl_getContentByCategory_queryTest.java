@@ -25,6 +25,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -216,6 +217,69 @@ public class DataSourceServiceImpl_getContentByCategory_queryTest
         // verify
         AssertTool.assertXPathEquals( "/contents/content/@key", xmlDocResult.getAsJDOMDocument(),
                                       new String[]{expectedContentKey.toString()} );
+    }
+
+
+    @Test(expected = DataSourceException.class)
+    public void testIndexGreaterThanZeroRequirement()
+    {
+
+        // setup content type
+        ContentTypeConfigBuilder ctyconf = new ContentTypeConfigBuilder( "Person", "name" );
+        ctyconf.startBlock( "Person" );
+        ctyconf.addInput( "name", "text", "contentdata/name", "Name", true );
+        ctyconf.endBlock();
+        Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
+
+        // setup content type, unit category, users, and rights
+        fixture.save(
+            factory.createContentType( "MyContentType", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes ) );
+        fixture.save( factory.createUnit( "MyUnit", "en" ) );
+        fixture.save(
+            factory.createCategory( "MyCategory", null, "MyContentType", "MyUnit", User.ANONYMOUS_UID, User.ANONYMOUS_UID, false ) );
+        fixture.createAndStoreNormalUserWithUserGroup( "content-creator", "Creator", "testuserstore" );
+        fixture.createAndStoreNormalUserWithUserGroup( "content-querier", "Creator", "testuserstore" );
+        fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-creator", "read, create, approve, admin_browse" ) );
+        fixture.save( factory.createCategoryAccessForUser( "MyCategory", "content-querier", "read, create, approve, admin_browse" ) );
+
+        fixture.flushAndClearHibernateSession();
+        fixture.flushIndexTransaction();
+
+        // setup content assigned to content-creator
+        CustomContentData contentData = new CustomContentData( fixture.findContentTypeByName( "MyContentType" ).getContentTypeConfig() );
+        contentData.add( new TextDataEntry( contentData.getInputConfig( "name" ), "Test Dummy" ) );
+        contentService.createContent(
+            createCreateContentCommand( "MyCategory", "content-creator", ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
+                                        "content-creator", contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+
+        // setup another content assigned to some one else
+        contentService.createContent(
+            createCreateContentCommand( "MyCategory", User.ROOT_UID, ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
+                                        User.ROOT_UID, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+
+        // Add content with owner = content-querier
+        ContentKey expectedContentKey = contentService.createContent(
+            createCreateContentCommand( "MyCategory", "content-querier", ContentStatus.APPROVED, new DateTime( 2020, 1, 1, 0, 0, 0, 0 ),
+                                        User.ROOT_UID, contentData, new DateTime( 2010, 1, 1, 0, 0, 0, 0 ), null ) );
+
+        fixture.flushIndexTransaction();
+
+        DataSourceContext context = new DataSourceContext();
+        context.setUser( fixture.findUserByName( "content-querier" ) );
+        int[] categoryKeys = new int[]{fixture.findCategoryByName( "MyCategory" ).getKey().toInt()};
+        int levels = 1;
+        String query = "status = 2";
+        String orderyBy = "";
+        int index = -1;
+        int count = 100;
+        boolean includeData = false;
+        int childrenLevel = 0;
+        int parentLevel = 0;
+        boolean filterOnUser = true;
+
+        XMLDocument xmlDocResult =
+            dataSourceService.getContentByCategory( context, categoryKeys, levels, query, orderyBy, index, count, includeData,
+                                                    childrenLevel, parentLevel, filterOnUser, null );
     }
 
 

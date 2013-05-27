@@ -25,6 +25,7 @@ import com.enonic.cms.core.content.contentdata.custom.stringbased.TextDataEntry;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
 import com.enonic.cms.core.content.contenttype.ContentTypeConfigBuilder;
 import com.enonic.cms.core.portal.datasource.DataSourceContext;
+import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.service.DataSourceServiceImpl;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
@@ -138,6 +139,24 @@ public class DataSourceServiceImpl_getContentByQueryTest
         Document jdomDocResult = xmlDocResult.getAsJDOMDocument();
         AssertTool.assertSingleXPathValueEquals( "/contents/@totalcount", jdomDocResult, "2" );
         AssertTool.assertXPathEquals( "/contents/content/@key", jdomDocResult, content_1, content_2 );
+    }
+
+    @Test(expected = DataSourceException.class)
+    public void testIndexGreaterThanZeroRequirement()
+    {
+        DataSourceContext context = new DataSourceContext();
+        context.setUser( fixture.findUserByName( "content-querier" ) );
+
+        String query = "title = 'Test title'";
+        String orderyBy = "@key asc";
+        int index = -1;
+        int count = 10;
+        boolean includeData = true;
+        int childrenLevel = 0;
+        int parentLevel = 0;
+
+        XMLDocument xmlDocResult =
+            dataSourceService.getContentByQuery( context, query, orderyBy, index, count, includeData, childrenLevel, parentLevel, null );
     }
 
     private CreateContentCommand createCreateContentCommand( String categoryName, ContentData contentData, String creatorUid )

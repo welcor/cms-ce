@@ -31,17 +31,12 @@ cms.ui.CodeArea = function( options )
     var width = options.width;
     var height = options.height;
     var readOnly = options.readOnly;
-    var hasStatusBar = options.statusBar;
     var textareaId = options.textareaId;
     var buttonsConfig = options.buttons;
     var useLineNumbers = options.lineNumbers;
     var createButtons = buttonsConfig.length > 0 && !readOnly;
     var textarea = document.getElementById(textareaId);
-    var editorContainer = document.getElementById('code-area-container-' + textareaId);
     var buttonsContainer = document.getElementById('code-area-buttons-container-' + textareaId);
-    var documentContainer = document.getElementById('code-area-document-container-' + textareaId);
-    var currentLineNumberContainer = document.getElementById('ca-current-line-number-' + textareaId);
-    var currentColumnNumberContainer = document.getElementById('ca-current-column-number-' + textareaId);
     var availableButtons = {
         indentall : {
             tooltip: 'Indent all',
@@ -142,38 +137,6 @@ cms.ui.CodeArea = function( options )
         }
 
         buttonsContainer.style.display = 'block';
-    };
-
-
-    this.caretChange = function( event )
-    {
-        var cursorPosition = codemirror.cursorPosition();
-        var lineNumber = ( event.type == 'blur' ) ? 0 : codemirror.lineNumber(cursorPosition.line);
-        var columnNumber = ( event.type == 'blur' ) ? 0 : cursorPosition.character + 1;
-
-        if ( hasStatusBar )
-        {
-            inst.updateLineAndColumnNumber( lineNumber, columnNumber )
-        }
-    };
-
-
-    this.updateLineAndColumnNumber = function( lineNumber, columnNumber )
-    {
-        currentLineNumberContainer.innerHTML = lineNumber;
-        currentColumnNumberContainer.innerHTML = columnNumber;
-    };
-
-
-    this.focusDocument = function( event )
-    {
-        inst.caretChange( event );
-    };
-
-
-    this.blurDocument = function( event )
-    {
-        inst.caretChange( event );
     };
 
 
@@ -313,16 +276,6 @@ cms.ui.CodeArea = function( options )
         } );
 
         // Add input events to the editor document.
-
-        if ( hasStatusBar )
-        {
-            /* admin.js */ addEvent(codemirror.win.document, 'click', inst.caretChange, false);
-            /* admin.js */ addEvent(codemirror.win.document, 'keyup', inst.caretChange, false);
-        }
-
-        /* admin.js */ addEvent(codemirror.win.document, 'click', inst.focusDocument, false);
-        /* admin.js */ addEvent(codemirror.win.document, 'focus', inst.focusDocument, false);
-        /* admin.js */ addEvent(codemirror.win.document, 'blur', inst.blurDocument, false);
         /* admin.js */ addEvent(codemirror.win.document, 'keydown', function(event)
     {
         var command_f_pressed = event.metaKey && event.keyCode === 70;

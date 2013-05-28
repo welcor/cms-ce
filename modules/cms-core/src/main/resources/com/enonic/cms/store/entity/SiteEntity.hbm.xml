@@ -15,7 +15,7 @@
       <column name="MEN_DTETIMESTAMP" not-null="true"/>
     </property>
     <property name="xmlData" type="com.enonic.cms.store.hibernate.type.LazyInitializedJDOMDocumentUserType">
-      <column name="MEN_XMLDATA"/>
+      <column name="MEN_XMLDATA" length="1024"/>
     </property>
     <many-to-one name="errorPage" class="com.enonic.cms.core.structure.menuitem.MenuItemEntity" fetch="select">
       <column name="MEN_MEI_ERRORPAGE"/>

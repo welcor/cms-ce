@@ -1535,3 +1535,22 @@ function getUrlParameter( url, name )
         return results[1];
     }
 }
+
+
+// NOTE: this code is not commented out, it is working in IE !!!
+
+/*@cc_on
+
+// IE 10 has bug with framesets. This function is tricky workaround - nothing is jumping, blinking or has other effects
+// @see http://social.msdn.microsoft.com/Forums/en-US/iewebdevelopment/thread/dd6bdecf-5751-4343-8cfd-bcfd7a14b144/
+! function msie10FramesFix() {
+     if (/^10/.test(@_jscript_version)) { // is exactly IE 10 ? IE 11 may not have this bug
+        var body = parent.window.document.body;
+        body.rows = '70, *, 1';
+        setTimeout(function (){
+            body.rows = '70, *';
+        }, 0);
+     }
+} ();
+
+@*/

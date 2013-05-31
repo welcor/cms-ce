@@ -22,7 +22,7 @@ public class PageCache
 {
     private static final String TYPE_PAGE = "P";
 
-    private static final String TYPE_OBJECT = "O";
+    private static final String TYPE_WINDOW = "O";
 
     private final SiteKey siteKey;
 
@@ -107,7 +107,7 @@ public class PageCache
         int secondsToLive = resolveSecondsToLive( settings );
         CachedObject cachedObject = new CachedObject( object );
         cachedObject.setExpirationTime( new DateTime().plusSeconds( secondsToLive ) );
-        String group = resolveGroupStringForObject( siteKey, key.getMenuItemKey() );
+        String group = resolveGroupStringForWindow( siteKey, key.getMenuItemKey() );
         doCacheObject( group, key, cachedObject, secondsToLive );
         return cachedObject;
     }
@@ -130,7 +130,7 @@ public class PageCache
             return null;
         }
 
-        final String group = resolveGroupStringForObject( siteKey, key.getMenuItemKey() );
+        final String group = resolveGroupStringForWindow( siteKey, key.getMenuItemKey() );
         return doGetCachedObject( group, key );
     }
 
@@ -146,7 +146,7 @@ public class PageCache
 
     public void removePortletWindowEntriesBySite()
     {
-        cacheFacade.removeGroupByPrefix( siteKey + "-" + TYPE_OBJECT + "-" );
+        cacheFacade.removeGroupByPrefix( siteKey + "-" + TYPE_WINDOW + "-" );
     }
 
     public void removeEntriesByMenuItem( final MenuItemKey menuItemKey )
@@ -159,7 +159,18 @@ public class PageCache
         String groupForPage = resolveGroupStringForPage( siteKey, menuItemKey );
         cacheFacade.removeGroup( groupForPage );
 
-        String groupForObjects = resolveGroupStringForObject( siteKey, menuItemKey );
+        String groupForObjects = resolveGroupStringForWindow( siteKey, menuItemKey );
+        cacheFacade.removeGroup( groupForObjects );
+    }
+
+    public void removeWindowEntriesByMenuItem( final MenuItemKey menuItemKey )
+    {
+        if ( !enabled )
+        {
+            return;
+        }
+
+        String groupForObjects = resolveGroupStringForWindow( siteKey, menuItemKey );
         cacheFacade.removeGroup( groupForObjects );
     }
 
@@ -170,10 +181,10 @@ public class PageCache
         return s.toString();
     }
 
-    private String resolveGroupStringForObject( final SiteKey siteKey, final MenuItemKey menuItemKey )
+    private String resolveGroupStringForWindow( final SiteKey siteKey, final MenuItemKey menuItemKey )
     {
         final StringBuilder s = new StringBuilder();
-        s.append( siteKey.toString() ).append( "-" ).append( TYPE_OBJECT ).append( "-" ).append( menuItemKey );
+        s.append( siteKey.toString() ).append( "-" ).append( TYPE_WINDOW ).append( "-" ).append( menuItemKey );
         return s.toString();
     }
 

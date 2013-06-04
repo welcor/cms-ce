@@ -178,7 +178,9 @@ public abstract class SendMailServicesBase
                 mail.setMessage( body.toString() );
 
                 // attachments?
-                if ( formItems.hasFileItems() )
+                boolean includeAttachment = formItems.getBoolean( "include_attachment", true );
+
+                if ( includeAttachment && formItems.hasFileItems() )
                 {
                     FileItem[] fileItems = formItems.getFileItems();
                     for ( int i = 0; i < fileItems.length; i++ )

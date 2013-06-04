@@ -17,6 +17,7 @@ import com.enonic.esl.net.URLUtil;
 import com.enonic.esl.servlet.http.CookieUtil;
 
 import com.enonic.cms.core.DeploymentPathResolver;
+import com.enonic.cms.core.portal.rendering.tracing.RenderTrace;
 
 @Component
 public class ForceResolverValueServiceImpl
@@ -58,7 +59,7 @@ public class ForceResolverValueServiceImpl
 
         if ( CookieUtil.getCookie( context.getRequest(), forcedValueKey ) != null )
         {
-            CookieUtil.setCookie( response, forcedValueKey, "", 0, getSiteDeploymentPath( context.getRequest() ) );
+            CookieUtil.setCookie( response, forcedValueKey, "", 0, getCookiePath( context.getRequest() ) );
         }
     }
 
@@ -79,7 +80,7 @@ public class ForceResolverValueServiceImpl
     private void setForcedValueInCookie( HttpServletRequest request, HttpServletResponse response, String cookieName, String forcedValue )
     {
         CookieUtil.setCookie( response, cookieName, encodeCookieValue( forcedValue ), FORCED_VALUE_COOKIE_MAX_AGE_SECONDS,
-                              getSiteDeploymentPath( request ) );
+                              getCookiePath( request ) );
     }
 
     private void setForcedValueInSession( HttpServletRequest request, String sessionKey, String deviceClass )
@@ -111,9 +112,11 @@ public class ForceResolverValueServiceImpl
         return URLUtil.decode( value );
     }
 
-    protected String getSiteDeploymentPath( HttpServletRequest request )
+    protected String getCookiePath( HttpServletRequest request )
     {
-        return DeploymentPathResolver.getSiteDeploymentPath( request );
+        final String adminDeploymentPath = RenderTrace.isTraceOn() ? DeploymentPathResolver.getAdminDeploymentPath( request ) : "";
+        final String siteDeploymentPath = DeploymentPathResolver.getSiteDeploymentPath( request );
+        return adminDeploymentPath + siteDeploymentPath;
     }
 
 }

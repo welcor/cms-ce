@@ -161,7 +161,7 @@ public class SitePropertiesServiceImpl
             props = sitePropertiesMap.get( siteKey );
             if ( props == null )
             {
-                loadSiteProperties( siteKey );
+                props = loadSiteProperties( siteKey );
             }
         }
         return props;
@@ -180,7 +180,7 @@ public class SitePropertiesServiceImpl
         }
     }
 
-    private void loadSiteProperties( final SiteKey siteKey )
+    private SiteProperties loadSiteProperties( final SiteKey siteKey )
     {
         final Properties properties = new Properties( defaultProperties );
         properties.setProperty( "sitekey", String.valueOf( siteKey ) );
@@ -207,7 +207,9 @@ public class SitePropertiesServiceImpl
         }
 
         properties.setProperty( SitePropertyNames.URL_DEFAULT_CHARACTER_ENCODING, this.characterEncoding );
-        sitePropertiesMap.put( siteKey, new SiteProperties( siteKey, properties ) );
+
+        final SiteProperties siteProperties = new SiteProperties( siteKey, properties );
+        sitePropertiesMap.put( siteKey, siteProperties );
 
         if ( custom )
         {
@@ -217,6 +219,8 @@ public class SitePropertiesServiceImpl
         {
             LOG.info( "Loaded default properties for site #{}", siteKey );
         }
+
+        return siteProperties;
     }
 
     @Value("${cms.home}")

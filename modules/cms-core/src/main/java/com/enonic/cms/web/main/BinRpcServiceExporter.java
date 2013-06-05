@@ -54,7 +54,7 @@ public final class BinRpcServiceExporter
     {
         if ( !this.rpcEnabled )
         {
-            BinRpcInvocationResult result = new BinRpcInvocationResult( new ClientException("Access to RPC service is denied.") );
+            BinRpcInvocationResult result = new BinRpcInvocationResult( new ClientException( "RPC service is turned off" ) );
             writeInvocationResult( res, result );
             return null;
         }

@@ -144,10 +144,15 @@ tinyMCEPopup = {
      * @method resizeToInnerSize
      */
     resizeToInnerSize : function() {
-        var t = this;
 
         // Detach it to workaround a Chrome specific bug
         // https://sourceforge.net/tracker/?func=detail&atid=635682&aid=2926339&group_id=103281
+
+        /*
+        tan: commented out as this is not needed for the CMS. See : CMS-373
+        https://github.com/tinymce/tinymce/pull/138
+
+        var t = this;
         setTimeout(function() {
             var vp = t.dom.getViewPort(window);
 
@@ -157,6 +162,7 @@ tinyMCEPopup = {
                 t.id || window
             );
         }, 10);
+        */
     },
 
     /**

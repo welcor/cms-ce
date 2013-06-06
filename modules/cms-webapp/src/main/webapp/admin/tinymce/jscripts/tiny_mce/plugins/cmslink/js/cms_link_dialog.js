@@ -54,7 +54,6 @@ var CMSLinkDialog = {
         var ed = tinyMCEPopup.editor;
         var dom = ed.dom;
         var url = splitAnchorFromLink(dom.getAttrib(selectedNode, 'href'));
-        console.log(url);
         var hrefVal = url.url;
         var anchorVal = url.anchor;
         var titleVal = dom.getAttrib(selectedNode, 'title');
@@ -229,7 +228,6 @@ var CMSLinkDialog = {
 };
 
 function splitAnchorFromLink(val) {
-    console.log(val);
     var values = val.split('#');
     return {
         url: values[0],

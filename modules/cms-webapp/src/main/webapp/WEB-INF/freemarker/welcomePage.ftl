@@ -15,7 +15,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Enonic CMS - Boot Page</title>
-    <meta name="robots" content="noindex,nofollow" />
+    <meta name="robots" content="noindex,nofollow"/>
 
     <link rel="shortcut icon" type="image/x-icon" href="${baseUrl}/resources/favicon.ico"/>
     <link rel="stylesheet" href="${baseUrl}/resources/bootpage.css" type="text/css"/>
@@ -148,7 +148,7 @@
                         <span class="name">Admin Console</span>
                         <br/>
                         <span>
-                           ${elipsis(adminUrl, componentsUrlMaxLength)}
+                        ${elipsis(adminUrl, componentsUrlMaxLength)}
                         </span>
                     </a>
                 </li>
@@ -158,7 +158,7 @@
                         <span class="name">WebDAV</span>
                         <br/>
                         <span>
-                           ${elipsis(webDavUrl, componentsUrlMaxLength)}
+                        ${elipsis(webDavUrl, componentsUrlMaxLength)}
                         </span>
                     </a>
                 </li>
@@ -169,11 +169,11 @@
             <ul>
 
             [#if upgradeNeeded == false]
-                [#list sites?keys?sort as key]
-                    [#assign url = baseUrl + '/site/' + sites[key] + '/']
+                [#list sites as site]
+                    [#assign url = baseUrl + '/site/' + site.key + '/']
                     <li>
                         <a href="${url}" title="${url}">
-                            <span class="name">${key}</span>
+                            <span class="name">${site.displayString}</span>
                             <br/>
                             <span>
                             ${elipsis(url, 40)}

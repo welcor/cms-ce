@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.web.main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,16 +55,39 @@ public final class WelcomeController
         this.licenseChecker = licenseChecker;
     }
 
-    private Map<String, Integer> createSiteMap()
+    private List<Site> createSiteList()
     {
-        final HashMap<String, Integer> siteMap = new HashMap<String, Integer>();
+        final List<Site> sites = new ArrayList<Site>();
         for ( final SiteEntity entity : this.siteDao.findAll() )
         {
             final String code = entity.getLanguage() == null ? "" : " (" + entity.getLanguage().getCode() + ")";
-            siteMap.put( entity.getName() + code, entity.getKey().toInt() );
+            sites.add( new Site( entity.getName() + code, entity.getKey().toInt() ) );
         }
 
-        return siteMap;
+        return sites;
+    }
+
+    public class Site
+    {
+        private String displayString;
+
+        private int key;
+
+        public Site( final String displayString, final int key )
+        {
+            this.displayString = displayString;
+            this.key = key;
+        }
+
+        public String getDisplayString()
+        {
+            return displayString;
+        }
+
+        public int getKey()
+        {
+            return key;
+        }
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
@@ -81,7 +104,7 @@ public final class WelcomeController
         model.put( "baseUrl", createBaseUrl( req ) );
         if ( !upgradeNeeded )
         {
-            model.put( "sites", createSiteMap() );
+            model.put( "sites", createSiteList() );
         }
         model.put( "upgradeNeeded", upgradeNeeded );
         model.put( "modelUpgradeNeeded", modelUpgradeNeeded );
@@ -89,7 +112,8 @@ public final class WelcomeController
         model.put( "upgradeFrom", this.upgradeService.getCurrentModelNumber() );
         model.put( "upgradeTo", this.upgradeService.getTargetModelNumber() );
 
-        if (this.licenseChecker == null) {
+        if ( this.licenseChecker == null )
+        {
             this.licenseChecker = new NopLicenseChecker();
         }
 
@@ -100,9 +124,12 @@ public final class WelcomeController
     private String createBaseUrl( final HttpServletRequest req )
     {
         final String url = ServletUriComponentsBuilder.fromRequest( req ).build().toString();
-        if (url.endsWith( "/" )) {
+        if ( url.endsWith( "/" ) )
+        {
             return url.substring( 0, url.length() - 1 );
-        } else {
+        }
+        else
+        {
             return url;
         }
     }

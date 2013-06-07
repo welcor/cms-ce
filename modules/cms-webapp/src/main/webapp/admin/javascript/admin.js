@@ -1546,9 +1546,10 @@ function getUrlParameter( url, name )
 ! function msie10FramesFix() {
      if (/^10/.test(@_jscript_version)) { // is exactly IE 10 ? IE 11 may not have this bug
         var body = parent.window.document.body;
-        body.rows = '70, *, 1';
+        var rows = body.rows;
+        body.rows = rows + ', 1';
         setTimeout(function (){
-            body.rows = '70, *';
+            body.rows = rows;
         }, 0);
      }
 } ();

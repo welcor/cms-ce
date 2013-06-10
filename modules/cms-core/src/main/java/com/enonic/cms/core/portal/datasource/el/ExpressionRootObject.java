@@ -12,7 +12,9 @@ import java.util.Map;
 public class ExpressionRootObject
     extends StaticExpressionFunctions
 {
-    private Map<String, String[]> param;
+    private Map<String, String> param;
+
+    private Map<String, String[]> params;
 
     private Map<String, String> session;
 
@@ -26,14 +28,24 @@ public class ExpressionRootObject
     {
     }
 
-    public Map<String, String[]> getParam()
+    public Map<String, String> getParam()
     {
         return param;
     }
 
-    public void setParam( final Map<String, String[]> param )
+    public void setParam( final Map<String, String> param )
     {
         this.param = param;
+    }
+
+    public Map<String, String[]> getParams()
+    {
+        return params;
+    }
+
+    public void setParams( final Map<String, String[]> params )
+    {
+        this.params = params;
     }
 
     public Map<String, String> getSession()

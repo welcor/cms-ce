@@ -72,6 +72,81 @@ public class ExpressionFunctionsExecutorTest
     }
 
     @Test
+    public void testSingleValue()
+        throws Exception
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter( "brands", "bmw" );
+
+        efExecutor.setHttpRequest( request );
+        efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
+
+        assertEquals( "bmw", efExecutor.evaluate( "${param.brands}" ) );
+        assertEquals( "bmw", efExecutor.evaluate( "${param['brands']}" ) );
+        assertEquals( "true", efExecutor.evaluate( "${param.brands == 'bmw'}" ) );
+    }
+
+    @Test
+    public void testMultipleValue()
+        throws Exception
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter( "brands", "bmw" );
+
+        request.addParameter( "cars", "skoda" );
+        request.addParameter( "cars", "lexus" );
+        request.addParameter( "cars", "volvo" );
+
+        request.addParameter( "third", new String[]{"audi", "kia", "opel"} );
+
+        efExecutor.setHttpRequest( request );
+        efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
+
+        assertEquals( "skoda,lexus,volvo", efExecutor.evaluate( "${params.cars}" ) );
+
+        assertEquals( "3", efExecutor.evaluate( "${params.cars.length}" ) );
+        assertEquals( "3", efExecutor.evaluate( "${params['cars'].length}" ) );
+
+        assertEquals( "skoda", efExecutor.evaluate( "${params.cars[0]}" ) );
+        assertEquals( "skoda", efExecutor.evaluate( "${params['cars'][0]}" ) );
+
+        assertEquals( "volvo", efExecutor.evaluate( "${params.cars[2]}" ) );
+        assertEquals( "volvo", efExecutor.evaluate( "${params['cars'][2]}" ) );
+
+        assertEquals( "false", efExecutor.evaluate( "${params.cars == 'skoda'}" ) );
+        assertEquals( "true", efExecutor.evaluate( "${params.cars[0] == 'skoda'}" ) );
+        assertEquals( "true", efExecutor.evaluate( "${params['cars'][2] == 'volvo'}" ) );
+
+        assertEquals( "3", efExecutor.evaluate( "${params.third.length}" ) );
+        assertEquals( "3", efExecutor.evaluate( "${params['third'].length}" ) );
+
+        assertEquals( "audi", efExecutor.evaluate( "${params.third[0]}" ) );
+        assertEquals( "audi", efExecutor.evaluate( "${params['third'][0]}" ) );
+        assertEquals( "opel", efExecutor.evaluate( "${params.third[2]}" ) );
+        assertEquals( "opel", efExecutor.evaluate( "${params['third'][2]}" ) );
+
+        assertEquals( "false", efExecutor.evaluate( "${params.third == 'audi'}" ) );
+        assertEquals( "true", efExecutor.evaluate( "${params.third != 'audi'}" ) );
+        assertEquals( "true", efExecutor.evaluate( "${params.third[0] == 'audi'}" ) );
+        assertEquals( "true", efExecutor.evaluate( "${params.third[2] == 'opel'}" ) );
+    }
+
+    @Test
+    public void testSingleValue_asParams()
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter( "brands", "bmw" );
+        efExecutor.setHttpRequest( request );
+        efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
+
+        assertEquals( "1", efExecutor.evaluate( "${params.brands.length}" ) );
+        assertEquals( "1", efExecutor.evaluate( "${params['brands'].length}" ) );
+        assertEquals( "bmw", efExecutor.evaluate( "${params.brands[0]}" ) );
+        assertEquals( "bmw", efExecutor.evaluate( "${params['brands'][0]}" ) );
+        assertEquals( "true", efExecutor.evaluate( "${params.brands[0] == 'bmw'}" ) );
+    }
+
+    @Test
     public void testSingleParameterEvaulation()
         throws Exception
     {
@@ -81,15 +156,8 @@ public class ExpressionFunctionsExecutorTest
         efExecutor.setHttpRequest( request );
         efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
 
-        String evaluated18 = efExecutor.evaluate( "${param.subCat}" );
-        assertEquals( "18", evaluated18 );
-        assertEquals( "18", efExecutor.evaluate( "${param.subCat[0]}" ));
-        assertEquals( "1", efExecutor.evaluate( "${param.subCat.length}" ));
-
-        String evaluated27 = efExecutor.evaluate( "${param['sub-cat']}" );
-        assertEquals( "27", evaluated27 );
-        assertEquals( "27", efExecutor.evaluate( "${param['sub-cat'][0]}" ));
-        assertEquals( "1", efExecutor.evaluate( "${param['sub-cat'].length}" ));
+        assertEquals( "18", efExecutor.evaluate( "${param.subCat}" ) );
+        assertEquals( "27", efExecutor.evaluate( "${param['sub-cat']}" ) );
     }
 
     @Test
@@ -103,19 +171,19 @@ public class ExpressionFunctionsExecutorTest
         efExecutor.setHttpRequest( request );
         efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
 
-        String param = efExecutor.evaluate( "${param.brands}" );
+        String param = efExecutor.evaluate( "${params.brands}" );
         assertEquals( "bmw,volvo,skoda", param );
 
-        param = efExecutor.evaluate( "${param.brands[0]}" );
+        param = efExecutor.evaluate( "${params.brands[0]}" );
         assertEquals( "bmw", param );
 
-        param = efExecutor.evaluate( "${param.brands[1]}" );
+        param = efExecutor.evaluate( "${params.brands[1]}" );
         assertEquals( "volvo", param );
 
-        param = efExecutor.evaluate( "${param.brands[2]}" );
+        param = efExecutor.evaluate( "${params.brands[2]}" );
         assertEquals( "skoda", param );
 
-        String length = efExecutor.evaluate( "${param.brands.length}" );
+        String length = efExecutor.evaluate( "${params.brands.length}" );
         assertEquals( "3", length );
     }
 
@@ -130,19 +198,19 @@ public class ExpressionFunctionsExecutorTest
         efExecutor.setHttpRequest( request );
         efExecutor.setRequestParameters( new RequestParameters( request.getParameterMap() ) );
 
-        String param = efExecutor.evaluate( "${param['my-brands']}" );
+        String param = efExecutor.evaluate( "${params['my-brands']}" );
         assertEquals( "bmw,volvo,skoda", param );
 
-        param = efExecutor.evaluate( "${param['my-brands'][0]}" );
+        param = efExecutor.evaluate( "${params['my-brands'][0]}" );
         assertEquals( "bmw", param );
 
-        param = efExecutor.evaluate( "${param['my-brands'][1]}" );
+        param = efExecutor.evaluate( "${params['my-brands'][1]}" );
         assertEquals( "volvo", param );
 
-        param = efExecutor.evaluate( "${param['my-brands'][2]}" );
+        param = efExecutor.evaluate( "${params['my-brands'][2]}" );
         assertEquals( "skoda", param );
 
-        String length = efExecutor.evaluate( "${param['my-brands'].length}" );
+        String length = efExecutor.evaluate( "${params['my-brands'].length}" );
         assertEquals( "3", length );
     }
 

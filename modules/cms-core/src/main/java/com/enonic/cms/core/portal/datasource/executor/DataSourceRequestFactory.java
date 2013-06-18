@@ -41,19 +41,21 @@ final class DataSourceRequestFactory
         for ( final Map.Entry<String, String> param : element.getParameters().entrySet() )
         {
             final String name = param.getKey();
+            final String value = param.getValue();
 
             try
             {
-                req.addParam( name, evaluateParameter( name, param.getValue() ) );
+                req.addParam( name, evaluateParameter( value ) );
             }
             catch ( final Exception e )
             {
-                throw new DataSourceException( "Failed to evaluate expression for [{0}.{1}]", req.getName(), name ).withCause( e );
+                throw new DataSourceException( "Failed to evaluate expression [{0}] for [{1}.{2}]", value, req.getName(), name ).withCause(
+                    e );
             }
         }
     }
 
-    private String evaluateParameter( final String name, final String value )
+    private String evaluateParameter( final String value )
     {
         if ( !Strings.isNullOrEmpty( value ) && value.contains( "${" ) )
         {

@@ -5,20 +5,24 @@
 package com.enonic.cms.core.portal.datasource.el;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.context.expression.MapAccessor;
 import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.PropertyAccessor;
 import org.springframework.expression.TypedValue;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+
+import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.content.ContentEntity;
@@ -77,7 +81,9 @@ public final class ExpressionFunctionsExecutor
 
         ExpressionFunctionsFactory.get().setContext( expressionContext );
 
-        context.addPropertyAccessor( new SafeMapAccessor() );
+        final List<PropertyAccessor> accessors = Lists.newArrayList();
+        accessors.add( new PropertyAccessorImpl() );
+        context.setPropertyAccessors( accessors );
 
         Expression exp = EXPR_FACTORY.parseExpression( expression, TEMPLATE_PARSER_CONTEXT );
 
@@ -293,8 +299,8 @@ public final class ExpressionFunctionsExecutor
     /**
      * does not throw Exception if map does not contain key
      */
-    private static class SafeMapAccessor
-        extends MapAccessor
+    private static class PropertyAccessorImpl
+        extends ReflectivePropertyAccessor
     {
         @Override
         public TypedValue read( EvaluationContext context, Object target, String name )
@@ -320,7 +326,21 @@ public final class ExpressionFunctionsExecutor
         public boolean canRead( EvaluationContext context, Object target, String name )
             throws AccessException
         {
-            return true;
+            if ( target instanceof Map )
+            {
+                return true;
+            }
+            else
+            {
+                return super.canRead( context, target, name );
+            }
+        }
+
+        @Override
+        public boolean canWrite( EvaluationContext context, Object target, String name )
+            throws AccessException
+        {
+            return false;
         }
     }
 }

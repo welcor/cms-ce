@@ -26,9 +26,11 @@ import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.io.InputContext;
 import org.apache.jackrabbit.webdav.io.OutputContext;
 import org.apache.jackrabbit.webdav.lock.ActiveLock;
+import org.apache.jackrabbit.webdav.lock.LockDiscovery;
 import org.apache.jackrabbit.webdav.lock.LockInfo;
 import org.apache.jackrabbit.webdav.lock.LockManager;
 import org.apache.jackrabbit.webdav.lock.Scope;
+import org.apache.jackrabbit.webdav.lock.SupportedLock;
 import org.apache.jackrabbit.webdav.lock.Type;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -552,6 +554,16 @@ final class DavResourceImpl
             result.add( new DefaultDavProperty<String>( DavPropertyName.GETCONTENTLENGTH, String.valueOf( this.file.length() ) ) );
         }
 
+        applyLocking( result );
+
         return result;
+    }
+
+    private void applyLocking( final DavPropertySet result )
+    {
+        result.add( new LockDiscovery( getLock( Type.WRITE, Scope.EXCLUSIVE ) ) );
+        SupportedLock supportedLock = new SupportedLock();
+        supportedLock.addEntry( Type.WRITE, Scope.EXCLUSIVE );
+        result.add( supportedLock );
     }
 }

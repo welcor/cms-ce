@@ -43,6 +43,7 @@ import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
+import com.enonic.cms.core.tools.index.ProgressInfo;
 
 @Component
 public class AdminServiceImpl
@@ -850,6 +851,12 @@ public class AdminServiceImpl
     public void cleanUnusedContent( User user )
     {
         this.adminEngine.cleanUnusedContent( user );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public ProgressInfo getCleanUnusedContentProgressInfo( User user )
+    {
+        return this.adminEngine.getCleanUnusedContentProgressInfo( user );
     }
 
     public boolean isDeveloper( User user )

@@ -38,6 +38,7 @@ import com.enonic.vertical.engine.handlers.SecurityHandler;
 import com.enonic.vertical.engine.handlers.SystemHandler;
 import com.enonic.vertical.engine.handlers.UnitHandler;
 import com.enonic.vertical.engine.handlers.UserHandler;
+import com.enonic.vertical.engine.handlers.VacuumHandler;
 
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -67,6 +68,7 @@ import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
+import com.enonic.cms.core.tools.index.ProgressInfo;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.GroupDao;
 
@@ -112,6 +114,8 @@ public final class AdminEngine
     private SecurityService securityService;
 
     private SystemHandler systemHandler;
+
+    private VacuumHandler vacuumHandler;
 
     private UnitHandler unitHandler;
 
@@ -1159,7 +1163,7 @@ public final class AdminEngine
     {
         if ( ( user != null ) && isEnterpriseAdmin( user ) )
         {
-            this.systemHandler.cleanReadLogs();
+            this.vacuumHandler.cleanReadLogs();
         }
     }
 
@@ -1167,8 +1171,19 @@ public final class AdminEngine
     {
         if ( ( user != null ) && isEnterpriseAdmin( user ) )
         {
-            this.systemHandler.cleanUnusedContent();
+            this.vacuumHandler.cleanUnusedContent();
         }
+    }
+
+
+    public ProgressInfo getCleanUnusedContentProgressInfo( final User user )
+    {
+        if ( ( user != null ) && isEnterpriseAdmin( user ) )
+        {
+            return this.vacuumHandler.getProgressInfo();
+        }
+
+        return ProgressInfo.NONE;
     }
 
     @Autowired
@@ -1266,6 +1281,12 @@ public final class AdminEngine
     public void setSystemHandler( SystemHandler systemHandler )
     {
         this.systemHandler = systemHandler;
+    }
+
+    @Autowired
+    public void setVacuumHandler( VacuumHandler vacuumHandler )
+    {
+        this.vacuumHandler = vacuumHandler;
     }
 
     @Autowired

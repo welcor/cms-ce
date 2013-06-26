@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.server.service.admin.mvc.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.util.UrlPathHelper;
 
 import com.enonic.cms.framework.blob.BlobRecord;
+import com.enonic.cms.framework.util.HttpServletRangeUtil;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.core.Path;
@@ -132,7 +134,7 @@ public class AttachmentController
                 throw AttachmentNotFoundException.notFound( binaryData.getBinaryDataKey() );
             }
 
-            putBinaryOnResponse( download, response, binaryData, blob );
+            putBinaryOnResponse( download, request, response, binaryData, blob );
             return null;
         }
         catch ( InvalidBinaryPathException e )
@@ -159,15 +161,26 @@ public class AttachmentController
         return new PathAndParams( path, requestParameters );
     }
 
-    private void putBinaryOnResponse( boolean download, HttpServletResponse response, BinaryDataEntity binaryData, BlobRecord blob )
+    private void putBinaryOnResponse( boolean download, final HttpServletRequest request, HttpServletResponse response, BinaryDataEntity binaryData, BlobRecord blob )
         throws IOException
     {
-        HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
+        final File file = blob.getAsFile();
 
-        response.setContentType( HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() ) );
-        response.setContentLength( (int) blob.getLength() );
+        if ( file != null )
+        {
+            HttpServletRangeUtil.processRequest( request, response,
+                                                 HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() ), file );
+        }
+        else
+        {
+            HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
 
-        HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );
+            response.setContentType( HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() ) );
+            response.setContentLength( (int) blob.getLength() );
+
+            HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );
+        }
+
     }
 
     private ContentEntity resolveContent( AttachmentRequest attachmentRequest, PathAndParams pathAndParams )

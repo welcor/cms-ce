@@ -1,11 +1,15 @@
 package com.enonic.cms.web.portal.resource;
 
+import java.io.File;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.framework.util.HttpServletRangeUtil;
 import com.enonic.cms.framework.util.HttpServletUtil;
 
 import com.enonic.cms.core.Path;
@@ -24,6 +28,14 @@ public final class ResourceHandler
     extends WebHandlerBase
 {
     private ResourceService resourceService;
+
+    private File resourceRoot;
+
+    @Value("${cms.resource.path}")
+    public void setResourceRoot( final File resourceRoot )
+    {
+        this.resourceRoot = resourceRoot;
+    }
 
     @Override
     protected boolean canHandle( final Path localPath )
@@ -65,10 +77,8 @@ public final class ResourceHandler
 
         setHttpHeaders( response, sitePath );
 
-        response.setContentType( resourceFile.getMimeType() );
-        response.setContentLength( (int) resourceFile.getSize() );
-
-        HttpServletUtil.copyNoCloseOut( resourceFile.getDataAsInputStream(), response.getOutputStream() );
+        HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(), resourceFile.getMimeType(),
+                                             new File( resourceRoot, resourceFile.getPath() ) );
     }
 
     private void setHttpHeaders( final HttpServletResponse response, final SitePath sitePath )

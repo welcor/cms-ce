@@ -5,6 +5,7 @@
 package com.enonic.cms.framework.blob.memory;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 
 import com.enonic.cms.framework.blob.BlobKey;
@@ -27,6 +28,10 @@ final public class MemoryBlobRecord
         this( new BlobKey( BlobKeyCreator.createKey( data ).toString() ), data );
     }
 
+    public File getAsFile()
+    {
+        return null;
+    }
 
     public long getLength()
     {

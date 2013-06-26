@@ -1,5 +1,6 @@
 package com.enonic.cms.web.portal.attachment;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.framework.blob.BlobRecord;
+import com.enonic.cms.framework.util.HttpServletRangeUtil;
 import com.enonic.cms.framework.util.HttpServletUtil;
 import com.enonic.cms.framework.util.MimeTypeResolver;
 
@@ -121,7 +123,7 @@ public final class AttachmentHandler
 
             // serve response ...
             setHttpHeaders( request, response, sitePath, loggedInUser );
-            putBinaryOnResponse( downloadRequested, response, binaryData, blob );
+            putBinaryOnResponse( context, downloadRequested, binaryData, blob );
         }
         catch ( Exception e )
         {
@@ -216,17 +218,27 @@ public final class AttachmentHandler
         }
     }
 
-    private void putBinaryOnResponse( final boolean download, final HttpServletResponse response, final BinaryDataEntity binaryData,
+    private void putBinaryOnResponse( final PortalWebContext context, final boolean download, final BinaryDataEntity binaryData,
                                       final BlobRecord blob )
         throws IOException
     {
+        final File file = blob.getAsFile();
 
-        HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
+        if ( file != null )
+        {
+            HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(),
+                                                 this.mimeTypeResolver.getMimeType( binaryData.getName() ), file );
+        }
+        else
+        {
+            final HttpServletResponse response = context.getResponse();
+            HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
 
-        response.setContentType( this.mimeTypeResolver.getMimeType( binaryData.getName() ) );
-        response.setContentLength( (int) blob.getLength() );
+            response.setContentType( this.mimeTypeResolver.getMimeType( binaryData.getName() ) );
+            response.setContentLength( (int) blob.getLength() );
 
-        HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );
+            HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );
+        }
     }
 
     private boolean isInPreviewMode( final HttpServletRequest httpRequest )

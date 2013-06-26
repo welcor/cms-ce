@@ -4,6 +4,7 @@
  */
 package com.enonic.cms.framework.blob;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -47,6 +48,8 @@ public abstract class BlobRecord
             Closeables.closeQuietly( stream );
         }
     }
+
+    public abstract File getAsFile();
 
     public final String toString()
     {

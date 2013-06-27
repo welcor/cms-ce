@@ -1,3 +1,8 @@
+/*
+ * Copyright 2000-2013 Enonic AS
+ * http://www.enonic.com/license
+ */
+
 package com.enonic.cms.core.mail;
 
 import org.springframework.beans.factory.annotation.Autowired;

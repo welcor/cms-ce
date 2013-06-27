@@ -1,3 +1,8 @@
+/*
+ * Copyright 2000-2013 Enonic AS
+ * http://www.enonic.com/license
+ */
+
 package com.enonic.cms.framework.cache.base;
 
 import java.util.concurrent.atomic.AtomicInteger;

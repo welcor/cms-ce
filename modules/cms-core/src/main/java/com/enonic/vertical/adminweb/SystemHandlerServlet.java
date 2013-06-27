@@ -15,6 +15,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.jdom.JDOMException;
 import org.joda.time.format.PeriodFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.time.DateTimeFormatters;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
+import com.enonic.cms.core.tools.index.ProgressInfo;
 
 /**
  *
@@ -60,6 +63,13 @@ public class SystemHandlerServlet
 
     @Autowired
     private CacheManager cacheManager;
+
+    private ObjectMapper jacksonObjectMapper;
+
+    public SystemHandlerServlet()
+    {
+        jacksonObjectMapper = new ObjectMapper().configure( SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false );
+    }
 
     public void handlerCustom( HttpServletRequest request, HttpServletResponse response, HttpSession session, AdminService admin,
                                ExtendedMap formItems, String operation )
@@ -114,6 +124,7 @@ public class SystemHandlerServlet
                 root.setAttribute( "upTime", PeriodFormat.wordBased().print( timeService.upTime() ) );
                 root.setAttribute( "version", ProductVersion.getVersion() );
                 root.setAttribute( "modelVersion", String.valueOf( this.upgradeService.getCurrentModelNumber() ) );
+                root.setAttribute( "isCleanInProgress", String.valueOf( admin.getCleanUnusedContentProgressInfo( user ).isInProgress() ) );
                 root.appendChild( buildComponentsInfo( doc ) );
             }
             else if ( mode.equals( "java_properties" ) )
@@ -181,8 +192,27 @@ public class SystemHandlerServlet
      */
     private void handlerCleanUnusedContent( AdminService admin, HttpServletRequest request, HttpServletResponse response )
     {
-        admin.cleanUnusedContent( securityService.getLoggedInAdminConsoleUser() );
-        redirectClientToReferer( request, response );
+        if ( !"getprogress".equals( request.getParameter( "subop" ) ) )
+        {
+            admin.cleanUnusedContent( securityService.getLoggedInAdminConsoleUser() );
+        }
+        else
+        {
+            final ProgressInfo cleanUnusedContentProgressInfo =
+                admin.getCleanUnusedContentProgressInfo( securityService.getLoggedInAdminConsoleUser() );
+
+            try
+            {
+                response.setHeader( "Content-Type", "application/json; charset=UTF-8" );
+
+                final String json = jacksonObjectMapper.writeValueAsString( cleanUnusedContentProgressInfo );
+                response.getWriter().println( json );
+            }
+            catch ( IOException e )
+            {
+                throw new RuntimeException( "Failed to transform objects to JSON: " + e.getMessage(), e );
+            }
+        }
     }
 
     private Element buildJavaInfo( Document doc )

@@ -22,10 +22,70 @@
     <html>
       <head>
         <xsl:call-template name="waitsplash"/>
+        <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js"/>
         <script type="text/javascript" src="javascript/admin.js"/>
         <script type="text/javascript" src="javascript/tabpane.js"/>
+        <link type="text/css" rel="stylesheet" href="javascript/bootstrap-progressbar.css" />
         <link type="text/css" rel="StyleSheet" href="javascript/tab.webfx.css"/>
         <link type="text/css" rel="stylesheet" href="css/admin.css"/>
+
+        <script>
+          function removeDeletedContentFromDatabase() {
+            if (confirm('%alertCleanUnusedContent%')) {
+              runRemoveDeletedContentFromDatabaseJob( true );
+            }
+          }
+
+          // render without animation
+          function renderProgress( percent ) {
+              $('.progress').html('<div class="bar" style="width: '+ + percent + '%"></div>');
+          }
+
+          function runRemoveDeletedContentFromDatabaseJob( start ) {
+              var startURL = 'adminpage?page=10&amp;op=cleanUnusedContent';
+              var progressURL = 'adminpage?page=10&amp;op=cleanUnusedContent&amp;subop=getprogress';
+
+              var timerId = false;
+              var showAnimation = start;
+
+              $('#message').html('Cleaning unused content...');
+              $('#cmdRemoveDeletedContentFromDatabase').attr("disabled", "disabled");
+
+
+              function showProgress() {
+                  $.post( progressURL ).done(function(data) {
+                      if (showAnimation) {
+                          $('.bar').css('width', data.percent + '%');
+                      } else {
+                          renderProgress( data.percent );
+                          showAnimation = true;
+                      }
+
+                      if (data.inProgress == false &amp;&amp; timerId) {
+                          clearInterval( timerId );
+
+                          setTimeout(function() {
+                              $('#message').html('Finished. Last clean was executed at ' + new Date().toTimeString() );
+                              $('#cmdRemoveDeletedContentFromDatabase').removeAttr("disabled");
+                          }, 500);
+                      }
+                      else {
+                          $('#message').html(data.logLine);
+                      }
+                  });
+              }
+
+              if ( start ) {
+                  renderProgress( 0 );
+                  $.post( startURL );
+              } else {
+                  showProgress();
+              }
+
+              timerId = setInterval(showProgress, 500);
+          }
+        </script>
+
       </head>
       <body>
         <h1>
@@ -35,39 +95,6 @@
             <xsl:with-param name="mode" select="$mode"/>
           </xsl:call-template>
         </h1>
-
-        <xsl:if test="$mode = 'system'">
-          <table cellspacing="0" cellpadding="0" border="0">
-            <tr>
-              <td>
-                <xsl:call-template name="button">
-                  <xsl:with-param name="type" select="'link'"/>
-                  <xsl:with-param name="caption" select="'%cmdCleanReadLogs%'"/>
-                  <xsl:with-param name="href" select="'adminpage?page=10&amp;op=cleanReadLogs'"/>
-                  <xsl:with-param name="condition">
-                    <xsl:text>confirm('%alertCleanReadLogs%')</xsl:text>
-                  </xsl:with-param>
-                </xsl:call-template>
-                <xsl:text>&#160;</xsl:text>
-                <xsl:call-template name="button">
-                  <xsl:with-param name="type" select="'link'"/>
-                  <xsl:with-param name="caption" select="'%cmdRemoveDeletedContentFromDatabase%'"/>
-                  <xsl:with-param name="href" select="'adminpage?page=10&amp;op=cleanUnusedContent'"/>
-                  <xsl:with-param name="condition">
-                    <xsl:text>confirm('%alertCleanUnusedContent%')</xsl:text>
-                  </xsl:with-param>
-                </xsl:call-template>
-                <xsl:text>&#160;</xsl:text>
-                <xsl:text>&#160;</xsl:text>
-              </td>
-            </tr>
-            <tr>
-              <td class="browse_buttonrow_datarows_seperator">
-                <img src="images/1x1.gif"/>
-              </td>
-            </tr>
-          </table>
-        </xsl:if>
 
         <div class="tab-pane" id="tab-pane-1">
 
@@ -227,6 +254,51 @@
           </tr>
         </table>
       </fieldset>
+
+      <xsl:if test="$mode = 'system'">
+      <fieldset>
+        <legend>&nbsp;Operations&nbsp;</legend>
+
+          <table cellspacing="0" cellpadding="0" border="0">
+            <tr>
+              <td>
+                <xsl:call-template name="button">
+                  <xsl:with-param name="type" select="'button'"/>
+                  <xsl:with-param name="caption" select="'%cmdRemoveDeletedContentFromDatabase%'"/>
+                  <xsl:with-param name="name" select="'cmdRemoveDeletedContentFromDatabase'"/>
+                  <xsl:with-param name="onclick">
+                    <xsl:text>javascript:removeDeletedContentFromDatabase();</xsl:text>
+                  </xsl:with-param>
+                  <xsl:with-param name="referer" select="''"/>
+                </xsl:call-template>
+                <xsl:text>&#160;</xsl:text>
+                <xsl:call-template name="button">
+                  <xsl:with-param name="type" select="'link'"/>
+                  <xsl:with-param name="caption" select="'%cmdCleanReadLogs%'"/>
+                  <xsl:with-param name="href" select="'adminpage?page=10&amp;op=cleanReadLogs'"/>
+                  <xsl:with-param name="condition">
+                    <xsl:text>confirm('%alertCleanReadLogs%')</xsl:text>
+                  </xsl:with-param>
+                  <xsl:with-param name="referer" select="''"/>
+                </xsl:call-template>
+              </td>
+            </tr>
+          </table>
+
+
+        <div class="progress" style="width: 300px; margin-top: 8px; margin-bottom: 8px;">
+            <div class="bar" style="width: 0"> </div>
+        </div>
+
+        <div id="message">Click button to process.</div>
+
+        <xsl:if test="/vertical/@isCleanInProgress = 'true'">
+          <script>runRemoveDeletedContentFromDatabaseJob(false)</script>
+        </xsl:if>
+
+
+      </fieldset>
+      </xsl:if>
 
     </div>
   </xsl:template>

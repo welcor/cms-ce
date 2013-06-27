@@ -1,3 +1,8 @@
+/*
+ * Copyright 2000-2013 Enonic AS
+ * http://www.enonic.com/license
+ */
+
 package com.enonic.cms.core.search.facet.builder;
 
 import org.elasticsearch.search.facet.range.RangeFacetBuilder;

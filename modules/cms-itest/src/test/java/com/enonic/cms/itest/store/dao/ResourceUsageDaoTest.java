@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 Enonic AS
+ * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
 package com.enonic.cms.itest.store.dao;

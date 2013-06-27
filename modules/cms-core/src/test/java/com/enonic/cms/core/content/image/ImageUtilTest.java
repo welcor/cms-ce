@@ -1,9 +1,9 @@
-package com.enonic.cms.core.content.image;
-
 /*
- * Copyright 2000-2011 Enonic AS
+ * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
+
+package com.enonic.cms.core.content.image;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

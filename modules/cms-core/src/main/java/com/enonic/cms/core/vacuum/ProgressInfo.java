@@ -2,11 +2,11 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.tools.index;
 
+package com.enonic.cms.core.vacuum;
 
 /**
- * DTO for the indexing progress
+ * DTO for the progress
  */
 public class ProgressInfo
 {

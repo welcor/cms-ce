@@ -29,7 +29,6 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.core.tools.index.ProgressInfo;
 
 public interface AdminService
 {
@@ -323,12 +322,6 @@ public interface AdminService
     public long getArchiveSizeByUnit( int unitKey );
 
     public boolean isSiteAdmin( User user, SiteKey siteKey );
-
-    public void cleanReadLogs( User user );
-
-    public void cleanUnusedContent( User user );
-
-    public ProgressInfo getCleanUnusedContentProgressInfo( User user );
 
     public XMLDocument getResourceTreeXml( String rootPath, boolean includeFullPath, boolean includeUsageCount, int maxLevels,
                                            boolean listFolders, boolean listResources );

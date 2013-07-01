@@ -13,17 +13,13 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.esl.sql.model.DatabaseSchemaTool;
 import com.enonic.vertical.engine.dbmodel.VerticalDatabase;
 
-import com.enonic.cms.framework.blob.gc.GarbageCollector;
-
 import com.enonic.cms.core.jdbc.DatabaseValuesInitializer;
 import com.enonic.cms.store.DatabaseAccessor;
-import com.enonic.cms.store.VacuumContentSQL;
 
 /**
  * This class implements the system handler that takes care of creating database schema and populating version numbers.

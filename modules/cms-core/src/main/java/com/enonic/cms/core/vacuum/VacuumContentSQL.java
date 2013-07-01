@@ -2,7 +2,7 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.store;
+package com.enonic.cms.core.vacuum;
 
 /**
  * Nov 24, 2010

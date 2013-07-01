@@ -2,53 +2,64 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.vertical.engine.handlers;
+
+package com.enonic.cms.core.vacuum;
 
 import java.sql.Connection;
 import java.sql.Statement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.enonic.vertical.engine.PresentationEngine;
 
 import com.enonic.cms.framework.blob.gc.GarbageCollector;
 
-import com.enonic.cms.core.tools.index.ProgressInfo;
-import com.enonic.cms.store.VacuumContentSQL;
+import com.enonic.cms.core.security.SecurityService;
+import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.userstore.MemberOfResolver;
 
-/**
- * This class implements the system handler that takes care of creating database schema and populating version numbers.
- */
 @Component
-public final class VacuumHandler
-    extends BaseHandler
+public final class VacuumServiceImpl
+    implements VacuumService
 {
-    private final static Logger LOG = LoggerFactory.getLogger( VacuumHandler.class );
-
-    /**
-     * Delete read logs.
-     */
     private final static String VACUUM_READ_LOGS_SQL = "DELETE FROM tLogEntry WHERE len_lTypeKey = 7";
 
     @Autowired
     private GarbageCollector garbageCollector;
 
-    private ProgressInfo progressInfo = new ProgressInfo();
+    @Autowired
+    protected PresentationEngine baseEngine;
 
+    @Autowired
+    protected SecurityService securityService;
+
+    @Autowired
+    private MemberOfResolver memberOfResolver;
+
+
+    private ProgressInfo progressInfo = new ProgressInfo();
 
     /**
      * Clean read logs.
      */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void cleanReadLogs()
     {
+        if ( !isAdmin() )
+        {
+            return;
+        }
+
         try
         {
-            Connection conn = getConnection();
+            final Connection conn = baseEngine.getConnection();
 
             vacuumReadLogs( conn );
         }
-        catch ( Exception e )
+        catch ( final Exception e )
         {
             throw new RuntimeException( "Failed to clean read logs", e );
         }
@@ -57,9 +68,10 @@ public final class VacuumHandler
     /**
      * Clean unused content.
      */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void cleanUnusedContent()
     {
-        if ( progressInfo.isInProgress() )
+        if ( progressInfo.isInProgress() || !isAdmin() )
         {
             return;
         }
@@ -70,7 +82,7 @@ public final class VacuumHandler
 
         try
         {
-            final Connection conn = getConnection();
+            final Connection conn = baseEngine.getConnection();
 
             progressInfo.setLogLine( "Vacuum binaries..." );
             progressInfo.setPercent( 2 );
@@ -91,8 +103,9 @@ public final class VacuumHandler
             progressInfo.setLogLine( "Vacuum blob store..." );
             progressInfo.setPercent( 80 );
             vacuumBlobStore();
+
         }
-        catch ( Exception e )
+        catch ( final Exception e )
         {
             progressInfo.setLogLine( "Failed to clean unused content: " + e.getMessage() );
 
@@ -107,10 +120,27 @@ public final class VacuumHandler
         }
     }
 
+    public ProgressInfo getProgressInfo()
+    {
+        if ( !isAdmin() )
+        {
+            return ProgressInfo.NONE;
+        }
+
+        return progressInfo;
+    }
+
+    private boolean isAdmin()
+    {
+        final User user = securityService.getLoggedInAdminConsoleUser();
+        return memberOfResolver.hasEnterpriseAdminPowers( user.getKey() );
+    }
+
+
     /**
      * Vacuum binaries.
      */
-    private void vacuumBinaries( Connection conn )
+    private void vacuumBinaries( final Connection conn )
         throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_BINARIES_STATEMENTS );
@@ -119,7 +149,7 @@ public final class VacuumHandler
     /**
      * Vacuum contents.
      */
-    private void vacuumContents( Connection conn )
+    private void vacuumContents( final Connection conn )
         throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_CONTENT_STATEMENTS );
@@ -128,7 +158,7 @@ public final class VacuumHandler
     /**
      * Vacuum categories.
      */
-    private void vacuumCategories( Connection conn )
+    private void vacuumCategories( final Connection conn )
         throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_CATEGORIES_STATEMENTS );
@@ -137,7 +167,7 @@ public final class VacuumHandler
     /**
      * Vacuum arvhives.
      */
-    private void vacuumArchives( Connection conn )
+    private void vacuumArchives( final Connection conn )
         throws Exception
     {
         executeStatements( conn, VacuumContentSQL.VACUUM_ARCHIVES_STATEMENTS );
@@ -146,19 +176,24 @@ public final class VacuumHandler
     /**
      * Vacuum read logs.
      */
-    private void vacuumReadLogs( Connection conn )
+    private void vacuumReadLogs( final Connection conn )
         throws Exception
     {
         executeStatements( conn, new String[]{VACUUM_READ_LOGS_SQL} );
     }
 
+    private void vacuumBlobStore()
+    {
+        this.garbageCollector.process();
+    }
+
     /**
      * Execute a list of statements.
      */
-    private void executeStatements( Connection conn, String[] sqlList )
+    private void executeStatements( final Connection conn, final String[] sqlList )
         throws Exception
     {
-        for ( String sql : sqlList )
+        for ( final String sql : sqlList )
         {
             executeStatement( conn, sql );
         }
@@ -167,7 +202,7 @@ public final class VacuumHandler
     /**
      * Execute statement.
      */
-    private void executeStatement( Connection conn, String sql )
+    private void executeStatement( final Connection conn, final String sql )
         throws Exception
     {
         Statement stmt = null;
@@ -179,17 +214,7 @@ public final class VacuumHandler
         }
         finally
         {
-            close( stmt );
+            baseEngine.close( stmt );
         }
-    }
-
-    private void vacuumBlobStore()
-    {
-        this.garbageCollector.process();
-    }
-
-    public ProgressInfo getProgressInfo()
-    {
-        return progressInfo;
     }
 }

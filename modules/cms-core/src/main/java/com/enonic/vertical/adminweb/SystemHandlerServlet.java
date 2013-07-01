@@ -41,7 +41,8 @@ import com.enonic.cms.core.service.AdminService;
 import com.enonic.cms.core.time.DateTimeFormatters;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
-import com.enonic.cms.core.tools.index.ProgressInfo;
+import com.enonic.cms.core.vacuum.ProgressInfo;
+import com.enonic.cms.core.vacuum.VacuumService;
 
 /**
  *
@@ -60,6 +61,9 @@ public class SystemHandlerServlet
 
     @Autowired
     private TimeService timeService;
+
+    @Autowired
+    private VacuumService vacuumService;
 
     @Autowired
     private CacheManager cacheManager;
@@ -124,7 +128,7 @@ public class SystemHandlerServlet
                 root.setAttribute( "upTime", PeriodFormat.wordBased().print( timeService.upTime() ) );
                 root.setAttribute( "version", ProductVersion.getVersion() );
                 root.setAttribute( "modelVersion", String.valueOf( this.upgradeService.getCurrentModelNumber() ) );
-                root.setAttribute( "isCleanInProgress", String.valueOf( admin.getCleanUnusedContentProgressInfo( user ).isInProgress() ) );
+                root.setAttribute( "isCleanInProgress", String.valueOf( vacuumService.getProgressInfo().isInProgress() ) );
                 root.appendChild( buildComponentsInfo( doc ) );
             }
             else if ( mode.equals( "java_properties" ) )
@@ -183,7 +187,7 @@ public class SystemHandlerServlet
      */
     private void handlerCleanReadLogs( AdminService admin, HttpServletRequest request, HttpServletResponse response )
     {
-        admin.cleanReadLogs( securityService.getLoggedInAdminConsoleUser() );
+        vacuumService.cleanReadLogs();
         redirectClientToReferer( request, response );
     }
 
@@ -194,12 +198,11 @@ public class SystemHandlerServlet
     {
         if ( !"getprogress".equals( request.getParameter( "subop" ) ) )
         {
-            admin.cleanUnusedContent( securityService.getLoggedInAdminConsoleUser() );
+            vacuumService.cleanUnusedContent( );
         }
         else
         {
-            final ProgressInfo cleanUnusedContentProgressInfo =
-                admin.getCleanUnusedContentProgressInfo( securityService.getLoggedInAdminConsoleUser() );
+            final ProgressInfo cleanUnusedContentProgressInfo = vacuumService.getProgressInfo();
 
             try
             {

@@ -18,7 +18,7 @@ public interface VacuumService
     void cleanUnusedContent();
 
     /**
-     * returns progress info about Clean unused content.
+     * returns progress info about either Clean unused content or Clean read logs.
      */
     ProgressInfo getProgressInfo();
 }

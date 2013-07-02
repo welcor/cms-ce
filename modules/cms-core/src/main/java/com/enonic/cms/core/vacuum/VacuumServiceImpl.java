@@ -7,19 +7,20 @@ package com.enonic.cms.core.vacuum;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.enonic.vertical.engine.PresentationEngine;
 
 import com.enonic.cms.framework.blob.gc.GarbageCollector;
 
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.userstore.MemberOfResolver;
+import com.enonic.cms.store.support.ConnectionFactory;
 
 @Component
 public final class VacuumServiceImpl
@@ -31,7 +32,7 @@ public final class VacuumServiceImpl
     private GarbageCollector garbageCollector;
 
     @Autowired
-    protected PresentationEngine baseEngine;
+    protected ConnectionFactory connectionFactory;
 
     @Autowired
     protected SecurityService securityService;
@@ -48,20 +49,30 @@ public final class VacuumServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void cleanReadLogs()
     {
-        if ( !isAdmin() )
+        if ( progressInfo.isInProgress() || !isAdmin() )
         {
             return;
         }
 
         try
         {
-            final Connection conn = baseEngine.getConnection();
+            startProgress( "Cleaning read logs..." );
+
+            final Connection conn = connectionFactory.getConnection( true );
+
+            setProgress( "Vacuum read logs...", 5 );
 
             vacuumReadLogs( conn );
         }
         catch ( final Exception e )
         {
+            setProgress( "Failed to clean read logs: " + e.getMessage(), 100 );
+
             throw new RuntimeException( "Failed to clean read logs", e );
+        }
+        finally
+        {
+            finishProgress();
         }
     }
 
@@ -76,50 +87,43 @@ public final class VacuumServiceImpl
             return;
         }
 
-        progressInfo.setInProgress( true );
-        progressInfo.setLogLine( "Cleaning unused content..." );
-        progressInfo.setPercent( 0 );
-
         try
         {
-            final Connection conn = baseEngine.getConnection();
+            startProgress( "Cleaning unused content..." );
 
-            progressInfo.setLogLine( "Vacuum binaries..." );
-            progressInfo.setPercent( 2 );
+            final Connection conn = connectionFactory.getConnection( true );
+
+            setProgress( "Vacuum binaries...", 5 );
             vacuumBinaries( conn );
 
-            progressInfo.setLogLine( "Vacuum contents..." );
-            progressInfo.setPercent( 20 );
+            setProgress( "Vacuum contents...", 20 );
             vacuumContents( conn );
 
-            progressInfo.setLogLine( "Vacuum categories..." );
-            progressInfo.setPercent( 40 );
+            setProgress( "Vacuum categories...", 40 );
             vacuumCategories( conn );
 
-            progressInfo.setLogLine( "Vacuum archives..." );
-            progressInfo.setPercent( 60 );
+            setProgress( "Vacuum archives...", 60 );
             vacuumArchives( conn );
 
-            progressInfo.setLogLine( "Vacuum blob store..." );
-            progressInfo.setPercent( 80 );
+            setProgress( "Vacuum blob store...", 80 );
             vacuumBlobStore();
 
         }
         catch ( final Exception e )
         {
-            progressInfo.setLogLine( "Failed to clean unused content: " + e.getMessage() );
+            setProgress( "Failed to clean unused content: " + e.getMessage(), 100 );
 
             throw new RuntimeException( "Failed to clean unused content", e );
         }
         finally
         {
-            progressInfo.setLogLine( "Done." );
-
-            progressInfo.setPercent( 100 );
-            progressInfo.setInProgress( false );
+            finishProgress();
         }
     }
 
+    /**
+     * returns progress info about either Clean unused content or Clean read logs.
+     */
     public ProgressInfo getProgressInfo()
     {
         if ( !isAdmin() )
@@ -128,6 +132,24 @@ public final class VacuumServiceImpl
         }
 
         return progressInfo;
+    }
+
+    private void startProgress( final String logLine )
+    {
+        setProgress( logLine, 0 );
+        progressInfo.setInProgress( true );
+    }
+
+    private void setProgress( final String logLine, final int percent )
+    {
+        progressInfo.setLogLine( logLine );
+        progressInfo.setPercent( percent );
+    }
+
+    private void finishProgress()
+    {
+        setProgress( "Finished. Last job was executed at " + new Date().toString(), 100 );
+        progressInfo.setInProgress( false );
     }
 
     private boolean isAdmin()
@@ -214,7 +236,7 @@ public final class VacuumServiceImpl
         }
         finally
         {
-            baseEngine.close( stmt );
+            JdbcUtils.closeStatement( stmt );
         }
     }
 }

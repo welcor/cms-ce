@@ -187,8 +187,14 @@ public class SystemHandlerServlet
      */
     private void handlerCleanReadLogs( AdminService admin, HttpServletRequest request, HttpServletResponse response )
     {
-        vacuumService.cleanReadLogs();
-        redirectClientToReferer( request, response );
+        if ( "getprogress".equals( request.getParameter( "subop" ) ) )
+        {
+            renderGetProgress( response );
+        }
+        else
+        {
+            vacuumService.cleanReadLogs();
+        }
     }
 
     /**
@@ -196,25 +202,30 @@ public class SystemHandlerServlet
      */
     private void handlerCleanUnusedContent( AdminService admin, HttpServletRequest request, HttpServletResponse response )
     {
-        if ( !"getprogress".equals( request.getParameter( "subop" ) ) )
+        if ( "getprogress".equals( request.getParameter( "subop" ) ) )
         {
-            vacuumService.cleanUnusedContent( );
+            renderGetProgress( response );
         }
         else
         {
-            final ProgressInfo cleanUnusedContentProgressInfo = vacuumService.getProgressInfo();
+            vacuumService.cleanUnusedContent( );
+        }
+    }
 
-            try
-            {
-                response.setHeader( "Content-Type", "application/json; charset=UTF-8" );
+    private void renderGetProgress( final HttpServletResponse response )
+    {
+        final ProgressInfo cleanUnusedContentProgressInfo = vacuumService.getProgressInfo();
 
-                final String json = jacksonObjectMapper.writeValueAsString( cleanUnusedContentProgressInfo );
-                response.getWriter().println( json );
-            }
-            catch ( IOException e )
-            {
-                throw new RuntimeException( "Failed to transform objects to JSON: " + e.getMessage(), e );
-            }
+        try
+        {
+            response.setHeader( "Content-Type", "application/json; charset=UTF-8" );
+
+            final String json = jacksonObjectMapper.writeValueAsString( cleanUnusedContentProgressInfo );
+            response.getWriter().println( json );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Failed to transform objects to JSON: " + e.getMessage(), e );
         }
     }
 

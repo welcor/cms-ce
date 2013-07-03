@@ -32,51 +32,59 @@
         <script>
           function removeDeletedContentFromDatabase() {
             if (confirm('%alertCleanUnusedContent%')) {
-              runRemoveDeletedContentFromDatabaseJob( true );
+                runProgress( true, 'cleanUnusedContent' );
             }
           }
 
-          // render without animation
-          function renderProgress( percent ) {
-              $('.progress').html('<div class="bar" style="width: '+ + percent + '%"></div>');
+          function cleanReadLogs() {
+            if (confirm('%alertCleanReadLogs%')) {
+                runProgress( true, 'cleanReadLogs' );
+            }
           }
 
-          function runRemoveDeletedContentFromDatabaseJob( start ) {
-              var startURL = 'adminpage?page=10&amp;op=cleanUnusedContent';
+          function renderProgress( percent, showAnimation ) {
+              if (showAnimation) {
+                  $('.bar').css('width', percent + '%');
+              } else {
+                  $('.progress').html('<div class="bar" style="width: ' + percent + '%"> </div>');
+              }
+          }
+
+          function renderMessage( message ) {
+              $('#message').html(message);
+          }
+
+          function runProgress( start, op ) {
+              var startURL = 'adminpage?page=10&amp;op=' + op;
               var progressURL = 'adminpage?page=10&amp;op=cleanUnusedContent&amp;subop=getprogress';
 
               var timerId = false;
               var showAnimation = start;
 
-              $('#message').html('Cleaning unused content...');
-              $('#cmdRemoveDeletedContentFromDatabase').attr("disabled", "disabled");
-
+              renderMessage('Running...');
+              $('#cmdRemoveDeletedContentFromDatabase,#cmdCleanReadLogs').attr("disabled", "disabled");
 
               function showProgress() {
                   $.post( progressURL ).done(function(data) {
-                      if (showAnimation) {
-                          $('.bar').css('width', data.percent + '%');
-                      } else {
-                          renderProgress( data.percent );
-                          showAnimation = true;
-                      }
+                      renderProgress( data.percent, showAnimation );
+                      showAnimation = true;
 
                       if (data.inProgress == false &amp;&amp; timerId) {
                           clearInterval( timerId );
 
                           setTimeout(function() {
-                              $('#message').html('Finished. Last clean was executed at ' + new Date().toTimeString() );
-                              $('#cmdRemoveDeletedContentFromDatabase').removeAttr("disabled");
+                              renderMessage(data.logLine);
+                              $('#cmdRemoveDeletedContentFromDatabase,#cmdCleanReadLogs').removeAttr("disabled");
                           }, 500);
                       }
                       else {
-                          $('#message').html(data.logLine);
+                          renderMessage(data.logLine);
                       }
                   });
               }
 
               if ( start ) {
-                  renderProgress( 0 );
+                  renderProgress( 0, false );
                   $.post( startURL );
               } else {
                   showProgress();
@@ -273,11 +281,11 @@
                 </xsl:call-template>
                 <xsl:text>&#160;</xsl:text>
                 <xsl:call-template name="button">
-                  <xsl:with-param name="type" select="'link'"/>
+                  <xsl:with-param name="type" select="'button'"/>
                   <xsl:with-param name="caption" select="'%cmdCleanReadLogs%'"/>
-                  <xsl:with-param name="href" select="'adminpage?page=10&amp;op=cleanReadLogs'"/>
-                  <xsl:with-param name="condition">
-                    <xsl:text>confirm('%alertCleanReadLogs%')</xsl:text>
+                  <xsl:with-param name="name" select="'cmdCleanReadLogs'"/>
+                  <xsl:with-param name="onclick">
+                    <xsl:text>javascript:cleanReadLogs();</xsl:text>
                   </xsl:with-param>
                   <xsl:with-param name="referer" select="''"/>
                 </xsl:call-template>
@@ -293,7 +301,7 @@
         <div id="message">Click button to process.</div>
 
         <xsl:if test="/vertical/@isCleanInProgress = 'true'">
-          <script>runRemoveDeletedContentFromDatabaseJob(false)</script>
+          <script>runProgress(false)</script>
         </xsl:if>
 
 

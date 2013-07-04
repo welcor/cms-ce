@@ -70,6 +70,13 @@
     </property>
   </bean>
 
+  <bean id="connectionDecorator" class="com.enonic.cms.framework.jdbc.LoggingConnectionDecorator"/>
+
+  <bean id="connectionFactory" class="com.enonic.cms.store.support.ConnectionFactory">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="decorator" ref="connectionDecorator"/>
+  </bean>
+
   <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>

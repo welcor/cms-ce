@@ -116,7 +116,7 @@ public class DurationTest
             Duration duration = new Duration();
             duration.setStartTime( new DateTime( currentTime ) );
             final long time = duration.getAsMilliseconds();
-            assertTrue( time >= 500 );
+            assertTrue( "time is less than 500 and is " + time, time >= 500 );
         }
         catch ( InterruptedException e )
         {

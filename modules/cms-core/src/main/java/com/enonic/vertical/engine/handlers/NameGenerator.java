@@ -30,9 +30,9 @@ public class NameGenerator
     public static final Pattern DIACRITICS = Pattern.compile( DIACRITICAL );
 
 
+    // dots and @ sign are not touched, see CMS-1806
     private static final ImmutableMap<Character, String> NON_DIACRITICS = ImmutableMap.<Character, String>builder()
         //remove crap strings with no semantics
-        .put( '.', "" )
         .put( '\"', "" )
         .put( '\'', "" )
 

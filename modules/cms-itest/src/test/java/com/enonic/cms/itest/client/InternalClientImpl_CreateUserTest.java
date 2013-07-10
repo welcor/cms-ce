@@ -77,6 +77,30 @@ public class InternalClientImpl_CreateUserTest
         assertEquals( "Jorund Vier", actualUser.getUserFields().getFirstName() );
         assertEquals( "Skriubakken", actualUser.getUserFields().getLastName() );
     }
+    
+    @Test
+    public void create_user_in_local_userstore_with_name_equals_email()
+        throws Exception
+    {
+        clientLogin( "admin" );
+
+        // exercise:
+        CreateUserParams params = new CreateUserParams();
+        params.userstore = "testuserstore";
+        params.username = "jvs@enonic.com";
+        params.password = "password";
+        params.email = "jvs@enonic.com";
+        params.userInfo.setFirstName( "Jorund Vier" );
+        params.userInfo.setLastName( "Skriubakken" );
+        String userKey = internalClient.createUser( params );
+
+        // verify:
+        assertNotNull( userKey );
+        UserEntity actualUser = fixture.findUserByName( "jvs@enonic.com" );
+        assertEquals( "jvs@enonic.com", actualUser.getEmail() );
+        assertEquals( "jvs@enonic.com", actualUser.getName() );
+    }
+    
 
     private void clientLogin( String username )
     {

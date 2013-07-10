@@ -121,6 +121,12 @@ public class DisplayNameResolverTest
     }
 
     @Test
+    public void testEmail()
+    {
+        Assert.assertEquals( "hza@enonic.com", displayNameResolver.resolveDisplayName( "hza@enonic.com", null, null ) );
+    }
+
+    @Test
     public void testAllWithoutDisplayName()
     {
         Mockito.when( userStoreConfig.getUserFieldConfig( UserFieldType.PREFIX ) ).thenReturn(

@@ -64,6 +64,11 @@ public class RelatedContentFinder
 
     public List<ContentKey> getContentKeys( final Map.Entry<CtyImportMappingConfig, AbstractSourceValue> configAndValue )
     {
+        final List<String> values = getValues( configAndValue.getValue() );
+        if ( values.isEmpty() )
+        {
+            return Collections.emptyList();
+        }
         final ContentIndexQuery query = getQuery( configAndValue );
         final ContentResultSet resSet = contentIndexService.query( query );
 

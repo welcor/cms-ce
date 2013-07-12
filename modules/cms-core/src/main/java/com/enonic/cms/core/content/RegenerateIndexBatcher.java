@@ -9,20 +9,26 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Iterables;
+
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
+import com.enonic.cms.core.search.IndexException;
 
 public class RegenerateIndexBatcher
 {
 
     private static final Logger LOG = LoggerFactory.getLogger( RegenerateIndexBatcher.class );
 
-    private IndexService indexService;
+    private static final int DEFAULT_RETRIES = 3;
 
-    private ContentService contentService;
+    private final IndexService indexService;
+
+    private final ContentService contentService;
+
+    private int maxRetries = DEFAULT_RETRIES;
 
     public RegenerateIndexBatcher( IndexService indexService, ContentService contentService )
     {
-
         this.indexService = indexService;
         this.contentService = contentService;
     }
@@ -62,7 +68,30 @@ public class RegenerateIndexBatcher
 
                 long start = System.currentTimeMillis();
 
-                indexService.reindex( nextContentKeys );
+                int retry = 0;
+                boolean indexSuccess = false;
+                do
+                {
+                    try
+                    {
+                        indexService.reindex( nextContentKeys );
+                        indexSuccess = true;
+                    }
+                    catch ( IndexException e )
+                    {
+                        retry++;
+                        if ( retry > this.maxRetries )
+                        {
+                            throw e;
+                        }
+                        else
+                        {
+                            LOG.warn( "Unexpected error indexing batch with keys: " + Iterables.toString( nextContentKeys ), e );
+                            LOG.warn( "Retrying (" + retry + ") ..." );
+                        }
+                    }
+                }
+                while ( !indexSuccess );
                 //indexService.regenerateIndexBatched( nextContentKeys );
 
                 long end = System.currentTimeMillis();
@@ -89,5 +118,10 @@ public class RegenerateIndexBatcher
         }
 
         return allContentKeys.subList( currentIndex, currentIndex + batchSize );
+    }
+
+    public void setMaxRetries( final int maxRetries )
+    {
+        this.maxRetries = Math.max( maxRetries, 0 );
     }
 }

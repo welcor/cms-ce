@@ -12,9 +12,9 @@ import com.enonic.cms.core.security.user.UpdateUserCommand;
 import com.enonic.cms.core.security.userstore.UserStoreConnectorPolicyBrokenException;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
-import com.enonic.cms.core.user.field.UserField;
-import com.enonic.cms.core.user.field.UserFields;
-import com.enonic.cms.core.user.remote.RemoteUser;
+import com.enonic.cms.api.plugin.userstore.UserField;
+import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.userstore.RemoteUser;
 
 public class UserPolicyValidator
 {

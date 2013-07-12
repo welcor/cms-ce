@@ -23,10 +23,10 @@ import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.user.field.UserField;
+import com.enonic.cms.api.plugin.userstore.UserField;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
-import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserFields;
 
 public class UserEntity
     implements User, Serializable

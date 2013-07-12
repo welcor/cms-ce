@@ -10,9 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
-import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 class UserFormEditableFieldsResolver
 {

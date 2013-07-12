@@ -2,9 +2,7 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.security.userstore.config;
-
-import com.enonic.cms.core.user.field.UserFieldType;
+package com.enonic.cms.api.plugin.userstore;
 
 public final class UserStoreUserFieldConfig
     implements Comparable<UserStoreUserFieldConfig>

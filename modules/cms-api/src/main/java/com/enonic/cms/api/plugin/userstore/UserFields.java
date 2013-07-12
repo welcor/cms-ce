@@ -2,8 +2,9 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.user.field;
+package com.enonic.cms.api.plugin.userstore;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -13,59 +14,64 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-
 import com.enonic.cms.api.client.model.user.Address;
 import com.enonic.cms.api.client.model.user.Gender;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
 
 public final class UserFields
     implements Iterable<UserField>
 {
-    private final boolean mutlipleAddresses;
+    private final boolean multipleAddresses;
 
-    private final Multimap<UserFieldType, UserField> fields;
+    private final List<UserFieldType> typeList;
 
-    public UserFields( boolean mutlipleAddresses )
-    {
-        this.mutlipleAddresses = mutlipleAddresses;
-        this.fields = LinkedHashMultimap.create();
-    }
+    private final List<UserField> userFieldList;
 
     public UserFields()
     {
-        this.mutlipleAddresses = true;
-        this.fields = LinkedHashMultimap.create();
+        this( true );
+    }
+
+    public UserFields( boolean multipleAddresses )
+    {
+        this.multipleAddresses = multipleAddresses;
+
+        this.typeList = new ArrayList<UserFieldType>();
+        this.userFieldList = new ArrayList<UserField>();
     }
 
     public void add( final UserField field )
     {
         final UserFieldType type = field.getType();
+
         if ( type == UserFieldType.ADDRESS )
         {
-            if ( this.mutlipleAddresses || !this.fields.containsKey( type ) )
+            if ( this.multipleAddresses || !hasField( type ) )
             {
-                this.fields.put( type, field );
+                internalAdd( type, field );
             }
         }
         else
         {
-            this.fields.removeAll( type );
-            this.fields.put( type, field );
+            remove( type );
+            internalAdd( type, field );
         }
+    }
+
+    private void internalAdd( final UserFieldType type, final UserField field )
+    {
+        this.typeList.add( type );
+        this.userFieldList.add( field );
     }
 
     public boolean hasField( final UserFieldType type )
     {
-        return this.fields.containsKey( type );
+        return this.typeList.contains( type );
     }
 
     public UserField getField( UserFieldType type )
     {
-        Collection<UserField> result = this.fields.get( type );
+        final Collection<UserField> result = getFields( type );
+
         if ( ( result != null ) && !result.isEmpty() )
         {
             return result.iterator().next();
@@ -78,17 +84,29 @@ public final class UserFields
 
     public Collection<UserField> getFields( UserFieldType type )
     {
-        return this.fields.get( type );
+        final List<UserField> fields = new ArrayList<UserField>();
+
+        final int size = typeList.size();
+
+        for ( int i = 0; i < size; i++ )
+        {
+            if ( type.equals( typeList.get( i ) ) )
+            {
+                fields.add( userFieldList.get( i ) );
+            }
+        }
+
+        return fields;
     }
 
     public Iterator<UserField> iterator()
     {
-        return this.fields.values().iterator();
+        return getAll().iterator();
     }
 
     public void addAll( Collection<UserField> fields )
     {
-        for ( UserField field : fields )
+        for ( final UserField field : fields )
         {
             add( field );
         }
@@ -96,7 +114,7 @@ public final class UserFields
 
     public void addAll( UserFields fields )
     {
-        for ( UserField field : fields )
+        for ( final UserField field : fields )
         {
             add( field );
         }
@@ -104,30 +122,45 @@ public final class UserFields
 
     public Collection<UserField> getAll()
     {
-        return this.fields.values();
+        return this.userFieldList;
     }
 
     public void clear()
     {
-        this.fields.clear();
+        this.typeList.clear();
+        this.userFieldList.clear();
     }
 
     public int getSize()
     {
-        return this.fields.size();
+        return this.typeList.size();
     }
 
     public void remove( UserFieldType type )
     {
-        this.fields.removeAll( type );
+        for ( int i = typeList.size() - 1; i >= 0; i-- )
+        {
+            if ( type.equals( typeList.get( i ) ) )
+            {
+                this.typeList.remove( i );
+                this.userFieldList.remove( i );
+            }
+        }
     }
 
     public void remove( Collection<UserFieldType> types )
     {
-        for ( UserFieldType type : types )
+        for ( final UserFieldType type : types )
         {
-            this.fields.removeAll( type );
+            remove( type );
         }
+    }
+
+    public void retain( Collection<UserFieldType> types )
+    {
+        final Set<UserFieldType> set = new HashSet<UserFieldType>( this.typeList );
+        set.removeAll( types );
+        remove( set );
     }
 
     /**
@@ -137,13 +170,6 @@ public final class UserFields
     {
         remove( config.getRemoteOnlyUserFieldTypes() );
         addAll( fields.getRemoteFields( config ) );
-    }
-
-    public void retain( Collection<UserFieldType> types )
-    {
-        Set<UserFieldType> set = new HashSet<UserFieldType>( this.fields.keySet() );
-        set.removeAll( types );
-        remove( set );
     }
 
     /**
@@ -283,9 +309,14 @@ public final class UserFields
             return false;
         }
 
-        UserFields that = (UserFields) o;
+        final UserFields that = (UserFields) o;
 
-        if ( !fields.equals( that.fields ) )
+        if ( !this.typeList.equals( that.typeList ) )
+        {
+            return false;
+        }
+
+        if ( !this.userFieldList.equals( that.userFieldList ) )
         {
             return false;
         }
@@ -296,12 +327,12 @@ public final class UserFields
     @Override
     public int hashCode()
     {
-        return fields.hashCode();
+        return this.typeList.hashCode() + this.userFieldList.hashCode();
     }
 
     public UserFields clone()
     {
-        UserFields newMap = new UserFields( this.mutlipleAddresses );
+        final UserFields newMap = new UserFields( this.multipleAddresses );
         newMap.addAll( this.getAll() );
         return newMap;
     }
@@ -632,11 +663,13 @@ public final class UserFields
 
     private List<Address> getUserFieldValueAsAddresses( UserFieldType type )
     {
-        final List<Address> addresses = Lists.newArrayList();
-        for ( UserField userField : getFields( type ) )
+        final List<Address> addresses = new ArrayList<Address>();
+
+        for ( final UserField userField : getFields( type ) )
         {
             addresses.add( userField.getValueAsAddress() );
         }
+
         return addresses;
     }
 }

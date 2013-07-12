@@ -43,7 +43,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
@@ -56,7 +56,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 
 /**

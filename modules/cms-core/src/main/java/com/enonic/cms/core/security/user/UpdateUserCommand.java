@@ -5,7 +5,7 @@
 package com.enonic.cms.core.security.user;
 
 import com.enonic.cms.core.security.group.AbstractMembershipsCommand;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 
 public class UpdateUserCommand

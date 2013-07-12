@@ -17,11 +17,11 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStorePlugin;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
-import com.enonic.cms.core.user.remote.RemoteGroup;
-import com.enonic.cms.core.user.remote.RemotePrincipal;
-import com.enonic.cms.core.user.remote.RemoteUser;
+import com.enonic.cms.api.plugin.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.userstore.RemotePrincipal;
+import com.enonic.cms.api.plugin.userstore.RemoteUser;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 

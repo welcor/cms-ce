@@ -27,7 +27,7 @@ import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 import com.enonic.cms.store.dao.CategoryAccessDao;
 import com.enonic.cms.store.dao.ContentAccessDao;
 import com.enonic.cms.store.dao.DefaultSiteAccessDao;

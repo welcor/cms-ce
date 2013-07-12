@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import junit.framework.Assert;
 
+import com.enonic.cms.api.plugin.userstore.UserField;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+
 public class UserFieldTest
 {
     @Test

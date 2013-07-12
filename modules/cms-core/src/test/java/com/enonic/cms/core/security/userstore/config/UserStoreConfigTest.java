@@ -12,7 +12,9 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 import static org.junit.Assert.*;
 

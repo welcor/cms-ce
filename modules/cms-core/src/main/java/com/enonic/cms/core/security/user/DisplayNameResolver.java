@@ -6,8 +6,8 @@ package com.enonic.cms.core.security.user;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 public final class DisplayNameResolver
     extends AbstractUserPropertyResolver

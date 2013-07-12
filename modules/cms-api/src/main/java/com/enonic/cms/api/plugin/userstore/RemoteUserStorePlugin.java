@@ -2,15 +2,10 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.security.userstore.connector.remote.plugin;
+package com.enonic.cms.api.plugin.userstore;
 
 import java.util.List;
 import java.util.Set;
-
-import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.remote.RemoteGroup;
-import com.enonic.cms.core.user.remote.RemotePrincipal;
-import com.enonic.cms.core.user.remote.RemoteUser;
 
 public interface RemoteUserStorePlugin
 {

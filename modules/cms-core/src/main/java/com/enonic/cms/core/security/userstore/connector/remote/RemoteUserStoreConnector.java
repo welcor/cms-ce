@@ -35,20 +35,20 @@ import com.enonic.cms.core.security.user.UserNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreConnectorPolicyBrokenException;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.AbstractBaseUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.GroupAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
-import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStorePlugin;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserFields;
-import com.enonic.cms.core.user.remote.RemoteGroup;
-import com.enonic.cms.core.user.remote.RemotePrincipal;
-import com.enonic.cms.core.user.remote.RemoteUser;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.userstore.RemotePrincipal;
+import com.enonic.cms.api.plugin.userstore.RemoteUser;
 
 public class RemoteUserStoreConnector
     extends AbstractBaseUserStoreConnector

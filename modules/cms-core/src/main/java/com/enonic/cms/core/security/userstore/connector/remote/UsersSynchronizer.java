@@ -14,7 +14,7 @@ import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.connector.EmailAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.NameAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
-import com.enonic.cms.core.user.remote.RemoteUser;
+import com.enonic.cms.api.plugin.userstore.RemoteUser;
 
 public class UsersSynchronizer
     extends AbstractBaseUserSynchronizer

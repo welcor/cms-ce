@@ -18,7 +18,7 @@ import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnecto
 import com.enonic.cms.core.security.userstore.connector.local.LocalUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStoreFactory;
-import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStorePlugin;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;

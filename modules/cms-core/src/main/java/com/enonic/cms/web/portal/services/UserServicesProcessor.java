@@ -84,7 +84,7 @@ import com.enonic.cms.core.structure.SiteContext;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 

@@ -9,6 +9,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
+import com.enonic.cms.core.search.query.IndexQueryException;
 import com.enonic.cms.core.search.query.QueryField;
 import com.enonic.cms.core.search.query.QueryFieldAndValue;
 import com.enonic.cms.core.search.query.QueryValue;
@@ -18,6 +19,11 @@ public class InQueryBuilderFactory
 {
     public QueryBuilder buildInQuery( final QueryField queryField, final QueryValue[] values )
     {
+        if ( values == null || values.length == 0 )
+        {
+            throw new IndexQueryException( "Cannot execute empty 'IN' statements" );
+        }
+
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
         for ( QueryValue value : values )

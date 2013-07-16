@@ -123,4 +123,15 @@ public class QueryTranslator_inTest
 
         compareStringsIgnoreFormatting( expected_search_result, builder.toString() );
     }
+
+
+    @Test(expected = IndexQueryException.class)
+    public void testIn_empty()
+        throws Exception
+    {
+        ContentIndexQuery query = createContentQuery( "myField IN ()" );
+
+        getQueryTranslator().build( query );
+    }
+
 }

@@ -5,12 +5,13 @@
 package com.enonic.cms.core.structure.page.template;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class PageTemplateRegionEntity
-    implements Serializable
+    implements Serializable, Cloneable
 {
     private int key;
 
@@ -24,7 +25,7 @@ public class PageTemplateRegionEntity
 
     private PageTemplateEntity pageTemplate;
 
-    private Collection<PageTemplatePortletEntity> portlets;
+    private Set<PageTemplatePortletEntity> portlets = new HashSet<PageTemplatePortletEntity>();
 
     public int getKey()
     {
@@ -112,6 +113,17 @@ public class PageTemplateRegionEntity
         return new HashCodeBuilder( 433, 449 ).append( key ).toHashCode();
     }
 
+    @Override
+    public PageTemplateRegionEntity clone() {
+        try {
+            PageTemplateRegionEntity copy = ( PageTemplateRegionEntity ) super.clone();
+
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String toString()
     {
         StringBuffer str = new StringBuffer();
@@ -119,8 +131,18 @@ public class PageTemplateRegionEntity
         return str.toString();
     }
 
-    public Collection<PageTemplatePortletEntity> getPortlets()
+    public Set<PageTemplatePortletEntity> getPortlets()
     {
         return portlets;
+    }
+
+    public void setPortlets( final Set<PageTemplatePortletEntity> portlets )
+    {
+        this.portlets = portlets;
+    }
+
+    public void addPortlet( PageTemplatePortletEntity portlet )
+    {
+        portlets.add(  portlet );
     }
 }

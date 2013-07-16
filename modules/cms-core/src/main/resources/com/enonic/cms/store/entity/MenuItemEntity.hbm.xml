@@ -129,4 +129,7 @@
   <query name="MenuItemEntity.findContentPage" cacheable="true">
     select x from MenuItemEntity x left join x.contents as y where x.site.key = :siteKey and y.key = :contentKey
   </query>
+  <query name="MenuItemEntity.findByPageTemplate" cacheable="true">
+    from MenuItemEntity where page.template.key = :pageTemplateKey
+  </query>
 </hibernate-mapping>

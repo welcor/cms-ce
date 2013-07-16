@@ -31,6 +31,8 @@ public interface MenuItemDao
      */
     Collection<MenuItemEntity> findBySiteKey( int siteKey );
 
+    Collection<MenuItemEntity> findByPageTemplate( int pageTemplateKey );
+
     /**
      * Find top level menu items.
      */

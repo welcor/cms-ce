@@ -92,14 +92,8 @@ public class QueryTranslator
         final Expression expression = queryExpr.getExpr();
 
         final QueryBuilder builtQuery;
-        try
-        {
-            builtQuery = buildQuery( expression );
-        }
-        catch ( Exception e )
-        {
-            throw new IndexException( "Failed to build query: " + contentIndexQuery.toString(), e );
-        }
+
+        builtQuery = buildQuery( expression );
 
         applySorting( builder, contentIndexQuery, queryExpr.getOrderBy() );
 
@@ -147,7 +141,7 @@ public class QueryTranslator
     }
 
     private QueryBuilder buildQuery( final Expression expr )
-        throws Exception
+
     {
         if ( expr == null )
         {
@@ -214,14 +208,12 @@ public class QueryTranslator
     }
 
     private QueryBuilder buildNotExpr( final NotExpr expr )
-        throws Exception
     {
         final QueryBuilder negated = buildQuery( expr.getExpr() );
         return buildNotQuery( negated );
     }
 
     private QueryBuilder buildLogicalExpr( final LogicalExpr expr )
-        throws Exception
     {
 
         final QueryBuilder left = buildQuery( expr.getLeft() );

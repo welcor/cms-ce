@@ -36,6 +36,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.content.index.ContentIndexQuery;
 import com.enonic.cms.core.content.resultset.ContentResultSet;
 import com.enonic.cms.core.content.resultset.ContentResultSetLazyFetcher;
+import com.enonic.cms.core.content.resultset.ContentResultSetNonLazy;
 import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTrace;
 import com.enonic.cms.core.portal.livetrace.ContentIndexQueryTracer;
 import com.enonic.cms.core.portal.livetrace.LivePortalTraceService;
@@ -232,7 +233,16 @@ public class ContentIndexServiceImpl
         {
             optimizeCount( query );
 
-            translatedQuerySource = buildQuerySource( query );
+            try
+            {
+                translatedQuerySource = buildQuerySource( query );
+            }
+            catch ( Exception e )
+            {
+                final ContentResultSetNonLazy rs = new ContentResultSetNonLazy( query.getIndex() );
+                rs.addError( "Failed to translate contentQuery ( " + query + " ): " + e.getMessage() );
+                return rs;
+            }
 
             ContentIndexQueryTracer.traceQuery( query, query.getIndex(), query.getCount(), translatedQuerySource.toString(), trace );
 

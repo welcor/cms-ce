@@ -5,9 +5,15 @@
             <td>${clusterName}</td>
         </tr>
     </table>
-<#list nodeList as x>
+<#list nodeList?sort as x>
     <fieldset>
         <legend>${x.name}</legend>
+
+        <#if x.isMaster>
+        <div style="float: left;background: lightgreen">
+        <#else>
+        <div style="float: left">
+        </#if>
 
         <div style="float: left">
             <table>
@@ -22,6 +28,12 @@
                         Hostname:
                     </td>
                     <td>${x.hostName}</td>
+                </tr>
+                <tr>
+                    <td>
+                        Master:
+                    </td>
+                    <td>${x.isMaster?string}</td>
                 </tr>
                 <tr>
                     <td>

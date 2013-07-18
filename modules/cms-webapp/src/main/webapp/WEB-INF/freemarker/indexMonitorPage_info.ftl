@@ -1,5 +1,16 @@
 <div>
     <fieldset>
+        <legend>Node status</legend>
+        <table>
+            <tr>
+                <td>Master:</td>
+                <td>${isMaster?string}</td>
+            </tr>
+        </table>
+    </fieldset>
+
+
+    <fieldset>
         <legend>Index status</legend>
         <table>
             <tr>

@@ -9,17 +9,32 @@ import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
 import org.elasticsearch.monitor.jvm.JvmInfo;
 
 public final class ClusterNodeWrapper
+    implements Comparable<ClusterNodeWrapper>
 {
     private final NodeInfo info;
 
-    public ClusterNodeWrapper( final NodeInfo info )
+    private boolean isMaster = false;
+
+    @Override
+    public int compareTo( final ClusterNodeWrapper o )
+    {
+        return this.getName().compareTo( o.getName() );
+    }
+
+    public ClusterNodeWrapper( final NodeInfo info, final boolean isMaster )
     {
         this.info = info;
+        this.isMaster = isMaster;
     }
 
     public String getName()
     {
         return this.info.getNode().getName();
+    }
+
+    public boolean getIsMaster()
+    {
+        return isMaster;
     }
 
     public String getHostName()

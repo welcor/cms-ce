@@ -160,6 +160,16 @@
           <bean class="com.enonic.cms.core.tools.index.ReindexContentToolController"/>
         </entry>
 
+        <entry key="/admin/tools/indexSettings">
+          <bean class="com.enonic.cms.core.tools.index.IndexSettingsToolController"/>
+        </entry>
+
+
+        <entry key="/admin/tools/clusterSettings">
+          <bean class="com.enonic.cms.core.tools.index.ClusterSettingsToolController"/>
+        </entry>
+
+
         <entry key="/admin/tools/livePortalTrace">
           <bean class="com.enonic.cms.core.tools.LivePortalTraceController"/>
         </entry>

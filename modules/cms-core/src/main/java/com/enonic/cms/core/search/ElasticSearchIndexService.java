@@ -8,9 +8,11 @@ package com.enonic.cms.core.search;
 import java.util.Map;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
@@ -25,6 +27,16 @@ import com.enonic.cms.core.search.builder.ContentIndexData;
  */
 public interface ElasticSearchIndexService
 {
+    public Map<String, String> getIndexSettings( final String indexName );
+
+    public Map<String, String> getClusterSettings();
+
+    public ClusterStateResponse getClusterState();
+
+    public void updateIndexSetting( final String indexName, final String setting, final String value );
+
+    public void updateClusterSettings( final String setting, final String value );
+
     public void createIndex( String indexName );
 
     public void deleteIndex( String indexName );

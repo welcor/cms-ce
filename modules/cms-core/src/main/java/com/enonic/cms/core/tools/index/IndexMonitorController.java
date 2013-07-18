@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Maps;
 import org.joda.time.Period;
@@ -68,6 +69,7 @@ public final class IndexMonitorController
         }
 
         final ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
+
         model.put( "activeShards", clusterHealthResponse.getActiveShards() );
 
         final ClusterHealthStatus status = clusterHealthResponse.getStatus();
@@ -93,8 +95,21 @@ public final class IndexMonitorController
             model.put( "lastReindexTimeUsed", getTimeUsedString() );
         }
 
+        model.put( "isMaster", isMaster() );
+
         renderView( req, res, model, "indexMonitorPage_info" );
     }
+
+    private boolean isMaster()
+    {
+        final ClusterStateResponse clusterState = elasticSearchIndexService.getClusterState();
+
+        final String localNodeId = clusterState.getState().nodes().localNodeId();
+        final String masterNodeId = clusterState.getState().nodes().masterNodeId();
+
+        return localNodeId.equals( masterNodeId );
+    }
+
 
     private String getLastIndexTimeString()
     {

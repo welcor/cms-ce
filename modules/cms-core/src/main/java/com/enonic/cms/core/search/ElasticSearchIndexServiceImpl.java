@@ -13,6 +13,9 @@ import java.util.Set;
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.settings.ClusterUpdateSettingsRequest;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
@@ -24,6 +27,8 @@ import org.elasticsearch.action.admin.indices.mapping.delete.DeleteMappingReques
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
+import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequestBuilder;
+import org.elasticsearch.action.admin.indices.settings.UpdateSettingsResponse;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -38,6 +43,9 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.search.ShardSearchFailure;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.cluster.metadata.MetaData;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -48,6 +56,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.search.builder.ContentIndexData;
@@ -88,6 +97,101 @@ public class ElasticSearchIndexServiceImpl
     public Client getClient()
     {
         return client;
+    }
+
+    @Override
+    public Map<String, String> getIndexSettings( final String indexName )
+    {
+
+        final ClusterStateRequest clusterStateRequest =
+            Requests.clusterStateRequest().filterRoutingTable( true ).filterNodes( true ).filteredIndices( indexName );
+        clusterStateRequest.listenerThreaded( false );
+
+        final ClusterStateResponse clusterStateResponse = client.admin().cluster().state( clusterStateRequest ).actionGet();
+
+        final MetaData metaData = clusterStateResponse.state().metaData();
+
+        final Map<String, String> indexSettings = Maps.newHashMap();
+
+        for ( IndexMetaData indexMetaData : metaData )
+        {
+            final Settings thisSettings = indexMetaData.settings();
+
+            for ( Map.Entry<String, String> entry : thisSettings.getAsMap().entrySet() )
+            {
+                indexSettings.put( entry.getKey(), entry.getValue() );
+            }
+        }
+
+        return indexSettings;
+    }
+
+
+    @Override
+    public Map<String, String> getClusterSettings()
+    {
+        final Map<String, String> clusterSettings = Maps.newHashMap();
+
+        ClusterStateRequest clusterStateRequest =
+            Requests.clusterStateRequest().listenerThreaded( false ).filterRoutingTable( true ).filterNodes( true );
+        final ClusterStateResponse clusterStateResponse = client.admin().cluster().state( clusterStateRequest ).actionGet();
+
+        for ( Map.Entry<String, String> entry : clusterStateResponse.state().metaData().persistentSettings().getAsMap().entrySet() )
+        {
+            clusterSettings.put( entry.getKey() + " (P)", entry.getValue() );
+        }
+
+        for ( Map.Entry<String, String> entry : clusterStateResponse.state().metaData().transientSettings().getAsMap().entrySet() )
+        {
+            clusterSettings.put( entry.getKey() + " (T)", entry.getValue() );
+        }
+
+        return clusterSettings;
+    }
+
+    @Override
+    public ClusterStateResponse getClusterState()
+    {
+        final ClusterStateRequest clusterStateRequest = Requests.clusterStateRequest();
+        clusterStateRequest.listenerThreaded( false );
+        clusterStateRequest.filterRoutingTable( true );
+        clusterStateRequest.filterMetaData( true );
+        clusterStateRequest.filterBlocks( true );
+        return client.admin().cluster().state( clusterStateRequest ).actionGet();
+    }
+
+    @Override
+    public void updateIndexSetting( final String indexName, final String setting, final String value )
+    {
+        ClusterStateRequest clusterStateRequest =
+            Requests.clusterStateRequest().filterRoutingTable( true ).filterNodes( true ).filteredIndices( indexName );
+        clusterStateRequest.listenerThreaded( false );
+
+        final ClusterStateResponse clusterStateResponse = client.admin().cluster().state( clusterStateRequest ).actionGet();
+
+        Map<String, Object> settingsMap = Maps.newHashMap();
+        settingsMap.put( setting, value );
+
+        final UpdateSettingsResponse updateSettingsResponse =
+            new UpdateSettingsRequestBuilder( this.client.admin().indices(), indexName ).setSettings( settingsMap ).execute().actionGet();
+
+        return;
+    }
+
+
+    @Override
+    public void updateClusterSettings( final String setting, final String value )
+    {
+
+        Map<String, Object> settingsMap = Maps.newHashMap();
+        settingsMap.put( setting, value );
+
+        ClusterUpdateSettingsRequest request = new ClusterUpdateSettingsRequest();
+        request.transientSettings( settingsMap );
+
+        this.client.admin().cluster().updateSettings( request );
+
+        return;
     }
 
     @Override

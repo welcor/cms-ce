@@ -13,6 +13,8 @@ import org.junit.Test;
 import com.enonic.esl.containers.ExtendedMap;
 
 import com.enonic.cms.api.client.model.user.Gender;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;

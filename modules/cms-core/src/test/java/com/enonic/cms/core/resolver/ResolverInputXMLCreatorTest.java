@@ -27,7 +27,7 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.*;

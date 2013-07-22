@@ -8,6 +8,8 @@ package com.enonic.cms.core.user.field;
 import org.joda.time.DateMidnight;
 import org.junit.Test;
 
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+
 import static org.junit.Assert.*;
 
 public class UserFieldHelperTest

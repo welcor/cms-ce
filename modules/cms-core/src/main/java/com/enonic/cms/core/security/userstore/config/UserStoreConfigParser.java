@@ -12,7 +12,9 @@ import java.util.Map;
 import org.jdom.Attribute;
 import org.jdom.Element;
 
-import com.enonic.cms.core.user.field.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 public class UserStoreConfigParser
 {

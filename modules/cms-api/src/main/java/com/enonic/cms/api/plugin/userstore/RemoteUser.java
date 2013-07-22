@@ -2,9 +2,7 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.user.remote;
-
-import com.enonic.cms.core.user.field.UserFields;
+package com.enonic.cms.api.plugin.userstore;
 
 public final class RemoteUser
     extends RemotePrincipal

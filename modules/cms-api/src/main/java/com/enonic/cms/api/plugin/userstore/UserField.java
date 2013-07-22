@@ -2,15 +2,12 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.user.field;
+package com.enonic.cms.api.plugin.userstore;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.enonic.cms.api.client.model.user.Address;
 import com.enonic.cms.api.client.model.user.Gender;
@@ -177,12 +174,17 @@ public final class UserField
     {
         if ( a instanceof String )
         {
-            if ( StringUtils.isBlank( (String) a ) && StringUtils.isBlank( (String) b ) )
+            if ( isBlank( (String) a ) && isBlank( (String) b ) )
             {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isBlank( final String string )
+    {
+        return string == null || "".equals( string );
     }
 
     @Override
@@ -214,8 +216,6 @@ public final class UserField
     @Override
     public int hashCode()
     {
-        final int initialNonZeroOddNumber = 443;
-        final int multiplierNonZeroOddNumber = 971;
-        return new HashCodeBuilder( initialNonZeroOddNumber, multiplierNonZeroOddNumber ).append( type ).append( value ).toHashCode();
+        return type.hashCode() + value.hashCode();
     }
 }

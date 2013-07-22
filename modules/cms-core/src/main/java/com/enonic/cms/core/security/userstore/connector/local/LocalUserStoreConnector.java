@@ -25,7 +25,7 @@ import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.connector.AbstractBaseUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 public class LocalUserStoreConnector
     extends AbstractBaseUserStoreConnector

@@ -5,7 +5,7 @@
 package com.enonic.cms.core.security.userstore;
 
 import com.enonic.cms.core.security.user.UserKey;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 
 
 public class StoreNewUserStoreCommand

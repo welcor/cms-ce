@@ -45,7 +45,7 @@ import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.core.security.userstore.UserStoreXmlCreator;
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigXmlCreator;

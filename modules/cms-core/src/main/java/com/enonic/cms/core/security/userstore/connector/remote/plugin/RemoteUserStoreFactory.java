@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
+
 @Component
 public final class RemoteUserStoreFactory
 {

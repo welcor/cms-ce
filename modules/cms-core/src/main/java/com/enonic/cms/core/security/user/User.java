@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 
 public interface User

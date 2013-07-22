@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.enonic.cms.api.client.model.user.Address;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 public class UserFieldTypeTest
 {

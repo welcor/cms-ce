@@ -2,7 +2,7 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.user.field;
+package com.enonic.cms.api.plugin.userstore;
 
 import java.util.Date;
 import java.util.Locale;

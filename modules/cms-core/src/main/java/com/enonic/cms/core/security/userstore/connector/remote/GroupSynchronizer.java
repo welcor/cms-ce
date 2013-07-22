@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.core.user.remote.RemoteGroup;
+import com.enonic.cms.api.plugin.userstore.RemoteGroup;
 
 public class GroupSynchronizer
     extends AbstractBaseGroupSynchronizer

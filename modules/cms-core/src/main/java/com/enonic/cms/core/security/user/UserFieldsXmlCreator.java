@@ -11,10 +11,10 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.api.client.model.user.Address;
-import com.enonic.cms.core.user.field.UserField;
+import com.enonic.cms.api.plugin.userstore.UserField;
 import com.enonic.cms.core.user.field.UserFieldHelper;
-import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 public final class UserFieldsXmlCreator
 {

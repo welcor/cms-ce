@@ -2,14 +2,12 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.security.userstore.config;
+package com.enonic.cms.api.plugin.userstore;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.enonic.cms.core.user.field.UserFieldType;
 
 public class UserStoreConfig
 {

@@ -19,7 +19,7 @@ import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.client.model.user.Address;
 import com.enonic.cms.api.client.model.user.Gender;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 import static org.junit.Assert.*;
 

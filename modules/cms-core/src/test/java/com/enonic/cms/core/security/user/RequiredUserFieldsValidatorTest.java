@@ -8,11 +8,11 @@ package com.enonic.cms.core.security.user;
 
 import org.junit.Test;
 
-import com.enonic.cms.core.security.userstore.config.UserStoreConfig;
-import com.enonic.cms.core.security.userstore.config.UserStoreUserFieldConfig;
-import com.enonic.cms.core.user.field.UserField;
-import com.enonic.cms.core.user.field.UserFieldType;
-import com.enonic.cms.core.user.field.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserField;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserFields;
 
 public class RequiredUserFieldsValidatorTest
 {

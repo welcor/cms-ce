@@ -12,4 +12,5 @@ import com.enonic.cms.api.client.LocalClient;
 public interface InternalClient
     extends LocalClient
 {
+    public <T> T getService(Class<T> type);
 }

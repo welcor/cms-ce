@@ -21,7 +21,10 @@ import org.jdom.Element;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -202,7 +205,7 @@ import com.enonic.cms.store.dao.UserStoreDao;
  * This class implements the local client.
  */
 public abstract class InternalClientImpl
-    implements InternalClient
+    implements InternalClient, ApplicationContextAware
 {
     private static final Logger LOG = LoggerFactory.getLogger( InternalClientImpl.class );
 
@@ -290,6 +293,8 @@ public abstract class InternalClientImpl
     private LogService logService;
 
     private final boolean clientForRemoteInvocations;
+
+    private ApplicationContext applicationContext;
 
     InternalClientImpl( final boolean clientForRemoteInvocations )
     {
@@ -2684,6 +2689,19 @@ public abstract class InternalClientImpl
         {
             ClientMethodExecutionTracer.stopTracing( trace, livePortalTraceService );
         }
+    }
+
+    @Override
+    public <T> T getService( final Class<T> type )
+    {
+        return this.applicationContext.getBean( type );
+    }
+
+    @Override
+    public void setApplicationContext( final ApplicationContext applicationContext )
+        throws BeansException
+    {
+        this.applicationContext = applicationContext;
     }
 
     private void assertMinValue( String name, int value, int minValue )

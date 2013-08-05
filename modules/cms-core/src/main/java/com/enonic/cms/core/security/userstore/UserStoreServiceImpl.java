@@ -23,7 +23,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import com.enonic.cms.api.plugin.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.userstore.RemoteUser;
 import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.userstore.UserField;
+import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.CreateGroupAccessException;
@@ -53,7 +59,6 @@ import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
 import com.enonic.cms.core.security.user.UserStorageInvalidArgumentException;
 import com.enonic.cms.core.security.userstore.config.InvalidUserStoreConfigException;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
@@ -63,11 +68,6 @@ import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreMa
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.security.userstore.status.LocalGroupsStatus;
 import com.enonic.cms.core.security.userstore.status.LocalUsersStatus;
-import com.enonic.cms.api.plugin.userstore.UserField;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.userstore.UserFields;
-import com.enonic.cms.api.plugin.userstore.RemoteGroup;
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
@@ -970,10 +970,7 @@ public class UserStoreServiceImpl
         final String connectorType = connectorConfig.getPluginType();
         final Properties pluginProperties = connectorConfig.getPluginProperties();
 
-        final RemoteUserStore remoteUserStorePlugin = remoteUserStoreFactory.create( connectorType, pluginProperties );
-        remoteUserStorePlugin.initialize();
-
-        return remoteUserStorePlugin;
+        return remoteUserStoreFactory.create( connectorType, pluginProperties );
     }
 
     public void verifyUserStoreConnectorConfig( final UserStoreConfig config, final String connectorName )

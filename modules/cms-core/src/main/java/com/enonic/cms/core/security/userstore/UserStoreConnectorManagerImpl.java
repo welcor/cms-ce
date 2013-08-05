@@ -162,7 +162,6 @@ public final class UserStoreConnectorManagerImpl
             userStoreConnectorConfigLoader.getUserStoreConnectorConfig( userStore.getConnectorName() );
         final RemoteUserStore remoteUserStorePlugin =
             remoteUserStoreFactory.create( connectorConfig.getPluginType(), connectorConfig.getPluginProperties() );
-        remoteUserStorePlugin.initialize();
 
         final RemoteUserStoreConnector connector =
             new RemoteUserStoreConnector( userStore.getKey(), userStore.getName(), userStore.getConnectorName() );

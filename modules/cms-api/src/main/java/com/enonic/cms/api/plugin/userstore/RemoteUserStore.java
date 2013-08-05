@@ -9,8 +9,6 @@ import java.util.Set;
 
 public interface RemoteUserStore
 {
-    public void initialize();
-
     public Set<UserFieldType> getSupportedFieldTypes();
 
     public boolean authenticate( String userId, String password );

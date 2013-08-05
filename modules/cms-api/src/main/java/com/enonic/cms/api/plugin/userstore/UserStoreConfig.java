@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class UserStoreConfig
+public class UserStoreConfig
 {
     private final Collection<UserStoreConfigField> userFieldConfigs = new TreeSet<UserStoreConfigField>();
 

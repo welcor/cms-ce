@@ -2,7 +2,7 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
-package com.enonic.cms.core.security.userstore.connector.remote.plugin;
+package com.enonic.cms.core.security.userstore.connector.remote;
 
 import java.util.Properties;
 
@@ -15,14 +15,9 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 
 @Component
-public final class RemoteUserStoreFactory
+public final class RemoteUserStoreManager
 {
-    private final static Logger LOG = LoggerFactory.getLogger( RemoteUserStoreFactory.class );
-
-    public RemoteUserStore create( String type )
-    {
-        return create( type, null );
-    }
+    private final static Logger LOG = LoggerFactory.getLogger( RemoteUserStoreManager.class );
 
     public RemoteUserStore create( String type, Properties props )
     {

@@ -10,30 +10,31 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreManager;
 
 import static org.junit.Assert.*;
 
 public class RemoteUserStoreFactoryTest
 {
-    private RemoteUserStoreFactory factory;
+    private RemoteUserStoreManager factory;
 
     @Before
     public void setUp()
     {
-        this.factory = new RemoteUserStoreFactory();
+        this.factory = new RemoteUserStoreManager();
     }
 
     @Test
     public void testCustom()
     {
-        RemoteUserStore dir = this.factory.create( NopRemoteUserStorePlugin.class.getName() );
+        RemoteUserStore dir = this.factory.create( NopRemoteUserStorePlugin.class.getName(), null );
         assertEquals( NopRemoteUserStorePlugin.class, dir.getClass() );
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIllegal()
     {
-        this.factory.create( "dummy" );
+        this.factory.create( "dummy", null );
     }
 
     @Test

@@ -132,14 +132,27 @@
 [/#if]
 
 [#if textExtractorExtensions?size > 0]
-    <div class="infoBox">
-        <b>Text Extractor Extensions</b>
+    <fieldset class="infoBox">
+        <legend>Text Extractor Extensions</legend>
         <ul>
             [#list textExtractorExtensions as plugin]
                 <li>${plugin.html}</li>
             [/#list]
         </ul>
-    </div>
+    </fieldset>
+[/#if]
+
+[#if remoteUserStoreFactories?size > 0]
+    <fieldset class="infoBox">
+        <legend>Remote UserStore Factory Extensions
+            <small>(Sorted by type)</small>
+        </legend>
+        <ul>
+            [#list remoteUserStoreFactories as plugin]
+                <li>${plugin.html}</li>
+            [/#list]
+        </ul>
+    </fieldset>
 [/#if]
 </div>
 

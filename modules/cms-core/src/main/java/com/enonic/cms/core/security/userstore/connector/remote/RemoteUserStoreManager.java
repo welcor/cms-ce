@@ -4,78 +4,72 @@
  */
 package com.enonic.cms.core.security.userstore.connector.remote;
 
+import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.beanutils.BeanMap;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.Lists;
+
+import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
+import com.enonic.cms.core.plugin.ExtensionListener;
 
 @Component
 public final class RemoteUserStoreManager
+    implements ExtensionListener
 {
-    private final static Logger LOG = LoggerFactory.getLogger( RemoteUserStoreManager.class );
+    private Runnable refreshCallback;
 
-    public RemoteUserStore create( String type, Properties props )
+    private final List<RemoteUserStoreFactory> factoryList;
+
+    public RemoteUserStoreManager()
     {
-        RemoteUserStore userStorePlugin = createInstance( type );
-        if ( props != null )
+        this.factoryList = Lists.newArrayList();
+    }
+
+    public void setRefreshCallback( final Runnable refreshCallback )
+    {
+        this.refreshCallback = refreshCallback;
+    }
+
+    public RemoteUserStore create( final String type, final Properties props )
+    {
+        final RemoteUserStoreFactory factory = findFactory( type );
+        return factory.create( props );
+    }
+
+
+    private RemoteUserStoreFactory findFactory( final String type )
+    {
+        for ( final RemoteUserStoreFactory ext : this.factoryList )
         {
-            BeanMap bean = new BeanMap( userStorePlugin );
-            for ( Object key : props.keySet() )
+            if ( ext.isOfType( type ) )
             {
-                String strKey = key.toString();
-                String strValue = props.getProperty( strKey );
-
-                // Preventing this property to be set as false if it blank (since it will be confusing for the user)
-                if ( "readUserSyncAttributeAsBinary".equals( strKey ) && StringUtils.isBlank( strValue ) )
-                {
-                    continue;
-                }
-
-                try
-                {
-                    bean.put( strKey, strValue );
-                }
-                catch ( Exception e )
-                {
-                    LOG.warn( "Failed to set property [" + strKey + "] with value [" + strValue + "]." );
-                }
+                return ext;
             }
         }
-        return userStorePlugin;
+
+        throw new IllegalArgumentException( "No such RemoteUserStoreFactory [" + type + "] registered" );
     }
 
-    private RemoteUserStore createInstance( String type )
+    @Override
+    public void extensionAdded( final Extension ext )
     {
-        Class<?> clz = getDirectoryClass( type );
-        if ( !RemoteUserStore.class.isAssignableFrom( clz ) )
+        if ( ext instanceof RemoteUserStoreFactory )
         {
-            throw new IllegalArgumentException( "Class [" + clz + "] is not a valid remote userstore" );
-        }
-
-        try
-        {
-            return (RemoteUserStore) clz.newInstance();
-        }
-        catch ( Exception e )
-        {
-            throw new IllegalArgumentException( "Failed to create userstore plugin instance from class [" + clz + "]", e );
+            this.factoryList.add( (RemoteUserStoreFactory) ext );
         }
     }
 
-    private Class<?> getDirectoryClass( String type )
+    @Override
+    public void extensionRemoved( final Extension ext )
     {
-        try
+        if ( ext instanceof RemoteUserStoreFactory )
         {
-            return Class.forName( type );
-        }
-        catch ( Exception e )
-        {
-            throw new IllegalArgumentException( "Illegal remote userstore [" + type + "]", e );
+            this.factoryList.remove( ext );
+            this.refreshCallback.run();
         }
     }
 }

@@ -22,6 +22,7 @@ import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpProcessor;
 import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
 import com.enonic.cms.core.plugin.ExtensionSet;
 
 final class ExtensionSetImpl
@@ -29,7 +30,7 @@ final class ExtensionSetImpl
 {
     private final List<Extension> list;
 
-    public ExtensionSetImpl(final List<Extension> list)
+    public ExtensionSetImpl( final List<Extension> list )
     {
         this.list = list;
     }
@@ -43,9 +44,11 @@ final class ExtensionSetImpl
     private <T extends Extension> List<T> getExtensions( final Class<T> type )
     {
         final ArrayList<T> result = Lists.newArrayList();
-        for (final Extension ext : this.list) {
-            if (type.isAssignableFrom(ext.getClass())) {
-                result.add((T)ext);
+        for ( final Extension ext : this.list )
+        {
+            if ( type.isAssignableFrom( ext.getClass() ) )
+            {
+                result.add( (T) ext );
             }
         }
 
@@ -56,7 +59,7 @@ final class ExtensionSetImpl
     private <T extends HttpProcessor> List<T> findHttpProcessorPlugins( Class<T> type, String path )
     {
         final LinkedList<T> list = new LinkedList<T>();
-        for ( final T plugin : getExtensions(type) )
+        for ( final T plugin : getExtensions( type ) )
         {
             if ( plugin.matchesUrlPattern( path ) )
             {
@@ -64,7 +67,7 @@ final class ExtensionSetImpl
             }
         }
 
-        Collections.sort(list);
+        Collections.sort( list );
         return list;
     }
 
@@ -90,7 +93,7 @@ final class ExtensionSetImpl
                 return plugin;
             }
         }
-        
+
         return null;
     }
 
@@ -113,7 +116,7 @@ final class ExtensionSetImpl
 
     public List<HttpInterceptor> getAllHttpInterceptors()
     {
-        final List<HttpInterceptor> plugins = getExtensions(HttpInterceptor.class);
+        final List<HttpInterceptor> plugins = getExtensions( HttpInterceptor.class );
         Collections.sort( plugins );
         return plugins;
     }
@@ -125,7 +128,7 @@ final class ExtensionSetImpl
 
     public List<HttpResponseFilter> getAllHttpResponseFilters()
     {
-        final List<HttpResponseFilter> plugins = getExtensions(HttpResponseFilter.class);
+        final List<HttpResponseFilter> plugins = getExtensions( HttpResponseFilter.class );
         Collections.sort( plugins );
         return plugins;
     }
@@ -138,28 +141,36 @@ final class ExtensionSetImpl
 
     public List<HttpAutoLogin> getAllHttpAutoLoginPlugins()
     {
-        final List<HttpAutoLogin> plugins = getExtensions(HttpAutoLogin.class);
+        final List<HttpAutoLogin> plugins = getExtensions( HttpAutoLogin.class );
         Collections.sort( plugins );
         return plugins;
     }
 
     public List<FunctionLibrary> getAllFunctionLibraries()
     {
-        return getExtensions(FunctionLibrary.class);
+        return getExtensions( FunctionLibrary.class );
     }
 
     public List<TaskHandler> getAllTaskPlugins()
     {
-        return getExtensions(TaskHandler.class);
+        return getExtensions( TaskHandler.class );
     }
 
     public List<TextExtractor> getAllTextExtractorPlugins()
     {
-        return getExtensions(TextExtractor.class);
+        return getExtensions( TextExtractor.class );
     }
 
     public Iterator<Extension> iterator()
     {
         return this.list.iterator();
+    }
+
+    @Override
+    public List<RemoteUserStoreFactory> getAllRemoteUserStoreFactories()
+    {
+        final List<RemoteUserStoreFactory> list = getExtensions( RemoteUserStoreFactory.class );
+        Collections.sort( list );
+        return list;
     }
 }

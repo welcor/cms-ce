@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -26,7 +27,7 @@ import com.enonic.cms.store.dao.UserStoreDao;
 
 @Component
 public final class UserStoreConnectorManagerImpl
-    implements UserStoreConnectorManager
+    implements UserStoreConnectorManager, InitializingBean
 {
     @Autowired
     private UserStoreConnectorConfigLoader userStoreConnectorConfigLoader;
@@ -58,12 +59,6 @@ public final class UserStoreConnectorManagerImpl
     private final Map<UserStoreKey, LocalUserStoreConnector> localUSConnectorMap =
         Collections.synchronizedMap( new HashMap<UserStoreKey, LocalUserStoreConnector>() );
 
-    private boolean useInternalOnly = false;
-
-    public void setUseInternalOnly( final boolean value )
-    {
-        this.useInternalOnly = value;
-    }
 
     public Map<String, UserStoreConnectorConfig> getUserStoreConnectorConfigs()
     {
@@ -110,7 +105,7 @@ public final class UserStoreConnectorManagerImpl
 
     private UserStoreConnector doGetUSConnector( final UserStoreEntity userStore )
     {
-        if ( useInternalOnly || userStore.isLocal() )
+        if ( userStore.isLocal() )
         {
             return doGetLocalUserStoreConnector( userStore );
         }
@@ -205,5 +200,19 @@ public final class UserStoreConnectorManagerImpl
         }
 
         throw new IllegalArgumentException( "User store [" + userStoreKey + "] not found" );
+    }
+
+    @Override
+    public void afterPropertiesSet()
+        throws Exception
+    {
+        this.remoteUserStoreFactory.setRefreshCallback( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                remoteUSConnectorMap.clear();
+            }
+        } );
     }
 }

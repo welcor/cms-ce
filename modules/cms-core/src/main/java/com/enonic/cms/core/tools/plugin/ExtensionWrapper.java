@@ -17,6 +17,7 @@ import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.api.plugin.ext.TextExtractor;
 import com.enonic.cms.api.plugin.ext.http.HttpProcessor;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
 
 public final class ExtensionWrapper
 {
@@ -45,6 +46,10 @@ public final class ExtensionWrapper
         {
             return toHtml( (HttpProcessor) this.extension );
         }
+        else if ( this.extension instanceof RemoteUserStoreFactory )
+        {
+            return toHtml( (RemoteUserStoreFactory) this.extension );
+        }
         else
         {
             return composeHtml( this.extension );
@@ -69,6 +74,11 @@ public final class ExtensionWrapper
     private static String toHtml( final HttpProcessor ext )
     {
         return composeHtml( ext, "priority", ext.getPriority(), "urlPatterns", Joiner.on( ", " ).skipNulls().join( ext.getUrlPatterns() ) );
+    }
+
+    private static String toHtml( final RemoteUserStoreFactory ext )
+    {
+        return composeHtml( ext, "type", ext.getType(), "aliases", Joiner.on( ", " ).skipNulls().join( ext.getAliases() ) );
     }
 
     private static String composeHtml( final Extension ext, final Object... props )

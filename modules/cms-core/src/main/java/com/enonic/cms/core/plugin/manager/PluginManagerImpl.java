@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
+import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.core.plugin.ExtensionListener;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
@@ -30,7 +31,7 @@ public final class PluginManagerImpl
     private final ExtensionHolder holder;
 
     private ContextFactory contextFactory;
-    
+
     private BundleContext bundleContext;
 
     public PluginManagerImpl()
@@ -71,18 +72,21 @@ public final class PluginManagerImpl
         final ArrayList<Bundle> list = Lists.newArrayList();
         for ( final Bundle bundle : this.bundleContext.getBundles() )
         {
-            if (!OsgiHelper.isFrameworkBundle(bundle)) {
-                list.add(bundle);
+            if ( !OsgiHelper.isFrameworkBundle( bundle ) )
+            {
+                list.add( bundle );
             }
         }
 
         return list;
     }
 
-    public PluginHandle findPluginByKey(final long key)
+    public PluginHandle findPluginByKey( final long key )
     {
-        for (final PluginHandle plugin : getPlugins()) {
-            if (plugin.getKey() == key) {
+        for ( final PluginHandle plugin : getPlugins() )
+        {
+            if ( plugin.getKey() == key )
+            {
                 return plugin;
             }
         }
@@ -91,19 +95,25 @@ public final class PluginManagerImpl
     }
 
     @Autowired(required = false)
-    public void setListeners(final List<ExtensionListener> list)
+    public void setListeners( final List<ExtensionListener> list )
     {
         this.holder.setListeners( list );
     }
 
     public ExtensionSet getExtensions()
     {
-        return new ExtensionSetImpl(this.holder.getAll());
+        return new ExtensionSetImpl( this.holder.getAll() );
     }
 
     @Autowired
     public void setContextFactory( final ContextFactory contextFactory )
     {
         this.contextFactory = contextFactory;
+    }
+
+    @Override
+    public void registerLocalExtension( final Extension ext )
+    {
+        this.holder.add( LocalServiceReference.INSTANCE, ext );
     }
 }

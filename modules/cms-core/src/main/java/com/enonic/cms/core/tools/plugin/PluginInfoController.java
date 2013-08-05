@@ -52,6 +52,7 @@ public final class PluginInfoController
         model.put( "httpResponseFilters", toWrappers( extensions.getAllHttpResponseFilters() ) );
         model.put( "taskExtensions", toWrappers( extensions.getAllTaskPlugins() ) );
         model.put( "textExtractorExtensions", toWrappers( extensions.getAllTextExtractorPlugins() ) );
+        model.put( "remoteUserStoreFactories", toWrappers( extensions.getAllRemoteUserStoreFactories() ) );
         model.put( "pluginHandles", toPluginWrappers( this.pluginManager.getPlugins() ) );
 
         renderView( req, res, model, "pluginInfoPage" );

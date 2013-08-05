@@ -22,6 +22,7 @@ import com.enonic.cms.api.plugin.ext.TextExtractor;
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
 import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.PluginManager;
@@ -109,6 +110,12 @@ public class MockPluginManager
             {
                 return Iterators.emptyIterator();
             }
+
+            @Override
+            public List<RemoteUserStoreFactory> getAllRemoteUserStoreFactories()
+            {
+                return Lists.newArrayList();
+            }
         };
     }
 
@@ -119,11 +126,14 @@ public class MockPluginManager
 
     public void install( final File file )
     {
-
     }
 
     public void uninstall( final File file )
     {
+    }
 
+    @Override
+    public void registerLocalExtension( final Extension ext )
+    {
     }
 }

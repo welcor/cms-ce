@@ -100,6 +100,15 @@ public final class PluginManagerImpl
         this.holder.setListeners( list );
     }
 
+    @Autowired(required = false)
+    public void setLocalExtensions( final List<Extension> list )
+    {
+        for ( final Extension ext : list )
+        {
+            this.holder.add( LocalServiceReference.INSTANCE, ext );
+        }
+    }
+
     public ExtensionSet getExtensions()
     {
         return new ExtensionSetImpl( this.holder.getAll() );
@@ -109,11 +118,5 @@ public final class PluginManagerImpl
     public void setContextFactory( final ContextFactory contextFactory )
     {
         this.contextFactory = contextFactory;
-    }
-
-    @Override
-    public void registerLocalExtension( final Extension ext )
-    {
-        this.holder.add( LocalServiceReference.INSTANCE, ext );
     }
 }

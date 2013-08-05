@@ -131,9 +131,4 @@ public class MockPluginManager
     public void uninstall( final File file )
     {
     }
-
-    @Override
-    public void registerLocalExtension( final Extension ext )
-    {
-    }
 }

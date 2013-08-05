@@ -18,6 +18,7 @@ import org.springframework.mock.web.MockHttpSession;
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.util.DateUtil;
 
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.portal.httpservices.UserServicesException;
 import com.enonic.cms.core.security.PortalSecurityHolder;
@@ -29,7 +30,6 @@ import com.enonic.cms.core.security.userstore.StoreNewUserStoreCommand;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
@@ -189,9 +189,9 @@ public class UserServicesProcessorTest_operation_UpdateTest
         }
     }
 
-    private UserStoreUserFieldConfig createUserStoreUserFieldConfig( UserFieldType type, String properties )
+    private UserStoreConfigField createUserStoreUserFieldConfig( UserFieldType type, String properties )
     {
-        UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField fieldConfig = new UserStoreConfigField( type );
         fieldConfig.setRemote( properties.contains( "remote" ) );
         fieldConfig.setReadOnly( properties.contains( "read-only" ) );
         fieldConfig.setRequired( properties.contains( "required" ) );

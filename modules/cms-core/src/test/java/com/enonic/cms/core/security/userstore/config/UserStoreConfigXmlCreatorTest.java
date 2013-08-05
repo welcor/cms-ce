@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 import static org.junit.Assert.*;
@@ -25,9 +25,9 @@ public class UserStoreConfigXmlCreatorTest
     @Test
     public void testCreateDocumentAddressField()
     {
-        Collection<UserStoreUserFieldConfig> userFieldConfigs = new TreeSet<UserStoreUserFieldConfig>();
+        Collection<UserStoreConfigField> userFieldConfigs = new TreeSet<UserStoreConfigField>();
 
-        UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( UserFieldType.ADDRESS );
+        UserStoreConfigField fieldConfig = new UserStoreConfigField( UserFieldType.ADDRESS );
         fieldConfig.setReadOnly( true );
         userFieldConfigs.add( fieldConfig );
 
@@ -51,9 +51,9 @@ public class UserStoreConfigXmlCreatorTest
     @Test
     public void testCreateDocumentFirstnameField()
     {
-        Collection<UserStoreUserFieldConfig> userFieldConfigs = new TreeSet<UserStoreUserFieldConfig>();
+        Collection<UserStoreConfigField> userFieldConfigs = new TreeSet<UserStoreConfigField>();
 
-        UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( UserFieldType.FIRST_NAME );
+        UserStoreConfigField fieldConfig = new UserStoreConfigField( UserFieldType.FIRST_NAME );
         fieldConfig.setRequired( true );
         userFieldConfigs.add( fieldConfig );
 

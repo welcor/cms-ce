@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 import static org.junit.Assert.*;
@@ -399,7 +399,7 @@ public class UserStoreConfigParserTest
 
         /* Verify unique types */
         final Set<UserFieldType> userFields = new HashSet<UserFieldType>();
-        for ( final UserStoreUserFieldConfig userFieldConfig : config.getUserFieldConfigs() )
+        for ( final UserStoreConfigField userFieldConfig : config.getUserFieldConfigs() )
         {
             userFields.add( userFieldConfig.getType() );
         }
@@ -423,12 +423,12 @@ public class UserStoreConfigParserTest
 
         final UserStoreConfig config = UserStoreConfigParser.parse( configEl );
 
-        final Collection<UserStoreUserFieldConfig> allUserFieldConfigs = config.getUserFieldConfigs();
-        final Collection<UserStoreUserFieldConfig> retmoteUserFieldConfigs = config.getRemoteOnlyUserFieldConfigs();
+        final Collection<UserStoreConfigField> allUserFieldConfigs = config.getUserFieldConfigs();
+        final Collection<UserStoreConfigField> retmoteUserFieldConfigs = config.getRemoteOnlyUserFieldConfigs();
 
         assertEquals( 1, retmoteUserFieldConfigs.size() );
 
-        for ( final UserStoreUserFieldConfig userFieldConfig : allUserFieldConfigs )
+        for ( final UserStoreConfigField userFieldConfig : allUserFieldConfigs )
         {
             if ( userFieldConfig.getType().getName().equals( "first-name" ) )
             {
@@ -461,9 +461,9 @@ public class UserStoreConfigParserTest
 
         final UserStoreConfig config = UserStoreConfigParser.parse( configEl );
 
-        final Collection<UserStoreUserFieldConfig> allUserFieldConfigs = config.getUserFieldConfigs();
+        final Collection<UserStoreConfigField> allUserFieldConfigs = config.getUserFieldConfigs();
 
-        for ( final UserStoreUserFieldConfig userFieldConfig : allUserFieldConfigs )
+        for ( final UserStoreConfigField userFieldConfig : allUserFieldConfigs )
         {
             if ( userFieldConfig.getType().getName().equals( "first-name" ) )
             {
@@ -496,9 +496,9 @@ public class UserStoreConfigParserTest
 
         final UserStoreConfig config = UserStoreConfigParser.parse( configEl );
 
-        final Collection<UserStoreUserFieldConfig> allUserFieldConfigs = config.getUserFieldConfigs();
+        final Collection<UserStoreConfigField> allUserFieldConfigs = config.getUserFieldConfigs();
 
-        for ( final UserStoreUserFieldConfig userFieldConfig : allUserFieldConfigs )
+        for ( final UserStoreConfigField userFieldConfig : allUserFieldConfigs )
         {
             if ( userFieldConfig.getType().getName().equals( "first-name" ) )
             {
@@ -529,9 +529,9 @@ public class UserStoreConfigParserTest
 
         final UserStoreConfig config = UserStoreConfigParser.parse( configEl );
 
-        final Collection<UserStoreUserFieldConfig> allUserFieldConfigs = config.getUserFieldConfigs();
+        final Collection<UserStoreConfigField> allUserFieldConfigs = config.getUserFieldConfigs();
 
-        for ( final UserStoreUserFieldConfig userFieldConfig : allUserFieldConfigs )
+        for ( final UserStoreConfigField userFieldConfig : allUserFieldConfigs )
         {
             if ( userFieldConfig.getType().getName().equals( "address" ) )
             {

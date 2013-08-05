@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.api.client.model.ChangeUserPasswordParams;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.client.InternalClient;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
@@ -26,7 +27,6 @@ import com.enonic.cms.core.security.userstore.StoreNewUserStoreCommand;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.userstore.UserFields;
@@ -104,9 +104,9 @@ public class InternalClientImpl_changeUserPasswordTest
         assertEquals( DigestUtils.shaHex( "changed" ), resultUser.getPassword() );
     }
 
-    private UserStoreUserFieldConfig createUserStoreUserFieldConfig( UserFieldType type, String properties )
+    private UserStoreConfigField createUserStoreUserFieldConfig( UserFieldType type, String properties )
     {
-        UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField fieldConfig = new UserStoreConfigField( type );
         fieldConfig.setRemote( properties.contains( "remote" ) );
         fieldConfig.setReadOnly( properties.contains( "read-only" ) );
         fieldConfig.setRequired( properties.contains( "required" ) );

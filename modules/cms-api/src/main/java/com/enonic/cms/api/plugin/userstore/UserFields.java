@@ -258,7 +258,7 @@ public final class UserFields
 
     public void removeReadOnlyFields( final UserStoreConfig config )
     {
-        for ( final UserStoreUserFieldConfig userFieldConfig : config.getUserFieldConfigs() )
+        for ( final UserStoreConfigField userFieldConfig : config.getUserFieldConfigs() )
         {
             if ( userFieldConfig.isReadOnly() && hasField( userFieldConfig.getType() ) )
             {

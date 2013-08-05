@@ -10,7 +10,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 public class UserStoreConfigXmlCreator
@@ -39,9 +39,9 @@ public class UserStoreConfigXmlCreator
         final Element customFieldsEl = new Element( "user-fields" );
         configEl.addContent( customFieldsEl );
 
-        final Collection<UserStoreUserFieldConfig> fieldConfigs = userStoreConfig.getUserFieldConfigs();
+        final Collection<UserStoreConfigField> fieldConfigs = userStoreConfig.getUserFieldConfigs();
 
-        for ( final UserStoreUserFieldConfig fieldConfig : fieldConfigs )
+        for ( final UserStoreConfigField fieldConfig : fieldConfigs )
         {
             customFieldsEl.addContent( doCreateFieldConfigElement( fieldConfig ) );
         }
@@ -49,7 +49,7 @@ public class UserStoreConfigXmlCreator
         return configEl;
     }
 
-    private static Element doCreateFieldConfigElement( final UserStoreUserFieldConfig fieldConfig )
+    private static Element doCreateFieldConfigElement( final UserStoreConfigField fieldConfig )
     {
 
         final Element userFieldConfigEl = new Element( fieldConfig.getType().getName() );

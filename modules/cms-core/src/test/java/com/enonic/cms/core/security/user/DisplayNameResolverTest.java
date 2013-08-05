@@ -13,7 +13,7 @@ import junit.framework.Assert;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.userstore.UserFields;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 
 public class DisplayNameResolverTest
 {
@@ -187,9 +187,9 @@ public class DisplayNameResolverTest
         Assert.assertEquals( "Arn", displayNameResolver.resolveDisplayName( null, null, userFields ) );
     }
 
-    private UserStoreUserFieldConfig createUserFieldConfig( UserFieldType type, boolean readOnly )
+    private UserStoreConfigField createUserFieldConfig( UserFieldType type, boolean readOnly )
     {
-        UserStoreUserFieldConfig config = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField config = new UserStoreConfigField( type );
         config.setReadOnly( readOnly );
         return config;
     }

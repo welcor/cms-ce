@@ -19,7 +19,7 @@ import com.enonic.cms.api.plugin.userstore.UserField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.userstore.UserFields;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 
 import static org.junit.Assert.*;
 
@@ -458,9 +458,9 @@ public class UserFieldsTest
         address.setRegion( "Region" );
         allUserFields.add( new UserField( UserFieldType.ADDRESS, address ) );
         UserStoreConfig userStoreConfig = new UserStoreConfig();
-        userStoreConfig.addUserFieldConfig( new UserStoreUserFieldConfig( UserFieldType.FIRST_NAME ) );
-        userStoreConfig.addUserFieldConfig( new UserStoreUserFieldConfig( UserFieldType.LAST_NAME ) );
-        UserStoreUserFieldConfig addressConfig = new UserStoreUserFieldConfig( UserFieldType.ADDRESS );
+        userStoreConfig.addUserFieldConfig( new UserStoreConfigField( UserFieldType.FIRST_NAME ) );
+        userStoreConfig.addUserFieldConfig( new UserStoreConfigField( UserFieldType.LAST_NAME ) );
+        UserStoreConfigField addressConfig = new UserStoreConfigField( UserFieldType.ADDRESS );
         addressConfig.setIso( false );
         userStoreConfig.addUserFieldConfig( addressConfig );
 
@@ -594,9 +594,9 @@ public class UserFieldsTest
 
     }
 
-    private UserStoreUserFieldConfig createUserStoreUserFieldConfig( UserFieldType type, boolean remote )
+    private UserStoreConfigField createUserStoreUserFieldConfig( UserFieldType type, boolean remote )
     {
-        UserStoreUserFieldConfig config = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField config = new UserStoreConfigField( type );
         config.setRemote( remote );
         return config;
     }

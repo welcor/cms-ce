@@ -9,7 +9,7 @@ import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +26,7 @@ public class RemoteUserStoreFactoryTest
     @Test
     public void testCustom()
     {
-        RemoteUserStorePlugin dir = this.factory.create( NopRemoteUserStorePlugin.class.getName() );
+        RemoteUserStore dir = this.factory.create( NopRemoteUserStorePlugin.class.getName() );
         assertEquals( NopRemoteUserStorePlugin.class, dir.getClass() );
     }
 

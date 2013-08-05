@@ -13,7 +13,7 @@ import org.jdom.Attribute;
 import org.jdom.Element;
 
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 public class UserStoreConfigParser
@@ -60,7 +60,7 @@ public class UserStoreConfigParser
         return config;
     }
 
-    private static Collection<UserStoreUserFieldConfig> parseUserFields( final Element userFieldsEl, final boolean remoteConfigAllowed )
+    private static Collection<UserStoreConfigField> parseUserFields( final Element userFieldsEl, final boolean remoteConfigAllowed )
     {
         if ( userFieldsEl == null )
         {
@@ -74,12 +74,12 @@ public class UserStoreConfigParser
                 "Given user-fields element is not named '" + USER_FIELDS_ELEMENT_NAME + "': " + elementName, userFieldsEl );
         }
 
-        final Map<UserFieldType, UserStoreUserFieldConfig> fieldConfigs = new HashMap<UserFieldType, UserStoreUserFieldConfig>();
+        final Map<UserFieldType, UserStoreConfigField> fieldConfigs = new HashMap<UserFieldType, UserStoreConfigField>();
 
         final List<Element> fieldConfigElements = userFieldsEl.getChildren();
         for ( Element fieldConfigEl : fieldConfigElements )
         {
-            final UserStoreUserFieldConfig fieldConfig = parseFieldConfig( fieldConfigEl, remoteConfigAllowed );
+            final UserStoreConfigField fieldConfig = parseFieldConfig( fieldConfigEl, remoteConfigAllowed );
             if ( fieldConfigs.containsKey( fieldConfig.getType() ) )
             {
                 throw new InvalidUserStoreConfigException( "Duplicate user-field found: " + fieldConfig.getType().getName(),
@@ -90,7 +90,7 @@ public class UserStoreConfigParser
         return fieldConfigs.values();
     }
 
-    private static UserStoreUserFieldConfig parseFieldConfig( final Element fieldConfigEl, final boolean remoteConfigAllowed )
+    private static UserStoreConfigField parseFieldConfig( final Element fieldConfigEl, final boolean remoteConfigAllowed )
     {
         final String fieldName = fieldConfigEl.getName();
         final UserFieldType type = UserFieldType.fromName( fieldName );
@@ -104,7 +104,7 @@ public class UserStoreConfigParser
                 "Illegal user-field element '" + ( (Element) fieldConfigEl.getChildren().get( 0 ) ).getName() + "'", fieldConfigEl );
         }
 
-        final UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( type );
+        final UserStoreConfigField fieldConfig = new UserStoreConfigField( type );
 
         /* Requried */
         final String required = fieldConfigEl.getAttributeValue( "required" );

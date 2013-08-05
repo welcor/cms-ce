@@ -24,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.enonic.esl.util.DateUtil;
 
 import com.enonic.cms.api.client.model.user.Gender;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.AdminSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.StoreNewUserCommand;
@@ -35,7 +36,6 @@ import com.enonic.cms.core.security.userstore.StoreNewUserStoreCommand;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreService;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.userstore.UserFields;
@@ -281,9 +281,9 @@ public class UserHandlerServlet_localUserStoreTest
     }
 
 
-    private UserStoreUserFieldConfig createUserStoreUserFieldConfig( UserFieldType type, String properties )
+    private UserStoreConfigField createUserStoreUserFieldConfig( UserFieldType type, String properties )
     {
-        UserStoreUserFieldConfig fieldConfig = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField fieldConfig = new UserStoreConfigField( type );
         fieldConfig.setRemote( properties.contains( "remote" ) );
         fieldConfig.setReadOnly( properties.contains( "read-only" ) );
         fieldConfig.setRequired( properties.contains( "required" ) );

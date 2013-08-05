@@ -15,6 +15,7 @@ import org.springframework.util.Assert;
 
 import com.google.common.base.Preconditions;
 
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -41,7 +42,6 @@ import com.enonic.cms.core.security.userstore.connector.GroupAlreadyExistsExcept
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
@@ -54,7 +54,7 @@ public class RemoteUserStoreConnector
     extends AbstractBaseUserStoreConnector
     implements UserStoreConnector
 {
-    private RemoteUserStorePlugin remoteUserStorePlugin;
+    private RemoteUserStore remoteUserStorePlugin;
 
     private TimeService timeService;
 
@@ -756,7 +756,7 @@ public class RemoteUserStoreConnector
         return remoteUserStorePlugin.getAllGroups();
     }
 
-    public void setRemoteUserStorePlugin( final RemoteUserStorePlugin value )
+    public void setRemoteUserStorePlugin( final RemoteUserStore value )
     {
         remoteUserStorePlugin = value;
     }

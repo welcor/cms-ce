@@ -7,7 +7,7 @@ package com.enonic.cms.api.plugin.userstore;
 import java.util.List;
 import java.util.Set;
 
-public interface RemoteUserStorePlugin
+public interface RemoteUserStore
 {
     public void initialize();
 

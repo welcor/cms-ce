@@ -4,8 +4,8 @@
  */
 package com.enonic.cms.api.plugin.userstore;
 
-public final class UserStoreUserFieldConfig
-    implements Comparable<UserStoreUserFieldConfig>
+public final class UserStoreConfigField
+    implements Comparable<UserStoreConfigField>
 {
     private final UserFieldType type;
 
@@ -17,7 +17,7 @@ public final class UserStoreUserFieldConfig
 
     private boolean iso = true;
 
-    public UserStoreUserFieldConfig( final UserFieldType type )
+    public UserStoreConfigField( final UserFieldType type )
     {
         this.type = type;
     }
@@ -67,7 +67,7 @@ public final class UserStoreUserFieldConfig
         iso = value;
     }
 
-    public int compareTo( final UserStoreUserFieldConfig o )
+    public int compareTo( final UserStoreConfigField o )
     {
         return type.getName().compareTo( o.getType().getName() );
     }

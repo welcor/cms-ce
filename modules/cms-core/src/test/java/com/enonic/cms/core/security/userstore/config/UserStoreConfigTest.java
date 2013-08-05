@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 import static org.junit.Assert.*;
@@ -25,8 +25,8 @@ public class UserStoreConfigTest
     {
         // setup
         UserStoreConfig userStoreConfig = new UserStoreConfig();
-        userStoreConfig.addUserFieldConfig( new UserStoreUserFieldConfig( UserFieldType.NICK_NAME ) );
-        userStoreConfig.addUserFieldConfig( new UserStoreUserFieldConfig( UserFieldType.TITLE ) );
+        userStoreConfig.addUserFieldConfig( new UserStoreConfigField( UserFieldType.NICK_NAME ) );
+        userStoreConfig.addUserFieldConfig( new UserStoreConfigField( UserFieldType.TITLE ) );
 
         // exercise
         List<UserFieldType> configuredTypesOnly = Lists.newArrayList( userStoreConfig.getUserFieldTypes() );
@@ -43,7 +43,7 @@ public class UserStoreConfigTest
         // setup
         UserStoreConfig userStoreConfig = new UserStoreConfig();
         userStoreConfig.addUserFieldConfig( createUserFieldConfig( UserFieldType.NICK_NAME, "remote" ) );
-        userStoreConfig.addUserFieldConfig( new UserStoreUserFieldConfig( UserFieldType.TITLE ) );
+        userStoreConfig.addUserFieldConfig( new UserStoreConfigField( UserFieldType.TITLE ) );
 
         // exercise
         List<UserFieldType> configuredTypesOnly = Lists.newArrayList( userStoreConfig.getRemoteOnlyUserFieldTypes() );
@@ -59,7 +59,7 @@ public class UserStoreConfigTest
         // setup
         UserStoreConfig userStoreConfig = new UserStoreConfig();
         userStoreConfig.addUserFieldConfig( createUserFieldConfig( UserFieldType.NICK_NAME, "remote" ) );
-        userStoreConfig.addUserFieldConfig( new UserStoreUserFieldConfig( UserFieldType.TITLE ) );
+        userStoreConfig.addUserFieldConfig( new UserStoreConfigField( UserFieldType.TITLE ) );
 
         // exercise
         List<UserFieldType> configuredTypesOnly = Lists.newArrayList( userStoreConfig.getLocalOnlyUserFieldTypes() );
@@ -69,9 +69,9 @@ public class UserStoreConfigTest
         assertEquals( "title", configuredTypesOnly.get( 0 ).getName() );
     }
 
-    private UserStoreUserFieldConfig createUserFieldConfig( UserFieldType type, String attributes )
+    private UserStoreConfigField createUserFieldConfig( UserFieldType type, String attributes )
     {
-        UserStoreUserFieldConfig config = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField config = new UserStoreConfigField( type );
         if ( attributes.contains( "read-only" ) )
         {
             config.setReadOnly( true );

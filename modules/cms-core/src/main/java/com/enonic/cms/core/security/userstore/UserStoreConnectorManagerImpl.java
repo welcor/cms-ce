@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigLoader;
 import com.enonic.cms.core.security.userstore.connector.local.LocalUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStoreFactory;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
@@ -165,7 +165,7 @@ public final class UserStoreConnectorManagerImpl
     {
         final UserStoreConnectorConfig connectorConfig =
             userStoreConnectorConfigLoader.getUserStoreConnectorConfig( userStore.getConnectorName() );
-        final RemoteUserStorePlugin remoteUserStorePlugin =
+        final RemoteUserStore remoteUserStorePlugin =
             remoteUserStoreFactory.create( connectorConfig.getPluginType(), connectorConfig.getPluginProperties() );
         remoteUserStorePlugin.initialize();
 

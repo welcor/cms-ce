@@ -8,9 +8,9 @@ package com.enonic.vertical.adminweb;
 
 import org.junit.Test;
 
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 import static org.junit.Assert.*;
@@ -205,33 +205,33 @@ public class UserFormEditableFieldsResolverTest
         assertFalse( resolver.isFirstNameEditable() );
     }
 
-    private UserStoreUserFieldConfig createLocalUserFieldConfig( UserFieldType type )
+    private UserStoreConfigField createLocalUserFieldConfig( UserFieldType type )
     {
-        UserStoreUserFieldConfig userFieldConfig = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField userFieldConfig = new UserStoreConfigField( type );
         userFieldConfig.setRemote( false );
         userFieldConfig.setReadOnly( false );
         return userFieldConfig;
     }
 
-    private UserStoreUserFieldConfig createLocalReadOnlyUserFieldConfig( UserFieldType type )
+    private UserStoreConfigField createLocalReadOnlyUserFieldConfig( UserFieldType type )
     {
-        UserStoreUserFieldConfig userFieldConfig = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField userFieldConfig = new UserStoreConfigField( type );
         userFieldConfig.setRemote( false );
         userFieldConfig.setReadOnly( true );
         return userFieldConfig;
     }
 
-    private UserStoreUserFieldConfig createRemoteUserFieldConfig( UserFieldType type )
+    private UserStoreConfigField createRemoteUserFieldConfig( UserFieldType type )
     {
-        UserStoreUserFieldConfig userFieldConfig = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField userFieldConfig = new UserStoreConfigField( type );
         userFieldConfig.setRemote( true );
         userFieldConfig.setReadOnly( false );
         return userFieldConfig;
     }
 
-    private UserStoreUserFieldConfig createRemoteReadOnlyUserFieldConfig( UserFieldType type )
+    private UserStoreConfigField createRemoteReadOnlyUserFieldConfig( UserFieldType type )
     {
-        UserStoreUserFieldConfig userFieldConfig = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField userFieldConfig = new UserStoreConfigField( type );
         userFieldConfig.setRemote( true );
         userFieldConfig.setReadOnly( true );
         return userFieldConfig;

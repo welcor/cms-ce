@@ -23,6 +23,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.CreateGroupAccessException;
 import com.enonic.cms.core.security.group.DeleteGroupAccessException;
@@ -53,13 +55,11 @@ import com.enonic.cms.core.security.user.UserStorageInvalidArgumentException;
 import com.enonic.cms.core.security.userstore.config.InvalidUserStoreConfigException;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.remote.MemberCache;
 import com.enonic.cms.core.security.userstore.connector.remote.RemoteUserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.remote.plugin.RemoteUserStoreFactory;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.security.userstore.status.LocalGroupsStatus;
 import com.enonic.cms.core.security.userstore.status.LocalUsersStatus;
@@ -964,13 +964,13 @@ public class UserStoreServiceImpl
         getRemoteUserStorePlugin( connectorName );
     }
 
-    private RemoteUserStorePlugin getRemoteUserStorePlugin( final String connectorName )
+    private RemoteUserStore getRemoteUserStorePlugin( final String connectorName )
     {
         final UserStoreConnectorConfig connectorConfig = userConnectorStoreManager.getUserStoreConnectorConfig( connectorName );
         final String connectorType = connectorConfig.getPluginType();
         final Properties pluginProperties = connectorConfig.getPluginProperties();
 
-        final RemoteUserStorePlugin remoteUserStorePlugin = remoteUserStoreFactory.create( connectorType, pluginProperties );
+        final RemoteUserStore remoteUserStorePlugin = remoteUserStoreFactory.create( connectorType, pluginProperties );
         remoteUserStorePlugin.initialize();
 
         return remoteUserStorePlugin;
@@ -978,9 +978,9 @@ public class UserStoreServiceImpl
 
     public void verifyUserStoreConnectorConfig( final UserStoreConfig config, final String connectorName )
     {
-        final RemoteUserStorePlugin remoteUserStorePlugin = getRemoteUserStorePlugin( connectorName );
+        final RemoteUserStore remoteUserStorePlugin = getRemoteUserStorePlugin( connectorName );
         final Set<UserFieldType> supportedTypes = remoteUserStorePlugin.getSupportedFieldTypes();
-        for ( final UserStoreUserFieldConfig userFieldConfig : config.getRemoteOnlyUserFieldConfigs() )
+        for ( final UserStoreConfigField userFieldConfig : config.getRemoteOnlyUserFieldConfigs() )
         {
             if ( !supportedTypes.contains( userFieldConfig.getType() ) )
             {

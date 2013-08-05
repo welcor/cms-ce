@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupSpecification;
 import com.enonic.cms.core.security.group.GroupType;
@@ -17,7 +18,6 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.api.plugin.userstore.RemoteGroup;
 import com.enonic.cms.api.plugin.userstore.RemotePrincipal;
@@ -40,7 +40,7 @@ public abstract class AbstractBaseGroupSynchronizer
 
     protected GroupDao groupDao;
 
-    protected RemoteUserStorePlugin remoteUserStorePlugin;
+    protected RemoteUserStore remoteUserStorePlugin;
 
     protected final boolean syncGroup;
 
@@ -311,7 +311,7 @@ public abstract class AbstractBaseGroupSynchronizer
         this.userDao = value;
     }
 
-    public void setRemoteUserStorePlugin( final RemoteUserStorePlugin value )
+    public void setRemoteUserStorePlugin( final RemoteUserStore value )
     {
         this.remoteUserStorePlugin = value;
     }

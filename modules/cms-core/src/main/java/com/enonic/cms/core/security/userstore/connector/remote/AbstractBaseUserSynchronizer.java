@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupSpecification;
@@ -29,7 +30,6 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStorer;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.api.plugin.userstore.UserFields;
@@ -48,7 +48,7 @@ public abstract class AbstractBaseUserSynchronizer
 
     protected final boolean syncMemberships;
 
-    protected RemoteUserStorePlugin remoteUserStorePlugin;
+    protected RemoteUserStore remoteUserStorePlugin;
 
     protected UserDao userDao;
 
@@ -473,7 +473,7 @@ public abstract class AbstractBaseUserSynchronizer
         return groupDao.findByKey( groupKey );
     }
 
-    public void setRemoteUserStorePlugin( final RemoteUserStorePlugin value )
+    public void setRemoteUserStorePlugin( final RemoteUserStore value )
     {
         this.remoteUserStorePlugin = value;
     }

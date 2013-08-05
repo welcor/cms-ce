@@ -4,11 +4,12 @@
  */
 package com.enonic.cms.itest.store.dao;
 
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -61,7 +62,7 @@ public class UserStoreEntityDaoTest
         final UserStoreConfig userStoreConfig = storedEntity.getConfig();
         assertNotNull( userStoreConfig );
 
-        final Collection<UserStoreUserFieldConfig> userFieldConfigs = userStoreConfig.getUserFieldConfigs();
+        final Collection<UserStoreConfigField> userFieldConfigs = userStoreConfig.getUserFieldConfigs();
         assertNotNull( userFieldConfigs );
         assertEquals( 1, userFieldConfigs.size() );
     }

@@ -9,7 +9,7 @@ package com.enonic.cms.core.security.user;
 import org.junit.Test;
 
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.userstore.UserFields;
@@ -116,9 +116,9 @@ public class RequiredUserFieldsValidatorTest
         validator.validatePresentFieldsAreNotBlankIfRequired( userFields );
     }
 
-    private UserStoreUserFieldConfig createUserStoreUserFieldConfig( UserFieldType type, String properties )
+    private UserStoreConfigField createUserStoreUserFieldConfig( UserFieldType type, String properties )
     {
-        UserStoreUserFieldConfig config = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField config = new UserStoreConfigField( type );
         config.setRemote( properties.contains( "remote" ) );
         config.setRequired( properties.contains( "required" ) );
         config.setReadOnly( properties.contains( "read-only" ) );

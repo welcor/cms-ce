@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
@@ -43,7 +44,6 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.ContentHomeEntity;
@@ -155,9 +155,9 @@ public class DomainFactory
         return user;
     }
 
-    public UserStoreUserFieldConfig createUserStoreUserFieldConfig( UserFieldType type, String properties )
+    public UserStoreConfigField createUserStoreUserFieldConfig( UserFieldType type, String properties )
     {
-        UserStoreUserFieldConfig config = new UserStoreUserFieldConfig( type );
+        UserStoreConfigField config = new UserStoreConfigField( type );
         config.setRemote( properties.contains( "remote" ) );
         config.setRequired( properties.contains( "required" ) );
         config.setReadOnly( properties.contains( "read-only" ) );

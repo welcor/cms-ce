@@ -12,21 +12,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 
 @Component
 public final class RemoteUserStoreFactory
 {
     private final static Logger LOG = LoggerFactory.getLogger( RemoteUserStoreFactory.class );
 
-    public RemoteUserStorePlugin create( String type )
+    public RemoteUserStore create( String type )
     {
         return create( type, null );
     }
 
-    public RemoteUserStorePlugin create( String type, Properties props )
+    public RemoteUserStore create( String type, Properties props )
     {
-        RemoteUserStorePlugin userStorePlugin = createInstance( type );
+        RemoteUserStore userStorePlugin = createInstance( type );
         if ( props != null )
         {
             BeanMap bean = new BeanMap( userStorePlugin );
@@ -54,17 +54,17 @@ public final class RemoteUserStoreFactory
         return userStorePlugin;
     }
 
-    private RemoteUserStorePlugin createInstance( String type )
+    private RemoteUserStore createInstance( String type )
     {
         Class<?> clz = getDirectoryClass( type );
-        if ( !RemoteUserStorePlugin.class.isAssignableFrom( clz ) )
+        if ( !RemoteUserStore.class.isAssignableFrom( clz ) )
         {
             throw new IllegalArgumentException( "Class [" + clz + "] is not a valid remote userstore" );
         }
 
         try
         {
-            return (RemoteUserStorePlugin) clz.newInstance();
+            return (RemoteUserStore) clz.newInstance();
         }
         catch ( Exception e )
         {

@@ -8,7 +8,7 @@ package com.enonic.cms.core.security.user;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserFields;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 
@@ -28,7 +28,7 @@ public class ReadOnlyUserFieldValidator
 
     public void validate( UserFields userFields )
     {
-        for ( final UserStoreUserFieldConfig userFieldConfig : userStoreConfig.getUserFieldConfigs() )
+        for ( final UserStoreConfigField userFieldConfig : userStoreConfig.getUserFieldConfigs() )
         {
             if ( userFieldConfig.isReadOnly() && userFields.hasField( userFieldConfig.getType() ) )
             {

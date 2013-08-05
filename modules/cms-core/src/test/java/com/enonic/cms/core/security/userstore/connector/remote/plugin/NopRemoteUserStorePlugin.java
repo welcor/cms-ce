@@ -7,14 +7,14 @@ package com.enonic.cms.core.security.userstore.connector.remote.plugin;
 import java.util.List;
 import java.util.Set;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStorePlugin;
+import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.userstore.RemoteGroup;
 import com.enonic.cms.api.plugin.userstore.RemotePrincipal;
 import com.enonic.cms.api.plugin.userstore.RemoteUser;
 
 public class NopRemoteUserStorePlugin
-    implements RemoteUserStorePlugin
+    implements RemoteUserStore
 {
     private String prop1;
 

@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.api.plugin.userstore.UserField;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.userstore.UserFields;
@@ -32,7 +32,7 @@ public class RequiredUserFieldsValidator
 
     public void validateAllRequiredFieldsArePresentAndNotEmpty( final UserFields userFields )
     {
-        for ( final UserStoreUserFieldConfig userFieldConfig : userStoreConfig.getUserFieldConfigs() )
+        for ( final UserStoreConfigField userFieldConfig : userStoreConfig.getUserFieldConfigs() )
         {
             final UserFieldType type = userFieldConfig.getType();
             if ( userFieldConfig.isRequired() )
@@ -48,7 +48,7 @@ public class RequiredUserFieldsValidator
 
     public void validatePresentFieldsAreNotBlankIfRequired( final UserFields userFields )
     {
-        for ( final UserStoreUserFieldConfig userFieldConfig : userStoreConfig.getUserFieldConfigs() )
+        for ( final UserStoreConfigField userFieldConfig : userStoreConfig.getUserFieldConfigs() )
         {
             final UserFieldType type = userFieldConfig.getType();
 

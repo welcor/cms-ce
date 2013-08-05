@@ -9,9 +9,9 @@ package com.enonic.vertical.adminweb;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreUserFieldConfig;
 import com.enonic.cms.api.plugin.userstore.UserFieldType;
 
 class UserFormEditableFieldsResolver
@@ -217,7 +217,7 @@ class UserFormEditableFieldsResolver
         return isEditable( userStoreConfig.getUserFieldConfig( UserFieldType.BIRTHDAY ) );
     }
 
-    private boolean isEditable( UserStoreUserFieldConfig config )
+    private boolean isEditable( UserStoreConfigField config )
     {
         if ( config == null )
         {

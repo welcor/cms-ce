@@ -9,32 +9,32 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class UserStoreConfig
+public final class UserStoreConfig
 {
-    private final Collection<UserStoreUserFieldConfig> userFieldConfigs = new TreeSet<UserStoreUserFieldConfig>();
+    private final Collection<UserStoreConfigField> userFieldConfigs = new TreeSet<UserStoreConfigField>();
 
-    public Collection<UserStoreUserFieldConfig> getUserFieldConfigs()
+    public Collection<UserStoreConfigField> getUserFieldConfigs()
     {
         return userFieldConfigs;
     }
 
-    public void addUserFieldConfig( UserStoreUserFieldConfig value )
+    public void addUserFieldConfig( UserStoreConfigField value )
     {
         userFieldConfigs.add( value );
     }
 
-    public void setUserFieldConfigs( final Collection<UserStoreUserFieldConfig> value )
+    public void setUserFieldConfigs( final Collection<UserStoreConfigField> value )
     {
         userFieldConfigs.clear();
         userFieldConfigs.addAll( value );
     }
 
-    public Set<UserStoreUserFieldConfig> getRemoteOnlyUserFieldConfigs()
+    public Set<UserStoreConfigField> getRemoteOnlyUserFieldConfigs()
     {
         return getUserFieldConfigs( true );
     }
 
-    public Set<UserStoreUserFieldConfig> getLocalOnlyUserFieldConfigs()
+    public Set<UserStoreConfigField> getLocalOnlyUserFieldConfigs()
     {
         return getUserFieldConfigs( false );
     }
@@ -54,9 +54,9 @@ public class UserStoreConfig
         return getUserFieldTypes( false );
     }
 
-    public UserStoreUserFieldConfig getUserFieldConfig( UserFieldType type )
+    public UserStoreConfigField getUserFieldConfig( UserFieldType type )
     {
-        for ( UserStoreUserFieldConfig config : userFieldConfigs )
+        for ( UserStoreConfigField config : userFieldConfigs )
         {
             if ( config.getType().equals( type ) )
             {
@@ -66,11 +66,11 @@ public class UserStoreConfig
         return null;
     }
 
-    private Set<UserStoreUserFieldConfig> getUserFieldConfigs( final Boolean remoteFlagValue )
+    private Set<UserStoreConfigField> getUserFieldConfigs( final Boolean remoteFlagValue )
     {
-        final Set<UserStoreUserFieldConfig> fieldConfigs = new LinkedHashSet<UserStoreUserFieldConfig>();
+        final Set<UserStoreConfigField> fieldConfigs = new LinkedHashSet<UserStoreConfigField>();
 
-        for ( final UserStoreUserFieldConfig userFieldConfig : userFieldConfigs )
+        for ( final UserStoreConfigField userFieldConfig : userFieldConfigs )
         {
             if ( remoteFlagValue == null || userFieldConfig.isRemote() == remoteFlagValue )
             {
@@ -84,7 +84,7 @@ public class UserStoreConfig
     {
         final Set<UserFieldType> fieldTypes = new LinkedHashSet<UserFieldType>();
 
-        for ( final UserStoreUserFieldConfig userFieldConfig : getUserFieldConfigs( remotesOnly ) )
+        for ( final UserStoreConfigField userFieldConfig : getUserFieldConfigs( remotesOnly ) )
         {
             fieldTypes.add( userFieldConfig.getType() );
         }

@@ -99,17 +99,17 @@
                     var oDOM = ed.dom;
                     var oParentNode = n.parentNode;
 
-                    var bSetCMSImageButtonActive = n.nodeName == 'IMG' && oDOM.getAttrib(n, 'src').match(reCMSImagePattern) && n.className.indexOf('mceItem') == -1;
-                    var bSetJustifyLeftButtonActive = n.nodeName == 'IMG' && oDOM.hasClass(n, 'editor-image-left') || oDOM.getStyle(n, 'textAlign') == 'left';
-                    var bSetJustifyRightButtonActive = n.nodeName == 'IMG' && oDOM.hasClass(n, 'editor-image-right') || oDOM.getStyle(n, 'textAlign') == 'right';
-                    var bSetJustifyCenterButtonActive = oDOM.hasClass(oParentNode, 'editor-p-center') || oDOM.getStyle(n, 'textAlign') == 'center';
-                    var bSetJustifyFullButtonActive = oDOM.hasClass(oParentNode, 'editor-p-block') || oDOM.getStyle(n, 'textAlign') == 'justify';
+                    var activateCMSImageButton = n.nodeName == 'IMG' && oDOM.getAttrib(n, 'src').match(reCMSImagePattern) && n.className.indexOf('mceItem') == -1;
+                    var activateJustifyLeftButton = n.nodeName == 'IMG' && oDOM.hasClass(n, 'editor-image-left') || oDOM.getStyle(n, 'textAlign') == 'left';
+                    var activateJustifyRightButton = n.nodeName == 'IMG' && oDOM.hasClass(n, 'editor-image-right') || oDOM.getStyle(n, 'textAlign') == 'right';
+                    var activateJustifyCenterButton = oDOM.hasClass(oParentNode, 'editor-p-center') || oDOM.getStyle(n, 'textAlign') == 'center';
+                    var activateJustifyFullButton = oDOM.hasClass(oParentNode, 'editor-p-block') || oDOM.getStyle(n, 'textAlign') == 'justify';
 
-                    cm.setActive('cmsimage', bSetCMSImageButtonActive);
-                    cm.setActive('justifyleft', bSetJustifyLeftButtonActive);
-                    cm.setActive('justifyright', bSetJustifyRightButtonActive);
-                    cm.setActive('justifycenter', bSetJustifyCenterButtonActive);
-                    cm.setActive('justifyfull', bSetJustifyFullButtonActive);
+                    cm.setActive('cmsimage', activateCMSImageButton);
+                    cm.setActive('justifyleft', activateJustifyLeftButton);
+                    cm.setActive('justifyright', activateJustifyRightButton);
+                    cm.setActive('justifycenter', activateJustifyCenterButton);
+                    cm.setActive('justifyfull', activateJustifyFullButton);
                 });
 
 
@@ -117,7 +117,7 @@
                  *** START: Alignment prototype code
                  *******************************************************************************************************************************/
 
-                var oSelectedImage = null;
+                var selectedImage = null;
 
                 // Image dragging solution for non Gecko browsers.
                 // Firefox selects any wrapped P element when the image is dragged in the editor document.
@@ -129,15 +129,15 @@
                 {
                     if ( !tinymce.isGecko )
                     {
-                        var oDOM = ed.dom;
+                        var dom = ed.dom;
 
                         if ( e.target.nodeName === 'IMG' )
                         {
-                            oSelectedImage = e.target;
+                            selectedImage = e.target;
 
                             var parent = e.target.parentNode;
 
-                            if ( parent.nodeName === 'P' && ( oDOM.hasClass(parent, 'editor-p-block') || oDOM.hasClass(parent, 'editor-p-center')) )
+                            if ( parent.nodeName === 'P' && ( dom.hasClass(parent, 'editor-p-block') || dom.hasClass(parent, 'editor-p-center')) )
                             {
                                 ed.selection.select(parent);
                             }
@@ -150,14 +150,14 @@
                 {
                     if ( !tinymce.isGecko )
                     {
-                        var oDOM = ed.dom;
+                        var dom = ed.dom;
 
                         if ( e.target.nodeName === 'IMG' )
                         {
-                            oSelectedImage = e.target;
+                            selectedImage = e.target;
 
                             var parent = e.target.parentNode;
-                            if ( parent.nodeName === 'P' && ( oDOM.hasClass(parent, 'editor-p-block') || oDOM.hasClass(parent, 'editor-p-center')) )
+                            if ( parent.nodeName === 'P' && ( dom.hasClass(parent, 'editor-p-block') || dom.hasClass(parent, 'editor-p-center')) )
                             {
                                 ed.selection.select(e.target);
                             }
@@ -173,25 +173,25 @@
                     if ( cmd === 'JustifyLeft' || cmd === 'JustifyRight' ||
                         cmd === 'JustifyCenter' || cmd === 'JustifyFull')
                     {
-                        var oDOM = ed.dom;
+                        var dom = ed.dom;
 
                         // Get the image for Fx.
                         // For IE the oSelectedImage is set during the mouse events (see mouseup/down events).
                         if ( tinymce.isGecko )
-                            oSelectedImage = ed.selection.getNode();
+                            selectedImage = ed.selection.getNode();
 
-                        if ( oSelectedImage && oSelectedImage.nodeName === 'IMG' )
+                        if ( selectedImage && selectedImage.nodeName === 'IMG' )
                         {
                             t.removeCmsCssFromImage(ed.selection.getNode(), ed);
 
                             // Since the node can be cloned and removed after such a command is executed.
                             // Setting a bogus attribute on the IMG makes it easier to find.
-                            oDOM.setAttrib(oSelectedImage, 'data-cms-image', '1');
+                            dom.setAttrib(selectedImage, 'data-cms-image', '1');
 
                             // Since TinyMCE creates a P for us, mark our P element for removal after the command has executed.
-                            if ( cmd === 'JustifyCenter' && oDOM.hasClass(oSelectedImage.parentNode, 'editor-p-block') )
+                            if ( cmd === 'JustifyCenter' && dom.hasClass(selectedImage.parentNode, 'editor-p-block') )
                             {
-                                oDOM.setAttrib(oSelectedImage.parentNode, 'data-cms-p-block', '1');
+                                dom.setAttrib(selectedImage.parentNode, 'data-cms-p-block', '1');
                             }
                         }
                     }
@@ -205,52 +205,52 @@
                         return;
                     }
 
-                    var oDOM = ed.dom;
+                    var dom = ed.dom;
 
                     // TinyMCE has cloned and removed the original IMG element.
                     // Select it again using the attribute added in onBeforeExecCommand.
 
-                    var oImageElement = oDOM.select('img[data-cms-image=1]')[0];
+                    var imageElement = dom.select('img[data-cms-image=1]')[0];
 
-                    if ( oImageElement && oImageElement.nodeName === 'IMG')
+                    if ( imageElement && imageElement.nodeName === 'IMG')
                     {
                         if ( cmd === 'JustifyLeft')
                         {
-                            t.alignImage(ed, oImageElement, 'left');
+                            t.alignImage(ed, imageElement, 'left');
                         }
                         else if ( cmd === 'JustifyRight')
                         {
-                            t.alignImage(ed, oImageElement, 'right');
+                            t.alignImage(ed, imageElement, 'right');
                         }
                         else if ( cmd === 'JustifyCenter')
                         {
-                            t.centerImage(ed, oImageElement);
+                            t.centerImage(ed, imageElement);
 
-                            var oCMSPBlock = oDOM.select('p[data-cms-p-block=1]')[0];
-                            if ( oDOM.hasClass(oCMSPBlock, 'editor-p-block') )
+                            var cmsParagraphBlock = dom.select('p[data-cms-p-block=1]')[0];
+                            if ( dom.hasClass(cmsParagraphBlock, 'editor-p-block') )
                             {
-                                oDOM.remove(oCMSPBlock);
+                                dom.remove(cmsParagraphBlock);
                             }
 
                         }
                         else if ( cmd === 'JustifyFull')
                         {
-                            t.blockImage(ed, oImageElement);
+                            t.blockImage(ed, imageElement);
                         }
 
                         // Firefox leaves the resize handlers in the old position. This command will clean it up.
                         ed.execCommand('mceRepaint');
 
-                        oImageElement = oDOM.select('img[data-cms-image=1]')[0];
+                        imageElement = dom.select('img[data-cms-image=1]')[0];
 
-                        oDOM.setAttrib(oImageElement, 'data-cms-image');
+                        dom.setAttrib(imageElement, 'data-cms-image');
 
-                        ed.selection.select(oImageElement);
+                        ed.selection.select(imageElement);
 
-                        oDOM.setAttrib(oImageElement, '_moz_resizing', 'true');
+                        dom.setAttrib(imageElement, '_moz_resizing', 'true');
 
                         // Needed for IE.
-                        oSelectedImage = oImageElement;
+                        selectedImage = imageElement;
                     }
                 });
 

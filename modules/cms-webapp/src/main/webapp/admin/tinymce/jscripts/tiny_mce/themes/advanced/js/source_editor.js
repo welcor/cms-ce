@@ -1,11 +1,22 @@
 tinyMCEPopup.requireLangPack();
 tinyMCEPopup.onInit.add(onLoadInit);
 
-var g_codemirror;
+var g_codemirror; // Reference to the codemirror instance.
 
 function onLoadInit()
 {
-    document.getElementById('htmlSource').value = blockElementsWithNewlines(tinyMCEPopup.editor.getContent());
+    var textAreaToTransform = document.getElementById('htmlSource');
+
+    textAreaToTransform.value = addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
+
+    // When the textarea has no content and the user tries to paste content from the system's
+    // clipboard Firefox will not paste the content properly.
+    // Adding a newline to the textarea fixes this and has no effect on the content as
+    // TinyMCE strips newlines on get/set content anyway.
+    if ( tinyMCEPopup.getWin().tinymce.isGecko && textAreaToTransform.value.length == 0 )
+    {
+        textAreaToTransform.value = '\n';
+    }
 
     g_codemirror = CodeMirror.fromTextArea('htmlSource', {
         width: '', // Leave blank for 100%
@@ -22,7 +33,7 @@ function onLoadInit()
     });
 }
 
-function blockElementsWithNewlines( content )
+function addNewlinesAfterBlockLevelTags( content )
 {
     var contentWithNewlines = content;
 

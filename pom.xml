@@ -158,14 +158,6 @@
       <id>enonic.public</id>
       <url>http://repo.enonic.com/public</url>
     </repository>
-    <repository>
-      <id>enonic.enterprise</id>
-      <url>http://repo.enonic.com/enterprise</url>
-    </repository>
-    <repository>
-      <id>enonic.inhouse</id>
-      <url>http://repo.enonic.com/inhouse</url>
-    </repository>
   </repositories>
 
   <profiles>

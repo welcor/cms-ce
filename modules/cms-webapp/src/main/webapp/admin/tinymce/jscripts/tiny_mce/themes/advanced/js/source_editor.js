@@ -9,6 +9,22 @@ var SourceEditor = {
         textAreaToTransform.value = self.addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
 
         self.codeArea = new cms.ui.CodeArea(textAreaToTransform.id);
+
+        // Resize editor on window resize
+        if (window.addEventListener) {
+            window.addEventListener('resize', function () {
+                self.resizeCodeAreaToWindowSize();
+            });
+        }
+
+        self.resizeCodeAreaToWindowSize();
+    },
+
+    resizeCodeAreaToWindowSize: function () {
+        var viewportWidth  = document.documentElement.clientWidth,
+            viewportHeight = document.documentElement.clientHeight;
+
+        this.codeArea.setSize(viewportWidth - 6, viewportHeight - 60);
     },
 
     // Add some newlines as the parsed content from TinyMCE is stripped for newlines

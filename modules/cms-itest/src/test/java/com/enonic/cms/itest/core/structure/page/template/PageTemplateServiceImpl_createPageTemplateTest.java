@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.jdom.Document;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -84,8 +85,8 @@ public class PageTemplateServiceImpl_createPageTemplateTest
         ctyconf.endBlock();
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
 
-        ContentTypeEntity contenType = factory.createContentType( "article", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
-                                                                  configAsXmlBytes );
+        ContentTypeEntity contenType =
+            factory.createContentType( "article", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes );
         contenType.setKey( 1001 );
         fixture.save( contenType );
 
@@ -104,6 +105,7 @@ public class PageTemplateServiceImpl_createPageTemplateTest
     }
 
     @Test
+    @Ignore
     public void create_page_template_with_relations()
     {
         final String xmdData = "<pagetemplate menukey=\"0\" runAs=\"DEFAULT_USER\" type=\"content\">" +
@@ -186,7 +188,6 @@ public class PageTemplateServiceImpl_createPageTemplateTest
         assertEquals( "Article-Show", templatePortlet.getPortlet().getName() );
         assertEquals( centerRegion, templatePortlet.getPageTemplateRegion() );
 
-
         assertEquals( false, centerRegion.isMultiple() );
         assertEquals( false, centerRegion.isOverride() );
         assertEquals( "<br />", centerRegion.getSeparator() );
@@ -210,24 +211,28 @@ public class PageTemplateServiceImpl_createPageTemplateTest
         assertUnorderedArrayArrayEquals( new String[]{"article", "document"}, names.toArray() );
     }
 
-    private static void assertUnorderedArrayArrayEquals(Object[] a1, Object[] a2) {
+    private static void assertUnorderedArrayArrayEquals( Object[] a1, Object[] a2 )
+    {
         Object[] b1 = a1.clone();
         Object[] b2 = a2.clone();
 
-        Arrays.sort(b1);
-        Arrays.sort(b2);
+        Arrays.sort( b1 );
+        Arrays.sort( b2 );
 
         assertArrayEquals( b1, b2 );
     }
 
-    private static void assertArrayEquals( final Object[] a1, final Object[] a2 ) {
+    private static void assertArrayEquals( final Object[] a1, final Object[] a2 )
+    {
         Assert.assertEquals( arrayToString( a1 ), arrayToString( a2 ) );
     }
 
-    private static String arrayToString( final Object[] a ) {
+    private static String arrayToString( final Object[] a )
+    {
         StringBuilder result = new StringBuilder( "[" );
 
-        for ( int i = 0; i < a.length; i++ ) {
+        for ( int i = 0; i < a.length; i++ )
+        {
             result.append( i ).append( ": " ).append( a[i] );
             if ( i < a.length - 1 )
             {

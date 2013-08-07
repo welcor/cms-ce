@@ -6,8 +6,6 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         >
 
-  <xsl:include href="codearea.xsl"/>
-
   <xsl:template name="content_source">
 
     <xsl:if test="/contents/source">

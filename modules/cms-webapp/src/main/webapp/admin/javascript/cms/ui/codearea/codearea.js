@@ -1,16 +1,23 @@
 /*
- Dependices:
+    Dependices:
 
- CSS:
+        common/codearea-scripts.xsl
 
- <link rel="stylesheet" type="text/css" href="css/admin.css"/>
+    Usage:
 
- JS:
+        <xsl:include href="common/codearea-scripts.xsl"/>
 
- <script type="text/javascript" src="codemirror2/lib/codemirror.js">//</script>
- <script type="text/javascript" src="javascript/codearea.js">//</script>
- <script type="text/javascript" src="javascript/admin.js">//</script>
- */
+        <head>
+            <xsl:call-template name="codearea-scripts"/> ...
+        </head>
+
+        <textarea id="xml_field">
+            Hello, world!
+        </textarea>
+        <script>
+            var codeArea = new cms.ui.CodeArea('xml_field', [codemirror-options])
+        </script>
+*/
 
 (function(){
     'use strict';
@@ -19,15 +26,13 @@
     if (!window.cms) { window.cms = {}; }
     if (!window.cms.ui) { window.cms.ui = {}; }
 
-    var ACTIVE_LINE_CSS_CLASS = 'CodeMirror-activeline';
-
     // Class (JS constructor function)
     var codeArea = cms.ui.CodeArea = function (textAreaId, codeMirrorConfig) {
         this.codeMirror = null;
         this.textAreaToConvert = document.getElementById(textAreaId);
         this.config = codeMirrorConfig || {};
         this.initCodeMirror();
-        // this.reIndent();
+        this.reindentAllLines();
     };
 
     var proto = codeArea.prototype;
@@ -50,7 +55,7 @@
         return this.codeMirror.getValue();
     };
 
-    proto.reIndent = function () {
+    proto.reindentAllLines = function () {
         var lineCount = this.codeMirror.lineCount();
         for (var line = 0; line < lineCount; line++) {
             this.codeMirror.indentLine(line);
@@ -62,23 +67,34 @@
     };
 
     proto.setDefaultConfig = function () {
-        var config = this.config;
+        var userConfig = this.config;
 
-        if (!config.mode) {
-            config.mode = 'application/xml';
+        if (!userConfig.mode) {
+            userConfig.mode = 'application/xml';
         }
 
-        if (!config.lineNumbers) {
-            config.lineNumbers = true;
+        if (!userConfig.lineNumbers) {
+            userConfig.lineNumbers = true;
         }
 
-        if (!config.lineWrapping) {
-            config.lineWrapping = true;
+        if (!userConfig.lineWrapping) {
+            userConfig.lineWrapping = true;
         }
 
-        if (!config.indentUnit) {
-            config.indentUnit = 4;
+        if (!userConfig.indentUnit) {
+            userConfig.indentUnit = 4;
         }
+
+        /* Add-ons */
+        if (!userConfig.autoCloseTags) {
+            userConfig.autoCloseTags = true;
+        }
+
+        if (!userConfig.styleActiveLine) {
+            userConfig.styleActiveLine = true;
+        }
+
+        userConfig.highlightSelectionMatches = {showToken: /\w/};
     };
 
 })();

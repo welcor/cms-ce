@@ -12,7 +12,7 @@
   <xsl:include href="common/displayerror.xsl"/>
   <xsl:include href="common/displayhelp.xsl"/>
   <xsl:include href="common/serialize.xsl"/>
-  <xsl:include href="common/codearea.xsl"/>
+  <xsl:include href="common/codearea-scripts.xsl"/>
 
   <xsl:param name="key"/>
   <xsl:param name="fromsystem"/>
@@ -85,17 +85,15 @@
       </xsl:call-template>
     </xsl:if>
 
-    <link rel="stylesheet" type="text/css" href="css/codearea.css"/>
-
     <script type="text/javascript">
       var g_number_of_available_connectors = <xsl:value-of select="count($availableConnectors)"/>;
       var g_is_remote = <xsl:value-of select="$remote = 'true'"/>;
     </script>
     <script type="text/javascript" src="javascript/userstore_form.js">//</script>
-    <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
-    <script type="text/javascript" src="javascript/codearea/codearea.js">//</script>
 
-    <div class="tab-pane" id="tab-pane-1">
+      <xsl:call-template name="codearea-scripts"/>
+
+      <div class="tab-pane" id="tab-pane-1">
       <script type="text/javascript" language="JavaScript">
         var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true );
       </script>
@@ -256,19 +254,21 @@
                   </xsl:call-template>
                 </xsl:if>
               </xsl:variable>
-
-              <xsl:call-template name="codearea">
-                <xsl:with-param name="name" select="'config'"/>
-                <xsl:with-param name="label" select="'%fldConfig%:'"/>
-                <xsl:with-param name="width" select="'100%'"/>
-                <xsl:with-param name="height" select="'380px'"/>
-                <xsl:with-param name="line-numbers" select="true()"/>
-                <xsl:with-param name="selectnode" select="$selectnode"/>
-                <xsl:with-param name="buttons" select="'find, replace, indentall, indentselection, gotoline'"/>
-              </xsl:call-template>
+                <xsl:call-template name="textarea">
+                    <xsl:with-param name="name" select="'config'"/>
+                    <xsl:with-param name="id" select="'config'"/>
+                    <xsl:with-param name="label" select="'%fldConfig%:'"/>
+                    <xsl:with-param name="width" select="'100%'"/>
+                    <xsl:with-param name="selectnode" select="$selectnode"/>
+                </xsl:call-template>
             </tr>
           </table>
         </fieldset>
+
+          <script type="text/javascript">
+              var configCodeArea = new cms.ui.CodeArea('config');
+          </script>
+
       </div>
     </div>
 

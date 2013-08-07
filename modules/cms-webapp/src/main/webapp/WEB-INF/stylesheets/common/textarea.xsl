@@ -136,7 +136,6 @@
             <xsl:value-of select="$selectnode"/>
           </xsl:otherwise>
         </xsl:choose>
-
       </textarea>
 
       <xsl:if test="$wrapWithDiv = 'true'">

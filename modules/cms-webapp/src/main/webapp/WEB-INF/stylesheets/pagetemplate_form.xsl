@@ -18,13 +18,13 @@
     <xsl:include href="common/button.xsl"/>
     <xsl:include href="common/searchfield.xsl"/>
     <xsl:include href="common/resourcefield.xsl"/>
-    <xsl:include href="common/codearea.xsl"/>
     <xsl:include href="editor/xhtmleditor.xsl"/>
     <xsl:include href="common/contentobjectselector.xsl"/>
     <xsl:include href="common/labelcolumn.xsl"/>
     <xsl:include href="common/displayhelp.xsl"/>
     <xsl:include href="common/displayerror.xsl"/>
     <xsl:include href="common/dropdown_runas.xsl"/>
+    <xsl:include href="common/codearea-scripts.xsl"/>
 
     <xsl:param name="selstylesheetkey"/>
     <xsl:param name="selstylesheetExist"/>
@@ -56,6 +56,8 @@
 
     <xsl:template match="/">
 
+        <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
+
         <html>
             <script type="text/javascript" src="javascript/validate.js">//</script>
             <script type="text/javascript" src="javascript/tabpane.js">//</script>
@@ -63,8 +65,8 @@
             <script type="text/javascript" src="tinymce/jscripts/cms/Util.js">//</script>
             <script type="text/javascript" src="tinymce/jscripts/cms/Editor.js">//</script>
             <script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js">//</script>
-            <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
-            <script type="text/javascript" src="javascript/codearea/codearea.js">//</script>
+
+            <xsl:call-template name="codearea-scripts"/>
 
             <xsl:call-template name="waitsplash"/>
 
@@ -84,7 +86,7 @@
 				{
 					var f = document.forms[formName];
 
-              f.datasources.value = codeArea_datasources.getCode();
+                    f.datasources.value = window.datasourcesCodeArea.getValue();
 
            // copy editor body to hidden textbox
            if (document.getElementById('type').value == 'document')
@@ -469,7 +471,6 @@
             </script>
 
             <link type="text/css" rel="StyleSheet" href="javascript/tab.webfx.css"/>
-            <link rel="stylesheet" type="text/css" href="css/codearea.css"/>
             <link rel="stylesheet" type="text/css" href="css/admin.css"/>
 
             <body onload="setFocus()">
@@ -1133,30 +1134,27 @@
                 </div>
 
                 <div class="tab-page" id="tab-page-4">
-                    <span class="tab">%blockDatasource%</span>
+                    <span class="tab" id="tab-data-source">%blockDatasource%</span>
 
                     <script type="text/javascript" language="JavaScript">
                         tabPane1.addTabPage( document.getElementById( "tab-page-4" ) );
                         function previewDataSource() {
-                          tinyMCE.triggerSave();
-                          document.forms['formAdminDataSource'].datasources.value = codeArea_datasources.getCode();
-                          document.forms['formAdminDataSource'].submit();
+                            tinyMCE.triggerSave();
+                            document.formAdminDataSource.datasources.value = window.datasourcesCodeArea.getValue();
+                            document.formAdminDataSource.submit();
                         }
                     </script>
 
                     <fieldset>
                         <table border="0" cellspacing="2" cellpadding="2" width="100%">
                           <tr>
-                            <xsl:call-template name="codearea">
-                              <xsl:with-param name="name" select="'datasources'"/>
-                              <xsl:with-param name="width" select="'100%'"/>
-                              <xsl:with-param name="height" select="'380px'"/>
-                              <xsl:with-param name="line-numbers" select="true()"/>
-                              <xsl:with-param name="read-only" select="false()"/>
-                              <xsl:with-param name="selectnode" select="$datasources"/>
-                              <xsl:with-param name="buttons" select="'find,replace,indentall,indentselection,gotoline'"/>
-                              <xsl:with-param name="status-bar" select="true()"/>
-                            </xsl:call-template>
+                              <xsl:call-template name="textarea">
+                                  <xsl:with-param name="name" select="'datasources'"/>
+                                  <xsl:with-param name="id" select="'_datasources_textarea'"/>
+                                  <xsl:with-param name="selectnode" select="$datasources"/>
+                                  <xsl:with-param name="width" select="'100%'"/>
+                                  <xsl:with-param name="withoutlabel" select="'true'"/>
+                              </xsl:call-template>
                           </tr>
                           <tr>
                             <td>
@@ -1170,6 +1168,18 @@
                           </tr>
                         </table>
                     </fieldset>
+
+                    <script type="text/javascript">
+                        window.datasourcesCodeArea = null;
+                        var g_dataSourceTab = document.getElementById('tab-data-source');
+                        g_dataSourceTab._clicked = false;
+                        addEvent(g_dataSourceTab, 'click', function() {
+                            if (!g_dataSourceTab._clicked) {
+                                window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
+                                g_dataSourceTab._clicked = true;
+                            }
+                        });
+                    </script>
                 </div>
 
               <xsl:if test="$create=0">

@@ -1,32 +1,14 @@
 var SourceEditor = {
 
-    codeMirror: null,
+    codeArea: null,
 
     onLoadInit: function () {
-
         var self = SourceEditor;
+        var textAreaToTransform = document.getElementById('htmlSource');
 
-        var textArea = document.getElementById('htmlSource');
-        // Populate textarea with html content from editor
-        textArea.value = self.addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
+        textAreaToTransform.value = self.addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
 
-        self.codeMirror = CodeMirror.fromTextArea(textArea, {
-            mode: 'htmlmixed',
-            lineNumbers: true,
-            lineWrapping: true,
-            indentUnit: 4
-        });
-
-        self.indentAll();
-    },
-
-    indentAll: function () {
-        var cm = this.codeMirror,
-            lineCount = cm.lineCount();
-
-        for (var i = 0, e = lineCount; i < e; ++i) {
-            cm.indentLine(i);
-        }
+        self.codeArea = new cms.ui.CodeArea(textAreaToTransform.id);
     },
 
     // Add some newlines as the parsed content from TinyMCE is stripped for newlines
@@ -45,7 +27,7 @@ var SourceEditor = {
     },
 
     saveContent: function () {
-        tinyMCEPopup.editor.setContent(this.codeMirror.getValue(''));
+        tinyMCEPopup.editor.setContent(this.codeArea.getValue(''));
         tinyMCEPopup.close();
     }
 

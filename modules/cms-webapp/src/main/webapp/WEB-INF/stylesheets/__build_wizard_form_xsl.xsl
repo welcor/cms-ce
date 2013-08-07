@@ -35,7 +35,8 @@
       <xsl:variable name="wizard_js" select="/wizardconfig/steps/step[@id=$wizard_stepid]/form/javascript/@src"/>
 
       <x:template match="/">
-        <html>
+          <x:text disable-output-escaping="yes">&lt;!DOCTYPE html></x:text>
+          <html>
           <head>
             <xsl:apply-templates select="/wizardconfig/steps/step[@id=$wizard_stepid]/head/call-template"/>
 
@@ -89,12 +90,6 @@
                             <xsl:value-of select="."/>
                         </xsl:if>
                     </xsl:for-each>
-
-                    var configTextArea = document.getElementById("config");
-                    if ( configTextArea &amp;&amp; codeArea_config )
-                    {
-                      configTextArea.value = codeArea_config.getCode();
-                    }
 
                     return true;
                 }

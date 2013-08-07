@@ -20,7 +20,7 @@
     <xsl:include href="common/displayhelp.xsl"/>
     <xsl:include href="common/button.xsl"/>
     <xsl:include href="common/resourcefield.xsl"/>
-    <xsl:include href="common/codearea.xsl"/>
+    <xsl:include href="common/codearea-scripts.xsl"/>
 
     <xsl:param name="create"/>
     <xsl:param name="usehandlerxml"/>
@@ -45,17 +45,12 @@
             <head>
                 <link type="text/css" rel="StyleSheet" href="javascript/tab.webfx.css" />
                 <link type="text/css" rel="stylesheet" href="css/admin.css"/>
-                <link type="text/css" rel="stylesheet" href="codemirror/lib/codemirror.css"/>
-                <link type="text/css" rel="stylesheet" href="javascript/cms/ui/codearea/codearea.css"/>
 
                 <script type="text/javascript" src="javascript/tabpane.js">//</script>
                 <script type="text/javascript" src="javascript/admin.js">//</script>
                 <script type="text/javascript" src="javascript/validate.js">//</script>
 
-                <script type="text/javascript" src="codemirror/lib/codemirror.js">//</script>
-                <script type="text/javascript" src="codemirror/mode/xml/xml.js">//</script>
-
-                <script type="text/javascript" src="javascript/cms/ui/codearea/codearea.js">//</script>
+                <xsl:call-template name="codearea-scripts"/>
 
                 <script type="text/javascript" language="JavaScript">
                     <xsl:choose>

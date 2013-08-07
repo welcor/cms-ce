@@ -15,6 +15,8 @@
   <xsl:template match="/">
     <x:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
+      <x:text disable-output-escaping="yes">&lt;!DOCTYPE html></x:text>
+
       <x:output method="html"/>
 
       <x:include href="{concat($xslpath, 'common/generic_parameters.xsl')}"/>

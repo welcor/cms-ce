@@ -18,7 +18,6 @@ import org.osgi.framework.Version;
 
 import com.enonic.cms.api.plugin.PluginConfig;
 import com.enonic.cms.core.plugin.context.PluginContext;
-import com.enonic.cms.core.plugin.ExtensionSet;
 
 import static org.junit.Assert.*;
 
@@ -97,13 +96,6 @@ public class PluginHandleImplTest
     {
         final PluginConfig result = this.handle.getConfig();
         assertSame( this.pluginContext.getConfig(), result );
-    }
-
-    @Test
-    public void testGetExtensions()
-    {
-        final ExtensionSet result = this.handle.getExtensions();
-        assertNotNull( result );
     }
 
     @Test

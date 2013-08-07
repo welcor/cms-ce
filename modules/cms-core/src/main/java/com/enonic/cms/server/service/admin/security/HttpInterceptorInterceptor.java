@@ -15,41 +15,44 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.HttpInterceptorExtensions;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 
-public class HttpInterceptorInterceptor extends HandlerInterceptorAdapter
+public class HttpInterceptorInterceptor
+    extends HandlerInterceptorAdapter
 {
     private static final String POST_HANDLE_PLUGINS_PARAM = "httpInterceptorInterceptor.postHandlePlugins";
 
-    private PluginManager pluginManager;
+    private HttpInterceptorExtensions httpInterceptorExtensions;
 
     @Autowired
-    public void setPluginManager( PluginManager pluginManager )
+    public void setHttpInterceptorExtensions( HttpInterceptorExtensions httpInterceptorExtensions )
     {
-        this.pluginManager = pluginManager;
+        this.httpInterceptorExtensions = httpInterceptorExtensions;
     }
 
     private OriginalPathResolver originalPathResolver = new OriginalPathResolver();
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
+    public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler )
+        throws Exception
     {
-        super.preHandle(request, response, handler);
+        super.preHandle( request, response, handler );
 
         Stack<HttpInterceptor> pluginsReadyForPostHandle = new Stack<HttpInterceptor>();
         boolean continueExecutionAsNormal = executePreHandle( request, response, pluginsReadyForPostHandle );
-        request.setAttribute(POST_HANDLE_PLUGINS_PARAM, pluginsReadyForPostHandle);
+        request.setAttribute( POST_HANDLE_PLUGINS_PARAM, pluginsReadyForPostHandle );
 
         return continueExecutionAsNormal;
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception
+    public void postHandle( HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView )
+        throws Exception
     {
-        super.postHandle(request, response, handler, modelAndView);
-        Stack<HttpInterceptor> pluginsReadyForPostHandle = (Stack<HttpInterceptor>) request.getAttribute(POST_HANDLE_PLUGINS_PARAM);
-        if (pluginsReadyForPostHandle != null)
+        super.postHandle( request, response, handler, modelAndView );
+        Stack<HttpInterceptor> pluginsReadyForPostHandle = (Stack<HttpInterceptor>) request.getAttribute( POST_HANDLE_PLUGINS_PARAM );
+        if ( pluginsReadyForPostHandle != null )
         {
             executePostHandle( request, response, pluginsReadyForPostHandle );
         }
@@ -85,7 +88,7 @@ public class HttpInterceptorInterceptor extends HandlerInterceptorAdapter
     private Collection<HttpInterceptor> getInterceptorPlugins( HttpServletRequest req )
     {
         String path = originalPathResolver.getRequestPathFromHttpRequest( req );
-        return pluginManager.getExtensions().findMatchingHttpInterceptors( path );
+        return this.httpInterceptorExtensions.findMatching( path );
 
     }
 

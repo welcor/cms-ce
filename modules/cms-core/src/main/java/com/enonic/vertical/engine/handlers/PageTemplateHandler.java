@@ -53,6 +53,7 @@ import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 
 @Component
+@Deprecated
 public final class PageTemplateHandler
     extends BaseHandler
 {
@@ -583,7 +584,7 @@ public final class PageTemplateHandler
             Element root = doc.getDocumentElement();
             Document ptdDoc = null;
 
-            org.jdom.Document pageTemplateXmlDataAsJdomDoc = pageTemplate.getXmlData();
+            org.jdom.Document pageTemplateXmlDataAsJdomDoc = pageTemplate.getXmlDataAsDocument();
             if ( pageTemplateXmlDataAsJdomDoc != null )
             {
                 ptdDoc = XMLDocumentFactory.create( pageTemplateXmlDataAsJdomDoc ).getAsDOMDocument();

@@ -20,8 +20,7 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.framework.util.JDOMUtil;
 
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
-import com.enonic.cms.core.plugin.ExtensionSet;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.FunctionLibraryExtensions;
 import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.handler.DataSourceRequest;
 import com.enonic.cms.core.portal.datasource.handler.base.ParameterConverter;
@@ -31,7 +30,7 @@ import com.enonic.cms.core.portal.datasource.handler.base.SimpleDataSourceHandle
 public final class InvokeExtensionHandler
     extends SimpleDataSourceHandler
 {
-    private PluginManager pluginManager;
+    private FunctionLibraryExtensions extensions;
 
     private ParameterConverter parameterConverter;
 
@@ -54,8 +53,7 @@ public final class InvokeExtensionHandler
         final String namespace = nameParts[0];
         final String methodName = nameParts[1];
 
-        final ExtensionSet extensions = pluginManager.getExtensions();
-        final FunctionLibrary library = extensions.findFunctionLibrary( namespace );
+        final FunctionLibrary library = extensions.getByName( namespace );
         if ( library == null )
         {
             throw new DataSourceException( "Function library [{0}] was not found", namespace );
@@ -65,12 +63,14 @@ public final class InvokeExtensionHandler
         final int parameterCount = parameterValues.length;
         final List<Method> methods = findMethod( library, methodName, parameterCount );
 
-        if (methods.isEmpty()) {
+        if ( methods.isEmpty() )
+        {
             throw new DataSourceException( "Method [{0}] with {1} parameters was not found in function library [{2}]", methodName,
                                            parameterCount == 0 ? "no" : parameterCount, namespace );
         }
 
-        if (methods.size() != 1) {
+        if ( methods.size() != 1 )
+        {
             throw new DataSourceException( "Multiple methods [{0}] with {1} parameters found in function library [{2}]", methodName,
                                            parameterCount == 0 ? "no" : parameterCount, namespace );
         }
@@ -146,8 +146,8 @@ public final class InvokeExtensionHandler
     }
 
     @Autowired
-    public void setPluginManager( final PluginManager pluginManager )
+    public void setExtensions( final FunctionLibraryExtensions extensions )
     {
-        this.pluginManager = pluginManager;
+        this.extensions = extensions;
     }
 }

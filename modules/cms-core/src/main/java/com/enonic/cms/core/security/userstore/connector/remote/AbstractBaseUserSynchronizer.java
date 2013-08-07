@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
 import com.enonic.cms.core.security.group.GroupEntity;
 import com.enonic.cms.core.security.group.GroupKey;
 import com.enonic.cms.core.security.group.GroupSpecification;
@@ -28,13 +28,13 @@ import com.enonic.cms.core.security.userstore.GroupStorer;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStorer;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.api.plugin.userstore.UserFields;
-import com.enonic.cms.api.plugin.userstore.RemoteGroup;
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
 import com.enonic.cms.store.dao.GroupDao;
 import com.enonic.cms.store.dao.UserDao;
 

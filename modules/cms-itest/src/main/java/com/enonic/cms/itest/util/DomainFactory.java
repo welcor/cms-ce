@@ -11,7 +11,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.ContentStatus;
@@ -56,7 +56,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 
 /**

@@ -25,14 +25,14 @@ import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserNotFoundException;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.remote.MemberCache;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.security.userstore.status.LocalGroupsStatus;
 import com.enonic.cms.core.security.userstore.status.LocalUsersStatus;
-import com.enonic.cms.api.plugin.userstore.RemoteGroup;
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
 
 public interface UserStoreService
 {

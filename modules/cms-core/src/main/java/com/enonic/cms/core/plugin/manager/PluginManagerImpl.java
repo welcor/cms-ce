@@ -17,11 +17,10 @@ import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.api.plugin.ext.Extension;
-import com.enonic.cms.core.plugin.ExtensionListener;
-import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.container.OsgiContainer;
 import com.enonic.cms.core.plugin.context.ContextFactory;
+import com.enonic.cms.core.plugin.ext.ExtensionListener;
 import com.enonic.cms.core.plugin.util.OsgiHelper;
 
 @Component("pluginManager")
@@ -107,11 +106,6 @@ public final class PluginManagerImpl
         {
             this.holder.add( LocalServiceReference.INSTANCE, ext );
         }
-    }
-
-    public ExtensionSet getExtensions()
-    {
-        return new ExtensionSetImpl( this.holder.getAll() );
     }
 
     @Autowired

@@ -18,8 +18,8 @@ import org.jdom.Element;
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.CacheSettings;
-import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.datasource.xml.DataSourceXmlFactory;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
@@ -116,6 +116,22 @@ public class PortletEntity
         else
         {
             this.xmlData = LazyInitializedJDOMDocument.parse( value );
+        }
+
+        // Invalidate cache
+        xmlDataAsJDOMDocument = null;
+        datasources = null;
+    }
+
+    public void setXmlData( String value )
+    {
+        if ( value == null )
+        {
+            this.xmlData = null;
+        }
+        else
+        {
+            this.xmlData = new LazyInitializedJDOMDocument( value );
         }
 
         // Invalidate cache

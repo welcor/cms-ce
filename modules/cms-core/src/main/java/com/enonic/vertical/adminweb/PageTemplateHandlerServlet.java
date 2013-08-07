@@ -40,10 +40,14 @@ import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemSpecification;
 import com.enonic.cms.core.structure.page.PageSpecification;
+import com.enonic.cms.core.structure.page.template.CopyPageTemplateCommand;
+import com.enonic.cms.core.structure.page.template.CreatePageTemplateCommand;
+import com.enonic.cms.core.structure.page.template.DeletePageTemplateCommand;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateSpecification;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
+import com.enonic.cms.core.structure.page.template.UpdatePageTemplateCommand;
 
 public class PageTemplateHandlerServlet
     extends AdminHandlerBaseServlet
@@ -372,12 +376,11 @@ public class PageTemplateHandlerServlet
                                ExtendedMap formItems )
         throws VerticalEngineException, VerticalAdminException
     {
-
-        User user = securityService.getLoggedInAdminConsoleUser();
-
-        // Build site XML and create the protal
+        // Build site XML and create the portal
         String xmlData = XMLTool.documentToString( buildPageTemplateXML( formItems, true ) );
-        admin.createPageTemplate( user, xmlData );
+
+        CreatePageTemplateCommand command = new CreatePageTemplateCommand( xmlData );
+        pageTemplateService.createPageTemplate( command );
 
         MultiValueMap queryParams = new MultiValueMap();
         queryParams.put( "page", formItems.get( "page" ) );
@@ -755,8 +758,8 @@ public class PageTemplateHandlerServlet
         throws VerticalRemoveException, VerticalSecurityException, VerticalAdminException
     {
 
-        User user = securityService.getLoggedInAdminConsoleUser();
-        admin.removePageTemplate( key );
+        DeletePageTemplateCommand command = new DeletePageTemplateCommand( key );
+        pageTemplateService.deletePageTemplate( command );
 
         redirectClientToReferer( request, response );
     }
@@ -767,9 +770,9 @@ public class PageTemplateHandlerServlet
     {
 
         String xmlData = XMLTool.documentToString( buildPageTemplateXML( formItems, false ) );
-        User user = securityService.getLoggedInAdminConsoleUser();
 
-        admin.updatePageTemplate( user, xmlData );
+        UpdatePageTemplateCommand command = new UpdatePageTemplateCommand( xmlData );
+        pageTemplateService.updatePageTemplate( command );
 
         invalidateCacheForPageTemplateChange( formItems.getInt( "key", -1 ) );
 
@@ -851,8 +854,9 @@ public class PageTemplateHandlerServlet
                              ExtendedMap formItems, User user, int key )
         throws VerticalAdminException, VerticalEngineException
     {
+        CopyPageTemplateCommand command = new CopyPageTemplateCommand( key, user );
+        pageTemplateService.copyPageTemplate( command );
 
-        admin.copyPageTemplate( user, key );
         browseRedirectWithSorting( request, response, session, formItems );
     }
 

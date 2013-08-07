@@ -4,9 +4,9 @@
  */
 package com.enonic.cms.core.security.user;
 
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 
 /**
  * Created by rmy - Date: Sep 18, 2009

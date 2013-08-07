@@ -14,9 +14,9 @@ import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import com.enonic.cms.core.plugin.ExtensionListener;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.context.ContextFactory;
+import com.enonic.cms.core.plugin.ext.ExtensionListener;
 
 import static org.junit.Assert.*;
 
@@ -34,13 +34,6 @@ public class PluginManagerImplTest
 
         final ContextFactory contextFactory = Mockito.mock( ContextFactory.class );
         this.manager.setContextFactory( contextFactory );
-    }
-
-    @Test
-    public void testGetExtensions()
-        throws Exception
-    {
-        assertNotNull( this.manager.getExtensions() );
     }
 
     @Test

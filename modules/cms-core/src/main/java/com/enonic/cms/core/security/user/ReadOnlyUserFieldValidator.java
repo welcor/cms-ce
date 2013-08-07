@@ -7,9 +7,9 @@ package com.enonic.cms.core.security.user;
 
 
 import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
-import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 
 public class ReadOnlyUserFieldValidator

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.plugin.ExtensionSet;
+import com.enonic.cms.core.plugin.ext.TaskHandlerExtensions;
 
 public final class WorkHelper
 {
@@ -24,10 +24,10 @@ public final class WorkHelper
     {
     }
 
-    public static void executeWork( final ExtensionSet extensions, String className, Properties props )
+    public static void executeWork( final TaskHandlerExtensions extensions, String className, Properties props )
         throws Exception
     {
-        TaskHandler p = extensions.findTaskPlugin( className );
+        TaskHandler p = extensions.getByName( className );
         if ( p != null )
         {
             p.execute( props );

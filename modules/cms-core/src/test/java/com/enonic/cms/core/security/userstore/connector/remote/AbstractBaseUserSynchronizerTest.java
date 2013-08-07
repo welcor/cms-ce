@@ -16,7 +16,7 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
 import com.enonic.cms.store.dao.UserDao;
 
 import static org.easymock.EasyMock.createMock;

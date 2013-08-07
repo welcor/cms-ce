@@ -86,6 +86,18 @@ public class PageEntity
         }
     }
 
+    public void setXmlData( String value )
+    {
+        if ( value == null )
+        {
+            this.xmlData = null;
+        }
+        else
+        {
+            this.xmlData = new LazyInitializedJDOMDocument( value );
+        }
+    }
+
     public void setTemplate( PageTemplateEntity template )
     {
         this.template = template;

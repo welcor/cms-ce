@@ -19,7 +19,7 @@ import com.enonic.esl.util.DateUtil;
 
 import com.enonic.cms.api.client.model.UpdateUserParams;
 import com.enonic.cms.api.client.model.user.UserInfo;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
 import com.enonic.cms.core.client.InternalClient;
 import com.enonic.cms.core.security.PortalSecurityHolder;
 import com.enonic.cms.core.security.SecurityService;
@@ -29,10 +29,10 @@ import com.enonic.cms.core.security.user.UserType;
 import com.enonic.cms.core.security.userstore.StoreNewUserStoreCommand;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.UserStoreService;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
 

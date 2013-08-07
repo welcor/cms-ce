@@ -17,6 +17,8 @@ public interface PageTemplateDao
 {
     PageTemplateEntity findByKey( int pageTemplateKey );
 
+    List<PageTemplateEntity> findByName( String name );
+
     /**
      * Find first by content type.
      */

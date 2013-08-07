@@ -11,10 +11,10 @@ import org.apache.commons.fileupload.FileItem;
 
 import com.enonic.esl.containers.ExtendedMap;
 
-import com.enonic.cms.api.plugin.userstore.UserField;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.userstore.UserFields;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserField;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 
 public final class UserFieldTransformer
 {

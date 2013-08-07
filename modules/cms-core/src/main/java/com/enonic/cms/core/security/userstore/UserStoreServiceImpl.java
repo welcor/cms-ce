@@ -23,14 +23,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import com.enonic.cms.api.plugin.userstore.RemoteGroup;
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
-import com.enonic.cms.api.plugin.userstore.UserField;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.userstore.UserFields;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.UserField;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
+import com.enonic.cms.core.plugin.ext.AuthenticatorExtensions;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.CreateGroupAccessException;
 import com.enonic.cms.core.security.group.DeleteGroupAccessException;
@@ -60,6 +61,7 @@ import com.enonic.cms.core.security.user.UserStorageExistingEmailException;
 import com.enonic.cms.core.security.user.UserStorageInvalidArgumentException;
 import com.enonic.cms.core.security.userstore.config.InvalidUserStoreConfigException;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
+import com.enonic.cms.core.security.userstore.connector.AuthenticationChain;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.remote.MemberCache;
@@ -105,6 +107,9 @@ public class UserStoreServiceImpl
 
     @Autowired
     private RemoteUserStoreManager remoteUserStoreFactory;
+
+    @Autowired
+    private AuthenticatorExtensions authenticationInterceptors;
 
     private static final String VALID_EMAIL_PATTERN =
         "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
@@ -735,7 +740,9 @@ public class UserStoreServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void authenticateUser( final UserStoreKey userStoreKey, final String uid, final String password )
     {
-        doGetUSConnector( userStoreKey ).authenticateUser( uid, password );
+        final AuthenticationChain authChain =
+            new AuthenticationChain( this.authenticationInterceptors );
+        doGetUSConnector( userStoreKey ).authenticateUser( uid, password, authChain );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

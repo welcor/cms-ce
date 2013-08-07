@@ -24,8 +24,6 @@ public interface PluginHandle
 
     public DateTime getTimestamp();
 
-    public ExtensionSet getExtensions();
-
     public PluginContext getContext();
 
     public PluginConfig getConfig();

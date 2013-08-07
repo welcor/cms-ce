@@ -14,9 +14,9 @@ import org.junit.Test;
 
 import com.enonic.cms.framework.util.JDOMUtil;
 
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
 
 import static org.junit.Assert.*;
 

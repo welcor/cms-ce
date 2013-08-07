@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
 import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfigLoader;

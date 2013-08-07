@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.enonic.cms.api.client.model.user.Address;
 import com.enonic.cms.api.client.model.user.Gender;
-import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.AbstractEqualsTest;
 
 public class UserFieldsEqualsTest

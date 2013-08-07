@@ -184,18 +184,6 @@ public class AdminServiceImpl
         return adminEngine.createMenuItem( user, xmlData );
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int createPageTemplate( User user, String xmlData )
-    {
-        return adminEngine.createPageTemplate( xmlData );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public int copyPageTemplate( User user, int pageTemplateKey )
-    {
-        return adminEngine.copyPageTemplate( user, pageTemplateKey );
-    }
-
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey )
     {
         return adminEngine.generateUID( fName, sName, userStoreKey );
@@ -443,12 +431,6 @@ public class AdminServiceImpl
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void removePageTemplate( int pageTemplateKey )
-    {
-        adminEngine.removePageTemplate( pageTemplateKey );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void updateContentObject( String xmlData )
     {
         adminEngine.updateContentObject( xmlData );
@@ -470,12 +452,6 @@ public class AdminServiceImpl
     public void updateMenuData( User user, String xmlData )
     {
         adminEngine.updateMenuData( user, xmlData );
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void updatePageTemplate( User user, String xmlData )
-    {
-        adminEngine.updatePageTemplate( xmlData );
     }
 
     public XMLDocument getGroup( String gKey )

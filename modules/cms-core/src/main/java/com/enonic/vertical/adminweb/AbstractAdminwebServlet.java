@@ -53,6 +53,7 @@ import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.structure.SitePropertiesService;
 import com.enonic.cms.core.structure.SiteService;
 import com.enonic.cms.core.structure.menuitem.MenuItemService;
+import com.enonic.cms.core.structure.page.template.PageTemplateService;
 import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.timezone.TimeZoneService;
 import com.enonic.cms.core.xslt.admin.AdminXsltProcessorFactory;
@@ -160,6 +161,9 @@ public abstract class AbstractAdminwebServlet
 
     @Autowired
     protected CategoryService categoryService;
+
+    @Autowired
+    protected PageTemplateService pageTemplateService;
 
     @Autowired
     protected SendMailService sendMailService;

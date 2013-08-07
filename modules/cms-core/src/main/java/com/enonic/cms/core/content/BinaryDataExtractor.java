@@ -21,14 +21,14 @@ import com.enonic.cms.api.plugin.ext.TextExtractor;
 import com.enonic.cms.core.content.binary.BinaryDataEntity;
 import com.enonic.cms.core.content.binary.ContentBinaryDataEntity;
 import com.enonic.cms.core.content.index.BigText;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.TextExtractorExtensions;
 import com.enonic.cms.store.dao.BinaryDataDao;
 
 @Component
 public class BinaryDataExtractor
 {
     @Autowired
-    PluginManager pluginManager;
+    TextExtractorExtensions extensions;
 
     @Autowired
     BinaryDataDao binaryDataDao;
@@ -68,7 +68,7 @@ public class BinaryDataExtractor
         throws IOException
     {
         final String mimeType = mimeTypeResolver.getMimeType( binaryData.getName() );
-        final TextExtractor textExtractor = pluginManager.getExtensions().findTextExtractorPluginByMimeType( mimeType );
+        final TextExtractor textExtractor = this.extensions.getByMimeType( mimeType );
 
         final String fullTextString;
         if ( textExtractor == null )

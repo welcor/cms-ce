@@ -15,7 +15,13 @@ import org.springframework.util.Assert;
 
 import com.google.common.base.Preconditions;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.ext.userstore.RemotePrincipal;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -36,23 +42,16 @@ import com.enonic.cms.core.security.user.UserNotFoundException;
 import com.enonic.cms.core.security.userstore.UserStoreConnectorPolicyBrokenException;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.connector.AbstractBaseUserStoreConnector;
+import com.enonic.cms.core.security.userstore.connector.AuthenticationChain;
 import com.enonic.cms.core.security.userstore.connector.GroupAlreadyExistsException;
 import com.enonic.cms.core.security.userstore.connector.UserAlreadyExistsException;
-import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.userstore.UserFields;
-import com.enonic.cms.api.plugin.userstore.RemoteGroup;
-import com.enonic.cms.api.plugin.userstore.RemotePrincipal;
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
 
 public class RemoteUserStoreConnector
     extends AbstractBaseUserStoreConnector
-    implements UserStoreConnector
 {
     private RemoteUserStore remoteUserStorePlugin;
 
@@ -391,12 +390,23 @@ public class RemoteUserStoreConnector
         deleteGroupLocally( command );
     }
 
-    public String authenticateUser( final String uid, final String password )
+    private boolean verifyPassword( final String uid, final String password, final AuthenticationChain authChain )
     {
-        if ( !remoteUserStorePlugin.authenticate( uid, password ) )
+        if ( authChain.authenticate( this.userStoreKey, uid, password ) )
+        {
+            return true;
+        }
+
+        return this.remoteUserStorePlugin.authenticate( uid, password );
+    }
+
+    public String authenticateUser( final String uid, final String password, final AuthenticationChain authChain )
+    {
+        if ( !verifyPassword( uid, password, authChain ) )
         {
             throw new InvalidCredentialsException( uid );
         }
+
         return getRemoteUser( uid ).getSync();
     }
 

@@ -328,9 +328,22 @@ public class MenuItemEntity
         this.allowedSectionContentTypes.add( contentType );
     }
 
+    public void addAllowedSectionContentType( final Collection<ContentTypeEntity> ctys )
+    {
+        for ( ContentTypeEntity cty : ctys )
+        {
+            addAllowedSectionContentType( cty );
+        }
+    }
+
     public boolean supportsSectionContentType( ContentTypeEntity contentType )
     {
         return this.allowedSectionContentTypes.contains( contentType );
+    }
+
+    public void clearSectionContentTypes()
+    {
+        this.allowedSectionContentTypes.clear();
     }
 
     public void addSectionContent( SectionContentEntity sectionContent )

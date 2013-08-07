@@ -73,10 +73,6 @@ public interface AdminService
 
     public int createMenuItem( User user, String xmlData );
 
-    public int createPageTemplate( User user, String xmlData );
-
-    public int copyPageTemplate( User user, int pageTemplateKey );
-
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey );
 
     public BinaryData getBinaryData( User user, int binaryDataKey );
@@ -173,8 +169,6 @@ public interface AdminService
 
     public void removeMenu( User user, int key );
 
-    public void removePageTemplate( int pageTemplateKey );
-
     public void updateContentObject( String xmlData );
 
     public void updateContentType( User user, String xmlData );
@@ -182,8 +176,6 @@ public interface AdminService
     public void updateLanguage( LanguageKey languageKey, String languageCode, String description );
 
     public void updateMenuData( User user, String xmlData );
-
-    public void updatePageTemplate( User user, String xmlData );
 
     public XMLDocument getGroup( String gKey );
 

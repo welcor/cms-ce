@@ -1,11 +1,12 @@
-package com.enonic.cms.api.plugin.userstore;
+package com.enonic.cms.api.plugin.ext.userstore;
 
 import java.util.Properties;
 
-import com.enonic.cms.api.plugin.ext.Extension;
+import com.enonic.cms.api.plugin.ext.ExtensionBase;
 
 public abstract class RemoteUserStoreFactory
-    implements Extension, Comparable<RemoteUserStoreFactory>
+    extends ExtensionBase
+    implements Comparable<RemoteUserStoreFactory>
 {
     private final String type;
 

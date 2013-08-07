@@ -4,10 +4,10 @@
  */
 package com.enonic.cms.itest.store.dao;
 
-import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
 
 import com.enonic.cms.framework.xml.XMLDocument;

@@ -15,7 +15,7 @@ import java.util.Properties;
 public abstract class TaskHandler
     extends ExtensionBase
 {
-    private final String name;
+    private String name;
 
     public TaskHandler()
     {
@@ -30,6 +30,11 @@ public abstract class TaskHandler
     public final String getName()
     {
         return name;
+    }
+
+    public final void setName( final String name )
+    {
+        this.name = name;
     }
 
     /**

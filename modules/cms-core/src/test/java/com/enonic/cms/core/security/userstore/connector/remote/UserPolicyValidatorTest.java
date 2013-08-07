@@ -12,7 +12,7 @@ import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.connector.config.GroupPolicyConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserPolicyConfig;
 import com.enonic.cms.core.security.userstore.connector.config.UserStoreConnectorConfig;
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
 
 public class UserPolicyValidatorTest
 {

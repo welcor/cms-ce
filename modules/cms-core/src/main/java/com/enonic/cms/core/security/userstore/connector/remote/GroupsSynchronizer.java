@@ -14,7 +14,7 @@ import com.enonic.cms.core.security.group.StoreNewGroupCommand;
 import com.enonic.cms.core.security.userstore.GroupStorer;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
 import com.enonic.cms.core.security.userstore.connector.synchronize.status.SynchronizeStatus;
-import com.enonic.cms.api.plugin.userstore.RemoteGroup;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteGroup;
 
 public class GroupsSynchronizer
     extends AbstractBaseGroupSynchronizer

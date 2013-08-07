@@ -13,9 +13,9 @@ import org.junit.Test;
 import junit.framework.Assert;
 
 import com.enonic.cms.api.client.model.user.Address;
-import com.enonic.cms.api.plugin.userstore.UserField;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
-import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserField;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 
 public class AddressTransformerTest
 {

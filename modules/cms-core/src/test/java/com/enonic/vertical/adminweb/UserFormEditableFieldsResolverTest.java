@@ -8,10 +8,10 @@ package com.enonic.vertical.adminweb;
 
 import org.junit.Test;
 
-import com.enonic.cms.api.plugin.userstore.UserStoreConfigField;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
 
 import static org.junit.Assert.*;
 

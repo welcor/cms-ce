@@ -1,4 +1,4 @@
-package com.enonic.cms.api.plugin.userstore;
+package com.enonic.cms.api.plugin.ext.userstore;
 
 import java.util.Properties;
 

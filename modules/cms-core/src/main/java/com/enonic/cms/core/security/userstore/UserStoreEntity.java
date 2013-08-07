@@ -12,7 +12,7 @@ import org.jdom.Document;
 
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigParser;
 import com.enonic.cms.core.security.userstore.config.UserStoreConfigXmlCreator;
 

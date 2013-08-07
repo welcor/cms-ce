@@ -6,8 +6,8 @@ package com.enonic.cms.core.security.user;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.enonic.cms.api.plugin.userstore.UserStoreConfig;
-import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 
 /**
  * Created by rmy - Date: Sep 18, 2009

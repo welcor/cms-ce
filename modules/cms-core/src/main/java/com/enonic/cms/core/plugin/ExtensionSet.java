@@ -14,7 +14,7 @@ import com.enonic.cms.api.plugin.ext.TextExtractor;
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
 
 public interface ExtensionSet
     extends Iterable<Extension>

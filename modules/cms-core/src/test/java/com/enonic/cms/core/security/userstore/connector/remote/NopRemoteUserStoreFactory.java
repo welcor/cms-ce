@@ -4,8 +4,8 @@ import java.util.Properties;
 
 import org.mockito.Mockito;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
 
 public final class NopRemoteUserStoreFactory
     extends RemoteUserStoreFactory

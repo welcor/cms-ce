@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.api.plugin.ext.Extension;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
 import com.enonic.cms.core.plugin.ExtensionListener;
 
 @Component

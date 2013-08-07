@@ -7,7 +7,7 @@ package com.enonic.cms.core.user.remote;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUser;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
 
 public class RemoteUserTest
 {

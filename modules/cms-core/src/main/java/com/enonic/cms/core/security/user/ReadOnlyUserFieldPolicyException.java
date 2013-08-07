@@ -4,7 +4,7 @@
  */
 package com.enonic.cms.core.security.user;
 
-import com.enonic.cms.api.plugin.userstore.UserFieldType;
+import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
 
 
 public class ReadOnlyUserFieldPolicyException

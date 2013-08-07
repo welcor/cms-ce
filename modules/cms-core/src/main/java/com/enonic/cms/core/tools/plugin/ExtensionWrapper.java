@@ -17,7 +17,7 @@ import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.api.plugin.ext.TextExtractor;
 import com.enonic.cms.api.plugin.ext.http.HttpProcessor;
-import com.enonic.cms.api.plugin.userstore.RemoteUserStoreFactory;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
 
 public final class ExtensionWrapper
 {

@@ -188,7 +188,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.api.plugin.userstore.UserFields;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;

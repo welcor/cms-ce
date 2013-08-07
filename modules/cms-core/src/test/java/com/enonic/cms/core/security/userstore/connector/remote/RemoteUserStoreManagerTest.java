@@ -7,7 +7,7 @@ package com.enonic.cms.core.security.userstore.connector.remote;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.enonic.cms.api.plugin.userstore.RemoteUserStore;
+import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
 
 import static org.junit.Assert.*;
 

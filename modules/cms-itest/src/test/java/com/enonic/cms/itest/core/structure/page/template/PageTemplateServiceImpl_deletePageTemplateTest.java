@@ -2,11 +2,11 @@ package com.enonic.cms.itest.core.structure.page.template;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jdom.Document;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -78,14 +78,6 @@ public class PageTemplateServiceImpl_deletePageTemplateTest
 
         save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
 
-        fixture.flushAndClearHibernateSession();
-        fixture.flushIndexTransaction();
-    }
-
-    @Test
-    @Ignore
-    public void remove_page_template_with_relations()
-    {
         save( factory.createContentType( "just-another-cty", ContentHandlerName.CUSTOM.getHandlerClassShortName(), null ) );
 
         PageTemplateEntity pageTemplate =
@@ -98,24 +90,32 @@ public class PageTemplateServiceImpl_deletePageTemplateTest
         pageTemplate.addPageTemplateRegion( region_leftColumn );
         pageTemplate.addPageTemplateRegion( region_mainColumn );
 
-        save( pageTemplate );
+        fixture.save( pageTemplate );
+    }
 
+    @Test
+    public void remove_page_template_with_relations()
+    {
         PageTemplateRegionEntity pRegion1 = pageTemplateRegionDao.findByKey( 1 );
         assertEquals( 1, pRegion1.getKey() );
 
         PageTemplateRegionEntity pRegion2 = pageTemplateRegionDao.findByKey( 2 );
         assertEquals( 2, pRegion2.getKey() );
 
-        PageTemplateEntity pPageTemplate = pageTemplateDao.findByKey( 0 );
-        assertEquals( 0, pPageTemplate.getKey() );
+        List<PageTemplateEntity> pPageTemplates = pageTemplateDao.findByName( "my-template" );
+        assertEquals( 1, pPageTemplates.size() );
+
+        PageTemplateEntity pPageTemplate = pPageTemplates.get( 0 );
+        assertNotNull( pPageTemplate );
 
         // Portlet
-        final Document xmlData = XMLDocumentFactory.create( "<menudata>" +
-                                                                "<defaultcss key=\"DEFAULT_CSS\"/>" +
-                                                                "<default-localization-resource>DEFAULT_LOCALIZATION_RESOURCE</default-localization-resource>" +
-                                                                "<device-class-resolver>DEVICE_CLASS_RESOLVER</device-class-resolver>" +
-                                                                "<locale-resolver>LOCALE_RESOLVER</locale-resolver>" +
-                                                                "</menudata>" ).getAsJDOMDocument();
+        final Document xmlData = XMLDocumentFactory.create(
+            "<menudata>" +
+                "<defaultcss key=\"DEFAULT_CSS\"/>" +
+                "<default-localization-resource>DEFAULT_LOCALIZATION_RESOURCE</default-localization-resource>" +
+                "<device-class-resolver>DEVICE_CLASS_RESOLVER</device-class-resolver>" +
+                "<locale-resolver>LOCALE_RESOLVER</locale-resolver>" +
+                "</menudata>" ).getAsJDOMDocument();
 
         final SiteEntity site = factory.createSite( "The Newspaper", new Date(), xmlData, "en" );
         save( site );
@@ -146,11 +146,11 @@ public class PageTemplateServiceImpl_deletePageTemplateTest
         pPageTemplate.getPageTemplateRegions().iterator().next().addPortlet( pTemplatePortlet );
         save( pPageTemplate );
 
-        DeletePageTemplateCommand command = new DeletePageTemplateCommand( 0 );
+        DeletePageTemplateCommand command = new DeletePageTemplateCommand( pPageTemplate.getKey() );
         pageTemplateService.deletePageTemplate( command );
 
-        PageTemplateEntity persisted = pageTemplateDao.findByKey( 0 );
-        assertNull( persisted );
+        List<PageTemplateEntity> persisted = pageTemplateDao.findByName( "my-template" );
+        assertTrue( persisted.isEmpty() );
 
         PageTemplateRegionEntity region = pageTemplateRegionDao.findByKey( 1 );
         assertNull( region );

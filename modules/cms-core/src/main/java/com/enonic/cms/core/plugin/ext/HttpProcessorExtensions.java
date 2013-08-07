@@ -7,15 +7,15 @@ import com.google.common.collect.Lists;
 
 import com.enonic.cms.api.plugin.ext.http.HttpProcessor;
 
-public abstract class HttpProcessors<T extends HttpProcessor>
+public abstract class HttpProcessorExtensions<T extends HttpProcessor>
     extends ExtensionPoint<T>
 {
-    public HttpProcessors( final Class<T> type )
+    public HttpProcessorExtensions( final Class<T> type )
     {
         super( type );
     }
 
-    public final Iterable<T> findMatching( final String path )
+    public final List<T> findMatching( final String path )
     {
         final List<T> list = Lists.newArrayList();
         for ( final T ext : this )

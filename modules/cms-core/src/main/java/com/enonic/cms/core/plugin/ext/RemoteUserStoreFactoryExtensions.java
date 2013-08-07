@@ -7,12 +7,25 @@ import com.google.common.base.Joiner;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
 
 @Component
-public final class RemoteUserStoreFactories
+public final class RemoteUserStoreFactoryExtensions
     extends ExtensionPoint<RemoteUserStoreFactory>
 {
-    public RemoteUserStoreFactories()
+    public RemoteUserStoreFactoryExtensions()
     {
         super( RemoteUserStoreFactory.class );
+    }
+
+    public RemoteUserStoreFactory getByType( final String type )
+    {
+        for ( final RemoteUserStoreFactory ext : this )
+        {
+            if ( ext.isOfType( type ) )
+            {
+                return ext;
+            }
+        }
+
+        return null;
     }
 
     @Override

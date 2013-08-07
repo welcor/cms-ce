@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 
 @Component
-public final class HttpInterceptors
-    extends HttpProcessors<HttpInterceptor>
+public final class HttpInterceptorExtensions
+    extends HttpProcessorExtensions<HttpInterceptor>
 {
-    public HttpInterceptors()
+    public HttpInterceptorExtensions()
     {
         super( HttpInterceptor.class );
     }

@@ -31,8 +31,7 @@ import com.enonic.cms.api.plugin.ext.userstore.UserFieldType;
 import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
-import com.enonic.cms.core.plugin.PluginManager;
-import com.enonic.cms.core.plugin.ext.AuthenticationInterceptors;
+import com.enonic.cms.core.plugin.ext.AuthenticatorExtensions;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.CreateGroupAccessException;
 import com.enonic.cms.core.security.group.DeleteGroupAccessException;
@@ -110,7 +109,7 @@ public class UserStoreServiceImpl
     private RemoteUserStoreManager remoteUserStoreFactory;
 
     @Autowired
-    private AuthenticationInterceptors authenticationInterceptors;
+    private AuthenticatorExtensions authenticationInterceptors;
 
     private static final String VALID_EMAIL_PATTERN =
         "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";

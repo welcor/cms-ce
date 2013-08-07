@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 
 @Component
-public final class HttpAutoLogins
-    extends HttpProcessors<HttpAutoLogin>
+public final class HttpAutoLoginExtensions
+    extends HttpProcessorExtensions<HttpAutoLogin>
 {
-    public HttpAutoLogins()
+    public HttpAutoLoginExtensions()
     {
         super( HttpAutoLogin.class );
     }

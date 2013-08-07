@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 
 @Component
-public final class FunctionLibraries
+public final class FunctionLibraryExtensions
     extends ExtensionPoint<FunctionLibrary>
 {
-    public FunctionLibraries()
+    public FunctionLibraryExtensions()
     {
         super( FunctionLibrary.class );
     }

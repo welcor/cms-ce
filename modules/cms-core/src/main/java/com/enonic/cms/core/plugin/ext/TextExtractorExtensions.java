@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.api.plugin.ext.TextExtractor;
 
 @Component
-public final class TextExtractors
+public final class TextExtractorExtensions
     extends ExtensionPoint<TextExtractor>
 {
-    public TextExtractors()
+    public TextExtractorExtensions()
     {
         super( TextExtractor.class );
     }

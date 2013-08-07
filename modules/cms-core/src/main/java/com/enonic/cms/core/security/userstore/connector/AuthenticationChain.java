@@ -1,14 +1,14 @@
 package com.enonic.cms.core.security.userstore.connector;
 
-import com.enonic.cms.api.plugin.ext.auth.AuthenticationInterceptor;
-import com.enonic.cms.core.plugin.ext.AuthenticationInterceptors;
+import com.enonic.cms.api.plugin.ext.auth.Authenticator;
+import com.enonic.cms.core.plugin.ext.AuthenticatorExtensions;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 
 public final class AuthenticationChain
 {
-    private final AuthenticationInterceptors interceptors;
+    private final AuthenticatorExtensions interceptors;
 
-    public AuthenticationChain( final AuthenticationInterceptors interceptors )
+    public AuthenticationChain( final AuthenticatorExtensions interceptors )
     {
         this.interceptors = interceptors;
     }
@@ -21,7 +21,7 @@ public final class AuthenticationChain
         }
 
         final AuthenticationTokenImpl token = new AuthenticationTokenImpl( userStore, userName, password );
-        for ( final AuthenticationInterceptor interceptor : this.interceptors )
+        for ( final Authenticator interceptor : this.interceptors )
         {
             if ( interceptor.authenticate( token ) )
             {

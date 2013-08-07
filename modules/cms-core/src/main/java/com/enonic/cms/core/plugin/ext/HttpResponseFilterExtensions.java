@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
 
 @Component
-public final class HttpResponseFilters
-    extends HttpProcessors<HttpResponseFilter>
+public final class HttpResponseFilterExtensions
+    extends HttpProcessorExtensions<HttpResponseFilter>
 {
-    public HttpResponseFilters()
+    public HttpResponseFilterExtensions()
     {
         super( HttpResponseFilter.class );
     }

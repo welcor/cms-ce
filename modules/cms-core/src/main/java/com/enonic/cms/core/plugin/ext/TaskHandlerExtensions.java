@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 
 @Component
-public final class TaskHandlers
+public final class TaskHandlerExtensions
     extends ExtensionPoint<TaskHandler>
 {
-    public TaskHandlers()
+    public TaskHandlerExtensions()
     {
         super( TaskHandler.class );
     }

@@ -39,17 +39,23 @@
 
     <xsl:template match="/">
 
+        <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
+
         <html>
             <head>
-                <script type="text/javascript" src="javascript/tabpane.js">//</script>
                 <link type="text/css" rel="StyleSheet" href="javascript/tab.webfx.css" />
-                <link rel="stylesheet" type="text/css" href="css/admin.css"/>
-                <link rel="stylesheet" type="text/css" href="css/codearea.css"/>
+                <link type="text/css" rel="stylesheet" href="css/admin.css"/>
+                <link type="text/css" rel="stylesheet" href="codemirror/lib/codemirror.css"/>
+                <link type="text/css" rel="stylesheet" href="javascript/cms/ui/codearea/codearea.css"/>
 
-                <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
-                <script type="text/javascript" src="javascript/codearea.js">//</script>
+                <script type="text/javascript" src="javascript/tabpane.js">//</script>
                 <script type="text/javascript" src="javascript/admin.js">//</script>
                 <script type="text/javascript" src="javascript/validate.js">//</script>
+
+                <script type="text/javascript" src="codemirror/lib/codemirror.js">//</script>
+                <script type="text/javascript" src="codemirror/mode/xml/xml.js">//</script>
+
+                <script type="text/javascript" src="javascript/cms/ui/codearea/codearea.js">//</script>
 
                 <script type="text/javascript" language="JavaScript">
                     <xsl:choose>
@@ -66,14 +72,7 @@
                         </xsl:otherwise>
                     </xsl:choose>
 
-                    var g_codeMirror = null;
-
                     function validateAll(formName) {
-
-                        if ( codeArea_module )
-                        {
-                          document.getElementById('module').value = codeArea_module.getCode();
-                        }
 
                         var f = document.forms[formName];
 
@@ -262,19 +261,20 @@
                             </tr>
                         </xsl:if>
                         <tr>
-                            <xsl:call-template name="codearea">
+                            <xsl:call-template name="textarea">
                                 <xsl:with-param name="name" select="'module'"/>
+                                <xsl:with-param name="id" select="'module'"/>
                                 <xsl:with-param name="label" select="'%fldConfig%:'"/>
                                 <xsl:with-param name="width" select="'100%'"/>
-                                <xsl:with-param name="height" select="'380px'"/>
-                                <xsl:with-param name="line-numbers" select="true()"/>
-                                <xsl:with-param name="read-only" select="false()"/>
                                 <xsl:with-param name="selectnode" select="$selectnode"/>
-                                <xsl:with-param name="buttons" select="'find,replace,indentall,indentselection,gotoline'"/>
-                                <xsl:with-param name="status-bar" select="true()"/>
                             </xsl:call-template>
                         </tr>
                     </table>
+
+                    <script type="text/javascript">
+                        var moduleCodeArea = new cms.ui.CodeArea('module');
+                    </script>
+
                 </fieldset>
             </div>
         </div>

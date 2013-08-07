@@ -23,7 +23,7 @@
 .ca-caret-info
 {
     float: right;
-    margin: 6px;  
+    margin: 6px;
     font: 12px monospace;
 }
 
@@ -125,4 +125,14 @@
     font-family: monospace;
     padding-top: .4em;
     cursor: default;
+}
+
+.CodeMirror {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 13px;
+}
+
+.CodeMirror-activeline {
+    background: #e8f2ff !important;
 }

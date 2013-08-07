@@ -93,7 +93,7 @@
     </script>
     <script type="text/javascript" src="javascript/userstore_form.js">//</script>
     <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
-    <script type="text/javascript" src="javascript/codearea.js">//</script>
+    <script type="text/javascript" src="javascript/codearea/codearea.js">//</script>
 
     <div class="tab-pane" id="tab-pane-1">
       <script type="text/javascript" language="JavaScript">

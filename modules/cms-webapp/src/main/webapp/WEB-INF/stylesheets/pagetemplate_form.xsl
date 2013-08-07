@@ -64,7 +64,7 @@
             <script type="text/javascript" src="tinymce/jscripts/cms/Editor.js">//</script>
             <script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js">//</script>
             <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
-            <script type="text/javascript" src="javascript/codearea.js">//</script>
+            <script type="text/javascript" src="javascript/codearea/codearea.js">//</script>
 
             <xsl:call-template name="waitsplash"/>
 

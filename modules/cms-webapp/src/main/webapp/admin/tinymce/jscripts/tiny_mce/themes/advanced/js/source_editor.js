@@ -1,55 +1,55 @@
-tinyMCEPopup.requireLangPack();
-tinyMCEPopup.onInit.add(onLoadInit);
+var SourceEditor = {
 
-var g_codemirror; // Reference to the codemirror instance.
+    codeMirror: null,
 
-function onLoadInit()
-{
-    var textAreaToTransform = document.getElementById('htmlSource');
+    onLoadInit: function () {
 
-    textAreaToTransform.value = addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
+        var self = SourceEditor;
 
-    // When the textarea has no content and the user tries to paste content from the system's
-    // clipboard Firefox will not paste the content properly.
-    // Adding a newline to the textarea fixes this and has no effect on the content as
-    // TinyMCE strips newlines on get/set content anyway.
-    if ( tinyMCEPopup.getWin().tinymce.isGecko && textAreaToTransform.value.length == 0 )
-    {
-        textAreaToTransform.value = '\n';
+        var textArea = document.getElementById('htmlSource');
+        // Populate textarea with html content from editor
+        textArea.value = self.addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
+
+        self.codeMirror = CodeMirror.fromTextArea(textArea, {
+            mode: 'htmlmixed',
+            lineNumbers: true,
+            lineWrapping: true,
+            indentUnit: 4
+        });
+
+        self.indentAll();
+    },
+
+    indentAll: function () {
+        var cm = this.codeMirror,
+            lineCount = cm.lineCount();
+
+        for (var i = 0, e = lineCount; i < e; ++i) {
+            cm.indentLine(i);
+        }
+    },
+
+    // Add some newlines as the parsed content from TinyMCE is stripped for newlines
+    addNewlinesAfterBlockLevelTags: function (content) {
+        var contentWithNewlines = content;
+
+        // P tags
+        contentWithNewlines = contentWithNewlines.replace(/(<p(?:\s+[^>]*)?>)/gim, '$1\n');
+        contentWithNewlines = contentWithNewlines.replace(/<\/p>/gim, '\n</p>');
+
+        // H1 - H6 tags
+        contentWithNewlines = contentWithNewlines.replace(/(<h[1-6].*?>)/gim, '$1\n');
+        contentWithNewlines = contentWithNewlines.replace(/(<\/h[1-6].*?>)/gim, '\n$1');
+
+        return contentWithNewlines;
+    },
+
+    saveContent: function () {
+        tinyMCEPopup.editor.setContent(this.codeMirror.getValue(''));
+        tinyMCEPopup.close();
     }
 
-    g_codemirror = CodeMirror.fromTextArea('htmlSource', {
-        width: '', // Leave blank for 100%
-        height: '450px',
-        lineNumbers: true,
-        textWrapping: true,
-        path: "../../../../../codemirror/js/",
-        tabMode: 'shift',
-        indentUnit: 2,
-        parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js"],
-        stylesheet: ["../../../../../codemirror/css/cms.xmlcolors.css", "../../../../../codemirror/css/cms.jscolors.css", "../../../../../codemirror/css/cms.csscolors.css"],
-        parserConfig: { useHTMLKludges: true },
-        reindentOnLoad: true
-    });
-}
+};
 
-function addNewlinesAfterBlockLevelTags( content )
-{
-    var contentWithNewlines = content;
-
-    // P
-    contentWithNewlines     = contentWithNewlines.replace(/(<p(?:\s+[^>]*)?>)/gim, '$1\n');
-    contentWithNewlines     = contentWithNewlines.replace(/<\/p>/gim, '\n</p>');
-
-    // H1-6
-    contentWithNewlines     = contentWithNewlines.replace(/(<h[1-6].*?>)/gim, '$1\n');
-    contentWithNewlines     = contentWithNewlines.replace(/(<\/h[1-6].*?>)/gim, '\n$1');
-
-    return contentWithNewlines;
-}
-
-function saveContent()
-{
-    tinyMCEPopup.editor.setContent(g_codemirror.getCode());
-    tinyMCEPopup.close();
-}
+tinyMCEPopup.requireLangPack();
+tinyMCEPopup.onInit.add(SourceEditor.onLoadInit);

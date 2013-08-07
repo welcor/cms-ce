@@ -17,7 +17,7 @@
         JS:
 
         <script type="text/javascript" src="codemirror/js/codemirror.js">//</script>
-        <script type="text/javascript" src="javascript/codearea.js">//</script>
+        <script type="text/javascript" src="javascript/codearea/codearea.js">//</script>
         <script type="text/javascript" src="javascript/admin.js">//</script>
   -->
 

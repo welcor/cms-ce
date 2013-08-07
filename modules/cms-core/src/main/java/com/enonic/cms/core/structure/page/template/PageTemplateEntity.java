@@ -20,8 +20,8 @@ import org.jdom.Element;
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
-import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.portal.datasource.xml.DataSourceXmlFactory;
+import com.enonic.cms.core.portal.datasource.xml.DataSourcesElement;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.RunAsType;
@@ -30,7 +30,7 @@ import com.enonic.cms.core.structure.TemplateParameter;
 import com.enonic.cms.core.structure.TemplateParameterType;
 
 public class PageTemplateEntity
-    implements Serializable
+    implements Serializable, Cloneable
 {
     private Integer key;
 
@@ -56,7 +56,7 @@ public class PageTemplateEntity
 
     private List<PageTemplatePortletEntity> pagetTemplatePortlets = new ArrayList<PageTemplatePortletEntity>();
 
-    private Set<ContentTypeEntity> contentTypes;
+    private Set<ContentTypeEntity> contentTypes = new HashSet<ContentTypeEntity>();
 
     private transient DataSourcesElement datasources;
 
@@ -85,7 +85,12 @@ public class PageTemplateEntity
         return timestamp;
     }
 
-    public Document getXmlData()
+    public LazyInitializedJDOMDocument getXmlData()
+    {
+        return xmlData;
+    }
+
+    public Document getXmlDataAsDocument()
     {
         if ( xmlData == null )
         {
@@ -130,19 +135,14 @@ public class PageTemplateEntity
         return runAs;
     }
 
-    public Set<ContentTypeEntity> getContentTypes()
-    {
-        return contentTypes;
-    }
-
-    public boolean supportsContentType( ContentTypeEntity contentType )
-    {
-        return contentTypes.contains( contentType );
-    }
-
     public void addPageTemplateRegion( PageTemplateRegionEntity value )
     {
         pageTemplateRegions.add( value );
+    }
+
+    public void clearPageTemplateRegions()
+    {
+        pageTemplateRegions.clear();
     }
 
     public Set<PageTemplateRegionEntity> getPageTemplateRegions()
@@ -150,9 +150,19 @@ public class PageTemplateEntity
         return pageTemplateRegions;
     }
 
+    public void setPageTemplateRegions( final Set<PageTemplateRegionEntity> pageTemplateRegions )
+    {
+        this.pageTemplateRegions = pageTemplateRegions;
+    }
+
     public void addPagetTemplatePortlet( PageTemplatePortletEntity value )
     {
         pagetTemplatePortlets.add( value );
+    }
+
+    public void clearPagetTemplatePortlets()
+    {
+        pagetTemplatePortlets.clear();
     }
 
     public List<PageTemplatePortletEntity> getPortlets()
@@ -160,7 +170,12 @@ public class PageTemplateEntity
         return pagetTemplatePortlets;
     }
 
-    public void setKey( int key )
+    public void setPagetTemplatePortlets( final List<PageTemplatePortletEntity> pagetTemplatePortlets )
+    {
+        this.pagetTemplatePortlets = pagetTemplatePortlets;
+    }
+
+    public void setKey( Integer key )
     {
         this.key = key;
     }
@@ -192,6 +207,18 @@ public class PageTemplateEntity
         }
     }
 
+    public void setXmlData( String value )
+    {
+        if ( value == null )
+        {
+            this.xmlData = null;
+        }
+        else
+        {
+            this.xmlData = new LazyInitializedJDOMDocument( value );
+        }
+    }
+
     public void setStyleKey( ResourceKey styleKey )
     {
         this.styleKey = styleKey;
@@ -220,6 +247,26 @@ public class PageTemplateEntity
     public void setContentTypes( Set<ContentTypeEntity> contentTypes )
     {
         this.contentTypes = contentTypes;
+    }
+
+    public Set<ContentTypeEntity> getContentTypes()
+    {
+        return contentTypes;
+    }
+
+    public boolean supportsContentType( ContentTypeEntity contentType )
+    {
+        return contentTypes.contains( contentType );
+    }
+
+    public void addContentType( ContentTypeEntity contentType )
+    {
+        contentTypes.add( contentType );
+    }
+
+    public void clearContentTypes()
+    {
+        contentTypes.clear();
     }
 
     public Map<String, TemplateParameter> getTemplateParameters()
@@ -297,6 +344,45 @@ public class PageTemplateEntity
         return s.toString();
     }
 
+
+    public PageTemplateRegionEntity findRegionByKey( int regionKey )
+    {
+        for ( PageTemplateRegionEntity region : pageTemplateRegions )
+        {
+            if ( regionKey == region.getKey() )
+            {
+                return region;
+            }
+        }
+
+        return null;
+    }
+
+    public PageTemplateRegionEntity findRegionByName( String name )
+    {
+        for ( PageTemplateRegionEntity region : pageTemplateRegions )
+        {
+            if ( name.equals( region.getName() ) )
+            {
+                return region;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public PageTemplateEntity clone() {
+        try {
+            PageTemplateEntity copy = ( PageTemplateEntity ) super.clone();
+
+            copy.setTimestamp( new Date() );
+
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public UserEntity resolveRunAsUser( UserEntity currentUser )
     {

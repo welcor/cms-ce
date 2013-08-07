@@ -12,7 +12,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 
 public class PageTemplatePortletEntity
-    implements Serializable
+    implements Serializable, Cloneable
 {
     private PageTemplatePortletKey key;
 
@@ -105,6 +105,19 @@ public class PageTemplatePortletEntity
         }
 
         return true;
+    }
+
+    @Override
+    public PageTemplatePortletEntity clone() {
+        try {
+            PageTemplatePortletEntity copy = ( PageTemplatePortletEntity ) super.clone();
+
+            copy.setTimestamp( new Date() );
+
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int hashCode()

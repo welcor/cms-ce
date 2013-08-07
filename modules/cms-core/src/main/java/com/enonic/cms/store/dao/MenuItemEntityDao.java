@@ -70,6 +70,12 @@ public final class MenuItemEntityDao
         return findByNamedQuery( MenuItemEntity.class, "MenuItemEntity.findBySiteKey", "siteKey", siteKey );
     }
 
+    @Override
+    public Collection<MenuItemEntity> findByPageTemplate( final int pageTemplateKey )
+    {
+        return findByNamedQuery( MenuItemEntity.class, "MenuItemEntity.findByPageTemplate", "pageTemplateKey", pageTemplateKey );
+    }
+
     public Collection<MenuItemEntity> findTopMenuItems( int siteKey )
     {
         return findByNamedQuery( MenuItemEntity.class, "MenuItemEntity.findTopMenuItems", "siteKey", siteKey );

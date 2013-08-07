@@ -27,6 +27,12 @@ public final class PageTemplateEntityDao
         return get( PageTemplateEntity.class, pageTemplateKey );
     }
 
+    @Override
+    public List<PageTemplateEntity> findByName( final String name )
+    {
+        return findByNamedQuery( PageTemplateEntity.class, "PageTemplateEntity.findByName", "name", name );
+    }
+
     /**
      * Find by content type.
      */

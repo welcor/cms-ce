@@ -297,16 +297,6 @@ public final class AdminEngine
         return menuHandler.createMenuItem( user, xmlData );
     }
 
-    public int createPageTemplate( String xmlData )
-    {
-        return pageTemplateHandler.createPageTemplate( xmlData );
-    }
-
-    public int copyPageTemplate( User user, int pageTemplateKey )
-    {
-        return pageTemplateHandler.copyPageTemplate( user, new PageTemplateKey( pageTemplateKey ) );
-    }
-
     public String generateUID( String fName, String sName, UserStoreKey userStoreKey )
     {
         return userHandler.generateUID( fName, sName, userStoreKey );
@@ -612,12 +602,6 @@ public final class AdminEngine
         menuHandler.removeMenu( user, menuKey );
     }
 
-    public void removePageTemplate( int pageTemplateKey )
-        throws VerticalSecurityException, VerticalRemoveException
-    {
-        pageTemplateHandler.removePageTemplate( pageTemplateKey );
-    }
-
     public void updateContentObject( String xmlData )
     {
         contentObjectHandler.updateContentObject( xmlData );
@@ -651,11 +635,6 @@ public final class AdminEngine
         }
 
         menuHandler.updateMenuData( doc );
-    }
-
-    public void updatePageTemplate( String xmlData )
-    {
-        pageTemplateHandler.updatePageTemplate( xmlData );
     }
 
     public XMLDocument getMenuItemsByContentObject( User user, int cobKey )

@@ -18,6 +18,7 @@ import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.api.plugin.ext.TextExtractor;
+import com.enonic.cms.api.plugin.ext.auth.AuthenticationInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpProcessor;
@@ -170,6 +171,14 @@ final class ExtensionSetImpl
     public List<RemoteUserStoreFactory> getAllRemoteUserStoreFactories()
     {
         final List<RemoteUserStoreFactory> list = getExtensions( RemoteUserStoreFactory.class );
+        Collections.sort( list );
+        return list;
+    }
+
+    @Override
+    public List<AuthenticationInterceptor> getAllAuthenticationInterceptors()
+    {
+        final List<AuthenticationInterceptor> list = getExtensions( AuthenticationInterceptor.class );
         Collections.sort( list );
         return list;
     }

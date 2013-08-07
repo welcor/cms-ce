@@ -6,6 +6,7 @@ package com.enonic.cms.core.security.userstore.connector.local;
 
 import org.springframework.util.Assert;
 
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -24,12 +25,10 @@ import com.enonic.cms.core.security.user.UserKey;
 import com.enonic.cms.core.security.user.UserSpecification;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 import com.enonic.cms.core.security.userstore.connector.AbstractBaseUserStoreConnector;
-import com.enonic.cms.core.security.userstore.connector.UserStoreConnector;
-import com.enonic.cms.api.plugin.ext.userstore.UserFields;
+import com.enonic.cms.core.security.userstore.connector.AuthenticationChain;
 
 public class LocalUserStoreConnector
     extends AbstractBaseUserStoreConnector
-    implements UserStoreConnector
 {
     public LocalUserStoreConnector( final UserStoreKey userStoreKey, final String userStoreName )
     {
@@ -130,7 +129,17 @@ public class LocalUserStoreConnector
         deleteGroupLocally( command );
     }
 
-    public String authenticateUser( final String uid, final String password )
+    private boolean verifyPassword( final UserEntity user, final String password, final AuthenticationChain authChain )
+    {
+        if ( authChain.authenticate( this.userStoreKey, user.getName(), password ) )
+        {
+            return true;
+        }
+
+        return user.verifyPassword( password );
+    }
+
+    public String authenticateUser( final String uid, final String password, final AuthenticationChain authChain )
     {
         final UserSpecification spec = new UserSpecification();
         spec.setUserStoreKey( userStoreKey );
@@ -138,11 +147,16 @@ public class LocalUserStoreConnector
         spec.setDeletedStateNotDeleted();
 
         final UserEntity user = userDao.findSingleBySpecification( spec );
-
-        if ( user == null || !user.verifyPassword( password ) )
+        if ( user == null )
         {
             throw new InvalidCredentialsException( uid );
         }
+
+        if ( !verifyPassword( user, password, authChain ) )
+        {
+            throw new InvalidCredentialsException( uid );
+        }
+
         return user.getSync();
     }
 

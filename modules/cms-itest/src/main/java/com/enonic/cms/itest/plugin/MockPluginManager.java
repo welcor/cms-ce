@@ -19,6 +19,7 @@ import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.api.plugin.ext.TextExtractor;
+import com.enonic.cms.api.plugin.ext.auth.AuthenticationInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpResponseFilter;
@@ -113,6 +114,12 @@ public class MockPluginManager
 
             @Override
             public List<RemoteUserStoreFactory> getAllRemoteUserStoreFactories()
+            {
+                return Lists.newArrayList();
+            }
+
+            @Override
+            public List<AuthenticationInterceptor> getAllAuthenticationInterceptors()
             {
                 return Lists.newArrayList();
             }

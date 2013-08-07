@@ -53,6 +53,7 @@ public final class PluginInfoController
         model.put( "taskExtensions", toWrappers( extensions.getAllTaskPlugins() ) );
         model.put( "textExtractorExtensions", toWrappers( extensions.getAllTextExtractorPlugins() ) );
         model.put( "remoteUserStoreFactories", toWrappers( extensions.getAllRemoteUserStoreFactories() ) );
+        model.put( "authenticationInterceptors", toWrappers( extensions.getAllAuthenticationInterceptors() ) );
         model.put( "pluginHandles", toPluginWrappers( this.pluginManager.getPlugins() ) );
 
         renderView( req, res, model, "pluginInfoPage" );

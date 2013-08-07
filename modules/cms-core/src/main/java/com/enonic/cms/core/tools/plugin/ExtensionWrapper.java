@@ -16,6 +16,7 @@ import com.enonic.cms.api.plugin.ext.ExtensionBase;
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.api.plugin.ext.TextExtractor;
+import com.enonic.cms.api.plugin.ext.auth.AuthenticationInterceptor;
 import com.enonic.cms.api.plugin.ext.http.HttpProcessor;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
 
@@ -50,6 +51,10 @@ public final class ExtensionWrapper
         {
             return toHtml( (RemoteUserStoreFactory) this.extension );
         }
+        else if ( this.extension instanceof AuthenticationInterceptor )
+        {
+            return toHtml( (AuthenticationInterceptor) this.extension );
+        }
         else
         {
             return composeHtml( this.extension );
@@ -79,6 +84,11 @@ public final class ExtensionWrapper
     private static String toHtml( final RemoteUserStoreFactory ext )
     {
         return composeHtml( ext, "type", ext.getType(), "aliases", Joiner.on( ", " ).skipNulls().join( ext.getAliases() ) );
+    }
+
+    private static String toHtml( final AuthenticationInterceptor ext )
+    {
+        return composeHtml( ext, "priority", ext.getPriority() );
     }
 
     private static String composeHtml( final Extension ext, final Object... props )

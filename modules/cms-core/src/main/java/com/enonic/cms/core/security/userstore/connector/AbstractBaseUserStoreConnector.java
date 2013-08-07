@@ -34,6 +34,7 @@ import com.enonic.cms.store.dao.UserStoreDao;
  * Jun 25, 2009
  */
 public abstract class AbstractBaseUserStoreConnector
+    implements UserStoreConnector
 {
     protected final UserStoreKey userStoreKey;
 

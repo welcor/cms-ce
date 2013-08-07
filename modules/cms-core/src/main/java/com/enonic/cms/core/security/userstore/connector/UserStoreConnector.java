@@ -34,7 +34,7 @@ public interface UserStoreConnector
 
     boolean canDeleteGroup();
 
-    String authenticateUser( final String uid, final String password );
+    String authenticateUser( final String uid, final String password, AuthenticationChain authChain );
 
     void changePassword( final String uid, final String newPassword );
 

@@ -142,6 +142,20 @@
     </fieldset>
 [/#if]
 
+[#if authenticationInterceptors?size > 0]
+    <fieldset class="infoBox">
+        <legend>Authentication Interceptor Extensions
+            <small>(Sorted by priority)</small>
+        </legend>
+        <ul>
+            [#list authenticationInterceptors as plugin]
+                <li>${plugin.html}</li>
+            [/#list]
+        </ul>
+    </fieldset>
+[/#if]
+</div>
+
 [#if remoteUserStoreFactories?size > 0]
     <fieldset class="infoBox">
         <legend>Remote UserStore Factory Extensions

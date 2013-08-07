@@ -1,15 +1,14 @@
 package com.enonic.cms.core.security.userstore.connector;
 
-import java.util.List;
-
 import com.enonic.cms.api.plugin.ext.auth.AuthenticationInterceptor;
+import com.enonic.cms.core.plugin.ext.AuthenticationInterceptors;
 import com.enonic.cms.core.security.userstore.UserStoreKey;
 
 public final class AuthenticationChain
 {
-    private final List<AuthenticationInterceptor> interceptors;
+    private final AuthenticationInterceptors interceptors;
 
-    public AuthenticationChain( final List<AuthenticationInterceptor> interceptors )
+    public AuthenticationChain( final AuthenticationInterceptors interceptors )
     {
         this.interceptors = interceptors;
     }

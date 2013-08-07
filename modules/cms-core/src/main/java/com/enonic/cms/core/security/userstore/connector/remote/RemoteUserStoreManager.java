@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
-import com.enonic.cms.core.plugin.ExtensionListener;
+import com.enonic.cms.core.plugin.ext.ExtensionListener;
 
 @Component
 public final class RemoteUserStoreManager

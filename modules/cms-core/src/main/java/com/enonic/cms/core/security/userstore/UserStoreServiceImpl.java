@@ -32,6 +32,7 @@ import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfig;
 import com.enonic.cms.api.plugin.ext.userstore.UserStoreConfigField;
 import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.AuthenticationInterceptors;
 import com.enonic.cms.core.security.group.AddMembershipsCommand;
 import com.enonic.cms.core.security.group.CreateGroupAccessException;
 import com.enonic.cms.core.security.group.DeleteGroupAccessException;
@@ -109,7 +110,7 @@ public class UserStoreServiceImpl
     private RemoteUserStoreManager remoteUserStoreFactory;
 
     @Autowired
-    private PluginManager pluginManager;
+    private AuthenticationInterceptors authenticationInterceptors;
 
     private static final String VALID_EMAIL_PATTERN =
         "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
@@ -741,7 +742,7 @@ public class UserStoreServiceImpl
     public void authenticateUser( final UserStoreKey userStoreKey, final String uid, final String password )
     {
         final AuthenticationChain authChain =
-            new AuthenticationChain( this.pluginManager.getExtensions().getAllAuthenticationInterceptors() );
+            new AuthenticationChain( this.authenticationInterceptors );
         doGetUSConnector( userStoreKey ).authenticateUser( uid, password, authChain );
     }
 

@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.api.plugin.ext.Extension;
-import com.enonic.cms.core.plugin.ExtensionListener;
+import com.enonic.cms.core.plugin.ext.ExtensionListener;
 
 final class ExtensionHolder
 {

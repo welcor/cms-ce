@@ -70,104 +70,19 @@
 <div class="infoBox">
     <b>Registered Extensions</b>
 
-[#if functionLibraryExtensions?size > 0]
-    <fieldset class="infoBox">
-        <legend>Function Library Extensions</legend>
-        <ul>
-            [#list functionLibraryExtensions as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
-
-[#if autoLoginExtensions?size > 0]
-    <fieldset class="infoBox">
-        <legend>Autologin Extensions
-            <small>(Sorted by priority)</small>
-        </legend>
-        <ul>
-            [#list autoLoginExtensions as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
-
-[#if httpInterceptors?size > 0]
-    <fieldset class="infoBox">
-        <legend>Http Interceptor Extensions
-            <small>(Sorted by priority)</small>
-        </legend>
-        <ul>
-            [#list httpInterceptors as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
-
-[#if httpResponseFilters?size > 0]
-    <fieldset class="infoBox">
-        <legend>Http Response Filters Extensions
-            <small>(Sorted by priority)</small>
-        </legend>
-        <ul>
-            [#list httpResponseFilters as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
-
-[#if taskExtensions?size > 0]
-    <fieldset class="infoBox">
-        <legend>Task Handler Extensions</legend>
-        <ul>
-            [#list taskExtensions as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
-
-[#if textExtractorExtensions?size > 0]
-    <fieldset class="infoBox">
-        <legend>Text Extractor Extensions</legend>
-        <ul>
-            [#list textExtractorExtensions as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
-
-[#if authenticationInterceptors?size > 0]
-    <fieldset class="infoBox">
-        <legend>Authentication Interceptor Extensions
-            <small>(Sorted by priority)</small>
-        </legend>
-        <ul>
-            [#list authenticationInterceptors as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
-</div>
-
-[#if remoteUserStoreFactories?size > 0]
-    <fieldset class="infoBox">
-        <legend>Remote UserStore Factory Extensions
-            <small>(Sorted by type)</small>
-        </legend>
-        <ul>
-            [#list remoteUserStoreFactories as plugin]
-                <li>${plugin.html}</li>
-            [/#list]
-        </ul>
-    </fieldset>
-[/#if]
+[#list extMap?keys as extName]
+    [#assign extList = extMap[extName]]
+    [#if extList?size > 0]
+        <fieldset class="infoBox">
+            <legend>${extName} Extensions <small>(${extList?size})</small></legend>
+            <ul>
+                [#list extList as html]
+                    <li>${html}</li>
+                [/#list]
+            </ul>
+        </fieldset>
+    [/#if]
+[/#list]
 </div>
 
 [#list pluginHandles as plugin]

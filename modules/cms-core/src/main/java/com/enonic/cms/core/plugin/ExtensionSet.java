@@ -22,15 +22,15 @@ public interface ExtensionSet
 {
     public List<Extension> getAllExtensions();
 
-    public List<FunctionLibrary> getAllFunctionLibraries();
+    public List<FunctionLibrary> getAllFunctionLibraries(); //
 
-    public List<HttpInterceptor> getAllHttpInterceptors();
+    public List<HttpInterceptor> getAllHttpInterceptors(); //
 
-    public List<HttpResponseFilter> getAllHttpResponseFilters();
+    public List<HttpResponseFilter> getAllHttpResponseFilters(); //
 
-    public List<HttpAutoLogin> getAllHttpAutoLoginPlugins();
+    public List<HttpAutoLogin> getAllHttpAutoLoginPlugins(); //
 
-    public List<TaskHandler> getAllTaskPlugins();
+    public List<TaskHandler> getAllTaskPlugins(); //
 
     public TaskHandler findTaskPlugin( String className );
 
@@ -44,9 +44,9 @@ public interface ExtensionSet
 
     public TextExtractor findTextExtractorPluginByMimeType( String mimeType );
 
-    public List<TextExtractor> getAllTextExtractorPlugins();
+    public List<TextExtractor> getAllTextExtractorPlugins(); //
 
-    public List<RemoteUserStoreFactory> getAllRemoteUserStoreFactories();
+    public List<RemoteUserStoreFactory> getAllRemoteUserStoreFactories(); //
 
-    public List<AuthenticationInterceptor> getAllAuthenticationInterceptors();
+    public List<AuthenticationInterceptor> getAllAuthenticationInterceptors(); //
 }

@@ -3,7 +3,7 @@
  * http://www.enonic.com/license
  */
 
-package com.enonic.cms.core.plugin;
+package com.enonic.cms.core.plugin.ext;
 
 import com.enonic.cms.api.plugin.ext.Extension;
 

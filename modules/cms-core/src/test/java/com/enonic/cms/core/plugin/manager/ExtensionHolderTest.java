@@ -17,7 +17,7 @@ import org.osgi.framework.ServiceReference;
 import com.google.common.collect.Lists;
 
 import com.enonic.cms.api.plugin.ext.Extension;
-import com.enonic.cms.core.plugin.ExtensionListener;
+import com.enonic.cms.core.plugin.ext.ExtensionListener;
 
 import static org.junit.Assert.*;
 

@@ -14,7 +14,7 @@ import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import com.enonic.cms.core.plugin.ExtensionListener;
+import com.enonic.cms.core.plugin.ext.ExtensionListener;
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.context.ContextFactory;
 

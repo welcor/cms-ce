@@ -8,27 +8,49 @@ package com.enonic.cms.core.tools.plugin;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.enonic.cms.api.plugin.ext.Extension;
-import com.enonic.cms.core.plugin.ExtensionSet;
+import com.google.common.collect.Maps;
+
 import com.enonic.cms.core.plugin.PluginHandle;
 import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.ExtensionPoint;
 import com.enonic.cms.core.tools.AbstractToolController;
 
 public final class PluginInfoController
     extends AbstractToolController
 {
+    private List<ExtensionPoint> extensionPoints;
+
     private PluginManager pluginManager;
 
     @Autowired
     public void setPluginManager( final PluginManager pluginManager )
     {
         this.pluginManager = pluginManager;
+    }
+
+    @Autowired
+    public void setExtensionPoints( final List<ExtensionPoint> extensionPoints )
+    {
+        this.extensionPoints = extensionPoints;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, List<String>> createExtMap()
+    {
+        final Map<String, List<String>> map = Maps.newTreeMap();
+        for ( final ExtensionPoint point : this.extensionPoints )
+        {
+            map.put( point.getName(), point.toHtml() );
+        }
+
+        return map;
     }
 
     @Override
@@ -44,16 +66,8 @@ public final class PluginInfoController
 
         final HashMap<String, Object> model = new HashMap<String, Object>();
 
-        final ExtensionSet extensions = this.pluginManager.getExtensions();
         model.put( "baseUrl", getBaseUrl( req ) );
-        model.put( "functionLibraryExtensions", toWrappers( extensions.getAllFunctionLibraries() ) );
-        model.put( "autoLoginExtensions", toWrappers( extensions.getAllHttpAutoLoginPlugins() ) );
-        model.put( "httpInterceptors", toWrappers( extensions.getAllHttpInterceptors() ) );
-        model.put( "httpResponseFilters", toWrappers( extensions.getAllHttpResponseFilters() ) );
-        model.put( "taskExtensions", toWrappers( extensions.getAllTaskPlugins() ) );
-        model.put( "textExtractorExtensions", toWrappers( extensions.getAllTextExtractorPlugins() ) );
-        model.put( "remoteUserStoreFactories", toWrappers( extensions.getAllRemoteUserStoreFactories() ) );
-        model.put( "authenticationInterceptors", toWrappers( extensions.getAllAuthenticationInterceptors() ) );
+        model.put( "extMap", createExtMap() );
         model.put( "pluginHandles", toPluginWrappers( this.pluginManager.getPlugins() ) );
 
         renderView( req, res, model, "pluginInfoPage" );
@@ -69,11 +83,6 @@ public final class PluginInfoController
         }
 
         redirectToReferrer( req, res );
-    }
-
-    private Collection<ExtensionWrapper> toWrappers( final List<? extends Extension> list )
-    {
-        return ExtensionWrapper.toWrapperList( list );
     }
 
     private Collection<PluginWrapper> toPluginWrappers( final List<PluginHandle> list )

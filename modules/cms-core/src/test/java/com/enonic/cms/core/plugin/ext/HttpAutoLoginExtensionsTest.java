@@ -1,6 +1,6 @@
 package com.enonic.cms.core.plugin.ext;
 
-import javax.servlet.http.HttpServletRequest;
+import org.mockito.Mockito;
 
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
 
@@ -15,15 +15,7 @@ public class HttpAutoLoginExtensionsTest
     @Override
     protected HttpAutoLogin createExt()
     {
-        return new HttpAutoLogin()
-        {
-            @Override
-            public String getAuthenticatedUser( final HttpServletRequest request )
-                throws Exception
-            {
-                return null;
-            }
-        };
+        return Mockito.mock( HttpAutoLogin.class );
     }
 
     @Override

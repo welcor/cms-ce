@@ -1,7 +1,6 @@
 package com.enonic.cms.core.plugin.ext;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.mockito.Mockito;
 
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
 
@@ -16,21 +15,7 @@ public class HttpInterceptorExtensionsTest
     @Override
     protected HttpInterceptor createExt()
     {
-        return new HttpInterceptor()
-        {
-            @Override
-            public boolean preHandle( final HttpServletRequest request, final HttpServletResponse response )
-                throws Exception
-            {
-                return false;
-            }
-
-            @Override
-            public void postHandle( final HttpServletRequest request, final HttpServletResponse response )
-                throws Exception
-            {
-            }
-        };
+        return Mockito.mock( HttpInterceptor.class );
     }
 
     @Override

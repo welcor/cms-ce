@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.ext.http.HttpInterceptor;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.HttpInterceptorExtensions;
 import com.enonic.cms.server.service.servlet.OriginalPathResolver;
 import com.enonic.cms.web.portal.PortalWebContext;
 
@@ -24,12 +24,12 @@ public class HttpInterceptorInterceptor
 {
     private static final String POST_HANDLE_PLUGINS_PARAM = "httpInterceptorInterceptor.postHandlePlugins";
 
-    private PluginManager pluginManager;
+    private HttpInterceptorExtensions httpInterceptorExtensions;
 
     @Autowired
-    public void setPluginManager( PluginManager pluginManager )
+    public void setHttpInterceptorExtensions( HttpInterceptorExtensions httpInterceptorExtensions )
     {
-        this.pluginManager = pluginManager;
+        this.httpInterceptorExtensions = httpInterceptorExtensions;
     }
 
     private OriginalPathResolver originalPathResolver = new OriginalPathResolver();
@@ -92,7 +92,7 @@ public class HttpInterceptorInterceptor
     private Collection<HttpInterceptor> getInterceptorPlugins( HttpServletRequest req )
     {
         String path = originalPathResolver.getRequestPathFromHttpRequest( req );
-        return pluginManager.getExtensions().findMatchingHttpInterceptors( path );
+        return this.httpInterceptorExtensions.findMatching( path );
 
     }
 

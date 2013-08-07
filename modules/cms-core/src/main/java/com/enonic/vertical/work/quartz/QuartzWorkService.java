@@ -21,21 +21,21 @@ import com.enonic.vertical.work.WorkException;
 import com.enonic.vertical.work.WorkService;
 
 import com.enonic.cms.api.plugin.ext.TaskHandler;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.TaskHandlerExtensions;
 
 public final class QuartzWorkService
     implements WorkService
 {
     private final static String DEFAULT_GROUP = "default";
 
-    private PluginManager pluginManager;
+    private TaskHandlerExtensions extensions;
 
     private QuartzSchedulerManager schedulerManager;
 
     @Autowired
-    public void setPluginManager( final PluginManager pluginManager )
+    public void setExtensions( final TaskHandlerExtensions extensions )
     {
-        this.pluginManager = pluginManager;
+        this.extensions = extensions;
     }
 
     public boolean isEnabled()
@@ -302,7 +302,7 @@ public final class QuartzWorkService
         throws WorkException
     {
         String clzName = entry.getWorkClass();
-        TaskHandler taskPlugin = this.pluginManager.getExtensions().findTaskPlugin( clzName );
+        TaskHandler taskPlugin = this.extensions.getByName( clzName );
         if ( taskPlugin == null )
         {
             throw new WorkException( "Work class " + clzName + " not valid" );

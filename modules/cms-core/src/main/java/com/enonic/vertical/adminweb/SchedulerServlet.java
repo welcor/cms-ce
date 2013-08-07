@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.google.common.collect.Lists;
+
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.util.DateUtil;
 import com.enonic.esl.util.StringUtil;
@@ -40,7 +42,7 @@ import com.enonic.cms.framework.xml.XMLDocumentFactory;
 
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 import com.enonic.cms.core.CalendarUtil;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.TaskHandlerExtensions;
 import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.service.AdminService;
 
@@ -66,7 +68,7 @@ public class SchedulerServlet
     private WorkService workService;
 
     @Autowired
-    private PluginManager pluginManager;
+    private TaskHandlerExtensions taskHandlerExtensions;
 
     public SchedulerServlet()
     {
@@ -113,7 +115,7 @@ public class SchedulerServlet
 
         private Document getTaskPluginsXML()
         {
-            Collection<TaskHandler> plugins = INSTANCE.pluginManager.getExtensions().getAllTaskPlugins();
+            Collection<TaskHandler> plugins = Lists.newArrayList( INSTANCE.taskHandlerExtensions );
             return createXmlDocument( plugins ).getAsDOMDocument();
         }
 
@@ -328,11 +330,13 @@ public class SchedulerServlet
                 {
                     if ( timeStr != null )
                     {
-                        dateStr = CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " " + timeStr;
+                        dateStr =
+                            CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " " + timeStr;
                     }
                     else
                     {
-                        dateStr = CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " 00:00:00";
+                        dateStr =
+                            CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " 00:00:00";
                         formItems.put( "timestart", "00:00:00" );
                     }
                 }
@@ -348,11 +352,13 @@ public class SchedulerServlet
                 {
                     if ( timeStr != null )
                     {
-                        dateStr = CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " " + timeStr;
+                        dateStr =
+                            CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " " + timeStr;
                     }
                     else
                     {
-                        dateStr = CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " 00:00:00";
+                        dateStr =
+                            CalendarUtil.formatDate( DateUtil.parseDate( dateStr ).getTime(), false ).substring( 0, 10 ) + " 00:00:00";
                         formItems.put( "timeend", "00:00:00" );
                     }
                 }
@@ -447,7 +453,8 @@ public class SchedulerServlet
     {
         if ( "createupdate".equals( wizardName ) )
         {
-            Wizard createUpdateWizard = Wizard.getInstance( admin, applicationContext, this, session, formItems, WIZARD_CONFIG_CREATE_UPDATE );
+            Wizard createUpdateWizard =
+                Wizard.getInstance( admin, applicationContext, this, session, formItems, WIZARD_CONFIG_CREATE_UPDATE );
             createUpdateWizard.processRequest( request, response, session, admin, formItems, parameters, user );
         }
         else

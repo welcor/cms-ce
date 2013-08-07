@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.api.plugin.ext.http.HttpAutoLogin;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.HttpAutoLoginExtensions;
 import com.enonic.cms.core.security.SecurityService;
 import com.enonic.cms.core.security.user.QualifiedUsername;
 import com.enonic.cms.core.security.user.UserEntity;
@@ -26,16 +26,16 @@ public final class AutoLoginInterceptor
 {
     private final static Logger LOG = LoggerFactory.getLogger( AutoLoginInterceptor.class );
 
-    private PluginManager pluginManager;
+    private HttpAutoLoginExtensions httpAutoLoginExtensions;
 
     private SecurityService securityService;
 
     private OriginalPathResolver originalPathResolver = new OriginalPathResolver();
 
     @Autowired
-    public void setPluginManager( PluginManager pluginManager )
+    public void setHttpAutoLoginExtensions( HttpAutoLoginExtensions httpAutoLoginExtensions )
     {
-        this.pluginManager = pluginManager;
+        this.httpAutoLoginExtensions = httpAutoLoginExtensions;
     }
 
     @Autowired
@@ -53,7 +53,7 @@ public final class AutoLoginInterceptor
     {
         final HttpServletRequest req = context.getRequest();
         String path = originalPathResolver.getRequestPathFromHttpRequest( req );
-        HttpAutoLogin plugin = pluginManager.getExtensions().findMatchingHttpAutoLoginPlugin( path );
+        HttpAutoLogin plugin = httpAutoLoginExtensions.findFirstMatching( path );
 
         if ( plugin != null )
         {

@@ -1,6 +1,7 @@
 package com.enonic.cms.core.plugin.ext;
 
-import com.enonic.cms.api.plugin.ext.auth.AuthenticationToken;
+import org.mockito.Mockito;
+
 import com.enonic.cms.api.plugin.ext.auth.Authenticator;
 
 public class AuthenticatorExtensionsTest
@@ -19,15 +20,7 @@ public class AuthenticatorExtensionsTest
 
     private Authenticator create( final int priority )
     {
-        final Authenticator ext = new Authenticator()
-        {
-            @Override
-            public boolean authenticate( final AuthenticationToken token )
-            {
-                return false;
-            }
-        };
-
+        final Authenticator ext = Mockito.mock( Authenticator.class );
         ext.setPriority( priority );
         return ext;
     }

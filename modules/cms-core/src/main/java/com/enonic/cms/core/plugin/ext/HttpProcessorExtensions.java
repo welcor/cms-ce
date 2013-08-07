@@ -29,6 +29,19 @@ public abstract class HttpProcessorExtensions<T extends HttpProcessor>
         return list;
     }
 
+    public T findFirstMatching( final String path )
+    {
+        for ( final T ext : this )
+        {
+            if ( ext.matchesUrlPattern( path ) )
+            {
+                return ext;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     protected final String toHtml( final T ext )
     {

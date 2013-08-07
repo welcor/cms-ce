@@ -12,8 +12,6 @@ public interface PluginManager
 {
     public List<PluginHandle> getPlugins();
 
-    public ExtensionSet getExtensions();
-
     public PluginHandle findPluginByKey( long key );
 
     public void install( File file );

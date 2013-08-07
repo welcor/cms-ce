@@ -11,13 +11,11 @@ import java.util.Locale;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.enonic.esl.xml.XMLTool;
 
 import com.enonic.cms.api.plugin.ext.FunctionLibrary;
-import com.enonic.cms.core.plugin.ExtensionSet;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.FunctionLibraryExtensions;
 import com.enonic.cms.core.portal.datasource.DataSourceException;
 import com.enonic.cms.core.portal.datasource.handler.AbstractDataSourceHandlerTest;
 
@@ -114,14 +112,11 @@ public class InvokeExtensionHandlerTest
         lib2.setTarget( new Extension2() );
         lib2.setTargetClass( Extension2.class );
 
-        final ExtensionSet extensions = Mockito.mock( ExtensionSet.class );
-        Mockito.when( extensions.findFunctionLibrary( "lib1" ) ).thenReturn( lib1 );
-        Mockito.when( extensions.findFunctionLibrary( "lib2" ) ).thenReturn( lib2 );
+        final FunctionLibraryExtensions extensions = new FunctionLibraryExtensions();
+        extensions.extensionAdded( lib1 );
+        extensions.extensionAdded( lib2 );
 
-        final PluginManager manager = Mockito.mock( PluginManager.class );
-        Mockito.when( manager.getExtensions() ).thenReturn( extensions );
-
-        this.handler.setPluginManager( manager );
+        this.handler.setExtensions( extensions );
     }
 
     @Test(expected = DataSourceException.class)

@@ -4,29 +4,33 @@
  */
 package com.enonic.cms.core.security.userstore.connector.remote;
 
-import java.util.List;
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.common.collect.Lists;
-
-import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStore;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteUserStoreFactory;
-import com.enonic.cms.core.plugin.ext.ExtensionListener;
+import com.enonic.cms.core.plugin.ext.FilteredExtensionListener;
+import com.enonic.cms.core.plugin.ext.RemoteUserStoreFactoryExtensions;
 
 @Component
 public final class RemoteUserStoreManager
-    implements ExtensionListener
+    extends FilteredExtensionListener<RemoteUserStoreFactory>
 {
     private Runnable refreshCallback;
 
-    private final List<RemoteUserStoreFactory> factoryList;
+    private RemoteUserStoreFactoryExtensions extensions;
 
     public RemoteUserStoreManager()
     {
-        this.factoryList = Lists.newArrayList();
+        super( RemoteUserStoreFactory.class );
+    }
+
+    @Autowired
+    public void setExtensions( final RemoteUserStoreFactoryExtensions extensions )
+    {
+        this.extensions = extensions;
     }
 
     public void setRefreshCallback( final Runnable refreshCallback )
@@ -40,36 +44,27 @@ public final class RemoteUserStoreManager
         return factory.create( props );
     }
 
-
     private RemoteUserStoreFactory findFactory( final String type )
     {
-        for ( final RemoteUserStoreFactory ext : this.factoryList )
+        final RemoteUserStoreFactory ext = this.extensions.getByType( type );
+        if ( ext != null )
         {
-            if ( ext.isOfType( type ) )
-            {
-                return ext;
-            }
+            return ext;
         }
 
         throw new IllegalArgumentException( "No such RemoteUserStoreFactory [" + type + "] registered" );
     }
 
     @Override
-    public void extensionAdded( final Extension ext )
+    protected void addExtension( final RemoteUserStoreFactory ext )
     {
-        if ( ext instanceof RemoteUserStoreFactory )
-        {
-            this.factoryList.add( (RemoteUserStoreFactory) ext );
-        }
+        // Do nothing
     }
 
     @Override
-    public void extensionRemoved( final Extension ext )
+    protected void removeExtension( final RemoteUserStoreFactory ext )
     {
-        if ( ext instanceof RemoteUserStoreFactory )
-        {
-            this.factoryList.remove( ext );
-            this.refreshCallback.run();
-        }
+        this.refreshCallback.run();
     }
 }
+

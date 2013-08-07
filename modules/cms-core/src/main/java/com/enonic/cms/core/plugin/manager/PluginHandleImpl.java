@@ -11,9 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.enonic.cms.api.plugin.PluginConfig;
-import com.enonic.cms.core.plugin.context.PluginContext;
-import com.enonic.cms.core.plugin.ExtensionSet;
 import com.enonic.cms.core.plugin.PluginHandle;
+import com.enonic.cms.core.plugin.context.PluginContext;
 import com.enonic.cms.core.plugin.util.OsgiHelper;
 
 final class PluginHandleImpl
@@ -22,9 +21,10 @@ final class PluginHandleImpl
     private final static Logger LOG = LoggerFactory.getLogger( PluginHandleImpl.class );
 
     private final Bundle bundle;
+
     private final ExtensionHolder holder;
 
-    public PluginHandleImpl(final Bundle bundle, final ExtensionHolder holder)
+    public PluginHandleImpl( final Bundle bundle, final ExtensionHolder holder )
     {
         this.bundle = bundle;
         this.holder = holder;
@@ -62,7 +62,7 @@ final class PluginHandleImpl
 
     public PluginContext getContext()
     {
-        return OsgiHelper.requireService(this.bundle.getBundleContext(), PluginContext.class);
+        return OsgiHelper.requireService( this.bundle.getBundleContext(), PluginContext.class );
     }
 
     public PluginConfig getConfig()
@@ -72,15 +72,14 @@ final class PluginHandleImpl
 
     public void update()
     {
-        try {
+        try
+        {
             this.bundle.update();
-        } catch (final Exception e) {
-            LOG.warn("Exception when updating plugin [{}]", this.bundle.getSymbolicName(), e);
+        }
+        catch ( final Exception e )
+        {
+            LOG.warn( "Exception when updating plugin [{}]", this.bundle.getSymbolicName(), e );
         }
     }
-
-    public ExtensionSet getExtensions()
-    {
-        return new ExtensionSetImpl(this.holder.getAllForBundle(this.bundle));
-    }
 }
+

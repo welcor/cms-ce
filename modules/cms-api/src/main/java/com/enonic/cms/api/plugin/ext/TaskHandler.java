@@ -32,7 +32,7 @@ public abstract class TaskHandler
         return name;
     }
 
-    public void setName( final String name )
+    public final void setName( final String name )
     {
         this.name = name;
     }

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.enonic.cms.core.Attribute;
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.HttpResponseFilterExtensions;
 import com.enonic.cms.core.portal.PortalRequest;
 import com.enonic.cms.core.portal.PortalResponse;
 import com.enonic.cms.core.portal.livetrace.PortalRequestTrace;
@@ -40,7 +40,7 @@ public class PortalRenderResponseService
 
     private SiteDao siteDao;
 
-    private PluginManager pluginManager;
+    private HttpResponseFilterExtensions httpResponseFilterExtensions;
 
     private final OriginalPathResolver originalPathResolver = new OriginalPathResolver();
 
@@ -72,7 +72,7 @@ public class PortalRenderResponseService
         processor.setCacheHeadersEnabledForSite( siteProperties.getPropertyAsBoolean( SitePropertyNames.PAGE_CACHE_HEADERS_ENABLED ) );
 
         final String matchingPath = originalPathResolver.getRequestPathFromHttpRequest( httpRequest );
-        processor.setResponseFilters( pluginManager.getExtensions().findMatchingHttpResponseFilters( matchingPath ) );
+        processor.setResponseFilters( httpResponseFilterExtensions.findMatching( matchingPath ) );
         processor.setInstantTraceEnabled( InstantTraceRequestInspector.isClientEnabled( httpRequest ) );
         processor.setCurrentPortalRequestTrace( portalRequestTrace );
         processor.serveResponse();
@@ -97,8 +97,8 @@ public class PortalRenderResponseService
     }
 
     @Autowired
-    public void setPluginManager( PluginManager pluginManager )
+    public void setHttpResponseFilterExtensions( HttpResponseFilterExtensions httpResponseFilterExtensions )
     {
-        this.pluginManager = pluginManager;
+        this.httpResponseFilterExtensions = httpResponseFilterExtensions;
     }
 }

@@ -12,12 +12,12 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.enonic.cms.core.plugin.PluginManager;
+import com.enonic.cms.core.plugin.ext.TaskHandlerExtensions;
 
 public class WorkRunnerImpl
     implements WorkRunner
 {
-    private PluginManager pluginManager;
+    private TaskHandlerExtensions extensions;
 
     private TransactionTemplate transactionTemplate;
 
@@ -36,7 +36,7 @@ public class WorkRunnerImpl
             {
                 try
                 {
-                    WorkHelper.executeWork( pluginManager.getExtensions(), className, props );
+                    WorkHelper.executeWork( extensions, className, props );
                     return null;
                 }
                 catch ( Exception e )
@@ -59,8 +59,8 @@ public class WorkRunnerImpl
     }
 
     @Autowired
-    public void setPluginManager( final PluginManager pluginManager )
+    public void setExtensions( final TaskHandlerExtensions extensions )
     {
-        this.pluginManager = pluginManager;
+        this.extensions = extensions;
     }
 }

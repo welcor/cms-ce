@@ -1,13 +1,11 @@
 package com.enonic.cms.core.plugin.ext;
 
-import java.util.Properties;
-
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.enonic.cms.api.plugin.ext.TaskHandler;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class TaskHandlerExtensionsTest
     extends ExtensionPointTest<TaskHandler, TaskHandlerExtensions>
@@ -25,15 +23,7 @@ public class TaskHandlerExtensionsTest
 
     private TaskHandler create( final String name )
     {
-        final TaskHandler ext = new TaskHandler()
-        {
-            @Override
-            public void execute( final Properties props )
-                throws Exception
-            {
-            }
-        };
-
+        final TaskHandler ext = Mockito.mock( TaskHandler.class );
         ext.setName( name );
         return ext;
     }

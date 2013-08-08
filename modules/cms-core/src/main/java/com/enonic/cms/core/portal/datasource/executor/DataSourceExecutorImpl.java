@@ -2,6 +2,7 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
+
 package com.enonic.cms.core.portal.datasource.executor;
 
 import org.jdom.Document;
@@ -60,6 +61,8 @@ final class DataSourceExecutorImpl
         this.expressionFunctionsExecutor.setExpressionContext( expressionFunctionsContext );
         this.expressionFunctionsExecutor.setHttpRequest( context.getHttpRequest() );
         this.expressionFunctionsExecutor.setRequestParameters( context.getRequestParameters() );
+        this.expressionFunctionsExecutor.setSiteProperties( context.getSiteProperties() );
+        this.expressionFunctionsExecutor.setRootProperties( context.getRootProperties() );
         this.expressionFunctionsExecutor.setVerticalSession( context.getVerticalSession() );
     }
 

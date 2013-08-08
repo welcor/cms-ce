@@ -4,18 +4,27 @@
  */
 package com.enonic.cms.itest.portal.datasource.expressionfunctions;
 
+import java.util.Properties;
+
+import javax.servlet.http.Cookie;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.RequestParameters;
+import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.portal.datasource.el.ExpressionContext;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsFactory;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
+import com.enonic.cms.core.structure.SiteKey;
+import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
 import com.enonic.cms.itest.util.DomainFixture;
@@ -61,14 +70,24 @@ public class ExpressionFunctionsExecutorTest
 
         efExecutor = new ExpressionFunctionsExecutor();
         efExecutor.setExpressionContext( expressionContext );
+
+        final Properties siteProperties = new Properties();
+        siteProperties.setProperty( "cms.test", "overridden" );
+        siteProperties.setProperty( "cms.site.test", "site" );
+        efExecutor.setSiteProperties( new SiteProperties( site.getKey(), siteProperties ) );
+
+        final Properties rootProperties = new Properties();
+        rootProperties.setProperty( "cms.test", "root" );
+        siteProperties.setProperty( "cms.root.test", "root" );
+        efExecutor.setRootProperties( rootProperties );
     }
 
     @Test
     public void testUserGetEmailReturnsLoggedInUserEmail()
         throws Exception
     {
-        String evaluted = efExecutor.evaluate( "${user.email}" );
-        assertEquals( "email@email.com", evaluted );
+        String evaluated = efExecutor.evaluate( "${user.email}" );
+        assertEquals( "email@email.com", evaluated );
     }
 
     @Test
@@ -84,6 +103,37 @@ public class ExpressionFunctionsExecutorTest
         assertEquals( "bmw", efExecutor.evaluate( "${param.brands}" ) );
         assertEquals( "bmw", efExecutor.evaluate( "${param['brands']}" ) );
         assertEquals( "true", efExecutor.evaluate( "${param.brands == 'bmw'}" ) );
+    }
+
+    @Test
+    public void testCookieValue()
+        throws Exception
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setCookies( new Cookie( "param1", "value1" ), new Cookie( "param2", "value2" ), new Cookie( "param3", "value3" ) );
+
+        efExecutor.setHttpRequest( request );
+
+        assertEquals( "value1", efExecutor.evaluate( "${cookie.param1}" ) );
+        assertEquals( "value2", efExecutor.evaluate( "${cookie.param2}" ) );
+        assertEquals( "value3", efExecutor.evaluate( "${cookie.param3}" ) );
+        assertEquals( null, efExecutor.evaluate( "${cookie.param4}" ) );
+    }
+
+    @Test
+    public void testSessionValue()
+        throws Exception
+    {
+        final VerticalSession verticalSession = new VerticalSession();
+        verticalSession.setAttribute( "param1", "value1");
+        verticalSession.setAttribute( "param2", "value2");
+        verticalSession.setAttribute( "param3", "value3");
+        efExecutor.setVerticalSession( verticalSession );
+
+        assertEquals( "value1", efExecutor.evaluate( "${session.param1}" ) );
+        assertEquals( "value2", efExecutor.evaluate( "${session.param2}" ) );
+        assertEquals( "value3", efExecutor.evaluate( "${session.param3}" ) );
+        assertEquals( null, efExecutor.evaluate( "${session.param4}" ) );
     }
 
     @Test
@@ -221,8 +271,8 @@ public class ExpressionFunctionsExecutorTest
     {
         timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
 
-        String evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDate( 'yyyy.MM.dd HH:mm' )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 12:30", evaluted );
+        String evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDate( 'yyyy.MM.dd HH:mm' )}" );
+        assertEquals( "@publishfrom >= 2010.05.28 12:30", evaluated );
     }
 
     @Test
@@ -231,8 +281,8 @@ public class ExpressionFunctionsExecutorTest
     {
         timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
 
-        String evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDate( 'yyyy.MM.dd' )}" );
-        assertEquals( "@publishfrom >= 2010.05.28", evaluted );
+        String evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDate( 'yyyy.MM.dd' )}" );
+        assertEquals( "@publishfrom >= 2010.05.28", evaluated );
     }
 
     @Test
@@ -241,20 +291,20 @@ public class ExpressionFunctionsExecutorTest
     {
         timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
 
-        String evaluted =
+        String evaluated =
             efExecutor.evaluate( "@publishfrom >= ${currentDateMinusOffset( 'yyyy.MM.dd HH:mm', periodHoursMinutes( 2, 35 ) )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 09:55", evaluted );
+        assertEquals( "@publishfrom >= 2010.05.28 09:55", evaluated );
 
-        evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDateMinusOffset( 'yyyy.MM.dd HH:mm', 'PT2H35M' )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 09:55", evaluted );
+        evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDateMinusOffset( 'yyyy.MM.dd HH:mm', 'PT2H35M' )}" );
+        assertEquals( "@publishfrom >= 2010.05.28 09:55", evaluated );
 
         // .. and with negative periods
 
-        evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDateMinusOffset( 'yyyy.MM.dd HH:mm', periodHoursMinutes( -2, -35 ) )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 15:05", evaluted );
+        evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDateMinusOffset( 'yyyy.MM.dd HH:mm', periodHoursMinutes( -2, -35 ) )}" );
+        assertEquals( "@publishfrom >= 2010.05.28 15:05", evaluated );
 
-        evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDateMinusOffset( 'yyyy.MM.dd HH:mm', 'PT-2H-35M' )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 15:05", evaluted );
+        evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDateMinusOffset( 'yyyy.MM.dd HH:mm', 'PT-2H-35M' )}" );
+        assertEquals( "@publishfrom >= 2010.05.28 15:05", evaluated );
     }
 
     @Test
@@ -263,20 +313,20 @@ public class ExpressionFunctionsExecutorTest
     {
         timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
 
-        String evaluted =
+        String evaluated =
             efExecutor.evaluate( "@publishfrom >= ${currentDatePlusOffset( 'yyyy.MM.dd HH:mm', periodHoursMinutes( 2, 5 ) )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 14:35", evaluted );
+        assertEquals( "@publishfrom >= 2010.05.28 14:35", evaluated );
 
-        evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDatePlusOffset( 'yyyy.MM.dd HH:mm', 'PT2H5M' )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 14:35", evaluted );
+        evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDatePlusOffset( 'yyyy.MM.dd HH:mm', 'PT2H5M' )}" );
+        assertEquals( "@publishfrom >= 2010.05.28 14:35", evaluated );
 
         // .. and with negative periods
 
-        evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDatePlusOffset( 'yyyy.MM.dd HH:mm', periodHoursMinutes( -2, -5 ) )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 10:25", evaluted );
+        evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDatePlusOffset( 'yyyy.MM.dd HH:mm', periodHoursMinutes( -2, -5 ) )}" );
+        assertEquals( "@publishfrom >= 2010.05.28 10:25", evaluated );
 
-        evaluted = efExecutor.evaluate( "@publishfrom >= ${currentDatePlusOffset( 'yyyy.MM.dd HH:mm', 'PT-2H-5M' )}" );
-        assertEquals( "@publishfrom >= 2010.05.28 10:25", evaluted );
+        evaluated = efExecutor.evaluate( "@publishfrom >= ${currentDatePlusOffset( 'yyyy.MM.dd HH:mm', 'PT-2H-5M' )}" );
+        assertEquals( "@publishfrom >= 2010.05.28 10:25", evaluated );
     }
 
     @Test
@@ -285,8 +335,8 @@ public class ExpressionFunctionsExecutorTest
     {
         timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
 
-        String evaluted = efExecutor.evaluate( "${periodHoursMinutes( 2, 5 )}" );
-        assertEquals( "PT2H5M", evaluted );
+        String evaluated = efExecutor.evaluate( "${periodHoursMinutes( 2, 5 )}" );
+        assertEquals( "PT2H5M", evaluated );
     }
 
     @Test
@@ -295,26 +345,57 @@ public class ExpressionFunctionsExecutorTest
     {
         timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
 
-        String evaluted = efExecutor.evaluate( "${periodHoursMinutes( -2, -5 )}" );
-        assertEquals( "PT-2H-5M", evaluted );
+        String evaluated = efExecutor.evaluate( "${periodHoursMinutes( -2, -5 )}" );
+        assertEquals( "PT-2H-5M", evaluated );
     }
 
     @Test
     public void testPortalSiteKey()
         throws Exception
     {
-        String evaluted = efExecutor.evaluate( "${portal.siteKey}" );
-        assertEquals( "0", evaluted );
+        String evaluated = efExecutor.evaluate( "${portal.siteKey}" );
+        assertEquals( "0", evaluated );
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testPortalSiteKeyValueDoesNotExists()
         throws Exception
     {
-        String evaluted = efExecutor.evaluate( "${portal.siteKey1233}" );
-        assertEquals( "0", evaluted );
+        String evaluated = efExecutor.evaluate( "${portal.siteKey1233}" );
+        assertEquals( null, evaluated );
     }
 
+    @Test
+    public void testPropertyFromSite()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${properties.cms.site.test}" );
+        assertEquals( "site", evaluated );
+    }
+
+    @Test
+    public void testPropertyFromRoot()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${properties.cms.root.test}" );
+        assertEquals( "root", evaluated );
+    }
+
+    @Test
+    public void testOverriddenProperty()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${properties.cms.test}" );
+        assertEquals( "overridden", evaluated );
+    }
+
+    @Test
+    public void testMissedProperty()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${properties.cms.test.none}" );
+        assertEquals( null, evaluated );
+    }
 
     @Test
     public void testEvaluateNegativeDurationHoursMinutesComplex()
@@ -328,8 +409,8 @@ public class ExpressionFunctionsExecutorTest
 
         timeService.setTimeNow( new DateTime( 2010, 5, 28, 12, 30, 4, 2 ) );
 
-        String evaluted = efExecutor.evaluate( "${periodHoursMinutes( param['sub-cat'], param.subCat )}" );
-        assertEquals( "PT-2H-5M", evaluted );
+        String evaluated = efExecutor.evaluate( "${periodHoursMinutes( param['sub-cat'], param.subCat )}" );
+        assertEquals( "PT-2H-5M", evaluated );
     }
 
 }

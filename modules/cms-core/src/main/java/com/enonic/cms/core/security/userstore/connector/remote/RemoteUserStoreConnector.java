@@ -10,10 +10,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import org.springframework.util.Assert;
 
 import com.google.common.base.Preconditions;
+
+import com.enonic.cms.framework.util.GenericConcurrencyLock;
 
 import com.enonic.cms.api.plugin.ext.userstore.RemoteGroup;
 import com.enonic.cms.api.plugin.ext.userstore.RemotePrincipal;
@@ -53,6 +56,8 @@ import com.enonic.cms.core.time.TimeService;
 public class RemoteUserStoreConnector
     extends AbstractBaseUserStoreConnector
 {
+    private static GenericConcurrencyLock<String> concurrencyLock = GenericConcurrencyLock.create();
+
     private RemoteUserStore remoteUserStorePlugin;
 
     private TimeService timeService;
@@ -459,21 +464,32 @@ public class RemoteUserStoreConnector
         synchronizer.synchronizeUsers( remoteUsers, memberCache );
     }
 
-    public synchronized void synchronizeUser( final String uid )
+    public void synchronizeUser( final String uid )
     {
-        final UserStoreEntity userStore = userStoreDao.findByKey( userStoreKey );
-        final boolean syncMemberships = connectorConfig.groupsStoredRemote();
+        final Lock locker = concurrencyLock.getLock( uid );
 
-        final UserSynchronizer synchronizer = new UserSynchronizer( userStore, syncMemberships );
-        synchronizer.setUserStorer( userStorerFactory.create( userStore.getKey() ) );
-        synchronizer.setGroupStorer( groupStorerFactory.create( userStore.getKey() ) );
-        synchronizer.setGroupDao( groupDao );
-        synchronizer.setUserDao( userDao );
-        synchronizer.setRemoteUserStorePlugin( remoteUserStorePlugin );
-        synchronizer.setTimeService( timeService );
-        synchronizer.setConnectorConfig( connectorConfig );
+        try
+        {
+            locker.lock();
 
-        synchronizer.synchronizeUser( uid );
+            final UserStoreEntity userStore = userStoreDao.findByKey( userStoreKey );
+            final boolean syncMemberships = connectorConfig.groupsStoredRemote();
+
+            final UserSynchronizer synchronizer = new UserSynchronizer( userStore, syncMemberships );
+            synchronizer.setUserStorer( userStorerFactory.create( userStore.getKey() ) );
+            synchronizer.setGroupStorer( groupStorerFactory.create( userStore.getKey() ) );
+            synchronizer.setGroupDao( groupDao );
+            synchronizer.setUserDao( userDao );
+            synchronizer.setRemoteUserStorePlugin( remoteUserStorePlugin );
+            synchronizer.setTimeService( timeService );
+            synchronizer.setConnectorConfig( connectorConfig );
+
+            synchronizer.synchronizeUser( uid );
+        }
+        finally
+        {
+            locker.unlock();
+        }
     }
 
     public synchronized void synchronizeGroup( final GroupEntity group, final boolean syncMemberships, final boolean syncMembers )

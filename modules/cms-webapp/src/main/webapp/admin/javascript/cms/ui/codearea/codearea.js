@@ -3,6 +3,8 @@
 
         common/codearea-scripts.xsl
 
+        - contains all necessary js and css
+
     Usage:
 
         <xsl:include href="common/codearea-scripts.xsl"/>

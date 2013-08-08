@@ -261,13 +261,17 @@
                                 <xsl:with-param name="id" select="'module'"/>
                                 <xsl:with-param name="label" select="'%fldConfig%:'"/>
                                 <xsl:with-param name="width" select="'100%'"/>
+                                <xsl:with-param name="rows" select="24"/>
                                 <xsl:with-param name="selectnode" select="$selectnode"/>
                             </xsl:call-template>
                         </tr>
                     </table>
 
                     <script type="text/javascript">
-                        var moduleCodeArea = new cms.ui.CodeArea('module');
+                        if (cms.ui.CodeArea.prototype.isBrowserSupported())
+                        {
+                            var moduleCodeArea = new cms.ui.CodeArea('module');
+                        }
                     </script>
 
                 </fieldset>

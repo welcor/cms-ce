@@ -86,27 +86,20 @@
 				{
 					var f = document.forms[formName];
 
-                    f.datasources.value = window.datasourcesCodeArea.getValue();
+                    // Copy datasource from code area to the textarea
+                    if (window.datasourcesCodeArea)
+                    {
+                        f.datasources.value = window.datasourcesCodeArea.getValue();
+                    }
+                    else
+                    {
+                        f.datasources.value = document.getElementById('_datasources_textarea').value;
+                    }
 
-           // copy editor body to hidden textbox
-           if (document.getElementById('type').value == 'document')
-					{
-						document.getElementById('docRow').style.display = '';
-              //document.forms['formAdminDataSource'].document.value = tinyMCE.get('contentdata_body').getContent();
-
-              /*
-            if (document.frames['editor'])
-						{
-							if (document.frames['editor'].ViewSource)
-							{
-								f.getElementsByName("contentdata_body")[0].value = document.frames['editor'].tbContentElement.DOM.body.innerHTML;
-							}
-							else
-							{
-								f.getElementsByName("contentdata_body")[0].value = document.frames['editor'].tbContentElement.DOM.body.innerText;
-							}
-						}
-						*/
+                    // copy editor body to hidden textbox
+                    if (document.getElementById('type').value == 'document')
+				    {
+					    document.getElementById('docRow').style.display = '';
                     }
 
                     if ( !checkAll(formName, validatedFields) )
@@ -116,9 +109,7 @@
 
 					selectAllRowsInSelect('contenttypekey');
 
-
-
-              f.submit();
+                    f.submit();
                 }
 
                 function OpenSelectorWindowForObjects(objThis, fieldName) {
@@ -1138,9 +1129,21 @@
 
                     <script type="text/javascript" language="JavaScript">
                         tabPane1.addTabPage( document.getElementById( "tab-page-4" ) );
-                        function previewDataSource() {
+
+                        // Copy values from rich textboxes to textareas
+                        function previewDataSource()
+                        {
                             tinyMCE.triggerSave();
-                            document.formAdminDataSource.datasources.value = window.datasourcesCodeArea.getValue();
+
+                            if (window.datasourcesCodeArea)
+                            {
+                                document.formAdminDataSource.datasources.value = window.datasourcesCodeArea.getValue();
+                            }
+                            else
+                            {
+                                document.formAdminDataSource.datasources.value = document.getElementById('_datasources_textarea').value;
+                            }
+
                             document.formAdminDataSource.submit();
                         }
                     </script>
@@ -1153,6 +1156,7 @@
                                   <xsl:with-param name="id" select="'_datasources_textarea'"/>
                                   <xsl:with-param name="selectnode" select="$datasources"/>
                                   <xsl:with-param name="width" select="'100%'"/>
+                                  <xsl:with-param name="rows" select="24"/>
                                   <xsl:with-param name="withoutlabel" select="'true'"/>
                               </xsl:call-template>
                           </tr>
@@ -1170,15 +1174,18 @@
                     </fieldset>
 
                     <script type="text/javascript">
-                        window.datasourcesCodeArea = null;
-                        var g_dataSourceTab = document.getElementById('tab-data-source');
-                        g_dataSourceTab._clicked = false;
-                        addEvent(g_dataSourceTab, 'click', function() {
-                            if (!g_dataSourceTab._clicked) {
-                                window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
-                                g_dataSourceTab._clicked = true;
-                            }
-                        });
+                        if (cms.ui.CodeArea.prototype.isBrowserSupported())
+                        {
+                            window.datasourcesCodeArea = null;
+                            var g_dataSourceTab = document.getElementById('tab-data-source');
+                            g_dataSourceTab._clicked = false;
+                            addEvent(g_dataSourceTab, 'click', function() {
+                                if (!g_dataSourceTab._clicked) {
+                                    window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
+                                    g_dataSourceTab._clicked = true;
+                                }
+                            });
+                        }
                     </script>
                 </div>
 

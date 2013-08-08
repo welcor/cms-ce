@@ -99,4 +99,10 @@
         userConfig.highlightSelectionMatches = {showToken: /\w/};
     };
 
+    proto.isBrowserSupported = function () {
+        var isInternetExplorerAndVersionLowerThan8 = document.all && document.documentMode == undefined;
+
+        return !isInternetExplorerAndVersionLowerThan8;
+    }
+
 })();

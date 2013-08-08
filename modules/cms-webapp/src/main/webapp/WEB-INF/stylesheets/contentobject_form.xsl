@@ -75,14 +75,23 @@
 
                   function validateAll(formName)
                   {
-                      var f = document.forms[formName];
+                        var f = document.forms[formName];
 
-                      f.datasources.value = window.datasourcesCodeArea.getValue();
+                        if (window.datasourcesCodeArea)
+                        {
+                            f.datasources.value = window.datasourcesCodeArea.getValue();
+                        }
+                        else
+                        {
+                            f.datasources.value = document.getElementById('_datasources_textarea').value;
+                        }
 
-                      if ( !checkAll(formName, validatedFields) )
-                          return;
+                        if ( !checkAll(formName, validatedFields) )
+                        {
+                            return;
+                        }
 
-                      f.submit();
+                        f.submit();
                   }
 
                   function GetCurrentContentObjectIndex(objThis,ObjName)
@@ -608,15 +617,19 @@
                 <script type="text/javascript" language="JavaScript">
                     tabPane1.addTabPage( document.getElementById( "tab-page-5" ) );
 
-                    function previewDataSource() {
-                      tinyMCE.triggerSave();
+                    function previewDataSource()
+                    {
+                        tinyMCE.triggerSave();
 
-                      document.formAdminDataSource.datasources.value = window.datasourcesCodeArea.getValue();
-                      document.formAdminDataSource.document.value = document.formAdmin.contentdata_body.value;
+                        if (window.datasourcesCodeArea)
+                        {
+                            document.formAdminDataSource.datasources.value = window.datasourcesCodeArea.getValue();
+                        }
 
-                      document.formAdminDataSource.submit();
+                        document.formAdminDataSource.document.value = document.formAdmin.contentdata_body.value;
+
+                        document.formAdminDataSource.submit();
                     }
-
                 </script>
 
                 <fieldset>
@@ -628,6 +641,7 @@
                                 <xsl:with-param name="id" select="'_datasources_textarea'"/>
                                 <xsl:with-param name="selectnode" select="$queryparam"/>
                                 <xsl:with-param name="width" select="'100%'"/>
+                                <xsl:with-param name="rows" select="24"/>
                                 <xsl:with-param name="withoutlabel" select="'true'"/>
                             </xsl:call-template>
                         </tr>
@@ -672,17 +686,20 @@
                 </fieldset>
 
                   <script type="text/javascript">
-                      window.datasourcesCodeArea = null;
-                      var g_dataSourceTab = document.getElementById('tab-data-source');
-                      g_dataSourceTab._clicked = false;
+                      if (cms.ui.CodeArea.prototype.isBrowserSupported())
+                      {
+                          window.datasourcesCodeArea = null;
+                          var g_dataSourceTab = document.getElementById('tab-data-source');
+                          g_dataSourceTab._clicked = false;
 
-                      // Only create the CodeArea the first time source tab is clicked.
-                      addEvent(g_dataSourceTab, 'click', function() {
-                        if (!g_dataSourceTab._clicked) {
-                            window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
-                            g_dataSourceTab._clicked = true;
-                        }
-                      });
+                          // Only create the CodeArea the first time source tab is clicked.
+                          addEvent(g_dataSourceTab, 'click', function() {
+                            if (!g_dataSourceTab._clicked) {
+                                window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
+                                g_dataSourceTab._clicked = true;
+                            }
+                          });
+                      }
                   </script>
 
               </div>

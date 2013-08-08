@@ -259,6 +259,7 @@
                     <xsl:with-param name="id" select="'config'"/>
                     <xsl:with-param name="label" select="'%fldConfig%:'"/>
                     <xsl:with-param name="width" select="'100%'"/>
+                    <xsl:with-param name="rows" select="24"/>
                     <xsl:with-param name="selectnode" select="$selectnode"/>
                 </xsl:call-template>
             </tr>
@@ -266,7 +267,10 @@
         </fieldset>
 
           <script type="text/javascript">
-              var configCodeArea = new cms.ui.CodeArea('config');
+              if (cms.ui.CodeArea.prototype.isBrowserSupported())
+              {
+                  var configCodeArea = new cms.ui.CodeArea('config');
+              }
           </script>
 
       </div>

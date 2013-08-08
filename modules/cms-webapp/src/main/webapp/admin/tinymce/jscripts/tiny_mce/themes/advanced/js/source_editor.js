@@ -13,7 +13,11 @@ var SourceEditor = {
         // Resize editor on window resize
         if (window.addEventListener) {
             window.addEventListener('resize', function () {
-                self.resizeCodeAreaToWindowSize();
+                // Make sure that the resize does not fired repeatedly.
+                clearTimeout(this.id);
+                this.id = setTimeout(function () {
+                    self.resizeCodeAreaToWindowSize();
+                }, 300);
             });
         }
 

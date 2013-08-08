@@ -5,7 +5,9 @@
 
 package com.enonic.cms.core.portal.datasource.el;
 
-import java.util.Map;
+import com.enonic.cms.core.portal.datasource.el.accessors.Accessor;
+import com.enonic.cms.core.portal.datasource.el.accessors.PortalAccessor;
+import com.enonic.cms.core.portal.datasource.el.accessors.UserAccessor;
 
 /**
  * root object for Spring EL.
@@ -14,82 +16,94 @@ import java.util.Map;
  * <p/>
  * all functions in StaticExpressionFunctions will be available by default in contexts
  */
-public class ExpressionRootObject
+final class ExpressionRootObject
     extends StaticExpressionFunctions
 {
-    private Map<String, String> param;
+    private Accessor param;
 
-    private Map<String, String[]> params;
+    private Accessor params;
 
-    private Map<String, String> session;
+    private Accessor session;
 
-    private Map<String, String> cookie;
+    private Accessor cookie;
 
-    private Map<String, String> user;
+    private Accessor properties;
 
-    private Map<String, Object> portal;
+    private UserAccessor user;
+
+    private PortalAccessor portal;
 
     public ExpressionRootObject()
     {
     }
 
-    public Map<String, String> getParam()
+    public Accessor getParam()
     {
         return param;
     }
 
-    public void setParam( final Map<String, String> param )
+    public void setParam( final Accessor param )
     {
         this.param = param;
     }
 
-    public Map<String, String[]> getParams()
+    public Accessor getParams()
     {
         return params;
     }
 
-    public void setParams( final Map<String, String[]> params )
+    public void setParams( final Accessor params )
     {
         this.params = params;
     }
 
-    public Map<String, String> getSession()
+    public Accessor getSession()
     {
         return session;
     }
 
-    public void setSession( final Map<String, String> session )
+    public void setSession( final Accessor session )
     {
         this.session = session;
     }
 
-    public Map<String, String> getCookie()
+    public Accessor getCookie()
     {
         return cookie;
     }
 
-    public void setCookie( final Map<String, String> cookie )
+    public void setCookie( final Accessor cookie )
     {
         this.cookie = cookie;
     }
 
-    public Map<String, String> getUser()
+    public UserAccessor getUser()
     {
         return user;
     }
 
-    public void setUser( final Map<String, String> user )
+    public void setUser( final UserAccessor user )
     {
         this.user = user;
     }
 
-    public Map<String, Object> getPortal()
+    public PortalAccessor getPortal()
     {
         return portal;
     }
 
-    public void setPortal( final Map<String, Object> portal )
+    public void setPortal( final PortalAccessor portal )
     {
         this.portal = portal;
+    }
+
+    public Accessor getProperties()
+    {
+        return properties;
+    }
+
+    public void setProperties( final Accessor properties )
+    {
+        this.properties = properties;
     }
 }

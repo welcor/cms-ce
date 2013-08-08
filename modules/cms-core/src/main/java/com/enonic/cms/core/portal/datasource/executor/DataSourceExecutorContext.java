@@ -2,9 +2,11 @@
  * Copyright 2000-2013 Enonic AS
  * http://www.enonic.com/license
  */
+
 package com.enonic.cms.core.portal.datasource.executor;
 
 import java.util.Locale;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -77,6 +79,8 @@ public final class DataSourceExecutorContext
     private UserEntity user;
 
     private Locale locale;
+
+    private Properties rootProperties;
 
     public DataSourceType getDataSourceType()
     {
@@ -321,5 +325,15 @@ public final class DataSourceExecutorContext
     public void setPortletWindowRenderedInline( Boolean value )
     {
         isPortletWindowRenderedInline = value;
+    }
+
+    public Properties getRootProperties()
+    {
+        return rootProperties;
+    }
+
+    public void setRootProperties( final Properties rootProperties )
+    {
+        this.rootProperties = rootProperties;
     }
 }

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ public final class PluginManagerImpl
     private ContextFactory contextFactory;
 
     private BundleContext bundleContext;
+
+    private List<Extension> localExtensions;
 
     public PluginManagerImpl()
     {
@@ -100,11 +104,20 @@ public final class PluginManagerImpl
     }
 
     @Autowired(required = false)
-    public void setLocalExtensions( final List<Extension> list )
+    public void setLocalExtensions( final List<Extension> localExtensions )
     {
-        for ( final Extension ext : list )
+        this.localExtensions = localExtensions;
+    }
+
+    @PostConstruct
+    public void initService()
+    {
+        if ( this.localExtensions != null )
         {
-            this.holder.add( LocalServiceReference.INSTANCE, ext );
+            for ( final Extension ext : this.localExtensions )
+            {
+                this.holder.add( LocalServiceReference.INSTANCE, ext );
+            }
         }
     }
 

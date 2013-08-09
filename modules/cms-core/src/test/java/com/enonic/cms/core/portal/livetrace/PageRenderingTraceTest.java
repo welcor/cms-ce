@@ -6,6 +6,7 @@
 package com.enonic.cms.core.portal.livetrace;
 
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -63,6 +64,7 @@ public class PageRenderingTraceTest
     }
 
     @Test
+    @Ignore
     public void getConcurrencyBlockingTime_returns_larger_than_zero_when_concurrency_block_was_timed_to_be_larger_than_threshold()
     {
         PageRenderingTrace trace = new PageRenderingTrace();

@@ -4,8 +4,13 @@
  */
 package com.enonic.cms.core.mail;
 
+import java.io.InputStream;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -45,9 +50,25 @@ public abstract class AbstractSendMailService
 
             settings.setBody( template.getBody() );
 
-            MimeMessageHelper message = createMessage( settings );
+            final MimeMessageHelper message = createMessage( settings, template.isHtml() || !template.getAttachments().isEmpty() );
             message.setSubject( template.getSubject() );
-            message.setText( template.getBody() );
+
+            final Map<String,InputStream> attachments = template.getAttachments();
+
+            for ( final Map.Entry<String, InputStream> attachment : attachments.entrySet() )
+            {
+                final InputStreamSource inputStreamSource = new InputStreamResource( attachment.getValue() );
+                message.addAttachment( attachment.getKey(), inputStreamSource );
+            }
+
+            if ( template.isHtml() )
+            {
+                message.setText( "[You need html supported mail client to read this email]", template.getBody() );
+            }
+            else
+            {
+                message.setText( template.getBody() );
+            }
 
             if ( template.getMailRecipients().size() == 0 )
             {
@@ -58,7 +79,22 @@ public abstract class AbstractSendMailService
             {
                 if ( recipient.getEmail() != null )
                 {
-                    message.addTo( recipient.getEmail(), recipient.getName() );
+                    final MailRecipientType type = recipient.getType();
+
+                    switch ( type )
+                    {
+                        case TO_RECIPIENT:
+                            message.addTo( recipient.getEmail(), recipient.getName() );
+                            break;
+                        case BCC_RECIPIENT:
+                            message.addBcc( recipient.getEmail(), recipient.getName() );
+                            break;
+                        case CC_RECIPIENT:
+                            message.addCc( recipient.getEmail(), recipient.getName() );
+                            break;
+                        default:
+                            throw new RuntimeException( "Unknown recipient type: " + type );
+                    }
                 }
             }
 
@@ -109,7 +145,7 @@ public abstract class AbstractSendMailService
         try
         {
             settings = createSettingsIfNeeded( settings );
-            MimeMessageHelper message = createMessage( settings );
+            MimeMessageHelper message = createMessage( settings, false );
             composeChangePasswordMail( message, user, newPassword, settings );
             sendMessage( message );
         }
@@ -135,10 +171,10 @@ public abstract class AbstractSendMailService
         return settings;
     }
 
-    private MimeMessageHelper createMessage( MessageSettings settings )
+    private MimeMessageHelper createMessage( MessageSettings settings, boolean multipart )
         throws Exception
     {
-        MimeMessageHelper message = new MimeMessageHelper( this.mailSender.createMimeMessage(), MAIL_ENCODING );
+        final MimeMessageHelper message = new MimeMessageHelper( this.mailSender.createMimeMessage(), multipart, MAIL_ENCODING );
         message.setFrom( settings.getFromMail(), settings.getFromName() );
         return message;
     }

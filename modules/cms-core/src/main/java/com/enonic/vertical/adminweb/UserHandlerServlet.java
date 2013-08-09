@@ -36,7 +36,6 @@ import org.w3c.dom.Element;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.net.Mail;
 import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.util.DateUtil;
 import com.enonic.esl.util.StringUtil;
@@ -55,6 +54,8 @@ import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.country.Country;
 import com.enonic.cms.core.country.CountryXmlCreator;
 import com.enonic.cms.core.locale.LocaleXmlCreator;
+import com.enonic.cms.core.mail.MailRecipientType;
+import com.enonic.cms.core.mail.SimpleMailTemplate;
 import com.enonic.cms.core.resource.ResourceFile;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.security.LoginAdminUserCommand;
@@ -1406,24 +1407,24 @@ public class UserHandlerServlet
         }
         else if ( "sendnotification".equals( operation ) )
         {
-            Mail mail = new Mail();
-            mail.setSMTPHost( getSmtpHost() );
+            final SimpleMailTemplate mail = new SimpleMailTemplate();
+
             mail.setFrom( formItems.getString( "from_name", "" ), formItems.getString( "from_mail", "" ) );
-            mail.addRecipient( formItems.getString( "to_name", "" ), formItems.getString( "to_mail" ), Mail.TO_RECIPIENT );
+            mail.addRecipient( formItems.getString( "to_name", "" ), formItems.getString( "to_mail" ), MailRecipientType.TO_RECIPIENT );
 
             if ( formItems.containsKey( "cc_mail" ) )
             {
                 String[] ccRecipients = StringUtil.splitString( formItems.getString( "cc_mail" ), ";" );
                 for ( String ccRecipient : ccRecipients )
                 {
-                    mail.addRecipient( ccRecipient.trim(), ccRecipient, Mail.CC_RECIPIENT );
+                    mail.addRecipient( ccRecipient.trim(), ccRecipient, MailRecipientType.CC_RECIPIENT );
                 }
             }
 
             mail.setSubject( formItems.getString( "subject", "" ) );
             mail.setMessage( formItems.getString( "mail_body" ) );
 
-            mail.send();
+            sendMailService.sendMail( mail );
 
             MultiValueMap queryParams = new MultiValueMap();
             queryParams.put( "page", formItems.get( "page" ) );

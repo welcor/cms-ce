@@ -4,8 +4,10 @@
  */
 package com.enonic.cms.core.mail;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +34,8 @@ public abstract class AbstractMailTemplate
     protected final static Logger LOG = LoggerFactory.getLogger( AbstractMailTemplate.class );
 
     private List<MailRecipient> mailRecipients = new ArrayList<MailRecipient>();
+
+    private Map<String, InputStream> attachments = new LinkedHashMap<String, InputStream>();
 
     private MailRecipient from;
 
@@ -89,6 +93,11 @@ public abstract class AbstractMailTemplate
         mailRecipients.add( recipient );
     }
 
+    public void addAttachment( final String filename, final InputStream inputStream )
+    {
+        attachments.put( filename, inputStream );
+    }
+
     public void addRecipient( UserEntity recipient )
     {
         mailRecipients.add( new MailRecipient( recipient ) );
@@ -141,5 +150,15 @@ public abstract class AbstractMailTemplate
         buffer.append( ")" );
 
         return buffer.toString();
+    }
+
+    public boolean isHtml()
+    {
+        return false;
+    }
+
+    public Map<String, InputStream> getAttachments()
+    {
+        return attachments;
     }
 }

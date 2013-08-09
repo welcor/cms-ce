@@ -37,7 +37,6 @@ import org.w3c.dom.Element;
 import com.google.common.collect.Sets;
 
 import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.net.Mail;
 import com.enonic.esl.servlet.http.HttpServletRequestWrapper;
 import com.enonic.esl.util.DateUtil;
 import com.enonic.esl.xml.XMLTool;
@@ -54,6 +53,8 @@ import com.enonic.cms.core.RequestParameters;
 import com.enonic.cms.core.RequestParametersMerger;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageResolver;
+import com.enonic.cms.core.mail.MailRecipientType;
+import com.enonic.cms.core.mail.SimpleMailTemplate;
 import com.enonic.cms.core.portal.PageRequestType;
 import com.enonic.cms.core.portal.rendering.PageRenderer;
 import com.enonic.cms.core.portal.rendering.PageRendererContext;
@@ -253,8 +254,6 @@ public class ContentNewsletterHandlerServlet
 
         Map<String, Map<String, String>> emailMap = getAllNewsetterRecipients( admin, formItems );
 
-        Mail mail = setupMail( senderName, senderEmail, subject );
-
         Element sendhistoryElem = XMLTool.createElementIfNotPresent( doc, contentdataElem, "sendhistory" );
 
         for ( Object recipient : emailMap.keySet() )
@@ -272,10 +271,13 @@ public class ContentNewsletterHandlerServlet
                     mailBody = mailBody.replaceAll( "\\%" + paramName + "\\%", paramValue );
                 }
                 String name = paramMap.get( "recipientName" );
-                mail.clearRecipients();
-                mail.addRecipient( name, email, Mail.TO_RECIPIENT );
+
+                final SimpleMailTemplate mail = new SimpleMailTemplate();
+                mail.setFrom( senderName, senderEmail );
+                mail.setSubject( subject );
+                mail.addRecipient( name, email, MailRecipientType.TO_RECIPIENT );
                 mail.setMessage( mailBody, true );
-                mail.send();
+                sendMailService.sendMail( mail );
 
                 Element sentElem = XMLTool.createElement( doc, sendhistoryElem, "sent" );
                 sentElem.setAttribute( "timestamp", DateUtil.formatISODateTime( new Date() ) );
@@ -365,15 +367,6 @@ public class ContentNewsletterHandlerServlet
             VerticalAdminLogger.errorAdmin( msg, ioe );
         }
 
-    }
-
-    private Mail setupMail( String senderName, String senderEmail, String subject )
-    {
-        Mail mail = new Mail();
-        mail.setSMTPHost( getSmtpHost() );
-        mail.setFrom( senderName, senderEmail );
-        mail.setSubject( subject );
-        return mail;
     }
 
     private Map<String, Map<String, String>> getAllNewsetterRecipients( AdminService admin, ExtendedMap formItems )

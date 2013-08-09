@@ -28,7 +28,6 @@ import org.springframework.util.Assert;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.containers.MultiValueMap;
-import com.enonic.esl.net.Mail;
 import com.enonic.esl.servlet.http.CookieUtil;
 import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.util.StringUtil;
@@ -36,12 +35,16 @@ import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalEngineException;
 import com.enonic.vertical.engine.VerticalSecurityException;
 
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.DeploymentPathResolver;
 import com.enonic.cms.core.log.LogService;
 import com.enonic.cms.core.log.LogType;
 import com.enonic.cms.core.log.StoreNewLogEntryCommand;
 import com.enonic.cms.core.login.LoginService;
+import com.enonic.cms.core.mail.MailRecipientType;
 import com.enonic.cms.core.mail.MessageSettings;
+import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.mail.SimpleMailTemplate;
 import com.enonic.cms.core.portal.PortalInstanceKey;
 import com.enonic.cms.core.portal.PortalInstanceKeyResolver;
 import com.enonic.cms.core.preference.PreferenceAccessException;
@@ -84,7 +87,6 @@ import com.enonic.cms.core.structure.SiteContext;
 import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SitePath;
 import com.enonic.cms.core.user.field.UserFieldTransformer;
-import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.store.dao.UserDao;
 import com.enonic.cms.store.dao.UserStoreDao;
 
@@ -123,6 +125,8 @@ public final class UserServicesProcessor
 
     private PreferenceService preferenceService;
 
+    private SendMailService sendMailService;
+
     private final PortalInstanceKeyResolver portalInstanceKeyResolver = new PortalInstanceKeyResolver();
 
     private LoginService loginService;
@@ -151,8 +155,6 @@ public final class UserServicesProcessor
 
     private int autoLoginTimeout;
 
-    private String smtpHost;
-
     public UserServicesProcessor()
     {
         super( "user" );
@@ -168,6 +170,12 @@ public final class UserServicesProcessor
     public void setPreferenceService( PreferenceService value )
     {
         this.preferenceService = value;
+    }
+
+    @Autowired
+    public void setSendMailService( final SendMailService sendMailService )
+    {
+        this.sendMailService = sendMailService;
     }
 
     @Autowired
@@ -973,10 +981,9 @@ public final class UserServicesProcessor
             formItems.put( FORMITEM_DISPLAYNAME, newUser.getDisplayName() );
             formItems.put( FORMITEM_USERSTORE, newUser.getUserStore().getName() );
 
-            Mail adminMail = new Mail();
-            adminMail.setSMTPHost( smtpHost );
+            final SimpleMailTemplate adminMail = new SimpleMailTemplate();
 
-            adminMail.addRecipient( formItems.getString( "admin_name", "" ), formItems.getString( "admin_email" ), Mail.TO_RECIPIENT );
+            adminMail.addRecipient( formItems.getString( "admin_name", "" ), formItems.getString( "admin_email" ), MailRecipientType.TO_RECIPIENT );
 
             adminMail.setFrom( formItems.getString( "from_name", "" ), formItems.getString( "from_email", "" ) );
 
@@ -991,7 +998,7 @@ public final class UserServicesProcessor
             mailBody = removeTokens( mailBody );
             adminMail.setMessage( mailBody );
 
-            adminMail.send();
+            sendMailService.sendMail( adminMail );
         }
     }
 
@@ -1006,10 +1013,9 @@ public final class UserServicesProcessor
             formItems.put( FORMITEM_DISPLAYNAME, newUser.getDisplayName() );
             formItems.put( FORMITEM_USERSTORE, newUser.getUserStore().getName() );
 
-            Mail userMail = new Mail();
-            userMail.setSMTPHost( smtpHost );
+            final SimpleMailTemplate userMail = new SimpleMailTemplate();
 
-            userMail.addRecipient( newUser.getDisplayName(), formItems.getString( "email" ), Mail.TO_RECIPIENT );
+            userMail.addRecipient( newUser.getDisplayName(), formItems.getString( "email" ), MailRecipientType.TO_RECIPIENT );
 
             userMail.setFrom( formItems.getString( "from_name", "" ), formItems.getString( "from_email" ) );
 
@@ -1024,7 +1030,7 @@ public final class UserServicesProcessor
             mailBody = removeTokens( mailBody );
             userMail.setMessage( mailBody );
 
-            userMail.send();
+            sendMailService.sendMail( userMail );
         }
     }
 
@@ -1641,11 +1647,5 @@ public final class UserServicesProcessor
     public void setAutoLoginTimeout( final int autoLoginTimeout )
     {
         this.autoLoginTimeout = autoLoginTimeout;
-    }
-
-    @Value("${cms.mail.smtpHost}")
-    public void setSmtpHost( final String smtpHost )
-    {
-        this.smtpHost = smtpHost;
     }
 }

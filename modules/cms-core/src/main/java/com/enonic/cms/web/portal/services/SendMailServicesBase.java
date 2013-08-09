@@ -15,12 +15,14 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.enonic.esl.containers.ExtendedMap;
-import com.enonic.esl.net.Mail;
 import com.enonic.vertical.engine.VerticalEngineException;
 
+import com.enonic.cms.core.mail.MailRecipientType;
+import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.mail.SimpleMailTemplate;
 import com.enonic.cms.core.service.UserServicesService;
 import com.enonic.cms.core.structure.SiteKey;
 
@@ -39,8 +41,6 @@ public abstract class SendMailServicesBase
 
     public final static int ERR_MISSING_SUBJECT_FIELD = 105;
 
-    private String smtpHost;
-
     public SendMailServicesBase( final String handlerName )
     {
         super( handlerName );
@@ -56,8 +56,7 @@ public abstract class SendMailServicesBase
             try
             {
 
-                Mail mail = new Mail();
-                mail.setSMTPHost( smtpHost );
+                final SimpleMailTemplate mail = new SimpleMailTemplate();
 
                 // from field
                 String fromName = formItems.getString( "from_name", "" );
@@ -82,7 +81,7 @@ public abstract class SendMailServicesBase
                 }
                 else
                 {
-                    int error = addRecipients( mail, recipients, Mail.TO_RECIPIENT );
+                    int error = addRecipients( mail, recipients, MailRecipientType.TO_RECIPIENT );
                     if ( error >= 0 )
                     {
                         redirectToErrorPage( request, response, formItems, error );
@@ -94,7 +93,7 @@ public abstract class SendMailServicesBase
                 recipients = formItems.getStringArray( "bcc" );
                 if ( recipients.length > 0 )
                 {
-                    int error = addRecipients( mail, recipients, Mail.BCC_RECIPIENT );
+                    int error = addRecipients( mail, recipients, MailRecipientType.BCC_RECIPIENT );
                     if ( error >= 0 )
                     {
                         redirectToErrorPage( request, response, formItems, error );
@@ -106,7 +105,7 @@ public abstract class SendMailServicesBase
                 recipients = formItems.getStringArray( "cc" );
                 if ( recipients.length > 0 )
                 {
-                    int error = addRecipients( mail, recipients, Mail.CC_RECIPIENT );
+                    int error = addRecipients( mail, recipients, MailRecipientType.CC_RECIPIENT );
                     if ( error >= 0 )
                     {
                         redirectToErrorPage( request, response, formItems, error );
@@ -190,11 +189,11 @@ public abstract class SendMailServicesBase
                     FileItem[] fileItems = formItems.getFileItems();
                     for ( int i = 0; i < fileItems.length; i++ )
                     {
-                        mail.addAttachment( fileItems[i] );
+                        mail.addAttachment( fileItems[i].getName(), fileItems[i].getInputStream() );
                     }
                 }
 
-                mail.send();
+                sendMailService.sendMail( mail );
 
                 redirectToPage( request, response, formItems );
             }
@@ -211,14 +210,14 @@ public abstract class SendMailServicesBase
         }
     }
 
-    private int addRecipients( Mail mail, String[] recipients, short type )
+    private int addRecipients( SimpleMailTemplate mail, String[] recipients, MailRecipientType type )
     {
 
         for ( int i = 0; i < recipients.length; i++ )
         {
 
             // skip empty recipients when recipient type is bcc or cc
-            if ( ( type == Mail.BCC_RECIPIENT || type == Mail.CC_RECIPIENT ) && recipients[i].trim().length() == 0 )
+            if ( ( type == MailRecipientType.BCC_RECIPIENT || type == MailRecipientType.CC_RECIPIENT ) && recipients[i].trim().length() == 0 )
             {
                 continue;
             }
@@ -243,20 +242,7 @@ public abstract class SendMailServicesBase
             if ( email == null || email.trim().length() == 0 )
             {
                 String message = "{0} email address not given.";
-                String addressType = null;
-                switch ( type )
-                {
-                    case Mail.TO_RECIPIENT:
-                        addressType = "To";
-                        break;
-                    case Mail.BCC_RECIPIENT:
-                        addressType = "Bcc";
-                        break;
-                    case Mail.CC_RECIPIENT:
-                        addressType = "Cc";
-                        break;
-                }
-                VerticalUserServicesLogger.warn( message, addressType, null );
+                VerticalUserServicesLogger.warn( message, type.getShortName(), null );
                 return ERR_RECIPIENT_HAS_NO_EMAIL_ADDRESS;
             }
             else
@@ -264,40 +250,16 @@ public abstract class SendMailServicesBase
                 int idx = email.indexOf( '@' );
                 if ( idx <= 0 )
                 {
-                    String message = "{0} email address in wrong format. Does not include an '@': {1}";
-                    Object[] ojbs = new Object[]{null, email};
-                    switch ( type )
-                    {
-                        case Mail.TO_RECIPIENT:
-                            ojbs[0] = "To";
-                            break;
-                        case Mail.BCC_RECIPIENT:
-                            ojbs[0] = "Bcc";
-                            break;
-                        case Mail.CC_RECIPIENT:
-                            ojbs[0] = "Cc";
-                            break;
-                    }
-                    VerticalUserServicesLogger.warn( message, ojbs );
+                    String message = "{0} email address is in wrong format. Include at least one '@': {1}";
+                    Object[] objects = new Object[]{type.getShortName(), email};
+                    VerticalUserServicesLogger.warn( message, objects );
                     return ERR_RECIPIENT_HAS_WRONG_ADDRESS_NO_ALPHA;
                 }
                 else if ( email.indexOf( '.', idx ) < 0 )
                 {
-                    String message = "{0} email address in wrong format. Does not include at least one '.': {1}";
-                    Object[] ojbs = new Object[]{null, email};
-                    switch ( type )
-                    {
-                        case Mail.TO_RECIPIENT:
-                            ojbs[0] = "To";
-                            break;
-                        case Mail.BCC_RECIPIENT:
-                            ojbs[0] = "Bcc";
-                            break;
-                        case Mail.CC_RECIPIENT:
-                            ojbs[0] = "Cc";
-                            break;
-                    }
-                    VerticalUserServicesLogger.warn( message, ojbs );
+                    String message = "{0} email address is in wrong format. Include at least one '.': {1}";
+                    Object[] objects = new Object[]{type.getShortName(), email};
+                    VerticalUserServicesLogger.warn( message, objects );
                     return ERR_RECIPIENT_HAS_WRONG_ADDRESS_MISSING_DOT;
                 }
 
@@ -308,9 +270,9 @@ public abstract class SendMailServicesBase
         return -1;
     }
 
-    @Value("${cms.mail.smtpHost}")
-    public void setSmtpHost( final String smtpHost )
+    @Autowired
+    public void setSendMailService( final SendMailService sendMailService )
     {
-        this.smtpHost = smtpHost;
+        this.sendMailService = sendMailService;
     }
 }

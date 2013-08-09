@@ -87,6 +87,7 @@ import com.enonic.cms.api.client.model.log.LogEntries;
 import com.enonic.cms.api.client.model.log.LogEntry;
 import com.enonic.cms.api.client.model.log.LogEventType;
 import com.enonic.cms.api.client.model.preference.Preference;
+import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.config.ConfigProperties;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -188,7 +189,6 @@ import com.enonic.cms.core.structure.menuitem.MenuItemAccessResolver;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.core.time.TimeService;
-import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.user.field.UserInfoTransformer;
 import com.enonic.cms.store.dao.CategoryDao;
 import com.enonic.cms.store.dao.ContentDao;
@@ -810,6 +810,30 @@ public abstract class InternalClientImpl
         try
         {
             this.securityService.loginClientApiUser( QualifiedUsername.parse( user ), password );
+            return this.securityService.getLoggedInClientApiUserAsEntity().getName();
+        }
+        catch ( Exception e )
+        {
+            throw handleException( e );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public String loginUsingEmail( final String userStore, final String email, final String password )
+        throws ClientException
+    {
+        try
+        {
+            final UserEntity user = this.securityService.findUserByEmail( userStore, email );
+            if ( user == null )
+            {
+                throw new ClientException( "No such user having email [" + email + "]" );
+            }
+
+            this.securityService.loginClientApiUser( user.getQualifiedName(), password );
             return this.securityService.getLoggedInClientApiUserAsEntity().getName();
         }
         catch ( Exception e )

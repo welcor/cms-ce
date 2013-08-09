@@ -656,6 +656,25 @@
                             </td>
                         </tr>
                     </table>
+
+                    <script type="text/javascript">
+                        if (cms.ui.CodeArea.prototype.isBrowserSupported())
+                        {
+                            window.datasourcesCodeArea = null;
+                            var g_dataSourceTab = document.getElementById('tab-data-source');
+                            g_dataSourceTab._clicked = false;
+
+                            // Only create the CodeArea the first time source tab is clicked.
+                            addEvent(g_dataSourceTab, 'click', function()
+                            {
+                                if (!g_dataSourceTab._clicked)
+                                {
+                                    window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
+                                    g_dataSourceTab._clicked = true;
+                                }
+                            });
+                        }
+                    </script>
                 </fieldset>
             </div>
 
@@ -684,24 +703,6 @@
                       </xsl:otherwise>
                     </xsl:choose>
                 </fieldset>
-
-                  <script type="text/javascript">
-                      if (cms.ui.CodeArea.prototype.isBrowserSupported())
-                      {
-                          window.datasourcesCodeArea = null;
-                          var g_dataSourceTab = document.getElementById('tab-data-source');
-                          g_dataSourceTab._clicked = false;
-
-                          // Only create the CodeArea the first time source tab is clicked.
-                          addEvent(g_dataSourceTab, 'click', function() {
-                            if (!g_dataSourceTab._clicked) {
-                                window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
-                                g_dataSourceTab._clicked = true;
-                            }
-                          });
-                      }
-                  </script>
-
               </div>
             </xsl:if>
 

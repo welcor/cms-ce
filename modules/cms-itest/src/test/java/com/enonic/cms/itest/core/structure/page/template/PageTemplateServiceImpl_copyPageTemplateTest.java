@@ -149,8 +149,11 @@ public class PageTemplateServiceImpl_copyPageTemplateTest
         PageTemplateRegionEntity pRegion2 = pageTemplateRegionDao.findByKey( 21 );
         assertEquals( 21 , pRegion2.getKey() );
 
-        PageTemplateEntity pPageTemplate = pageTemplateDao.findByKey( 0 );
-        assertEquals( 0, pPageTemplate.getKey() );
+        List<PageTemplateEntity> templates = pageTemplateDao.findByName( "my-template" );
+        assertEquals( 1, templates.size() );
+
+        PageTemplateEntity pPageTemplate = templates.get( 0 );
+        assertNotNull( pPageTemplate );
 
         // Portlet
         final String xml =

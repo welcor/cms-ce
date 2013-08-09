@@ -111,6 +111,13 @@ public class MockClient
         return null;
     }
 
+    @Override
+    public String loginUsingEmail( final String userStore, final String email, final String password )
+        throws ClientException
+    {
+        return null;
+    }
+
     public String impersonate( String user )
         throws ClientException
     {

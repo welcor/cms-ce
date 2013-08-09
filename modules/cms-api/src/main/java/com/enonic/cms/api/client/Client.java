@@ -79,6 +79,17 @@ public interface Client
         throws ClientException;
 
     /**
+     * Logs in specified user if successfully authorized. If user origins from a remote userstore the user will be synchronized.
+     *
+     * @param userStore UserStore name to login into.
+     * @param email     Email address of the specified user.
+     * @param password  the password
+     * @return The name of the currently logged in user after the operation.
+     */
+    public String loginUsingEmail( String userStore, String email, String password )
+        throws ClientException;
+
+    /**
      * Impersonate an user. All calls to Client methods after this will be done as the impersonated user instead of the currently logged in
      * user. To remove the current impersonation use the method removeImpersonation().
      *
@@ -202,7 +213,7 @@ public interface Client
         throws ClientException;
 
     public void deleteUser( DeleteUserParams params )
-         throws ClientException;
+        throws ClientException;
 
     public void changeUserPassword( ChangeUserPasswordParams params )
         throws ClientException;

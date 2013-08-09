@@ -891,6 +891,11 @@
                                     <xsl:choose>
                                         <xsl:when test="$create=1">
                                             <xsl:for-each select="/pagetemplates/pagetemplate/pagetemplatedata/pagetemplateparameter">
+
+                                                <!-- pagetemplateparameter does not have the help info so we'll find it in the stylesheet -->
+                                                <xsl:variable name="parameterName" select="@name"/>
+                                                <xsl:variable name="helpElement" select="/pagetemplates/resource/xsl:stylesheet/xsl:param[@name=$parameterName][node()[local-name() = 'help']]"/>
+
                                                 <tr>
                                                     <input type="hidden">
                                                         <xsl:attribute name="name">
@@ -931,6 +936,9 @@
                                                                 <xsl:with-param name="buttonfunction" select="$function"/>
                                                                 <xsl:with-param name="removefunction" select="$removefunction"/>
                                                                 <xsl:with-param name="colspan" select="'1'"/>
+                                                                <xsl:with-param name="helpelement">
+                                                                    <xsl:copy-of select="$helpElement"/>
+                                                                </xsl:with-param>
                                                             </xsl:call-template>
                                                         </xsl:when>
                                                         <xsl:when test="@type = 'page'">
@@ -951,6 +959,10 @@
                                                                 <xsl:with-param name="buttonfunction" select="$function"/>
                                                                 <xsl:with-param name="removefunction" select="$removefunction"/>
                                                                 <xsl:with-param name="colspan" select="'1'"/>
+                                                                <xsl:with-param name="helpelement">
+                                                                    <xsl:copy-of select="$helpElement"/>
+                                                                </xsl:with-param>
+
                                                             </xsl:call-template>
                                                         </xsl:when>
                                                         <xsl:when test="@type = 'resource'">
@@ -963,13 +975,10 @@
                                                             <xsl:with-param name="label" select="concat(@name, ':')"/>
                                                             <xsl:with-param name="value" select="''"/>
                                                             <xsl:with-param name="position" select="position()"/>
-                                                            <!--xsl:with-param name="exist" select="$selstylesheetExist"/>
-                                                            <xsl:with-param name="valid" select="$selstylesheetValid"/>
-                                                            <xsl:with-param name="required" select="true()"/>
-                                                            <xsl:with-param name="onchange">
-                                                                <xsl:text>javascript: updateStyleSheet();</xsl:text>
-                                                            </xsl:with-param-->
-                                                            </xsl:call-template>
+                                                            <xsl:with-param name="helpelement">
+                                                                <xsl:copy-of select="$helpElement"/>
+                                                            </xsl:with-param>
+                                                        </xsl:call-template>
                                                         </xsl:when>
                                                         <xsl:otherwise>
 															                              <xsl:variable name="stylesheet" select="/pagetemplates/resource"/>
@@ -1007,6 +1016,11 @@
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <xsl:for-each select="/pagetemplates/pagetemplate/pagetemplatedata/pagetemplateparameter">
+
+                                                <!-- pagetemplateparameter does not have the help info so we'll find it in the stylesheet -->
+                                                <xsl:variable name="name" select="@name"/>
+                                                <xsl:variable name="helpElement" select="/pagetemplates/resource/xsl:stylesheet/xsl:param[@name=$name][node()[local-name() = 'help']]"/>
+
                                                 <tr>
                                                     <input type="hidden">
                                                         <xsl:attribute name="name">
@@ -1047,6 +1061,9 @@
                                                                 <xsl:with-param name="buttonfunction" select="$function"/>
                                                                 <xsl:with-param name="removefunction" select="$removefunction"/>
                                                                 <xsl:with-param name="colspan" select="'1'"/>
+                                                                <xsl:with-param name="helpelement">
+                                                                    <xsl:copy-of select="$helpElement"/>
+                                                                </xsl:with-param>
                                                             </xsl:call-template>
                                                         </xsl:when>
                                                         <xsl:when test="@type = 'page'">
@@ -1067,6 +1084,9 @@
                                                                 <xsl:with-param name="buttonfunction" select="$function"/>
                                                                 <xsl:with-param name="removefunction" select="$removefunction"/>
                                                                 <xsl:with-param name="colspan" select="'1'"/>
+                                                                <xsl:with-param name="helpelement">
+                                                                    <xsl:copy-of select="$helpElement"/>
+                                                                </xsl:with-param>
                                                             </xsl:call-template>
                                                         </xsl:when>
                                                         <xsl:when test="@type = 'resource'">
@@ -1077,7 +1097,10 @@
                                                               <xsl:with-param name="label" select="concat(@name, ':')"/>
                                                               <xsl:with-param name="value" select="@value"/>
                                                               <xsl:with-param name="position" select="position()"/>
-                                                          </xsl:call-template>
+                                                                <xsl:with-param name="helpelement">
+                                                                    <xsl:copy-of select="$helpElement"/>
+                                                                </xsl:with-param>
+                                                            </xsl:call-template>
                                                         </xsl:when>
                                                         <xsl:otherwise>
                                                             <xsl:variable name="stylesheet" select="/pagetemplates/resource"/>
@@ -1104,6 +1127,9 @@
                                                                 <xsl:with-param name="colspan" select="'1'"/>
                                                                 <xsl:with-param name="lefttdwidth" select="'120'"/>
                                                                 <xsl:with-param name="postfield" select="$postfield"/>
+                                                                <xsl:with-param name="helpelement">
+                                                                    <xsl:copy-of select="$helpElement"/>
+                                                                </xsl:with-param>
                                                             </xsl:call-template>
                                                             <input type="hidden" name="viewparameter_value" value="dummy"/>
                                                             <input type="hidden" name="btnparameter_value" value="dummy"/>

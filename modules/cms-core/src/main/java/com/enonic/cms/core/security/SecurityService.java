@@ -31,6 +31,8 @@ public interface SecurityService
 
     GroupEntity getAuthenticatedUsersGroup( UserStoreEntity userStore );
 
+    UserEntity findUserByEmail( String userStore, String email );
+
     /**
      * Finds the specified user unless it is deleted.
      *

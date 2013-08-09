@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.jdom.Document;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -57,6 +56,8 @@ public class PageTemplateServiceImpl_createPageTemplateTest
     @Autowired
     private PageTemplateDao pageTemplateDao;
 
+    private int siteKey;
+
     @Before
     public void setUp()
     {
@@ -66,6 +67,7 @@ public class PageTemplateServiceImpl_createPageTemplateTest
         fixture.initSystemData();
 
         final SiteEntity site = factory.createSite( "The Newspaper", new Date(), null, "en" );
+        siteKey = site.getKey().toInt();
         fixture.save( site );
 
         fixture.save( factory.createContentHandler( "Custom content", ContentHandlerName.CUSTOM.getHandlerClassShortName() ) );
@@ -105,10 +107,9 @@ public class PageTemplateServiceImpl_createPageTemplateTest
     }
 
     @Test
-    @Ignore
     public void create_page_template_with_relations()
     {
-        final String xmdData = "<pagetemplate menukey=\"0\" runAs=\"DEFAULT_USER\" type=\"content\">" +
+        final String xmdData = "<pagetemplate menukey=\"" + siteKey + "\" runAs=\"DEFAULT_USER\" type=\"content\">" +
             "<css stylesheetkey=\"/sites/advanced/dav/_public/sites/advanced/all.css\"/>" +
             "<name>Bublik</name>" +
             "<description>video subject</description>" +

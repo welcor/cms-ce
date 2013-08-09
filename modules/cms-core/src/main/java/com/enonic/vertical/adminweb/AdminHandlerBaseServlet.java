@@ -83,9 +83,6 @@ public abstract class AdminHandlerBaseServlet
 
     private FileUpload fileUpload;
 
-    // SMTP server to use when sending mail:
-    private String smtpHost;
-
     private long multiPartRequestMaxSize;
 
     private String storeXHTML;
@@ -105,9 +102,6 @@ public abstract class AdminHandlerBaseServlet
         fileUpload = new FileUpload( diskFileItemFactory );
         fileUpload.setHeaderEncoding( "UTF-8" );
         fileUpload.setSizeMax( multiPartRequestMaxSize );
-
-        // Parameters for the mail sent to users when generating a new password:
-        smtpHost = ( smtpHost != null ) ? smtpHost : "mail.enonic.com";
     }
 
     public void addError( int errorCode, String fieldName, String fieldValue )
@@ -1564,17 +1558,6 @@ public abstract class AdminHandlerBaseServlet
             }
         }
         return doc;
-    }
-
-    protected String getSmtpHost()
-    {
-        return smtpHost;
-    }
-
-    @Value("${cms.mail.smtpHost}")
-    public void setSmtpHost( final String smtpHost )
-    {
-        this.smtpHost = smtpHost;
     }
 
     @Value("${cms.admin.binaryUploadMaxSize}")

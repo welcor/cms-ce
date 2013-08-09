@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.util.StopWatch;
 
@@ -98,6 +99,7 @@ public class ContentMapTest
     }
 
     @Test
+    @Ignore
     public void add_performance()
     {
         // setup

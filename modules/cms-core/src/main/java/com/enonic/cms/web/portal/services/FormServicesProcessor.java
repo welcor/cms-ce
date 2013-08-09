@@ -5,6 +5,7 @@
 
 package com.enonic.cms.web.portal.services;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
@@ -22,7 +24,6 @@ import org.w3c.dom.Element;
 
 import com.enonic.esl.containers.ExtendedMap;
 import com.enonic.esl.io.FileUtil;
-import com.enonic.esl.net.Mail;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalCreateException;
 import com.enonic.vertical.engine.VerticalSecurityException;
@@ -34,6 +35,9 @@ import com.enonic.cms.core.content.ContentVersionEntity;
 import com.enonic.cms.core.content.binary.BinaryData;
 import com.enonic.cms.core.content.binary.BinaryDataAndBinary;
 import com.enonic.cms.core.content.command.CreateContentCommand;
+import com.enonic.cms.core.mail.MailRecipientType;
+import com.enonic.cms.core.mail.SendMailService;
+import com.enonic.cms.core.mail.SimpleMailTemplate;
 import com.enonic.cms.core.portal.PrettyPathNameCreator;
 import com.enonic.cms.core.portal.VerticalSession;
 import com.enonic.cms.core.security.user.User;
@@ -57,7 +61,7 @@ public final class FormServicesProcessor
 
     private String adminEmail;
 
-    private String smtpHost;
+    private SendMailService sendMailService;
 
     class FormException
         extends VerticalUserServicesException
@@ -567,7 +571,7 @@ public final class FormServicesProcessor
     private void createAndSendMail( String subject, User user, String[] recipients, ExtendedMap formItems, StringBuffer body,
                                     String fromEmail, String fromName, boolean addAttachment )
     {
-        Mail formMail = new Mail();
+        final SimpleMailTemplate formMail = new SimpleMailTemplate();
         if ( fromEmail != null )
         {
             formMail.setFrom( fromName, fromEmail );
@@ -583,13 +587,12 @@ public final class FormServicesProcessor
                 formMail.setFrom( "Anonymous", adminEmail );
             }
         }
-        formMail.setSMTPHost( smtpHost );
 
         formMail.setSubject( subject );
         formMail.setMessage( body.toString() );
         for ( String recipient : recipients )
         {
-            formMail.addRecipient( null, recipient, Mail.TO_RECIPIENT );
+            formMail.addRecipient( null, recipient, MailRecipientType.TO_RECIPIENT );
         }
 
         if ( addAttachment )
@@ -599,11 +602,18 @@ public final class FormServicesProcessor
                 FileItem[] fileItems = formItems.getFileItems();
                 for ( FileItem fileItem : fileItems )
                 {
-                    formMail.addAttachment( fileItem );
+                    try
+                    {
+                        formMail.addAttachment( fileItem.getName(), fileItem.getInputStream() );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new RuntimeException( e );
+                    }
                 }
             }
         }
-        formMail.send();
+        sendMailService.sendMail( formMail );
     }
 
     private StringBuffer createMailBody( int menuItemKey, Element formElement, ExtendedMap formItems )
@@ -700,9 +710,9 @@ public final class FormServicesProcessor
         this.adminEmail = adminEmail;
     }
 
-    @Value("${cms.mail.smtpHost}")
-    public void setSmtpHost( final String smtpHost )
+    @Autowired
+    public void setSendMailService( final SendMailService sendMailService )
     {
-        this.smtpHost = smtpHost;
+        this.sendMailService = sendMailService;
     }
 }

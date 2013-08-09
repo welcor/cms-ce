@@ -47,7 +47,7 @@
             <div class="labelcolumn_inner"> <!-- Holly Hack for IE -->
                 <div style="float:left" title="{$tooltip}">
                     <xsl:choose>
-                        <xsl:when test="$helpelement and not($helpelement/@alwayson = 'true')">
+                        <xsl:when test="$helpelement != '' and not($helpelement/@alwayson = 'true')">
                             <table width="100%" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <td>
@@ -65,7 +65,7 @@
                             </table>
                         </xsl:when>
                         <xsl:otherwise>
-                            <xsl:if test="$helpelement and $helpelement/@alwayson = 'true'">
+                            <xsl:if test="$helpelement !='' and $helpelement/@alwayson = 'true'">
                                 <a id="{$fieldname}_helplink"/>
                             </xsl:if>
                             <xsl:value-of select="$label" disable-output-escaping="yes"/>

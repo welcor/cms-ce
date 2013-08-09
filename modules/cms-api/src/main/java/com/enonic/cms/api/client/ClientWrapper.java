@@ -113,11 +113,17 @@ public abstract class ClientWrapper
         return this.delegate.getRunAsUserContext();
     }
 
-
     public String login( String user, String password )
         throws ClientException
     {
         return this.delegate.login( user, password );
+    }
+
+    @Override
+    public String loginUsingEmail( final String userStore, final String email, final String password )
+        throws ClientException
+    {
+        return this.delegate.loginUsingEmail( userStore, email, password );
     }
 
     public String impersonate( String user )
@@ -210,14 +216,14 @@ public abstract class ClientWrapper
         delegate.updateUser( params );
     }
 
-     public void deleteUser( DeleteUserParams params )
-         throws ClientException
-     {
-         delegate.deleteUser( params );
-     }
+    public void deleteUser( DeleteUserParams params )
+        throws ClientException
+    {
+        delegate.deleteUser( params );
+    }
 
     public void changeUserPassword( ChangeUserPasswordParams params )
-            throws ClientException
+        throws ClientException
     {
         delegate.changeUserPassword( params );
     }

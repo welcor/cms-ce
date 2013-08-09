@@ -14,20 +14,27 @@ import com.enonic.cms.core.security.user.UserEntity;
  */
 public class MailRecipient
 {
-    String name;
+    private String name;
 
-    String email;
+    private String email;
+
+    private MailRecipientType type;
 
     public MailRecipient( String name, String email )
     {
-        this.name = name;
-        this.email = email;
+        this( name, email, MailRecipientType.TO_RECIPIENT );
     }
 
     public MailRecipient( UserEntity user )
     {
-        this.name = user.getDisplayName();
-        this.email = user.getEmail();
+        this( user.getDisplayName(), user.getEmail() );
+    }
+
+    public MailRecipient( final String name, final String email, final MailRecipientType type )
+    {
+        this.name = name;
+        this.email = email;
+        this.type = type;
     }
 
     public String getName()
@@ -50,6 +57,16 @@ public class MailRecipient
         this.email = email;
     }
 
+    public MailRecipientType getType()
+    {
+        return type;
+    }
+
+    public void setType( final MailRecipientType type )
+    {
+        this.type = type;
+    }
+
     @Override
     public boolean equals( Object o )
     {
@@ -69,6 +86,11 @@ public class MailRecipient
             return false;
         }
         if ( name != null ? !name.equals( that.name ) : that.name != null )
+        {
+            return false;
+        }
+
+        if ( type != that.type )
         {
             return false;
         }

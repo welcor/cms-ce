@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import com.enonic.cms.core.admin.AdminConsoleAccessDeniedException;
 import com.enonic.cms.core.security.group.GroupEntity;
@@ -617,5 +618,31 @@ public class SecurityServiceImpl
         return AdminSecurityHolder.getUser();
     }
 
+    @Override
+    public UserEntity findUserByEmail( final String userStoreName, final String email )
+    {
+        UserStoreEntity userStore = null;
 
+        if ( Strings.isNullOrEmpty( userStoreName ) )
+        {
+            userStore = doGetDefaultUserStore();
+        }
+        else
+        {
+            userStore = this.userStoreDao.findByName( userStoreName );
+        }
+
+        if ( userStore == null )
+        {
+            return null;
+        }
+
+        final UserSpecification spec = new UserSpecification();
+        spec.setEmail( email );
+        spec.setUserStoreKey( userStore.getKey() );
+        spec.setDeletedStateNotDeleted();
+
+        final List<UserEntity> users = this.userDao.findBySpecification( spec );
+        return users.isEmpty() ? null : users.get( 0 );
+    }
 }

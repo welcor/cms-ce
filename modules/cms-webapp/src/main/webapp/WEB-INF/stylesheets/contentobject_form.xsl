@@ -706,6 +706,9 @@
                             <xsl:variable name="category-callback-js-fn-name" select="translate($xslparam_name, '-', '_')"/>
 
                             <xsl:variable name="type" select="node()[local-name() = 'type']"/>
+
+                            <xsl:variable name="helpElement" select="node()[local-name() = 'help']"/>
+
                             <input type="hidden" name="xslparam_name">
                                 <xsl:attribute name="value"><xsl:value-of select="$xslparam_name"/></xsl:attribute>
                             </input>
@@ -752,7 +755,7 @@
                                             <xsl:with-param name="colspan" select="'1'"/>
                                             <xsl:with-param name="lefttdwidth" select="'120'"/>
                                             <xsl:with-param name="helpelement">
-                                            	<xsl:copy-of select="help"/>
+                                            	<xsl:copy-of select="$helpElement"/>
                                             </xsl:with-param>
                                         </xsl:call-template>
                                     </xsl:when>
@@ -809,7 +812,7 @@
                                         <xsl:with-param name="colspan" select="'1'"/>
                                         <xsl:with-param name="lefttdwidth" select="'120'"/>
                                         <xsl:with-param name="helpelement">
-	                                       	<xsl:copy-of select="help"/>
+	                                       	<xsl:copy-of select="$helpElement"/>
                                         </xsl:with-param>
                                     </xsl:call-template>
                                 </xsl:when>
@@ -819,6 +822,7 @@
                                 			<xsl:text>&nbsp;&nbsp;%fldDefault%: </xsl:text><xsl:value-of select="@select"/>
                                 		</xsl:if>
                                 	</xsl:variable>
+
                                     <xsl:call-template name="textfield">
                                         <xsl:with-param name="name" select="'xslparam_value'"/>
                                         <xsl:with-param name="label" select="concat($xslparam_name, ':')"/>
@@ -829,7 +833,7 @@
                                         <xsl:with-param name="lefttdwidth" select="'120'"/>
                                         <xsl:with-param name="postfield" select="$postfield"/>
                                         <xsl:with-param name="helpelement">
-                                           	<xsl:copy-of select="help"/>
+                                            <xsl:copy-of select="$helpElement"/>
                                         </xsl:with-param>
                                     </xsl:call-template>
                                     <input type="hidden" name="viewxslparam_value" value="dummy"/>

@@ -141,7 +141,7 @@
       <xsl:attribute name="colspan">
         <xsl:value-of select="$colspan"/>
       </xsl:attribute>
-      <xsl:if test="$helpelement">
+      <xsl:if test="$helpelement != ''">
         <xsl:call-template name="displayhelp">
           <xsl:with-param name="fieldname" select="$name"/>
           <xsl:with-param name="helpelement" select="$helpelement"/>

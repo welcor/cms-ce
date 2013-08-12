@@ -31,15 +31,15 @@
             <xsl:value-of select="concat($path, '/icon_file_video')"/>
           </xsl:when>
 
-          <xsl:when test="$fname='ppt' or $fname='pps' or $fname='pptx' or $fname='potx' or $fname='pot' or $fname='keynote'">
+          <xsl:when test="$fname='ppt' or $fname='pps' or $fname='pptx' or $fname='potx' or $fname='pot' or $fname='keynote' or $fname='odp'">
             <xsl:value-of select="concat($path, '/icon_file_presentation')"/>
           </xsl:when>
 
-          <xsl:when test="$fname='doc' or $fname='rtf' or $fname='docx' or $fname='dotx' or $fname='dot' or $fname='pages'">
+          <xsl:when test="$fname='doc' or $fname='rtf' or $fname='docx' or $fname='dotx' or $fname='dot' or $fname='pages' or $fname='odt'">
             <xsl:value-of select="concat($path, '/icon_file_doc')"/>
           </xsl:when>
 
-          <xsl:when test="$fname='xls' or $fname='xlsx' or $fname='numbers'">
+          <xsl:when test="$fname='xls' or $fname='xlsx' or $fname='numbers' or $fname='ods' or $fname='odb'">
             <xsl:value-of select="concat($path, '/icon_file_spreadsheet')"/>
           </xsl:when>
 
@@ -55,7 +55,7 @@
             <xsl:value-of select="concat($path, '/icon_file_xml')"/>
           </xsl:when>
 
-          <xsl:when test="$fname='eps' or $fname='ai' or $fname='wmf' or $fname='emf'">
+          <xsl:when test="$fname='eps' or $fname='ai' or $fname='wmf' or $fname='emf' or $fname='odg'">
             <xsl:value-of select="concat($path, '/icon_file_vectorimage')"/>
           </xsl:when>
 
@@ -73,6 +73,10 @@
 
           <xsl:when test="$fname='mp3' or $fname='wav' or $fname='mid' or $fname='midi' or $fname='av' or $fname='wma' or $fname='m4a'">
             <xsl:value-of select="concat($path, '/icon_file_sound')"/>
+          </xsl:when>
+
+          <xsl:when test="$fname='odf'">
+            <xsl:value-of select="concat($path, '/icon_file_math')"/>
           </xsl:when>
 
           <xsl:otherwise>

@@ -10,9 +10,15 @@ public abstract class RemotePrincipal
 
     private String sync;
 
-    public RemotePrincipal( String id )
+    public RemotePrincipal( final String id )
     {
         this.id = id;
+    }
+
+    public RemotePrincipal( final RemotePrincipal other )
+    {
+        this.id = other.id;
+        this.sync = other.sync;
     }
 
     public final String getId()

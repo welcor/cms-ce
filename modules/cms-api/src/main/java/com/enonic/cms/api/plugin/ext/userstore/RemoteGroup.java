@@ -7,9 +7,14 @@ package com.enonic.cms.api.plugin.ext.userstore;
 public final class RemoteGroup
     extends RemotePrincipal
 {
-    public RemoteGroup( String id )
+    public RemoteGroup( final String id )
     {
         super( id );
+    }
+
+    public RemoteGroup( final RemoteGroup other )
+    {
+        super( other );
     }
 
     public int hashCode()

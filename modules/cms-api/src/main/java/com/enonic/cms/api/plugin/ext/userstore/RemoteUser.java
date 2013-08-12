@@ -11,10 +11,17 @@ public final class RemoteUser
 
     private final UserFields userFields;
 
-    public RemoteUser( String id )
+    public RemoteUser( final String id )
     {
         super( id );
         this.userFields = new UserFields( false );
+    }
+
+    public RemoteUser( final RemoteUser other )
+    {
+        super( other );
+        this.email = other.email;
+        this.userFields = other.userFields.clone();
     }
 
     public String getEmail()

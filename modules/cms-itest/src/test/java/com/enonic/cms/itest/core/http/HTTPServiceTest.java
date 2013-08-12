@@ -7,145 +7,125 @@ package com.enonic.cms.itest.core.http;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.SecureRandom;
-import java.util.Properties;
-import java.util.Random;
+import java.net.InetSocketAddress;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 
 import com.enonic.esl.xml.XMLTool;
 
 import com.enonic.cms.core.http.HTTPService;
-import com.enonic.cms.itest.util.MockHTTPServer;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
 public class HTTPServiceTest
 {
-    private static Random RANDOM_WHEEL = new SecureRandom();
+    private final static String SAMPLE_TEXT_RESPONSE = "sample text response with special chars: \u00C5\u00F8 \u00E9";
 
-    static private String SAMPLE_TEXT_RESPONSE = "sample text response with special chars: \u00C5\u00F8 \u00E9";
+    private final static String SAMPLE_XML_RESPONSE =
+        "<base><node1>H\u00e6?</node1><node2>\u00c6\u00d8\u00c5</node2><node3>Citro\u00ebn est d\u00e9go\u00fbtant</node3></base>";
 
-    static private String SAMPLE_XML_RESPONSE = "<base><node1>H\u00e6?</node1><node2>\u00c6\u00d8\u00c5</node2><node3>Citro\u00ebn est d\u00e9go\u00fbtant</node3></base>";
-
-    @Autowired
     private HTTPService httpService;
 
-    private MockHTTPServer httpServer;
+    private HttpServer httpServer;
 
-    private int serverPort;
+    private String responseType;
 
-    @Autowired
-    private Properties properties;
+    private byte[] responseBytes;
 
     @Before
     public void before()
-        throws IOException
+        throws Exception
     {
-        serverPort = random( 8090, 9090 );
-        httpServer = new MockHTTPServer( serverPort );
-        properties.setProperty( "cms.enonic.vertical.presentation.dataSource.getUrl.userAgent",
-                                "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
+        final InetSocketAddress address = new InetSocketAddress( 9999 );
+
+        this.httpServer = HttpServer.create( address, 0 );
+        this.httpServer.createContext( "/test", new HttpHandler()
+        {
+            @Override
+            public void handle( final HttpExchange httpExchange )
+                throws IOException
+            {
+                httpExchange.getResponseHeaders().set( "Content-Type", responseType );
+                httpExchange.sendResponseHeaders( 200, responseBytes.length );
+                httpExchange.getResponseBody().write( responseBytes );
+                httpExchange.close();
+            }
+        } );
+
+        this.httpService = new HTTPService();
+        this.httpService.setUserAgent( "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)" );
+        this.httpServer.start();
     }
 
     @After
     public void after()
     {
-        if ( httpServer != null )
-        {
-            httpServer.stop();
-        }
+        httpServer.stop( 0 );
     }
 
     @Test
     public void get_url_as_text_test()
+        throws Exception
     {
-        String testText="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        httpServer.setResponseText( testText );
-        String result = httpService.getURL( buildServerUrl( MockHTTPServer.TEXT_TYPE ), "utf8", 5000 );
-        System.out.println( "Original: " + testText );
-        System.out.println( "Result:   " + result );
-        assertEquals( testText, result );
-    }
-
-    @Test
-    public void get_url_as_bytes_test()
-        throws UnsupportedEncodingException
-    {
-        String testText="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        byte[] utf8 = testText.getBytes( "utf8" );
-
-        httpServer.setResponseBytes( utf8 );
-        String result = httpService.getURL( buildServerUrl( MockHTTPServer.BYTE_TYPE ), "utf8", 5000 );
-        assertEquals( testText, result );
+        setResponse( SAMPLE_TEXT_RESPONSE, "utf8", "text/plain" );
+        final String result = this.httpService.getURL( buildServerUrl( "/test" ), "utf8", 5000 );
+        assertEquals( SAMPLE_TEXT_RESPONSE, result );
     }
 
     @Test
     public void get_win1252_response_test()
-        throws UnsupportedEncodingException
+        throws Exception
     {
-        byte[] w1252 = SAMPLE_TEXT_RESPONSE.getBytes( "cp1252" );
-
-        httpServer.setResponseBytes( w1252 );
-        String result = httpService.getURL( buildServerUrl( MockHTTPServer.BYTE_TYPE ), "cp1252", 5000 );
+        setResponse( SAMPLE_TEXT_RESPONSE, "cp1252", "text/plain" );
+        final String result = this.httpService.getURL( buildServerUrl( "/test" ), "cp1252", 5000 );
         assertEquals( SAMPLE_TEXT_RESPONSE, result );
     }
 
     @Test
     public void get_win1252_respons_when_encoding_is_not_known_test()
-        throws UnsupportedEncodingException
+        throws Exception
     {
         // This is the typical situation when calls to getUrlAsText or getUrlAsXML are made from the datasource.
         // The datasource does not know the encoding of the source, so we need to do something to detect it in "getUrl".
-        String header = "<?xml version=\"1.0\" encoding=\"Windows-1252\" ?>";
-        byte[] w1252 = header.concat( SAMPLE_XML_RESPONSE ).getBytes( "cp1252" );
 
-        httpServer.setResponseBytes( w1252 );
-        byte[] httpResult = httpService.getURLAsBytes( buildServerUrl( MockHTTPServer.BYTE_TYPE ), 5000 );
-        ByteArrayInputStream byteStream = new ByteArrayInputStream( httpResult );
-        Document resultDoc = XMLTool.domparse( byteStream );
-        String resultXML = XMLTool.documentToString( resultDoc );
+        setResponse( "<?xml version=\"1.0\" encoding=\"Windows-1252\" ?>" + SAMPLE_XML_RESPONSE, "cp1252", "text/xml" );
 
-        int xmlBodyStart = resultXML.indexOf( "<base>" );
-        String xmlBody = resultXML.substring( xmlBodyStart );
+        final byte[] httpResult = this.httpService.getURLAsBytes( buildServerUrl( "/test" ), 5000 );
+        final ByteArrayInputStream byteStream = new ByteArrayInputStream( httpResult );
+        final Document resultDoc = XMLTool.domparse( byteStream );
+        final String resultXML = XMLTool.documentToString( resultDoc );
+
+        final int xmlBodyStart = resultXML.indexOf( "<base>" );
+        final String xmlBody = resultXML.substring( xmlBodyStart );
         assertEquals( SAMPLE_XML_RESPONSE, xmlBody );
     }
 
     @Test
     public void get_url_as_text_wrong_url_test()
+        throws Exception
     {
-        String result = httpService.getURL( buildServerUrl( "wrong" ), null, 5000 );
+        final String result = this.httpService.getURL( buildServerUrl( "/unknown" ), null, 5000 );
         assertNull( result );
     }
 
-    private String buildServerUrl( String type )
+    private String buildServerUrl( final String path )
     {
-        StringBuffer sb = new StringBuffer( "http://localhost:" );
-        sb.append( serverPort );
-        sb.append( "?" );
-        sb.append( MockHTTPServer.TYPE_PARAM );
-        sb.append( "=" );
-        sb.append( type );
-        return sb.toString();
+        final StringBuilder str = new StringBuilder( "http://localhost:" );
+        str.append( this.httpServer.getAddress().getPort() ).append( path );
+        return str.toString();
     }
 
-    public void setHttpService( HTTPService httpService )
+    private void setResponse( final String text, final String encoding, final String type )
+        throws Exception
     {
-        this.httpService = httpService;
-    }
-
-    private static int random( int low, int high )
-    {
-        return RANDOM_WHEEL.nextInt( high - low + 1 ) + low;
+        this.responseBytes = text.getBytes( encoding );
+        this.responseType = type;
     }
 }

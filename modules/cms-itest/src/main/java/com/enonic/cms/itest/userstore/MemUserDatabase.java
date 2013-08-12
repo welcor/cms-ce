@@ -82,7 +82,7 @@ public final class MemUserDatabase
             return false;
         }
 
-        this.users.put( user.getId(), new RemoteUser( user ) );
+        this.users.put( user.getId(), copyUser( user ) );
         return true;
     }
 
@@ -93,7 +93,7 @@ public final class MemUserDatabase
             return false;
         }
 
-        this.groups.put( group.getId(), new RemoteGroup( group ) );
+        this.groups.put( group.getId(), copyGroup( group ) );
         return true;
     }
 
@@ -104,7 +104,7 @@ public final class MemUserDatabase
             return false;
         }
 
-        this.users.put( user.getId(), new RemoteUser( user ) );
+        this.users.put( user.getId(), copyUser( user ) );
         return true;
     }
 
@@ -115,7 +115,7 @@ public final class MemUserDatabase
             return false;
         }
 
-        this.groups.put( group.getId(), new RemoteGroup( group ) );
+        this.groups.put( group.getId(), copyGroup( group ) );
         return true;
     }
 
@@ -147,6 +147,9 @@ public final class MemUserDatabase
 
     public void addMember( final RemoteGroup group, final RemotePrincipal member )
     {
+        ensureSyncField( group );
+        ensureSyncField( member );
+
         this.members.put( group, member );
         this.memberships.put( member, group );
     }
@@ -165,5 +168,27 @@ public final class MemUserDatabase
     public List<RemoteGroup> getMemberships( final RemotePrincipal principal )
     {
         return Lists.newArrayList( this.memberships.get( principal ) );
+    }
+
+    private RemoteUser copyUser( final RemoteUser user )
+    {
+        final RemoteUser other = new RemoteUser( user );
+        ensureSyncField( other );
+        return other;
+    }
+
+    private RemoteGroup copyGroup( final RemoteGroup group )
+    {
+        final RemoteGroup other = new RemoteGroup( group );
+        ensureSyncField( other );
+        return other;
+    }
+
+    private void ensureSyncField( final RemotePrincipal principal )
+    {
+        if ( principal.getSync() == null )
+        {
+            principal.setSync( principal.getId() );
+        }
     }
 }

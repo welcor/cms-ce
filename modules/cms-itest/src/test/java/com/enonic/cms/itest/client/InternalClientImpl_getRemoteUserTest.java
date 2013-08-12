@@ -51,6 +51,7 @@ public class InternalClientImpl_getRemoteUserTest
     public void before()
         throws Exception
     {
+        this.fixture.initSystemData();
         this.fixture.createAndStoreNormalUserWithUserGroup( "testuser", "Test user", "testuserstore" );
 
         MockHttpServletRequest request = new MockHttpServletRequest();

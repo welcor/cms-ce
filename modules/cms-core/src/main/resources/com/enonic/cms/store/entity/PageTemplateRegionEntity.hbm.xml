@@ -8,13 +8,13 @@
       <column name="PTP_LKEY"/>
       <generator class="assigned"/>
     </id>
-    <property name="multiple" type="boolean">
+    <property name="multiple" type="org.hibernate.type.NumericBooleanType">
       <column name="PTP_BMULTIPLE" not-null="true"/>
     </property>
     <property name="name" type="string">
       <column name="PTP_SPARAMNAME" length="64" not-null="true"/>
     </property>
-    <property name="override" type="boolean">
+    <property name="override" type="org.hibernate.type.NumericBooleanType">
       <column name="PTP_BOVERRIDE" not-null="true"/>
     </property>
     <property name="separator" type="string">

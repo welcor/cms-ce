@@ -53,7 +53,7 @@
         }
     };
 
-    proto.getValue = function (w, h) {
+    proto.getValue = function () {
         return this.codeMirror.getValue();
     };
 

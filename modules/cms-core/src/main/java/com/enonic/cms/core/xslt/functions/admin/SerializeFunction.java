@@ -43,7 +43,7 @@ class SerializeFunction
             recursiveRemoveNamespaces( doc.getRootElement() );
 
             final String output = includeSelf ? JDOMUtil.serialize( doc, 4, true ) : JDOMUtil.serializeChildren( doc, 4 );
-            return createValue( output );
+            return createValue( output.trim() );
         }
     }
 

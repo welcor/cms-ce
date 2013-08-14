@@ -33,10 +33,12 @@ public final class IndexMonitorController
     extends AbstractToolController
 {
 
-    protected static final PeriodFormatter HOURS_MINUTES_MILLIS =
-        new PeriodFormatterBuilder().appendHours().appendSuffix( " h ", " h " ).appendMinutes().appendSuffix( " m ",
-                                                                                                              " m " ).appendSeconds().appendSuffix(
-            " s ", " s " ).appendMillis().appendSuffix( " ms", " ms" ).toFormatter();
+    protected static final PeriodFormatter HOURS_MINUTES_MILLIS = new PeriodFormatterBuilder().
+        appendHours().appendSuffix( " h ", " h " ).
+        appendMinutes().appendSuffix( " m ", " m " ).
+        appendSeconds().appendSuffix( " s ", " s " ).
+        appendMillis().appendSuffix( " ms", " ms" ).
+        toFormatter();
 
     private static final DateTimeFormatter SIMPLE_DATE_FORMAT = DateTimeFormat.forPattern( "yyyy-MM-dd HH:mm" );
 
@@ -68,25 +70,56 @@ public final class IndexMonitorController
             return;
         }
 
+        List<String> errors = Lists.newArrayList();
+
+        populateClusterHealth( model, errors );
+        populateReindexInfo( model, errors );
+
+        model.put( "isMaster", isMaster( errors ) );
+
+        if ( !errors.isEmpty() )
+        {
+            model.put( "errors", errors );
+        }
+
+        renderView( req, res, model, "indexMonitorPage_info" );
+    }
+
+    private void populateClusterHealth( final Map<String, Object> model, final List<String> errors )
+    {
         final ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
 
-        model.put( "activeShards", clusterHealthResponse.getActiveShards() );
+        if ( clusterHealthResponse == null )
+        {
+            errors.add( "Not able to get clusterHealthResponse" );
+        }
+        else
+        {
+            model.put( "activeShards", clusterHealthResponse.getActiveShards() );
 
-        final ClusterHealthStatus status = clusterHealthResponse.getStatus();
-        model.put( "clusterStatus", status.toString() );
-        model.put( "relocatingShards", clusterHealthResponse.getRelocatingShards() );
-        model.put( "activePrimaryShards", clusterHealthResponse.getActivePrimaryShards() );
-        model.put( "numberOfNodes", clusterHealthResponse.getNumberOfNodes() );
-        model.put( "unassignedShards", clusterHealthResponse.getUnassignedShards() );
+            final ClusterHealthStatus status = clusterHealthResponse.getStatus();
+            model.put( "clusterStatus", status.toString() );
+            model.put( "relocatingShards", clusterHealthResponse.getRelocatingShards() );
+            model.put( "activePrimaryShards", clusterHealthResponse.getActivePrimaryShards() );
+            model.put( "numberOfNodes", clusterHealthResponse.getNumberOfNodes() );
+            model.put( "unassignedShards", clusterHealthResponse.getUnassignedShards() );
 
-        final List<String> allValidationFailures = clusterHealthResponse.getAllValidationFailures();
-        model.put( "validationFailures", allValidationFailures.isEmpty() ? Lists.newArrayList( "None" ) : allValidationFailures );
+            final List<String> allValidationFailures = clusterHealthResponse.getAllValidationFailures();
 
-        final boolean indexExists = elasticSearchIndexService.indexExists( "cms" );
-        model.put( "indexExists", indexExists );
-        model.put( "numberOfContent", getTotalHitsContent( status ) );
-        model.put( "numberOfBinaries", getTotalHitsBinaries( status ) );
+            if ( !allValidationFailures.isEmpty() )
+            {
+                model.put( "validationFailures", allValidationFailures );
+            }
 
+            final boolean indexExists = elasticSearchIndexService.indexExists( "cms" );
+            model.put( "indexExists", indexExists );
+            model.put( "numberOfContent", getTotalHitsContent( status ) );
+            model.put( "numberOfBinaries", getTotalHitsBinaries( status ) );
+        }
+    }
+
+    private void populateReindexInfo( final Map<String, Object> model, final List<String> errors )
+    {
         model.put( "reindexInProgress", reindexContentToolService.isReIndexInProgress() );
 
         if ( reindexContentToolService.getLastReindexTime() != null )
@@ -94,20 +127,32 @@ public final class IndexMonitorController
             model.put( "lastReindexTime", getLastIndexTimeString() );
             model.put( "lastReindexTimeUsed", getTimeUsedString() );
         }
-
-        model.put( "isMaster", isMaster() );
-
-        renderView( req, res, model, "indexMonitorPage_info" );
     }
 
-    private boolean isMaster()
+    private Boolean isMaster( final List<String> errors )
     {
         final ClusterStateResponse clusterState = elasticSearchIndexService.getClusterState();
+
+        if ( clusterState == null )
+        {
+            errors.add( "Not able to get clusterState" );
+            return false;
+        }
 
         final String localNodeId = clusterState.getState().nodes().localNodeId();
         final String masterNodeId = clusterState.getState().nodes().masterNodeId();
 
-        return localNodeId.equals( masterNodeId );
+        if ( localNodeId == null )
+        {
+            errors.add( "Not able to get local nodeId" );
+        }
+
+        if ( masterNodeId == null )
+        {
+            errors.add( "Not able to get masterNodeId" );
+        }
+
+        return localNodeId != null && masterNodeId != null ? localNodeId.equals( masterNodeId ) : false;
     }
 
 

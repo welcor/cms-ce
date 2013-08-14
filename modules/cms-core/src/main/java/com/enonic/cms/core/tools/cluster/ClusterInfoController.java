@@ -76,12 +76,14 @@ public final class ClusterInfoController
 
     private List<ClusterNodeWrapper> toWrapper( final NodeInfo[] list, final String masterNodeId )
     {
-        final List<ClusterNodeWrapper> result = Lists.newArrayList();
-        Collections.sort( result );
+        final List<ClusterNodeWrapper> result = Lists.newLinkedList();
+
         for ( final NodeInfo info : list )
         {
-            result.add( new ClusterNodeWrapper( info, masterNodeId.equals( info.getNode().getId() ) ) );
+            result.add( new ClusterNodeWrapper( info, ( info.getNode().getId() ).equals( masterNodeId ) ) );
         }
+
+        Collections.sort( result );
 
         return result;
     }

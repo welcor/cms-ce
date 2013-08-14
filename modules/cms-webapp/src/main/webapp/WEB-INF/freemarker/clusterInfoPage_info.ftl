@@ -5,15 +5,14 @@
             <td>${clusterName}</td>
         </tr>
     </table>
-<#list nodeList?sort as x>
+<#list nodeList as x>
     <fieldset>
-        <legend>${x.name}</legend>
-
-        <#if x.isMaster>
-        <div style="float: left;background: lightgreen">
-        <#else>
-        <div style="float: left">
-        </#if>
+        <legend>
+        ${x.name}
+            <#if x.isMaster>
+                <strong>(MASTER)
+            </#if>
+        </legend>
 
         <div style="float: left">
             <table>

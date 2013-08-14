@@ -9,7 +9,6 @@
         </table>
     </fieldset>
 
-
     <fieldset>
         <legend>Index status</legend>
         <table>
@@ -35,20 +34,6 @@
         </table>
     </fieldset>
     <br/>
-<#if error??>
-    <fieldset>
-        <legend>Errors</legend>
-        <table>
-            <tr>
-                <td>
-                    Error:
-                </td>
-                <td>${error}</td>
-            </tr>
-        </table>
-    </fieldset>
-    <br/>
-</#if>
     <fieldset>
         <legend>Cluster health</legend>
         <table>
@@ -91,6 +76,19 @@
         </table>
     </fieldset>
     <br/>
+
+<#if errors??>
+    <fieldset>
+        <legend>Errors</legend>
+        <ul>
+            <#list errors as entry>
+                <li>${entry}</li>
+            </#list>
+        </ul>
+    </fieldset>
+    <br/>
+</#if>
+<#if validationFailures??>
     <fieldset>
         <legend>Validation Failures</legend>
         <ul>
@@ -99,6 +97,7 @@
         </#list>
         </ul>
     </fieldset>
+</#if>
     <br/>
     <fieldset>
         <legend>Operations</legend>

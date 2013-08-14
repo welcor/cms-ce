@@ -2,9 +2,9 @@ package com.enonic.cms.api.plugin.ext.auth;
 
 import com.enonic.cms.api.plugin.ext.ExtensionBase;
 
-public abstract class Authenticator
+public abstract class AuthenticationInterceptor
     extends ExtensionBase
-    implements Comparable<Authenticator>
+    implements Comparable<AuthenticationInterceptor>
 {
     private int priority = 0;
 
@@ -30,19 +30,19 @@ public abstract class Authenticator
         this.priority = priority;
     }
 
-    public final int compareTo( final Authenticator other )
+    public final int compareTo( final AuthenticationInterceptor other )
     {
         return this.priority - other.priority;
     }
 
     /**
-     * Tries to authenticate the user. Returns true if authenticated, and false if not.
-     * If it returns false, then the system will ask the next authenticator in chain. If no such interceptor
-     * exists, then it will go trough to the user store (local or remote). If it returns true, then
-     * it will not go trough to the next interceptor in chain.
+     * Tries to authenticate the user. Return SUCCESS if authentication was successful. Then the authentication
+     * chain will stop and return control to the user. If FAILURE was returned, the chain stops and an exception
+     * is returned to the user. If CONTINUE was returned, it will continue to the next authenticator in chain and
+     * eventually go to the user stores authentication method.
      *
      * @param token authentication token.
-     * @return true if successful, false otherwise.
+     * @return result state.
      */
-    public abstract boolean authenticate( AuthenticationToken token );
+    public abstract AuthenticationResult authenticate( AuthenticationToken token );
 }

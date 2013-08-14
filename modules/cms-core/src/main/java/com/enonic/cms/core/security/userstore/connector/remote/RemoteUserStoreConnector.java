@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 
 import com.enonic.cms.framework.util.GenericConcurrencyLock;
 
+import com.enonic.cms.api.plugin.ext.auth.AuthenticationResult;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteGroup;
 import com.enonic.cms.api.plugin.ext.userstore.RemotePrincipal;
 import com.enonic.cms.api.plugin.ext.userstore.RemoteUser;
@@ -397,12 +398,13 @@ public class RemoteUserStoreConnector
 
     private boolean verifyPassword( final String uid, final String password, final AuthenticationChain authChain )
     {
-        if ( authChain.authenticate( this.userStoreKey, uid, password ) )
+        final AuthenticationResult result = authChain.authenticate( getUserStoreName(), uid, password );
+        if ( result == AuthenticationResult.CONTINUE )
         {
-            return true;
+            return this.remoteUserStorePlugin.authenticate( uid, password );
         }
 
-        return this.remoteUserStorePlugin.authenticate( uid, password );
+        return result == AuthenticationResult.OK;
     }
 
     public String authenticateUser( final String uid, final String password, final AuthenticationChain authChain )

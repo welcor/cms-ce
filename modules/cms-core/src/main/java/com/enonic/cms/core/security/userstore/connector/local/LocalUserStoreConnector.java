@@ -6,6 +6,7 @@ package com.enonic.cms.core.security.userstore.connector.local;
 
 import org.springframework.util.Assert;
 
+import com.enonic.cms.api.plugin.ext.auth.AuthenticationResult;
 import com.enonic.cms.api.plugin.ext.userstore.UserFields;
 import com.enonic.cms.core.security.InvalidCredentialsException;
 import com.enonic.cms.core.security.group.DeleteGroupCommand;
@@ -131,12 +132,13 @@ public class LocalUserStoreConnector
 
     private boolean verifyPassword( final UserEntity user, final String password, final AuthenticationChain authChain )
     {
-        if ( authChain.authenticate( this.userStoreKey, user.getName(), password ) )
+        final AuthenticationResult result = authChain.authenticate( getUserStoreName(), user.getName(), password );
+        if ( result == AuthenticationResult.CONTINUE )
         {
-            return true;
+            return user.verifyPassword( password );
         }
 
-        return user.verifyPassword( password );
+        return result == AuthenticationResult.OK;
     }
 
     public String authenticateUser( final String uid, final String password, final AuthenticationChain authChain )

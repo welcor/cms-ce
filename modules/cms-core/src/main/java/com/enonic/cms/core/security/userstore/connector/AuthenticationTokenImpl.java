@@ -6,13 +6,13 @@ import com.enonic.cms.core.security.userstore.UserStoreKey;
 final class AuthenticationTokenImpl
     implements AuthenticationToken
 {
-    private final UserStoreKey userStore;
+    private final String userStore;
 
     private final String userName;
 
     private final String password;
 
-    public AuthenticationTokenImpl( final UserStoreKey userStore, final String userName, final String password )
+    public AuthenticationTokenImpl( final String userStore, final String userName, final String password )
     {
         this.userStore = userStore;
         this.userName = userName;
@@ -22,7 +22,7 @@ final class AuthenticationTokenImpl
     @Override
     public String getUserStore()
     {
-        return this.userStore != null ? userStore.toString() : null;
+        return this.userStore;
     }
 
     @Override

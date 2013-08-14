@@ -1,12 +1,12 @@
 package com.enonic.cms.core.plugin.ext;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import com.enonic.cms.api.plugin.ext.Extension;
 import com.enonic.cms.api.plugin.ext.ExtensionBase;
@@ -15,12 +15,12 @@ public abstract class ExtensionPoint<T extends Extension>
     extends FilteredExtensionListener<T>
     implements Iterable<T>, Comparator<T>
 {
-    private final Set<T> set;
+    private ImmutableList<T> list;
 
     public ExtensionPoint( final Class<T> type )
     {
         super( type );
-        this.set = Sets.newTreeSet( this );
+        this.list = ImmutableList.of();
     }
 
     public final String getName()
@@ -30,23 +30,29 @@ public abstract class ExtensionPoint<T extends Extension>
 
     public final boolean isEmpty()
     {
-        return this.set.isEmpty();
+        return this.list.isEmpty();
     }
 
     @Override
     public final Iterator<T> iterator()
     {
-        return this.set.iterator();
+        return this.list.iterator();
     }
 
-    protected final void addExtension( final T ext )
+    protected synchronized final void addExtension( final T ext )
     {
-        this.set.add( ext );
+        final List<T> other = Lists.newArrayList( this.list );
+        other.add( ext );
+        Collections.sort( other, this );
+        this.list = ImmutableList.copyOf( other );
     }
 
-    protected final void removeExtension( final T ext )
+    protected synchronized final void removeExtension( final T ext )
     {
-        this.set.remove( ext );
+        final List<T> other = Lists.newArrayList( this.list );
+        other.remove( ext );
+        Collections.sort( other, this );
+        this.list = ImmutableList.copyOf( other );
     }
 
     public final List<String> toHtml()

@@ -2,17 +2,17 @@ package com.enonic.cms.core.security.userstore.connector;
 
 import org.junit.Test;
 
-import com.enonic.cms.api.plugin.ext.auth.AuthenticationInterceptor;
+import com.enonic.cms.api.plugin.ext.auth.Authenticator;
 import com.enonic.cms.api.plugin.ext.auth.AuthenticationResult;
 import com.enonic.cms.api.plugin.ext.auth.AuthenticationToken;
-import com.enonic.cms.core.plugin.ext.AuthenticationInterceptorExtensions;
+import com.enonic.cms.core.plugin.ext.AuthenticatorExtensions;
 
 import static org.junit.Assert.*;
 
 public class AuthenticationChainTest
 {
     private final class InterceptorImpl
-        extends AuthenticationInterceptor
+        extends Authenticator
     {
         private final AuthenticationResult result;
 
@@ -142,10 +142,10 @@ public class AuthenticationChainTest
         assertEquals( 0, interceptor2.invokeCount );
     }
 
-    private AuthenticationChain create( final AuthenticationInterceptor... interceptors )
+    private AuthenticationChain create( final Authenticator... interceptors )
     {
-        final AuthenticationInterceptorExtensions extensions = new AuthenticationInterceptorExtensions();
-        for ( final AuthenticationInterceptor interceptor : interceptors )
+        final AuthenticatorExtensions extensions = new AuthenticatorExtensions();
+        for ( final Authenticator interceptor : interceptors )
         {
             extensions.extensionAdded( interceptor );
         }

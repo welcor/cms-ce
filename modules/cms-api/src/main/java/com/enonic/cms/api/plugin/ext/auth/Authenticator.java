@@ -2,9 +2,9 @@ package com.enonic.cms.api.plugin.ext.auth;
 
 import com.enonic.cms.api.plugin.ext.ExtensionBase;
 
-public abstract class AuthenticationInterceptor
+public abstract class Authenticator
     extends ExtensionBase
-    implements Comparable<AuthenticationInterceptor>
+    implements Comparable<Authenticator>
 {
     private int priority = 0;
 
@@ -30,7 +30,7 @@ public abstract class AuthenticationInterceptor
         this.priority = priority;
     }
 
-    public final int compareTo( final AuthenticationInterceptor other )
+    public final int compareTo( final Authenticator other )
     {
         return this.priority - other.priority;
     }

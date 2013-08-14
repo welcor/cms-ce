@@ -716,6 +716,7 @@
 %cmdDone%|Ok|Done|Ok|Ok
 %fldRequired%|Påkrevet|Required|Obligatorisk|Krävs
 %fldDefaultValue%|Standardverdi|Default value|Standardværdi|Standardvärde
+%fldDataType%|Datatype|Data type|Datatype|Datatyp
 %fldValidation%|Validering|Validation|Validering|Validering
 %optChecked%|Valgt|Checked|Valgt|Valt
 %optNotChecked%|Ikke valgt|Not checked|Ikke valgt|Ej valt

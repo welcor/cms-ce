@@ -981,18 +981,19 @@
                                                         </xsl:call-template>
                                                         </xsl:when>
                                                         <xsl:otherwise>
-															                              <xsl:variable name="stylesheet" select="/pagetemplates/resource"/>
-															                              <xsl:variable name="name" select="@name"/>
+                                                            <xsl:variable name="stylesheet" select="/pagetemplates/resource"/>
+                                                            <xsl:variable name="name" select="@name"/>
                                                             <xsl:variable name="postfield">
-                                                              <xsl:if test="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as">
-                                                                <xsl:text>&nbsp;&nbsp;Type: </xsl:text>
-                                                                  <xsl:value-of select="substring-after($stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as,'xs:')"/>,
-                                                              </xsl:if>
-                                                              <xsl:if test="not($stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as)">
                                                                 <xsl:text>&nbsp;&nbsp;</xsl:text>
-                                                              </xsl:if>
+                                                                <xsl:if test="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as">
+                                                                    <xsl:text>%fldDataType%: </xsl:text>
+                                                                    <xsl:value-of select="substring-after($stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as,'xs:')"/>
+                                                                </xsl:if>
                                                                 <xsl:if test="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@select">
-                                                                    <xsl:text>%fldDefault%: </xsl:text>
+                                                                    <xsl:if test="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as">
+                                                                        <xsl:text>, </xsl:text>
+                                                                    </xsl:if>
+                                                                    <xsl:text>%fldDefaultValue%: </xsl:text>
                                                                     <xsl:value-of select="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@select"/>
                                                                 </xsl:if>
                                                             </xsl:variable>
@@ -1106,15 +1107,16 @@
                                                             <xsl:variable name="stylesheet" select="/pagetemplates/resource"/>
 															                              <xsl:variable name="name" select="@name"/>
                                                             <xsl:variable name="postfield">
+                                                                <xsl:text>&nbsp;&nbsp;</xsl:text>
                                                                 <xsl:if test="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as">
-                                                                  <xsl:text>&nbsp;&nbsp;Type: </xsl:text>
-                                                                    <xsl:value-of select="substring-after($stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as,'xs:')"/>,
-                                                                </xsl:if>
-                                                                <xsl:if test="not($stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as)">
-                                                                  <xsl:text>&nbsp;&nbsp;</xsl:text>
+                                                                  <xsl:text>%fldDataType%: </xsl:text>
+                                                                    <xsl:value-of select="substring-after($stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as,'xs:')"/>
                                                                 </xsl:if>
                                                                 <xsl:if test="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@select">
-                                                                    <xsl:text>%fldDefault%: </xsl:text>
+                                                                    <xsl:if test="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@as">
+                                                                        <xsl:text>, </xsl:text>
+                                                                    </xsl:if>
+                                                                    <xsl:text>%fldDefaultValue%: </xsl:text>
                                                                   <xsl:value-of select="$stylesheet/xsl:stylesheet/xsl:param[@name = $name]/@select"/>
                                                                 </xsl:if>
                                                             </xsl:variable>
@@ -1335,7 +1337,7 @@
                                     <td>%fldDefaultPortlets%:</td>
                                     <td colspan="2">
                                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
-											                    <tbody>
+                                            <tbody>
 	                                            <xsl:attribute name="id">
 	                                                <xsl:text>tbl</xsl:text>
 	                                                <xsl:value-of select="concat($paramname, 'co_portlet')"/>

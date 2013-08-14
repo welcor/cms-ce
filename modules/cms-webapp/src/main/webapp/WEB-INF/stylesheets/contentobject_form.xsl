@@ -732,7 +732,7 @@
                             <xsl:variable name="xslparam_name" select="@name"/>
                             <xsl:variable name="category-callback-js-fn-name" select="translate($xslparam_name, '-', '_')"/>
 
-                            <xsl:variable name="type" select="node()[local-name() = 'type']"/>
+                            <xsl:variable name="param_type" select="node()[local-name() = 'type']"/>
 
                             <xsl:variable name="helpElement" select="node()[local-name() = 'help']"/>
 
@@ -741,11 +741,11 @@
                             </input>
 
                             <input type="hidden" name="xslparam_type">
-                                <xsl:attribute name="value"><xsl:value-of select="$type"/></xsl:attribute>
+                                <xsl:attribute name="value"><xsl:value-of select="$param_type"/></xsl:attribute>
                             </input>
                             <tr>
                                 <xsl:choose>
-                                    <xsl:when test="$type = 'resource'">
+                                    <xsl:when test="$param_type = 'resource'">
                                       <xsl:call-template name="resourcefield">
                                         <xsl:with-param name="name" select="'xslparam_value'"/>
                                         <xsl:with-param name="id" select="concat('xslparam_value', position())"/>
@@ -758,7 +758,7 @@
                                       <input type="hidden" name="btnxslparam_value" value="dummy"/>
                                       <input type="hidden" name="removexslparam_value" value="dummy"/>
                                     </xsl:when>
-                                    <xsl:when test="$type = 'page'">
+                                    <xsl:when test="$param_type = 'page'">
                                         <xsl:variable name="function">
                                           <xsl:text>javascript:OpenSelectorWindowPage( this, 850, &apos;xslparam_value</xsl:text>
                                           <xsl:value-of select="position()"/>
@@ -786,7 +786,7 @@
                                             </xsl:with-param>
                                         </xsl:call-template>
                                     </xsl:when>
-                                    <xsl:when test="$type = 'category'">
+                                    <xsl:when test="$param_type = 'category'">
 
                                         <script type="text/javascript" language="JavaScript">
                                             function callback_<xsl:value-of select="$category-callback-js-fn-name"/>(key, view, win) {
@@ -845,8 +845,15 @@
                                 </xsl:when>
                                 <xsl:otherwise>
                                 	<xsl:variable name="postfield">
+                                        <xsl:text>&nbsp;&nbsp;</xsl:text>
+                                		<xsl:if test="@as">
+                                			<xsl:text>%fldDataType%: </xsl:text><xsl:value-of select="@as"/>
+                                		</xsl:if>
                                 		<xsl:if test="@select">
-                                			<xsl:text>&nbsp;&nbsp;%fldDefault%: </xsl:text><xsl:value-of select="@select"/>
+                                            <xsl:if test="@as">
+                                                <xsl:text>, </xsl:text>
+                                            </xsl:if>
+                                			<xsl:text>%fldDefaultValue%: </xsl:text><xsl:value-of select="@select"/>
                                 		</xsl:if>
                                 	</xsl:variable>
 

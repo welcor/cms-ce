@@ -270,7 +270,7 @@
                     <script type="text/javascript">
                         if (cms.ui.CodeArea.prototype.isBrowserSupported())
                         {
-                            var moduleCodeArea = new cms.ui.CodeArea('module');
+                            var moduleCodeArea = new cms.ui.CodeArea('module', null, true);
                         }
                     </script>
 

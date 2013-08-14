@@ -8,7 +8,7 @@ var SourceEditor = {
 
         textAreaToTransform.value = self.addNewlinesAfterBlockLevelTags(tinyMCEPopup.editor.getContent());
 
-        self.codeArea = new cms.ui.CodeArea(textAreaToTransform.id);
+        self.codeArea = new cms.ui.CodeArea(textAreaToTransform.id, null, false);
 
         // Resize editor on window resize
         if (window.addEventListener) {

@@ -269,7 +269,7 @@
           <script type="text/javascript">
               if (cms.ui.CodeArea.prototype.isBrowserSupported())
               {
-                  var configCodeArea = new cms.ui.CodeArea('config');
+                  var configCodeArea = new cms.ui.CodeArea('config', null, true);
               }
           </script>
 

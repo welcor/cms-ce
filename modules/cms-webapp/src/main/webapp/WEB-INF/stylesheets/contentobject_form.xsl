@@ -669,7 +669,7 @@
                             {
                                 if (!g_dataSourceTab._clicked)
                                 {
-                                    window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea');
+                                    window.datasourcesCodeArea = new cms.ui.CodeArea('_datasources_textarea', null, true);
                                     g_dataSourceTab._clicked = true;
                                 }
                             });

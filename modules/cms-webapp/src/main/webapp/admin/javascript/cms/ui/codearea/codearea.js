@@ -23,16 +23,23 @@
 
 (function(){
     'use strict';
-
     // Namespaces
     if (!window.cms) { window.cms = {}; }
     if (!window.cms.ui) { window.cms.ui = {}; }
 
-    // Class (JS constructor function)
-    var codeArea = cms.ui.CodeArea = function (textAreaId, codeMirrorConfig) {
+    /**
+     * Class CodeArea
+     *
+     * @textAreaId {String} id of the textarea element that should be transformed.
+     * @codeMirrorConfig {CodeMirrorConfig} optional
+     * @enableAutoResize {Boolean} optional
+     */
+    var codeArea = cms.ui.CodeArea = function (textAreaId, codeMirrorConfig, enableAutoResize) {
         this.codeMirror = null;
         this.textAreaToConvert = document.getElementById(textAreaId);
         this.config = codeMirrorConfig || {};
+        this.enableAutoResize = enableAutoResize || true;
+
         this.initCodeMirror();
         this.reindentAllLines();
     };
@@ -45,6 +52,10 @@
         try {
             if (this.textAreaToConvert) {
                 this.setDefaultConfig();
+                if (this.enableAutoResize) {
+                    this.appendCodeMirrorAutoResizeCssToHeadElement();
+                }
+
                 this.codeMirror = CodeMirror.fromTextArea(this.textAreaToConvert, this.config);
             }
         }
@@ -69,34 +80,53 @@
     };
 
     proto.setDefaultConfig = function () {
-        var userConfig = this.config;
+        var config = this.config;
 
-        if (!userConfig.mode) {
-            userConfig.mode = 'application/xml';
+        if (this.enableAutoResize) {
+            config.viewportMargin = Infinity;
         }
 
-        if (!userConfig.lineNumbers) {
-            userConfig.lineNumbers = true;
+        if (!config.mode) {
+            config.mode = 'application/xml';
         }
 
-        if (!userConfig.lineWrapping) {
-            userConfig.lineWrapping = true;
+        if (!config.lineNumbers) {
+            config.lineNumbers = true;
         }
 
-        if (!userConfig.indentUnit) {
-            userConfig.indentUnit = 4;
+        if (!config.lineWrapping) {
+            config.lineWrapping = true;
         }
 
-        /* Add-ons */
-        if (!userConfig.autoCloseTags) {
-            userConfig.autoCloseTags = true;
+        if (!config.indentUnit) {
+            config.indentUnit = 4;
         }
 
-        if (!userConfig.styleActiveLine) {
-            userConfig.styleActiveLine = true;
+        /* Add-on specific configuration */
+
+        if (!config.autoCloseTags) {
+            config.autoCloseTags = true;
         }
 
-        userConfig.highlightSelectionMatches = {showToken: /\w/};
+        if (!config.styleActiveLine) {
+            config.styleActiveLine = true;
+        }
+        config.highlightSelectionMatches = {showToken: /\w/};
+    };
+
+    proto.appendCodeMirrorAutoResizeCssToHeadElement = function () {
+        var css = '.CodeMirror { height: auto } .CodeMirror-scroll {  min-height: 130px; overflow-y: hidden; overflow-x: auto; }',
+            headEl = document.getElementsByTagName('head')[0],
+            styleEl = document.createElement('style');
+
+        styleEl.type = 'text/css';
+        if (styleEl.styleSheet) {
+            styleEl.styleSheet.cssText = css;
+        } else {
+            styleEl.appendChild(document.createTextNode(css));
+        }
+
+        headEl.appendChild(styleEl);
     };
 
     proto.isBrowserSupported = function () {

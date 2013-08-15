@@ -25,6 +25,6 @@ public final class OSStatusInfoBuilder
         json.put( "version", bean.getVersion() );
         json.put( "arch", bean.getArch() );
         json.put( "cores", bean.getAvailableProcessors() );
-        json.put( "load_average", bean.getSystemLoadAverage() );
+        json.put( "loadAverage", bean.getSystemLoadAverage() );
     }
 }

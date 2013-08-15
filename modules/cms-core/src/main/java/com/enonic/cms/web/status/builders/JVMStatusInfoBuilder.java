@@ -24,7 +24,7 @@ public final class JVMStatusInfoBuilder
         json.put( "name", bean.getVmName() );
         json.put( "vendor", bean.getVmVendor() );
         json.put( "vesion", bean.getVmVersion() );
-        json.put( "start_time", bean.getStartTime() );
-        json.put( "up_time", bean.getUptime() );
+        json.put( "startTime", bean.getStartTime() );
+        json.put( "upTime", bean.getUptime() );
     }
 }

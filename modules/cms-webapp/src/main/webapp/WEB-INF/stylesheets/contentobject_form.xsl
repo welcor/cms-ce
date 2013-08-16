@@ -60,9 +60,8 @@
                 <script type="text/javascript" src="javascript/validate.js">//</script>
                 <script type="text/javascript" src="javascript/tabpane.js">//</script>
                 <script type="text/javascript" src="javascript/accessrights.js">//</script>
-                <script type="text/javascript" src="tinymce/jscripts/cms/Util.js">//</script>
-                <script type="text/javascript" src="tinymce/jscripts/cms/Editor.js">//</script>
-                <script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js">//</script>
+
+                <xsl:call-template name="xhtmleditor-scripts"/>
 
                 <xsl:call-template name="codearea-scripts"/>
 

@@ -61,10 +61,7 @@
         <script type="text/javascript" language="JavaScript" src="javascript/calendar_picker.js"/>
         <script type="text/javascript" language="JavaScript" src="javascript/properties.js"/>
 
-        <script type="text/javascript" src="tinymce/jscripts/cms/Util.js">//</script>
-        <script type="text/javascript" src="tinymce/jscripts/cms/Editor.js">//</script>
-        <script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js">//</script>
-
+        <xsl:call-template name="xhtmleditor-scripts"/>
 
         <script type="text/javascript" language="JavaScript">
           // variables used by menu.js

@@ -63,9 +63,7 @@
             <script type="text/javascript" src="javascript/cms/element/Dimensions.js">//</script>
             <script type="text/javascript" src="javascript/cms/ui/SplitButton.js">//</script>
 
-            <script type="text/javascript" src="tinymce/jscripts/cms/Util.js">//</script>
-            <script type="text/javascript" src="tinymce/jscripts/cms/Editor.js">//</script>
-            <script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js">//</script>
+            <xsl:call-template name="xhtmleditor-scripts"/>
 
             <xsl:call-template name="waitsplash"/>
 

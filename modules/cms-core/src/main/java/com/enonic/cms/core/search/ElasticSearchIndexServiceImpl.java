@@ -13,6 +13,9 @@ import java.util.Set;
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
+import org.elasticsearch.action.admin.cluster.node.info.NodesInfoRequest;
+import org.elasticsearch.action.admin.cluster.node.info.NodesInfoResponse;
 import org.elasticsearch.action.admin.cluster.settings.ClusterUpdateSettingsRequest;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
@@ -158,6 +161,29 @@ public class ElasticSearchIndexServiceImpl
         clusterStateRequest.filterMetaData( true );
         clusterStateRequest.filterBlocks( true );
         return client.admin().cluster().state( clusterStateRequest ).actionGet();
+    }
+
+    @Override
+    public NodeInfo getLocalNodeInfo()
+    {
+        final NodesInfoResponse nodeInfos = doGetNodesInfo( new String[]{"_local"} );
+
+        return nodeInfos.getAt( 0 );
+    }
+
+
+    @Override
+    public NodesInfoResponse getNodesInfo( final String[] nodeIds )
+    {
+        return doGetNodesInfo( nodeIds );
+    }
+
+
+    private NodesInfoResponse doGetNodesInfo( final String[] nodeIds )
+    {
+        final NodesInfoRequest nodesInfoRequest = new NodesInfoRequest( nodeIds );
+
+        return client.admin().cluster().nodesInfo( nodesInfoRequest ).actionGet();
     }
 
     @Override

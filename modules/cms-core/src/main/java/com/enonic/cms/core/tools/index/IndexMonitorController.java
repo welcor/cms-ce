@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
+import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Maps;
@@ -133,13 +134,15 @@ public final class IndexMonitorController
     {
         final ClusterStateResponse clusterState = elasticSearchIndexService.getClusterState();
 
+        final NodeInfo localNodeInfo = elasticSearchIndexService.getLocalNodeInfo();
+
         if ( clusterState == null )
         {
             errors.add( "Not able to get clusterState" );
             return false;
         }
 
-        final String localNodeId = clusterState.getState().nodes().localNodeId();
+        final String localNodeId = localNodeInfo.getNode().getId();
         final String masterNodeId = clusterState.getState().nodes().masterNodeId();
 
         if ( localNodeId == null )

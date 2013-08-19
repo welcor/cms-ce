@@ -16,7 +16,6 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.PropertyAccessor;
 import org.springframework.expression.spel.SpelEvaluationException;
-import org.springframework.expression.spel.SpelParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -29,7 +28,6 @@ import com.enonic.cms.core.portal.datasource.el.accessors.ParamsAccessor;
 import com.enonic.cms.core.portal.datasource.el.accessors.PortalAccessor;
 import com.enonic.cms.core.portal.datasource.el.accessors.SessionAccessor;
 import com.enonic.cms.core.portal.datasource.el.accessors.UserAccessor;
-import com.enonic.cms.core.portal.datasource.el.accessors.UserAccessorNoReflection;
 import com.enonic.cms.core.structure.SiteProperties;
 
 public final class ExpressionFunctionsExecutor

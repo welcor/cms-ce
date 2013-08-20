@@ -15,8 +15,6 @@
   <xsl:template match="/">
     <x:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-      <x:text disable-output-escaping="yes">&lt;!DOCTYPE html></x:text>
-
       <x:output method="html"/>
 
       <x:include href="{concat($xslpath, 'common/generic_parameters.xsl')}"/>
@@ -157,7 +155,7 @@
                   select="boolean($configuration/prefix) or boolean($configuration/first-name) or boolean($configuration/middle-name) or boolean($configuration/last-name) or boolean($configuration/suffix) or boolean($configuration/initials)  or boolean($configuration/nickname)"/>
 
       <x:template match="/">
-        <html>
+          <html>
           <head>
           <script type="text/javascript" src="javascript/admin.js">//</script>
           <script type="text/javascript" src="javascript/validate.js">//</script>

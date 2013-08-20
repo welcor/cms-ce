@@ -10,10 +10,8 @@ import javax.servlet.http.Cookie;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.enonic.cms.core.RequestParameters;
@@ -23,7 +21,6 @@ import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsExecutor;
 import com.enonic.cms.core.portal.datasource.el.ExpressionFunctionsFactory;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.SiteEntity;
-import com.enonic.cms.core.structure.SiteKey;
 import com.enonic.cms.core.structure.SiteProperties;
 import com.enonic.cms.core.time.MockTimeService;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -369,7 +366,7 @@ public class ExpressionFunctionsExecutorTest
     public void testPropertyFromSite()
         throws Exception
     {
-        String evaluated = efExecutor.evaluate( "${properties.cms.site.test}" );
+        String evaluated = efExecutor.evaluate( "${properties['cms.site.test']}" );
         assertEquals( "site", evaluated );
     }
 
@@ -377,7 +374,7 @@ public class ExpressionFunctionsExecutorTest
     public void testPropertyFromRoot()
         throws Exception
     {
-        String evaluated = efExecutor.evaluate( "${properties.cms.root.test}" );
+        String evaluated = efExecutor.evaluate( "${properties['cms.root.test']}" );
         assertEquals( "root", evaluated );
     }
 
@@ -385,7 +382,7 @@ public class ExpressionFunctionsExecutorTest
     public void testOverriddenProperty()
         throws Exception
     {
-        String evaluated = efExecutor.evaluate( "${properties.cms.test}" );
+        String evaluated = efExecutor.evaluate( "${properties['cms.test']}" );
         assertEquals( "overridden", evaluated );
     }
 
@@ -393,7 +390,7 @@ public class ExpressionFunctionsExecutorTest
     public void testMissedProperty()
         throws Exception
     {
-        String evaluated = efExecutor.evaluate( "${properties.cms.test.none}" );
+        String evaluated = efExecutor.evaluate( "${properties['cms.test.none']}" );
         assertEquals( null, evaluated );
     }
 

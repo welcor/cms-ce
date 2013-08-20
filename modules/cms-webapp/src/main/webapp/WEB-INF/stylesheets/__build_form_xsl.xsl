@@ -112,9 +112,7 @@
             <script type="text/javascript" src="javascript/menu.js">//</script>
             <script type="text/javascript" src="javascript/properties.js">//</script>
 
-            <script type="text/javascript" src="tinymce/jscripts/cms/Util.js">//</script>
-            <script type="text/javascript" src="tinymce/jscripts/cms/Editor.js">//</script>
-            <script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js">//</script>
+            <x:call-template name="xhtmleditor-scripts"/>
 
             <x:if test="$subop != ''">
               <script type="text/javascript" src="javascript/window.js"/>

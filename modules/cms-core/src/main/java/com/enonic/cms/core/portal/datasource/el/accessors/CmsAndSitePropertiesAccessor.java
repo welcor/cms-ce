@@ -11,7 +11,7 @@ import java.util.Properties;
 import com.enonic.cms.core.structure.SiteProperties;
 
 public final class CmsAndSitePropertiesAccessor
-    implements Accessor<CmsAndSitePropertiesAccessor>
+    implements Accessor<String>
 {
     private String path;
 
@@ -25,33 +25,22 @@ public final class CmsAndSitePropertiesAccessor
         this.siteProperties = siteProperties != null ? siteProperties.getProperties() : null;
     }
 
-    public CmsAndSitePropertiesAccessor getValue( final String name )
+    public String getValue( final String name )
     {
         this.path = this.path == null ? name : this.path + "." + name;
 
-        return this;
-    }
-
-    @Override
-    public String toString()
-    {
         Object value = null;
 
         if ( siteProperties != null )
         {
             value = siteProperties.get( this.path );
         }
-
         if ( value == null )
         {
             value = rootProperties.get( this.path );
         }
 
-        if ( value != null )
-        {
-            return value.toString();
-        }
-
-        return null;
+        return value != null ? value.toString() : null;
     }
+
 }

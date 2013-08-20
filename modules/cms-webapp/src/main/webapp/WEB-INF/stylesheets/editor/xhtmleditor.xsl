@@ -6,6 +6,12 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:admin="http://www.enonic.com/cms/admin">
 
+    <xsl:template name="xhtmleditor-scripts">
+        <script type="text/javascript" src="tinymce/jscripts/cms/Util.js">//</script>
+        <script type="text/javascript" src="tinymce/jscripts/cms/Editor.js">//</script>
+        <script type="text/javascript" src="tinymce/jscripts/tiny_mce/tiny_mce.js">//</script>
+    </xsl:template>
+
   <xsl:template name="xhtmleditor">
     <!-- String, Required -->
     <xsl:param name="id"/>

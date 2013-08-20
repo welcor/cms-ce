@@ -30,16 +30,15 @@ public class QueryTranslator_filterCategoryAccessFilterTest
         String expected = "{\n" +
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
+            "      \"must\" : [ {\n" +
             "        \"terms\" : {\n" +
             "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
+            "      }, {\n" +
             "        \"terms\" : {\n" +
             "          \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
-            "      }\n" +
+            "      } ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -70,25 +69,23 @@ public class QueryTranslator_filterCategoryAccessFilterTest
         String expected = "{\n" +
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
+            "      \"must\" : [ {\n" +
             "        \"terms\" : {\n" +
             "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
+            "      }, {\n" +
             "        \"bool\" : {\n" +
-            "          \"must\" : {\n" +
+            "          \"must\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"access_category_approve\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
-            "      }\n" +
+            "      } ]\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -119,25 +116,23 @@ public class QueryTranslator_filterCategoryAccessFilterTest
         String expected = "{\n" +
             "  \"filter\" : {\n" +
             "    \"bool\" : {\n" +
-            "      \"must\" : {\n" +
+            "      \"must\" : [ {\n" +
             "        \"terms\" : {\n" +
             "          \"access_read\" : [ \"group_a\", \"group_b\" ]\n" +
             "        }\n" +
-            "      },\n" +
-            "      \"must\" : {\n" +
+            "      }, {\n" +
             "        \"bool\" : {\n" +
-            "          \"should\" : {\n" +
+            "          \"should\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"access_category_browse\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"should\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"access_category_approve\" : [ \"group_a\", \"group_b\" ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
-            "      }\n" +
+            "      } ]\n" +
             "    }\n" +
             "  }\n" +
             "}";

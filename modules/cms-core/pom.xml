@@ -240,9 +240,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.enonic.lib.repack</groupId>
+      <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>0.20.6</version>
+      <version>0.90.3</version>
     </dependency>
     <dependency>
       <groupId>org.tuckey</groupId>

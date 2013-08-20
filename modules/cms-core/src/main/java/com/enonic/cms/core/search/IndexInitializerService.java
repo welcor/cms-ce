@@ -49,7 +49,7 @@ public class IndexInitializerService
         final ClusterHealthResponse clusterHealth =
             elasticSearchIndexService.getClusterHealth( ContentIndexServiceImpl.CONTENT_INDEX_NAME, true );
 
-        if ( clusterHealth.timedOut() || ClusterHealthStatus.RED.equals( clusterHealth.getStatus() ) )
+        if ( clusterHealth.isTimedOut() || ClusterHealthStatus.RED.equals( clusterHealth.getStatus() ) )
         {
             LOG.warn( "Not able to get a valid cluster status, skipping reindex" );
         }

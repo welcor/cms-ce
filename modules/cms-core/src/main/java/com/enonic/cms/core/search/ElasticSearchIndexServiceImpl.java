@@ -112,7 +112,7 @@ public class ElasticSearchIndexServiceImpl
 
         final ClusterStateResponse clusterStateResponse = client.admin().cluster().state( clusterStateRequest ).actionGet();
 
-        final MetaData metaData = clusterStateResponse.state().metaData();
+        final MetaData metaData = clusterStateResponse.getState().metaData();
 
         final Map<String, String> indexSettings = Maps.newHashMap();
 
@@ -139,12 +139,12 @@ public class ElasticSearchIndexServiceImpl
             Requests.clusterStateRequest().listenerThreaded( false ).filterRoutingTable( true ).filterNodes( true );
         final ClusterStateResponse clusterStateResponse = client.admin().cluster().state( clusterStateRequest ).actionGet();
 
-        for ( Map.Entry<String, String> entry : clusterStateResponse.state().metaData().persistentSettings().getAsMap().entrySet() )
+        for ( Map.Entry<String, String> entry : clusterStateResponse.getState().metaData().persistentSettings().getAsMap().entrySet() )
         {
             clusterSettings.put( entry.getKey() + " (P)", entry.getValue() );
         }
 
-        for ( Map.Entry<String, String> entry : clusterStateResponse.state().metaData().transientSettings().getAsMap().entrySet() )
+        for ( Map.Entry<String, String> entry : clusterStateResponse.getState().metaData().transientSettings().getAsMap().entrySet() )
         {
             clusterSettings.put( entry.getKey() + " (T)", entry.getValue() );
         }
@@ -282,7 +282,7 @@ public class ElasticSearchIndexServiceImpl
             throw new IndexException( "Failed to delete content with key: " + contentKey, e );
         }
 
-        return !deleteResponse.notFound();
+        return !deleteResponse.isNotFound();
     }
 
     @Override
@@ -329,7 +329,7 @@ public class ElasticSearchIndexServiceImpl
             throw new IndexException( "Failed to get contentKey with id " + contentKey.toString(), e );
         }
 
-        return getResponse.exists();
+        return getResponse.isExists();
     }
 
     public long count( String indexName, String indexType, SearchSourceBuilder sourceBuilder )
@@ -352,7 +352,7 @@ public class ElasticSearchIndexServiceImpl
 
         final CountResponse countResponse = this.client.count( countRequestBuilder.request() ).actionGet();
 
-        return countResponse.count();
+        return countResponse.getCount();
     }
 
     @Override
@@ -365,7 +365,7 @@ public class ElasticSearchIndexServiceImpl
         final OptimizeResponse optimizeResponse = this.client.admin().indices().optimize( optimizeRequest ).actionGet();
         long finished = System.currentTimeMillis();
 
-        LOG.debug( "Optimized index for " + optimizeResponse.successfulShards() + " shards in " + ( finished - start ) + " ms" );
+        LOG.debug( "Optimized index for " + optimizeResponse.getSuccessfulShards() + " shards in " + ( finished - start ) + " ms" );
     }
 
     @Override
@@ -375,7 +375,7 @@ public class ElasticSearchIndexServiceImpl
 
         final DeleteIndexResponse deleteIndexResponse = this.client.admin().indices().delete( deleteIndexRequest ).actionGet();
 
-        if ( !deleteIndexResponse.acknowledged() )
+        if ( !deleteIndexResponse.isAcknowledged() )
         {
             LOG.warn( "Index " + indexName + " not deleted" );
         }
@@ -471,7 +471,7 @@ public class ElasticSearchIndexServiceImpl
     public boolean indexExists( String indexName )
     {
         final IndicesExistsResponse exists = this.client.admin().indices().exists( new IndicesExistsRequest( indexName ) ).actionGet();
-        return exists.exists();
+        return exists.isExists();
     }
 
     @Override
@@ -490,13 +490,13 @@ public class ElasticSearchIndexServiceImpl
 
         final ClusterHealthResponse clusterHealthResponse = this.client.admin().cluster().health( request ).actionGet();
 
-        if ( clusterHealthResponse.timedOut() )
+        if ( clusterHealthResponse.isTimedOut() )
         {
             LOG.warn( "ElasticSearch cluster health timed out" );
         }
         else
         {
-            LOG.trace( "ElasticSearch cluster health: Status " + clusterHealthResponse.status().name() + "; " +
+            LOG.trace( "ElasticSearch cluster health: Status " + clusterHealthResponse.getStatus().name() + "; " +
                            clusterHealthResponse.getNumberOfNodes() + " nodes; " + clusterHealthResponse.getActiveShards() +
                            " active shards." );
         }

@@ -31,7 +31,7 @@ public class QueryTranslator_filterSectionTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
+            "  \"size\" : 1000,\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -39,16 +39,15 @@ public class QueryTranslator_filterSectionTest
             "      },\n" +
             "      \"filter\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"should\" : {\n" +
+            "          \"should\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"contentlocations_approved\" : [ \"3\", \"2\", \"1\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"should\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"contentlocations_unapproved\" : [ \"3\", \"2\", \"1\" ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

@@ -31,7 +31,7 @@ public class FacetExtractorTest
         final Facets facets = createFacets( statisticalFacet );
 
         SearchResponse response = Mockito.mock( SearchResponse.class );
-        Mockito.when( response.facets() ).thenReturn( facets );
+        Mockito.when( response.getFacets() ).thenReturn( facets );
 
         assertNull( FacetExtractor.getStatisticalFacet( response, "nonExisting" ) );
         assertNotNull( FacetExtractor.getStatisticalFacet( response, "test" ) );
@@ -44,7 +44,7 @@ public class FacetExtractorTest
         final Facets facets = createFacets( queryFacet );
 
         SearchResponse response = Mockito.mock( SearchResponse.class );
-        Mockito.when( response.facets() ).thenReturn( facets );
+        Mockito.when( response.getFacets() ).thenReturn( facets );
 
         final StatisticalFacet test = FacetExtractor.getStatisticalFacet( response, "test" );
     }
@@ -99,9 +99,9 @@ public class FacetExtractorTest
         Facet facet = new QueryFacet()
         {
             @Override
-            public long count()
+            public String getName()
             {
-                return 0;
+                return name;
             }
 
             @Override
@@ -110,53 +110,24 @@ public class FacetExtractorTest
                 return 0;
             }
 
-            @Override
-            public String name()
-            {
-                return name;
-            }
-
-            @Override
-            public String getName()
-            {
-                return name();
-            }
-
-            @Override
-            public String type()
-            {
-                return null;
-            }
 
             @Override
             public String getType()
             {
                 return null;
             }
-        };
-        return facet;
+        }; return facet;
     }
 
     private Facet createStatisticalFacet( final String name )
     {
         Facet facet = new StatisticalFacet()
         {
-            @Override
-            public long count()
-            {
-                return 10;
-            }
 
             @Override
             public long getCount()
             {
                 return 10;
-            }
-
-            @Override
-            public double total()
-            {
-                return 20;
             }
 
             @Override
@@ -166,19 +137,7 @@ public class FacetExtractorTest
             }
 
             @Override
-            public double sumOfSquares()
-            {
-                return 30;
-            }
-
-            @Override
             public double getSumOfSquares()
-            {
-                return 30;
-            }
-
-            @Override
-            public double mean()
             {
                 return 30;
             }
@@ -190,19 +149,7 @@ public class FacetExtractorTest
             }
 
             @Override
-            public double min()
-            {
-                return 0;
-            }
-
-            @Override
             public double getMin()
-            {
-                return 0;
-            }
-
-            @Override
-            public double max()
             {
                 return 0;
             }
@@ -214,19 +161,7 @@ public class FacetExtractorTest
             }
 
             @Override
-            public double variance()
-            {
-                return 0;
-            }
-
-            @Override
             public double getVariance()
-            {
-                return 0;
-            }
-
-            @Override
-            public double stdDeviation()
             {
                 return 0;
             }
@@ -238,21 +173,9 @@ public class FacetExtractorTest
             }
 
             @Override
-            public String name()
-            {
-                return name;
-            }
-
-            @Override
             public String getName()
             {
-                return name();
-            }
-
-            @Override
-            public String type()
-            {
-                return null;
+                return name;
             }
 
             @Override

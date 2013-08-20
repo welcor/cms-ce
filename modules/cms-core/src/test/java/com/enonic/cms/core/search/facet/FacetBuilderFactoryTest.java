@@ -8,7 +8,7 @@ package com.enonic.cms.core.search.facet;
 import java.util.Collection;
 import java.util.Set;
 
-import org.elasticsearch.search.facet.AbstractFacetBuilder;
+import org.elasticsearch.search.facet.FacetBuilder;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class FacetBuilderFactoryTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         query.setFacets( facetXml );
 
-        final Collection<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
+        final Collection<FacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 
         assertTrue( abstractFacetBuilders.size() == 0 );
     }
@@ -47,11 +47,11 @@ public class FacetBuilderFactoryTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         query.setFacets( facetXml );
 
-        final Set<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
+        final Set<FacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 
         assertTrue( "Should create one facet", abstractFacetBuilders.size() == 1 );
 
-        for ( AbstractFacetBuilder builder : abstractFacetBuilders )
+        for ( FacetBuilder builder : abstractFacetBuilders )
         {
             assertTrue( builder instanceof TermsFacetBuilder );
         }
@@ -78,11 +78,11 @@ public class FacetBuilderFactoryTest
         ContentIndexQuery query = new ContentIndexQuery( "" );
         query.setFacets( facetXml );
 
-        final Set<AbstractFacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
+        final Set<FacetBuilder> abstractFacetBuilders = factory.buildFacetBuilder( query );
 
         assertTrue( abstractFacetBuilders.size() == 3 );
 
-        for ( AbstractFacetBuilder builder : abstractFacetBuilders )
+        for ( FacetBuilder builder : abstractFacetBuilders )
         {
             assertTrue( builder instanceof TermsFacetBuilder );
         }

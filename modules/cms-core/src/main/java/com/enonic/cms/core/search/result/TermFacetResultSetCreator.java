@@ -20,10 +20,10 @@ public class TermFacetResultSetCreator
         termsFacetResultSet.setMissing( facet.getMissingCount() );
         termsFacetResultSet.setOther( facet.getOtherCount() );
 
-        final List<? extends TermsFacet.Entry> entries = facet.entries();
+        final List<? extends TermsFacet.Entry> entries = facet.getEntries();
         for ( TermsFacet.Entry entry : entries )
         {
-            termsFacetResultSet.addResult( entry.getTerm(), entry.getCount() );
+            termsFacetResultSet.addResult( entry.getTerm().toString(), entry.getCount() );
         }
 
         return termsFacetResultSet;

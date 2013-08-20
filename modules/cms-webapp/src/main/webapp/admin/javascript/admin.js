@@ -769,26 +769,31 @@ function setFocus()
 }
 
 // Sets focus to the first field in the form
-function form_setFocus( aForm )
-{
-	if( aForm.elements.length > 0)
-	{
-		var i;
-		var max = aForm.length;
-		for( i = 0; i < max; i++ ) {
-			if( aForm.elements[ i ].type != "hidden" &&
-				aForm.elements[ i ].type != undefined &&
-				!aForm.elements[ i ].disabled &&
-				!aForm.elements[ i ].readOnly ) {
-				try {
-					aForm.elements[ i ].focus();
-				}
-				catch(e){
-				}
-				break;
-			}
-		}
-	}
+function form_setFocus( aForm ) {
+    if (aForm.elements.length > 0) {
+        var i,
+            formElement,
+            type,
+            tagName,
+            isEnabled;
+
+        for (i = 0; i < aForm.length; i++) {
+            formElement = aForm.elements[i];
+            type = formElement.type;
+            tagName = formElement.tagName.toLowerCase();
+            isEnabled = !formElement.disabled && !formElement.readOnly;
+
+            if (type != "hidden" && type != undefined && isEnabled && tagName != "button") {
+                try {
+                    formElement.focus();
+                }
+                catch (e) {
+                }
+
+                break;
+            }
+        }
+    }
 }
 
 // Moves options from one select box to another

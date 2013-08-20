@@ -146,8 +146,15 @@
                   isCssValid: <xsl:value-of select="$isCssValid"/>
                 </p>
                 -->
+              <xsl:call-template name="save-cancel-buttons"/>
 
-                <form action="adminpage?page={$page}&amp;op=update&amp;reload=true" method="POST" name="formAdmin" id="formAdmin">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                      <td class="form_form_buttonrow_seperator"><img src="images/1x1.gif"/></td>
+                  </tr>
+              </table>
+
+              <form action="adminpage?page={$page}&amp;op=update&amp;reload=true" method="POST" name="formAdmin" id="formAdmin">
 
                     <input type="hidden" id="resetcache" name="resetcache" value="false"/>
 
@@ -386,31 +393,36 @@
                             <td class="form_form_buttonrow_seperator"><img src="images/1x1.gif"/></td>
                         </tr>
                     </table>
-                    <xsl:call-template name="button">
-                        <xsl:with-param name="type" select="'button'"/>
-                        <xsl:with-param name="caption" select="'%cmdSave%'"/>
-                        <xsl:with-param name="name" select="'lagre'"/>
-                        <xsl:with-param name="onclick">
-                            <xsl:text>javascript:validateAll('formAdmin');</xsl:text>
-                        </xsl:with-param>
-                        <xsl:with-param name="disabled" select="$isCssValid = 'false'"/>
-                    </xsl:call-template>
 
-                    <xsl:text>&nbsp;</xsl:text>
-
-                    <xsl:call-template name="button">
-                        <xsl:with-param name="type" select="'button'"/>
-                        <xsl:with-param name="caption" select="'%cmdCancel%'"/>
-                        <xsl:with-param name="name" select="'avbryt'"/>
-                        <xsl:with-param name="onclick">
-                            <xsl:text>javascript:history.back();</xsl:text>
-                        </xsl:with-param>
-                    </xsl:call-template>
+                    <xsl:call-template name="save-cancel-buttons"/>
 
                 </form>
             </body>
 
         </html>
+    </xsl:template>
+
+    <xsl:template name="save-cancel-buttons">
+        <xsl:call-template name="button">
+            <xsl:with-param name="type" select="'button'"/>
+            <xsl:with-param name="caption" select="'%cmdSave%'"/>
+            <xsl:with-param name="name" select="'lagre'"/>
+            <xsl:with-param name="onclick">
+                <xsl:text>javascript:validateAll('formAdmin');</xsl:text>
+            </xsl:with-param>
+            <xsl:with-param name="disabled" select="$isCssValid = 'false'"/>
+        </xsl:call-template>
+
+        <xsl:text>&nbsp;</xsl:text>
+
+        <xsl:call-template name="button">
+            <xsl:with-param name="type" select="'button'"/>
+            <xsl:with-param name="caption" select="'%cmdCancel%'"/>
+            <xsl:with-param name="name" select="'avbryt'"/>
+            <xsl:with-param name="onclick">
+                <xsl:text>javascript:history.back();</xsl:text>
+            </xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
 </xsl:stylesheet>

@@ -76,105 +76,10 @@
           </xsl:if>
         </xsl:if>
 
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td class="browse_title_buttonrow_seperator"><img src="images/1x1.gif"/></td>
-          </tr>
-          <tr>
-            <td>
-              <xsl:if test="$siteadmin = 'true'">
+        <xsl:call-template name="navigation-buttons">
+            <xsl:with-param name="id" select="'1'"/>
+        </xsl:call-template>
 
-                <xsl:call-template name="button">
-                  <xsl:with-param name="type" select="'link'"/>
-                  <xsl:with-param name="caption" select="'%cmdEdit%'"/>
-                  <xsl:with-param name="href">
-                    <xsl:text>adminpage?page=</xsl:text>
-                    <xsl:value-of select="$page"/>
-                    <xsl:text>&amp;op=form</xsl:text>
-                    <xsl:text>&amp;key=</xsl:text>
-                    <xsl:value-of select="$menukey"/>
-                  </xsl:with-param>
-                </xsl:call-template>
-
-                <xsl:if test="$siteadmin = 'true' or $enterpriseadmin = 'true'">
-                  <xsl:text>&nbsp;</xsl:text>
-
-                  <xsl:call-template name="button">
-                    <xsl:with-param name="type" select="'link'"/>
-                    <xsl:with-param name="caption" select="'%cmdCopy%'"/>
-                    <xsl:with-param name="href">
-                      <xsl:text>adminpage?page=5&amp;redirect=adminpage%3Fpage=851%26op=copy</xsl:text>
-                      <xsl:text>%26returnop=browse%26key=</xsl:text><xsl:value-of select="$menukey"/>
-                    </xsl:with-param>
-                    <xsl:with-param name="condition">
-                      <xsl:text>confirm('%alertCopySiteCustom% </xsl:text>
-                      <xsl:value-of select="/menus/menu/name"/>
-                      <xsl:text>?')</xsl:text>
-                    </xsl:with-param>
-                  </xsl:call-template>
-                </xsl:if>
-
-                <xsl:text>&nbsp;</xsl:text>
-
-                <xsl:call-template name="button">
-                  <xsl:with-param name="type" select="'link'"/>
-                  <xsl:with-param name="caption" select="'%cmdDelete%'"/>
-                  <xsl:with-param name="href">
-                    <xsl:text>adminpage?page=</xsl:text>
-                    <xsl:value-of select="$page"/>
-                    <xsl:text>&amp;op=remove</xsl:text>
-                    <xsl:text>&amp;key=</xsl:text><xsl:value-of select="$menukey"/>
-                  </xsl:with-param>
-                  <xsl:with-param name="condition">
-                    <xsl:text>confirm('%alertDeleteSite%')</xsl:text>
-                  </xsl:with-param>
-                </xsl:call-template>
-
-                <xsl:text>&nbsp;</xsl:text>
-              </xsl:if>
-
-              <xsl:call-template name="button">
-                <xsl:with-param name="type" select="'link'"/>
-                <xsl:with-param name="caption" select="'%btnOpenInIce%'"/>
-                <xsl:with-param name="tooltip" select="'%btnOpenInIceTooltip%'"/>
-                <xsl:with-param name="href" select="$debugpath"/>
-                <xsl:with-param name="target" select="'_blank'"/>
-              </xsl:call-template>
-
-              <xsl:if test="$siteadmin = 'true'">
-
-                <xsl:variable name="commandUrlPrefix">
-                  <xsl:text>adminpage?page=</xsl:text>
-                  <xsl:value-of select="$page"/>
-                  <xsl:text>&amp;menukey=</xsl:text>
-                  <xsl:value-of select="$menukey"/>
-                </xsl:variable>
-
-                <ul id="clearPageCacheEntriesBySite" title="%cmdClearPageCacheBySite%" class="cms-split-button no-default-action">
-                  <li class="cms-menu-item-icon-clear-pages-only">
-                    <a href="{concat($commandUrlPrefix, '&amp;op=clearcachedpages')}">%cmdClearPagesOnly%</a>
-                  </li>
-                  <li class="cms-menu-item-icon-clear-portlets-only">
-                    <a href="{concat($commandUrlPrefix, '&amp;op=clearcachedobjects')}">%cmdClearPortletsOnly%</a>
-                  </li>
-                  <li>
-                    <a href="{concat($commandUrlPrefix, '&amp;op=clearcachedpagesandobjects')}">%cmdClearPagesAndPortlets%</a>
-                  </li>
-                </ul>
-                <script type="text/javascript" charset="utf-8">
-                  var splitButton = new cms.ui.SplitButton('clearPageCacheEntriesBySite');
-                  splitButton.insert();
-                </script>
-
-              </xsl:if>
-
-            </td>
-          </tr>
-          <tr>
-            <td class="browse_buttonrow_datarows_seperator"><img src="images/1x1.gif"/>
-            </td>
-          </tr>
-        </table>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
           <tr>
             <td>
@@ -407,8 +312,120 @@
           </tr>
         </table>
 
+          <xsl:call-template name="navigation-buttons">
+              <xsl:with-param name="id" select="'2'"/>
+          </xsl:call-template>
+
+
       </body>
     </html>
   </xsl:template>
+    <xsl:template name="navigation-buttons">
+        <xsl:param name="id"/>
+
+        <xsl:variable name="name" select="concat('clearCacheButton', $id)"/>
+
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td class="browse_title_buttonrow_seperator"><img src="images/1x1.gif"/></td>
+            </tr>
+            <tr>
+                <td>
+                    <xsl:if test="$siteadmin = 'true'">
+
+                        <xsl:call-template name="button">
+                            <xsl:with-param name="type" select="'link'"/>
+                            <xsl:with-param name="caption" select="'%cmdEdit%'"/>
+                            <xsl:with-param name="href">
+                                <xsl:text>adminpage?page=</xsl:text>
+                                <xsl:value-of select="$page"/>
+                                <xsl:text>&amp;op=form</xsl:text>
+                                <xsl:text>&amp;key=</xsl:text>
+                                <xsl:value-of select="$menukey"/>
+                            </xsl:with-param>
+                        </xsl:call-template>
+
+                        <xsl:if test="$siteadmin = 'true' or $enterpriseadmin = 'true'">
+                            <xsl:text>&nbsp;</xsl:text>
+
+                            <xsl:call-template name="button">
+                                <xsl:with-param name="type" select="'link'"/>
+                                <xsl:with-param name="caption" select="'%cmdCopy%'"/>
+                                <xsl:with-param name="href">
+                                    <xsl:text>adminpage?page=5&amp;redirect=adminpage%3Fpage=851%26op=copy</xsl:text>
+                                    <xsl:text>%26returnop=browse%26key=</xsl:text><xsl:value-of select="$menukey"/>
+                                </xsl:with-param>
+                                <xsl:with-param name="condition">
+                                    <xsl:text>confirm('%alertCopySiteCustom% </xsl:text>
+                                    <xsl:value-of select="/menus/menu/name"/>
+                                    <xsl:text>?')</xsl:text>
+                                </xsl:with-param>
+                            </xsl:call-template>
+                        </xsl:if>
+
+                        <xsl:text>&nbsp;</xsl:text>
+
+                        <xsl:call-template name="button">
+                            <xsl:with-param name="type" select="'link'"/>
+                            <xsl:with-param name="caption" select="'%cmdDelete%'"/>
+                            <xsl:with-param name="href">
+                                <xsl:text>adminpage?page=</xsl:text>
+                                <xsl:value-of select="$page"/>
+                                <xsl:text>&amp;op=remove</xsl:text>
+                                <xsl:text>&amp;key=</xsl:text><xsl:value-of select="$menukey"/>
+                            </xsl:with-param>
+                            <xsl:with-param name="condition">
+                                <xsl:text>confirm('%alertDeleteSite%')</xsl:text>
+                            </xsl:with-param>
+                        </xsl:call-template>
+
+                        <xsl:text>&nbsp;</xsl:text>
+                    </xsl:if>
+
+                    <xsl:call-template name="button">
+                        <xsl:with-param name="type" select="'link'"/>
+                        <xsl:with-param name="caption" select="'%btnOpenInIce%'"/>
+                        <xsl:with-param name="tooltip" select="'%btnOpenInIceTooltip%'"/>
+                        <xsl:with-param name="href" select="$debugpath"/>
+                        <xsl:with-param name="target" select="'_blank'"/>
+                    </xsl:call-template>
+
+                    <xsl:if test="$siteadmin = 'true'">
+                        <xsl:text> </xsl:text>
+
+                        <xsl:variable name="commandUrlPrefix">
+                            <xsl:text>adminpage?page=</xsl:text>
+                            <xsl:value-of select="$page"/>
+                            <xsl:text>&amp;menukey=</xsl:text>
+                            <xsl:value-of select="$menukey"/>
+                        </xsl:variable>
+
+                        <ul id="{$name}" title="%cmdClearPageCacheBySite%" class="cms-split-button no-default-action">
+                            <li class="cms-menu-item-icon-clear-pages-only">
+                                <a href="{concat($commandUrlPrefix, '&amp;op=clearcachedpages')}">%cmdClearPagesOnly%</a>
+                            </li>
+                            <li class="cms-menu-item-icon-clear-portlets-only">
+                                <a href="{concat($commandUrlPrefix, '&amp;op=clearcachedobjects')}">%cmdClearPortletsOnly%</a>
+                            </li>
+                            <li>
+                                <a href="{concat($commandUrlPrefix, '&amp;op=clearcachedpagesandobjects')}">%cmdClearPagesAndPortlets%</a>
+                            </li>
+                        </ul>
+                        <script type="text/javascript" charset="utf-8">
+                            var <xsl:value-of select="$name"/> = new cms.ui.SplitButton('<xsl:value-of select="$name"/>');
+                            <xsl:value-of select="$name"/>.insert();
+                        </script>
+
+                    </xsl:if>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="browse_buttonrow_datarows_seperator"><img src="images/1x1.gif"/>
+                </td>
+            </tr>
+        </table>
+
+    </xsl:template>
 
 </xsl:stylesheet>

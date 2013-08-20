@@ -625,122 +625,74 @@
             </x:attribute>
           </input>
 
-          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td>
-                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td colspan="10">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
 
-                      <div class="tab-pane" id="tab-pane-1">
-                        <script type="text/javascript">var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true );
-                        </script>
+                            <tr>
+                                <td colspan="10">
+                                    <x:call-template name="navigation-buttons">
+                                        <x:with-param name="id" select="'1'"/>
+                                    </x:call-template>
 
-                        <div class="tab-page" id="tab-page-1">
-                          <span class="tab">%blockUser%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="10" class="form_form_buttonrow_seperator">
+                                </td>
+                            </tr>
 
-                          <script type="text/javascript" language="JavaScript">
-                            <xsl:text>tabPane1.addTabPage( document.getElementById( "tab-page-1") );</xsl:text>
-                          </script>
+                            <tr>
+                                <td colspan="10">
 
-                          <x:call-template name="form-fieldsets"/>
-                        </div>
+                                    <div class="tab-pane" id="tab-pane-1">
+                                        <script type="text/javascript">var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true );
+                                        </script>
 
-                        <x:if test="$create = 0">
-                          <x:call-template name="properties"/>
+                                        <div class="tab-page" id="tab-page-1">
+                                            <span class="tab">%blockUser%</span>
 
-                          <x:if test="$user/block">
-                            <x:call-template name="groupmembershipform"/>
-                          </x:if>
-                          <x:if test="$isadmin = 'true'">
-                            <x:call-template name="preferences"/>
-                          </x:if>
-                        </x:if>
+                                            <script type="text/javascript" language="JavaScript">
+                                                <xsl:text>tabPane1.addTabPage( document.getElementById( "tab-page-1") );</xsl:text>
+                                            </script>
 
-                      </div>
-                      <script type="text/javascript">setupAllTabs();form_setFocus(document.formAdmin);</script>
+                                            <x:call-template name="form-fieldsets"/>
+                                        </div>
+
+                                        <x:if test="$create = 0">
+                                            <x:call-template name="properties"/>
+
+                                            <x:if test="$user/block">
+                                                <x:call-template name="groupmembershipform"/>
+                                            </x:if>
+                                            <x:if test="$isadmin = 'true'">
+                                                <x:call-template name="preferences"/>
+                                            </x:if>
+                                        </x:if>
+
+                                    </div>
+                                    <script type="text/javascript">setupAllTabs();form_setFocus(document.formAdmin);</script>
+                                </td>
+                            </tr>
+
+                        </table>
+
                     </td>
-                  </tr>
-
-                </table>
-
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <br/>
-              </td>
-            </tr>
-            <tr>
-              <td>
-
-                  <x:variable name="savescript">
-                    <x:choose>
-                      <x:when test="$user/block or $create = 1">
-                        <xsl:text>javascript:updateNotifyInputField(false); op='create';validateAll('formAdmin');</xsl:text>
-                      </x:when>
-                      <x:otherwise>
-                        <xsl:text>javascript:updateLanguage();history.back();parent.frames[2].location.href = parent.frames[2].location.href;</xsl:text>
-                      </x:otherwise>
-                    </x:choose>
-                  </x:variable>
-
-                  <x:choose>
-                    <x:when test="not($wizard) and not($profile) and not($uid = /users/user[1]/block/uid)">
-                      <ul id="save-split-button" title="%cmdSave%" class="cms-split-button">
-                        <li>
-                          <a>
-                            <x:attribute name="href">
-                              <x:value-of select="$savescript"/>
-                            </x:attribute>
-                            <x:text>%cmdSave%</x:text>
-                          </a>
-                        </li>
-                        <li>
-                          <a>
-                            <x:attribute name="href">
-                              <x:choose>
-                                <x:when test="$user/block or $create = 1">
-                                  <xsl:text>javascript:updateNotifyInputField(true); op = 'create'; validateAll('formAdmin');</xsl:text>
-                                </x:when>
-                                <x:otherwise>
-                                  <xsl:text>javascript:updateLanguage();history.back();parent.frames[2].location.href = parent.frames[2].location.href;</xsl:text>
-                                </x:otherwise>
-                              </x:choose>
-                            </x:attribute>
-                            <x:text>%cmdSaveAndNotify%</x:text>
-                          </a>
-                        </li>
-                      </ul>
-
-                      <script type="text/javascript" charset="utf-8">
-                        var splitButton = new cms.ui.SplitButton('save-split-button');
-                        splitButton.insert();
-                      </script>
-                    </x:when>
-                    <x:otherwise>
-                      <x:call-template name="button">
-                        <x:with-param name="type" select="'button'"/>
-                        <x:with-param name="caption" select="'%cmdSave%'"/>
-                        <x:with-param name="name" select="'lagre'"/>
-                        <x:with-param name="onclick" select="$savescript"/>
-                      </x:call-template>
-                    </x:otherwise>
-                  </x:choose>
-
-                  <x:text>&nbsp;</x:text>
-
-                <x:call-template name="button">
-                  <x:with-param name="type" select="'button'"/>
-                  <x:with-param name="caption" select="'%cmdCancel%'"/>
-                  <x:with-param name="name" select="'avbryt'"/>
-                  <x:with-param name="onclick">
-                    <xsl:text>javascript:history.back();</xsl:text>
-                  </x:with-param>
-                </x:call-template>
-              </td>
-            </tr>
-          </table>
+                </tr>
+                <tr>
+                    <td>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <x:call-template name="navigation-buttons">
+                            <x:with-param name="id" select="'2'"/>
+                        </x:call-template>
+                    </td>
+                </tr>
+            </table>
         </form>
       </x:template>
 
@@ -854,6 +806,81 @@
           </fieldset>
         </div>
       </x:template>
+
+        <x:template name="navigation-buttons">
+            <x:param name="id"/>
+
+            <x:variable name="name" select="concat('splitButton', $id)"/>
+
+            <x:variable name="savescript">
+                <x:choose>
+                    <x:when test="$user/block or $create = 1">
+                        <xsl:text>javascript:updateNotifyInputField(false); op='create';validateAll('formAdmin');</xsl:text>
+                    </x:when>
+                    <x:otherwise>
+                        <xsl:text>javascript:updateLanguage();history.back();parent.frames[2].location.href = parent.frames[2].location.href;</xsl:text>
+                    </x:otherwise>
+                </x:choose>
+            </x:variable>
+
+            <x:choose>
+                <x:when test="not($wizard) and not($profile) and not($uid = /users/user[1]/block/uid)">
+                    <ul title="%cmdSave%" class="cms-split-button">
+                        <x:attribute name="id">
+                            <x:value-of select="$name"/>
+                        </x:attribute>
+                        <li>
+                            <a>
+                                <x:attribute name="href">
+                                    <x:value-of select="$savescript"/>
+                                </x:attribute>
+                                <x:text>%cmdSave%</x:text>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <x:attribute name="href">
+                                    <x:choose>
+                                        <x:when test="$user/block or $create = 1">
+                                            <xsl:text>javascript:updateNotifyInputField(true); op = 'create'; validateAll('formAdmin');</xsl:text>
+                                        </x:when>
+                                        <x:otherwise>
+                                            <xsl:text>javascript:updateLanguage();history.back();parent.frames[2].location.href = parent.frames[2].location.href;</xsl:text>
+                                        </x:otherwise>
+                                    </x:choose>
+                                </x:attribute>
+                                <x:text>%cmdSaveAndNotify%</x:text>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <script type="text/javascript" charset="utf-8">
+                        var <x:value-of select="$name"/> = new cms.ui.SplitButton('<x:value-of select="$name"/>');
+                        <x:value-of select="$name"/>.insert();
+                    </script>
+
+                </x:when>
+                <x:otherwise>
+                    <x:call-template name="button">
+                        <x:with-param name="type" select="'button'"/>
+                        <x:with-param name="caption" select="'%cmdSave%'"/>
+                        <x:with-param name="name" select="'lagre'"/>
+                        <x:with-param name="onclick" select="$savescript"/>
+                    </x:call-template>
+                </x:otherwise>
+            </x:choose>
+
+            <x:text>&nbsp;</x:text>
+
+            <x:call-template name="button">
+                <x:with-param name="type" select="'button'"/>
+                <x:with-param name="caption" select="'%cmdCancel%'"/>
+                <x:with-param name="name" select="'avbryt'"/>
+                <x:with-param name="onclick">
+                    <xsl:text>javascript:history.back();</xsl:text>
+                </x:with-param>
+            </x:call-template>
+        </x:template>
 
       <x:template name="groupmembershipform">
         <x:param name="name" select="'%blockMemberOfGroups%'"/>

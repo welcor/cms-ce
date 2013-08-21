@@ -22,7 +22,7 @@ import com.enonic.cms.core.xslt.functions.AbstractXsltFunctionCall;
 final class CreateImagePlaceholderFunction
     extends AbstractPortalFunction
 {
-    private final static String IMAGE_FORMAT = "gif";
+    private final static String IMAGE_FORMAT = "png";
 
     private final class Call
         extends AbstractXsltFunctionCall

@@ -21,6 +21,7 @@ import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.type.ItemType;
 import net.sf.saxon.type.TypeHierarchy;
 import net.sf.saxon.value.BooleanValue;
+import net.sf.saxon.value.NumericValue;
 import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 
@@ -122,9 +123,12 @@ public abstract class AbstractXsltFunctionCall
         throws XPathException
     {
         final Item item = it.next();
-        if (item == null) {
+        if ( item == null )
+        {
             return null;
-        } else {
+        }
+        else
+        {
             return item.getStringValue();
         }
     }
@@ -146,5 +150,23 @@ public abstract class AbstractXsltFunctionCall
         }
 
         return list.toArray( new String[list.size()] );
+    }
+
+    protected final Long toSingleInteger( final SequenceIterator it )
+        throws XPathException
+    {
+        final Item item = it.next();
+        if ( item == null )
+        {
+            return null;
+        }
+        else if ( item instanceof NumericValue )
+        {
+            return ( (NumericValue) item ).getDecimalValue().longValue();
+        }
+        else
+        {
+            return Long.parseLong( item.getStringValue() );
+        }
     }
 }

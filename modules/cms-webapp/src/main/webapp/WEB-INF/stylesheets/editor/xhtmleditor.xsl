@@ -19,7 +19,7 @@
     <xsl:param name="name"/>
     <!-- Node -->
     <xsl:param name="content"/>
-    <!-- String, Required -->
+    <!-- String, Optional, see CMS doc for possible values -->
     <xsl:param name="config" select="'document'"/>
     <!-- String -->
     <xsl:param name="buttonRows"/>

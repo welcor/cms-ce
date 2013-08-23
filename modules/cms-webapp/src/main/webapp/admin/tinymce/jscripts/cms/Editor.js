@@ -18,12 +18,12 @@ function Editor( id )
 
         Wrapper, creates a new editor instance.
     */
-    this.create = function( oConfig )
+    this.create = function( tinyMceConfigObject )
     {
-        if ( oConfig )
+        if ( tinyMceConfigObject )
         {
-            var oEditor = new tinymce.Editor(this.id, oConfig);
-            oEditor.render();
+            var editor = new tinymce.Editor(this.id, tinyMceConfigObject);
+            editor.render();
         }
     };
     // -------------------------------------------------------------------------------------------------------------------------------------

@@ -111,7 +111,10 @@
         if (!config.styleActiveLine) {
             config.styleActiveLine = true;
         }
-        config.highlightSelectionMatches = {showToken: /\w/};
+
+        if (!config.matchTags) {
+            config.matchTags = true;
+        }
     };
 
     proto.appendCodeMirrorAutoResizeCssToHeadElement = function () {

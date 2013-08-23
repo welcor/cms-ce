@@ -11,8 +11,10 @@
         <!-- JS -->
         <script type="text/javascript" src="codemirror/lib/codemirror.js">//</script>
         <script type="text/javascript" src="codemirror/addon/selection/active-line.js">//</script>
-        <script type="text/javascript" src="codemirror/addon/search/match-highlighter.js">//</script>
+        <script type="text/javascript" src="codemirror/addon/fold/xml-fold.js">//</script>
+        <script type="text/javascript" src="codemirror/addon/edit/matchtags.js">//</script>
         <script type="text/javascript" src="codemirror/addon/edit/closetag.js">//</script>
+
         <script type="text/javascript" src="codemirror/mode/xml/xml.js">//</script>
 
         <script type="text/javascript" src="javascript/cms/ui/codearea/codearea.js">//</script>

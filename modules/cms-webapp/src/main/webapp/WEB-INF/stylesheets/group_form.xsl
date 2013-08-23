@@ -118,11 +118,14 @@
 
           <table width="100%" border="0" cellspacing="0" cellpadding="2">
             <!-- separator -->
-            <tr>
-              <td class="form_title_form_seperator">
-                <img src="images/1x1.gif"/>
-              </td>
-            </tr>
+
+              <xsl:call-template name="save-buttons"/>
+              <tr>
+                  <td class="form_form_buttonrow_seperator">
+                      <img src="images/1x1.gif"/>
+                  </td>
+              </tr>
+
 
             <!-- form -->
             <tr>
@@ -427,40 +430,46 @@
                 <img src="images/1x1.gif"/>
               </td>
             </tr>
-            <tr>
-              <td>
-                <xsl:call-template name="button">
-                  <xsl:with-param name="type" select="'button'"/>
-                  <xsl:with-param name="caption" select="'%cmdSave%'"/>
-                  <xsl:with-param name="name" select="'lagre'"/>
-                  <xsl:with-param name="onclick">
-                    <xsl:text>javascript:validateAll('formAdmin');</xsl:text>
-                  </xsl:with-param>
-                </xsl:call-template>
-                <xsl:text>&nbsp;</xsl:text>
 
-                <xsl:variable name="buttonCaption">
-                  <xsl:choose>
-                    <xsl:when test="$canUpdateGroup = 'true'">%cmdCancel%</xsl:when>
-                    <xsl:otherwise>%cmdClose%</xsl:otherwise>
-                  </xsl:choose>
-                </xsl:variable>
+              <xsl:call-template name="save-buttons"/>
 
-                <xsl:call-template name="button">
-                  <xsl:with-param name="type" select="'button'"/>
-                  <xsl:with-param name="caption" select="$buttonCaption"/>
-                  <xsl:with-param name="name" select="'avbryt'"/>
-                  <xsl:with-param name="onclick">
-                    <xsl:text>javascript:history.back();</xsl:text>
-                  </xsl:with-param>
-                </xsl:call-template>
-              </td>
-            </tr>
           </table>
         </form>
 
       </body>
     </html>
   </xsl:template>
+
+    <xsl:template name="save-buttons">
+        <tr>
+            <td>
+                <xsl:call-template name="button">
+                    <xsl:with-param name="type" select="'button'"/>
+                    <xsl:with-param name="caption" select="'%cmdSave%'"/>
+                    <xsl:with-param name="name" select="'lagre'"/>
+                    <xsl:with-param name="onclick">
+                        <xsl:text>javascript:validateAll('formAdmin');</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+                <xsl:text>&nbsp;</xsl:text>
+
+                <xsl:variable name="buttonCaption">
+                    <xsl:choose>
+                        <xsl:when test="$canUpdateGroup = 'true'">%cmdCancel%</xsl:when>
+                        <xsl:otherwise>%cmdClose%</xsl:otherwise>
+                    </xsl:choose>
+                </xsl:variable>
+
+                <xsl:call-template name="button">
+                    <xsl:with-param name="type" select="'button'"/>
+                    <xsl:with-param name="caption" select="$buttonCaption"/>
+                    <xsl:with-param name="name" select="'avbryt'"/>
+                    <xsl:with-param name="onclick">
+                        <xsl:text>javascript:history.back();</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </td>
+        </tr>
+    </xsl:template>
 
 </xsl:stylesheet>

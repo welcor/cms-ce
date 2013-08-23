@@ -69,8 +69,6 @@
               <xsl:text>&nbsp;</xsl:text><span id="titlename"> </span>
             </h1>
 
-
-
                 <form name="formAdmin" method="post" action="adminpage?page=851&amp;op=createmenu&amp;selecteddomainkey={$selecteddomainkey}">
 
                     <input type="hidden" name="redirect" value="adminpage?page=851&amp;selecteddomainkey={$selecteddomainkey}&amp;op=listmenus"/>
@@ -79,6 +77,13 @@
                         <tr>
                             <td class="browse_title_buttonrow_seperator"><img src="images/1x1.gif"/></td>
                         </tr>
+
+                        <xsl:call-template name="save-cancel-buttons"/>
+
+                        <tr>
+                            <td class="form_form_buttonrow_seperator"><img src="images/1x1.gif"/></td>
+                        </tr>
+
                         <tr>
                             <td>
                                 <div class="tab-pane" id="tab-pane-1">
@@ -153,28 +158,9 @@
                         <tr>
                             <td class="form_form_buttonrow_seperator"><img src="images/1x1.gif"/></td>
                         </tr>
-                        <tr>
-                            <td>
-                                <xsl:call-template name="button">
-                                    <xsl:with-param name="type" select="'button'"/>
-                                    <xsl:with-param name="caption" select="'%cmdSave%'"/>
-                                    <xsl:with-param name="onclick">
-                                        <xsl:text>javascript:validateAll("formAdmin");</xsl:text>
-                                    </xsl:with-param>
-                                </xsl:call-template>
 
-                                <xsl:text>&nbsp;</xsl:text>
+                        <xsl:call-template name="save-cancel-buttons"/>
 
-                                <xsl:call-template name="button">
-                                    <xsl:with-param name="type" select="'button'"/>
-                                    <xsl:with-param name="caption" select="'%cmdCancel%'"/>
-                                    <xsl:with-param name="name" select="'avbryt'"/>
-                                    <xsl:with-param name="onclick">
-                                        <xsl:text>javascript:history.back();</xsl:text>
-                                    </xsl:with-param>
-                                </xsl:call-template>
-                             </td>
-                        </tr>
                     </table>
                 </form>
             </body>
@@ -208,6 +194,32 @@
                 </xsl:for-each>
             </select>
         </td>
+    </xsl:template>
+
+    <xsl:template name="save-cancel-buttons">
+        <tr>
+            <td>
+                <xsl:call-template name="button">
+                    <xsl:with-param name="type" select="'button'"/>
+                    <xsl:with-param name="caption" select="'%cmdSave%'"/>
+                    <xsl:with-param name="onclick">
+                        <xsl:text>javascript:validateAll("formAdmin");</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+
+                <xsl:text>&nbsp;</xsl:text>
+
+                <xsl:call-template name="button">
+                    <xsl:with-param name="type" select="'button'"/>
+                    <xsl:with-param name="caption" select="'%cmdCancel%'"/>
+                    <xsl:with-param name="name" select="'avbryt'"/>
+                    <xsl:with-param name="onclick">
+                        <xsl:text>javascript:history.back();</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </td>
+        </tr>
+
     </xsl:template>
 
 </xsl:stylesheet>

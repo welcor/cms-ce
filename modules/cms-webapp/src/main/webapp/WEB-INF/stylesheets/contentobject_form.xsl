@@ -348,6 +348,19 @@
                                     </input>
                                 </xsl:if>
 
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td colspan="4">
+
+                                            <xsl:call-template name="save-cancel-buttons"/>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="form_form_buttonrow_seperator"><img src="images/1x1.gif"/></td>
+                                    </tr>
+                                </table>
+
                                 <xsl:call-template name="contentobjectform"/>
 
                                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -357,22 +370,8 @@
                                     <tr>
                                         <td colspan="4">
 
-                                            <xsl:call-template name="button">
-                                                <xsl:with-param name="type" select="'button'"/>
-                                                <xsl:with-param name="caption" select="'%cmdSave%'"/>
-                                                <xsl:with-param name="name" select="'lagre'"/>
-                                                <xsl:with-param name="disabled" select="$styleSheetsExists"/>
-                                                <xsl:with-param name="onclick">
-                                                    <xsl:text>javascript:validateAll('formAdmin');</xsl:text>
-                                                </xsl:with-param>
-                                            </xsl:call-template>
+                                            <xsl:call-template name="save-cancel-buttons"/>
 
-                                            <xsl:text>&nbsp;</xsl:text>
-
-                                            <xsl:call-template name="button">
-				                                <xsl:with-param name="type" select="'cancel'"/>
-				                                <xsl:with-param name="referer" select="$referer"/>
-                                            </xsl:call-template>
                                         </td>
                                     </tr>
                                 </table>
@@ -1012,5 +1011,25 @@
                     </table>
                 </xsl:otherwise>
             </xsl:choose>
+    </xsl:template>
+
+    <xsl:template name="save-cancel-buttons">
+        <xsl:call-template name="button">
+            <xsl:with-param name="type" select="'button'"/>
+            <xsl:with-param name="caption" select="'%cmdSave%'"/>
+            <xsl:with-param name="name" select="'lagre'"/>
+            <xsl:with-param name="disabled" select="$styleSheetsExists"/>
+            <xsl:with-param name="onclick">
+                <xsl:text>javascript:validateAll('formAdmin');</xsl:text>
+            </xsl:with-param>
+        </xsl:call-template>
+
+        <xsl:text> </xsl:text>
+
+        <xsl:call-template name="button">
+            <xsl:with-param name="type" select="'cancel'"/>
+            <xsl:with-param name="referer" select="$referer"/>
+        </xsl:call-template>
+
     </xsl:template>
 </xsl:stylesheet>

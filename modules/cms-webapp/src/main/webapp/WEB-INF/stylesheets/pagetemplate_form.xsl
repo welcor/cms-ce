@@ -523,42 +523,34 @@
                     </xsl:otherwise>
                   </xsl:choose-->
 
-                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <xsl:call-template name="save-cancel-buttons"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form_form_buttonrow_seperator">
+                                <img src="images/1x1.gif"/>
+                            </td>
+                        </tr>
                         <tr>
                             <td>
                                 <xsl:call-template name="form"/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="form_form_buttonrow_seperator"><img src="images/1x1.gif"/></td>
+                            <td class="form_form_buttonrow_seperator">
+                                <img src="images/1x1.gif"/>
+                            </td>
                         </tr>
                         <tr>
                             <td>
-                                <xsl:call-template name="button">
-                                    <xsl:with-param name="type" select="'button'"/>
-                                    <xsl:with-param name="caption" select="'%cmdSave%'"/>
-                                    <xsl:with-param name="name" select="'lagre'"/>
-                                    <xsl:with-param name="onclick">
-                                        <xsl:text>javascript:</xsl:text>
-                                        <xsl:if test="/pagetemplates/pages/page and $stylesheetupdated">
-                                            <xsl:text> if (confirm('%alertUpdatePageTemplate%'))</xsl:text>
-                                        </xsl:if>
-                                        <xsl:text> validateAll('formAdmin');</xsl:text>
-                                    </xsl:with-param>
-                                    <xsl:with-param name="disabled" select="$styleSheetsExists"/>
-                                </xsl:call-template>
 
-                                <xsl:text> </xsl:text>
-
-                                <xsl:call-template name="button">
-                                    <xsl:with-param name="type" select="'link'"/>
-                                    <xsl:with-param name="caption" select="'%cmdCancel%'"/>
-                                    <xsl:with-param name="href" select="'javascript:history.back();'"/>
-                                </xsl:call-template>
+                                <xsl:call-template name="save-cancel-buttons"/>
 
                             </td>
                         </tr>
-
                     </table>
                 </form>
 
@@ -1494,5 +1486,30 @@
                 </table>
             </fieldset>
         </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template name="save-cancel-buttons">
+        <xsl:call-template name="button">
+            <xsl:with-param name="type" select="'button'"/>
+            <xsl:with-param name="caption" select="'%cmdSave%'"/>
+            <xsl:with-param name="name" select="'lagre'"/>
+            <xsl:with-param name="onclick">
+                <xsl:text>javascript:</xsl:text>
+                <xsl:if test="/pagetemplates/pages/page and $stylesheetupdated">
+                    <xsl:text> if (confirm('%alertUpdatePageTemplate%'))</xsl:text>
+                </xsl:if>
+                <xsl:text> validateAll('formAdmin');</xsl:text>
+            </xsl:with-param>
+            <xsl:with-param name="disabled" select="$styleSheetsExists"/>
+        </xsl:call-template>
+
+        <xsl:text> </xsl:text>
+
+        <xsl:call-template name="button">
+            <xsl:with-param name="type" select="'link'"/>
+            <xsl:with-param name="caption" select="'%cmdCancel%'"/>
+            <xsl:with-param name="href" select="'javascript:history.back();'"/>
+        </xsl:call-template>
+
     </xsl:template>
 </xsl:stylesheet>

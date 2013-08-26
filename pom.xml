@@ -43,6 +43,7 @@
     <module>modules/cms-webapp</module>
     <module>modules/cms-itest</module>
     <module>modules/cms-extractor-plugin</module>
+    <module>modules/cms-distro</module>
   </modules>
 
   <dependencies>

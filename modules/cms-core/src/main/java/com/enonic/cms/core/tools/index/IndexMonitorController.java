@@ -139,7 +139,10 @@ public final class IndexMonitorController
         else
         {
             model.put( "numberOfDocuments", indexStatus.getDocs().getNumDocs() );
-            model.put( "storageSize", indexStatus.getStoreSize().getMb() );
+            model.put( "primaryStorageSize", indexStatus.getPrimaryStoreSize() );
+            model.put( "totalStorageSize", indexStatus.getStoreSize() );
+
+
         }
     }
 

@@ -31,12 +31,15 @@ public class IndexStatusInfoBuilder
         json.put( "status", clusterHealthResponse.getStatus().toString() );
         json.put( "activeShards", clusterHealthResponse.getActiveShards() );
         json.put( "activePrimaryShards", clusterHealthResponse.getActivePrimaryShards() );
+        json.put( "activeReplicas", clusterHealthResponse.getActiveShards() - clusterHealthResponse.getActivePrimaryShards() );
         json.put( "unassignedShards", clusterHealthResponse.getUnassignedShards() );
-        json.put( "relocationShards", clusterHealthResponse.getRelocatingShards() );
+        json.put( "relocatingShards", clusterHealthResponse.getRelocatingShards() );
         json.put( "initializingShards", clusterHealthResponse.getInitializingShards() );
 
         json.put( "documents", indexStatus.getDocs().getNumDocs() );
-        json.put( "storeSize", indexStatus.getStoreSize().getMb() + "MB" );
+        json.put( "primaryShardsStoreSize", indexStatus.getPrimaryStoreSize().toString() );
+        json.put( "totalStoreSize", indexStatus.getStoreSize().toString() );
+
     }
 
 }

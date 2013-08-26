@@ -27,11 +27,23 @@
                 </td>
                 <td>${numberOfBinaries}</td>
             </tr>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend>Index storage</legend>
+        <table>
             <tr>
                 <td>
-                    Storage size:
+                    Primary shards storage size:
                 </td>
-                <td>${storageSize} MB</td>
+                <td>${primaryStorageSize}</td>
+            </tr>
+            <tr>
+                <td>
+                    Total storage size:
+                </td>
+                <td>${totalStorageSize}</td>
             </tr>
         </table>
     </fieldset>

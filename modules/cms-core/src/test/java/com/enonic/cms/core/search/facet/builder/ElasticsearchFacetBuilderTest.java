@@ -7,7 +7,7 @@ package com.enonic.cms.core.search.facet.builder;
 
 import java.util.Set;
 
-import org.elasticsearch.search.facet.AbstractFacetBuilder;
+import org.elasticsearch.search.facet.FacetBuilder;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class ElasticsearchFacetBuilderTest
     public void testEmptyFacetsModel()
     {
         FacetsModel facetsModel = new FacetsModel();
-        final Set<AbstractFacetBuilder> build = elasticsearchFacetBuilder.build( facetsModel );
+        final Set<FacetBuilder> build = elasticsearchFacetBuilder.build( facetsModel );
         assertEquals( 0, build.size() );
     }
 
@@ -40,10 +40,10 @@ public class ElasticsearchFacetBuilderTest
 
         facetsModel.addFacet( termFacetModel );
 
-        final Set<AbstractFacetBuilder> build = elasticsearchFacetBuilder.build( facetsModel );
+        final Set<FacetBuilder> build = elasticsearchFacetBuilder.build( facetsModel );
 
         assertEquals( 1, build.size() );
-        final AbstractFacetBuilder next = build.iterator().next();
+        final FacetBuilder next = build.iterator().next();
         assertTrue( next instanceof TermsFacetBuilder );
     }
 

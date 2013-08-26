@@ -11,7 +11,7 @@ import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.facet.AbstractFacetBuilder;
+import org.elasticsearch.search.facet.FacetBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -115,8 +115,8 @@ public class QueryTranslator
 
     private void doAddFacets( final ContentIndexQuery contentIndexQuery, final SearchSourceBuilder builder )
     {
-        final Collection<AbstractFacetBuilder> facetBuilders = facetBuilderFactory.buildFacetBuilder( contentIndexQuery );
-        for ( AbstractFacetBuilder facetBuilder : facetBuilders )
+        final Collection<FacetBuilder> facetBuilders = facetBuilderFactory.buildFacetBuilder( contentIndexQuery );
+        for ( FacetBuilder facetBuilder : facetBuilders )
         {
             builder.facet( facetBuilder );
         }

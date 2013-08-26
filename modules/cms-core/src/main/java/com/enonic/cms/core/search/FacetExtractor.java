@@ -36,7 +36,7 @@ public class FacetExtractor
             return null;
         }
 
-        Facets facets = response.facets();
+        Facets facets = response.getFacets();
 
         if ( facets == null )
         {

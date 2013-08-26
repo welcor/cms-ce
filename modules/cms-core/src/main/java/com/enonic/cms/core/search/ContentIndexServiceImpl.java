@@ -103,7 +103,7 @@ public class ContentIndexServiceImpl
     {
         final ClusterHealthResponse clusterHealth = elasticSearchIndexService.getClusterHealth( CONTENT_INDEX_NAME, true );
 
-        LOG.info( "Cluster in state: " + clusterHealth.status().toString() );
+        LOG.info( "Cluster in state: " + clusterHealth.getStatus().toString() );
 
         final boolean indexExists = elasticSearchIndexService.indexExists( CONTENT_INDEX_NAME );
 
@@ -443,7 +443,7 @@ public class ContentIndexServiceImpl
         final StatisticalFacet statisticalFacet =
             FacetExtractor.getStatisticalFacet( response, AggregatedQueryTranslator.AGGREGATED_FACET_NAME );
 
-        return new AggregatedResultImpl( statisticalFacet.count(), statisticalFacet.min(), statisticalFacet.max(), statisticalFacet.total(),
+        return new AggregatedResultImpl( statisticalFacet.getCount(), statisticalFacet.getMin(), statisticalFacet.getMax(), statisticalFacet.getTotal(),
                                          statisticalFacet.getMean() );
     }
 

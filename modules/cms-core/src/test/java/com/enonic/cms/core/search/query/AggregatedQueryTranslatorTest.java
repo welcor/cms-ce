@@ -58,16 +58,15 @@ public class AggregatedQueryTranslatorTest
             "      },\n" +
             "      \"facet_filter\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"must\" : {\n" +
+            "          \"must\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"categorykey\" : [ \"1\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"contenttypekey\" : [ \"1\" ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

@@ -28,7 +28,7 @@ public class QueryTranslator_filterContentOnlineAtTest
     {
         final String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
+            "  \"size\" : 1000,\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -36,17 +36,15 @@ public class QueryTranslator_filterContentOnlineAtTest
             "      },\n" +
             "      \"filter\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"must\" : {\n" +
+            "          \"must\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"categorykey\" : [ \"42\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"contenttypekey\" : [ \"1234\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must\" : {\n" +
+            "          }, {\n" +
             "            \"and\" : {\n" +
             "              \"filters\" : [ {\n" +
             "                \"range\" : {\n" +
@@ -76,7 +74,7 @@ public class QueryTranslator_filterContentOnlineAtTest
             "                }\n" +
             "              } ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

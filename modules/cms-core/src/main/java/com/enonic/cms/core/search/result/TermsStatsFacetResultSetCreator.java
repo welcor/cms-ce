@@ -19,7 +19,7 @@ public class TermsStatsFacetResultSetCreator
         termsStatsFacetResultSet.setName( facetName );
         termsStatsFacetResultSet.setMissing( facet.getMissingCount() );
 
-        final List<? extends TermsStatsFacet.Entry> entries = facet.entries();
+        final List<? extends TermsStatsFacet.Entry> entries = facet.getEntries();
         for ( TermsStatsFacet.Entry entry : entries )
         {
             TermsStatsFacetResultEntry termsStatsFacetResultEntry = new TermsStatsFacetResultEntry();
@@ -30,7 +30,7 @@ public class TermsStatsFacetResultSetCreator
             termsStatsFacetResultEntry.setMin( getValueIfNumber( entry.getMin() ) );
             termsStatsFacetResultEntry.setTotal( getValueIfNumber( entry.getTotal() ) );
             // termsStatsFacetResultEntry.setTotalCount( entry.getTotalCount() );
-            termsStatsFacetResultEntry.setTerm( entry.getTerm() );
+            termsStatsFacetResultEntry.setTerm( entry.getTerm().toString() );
 
             termsStatsFacetResultSet.addResult( termsStatsFacetResultEntry );
         }

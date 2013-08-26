@@ -24,7 +24,7 @@ public class QueryTranslator_filterCombinationsTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
+            "  \"size\" : 1000,\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -32,16 +32,15 @@ public class QueryTranslator_filterCombinationsTest
             "      },\n" +
             "      \"filter\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"must\" : {\n" +
+            "          \"must\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"categorykey\" : [ \"15\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"contenttypekey\" : [ \"1001\", \"1002\" ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -68,7 +67,7 @@ public class QueryTranslator_filterCombinationsTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
+            "  \"size\" : 1000,\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -83,16 +82,15 @@ public class QueryTranslator_filterCombinationsTest
             "      },\n" +
             "      \"filter\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"must\" : {\n" +
+            "          \"must\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"categorykey\" : [ \"15\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"contenttypekey\" : [ \"1001\" ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +
@@ -133,16 +131,15 @@ public class QueryTranslator_filterCombinationsTest
             "      },\n" +
             "      \"filter\" : {\n" +
             "        \"bool\" : {\n" +
-            "          \"must\" : {\n" +
+            "          \"must\" : [ {\n" +
             "            \"terms\" : {\n" +
             "              \"categorykey\" : [ \"15\" ]\n" +
             "            }\n" +
-            "          },\n" +
-            "          \"must\" : {\n" +
+            "          }, {\n" +
             "            \"terms\" : {\n" +
             "              \"contenttypekey\" : [ \"1001\" ]\n" +
             "            }\n" +
-            "          }\n" +
+            "          } ]\n" +
             "        }\n" +
             "      }\n" +
             "    }\n" +

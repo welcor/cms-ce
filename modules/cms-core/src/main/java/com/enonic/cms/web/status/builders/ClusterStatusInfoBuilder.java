@@ -50,7 +50,6 @@ public final class ClusterStatusInfoBuilder
             buildNodeInfo( masterNodeId, node, thisNode );
         }
 
-        buildNodes( json, clusterState, localNodeId );
     }
 
     private void buildNodeInfo( final String masterNodeId, final DiscoveryNode node, final ObjectNode thisNode )
@@ -62,8 +61,4 @@ public final class ClusterStatusInfoBuilder
         thisNode.put( "master", Boolean.toString( node.getId().equals( masterNodeId ) ) );
     }
 
-    private void buildNodes( final ObjectNode json, final ClusterStateResponse clusterState, final String localNodeId )
-    {
-
-    }
 }

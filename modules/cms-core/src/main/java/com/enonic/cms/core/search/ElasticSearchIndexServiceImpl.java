@@ -32,6 +32,9 @@ import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeResponse;
 import org.elasticsearch.action.admin.indices.settings.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.admin.indices.settings.UpdateSettingsResponse;
+import org.elasticsearch.action.admin.indices.status.IndexStatus;
+import org.elasticsearch.action.admin.indices.status.IndicesStatusRequestBuilder;
+import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -468,10 +471,20 @@ public class ElasticSearchIndexServiceImpl
     }
 
     @Override
-    public boolean indexExists( String indexName )
+    public boolean indexExists( final String indexName )
     {
         final IndicesExistsResponse exists = this.client.admin().indices().exists( new IndicesExistsRequest( indexName ) ).actionGet();
         return exists.isExists();
+    }
+
+    @Override
+    public IndexStatus getIndexStatus( final String indexName )
+    {
+        final IndicesStatusResponse indicesStatusResponse = new IndicesStatusRequestBuilder( this.client.admin().indices() ).
+            setIndices( indexName ).
+            execute().actionGet();
+
+        return indicesStatusResponse.getIndex( indexName );
     }
 
     @Override

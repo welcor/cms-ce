@@ -102,7 +102,10 @@ public class ContentEntityDao
 
     private void applyAssignedToContentsHql( ContentSpecification specification, SelectBuilder hqlQuery )
     {
-        hqlQuery.addFilter( "AND", "c.assignee = '" + specification.getAssignee().getKey().toString() + "'" );
+        if ( specification.getAssignee() != null )
+        {
+            hqlQuery.addFilter( "AND", "c.assignee = '" + specification.getAssignee().getKey().toString() + "'" );
+        }
 
         if ( specification.assignedDraftsOnly() )
         {

@@ -11,6 +11,8 @@ import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
 import org.elasticsearch.action.admin.cluster.node.info.NodesInfoResponse;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
+import org.elasticsearch.action.admin.indices.status.IndexStatus;
+import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -77,6 +79,8 @@ public interface ElasticSearchIndexService
     public ClusterHealthResponse getClusterHealth( String indexName, boolean waitForYellow );
 
     public Client getClient();
+
+    public IndexStatus getIndexStatus( final String indexName );
 
 }
 

@@ -1,15 +1,5 @@
 <div>
     <fieldset>
-        <legend>Node status</legend>
-        <table>
-            <tr>
-                <td>Master:</td>
-                <td>${isMaster?string}</td>
-            </tr>
-        </table>
-    </fieldset>
-
-    <fieldset>
         <legend>Index status</legend>
         <table>
             <tr>
@@ -21,21 +11,33 @@
             </tr>
             <tr>
                 <td>
-                    Number of indexed contents:
+                    Indexed documents:
                 </td>
-                <td>${numberOfContent}</td>
+                <td>${numberOfDocuments}</td>
             </tr>
             <tr>
                 <td>
-                    Number of indexed attachments:
+                    * Contents:
+                </td>
+                <td>${numberOfContent} (of ${totalNumberOfContent})</td>
+            </tr>
+            <tr>
+                <td>
+                    * Attachments:
                 </td>
                 <td>${numberOfBinaries}</td>
+            </tr>
+            <tr>
+                <td>
+                    Storage size:
+                </td>
+                <td>${storageSize} MB</td>
             </tr>
         </table>
     </fieldset>
     <br/>
     <fieldset>
-        <legend>Cluster health</legend>
+        <legend>Index health</legend>
         <table>
             <tr>
                 <td>
@@ -92,9 +94,9 @@
     <fieldset>
         <legend>Validation Failures</legend>
         <ul>
-        <#list validationFailures as entry>
-            <li>${entry}</li>
-        </#list>
+            <#list validationFailures as entry>
+                <li>${entry}</li>
+            </#list>
         </ul>
     </fieldset>
 </#if>

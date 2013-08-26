@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
-import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
-import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
+import org.elasticsearch.action.admin.indices.status.IndexStatus;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Maps;
 import org.joda.time.Period;
@@ -26,9 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Lists;
 
+import com.enonic.cms.core.content.ContentSpecification;
 import com.enonic.cms.core.search.ElasticSearchIndexService;
 import com.enonic.cms.core.search.IndexType;
 import com.enonic.cms.core.tools.AbstractToolController;
+import com.enonic.cms.store.dao.ContentDao;
 
 public final class IndexMonitorController
     extends AbstractToolController
@@ -57,6 +58,8 @@ public final class IndexMonitorController
 
     private ReindexContentToolService reindexContentToolService;
 
+    private ContentDao contentDao;
+
     @Override
     protected void doGet( final HttpServletRequest req, final HttpServletResponse res )
         throws Exception
@@ -76,7 +79,10 @@ public final class IndexMonitorController
         populateClusterHealth( model, errors );
         populateReindexInfo( model, errors );
 
-        model.put( "isMaster", isMaster( errors ) );
+        final ContentSpecification specification = new ContentSpecification();
+        specification.setIncludeDeleted( false );
+        final long totalNumberOfContent = contentDao.findCountBySpecification( specification );
+        model.put( "totalNumberOfContent", totalNumberOfContent );
 
         if ( !errors.isEmpty() )
         {
@@ -89,6 +95,8 @@ public final class IndexMonitorController
     private void populateClusterHealth( final Map<String, Object> model, final List<String> errors )
     {
         final ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
+
+        populateInfoFromIndexStatus( model, errors );
 
         if ( clusterHealthResponse == null )
         {
@@ -114,8 +122,24 @@ public final class IndexMonitorController
 
             final boolean indexExists = elasticSearchIndexService.indexExists( "cms" );
             model.put( "indexExists", indexExists );
+
             model.put( "numberOfContent", getTotalHitsContent( status ) );
             model.put( "numberOfBinaries", getTotalHitsBinaries( status ) );
+        }
+    }
+
+    private void populateInfoFromIndexStatus( final Map<String, Object> model, final List<String> errors )
+    {
+        final IndexStatus indexStatus = elasticSearchIndexService.getIndexStatus( "cms" );
+
+        if ( indexStatus == null )
+        {
+            errors.add( "Not able to get indexStatus for index 'cms'" );
+        }
+        else
+        {
+            model.put( "numberOfDocuments", indexStatus.getDocs().getNumDocs() );
+            model.put( "storageSize", indexStatus.getStoreSize().getMb() );
         }
     }
 
@@ -129,35 +153,6 @@ public final class IndexMonitorController
             model.put( "lastReindexTimeUsed", getTimeUsedString() );
         }
     }
-
-    private Boolean isMaster( final List<String> errors )
-    {
-        final ClusterStateResponse clusterState = elasticSearchIndexService.getClusterState();
-
-        final NodeInfo localNodeInfo = elasticSearchIndexService.getLocalNodeInfo();
-
-        if ( clusterState == null )
-        {
-            errors.add( "Not able to get clusterState" );
-            return false;
-        }
-
-        final String localNodeId = localNodeInfo.getNode().getId();
-        final String masterNodeId = clusterState.getState().nodes().masterNodeId();
-
-        if ( localNodeId == null )
-        {
-            errors.add( "Not able to get local nodeId" );
-        }
-
-        if ( masterNodeId == null )
-        {
-            errors.add( "Not able to get masterNodeId" );
-        }
-
-        return localNodeId != null && masterNodeId != null ? localNodeId.equals( masterNodeId ) : false;
-    }
-
 
     private String getLastIndexTimeString()
     {
@@ -207,5 +202,11 @@ public final class IndexMonitorController
     public void setReindexContentToolService( final ReindexContentToolService reindexContentToolService )
     {
         this.reindexContentToolService = reindexContentToolService;
+    }
+
+    @Autowired
+    public void setContentDao( final ContentDao contentDao )
+    {
+        this.contentDao = contentDao;
     }
 }

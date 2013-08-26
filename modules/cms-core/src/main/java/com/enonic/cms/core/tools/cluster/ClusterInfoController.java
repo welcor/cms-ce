@@ -70,7 +70,7 @@ public final class ClusterInfoController
         builder.setJvm( true );
 
         final NodesInfoResponse res = builder.execute().actionGet();
-        model.put( "clusterName", res.getClusterName() );
+        model.put( "clusterName", res.getClusterName().value() );
         model.put( "nodeList", toWrapper( res.getNodes(), masterNodeId ) );
     }
 

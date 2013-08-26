@@ -42,6 +42,7 @@
     <module>modules/cms-core</module>
     <module>modules/cms-webapp</module>
     <module>modules/cms-itest</module>
+    <module>modules/cms-extractor-plugin</module>
   </modules>
 
   <dependencies>
@@ -171,6 +172,13 @@
       <url>http://repo.enonic.com/public</url>
     </repository>
   </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>enonic.public</id>
+      <url>http://repo.enonic.com/public</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <profiles>
     <profile>

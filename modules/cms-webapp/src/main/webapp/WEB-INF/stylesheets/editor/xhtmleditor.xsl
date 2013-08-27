@@ -134,11 +134,9 @@
 
         <div id="editor_cms_container_{$edKey}" style="visibility:hidden">
           <textarea name="{$name}" id="{$edKey}" class="{concat('editor-textarea editor_settings_', $edKey)}" style="width:{$width}px;height:{$height}px">
-            <xsl:if test="$content !=''">
-              <xsl:call-template name="serialize">
-                <xsl:with-param name="xpath" select="$content"/>
-              </xsl:call-template>
-            </xsl:if>
+            <xsl:call-template name="serialize">
+              <xsl:with-param name="xpath" select="$content"/>
+            </xsl:call-template>
           </textarea>
         </div>
 

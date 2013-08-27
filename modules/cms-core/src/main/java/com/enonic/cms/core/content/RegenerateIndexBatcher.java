@@ -104,11 +104,6 @@ public class RegenerateIndexBatcher
 
     }
 
-    public void optimizeIndex()
-    {
-        indexService.optimizeIndex();
-    }
-
     private List<ContentKey> getNextContentKeys( List<ContentKey> allContentKeys, int currentIndex, int batchSize )
     {
 

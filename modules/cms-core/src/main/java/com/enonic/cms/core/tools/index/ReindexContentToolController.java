@@ -82,7 +82,13 @@ public class ReindexContentToolController
 
                 try
                 {
+                    reindexContentToolService.setLastReindexFailed( false );
                     reindexContentToolService.reindexAllContent( logEntries );
+                }
+                catch ( Exception e )
+                {
+                    reindexContentToolService.setLastReindexFailed( true );
+                    throw new ReindexContentException( "Reindex content failed", e );
                 }
                 finally
                 {

@@ -20,4 +20,8 @@ public interface ReindexContentToolService
 
     public Long getLastReindexTimeUsed();
 
+    public void setLastReindexFailed( final boolean lastReindexFailed );
+
+    public boolean isLastReindexFailed();
+
 }

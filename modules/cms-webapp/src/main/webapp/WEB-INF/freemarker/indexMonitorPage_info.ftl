@@ -96,7 +96,7 @@
         <legend>Errors</legend>
         <ul>
             <#list errors as entry>
-                <li>${entry}</li>
+                <li><span class="error">${entry}</span></li>
             </#list>
         </ul>
     </fieldset>
@@ -107,7 +107,7 @@
         <legend>Validation Failures</legend>
         <ul>
             <#list validationFailures as entry>
-                <li>${entry}</li>
+                <li><span class="error">${entry}</span></li>
             </#list>
         </ul>
     </fieldset>
@@ -124,6 +124,10 @@
         <div class="operation-bottom">
             <a href="${baseUrl}/tools/reindexContent?op=custom">Reindex in progress...</a><br/>
         </div>
+    </#if>
+
+    <#if reindexError>
+        <span class="error">Reindex failed, see <a href="${baseUrl}/tools/reindexContent?op=custom">log</a> for details</span><br/>
     </#if>
 
     <#if lastReindexTime??>

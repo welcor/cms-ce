@@ -28,6 +28,12 @@ public class IndexStatusInfoBuilder
 
         final ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
 
+        if ( clusterHealthResponse == null )
+        {
+            json.put( "error", "not able to get cluster health response" );
+            return;
+        }
+
         json.put( "status", clusterHealthResponse.getStatus().toString() );
         json.put( "activeShards", clusterHealthResponse.getActiveShards() );
         json.put( "activePrimaryShards", clusterHealthResponse.getActivePrimaryShards() );

@@ -54,6 +54,8 @@ public final class IndexMonitorController
         "}\n" +
         "";
 
+    public static final String NOT_APPLICABLE = "N/A";
+
     private ElasticSearchIndexService elasticSearchIndexService;
 
     private ReindexContentToolService reindexContentToolService;
@@ -101,6 +103,15 @@ public final class IndexMonitorController
         if ( clusterHealthResponse == null )
         {
             errors.add( "Not able to get clusterHealthResponse" );
+            model.put( "activeShards", NOT_APPLICABLE );
+            model.put( "clusterStatus", NOT_APPLICABLE );
+            model.put( "relocatingShards", NOT_APPLICABLE );
+            model.put( "activePrimaryShards", NOT_APPLICABLE );
+            model.put( "numberOfNodes", NOT_APPLICABLE );
+            model.put( "unassignedShards", NOT_APPLICABLE );
+            model.put( "indexExists", NOT_APPLICABLE );
+            model.put( "numberOfContent", NOT_APPLICABLE );
+            model.put( "numberOfBinaries", NOT_APPLICABLE );
         }
         else
         {
@@ -135,20 +146,23 @@ public final class IndexMonitorController
         if ( indexStatus == null )
         {
             errors.add( "Not able to get indexStatus for index 'cms'" );
+            model.put( "numberOfDocuments", NOT_APPLICABLE );
+            model.put( "primaryStorageSize", NOT_APPLICABLE );
+            model.put( "totalStorageSize", NOT_APPLICABLE );
         }
         else
         {
             model.put( "numberOfDocuments", indexStatus.getDocs().getNumDocs() );
             model.put( "primaryStorageSize", indexStatus.getPrimaryStoreSize() );
             model.put( "totalStorageSize", indexStatus.getStoreSize() );
-
-
         }
     }
 
     private void populateReindexInfo( final Map<String, Object> model, final List<String> errors )
     {
         model.put( "reindexInProgress", reindexContentToolService.isReIndexInProgress() );
+
+        model.put( "reindexError", reindexContentToolService.isLastReindexFailed() );
 
         if ( reindexContentToolService.getLastReindexTime() != null )
         {

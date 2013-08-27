@@ -4,6 +4,9 @@
  */
 package com.enonic.cms.core.tools.index;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class ReindexContentToolServiceImpl
 
     private DateTime lastIndexedTime;
 
+    private boolean lastReindexFailed = false;
+
     public void reindexAllContent( List<String> logEntries )
     {
         logEntries.clear();
@@ -49,33 +54,19 @@ public class ReindexContentToolServiceImpl
 
         logEntries.add( "Generating indexes for " + contentTypes.size() + " content types..." );
 
-        RegenerateIndexBatcher batcher = null;
-
-        int count = 1;
-        for ( ContentTypeEntity contentType : contentTypes )
+        try
         {
-
-            StringBuffer message = new StringBuffer();
-            message.append( "Generating indexes for '" ).append( contentType.getName() ).append( "'" );
-            message.append( " (#" ).append( count++ ).append( " of " ).append( contentTypes.size() ).append( ")..." );
-
-            logEntries.add( message.toString() );
-
-            long start = System.currentTimeMillis();
-
-            batcher = new RegenerateIndexBatcher( indexService, contentService );
-
-            batcher.regenerateIndex( contentType, BATCH_SIZE, logEntries );
-
-            long end = System.currentTimeMillis();
-
-            logEntries.add( "... index values generated in " + ( end - start ) + " ms" );
+            doReindexAllContentTypes( logEntries, contentTypes );
+        }
+        catch ( Exception e )
+        {
+            logEntries.add( "Reindex failed: " + stackTraceLogString( e ) );
+            throw new ReindexContentException( "Reindex all contenttypes failed", e );
         }
 
         long globalTimeUsed = ( System.currentTimeMillis() - globalStart );
-        long timeUsedSeconds = globalTimeUsed / 1000;
 
-        String timeUsed = timeUsedSeconds > 240 ? timeUsedSeconds / 60 + " min" : timeUsedSeconds + " sec";
+        String timeUsed = getTimeusedString( globalTimeUsed );
 
         this.lastIndexedTime = new DateTime();
         this.lastReindexRuntime = globalTimeUsed;
@@ -83,7 +74,46 @@ public class ReindexContentToolServiceImpl
         logEntries.add( "Reindexing of all content types was successful!" );
         logEntries.add( "Total time used: " + timeUsed );
 
-        batcher.optimizeIndex();
+    }
+
+    private String stackTraceLogString( Throwable aThrowable )
+    {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter( result );
+        aThrowable.printStackTrace( printWriter );
+        return result.toString();
+    }
+
+
+    private String getTimeusedString( final long globalTimeUsed )
+    {
+        long timeUsedSeconds = globalTimeUsed / 1000;
+
+        return timeUsedSeconds > 240 ? timeUsedSeconds / 60 + " min" : timeUsedSeconds + " sec";
+    }
+
+    private void doReindexAllContentTypes( final List<String> logEntries, final Collection<ContentTypeEntity> contentTypes )
+    {
+        int count = 1;
+
+        for ( ContentTypeEntity contentType : contentTypes )
+        {
+            final StringBuffer message = new StringBuffer();
+            message.append( "Generating indexes for '" ).append( contentType.getName() ).append( "'" );
+            message.append( " (#" ).append( count++ ).append( " of " ).append( contentTypes.size() ).append( ")..." );
+
+            logEntries.add( message.toString() );
+
+            long start = System.currentTimeMillis();
+
+            final RegenerateIndexBatcher batcher = new RegenerateIndexBatcher( indexService, contentService );
+
+            batcher.regenerateIndex( contentType, BATCH_SIZE, logEntries );
+
+            long end = System.currentTimeMillis();
+
+            logEntries.add( "... index values generated in " + ( end - start ) + " ms" );
+        }
     }
 
     @Override
@@ -119,5 +149,15 @@ public class ReindexContentToolServiceImpl
     public void setContentService( @Qualifier("contentService") ContentService value )
     {
         this.contentService = value;
+    }
+
+    public boolean isLastReindexFailed()
+    {
+        return lastReindexFailed;
+    }
+
+    public void setLastReindexFailed( final boolean lastReindexFailed )
+    {
+        this.lastReindexFailed = lastReindexFailed;
     }
 }

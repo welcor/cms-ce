@@ -11,6 +11,7 @@
   <xsl:param name="minoccurrence"/>
   <xsl:param name="maxoccurrence"/>
   <xsl:param name="selectedtabpage"/>
+  <xsl:param name="modulename"/>
 
   <xsl:template name="generalhiddenfields">
 

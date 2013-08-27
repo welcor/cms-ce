@@ -23,7 +23,6 @@
 
   <xsl:param name="create"/>
   <xsl:param name="contenttypekey"/>
-  <xsl:param name="modulename"/>
   <xsl:param name="expertcontributor"/>
   <xsl:param name="developer"/>
 

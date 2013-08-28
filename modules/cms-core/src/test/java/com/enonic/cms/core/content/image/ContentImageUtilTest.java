@@ -31,14 +31,8 @@ public class ContentImageUtilTest
 {
     private final int createOriginalImage = 0;
 
-    @Before
-    public void setUp()
-    {
-
-    }
-
     @Test
-    public void testScaleExtraLargeImage()
+    public void testScale1600Image()
         throws Exception
     {
         final String imageSize = "1600";
@@ -50,7 +44,23 @@ public class ContentImageUtilTest
 
         assertEquals( "Wrong number of scaled images", 3 + createOriginalImage, scaledImages.size() );
 
-        checkCreatedImages( scaledImages, true, true, true );
+        checkCreatedImages( scaledImages, true, true, true, false );
+    }
+
+    @Test
+    public void testScaleExtraLargeImage()
+        throws Exception
+    {
+        final String imageSize = "2200";
+        BufferedImage image = getImageFromFile( imageSize );
+
+        List<BinaryData> scaledImages = ContentImageUtil.createStandardSizeImages( image, "jpg", createFileName( imageSize ) );
+
+        assertTrue( image.getWidth() == new Integer( imageSize ) );
+
+        assertEquals( "Wrong number of scaled images", 4 + createOriginalImage, scaledImages.size() );
+
+        checkCreatedImages( scaledImages, true, true, true, true );
     }
 
     @Test
@@ -66,7 +76,7 @@ public class ContentImageUtilTest
 
         assertEquals( "Wrong number of scaled images", 2 + createOriginalImage, scaledImages.size() );
 
-        checkCreatedImages( scaledImages, true, true, false );
+        checkCreatedImages( scaledImages, true, true, false, false );
     }
 
     @Test
@@ -82,7 +92,7 @@ public class ContentImageUtilTest
 
         assertEquals( "Wrong number of scaled images", 1 + createOriginalImage, scaledImages.size() );
 
-        checkCreatedImages( scaledImages, true, false, false );
+        checkCreatedImages( scaledImages, true, false, false, false );
 
     }
 
@@ -100,15 +110,16 @@ public class ContentImageUtilTest
 
         assertEquals( "Wrong number of scaled images", 0 + createOriginalImage, scaledImages.size() );
 
-        checkCreatedImages( scaledImages, false, false, false );
+        checkCreatedImages( scaledImages, false, false, false, false );
     }
 
 
-    private void checkCreatedImages( List<BinaryData> scaledImages, boolean createSmall, boolean createMedium, boolean createLarge )
+    private void checkCreatedImages( List<BinaryData> scaledImages, boolean createSmall, boolean createMedium, boolean createLarge,
+                                     boolean createExtraLarge )
         throws Exception
     {
 
-        boolean smallCreated = false, mediumCreated = false, largeCreated = false;
+        boolean smallCreated = false, mediumCreated = false, largeCreated = false, extraLargeCreated = false;
 
         for ( BinaryData scaledImageData : scaledImages )
         {
@@ -129,11 +140,17 @@ public class ContentImageUtilTest
                 largeCreated = true;
                 assertEquals( ContentImageUtil.STANDARD_WIDTH_SIZES[2], scaledImage.getWidth() );
             }
+            if ( checkBinaryData( scaledImageData, "extra-large" ) )
+            {
+                extraLargeCreated = true;
+                assertEquals( ContentImageUtil.STANDARD_WIDTH_SIZES[3], scaledImage.getWidth() );
+            }
         }
 
         assertEquals( createSmall, smallCreated );
         assertEquals( createMedium, mediumCreated );
         assertEquals( createLarge, largeCreated );
+        assertEquals( createExtraLarge, extraLargeCreated );
     }
 
     private boolean checkBinaryData( BinaryData scaledImage, String expectedPattern )

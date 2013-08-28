@@ -654,6 +654,13 @@
                                         </a>
                                     </li>
                                 </xsl:if>
+                                <xsl:if test="/contents/content/binaries/binary[@label = 'extra-large']">
+                                    <li>
+                                        <a href="_image/{/contents/content/@key}/label/extra-large?_version={$current-version-key}" target="_blank">
+                                            <xsl:text>extra-large</xsl:text>
+                                        </a>
+                                    </li>
+                                </xsl:if>
                             </ul>
                         </td>
                     </tr>

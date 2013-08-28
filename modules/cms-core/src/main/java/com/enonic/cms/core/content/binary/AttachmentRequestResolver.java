@@ -11,6 +11,7 @@ import com.enonic.cms.core.PathAndParams;
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.image.ContentImageUtil;
 
 public abstract class AttachmentRequestResolver
 {
@@ -119,7 +120,7 @@ public abstract class AttachmentRequestResolver
             throw new InvalidBinaryPathException( binaryPath, "Label 'file' no longer supported. Use '/label/<label>' instead." );
         }
 
-        if ( !label.equals( "small" ) && !label.equals( "medium" ) && !label.equals( "large" ) && !label.equals( "source" ) )
+        if ( !ContentImageUtil.isValidLabel( label ) )
         {
             throw new InvalidBinaryPathException( binaryPath, "Unsupported label '" + label + "'" );
         }

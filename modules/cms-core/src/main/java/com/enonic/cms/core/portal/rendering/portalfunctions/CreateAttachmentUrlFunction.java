@@ -18,6 +18,7 @@ import com.enonic.cms.core.content.binary.AttachmentNativeLinkKeyWithBinaryKey;
 import com.enonic.cms.core.content.binary.AttachmentNativeLinkKeyWithLabel;
 import com.enonic.cms.core.content.binary.BinaryDataKey;
 import com.enonic.cms.core.content.contenttype.ContentHandlerName;
+import com.enonic.cms.core.content.image.ContentImageUtil;
 import com.enonic.cms.core.portal.instruction.CreateAttachmentUrlInstruction;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 import com.enonic.cms.store.dao.ContentDao;
@@ -98,7 +99,7 @@ public class CreateAttachmentUrlFunction
             throw new IllegalArgumentException( "Label 'file' no longer supported. Use '/label/<label>' instead." );
         }
 
-        if ( !label.equals( "small" ) && !label.equals( "medium" ) && !label.equals( "large" ) && !label.equals( "source" ) )
+        if ( !ContentImageUtil.isValidLabel( label ) )
         {
             throw new IllegalArgumentException( "Unsupported label '" + label + "'" );
         }

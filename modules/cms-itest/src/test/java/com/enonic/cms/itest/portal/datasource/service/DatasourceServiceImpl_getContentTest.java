@@ -226,7 +226,7 @@ public class DatasourceServiceImpl_getContentTest
         // Exercise
         int[] contentKeys = new int[]{requested1.toInt(), requested2.toInt()};
         String query = "";
-        String orderBy = "";
+        String orderBy = "key";
         int index = 0;
         int count = 100;
         boolean includeData = false;

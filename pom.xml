@@ -116,7 +116,6 @@
                 <bannedDependencies>
                   <excludes>
                     <exclude>jdom:jdom</exclude>
-                    <exclude>cglib:cglib</exclude>
                     <exclude>org.springframework:spring</exclude>
                     <exclude>xerces:*</exclude>
                     <exclude>xml-apis:xml-apis</exclude>

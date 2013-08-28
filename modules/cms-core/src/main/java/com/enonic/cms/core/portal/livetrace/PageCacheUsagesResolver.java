@@ -50,11 +50,15 @@ class PageCacheUsagesResolver
         {
             for ( ViewFunctionTrace viewFunctionTrace : viewTransformationTrace.getViewFunctionTraces() )
             {
-                for ( Trace trace : viewFunctionTrace.getTraces() )
+                final Traces<? extends Trace> traces = viewFunctionTrace.getTraces();
+                if ( traces != null )
                 {
-                    if ( trace instanceof WindowRenderingTrace )
+                    for ( Trace trace : traces )
                     {
-                        collectWindowRenderingTrace( (WindowRenderingTrace) trace, collection );
+                        if ( trace instanceof WindowRenderingTrace )
+                        {
+                            collectWindowRenderingTrace( (WindowRenderingTrace) trace, collection );
+                        }
                     }
                 }
             }

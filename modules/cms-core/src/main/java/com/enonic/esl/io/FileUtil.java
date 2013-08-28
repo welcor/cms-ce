@@ -27,7 +27,8 @@ public class FileUtil
         ZipEntry zipEntry = zipIn.getNextEntry();
         while ( zipEntry != null )
         {
-            if ( !filterRegExp.matches(zipEntry.getName()) )
+            final String name = zipEntry.getName();
+            if ( !name.matches(filterRegExp) )
             {
                 inflateFile( dir, zipIn, zipEntry );
             }

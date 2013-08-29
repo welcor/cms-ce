@@ -301,7 +301,7 @@ public final class QuartzWorkService
     private void validateEntry( WorkEntry entry )
         throws WorkException
     {
-        String clzName = entry.getWorkClass();
+        String clzName = entry.getWorkClass().replaceAll( ".*\\.", "" );
         TaskHandler taskPlugin = this.extensions.getByName( clzName );
         if ( taskPlugin == null )
         {

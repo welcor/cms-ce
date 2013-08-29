@@ -27,7 +27,7 @@ public final class WorkHelper
     public static void executeWork( final TaskHandlerExtensions extensions, String className, Properties props )
         throws Exception
     {
-        TaskHandler p = extensions.getByName( className );
+        TaskHandler p = extensions.getByName( className.replaceAll( ".*\\.", "" ) );
         if ( p != null )
         {
             p.execute( props );

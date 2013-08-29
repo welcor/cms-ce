@@ -23,7 +23,7 @@ public final class JVMStatusInfoBuilder
         final RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         json.put( "name", bean.getVmName() );
         json.put( "vendor", bean.getVmVendor() );
-        json.put( "vesion", bean.getVmVersion() );
+        json.put( "version", bean.getVmVersion() );
         json.put( "startTime", bean.getStartTime() );
         json.put( "upTime", bean.getUptime() );
     }

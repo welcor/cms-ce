@@ -142,7 +142,7 @@ public class PageTemplateServiceImpl_deletePageTemplateTest
 
         PageTemplatePortletEntity pTemplatePortlet = pageTemplatePortletDao.findByKey( templatePortletKey );
 
-        pPageTemplate.addPagetTemplatePortlet( pTemplatePortlet );
+        pPageTemplate.addPageTemplatePortlet( pTemplatePortlet );
         pPageTemplate.getPageTemplateRegions().iterator().next().addPortlet( pTemplatePortlet );
         save( pPageTemplate );
 

@@ -17,6 +17,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
@@ -30,7 +33,7 @@ import com.enonic.cms.core.structure.TemplateParameter;
 import com.enonic.cms.core.structure.TemplateParameterType;
 
 public class PageTemplateEntity
-    implements Serializable, Cloneable
+    implements Serializable
 {
     private Integer key;
 
@@ -54,11 +57,72 @@ public class PageTemplateEntity
 
     private Set<PageTemplateRegionEntity> pageTemplateRegions = new HashSet<PageTemplateRegionEntity>();
 
-    private List<PageTemplatePortletEntity> pagetTemplatePortlets = new ArrayList<PageTemplatePortletEntity>();
+    private List<PageTemplatePortletEntity> pageTemplatePortlets = new ArrayList<PageTemplatePortletEntity>();
 
     private Set<ContentTypeEntity> contentTypes = new HashSet<ContentTypeEntity>();
 
     private transient DataSourcesElement datasources;
+
+    public PageTemplateEntity()
+    {
+    }
+
+    /**
+     * Copy constructor. clones contained references for portlets, regions...
+     *
+     * @param source
+     */
+    public PageTemplateEntity( final PageTemplateEntity source )
+    {
+        this.key = source.key;
+        this.name = source.name;
+        this.description = source.description;
+        this.timestamp = source.timestamp == null ? null : new Date( source.timestamp.getTime() );
+        this.xmlData = (LazyInitializedJDOMDocument) source.xmlData.clone();
+        this.styleKey = source.styleKey;
+        this.site = source.site;
+        this.cssKey = source.cssKey;
+        this.type = source.type;
+        this.runAs = source.runAs;
+
+        final Map<Integer, PageTemplateRegionEntity> templateRegionTable = Maps.newConcurrentMap();
+        // clone page template regions
+        for ( PageTemplateRegionEntity region : source.pageTemplateRegions )
+        {
+            final PageTemplateRegionEntity regionClone = new PageTemplateRegionEntity( region );
+            regionClone.setPageTemplate( this );
+            this.pageTemplateRegions.add( regionClone );
+            templateRegionTable.put( regionClone.getKey(), regionClone );
+        }
+
+        // clone page template portlets
+        for ( PageTemplatePortletEntity pageTemplatePortlet : source.pageTemplatePortlets )
+        {
+            final PageTemplatePortletEntity pageTemplatePortletClone = new PageTemplatePortletEntity( pageTemplatePortlet );
+            pageTemplatePortletClone.setPageTemplate( this );
+
+            // make reference pointing to region in cloned portlet, point to cloned region instance
+            final PageTemplateRegionEntity pageTemplateRegionClone =
+                templateRegionTable.get( pageTemplatePortlet.getPageTemplateRegion().getKey() );
+            pageTemplatePortletClone.setPageTemplateRegion( pageTemplateRegionClone );
+
+            this.pageTemplatePortlets.add( pageTemplatePortletClone );
+        }
+
+        // fix references to portlets in cloned regions
+        for ( PageTemplateRegionEntity region : this.pageTemplateRegions )
+        {
+            final Set<PageTemplatePortletEntity> clonedPortlets = Sets.newHashSet();
+            for ( PageTemplatePortletEntity portlet : region.getPortlets() )
+            {
+                clonedPortlets.add( this.pageTemplatePortlets.get( this.pageTemplatePortlets.indexOf( portlet ) ) );
+            }
+            region.setPortlets( clonedPortlets );
+        }
+
+        this.contentTypes = Sets.newHashSet( source.contentTypes );
+        this.datasources = source.datasources == null ? null : new DataSourcesElement( source.datasources );
+    }
 
     public int getKey()
     {
@@ -155,24 +219,24 @@ public class PageTemplateEntity
         this.pageTemplateRegions = pageTemplateRegions;
     }
 
-    public void addPagetTemplatePortlet( PageTemplatePortletEntity value )
+    public void addPageTemplatePortlet( PageTemplatePortletEntity value )
     {
-        pagetTemplatePortlets.add( value );
+        pageTemplatePortlets.add( value );
     }
 
-    public void clearPagetTemplatePortlets()
+    public void clearPageTemplatePortlets()
     {
-        pagetTemplatePortlets.clear();
+        pageTemplatePortlets.clear();
     }
 
     public List<PageTemplatePortletEntity> getPortlets()
     {
-        return pagetTemplatePortlets;
+        return pageTemplatePortlets;
     }
 
-    public void setPagetTemplatePortlets( final List<PageTemplatePortletEntity> pagetTemplatePortlets )
+    public void setPageTemplatePortlets( final List<PageTemplatePortletEntity> pageTemplatePortlets )
     {
-        this.pagetTemplatePortlets = pagetTemplatePortlets;
+        this.pageTemplatePortlets = pageTemplatePortlets;
     }
 
     public void setKey( Integer key )
@@ -369,19 +433,6 @@ public class PageTemplateEntity
         }
 
         return null;
-    }
-
-    @Override
-    public PageTemplateEntity clone() {
-        try {
-            PageTemplateEntity copy = ( PageTemplateEntity ) super.clone();
-
-            copy.setTimestamp( new Date() );
-
-            return copy;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public UserEntity resolveRunAsUser( UserEntity currentUser )

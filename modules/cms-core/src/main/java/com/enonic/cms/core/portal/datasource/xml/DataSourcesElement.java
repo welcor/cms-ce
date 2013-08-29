@@ -19,6 +19,16 @@ public final class DataSourcesElement
         this.list = Lists.newArrayList();
     }
 
+    public DataSourcesElement( final DataSourcesElement source )
+    {
+        this.resultElement = source.resultElement;
+        this.list = Lists.newArrayList();
+        for ( DataSourceElement dataSourceEl : source.list )
+        {
+            this.list.add( new DataSourceElement( dataSourceEl ) );
+        }
+    }
+
     public String getResultElement()
     {
         return this.resultElement;

@@ -44,7 +44,7 @@
         <column name="PTT_CTY_LKEY" not-null="true"/>
       </many-to-many>
     </set>
-    <bag name="pagetTemplatePortlets" inverse="true" order-by="PTC_LORDER" cascade="all-delete-orphan" lazy="true" fetch="select" batch-size="500">
+    <bag name="pageTemplatePortlets" inverse="true" order-by="PTC_LORDER" cascade="all-delete-orphan" lazy="true" fetch="select" batch-size="500">
       <cache usage="nonstrict-read-write"/>
       <key column="PTC_PAT_LKEY"/>
       <one-to-many class="com.enonic.cms.core.structure.page.template.PageTemplatePortletEntity"/>

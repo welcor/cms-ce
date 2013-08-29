@@ -11,12 +11,14 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class PageTemplatePortletKey
     implements Serializable
 {
-    private int pageTemplateKey;
+    private final int pageTemplateKey;
 
-    private int portletKey;
+    private final int portletKey;
 
     public PageTemplatePortletKey()
     {
+        this.pageTemplateKey = 0;
+        this.portletKey = 0;
     }
 
     public PageTemplatePortletKey( int pageTemplateKey, int portletKey )

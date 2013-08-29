@@ -27,6 +27,15 @@ public final class DataSourceElement
         this.parameters = Maps.newHashMap();
     }
 
+    public DataSourceElement( final DataSourceElement source )
+    {
+        this.name = source.name;
+        this.cache = source.cache;
+        this.resultElement = source.resultElement;
+        this.condition = source.condition;
+        this.parameters = Maps.newHashMap( source.parameters );
+    }
+
     public String getName()
     {
         return this.name;

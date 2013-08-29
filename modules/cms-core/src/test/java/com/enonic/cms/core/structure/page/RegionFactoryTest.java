@@ -36,11 +36,11 @@ public class RegionFactoryTest
         pageTemplate.addPageTemplateRegion( createPageTemplateRegion( 4, "east", pageTemplate ) );
         pageTemplate.addPageTemplateRegion( createPageTemplateRegion( 5, "south", pageTemplate ) );
 
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "north", createPortlet( 1, "Portlet-1" ), pageTemplate ) );
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "west", createPortlet( 2, "Portlet-2" ), pageTemplate ) );
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "east", createPortlet( 3, "Portlet-3" ), pageTemplate ) );
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "center", createPortlet( 4, "Portlet-4" ), pageTemplate ) );
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "south", createPortlet( 5, "Portlet-5" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "north", createPortlet( 1, "Portlet-1" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "west", createPortlet( 2, "Portlet-2" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "east", createPortlet( 3, "Portlet-3" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "center", createPortlet( 4, "Portlet-4" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "south", createPortlet( 5, "Portlet-5" ), pageTemplate ) );
 
         MenuItemEntity menuItem = createMenuItem( 1, "forsiden", null );
 
@@ -64,8 +64,8 @@ public class RegionFactoryTest
         pageTemplate.addPageTemplateRegion( region_leftColumn );
         pageTemplate.addPageTemplateRegion( region_mainColumn );
 
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "leftColumn", createPortlet( 11, "Portlet-1" ), pageTemplate ) );
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "mainColumn", createPortlet( 22, "Portlet-2" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "leftColumn", createPortlet( 11, "Portlet-1" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "mainColumn", createPortlet( 22, "Portlet-2" ), pageTemplate ) );
 
         PageEntity page = createPage( 1, pageTemplate );
         page.addPortletPlacement( createPagePortletWindow( page, region_leftColumn, createPortlet( 101, "Overriding-Portlet-1" ) ) );
@@ -103,8 +103,8 @@ public class RegionFactoryTest
         pageTemplate.addPageTemplateRegion( region_leftColumn );
         pageTemplate.addPageTemplateRegion( region_mainColumn );
 
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "leftColumn", createPortlet( 11, "Portlet-1" ), pageTemplate ) );
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "mainColumn", createPortlet( 22, "Portlet-2" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "leftColumn", createPortlet( 11, "Portlet-1" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "mainColumn", createPortlet( 22, "Portlet-2" ), pageTemplate ) );
 
         PageEntity page = createPage( 1, pageTemplate );
         page.addPortletPlacement( createPagePortletWindow( page, region_leftColumn, createPortlet( 101, "Overriding-Portlet-1" ) ) );
@@ -136,7 +136,7 @@ public class RegionFactoryTest
 
         pageTemplate.addPageTemplateRegion( region_leftColumn );
 
-        pageTemplate.addPagetTemplatePortlet( createPageTemplatePortlet( "leftColumn", createPortlet( 11, "Portlet-1" ), pageTemplate ) );
+        pageTemplate.addPageTemplatePortlet( createPageTemplatePortlet( "leftColumn", createPortlet( 11, "Portlet-1" ), pageTemplate ) );
 
         PageEntity page = createPage( 1, pageTemplate );
         page.addPortletPlacement( createPagePortletWindow( page, region_leftColumn, createPortlet( 101, "Overriding-Portlet-1" ) ) );

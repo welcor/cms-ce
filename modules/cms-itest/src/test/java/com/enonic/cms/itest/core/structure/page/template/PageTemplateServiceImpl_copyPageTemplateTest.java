@@ -193,7 +193,7 @@ public class PageTemplateServiceImpl_copyPageTemplateTest
 
         PageTemplatePortletEntity pTemplatePortlet = pageTemplatePortletDao.findByKey( templatePortletKey );
 
-        pPageTemplate.addPagetTemplatePortlet( pTemplatePortlet );
+        pPageTemplate.addPageTemplatePortlet( pTemplatePortlet );
 
         pPageTemplate.setDescription( "crocs" );
 

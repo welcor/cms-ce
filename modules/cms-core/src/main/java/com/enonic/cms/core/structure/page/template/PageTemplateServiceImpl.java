@@ -1,10 +1,8 @@
 package com.enonic.cms.core.structure.page.template;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.Text;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineLogger;
@@ -30,7 +30,6 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
-import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.structure.RunAsType;
@@ -40,6 +39,7 @@ import com.enonic.cms.core.structure.portlet.PortletEntity;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.PageTemplateDao;
+import com.enonic.cms.store.dao.PageTemplateRegionDao;
 import com.enonic.cms.store.dao.PortletDao;
 import com.enonic.cms.store.dao.SiteDao;
 
@@ -48,22 +48,33 @@ public class PageTemplateServiceImpl
     implements PageTemplateService
 {
     private static final String PAT_TABLE = "tPageTemplate";
+
     private static final String PTP_TABLE = "tPageTemplParam";
 
     @Autowired
     private KeyService keyService;
+
     @Autowired
     private PageTemplateDao pageTemplateDao;
+
     @Autowired
     private SiteDao siteDao;
+
     @Autowired
     private PortletDao portletDao;
+
+    @Autowired
+    private PageTemplateRegionDao regionDao;
+
     @Autowired
     private MenuItemDao menuItemDao;
+
     @Autowired
     private ContentTypeDao contentTypeDao;
+
     @Autowired
     private ResourceService resourceService;
+
     @Autowired
     private AdminConsoleTranslationService languageMap;
 
@@ -96,9 +107,8 @@ public class PageTemplateServiceImpl
         final PageTemplateEntity newPageTemplate = new PageTemplateEntity();
 
         final Element docElem = doc.getDocumentElement();
-        final Element[] pagetemplateElems = ( "pagetemplate".equals( docElem.getTagName() ) )
-            ? new Element[]{docElem}
-            : XMLTool.getElements( doc.getDocumentElement() );
+        final Element[] pagetemplateElems =
+            ( "pagetemplate".equals( docElem.getTagName() ) ) ? new Element[]{docElem} : XMLTool.getElements( doc.getDocumentElement() );
 
         try
         {
@@ -108,7 +118,8 @@ public class PageTemplateServiceImpl
 
                 // attribute: key
                 final String keyStr = root.getAttribute( "key" );
-                final int pageTemplateKey = ( !useOldKey || StringUtils.isBlank( keyStr ) ) ? getNextKey( PAT_TABLE ) : Integer.parseInt( keyStr );
+                final int pageTemplateKey =
+                    ( !useOldKey || StringUtils.isBlank( keyStr ) ) ? getNextKey( PAT_TABLE ) : Integer.parseInt( keyStr );
                 newPageTemplate.setKey( pageTemplateKey );
 
                 // attribute: menukey
@@ -371,7 +382,7 @@ public class PageTemplateServiceImpl
             {
                 final PageTemplatePortletEntity template = new PageTemplatePortletEntity();
                 template.setPageTemplate( pageTemplate );
-                pageTemplate.addPagetTemplatePortlet( template );
+                pageTemplate.addPageTemplatePortlet( template );
 
                 Element elem = (Element) node;
                 Map<String, Element> subelems = XMLTool.filterElements( elem.getChildNodes() );
@@ -418,50 +429,33 @@ public class PageTemplateServiceImpl
             throw new IllegalArgumentException( "PageTemplate with key=" + command.getKey() + " not found" );
         }
 
-        final User user = command.getUser();
+        final PageTemplateEntity newPageTemplate = new PageTemplateEntity( pageTemplateToCopy );
+        newPageTemplate.setTimestamp( new Date() );
+        newPageTemplate.setKey( getNextKey( PAT_TABLE ) );
+        final Map translationMap = languageMap.getTranslationMap( command.getUser().getSelectedLanguageCode() );
+        newPageTemplate.setName( pageTemplateToCopy.getName() + " (" + translationMap.get( "%txtCopy%" ) + ")" );
 
-        final PageTemplateEntity newPageTemplate = copyPageTemplate( pageTemplateToCopy, user );
-
+        final List<PageTemplatePortletEntity> portlets = newPageTemplate.getPortlets();
+        final Set<PageTemplateRegionEntity> regions = newPageTemplate.getPageTemplateRegions();
+        newPageTemplate.setPageTemplatePortlets( Lists.<PageTemplatePortletEntity>newArrayList() );
+        newPageTemplate.setPageTemplateRegions( Sets.<PageTemplateRegionEntity>newHashSet() );
+        // first persist page template copy without references to regions or portlets
         pageTemplateDao.storeNew( newPageTemplate );
-    }
 
-    private PageTemplateEntity copyPageTemplate( PageTemplateEntity pageTemplate, User user )
-    {
-        final Document doc = createPageTemplatesDocument( pageTemplate != null ? Arrays.asList( pageTemplate ) : null );
-        final org.w3c.dom.Document document = XMLDocumentFactory.create( doc ).getAsDOMDocument();
-
-        Element root = document.getDocumentElement();
-        Element pagetemplateElem = XMLTool.getFirstElement( root );
-
-        if ( pagetemplateElem != null )
+        // add references to regions and portlets, persist new regions
+        for ( PageTemplateRegionEntity region : regions )
         {
-            // rename copy
-            Map translationMap = languageMap.getTranslationMap( user.getSelectedLanguageCode() );
-            Element nameElem = XMLTool.getElement( pagetemplateElem, "name" );
-            Text nameNode = (Text) nameElem.getFirstChild();
-            nameNode.setData( nameNode.getData() + " (" + translationMap.get( "%txtCopy%" ) + ")" );
-
-            // remove old parameter keys and save position
-            Map<String, String> paramKeyMap = new HashMap<String, String>();
-            Element[] paramElems = XMLTool.getElements( XMLTool.getElement( pagetemplateElem, "pagetemplateparameters" ) );
-            for ( int i = 0; i < paramElems.length; i++ )
-            {
-                String key = paramElems[i].getAttribute( "key" );
-                paramKeyMap.put( key, "_" + i );
-                paramElems[i].removeAttribute( "key" );
-            }
-
-            // replace old parameter keys with saved position
-            Element[] contentobjectElems = XMLTool.getElements( XMLTool.getElement( pagetemplateElem, "contentobjects" ) );
-            for ( Element contentobjectElem : contentobjectElems )
-            {
-                String key = contentobjectElem.getAttribute( "parameterkey" );
-                contentobjectElem.setAttribute( "parameterkey", paramKeyMap.get( key ) );
-            }
-
-            return createPageTemplate( document, false );
+            region.setKey( getNextKey( PTP_TABLE ) );
+            regionDao.storeNew( region );
+            newPageTemplate.addPageTemplateRegion( region );
         }
-        return null;
+        for ( PageTemplatePortletEntity portlet : portlets)
+        {
+            portlet.setKey( new PageTemplatePortletKey( newPageTemplate.getKey(), portlet.getPortlet().getKey() ) );
+            newPageTemplate.addPageTemplatePortlet( portlet );
+        }
+
+        pageTemplateDao.store( newPageTemplate );
     }
 
     private Document createPageTemplatesDocument( Collection<PageTemplateEntity> pageTemplates )
@@ -727,7 +721,6 @@ public class PageTemplateServiceImpl
                 }
                 pageTemplate.setCssKey( css );
 
-
                 // store relations in old schema
                 Element ptpsElem = XMLTool.getElement( root, "pagetemplateparameters" );
                 Element contentobjectsElem = XMLTool.getElement( root, "contentobjects" );
@@ -747,9 +740,8 @@ public class PageTemplateServiceImpl
 
                 // Clear all old relationships
                 pageTemplate.clearPageTemplateRegions();
-                pageTemplate.clearPagetTemplatePortlets();
+                pageTemplate.clearPageTemplatePortlets();
                 pageTemplate.clearContentTypes();
-
 
                 // element: PageTemplateRegion
                 int[] ptpKeys = null;
@@ -796,7 +788,6 @@ public class PageTemplateServiceImpl
 
                 final List<ContentTypeEntity> contentTypes = setPageTemplateContentTypes( pageTemplate, ctyElems );
 
-
                 // If page template is of type "section", we need to create sections for menuitems
                 // that does not have one
                 if ( pageTemplateType == PageTemplateType.SECTIONPAGE )
@@ -841,7 +832,7 @@ public class PageTemplateServiceImpl
 
                     Element subelem = subelems.get( "name" );
                     final String name = XMLTool.getElementText( subelem );
-                    return name ;
+                    return name;
                 }
             }
         }

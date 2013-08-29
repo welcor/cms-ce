@@ -5,9 +5,6 @@
 package com.enonic.cms.core.structure.page.template;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -19,17 +16,19 @@ import com.enonic.cms.core.InvalidKeyException;
 public class PageTemplateKey
     implements Serializable
 {
-    private int intValue;
+    private final int intValue;
 
-    private String stringValue;
+    private final String stringValue;
 
 
-    public PageTemplateKey( String key )
+    public PageTemplateKey( final String key )
         throws InvalidKeyException
     {
         try
         {
-            init( Integer.parseInt( key ) );
+            final int value = Integer.parseInt( key );
+            this.intValue = value;
+            this.stringValue = String.valueOf( value );
         }
         catch ( NumberFormatException e )
         {
@@ -37,15 +36,10 @@ public class PageTemplateKey
         }
     }
 
-    public PageTemplateKey( int key )
+    public PageTemplateKey( final int key )
     {
-        init( key );
-    }
-
-    private void init( int value )
-    {
-        this.intValue = value;
-        this.stringValue = String.valueOf( value );
+        this.intValue = key;
+        this.stringValue = String.valueOf( key );
     }
 
     public int toInt()
@@ -85,9 +79,8 @@ public class PageTemplateKey
         return stringValue;
     }
 
-    public static PageTemplateKey parse( String str )
+    public static PageTemplateKey parse( final String str )
     {
-
         if ( str == null )
         {
             return null;
@@ -96,35 +89,4 @@ public class PageTemplateKey
         return new PageTemplateKey( str );
     }
 
-    public static Collection<PageTemplateKey> converToList( int[] array )
-    {
-
-        if ( ( array == null ) || ( array.length == 0 ) )
-        {
-            return new ArrayList<PageTemplateKey>();
-        }
-
-        Collection<PageTemplateKey> list = new ArrayList<PageTemplateKey>( array.length );
-        for ( int value : array )
-        {
-            list.add( new PageTemplateKey( value ) );
-
-        }
-        return list;
-    }
-
-    public static String convertToCommaSeparatedString( Collection<PageTemplateKey> keys )
-    {
-        StringBuffer s = new StringBuffer();
-        for ( Iterator<PageTemplateKey> it = keys.iterator(); it.hasNext(); )
-        {
-            PageTemplateKey pageTemplateKey = it.next();
-            s.append( pageTemplateKey );
-            if ( it.hasNext() )
-            {
-                s.append( "," );
-            }
-        }
-        return s.toString();
-    }
 }

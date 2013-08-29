@@ -40,6 +40,10 @@ class SerializeFunction
             final org.w3c.dom.Node w3cNode = NodeOverNodeInfo.wrap( node );
 
             final Document doc = JDOMUtil.toDocument( w3cNode );
+            if ( !doc.hasRootElement() )
+            {
+                return createValue( "" );
+            }
             recursiveRemoveNamespaces( doc.getRootElement() );
 
             final String output = includeSelf ? JDOMUtil.serialize( doc, 4, true ) : JDOMUtil.serializeChildren( doc, 4 );

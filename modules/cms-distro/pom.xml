@@ -10,6 +10,7 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
+  <groupId>com.enonic.cms.distro</groupId>
   <artifactId>cms-distro</artifactId>
   <packaging>pom</packaging>
   <name>Enonic CMS Distro</name>
@@ -20,12 +21,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>com.enonic.cms</groupId>
       <artifactId>cms-extractor-plugin</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>com.enonic.cms</groupId>
       <artifactId>cms-webapp</artifactId>
       <version>${project.version}</version>
       <type>war</type>

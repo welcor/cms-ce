@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.SocketException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -194,5 +195,29 @@ public class HttpServletUtil
     public static void setEtag( HttpServletResponse res, String etag )
     {
         res.setHeader( "ETag", etag );
+    }
+
+    public static boolean checkHeaderContainsETag( final String header, final String eTag )
+    {
+        String[] matchValues = header.split( "\\s*,\\s*" );
+        Arrays.sort( matchValues );
+
+        return Arrays.binarySearch( matchValues, eTag ) > -1 || Arrays.binarySearch( matchValues, "*" ) > -1;
+    }
+
+    /**
+     * Check header with given value
+     * @param header accept header.
+     * @param value value to be accepted.
+     * @return <code>TRUE</code> if header apply the given value, <code>FALSE</code> otherwise
+     */
+    public static boolean checkHeaderContainsValue( final String header, final String value )
+    {
+        String[] values = header.split( "\\s*(,|;)\\s*" );
+        Arrays.sort( values );
+
+        return Arrays.binarySearch( values, value ) > -1 ||
+            Arrays.binarySearch( values, value.replaceAll( "/.*$", "/*" ) ) > -1 ||
+            Arrays.binarySearch( values, "*/*" ) > -1;
     }
 }

@@ -29,6 +29,11 @@ final class FileBlobRecord
         return this.file.length();
     }
 
+    public File getAsFile()
+    {
+        return file;
+    }
+
     public InputStream getStream()
         throws BlobStoreException
     {

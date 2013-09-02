@@ -170,8 +170,13 @@
     <repository>
       <id>enonic.public</id>
       <url>http://repo.enonic.com/public</url>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
     </repository>
+
   </repositories>
+
 
   <pluginRepositories>
     <pluginRepository>
@@ -193,5 +198,6 @@
       </modules>
     </profile>
   </profiles>
+
 
 </project>

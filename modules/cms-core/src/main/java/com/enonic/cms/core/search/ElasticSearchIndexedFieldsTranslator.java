@@ -90,7 +90,7 @@ public class ElasticSearchIndexedFieldsTranslator
         else
         {
             field = fields.get( name );
-            indexFieldSet.addFieldWithAnyValue( fieldPath, (String) field.getValue() );
+            indexFieldSet.addFieldWithAnyValue( fieldPath, StringUtils.join( field.getValues(), ',' ) );
         }
     }
 

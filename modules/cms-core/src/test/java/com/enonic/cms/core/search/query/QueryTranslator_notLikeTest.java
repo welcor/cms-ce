@@ -19,7 +19,7 @@ public class QueryTranslator_notLikeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
+            "  \"size\" : 1000,\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -29,7 +29,9 @@ public class QueryTranslator_notLikeTest
             "          },\n" +
             "          \"must_not\" : {\n" +
             "            \"wildcard\" : {\n" +
-            "              \"title\" : \"boat*\"\n" +
+            "              \"title\" : {\n" +
+            "                \"wildcard\" : \"boat*\"\n" +
+            "              }\n" +
             "            }\n" +
             "          }\n" +
             "        }\n" +
@@ -51,7 +53,7 @@ public class QueryTranslator_notLikeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
+            "  \"size\" : 1000,\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -61,7 +63,9 @@ public class QueryTranslator_notLikeTest
             "          },\n" +
             "          \"must_not\" : {\n" +
             "            \"wildcard\" : {\n" +
-            "              \"title\" : \"*$&*\"\n" +
+            "              \"title\" : {\n" +
+            "                \"wildcard\" : \"*$&*\"\n" +
+            "              }\n" +
             "            }\n" +
             "          }\n" +
             "        }\n" +
@@ -83,7 +87,7 @@ public class QueryTranslator_notLikeTest
     {
         String expected_search_result = "{\n" +
             "  \"from\" : 0,\n" +
-            "  \"size\" : " + ContentIndexQuery.DEFAULT_COUNT + ",\n" +
+            "  \"size\" : 1000,\n" +
             "  \"query\" : {\n" +
             "    \"filtered\" : {\n" +
             "      \"query\" : {\n" +
@@ -93,7 +97,9 @@ public class QueryTranslator_notLikeTest
             "          },\n" +
             "          \"must_not\" : {\n" +
             "            \"wildcard\" : {\n" +
-            "              \"title\" : \"*\\\\*\"\n" +
+            "              \"title\" : {\n" +
+            "                \"wildcard\" : \"*\\\\*\"\n" +
+            "              }\n" +
             "            }\n" +
             "          }\n" +
             "        }\n" +

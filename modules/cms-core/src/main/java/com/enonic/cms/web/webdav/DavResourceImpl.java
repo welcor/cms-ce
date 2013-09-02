@@ -43,8 +43,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
-import com.enonic.cms.framework.util.MimeTypeResolver;
-
 final class DavResourceImpl
     implements DavResource
 {
@@ -60,16 +58,16 @@ final class DavResourceImpl
 
     private LockManager lockManager;
 
-    private final MimeTypeResolver mimeTypeResolver;
+    private final DavConfiguration configuration;
 
     public DavResourceImpl( final File file, final DavResourceLocator locator, final DavSession session, final DavResourceFactory factory,
-                            final MimeTypeResolver mimeTypeResolver )
+                            final DavConfiguration configuration )
     {
         this.file = file;
         this.locator = locator;
         this.session = session;
         this.factory = factory;
-        this.mimeTypeResolver = mimeTypeResolver;
+        this.configuration = configuration;
     }
 
     @Override
@@ -87,7 +85,7 @@ final class DavResourceImpl
     @Override
     public boolean exists()
     {
-        return this.file.exists();
+        return ( this.file != null ) && this.file.exists() && !isHidden( this.file.getName() );
     }
 
     @Override
@@ -152,7 +150,7 @@ final class DavResourceImpl
     {
         out.setContentLength( this.file.length() );
         out.setModificationTime( this.file.lastModified() );
-        out.setContentType( this.mimeTypeResolver.getMimeType( this.file.getName() ) );
+        out.setContentType( this.configuration.getMimeTypeResolver().getMimeType( this.file.getName() ) );
 
         if ( out.hasStream() )
         {
@@ -305,7 +303,7 @@ final class DavResourceImpl
 
     private boolean isHidden( final String name )
     {
-        return name.startsWith( "." );
+        return this.configuration.isHidden( name );
     }
 
     @Override

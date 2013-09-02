@@ -74,4 +74,10 @@ public final class DavConfigurationImpl
     {
         this.mimeTypeResolver = value;
     }
+
+    @Override
+    public boolean isHidden( final String name )
+    {
+        return name.startsWith( "." );
+    }
 }

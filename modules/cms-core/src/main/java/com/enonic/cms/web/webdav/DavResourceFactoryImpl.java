@@ -16,8 +16,6 @@ import org.apache.jackrabbit.webdav.DavSession;
 import org.apache.jackrabbit.webdav.lock.LockManager;
 import org.apache.jackrabbit.webdav.lock.SimpleLockManager;
 
-import com.enonic.cms.framework.util.MimeTypeResolver;
-
 final class DavResourceFactoryImpl
     implements DavResourceFactory
 {
@@ -25,12 +23,12 @@ final class DavResourceFactoryImpl
 
     private final LockManager lockManager;
 
-    private final MimeTypeResolver mimeTypeResolver;
+    private final DavConfiguration configuration;
 
     public DavResourceFactoryImpl( final DavConfiguration configuration )
     {
-        this.mimeTypeResolver = configuration.getMimeTypeResolver();
-        this.resourceRoot = configuration.getResourceRoot();
+        this.configuration = configuration;
+        this.resourceRoot = this.configuration.getResourceRoot();
         this.lockManager = new SimpleLockManager();
     }
 
@@ -39,7 +37,7 @@ final class DavResourceFactoryImpl
         throws DavException
     {
         final File file = new File( this.resourceRoot, locator.getResourcePath() );
-        final DavResourceImpl resource = new DavResourceImpl( file, locator, session, this, this.mimeTypeResolver );
+        final DavResourceImpl resource = new DavResourceImpl( file, locator, session, this, this.configuration );
         resource.addLockManager( this.lockManager );
         return resource;
     }

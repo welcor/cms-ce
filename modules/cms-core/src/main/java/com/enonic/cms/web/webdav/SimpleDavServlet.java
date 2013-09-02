@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.jackrabbit.webdav.DavLocatorFactory;
 import org.apache.jackrabbit.webdav.DavResource;
 import org.apache.jackrabbit.webdav.DavResourceFactory;
@@ -39,14 +40,15 @@ public final class SimpleDavServlet
 
     private DavResourceFactory resourceFactory;
 
+    private DavConfiguration configuration;
+
     private File resourceRoot;
 
     public void init( final ServletConfig config )
         throws ServletException
     {
         final ServletContext servletContext = config.getServletContext();
-        final DavConfiguration configuration = getConfiguration( servletContext );
-
+        this.configuration = getConfiguration( servletContext );
         this.resourceRoot = configuration.getResourceRoot();
 
         setLocatorFactory( new DavLocatorFactoryImpl() );
@@ -62,12 +64,26 @@ public final class SimpleDavServlet
         return appContext.getBean( DavConfiguration.class );
     }
 
-    protected void service( HttpServletRequest request, HttpServletResponse response )
+    protected void service( final HttpServletRequest request, final HttpServletResponse response )
         throws ServletException, IOException
     {
         ServletRequestAccessor.setRequest( request );
         ensureResourceRootExists();
+
+        if ( isHidden( request ) )
+        {
+            response.setStatus( HttpServletResponse.SC_NOT_FOUND );
+            return;
+        }
+
         super.service( request, response );
+    }
+
+    private boolean isHidden( final HttpServletRequest request )
+    {
+        final String uri = request.getRequestURI();
+        final String name = FilenameUtils.getName( uri );
+        return this.configuration.isHidden( name );
     }
 
     private void ensureResourceRootExists()

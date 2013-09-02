@@ -20,4 +20,6 @@ public interface DavConfiguration
     public ResourceAccessResolver getResourceAccessResolver();
 
     public MimeTypeResolver getMimeTypeResolver();
+
+    public boolean isHidden( String name );
 }

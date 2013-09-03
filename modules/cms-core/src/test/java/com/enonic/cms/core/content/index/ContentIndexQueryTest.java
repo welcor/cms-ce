@@ -13,32 +13,17 @@ public class ContentIndexQueryTest
 
     public void testFullTextValidation()
     {
-
         // one char illegal
-        try
-        {
-            new ContentIndexQuery( "fulltext CONTAINS \"A\"" );
-            fail( "Expected Exception" );
-        }
-        catch ( IllegalQueryException e )
-        {
-            // expected
-        }
+        ContentIndexQuery query1 = new ContentIndexQuery( "fulltext CONTAINS \"A\"" );
+        assertNotNull( query1 );
 
         // two chars illegal
-        try
-        {
-            new ContentIndexQuery( "fulltext CONTAINS \"AB\"" );
-            fail( "Expected Exception" );
-        }
-        catch ( IllegalQueryException e )
-        {
-            // expected
-        }
+        ContentIndexQuery query2 = new ContentIndexQuery( "fulltext CONTAINS \"AB\"" );
+        assertNotNull( query2 );
 
-        // three chars are legal 
-        ContentIndexQuery query = new ContentIndexQuery( "fulltext CONTAINS \"ABC\"" );
-        assertNotNull( query );
+        // three chars are legal
+        ContentIndexQuery query3 = new ContentIndexQuery( "fulltext CONTAINS \"ABC\"" );
+        assertNotNull( query3 );
 
     }
 }

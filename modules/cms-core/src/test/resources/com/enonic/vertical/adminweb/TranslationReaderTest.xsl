@@ -76,26 +76,9 @@
         el.appendChild(n);
         document.getElementsByName(currview)[0].value = key;
       }
-
-      function validateQuery(form) {
-
-        document.getElementById('selectedtabpage').value = tabPane.getSelectedPage();
-
-        var fileAttachmentsRadioButton = document.getElementById("ascope_fileAttachments");
-        var searchText = form["asearchtext"].value;
-        var trimmedSearchText = searchText.replace(/^\s+|\s+$/g, '');
-
-        if(fileAttachmentsRadioButton.checked &amp;&amp; trimmedSearchText.length &lt; 3) {
-          alert("%alertSearchTextTooShort_Minium3%");
-          return false;
-        }
-
-        return true;
-      }
-
     </script>
 
-    <form name="advSearchform" method="get" action="adminpage" onsubmit="return validateQuery(this);">
+    <form name="advSearchform" method="get" action="adminpage">
       <input type="hidden" name="page" value="{$page}"/>
       <input type="hidden" name="op" value="browse"/>
       <input type="hidden" name="subop" value="{$subop}"/>

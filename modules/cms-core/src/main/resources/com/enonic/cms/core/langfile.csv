@@ -1171,7 +1171,6 @@
 %txtPage%|Side|Page|Side|Sida
 %fldRel%|Relasjon til mål|Relationship to target|Relativt til destination|Relation (rel attribut)
 %alertOneContentOnly%|Maks ett innhold tillatt|Maximum one content allowed|Højst ét indhold tilladt|Max 1 innehåll är tillåtet
-%alertSearchTextTooShort_Minium3%|Søkestreng for kort. Den må være på minimum 3 tegn.|Search text too short. It must be minimum 3 chars.|Søgetekst er forkort. De skal bestå af minimum 3 tegn. |Söksträng är för kort. Det måste bestå av minst 3 tecken.
 %selectContentType%|Velg innholdstype|Select content type|Vælg indholdstype|Välj innehållstype
 %createContentWizard%|Innholdsveiviser...|Content Wizard...|Indholdsguide...|Innehållswizard...
 %headContentWizard%|Innholdsveiviser|Content Wizard|Indholdsguide|Innehållswizard

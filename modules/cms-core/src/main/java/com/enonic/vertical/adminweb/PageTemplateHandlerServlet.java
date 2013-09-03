@@ -854,10 +854,9 @@ public class PageTemplateHandlerServlet
                              ExtendedMap formItems, User user, int key )
         throws VerticalAdminException, VerticalEngineException
     {
-        CopyPageTemplateCommand command = new CopyPageTemplateCommand( key, user );
+        CopyPageTemplateCommand command = new CopyPageTemplateCommand( new PageTemplateKey( key ), user.getKey() );
         pageTemplateService.copyPageTemplate( command );
 
         browseRedirectWithSorting( request, response, session, formItems );
     }
-
 }

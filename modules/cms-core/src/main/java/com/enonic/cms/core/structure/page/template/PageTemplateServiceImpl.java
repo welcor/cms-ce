@@ -30,6 +30,7 @@ import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceKey;
 import com.enonic.cms.core.resource.ResourceService;
+import com.enonic.cms.core.security.user.User;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.structure.RunAsType;
@@ -42,6 +43,7 @@ import com.enonic.cms.store.dao.PageTemplateDao;
 import com.enonic.cms.store.dao.PageTemplateRegionDao;
 import com.enonic.cms.store.dao.PortletDao;
 import com.enonic.cms.store.dao.SiteDao;
+import com.enonic.cms.store.dao.UserDao;
 
 @Service("pageTemplateService")
 public class PageTemplateServiceImpl
@@ -68,6 +70,9 @@ public class PageTemplateServiceImpl
 
     @Autowired
     private MenuItemDao menuItemDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private ContentTypeDao contentTypeDao;
@@ -422,17 +427,19 @@ public class PageTemplateServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void copyPageTemplate( final CopyPageTemplateCommand command )
     {
-        final PageTemplateEntity pageTemplateToCopy = pageTemplateDao.findByKey( command.getKey() );
+        final PageTemplateEntity pageTemplateToCopy = pageTemplateDao.findByKey( command.getPageTemplateKey().toInt() );
 
         if ( pageTemplateToCopy == null )
         {
-            throw new IllegalArgumentException( "PageTemplate with key=" + command.getKey() + " not found" );
+            throw new IllegalArgumentException( "PageTemplate with key=" + command.getPageTemplateKey() + " not found" );
         }
 
         final PageTemplateEntity newPageTemplate = new PageTemplateEntity( pageTemplateToCopy );
         newPageTemplate.setTimestamp( new Date() );
         newPageTemplate.setKey( getNextKey( PAT_TABLE ) );
-        final Map translationMap = languageMap.getTranslationMap( command.getUser().getSelectedLanguageCode() );
+
+        final User copier = userDao.findByKey( command.getCopierKey() );
+        final Map translationMap = languageMap.getTranslationMap( copier.getSelectedLanguageCode() );
         newPageTemplate.setName( pageTemplateToCopy.getName() + " (" + translationMap.get( "%txtCopy%" ) + ")" );
 
         final List<PageTemplatePortletEntity> portlets = newPageTemplate.getPortlets();

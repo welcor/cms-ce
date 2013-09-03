@@ -2,15 +2,15 @@ package com.enonic.cms.core.structure.page.template;
 
 public class DeletePageTemplateCommand
 {
-    private int key;
+    private PageTemplateKey pageTemplateKey;
 
-    public DeletePageTemplateCommand( final int key )
+    public DeletePageTemplateCommand( final PageTemplateKey pageTemplateKey )
     {
-        this.key = key;
+        this.pageTemplateKey = pageTemplateKey;
     }
 
-    public int getKey()
+    public PageTemplateKey getPageTemplateKey()
     {
-        return key;
+        return pageTemplateKey;
     }
 }

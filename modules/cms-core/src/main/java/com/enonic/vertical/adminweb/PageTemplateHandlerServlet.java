@@ -758,7 +758,7 @@ public class PageTemplateHandlerServlet
         throws VerticalRemoveException, VerticalSecurityException, VerticalAdminException
     {
 
-        DeletePageTemplateCommand command = new DeletePageTemplateCommand( key );
+        DeletePageTemplateCommand command = new DeletePageTemplateCommand( new PageTemplateKey( key ) );
         pageTemplateService.deletePageTemplate( command );
 
         redirectClientToReferer( request, response );

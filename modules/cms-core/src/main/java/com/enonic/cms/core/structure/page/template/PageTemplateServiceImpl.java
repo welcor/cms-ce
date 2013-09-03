@@ -82,11 +82,11 @@ public class PageTemplateServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void deletePageTemplate( final DeletePageTemplateCommand command )
     {
-        final PageTemplateEntity pageTemplateToDelete = pageTemplateDao.findByKey( command.getKey() );
+        final PageTemplateEntity pageTemplateToDelete = pageTemplateDao.findByKey( command.getPageTemplateKey().toInt() );
 
         if ( pageTemplateToDelete == null )
         {
-            throw new IllegalArgumentException( "PageTemplate with key=" + command.getKey() + " not found" );
+            throw new IllegalArgumentException( "PageTemplate with key=" + command.getPageTemplateKey() + " not found" );
         }
 
         pageTemplateDao.delete( pageTemplateToDelete );

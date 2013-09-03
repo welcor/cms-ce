@@ -23,6 +23,7 @@ import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.page.template.DeletePageTemplateCommand;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
+import com.enonic.cms.core.structure.page.template.PageTemplateKey;
 import com.enonic.cms.core.structure.page.template.PageTemplatePortletEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplatePortletKey;
 import com.enonic.cms.core.structure.page.template.PageTemplateRegionEntity;
@@ -146,7 +147,7 @@ public class PageTemplateServiceImpl_deletePageTemplateTest
         pPageTemplate.getPageTemplateRegions().iterator().next().addPortlet( pTemplatePortlet );
         save( pPageTemplate );
 
-        DeletePageTemplateCommand command = new DeletePageTemplateCommand( pPageTemplate.getKey() );
+        final DeletePageTemplateCommand command = new DeletePageTemplateCommand( new PageTemplateKey( pPageTemplate.getKey() ) );
         pageTemplateService.deletePageTemplate( command );
 
         List<PageTemplateEntity> persisted = pageTemplateDao.findByName( "my-template" );

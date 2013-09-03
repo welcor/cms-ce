@@ -1,26 +1,26 @@
 package com.enonic.cms.core.structure.page.template;
 
-import com.enonic.cms.core.security.user.User;
+import com.enonic.cms.core.security.user.UserKey;
 
 public class CopyPageTemplateCommand
 {
-    private int key;
+    private final PageTemplateKey pageTemplateKey ;
 
-    private User user;
+    private final UserKey copierKey;
 
-    public CopyPageTemplateCommand( final int key, final User user )
+    public CopyPageTemplateCommand( final PageTemplateKey pageTemplateKey, final UserKey copierKey )
     {
-        this.key = key;
-        this.user = user;
+        this.pageTemplateKey = pageTemplateKey;
+        this.copierKey = copierKey;
     }
 
-    public int getKey()
+    public PageTemplateKey getPageTemplateKey()
     {
-        return key;
+        return pageTemplateKey;
     }
 
-    public User getUser()
+    public UserKey getCopierKey()
     {
-        return user;
+        return copierKey;
     }
 }

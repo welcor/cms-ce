@@ -24,7 +24,7 @@ public class TranslationReaderTest
         throws Exception
     {
         Map<String, String> translations = new HashMap<String, String>();
-        translations.put( "%alertSearchTextTooShort_Minium3%", "alert" );
+        translations.put( "%__example__%", "alert" );
 
         final String xslFilename = getClass().getName().replace( '.', '/' ) + ".xsl";
         final InputStream xslInputStream = getClass().getClassLoader().getResourceAsStream( xslFilename );
@@ -34,6 +34,6 @@ public class TranslationReaderTest
         final char[] xslBuffer = new char[length];
         translationReader.read( xslBuffer, 0, length );
         final String xslString = new String( xslBuffer );
-        assertFalse( "The XSL contains untranslated string", xslString.contains( "%alertSearchTextTooShort_Minium3%" ) );
+        assertFalse( "The XSL contains untranslated string", xslString.contains( "%__example__%" ) );
     }
 }

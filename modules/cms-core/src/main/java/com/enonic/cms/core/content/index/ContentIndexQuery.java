@@ -97,33 +97,11 @@ public final class ContentIndexQuery
         }
 
         this.query = queryWithoutOrderBy.trim();
-
-        validateFullTextQuery( query );
     }
 
     public ContentIndexQuery( String query )
     {
         this.query = query;
-        validateFullTextQuery( query );
-    }
-
-    private void validateFullTextQuery( String query )
-    {
-
-        Pattern pattern = Pattern.compile( ".*fulltext CONTAINS \"(.*?)\".*" );
-        Matcher matcher = pattern.matcher( query );
-        if ( !matcher.matches() )
-        {
-            return;
-        }
-
-        String fullTextSearchPattern = matcher.group( 1 ).trim();
-
-        if ( fullTextSearchPattern != null && fullTextSearchPattern.length() < 3 )
-        {
-            throw new IllegalQueryException( "Fulltext search with less than 3 characters not allowed", query );
-        }
-
     }
 
     /**

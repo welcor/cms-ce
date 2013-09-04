@@ -10,7 +10,6 @@ import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Scanners;
 import org.codehaus.jparsec.Terminals;
 import org.codehaus.jparsec.Tokens;
-import org.codehaus.jparsec._;
 import org.codehaus.jparsec.functors.Binary;
 import org.codehaus.jparsec.functors.Unary;
 import org.codehaus.jparsec.misc.Mapper;
@@ -54,7 +53,7 @@ public final class QueryParser
                            Terminals.StringLiteral.SINGLE_QUOTE_TOKENIZER );
     }
 
-    private Parser<_> ignored()
+    private Parser<Void> ignored()
     {
         return Scanners.SQL_DELIMITER;
     }

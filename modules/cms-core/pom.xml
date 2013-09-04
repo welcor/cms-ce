@@ -105,9 +105,9 @@
       <classifier>jdom</classifier>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jparsec</groupId>
+      <groupId>jparsec</groupId>
       <artifactId>jparsec</artifactId>
-      <version>2.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>

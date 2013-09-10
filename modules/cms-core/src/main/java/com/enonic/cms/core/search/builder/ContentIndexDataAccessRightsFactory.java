@@ -21,7 +21,7 @@ public class ContentIndexDataAccessRightsFactory
     public void create( final ContentIndexData contentIndexData, final Collection<ContentAccessEntity> contentAccessRights,
                         Map<GroupKey, CategoryAccessEntity> categoryAccessRights )
     {
-        if ( contentAccessRights == null && contentAccessRights.isEmpty() )
+        if ( contentAccessRights == null )
         {
             return;
         }

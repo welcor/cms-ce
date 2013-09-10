@@ -46,6 +46,7 @@ public class IndexStatusInfoBuilder
         if ( indexStatus == null )
         {
             json.put( "error", "not able to fetch indexStatus" );
+            return;
         }
 
         json.put( "documents",
@@ -55,7 +56,6 @@ public class IndexStatusInfoBuilder
             : indexStatus.getPrimaryStoreSize().toString() );
         json.put( "totalStoreSize",
                   indexStatus.getStoreSize() == null ? "error: not able to get storeSize" : indexStatus.getStoreSize().toString() );
-
     }
 
 }

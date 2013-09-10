@@ -24,7 +24,6 @@ public class IndexStatusInfoBuilder
     @Override
     protected void build( final ObjectNode json )
     {
-        final IndexStatus indexStatus = elasticSearchIndexService.getIndexStatus( "cms" );
 
         final ClusterHealthResponse clusterHealthResponse = elasticSearchIndexService.getClusterHealth( "cms", false );
 
@@ -42,9 +41,20 @@ public class IndexStatusInfoBuilder
         json.put( "relocatingShards", clusterHealthResponse.getRelocatingShards() );
         json.put( "initializingShards", clusterHealthResponse.getInitializingShards() );
 
-        json.put( "documents", indexStatus.getDocs().getNumDocs() );
-        json.put( "primaryShardsStoreSize", indexStatus.getPrimaryStoreSize().toString() );
-        json.put( "totalStoreSize", indexStatus.getStoreSize().toString() );
+        final IndexStatus indexStatus = elasticSearchIndexService.getIndexStatus( "cms" );
+
+        if ( indexStatus == null )
+        {
+            json.put( "error", "not able to fetch indexStatus" );
+        }
+
+        json.put( "documents",
+                  indexStatus.getDocs() == null ? "error: not able to get number of documents" : indexStatus.getDocs().getNumDocs() + "" );
+        json.put( "primaryShardsStoreSize", indexStatus.getPrimaryStoreSize() == null
+            ? "error: not able to get primaryStoreSize"
+            : indexStatus.getPrimaryStoreSize().toString() );
+        json.put( "totalStoreSize",
+                  indexStatus.getStoreSize() == null ? "error: not able to get storeSize" : indexStatus.getStoreSize().toString() );
 
     }
 

@@ -21,7 +21,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
 
@@ -71,13 +70,7 @@ public final class PortalServlet
         }
 
         ServletRequestAccessor.setRequest( req );
-
-        // resolve and set original url if not set
-        if ( req.getAttribute( Attribute.ORIGINAL_URL ) == null )
-        {
-            final String originalUrl = OriginalUrlResolver.get().resolveOriginalUrl( req );
-            req.setAttribute( Attribute.ORIGINAL_URL, originalUrl );
-        }
+        OriginalUrlResolver.resolveOriginalUrl( req );
 
         this.dispatcher.handle( req, res );
     }

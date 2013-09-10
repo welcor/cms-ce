@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import com.enonic.cms.core.Attribute;
 import com.enonic.cms.core.servlet.ServletRequestAccessor;
 import com.enonic.cms.server.service.servlet.OriginalUrlResolver;
 
@@ -54,12 +53,7 @@ public final class CmsDispatcherServlet
         }
 
         ServletRequestAccessor.setRequest( req );
-        // resolve and set original url if not set
-        if ( req.getAttribute( Attribute.ORIGINAL_URL ) == null )
-        {
-            final String originalUrl = OriginalUrlResolver.get().resolveOriginalUrl( req );
-            req.setAttribute( Attribute.ORIGINAL_URL, originalUrl );
-        }
+        OriginalUrlResolver.resolveOriginalUrl( req );
 
         super.doService( req, res );
     }

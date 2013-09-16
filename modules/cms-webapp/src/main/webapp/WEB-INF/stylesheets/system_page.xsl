@@ -141,8 +141,8 @@
         <table class="formtable">
           <tr>
             <td class="form_labelcolumn" colspan="2">
-              <xsl:value-of select="/vertical/@upTime"/> ( since
-              <xsl:value-of select="/vertical/@bootTime"/> )
+              <xsl:value-of select="/vertical/@upTime"/> (since
+              <xsl:value-of select="/vertical/@bootTime"/>)
             </td>
           </tr>
         </table>

@@ -21,6 +21,7 @@
             height: 600px;
             width: 100%;
             margin-top: 10px;
+            font-size: 12px;
         }
 
         .logentry {

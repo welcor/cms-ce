@@ -85,8 +85,6 @@
 
   <bean id="adminAjaxService" class="com.enonic.cms.server.service.admin.ajax.AdminAjaxServiceImpl"/>
 
-  <bean id="originalUrlResolver" class="com.enonic.cms.server.service.servlet.OriginalUrlResolver"/>
-
   <bean id="datasourceInfoResolver" class="com.enonic.cms.core.tools.DataSourceInfoResolver"/>
 
   <bean class="com.enonic.vertical.adminweb.handlers.xmlbuilders.ContentArticle3XMLBuilder"/>

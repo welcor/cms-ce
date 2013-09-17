@@ -71,7 +71,7 @@ public class ReindexContentToolServiceImpl
         this.lastIndexedTime = new DateTime();
         this.lastReindexRuntime = globalTimeUsed;
 
-        logEntries.add( "<b>Reindexing of all content types was successful!</b>" );
+        logEntries.add( "Reindexing of all content types was successful!" );
         logEntries.add( "Total time used: " + timeUsed );
 
     }

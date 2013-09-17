@@ -5,6 +5,9 @@
 
 package com.enonic.cms.core.xslt.portal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.enonic.cms.framework.cache.CacheFacade;
 
 import com.enonic.cms.core.resource.FileResource;
@@ -13,6 +16,8 @@ import com.enonic.cms.core.resource.FileResourceService;
 
 final class XsltTemplatesCache
 {
+    private final static Logger LOG = LoggerFactory.getLogger( XsltTemplatesCache.class );
+
     private final CacheFacade cacheFacade;
 
     private final FileResourceService resourceService;
@@ -59,6 +64,15 @@ final class XsltTemplatesCache
         }
 
         entry.setLastValidated( now );
+        final boolean flag = isModifiedAfter( entry );
+
+        LOG.info( "XsltTemplatesCacheEntry validation took " + ( System.currentTimeMillis() - now ) + " ms and checked " +
+                      entry.getResourceSet().size() + " resources for modifications." );
+        return flag;
+    }
+
+    private boolean isModifiedAfter( final XsltTemplatesCacheEntry entry )
+    {
         for ( final FileResourceName name : entry.getResourceSet() )
         {
             if ( isModifiedAfter( name, entry.getCompileTimestamp() ) )

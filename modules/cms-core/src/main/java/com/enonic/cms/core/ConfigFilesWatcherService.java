@@ -34,6 +34,8 @@ public class ConfigFilesWatcherService
 
     public static final String SITE_PROPERTIES_FILENAME = "site-(\\d+).properties";
 
+    public static final String[] EMPTY_DIR = {};
+
     @Autowired
     private VirtualHostResolver virtualHostResolver;
 
@@ -41,6 +43,8 @@ public class ConfigFilesWatcherService
     private SitePropertiesServiceImpl sitePropertiesService;
 
     private File configDir;
+
+    private boolean configDirObserved;
 
     private Map<String, Long> lastModified;
 
@@ -52,17 +56,70 @@ public class ConfigFilesWatcherService
     @PostConstruct
     public void initService()
     {
+        configDirObserved = configDir.exists();
+
+        if ( configDirObserved )
+        {
+            final String[] filenames = configDir.list();
+            resolveLastModified( filenames );
+        }
+    }
+
+    private String[] listConfigFiles()
+    {
         final String[] filenames = configDir.list();
+
+        checkConfigDirObserved( filenames );
+
+        return filenames != null ? filenames : EMPTY_DIR;
+    }
+
+    private void checkConfigDirObserved( final String[] filenames )
+    {
+        if ( filenames != null && !configDirObserved )
+        {
+            resolveLastModified( filenames );
+
+            markObservedConfigFilesAsModified();
+
+            LOG.debug( "config directory was created." );
+        }
+        else if ( filenames == null && configDirObserved )
+        {
+            markObservedConfigFilesAsModified();
+
+            LOG.debug( "config directory was removed." );
+        }
+
+        configDirObserved = filenames != null;
+    }
+
+    private void markObservedConfigFilesAsModified()
+    {
+        for ( final Map.Entry<String, Long> entry : lastModified.entrySet() )
+        {
+            entry.setValue( 0L );
+        }
+    }
+
+    private void resolveLastModified( final String[] filenames )
+    {
+        lastModified.clear();
 
         for ( final String filename : filenames )
         {
-            if ( filename.equals( "vhost.properties" ) || filename.matches( SITE_PROPERTIES_FILENAME ) ||
-                filename.equals( "cms.properties" ) )
+            if ( isObservableFile( filename ) )
             {
                 final File file = new File( configDir.getAbsoluteFile() + File.separator + filename );
                 lastModified.put( filename, file.lastModified() );
             }
         }
+    }
+
+    private boolean isObservableFile( final String filename )
+    {
+        return filename.equals( "vhost.properties" ) || filename.matches( SITE_PROPERTIES_FILENAME ) ||
+            filename.equals( "cms.properties" );
     }
 
     /**
@@ -71,9 +128,9 @@ public class ConfigFilesWatcherService
      * monitors cms.properties, vhost.properties and site-*.properties
      */
     @Scheduled(fixedRate = 2000)
-    private void checkConfigDirectory()
+    private void checkConfigFiles()
     {
-        final String[] dir = configDir.list();
+        final String[] dir = listConfigFiles();
 
         final Set<String> filenames = new HashSet<String>();
 
@@ -82,18 +139,18 @@ public class ConfigFilesWatcherService
 
         for ( final String filename : filenames )
         {
-            if ( !filename.endsWith( ".properties" ) )
+            if ( !isObservableFile( filename ) || !isFileModified( filename ) )
             {
                 continue;
             }
 
-            if ( filename.equals( "vhost.properties" ) && isFileModified( filename ) )
+            if ( filename.equals( "vhost.properties" ) )
             {
                 virtualHostResolver.configureVirtualHosts();
 
                 LOG.info( "Reloaded vhost configuration." );
             }
-            else if ( filename.matches( SITE_PROPERTIES_FILENAME ) && isFileModified( filename ) )
+            else if ( filename.matches( SITE_PROPERTIES_FILENAME ) )
             {
                 final Pattern pattern = Pattern.compile( SITE_PROPERTIES_FILENAME );
                 final Matcher matcher = pattern.matcher( filename );
@@ -107,7 +164,7 @@ public class ConfigFilesWatcherService
                     LOG.info( "Reloaded configuration for site #{}.", site );
                 }
             }
-            else if ( filename.equals( "cms.properties" ) && isFileModified( filename ) )
+            else if ( filename.equals( "cms.properties" ) )
             {
                 LOG.info( "{} was changed. Please restart the application to load new values.", filename );
             }

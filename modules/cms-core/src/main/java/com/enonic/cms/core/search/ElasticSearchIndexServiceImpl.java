@@ -464,7 +464,7 @@ public class ElasticSearchIndexServiceImpl
     @Override
     public void flush( String indexName )
     {
-        final FlushRequest flushRequest = Requests.flushRequest( indexName ).refresh( true );
+        final FlushRequest flushRequest = Requests.flushRequest( indexName );
         final FlushResponse flushResponse = client.admin().indices().flush( flushRequest ).actionGet();
 
         LOG.debug( "Flush request executed with " + flushResponse.getSuccessfulShards() + " successfull shards" );

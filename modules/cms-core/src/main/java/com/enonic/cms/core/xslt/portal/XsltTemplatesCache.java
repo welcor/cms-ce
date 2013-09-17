@@ -66,8 +66,8 @@ final class XsltTemplatesCache
         entry.setLastValidated( now );
         final boolean flag = isModifiedAfter( entry );
 
-        LOG.info( "XsltTemplatesCacheEntry validation took " + ( System.currentTimeMillis() - now ) + " ms and checked " +
-                      entry.getResourceSet().size() + " resources for modifications." );
+        LOG.debug( "XsltTemplatesCacheEntry validation took " + ( System.currentTimeMillis() - now ) + " ms and checked " +
+                       entry.getResourceSet().size() + " resources for modifications." );
         return flag;
     }
 

@@ -1012,7 +1012,7 @@
 
                                                 <!-- pagetemplateparameter does not have the help info so we'll find it in the stylesheet -->
                                                 <xsl:variable name="name" select="@name"/>
-                                                <xsl:variable name="helpElement" select="/pagetemplates/resource/xsl:stylesheet/xsl:param[@name=$name][node()[local-name() = 'help']]"/>
+                                                <xsl:variable name="helpElement" select="/pagetemplates/resource/xsl:stylesheet/xsl:param[@name=$name]/node()[local-name() = 'help']"/>
 
                                                 <tr>
                                                     <input type="hidden">

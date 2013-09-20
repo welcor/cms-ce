@@ -20,6 +20,8 @@ import org.jdom.Element;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import com.enonic.esl.util.ArrayUtil;
+
 import com.enonic.cms.framework.util.LazyInitializedJDOMDocument;
 
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
@@ -227,6 +229,12 @@ public class PageTemplateEntity
     public void clearPageTemplatePortlets()
     {
         pageTemplatePortlets.clear();
+
+        // clean all regions
+        for ( PageTemplateRegionEntity region : pageTemplateRegions )
+        {
+            region.clearPortlets();
+        }
     }
 
     public List<PageTemplatePortletEntity> getPortlets()
@@ -409,24 +417,27 @@ public class PageTemplateEntity
     }
 
 
+    public void removePageTemplParams( final int[] droppedRegionKeys )
+    {
+        final Set<PageTemplateRegionEntity> regions = new HashSet<PageTemplateRegionEntity>();
+
+        for ( final PageTemplateRegionEntity region : pageTemplateRegions )
+        {
+            if ( !ArrayUtil.contains( droppedRegionKeys, region.getKey() ) )
+            {
+                regions.add( region );
+            }
+        }
+
+        clearPageTemplateRegions();
+        pageTemplateRegions.addAll( regions );
+    }
+
     public PageTemplateRegionEntity findRegionByKey( int regionKey )
     {
         for ( PageTemplateRegionEntity region : pageTemplateRegions )
         {
             if ( regionKey == region.getKey() )
-            {
-                return region;
-            }
-        }
-
-        return null;
-    }
-
-    public PageTemplateRegionEntity findRegionByName( String name )
-    {
-        for ( PageTemplateRegionEntity region : pageTemplateRegions )
-        {
-            if ( name.equals( region.getName() ) )
             {
                 return region;
             }

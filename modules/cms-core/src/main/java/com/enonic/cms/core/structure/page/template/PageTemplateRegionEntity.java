@@ -149,4 +149,9 @@ public class PageTemplateRegionEntity
     {
         portlets.add( portlet );
     }
+
+    public void clearPortlets()
+    {
+        portlets.clear();
+    }
 }

@@ -1,5 +1,8 @@
 package com.enonic.cms.web.status;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.codehaus.jackson.node.ObjectNode;
 
 public abstract class StatusInfoBuilder
@@ -23,6 +26,14 @@ public abstract class StatusInfoBuilder
     }
 
     protected abstract void build( ObjectNode json );
+
+    protected String exceptionToString( Throwable t )
+    {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter( sw );
+        t.printStackTrace( pw );
+        return sw.toString();
+    }
 
     @Override
     public int compareTo( final StatusInfoBuilder o )

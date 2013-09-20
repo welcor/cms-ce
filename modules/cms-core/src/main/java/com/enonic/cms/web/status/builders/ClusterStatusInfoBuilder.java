@@ -26,7 +26,16 @@ public final class ClusterStatusInfoBuilder
     @Override
     public void build( final ObjectNode json )
     {
-        final ClusterStateResponse clusterState = elasticSearchIndexService.getClusterState();
+        final ClusterStateResponse clusterState;
+        try
+        {
+            clusterState = elasticSearchIndexService.getClusterState();
+        }
+        catch ( Exception e )
+        {
+            json.put( "exception", exceptionToString( e ) );
+            return;
+        }
 
         if ( clusterState == null )
         {
@@ -42,7 +51,16 @@ public final class ClusterStatusInfoBuilder
 
         final ObjectNode localNodeObject = json.putObject( "localNode" );
 
-        final NodeInfo localNodeInfo = elasticSearchIndexService.getLocalNodeInfo();
+        final NodeInfo localNodeInfo;
+        try
+        {
+            localNodeInfo = elasticSearchIndexService.getLocalNodeInfo();
+        }
+        catch ( Exception e )
+        {
+            json.put( "exception", exceptionToString( e ) );
+            return;
+        }
 
         if ( localNodeInfo == null )
         {
@@ -62,7 +80,6 @@ public final class ClusterStatusInfoBuilder
             final ObjectNode thisNode = nodesObject.putObject( node.getId() );
             buildNodeInfo( masterNodeId, node, thisNode );
         }
-
     }
 
     private void buildNodeInfo( final String masterNodeId, final DiscoveryNode node, final ObjectNode thisNode )

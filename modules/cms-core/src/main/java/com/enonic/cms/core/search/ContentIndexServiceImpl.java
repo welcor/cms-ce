@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.discovery.MasterNotDiscoveredException;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -101,9 +102,18 @@ public class ContentIndexServiceImpl
     @PostConstruct
     public void initializeContentIndex()
     {
-        final ClusterHealthResponse clusterHealth = elasticSearchIndexService.getClusterHealth( CONTENT_INDEX_NAME, true );
 
-        LOG.info( "Cluster in state: " + clusterHealth.getStatus().toString() );
+        final ClusterHealthResponse clusterHealth;
+        try
+        {
+            clusterHealth = elasticSearchIndexService.getClusterHealth( CONTENT_INDEX_NAME, true );
+            LOG.info( "Cluster in state: " + clusterHealth.getStatus().toString() );
+        }
+        catch ( MasterNotDiscoveredException e )
+        {
+            LOG.error( "Master node not discovered, could not start/join cluster", e );
+            return;
+        }
 
         final boolean indexExists = elasticSearchIndexService.indexExists( CONTENT_INDEX_NAME );
 
@@ -443,8 +453,8 @@ public class ContentIndexServiceImpl
         final StatisticalFacet statisticalFacet =
             FacetExtractor.getStatisticalFacet( response, AggregatedQueryTranslator.AGGREGATED_FACET_NAME );
 
-        return new AggregatedResultImpl( statisticalFacet.getCount(), statisticalFacet.getMin(), statisticalFacet.getMax(), statisticalFacet.getTotal(),
-                                         statisticalFacet.getMean() );
+        return new AggregatedResultImpl( statisticalFacet.getCount(), statisticalFacet.getMin(), statisticalFacet.getMax(),
+                                         statisticalFacet.getTotal(), statisticalFacet.getMean() );
     }
 
     @Override

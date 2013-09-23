@@ -63,7 +63,7 @@ import com.enonic.cms.store.dao.PortletDao;
 
 public class PortalFunctions
 {
-    private static final Pattern IMAGE_KEY_FORMAT = Pattern.compile( "(\\d+(/\\w+){0,2}?)|(^user/.+$)" );
+    private static final Pattern IMAGE_KEY_FORMAT = Pattern.compile( "(\\d+(/[-\\w]+){0,2}?)|(^user/.+$)" );
 
     private static final String CAPTCHA_RELATIVE_URL = "_captcha";
 
@@ -447,7 +447,7 @@ public class PortalFunctions
         return serializePostProcessInstruction( instruction );
     }
 
-    private void verifyImageKey( String imageKey )
+    protected void verifyImageKey( String imageKey )
     {
         if ( StringUtils.isBlank( imageKey ) )
         {

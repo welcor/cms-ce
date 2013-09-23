@@ -883,4 +883,14 @@ public class PortalFunctionsTest
         return content;
     }
 
+    @Test
+    public void testVerifyImageKey()
+        throws Exception
+    {
+        portalFunctions.verifyImageKey( "871/label/source" );
+        portalFunctions.verifyImageKey( "871/label/small" );
+        portalFunctions.verifyImageKey( "871/label/medium" );
+        portalFunctions.verifyImageKey( "871/label/large" );
+        portalFunctions.verifyImageKey( "871/label/extra-large" );
+    }
 }

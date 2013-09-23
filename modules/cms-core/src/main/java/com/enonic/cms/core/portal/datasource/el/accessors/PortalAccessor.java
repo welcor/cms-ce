@@ -105,4 +105,8 @@ public final class PortalAccessor
         return content.getKey().toString();
     }
 
+    public String getDeviceClass()
+    {
+        return expressionContext.getDeviceClass();
+    }
 }

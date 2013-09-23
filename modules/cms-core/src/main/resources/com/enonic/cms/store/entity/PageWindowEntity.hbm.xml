@@ -29,4 +29,12 @@
       <column name="PCO_PTP_LKEY" not-null="true"/>
     </many-to-one>
   </class>
+  <query name="PageWindowEntity.deleteByPageKeyAndTemplateRegionKey" cacheable="false">
+    delete from PageWindowEntity
+    where page.key in (:pageKeys)
+    and pageTemplateRegion.key in (:regionKeys)
+  </query>
+  <query name="PageWindowEntity.deleteByPageKeys" cacheable="false">
+    delete from PageWindowEntity where page.key in (:pageKeys)
+  </query>
 </hibernate-mapping>

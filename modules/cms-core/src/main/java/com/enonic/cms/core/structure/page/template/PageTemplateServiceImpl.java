@@ -1,6 +1,7 @@
 package com.enonic.cms.core.structure.page.template;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -19,28 +20,27 @@ import org.w3c.dom.Node;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import com.enonic.esl.util.ArrayUtil;
 import com.enonic.esl.xml.XMLTool;
 import com.enonic.vertical.engine.VerticalEngineLogger;
 
-import com.enonic.cms.framework.xml.XMLDocumentFactory;
-
 import com.enonic.cms.core.AdminConsoleTranslationService;
-import com.enonic.cms.core.CalendarUtil;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeKey;
 import com.enonic.cms.core.resource.ResourceKey;
-import com.enonic.cms.core.resource.ResourceService;
 import com.enonic.cms.core.security.user.User;
-import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.MenuItemDao;
+import com.enonic.cms.store.dao.PageDao;
 import com.enonic.cms.store.dao.PageTemplateDao;
 import com.enonic.cms.store.dao.PageTemplateRegionDao;
+import com.enonic.cms.store.dao.PageWindowDao;
 import com.enonic.cms.store.dao.PortletDao;
 import com.enonic.cms.store.dao.SiteDao;
 import com.enonic.cms.store.dao.UserDao;
@@ -66,6 +66,12 @@ public class PageTemplateServiceImpl
     private PortletDao portletDao;
 
     @Autowired
+    private PageDao pageDao;
+
+    @Autowired
+    private PageWindowDao pageWindowDao;
+
+    @Autowired
     private PageTemplateRegionDao regionDao;
 
     @Autowired
@@ -76,9 +82,6 @@ public class PageTemplateServiceImpl
 
     @Autowired
     private ContentTypeDao contentTypeDao;
-
-    @Autowired
-    private ResourceService resourceService;
 
     @Autowired
     private AdminConsoleTranslationService languageMap;
@@ -273,17 +276,14 @@ public class PageTemplateServiceImpl
 
     private int[] createPageTemplParam( final PageTemplateEntity pageTemplate, final Document ptpDoc )
     {
-        // XML DOM
         Element root = ptpDoc.getDocumentElement();
 
-        // check: does root element exist?
         if ( root == null )
         {
             String message = "Root element does not exist.";
             VerticalEngineLogger.errorCreate( message, null );
         }
 
-        // check: if root element is not contentrating, throw create exception
         if ( !"pagetemplateparameter".equals( root.getTagName() ) && !"pagetemplateparameters".equals( root.getTagName() ) )
         {
             String message = "Root element is not a pagetemplate or pagetemplates element: {0}";
@@ -352,19 +352,87 @@ public class PageTemplateServiceImpl
         return ptptKeys;
     }
 
-    private void updatePageTemplateCOs( final Document contentobjectDoc, final PageTemplateEntity pageTemplate, final int[] paramKeys )
+    private void updatePageTemplParam( final PageTemplateEntity pageTemplate, final Document ptpDoc )
     {
-        // XML DOM
+        Element root = ptpDoc.getDocumentElement();
+
+        if ( root == null )
+        {
+            String message = "Root element does not exist";
+            VerticalEngineLogger.errorUpdate( message, null );
+        }
+
+        if ( !"pagetemplateparameter".equals( root.getTagName() ) && !"pagetemplateparameters".equals( root.getTagName() ) )
+        {
+            String message = "Root element is not the \"pagetemplateparameter\" or \"pagetemplateparameters\" element: {0}";
+            VerticalEngineLogger.errorUpdate( message, root.getTagName(), null );
+        }
+
+        Node[] node;
+        if ( "pagetemplateparameters".equals( root.getTagName() ) )
+        {
+            node = XMLTool.filterNodes( root.getChildNodes(), Node.ELEMENT_NODE );
+            if ( node == null || node.length == 0 )
+            {
+                return;
+                //String message = "No page template parameters to create.";
+                //VerticalEngineLogger.warn(2, message, null);
+            }
+        }
+        else
+        {
+            node = new Node[]{root};
+        }
+
+        try
+        {
+            for ( Node aNode : node )
+            {
+                Element elem = (Element) aNode;
+                Map<String, Element> subelems = XMLTool.filterElements( elem.getChildNodes() );
+
+                // attribute: key
+                String keyStr = elem.getAttribute( "key" );
+                int pageTemplParamKey = Integer.parseInt( keyStr );
+                final PageTemplateRegionEntity region = pageTemplate.findRegionByKey( pageTemplParamKey );
+
+                // element: multiple
+                final String multiple = elem.getAttribute( "multiple" );
+                region.setMultiple( "1".equals( multiple ) );
+
+                // element: override
+                final String override = elem.getAttribute( "override" );
+                region.setOverride( "1".equals( override ) );
+
+                // element: name
+                Element subelem = subelems.get( "name" );
+                final String name = XMLTool.getElementText( subelem );
+                region.setName( name );
+
+                // element: separator
+                subelem = subelems.get( "separator" );
+                String separator = XMLTool.getElementText( subelem );
+                separator = StringUtils.isBlank( separator ) ? "" : separator;
+                region.setSeparator( separator );
+            }
+        }
+        catch ( NumberFormatException nfe )
+        {
+            String message = "Failed to parse a key field: %t";
+            VerticalEngineLogger.errorUpdate( message, nfe );
+        }
+    }
+
+    private void updatePageTemplateCOs( final Document contentobjectDoc, final PageTemplateEntity pageTemplate, final int[] ptpKeys )
+    {
         Element root = contentobjectDoc.getDocumentElement();
 
-        // check: does root element exist?
         if ( root == null )
         {
             String message = "Root element does not exist.";
             VerticalEngineLogger.errorCreate( message, null );
         }
 
-        // check: if root element is not contentrating, throw create exception
         if ( !"contentobject".equals( root.getTagName() ) && !"contentobjects".equals( root.getTagName() ) )
         {
             String message = "Root element is not a contentobject or contentobjects element: {0}";
@@ -399,10 +467,10 @@ public class PageTemplateServiceImpl
                 template.setPortlet( portlet );
 
                 // attribute: region
-                String regionkey = elem.getAttribute( "parameterkey" );
-                final int regionKey = ( regionkey.charAt( 0 ) == '_' )
-                    ? paramKeys[Integer.parseInt( regionkey.substring( 1 ) )]
-                    : Integer.parseInt( regionkey );
+                String regionKeyStr = elem.getAttribute( "parameterkey" );
+                final int regionKey = ( regionKeyStr.charAt( 0 ) == '_' )
+                    ? ptpKeys[Integer.parseInt( regionKeyStr.substring( 1 ) )]
+                    : Integer.parseInt( regionKeyStr );
 
                 final PageTemplateRegionEntity region = pageTemplate.findRegionByKey( regionKey );
                 template.setPageTemplateRegion( region );
@@ -463,163 +531,6 @@ public class PageTemplateServiceImpl
         }
 
         pageTemplateDao.store( newPageTemplate );
-    }
-
-    private Document createPageTemplatesDocument( Collection<PageTemplateEntity> pageTemplates )
-    {
-        Document doc = XMLTool.createDocument( "pagetemplates" );
-        if ( pageTemplates == null )
-        {
-            return doc;
-        }
-
-        for ( PageTemplateEntity pageTemplate : pageTemplates )
-        {
-            Element root = doc.getDocumentElement();
-            Document ptdDoc = null;
-
-            org.jdom.Document pageTemplateXmlDataAsJdomDoc = pageTemplate.getXmlDataAsDocument();
-            if ( pageTemplateXmlDataAsJdomDoc != null )
-            {
-                ptdDoc = XMLDocumentFactory.create( pageTemplateXmlDataAsJdomDoc ).getAsDOMDocument();
-                Element docElem = XMLTool.getElement( ptdDoc.getDocumentElement(), "document" );
-                if ( docElem != null )
-                {
-                    Node firstChild = docElem.getFirstChild();
-                    if ( firstChild == null || firstChild.getNodeType() != Node.CDATA_SECTION_NODE )
-                    {
-                        docElem.setAttribute( "mode", "xhtml" );
-                    }
-                }
-            }
-
-            Element elem = XMLTool.createElement( doc, root, "pagetemplate" );
-            elem.setAttribute( "key", String.valueOf( pageTemplate.getKey() ) );
-            elem.setAttribute( "menukey", String.valueOf( pageTemplate.getSite().getKey() ) );
-
-            // sub-elements
-            XMLTool.createElement( doc, elem, "name", pageTemplate.getName() );
-            XMLTool.createElement( doc, elem, "description", pageTemplate.getDescription() );
-            Element tmp = XMLTool.createElement( doc, elem, "stylesheet" );
-            tmp.setAttribute( "stylesheetkey", pageTemplate.getStyleKey().toString() );
-            tmp.setAttribute( "exists", resourceService.getResourceFile( pageTemplate.getStyleKey() ) != null ? "true" : "false" );
-
-            // element conobjects for pagetemplate
-            Document contentobj = getPageTemplateCO( pageTemplate );
-            elem.appendChild( doc.importNode( contentobj.getDocumentElement(), true ) );
-
-            // get page template parameters
-            Document ptpDoc = getPageTemplParams( pageTemplate );
-            Node ptpNode = doc.importNode( ptpDoc.getDocumentElement(), true );
-            elem.appendChild( ptpNode );
-
-            // element timestamp
-            XMLTool.createElement( doc, elem, "timestamp", CalendarUtil.formatTimestamp( pageTemplate.getTimestamp(), true ) );
-
-            // element: pagetemplatedata
-            if ( ptdDoc != null )
-            {
-                elem.appendChild( doc.importNode( ptdDoc.getDocumentElement(), true ) );
-            }
-
-            // element: CSS
-            ResourceKey cssKey = pageTemplate.getCssKey();
-            if ( cssKey != null )
-            {
-                tmp = XMLTool.createElement( doc, elem, "css" );
-                tmp.setAttribute( "stylesheetkey", cssKey.toString() );
-                tmp.setAttribute( "exists", resourceService.getResourceFile( cssKey ) != null ? "true" : "false" );
-            }
-
-            // attribute: runAs & defaultRunAsUser
-            elem.setAttribute( "runAs", pageTemplate.getRunAs().toString() );
-            UserEntity defaultRunAsUser = pageTemplate.getSite().resolveDefaultRunAsUser();
-            String defaultRunAsUserName = "NA";
-            if ( defaultRunAsUser != null )
-            {
-                defaultRunAsUserName = defaultRunAsUser.getDisplayName();
-            }
-            elem.setAttribute( "defaultRunAsUser", defaultRunAsUserName );
-
-            // attribute: type
-            elem.setAttribute( "type", pageTemplate.getType().getName() );
-
-            // contenttypes
-            Document contentTypesDoc = getContentTypesDocument( pageTemplate.getContentTypes() );
-            XMLTool.mergeDocuments( elem, contentTypesDoc, true );
-        }
-
-        return doc;
-    }
-
-    private Document getContentTypesDocument( final Set<ContentTypeEntity> ctys )
-    {
-        Document doc = XMLTool.createDocument( "contenttypes" );
-        for ( ContentTypeEntity contentType : ctys )
-        {
-            Element contentTypeElem = XMLTool.createElement( doc, doc.getDocumentElement(), "contenttype" );
-            contentTypeElem.setAttribute( "key", Integer.toString( contentType.getKey() ) );
-            XMLTool.createElement( doc, contentTypeElem, "name", contentType.getName() );
-        }
-        return doc;
-    }
-
-    private Document getPageTemplParams( final PageTemplateEntity pageTemplate )
-    {
-        Document doc = XMLTool.createDocument();
-        Element root = XMLTool.createRootElement( doc, "pagetemplateparameters" );
-
-        if ( pageTemplate != null )
-        {
-            for ( PageTemplateRegionEntity entity : pageTemplate.getPageTemplateRegions() )
-            {
-                Element elem = XMLTool.createElement( doc, root, "pagetemplateparameter" );
-                elem.setAttribute( "key", String.valueOf( entity.getKey() ) );
-                elem.setAttribute( "pagetemplatekey", String.valueOf( entity.getPageTemplate().getKey() ) );
-                elem.setAttribute( "multiple", entity.isMultiple() ? "1" : "0" );
-                elem.setAttribute( "override", entity.isOverride() ? "1" : "0" );
-
-                // sub-elements
-                XMLTool.createElement( doc, elem, "name", entity.getName() );
-                XMLTool.createElement( doc, elem, "separator", entity.getSeparator() );
-            }
-        }
-
-        return doc;
-    }
-
-    private Document getPageTemplateCO( final PageTemplateEntity pageTemplate )
-    {
-        Document doc = XMLTool.createDocument();
-        Element root = XMLTool.createRootElement( doc, "contentobjects" );
-
-        final List<PageTemplatePortletEntity> objects = pageTemplate.getPortlets();
-        for ( PageTemplatePortletEntity pageTemplateObject : objects )
-        {
-            final PortletEntity portlet = pageTemplateObject.getPortlet();
-            final PageTemplateRegionEntity pageTemplateParam = pageTemplateObject.getPageTemplateRegion();
-
-            Element elem = XMLTool.createElement( doc, root, "contentobject" );
-            elem.setAttribute( "pagetemplatekey", String.valueOf( pageTemplate.getKey() ) );
-            elem.setAttribute( "conobjkey", String.valueOf( portlet.getKey() ) );
-
-            elem.setAttribute( "parameterkey", String.valueOf( pageTemplateParam.getKey() ) );
-
-            // element: contentobjectdata
-            Document contentdata = XMLDocumentFactory.create( portlet.getXmlDataAsJDOMDocument() ).getAsDOMDocument();
-            Node xmldata_root = doc.importNode( contentdata.getDocumentElement(), true );
-            elem.appendChild( xmldata_root );
-
-            // sub-elements
-            XMLTool.createElement( doc, elem, "order", String.valueOf( pageTemplateObject.getOrder() ) );
-            XMLTool.createElement( doc, elem, "name", portlet.getName() );
-            XMLTool.createElement( doc, elem, "separator", pageTemplateParam.getSeparator() );
-            elem = XMLTool.createElement( doc, elem, "parametername", pageTemplateParam.getName() );
-            elem.setAttribute( "multiple", String.valueOf( pageTemplateParam.isMultiple() ? "1" : "0" ) );
-            elem.setAttribute( "override", String.valueOf( pageTemplateParam.isOverride() ? "1" : "0" ) );
-        }
-
-        return doc;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -728,65 +639,95 @@ public class PageTemplateServiceImpl
                 }
                 pageTemplate.setCssKey( css );
 
-                // store relations in old schema
-                Element ptpsElem = XMLTool.getElement( root, "pagetemplateparameters" );
                 Element contentobjectsElem = XMLTool.getElement( root, "contentobjects" );
+                Element ptpsElem = XMLTool.getElement( root, "pagetemplateparameters" );
 
-                if ( contentobjectsElem != null )
-                {
-                    Element[] contentobjectElems = XMLTool.getElements( contentobjectsElem );
-
-                    for ( Element contentobjectElem : contentobjectElems )
-                    {
-                        String regionKey = contentobjectElem.getAttribute( "parameterkey" );
-                        String destination = getDestinationByRegionKey( ptpsElem, regionKey );
-
-                        contentobjectElem.setAttribute( "destination", destination );
-                    }
-                }
-
-                // Clear all old relationships
-                pageTemplate.clearPageTemplateRegions();
-                pageTemplate.clearPageTemplatePortlets();
-                pageTemplate.clearContentTypes();
-
-                // element: PageTemplateRegion
-                int[] ptpKeys = null;
                 if ( ptpsElem != null )
                 {
-                    Element[] ptpElems = XMLTool.getElements( ptpsElem );
-                    for ( Element ptp : ptpElems )
+                    // update all ptp entries for page
+                    int[] oldPTPKey = getPageTemplParamKeys( pageTemplate );
+                    Node[] ptpNode = XMLTool.filterNodes( ptpsElem.getChildNodes(), Node.ELEMENT_NODE );
+                    int[] updatedPTPKey = new int[ptpNode.length];
+                    int updatedPTPs = 0, newPTPs = 0;
+                    Document updatedPTPDoc = XMLTool.createDocument( "pagetemplateparameters" );
+                    Element updatedPTP = updatedPTPDoc.getDocumentElement();
+                    Document newPTPDoc = XMLTool.createDocument( "pagetemplateparameters" );
+                    Element newPTP = newPTPDoc.getDocumentElement();
+
+                    for ( Node aPtpNode : ptpNode )
                     {
-                        ptp.setAttribute( "pagetemplatekey", Integer.toString( pageTemplateKey ) );
+                        ptpsElem = (Element) aPtpNode;
+                        keyStr = ptpsElem.getAttribute( "key" );
+                        int key;
+                        if ( keyStr != null && keyStr.length() > 0 )
+                        {
+                            key = Integer.parseInt( keyStr );
+                        }
+                        else
+                        {
+                            key = -1;
+                        }
+                        if ( key >= 0 )
+                        {
+                            updatedPTP.appendChild( updatedPTPDoc.importNode( ptpsElem, true ) );
+                            updatedPTPKey[updatedPTPs++] = key;
+                        }
+                        else
+                        {
+                            newPTP.appendChild( newPTPDoc.importNode( ptpsElem, true ) );
+                            newPTPs++;
+                        }
                     }
 
-                    Document ptpDoc = XMLTool.createDocument();
-                    Node n = ptpDoc.importNode( ptpsElem, true );
-                    ptpDoc.appendChild( n );
-                    ptpKeys = createPageTemplParam( pageTemplate, ptpDoc );
-                }
-
-                pageTemplateDao.updateExisting( pageTemplate );
-                pageTemplateDao.getHibernateTemplate().flush();
-
-                // create all pageconobj entries for page
-                if ( contentobjectsElem != null )
-                {
-                    Element[] contentobjectElems = XMLTool.getElements( contentobjectsElem );
-
-                    for ( Element contentobjectElem : contentobjectElems )
+                    // remove old
+                    if ( updatedPTPs == 0 )
                     {
-                        contentobjectElem.setAttribute( "pagetemplatekey", Integer.toString( pageTemplateKey ) );
+                        Integer[] pageKeys = getPageKeysByPageTemplateKey( pageTemplateKey );
+                        pageWindowDao.deleteByPageKeys( pageKeys );
 
-                        String destination = contentobjectElem.getAttribute( "destination" );
-                        PageTemplateRegionEntity region = pageTemplate.findRegionByName( destination );
+                        pageTemplate.clearPageTemplateRegions();
+                    }
+                    else if ( updatedPTPs < oldPTPKey.length )
+                    {
+                        int temp1[] = new int[updatedPTPs];
+                        System.arraycopy( updatedPTPKey, 0, temp1, 0, updatedPTPs );
+                        updatedPTPKey = temp1;
 
-                        contentobjectElem.setAttribute( "parameterkey", Integer.toString( region.getKey() ) );
+                        Arrays.sort( oldPTPKey );
+                        oldPTPKey = ArrayUtil.removeDuplicates( oldPTPKey );
+                        Arrays.sort( updatedPTPKey );
+                        updatedPTPKey = ArrayUtil.removeDuplicates( updatedPTPKey );
+                        int temp2[][] = ArrayUtil.diff( oldPTPKey, updatedPTPKey );
+
+                        final int[] regionKeys = temp2[0];
+                        Integer[] pageKeys = getPageKeysByPageTemplateKey( pageTemplateKey );
+
+                        pageWindowDao.deleteByPageKeyAndTemplateRegionKey( pageKeys, regionKeys );
+
+                        pageTemplate.removePageTemplParams( regionKeys );
                     }
 
-                    Document coDoc = XMLTool.createDocument();
-                    coDoc.appendChild( coDoc.importNode( contentobjectsElem, true ) );
-                    updatePageTemplateCOs( coDoc, pageTemplate, ptpKeys );
+                    updatePageTemplParam( pageTemplate, updatedPTPDoc );
+
+                    int[] ptpKeys = new int[0];
+                    if ( newPTPs > 0 )
+                    {
+                        ptpKeys = createPageTemplParam( pageTemplate, newPTPDoc );
+                    }
+
+                    pageTemplate.clearPageTemplatePortlets();
+                    pageTemplate.clearContentTypes();
+
+                    pageTemplateDao.updateExisting( pageTemplate );
+                    pageTemplateDao.getHibernateTemplate().flush();
+
+                    if ( contentobjectsElem != null )
+                    {
+                        // update all pageconobj entries for page
+                        Document cobsDoc = XMLTool.createDocument();
+                        cobsDoc.appendChild( cobsDoc.importNode( contentobjectsElem, true ) );
+                        updatePageTemplateCOs( cobsDoc, pageTemplate, ptpKeys );
+                    }
                 }
 
                 // element: contenttypes
@@ -826,24 +767,33 @@ public class PageTemplateServiceImpl
         return pageTemplate;
     }
 
-    private String getDestinationByRegionKey( final Element ptpsElem, final String regionKey )
+    private int[] getPageTemplParamKeys( final PageTemplateEntity pageTemplate )
     {
-        if ( ptpsElem != null )
-        {
-            Element[] ptpElems = XMLTool.getElements( ptpsElem );
-            for ( Element ptp : ptpElems )
-            {
-                if ( regionKey.equals( ptp.getAttribute( "key" ) ) )
-                {
-                    Map<String, Element> subelems = XMLTool.filterElements( ptp.getChildNodes() );
+        final Set<PageTemplateRegionEntity> regions = pageTemplate.getPageTemplateRegions();
 
-                    Element subelem = subelems.get( "name" );
-                    final String name = XMLTool.getElementText( subelem );
-                    return name;
-                }
-            }
+        final int[] keys = new int[ regions.size() ];
+        int i = 0;
+
+        for ( PageTemplateRegionEntity region : regions )
+        {
+            keys[i++] = region.getKey();
         }
-        return null;
+
+        return keys;
+    }
+
+    private Integer[] getPageKeysByPageTemplateKey( final int pageTemplateKey )
+    {
+        final List<PageEntity> pages = pageDao.findByTemplateKeys( Arrays.asList( pageTemplateKey ) );
+        final Integer[] keys = new Integer[pages.size()];
+        int i = 0;
+
+        for ( PageEntity page : pages )
+        {
+            keys[i++] = page.getKey();
+        }
+
+        return keys;
     }
 
     private int getNextKey( final String tableName )

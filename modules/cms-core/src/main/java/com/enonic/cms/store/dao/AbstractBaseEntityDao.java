@@ -186,6 +186,27 @@ public abstract class AbstractBaseEntityDao<T>
         getHibernateTemplate().evict( object );
     }
 
+    public int deleteByNamedQuery( final String queryName, final String[] paramNames, final Object[][] paramValues )
+    {
+        return ( (Number) getHibernateTemplate().execute( new HibernateCallback()
+        {
+            public Object doInHibernate( Session session )
+                throws HibernateException, SQLException
+            {
+                Query query = session.getNamedQuery( queryName );
+                if ( paramNames != null )
+                {
+                    for ( int i = 0; i < paramNames.length; i++ )
+                    {
+                        query.setParameterList( paramNames[i], paramValues[i] );
+                    }
+                }
+
+                return query.executeUpdate();
+            }
+        } ) ).intValue();
+    }
+
     public int deleteByNamedQuery( final String queryName, String paramName, Object paramValue )
     {
         return executeByNamedQuery( queryName, paramName != null ? new String[]{paramName} : null,

@@ -8,7 +8,6 @@ package com.enonic.cms.web.portal.services;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.elasticsearch.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +46,6 @@ public final class ServicesHandler
         final HttpServletRequest request = context.getRequest();
         final SitePath sitePath = context.getSitePath();
 
-        if ( !isOperationEnabled( sitePath ) )
-        {
-            context.getResponse().setStatus( HttpServletResponse.SC_FORBIDDEN );
-            return;
-        }
-
         if ( ticketIsRequired( sitePath ) && !ticketIsValid( request ) )
         {
             throw new InvalidTicketException();
@@ -73,28 +66,6 @@ public final class ServicesHandler
         }
 
         processor.handle( context );
-    }
-
-    private boolean isOperationEnabled( final SitePath sitePath )
-    {
-        final String handler = UserServicesParameterResolver.resolveHandlerFromSitePath( sitePath );
-        final String operation = UserServicesParameterResolver.resolveOperationFromSitePath( sitePath );
-
-        /*
-        String sitePropertyVariable = SITE_PROPERTY_CAPTCHA_ENABLE + "." + handler;
-        String sitePropertySetting = sitePropertiesService.getSiteProperties( siteKey ).getProperty( sitePropertyVariable );
-        if ( sitePropertySetting == null )
-        {
-            return false;
-        }
-        else
-        {
-            sitePropertySetting = sitePropertySetting.trim();
-        }
-        return sitePropertySetting.equals( "*" ) || sitePropertySetting.equals( operation );
-         */
-
-        return true;
     }
 
     private boolean ticketIsRequired( SitePath sitePath )

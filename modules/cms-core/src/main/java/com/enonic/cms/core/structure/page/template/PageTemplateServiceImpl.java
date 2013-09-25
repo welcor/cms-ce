@@ -641,7 +641,10 @@ public class PageTemplateServiceImpl
                 final int[] regionKeys = diff[0];
                 final Integer[] pageKeys = getPageKeysByPageTemplateKey( pageTemplateKey );
 
-                pageWindowDao.deleteByPageKeyAndTemplateRegionKey( pageKeys, regionKeys );
+                if ( pageKeys.length != 0 )
+                {
+                    pageWindowDao.deleteByPageKeyAndTemplateRegionKey( pageKeys, regionKeys );
+                }
 
                 pageTemplate.removePageTemplParams( regionKeys );
             }

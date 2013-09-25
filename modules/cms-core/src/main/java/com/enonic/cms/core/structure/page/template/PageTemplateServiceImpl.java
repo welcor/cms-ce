@@ -39,6 +39,7 @@ import com.enonic.cms.store.dao.ContentTypeDao;
 import com.enonic.cms.store.dao.MenuItemDao;
 import com.enonic.cms.store.dao.PageDao;
 import com.enonic.cms.store.dao.PageTemplateDao;
+import com.enonic.cms.store.dao.PageTemplatePortletDao;
 import com.enonic.cms.store.dao.PageTemplateRegionDao;
 import com.enonic.cms.store.dao.PageWindowDao;
 import com.enonic.cms.store.dao.PortletDao;
@@ -58,6 +59,9 @@ public class PageTemplateServiceImpl
 
     @Autowired
     private PageTemplateDao pageTemplateDao;
+
+    @Autowired
+    private PageTemplatePortletDao pageTemplatePortletDao;
 
     @Autowired
     private SiteDao siteDao;
@@ -442,10 +446,6 @@ public class PageTemplateServiceImpl
         {
             for ( final Node node : nodes )
             {
-                final PageTemplatePortletEntity template = new PageTemplatePortletEntity();
-                template.setPageTemplate( pageTemplate );
-                pageTemplate.addPageTemplatePortlet( template );
-
                 Element elem = (Element) node;
                 Map<String, Element> subelems = XMLTool.filterElements( elem.getChildNodes() );
 
@@ -453,6 +453,15 @@ public class PageTemplateServiceImpl
                 String portletkey = elem.getAttribute( "conobjkey" );
                 final int portletKey = Integer.parseInt( portletkey );
                 final PortletEntity portlet = portletDao.findByKey( portletKey );
+
+                final PageTemplatePortletKey key = new PageTemplatePortletKey( pageTemplate.getKey(), portlet.getKey() );
+
+                // create or update PageTemplatePortletEntity
+                final PageTemplatePortletEntity template = createOrLoadPageTemplatePortletEntity( key );
+
+                template.setPageTemplate( pageTemplate );
+                pageTemplate.addPageTemplatePortlet( template );
+
                 template.setPortlet( portlet );
 
                 // attribute: region
@@ -469,9 +478,6 @@ public class PageTemplateServiceImpl
                 Element subelem = subelems.get( "order" );
                 final int order = Integer.parseInt( XMLTool.getElementText( subelem ) );
                 template.setOrder( order );
-
-                template.setKey( new PageTemplatePortletKey( pageTemplate.getKey(), portlet.getKey() ) );
-                template.setTimestamp( new Date() );
             }
         }
         catch ( NumberFormatException nfe )
@@ -479,6 +485,23 @@ public class PageTemplateServiceImpl
             String message = "Failed to parse a key field: %t";
             VerticalEngineLogger.errorCreate( message, nfe );
         }
+    }
+
+    private PageTemplatePortletEntity createOrLoadPageTemplatePortletEntity( final PageTemplatePortletKey key )
+    {
+        final PageTemplatePortletEntity template = pageTemplatePortletDao.findByKey( key );
+
+        if ( template == null )
+        {
+            final PageTemplatePortletEntity newTemplate = new PageTemplatePortletEntity();
+
+            newTemplate.setKey( key );
+            newTemplate.setTimestamp( new Date() );
+
+            return newTemplate;
+        }
+
+        return template;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -527,13 +550,6 @@ public class PageTemplateServiceImpl
     {
         final Document doc = XMLTool.domparse( command.getXmlData(), "pagetemplate" );
 
-        final PageTemplateEntity pageTemplate = updatePageTemplate( doc );
-
-        pageTemplateDao.updateExisting( pageTemplate );
-    }
-
-    private PageTemplateEntity updatePageTemplate( Document doc )
-    {
         final Element docElem = doc.getDocumentElement();
         final Element[] pagetemplateElems;
 
@@ -647,12 +663,12 @@ public class PageTemplateServiceImpl
         }
 
         // element: contenttypes
-        final Element[] ctyElems = XMLTool.getElements( subelems.get( "contenttypes" ) );
-
+        final Element contenttypes = subelems.get( "contenttypes" );
+        final Element[] ctyElems = XMLTool.getElements( contenttypes );
         final List<ContentTypeEntity> contentTypes = setPageTemplateContentTypes( pageTemplate, ctyElems );
         createSectionsForMenuItems( pageTemplate, contentTypes );
 
-        return pageTemplate;
+        pageTemplateDao.updateExisting( pageTemplate );
     }
 
     private void populatePageTemplate( final Element pageTemplateElement, final Map<String, Element> subelems,

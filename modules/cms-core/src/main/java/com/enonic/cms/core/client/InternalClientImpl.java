@@ -1051,7 +1051,7 @@ public abstract class InternalClientImpl
         }
     }
 
-    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void changeUserPassword( ChangeUserPasswordParams params )
         throws ClientException
     {
@@ -2281,6 +2281,7 @@ public abstract class InternalClientImpl
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void clearPageCacheForSite( Integer siteKeyInt )
     {
         try
@@ -2304,6 +2305,7 @@ public abstract class InternalClientImpl
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void clearPageCacheForPage( Integer siteKeyInt, Integer[] menuItemKeys )
     {
         try
@@ -2342,6 +2344,7 @@ public abstract class InternalClientImpl
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void clearPageCacheForContent( Integer[] contentKeys )
     {
         try
@@ -2368,6 +2371,7 @@ public abstract class InternalClientImpl
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void deleteCategory( DeleteCategoryParams params )
         throws ClientException
     {
@@ -2670,6 +2674,7 @@ public abstract class InternalClientImpl
         return logEntry;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Document getContentTypeConfigXML( GetContentTypeConfigXMLParams params )
         throws ClientException
     {
@@ -2715,7 +2720,8 @@ public abstract class InternalClientImpl
         }
     }
 
-    @Override
+    /* magnífico security hole */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public <T> T getService( final Class<T> type )
     {
         return this.applicationContext.getBean( type );

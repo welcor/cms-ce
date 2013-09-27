@@ -622,7 +622,10 @@ public class PageTemplateServiceImpl
             if ( updatedPTPs == 0 )
             {
                 Integer[] pageKeys = getPageKeysByPageTemplateKey( pageTemplateKey );
-                pageWindowDao.deleteByPageKeys( pageKeys );
+                if ( pageKeys.length != 0 )
+                {
+                    pageWindowDao.deleteByPageKeys( pageKeys );
+                }
 
                 pageTemplate.clearPageTemplateRegions();
             }

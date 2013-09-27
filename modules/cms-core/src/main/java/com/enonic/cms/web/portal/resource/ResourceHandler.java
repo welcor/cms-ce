@@ -82,8 +82,10 @@ public final class ResourceHandler
 
         setHttpHeaders( response, sitePath );
 
-        HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(), resourceFile.getMimeType(),
-                                             new File( resourceRoot, resourceFile.getPath() ) );
+        final File file = new File( resourceRoot, resourceFile.getPath() );
+        final String mimeType = resourceFile.getMimeType();
+
+        HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(), resourceFile.getName(), mimeType, file );
     }
 
     private void setHttpHeaders( final HttpServletResponse response, final SitePath sitePath )

@@ -20,8 +20,7 @@ public class HttpServletRangeUtil
     // Format: "bytes=n-n,n-n,n-n..."
     private static final String PATTERN_RANGE = "^bytes=\\d*-\\d*(,\\d*-\\d*)*$";
 
-    // = 10KB
-    private static final int DEFAULT_BUFFER_SIZE = 10240;
+    private static final int DEFAULT_BUFFER_SIZE = 1<<15; // 32Kb
     private static final String SEPARATOR = "THIS_STRING_SEPARATES";
 
     /**
@@ -29,11 +28,12 @@ public class HttpServletRangeUtil
      *
      * @param request request to be processed
      * @param response response to be created
+     * @param filename name of file
      * @param contentType request contentType
      * @param file file to be proceed
      * @throws java.io.IOException
      */
-    public static void processRequest( final HttpServletRequest request, final HttpServletResponse response, String contentType, final File file )
+    public static void processRequest( final HttpServletRequest request, final HttpServletResponse response, final String filename, String contentType, final File file )
         throws IOException
     {
         // I. File validation
@@ -99,7 +99,7 @@ public class HttpServletRangeUtil
 
 
         // IV. Process gzip
-        boolean acceptGzip = processGZip( request, response, contentType, file, eTag );
+        boolean acceptGzip = processGZip( request, response, contentType, filename, file, eTag );
 
 
         // V. Process download
@@ -255,7 +255,7 @@ public class HttpServletRangeUtil
         return 0;
     }
 
-    private static boolean processGZip( final HttpServletRequest request, final HttpServletResponse response, String contentType, final File file, final String eTag )
+    private static boolean processGZip( final HttpServletRequest request, final HttpServletResponse response, String contentType, String filename, final File file, final String eTag )
     {
         contentType = ( contentType != null ) ? contentType : "application/octet-stream";
 
@@ -291,7 +291,7 @@ public class HttpServletRangeUtil
 
         if ( !response.containsHeader( HttpHeaders.CONTENT_DISPOSITION ) )
         {
-            String header = String.format( "%s;filename=\"%s\"", disposition, file.getName() );
+            final String header = String.format( "%s;filename=\"%s\"", disposition, filename );
             response.setHeader( HttpHeaders.CONTENT_DISPOSITION, header );
         }
 

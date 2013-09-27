@@ -229,17 +229,18 @@ public final class AttachmentHandler
     {
         final File file = blob.getAsFile();
 
+        final String mimeType = this.mimeTypeResolver.getMimeType( binaryData.getName() );
+
         if ( file != null )
         {
-            HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(),
-                                                 this.mimeTypeResolver.getMimeType( binaryData.getName() ), file );
+            HttpServletRangeUtil.processRequest( context.getRequest(), context.getResponse(), binaryData.getName(), mimeType, file );
         }
         else
         {
             final HttpServletResponse response = context.getResponse();
             HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
 
-            response.setContentType( this.mimeTypeResolver.getMimeType( binaryData.getName() ) );
+            response.setContentType( mimeType );
             response.setContentLength( (int) blob.getLength() );
 
             HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );

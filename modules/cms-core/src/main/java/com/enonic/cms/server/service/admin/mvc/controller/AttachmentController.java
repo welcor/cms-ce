@@ -166,16 +166,17 @@ public class AttachmentController
     {
         final File file = blob.getAsFile();
 
+        final String mimeType = HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() );
+
         if ( file != null )
         {
-            HttpServletRangeUtil.processRequest( request, response,
-                                                 HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() ), file );
+            HttpServletRangeUtil.processRequest( request, response, binaryData.getName(), mimeType, file );
         }
         else
         {
             HttpServletUtil.setContentDisposition( response, download, binaryData.getName() );
 
-            response.setContentType( HttpServletUtil.resolveMimeType( getServletContext(), binaryData.getName() ) );
+            response.setContentType( mimeType );
             response.setContentLength( (int) blob.getLength() );
 
             HttpServletUtil.copyNoCloseOut( blob.getStream(), response.getOutputStream() );

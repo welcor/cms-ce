@@ -10,9 +10,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 
 public class SectionContentTypeFilterEntity
 {
-
-
-    private int key;
+    private SectionContentTypeFilterKey key;
 
     private MenuItemEntity section;
 
@@ -23,14 +21,14 @@ public class SectionContentTypeFilterEntity
         // for Hibernate
     }
 
-    public int getKey()
+    public SectionContentTypeFilterKey getKey()
     {
         return key;
     }
 
-    public void setKey( int value )
+    public void setKey( final SectionContentTypeFilterKey key )
     {
-        this.key = value;
+        this.key = key;
     }
 
     public MenuItemEntity getSection()

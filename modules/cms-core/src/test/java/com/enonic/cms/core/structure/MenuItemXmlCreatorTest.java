@@ -18,6 +18,7 @@ import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemType;
 import com.enonic.cms.core.structure.menuitem.MenuItemXMLCreatorSetting;
 import com.enonic.cms.core.structure.menuitem.MenuItemXmlCreator;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
@@ -202,7 +203,13 @@ public class MenuItemXmlCreatorTest
         Set<ContentTypeEntity> filteredContentTypes = new LinkedHashSet<ContentTypeEntity>();
         filteredContentTypes.add( createContentType( "201", "type1" ) );
         filteredContentTypes.add( createContentType( "202", "type2" ) );
-        mi.setAllowedSectionContentTypes( filteredContentTypes );
+        for ( ContentTypeEntity allowedSectionContentType : filteredContentTypes )
+        {
+            final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
+            contentTypeFilter.setContentType( allowedSectionContentType );
+            contentTypeFilter.setSection( mi );
+            mi.addSectionContentTypeFilter( contentTypeFilter );
+        }
 
         PageEntity page = createPage( "201" );
         PageTemplateEntity pageTemplate = createPageTemplate( "301", "name-301" );
@@ -262,8 +269,13 @@ public class MenuItemXmlCreatorTest
         Set<ContentTypeEntity> filteredContentTypes = new LinkedHashSet<ContentTypeEntity>();
         filteredContentTypes.add( createContentType( "201", "type1" ) );
         filteredContentTypes.add( createContentType( "202", "type2" ) );
-        mi.setAllowedSectionContentTypes( filteredContentTypes );
-
+        for ( ContentTypeEntity allowedSectionContentType : filteredContentTypes )
+        {
+            final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
+            contentTypeFilter.setContentType( allowedSectionContentType );
+            contentTypeFilter.setSection( mi );
+            mi.addSectionContentTypeFilter( contentTypeFilter );
+        }
         setting = new MenuItemXMLCreatorSetting();
         xmlCreator = new MenuItemXmlCreator( setting, menuItemAccessResolver );
         XMLDocument xmlDoc = xmlCreator.createLegacyGetMenuItem( mi );

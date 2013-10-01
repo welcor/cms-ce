@@ -4295,28 +4295,9 @@ public final class MenuHandler
                 {
                     type = pageTemplateType.getName();
                 }
-                else
+                else if ( !menuItemType.isPage() )
                 {
-                    if ( menuItemType == MenuItemType.URL )
-                    {
-                        type = "url";
-                    }
-                    else if ( menuItemType == MenuItemType.CONTENT )
-                    {
-                        type = "content";
-                    }
-                    else if ( menuItemType == MenuItemType.LABEL )
-                    {
-                        type = "label";
-                    }
-                    else if ( menuItemType == MenuItemType.SECTION )
-                    {
-                        type = "section";
-                    }
-                    else if ( menuItemType == MenuItemType.SHORTCUT )
-                    {
-                        type = "shortcut";
-                    }
+                    type = menuItemType.getName();
                 }
 
                 elem.setAttribute( "type", type );

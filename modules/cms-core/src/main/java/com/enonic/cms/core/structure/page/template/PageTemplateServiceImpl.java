@@ -33,6 +33,7 @@ import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 import com.enonic.cms.store.dao.ContentTypeDao;
@@ -109,12 +110,12 @@ public class PageTemplateServiceImpl
     {
         final Document doc = XMLTool.domparse( command.getXmlData(), "pagetemplate" );
 
-        final PageTemplateEntity newPageTemplate = createPageTemplate( doc, true );
+        final PageTemplateEntity newPageTemplate = createPageTemplate( doc );
 
         pageTemplateDao.storeNew( newPageTemplate );
     }
 
-    private PageTemplateEntity createPageTemplate( final Document doc, final boolean useOldKey )
+    private PageTemplateEntity createPageTemplate( final Document doc )
     {
         final PageTemplateEntity newPageTemplate = new PageTemplateEntity();
 
@@ -130,8 +131,7 @@ public class PageTemplateServiceImpl
 
                 // attribute: key
                 final String keyStr = root.getAttribute( "key" );
-                final int pageTemplateKey =
-                    ( !useOldKey || StringUtils.isBlank( keyStr ) ) ? getNextKey( PAT_TABLE ) : Integer.parseInt( keyStr );
+                final int pageTemplateKey = ( StringUtils.isBlank( keyStr ) ) ? getNextKey( PAT_TABLE ) : Integer.parseInt( keyStr );
                 newPageTemplate.setKey( pageTemplateKey );
 
                 // attribute: menukey
@@ -257,25 +257,47 @@ public class PageTemplateServiceImpl
 
         for ( Element ctyElem : ctyElems )
         {
-            final int ctyKey = Integer.parseInt( ctyElem.getAttribute( "key" ) );
+            final int ctyKey = parseKey( ctyElem );
             final ContentTypeEntity contentType = contentTypeDao.findByKey( new ContentTypeKey( ctyKey ) );
             pageTemplate.addContentType( contentType );
             contentTypes.add( contentType );
         }
 
         // do the same for all menuitems using this page template
-        Collection<MenuItemEntity> menuItems = menuItemDao.findByPageTemplate( pageTemplate.getKey() );
-
-        for ( MenuItemEntity menuItem : menuItems )
-        {
-            if ( menuItem.isSection() )
-            {
-                menuItem.clearSectionContentTypes();
-                menuItem.addAllowedSectionContentType( contentTypes );
-            }
-        }
+        createContentTypesForMenuItems( pageTemplate, contentTypes, true );
 
         return contentTypes;
+    }
+
+    private void createContentTypesForMenuItems( final PageTemplateEntity pageTemplate,
+                                                 final List<ContentTypeEntity> contentTypes,
+                                                 final boolean switchToSection )
+    {
+        final Collection<MenuItemEntity> menuItems = menuItemDao.findByPageTemplate( pageTemplate.getKey() );
+
+        for ( final MenuItemEntity menuItem : menuItems )
+        {
+            if ( menuItem.isSection() == switchToSection )
+            {
+                boolean removeSection = !switchToSection;
+
+                if ( removeSection )
+                {
+                    menuItem.setOrderedSection( true );
+                    menuItem.setSection( true );
+                }
+
+                menuItem.clearSectionContentTypeFilters();
+
+                for ( final ContentTypeEntity contentType : contentTypes )
+                {
+                    final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
+                    contentTypeFilter.setContentType( contentType );
+                    contentTypeFilter.setSection( menuItem );
+                    menuItem.addSectionContentTypeFilter( contentTypeFilter );
+                }
+            }
+        }
     }
 
     private int[] createPageTemplParam( final PageTemplateEntity pageTemplate, final Document ptpDoc )
@@ -308,32 +330,25 @@ public class PageTemplateServiceImpl
         {
             nodes = new Node[]{root};
         }
+
         int[] ptptKeys = new int[nodes.length];
 
-        try
+        for ( int i = 0; i < nodes.length; i++ )
         {
-            for ( int i = 0; i < nodes.length; i++ )
-            {
-                final PageTemplateRegionEntity region = new PageTemplateRegionEntity();
+            final PageTemplateRegionEntity region = new PageTemplateRegionEntity();
 
-                Element elem = (Element) nodes[i];
-                Map<String, Element> subelems = XMLTool.filterElements( elem.getChildNodes() );
+            Element elem = (Element) nodes[i];
+            Map<String, Element> subelems = XMLTool.filterElements( elem.getChildNodes() );
 
-                // attribute: key (generated in database)
-                ptptKeys[i] = getNextKey( PTP_TABLE );
-                region.setKey( ptptKeys[i] );
+            // attribute: key (generated in database)
+            ptptKeys[i] = getNextKey( PTP_TABLE );
+            region.setKey( ptptKeys[i] );
 
-                // element: pagetemplate
-                region.setPageTemplate( pageTemplate );
-                pageTemplate.addPageTemplateRegion( region );
+            // element: pagetemplate
+            region.setPageTemplate( pageTemplate );
+            pageTemplate.addPageTemplateRegion( region );
 
-                populatePageTemplateRegion( region, elem, subelems );
-            }
-        }
-        catch ( NumberFormatException nfe )
-        {
-            String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorCreate( message, nfe );
+            populatePageTemplateRegion( region, elem, subelems );
         }
 
         return ptptKeys;
@@ -341,7 +356,7 @@ public class PageTemplateServiceImpl
 
     private void updatePageTemplParam( final PageTemplateEntity pageTemplate, final Document ptpDoc )
     {
-        Element root = ptpDoc.getDocumentElement();
+        final Element root = ptpDoc.getDocumentElement();
 
         if ( root == null )
         {
@@ -371,29 +386,21 @@ public class PageTemplateServiceImpl
             node = new Node[]{root};
         }
 
-        try
+        for ( Node aNode : node )
         {
-            for ( Node aNode : node )
-            {
-                Element elem = (Element) aNode;
-                Map<String, Element> subelems = XMLTool.filterElements( elem.getChildNodes() );
+            Element elem = (Element) aNode;
+            Map<String, Element> subelems = XMLTool.filterElements( elem.getChildNodes() );
 
-                // attribute: key
-                String keyStr = elem.getAttribute( "key" );
-                int pageTemplParamKey = Integer.parseInt( keyStr );
-                final PageTemplateRegionEntity region = pageTemplate.findRegionByKey( pageTemplParamKey );
+            // attribute: key
+            final int pageTemplParamKey = parseKey( elem );
+            final PageTemplateRegionEntity region = pageTemplate.findRegionByKey( pageTemplParamKey );
 
-                populatePageTemplateRegion( region, elem, subelems );
-            }
-        }
-        catch ( NumberFormatException nfe )
-        {
-            String message = "Failed to parse a key field: %t";
-            VerticalEngineLogger.errorUpdate( message, nfe );
+            populatePageTemplateRegion( region, elem, subelems );
         }
     }
 
-    private void populatePageTemplateRegion( final PageTemplateRegionEntity region, final Element elem,
+    private void populatePageTemplateRegion( final PageTemplateRegionEntity region,
+                                             final Element elem,
                                              final Map<String, Element> subelems )
     {
         // element: name
@@ -465,7 +472,7 @@ public class PageTemplateServiceImpl
                 template.setPortlet( portlet );
 
                 // attribute: region
-                String regionKeyStr = elem.getAttribute( "parameterkey" );
+                final String regionKeyStr = elem.getAttribute( "parameterkey" );
                 final int regionKey = ( regionKeyStr.charAt( 0 ) == '_' )
                     ? ptpKeys[Integer.parseInt( regionKeyStr.substring( 1 ) )]
                     : Integer.parseInt( regionKeyStr );
@@ -565,9 +572,8 @@ public class PageTemplateServiceImpl
         final Element pageTemplateElement = pagetemplateElems[0];
         final Map<String, Element> subelems = XMLTool.filterElements( pageTemplateElement.getChildNodes() );
 
-        final int pageTemplateKey = getPageTemplateKey( pageTemplateElement );
-
-        final PageTemplateEntity pageTemplate = pageTemplateDao.findByKey( getPageTemplateKey( pageTemplateElement ) );
+        final int pageTemplateKey = parseKey( pageTemplateElement );
+        final PageTemplateEntity pageTemplate = pageTemplateDao.findByKey( pageTemplateKey );
 
         if ( pageTemplate == null )
         {
@@ -672,7 +678,12 @@ public class PageTemplateServiceImpl
         final Element contenttypes = subelems.get( "contenttypes" );
         final Element[] ctyElems = XMLTool.getElements( contenttypes );
         final List<ContentTypeEntity> contentTypes = setPageTemplateContentTypes( pageTemplate, ctyElems );
-        createSectionsForMenuItems( pageTemplate, contentTypes );
+
+        // If page template is of type "section", we need to create sections for menuitems that does not have one
+        if ( pageTemplate.getType() == PageTemplateType.SECTIONPAGE )
+        {
+            createContentTypesForMenuItems( pageTemplate, contentTypes, false );
+        }
 
         pageTemplateDao.updateExisting( pageTemplate );
     }
@@ -746,32 +757,7 @@ public class PageTemplateServiceImpl
         pageTemplate.setCssKey( css );
     }
 
-    private void createSectionsForMenuItems( final PageTemplateEntity pageTemplate,
-                                             final List<ContentTypeEntity> contentTypes )
-    {
-        // If page template is of type "section", we need to create sections for menuitems
-        // that does not have one
-        if ( pageTemplate.getType() == PageTemplateType.SECTIONPAGE )
-        {
-            final Collection<MenuItemEntity> menuItems = menuItemDao.findByPageTemplate( pageTemplate.getKey() );
-
-            for ( final MenuItemEntity menuItem : menuItems )
-            {
-                if ( !menuItem.isSection() )
-                {
-                    menuItem.setOrderedSection( true );
-                    menuItem.setSection( true );
-
-                    menuItem.clearSectionContentTypes();
-                    menuItem.addAllowedSectionContentType( contentTypes );
-
-                    menuItemDao.updateExisting( menuItem );
-                }
-            }
-        }
-    }
-
-    private int getPageTemplateKey( final Element root )
+    private int parseKey( final Element root )
     {
         final String keyStr = root.getAttribute( "key" );
 

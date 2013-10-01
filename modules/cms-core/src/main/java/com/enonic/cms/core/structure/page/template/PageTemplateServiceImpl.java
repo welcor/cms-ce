@@ -102,6 +102,7 @@ public class PageTemplateServiceImpl
         }
 
         pageTemplateDao.delete( pageTemplateToDelete );
+        pageTemplateToDelete.getSite().getPageTemplates().remove( pageTemplateToDelete );
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

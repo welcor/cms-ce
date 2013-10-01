@@ -119,6 +119,8 @@ public class PageTemplateServiceImpl_deletePageTemplateTest
                 "</menudata>" ).getAsJDOMDocument();
 
         final SiteEntity site = factory.createSite( "The Newspaper", new Date(), xmlData, "en" );
+        site.getPageTemplates().add( pPageTemplate );
+        pPageTemplate.setSite( site );
         save( site );
 
         PortletEntity portlet = createPortlet( 11, "Portlet-1" );

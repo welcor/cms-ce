@@ -5,9 +5,12 @@
   <class name="com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity" table="tseccontypefilter2" mutable="true">
     <cache usage="nonstrict-read-write"/>
 
-    <id name="key" type="int">
+    <id name="key" type="com.enonic.cms.store.hibernate.type.SectionContentTypeFilterKeyUserType">
       <column name="sctf_lkey"/>
-      <generator class="assigned"/>
+      <generator class="com.enonic.cms.store.hibernate.id.IntegerBasedCustomIdentifierGenerator">
+        <param name="table">tseccontypefilter2</param>
+        <param name="idClassName">com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterKey</param>
+      </generator>
     </id>
 
     <many-to-one name="section" class="com.enonic.cms.core.structure.menuitem.MenuItemEntity" fetch="select">

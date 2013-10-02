@@ -100,14 +100,10 @@
       <key column="SCO_MEI_LKEY" not-null="true"/>
       <one-to-many class="com.enonic.cms.core.structure.menuitem.section.SectionContentEntity"/>
     </set>
-    <set name="allowedSectionContentTypes" inverse="false" table="TSECCONTYPEFILTER2"  lazy="true" fetch="select" batch-size="500">
+    <set name="sectionContentTypeFilters" inverse="true" lazy="true" fetch="select" batch-size="500" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
-      <key>
-        <column name="SCTF_MEI_LKEY" not-null="true"/>
-      </key>
-      <many-to-many class="com.enonic.cms.core.content.contenttype.ContentTypeEntity">
-        <column name="SCTF_CTY_LKEY" not-null="true"/>
-      </many-to-many>
+      <key column="SCTF_MEI_LKEY" not-null="true"/>
+      <one-to-many class="com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity"/>
     </set>
     <map name="accesses" lazy="true" fetch="select" batch-size="500" inverse="true">
       <cache usage="nonstrict-read-write"/>

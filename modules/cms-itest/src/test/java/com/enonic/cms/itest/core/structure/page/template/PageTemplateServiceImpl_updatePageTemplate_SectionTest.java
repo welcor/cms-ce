@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.CreatePageTemplateCommand;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
@@ -389,21 +391,32 @@ public class PageTemplateServiceImpl_updatePageTemplate_SectionTest
 
 
         MenuItemEntity menuItem4040 = menuItemDao.findByKey( new MenuItemKey( 4040 ) );
-        Set<ContentTypeEntity> ctys = menuItem4040.getAllowedSectionContentTypes();
+        Set<ContentTypeEntity> ctys = new HashSet<ContentTypeEntity>(  );
+        for ( SectionContentTypeFilterEntity sectionContentTypeFilter2 : menuItem4040.getSectionContentTypeFilters() )
+        {
+            ctys.add( sectionContentTypeFilter2.getContentType() );
+        }
         assertEquals( 3, ctys.size() );
-
         checkContentTypes( new String[]{"article", "document", "person"}, ctys );
+
 
         MenuItemEntity menuItem4041 = menuItemDao.findByKey( new MenuItemKey( 4041 ) );
-        ctys = menuItem4041.getAllowedSectionContentTypes();
+        ctys = new HashSet<ContentTypeEntity>(  );
+        for ( SectionContentTypeFilterEntity sectionContentTypeFilter1 : menuItem4041.getSectionContentTypeFilters() )
+        {
+            ctys.add( sectionContentTypeFilter1.getContentType() );
+        }
         assertEquals( 3, ctys.size() );
-
         checkContentTypes( new String[]{"article", "document", "person"}, ctys );
 
-        MenuItemEntity menuItem3030 = menuItemDao.findByKey( new MenuItemKey( 3030 ) );
-        ctys = menuItem3030.getAllowedSectionContentTypes();
-        assertEquals( 3, ctys.size() );
 
+        MenuItemEntity menuItem3030 = menuItemDao.findByKey( new MenuItemKey( 3030 ) );
+        ctys = new HashSet<ContentTypeEntity>(  );
+        for ( SectionContentTypeFilterEntity sectionContentTypeFilter : menuItem3030.getSectionContentTypeFilters() )
+        {
+            ctys.add( sectionContentTypeFilter.getContentType() );
+        }
+        assertEquals( 3, ctys.size() );
         checkContentTypes( new String[]{"article", "document", "person"}, ctys );
     }
 

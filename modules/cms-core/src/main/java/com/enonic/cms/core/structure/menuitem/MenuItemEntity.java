@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,6 +41,7 @@ import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
@@ -98,7 +100,7 @@ public class MenuItemEntity
 
     private RunAsType runAs;
 
-    private Set<ContentTypeEntity> allowedSectionContentTypes = new LinkedHashSet<ContentTypeEntity>();
+    private Set<SectionContentTypeFilterEntity> sectionContentTypeFilters = new LinkedHashSet<SectionContentTypeFilterEntity>();
 
     private SortedSet<SectionContentEntity> sectionContents = new TreeSet<SectionContentEntity>( new SectionContentComparatorByOrder() );
 
@@ -158,7 +160,7 @@ public class MenuItemEntity
         section = source.section;
         orderedSection = source.orderedSection;
         runAs = source.runAs;
-        allowedSectionContentTypes = Sets.newLinkedHashSet( source.allowedSectionContentTypes );
+        sectionContentTypeFilters = Sets.newLinkedHashSet( source.sectionContentTypeFilters );
         sectionContents = Sets.newTreeSet( source.sectionContents );
         accesses = Maps.newHashMap( source.accesses );
     }
@@ -308,42 +310,39 @@ public class MenuItemEntity
         return runAs;
     }
 
-    public boolean hasSectionContentTypeFilter()
+    public boolean hasSectionContentTypeFilters()
     {
-        return allowedSectionContentTypes.size() > 0;
+        return sectionContentTypeFilters.size() > 0;
     }
 
-    public Set<ContentTypeEntity> getAllowedSectionContentTypes()
+    public Set<SectionContentTypeFilterEntity> getSectionContentTypeFilters()
     {
-        return allowedSectionContentTypes;
+        return sectionContentTypeFilters;
     }
 
-    public void setAllowedSectionContentTypes( Set<ContentTypeEntity> contentTypeFilter )
+    public void setSectionContentTypeFilters( Set<SectionContentTypeFilterEntity> contentTypeFilter )
     {
-        this.allowedSectionContentTypes = contentTypeFilter;
+        this.sectionContentTypeFilters = contentTypeFilter;
     }
 
-    public void addAllowedSectionContentType( ContentTypeEntity contentType )
+    public void addSectionContentTypeFilter( SectionContentTypeFilterEntity contentType )
     {
-        this.allowedSectionContentTypes.add( contentType );
-    }
-
-    public void addAllowedSectionContentType( final Collection<ContentTypeEntity> ctys )
-    {
-        for ( ContentTypeEntity cty : ctys )
-        {
-            addAllowedSectionContentType( cty );
-        }
+        this.sectionContentTypeFilters.add( contentType );
     }
 
     public boolean supportsSectionContentType( ContentTypeEntity contentType )
     {
-        return this.allowedSectionContentTypes.contains( contentType );
+        final Set<ContentTypeEntity> contentTypeEntities = new HashSet<ContentTypeEntity>();
+        for ( SectionContentTypeFilterEntity sectionContentTypeFilter : sectionContentTypeFilters )
+        {
+            contentTypeEntities.add( sectionContentTypeFilter.getContentType() );
+        }
+        return contentTypeEntities.contains( contentType );
     }
 
-    public void clearSectionContentTypes()
+    public void clearSectionContentTypeFilters()
     {
-        this.allowedSectionContentTypes.clear();
+        this.sectionContentTypeFilters.clear();
     }
 
     public void addSectionContent( SectionContentEntity sectionContent )
@@ -939,7 +938,7 @@ public class MenuItemEntity
             return null;
         }
 
-        while ( parent != null && parent.getType() == MenuItemType.SECTION )
+        while ( parent != null && parent.isSection() )
         {
             parent = parent.getParent();
         }

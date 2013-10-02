@@ -22,6 +22,7 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 
@@ -453,9 +454,11 @@ public class MenuItemXmlCreator
         xmlDoc.setAttribute( "ordered", menuItem.isOrderedSection() ? "true" : "false" );
 
         xmlDoc.startElement( "contenttypes" );
-        Set<ContentTypeEntity> contentTypes = menuItem.getAllowedSectionContentTypes();
-        for ( ContentTypeEntity contentType : contentTypes )
+        Set<SectionContentTypeFilterEntity> filterEntities = menuItem.getSectionContentTypeFilters();
+        for (SectionContentTypeFilterEntity filterEntity : filterEntities)
         {
+            final ContentTypeEntity contentType = filterEntity.getContentType();
+
             xmlDoc.startElement( "contenttype" );
             xmlDoc.setAttribute( "key", contentType.getKey() );
 

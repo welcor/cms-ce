@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.ContentKey;
@@ -203,7 +201,7 @@ public class MenuItemServiceImpl
             menuItemAccessResolver.checkAccessToApproveContentInSection( contributor, section, "Cannot approve content in section." );
         }
 
-        if ( section.getType() == MenuItemType.SECTION && section.hasSectionContentTypeFilter() )
+        if ( section.isSection() && section.hasSectionContentTypeFilters() )
         {
             if ( !section.supportsSectionContentType( content.getCategory().getContentType() ) )
             {

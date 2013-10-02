@@ -54,6 +54,7 @@ import com.enonic.cms.core.structure.menuitem.RemoveContentsFromSectionCommand;
 import com.enonic.cms.core.structure.menuitem.SetContentHomeCommand;
 import com.enonic.cms.core.structure.menuitem.UnapproveContentsInSectionCommand;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
+import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.itest.AbstractSpringTest;
@@ -474,7 +475,10 @@ public class MenuItemServiceImplTest
     {
         // setup
         MenuItemEntity section = createSection( "My section", "The Newspaper", false );
-        section.addAllowedSectionContentType( fixture.findContentTypeByName( "article" ) );
+        final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
+        contentTypeFilter.setContentType( fixture.findContentTypeByName( "article" ) );
+        contentTypeFilter.setSection( section );
+        section.addSectionContentTypeFilter( contentTypeFilter );
         fixture.save( section );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
         createContent( "my-supported-content", "Articles" );
@@ -501,7 +505,10 @@ public class MenuItemServiceImplTest
         // setup section with different content type supported
         fixture.save( factory.createContentType( "just-another-cty", ContentHandlerName.CUSTOM.getHandlerClassShortName(), null ) );
         MenuItemEntity section = createSection( "My section", "The Newspaper", false );
-        section.addAllowedSectionContentType( fixture.findContentTypeByName( "just-another-cty" ) );
+        final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
+        contentTypeFilter.setContentType( fixture.findContentTypeByName( "just-another-cty" ) );
+        contentTypeFilter.setSection( section );
+        section.addSectionContentTypeFilter( contentTypeFilter );
         fixture.save( section );
         fixture.save( createMenuItemAccess( "My section", "aru", "add" ) );
         createContent( "my-unsupported-content", "Articles" );
@@ -509,9 +516,10 @@ public class MenuItemServiceImplTest
         fixture.flushAndClearHibernateSession();
 
         // verify setup:
-        assertEquals( 1, fixture.findMenuItemByName( "My section" ).getAllowedSectionContentTypes().size() );
+        assertEquals( 1, fixture.findMenuItemByName( "My section" ).getSectionContentTypeFilters().size() );
+
         assertEquals( "just-another-cty",
-                      fixture.findMenuItemByName( "My section" ).getAllowedSectionContentTypes().iterator().next().getName() );
+                      fixture.findMenuItemByName( "My section" ).getSectionContentTypeFilters().iterator().next().getContentType().getName() );
 
         // exercise
         AddContentToSectionCommand command = new AddContentToSectionCommand();

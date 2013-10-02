@@ -87,4 +87,14 @@ public enum MenuItemType
     {
         return renderable;
     }
+
+    public boolean isPage()
+    {
+        return PAGE.equals( this );
+    }
+
+    public boolean isSection()
+    {
+        return SECTION.equals( this );
+    }
 }

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -310,9 +309,55 @@ public class MenuItemEntity
         return runAs;
     }
 
-    public boolean hasSectionContentTypeFilters()
+    public boolean hasSectionContentTypeFilter()
     {
-        return sectionContentTypeFilters.size() > 0;
+        return !this.sectionContentTypeFilters.isEmpty();
+    }
+
+    public Set<ContentTypeEntity> getAllowedSectionContentTypes()
+    {
+        final Set<ContentTypeEntity> contentTypeEntities = new LinkedHashSet<ContentTypeEntity>();
+
+        for ( SectionContentTypeFilterEntity sectionContentTypeFilter : sectionContentTypeFilters )
+        {
+            contentTypeEntities.add( sectionContentTypeFilter.getContentType() );
+        }
+
+        return contentTypeEntities;
+    }
+
+    public void setAllowedSectionContentTypes( Set<ContentTypeEntity> contentTypeFilter )
+    {
+        for ( ContentTypeEntity contentType : contentTypeFilter )
+        {
+            addAllowedSectionContentType( contentType );
+        }
+    }
+
+    public void addAllowedSectionContentType( ContentTypeEntity contentType )
+    {
+        final SectionContentTypeFilterEntity sectionContentTypeFilterEntity = new SectionContentTypeFilterEntity();
+        sectionContentTypeFilterEntity.setContentType( contentType );
+        sectionContentTypeFilterEntity.setSection( this );
+        this.sectionContentTypeFilters.add( sectionContentTypeFilterEntity );
+    }
+
+    public void addAllowedSectionContentType( final Collection<ContentTypeEntity> ctys )
+    {
+        for ( ContentTypeEntity cty : ctys )
+        {
+            addAllowedSectionContentType( cty );
+        }
+    }
+
+    public boolean supportsSectionContentType( ContentTypeEntity contentType )
+    {
+        return this.getAllowedSectionContentTypes().contains( contentType );
+    }
+
+    public void clearSectionContentTypes()
+    {
+        this.sectionContentTypeFilters.clear();
     }
 
     public Set<SectionContentTypeFilterEntity> getSectionContentTypeFilters()
@@ -323,26 +368,6 @@ public class MenuItemEntity
     public void setSectionContentTypeFilters( Set<SectionContentTypeFilterEntity> contentTypeFilter )
     {
         this.sectionContentTypeFilters = contentTypeFilter;
-    }
-
-    public void addSectionContentTypeFilter( SectionContentTypeFilterEntity contentType )
-    {
-        this.sectionContentTypeFilters.add( contentType );
-    }
-
-    public boolean supportsSectionContentType( ContentTypeEntity contentType )
-    {
-        final Set<ContentTypeEntity> contentTypeEntities = new HashSet<ContentTypeEntity>();
-        for ( SectionContentTypeFilterEntity sectionContentTypeFilter : sectionContentTypeFilters )
-        {
-            contentTypeEntities.add( sectionContentTypeFilter.getContentType() );
-        }
-        return contentTypeEntities.contains( contentType );
-    }
-
-    public void clearSectionContentTypeFilters()
-    {
-        this.sectionContentTypeFilters.clear();
     }
 
     public void addSectionContent( SectionContentEntity sectionContent )

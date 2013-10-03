@@ -201,7 +201,7 @@ public class MenuItemServiceImpl
             menuItemAccessResolver.checkAccessToApproveContentInSection( contributor, section, "Cannot approve content in section." );
         }
 
-        if ( section.isSection() && section.hasSectionContentTypeFilters() )
+        if ( section.isSection() && section.hasSectionContentTypeFilter() )
         {
             if ( !section.supportsSectionContentType( content.getCategory().getContentType() ) )
             {

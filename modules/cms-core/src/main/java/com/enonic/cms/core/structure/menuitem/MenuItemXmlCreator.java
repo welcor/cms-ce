@@ -454,11 +454,9 @@ public class MenuItemXmlCreator
         xmlDoc.setAttribute( "ordered", menuItem.isOrderedSection() ? "true" : "false" );
 
         xmlDoc.startElement( "contenttypes" );
-        Set<SectionContentTypeFilterEntity> filterEntities = menuItem.getSectionContentTypeFilters();
-        for (SectionContentTypeFilterEntity filterEntity : filterEntities)
+        Set<ContentTypeEntity> contentTypes = menuItem.getAllowedSectionContentTypes();
+        for ( ContentTypeEntity contentType : contentTypes )
         {
-            final ContentTypeEntity contentType = filterEntity.getContentType();
-
             xmlDoc.startElement( "contenttype" );
             xmlDoc.setAttribute( "key", contentType.getKey() );
 

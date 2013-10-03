@@ -288,15 +288,8 @@ public class PageTemplateServiceImpl
                     menuItem.setSection( true );
                 }
 
-                menuItem.clearSectionContentTypeFilters();
-
-                for ( final ContentTypeEntity contentType : contentTypes )
-                {
-                    final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
-                    contentTypeFilter.setContentType( contentType );
-                    contentTypeFilter.setSection( menuItem );
-                    menuItem.addSectionContentTypeFilter( contentTypeFilter );
-                }
+                menuItem.clearSectionContentTypes();
+                menuItem.addAllowedSectionContentType( contentTypes );
             }
         }
     }

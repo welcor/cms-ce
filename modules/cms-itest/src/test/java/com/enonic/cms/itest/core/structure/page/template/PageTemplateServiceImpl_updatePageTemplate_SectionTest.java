@@ -391,31 +391,17 @@ public class PageTemplateServiceImpl_updatePageTemplate_SectionTest
 
 
         MenuItemEntity menuItem4040 = menuItemDao.findByKey( new MenuItemKey( 4040 ) );
-        Set<ContentTypeEntity> ctys = new HashSet<ContentTypeEntity>(  );
-        for ( SectionContentTypeFilterEntity sectionContentTypeFilter2 : menuItem4040.getSectionContentTypeFilters() )
-        {
-            ctys.add( sectionContentTypeFilter2.getContentType() );
-        }
+        Set<ContentTypeEntity> ctys = menuItem4040.getAllowedSectionContentTypes();
         assertEquals( 3, ctys.size() );
         checkContentTypes( new String[]{"article", "document", "person"}, ctys );
-
 
         MenuItemEntity menuItem4041 = menuItemDao.findByKey( new MenuItemKey( 4041 ) );
-        ctys = new HashSet<ContentTypeEntity>(  );
-        for ( SectionContentTypeFilterEntity sectionContentTypeFilter1 : menuItem4041.getSectionContentTypeFilters() )
-        {
-            ctys.add( sectionContentTypeFilter1.getContentType() );
-        }
+        ctys = menuItem4041.getAllowedSectionContentTypes();
         assertEquals( 3, ctys.size() );
         checkContentTypes( new String[]{"article", "document", "person"}, ctys );
 
-
         MenuItemEntity menuItem3030 = menuItemDao.findByKey( new MenuItemKey( 3030 ) );
-        ctys = new HashSet<ContentTypeEntity>(  );
-        for ( SectionContentTypeFilterEntity sectionContentTypeFilter : menuItem3030.getSectionContentTypeFilters() )
-        {
-            ctys.add( sectionContentTypeFilter.getContentType() );
-        }
+        ctys = menuItem3030.getAllowedSectionContentTypes();
         assertEquals( 3, ctys.size() );
         checkContentTypes( new String[]{"article", "document", "person"}, ctys );
     }

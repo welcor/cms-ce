@@ -203,13 +203,7 @@ public class MenuItemXmlCreatorTest
         Set<ContentTypeEntity> filteredContentTypes = new LinkedHashSet<ContentTypeEntity>();
         filteredContentTypes.add( createContentType( "201", "type1" ) );
         filteredContentTypes.add( createContentType( "202", "type2" ) );
-        for ( ContentTypeEntity allowedSectionContentType : filteredContentTypes )
-        {
-            final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
-            contentTypeFilter.setContentType( allowedSectionContentType );
-            contentTypeFilter.setSection( mi );
-            mi.addSectionContentTypeFilter( contentTypeFilter );
-        }
+        mi.setAllowedSectionContentTypes( filteredContentTypes );
 
         PageEntity page = createPage( "201" );
         PageTemplateEntity pageTemplate = createPageTemplate( "301", "name-301" );
@@ -269,13 +263,7 @@ public class MenuItemXmlCreatorTest
         Set<ContentTypeEntity> filteredContentTypes = new LinkedHashSet<ContentTypeEntity>();
         filteredContentTypes.add( createContentType( "201", "type1" ) );
         filteredContentTypes.add( createContentType( "202", "type2" ) );
-        for ( ContentTypeEntity allowedSectionContentType : filteredContentTypes )
-        {
-            final SectionContentTypeFilterEntity contentTypeFilter = new SectionContentTypeFilterEntity();
-            contentTypeFilter.setContentType( allowedSectionContentType );
-            contentTypeFilter.setSection( mi );
-            mi.addSectionContentTypeFilter( contentTypeFilter );
-        }
+        mi.setAllowedSectionContentTypes( filteredContentTypes );
         setting = new MenuItemXMLCreatorSetting();
         xmlCreator = new MenuItemXmlCreator( setting, menuItemAccessResolver );
         XMLDocument xmlDoc = xmlCreator.createLegacyGetMenuItem( mi );
